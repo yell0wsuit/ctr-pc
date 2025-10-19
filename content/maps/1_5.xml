@@ -1,0 +1,38 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign ropePhysicsSpeed="1" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="101" y="238" />
+<target x="219" y="431" />
+<star x="102" y="326" timeout="-1" />
+<star x="217" y="209" timeout="-1" />
+<star x="217" y="74" timeout="-1" />
+<grab x="96" y="139" length="90" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<bubble x="99" y="391" />
+<grab x="219" y="252" length="140" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<tutorialText x="43" y="45" locale="en" text="Click to pop the bubble" width="120" special="1" />
+<tutorialText x="157" y="293" locale="en" text="The bubble will lift the candy up" width="120" />
+<tutorial04 x="167" y="391" locale="en" angle="15" moveSpeed="100" rotateSpeed="100" />
+<tutorial05 x="218" y="78" locale="en" moveSpeed="100" rotateSpeed="10" special="1" />
+</layer>
+<layer name="Ru">
+<tutorial04 x="167" y="391" locale="ru" angle="20" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="138" y="315" locale="ru" text="Пузырь подымет леденец вверх" width="160" />
+<tutorialText x="21" y="44" locale="ru" text="Нажмите чтобы лопнуть пузырь" width="160" special="1" />
+<tutorial05 x="218" y="78" locale="ru" moveSpeed="100" rotateSpeed="100" special="1" />
+</layer>
+<layer name="Fr">
+<tutorialText x="121" y="311" locale="fr" text="La bulle fera monter le bonbon" width="150" />
+<tutorial04 x="167" y="386" locale="fr" angle="15" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="33" y="46" locale="fr" text="Clique pour éclater la bulle" width="130" special="1" />
+<tutorial05 x="217" y="78" locale="fr" moveSpeed="100" rotateSpeed="100" special="1" />
+</layer>
+<layer name="De">
+<tutorialText x="17" y="30" locale="de" text="Klicke, um die Seifenblase platzen zu lassen" width="140" special="1" />
+<tutorial05 x="217" y="77" locale="de" moveSpeed="100" rotateSpeed="10" special="1" />
+<tutorialText x="138" y="308" locale="de" text="Die Seifenblase lässt den Bonbon schweben" width="170" />
+<tutorial04 x="166" y="390" locale="de" angle="15" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

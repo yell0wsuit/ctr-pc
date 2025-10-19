@@ -1,0 +1,31 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="77" y="313" />
+<target x="123" y="432" />
+<star x="148" y="139" timeout="-1" />
+<star x="257" y="351" timeout="-1" />
+<star x="122" y="346" timeout="-1" />
+<grab x="124" y="191" length="70" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="247" y="92" length="150" wheel="false" gun="false" radius="55" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="188" y="289" length="100" wheel="false" gun="false" radius="65" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="49" y="381" length="25" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<tutorialText x="20" y="98" locale="en" text="Stretched ropes get red" width="100" />
+<tutorial09 x="67" y="85" locale="en" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorial09 x="68" y="64" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="21" y="77" locale="ru" text="Натянутые веревки становятся красными" width="100" />
+</layer>
+<layer name="Fr">
+<tutorial09 x="67" y="61" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="20" y="74" locale="fr" text="Les cordes étirées deviennent rouges" width="100" />
+</layer>
+<layer name="De">
+<tutorialText x="57" y="33" locale="de" text="Gespannte Seile werden rot" width="140" />
+<tutorial09 x="39" y="68" locale="de" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

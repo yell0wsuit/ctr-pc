@@ -1,0 +1,15 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="960" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="160" y="176" />
+<target x="264" y="905" />
+<grab x="52" y="112" length="160" wheel="false" radius="-1" moveLength="600" moveVertical="true" moveOffset="0" spider="true" part="L" />
+<grab x="278" y="115" length="160" wheel="false" radius="-1" moveLength="600" moveVertical="true" moveOffset="0" spider="true" part="L" />
+<star x="84" y="319" timeout="-1" />
+<star x="243" y="526" timeout="-1" />
+<star x="86" y="705" timeout="-1" />
+</layer>
+</map>

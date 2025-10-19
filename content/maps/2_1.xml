@@ -1,0 +1,31 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="161" y="220" />
+<target x="254" y="416" />
+<star x="299" y="89" timeout="-1" />
+<star x="20" y="89" timeout="-1" />
+<star x="161" y="171" timeout="-1" />
+<pump x="42" y="237" angle="0" />
+<pump x="277" y="233" angle="180" />
+<grab x="162" y="88" length="110" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<pump x="161" y="334" angle="-90" />
+<tutorialText x="22" y="357" locale="en" text="Click the air cushion to blow object" width="180" />
+<tutorial04 x="101" y="347" locale="en" angle="180" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorial04 x="104" y="350" locale="ru" angle="180" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="22" y="357" locale="ru" text="Нажмите на подушку, чтобы подуть на леденец" width="180" />
+</layer>
+<layer name="Fr">
+<tutorial04 x="101" y="347" locale="fr" angle="180" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="-5" y="355" locale="fr" text="Clique le coussin d'air pour souffler sur les objets" width="180" />
+</layer>
+<layer name="De">
+<tutorial04 x="102" y="354" locale="de" angle="180" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="-17" y="360" locale="de" text="Klicke auf das Luftkissen, um auf den Gegenstand zu blasen" width="230" />
+</layer>
+</map>

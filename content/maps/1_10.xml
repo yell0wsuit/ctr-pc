@@ -1,0 +1,31 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="640" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<target x="514" y="418" />
+<grab x="224" y="177" length="100" wheel="false" gun="false" radius="45" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="448" y="337" length="100" wheel="false" gun="false" radius="45" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="335" y="256" length="100" wheel="false" gun="false" radius="45" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<candy x="178" y="103" />
+<star x="222" y="269" timeout="-1" />
+<star x="448" y="430" timeout="-1" />
+<star x="328" y="345" timeout="-1" />
+<grab x="180" y="31" length="50" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<tutorialText x="273" y="39" locale="en" text="Automatic ropes appear when candy gets into their area" width="140" />
+<tutorial04 x="316" y="164" locale="en" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorial04 x="325" y="173" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="234" y="68" locale="ru" text="Авто-веревки появляются, когда леденец попадает в их радиус" width="220" />
+</layer>
+<layer name="Fr">
+<tutorialText x="213" y="41" locale="fr" text="Les cordes automatiques apparaissent lorsqu'un bonbon arrive dans leur zone" width="260" />
+<tutorial04 x="298" y="144" locale="fr" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="De">
+<tutorialText x="250" y="47" locale="de" text="Sobald der Bonbon in ihrer Nähe ist, erscheinen automatisch Seile" width="200" />
+<tutorial04 x="329" y="152" locale="de" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

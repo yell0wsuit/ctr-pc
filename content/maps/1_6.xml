@@ -1,0 +1,29 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<star x="161" y="371" timeout="-1" />
+<star x="163" y="293" timeout="-1" />
+<target x="160" y="432" />
+<candy x="160" y="217" />
+<grab x="163" y="152" length="50" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<bubble x="161" y="293" />
+<star x="161" y="91" timeout="-1" />
+<tutorialText x="20" y="80" locale="en" text="Don't let the candy leave the box" width="120" />
+<tutorial09 x="79" y="65" locale="en" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorialText x="20" y="80" locale="ru" text="Не дайте леденцу вылететь за пределы коробки" width="120" />
+<tutorial09 x="79" y="65" locale="ru" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Fr">
+<tutorialText x="20" y="80" locale="fr" text="Ne laissez pas le bonbon sortir de la boîte" width="110" />
+<tutorial09 x="79" y="65" locale="fr" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="De">
+<tutorialText x="14" y="80" locale="de" text="Lass den Bonbon nicht aus der Schachtel" width="140" />
+<tutorial09 x="79" y="65" locale="de" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

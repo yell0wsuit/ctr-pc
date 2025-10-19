@@ -1,0 +1,31 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign special="1" twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<target x="269" y="74" />
+<rotatedCircle x="226" y="348" size="75" handleAngle="90" oneHandle="false" />
+<rotatedCircle x="100" y="349" size="75" handleAngle="90" oneHandle="false" />
+<grab x="32" y="347" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<candy x="35" y="249" />
+<star x="164" y="250" timeout="-1" />
+<star x="270" y="145" timeout="-1" />
+<star x="270" y="251" timeout="-1" />
+<bubble x="35" y="246" />
+<tutorialText x="46" y="130" locale="en" text="Move the rope holder from one record to another" width="200" />
+<tutorial09 x="146" y="113" locale="en" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorialText x="52" y="131" locale="ru" text="Переместите крепеж веревки с одной пластинки на другую" width="200" />
+<tutorial09 x="148" y="115" locale="ru" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="De">
+<tutorialText x="53" y="130" locale="de" text="Bewege den Seilhalter von einer Schallplatte zur Anderen" width="200" />
+<tutorial09 x="147" y="114" locale="de" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="fr">
+<tutorialText x="50" y="129" locale="fr" text="Fais passer l'attache de la corde d'un disque à l'autre" width="200" />
+<tutorial09 x="146" y="114" locale="fr" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>
