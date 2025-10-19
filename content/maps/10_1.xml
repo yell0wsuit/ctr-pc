@@ -1,0 +1,34 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<grab x="162" y="131" length="40" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<candy x="175" y="189" />
+<grab x="256" y="28" length="150" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" path="0,237," hidePath="false" moveSpeed="45" />
+<grab x="65" y="256" length="150" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" path="0,-237," hidePath="false" moveSpeed="45" />
+<spike1 x="104" y="368" angle="90" size="1" toggled="false" />
+<spike1 x="211" y="368" angle="90" size="1" toggled="false" />
+<target x="158" y="425" />
+<star x="159" y="360" timeout="-1" />
+<star x="64" y="234" timeout="-1" />
+<star x="253" y="238" timeout="-1" />
+</layer>
+<layer name="En">
+<tutorial09 x="155" y="261" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="57" y="271" locale="en" text="The bee carries candy along this path" width="200" />
+</layer>
+<layer name="Ru">
+<tutorial09 x="98" y="289" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="127" y="247" locale="ru" text="Пчела носит леденец по траектории" width="100" />
+</layer>
+<layer name="De">
+<tutorialText x="56" y="262" locale="de" text="Die Biene trägt das Bonbon diesen Pfad entlang" width="200" />
+<tutorial09 x="155" y="252" locale="de" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Fr">
+<tutorialText x="55" y="268" locale="fr" text="L'abeille transporte le bonbon le long de ce chemin" width="200" />
+<tutorial09 x="155" y="252" locale="fr" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

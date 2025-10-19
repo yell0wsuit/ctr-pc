@@ -1,0 +1,19 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign ropePhysicsSpeed="1" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<gravitySwitch x="58" y="210" />
+<target x="258" y="323" />
+<bouncer2 x="160" y="95" angle="0" size="2" />
+<bouncer2 x="159" y="366" angle="0" size="2" />
+<star x="160" y="186" path="RW65" moveSpeed="65" timeout="-1" />
+<star x="160" y="209" path="RC40" moveSpeed="60" timeout="-1" />
+<star x="160" y="209" path="RW10" moveSpeed="20" timeout="-1" />
+<pump x="58" y="313" angle="0" />
+<candy x="155" y="299" />
+<spike3 x="158" y="439" angle="0" size="3" path="0,-120" moveSpeed="30" toggled="false" />
+<spike3 x="159" y="160" angle="0" size="3" path="0,-120" moveSpeed="30" toggled="false" />
+</layer>
+</map>

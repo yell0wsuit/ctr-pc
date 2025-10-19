@@ -1,0 +1,21 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign special="1" twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<candy x="67" y="185" />
+<grab x="72" y="353" length="60" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<grab x="77" y="59" length="20" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<star x="270" y="142" timeout="15" />
+<star x="266" y="252" timeout="10" />
+<star x="264" y="375" timeout="12" />
+<spike4 x="47" y="303" angle="0" size="4" toggled="false" />
+<target x="272" y="62" />
+<sock x="48" y="355" group="0" angle="0" />
+<sock x="265" y="431" group="0" angle="270" />
+<rotatedCircle x="239" y="313" size="70" handleAngle="45" oneHandle="false" />
+<rotatedCircle x="167" y="221" size="70" handleAngle="-45" oneHandle="false" />
+<rotatedCircle x="91" y="125" size="70" handleAngle="45" oneHandle="false" />
+</layer>
+</map>

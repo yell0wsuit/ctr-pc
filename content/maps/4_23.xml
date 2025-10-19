@@ -1,0 +1,22 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="640" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="113" y="189" />
+<grab x="61" y="187" length="50" wheel="false" radius="-1" moveVertical="true" spider="false" part="L" />
+<grab x="164" y="188" length="50" wheel="false" radius="-1" moveVertical="true" spider="false" part="L" />
+<star x="545" y="195" timeout="-1" />
+<sock x="111" y="401" group="0" angle="270" />
+<target x="477" y="290" />
+<bubble x="269" y="257" />
+<sock x="268" y="98" group="0" angle="90" />
+<star x="407" y="191" timeout="-1" />
+<star x="475" y="113" timeout="-1" />
+<sock x="273" y="403" group="1" angle="270" />
+<sock x="419" y="402" group="1" angle="270" />
+<grab x="477" y="195" length="100" wheel="false" radius="50" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<spike2 x="114" y="74" angle="0" size="2" />
+</layer>
+</map>

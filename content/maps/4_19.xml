@@ -1,0 +1,28 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="640" height="960" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false"  mapOffsetX="80"/>
+</layer>
+<layer name="Objects">
+<target x="64" y="866" />
+<grab x="171" y="804" length="40" wheel="false" gun="false" radius="-1" moveLength="150" moveVertical="false" moveOffset="120" spider="false" part="L" />
+<candy x="298" y="807" />
+<sock x="329" y="673" group="1" angle="270" />
+<sock x="436" y="796" group="1" angle="180" />
+<star x="328" y="158" timeout="-1" />
+<star x="327" y="589" timeout="-1" />
+<grab x="376" y="804" length="60" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<spike1 x="415" y="668" angle="30" size="1" />
+<spike3 x="327" y="62" angle="0" size="3" />
+<spike4 x="391" y="565" angle="90" size="4" />
+<spike4 x="256" y="567" angle="90" size="4" />
+<spike4 x="391" y="388" angle="90" size="4" />
+<spike4 x="256" y="390" angle="90" size="4" />
+<spike4 x="256" y="212" angle="90" size="4" />
+<spike4 x="391" y="210" angle="90" size="4" />
+<spike1 x="231" y="665" angle="-20" size="1" />
+<spike1 x="391" y="92" angle="90" size="1" />
+<spike1 x="256" y="95" angle="90" size="1" />
+<star x="326" y="374" timeout="-1" />
+</layer>
+</map>

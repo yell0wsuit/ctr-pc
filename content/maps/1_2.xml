@@ -1,0 +1,44 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="640" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="288" y="203" />
+<grab x="271" y="70" length="90" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<grab x="381" y="69" length="170" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<target x="483" y="419" />
+<star x="273" y="250" timeout="-1" />
+<star x="272" y="369" timeout="-1" />
+<star x="499" y="250" timeout="-1" />
+<grab x="494" y="69" length="320" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+</layer>
+<layer name="En_Track">
+<tutorial01 x="223" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="276" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="329" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial11 x="205" y="135" locale="en" moveSpeed="100" rotateSpeed="100" special="2" />
+<tutorialText x="-15" y="78" locale="en" text="Using the trackpad slide two fingers across to cut the rope" width="190" />
+</layer>
+<layer name="Ru_Track">
+<tutorialText x="-35" y="70" locale="ru" text="Перерезайте веревку движением двух пальцев, используя трекпад" width="200" />
+<tutorial01 x="223" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="276" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="329" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorial11 x="205" y="135" locale="ru" moveSpeed="100" rotateSpeed="100" special="2" />
+</layer>
+<layer name="De_Track">
+<tutorialText x="-15" y="78" locale="de" text="Ziehe zwei Finger über dasTrackpad, um das Seil zu zerschneiden" width="200" />
+<tutorial01 x="223" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="276" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="329" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial11 x="205" y="135" locale="de" moveSpeed="100" rotateSpeed="100" special="2" />
+</layer>
+<layer name="Fr_Track">
+<tutorialText x="-14" y="78" locale="fr" text="Sur le trackpad, glisse deux doigts sur une corde pour la couper" width="200" />
+<tutorial01 x="223" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="276" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="329" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial11 x="205" y="135" locale="fr" moveSpeed="100" rotateSpeed="100" special="2" />
+</layer>
+</map>

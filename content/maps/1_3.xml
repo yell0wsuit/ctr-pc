@@ -1,0 +1,32 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="640" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="360" y="221" />
+<grab x="279" y="281" length="95" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<grab x="277" y="120" length="95" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<target x="387" y="387" />
+<star x="159" y="318" timeout="-1" />
+<star x="277" y="403" timeout="-1" />
+<star x="225" y="223" timeout="-1" />
+<grab x="532" y="169" length="140" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+</layer>
+<layer name="En_Track">
+<tutorialText x="420" y="260" locale="en" text="Collect as many stars as you can" width="150" />
+<tutorial09 x="486" y="248" locale="en" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorial09 x="485" y="247" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="391" y="257" locale="ru" text="Старайтесь собрать как можно больше звезд" width="210" />
+</layer>
+<layer name="Fr">
+<tutorialText x="397" y="261" locale="fr" text="Collecte autant d'étoiles que tu le peux" width="200" />
+<tutorial09 x="486" y="248" locale="fr" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="De">
+<tutorialText x="409" y="259" locale="de" text="Sammle möglichst viele Sternchen" width="170" />
+<tutorial09 x="485" y="247" locale="de" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

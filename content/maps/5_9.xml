@@ -1,0 +1,22 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="640" height="480" />
+<gameDesign ropePhysicsSpeed="1" special="1" twoParts="true" />
+</layer>
+<layer name="Objects">
+<candyL x="479" y="93" />
+<grab x="476" y="192" length="60" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<target x="223" y="54" />
+<grab x="228" y="218" length="60" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="R" />
+<star x="319" y="401" timeout="-1" />
+<star x="224" y="128" timeout="-1" />
+<star x="564" y="191" timeout="-1" />
+<grab x="386" y="95" length="60" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="226" y="411" length="60" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="R" />
+<candyR x="230" y="318" />
+<grab x="322" y="316" length="55" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="R" />
+<grab x="570" y="93" length="55" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<bubble x="317" y="400" />
+<bubble x="473" y="90" />
+</layer>
+</map>
