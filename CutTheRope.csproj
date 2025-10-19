@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>CutTheRope</RootNamespace>
+    <AssemblyName>CutTheRope</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWindowsForms>True</UseWindowsForms>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <EnableDefaultItems>False</EnableDefaultItems>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
+    <StartupObject>CutTheRope.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ctr_commons\CTRApp.cs" />
+    <Compile Include="ctr_commons\CtrRenderer.cs" />
+    <Compile Include="ctr_commons\HLiftScrollbar.cs" />
+    <Compile Include="ctr_commons\Lift.cs" />
+    <Compile Include="ctr_commons\LiftScrollbarDelegate.cs" />
+    <Compile Include="ctr_commons\Popup.cs" />
+    <Compile Include="ctr_commons\RemoteDataManager.cs" />
+    <Compile Include="ctr_commons\SaveMgr.cs" />
+    <Compile Include="CutTheRope.Designer.cs">
+      <DependentUpon>CutTheRope.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DynamicArray.cs" />
+    <Compile Include="DynamicArrayEnumerator.cs" />
+    <Compile Include="Game1.cs" />
+    <Compile Include="game\Bouncer.cs" />
+    <Compile Include="game\BoxOpenClose.cs" />
+    <Compile Include="game\Bubble.cs" />
+    <Compile Include="game\Bungee.cs" />
+    <Compile Include="game\CandyBreak.cs" />
+    <Compile Include="game\CharAnimation.cs" />
+    <Compile Include="game\CharAnimations.cs" />
+    <Compile Include="game\CTRGameObject.cs" />
+    <Compile Include="game\CTRMover.cs" />
+    <Compile Include="game\CTRPreferences.cs" />
+    <Compile Include="game\CTRResourceMgr.cs" />
+    <Compile Include="game\CTRRootController.cs" />
+    <Compile Include="game\CTRSoundMgr.cs" />
+    <Compile Include="game\GameController.cs" />
+    <Compile Include="game\GameDesign.cs" />
+    <Compile Include="game\GameScene.cs" />
+    <Compile Include="game\GameSceneDelegate.cs" />
+    <Compile Include="game\GameView.cs" />
+    <Compile Include="game\Grab.cs" />
+    <Compile Include="game\LevelsList.cs" />
+    <Compile Include="game\LoadingController.cs" />
+    <Compile Include="game\LoadingView.cs" />
+    <Compile Include="game\MapPickerController.cs" />
+    <Compile Include="game\MapPickerControllerButtonId.cs" />
+    <Compile Include="game\MapPickerControllerViewId.cs" />
+    <Compile Include="game\MenuController.cs" />
+    <Compile Include="game\MenuView.cs" />
+    <Compile Include="game\MovieView.cs" />
+    <Compile Include="game\Pollen.cs" />
+    <Compile Include="game\PollenDrawer.cs" />
+    <Compile Include="game\Processing.cs" />
+    <Compile Include="game\Pump.cs" />
+    <Compile Include="game\PumpDirt.cs" />
+    <Compile Include="game\Razor.cs" />
+    <Compile Include="game\ResDataPhoneFull.cs" />
+    <Compile Include="game\RotatedCircle.cs" />
+    <Compile Include="game\RotatedCircle2.cs" />
+    <Compile Include="game\Scorer.cs" />
+    <Compile Include="game\Sock.cs" />
+    <Compile Include="game\Spikes.cs" />
+    <Compile Include="game\Star.cs" />
+    <Compile Include="game\StarsBreak.cs" />
+    <Compile Include="game\StartupController.cs" />
+    <Compile Include="game\UNLOCKED_STATE.cs" />
+    <Compile Include="iframework\core\Application.cs" />
+    <Compile Include="iframework\core\ApplicationSettings.cs" />
+    <Compile Include="iframework\core\Preferences.cs" />
+    <Compile Include="iframework\core\ResourceMgr.cs" />
+    <Compile Include="iframework\core\ResourceMgrDelegate.cs" />
+    <Compile Include="iframework\core\RootController.cs" />
+    <Compile Include="iframework\core\Vector.cs" />
+    <Compile Include="iframework\core\VectorClass.cs" />
+    <Compile Include="iframework\core\View.cs" />
+    <Compile Include="iframework\core\ViewController.cs" />
+    <Compile Include="iframework\FrameworkTypes.cs" />
+    <Compile Include="iframework\helpers\Camera2D.cs" />
+    <Compile Include="iframework\helpers\CAMERA_TYPE.cs" />
+    <Compile Include="iframework\helpers\DelayedDispatcher.cs" />
+    <Compile Include="iframework\helpers\Dispatch.cs" />
+    <Compile Include="iframework\helpers\GameObject.cs" />
+    <Compile Include="iframework\helpers\MathHelper.cs" />
+    <Compile Include="iframework\helpers\Mover.cs" />
+    <Compile Include="iframework\Language.cs" />
+    <Compile Include="iframework\md5.cs" />
+    <Compile Include="iframework\media\MovieMgr.cs" />
+    <Compile Include="iframework\media\MovieMgrDelegate.cs" />
+    <Compile Include="iframework\media\SoundMgr.cs" />
+    <Compile Include="iframework\platform\GLCanvas.cs" />
+    <Compile Include="iframework\Point.cs" />
+    <Compile Include="iframework\PointSprite.cs" />
+    <Compile Include="iframework\Quad2D.cs" />
+    <Compile Include="iframework\Quad3D.cs" />
+    <Compile Include="iframework\Rectangle.cs" />
+    <Compile Include="iframework\RGBAColor.cs" />
+    <Compile Include="iframework\sfe\Constraint.cs" />
+    <Compile Include="iframework\sfe\ConstraintedPoint.cs" />
+    <Compile Include="iframework\sfe\ConstraintSystem.cs" />
+    <Compile Include="iframework\sfe\MaterialPoint.cs" />
+    <Compile Include="iframework\visual\Action.cs" />
+    <Compile Include="iframework\visual\ActionData.cs" />
+    <Compile Include="iframework\visual\ActionParams.cs" />
+    <Compile Include="iframework\visual\Animation.cs" />
+    <Compile Include="iframework\visual\AnimationsPool.cs" />
+    <Compile Include="iframework\visual\BaseElement.cs" />
+    <Compile Include="iframework\visual\Button.cs" />
+    <Compile Include="iframework\visual\ButtonDelegate.cs" />
+    <Compile Include="iframework\visual\CircleElement.cs" />
+    <Compile Include="iframework\visual\ColorParams.cs" />
+    <Compile Include="iframework\visual\Font.cs" />
+    <Compile Include="iframework\visual\FontGeneric.cs" />
+    <Compile Include="iframework\visual\FormattedString.cs" />
+    <Compile Include="iframework\visual\GLDrawer.cs" />
+    <Compile Include="iframework\visual\Grabber.cs" />
+    <Compile Include="iframework\visual\HBox.cs" />
+    <Compile Include="iframework\visual\HorizontallyTiledImage.cs" />
+    <Compile Include="iframework\visual\Image.cs" />
+    <Compile Include="iframework\visual\ImageMultiDrawer.cs" />
+    <Compile Include="iframework\visual\KeyFrame.cs" />
+    <Compile Include="iframework\visual\KeyFrameValue.cs" />
+    <Compile Include="iframework\visual\MultiParticles.cs" />
+    <Compile Include="iframework\visual\Particle.cs" />
+    <Compile Include="iframework\visual\Particles.cs" />
+    <Compile Include="iframework\visual\ParticlesFactory.cs" />
+    <Compile Include="iframework\visual\PosParams.cs" />
+    <Compile Include="iframework\visual\RectangleElement.cs" />
+    <Compile Include="iframework\visual\RotatableScalableMultiParticles.cs" />
+    <Compile Include="iframework\visual\RotateableMultiParticles.cs" />
+    <Compile Include="iframework\visual\RotationParams.cs" />
+    <Compile Include="iframework\visual\ScalableMultiParticles.cs" />
+    <Compile Include="iframework\visual\ScaleParams.cs" />
+    <Compile Include="iframework\visual\ScrollableContainer.cs" />
+    <Compile Include="iframework\visual\ScrollableContainerProtocol.cs" />
+    <Compile Include="iframework\visual\Scrollbar.cs" />
+    <Compile Include="iframework\visual\Text.cs" />
+    <Compile Include="iframework\visual\Texture2D.cs" />
+    <Compile Include="iframework\visual\TiledImage.cs" />
+    <Compile Include="iframework\visual\TileEntry.cs" />
+    <Compile Include="iframework\visual\TileMap.cs" />
+    <Compile Include="iframework\visual\Timeline.cs" />
+    <Compile Include="iframework\visual\TimelineDelegate.cs" />
+    <Compile Include="iframework\visual\ToggleButton.cs" />
+    <Compile Include="iframework\visual\TouchDelegate.cs" />
+    <Compile Include="iframework\visual\Track.cs" />
+    <Compile Include="iframework\visual\VBox.cs" />
+    <Compile Include="iframework\visual\VerticallyTiledImage.cs" />
+    <Compile Include="ios\NSObject.cs" />
+    <Compile Include="ios\NSPoint.cs" />
+    <Compile Include="ios\NSRange.cs" />
+    <Compile Include="ios\NSRect.cs" />
+    <Compile Include="ios\NSScreen.cs" />
+    <Compile Include="ios\NSSize.cs" />
+    <Compile Include="ios\NSString.cs" />
+    <Compile Include="ios\NSTimer.cs" />
+    <Compile Include="ios\UIApplication.cs" />
+    <Compile Include="ios\XMLNode.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="windows\BlendingFactor.cs" />
+    <Compile Include="windows\BlendParams.cs" />
+    <Compile Include="windows\Branding.cs" />
+    <Compile Include="windows\DateTimeJavaHelper.cs" />
+    <Compile Include="windows\GLenum.cs" />
+    <Compile Include="windows\Global.cs" />
+    <Compile Include="windows\Images.cs" />
+    <Compile Include="windows\MouseCursor.cs" />
+    <Compile Include="windows\NativeMethods.cs" />
+    <Compile Include="windows\OpenGL.cs" />
+    <Compile Include="windows\ParentProcessUtilities.cs" />
+    <Compile Include="windows\ScreenSizeManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CutTheRope.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CutTheRope.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\..\..\Cut the Rope Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest" />
+  </ItemGroup>
+</Project>
