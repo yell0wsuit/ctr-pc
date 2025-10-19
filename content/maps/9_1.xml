@@ -1,0 +1,32 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<star x="159" y="306" path="RW100" moveSpeed="100" timeout="-1" />
+<star x="161" y="308" path="RW50" moveSpeed="50" timeout="-1" />
+<star x="162" y="308" timeout="-1" />
+<candy x="53" y="128" />
+<grab x="56" y="46" length="50" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<target x="226" y="334" />
+<grab x="256" y="45" length="260" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<spike4 x="99" y="365" angle="-70" size="4" toggled="1" />
+</layer>
+<layer name="ru">
+<tutorial04 x="126" y="401" locale="ru" angle="90" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="146" y="392" locale="ru" text="Чтобы повернуть пилу, нажмите кнопку" width="150" />
+</layer>
+<layer name="en">
+<tutorialText x="143" y="393" locale="en" text="Turn the blades with this button" width="150" />
+<tutorial04 x="126" y="401" locale="en" angle="90" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="de">
+<tutorialText x="150" y="389" locale="de" text="Drehe die Sägeblätter mit diesem Schaltfeld" width="180" />
+<tutorial04 x="126" y="403" locale="de" angle="90" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="fr">
+<tutorialText x="146" y="391" locale="fr" text="Faites tourner les lames avec ce bouton" width="150" />
+<tutorial04 x="128" y="407" locale="fr" angle="90" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

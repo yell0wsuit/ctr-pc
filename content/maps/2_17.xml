@@ -1,0 +1,31 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="640" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="224" y="199" />
+<grab x="223" y="113" length="40" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<target x="385" y="436" />
+<star x="384" y="349" timeout="17" />
+<star x="222" y="64" timeout="4" />
+<star x="388" y="165" timeout="9" />
+<bubble x="222" y="348" />
+<pump x="225" y="442" angle="-90" />
+<grab x="304" y="66" length="100" wheel="false" gun="false" radius="70" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
+<tutorialText x="176" y="215" locale="en" text="Some stars require fast actions to be collected" width="250" />
+<tutorial09 x="167" y="252" locale="en" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorial09 x="65" y="259" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="80" y="213" locale="ru" text="Некоторые звезды пропадают, если вы не достаточно быстры" width="200" />
+</layer>
+<layer name="Fr">
+<tutorialText x="46" y="213" locale="fr" text="Il est nécessaire d'agir rapidement pour collecter certaines étoiles" width="240" />
+<tutorial09 x="40" y="256" locale="fr" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="De">
+<tutorialText x="60" y="207" locale="de" text="Bei einigen Sternchen musst Du beim Einsammeln schnell sein" width="250" />
+<tutorial09 x="43" y="251" locale="de" moveSpeed="100" rotateSpeed="100" />
+</layer>
+</map>

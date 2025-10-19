@@ -1,0 +1,55 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+</layer>
+<layer name="Objects">
+<candy x="162" y="101" />
+<target x="162" y="426" />
+<star x="161" y="216" timeout="0" />
+<star x="162" y="345" timeout="-1" />
+<star x="161" y="284" timeout="-1" />
+<grab x="85" y="47" length="95" wheel="false" gun="false" radius="-1" moveLength="0" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="245" y="47" length="95" wheel="false" gun="false" radius="-1" moveLength="0" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<spike4 x="221" y="310" angle="80" size="4" />
+<spike4 x="104" y="310" angle="100" size="4" />
+<grab x="236" y="250" length="100" wheel="false" gun="false" radius="80" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<grab x="88" y="248" length="100" wheel="false" gun="false" radius="80" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
+<tutorialText x="9" y="56" locale="en" text="You can cut several ropes at once" width="300" />
+<tutorial01 x="56" y="96" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="108" y="96" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="161" y="96" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="212" y="95" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="266" y="95" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial07 x="19" y="95" locale="en" moveSpeed="100" rotateSpeed="100" />
+<tutorial07 x="304" y="96" locale="en" angle="180" moveSpeed="100" rotateSpeed="100" />
+</layer>
+<layer name="Ru">
+<tutorial01 x="54" y="110" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="107" y="110" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="160" y="110" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="210" y="109" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="264" y="109" locale="ru" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="10" y="50" locale="ru" text="Вы можете перерезать несколько веревок одновременно" width="300" />
+</layer>
+<layer name="Fr">
+<tutorial01 x="56" y="106" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="108" y="106" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="161" y="106" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="212" y="105" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="266" y="105" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial07 x="19" y="105" locale="fr" moveSpeed="100" rotateSpeed="100" />
+<tutorial07 x="304" y="106" locale="fr" angle="180" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="37" y="46" locale="fr" text="Tu peux couper plusieurs cordes à la fois" width="250" />
+</layer>
+<layer name="De">
+<tutorial01 x="56" y="106" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="108" y="106" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="161" y="106" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="212" y="105" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial01 x="266" y="105" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial07 x="19" y="105" locale="de" moveSpeed="100" rotateSpeed="100" />
+<tutorial07 x="304" y="106" locale="de" angle="180" moveSpeed="100" rotateSpeed="100" />
+<tutorialText x="35" y="46" locale="de" text="Du kannst mehrere Seile gleichzeitig durchschneiden" width="250" />
+</layer>
+</map>
