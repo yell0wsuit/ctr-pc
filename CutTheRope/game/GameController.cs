@@ -668,10 +668,7 @@ namespace CutTheRope.game
             view.getChild(1).x = (float)(-(float)base.canvas.xOffsetScaled);
             this.mapNameLabel.x = FrameworkTypes.RTD(-10.0) - (float)base.canvas.xOffsetScaled + 256f;
             GameScene gameScene = (GameScene)view.getChild(0);
-            if (gameScene != null)
-            {
-                gameScene.fullscreenToggled(isFullscreen);
-            }
+            gameScene?.fullscreenToggled(isFullscreen);
         }
 
         private const int BUTTON_PAUSE_RESUME = 0;

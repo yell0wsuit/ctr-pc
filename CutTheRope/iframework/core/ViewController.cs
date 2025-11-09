@@ -135,10 +135,7 @@ namespace CutTheRope.iframework.core
         public virtual void addChildwithID(ViewController c, int n)
         {
             ViewController viewController = null;
-            if (viewController != null)
-            {
-                viewController.dealloc();
-            }
+            viewController?.dealloc();
             this.childs[n] = c;
         }
 
@@ -241,10 +238,7 @@ namespace CutTheRope.iframework.core
             {
                 ViewController value;
                 this.childs.TryGetValue(this.activeChildID, out value);
-                if (value != null)
-                {
-                    value.deactivateAllButtons();
-                }
+                value?.deactivateAllButtons();
             }
         }
 

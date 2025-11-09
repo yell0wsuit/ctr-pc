@@ -13,10 +13,7 @@ namespace CutTheRope.iframework.visual
             for (int i = 0; i < count; i++)
             {
                 ImageMultiDrawer imageMultiDrawer = this.drawers[i];
-                if (imageMultiDrawer != null)
-                {
-                    imageMultiDrawer.draw();
-                }
+                imageMultiDrawer?.draw();
             }
         }
 

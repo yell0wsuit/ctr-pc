@@ -147,10 +147,7 @@ internal class DynamicArray : NSObject, IEnumerable
     public virtual void removeObjectAtIndex(int k)
     {
         NSObject nSObject = this.map[k];
-        if (nSObject != null)
-        {
-            nSObject.release();
-        }
+        nSObject?.release();
         for (int i = k; i < this.highestIndex; i++)
         {
             this.map[i] = this.map[i + 1];

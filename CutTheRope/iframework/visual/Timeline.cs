@@ -108,10 +108,7 @@ namespace CutTheRope.iframework.visual
                             if (thiss.loopsLimit == 0)
                             {
                                 thiss.stopTimeline();
-                                if (thiss.delegateTimelineDelegate != null)
-                                {
-                                    thiss.delegateTimelineDelegate.timelineFinished(thiss);
-                                }
+                                thiss.delegateTimelineDelegate?.timelineFinished(thiss);
                             }
                         }
                         thiss.time = Math.Min(thiss.time - thiss.length, thiss.length);
@@ -136,10 +133,7 @@ namespace CutTheRope.iframework.visual
                                 if (thiss.loopsLimit == 0)
                                 {
                                     thiss.stopTimeline();
-                                    if (thiss.delegateTimelineDelegate != null)
-                                    {
-                                        thiss.delegateTimelineDelegate.timelineFinished(thiss);
-                                    }
+                                    thiss.delegateTimelineDelegate?.timelineFinished(thiss);
                                 }
                             }
                             thiss.time = Math.Min(0f - thiss.time, thiss.length);

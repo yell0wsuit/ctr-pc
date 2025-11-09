@@ -10,10 +10,7 @@ namespace CutTheRope.iframework.visual
             {
                 this.toggle();
             }
-            if (this.delegateButtonDelegate != null)
-            {
-                this.delegateButtonDelegate.onButtonPressed(this.buttonID);
-            }
+            this.delegateButtonDelegate?.onButtonPressed(this.buttonID);
         }
 
         public ToggleButton initWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, int bid)

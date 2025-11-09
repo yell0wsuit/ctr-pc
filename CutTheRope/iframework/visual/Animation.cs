@@ -19,10 +19,7 @@ namespace CutTheRope.iframework.visual
         public static Animation Animation_createWithResIDQuad(int r, int q)
         {
             Animation animation = Animation.Animation_createWithResID(r);
-            if (animation != null)
-            {
-                animation.setDrawQuad(q);
-            }
+            animation?.setDrawQuad(q);
             return animation;
         }
 

@@ -167,10 +167,7 @@ namespace CutTheRope.iframework.visual
                 this.moveToPointDeltaSpeed(vector, delta, (float)Math.Max(100.0, (double)MathHelper.vectDistance(vector, MathHelper.vect(this.container.x, this.container.y)) * 4.0 * (double)this.spointMoveMultiplier));
                 if (this.container.x == vector.x && this.container.y == vector.y)
                 {
-                    if (this.delegateScrollableContainerProtocol != null)
-                    {
-                        this.delegateScrollableContainerProtocol.scrollableContainerreachedScrollPoint(this, this.targetSpoint);
-                    }
+                    this.delegateScrollableContainerProtocol?.scrollableContainerreachedScrollPoint(this, this.targetSpoint);
                     this.movingToSpoint = false;
                     this.targetSpoint = -1;
                     this.lastTargetSpoint = -1;
@@ -483,10 +480,7 @@ namespace CutTheRope.iframework.visual
             this.movingToSpoint = false;
             this.targetSpoint = -1;
             this.lastTargetSpoint = sp;
-            if (this.delegateScrollableContainerProtocol != null)
-            {
-                this.delegateScrollableContainerProtocol.scrollableContainerreachedScrollPoint(this, sp);
-            }
+            this.delegateScrollableContainerProtocol?.scrollableContainerreachedScrollPoint(this, sp);
         }
 
         public virtual void moveToScrollPointmoveMultiplier(int sp, double m)

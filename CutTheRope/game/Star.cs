@@ -46,10 +46,7 @@ namespace CutTheRope.game
 
         public override void draw()
         {
-            if (this.timedAnim != null)
-            {
-                this.timedAnim.draw();
-            }
+            this.timedAnim?.draw();
             base.draw();
         }
 

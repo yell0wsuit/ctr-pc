@@ -96,10 +96,7 @@ namespace CutTheRope.iframework.visual
                 this.setState(Button.BUTTON_STATE.BUTTON_UP);
                 if (this.isInTouchZoneXYforTouchDown(tx, ty, false))
                 {
-                    if (this.delegateButtonDelegate != null)
-                    {
-                        this.delegateButtonDelegate.onButtonPressed(this.buttonID);
-                    }
+                    this.delegateButtonDelegate?.onButtonPressed(this.buttonID);
                     return true;
                 }
             }

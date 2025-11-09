@@ -590,7 +590,7 @@ namespace CutTheRope.game
                 string text3 = (n + 1).ToString();
                 string text4 = ". ";
                 NSString @string = Application.getString(655404 + n);
-                nsstring = NSObject.NSS(text3 + text4 + ((@string != null) ? @string.ToString() : null));
+                nsstring = NSObject.NSS(text3 + text4 + (@string?.ToString()));
             }
             NSString nSString = nsstring;
             UNLOCKED_STATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(n, 0);

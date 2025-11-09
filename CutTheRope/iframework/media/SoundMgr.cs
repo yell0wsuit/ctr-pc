@@ -177,10 +177,7 @@ namespace CutTheRope.iframework.media
         {
             foreach (SoundEffectInstance item in list)
             {
-                if (item != null)
-                {
-                    item.Stop();
-                }
+                item?.Stop();
             }
         }
 

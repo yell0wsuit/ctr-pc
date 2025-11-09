@@ -32,10 +32,7 @@ namespace CutTheRope.iframework.sfe
             for (int i = 0; i < count; i++)
             {
                 ConstraintedPoint constraintedPoint = this.parts[i];
-                if (constraintedPoint != null)
-                {
-                    constraintedPoint.update(delta);
-                }
+                constraintedPoint?.update(delta);
             }
             int count2 = this.parts.Count;
             for (int j = 0; j < this.relaxationTimes; j++)

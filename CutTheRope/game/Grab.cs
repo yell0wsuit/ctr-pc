@@ -230,10 +230,7 @@ namespace CutTheRope.game
         public void drawBungee()
         {
             Bungee bungee = this.rope;
-            if (bungee != null)
-            {
-                bungee.draw();
-            }
+            bungee?.draw();
         }
 
         public override void draw()
@@ -250,10 +247,7 @@ namespace CutTheRope.game
                 OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
             }
             OpenGL.glDisable(0);
-            if (bungee != null)
-            {
-                bungee.draw();
-            }
+            bungee?.draw();
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             if ((double)this.moveLength <= 0.0)
