@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections;
 using CutTheRope.ios;
+using System;
+using System.Collections;
 
 // Token: 0x02000003 RID: 3
 internal class DynamicArrayEnumerator : IEnumerator

@@ -1,5 +1,5 @@
-﻿using System;
 using CutTheRope.iframework.visual;
+using System;
 
 namespace CutTheRope.ctr_commons
 {

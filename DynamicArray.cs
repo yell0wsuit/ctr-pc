@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections;
 using CutTheRope.ios;
+using System;
+using System.Collections;
 
 // Token: 0x02000002 RID: 2
 internal class DynamicArray : NSObject, IEnumerable

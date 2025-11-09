@@ -1,9 +1,9 @@
-﻿using System;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+using System;
 
 namespace CutTheRope.game
 {

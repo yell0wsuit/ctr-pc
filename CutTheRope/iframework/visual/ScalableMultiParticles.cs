@@ -1,5 +1,5 @@
-﻿using System;
 using CutTheRope.iframework.helpers;
+using System;
 
 namespace CutTheRope.iframework.visual
 {

@@ -1,7 +1,7 @@
-﻿using System;
 using CutTheRope.iframework.core;
 using CutTheRope.windows;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace CutTheRope.game
 {

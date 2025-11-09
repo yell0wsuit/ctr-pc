@@ -1,8 +1,8 @@
-﻿using System;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.media;
 using Microsoft.Xna.Framework.Audio;
+using System;
 
 namespace CutTheRope.game
 {

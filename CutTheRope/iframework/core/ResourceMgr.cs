@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using CutTheRope.game;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CutTheRope.iframework.core
 {

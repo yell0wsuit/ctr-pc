@@ -1,10 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Threading;
-using System.Windows.Forms;
 using CutTheRope.ctr_commons;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -13,6 +6,13 @@ using CutTheRope.windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace CutTheRope
 {

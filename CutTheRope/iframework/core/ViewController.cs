@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
 using CutTheRope.ctr_commons;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework.Input.Touch;
+using System;
+using System.Collections.Generic;
 
 namespace CutTheRope.iframework.core
 {

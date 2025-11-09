@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using CutTheRope.ctr_commons;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -11,6 +8,9 @@ using CutTheRope.ios;
 using CutTheRope.windows;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace CutTheRope.game
 {

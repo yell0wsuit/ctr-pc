@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.windows;
+using System;
+using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
