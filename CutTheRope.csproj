@@ -17,10 +17,6 @@
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.263" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CutTheRope.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CutTheRope.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
   </ItemGroup>
   <ItemGroup>
