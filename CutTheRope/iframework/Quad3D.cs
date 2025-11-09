@@ -56,11 +56,11 @@ namespace CutTheRope.iframework
         {
             if (this._array == null)
             {
-                this._array = new float[]
-                {
+                this._array =
+                [
                     this.blX, this.blY, this.blZ, this.brX, this.brY, this.brZ, this.tlX, this.tlY, this.tlZ, this.trX,
                     this.trY, this.trZ
-                };
+                ];
             }
             return this._array;
         }

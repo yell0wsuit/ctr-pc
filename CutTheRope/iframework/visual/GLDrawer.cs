@@ -316,11 +316,11 @@ namespace CutTheRope.iframework.visual
             Vector vector4 = MathHelper.vectSub(v4, vector2);
             Vector vector5 = MathHelper.vectAdd(v3, vector2);
             Vector vector6 = MathHelper.vectAdd(v5, vector2);
-            float[] pointer = new float[]
-            {
+            float[] pointer =
+            [
                 v2.x, v2.y, v4.x, v4.y, vector3.x, vector3.y, vector4.x, vector4.y, vector5.x, vector5.y,
                 vector6.x, vector6.y, v3.x, v3.y, v5.x, v5.y
-            };
+            ];
             GLDrawer.colors[2] = color;
             GLDrawer.colors[3] = color;
             GLDrawer.colors[4] = color;
@@ -332,8 +332,8 @@ namespace CutTheRope.iframework.visual
         // Token: 0x060001CD RID: 461 RVA: 0x00009333 File Offset: 0x00007533
         public static void drawRect(float x, float y, float w, float h, RGBAColor color)
         {
-            GLDrawer.drawPolygon(new float[]
-            {
+            GLDrawer.drawPolygon(
+            [
                 x,
                 y,
                 x + w,
@@ -342,14 +342,14 @@ namespace CutTheRope.iframework.visual
                 y + h,
                 x + w,
                 y + h
-            }, 4, color);
+            ], 4, color);
         }
 
         // Token: 0x060001CE RID: 462 RVA: 0x0000936B File Offset: 0x0000756B
         public static void drawSolidRect(float x, float y, float w, float h, RGBAColor border, RGBAColor fill)
         {
-            GLDrawer.drawSolidPolygon(new float[]
-            {
+            GLDrawer.drawSolidPolygon(
+            [
                 x,
                 y,
                 x + w,
@@ -358,14 +358,14 @@ namespace CutTheRope.iframework.visual
                 y + h,
                 x + w,
                 y + h
-            }, 4, border, fill);
+            ], 4, border, fill);
         }
 
         // Token: 0x060001CF RID: 463 RVA: 0x000093A8 File Offset: 0x000075A8
         public static void drawSolidRectWOBorder(float x, float y, float w, float h, RGBAColor fill)
         {
-            float[] pointer = new float[]
-            {
+            float[] pointer =
+            [
                 x,
                 y,
                 x + w,
@@ -374,7 +374,7 @@ namespace CutTheRope.iframework.visual
                 y + h,
                 x + w,
                 y + h
-            };
+            ];
             OpenGL.glColor4f(fill.toXNA());
             OpenGL.glVertexPointer(2, 5, 0, pointer);
             OpenGL.glDrawArrays(8, 0, 4);
@@ -407,8 +407,8 @@ namespace CutTheRope.iframework.visual
         }
 
         // Token: 0x04000139 RID: 313
-        private static RGBAColor[] colors = new RGBAColor[]
-        {
+        private static RGBAColor[] colors =
+        [
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -417,6 +417,6 @@ namespace CutTheRope.iframework.visual
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-        };
+        ];
     }
 }

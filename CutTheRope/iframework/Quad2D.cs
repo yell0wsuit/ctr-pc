@@ -21,7 +21,7 @@ namespace CutTheRope.iframework
         // Token: 0x06000130 RID: 304 RVA: 0x000068FC File Offset: 0x00004AFC
         public float[] toFloatArray()
         {
-            return new float[] { this.tlX, this.tlY, this.trX, this.trY, this.blX, this.blY, this.brX, this.brY };
+            return [this.tlX, this.tlY, this.trX, this.trY, this.blX, this.blY, this.brX, this.brY];
         }
 
         // Token: 0x06000131 RID: 305 RVA: 0x00006957 File Offset: 0x00004B57

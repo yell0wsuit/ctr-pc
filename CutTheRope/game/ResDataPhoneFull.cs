@@ -2409,117 +2409,117 @@ namespace CutTheRope.game
         public static string ContentFolder = "";
 
         // Token: 0x040007AA RID: 1962
-        internal static int[] PACK_STARTUP = new int[] { 0, 1, -1 };
+        internal static int[] PACK_STARTUP = [0, 1, -1];
 
         // Token: 0x040007AB RID: 1963
-        internal static int[] PACK_COMMON_IMAGES = new int[] { 2, 3, 4, 5, 6, 7, 8, -1 };
+        internal static int[] PACK_COMMON_IMAGES = [2, 3, 4, 5, 6, 7, 8, -1];
 
         // Token: 0x040007AC RID: 1964
-        internal static int[] PACK_COMMON = new int[]
-        {
+        internal static int[] PACK_COMMON =
+        [
             9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
             19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
             29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
             39, 40, 41, 42, 43, 44, 45, 46, 47, -1
-        };
+        ];
 
         // Token: 0x040007AD RID: 1965
-        internal static int[] PACK_MENU = new int[]
-        {
+        internal static int[] PACK_MENU =
+        [
             48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
             58, 59, 60, -1
-        };
+        ];
 
         // Token: 0x040007AE RID: 1966
-        internal static int[] PACK_GAME = new int[]
-        {
+        internal static int[] PACK_GAME =
+        [
             61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
             -1
-        };
+        ];
 
         // Token: 0x040007AF RID: 1967
-        internal static int[] PACK_GAME_NORMAL = new int[]
-        {
+        internal static int[] PACK_GAME_NORMAL =
+        [
             71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
             81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
             91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
             101, 102, 103, -1
-        };
+        ];
 
         // Token: 0x040007B0 RID: 1968
-        internal static int[] PACK_GAME_01 = new int[] { 104, 105, -1 };
+        internal static int[] PACK_GAME_01 = [104, 105, -1];
 
         // Token: 0x040007B1 RID: 1969
-        internal static int[] PACK_GAME_02 = new int[] { 106, 107, -1 };
+        internal static int[] PACK_GAME_02 = [106, 107, -1];
 
         // Token: 0x040007B2 RID: 1970
-        internal static int[] PACK_GAME_03 = new int[] { 108, 109, -1 };
+        internal static int[] PACK_GAME_03 = [108, 109, -1];
 
         // Token: 0x040007B3 RID: 1971
-        internal static int[] PACK_GAME_04 = new int[] { 110, 111, -1 };
+        internal static int[] PACK_GAME_04 = [110, 111, -1];
 
         // Token: 0x040007B4 RID: 1972
-        internal static int[] PACK_GAME_05 = new int[] { 112, 113, -1 };
+        internal static int[] PACK_GAME_05 = [112, 113, -1];
 
         // Token: 0x040007B5 RID: 1973
-        internal static int[] PACK_GAME_06 = new int[] { 114, 115, -1 };
+        internal static int[] PACK_GAME_06 = [114, 115, -1];
 
         // Token: 0x040007B6 RID: 1974
-        internal static int[] PACK_GAME_07 = new int[] { 116, 117, -1 };
+        internal static int[] PACK_GAME_07 = [116, 117, -1];
 
         // Token: 0x040007B7 RID: 1975
-        internal static int[] PACK_GAME_08 = new int[] { 118, 119, -1 };
+        internal static int[] PACK_GAME_08 = [118, 119, -1];
 
         // Token: 0x040007B8 RID: 1976
-        internal static int[] PACK_GAME_09 = new int[] { 120, 121, -1 };
+        internal static int[] PACK_GAME_09 = [120, 121, -1];
 
         // Token: 0x040007B9 RID: 1977
-        internal static int[] PACK_GAME_10 = new int[] { 122, 123, -1 };
+        internal static int[] PACK_GAME_10 = [122, 123, -1];
 
         // Token: 0x040007BA RID: 1978
-        internal static int[] PACK_GAME_11 = new int[] { 124, 125, -1 };
+        internal static int[] PACK_GAME_11 = [124, 125, -1];
 
         // Token: 0x040007BB RID: 1979
-        internal static int[] PACK_GAME_COVER_01 = new int[] { 126, -1 };
+        internal static int[] PACK_GAME_COVER_01 = [126, -1];
 
         // Token: 0x040007BC RID: 1980
-        internal static int[] PACK_GAME_COVER_02 = new int[] { 127, -1 };
+        internal static int[] PACK_GAME_COVER_02 = [127, -1];
 
         // Token: 0x040007BD RID: 1981
-        internal static int[] PACK_GAME_COVER_03 = new int[] { 128, -1 };
+        internal static int[] PACK_GAME_COVER_03 = [128, -1];
 
         // Token: 0x040007BE RID: 1982
-        internal static int[] PACK_GAME_COVER_04 = new int[] { 129, -1 };
+        internal static int[] PACK_GAME_COVER_04 = [129, -1];
 
         // Token: 0x040007BF RID: 1983
-        internal static int[] PACK_GAME_COVER_05 = new int[] { 130, -1 };
+        internal static int[] PACK_GAME_COVER_05 = [130, -1];
 
         // Token: 0x040007C0 RID: 1984
-        internal static int[] PACK_GAME_COVER_06 = new int[] { 131, -1 };
+        internal static int[] PACK_GAME_COVER_06 = [131, -1];
 
         // Token: 0x040007C1 RID: 1985
-        internal static int[] PACK_GAME_COVER_07 = new int[] { 132, -1 };
+        internal static int[] PACK_GAME_COVER_07 = [132, -1];
 
         // Token: 0x040007C2 RID: 1986
-        internal static int[] PACK_GAME_COVER_08 = new int[] { 133, -1 };
+        internal static int[] PACK_GAME_COVER_08 = [133, -1];
 
         // Token: 0x040007C3 RID: 1987
-        internal static int[] PACK_GAME_COVER_09 = new int[] { 134, -1 };
+        internal static int[] PACK_GAME_COVER_09 = [134, -1];
 
         // Token: 0x040007C4 RID: 1988
-        internal static int[] PACK_GAME_COVER_10 = new int[] { 135, -1 };
+        internal static int[] PACK_GAME_COVER_10 = [135, -1];
 
         // Token: 0x040007C5 RID: 1989
-        internal static int[] PACK_GAME_COVER_11 = new int[] { 136, -1 };
+        internal static int[] PACK_GAME_COVER_11 = [136, -1];
 
         // Token: 0x040007C6 RID: 1990
-        internal static int[] PACK_LOCALIZATION = new int[] { 137, 138, 139, 140, 141, 142, 143, 144, -1 };
+        internal static int[] PACK_LOCALIZATION = [137, 138, 139, 140, 141, 142, 143, 144, -1];
 
         // Token: 0x040007C7 RID: 1991
-        internal static int[] PACK_MUSIC = new int[] { 145, 146, 147, 148, -1 };
+        internal static int[] PACK_MUSIC = [145, 146, 147, 148, -1];
 
         // Token: 0x040007C8 RID: 1992
-        internal static int[] PACK_LOCALIZATION_MENU = new int[] { 149, -1 };
+        internal static int[] PACK_LOCALIZATION_MENU = [149, -1];
 
         // Token: 0x040007C9 RID: 1993
         public static Language LANGUAGE = Language.LANG_EN;

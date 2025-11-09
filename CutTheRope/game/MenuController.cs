@@ -506,7 +506,7 @@ namespace CutTheRope.game
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
             BaseElement baseElement = MenuController.createBackgroundWithLogo(false);
             string text = Application.getString(655416).ToString();
-            string[] separator = new string[] { "%@" };
+            string[] separator = ["%@"];
             string[] array = text.Split(separator, StringSplitOptions.None);
             for (int i = 0; i < array.Length; i++)
             {
@@ -1437,13 +1437,13 @@ namespace CutTheRope.game
                 case 22:
                     {
                         NSString @string = Application.sharedAppSettings().getString(8);
-                        NSString[] array3 = new NSString[]
-                        {
+                        NSString[] array3 =
+                        [
                     NSObject.NSS("en"),
                     NSObject.NSS("ru"),
                     NSObject.NSS("de"),
                     NSObject.NSS("fr")
-                        };
+                        ];
                         int num = array3.Length;
                         bool flag4 = false;
                         for (int j = 0; j < num; j++)
@@ -1514,13 +1514,13 @@ namespace CutTheRope.game
                 case 37:
                 case 38:
                     {
-                        NSString[] array4 = new NSString[]
-                        {
+                        NSString[] array4 =
+                        [
                     NSObject.NSS("BS"),
                     NSObject.NSS("OP"),
                     NSObject.NSS("LB"),
                     NSObject.NSS("AC")
-                        };
+                        ];
                         NSString[] array5 = new NSString[4];
                         array5[0] = NSObject.NSS("BS_BACK_PRESSED");
                         array5[1] = NSObject.NSS("OP_BACK_PRESSED");

@@ -55,7 +55,7 @@ namespace CutTheRope.game
         {
             float num = 1f;
             float num2 = 1f;
-            float[] array = new float[] { 0.3f, 0.3f, 0.5f, 0.5f, 0.6f };
+            float[] array = [0.3f, 0.3f, 0.5f, 0.5f, 0.6f];
             int num3 = array.Count<float>();
             float num4 = array[MathHelper.RND_RANGE(0, num3 - 1)];
             float num5 = num4;

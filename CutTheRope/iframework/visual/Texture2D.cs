@@ -18,7 +18,7 @@ namespace CutTheRope.iframework.visual
             float num2 = t._invHeight * rect.y;
             float num3 = num + t._invWidth * rect.w;
             float num4 = num2 + t._invHeight * rect.h;
-            float[] pointer = new float[] { num, num2, num3, num2, num, num4, num3, num4 };
+            float[] pointer = [num, num2, num3, num2, num, num4, num3, num4];
             float[] array = new float[12];
             array[0] = point.x;
             array[1] = point.y;
@@ -103,7 +103,7 @@ namespace CutTheRope.iframework.visual
         // Token: 0x0600027B RID: 635 RVA: 0x0000E1A0 File Offset: 0x0000C3A0
         public static void drawAtPoint(Texture2D t, Vector point)
         {
-            float[] pointer = new float[] { 0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT };
+            float[] pointer = [0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT];
             float[] array = new float[12];
             array[0] = point.x;
             array[1] = point.y;
