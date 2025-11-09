@@ -92,7 +92,7 @@ namespace CutTheRope.game
 
         public static Button createButtonWithImageIDDelegate(int resID, int bid, ButtonDelegate d)
         {
-            Texture2D texture = Application.getTexture(resID);
+            CTRTexture2D texture = Application.getTexture(resID);
             Image up = Image.Image_create(texture);
             Image image = Image.Image_create(texture);
             image.scaleX = 1.2f;
@@ -123,7 +123,7 @@ namespace CutTheRope.game
             image2.doRestoreCutTransparency();
             Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
             button.delegateButtonDelegate = d;
-            Texture2D texture = Application.getTexture(res);
+            CTRTexture2D texture = Application.getTexture(res);
             button.forceTouchRect(FrameworkTypes.MakeRectangle(texture.quadOffsets[q1].x, texture.quadOffsets[q1].y, texture.quadRects[q1].w, texture.quadRects[q1].h));
             return button;
         }
@@ -348,7 +348,7 @@ namespace CutTheRope.game
                 baseElement2.height = baseElement.height;
                 baseElement2.x -= (float)base.canvas.xOffsetScaled;
                 baseElement.addChild(baseElement2);
-                Texture2D texture = Application.getTexture(54);
+                CTRTexture2D texture = Application.getTexture(54);
                 Button button = MenuController.createButton2WithImageQuad1Quad2IDDelegate(54, 3, 3, 16, this);
                 button.anchor = 9;
                 button.parentAnchor = 36;
@@ -720,7 +720,7 @@ namespace CutTheRope.game
             this.packContainer.x = FrameworkTypes.SCREEN_WIDTH / 2f - (float)(this.packContainer.width / 2);
             hBox.anchor = (hBox.parentAnchor = 12);
             baseElement.addChild(hBox);
-            Texture2D texture = Application.getTexture(52);
+            CTRTexture2D texture = Application.getTexture(52);
             BaseElement baseElement2 = (BaseElement)new BaseElement().init();
             baseElement2.width = (int)texture.preCutSize.x;
             baseElement2.height = (int)texture.preCutSize.y;
@@ -1839,7 +1839,7 @@ namespace CutTheRope.game
 
         public class MonsterSlot : Image
         {
-            public static MenuController.MonsterSlot MonsterSlot_create(Texture2D t)
+            public static MenuController.MonsterSlot MonsterSlot_create(CTRTexture2D t)
             {
                 return (MenuController.MonsterSlot)new MenuController.MonsterSlot().initWithTexture(t);
             }

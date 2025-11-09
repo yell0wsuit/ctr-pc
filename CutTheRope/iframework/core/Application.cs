@@ -120,9 +120,9 @@ namespace CutTheRope.iframework.core
             return (FontGeneric)Application.sharedResourceMgr().loadResource(fontResID, ResourceMgr.ResourceType.FONT);
         }
 
-        internal static Texture2D getTexture(int textureResID)
+        internal static CTRTexture2D getTexture(int textureResID)
         {
-            return (Texture2D)Application.sharedResourceMgr().loadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            return (CTRTexture2D)Application.sharedResourceMgr().loadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
         }
 
         internal static NSString getString(int strResID)

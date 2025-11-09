@@ -5,7 +5,7 @@ namespace CutTheRope.iframework.visual
 {
     internal class Font : FontGeneric
     {
-        public virtual Font initWithVariableSizeCharscharMapFileKerning(NSString strParam, Texture2D charmapfile, object k)
+        public virtual Font initWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
         {
             if (base.init() != null)
             {

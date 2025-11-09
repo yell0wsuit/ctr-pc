@@ -8,7 +8,7 @@ namespace CutTheRope.game
 {
     internal class Bouncer : CTRGameObject
     {
-        private static Bouncer Bouncer_create(Texture2D t)
+        private static Bouncer Bouncer_create(CTRTexture2D t)
         {
             return (Bouncer)new Bouncer().initWithTexture(t);
         }

@@ -7,7 +7,7 @@ namespace CutTheRope.game
 {
     internal class Bubble : GameObject
     {
-        public static Bubble Bubble_create(Texture2D t)
+        public static Bubble Bubble_create(CTRTexture2D t)
         {
             return (Bubble)new Bubble().initWithTexture(t);
         }

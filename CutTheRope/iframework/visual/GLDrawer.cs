@@ -8,37 +8,37 @@ namespace CutTheRope.iframework.visual
 {
     internal class GLDrawer : NSObject
     {
-        public static void drawImage(Texture2D image, float x, float y)
+        public static void drawImage(CTRTexture2D image, float x, float y)
         {
-            Texture2D.drawAtPoint(image, CTRMathHelper.vect(x, y));
+            CTRTexture2D.drawAtPoint(image, CTRMathHelper.vect(x, y));
         }
 
-        public static void drawImagePart(Texture2D image, Rectangle r, double x, double y)
+        public static void drawImagePart(CTRTexture2D image, Rectangle r, double x, double y)
         {
             GLDrawer.drawImagePart(image, r, (float)x, (float)y);
         }
 
-        public static void drawImagePart(Texture2D image, Rectangle r, float x, float y)
+        public static void drawImagePart(CTRTexture2D image, Rectangle r, float x, float y)
         {
-            Texture2D.drawRectAtPoint(image, r, CTRMathHelper.vect(x, y));
+            CTRTexture2D.drawRectAtPoint(image, r, CTRMathHelper.vect(x, y));
         }
 
-        public static void drawImageQuad(Texture2D image, int q, double x, double y)
+        public static void drawImageQuad(CTRTexture2D image, int q, double x, double y)
         {
             GLDrawer.drawImageQuad(image, q, (float)x, (float)y);
         }
 
-        public static void drawImageQuad(Texture2D image, int q, float x, float y)
+        public static void drawImageQuad(CTRTexture2D image, int q, float x, float y)
         {
             if (q == -1)
             {
                 GLDrawer.drawImage(image, x, y);
                 return;
             }
-            Texture2D.drawQuadAtPoint(image, q, CTRMathHelper.vect(x, y));
+            CTRTexture2D.drawQuadAtPoint(image, q, CTRMathHelper.vect(x, y));
         }
 
-        public static void drawImageTiledCool(Texture2D image, int q, float x, float y, float width, float height)
+        public static void drawImageTiledCool(CTRTexture2D image, int q, float x, float y, float width, float height)
         {
             float xParam = 0f;
             float yParam = 0f;
@@ -76,7 +76,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public static void drawImageTiled(Texture2D image, int q, float x, float y, float width, float height)
+        public static void drawImageTiled(CTRTexture2D image, int q, float x, float y, float width, float height)
         {
             if (FrameworkTypes.IS_WVGA)
             {
@@ -132,7 +132,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public static Quad2D getTextureCoordinates(Texture2D t, Rectangle r)
+        public static Quad2D getTextureCoordinates(CTRTexture2D t, Rectangle r)
         {
             return Quad2D.MakeQuad2D(t._invWidth * r.x, t._invHeight * r.y, t._invWidth * r.w, t._invHeight * r.h);
         }

@@ -5,7 +5,7 @@ namespace CutTheRope.iframework.visual
 {
     internal class HorizontallyTiledImage : Image
     {
-        public override Image initWithTexture(Texture2D t)
+        public override Image initWithTexture(CTRTexture2D t)
         {
             if (base.initWithTexture(t) != null)
             {
@@ -68,7 +68,7 @@ namespace CutTheRope.iframework.visual
             this.offsets[2] = ((float)this.height - h3) / 2f;
         }
 
-        public static HorizontallyTiledImage HorizontallyTiledImage_create(Texture2D t)
+        public static HorizontallyTiledImage HorizontallyTiledImage_create(CTRTexture2D t)
         {
             return (HorizontallyTiledImage)new HorizontallyTiledImage().initWithTexture(t);
         }

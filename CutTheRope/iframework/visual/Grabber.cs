@@ -17,12 +17,12 @@ namespace CutTheRope.iframework.visual
             base.dealloc();
         }
 
-        public virtual Texture2D grab()
+        public virtual CTRTexture2D grab()
         {
-            return (Texture2D)new Texture2D().initFromPixels(0, 0, (int)FrameworkTypes.SCREEN_WIDTH, (int)FrameworkTypes.SCREEN_HEIGHT);
+            return (CTRTexture2D)new CTRTexture2D().initFromPixels(0, 0, (int)FrameworkTypes.SCREEN_WIDTH, (int)FrameworkTypes.SCREEN_HEIGHT);
         }
 
-        public static void drawGrabbedImage(Texture2D t, int x, int y)
+        public static void drawGrabbedImage(CTRTexture2D t, int x, int y)
         {
             if (t != null)
             {

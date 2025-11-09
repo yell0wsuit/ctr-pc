@@ -126,12 +126,12 @@ namespace CutTheRope.iframework.core
             {
                 NSString data2 = xMLNode3.data;
             }
-            Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (Texture2D)this.loadResource(resID, ResourceMgr.ResourceType.IMAGE), null);
+            Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)this.loadResource(resID, ResourceMgr.ResourceType.IMAGE), null);
             font.setCharOffsetLineOffsetSpaceWidth((float)num, (float)num2, (float)num3);
             return font;
         }
 
-        public virtual Texture2D loadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
+        public virtual CTRTexture2D loadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
             if (i == null)
             {
@@ -142,19 +142,19 @@ namespace CutTheRope.iframework.core
             string text = ResourceMgr.fullPathFromRelativePath(path);
             if (flag)
             {
-                Texture2D.setAntiAliasTexParameters();
+                CTRTexture2D.setAntiAliasTexParameters();
             }
             else
             {
-                Texture2D.setAliasTexParameters();
+                CTRTexture2D.setAliasTexParameters();
             }
-            Texture2D.setDefaultAlphaPixelFormat((Texture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
-            Texture2D texture2D = new Texture2D().initWithPath(text, true);
+            CTRTexture2D.setDefaultAlphaPixelFormat((CTRTexture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
+            CTRTexture2D texture2D = new CTRTexture2D().initWithPath(text, true);
             if (texture2D == null)
             {
                 throw new Exception("texture not found: " + text);
             }
-            Texture2D.setDefaultAlphaPixelFormat(Texture2D.kTexture2DPixelFormat_Default);
+            CTRTexture2D.setDefaultAlphaPixelFormat(CTRTexture2D.kTexture2DPixelFormat_Default);
             if (isWvga)
             {
                 texture2D.setWvga();
@@ -164,7 +164,7 @@ namespace CutTheRope.iframework.core
             return texture2D;
         }
 
-        public virtual void setTextureInfo(Texture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
+        public virtual void setTextureInfo(CTRTexture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
             t.preCutSize = CTRMathHelper.vectUndefined;
             XMLNode xMLNode = i.findChildWithTagNameRecursively("quads", false);
@@ -215,7 +215,7 @@ namespace CutTheRope.iframework.core
             return ResDataPhoneFull.ContentFolder + relPath;
         }
 
-        private void setQuadsInfo(Texture2D t, float[] data, int size, float scaleX, float scaleY)
+        private void setQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = data.Length / 4;
             t.setQuadsCapacity(num);
@@ -241,7 +241,7 @@ namespace CutTheRope.iframework.core
             t.optimizeMemory();
         }
 
-        private void setOffsetsInfo(Texture2D t, float[] data, int size, float scaleX, float scaleY)
+        private void setOffsetsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = size / 2;
             for (int i = 0; i < num; i++)

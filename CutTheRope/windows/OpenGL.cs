@@ -169,7 +169,7 @@ namespace CutTheRope.windows
             OpenGL.s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * OpenGL.s_matrixModelView;
         }
 
-        public static void glBindTexture(CutTheRope.iframework.visual.Texture2D t)
+        public static void glBindTexture(CutTheRope.iframework.visual.CTRTexture2D t)
         {
             OpenGL.s_Texture = t;
         }
@@ -658,9 +658,9 @@ namespace CutTheRope.windows
 
         private static Matrix s_matrixProjection = Matrix.Identity;
 
-        private static CutTheRope.iframework.visual.Texture2D s_Texture;
+        private static CutTheRope.iframework.visual.CTRTexture2D s_Texture;
 
-        private static CutTheRope.iframework.visual.Texture2D s_Texture_OptimizeLastUsed;
+        private static CutTheRope.iframework.visual.CTRTexture2D s_Texture_OptimizeLastUsed;
 
         private static Color s_glClearColor = Color.White;
 

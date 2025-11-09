@@ -8,9 +8,9 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Texture2D : NSObject
+    internal class CTRTexture2D : NSObject
     {
-        public static void drawRectAtPoint(Texture2D t, Rectangle rect, Vector point)
+        public static void drawRectAtPoint(CTRTexture2D t, Rectangle rect, Vector point)
         {
             float num = t._invWidth * rect.x;
             float num2 = t._invHeight * rect.y;
@@ -34,7 +34,7 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDrawArrays(8, 0, 4);
         }
 
-        public Texture2D name()
+        public CTRTexture2D name()
         {
             return this;
         }
@@ -71,7 +71,7 @@ namespace CutTheRope.iframework.visual
             this.calculateForQuickDrawing();
         }
 
-        public static void drawQuadAtPoint(Texture2D t, int q, Vector point)
+        public static void drawQuadAtPoint(CTRTexture2D t, int q, Vector point)
         {
             Quad2D quad2D = t.quads[q];
             float[] array = new float[12];
@@ -91,7 +91,7 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDrawArrays(8, 0, 4);
         }
 
-        public static void drawAtPoint(Texture2D t, Vector point)
+        public static void drawAtPoint(CTRTexture2D t, Vector point)
         {
             float[] pointer = [0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT];
             float[] array = new float[12];
@@ -137,16 +137,16 @@ namespace CutTheRope.iframework.visual
 
         public virtual void reg()
         {
-            this.prev = Texture2D.tail;
+            this.prev = CTRTexture2D.tail;
             if (this.prev != null)
             {
                 this.prev.next = this;
             }
             else
             {
-                Texture2D.root = this;
+                CTRTexture2D.root = this;
             }
-            Texture2D.tail = this;
+            CTRTexture2D.tail = this;
         }
 
         public virtual void unreg()
@@ -157,7 +157,7 @@ namespace CutTheRope.iframework.visual
             }
             else
             {
-                Texture2D.root = this.next;
+                CTRTexture2D.root = this.next;
             }
             if (this.next != null)
             {
@@ -165,12 +165,12 @@ namespace CutTheRope.iframework.visual
             }
             else
             {
-                Texture2D.tail = this.prev;
+                CTRTexture2D.tail = this.prev;
             }
             this.next = (this.prev = null);
         }
 
-        public virtual Texture2D initWithPath(string path, bool assets)
+        public virtual CTRTexture2D initWithPath(string path, bool assets)
         {
             if (base.init() == null)
             {
@@ -178,7 +178,7 @@ namespace CutTheRope.iframework.visual
             }
             this._resName = path;
             this._name = 65536U;
-            this._localTexParams = Texture2D._texParams;
+            this._localTexParams = CTRTexture2D._texParams;
             this.reg();
             this.xnaTexture_ = Images.get(path);
             if (this.xnaTexture_ == null)
@@ -200,12 +200,12 @@ namespace CutTheRope.iframework.visual
         private void imageLoaded(int w, int h)
         {
             this._lowypoint = h;
-            int num = Texture2D.calcRealSize(w);
-            int num2 = Texture2D.calcRealSize(h);
+            int num = CTRTexture2D.calcRealSize(w);
+            int num2 = CTRTexture2D.calcRealSize(h);
             this._size = new Vector((float)num, (float)num2);
             this._width = (uint)num;
             this._height = (uint)num2;
-            this._format = Texture2D._defaultAlphaPixelFormat;
+            this._format = CTRTexture2D._defaultAlphaPixelFormat;
             this._maxS = (float)w / (float)num;
             this._maxT = (float)h / (float)num2;
             this._hasPremultipliedAlpha = true;
@@ -215,9 +215,9 @@ namespace CutTheRope.iframework.visual
         {
         }
 
-        public static void setDefaultAlphaPixelFormat(Texture2D.Texture2DPixelFormat format)
+        public static void setDefaultAlphaPixelFormat(CTRTexture2D.Texture2DPixelFormat format)
         {
-            Texture2D._defaultAlphaPixelFormat = format;
+            CTRTexture2D._defaultAlphaPixelFormat = format;
         }
 
         public void optimizeMemory()
@@ -231,7 +231,7 @@ namespace CutTheRope.iframework.visual
 
         public static void suspendAll()
         {
-            for (Texture2D texture2D = Texture2D.root; texture2D != null; texture2D = texture2D.next)
+            for (CTRTexture2D texture2D = CTRTexture2D.root; texture2D != null; texture2D = texture2D.next)
             {
                 texture2D.suspend();
             }
@@ -239,7 +239,7 @@ namespace CutTheRope.iframework.visual
 
         public static void resumeAll()
         {
-            for (Texture2D texture2D = Texture2D.root; texture2D != null; texture2D = texture2D.next)
+            for (CTRTexture2D texture2D = CTRTexture2D.root; texture2D != null; texture2D = texture2D.next)
             {
                 texture2D.resume();
             }
@@ -253,10 +253,10 @@ namespace CutTheRope.iframework.visual
             }
             this._name = 65536U;
             this._lowypoint = -1;
-            this._localTexParams = Texture2D._defaultTexParams;
+            this._localTexParams = CTRTexture2D._defaultTexParams;
             this.reg();
-            int num = Texture2D.calcRealSize(w);
-            int num2 = Texture2D.calcRealSize(h);
+            int num = CTRTexture2D.calcRealSize(w);
+            int num2 = CTRTexture2D.calcRealSize(h);
             float transitionTime = Application.sharedRootController().transitionTime;
             Application.sharedRootController().transitionTime = -1f;
             RenderTarget2D renderTarget;
@@ -274,7 +274,7 @@ namespace CutTheRope.iframework.visual
             Global.GraphicsDevice.SetRenderTarget(null);
             Application.sharedRootController().transitionTime = transitionTime;
             this.xnaTexture_ = renderTarget;
-            this._format = Texture2D.Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
+            this._format = CTRTexture2D.Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
             this._size = new Vector((float)num, (float)num2);
             this._width = (uint)num;
             this._height = (uint)num2;
@@ -298,7 +298,7 @@ namespace CutTheRope.iframework.visual
 
         private const int UNDEFINED_TEXTURE = 65536;
 
-        public Texture2D xnaTexture_;
+        public Microsoft.Xna.Framework.Graphics.Texture2D xnaTexture_;
 
         public string _resName;
 
@@ -320,7 +320,7 @@ namespace CutTheRope.iframework.visual
 
         private float _scaleY;
 
-        private Texture2D.Texture2DPixelFormat _format;
+        private CTRTexture2D.Texture2DPixelFormat _format;
 
         private Vector _size;
 
@@ -344,27 +344,27 @@ namespace CutTheRope.iframework.visual
 
         private bool _isWvga;
 
-        private Texture2D.TexParams _localTexParams;
+        private CTRTexture2D.TexParams _localTexParams;
 
-        private static Texture2D.TexParams _defaultTexParams;
+        private static CTRTexture2D.TexParams _defaultTexParams;
 
-        private static Texture2D.TexParams _texParams;
+        private static CTRTexture2D.TexParams _texParams;
 
-        private static Texture2D.TexParams _texParamsCopy;
+        private static CTRTexture2D.TexParams _texParamsCopy;
 
         private bool PixelCorrectionDone;
 
-        private static Texture2D root;
+        private static CTRTexture2D root;
 
-        private static Texture2D tail;
+        private static CTRTexture2D tail;
 
-        private Texture2D next;
+        private CTRTexture2D next;
 
-        private Texture2D prev;
+        private CTRTexture2D prev;
 
-        public static Texture2D.Texture2DPixelFormat kTexture2DPixelFormat_Default = Texture2D.Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
+        public static CTRTexture2D.Texture2DPixelFormat kTexture2DPixelFormat_Default = CTRTexture2D.Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
 
-        private static Texture2D.Texture2DPixelFormat _defaultAlphaPixelFormat = Texture2D.kTexture2DPixelFormat_Default;
+        private static CTRTexture2D.Texture2DPixelFormat _defaultAlphaPixelFormat = CTRTexture2D.kTexture2DPixelFormat_Default;
 
         public enum Texture2DPixelFormat
         {
