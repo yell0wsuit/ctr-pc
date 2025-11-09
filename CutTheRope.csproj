@@ -5,187 +5,16 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>CutTheRope</RootNamespace>
     <AssemblyName>CutTheRope</AssemblyName>
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <FileAlignment>512</FileAlignment>
     <TargetFramework>net9.0-windows</TargetFramework>
     <UseWindowsForms>True</UseWindowsForms>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup>
+    <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <EnableDefaultItems>False</EnableDefaultItems>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
     <StartupObject>CutTheRope.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CutTheRope\ctr_commons\CTRApp.cs" />
-    <Compile Include="CutTheRope\ctr_commons\CtrRenderer.cs" />
-    <Compile Include="CutTheRope\ctr_commons\HLiftScrollbar.cs" />
-    <Compile Include="CutTheRope\ctr_commons\Lift.cs" />
-    <Compile Include="CutTheRope\ctr_commons\LiftScrollbarDelegate.cs" />
-    <Compile Include="CutTheRope\ctr_commons\Popup.cs" />
-    <Compile Include="CutTheRope\ctr_commons\RemoteDataManager.cs" />
-    <Compile Include="CutTheRope\ctr_commons\SaveMgr.cs" />
-    <Compile Include="CutTheRope.Designer.cs">
-      <DependentUpon>CutTheRope.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="DynamicArray.cs" />
-    <Compile Include="DynamicArrayEnumerator.cs" />
-    <Compile Include="CutTheRope\Game1.cs" />
-    <Compile Include="CutTheRope\game\Bouncer.cs" />
-    <Compile Include="CutTheRope\game\BoxOpenClose.cs" />
-    <Compile Include="CutTheRope\game\Bubble.cs" />
-    <Compile Include="CutTheRope\game\Bungee.cs" />
-    <Compile Include="CutTheRope\game\CandyBreak.cs" />
-    <Compile Include="CutTheRope\game\CharAnimation.cs" />
-    <Compile Include="CutTheRope\game\CharAnimations.cs" />
-    <Compile Include="CutTheRope\game\CTRGameObject.cs" />
-    <Compile Include="CutTheRope\game\CTRMover.cs" />
-    <Compile Include="CutTheRope\game\CTRPreferences.cs" />
-    <Compile Include="CutTheRope\game\CTRResourceMgr.cs" />
-    <Compile Include="CutTheRope\game\CTRRootController.cs" />
-    <Compile Include="CutTheRope\game\CTRSoundMgr.cs" />
-    <Compile Include="CutTheRope\game\GameController.cs" />
-    <Compile Include="CutTheRope\game\GameDesign.cs" />
-    <Compile Include="CutTheRope\game\GameScene.cs" />
-    <Compile Include="CutTheRope\game\GameSceneDelegate.cs" />
-    <Compile Include="CutTheRope\game\GameView.cs" />
-    <Compile Include="CutTheRope\game\Grab.cs" />
-    <Compile Include="CutTheRope\game\LevelsList.cs" />
-    <Compile Include="CutTheRope\game\LoadingController.cs" />
-    <Compile Include="CutTheRope\game\LoadingView.cs" />
-    <Compile Include="CutTheRope\game\MapPickerController.cs" />
-    <Compile Include="CutTheRope\game\MapPickerControllerButtonId.cs" />
-    <Compile Include="CutTheRope\game\MapPickerControllerViewId.cs" />
-    <Compile Include="CutTheRope\game\MenuController.cs" />
-    <Compile Include="CutTheRope\game\MenuView.cs" />
-    <Compile Include="CutTheRope\game\MovieView.cs" />
-    <Compile Include="CutTheRope\game\Pollen.cs" />
-    <Compile Include="CutTheRope\game\PollenDrawer.cs" />
-    <Compile Include="CutTheRope\game\Processing.cs" />
-    <Compile Include="CutTheRope\game\Pump.cs" />
-    <Compile Include="CutTheRope\game\PumpDirt.cs" />
-    <Compile Include="CutTheRope\game\Razor.cs" />
-    <Compile Include="CutTheRope\game\ResDataPhoneFull.cs" />
-    <Compile Include="CutTheRope\game\RotatedCircle.cs" />
-    <Compile Include="CutTheRope\game\RotatedCircle2.cs" />
-    <Compile Include="CutTheRope\game\Scorer.cs" />
-    <Compile Include="CutTheRope\game\Sock.cs" />
-    <Compile Include="CutTheRope\game\Spikes.cs" />
-    <Compile Include="CutTheRope\game\Star.cs" />
-    <Compile Include="CutTheRope\game\StarsBreak.cs" />
-    <Compile Include="CutTheRope\game\StartupController.cs" />
-    <Compile Include="CutTheRope\game\UNLOCKED_STATE.cs" />
-    <Compile Include="CutTheRope\iframework\core\Application.cs" />
-    <Compile Include="CutTheRope\iframework\core\ApplicationSettings.cs" />
-    <Compile Include="CutTheRope\iframework\core\Preferences.cs" />
-    <Compile Include="CutTheRope\iframework\core\ResourceMgr.cs" />
-    <Compile Include="CutTheRope\iframework\core\ResourceMgrDelegate.cs" />
-    <Compile Include="CutTheRope\iframework\core\RootController.cs" />
-    <Compile Include="CutTheRope\iframework\core\Vector.cs" />
-    <Compile Include="CutTheRope\iframework\core\VectorClass.cs" />
-    <Compile Include="CutTheRope\iframework\core\View.cs" />
-    <Compile Include="CutTheRope\iframework\core\ViewController.cs" />
-    <Compile Include="CutTheRope\iframework\FrameworkTypes.cs" />
-    <Compile Include="CutTheRope\iframework\helpers\Camera2D.cs" />
-    <Compile Include="CutTheRope\iframework\helpers\CAMERA_TYPE.cs" />
-    <Compile Include="CutTheRope\iframework\helpers\DelayedDispatcher.cs" />
-    <Compile Include="CutTheRope\iframework\helpers\Dispatch.cs" />
-    <Compile Include="CutTheRope\iframework\helpers\GameObject.cs" />
-    <Compile Include="CutTheRope\iframework\helpers\MathHelper.cs" />
-    <Compile Include="CutTheRope\iframework\helpers\Mover.cs" />
-    <Compile Include="CutTheRope\iframework\Language.cs" />
-    <Compile Include="CutTheRope\iframework\md5.cs" />
-    <Compile Include="CutTheRope\iframework\media\MovieMgr.cs" />
-    <Compile Include="CutTheRope\iframework\media\MovieMgrDelegate.cs" />
-    <Compile Include="CutTheRope\iframework\media\SoundMgr.cs" />
-    <Compile Include="CutTheRope\iframework\platform\GLCanvas.cs" />
-    <Compile Include="CutTheRope\iframework\Point.cs" />
-    <Compile Include="CutTheRope\iframework\PointSprite.cs" />
-    <Compile Include="CutTheRope\iframework\Quad2D.cs" />
-    <Compile Include="CutTheRope\iframework\Quad3D.cs" />
-    <Compile Include="CutTheRope\iframework\Rectangle.cs" />
-    <Compile Include="CutTheRope\iframework\RGBAColor.cs" />
-    <Compile Include="CutTheRope\iframework\sfe\Constraint.cs" />
-    <Compile Include="CutTheRope\iframework\sfe\ConstraintedPoint.cs" />
-    <Compile Include="CutTheRope\iframework\sfe\ConstraintSystem.cs" />
-    <Compile Include="CutTheRope\iframework\sfe\MaterialPoint.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Action.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ActionData.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ActionParams.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Animation.cs" />
-    <Compile Include="CutTheRope\iframework\visual\AnimationsPool.cs" />
-    <Compile Include="CutTheRope\iframework\visual\BaseElement.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Button.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ButtonDelegate.cs" />
-    <Compile Include="CutTheRope\iframework\visual\CircleElement.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ColorParams.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Font.cs" />
-    <Compile Include="CutTheRope\iframework\visual\FontGeneric.cs" />
-    <Compile Include="CutTheRope\iframework\visual\FormattedString.cs" />
-    <Compile Include="CutTheRope\iframework\visual\GLDrawer.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Grabber.cs" />
-    <Compile Include="CutTheRope\iframework\visual\HBox.cs" />
-    <Compile Include="CutTheRope\iframework\visual\HorizontallyTiledImage.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Image.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ImageMultiDrawer.cs" />
-    <Compile Include="CutTheRope\iframework\visual\KeyFrame.cs" />
-    <Compile Include="CutTheRope\iframework\visual\KeyFrameValue.cs" />
-    <Compile Include="CutTheRope\iframework\visual\MultiParticles.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Particle.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Particles.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ParticlesFactory.cs" />
-    <Compile Include="CutTheRope\iframework\visual\PosParams.cs" />
-    <Compile Include="CutTheRope\iframework\visual\RectangleElement.cs" />
-    <Compile Include="CutTheRope\iframework\visual\RotatableScalableMultiParticles.cs" />
-    <Compile Include="CutTheRope\iframework\visual\RotateableMultiParticles.cs" />
-    <Compile Include="CutTheRope\iframework\visual\RotationParams.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ScalableMultiParticles.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ScaleParams.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ScrollableContainer.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ScrollableContainerProtocol.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Scrollbar.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Text.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Texture2D.cs" />
-    <Compile Include="CutTheRope\iframework\visual\TiledImage.cs" />
-    <Compile Include="CutTheRope\iframework\visual\TileEntry.cs" />
-    <Compile Include="CutTheRope\iframework\visual\TileMap.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Timeline.cs" />
-    <Compile Include="CutTheRope\iframework\visual\TimelineDelegate.cs" />
-    <Compile Include="CutTheRope\iframework\visual\ToggleButton.cs" />
-    <Compile Include="CutTheRope\iframework\visual\TouchDelegate.cs" />
-    <Compile Include="CutTheRope\iframework\visual\Track.cs" />
-    <Compile Include="CutTheRope\iframework\visual\VBox.cs" />
-    <Compile Include="CutTheRope\iframework\visual\VerticallyTiledImage.cs" />
-    <Compile Include="CutTheRope\ios\NSObject.cs" />
-    <Compile Include="CutTheRope\ios\NSPoint.cs" />
-    <Compile Include="CutTheRope\ios\NSRange.cs" />
-    <Compile Include="CutTheRope\ios\NSRect.cs" />
-    <Compile Include="CutTheRope\ios\NSScreen.cs" />
-    <Compile Include="CutTheRope\ios\NSSize.cs" />
-    <Compile Include="CutTheRope\ios\NSString.cs" />
-    <Compile Include="CutTheRope\ios\NSTimer.cs" />
-    <Compile Include="CutTheRope\ios\UIApplication.cs" />
-    <Compile Include="CutTheRope\ios\XMLNode.cs" />
-    <Compile Include="CutTheRope\Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CutTheRope\windows\BlendingFactor.cs" />
-    <Compile Include="CutTheRope\windows\BlendParams.cs" />
-    <Compile Include="CutTheRope\windows\Branding.cs" />
-    <Compile Include="CutTheRope\windows\DateTimeJavaHelper.cs" />
-    <Compile Include="CutTheRope\windows\GLenum.cs" />
-    <Compile Include="CutTheRope\windows\Global.cs" />
-    <Compile Include="CutTheRope\windows\Images.cs" />
-    <Compile Include="CutTheRope\windows\MouseCursor.cs" />
-    <Compile Include="CutTheRope\windows\NativeMethods.cs" />
-    <Compile Include="CutTheRope\windows\OpenGL.cs" />
-    <Compile Include="CutTheRope\windows\ParentProcessUtilities.cs" />
-    <Compile Include="CutTheRope\windows\ScreenSizeManager.cs" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.1" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CutTheRope.resx">
@@ -195,11 +24,11 @@
     <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>..\..\..\Cut the Rope Windows\MonoGame.Framework.dll</HintPath>
-    </Reference>
+    <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.manifest" />
+    <None Update="content\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
