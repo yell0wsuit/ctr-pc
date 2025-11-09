@@ -5,17 +5,14 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000088 RID: 136
     internal class MenuView : View
     {
-        // Token: 0x0600059D RID: 1437 RVA: 0x0002E1BC File Offset: 0x0002C3BC
         public override void update(float t)
         {
             Global.MouseCursor.Enable(true);
             base.update(t);
         }
 
-        // Token: 0x0600059E RID: 1438 RVA: 0x0002E1D0 File Offset: 0x0002C3D0
         public override void draw()
         {
             OpenGL.glColor4f(Color.White);

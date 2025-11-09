@@ -9,10 +9,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000091 RID: 145
     internal class RotatedCircle : BaseElement
     {
-        // Token: 0x060005C3 RID: 1475 RVA: 0x0002FD7C File Offset: 0x0002DF7C
         public override NSObject init()
         {
             if (base.init() != null)
@@ -62,7 +60,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x060005C4 RID: 1476 RVA: 0x00030000 File Offset: 0x0002E200
         public virtual void setSize(float value)
         {
             this.size = value;
@@ -82,43 +79,36 @@ namespace CutTheRope.game
             this.updateChildPositions();
         }
 
-        // Token: 0x060005C5 RID: 1477 RVA: 0x0003019F File Offset: 0x0002E39F
         public virtual bool hasOneHandle()
         {
             return !this.vinilControllerL.visible;
         }
 
-        // Token: 0x060005C6 RID: 1478 RVA: 0x000301AF File Offset: 0x0002E3AF
         public virtual void setHasOneHandle(bool value)
         {
             this.vinilControllerL.visible = !value;
         }
 
-        // Token: 0x060005C7 RID: 1479 RVA: 0x000301C0 File Offset: 0x0002E3C0
         public virtual bool isLeftControllerActive()
         {
             return this.vinilActiveControllerL.visible;
         }
 
-        // Token: 0x060005C8 RID: 1480 RVA: 0x000301CD File Offset: 0x0002E3CD
         public virtual void setIsLeftControllerActive(bool value)
         {
             this.vinilActiveControllerL.visible = value;
         }
 
-        // Token: 0x060005C9 RID: 1481 RVA: 0x000301DB File Offset: 0x0002E3DB
         public virtual bool isRightControllerActive()
         {
             return this.vinilActiveControllerR.visible;
         }
 
-        // Token: 0x060005CA RID: 1482 RVA: 0x000301E8 File Offset: 0x0002E3E8
         public virtual void setIsRightControllerActive(bool value)
         {
             this.vinilActiveControllerR.visible = value;
         }
 
-        // Token: 0x060005CB RID: 1483 RVA: 0x000301F8 File Offset: 0x0002E3F8
         public virtual bool containsSameObjectWithAnotherCircle()
         {
             foreach (object obj in this.circlesArray)
@@ -132,7 +122,6 @@ namespace CutTheRope.game
             return false;
         }
 
-        // Token: 0x060005CC RID: 1484 RVA: 0x00030260 File Offset: 0x0002E460
         public override void draw()
         {
             if (this.isRightControllerActive() || this.isLeftControllerActive())
@@ -173,7 +162,6 @@ namespace CutTheRope.game
             this.vinilCenter.draw();
         }
 
-        // Token: 0x060005CD RID: 1485 RVA: 0x000304A4 File Offset: 0x0002E6A4
         public virtual void updateChildPositions()
         {
             this.vinil.x = (this.vinilCenter.x = this.x);
@@ -193,7 +181,6 @@ namespace CutTheRope.game
             this.vinilActiveControllerR.y = this.vinilControllerR.y;
         }
 
-        // Token: 0x060005CE RID: 1486 RVA: 0x00030658 File Offset: 0x0002E858
         public virtual bool containsSameObjectWithCircle(RotatedCircle anotherCircle)
         {
             if (this.x == anotherCircle.x && this.y == anotherCircle.y && this.size == anotherCircle.size)
@@ -211,7 +198,6 @@ namespace CutTheRope.game
             return false;
         }
 
-        // Token: 0x060005CF RID: 1487 RVA: 0x000306EC File Offset: 0x0002E8EC
         public virtual NSObject copy()
         {
             RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().init();
@@ -232,7 +218,6 @@ namespace CutTheRope.game
             return rotatedCircle;
         }
 
-        // Token: 0x060005D0 RID: 1488 RVA: 0x00030823 File Offset: 0x0002EA23
         public override void dealloc()
         {
             this.vinilCenter.release();
@@ -243,109 +228,74 @@ namespace CutTheRope.game
             base.dealloc();
         }
 
-        // Token: 0x040007CB RID: 1995
         public const int PM = 3;
 
-        // Token: 0x040007CC RID: 1996
         public const float CONTROLLER_MIN_SCALE = 0.75f;
 
-        // Token: 0x040007CD RID: 1997
         public const float STICKER_MIN_SCALE = 0.4f;
 
-        // Token: 0x040007CE RID: 1998
         public const float CENTER_SCALE_FACTOR = 0.5f;
 
-        // Token: 0x040007CF RID: 1999
         public const float HUNDRED_PERCENT_SCALE_SIZE = 167f;
 
-        // Token: 0x040007D0 RID: 2000
         public const int CIRCLE_VERTEX_COUNT = 80;
 
-        // Token: 0x040007D1 RID: 2001
         public float size;
 
-        // Token: 0x040007D2 RID: 2002
         public float sizeInPixels;
 
-        // Token: 0x040007D3 RID: 2003
         public int operating;
 
-        // Token: 0x040007D4 RID: 2004
         public int soundPlaying;
 
-        // Token: 0x040007D5 RID: 2005
         public Vector lastTouch;
 
-        // Token: 0x040007D6 RID: 2006
         public Vector handle1;
 
-        // Token: 0x040007D7 RID: 2007
         public Vector handle2;
 
-        // Token: 0x040007D8 RID: 2008
         public Vector inithanlde1;
 
-        // Token: 0x040007D9 RID: 2009
         public Vector inithanlde2;
 
-        // Token: 0x040007DA RID: 2010
         public DynamicArray circlesArray;
 
-        // Token: 0x040007DB RID: 2011
         public DynamicArray containedObjects;
 
-        // Token: 0x040007DC RID: 2012
         public bool removeOnNextUpdate;
 
-        // Token: 0x040007DD RID: 2013
         private Image vinilStickerL;
 
-        // Token: 0x040007DE RID: 2014
         private Image vinilStickerR;
 
-        // Token: 0x040007DF RID: 2015
         private Image vinilHighlightL;
 
-        // Token: 0x040007E0 RID: 2016
         private Image vinilHighlightR;
 
-        // Token: 0x040007E1 RID: 2017
         private Image vinilControllerL;
 
-        // Token: 0x040007E2 RID: 2018
         private Image vinilControllerR;
 
-        // Token: 0x040007E3 RID: 2019
         private Image vinilActiveControllerL;
 
-        // Token: 0x040007E4 RID: 2020
         private Image vinilActiveControllerR;
 
-        // Token: 0x040007E5 RID: 2021
         private Image vinilCenter;
 
-        // Token: 0x040007E6 RID: 2022
         private Image vinil;
 
-        // Token: 0x040007E7 RID: 2023
         private bool hasOneHandle_;
 
-        // Token: 0x040007E8 RID: 2024
         private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.2);
 
-        // Token: 0x040007E9 RID: 2025
         private float INNER_CIRCLE_WIDTH = FrameworkTypes.RTPD(15.0) * 3f;
 
-        // Token: 0x040007EA RID: 2026
         private float OUTER_CIRCLE_WIDTH = FrameworkTypes.RTPD(7.0) * 3f;
 
-        // Token: 0x040007EB RID: 2027
         private float ACTIVE_CIRCLE_WIDTH = FrameworkTypes.RTPD(3.0) * 3f;
 
-        // Token: 0x040007EC RID: 2028
         private float CONTROLLER_SHIFT_PARAM1 = 67.5f;
 
-        // Token: 0x040007ED RID: 2029
         private float CONTROLLER_SHIFT_PARAM2 = 0.089999996f;
     }
 }

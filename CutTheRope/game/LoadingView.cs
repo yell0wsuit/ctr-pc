@@ -7,10 +7,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000083 RID: 131
     internal class LoadingView : View
     {
-        // Token: 0x06000559 RID: 1369 RVA: 0x0002A13C File Offset: 0x0002833C
         public override void draw()
         {
             Global.MouseCursor.Enable(false);
@@ -65,10 +63,8 @@ namespace CutTheRope.game
             OpenGL.glDisable(1);
         }
 
-        // Token: 0x0400044A RID: 1098
         public bool game;
 
-        // Token: 0x0400044B RID: 1099
         private static Color s_Color1 = new(0.85f, 0.85f, 0.85f, 1f);
     }
 }

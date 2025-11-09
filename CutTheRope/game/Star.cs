@@ -7,22 +7,18 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000096 RID: 150
     internal class Star : CTRGameObject
     {
-        // Token: 0x060005FC RID: 1532 RVA: 0x00032148 File Offset: 0x00030348
         public static Star Star_create(Texture2D t)
         {
             return (Star)new Star().initWithTexture(t);
         }
 
-        // Token: 0x060005FD RID: 1533 RVA: 0x0003215A File Offset: 0x0003035A
         public static Star Star_createWithResID(int r)
         {
             return Star.Star_create(Application.getTexture(r));
         }
 
-        // Token: 0x060005FE RID: 1534 RVA: 0x00032167 File Offset: 0x00030367
         public static Star Star_createWithResIDQuad(int r, int q)
         {
             Star star = Star.Star_create(Application.getTexture(r));
@@ -30,7 +26,6 @@ namespace CutTheRope.game
             return star;
         }
 
-        // Token: 0x060005FF RID: 1535 RVA: 0x0003217B File Offset: 0x0003037B
         public override NSObject init()
         {
             if (base.init() != null)
@@ -40,7 +35,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000600 RID: 1536 RVA: 0x00032190 File Offset: 0x00030390
         public override void update(float delta)
         {
             if ((double)this.timeout > 0.0 && (double)this.time > 0.0)
@@ -50,7 +44,6 @@ namespace CutTheRope.game
             base.update(delta);
         }
 
-        // Token: 0x06000601 RID: 1537 RVA: 0x000321DF File Offset: 0x000303DF
         public override void draw()
         {
             if (this.timedAnim != null)
@@ -60,7 +53,6 @@ namespace CutTheRope.game
             base.draw();
         }
 
-        // Token: 0x06000602 RID: 1538 RVA: 0x000321FC File Offset: 0x000303FC
         public virtual void createAnimations()
         {
             if ((double)this.timeout > 0.0)
@@ -104,13 +96,10 @@ namespace CutTheRope.game
             this.addChild(animation);
         }
 
-        // Token: 0x04000837 RID: 2103
         public float time;
 
-        // Token: 0x04000838 RID: 2104
         public float timeout;
 
-        // Token: 0x04000839 RID: 2105
         public Animation timedAnim;
     }
 }

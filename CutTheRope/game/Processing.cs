@@ -6,16 +6,13 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200008C RID: 140
     internal class Processing : RectangleElement, TimelineDelegate
     {
-        // Token: 0x060005AA RID: 1450 RVA: 0x0002E9DE File Offset: 0x0002CBDE
         private static NSObject createWithLoading()
         {
             return new Processing().initWithLoading(true);
         }
 
-        // Token: 0x060005AB RID: 1451 RVA: 0x0002E9EC File Offset: 0x0002CBEC
         public virtual NSObject initWithLoading(bool loading)
         {
             if (this.init() != null)
@@ -55,28 +52,24 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x060005AC RID: 1452 RVA: 0x0002EBDA File Offset: 0x0002CDDA
         public override bool onTouchDownXY(float tx, float ty)
         {
             base.onTouchDownXY(tx, ty);
             return true;
         }
 
-        // Token: 0x060005AD RID: 1453 RVA: 0x0002EBE6 File Offset: 0x0002CDE6
         public override bool onTouchUpXY(float tx, float ty)
         {
             base.onTouchUpXY(tx, ty);
             return true;
         }
 
-        // Token: 0x060005AE RID: 1454 RVA: 0x0002EBF2 File Offset: 0x0002CDF2
         public override bool onTouchMoveXY(float tx, float ty)
         {
             base.onTouchMoveXY(tx, ty);
             return true;
         }
 
-        // Token: 0x060005AF RID: 1455 RVA: 0x0002EBFE File Offset: 0x0002CDFE
         public override void playTimeline(int t)
         {
             if (t == 0)
@@ -86,13 +79,11 @@ namespace CutTheRope.game
             base.playTimeline(t);
         }
 
-        // Token: 0x060005B0 RID: 1456 RVA: 0x0002EC11 File Offset: 0x0002CE11
         public void timelineFinished(Timeline t)
         {
             base.setEnabled(false);
         }
 
-        // Token: 0x060005B1 RID: 1457 RVA: 0x0002EC1A File Offset: 0x0002CE1A
         public void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }

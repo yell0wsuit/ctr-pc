@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.windows
 {
-    // Token: 0x0200000D RID: 13
     internal class Images
     {
-        // Token: 0x06000058 RID: 88 RVA: 0x00003744 File Offset: 0x00001944
         private static ContentManager getContentManager(string imgName)
         {
             ContentManager value = null;
@@ -21,7 +19,6 @@ namespace CutTheRope.windows
             return value;
         }
 
-        // Token: 0x06000059 RID: 89 RVA: 0x00003788 File Offset: 0x00001988
         public static Texture2D get(string imgName)
         {
             ContentManager contentManager = Images.getContentManager(imgName);
@@ -39,13 +36,11 @@ namespace CutTheRope.windows
             return texture2D;
         }
 
-        // Token: 0x0600005A RID: 90 RVA: 0x000037C0 File Offset: 0x000019C0
         public static void free(string imgName)
         {
             Images.getContentManager(imgName).Unload();
         }
 
-        // Token: 0x04000055 RID: 85
         private static Dictionary<string, ContentManager> _contentManagers = new();
     }
 }

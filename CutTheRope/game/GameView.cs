@@ -8,10 +8,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200007F RID: 127
     internal class GameView : View
     {
-        // Token: 0x06000538 RID: 1336 RVA: 0x00026543 File Offset: 0x00024743
         public override NSObject initFullscreen()
         {
             if (base.initFullscreen() == null)
@@ -21,19 +19,16 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000539 RID: 1337 RVA: 0x00026550 File Offset: 0x00024750
         public override void show()
         {
             base.show();
         }
 
-        // Token: 0x0600053A RID: 1338 RVA: 0x00026558 File Offset: 0x00024758
         public override void hide()
         {
             base.hide();
         }
 
-        // Token: 0x0600053B RID: 1339 RVA: 0x00026560 File Offset: 0x00024760
         public override void draw()
         {
             Global.MouseCursor.Enable(true);
@@ -72,19 +67,14 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0400041A RID: 1050
         public const int VIEW_ELEMENT_GAME_SCENE = 0;
 
-        // Token: 0x0400041B RID: 1051
         public const int VIEW_ELEMENT_PAUSE_BUTTON = 1;
 
-        // Token: 0x0400041C RID: 1052
         public const int VIEW_ELEMENT_RESTART_BUTTON = 2;
 
-        // Token: 0x0400041D RID: 1053
         public const int VIEW_ELEMENT_PAUSE_MENU = 3;
 
-        // Token: 0x0400041E RID: 1054
         public const int VIEW_ELEMENT_RESULTS = 4;
     }
 }

@@ -3,10 +3,8 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000044 RID: 68
     internal class ScalableMultiParticles : MultiParticles
     {
-        // Token: 0x06000238 RID: 568 RVA: 0x0000BEB0 File Offset: 0x0000A0B0
         public override void initParticle(ref Particle particle)
         {
             Image imageGrid = this.imageGrid;

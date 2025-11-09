@@ -3,10 +3,8 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000036 RID: 54
     internal class HorizontallyTiledImage : Image
     {
-        // Token: 0x060001DE RID: 478 RVA: 0x000096D0 File Offset: 0x000078D0
         public override Image initWithTexture(Texture2D t)
         {
             if (base.initWithTexture(t) != null)
@@ -20,7 +18,6 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x060001DF RID: 479 RVA: 0x00009704 File Offset: 0x00007904
         public override void draw()
         {
             this.preDraw();
@@ -46,7 +43,6 @@ namespace CutTheRope.iframework.visual
             this.postDraw();
         }
 
-        // Token: 0x060001E0 RID: 480 RVA: 0x00009900 File Offset: 0x00007B00
         public virtual void setTileHorizontallyLeftCenterRight(int l, int c, int r)
         {
             this.tiles[0] = l;
@@ -72,19 +68,16 @@ namespace CutTheRope.iframework.visual
             this.offsets[2] = ((float)this.height - h3) / 2f;
         }
 
-        // Token: 0x060001E1 RID: 481 RVA: 0x000099F3 File Offset: 0x00007BF3
         public static HorizontallyTiledImage HorizontallyTiledImage_create(Texture2D t)
         {
             return (HorizontallyTiledImage)new HorizontallyTiledImage().initWithTexture(t);
         }
 
-        // Token: 0x060001E2 RID: 482 RVA: 0x00009A05 File Offset: 0x00007C05
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(int r)
         {
             return HorizontallyTiledImage.HorizontallyTiledImage_create(Application.getTexture(r));
         }
 
-        // Token: 0x060001E3 RID: 483 RVA: 0x00009A12 File Offset: 0x00007C12
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResIDQuad(int r, int q)
         {
             HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage.HorizontallyTiledImage_create(Application.getTexture(r));
@@ -92,13 +85,10 @@ namespace CutTheRope.iframework.visual
             return horizontallyTiledImage;
         }
 
-        // Token: 0x0400013D RID: 317
         public int[] tiles = new int[3];
 
-        // Token: 0x0400013E RID: 318
         public float[] offsets = new float[3];
 
-        // Token: 0x0400013F RID: 319
         public int align;
     }
 }

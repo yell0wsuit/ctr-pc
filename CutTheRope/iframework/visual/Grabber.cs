@@ -4,29 +4,24 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000034 RID: 52
     internal class Grabber : NSObject
     {
-        // Token: 0x060001D5 RID: 469 RVA: 0x000094F4 File Offset: 0x000076F4
         public override NSObject init()
         {
             base.init();
             return this;
         }
 
-        // Token: 0x060001D6 RID: 470 RVA: 0x000094FE File Offset: 0x000076FE
         public override void dealloc()
         {
             base.dealloc();
         }
 
-        // Token: 0x060001D7 RID: 471 RVA: 0x00009506 File Offset: 0x00007706
         public virtual Texture2D grab()
         {
             return (Texture2D)new Texture2D().initFromPixels(0, 0, (int)FrameworkTypes.SCREEN_WIDTH, (int)FrameworkTypes.SCREEN_HEIGHT);
         }
 
-        // Token: 0x060001D8 RID: 472 RVA: 0x00009528 File Offset: 0x00007728
         public static void drawGrabbedImage(Texture2D t, int x, int y)
         {
             if (t != null)

@@ -7,10 +7,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000084 RID: 132
     internal class MapPickerController : ViewController, ButtonDelegate
     {
-        // Token: 0x0600055C RID: 1372 RVA: 0x0002A3E0 File Offset: 0x000285E0
         public override NSObject initWithParent(ViewController p)
         {
             if (base.initWithParent(p) != null)
@@ -35,7 +33,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x0600055D RID: 1373 RVA: 0x0002A4A8 File Offset: 0x000286A8
         public virtual void createPickerView()
         {
             View view = (View)new View().initFullscreen();
@@ -57,7 +54,6 @@ namespace CutTheRope.game
             this.addViewwithID(view, 0);
         }
 
-        // Token: 0x0600055E RID: 1374 RVA: 0x0002A598 File Offset: 0x00028798
         public override void activate()
         {
             base.activate();
@@ -74,18 +70,15 @@ namespace CutTheRope.game
             this.loadList();
         }
 
-        // Token: 0x0600055F RID: 1375 RVA: 0x0002A5FB File Offset: 0x000287FB
         public virtual void loadList()
         {
         }
 
-        // Token: 0x06000560 RID: 1376 RVA: 0x0002A5FD File Offset: 0x000287FD
         public override void deactivate()
         {
             base.deactivate();
         }
 
-        // Token: 0x06000561 RID: 1377 RVA: 0x0002A605 File Offset: 0x00028805
         public virtual void xmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
         {
             if (rootNode != null)
@@ -99,14 +92,12 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000562 RID: 1378 RVA: 0x0002A63F File Offset: 0x0002883F
         public virtual void setNormalMode()
         {
             this.autoLoad = false;
             ((CTRRootController)Application.sharedRootController()).setPicker(true);
         }
 
-        // Token: 0x06000563 RID: 1379 RVA: 0x0002A658 File Offset: 0x00028858
         public virtual void setAutoLoadMap(NSString map)
         {
             this.autoLoad = true;
@@ -115,7 +106,6 @@ namespace CutTheRope.game
             this.selectedMap = (NSString)NSObject.NSRET(map);
         }
 
-        // Token: 0x06000564 RID: 1380 RVA: 0x0002A68D File Offset: 0x0002888D
         public virtual void onButtonPressed(int n)
         {
             if (n == 0)
@@ -124,20 +114,16 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000565 RID: 1381 RVA: 0x0002A698 File Offset: 0x00028898
         public override void dealloc()
         {
             NSObject.NSREL(this.selectedMap);
             base.dealloc();
         }
 
-        // Token: 0x0400044C RID: 1100
         private NSString selectedMap;
 
-        // Token: 0x0400044D RID: 1101
         private Dictionary<string, XMLNode> maplist;
 
-        // Token: 0x0400044E RID: 1102
         private bool autoLoad;
     }
 }

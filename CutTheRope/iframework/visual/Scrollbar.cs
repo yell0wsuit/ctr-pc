@@ -6,10 +6,8 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000048 RID: 72
     internal class Scrollbar : BaseElement
     {
-        // Token: 0x06000260 RID: 608 RVA: 0x0000D3B5 File Offset: 0x0000B5B5
         public override void update(float delta)
         {
             base.update(delta);
@@ -19,7 +17,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x06000261 RID: 609 RVA: 0x0000D3E4 File Offset: 0x0000B5E4
         public override void draw()
         {
             base.preDraw();
@@ -67,7 +64,6 @@ namespace CutTheRope.iframework.visual
             base.postDraw();
         }
 
-        // Token: 0x06000262 RID: 610 RVA: 0x0000D5E0 File Offset: 0x0000B7E0
         public virtual Scrollbar initWithWidthHeightVertical(float w, float h, bool v)
         {
             if (this.init() != null)
@@ -84,28 +80,20 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x040001C5 RID: 453
         public Vector sp;
 
-        // Token: 0x040001C6 RID: 454
         public Vector mp;
 
-        // Token: 0x040001C7 RID: 455
         public Vector sc;
 
-        // Token: 0x040001C8 RID: 456
         public Scrollbar.ProvideScrollPosMaxScrollPosScrollCoeff delegateProvider;
 
-        // Token: 0x040001C9 RID: 457
         public bool vertical;
 
-        // Token: 0x040001CA RID: 458
         public RGBAColor backColor;
 
-        // Token: 0x040001CB RID: 459
         public RGBAColor scrollerColor;
 
-        // Token: 0x020000B0 RID: 176
         // (Invoke) Token: 0x0600066C RID: 1644
         public delegate void ProvideScrollPosMaxScrollPosScrollCoeff(ref Vector sp, ref Vector mp, ref Vector sc);
     }

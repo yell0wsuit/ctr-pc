@@ -5,16 +5,13 @@ using System;
 
 namespace CutTheRope.ctr_commons
 {
-    // Token: 0x0200009C RID: 156
     internal class HLiftScrollbar : Image
     {
-        // Token: 0x0600062D RID: 1581 RVA: 0x0003300F File Offset: 0x0003120F
         public static HLiftScrollbar createWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
             return new HLiftScrollbar().initWithResIDBackQuadLiftQuadLiftQuadPressed(resID, bq, lq, lqp);
         }
 
-        // Token: 0x0600062E RID: 1582 RVA: 0x00033020 File Offset: 0x00031220
         public virtual HLiftScrollbar initWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
             if (base.initWithTexture(Application.getTexture(resID)) != null)
@@ -41,19 +38,16 @@ namespace CutTheRope.ctr_commons
             return this;
         }
 
-        // Token: 0x0600062F RID: 1583 RVA: 0x0003313C File Offset: 0x0003133C
         public virtual Vector getScrollPoint(int i)
         {
             return this.spoints[i];
         }
 
-        // Token: 0x06000630 RID: 1584 RVA: 0x0003314A File Offset: 0x0003134A
         public virtual int getTotalScrollPoints()
         {
             return this.spointsNum;
         }
 
-        // Token: 0x06000631 RID: 1585 RVA: 0x00033154 File Offset: 0x00031354
         public virtual void updateActiveSpoint()
         {
             int i = 0;
@@ -76,7 +70,6 @@ namespace CutTheRope.ctr_commons
             }
         }
 
-        // Token: 0x06000632 RID: 1586 RVA: 0x000331BC File Offset: 0x000313BC
         public override void update(float delta)
         {
             base.update(delta);
@@ -107,7 +100,6 @@ namespace CutTheRope.ctr_commons
             }
         }
 
-        // Token: 0x06000633 RID: 1587 RVA: 0x000332B2 File Offset: 0x000314B2
         public override void dealloc()
         {
             this.spoints = null;
@@ -118,13 +110,11 @@ namespace CutTheRope.ctr_commons
             base.dealloc();
         }
 
-        // Token: 0x06000634 RID: 1588 RVA: 0x000332DD File Offset: 0x000314DD
         public override bool onTouchDownXY(float tx, float ty)
         {
             return base.onTouchDownXY(tx, ty);
         }
 
-        // Token: 0x06000635 RID: 1589 RVA: 0x000332E7 File Offset: 0x000314E7
         public override bool onTouchUpXY(float tx, float ty)
         {
             bool flag = base.onTouchUpXY(tx, ty);
@@ -132,14 +122,12 @@ namespace CutTheRope.ctr_commons
             return flag;
         }
 
-        // Token: 0x06000636 RID: 1590 RVA: 0x00033304 File Offset: 0x00031504
         public void percentXY(float px, float py)
         {
             Vector maxScroll = this.container.getMaxScroll();
             this.container.setScroll(MathHelper.vect(maxScroll.x * px, maxScroll.y * py));
         }
 
-        // Token: 0x06000637 RID: 1591 RVA: 0x00033340 File Offset: 0x00031540
         public virtual void updateLift()
         {
             Vector scroll = this.container.getScroll();
@@ -158,7 +146,6 @@ namespace CutTheRope.ctr_commons
             this.lift.y = (this.lift.maxY - this.lift.minY) * num2 + this.lift.minY;
         }
 
-        // Token: 0x06000638 RID: 1592 RVA: 0x00033408 File Offset: 0x00031608
         public virtual void calcScrollPoints()
         {
             Vector maxScroll = this.container.getMaxScroll();
@@ -219,7 +206,6 @@ namespace CutTheRope.ctr_commons
             }
         }
 
-        // Token: 0x06000639 RID: 1593 RVA: 0x000336A8 File Offset: 0x000318A8
         public virtual void setContainer(ScrollableContainer c)
         {
             this.container = c;
@@ -230,28 +216,20 @@ namespace CutTheRope.ctr_commons
             }
         }
 
-        // Token: 0x04000857 RID: 2135
         public Vector[] spoints;
 
-        // Token: 0x04000858 RID: 2136
         public Vector[] spointsLimits;
 
-        // Token: 0x04000859 RID: 2137
         public int[] limitPoints;
 
-        // Token: 0x0400085A RID: 2138
         public int spointsNum;
 
-        // Token: 0x0400085B RID: 2139
         public int activeSpoint;
 
-        // Token: 0x0400085C RID: 2140
         public Lift lift;
 
-        // Token: 0x0400085D RID: 2141
         public ScrollableContainer container;
 
-        // Token: 0x0400085E RID: 2142
         public LiftScrollbarDelegate delegateLiftScrollbarDelegate;
     }
 }

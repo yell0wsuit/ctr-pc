@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.helpers
 {
-    // Token: 0x02000063 RID: 99
     internal class Mover : NSObject
     {
-        // Token: 0x06000391 RID: 913 RVA: 0x00014490 File Offset: 0x00012690
         public virtual Mover initWithPathCapacityMoveSpeedRotateSpeed(int l, float m_, float r_)
         {
             int num = (int)m_;
@@ -36,7 +34,6 @@ namespace CutTheRope.iframework.helpers
             return this;
         }
 
-        // Token: 0x06000392 RID: 914 RVA: 0x0001453C File Offset: 0x0001273C
         public virtual void setMoveSpeed(float ms)
         {
             for (int i = 0; i < this.pathCapacity; i++)
@@ -45,7 +42,6 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        // Token: 0x06000393 RID: 915 RVA: 0x00014564 File Offset: 0x00012764
         public virtual void setPathFromStringandStart(NSString p, Vector s)
         {
             if (p.characterAtIndex(0) == 'R')
@@ -82,7 +78,6 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        // Token: 0x06000394 RID: 916 RVA: 0x00014690 File Offset: 0x00012890
         public virtual void addPathPoint(Vector v)
         {
             Vector[] array = this.path;
@@ -91,7 +86,6 @@ namespace CutTheRope.iframework.helpers
             array[num] = v;
         }
 
-        // Token: 0x06000395 RID: 917 RVA: 0x000146BA File Offset: 0x000128BA
         public virtual void start()
         {
             if (this.pathLen > 0)
@@ -102,25 +96,21 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        // Token: 0x06000396 RID: 918 RVA: 0x000146E4 File Offset: 0x000128E4
         public virtual void pause()
         {
             this.paused = true;
         }
 
-        // Token: 0x06000397 RID: 919 RVA: 0x000146ED File Offset: 0x000128ED
         public virtual void unpause()
         {
             this.paused = false;
         }
 
-        // Token: 0x06000398 RID: 920 RVA: 0x000146F6 File Offset: 0x000128F6
         public virtual void setRotateSpeed(float rs)
         {
             this.rotateSpeed = rs;
         }
 
-        // Token: 0x06000399 RID: 921 RVA: 0x000146FF File Offset: 0x000128FF
         public virtual void jumpToPoint(int p)
         {
             this.targetPoint = p;
@@ -128,26 +118,22 @@ namespace CutTheRope.iframework.helpers
             this.calculateOffset();
         }
 
-        // Token: 0x0600039A RID: 922 RVA: 0x00014728 File Offset: 0x00012928
         public virtual void calculateOffset()
         {
             Vector v = this.path[this.targetPoint];
             this.offset = MathHelper.vectMult(MathHelper.vectNormalize(MathHelper.vectSub(v, this.pos)), this.moveSpeed[this.targetPoint]);
         }
 
-        // Token: 0x0600039B RID: 923 RVA: 0x00014770 File Offset: 0x00012970
         public virtual void setMoveSpeedforPoint(float ms, int i)
         {
             this.moveSpeed[i] = ms;
         }
 
-        // Token: 0x0600039C RID: 924 RVA: 0x0001477B File Offset: 0x0001297B
         public virtual void setMoveReverse(bool r)
         {
             this.reverse = r;
         }
 
-        // Token: 0x0600039D RID: 925 RVA: 0x00014784 File Offset: 0x00012984
         public virtual void update(float delta)
         {
             if (this.paused)
@@ -212,7 +198,6 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        // Token: 0x0600039E RID: 926 RVA: 0x0001492C File Offset: 0x00012B2C
         public override void dealloc()
         {
             this.path = null;
@@ -220,13 +205,11 @@ namespace CutTheRope.iframework.helpers
             base.dealloc();
         }
 
-        // Token: 0x0600039F RID: 927 RVA: 0x00014942 File Offset: 0x00012B42
         public static bool moveVariableToTarget(ref float v, double t, double speed, double delta)
         {
             return Mover.moveVariableToTarget(ref v, (float)t, (float)speed, (float)delta);
         }
 
-        // Token: 0x060003A0 RID: 928 RVA: 0x00014950 File Offset: 0x00012B50
         public static bool moveVariableToTarget(ref float v, float t, float speed, float delta)
         {
             if (t != v)
@@ -255,46 +238,32 @@ namespace CutTheRope.iframework.helpers
             return false;
         }
 
-        // Token: 0x0400028C RID: 652
         private float[] moveSpeed;
 
-        // Token: 0x0400028D RID: 653
         private float rotateSpeed;
 
-        // Token: 0x0400028E RID: 654
         public Vector[] path;
 
-        // Token: 0x0400028F RID: 655
         public int pathLen;
 
-        // Token: 0x04000290 RID: 656
         private int pathCapacity;
 
-        // Token: 0x04000291 RID: 657
         public Vector pos;
 
-        // Token: 0x04000292 RID: 658
         public double angle_;
 
-        // Token: 0x04000293 RID: 659
         public double angle_initial;
 
-        // Token: 0x04000294 RID: 660
         public bool use_angle_initial;
 
-        // Token: 0x04000295 RID: 661
         private bool paused;
 
-        // Token: 0x04000296 RID: 662
         public int targetPoint;
 
-        // Token: 0x04000297 RID: 663
         private bool reverse;
 
-        // Token: 0x04000298 RID: 664
         private float overrun;
 
-        // Token: 0x04000299 RID: 665
         private Vector offset;
     }
 }

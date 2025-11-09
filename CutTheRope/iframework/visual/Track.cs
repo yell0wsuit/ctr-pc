@@ -4,10 +4,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000052 RID: 82
     internal class Track : NSObject
     {
-        // Token: 0x060002BB RID: 699 RVA: 0x0000F581 File Offset: 0x0000D781
         public Track()
         {
             this.elementPrevState = new KeyFrame();
@@ -15,7 +13,6 @@ namespace CutTheRope.iframework.visual
             this.currentStepAcceleration = new KeyFrame();
         }
 
-        // Token: 0x060002BC RID: 700 RVA: 0x0000F5AC File Offset: 0x0000D7AC
         public virtual Track initWithTimelineTypeandMaxKeyFrames(Timeline timeline, Track.TrackType trackType, int m)
         {
             this.t = timeline;
@@ -33,7 +30,6 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x060002BD RID: 701 RVA: 0x0000F610 File Offset: 0x0000D810
         public virtual void initActionKeyFrameandTime(KeyFrame kf, float time)
         {
             this.keyFrameTimeLeft = time;
@@ -45,7 +41,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060002BE RID: 702 RVA: 0x0000F644 File Offset: 0x0000D844
         public virtual void setKeyFrameAt(KeyFrame k, int i)
         {
             this.keyFrames[i] = k;
@@ -59,7 +54,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060002BF RID: 703 RVA: 0x0000F690 File Offset: 0x0000D890
         public virtual float getFrameTime(int f)
         {
             float num = 0f;
@@ -70,14 +64,12 @@ namespace CutTheRope.iframework.visual
             return num;
         }
 
-        // Token: 0x060002C0 RID: 704 RVA: 0x0000F6C0 File Offset: 0x0000D8C0
         public virtual void updateRange()
         {
             this.startTime = this.getFrameTime(0);
             this.endTime = this.getFrameTime(this.keyFramesCount - 1);
         }
 
-        // Token: 0x060002C1 RID: 705 RVA: 0x0000F6E4 File Offset: 0x0000D8E4
         private void initKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
         {
             this.keyFrameTimeLeft = time;
@@ -194,7 +186,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060002C2 RID: 706 RVA: 0x0000FF84 File Offset: 0x0000E184
         public virtual void setElementFromKeyFrame(KeyFrame kf)
         {
             switch (this.type)
@@ -252,7 +243,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060002C3 RID: 707 RVA: 0x00010308 File Offset: 0x0000E508
         private void setKeyFrameFromElement(KeyFrame kf)
         {
             switch (this.type)
@@ -278,7 +268,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060002C4 RID: 708 RVA: 0x000103FC File Offset: 0x0000E5FC
         public static void updateActionTrack(Track thiss, float delta)
         {
             if (thiss == null)
@@ -350,7 +339,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060002C5 RID: 709 RVA: 0x000106B8 File Offset: 0x0000E8B8
         public static void updateTrack(Track thiss, float delta)
         {
             Timeline timeline = thiss.t;
@@ -500,77 +488,51 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x0400021E RID: 542
         public Track.TrackType type;
 
-        // Token: 0x0400021F RID: 543
         public Track.TrackState state;
 
-        // Token: 0x04000220 RID: 544
         public bool relative;
 
-        // Token: 0x04000221 RID: 545
         public float startTime;
 
-        // Token: 0x04000222 RID: 546
         public float endTime;
 
-        // Token: 0x04000223 RID: 547
         public int keyFramesCount;
 
-        // Token: 0x04000224 RID: 548
         public KeyFrame[] keyFrames;
 
-        // Token: 0x04000225 RID: 549
         public Timeline t;
 
-        // Token: 0x04000226 RID: 550
         public int nextKeyFrame;
 
-        // Token: 0x04000227 RID: 551
         public int keyFramesCapacity;
 
-        // Token: 0x04000228 RID: 552
         public KeyFrame currentStepPerSecond;
 
-        // Token: 0x04000229 RID: 553
         public KeyFrame currentStepAcceleration;
 
-        // Token: 0x0400022A RID: 554
         public float keyFrameTimeLeft;
 
-        // Token: 0x0400022B RID: 555
         public KeyFrame elementPrevState;
 
-        // Token: 0x0400022C RID: 556
         public float overrun;
 
-        // Token: 0x0400022D RID: 557
         public List<List<Action>> actionSets;
 
-        // Token: 0x020000B7 RID: 183
         public enum TrackType
         {
-            // Token: 0x040008BB RID: 2235
             TRACK_POSITION,
-            // Token: 0x040008BC RID: 2236
             TRACK_SCALE,
-            // Token: 0x040008BD RID: 2237
             TRACK_ROTATION,
-            // Token: 0x040008BE RID: 2238
             TRACK_COLOR,
-            // Token: 0x040008BF RID: 2239
             TRACK_ACTION,
-            // Token: 0x040008C0 RID: 2240
             TRACKS_COUNT
         }
 
-        // Token: 0x020000B8 RID: 184
         public enum TrackState
         {
-            // Token: 0x040008C2 RID: 2242
             TRACK_NOT_ACTIVE,
-            // Token: 0x040008C3 RID: 2243
             TRACK_ACTIVE
         }
     }

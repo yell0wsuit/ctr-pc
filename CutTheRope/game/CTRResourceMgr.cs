@@ -6,17 +6,14 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000078 RID: 120
     internal class CTRResourceMgr : ResourceMgr
     {
-        // Token: 0x060004A8 RID: 1192 RVA: 0x0001A8ED File Offset: 0x00018AED
         public override NSObject init()
         {
             base.init();
             return this;
         }
 
-        // Token: 0x060004A9 RID: 1193 RVA: 0x0001A8F8 File Offset: 0x00018AF8
         public static int handleLocalizedResource(int r)
         {
             if (r != 69)
@@ -73,7 +70,6 @@ namespace CutTheRope.game
             return r;
         }
 
-        // Token: 0x060004AA RID: 1194 RVA: 0x0001A994 File Offset: 0x00018B94
         public static string XNA_ResName(int resId)
         {
             if (CTRResourceMgr.resNames_ == null)
@@ -237,19 +233,16 @@ namespace CutTheRope.game
             return value;
         }
 
-        // Token: 0x060004AB RID: 1195 RVA: 0x0001B1A0 File Offset: 0x000193A0
         public override NSObject loadResource(int resID, ResourceMgr.ResourceType resType)
         {
             return base.loadResource(CTRResourceMgr.handleLocalizedResource(resID), resType);
         }
 
-        // Token: 0x060004AC RID: 1196 RVA: 0x0001B1AF File Offset: 0x000193AF
         public override void freeResource(int resID)
         {
             base.freeResource(CTRResourceMgr.handleLocalizedResource(resID));
         }
 
-        // Token: 0x0400036D RID: 877
         private static Dictionary<int, string> resNames_;
     }
 }

@@ -2,10 +2,8 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000054 RID: 84
     internal class VerticallyTiledImage : Image
     {
-        // Token: 0x060002CA RID: 714 RVA: 0x000110C4 File Offset: 0x0000F2C4
         public override Image initWithTexture(Texture2D t)
         {
             if (base.initWithTexture(t) != null)
@@ -19,7 +17,6 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x060002CB RID: 715 RVA: 0x000110F8 File Offset: 0x0000F2F8
         public override void draw()
         {
             this.preDraw();
@@ -45,7 +42,6 @@ namespace CutTheRope.iframework.visual
             this.postDraw();
         }
 
-        // Token: 0x060002CC RID: 716 RVA: 0x000112DC File Offset: 0x0000F4DC
         public virtual void setTileVerticallyTopCenterBottom(int t, int c, int b)
         {
             this.tiles[0] = t;
@@ -71,13 +67,10 @@ namespace CutTheRope.iframework.visual
             this.offsets[2] = ((float)this.width - w3) / 2f;
         }
 
-        // Token: 0x04000231 RID: 561
         public int[] tiles = new int[3];
 
-        // Token: 0x04000232 RID: 562
         public float[] offsets = new float[3];
 
-        // Token: 0x04000233 RID: 563
         public int align;
     }
 }

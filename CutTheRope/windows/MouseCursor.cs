@@ -11,29 +11,24 @@ using System.Windows.Forms;
 
 namespace CutTheRope.windows
 {
-    // Token: 0x0200000E RID: 14
     internal class MouseCursor
     {
-        // Token: 0x0600005D RID: 93 RVA: 0x000037E1 File Offset: 0x000019E1
         public void Enable(bool b)
         {
             this._enabled = b;
         }
 
-        // Token: 0x0600005E RID: 94 RVA: 0x000037EC File Offset: 0x000019EC
         public void ReleaseButtons()
         {
             this._mouseStateTranformed = new MouseState(this._mouseStateTranformed.X, this._mouseStateTranformed.Y, this._mouseStateTranformed.ScrollWheelValue, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released);
         }
 
-        // Token: 0x0600005F RID: 95 RVA: 0x0000382A File Offset: 0x00001A2A
         public void Load(ContentManager cm)
         {
             this._cursorWindows = NativeMethods.LoadCustomCursor("content/cursor_windows.cur");
             this._cursorActiveWindows = NativeMethods.LoadCustomCursor("content/cursor_active_windows.cur");
         }
 
-        // Token: 0x06000060 RID: 96 RVA: 0x0000384C File Offset: 0x00001A4C
         public void Draw()
         {
             if (this._enabled && !Global.XnaGame.IsMouseVisible && this._mouseStateOriginal.X >= 0 && this._mouseStateOriginal.Y >= 0)
@@ -48,19 +43,16 @@ namespace CutTheRope.windows
             }
         }
 
-        // Token: 0x06000061 RID: 97 RVA: 0x00003952 File Offset: 0x00001B52
         public static MouseState GetMouseState()
         {
             return MouseCursor.TransformMouseState(Global.XnaGame.GetMouseState());
         }
 
-        // Token: 0x06000062 RID: 98 RVA: 0x00003964 File Offset: 0x00001B64
         private static MouseState TransformMouseState(MouseState mouseState)
         {
             return new MouseState(Global.ScreenSizeManager.TransformWindowToViewX(mouseState.X), Global.ScreenSizeManager.TransformWindowToViewY(mouseState.Y), mouseState.ScrollWheelValue, mouseState.LeftButton, mouseState.MiddleButton, mouseState.RightButton, mouseState.XButton1, mouseState.XButton2);
         }
 
-        // Token: 0x06000063 RID: 99 RVA: 0x000039C4 File Offset: 0x00001BC4
         public List<TouchLocation> GetTouchLocation()
         {
             List<TouchLocation> list = new();
@@ -111,28 +103,20 @@ namespace CutTheRope.windows
             return CutTheRope.iframework.core.Application.sharedCanvas().convertTouches(list);
         }
 
-        // Token: 0x04000056 RID: 86
         private Cursor _cursorWindows;
 
-        // Token: 0x04000057 RID: 87
         private Cursor _cursorActiveWindows;
 
-        // Token: 0x04000058 RID: 88
         private Texture2D _cursor;
 
-        // Token: 0x04000059 RID: 89
         private Texture2D _cursorActive;
 
-        // Token: 0x0400005A RID: 90
         private MouseState _mouseStateTranformed;
 
-        // Token: 0x0400005B RID: 91
         private MouseState _mouseStateOriginal;
 
-        // Token: 0x0400005C RID: 92
         private int _touchID;
 
-        // Token: 0x0400005D RID: 93
         private bool _enabled;
     }
 }

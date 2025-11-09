@@ -7,16 +7,13 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000049 RID: 73
     internal class Text : BaseElement
     {
-        // Token: 0x06000264 RID: 612 RVA: 0x0000D674 File Offset: 0x0000B874
         public static Text createWithFontandString(int i, string str)
         {
             return Text.createWithFontandString(i, NSObject.NSS(str));
         }
 
-        // Token: 0x06000265 RID: 613 RVA: 0x0000D682 File Offset: 0x0000B882
         public static Text createWithFontandString(int i, NSString str)
         {
             Text text = new Text().initWithFont(Application.getFont(i));
@@ -24,7 +21,6 @@ namespace CutTheRope.iframework.visual
             return text;
         }
 
-        // Token: 0x06000266 RID: 614 RVA: 0x0000D69C File Offset: 0x0000B89C
         public virtual Text initWithFont(FontGeneric i)
         {
             if (this.init() != null)
@@ -42,25 +38,21 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x06000267 RID: 615 RVA: 0x0000D70C File Offset: 0x0000B90C
         public virtual void setString(string newString)
         {
             this.setString(NSObject.NSS(newString));
         }
 
-        // Token: 0x06000268 RID: 616 RVA: 0x0000D71A File Offset: 0x0000B91A
         public virtual void setString(NSString newString)
         {
             this.setStringandWidth(newString, -1f);
         }
 
-        // Token: 0x06000269 RID: 617 RVA: 0x0000D728 File Offset: 0x0000B928
         public virtual void setStringandWidth(NSString newString, double w)
         {
             this.setStringandWidth(newString, (float)w);
         }
 
-        // Token: 0x0600026A RID: 618 RVA: 0x0000D734 File Offset: 0x0000B934
         public virtual void setStringandWidth(NSString newString, float w)
         {
             this.string_ = newString;
@@ -87,7 +79,6 @@ namespace CutTheRope.iframework.visual
             this.stringLength = 0;
         }
 
-        // Token: 0x0600026B RID: 619 RVA: 0x0000D7B8 File Offset: 0x0000B9B8
         public virtual void updateDrawerValues()
         {
             this.multiDrawers.Clear();
@@ -186,19 +177,16 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x0600026C RID: 620 RVA: 0x0000DC01 File Offset: 0x0000BE01
         public virtual NSString getString()
         {
             return this.string_;
         }
 
-        // Token: 0x0600026D RID: 621 RVA: 0x0000DC09 File Offset: 0x0000BE09
         public virtual void setAlignment(int a)
         {
             this.align = a;
         }
 
-        // Token: 0x0600026E RID: 622 RVA: 0x0000DC14 File Offset: 0x0000BE14
         public override void draw()
         {
             this.preDraw();
@@ -222,7 +210,6 @@ namespace CutTheRope.iframework.visual
             this.postDraw();
         }
 
-        // Token: 0x0600026F RID: 623 RVA: 0x0000DCA8 File Offset: 0x0000BEA8
         public virtual void formatText()
         {
             short[] array = new short[512];
@@ -297,13 +284,11 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x06000270 RID: 624 RVA: 0x0000DECA File Offset: 0x0000C0CA
         private BaseElement createFromXML(XMLNode xml)
         {
             return null;
         }
 
-        // Token: 0x06000271 RID: 625 RVA: 0x0000DECD File Offset: 0x0000C0CD
         public override void dealloc()
         {
             this.font.notifyTextDeleted(this);
@@ -315,31 +300,22 @@ namespace CutTheRope.iframework.visual
             base.dealloc();
         }
 
-        // Token: 0x040001CC RID: 460
         public int align;
 
-        // Token: 0x040001CD RID: 461
         public NSString string_;
 
-        // Token: 0x040001CE RID: 462
         public int stringLength;
 
-        // Token: 0x040001CF RID: 463
         public FontGeneric font;
 
-        // Token: 0x040001D0 RID: 464
         public float wrapWidth;
 
-        // Token: 0x040001D1 RID: 465
         private List<FormattedString> formattedStrings;
 
-        // Token: 0x040001D2 RID: 466
         private List<ImageMultiDrawer> multiDrawers;
 
-        // Token: 0x040001D3 RID: 467
         public float maxHeight;
 
-        // Token: 0x040001D4 RID: 468
         public bool wrapLongWords;
     }
 }

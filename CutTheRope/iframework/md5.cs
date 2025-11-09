@@ -3,16 +3,13 @@ using System.Runtime.CompilerServices;
 
 namespace CutTheRope.iframework
 {
-    // Token: 0x0200001F RID: 31
     internal class md5
     {
-        // Token: 0x0600011F RID: 287 RVA: 0x00005E59 File Offset: 0x00004059
         private static void GET_UINT32(ref uint n, byte[] b, int dataIndex, int i)
         {
             n = (uint)((int)b[dataIndex + i] | ((int)b[dataIndex + i + 1] << 8) | ((int)b[dataIndex + i + 2] << 16) | ((int)b[dataIndex + i + 3] << 24));
         }
 
-        // Token: 0x06000120 RID: 288 RVA: 0x00005E82 File Offset: 0x00004082
         private static void PUT_UINT32(uint n, ref byte[] b, int i)
         {
             b[i] = (byte)n;
@@ -21,44 +18,37 @@ namespace CutTheRope.iframework
             b[i + 3] = (byte)(n >> 24);
         }
 
-        // Token: 0x06000121 RID: 289 RVA: 0x00005EAA File Offset: 0x000040AA
         private static uint S(uint x, uint n)
         {
             return (x << (int)n) | ((x & uint.MaxValue) >> (int)(32U - n));
         }
 
-        // Token: 0x06000122 RID: 290 RVA: 0x00005EBE File Offset: 0x000040BE
         private static void P(ref uint a, uint b, uint c, uint d, uint k, uint s, uint t, uint[] X, md5.FuncF F)
         {
             a += F(b, c, d) + X[(int)k] + t;
             a = md5.S(a, s) + b;
         }
 
-        // Token: 0x06000123 RID: 291 RVA: 0x00005EE5 File Offset: 0x000040E5
         private static uint F_1(uint x, uint y, uint z)
         {
             return z ^ (x & (y ^ z));
         }
 
-        // Token: 0x06000124 RID: 292 RVA: 0x00005EEE File Offset: 0x000040EE
         private static uint F_2(uint x, uint y, uint z)
         {
             return y ^ (z & (x ^ y));
         }
 
-        // Token: 0x06000125 RID: 293 RVA: 0x00005EF7 File Offset: 0x000040F7
         private static uint F_3(uint x, uint y, uint z)
         {
             return x ^ y ^ z;
         }
 
-        // Token: 0x06000126 RID: 294 RVA: 0x00005EFE File Offset: 0x000040FE
         private static uint F_4(uint x, uint y, uint z)
         {
             return y ^ (x | ~z);
         }
 
-        // Token: 0x06000127 RID: 295 RVA: 0x00005F08 File Offset: 0x00004108
         public static void md5_starts(ref md5.md5_context ctx)
         {
             ctx.total[0] = 0U;
@@ -69,7 +59,6 @@ namespace CutTheRope.iframework
             ctx.state[3] = 271733878U;
         }
 
-        // Token: 0x06000128 RID: 296 RVA: 0x00005F64 File Offset: 0x00004164
         public static void md5_process(ref md5.md5_context ctx, byte[] data, int dataIndex)
         {
             uint[] array = new uint[16];
@@ -187,7 +176,6 @@ namespace CutTheRope.iframework
             ctx.state[3] += a4;
         }
 
-        // Token: 0x06000129 RID: 297 RVA: 0x000066E0 File Offset: 0x000048E0
         public static void md5_update(ref md5.md5_context ctx, byte[] input, uint length)
         {
             if (length == 0U)
@@ -224,7 +212,6 @@ namespace CutTheRope.iframework
             }
         }
 
-        // Token: 0x0600012A RID: 298 RVA: 0x000067A8 File Offset: 0x000049A8
         public static void md5_finish(ref md5.md5_context ctx, byte[] digest)
         {
             byte[] b = new byte[8];
@@ -241,7 +228,6 @@ namespace CutTheRope.iframework
             md5.PUT_UINT32(ctx.state[3], ref digest, 12);
         }
 
-        // Token: 0x0600012B RID: 299 RVA: 0x00006865 File Offset: 0x00004A65
         static md5()
         {
             byte[] array = new byte[64];
@@ -249,13 +235,10 @@ namespace CutTheRope.iframework
             md5.md5_padding = array;
         }
 
-        // Token: 0x040000CB RID: 203
         private static byte[] md5_padding;
 
-        // Token: 0x020000A9 RID: 169
         public class md5_context
         {
-            // Token: 0x06000662 RID: 1634 RVA: 0x00033BDC File Offset: 0x00031DDC
             public md5_context()
             {
                 this.total = new uint[2];
@@ -263,34 +246,25 @@ namespace CutTheRope.iframework
                 this.buffer = new byte[64];
             }
 
-            // Token: 0x0400088C RID: 2188
             public uint[] total;
 
-            // Token: 0x0400088D RID: 2189
             public uint[] state;
 
-            // Token: 0x0400088E RID: 2190
             public byte[] buffer;
         }
 
-        // Token: 0x020000AA RID: 170
         // (Invoke) Token: 0x06000664 RID: 1636
         private delegate uint FuncF(uint x, uint y, uint z);
 
-        // Token: 0x020000AB RID: 171
         [CompilerGenerated]
         private static class <>O
 		{
-			// Token: 0x0400088F RID: 2191
-			public static md5.FuncF<0> __F_1;
+						public static md5.FuncF<0> __F_1;
 
-        // Token: 0x04000890 RID: 2192
         public static md5.FuncF<1> __F_2;
 
-        // Token: 0x04000891 RID: 2193
         public static md5.FuncF<2> __F_3;
 
-        // Token: 0x04000892 RID: 2194
         public static md5.FuncF<3> __F_4;
     }
 }

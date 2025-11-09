@@ -6,22 +6,18 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200006E RID: 110
     internal class Bouncer : CTRGameObject
     {
-        // Token: 0x0600043F RID: 1087 RVA: 0x00016883 File Offset: 0x00014A83
         private static Bouncer Bouncer_create(Texture2D t)
         {
             return (Bouncer)new Bouncer().initWithTexture(t);
         }
 
-        // Token: 0x06000440 RID: 1088 RVA: 0x00016895 File Offset: 0x00014A95
         private static Bouncer Bouncer_createWithResID(int r)
         {
             return Bouncer.Bouncer_create(Application.getTexture(r));
         }
 
-        // Token: 0x06000441 RID: 1089 RVA: 0x000168A2 File Offset: 0x00014AA2
         private static Bouncer Bouncer_createWithResIDQuad(int r, int q)
         {
             Bouncer bouncer = Bouncer.Bouncer_create(Application.getTexture(r));
@@ -29,7 +25,6 @@ namespace CutTheRope.game
             return bouncer;
         }
 
-        // Token: 0x06000442 RID: 1090 RVA: 0x000168B8 File Offset: 0x00014AB8
         public virtual NSObject initWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
             int textureResID = -1;
@@ -57,7 +52,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000443 RID: 1091 RVA: 0x00016934 File Offset: 0x00014B34
         public override void update(float delta)
         {
             base.update(delta);
@@ -67,7 +61,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000444 RID: 1092 RVA: 0x0001694C File Offset: 0x00014B4C
         public virtual void updateRotation()
         {
             this.t1.x = this.x - (float)(this.width / 2);
@@ -83,25 +76,18 @@ namespace CutTheRope.game
             this.b2 = MathHelper.vectRotateAround(this.b2, (double)this.angle, this.x, this.y);
         }
 
-        // Token: 0x040002CF RID: 719
         private const float BOUNCER_HEIGHT = 10f;
 
-        // Token: 0x040002D0 RID: 720
         public float angle;
 
-        // Token: 0x040002D1 RID: 721
         public Vector t1;
 
-        // Token: 0x040002D2 RID: 722
         public Vector t2;
 
-        // Token: 0x040002D3 RID: 723
         public Vector b1;
 
-        // Token: 0x040002D4 RID: 724
         public Vector b2;
 
-        // Token: 0x040002D5 RID: 725
         public bool skip;
     }
 }

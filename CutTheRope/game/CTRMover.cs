@@ -7,10 +7,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000076 RID: 118
     internal class CTRMover : Mover
     {
-        // Token: 0x06000483 RID: 1155 RVA: 0x0001A1B0 File Offset: 0x000183B0
         public override void setPathFromStringandStart(NSString p, Vector s)
         {
             if (p.characterAtIndex(0) == 'R')

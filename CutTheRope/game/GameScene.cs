@@ -13,10 +13,8 @@ using System.Linq;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200007D RID: 125
     internal class GameScene : BaseElement, TimelineDelegate, ButtonDelegate
     {
-        // Token: 0x060004FE RID: 1278 RVA: 0x0001CAE0 File Offset: 0x0001ACE0
         private static void drawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
         {
             Vector vector5 = CutTheRope.iframework.helpers.MathHelper.vectNormalize(CutTheRope.iframework.helpers.MathHelper.vectSub(end, start));
@@ -31,7 +29,6 @@ namespace CutTheRope.game
             re = vector3;
         }
 
-        // Token: 0x060004FF RID: 1279 RVA: 0x0001CBD0 File Offset: 0x0001ADD0
         private static float maxOf4(float v1, float v2, float v3, float v4)
         {
             if (v1 >= v2 && v1 >= v3 && v1 >= v4)
@@ -53,7 +50,6 @@ namespace CutTheRope.game
             return -1f;
         }
 
-        // Token: 0x06000500 RID: 1280 RVA: 0x0001CC0F File Offset: 0x0001AE0F
         private static float minOf4(float v1, float v2, float v3, float v4)
         {
             if (v1 <= v2 && v1 <= v3 && v1 <= v4)
@@ -75,7 +71,6 @@ namespace CutTheRope.game
             return -1f;
         }
 
-        // Token: 0x06000501 RID: 1281 RVA: 0x0001CC50 File Offset: 0x0001AE50
         public static ToggleButton createGravityButtonWithDelegate(ButtonDelegate d)
         {
             Image u = Image.Image_createWithResIDQuad(78, 56);
@@ -87,13 +82,11 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        // Token: 0x06000502 RID: 1282 RVA: 0x0001CC9B File Offset: 0x0001AE9B
         public virtual bool pointOutOfScreen(ConstraintedPoint p)
         {
             return p.pos.y > this.mapHeight + 400f || p.pos.y < -400f;
         }
 
-        // Token: 0x06000503 RID: 1283 RVA: 0x0001CCCC File Offset: 0x0001AECC
         public override NSObject init()
         {
             if (base.init() != null)
@@ -141,7 +134,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000504 RID: 1284 RVA: 0x0001CF23 File Offset: 0x0001B123
         public virtual void xmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
         {
             ((CTRRootController)Application.sharedRootController()).setMap(rootNode);
@@ -153,7 +145,6 @@ namespace CutTheRope.game
             this.restart();
         }
 
-        // Token: 0x06000505 RID: 1285 RVA: 0x0001CF4C File Offset: 0x0001B14C
         public virtual void reload()
         {
             this.dd.cancelAllDispatches();
@@ -168,7 +159,6 @@ namespace CutTheRope.game
             this.xmlLoaderFinishedWithfromwithSuccess(XMLNode.parseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSObject.NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
         }
 
-        // Token: 0x06000506 RID: 1286 RVA: 0x0001CFE8 File Offset: 0x0001B1E8
         public virtual void loadNextMap()
         {
             this.dd.cancelAllDispatches();
@@ -190,14 +180,12 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000507 RID: 1287 RVA: 0x0001D0BD File Offset: 0x0001B2BD
         public virtual void restart()
         {
             this.hide();
             this.show();
         }
 
-        // Token: 0x06000508 RID: 1288 RVA: 0x0001D0CC File Offset: 0x0001B2CC
         public virtual void createEarthImageWithOffsetXY(float xs, float ys)
         {
             Image image = Image.Image_createWithResIDQuad(78, 58);
@@ -222,7 +210,6 @@ namespace CutTheRope.game
             this.earthAnims.addObject(image);
         }
 
-        // Token: 0x06000509 RID: 1289 RVA: 0x0001D1EC File Offset: 0x0001B3EC
         public virtual bool shouldSkipTutorialElement(XMLNode c)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
@@ -246,13 +233,11 @@ namespace CutTheRope.game
             return false;
         }
 
-        // Token: 0x0600050A RID: 1290 RVA: 0x0001D27E File Offset: 0x0001B47E
         public virtual void showGreeting()
         {
             this.target.playAnimationtimeline(101, 10);
         }
 
-        // Token: 0x0600050B RID: 1291 RVA: 0x0001D290 File Offset: 0x0001B490
         public override void show()
         {
             CTRSoundMgr.EnableLoopedSounds(true);
@@ -876,7 +861,6 @@ namespace CutTheRope.game
             CTRRootController.logEvent("IG_SHOWN");
         }
 
-        // Token: 0x0600050C RID: 1292 RVA: 0x0001F948 File Offset: 0x0001DB48
         public virtual void startCamera()
         {
             if (this.mapWidth > FrameworkTypes.SCREEN_WIDTH || this.mapHeight > FrameworkTypes.SCREEN_HEIGHT)
@@ -924,13 +908,11 @@ namespace CutTheRope.game
             this.camera.moveToXYImmediate(0f, 0f, true);
         }
 
-        // Token: 0x0600050D RID: 1293 RVA: 0x0001FB01 File Offset: 0x0001DD01
         public virtual void doCandyBlink()
         {
             this.candyBlink.playTimeline(0);
         }
 
-        // Token: 0x0600050E RID: 1294 RVA: 0x0001FB10 File Offset: 0x0001DD10
         public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
             if (this.rotatedCircles.getObjectIndex(t.element) != -1 || i != 1)
@@ -959,7 +941,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600050F RID: 1295 RVA: 0x0001FBB4 File Offset: 0x0001DDB4
         public virtual void timelineFinished(Timeline t)
         {
             if (this.rotatedCircles.getObjectIndex(t.element) != -1)
@@ -972,7 +953,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000510 RID: 1296 RVA: 0x0001FC2C File Offset: 0x0001DE2C
         public override void hide()
         {
             if (this.gravityButton != null)
@@ -1015,7 +995,6 @@ namespace CutTheRope.game
             this.starR = null;
         }
 
-        // Token: 0x06000511 RID: 1297 RVA: 0x0001FD68 File Offset: 0x0001DF68
         public override void update(float delta)
         {
             delta = 0.016f;
@@ -1960,7 +1939,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000512 RID: 1298 RVA: 0x00022DD0 File Offset: 0x00020FD0
         public virtual void teleport()
         {
             if (this.targetSock != null)
@@ -1981,14 +1959,12 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000513 RID: 1299 RVA: 0x00022F4C File Offset: 0x0002114C
         public virtual void animateLevelRestart()
         {
             this.restartState = 0;
             this.dimTime = 0.15f;
         }
 
-        // Token: 0x06000514 RID: 1300 RVA: 0x00022F60 File Offset: 0x00021160
         public virtual void releaseAllRopes(bool left)
         {
             int num = this.bungees.count();
@@ -2014,7 +1990,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000515 RID: 1301 RVA: 0x00023014 File Offset: 0x00021214
         public virtual void calculateScore()
         {
             this.timeBonus = (int)CutTheRope.iframework.helpers.MathHelper.MAX(0f, 30f - this.time) * 100;
@@ -2024,7 +1999,6 @@ namespace CutTheRope.game
             this.score = (int)CutTheRope.iframework.helpers.MathHelper.ceil((double)(this.timeBonus + this.starBonus));
         }
 
-        // Token: 0x06000516 RID: 1302 RVA: 0x0002308C File Offset: 0x0002128C
         public virtual void gameWon()
         {
             this.dd.cancelAllDispatches();
@@ -2054,7 +2028,6 @@ namespace CutTheRope.game
             this.releaseAllRopes(false);
         }
 
-        // Token: 0x06000517 RID: 1303 RVA: 0x0002326C File Offset: 0x0002146C
         public virtual void gameLost()
         {
             this.dd.cancelAllDispatches();
@@ -2064,7 +2037,6 @@ namespace CutTheRope.game
             this.gameSceneDelegate.gameLost();
         }
 
-        // Token: 0x06000518 RID: 1304 RVA: 0x000232C8 File Offset: 0x000214C8
         public override void draw()
         {
             OpenGL.glClear(0);
@@ -2222,7 +2194,6 @@ namespace CutTheRope.game
             base.postDraw();
         }
 
-        // Token: 0x06000519 RID: 1305 RVA: 0x00023AF4 File Offset: 0x00021CF4
         public virtual void drawCuts()
         {
             for (int i = 0; i < 5; i++)
@@ -2326,7 +2297,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600051A RID: 1306 RVA: 0x00023E5C File Offset: 0x0002205C
         public virtual void handlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
             float num = 624f;
@@ -2352,7 +2322,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600051B RID: 1307 RVA: 0x00024040 File Offset: 0x00022240
         public virtual void handleBouncePtDelta(Bouncer b, ConstraintedPoint s, float delta)
         {
             if (!b.skip)
@@ -2373,7 +2342,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600051C RID: 1308 RVA: 0x000241A4 File Offset: 0x000223A4
         public virtual void operatePump(Pump p)
         {
             p.playTimeline(0);
@@ -2404,7 +2372,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600051D RID: 1309 RVA: 0x000242C8 File Offset: 0x000224C8
         public virtual int cutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int num = 0;
@@ -2453,7 +2420,6 @@ namespace CutTheRope.game
             return num;
         }
 
-        // Token: 0x0600051E RID: 1310 RVA: 0x00024580 File Offset: 0x00022780
         public virtual void spiderBusted(Grab g)
         {
             int num = Preferences._getIntForKey("PREFS_SPIDERS_BUSTED") + 1;
@@ -2494,7 +2460,6 @@ namespace CutTheRope.game
             this.aniPool.addChild(image);
         }
 
-        // Token: 0x0600051F RID: 1311 RVA: 0x000247DC File Offset: 0x000229DC
         public virtual void spiderWon(Grab sg)
         {
             CTRSoundMgr._playSound(35);
@@ -2551,7 +2516,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000520 RID: 1312 RVA: 0x00024AD8 File Offset: 0x00022CD8
         public virtual void popCandyBubble(bool left)
         {
             if (this.twoParts == 2)
@@ -2573,7 +2537,6 @@ namespace CutTheRope.game
             this.popBubbleAtXY(this.candyR.x, this.candyR.y);
         }
 
-        // Token: 0x06000521 RID: 1313 RVA: 0x00024B80 File Offset: 0x00022D80
         public virtual void popBubbleAtXY(float bx, float by)
         {
             CTRSoundMgr._playSound(12);
@@ -2588,7 +2551,6 @@ namespace CutTheRope.game
             this.aniPool.addChild(animation);
         }
 
-        // Token: 0x06000522 RID: 1314 RVA: 0x00024BF4 File Offset: 0x00022DF4
         public virtual bool handleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
         {
             if (CutTheRope.iframework.helpers.MathHelper.pointInRect(tx + this.camera.pos.x, ty + this.camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
@@ -2609,7 +2571,6 @@ namespace CutTheRope.game
             return false;
         }
 
-        // Token: 0x06000523 RID: 1315 RVA: 0x00024CB8 File Offset: 0x00022EB8
         public virtual void resetBungeeHighlight()
         {
             for (int i = 0; i < this.bungees.count(); i++)
@@ -2622,7 +2583,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000524 RID: 1316 RVA: 0x00024D08 File Offset: 0x00022F08
         public virtual Bungee getNearestBungeeSegmentByBeziersPointsatXYgrab(ref Vector s, float tx, float ty, ref Grab grab)
         {
             float num = 60f;
@@ -2652,7 +2612,6 @@ namespace CutTheRope.game
             return result;
         }
 
-        // Token: 0x06000525 RID: 1317 RVA: 0x00024DC4 File Offset: 0x00022FC4
         public virtual Bungee getNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
         {
             float num4 = 2.1474836E+09f;
@@ -2678,7 +2637,6 @@ namespace CutTheRope.game
             return result;
         }
 
-        // Token: 0x06000526 RID: 1318 RVA: 0x00024E98 File Offset: 0x00023098
         public virtual bool touchDownXYIndex(float tx, float ty, int ti)
         {
             if (this.ignoreTouches)
@@ -2823,7 +2781,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x06000527 RID: 1319 RVA: 0x000255C4 File Offset: 0x000237C4
         public virtual bool touchUpXYIndex(float tx, float ty, int ti)
         {
             if (this.ignoreTouches)
@@ -2882,7 +2839,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x06000528 RID: 1320 RVA: 0x000257E4 File Offset: 0x000239E4
         public virtual bool touchMoveXYIndex(float tx, float ty, int ti)
         {
             if (this.ignoreTouches)
@@ -3100,7 +3056,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x06000529 RID: 1321 RVA: 0x00026234 File Offset: 0x00024434
         public virtual bool touchDraggedXYIndex(float tx, float ty, int index)
         {
             if (index > 5)
@@ -3111,7 +3066,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x0600052A RID: 1322 RVA: 0x0002624C File Offset: 0x0002444C
         public virtual void onButtonPressed(int n)
         {
             if ((double)MaterialPoint.globalGravity.y == 784.0)
@@ -3144,7 +3098,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600052B RID: 1323 RVA: 0x00026314 File Offset: 0x00024514
         public virtual void rotateAllSpikesWithID(int sid)
         {
             foreach (object obj in this.spikes)
@@ -3157,7 +3110,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600052C RID: 1324 RVA: 0x00026378 File Offset: 0x00024578
         public override void dealloc()
         {
             for (int i = 0; i < 5; i++)
@@ -3170,7 +3122,6 @@ namespace CutTheRope.game
             base.dealloc();
         }
 
-        // Token: 0x0600052D RID: 1325 RVA: 0x000263C8 File Offset: 0x000245C8
         public virtual void fullscreenToggled(bool isFullscreen)
         {
             BaseElement childWithName = this.staticAniPool.getChildWithName("levelLabel");
@@ -3191,13 +3142,11 @@ namespace CutTheRope.game
             this.back.scaleX = 1.25f;
         }
 
-        // Token: 0x0600052E RID: 1326 RVA: 0x00026475 File Offset: 0x00024675
         private void selector_gameLost(NSObject param)
         {
             this.gameLost();
         }
 
-        // Token: 0x0600052F RID: 1327 RVA: 0x0002647D File Offset: 0x0002467D
         private void selector_gameWon(NSObject param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
@@ -3207,469 +3156,320 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000530 RID: 1328 RVA: 0x00026498 File Offset: 0x00024698
         private void selector_animateLevelRestart(NSObject param)
         {
             this.animateLevelRestart();
         }
 
-        // Token: 0x06000531 RID: 1329 RVA: 0x000264A0 File Offset: 0x000246A0
         private void selector_showGreeting(NSObject param)
         {
             this.showGreeting();
         }
 
-        // Token: 0x06000532 RID: 1330 RVA: 0x000264A8 File Offset: 0x000246A8
         private void selector_doCandyBlink(NSObject param)
         {
             this.doCandyBlink();
         }
 
-        // Token: 0x06000533 RID: 1331 RVA: 0x000264B0 File Offset: 0x000246B0
         private void selector_teleport(NSObject param)
         {
             this.teleport();
         }
 
-        // Token: 0x06000534 RID: 1332 RVA: 0x000264B8 File Offset: 0x000246B8
         public static float FBOUND_PI(float a)
         {
             return (float)(((double)a > 3.141592653589793) ? ((double)a - 6.283185307179586) : (((double)a < -3.141592653589793) ? ((double)a + 6.283185307179586) : ((double)a)));
         }
 
-        // Token: 0x04000399 RID: 921
         public const int MAX_TOUCHES = 5;
 
-        // Token: 0x0400039A RID: 922
         public const float DIM_TIMEOUT = 0.15f;
 
-        // Token: 0x0400039B RID: 923
         public const int RESTART_STATE_FADE_IN = 0;
 
-        // Token: 0x0400039C RID: 924
         public const int RESTART_STATE_FADE_OUT = 1;
 
-        // Token: 0x0400039D RID: 925
         public const int S_MOVE_DOWN = 0;
 
-        // Token: 0x0400039E RID: 926
         public const int S_WAIT = 1;
 
-        // Token: 0x0400039F RID: 927
         public const int S_MOVE_UP = 2;
 
-        // Token: 0x040003A0 RID: 928
         public const int CAMERA_MOVE_TO_CANDY_PART = 0;
 
-        // Token: 0x040003A1 RID: 929
         public const int CAMERA_MOVE_TO_CANDY = 1;
 
-        // Token: 0x040003A2 RID: 930
         public const int BUTTON_GRAVITY = 0;
 
-        // Token: 0x040003A3 RID: 931
         public const int PARTS_SEPARATE = 0;
 
-        // Token: 0x040003A4 RID: 932
         public const int PARTS_DIST = 1;
 
-        // Token: 0x040003A5 RID: 933
         public const int PARTS_NONE = 2;
 
-        // Token: 0x040003A6 RID: 934
         public const float SCOMBO_TIMEOUT = 0.2f;
 
-        // Token: 0x040003A7 RID: 935
         public const int SCUT_SCORE = 10;
 
-        // Token: 0x040003A8 RID: 936
         public const int MAX_LOST_CANDIES = 3;
 
-        // Token: 0x040003A9 RID: 937
         public const float ROPE_CUT_AT_ONCE_TIMEOUT = 0.1f;
 
-        // Token: 0x040003AA RID: 938
         public const int STAR_RADIUS = 42;
 
-        // Token: 0x040003AB RID: 939
         public const float MOUTH_OPEN_RADIUS = 200f;
 
-        // Token: 0x040003AC RID: 940
         public const int BLINK_SKIP = 3;
 
-        // Token: 0x040003AD RID: 941
         public const float MOUTH_OPEN_TIME = 1f;
 
-        // Token: 0x040003AE RID: 942
         public const float PUMP_TIMEOUT = 0.05f;
 
-        // Token: 0x040003AF RID: 943
         public const int CAMERA_SPEED = 14;
 
-        // Token: 0x040003B0 RID: 944
         public const float SOCK_SPEED_K = 0.9f;
 
-        // Token: 0x040003B1 RID: 945
         public const int SOCK_COLLISION_Y_OFFSET = 85;
 
-        // Token: 0x040003B2 RID: 946
         public const int BUBBLE_RADIUS = 60;
 
-        // Token: 0x040003B3 RID: 947
         public const int WHEEL_RADIUS = 110;
 
-        // Token: 0x040003B4 RID: 948
         public const int GRAB_MOVE_RADIUS = 65;
 
-        // Token: 0x040003B5 RID: 949
         public const int RC_CONTROLLER_RADIUS = 90;
 
-        // Token: 0x040003B6 RID: 950
         public const int CANDY_BLINK_INITIAL = 0;
 
-        // Token: 0x040003B7 RID: 951
         public const int CANDY_BLINK_STAR = 1;
 
-        // Token: 0x040003B8 RID: 952
         public const int TUTORIAL_SHOW_ANIM = 0;
 
-        // Token: 0x040003B9 RID: 953
         public const int TUTORIAL_HIDE_ANIM = 1;
 
-        // Token: 0x040003BA RID: 954
         public const int EARTH_NORMAL_ANIM = 0;
 
-        // Token: 0x040003BB RID: 955
         public const int EARTH_UPSIDEDOWN_ANIM = 1;
 
-        // Token: 0x040003BC RID: 956
         private const int CHAR_ANIMATION_IDLE = 0;
 
-        // Token: 0x040003BD RID: 957
         private const int CHAR_ANIMATION_IDLE2 = 1;
 
-        // Token: 0x040003BE RID: 958
         private const int CHAR_ANIMATION_IDLE3 = 2;
 
-        // Token: 0x040003BF RID: 959
         private const int CHAR_ANIMATION_EXCITED = 3;
 
-        // Token: 0x040003C0 RID: 960
         private const int CHAR_ANIMATION_PUZZLED = 4;
 
-        // Token: 0x040003C1 RID: 961
         private const int CHAR_ANIMATION_FAIL = 5;
 
-        // Token: 0x040003C2 RID: 962
         private const int CHAR_ANIMATION_WIN = 6;
 
-        // Token: 0x040003C3 RID: 963
         private const int CHAR_ANIMATION_MOUTH_OPEN = 7;
 
-        // Token: 0x040003C4 RID: 964
         private const int CHAR_ANIMATION_MOUTH_CLOSE = 8;
 
-        // Token: 0x040003C5 RID: 965
         private const int CHAR_ANIMATION_CHEW = 9;
 
-        // Token: 0x040003C6 RID: 966
         private const int CHAR_ANIMATION_GREETING = 10;
 
-        // Token: 0x040003C7 RID: 967
         private DelayedDispatcher dd;
 
-        // Token: 0x040003C8 RID: 968
         public GameSceneDelegate gameSceneDelegate;
 
-        // Token: 0x040003C9 RID: 969
         private AnimationsPool aniPool;
 
-        // Token: 0x040003CA RID: 970
         private AnimationsPool staticAniPool;
 
-        // Token: 0x040003CB RID: 971
         private PollenDrawer pollenDrawer;
 
-        // Token: 0x040003CC RID: 972
         private TileMap back;
 
-        // Token: 0x040003CD RID: 973
         private CharAnimations target;
 
-        // Token: 0x040003CE RID: 974
         private Image support;
 
-        // Token: 0x040003CF RID: 975
         private GameObject candy;
 
-        // Token: 0x040003D0 RID: 976
         private Image candyMain;
 
-        // Token: 0x040003D1 RID: 977
         private Image candyTop;
 
-        // Token: 0x040003D2 RID: 978
         private Animation candyBlink;
 
-        // Token: 0x040003D3 RID: 979
         private Animation candyBubbleAnimation;
 
-        // Token: 0x040003D4 RID: 980
         private Animation candyBubbleAnimationL;
 
-        // Token: 0x040003D5 RID: 981
         private Animation candyBubbleAnimationR;
 
-        // Token: 0x040003D6 RID: 982
         private ConstraintedPoint star;
 
-        // Token: 0x040003D7 RID: 983
         private DynamicArray bungees;
 
-        // Token: 0x040003D8 RID: 984
         private DynamicArray razors;
 
-        // Token: 0x040003D9 RID: 985
         private DynamicArray spikes;
 
-        // Token: 0x040003DA RID: 986
         private DynamicArray stars;
 
-        // Token: 0x040003DB RID: 987
         private DynamicArray bubbles;
 
-        // Token: 0x040003DC RID: 988
         private DynamicArray pumps;
 
-        // Token: 0x040003DD RID: 989
         private DynamicArray socks;
 
-        // Token: 0x040003DE RID: 990
         private DynamicArray bouncers;
 
-        // Token: 0x040003DF RID: 991
         private DynamicArray rotatedCircles;
 
-        // Token: 0x040003E0 RID: 992
         private DynamicArray tutorialImages;
 
-        // Token: 0x040003E1 RID: 993
         private DynamicArray tutorials;
 
-        // Token: 0x040003E2 RID: 994
         private GameObject candyL;
 
-        // Token: 0x040003E3 RID: 995
         private GameObject candyR;
 
-        // Token: 0x040003E4 RID: 996
         private ConstraintedPoint starL;
 
-        // Token: 0x040003E5 RID: 997
         private ConstraintedPoint starR;
 
-        // Token: 0x040003E6 RID: 998
         private Animation blink;
 
-        // Token: 0x040003E7 RID: 999
         private bool[] dragging = new bool[5];
 
-        // Token: 0x040003E8 RID: 1000
         private Vector[] startPos = new Vector[5];
 
-        // Token: 0x040003E9 RID: 1001
         private Vector[] prevStartPos = new Vector[5];
 
-        // Token: 0x040003EA RID: 1002
         private float ropePhysicsSpeed;
 
-        // Token: 0x040003EB RID: 1003
         private GameObject candyBubble;
 
-        // Token: 0x040003EC RID: 1004
         private GameObject candyBubbleL;
 
-        // Token: 0x040003ED RID: 1005
         private GameObject candyBubbleR;
 
-        // Token: 0x040003EE RID: 1006
         private Animation[] hudStar = new Animation[3];
 
-        // Token: 0x040003EF RID: 1007
         private Camera2D camera;
 
-        // Token: 0x040003F0 RID: 1008
         private float mapWidth;
 
-        // Token: 0x040003F1 RID: 1009
         private float mapHeight;
 
-        // Token: 0x040003F2 RID: 1010
         private bool mouthOpen;
 
-        // Token: 0x040003F3 RID: 1011
         private bool noCandy;
 
-        // Token: 0x040003F4 RID: 1012
         private int blinkTimer;
 
-        // Token: 0x040003F5 RID: 1013
         private int idlesTimer;
 
-        // Token: 0x040003F6 RID: 1014
         private float mouthCloseTimer;
 
-        // Token: 0x040003F7 RID: 1015
         private float lastCandyRotateDelta;
 
-        // Token: 0x040003F8 RID: 1016
         private float lastCandyRotateDeltaL;
 
-        // Token: 0x040003F9 RID: 1017
         private float lastCandyRotateDeltaR;
 
-        // Token: 0x040003FA RID: 1018
         private bool spiderTookCandy;
 
-        // Token: 0x040003FB RID: 1019
         private int special;
 
-        // Token: 0x040003FC RID: 1020
         private bool fastenCamera;
 
-        // Token: 0x040003FD RID: 1021
         private float savedSockSpeed;
 
-        // Token: 0x040003FE RID: 1022
         private Sock targetSock;
 
-        // Token: 0x040003FF RID: 1023
         private int ropesCutAtOnce;
 
-        // Token: 0x04000400 RID: 1024
         private float ropeAtOnceTimer;
 
-        // Token: 0x04000401 RID: 1025
         private bool clickToCut;
 
-        // Token: 0x04000402 RID: 1026
         public int starsCollected;
 
-        // Token: 0x04000403 RID: 1027
         public int starBonus;
 
-        // Token: 0x04000404 RID: 1028
         public int timeBonus;
 
-        // Token: 0x04000405 RID: 1029
         public int score;
 
-        // Token: 0x04000406 RID: 1030
         public float time;
 
-        // Token: 0x04000407 RID: 1031
         public float initialCameraToStarDistance;
 
-        // Token: 0x04000408 RID: 1032
         public float dimTime;
 
-        // Token: 0x04000409 RID: 1033
         public int restartState;
 
-        // Token: 0x0400040A RID: 1034
         public bool animateRestartDim;
 
-        // Token: 0x0400040B RID: 1035
         public bool freezeCamera;
 
-        // Token: 0x0400040C RID: 1036
         public int cameraMoveMode;
 
-        // Token: 0x0400040D RID: 1037
         public bool ignoreTouches;
 
-        // Token: 0x0400040E RID: 1038
         public bool nightLevel;
 
-        // Token: 0x0400040F RID: 1039
         public bool gravityNormal;
 
-        // Token: 0x04000410 RID: 1040
         public ToggleButton gravityButton;
 
-        // Token: 0x04000411 RID: 1041
         public int gravityTouchDown;
 
-        // Token: 0x04000412 RID: 1042
         public int twoParts;
 
-        // Token: 0x04000413 RID: 1043
         public bool noCandyL;
 
-        // Token: 0x04000414 RID: 1044
         public bool noCandyR;
 
-        // Token: 0x04000415 RID: 1045
         public float partsDist;
 
-        // Token: 0x04000416 RID: 1046
         public DynamicArray earthAnims;
 
-        // Token: 0x04000417 RID: 1047
         public int tummyTeasers;
 
-        // Token: 0x04000418 RID: 1048
         public Vector slastTouch;
 
-        // Token: 0x04000419 RID: 1049
         public DynamicArray[] fingerCuts = new DynamicArray[5];
 
-        // Token: 0x020000C4 RID: 196
         private class FingerCut : NSObject
         {
-            // Token: 0x040008EC RID: 2284
             public Vector start;
 
-            // Token: 0x040008ED RID: 2285
             public Vector end;
 
-            // Token: 0x040008EE RID: 2286
             public float startSize;
 
-            // Token: 0x040008EF RID: 2287
             public float endSize;
 
-            // Token: 0x040008F0 RID: 2288
             public RGBAColor c;
         }
 
-        // Token: 0x020000C5 RID: 197
         private class SCandy : ConstraintedPoint
         {
-            // Token: 0x040008F1 RID: 2289
             public bool good;
 
-            // Token: 0x040008F2 RID: 2290
             public float speed;
 
-            // Token: 0x040008F3 RID: 2291
             public float angle;
 
-            // Token: 0x040008F4 RID: 2292
             public float lastAngleChange;
         }
 
-        // Token: 0x020000C6 RID: 198
         private class TutorialText : Text
         {
-            // Token: 0x040008F5 RID: 2293
             public int special;
         }
 
-        // Token: 0x020000C7 RID: 199
         private class GameObjectSpecial : CTRGameObject
         {
-            // Token: 0x0600067E RID: 1662 RVA: 0x00033C5D File Offset: 0x00031E5D
             private static GameScene.GameObjectSpecial GameObjectSpecial_create(Texture2D t)
             {
                 GameScene.GameObjectSpecial gameObjectSpecial = new();
@@ -3677,7 +3477,6 @@ namespace CutTheRope.game
                 return gameObjectSpecial;
             }
 
-            // Token: 0x0600067F RID: 1663 RVA: 0x00033C6C File Offset: 0x00031E6C
             public static GameScene.GameObjectSpecial GameObjectSpecial_createWithResIDQuad(int r, int q)
             {
                 GameScene.GameObjectSpecial gameObjectSpecial = GameScene.GameObjectSpecial.GameObjectSpecial_create(Application.getTexture(r));
@@ -3685,7 +3484,6 @@ namespace CutTheRope.game
                 return gameObjectSpecial;
             }
 
-            // Token: 0x040008F6 RID: 2294
             public int special;
         }
     }

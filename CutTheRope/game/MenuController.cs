@@ -14,10 +14,8 @@ using System.Reflection;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000087 RID: 135
     internal class MenuController : ViewController, ButtonDelegate, MovieMgrDelegate, ScrollableContainerProtocol, TimelineDelegate
     {
-        // Token: 0x06000567 RID: 1383 RVA: 0x0002A6B4 File Offset: 0x000288B4
         public static Button createButtonWithTextIDDelegate(NSString str, int bid, ButtonDelegate d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
@@ -37,7 +35,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x06000568 RID: 1384 RVA: 0x0002A778 File Offset: 0x00028978
         public static Button createShortButtonWithTextIDDelegate(NSString str, int bid, ButtonDelegate d)
         {
             Image image = Image.Image_createWithResIDQuad(61, 1);
@@ -57,7 +54,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x06000569 RID: 1385 RVA: 0x0002A840 File Offset: 0x00028A40
         public static ToggleButton createToggleButtonWithText1Text2IDDelegate(NSString str1, NSString str2, int bid, ButtonDelegate d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
@@ -87,7 +83,6 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        // Token: 0x0600056A RID: 1386 RVA: 0x0002A988 File Offset: 0x00028B88
         public static Button createBackButtonWithDelegateID(ButtonDelegate d, int bid)
         {
             Button button = MenuController.createButtonWithImageQuad1Quad2IDDelegate(54, 0, 1, bid, d);
@@ -95,7 +90,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x0600056B RID: 1387 RVA: 0x0002A9B4 File Offset: 0x00028BB4
         public static Button createButtonWithImageIDDelegate(int resID, int bid, ButtonDelegate d)
         {
             Texture2D texture = Application.getTexture(resID);
@@ -109,7 +103,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x0600056C RID: 1388 RVA: 0x0002AA28 File Offset: 0x00028C28
         public static Button createButton2WithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, ButtonDelegate d)
         {
             Image up = Image.Image_createWithResIDQuad(res, q1);
@@ -122,7 +115,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x0600056D RID: 1389 RVA: 0x0002AA8C File Offset: 0x00028C8C
         public static Button createButtonWithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, ButtonDelegate d)
         {
             Image image = Image.Image_createWithResIDQuad(res, q1);
@@ -136,7 +128,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x0600056E RID: 1390 RVA: 0x0002AB20 File Offset: 0x00028D20
         public static BaseElement createBackgroundWithLogowithShadow(bool l, bool s)
         {
             BaseElement baseElement = (BaseElement)new BaseElement().init();
@@ -178,13 +169,11 @@ namespace CutTheRope.game
             return baseElement;
         }
 
-        // Token: 0x0600056F RID: 1391 RVA: 0x0002ACD5 File Offset: 0x00028ED5
         public static BaseElement createBackgroundWithLogo(bool l)
         {
             return MenuController.createBackgroundWithLogowithShadow(l, true);
         }
 
-        // Token: 0x06000570 RID: 1392 RVA: 0x0002ACE0 File Offset: 0x00028EE0
         public static Image createAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, Vector offset)
         {
             int num = ((p > false) ? 1 : 0);
@@ -206,7 +195,6 @@ namespace CutTheRope.game
             return image;
         }
 
-        // Token: 0x06000571 RID: 1393 RVA: 0x0002AD9C File Offset: 0x00028F9C
         public static ToggleButton createAudioButtonWithQuadDelegateIDiconOffset(int q, ButtonDelegate delegateValue, int bid, Vector offset)
         {
             Image u = MenuController.createAudioElementForQuadwithCrosspressediconOffset(q, false, false, offset);
@@ -218,7 +206,6 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        // Token: 0x06000572 RID: 1394 RVA: 0x0002ADE8 File Offset: 0x00028FE8
         public static Button createLanguageButtonWithIDDelegate(int bid, ButtonDelegate d)
         {
             NSString @string = Application.sharedAppSettings().getString(8);
@@ -261,7 +248,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x06000573 RID: 1395 RVA: 0x0002AF9E File Offset: 0x0002919E
         public static BaseElement createElementWithResIdquad(int resId, int quad)
         {
             if (resId != -1 && quad != -1)
@@ -271,7 +257,6 @@ namespace CutTheRope.game
             return (BaseElement)new BaseElement().init();
         }
 
-        // Token: 0x06000574 RID: 1396 RVA: 0x0002AFC0 File Offset: 0x000291C0
         public static ToggleButton createToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, ButtonDelegate delegateValue)
         {
             BaseElement baseElement = MenuController.createElementWithResIdquad(res, quad);
@@ -290,7 +275,6 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        // Token: 0x06000575 RID: 1397 RVA: 0x0002B0A4 File Offset: 0x000292A4
         public static BaseElement createControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, NSString str, int bId, ButtonDelegate delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(8, q);
@@ -320,7 +304,6 @@ namespace CutTheRope.game
             return image;
         }
 
-        // Token: 0x06000576 RID: 1398 RVA: 0x0002B18C File Offset: 0x0002938C
         public static Image createBlankScoresButtonWithIconpressed(int quad, bool pressed)
         {
             Image image3 = Image.Image_createWithResIDQuad(59, (pressed > false) ? 1 : 0);
@@ -331,7 +314,6 @@ namespace CutTheRope.game
             return image3;
         }
 
-        // Token: 0x06000577 RID: 1399 RVA: 0x0002B1C8 File Offset: 0x000293C8
         public static Button createScoresButtonWithIconbuttonIDdelegate(int quad, int bId, ButtonDelegate delegateValue)
         {
             Image up = MenuController.createBlankScoresButtonWithIconpressed(quad, false);
@@ -342,7 +324,6 @@ namespace CutTheRope.game
             return button;
         }
 
-        // Token: 0x06000578 RID: 1400 RVA: 0x0002B204 File Offset: 0x00029404
         public virtual void createMainMenu()
         {
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
@@ -397,7 +378,6 @@ namespace CutTheRope.game
             this.addViewwithID(menuView, 0);
         }
 
-        // Token: 0x06000579 RID: 1401 RVA: 0x0002B4A0 File Offset: 0x000296A0
         public virtual void createOptions()
         {
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
@@ -461,7 +441,6 @@ namespace CutTheRope.game
             this.addViewwithID(menuView, 1);
         }
 
-        // Token: 0x0600057A RID: 1402 RVA: 0x0002B7A0 File Offset: 0x000299A0
         public virtual void createReset()
         {
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
@@ -488,7 +467,6 @@ namespace CutTheRope.game
             this.addViewwithID(menuView, 4);
         }
 
-        // Token: 0x0600057B RID: 1403 RVA: 0x0002B8E8 File Offset: 0x00029AE8
         public virtual void createMovieView()
         {
             MovieView movieView = (MovieView)new MovieView().initFullscreen();
@@ -500,7 +478,6 @@ namespace CutTheRope.game
             this.addViewwithID(movieView, 7);
         }
 
-        // Token: 0x0600057C RID: 1404 RVA: 0x0002B948 File Offset: 0x00029B48
         public virtual void createAbout()
         {
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
@@ -553,7 +530,6 @@ namespace CutTheRope.game
             this.addViewwithID(menuView, 3);
         }
 
-        // Token: 0x0600057D RID: 1405 RVA: 0x0002BB68 File Offset: 0x00029D68
         public virtual HBox createTextWithStar(NSString t)
         {
             HBox hbox = new HBox().initWithOffsetAlignHeight(0.0, 16, (double)FrameworkTypes.RTD(50.0));
@@ -568,13 +544,11 @@ namespace CutTheRope.game
             return hbox;
         }
 
-        // Token: 0x0600057E RID: 1406 RVA: 0x0002BC02 File Offset: 0x00029E02
         public virtual float getBoxWidth()
         {
             return Image.getQuadSize(52, 4).x + Image.getQuadOffset(52, 4).x * 2f;
         }
 
-        // Token: 0x0600057F RID: 1407 RVA: 0x0002BC28 File Offset: 0x00029E28
         public virtual float getPackOffset()
         {
             float num = FrameworkTypes.SCREEN_WIDTH + (float)(base.canvas.xOffset * 2);
@@ -586,7 +560,6 @@ namespace CutTheRope.game
             return 0f;
         }
 
-        // Token: 0x06000580 RID: 1408 RVA: 0x0002BC70 File Offset: 0x00029E70
         public virtual BaseElement createPackElementforContainer(int n, ScrollableContainer c)
         {
             MenuController.TouchBaseElement touchBaseElement = (MenuController.TouchBaseElement)new MenuController.TouchBaseElement().init();
@@ -717,7 +690,6 @@ namespace CutTheRope.game
             return touchBaseElement;
         }
 
-        // Token: 0x06000581 RID: 1409 RVA: 0x0002C248 File Offset: 0x0002A448
         public virtual void createPackSelect()
         {
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
@@ -810,17 +782,14 @@ namespace CutTheRope.game
             this.scrollableContainerchangedTargetScrollPoint(this.packContainer, lastPack);
         }
 
-        // Token: 0x06000582 RID: 1410 RVA: 0x0002C7E2 File Offset: 0x0002A9E2
         public virtual void createLeaderboards()
         {
         }
 
-        // Token: 0x06000583 RID: 1411 RVA: 0x0002C7E4 File Offset: 0x0002A9E4
         public virtual void createAchievements()
         {
         }
 
-        // Token: 0x06000584 RID: 1412 RVA: 0x0002C7E8 File Offset: 0x0002A9E8
         public virtual void showCantUnlockPopup()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
@@ -866,7 +835,6 @@ namespace CutTheRope.game
             this.activeView().addChild(popup);
         }
 
-        // Token: 0x06000585 RID: 1413 RVA: 0x0002C9EC File Offset: 0x0002ABEC
         public virtual void showGameFinishedPopup()
         {
             Popup popup = (Popup)new Popup().init();
@@ -896,7 +864,6 @@ namespace CutTheRope.game
             this.activeView().addChild(popup);
         }
 
-        // Token: 0x06000586 RID: 1414 RVA: 0x0002CB28 File Offset: 0x0002AD28
         public virtual void showYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
         {
             Popup popup = (Popup)new Popup().init();
@@ -925,7 +892,6 @@ namespace CutTheRope.game
             this.activeView().addChild(popup);
         }
 
-        // Token: 0x06000587 RID: 1415 RVA: 0x0002CC44 File Offset: 0x0002AE44
         public virtual void scrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
         {
             this.currentPack = i;
@@ -964,7 +930,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000588 RID: 1416 RVA: 0x0002CD28 File Offset: 0x0002AF28
         public virtual void scrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i)
         {
             this.currentPack = i;
@@ -972,7 +937,6 @@ namespace CutTheRope.game
             CTRPreferences.setLastPack(i);
         }
 
-        // Token: 0x06000589 RID: 1417 RVA: 0x0002CD4C File Offset: 0x0002AF4C
         public virtual BaseElement createButtonForLevelPack(int l, int p)
         {
             bool flag = CTRPreferences.getUnlockedForPackLevel(p, l) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED;
@@ -1009,7 +973,6 @@ namespace CutTheRope.game
             return touchBaseElement;
         }
 
-        // Token: 0x0600058A RID: 1418 RVA: 0x0002CE98 File Offset: 0x0002B098
         public virtual void createLevelSelect()
         {
             float num = 0.3f;
@@ -1099,7 +1062,6 @@ namespace CutTheRope.game
             this.addViewwithID(menuView, 6);
         }
 
-        // Token: 0x0600058B RID: 1419 RVA: 0x0002D374 File Offset: 0x0002B574
         public override NSObject initWithParent(ViewController p)
         {
             if (base.initWithParent(p) != null)
@@ -1120,7 +1082,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x0600058C RID: 1420 RVA: 0x0002D400 File Offset: 0x0002B600
         public override void dealloc()
         {
             this.ddMainMenu.cancelAllDispatches();
@@ -1132,7 +1093,6 @@ namespace CutTheRope.game
             base.dealloc();
         }
 
-        // Token: 0x0600058D RID: 1421 RVA: 0x0002D450 File Offset: 0x0002B650
         public override void activate()
         {
             this.showNextPackStatus = false;
@@ -1149,7 +1109,6 @@ namespace CutTheRope.game
             CTRSoundMgr._playMusic(145);
         }
 
-        // Token: 0x0600058E RID: 1422 RVA: 0x0002D4B8 File Offset: 0x0002B6B8
         public virtual void showNextPack()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
@@ -1168,7 +1127,6 @@ namespace CutTheRope.game
             Application.sharedMovieMgr().playURL(NSObject.NSS("outro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
         }
 
-        // Token: 0x0600058F RID: 1423 RVA: 0x0002D566 File Offset: 0x0002B766
         public override void onChildDeactivated(int n)
         {
             base.onChildDeactivated(n);
@@ -1176,7 +1134,6 @@ namespace CutTheRope.game
             this.deactivate();
         }
 
-        // Token: 0x06000590 RID: 1424 RVA: 0x0002D588 File Offset: 0x0002B788
         public virtual void moviePlaybackFinished(NSString url)
         {
             if (this.replayingIntroMovie)
@@ -1207,7 +1164,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000591 RID: 1425 RVA: 0x0002D634 File Offset: 0x0002B834
         public virtual void preLevelSelect()
         {
             CTRResourceMgr cTRResourceMgr = Application.sharedResourceMgr();
@@ -1258,7 +1214,6 @@ namespace CutTheRope.game
             this.createLevelSelect();
         }
 
-        // Token: 0x06000592 RID: 1426 RVA: 0x0002D704 File Offset: 0x0002B904
         public virtual void timelineFinished(Timeline t)
         {
             CTRSoundMgr._stopMusic();
@@ -1279,14 +1234,12 @@ namespace CutTheRope.game
             this.activateChild(0);
         }
 
-        // Token: 0x06000593 RID: 1427 RVA: 0x0002D7D8 File Offset: 0x0002B9D8
         public virtual void recreateOptions()
         {
             this.deleteView(1);
             this.createOptions();
         }
 
-        // Token: 0x06000594 RID: 1428 RVA: 0x0002D7E8 File Offset: 0x0002B9E8
         public virtual void onButtonPressed(int n)
         {
             if (n != -1 && n != 34)
@@ -1548,7 +1501,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000595 RID: 1429 RVA: 0x0002DE84 File Offset: 0x0002C084
         private int FixScrollPoint(int moveToPack)
         {
             if (moveToPack >= this.packContainer.getTotalScrollPoints())
@@ -1562,7 +1514,6 @@ namespace CutTheRope.game
             return moveToPack;
         }
 
-        // Token: 0x06000596 RID: 1430 RVA: 0x0002DEB0 File Offset: 0x0002C0B0
         public override void update(float delta)
         {
             base.update(delta);
@@ -1614,7 +1565,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000597 RID: 1431 RVA: 0x0002DFFB File Offset: 0x0002C1FB
         public override bool touchesBeganwithEvent(IList<TouchLocation> touches)
         {
             bool flag = base.touchesBeganwithEvent(touches);
@@ -1625,12 +1575,10 @@ namespace CutTheRope.game
             return flag;
         }
 
-        // Token: 0x06000598 RID: 1432 RVA: 0x0002E01C File Offset: 0x0002C21C
         public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        // Token: 0x06000599 RID: 1433 RVA: 0x0002E020 File Offset: 0x0002C220
         public override void fullscreenToggled(bool isFullscreen)
         {
             this.deleteView(5);
@@ -1665,13 +1613,11 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600059A RID: 1434 RVA: 0x0002E11E File Offset: 0x0002C31E
         public void selector_recreateOptions(NSObject param)
         {
             this.recreateOptions();
         }
 
-        // Token: 0x0600059B RID: 1435 RVA: 0x0002E128 File Offset: 0x0002C328
         public override bool backButtonPressed()
         {
             int num = this.activeViewID;
@@ -1705,256 +1651,172 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x04000454 RID: 1108
         private const int CHILD_PICKER = 0;
 
-        // Token: 0x04000455 RID: 1109
         public const int VIEW_MAIN_MENU = 0;
 
-        // Token: 0x04000456 RID: 1110
         public const int VIEW_OPTIONS = 1;
 
-        // Token: 0x04000457 RID: 1111
         public const int VIEW_HELP = 2;
 
-        // Token: 0x04000458 RID: 1112
         public const int VIEW_ABOUT = 3;
 
-        // Token: 0x04000459 RID: 1113
         public const int VIEW_RESET = 4;
 
-        // Token: 0x0400045A RID: 1114
         public const int VIEW_PACK_SELECT = 5;
 
-        // Token: 0x0400045B RID: 1115
         public const int VIEW_LEVEL_SELECT = 6;
 
-        // Token: 0x0400045C RID: 1116
         public const int VIEW_MOVIE = 7;
 
-        // Token: 0x0400045D RID: 1117
         public const int VIEW_LEADERBOARDS = 8;
 
-        // Token: 0x0400045E RID: 1118
         public const int VIEW_ACHIEVEMENTS = 9;
 
-        // Token: 0x0400045F RID: 1119
         private const int MM_VIEWS_COUNT = 10;
 
-        // Token: 0x04000460 RID: 1120
         private const int BUTTON_PLAY = 0;
 
-        // Token: 0x04000461 RID: 1121
         private const int BUTTON_OPTIONS = 1;
 
-        // Token: 0x04000462 RID: 1122
         private const int BUTTON_EXTRAS = 2;
 
-        // Token: 0x04000463 RID: 1123
         private const int BUTTON_SURVIVAL = 3;
 
-        // Token: 0x04000464 RID: 1124
         private const int BUTTON_BUYGAME = 4;
 
-        // Token: 0x04000465 RID: 1125
         private const int BUTTON_SOUND_ONOFF = 5;
 
-        // Token: 0x04000466 RID: 1126
         private const int BUTTON_MUSIC_ONOFF = 6;
 
-        // Token: 0x04000467 RID: 1127
         private const int BUTTON_ABOUT = 7;
 
-        // Token: 0x04000468 RID: 1128
         private const int BUTTON_RESET = 8;
 
-        // Token: 0x04000469 RID: 1129
         private const int BUTTON_HELP = 9;
 
-        // Token: 0x0400046A RID: 1130
         private const int BUTTON_BACK_TO_OPTIONS = 10;
 
-        // Token: 0x0400046B RID: 1131
         private const int BUTTON_SWAP_CONTROL = 11;
 
-        // Token: 0x0400046C RID: 1132
         private const int BUTTON_BACK_TO_PACK_SELECT = 12;
 
-        // Token: 0x0400046D RID: 1133
         private const int BUTTON_RESET_YES = 13;
 
-        // Token: 0x0400046E RID: 1134
         private const int BUTTON_RESET_NO = 14;
 
-        // Token: 0x0400046F RID: 1135
         private const int BUTTON_CANT_UNLOCK_OK = 15;
 
-        // Token: 0x04000470 RID: 1136
         private const int BUTTON_TWITTER = 16;
 
-        // Token: 0x04000471 RID: 1137
         private const int BUTTON_FACEBOOK = 17;
 
-        // Token: 0x04000472 RID: 1138
         private const int BUTTON_LEADERBOARDS = 18;
 
-        // Token: 0x04000473 RID: 1139
         private const int BUTTON_ACHIEVEMENTS = 19;
 
-        // Token: 0x04000474 RID: 1140
         private const int BUTTON_NEXT_PACK = 20;
 
-        // Token: 0x04000475 RID: 1141
         private const int BUTTON_PREVIOUS_PACK = 21;
 
-        // Token: 0x04000476 RID: 1142
         private const int BUTTON_LOCALIZATION = 22;
 
-        // Token: 0x04000477 RID: 1143
         private const int BUTTON_PACK1 = 23;
 
-        // Token: 0x04000478 RID: 1144
         private const int BUTTON_PACK2 = 24;
 
-        // Token: 0x04000479 RID: 1145
         private const int BUTTON_PACK3 = 25;
 
-        // Token: 0x0400047A RID: 1146
         private const int BUTTON_PACK4 = 26;
 
-        // Token: 0x0400047B RID: 1147
         private const int BUTTON_PACK5 = 27;
 
-        // Token: 0x0400047C RID: 1148
         private const int BUTTON_PACK6 = 28;
 
-        // Token: 0x0400047D RID: 1149
         private const int BUTTON_PACK7 = 29;
 
-        // Token: 0x0400047E RID: 1150
         private const int BUTTON_PACK8 = 30;
 
-        // Token: 0x0400047F RID: 1151
         private const int BUTTON_PACK9 = 31;
 
-        // Token: 0x04000480 RID: 1152
         private const int BUTTON_PACK10 = 32;
 
-        // Token: 0x04000481 RID: 1153
         private const int BUTTON_PACK11 = 33;
 
-        // Token: 0x04000482 RID: 1154
         private const int BUTTON_SOON = 34;
 
-        // Token: 0x04000483 RID: 1155
         private const int BUTTON_PACK_SELECTION_BACK = 35;
 
-        // Token: 0x04000484 RID: 1156
         private const int BUTTON_OPTIONS_BACK = 36;
 
-        // Token: 0x04000485 RID: 1157
         private const int BUTTON_LEADERBOARDS_BACK = 37;
 
-        // Token: 0x04000486 RID: 1158
         private const int BUTTON_ACHIEVEMENTS_BACK = 38;
 
-        // Token: 0x04000487 RID: 1159
         private const int BUTTON_EXIT_YES = 39;
 
-        // Token: 0x04000488 RID: 1160
         private const int BUTTON_POPUP_HIDE = 40;
 
-        // Token: 0x04000489 RID: 1161
         private const int BUTTON_QIUT = 41;
 
-        // Token: 0x0400048A RID: 1162
         public const int BUTTON_LEVEL_1 = 1000;
 
-        // Token: 0x0400048B RID: 1163
         private const string TWITTER_LINK = "http://twitter.com/zeptolab";
 
-        // Token: 0x0400048C RID: 1164
         private const string FACEBOOK_LINK = "http://www.facebook.com/cuttherope";
 
-        // Token: 0x0400048D RID: 1165
         private const float BOX_OFFSET = -20f;
 
-        // Token: 0x0400048E RID: 1166
         private const float BOX_X_SHIFT = 0f;
 
-        // Token: 0x0400048F RID: 1167
         private const float BOX_Y_SHIFT = 0f;
 
-        // Token: 0x04000490 RID: 1168
         private const float BOX_TOUCH_X_SHIFT = 235f;
 
-        // Token: 0x04000491 RID: 1169
         private const float BOX_TOUCH_WIDTH_SHIFT = 70f;
 
-        // Token: 0x04000492 RID: 1170
         private const float BOX_WIDTH_INCREASE = 1000f;
 
-        // Token: 0x04000493 RID: 1171
         public DelayedDispatcher ddMainMenu;
 
-        // Token: 0x04000494 RID: 1172
         public DelayedDispatcher ddPackSelect;
 
-        // Token: 0x04000495 RID: 1173
         private ScrollableContainer helpContainer;
 
-        // Token: 0x04000496 RID: 1174
         private ScrollableContainer aboutContainer;
 
-        // Token: 0x04000497 RID: 1175
         private ScrollableContainer packContainer;
 
-        // Token: 0x04000498 RID: 1176
         private BaseElement[] boxes = new BaseElement[CTRPreferences.getPacksCount() + 1];
 
-        // Token: 0x04000499 RID: 1177
         private bool showNextPackStatus;
 
-        // Token: 0x0400049A RID: 1178
         private bool aboutAutoScroll;
 
-        // Token: 0x0400049B RID: 1179
         private bool replayingIntroMovie;
 
-        // Token: 0x0400049C RID: 1180
         private int currentPack;
 
-        // Token: 0x0400049D RID: 1181
         private int scrollPacksLeft;
 
-        // Token: 0x0400049E RID: 1182
         private int scrollPacksRight;
 
-        // Token: 0x0400049F RID: 1183
         private bool bScrolling;
 
-        // Token: 0x040004A0 RID: 1184
         private Button nextb;
 
-        // Token: 0x040004A1 RID: 1185
         private Button prevb;
 
-        // Token: 0x040004A2 RID: 1186
         private int pack;
 
-        // Token: 0x040004A3 RID: 1187
         private int level;
 
-        // Token: 0x040004A4 RID: 1188
         public int viewToShow;
 
-        // Token: 0x040004A5 RID: 1189
         private Popup ep;
 
-        // Token: 0x020000CA RID: 202
         public class TouchBaseElement : BaseElement
         {
-            // Token: 0x06000681 RID: 1665 RVA: 0x00033C88 File Offset: 0x00031E88
             public override bool onTouchDownXY(float tx, float ty)
             {
                 base.onTouchDownXY(tx, ty);
@@ -1968,32 +1830,25 @@ namespace CutTheRope.game
                 return false;
             }
 
-            // Token: 0x040008FE RID: 2302
             public int bid;
 
-            // Token: 0x040008FF RID: 2303
             public Rectangle bbc;
 
-            // Token: 0x04000900 RID: 2304
             public ButtonDelegate delegateValue;
         }
 
-        // Token: 0x020000CB RID: 203
         public class MonsterSlot : Image
         {
-            // Token: 0x06000683 RID: 1667 RVA: 0x00033D6F File Offset: 0x00031F6F
             public static MenuController.MonsterSlot MonsterSlot_create(Texture2D t)
             {
                 return (MenuController.MonsterSlot)new MenuController.MonsterSlot().initWithTexture(t);
             }
 
-            // Token: 0x06000684 RID: 1668 RVA: 0x00033D81 File Offset: 0x00031F81
             public static MenuController.MonsterSlot MonsterSlot_createWithResID(int r)
             {
                 return MenuController.MonsterSlot.MonsterSlot_create(Application.getTexture(r));
             }
 
-            // Token: 0x06000685 RID: 1669 RVA: 0x00033D8E File Offset: 0x00031F8E
             public static MenuController.MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
                 MenuController.MonsterSlot monsterSlot = MenuController.MonsterSlot.MonsterSlot_create(Application.getTexture(r));
@@ -2001,7 +1856,6 @@ namespace CutTheRope.game
                 return monsterSlot;
             }
 
-            // Token: 0x06000686 RID: 1670 RVA: 0x00033DA4 File Offset: 0x00031FA4
             public override void draw()
             {
                 this.preDraw();
@@ -2025,13 +1879,10 @@ namespace CutTheRope.game
                 }
             }
 
-            // Token: 0x04000901 RID: 2305
             public ScrollableContainer c;
 
-            // Token: 0x04000902 RID: 2306
             public float s;
 
-            // Token: 0x04000903 RID: 2307
             public float e;
         }
     }

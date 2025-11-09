@@ -5,10 +5,8 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000041 RID: 65
     internal class RotatableScalableMultiParticles : ScalableMultiParticles
     {
-        // Token: 0x0600022F RID: 559 RVA: 0x0000B3FC File Offset: 0x000095FC
         public override void initParticle(ref Particle particle)
         {
             base.initParticle(ref particle);
@@ -17,7 +15,6 @@ namespace CutTheRope.iframework.visual
             particle.deltaSize = (this.endSize - this.size) / particle.life;
         }
 
-        // Token: 0x06000230 RID: 560 RVA: 0x0000B454 File Offset: 0x00009654
         public override void updateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -84,7 +81,6 @@ namespace CutTheRope.iframework.visual
             this.particleCount--;
         }
 
-        // Token: 0x06000231 RID: 561 RVA: 0x0000B870 File Offset: 0x00009A70
         public override void update(float delta)
         {
             base.update(delta);
@@ -113,13 +109,10 @@ namespace CutTheRope.iframework.visual
             OpenGL.glBindBuffer(2, 0U);
         }
 
-        // Token: 0x0400018B RID: 395
         public float initialAngle;
 
-        // Token: 0x0400018C RID: 396
         public float rotateSpeed;
 
-        // Token: 0x0400018D RID: 397
         public float rotateSpeedVar;
     }
 }

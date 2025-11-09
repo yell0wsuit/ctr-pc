@@ -8,10 +8,8 @@ using System.Runtime.CompilerServices;
 
 namespace CutTheRope.iframework.core
 {
-    // Token: 0x02000067 RID: 103
     internal class ResourceMgr : NSObject
     {
-        // Token: 0x060003D5 RID: 981 RVA: 0x000151E4 File Offset: 0x000133E4
         public virtual bool hasResource(int resID)
         {
             NSObject value = null;
@@ -19,20 +17,17 @@ namespace CutTheRope.iframework.core
             return value != null;
         }
 
-        // Token: 0x060003D6 RID: 982 RVA: 0x00015206 File Offset: 0x00013406
         public virtual void addResourceToLoadQueue(int resID)
         {
             this.loadQueue.Add(resID);
             this.loadCount++;
         }
 
-        // Token: 0x060003D7 RID: 983 RVA: 0x00015222 File Offset: 0x00013422
         public void clearCachedResources()
         {
             this.s_Resources = new Dictionary<int, NSObject>();
         }
 
-        // Token: 0x060003D8 RID: 984 RVA: 0x00015230 File Offset: 0x00013430
         public virtual NSObject loadResource(int resID, ResourceMgr.ResourceType resType)
         {
             NSObject value = null;
@@ -73,13 +68,11 @@ namespace CutTheRope.iframework.core
             return value;
         }
 
-        // Token: 0x060003D9 RID: 985 RVA: 0x00015309 File Offset: 0x00013509
         public virtual NSObject loadSoundInfo(string path)
         {
             return new NSObject().init();
         }
 
-        // Token: 0x060003DA RID: 986 RVA: 0x00015318 File Offset: 0x00013518
         public NSString loadStringsInfo(int key)
         {
             key &= 65535;
@@ -120,7 +113,6 @@ namespace CutTheRope.iframework.core
             return new NSString();
         }
 
-        // Token: 0x060003DB RID: 987 RVA: 0x000153C8 File Offset: 0x000135C8
         public virtual FontGeneric loadVariableFontInfo(string path, int resID, bool isWvga)
         {
             XMLNode xmlnode = XMLNode.parseXML(path);
@@ -139,7 +131,6 @@ namespace CutTheRope.iframework.core
             return font;
         }
 
-        // Token: 0x060003DC RID: 988 RVA: 0x00015464 File Offset: 0x00013664
         public virtual Texture2D loadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
             if (i == null)
@@ -173,7 +164,6 @@ namespace CutTheRope.iframework.core
             return texture2D;
         }
 
-        // Token: 0x060003DD RID: 989 RVA: 0x0001550C File Offset: 0x0001370C
         public virtual void setTextureInfo(Texture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
             t.preCutSize = MathHelper.vectUndefined;
@@ -220,13 +210,11 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x060003DE RID: 990 RVA: 0x0001568A File Offset: 0x0001388A
         private static string fullPathFromRelativePath(string relPath)
         {
             return ResDataPhoneFull.ContentFolder + relPath;
         }
 
-        // Token: 0x060003DF RID: 991 RVA: 0x00015698 File Offset: 0x00013898
         private void setQuadsInfo(Texture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = data.Length / 4;
@@ -253,7 +241,6 @@ namespace CutTheRope.iframework.core
             t.optimizeMemory();
         }
 
-        // Token: 0x060003E0 RID: 992 RVA: 0x0001575C File Offset: 0x0001395C
         private void setOffsetsInfo(Texture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = size / 2;
@@ -271,37 +258,31 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x060003E1 RID: 993 RVA: 0x000157D5 File Offset: 0x000139D5
         public virtual bool isWvgaResource(int r)
         {
             return r - 126 > 10;
         }
 
-        // Token: 0x060003E2 RID: 994 RVA: 0x000157E2 File Offset: 0x000139E2
         public virtual float getNormalScaleX(int r)
         {
             return 1f;
         }
 
-        // Token: 0x060003E3 RID: 995 RVA: 0x000157E9 File Offset: 0x000139E9
         public virtual float getNormalScaleY(int r)
         {
             return 1f;
         }
 
-        // Token: 0x060003E4 RID: 996 RVA: 0x000157F0 File Offset: 0x000139F0
         public virtual float getWvgaScaleX(int r)
         {
             return 1.5f;
         }
 
-        // Token: 0x060003E5 RID: 997 RVA: 0x000157F7 File Offset: 0x000139F7
         public virtual float getWvgaScaleY(int r)
         {
             return 1.5f;
         }
 
-        // Token: 0x060003E6 RID: 998 RVA: 0x000157FE File Offset: 0x000139FE
         public virtual void initLoading()
         {
             this.loadQueue.Clear();
@@ -309,7 +290,6 @@ namespace CutTheRope.iframework.core
             this.loadCount = 0;
         }
 
-        // Token: 0x060003E7 RID: 999 RVA: 0x00015819 File Offset: 0x00013A19
         public virtual int getPercentLoaded()
         {
             if (this.loadCount == 0)
@@ -319,7 +299,6 @@ namespace CutTheRope.iframework.core
             return 100 * this.loaded / this.getLoadCount();
         }
 
-        // Token: 0x060003E8 RID: 1000 RVA: 0x00015838 File Offset: 0x00013A38
         public virtual void loadPack(int[] pack)
         {
             int i = 0;
@@ -330,7 +309,6 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x060003E9 RID: 1001 RVA: 0x0001585C File Offset: 0x00013A5C
         public virtual void freePack(int[] pack)
         {
             int i = 0;
@@ -341,7 +319,6 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x060003EA RID: 1002 RVA: 0x00015880 File Offset: 0x00013A80
         public virtual void loadImmediately()
         {
             while (this.loadQueue.Count != 0)
@@ -353,7 +330,6 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x060003EB RID: 1003 RVA: 0x000158CC File Offset: 0x00013ACC
         public virtual void startLoading()
         {
             if (this.resourcesDelegate != null)
@@ -368,7 +344,6 @@ namespace CutTheRope.iframework.core
             this.bUseFake = this.loadQueue.Count < 100;
         }
 
-        // Token: 0x060003EC RID: 1004 RVA: 0x00015922 File Offset: 0x00013B22
         private int getLoadCount()
         {
             if (!this.bUseFake)
@@ -378,7 +353,6 @@ namespace CutTheRope.iframework.core
             return 100;
         }
 
-        // Token: 0x060003ED RID: 1005 RVA: 0x00015938 File Offset: 0x00013B38
         public void update()
         {
             if (this.loadQueue.Count > 0)
@@ -399,13 +373,11 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x060003EE RID: 1006 RVA: 0x000159B5 File Offset: 0x00013BB5
         private static void rmgr_internalUpdate(NSObject obj)
         {
             ((ResourceMgr)obj).update();
         }
 
-        // Token: 0x060003EF RID: 1007 RVA: 0x000159C4 File Offset: 0x00013BC4
         private void loadResource(int resId)
         {
             if (150 < resId)
@@ -439,7 +411,6 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x060003F0 RID: 1008 RVA: 0x00015A3C File Offset: 0x00013C3C
         public virtual void freeResource(int resId)
         {
             if (150 < resId)
@@ -467,53 +438,36 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        // Token: 0x040002A8 RID: 680
         public ResourceMgrDelegate resourcesDelegate;
 
-        // Token: 0x040002A9 RID: 681
         private Dictionary<int, NSObject> s_Resources = new();
 
-        // Token: 0x040002AA RID: 682
         private XMLNode xmlStrings;
 
-        // Token: 0x040002AB RID: 683
         private int loaded;
 
-        // Token: 0x040002AC RID: 684
         private int loadCount;
 
-        // Token: 0x040002AD RID: 685
         private List<int> loadQueue = new();
 
-        // Token: 0x040002AE RID: 686
         private int Timer;
 
-        // Token: 0x040002AF RID: 687
         private bool bUseFake;
 
-        // Token: 0x020000BD RID: 189
         public enum ResourceType
         {
-            // Token: 0x040008DB RID: 2267
             IMAGE,
-            // Token: 0x040008DC RID: 2268
             FONT,
-            // Token: 0x040008DD RID: 2269
             SOUND,
-            // Token: 0x040008DE RID: 2270
             BINARY,
-            // Token: 0x040008DF RID: 2271
             STRINGS,
-            // Token: 0x040008E0 RID: 2272
             ELEMENT
         }
 
-        // Token: 0x020000BE RID: 190
         [CompilerGenerated]
         private static class <>O
 		{
-			// Token: 0x040008E1 RID: 2273
-			public static DelayedDispatcher.DispatchFunc<0> __rmgr_internalUpdate;
+						public static DelayedDispatcher.DispatchFunc<0> __rmgr_internalUpdate;
     }
 }
 }

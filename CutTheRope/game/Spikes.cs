@@ -8,10 +8,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000095 RID: 149
     internal class Spikes : CTRGameObject, TimelineDelegate, ButtonDelegate
     {
-        // Token: 0x060005EF RID: 1519 RVA: 0x00031B98 File Offset: 0x0002FD98
         public virtual NSObject initWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
         {
             int textureResID = -1;
@@ -79,7 +77,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x060005F0 RID: 1520 RVA: 0x00031DB0 File Offset: 0x0002FFB0
         public virtual void updateRotation()
         {
             float num = ((!this.electro) ? this.texture.quadRects[this.quadToDraw].w : ((float)this.width - FrameworkTypes.RTPD(400.0)));
@@ -97,7 +94,6 @@ namespace CutTheRope.game
             this.b2 = MathHelper.vectRotateAround(this.b2, this.angle, this.x, this.y);
         }
 
-        // Token: 0x060005F1 RID: 1521 RVA: 0x00031F3B File Offset: 0x0003013B
         public virtual void turnElectroOff()
         {
             this.electroOn = false;
@@ -110,7 +106,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060005F2 RID: 1522 RVA: 0x00031F71 File Offset: 0x00030171
         public virtual void turnElectroOn()
         {
             this.electroOn = true;
@@ -119,7 +114,6 @@ namespace CutTheRope.game
             this.sndElectric = CTRSoundMgr._playSoundLooped(28);
         }
 
-        // Token: 0x060005F3 RID: 1523 RVA: 0x00031F9C File Offset: 0x0003019C
         public virtual void rotateSpikes()
         {
             this.spikesNormal = !this.spikesNormal;
@@ -136,19 +130,16 @@ namespace CutTheRope.game
             this.rotateButton.scaleX = 0f - this.rotateButton.scaleX;
         }
 
-        // Token: 0x060005F4 RID: 1524 RVA: 0x0003205B File Offset: 0x0003025B
         public virtual void setToggled(int t)
         {
             this.toggled = t;
         }
 
-        // Token: 0x060005F5 RID: 1525 RVA: 0x00032064 File Offset: 0x00030264
         public virtual int getToggled()
         {
             return this.toggled;
         }
 
-        // Token: 0x060005F6 RID: 1526 RVA: 0x0003206C File Offset: 0x0003026C
         public override void update(float delta)
         {
             base.update(delta);
@@ -179,18 +170,15 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060005F7 RID: 1527 RVA: 0x00032106 File Offset: 0x00030306
         public virtual void timelineReachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        // Token: 0x060005F8 RID: 1528 RVA: 0x00032108 File Offset: 0x00030308
         public virtual void timelineFinished(Timeline t)
         {
             this.updateRotationFlag = false;
         }
 
-        // Token: 0x060005F9 RID: 1529 RVA: 0x00032111 File Offset: 0x00030311
         public virtual void onButtonPressed(int n)
         {
             if (n == 0)
@@ -205,90 +193,62 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060005FA RID: 1530 RVA: 0x0003213E File Offset: 0x0003033E
         public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        // Token: 0x04000823 RID: 2083
         private const float SPIKES_HEIGHT = 10f;
 
-        // Token: 0x04000824 RID: 2084
         private int toggled;
 
-        // Token: 0x04000825 RID: 2085
         public double angle;
 
-        // Token: 0x04000826 RID: 2086
         public Vector t1;
 
-        // Token: 0x04000827 RID: 2087
         public Vector t2;
 
-        // Token: 0x04000828 RID: 2088
         public Vector b1;
 
-        // Token: 0x04000829 RID: 2089
         public Vector b2;
 
-        // Token: 0x0400082A RID: 2090
         public bool electro;
 
-        // Token: 0x0400082B RID: 2091
         public float initialDelay;
 
-        // Token: 0x0400082C RID: 2092
         public float onTime;
 
-        // Token: 0x0400082D RID: 2093
         public float offTime;
 
-        // Token: 0x0400082E RID: 2094
         public bool electroOn;
 
-        // Token: 0x0400082F RID: 2095
         public float electroTimer;
 
-        // Token: 0x04000830 RID: 2096
         private bool updateRotationFlag;
 
-        // Token: 0x04000831 RID: 2097
         private bool spikesNormal;
 
-        // Token: 0x04000832 RID: 2098
         private float origRotation;
 
-        // Token: 0x04000833 RID: 2099
         public Button rotateButton;
 
-        // Token: 0x04000834 RID: 2100
         public int touchIndex;
 
-        // Token: 0x04000835 RID: 2101
         public Spikes.rotateAllSpikesWithID delegateRotateAllSpikesWithID;
 
-        // Token: 0x04000836 RID: 2102
         private SoundEffectInstance sndElectric;
 
-        // Token: 0x020000CC RID: 204
         private enum SPIKES_ANIM
         {
-            // Token: 0x04000905 RID: 2309
             SPIKES_ANIM_ELECTRODES_BASE,
-            // Token: 0x04000906 RID: 2310
             SPIKES_ANIM_ELECTRODES_ELECTRIC,
-            // Token: 0x04000907 RID: 2311
             SPIKES_ANIM_ROTATION_ADJUSTED
         }
 
-        // Token: 0x020000CD RID: 205
         private enum SPIKES_ROTATION
         {
-            // Token: 0x04000909 RID: 2313
             SPIKES_ROTATION_BUTTON
         }
 
-        // Token: 0x020000CE RID: 206
         // (Invoke) Token: 0x06000689 RID: 1673
         public delegate void rotateAllSpikesWithID(int sid);
     }

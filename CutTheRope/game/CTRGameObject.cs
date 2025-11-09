@@ -5,10 +5,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000075 RID: 117
     internal class CTRGameObject : GameObject
     {
-        // Token: 0x06000481 RID: 1153 RVA: 0x0001A0A8 File Offset: 0x000182A8
         public override void parseMover(XMLNode xml)
         {
             this.rotation = 0f;

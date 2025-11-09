@@ -3,10 +3,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000081 RID: 129
     internal class LevelsList : NSObject
     {
-        // Token: 0x06000553 RID: 1363 RVA: 0x000277D4 File Offset: 0x000259D4
         // Note: this type is marked as 'beforefieldinit'.
         static LevelsList()
         {
@@ -566,10 +564,8 @@ namespace CutTheRope.game
             LevelsList.LEVEL_NAMES = array2;
         }
 
-        // Token: 0x04000447 RID: 1095
         public static NSString[,] LEVEL_HASHES;
 
-        // Token: 0x04000448 RID: 1096
         public static NSString[,] LEVEL_NAMES;
     }
 }

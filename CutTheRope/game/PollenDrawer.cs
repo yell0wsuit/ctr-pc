@@ -9,10 +9,8 @@ using System.Linq;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200008B RID: 139
     internal class PollenDrawer : BaseElement
     {
-        // Token: 0x060005A3 RID: 1443 RVA: 0x0002E248 File Offset: 0x0002C448
         public override NSObject init()
         {
             if (base.init() != null)
@@ -29,7 +27,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x060005A4 RID: 1444 RVA: 0x0002E2E4 File Offset: 0x0002C4E4
         public override void dealloc()
         {
             if (this.pollens != null)
@@ -50,7 +47,6 @@ namespace CutTheRope.game
             base.dealloc();
         }
 
-        // Token: 0x060005A5 RID: 1445 RVA: 0x0002E344 File Offset: 0x0002C544
         public virtual void addPollenAtparentIndex(Vector v, int pi)
         {
             float num = 1f;
@@ -106,7 +102,6 @@ namespace CutTheRope.game
             this.pollenCount++;
         }
 
-        // Token: 0x060005A6 RID: 1446 RVA: 0x0002E594 File Offset: 0x0002C794
         public virtual void fillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
         {
             int num = 44;
@@ -123,7 +118,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060005A7 RID: 1447 RVA: 0x0002E670 File Offset: 0x0002C870
         public override void update(float delta)
         {
             base.update(delta);
@@ -162,7 +156,6 @@ namespace CutTheRope.game
             OpenGL.glBindBuffer(2, 0U);
         }
 
-        // Token: 0x060005A8 RID: 1448 RVA: 0x0002E8F4 File Offset: 0x0002CAF4
         public override void draw()
         {
             if (this.pollenCount >= 2)
@@ -185,34 +178,24 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x040004B2 RID: 1202
         private ImageMultiDrawer drawer;
 
-        // Token: 0x040004B3 RID: 1203
         private int pollenCount;
 
-        // Token: 0x040004B4 RID: 1204
         private int totalCapacity;
 
-        // Token: 0x040004B5 RID: 1205
         private Pollen[] pollens;
 
-        // Token: 0x040004B6 RID: 1206
         private float qw;
 
-        // Token: 0x040004B7 RID: 1207
         private float qh;
 
-        // Token: 0x040004B8 RID: 1208
         private RGBAColor[] colors;
 
-        // Token: 0x040004B9 RID: 1209
         private uint colorsID;
 
-        // Token: 0x040004BA RID: 1210
         private PointSprite[] vertices;
 
-        // Token: 0x040004BB RID: 1211
         private uint verticesID;
     }
 }

@@ -8,10 +8,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.media
 {
-    // Token: 0x0200005C RID: 92
     internal class SoundMgr : NSObject
     {
-        // Token: 0x06000317 RID: 791 RVA: 0x000124C7 File Offset: 0x000106C7
         public new SoundMgr init()
         {
             this.LoadedSounds = new Dictionary<int, SoundEffect>();
@@ -20,19 +18,16 @@ namespace CutTheRope.iframework.media
             return this;
         }
 
-        // Token: 0x06000318 RID: 792 RVA: 0x000124EB File Offset: 0x000106EB
         public static void SetContentManager(ContentManager contentManager)
         {
             SoundMgr._contentManager = contentManager;
         }
 
-        // Token: 0x06000319 RID: 793 RVA: 0x000124F3 File Offset: 0x000106F3
         public void freeSound(int resId)
         {
             this.LoadedSounds.Remove(resId);
         }
 
-        // Token: 0x0600031A RID: 794 RVA: 0x00012504 File Offset: 0x00010704
         public SoundEffect getSound(int resId)
         {
             if (resId >= 145 && resId <= 148)
@@ -58,7 +53,6 @@ namespace CutTheRope.iframework.media
             return soundEffect;
         }
 
-        // Token: 0x0600031B RID: 795 RVA: 0x00012578 File Offset: 0x00010778
         private void ClearStopped()
         {
             List<SoundEffectInstance> list = new();
@@ -73,14 +67,12 @@ namespace CutTheRope.iframework.media
             this.activeSounds = list;
         }
 
-        // Token: 0x0600031C RID: 796 RVA: 0x000125F0 File Offset: 0x000107F0
         public virtual void playSound(int sid)
         {
             this.ClearStopped();
             this.activeSounds.Add(this.play(sid, false));
         }
 
-        // Token: 0x0600031D RID: 797 RVA: 0x0001260C File Offset: 0x0001080C
         public virtual SoundEffectInstance playSoundLooped(int sid)
         {
             this.ClearStopped();
@@ -89,7 +81,6 @@ namespace CutTheRope.iframework.media
             return soundEffectInstance;
         }
 
-        // Token: 0x0600031E RID: 798 RVA: 0x00012638 File Offset: 0x00010838
         public virtual void playMusic(int resId)
         {
             this.stopMusic();
@@ -104,20 +95,17 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        // Token: 0x0600031F RID: 799 RVA: 0x00012688 File Offset: 0x00010888
         public virtual void stopLoopedSounds()
         {
             SoundMgr.stopList(this.activeLoopedSounds);
             this.activeLoopedSounds.Clear();
         }
 
-        // Token: 0x06000320 RID: 800 RVA: 0x000126A0 File Offset: 0x000108A0
         public virtual void stopAllSounds()
         {
             this.stopLoopedSounds();
         }
 
-        // Token: 0x06000321 RID: 801 RVA: 0x000126A8 File Offset: 0x000108A8
         public virtual void stopMusic()
         {
             try
@@ -129,17 +117,14 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        // Token: 0x06000322 RID: 802 RVA: 0x000126D0 File Offset: 0x000108D0
         public virtual void suspend()
         {
         }
 
-        // Token: 0x06000323 RID: 803 RVA: 0x000126D2 File Offset: 0x000108D2
         public virtual void resume()
         {
         }
 
-        // Token: 0x06000324 RID: 804 RVA: 0x000126D4 File Offset: 0x000108D4
         public virtual void pause()
         {
             try
@@ -155,7 +140,6 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        // Token: 0x06000325 RID: 805 RVA: 0x00012710 File Offset: 0x00010910
         public virtual void unpause()
         {
             try
@@ -171,7 +155,6 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        // Token: 0x06000326 RID: 806 RVA: 0x0001274C File Offset: 0x0001094C
         private SoundEffectInstance play(int sid, bool l)
         {
             SoundEffectInstance soundEffectInstance = null;
@@ -190,7 +173,6 @@ namespace CutTheRope.iframework.media
             return soundEffectInstance2;
         }
 
-        // Token: 0x06000327 RID: 807 RVA: 0x00012790 File Offset: 0x00010990
         private static void stopList(List<SoundEffectInstance> list)
         {
             foreach (SoundEffectInstance item in list)
@@ -202,7 +184,6 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        // Token: 0x06000328 RID: 808 RVA: 0x000127E0 File Offset: 0x000109E0
         private static void changeListState(List<SoundEffectInstance> list, SoundState fromState, SoundState toState)
         {
             foreach (SoundEffectInstance item in list)
@@ -224,16 +205,12 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        // Token: 0x04000267 RID: 615
         private static ContentManager _contentManager;
 
-        // Token: 0x04000268 RID: 616
         private Dictionary<int, SoundEffect> LoadedSounds;
 
-        // Token: 0x04000269 RID: 617
         private List<SoundEffectInstance> activeSounds;
 
-        // Token: 0x0400026A RID: 618
         private List<SoundEffectInstance> activeLoopedSounds;
     }
 }

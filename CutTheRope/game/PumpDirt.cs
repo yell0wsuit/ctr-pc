@@ -7,10 +7,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200008E RID: 142
     internal class PumpDirt : MultiParticles
     {
-        // Token: 0x060005B8 RID: 1464 RVA: 0x0002ED2C File Offset: 0x0002CF2C
         public virtual PumpDirt initWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (base.initWithTotalParticlesandImageGrid(p, grid) == null)
@@ -55,7 +53,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x060005B9 RID: 1465 RVA: 0x0002EF24 File Offset: 0x0002D124
         public override void initParticle(ref Particle particle)
         {
             base.initParticle(ref particle);
@@ -68,7 +65,6 @@ namespace CutTheRope.game
             particle.height = rectangle.h * particle.size;
         }
 
-        // Token: 0x060005BA RID: 1466 RVA: 0x0002EFC8 File Offset: 0x0002D1C8
         public override void updateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -99,7 +95,6 @@ namespace CutTheRope.game
             this.particleCount--;
         }
 
-        // Token: 0x060005BB RID: 1467 RVA: 0x0002F1E4 File Offset: 0x0002D3E4
         public override void update(float delta)
         {
             base.update(delta);
