@@ -64,7 +64,7 @@ namespace CutTheRope.iframework.core
 
         public virtual GLCanvas createCanvas()
         {
-            return (GLCanvas)new GLCanvas().initWithFrame(new Rectangle(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT));
+            return (GLCanvas)new GLCanvas().initWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
         }
 
         public virtual CTRResourceMgr createResourceMgr()
