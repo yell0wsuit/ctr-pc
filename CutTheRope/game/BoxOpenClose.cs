@@ -529,11 +529,7 @@ namespace CutTheRope.game
                 case 0:
                 case 1:
                     {
-                        DelayedDispatcher.DispatchFunc dispatchFunc;
-                        if ((dispatchFunc = BoxOpenClose.<> O.< 0 > __selector_removeOpenCloseAnims) == null)
-                        {
-                            dispatchFunc = BoxOpenClose.<> O.< 0 > __selector_removeOpenCloseAnims = new DelayedDispatcher.DispatchFunc(selector_removeOpenCloseAnims);
-                        }
+                        DelayedDispatcher.DispatchFunc dispatchFunc = new DelayedDispatcher.DispatchFunc(selector_removeOpenCloseAnims);
                         NSTimer.registerDelayedObjectCall(dispatchFunc, this, 0.001);
                         if (result.isEnabled())
                         {
@@ -545,11 +541,7 @@ namespace CutTheRope.game
                     }
                 case 2:
                     {
-                        DelayedDispatcher.DispatchFunc dispatchFunc2;
-                        if ((dispatchFunc2 = BoxOpenClose.<> O.< 1 > __selector_postBoxClosed) == null)
-                        {
-                            dispatchFunc2 = BoxOpenClose.<> O.< 1 > __selector_postBoxClosed = new DelayedDispatcher.DispatchFunc(selector_postBoxClosed);
-                        }
+                        DelayedDispatcher.DispatchFunc dispatchFunc2 = new DelayedDispatcher.DispatchFunc(selector_postBoxClosed);
                         NSTimer.registerDelayedObjectCall(dispatchFunc2, this, 0.001);
                         break;
                     }
@@ -693,13 +685,5 @@ namespace CutTheRope.game
 
             public Timeline ani;
         }
-
-        [CompilerGenerated]
-        private static class <>O
-		{
-						public static DelayedDispatcher.DispatchFunc<0> __selector_removeOpenCloseAnims;
-
-        public static DelayedDispatcher.DispatchFunc<1> __selector_postBoxClosed;
     }
-}
 }
