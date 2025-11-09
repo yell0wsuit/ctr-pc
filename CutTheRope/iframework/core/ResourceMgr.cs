@@ -334,11 +334,7 @@ namespace CutTheRope.iframework.core
         {
             if (resourcesDelegate != null)
             {
-                DelayedDispatcher.DispatchFunc dispatchFunc;
-                if ((dispatchFunc = ResourceMgr.<> O.< 0 > __rmgr_internalUpdate) == null)
-                {
-                    dispatchFunc = ResourceMgr.<> O.< 0 > __rmgr_internalUpdate = new DelayedDispatcher.DispatchFunc(ResourceMgr.rmgr_internalUpdate);
-                }
+                DelayedDispatcher.DispatchFunc dispatchFunc = new(ResourceMgr.rmgr_internalUpdate);
                 Timer = NSTimer.schedule(dispatchFunc, this, 0.022222223f);
             }
             bUseFake = loadQueue.Count < 100;
@@ -460,11 +456,5 @@ namespace CutTheRope.iframework.core
             STRINGS,
             ELEMENT
         }
-
-        [CompilerGenerated]
-        private static class <>O
-		{
-						public static DelayedDispatcher.DispatchFunc<0> __rmgr_internalUpdate;
     }
-}
 }
