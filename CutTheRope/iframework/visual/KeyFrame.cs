@@ -12,16 +12,16 @@ namespace CutTheRope.iframework.visual
 
         public static KeyFrame makeAction(DynamicArray actions, float time)
         {
-            List<Action> list = new();
+            List<CTRAction> list = new();
             foreach (object obj in actions)
             {
-                Action action = (Action)obj;
+                CTRAction action = (CTRAction)obj;
                 list.Add(action);
             }
             return KeyFrame.makeAction(list, time);
         }
 
-        public static KeyFrame makeAction(List<Action> actions, float time)
+        public static KeyFrame makeAction(List<CTRAction> actions, float time)
         {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.action.actionSet = actions;
@@ -41,7 +41,7 @@ namespace CutTheRope.iframework.visual
 
         public static KeyFrame makeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
-            return KeyFrame.makeAction(new List<Action> { Action.createAction(target, action, p, sp) }, time);
+            return KeyFrame.makeAction(new List<CTRAction> { CTRAction.createAction(target, action, p, sp) }, time);
         }
 
         public static KeyFrame makePos(double x, double y, KeyFrame.TransitionType transition, double time)
