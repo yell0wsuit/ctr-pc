@@ -20,12 +20,12 @@ namespace CutTheRope.game
                 vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
                 vinilStickerL.anchor = 20;
                 vinilStickerL.parentAnchor = 18;
-                vinilStickerL.rotationCenterX = (float)vinilStickerL.width / 2f;
+                vinilStickerL.rotationCenterX = vinilStickerL.width / 2f;
                 vinilStickerR = Image.Image_createWithResIDQuad(103, 2);
                 vinilStickerR.scaleX = -1f;
                 vinilStickerR.anchor = 20;
                 vinilStickerR.parentAnchor = 18;
-                vinilStickerR.rotationCenterX = (float)vinilStickerR.width / 2f;
+                vinilStickerR.rotationCenterX = vinilStickerR.width / 2f;
                 vinilCenter = Image.Image_createWithResIDQuad(103, 3);
                 vinilCenter.anchor = 18;
                 vinilHighlightL = Image.Image_createWithResIDQuad(103, 1);
@@ -75,7 +75,7 @@ namespace CutTheRope.game
             vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = num3;
             vinilCenter.scaleX = 1f - (1f - vinilStickerL.scaleX) * 0.5f;
             vinilCenter.scaleY = vinilCenter.scaleX;
-            sizeInPixels = (float)vinilHighlightL.width * vinilHighlightL.scaleX;
+            sizeInPixels = vinilHighlightL.width * vinilHighlightL.scaleX;
             updateChildPositions();
         }
 
@@ -129,7 +129,7 @@ namespace CutTheRope.game
                 OpenGL.glDisable(0);
                 OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
-                if ((double)color.a != 1.0)
+                if (color.a != 1.0)
                 {
                     whiteRGBA.a = color.a;
                 }
@@ -166,9 +166,9 @@ namespace CutTheRope.game
         {
             vinil.x = vinilCenter.x = x;
             vinil.y = vinilCenter.y = y;
-            float num = (float)(vinilHighlightL.width / 2) * (1f - vinilHighlightL.scaleX);
-            float num2 = (float)(vinilHighlightL.height / 2) * (1f - vinilHighlightL.scaleY);
-            float num3 = sizeInPixels - RTPD((double)(CONTROLLER_SHIFT_PARAM1 - CONTROLLER_SHIFT_PARAM2 * size)) + (1f - vinilControllerL.scaleX) * (float)(vinilControllerL.width / 2);
+            float num = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
+            float num2 = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
+            float num3 = sizeInPixels - RTPD((double)(CONTROLLER_SHIFT_PARAM1 - CONTROLLER_SHIFT_PARAM2 * size)) + (1f - vinilControllerL.scaleX) * (vinilControllerL.width / 2);
             vinilHighlightL.x = x + num;
             vinilHighlightR.x = x - num;
             vinilHighlightL.y = vinilHighlightR.y = y - num2;

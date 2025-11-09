@@ -33,7 +33,7 @@ namespace CutTheRope.iframework.helpers
         {
             if (base.initWithTexture(t) != null)
             {
-                bb = new CTRRectangle(0f, 0f, (float)width, (float)height);
+                bb = new CTRRectangle(0f, 0f, width, height);
                 rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
                 anchor = 18;
                 rotatedBB = false;
@@ -83,20 +83,20 @@ namespace CutTheRope.iframework.helpers
         {
             if (base.initWithTexture(Application.getTexture(t)) != null)
             {
-                float num = (float)xml["x"].intValue();
-                float num2 = (float)xml["y"].intValue();
-                x = (float)tx + num;
-                y = (float)ty + num2;
+                float num = xml["x"].intValue();
+                float num2 = xml["y"].intValue();
+                x = tx + num;
+                y = ty + num2;
                 type = t;
                 NSString nSString = xml["bb"];
                 if (nSString != null)
                 {
                     List<NSString> list = nSString.componentsSeparatedByString(',');
-                    bb = new CTRRectangle((float)list[0].intValue(), (float)list[1].intValue(), (float)list[2].intValue(), (float)list[3].intValue());
+                    bb = new CTRRectangle(list[0].intValue(), list[1].intValue(), list[2].intValue(), list[3].intValue());
                 }
                 else
                 {
-                    bb = new CTRRectangle(0f, 0f, (float)width, (float)height);
+                    bb = new CTRRectangle(0f, 0f, width, height);
                 }
                 rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
                 parseMover(xml);
@@ -118,7 +118,7 @@ namespace CutTheRope.iframework.helpers
                 float m_ = xml["moveSpeed"].floatValue();
                 float r_ = xml["rotateSpeed"].floatValue();
                 Mover mover = new Mover().initWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
-                mover.angle_ = (double)rotation;
+                mover.angle_ = rotation;
                 mover.angle_initial = mover.angle_;
                 mover.setPathFromStringandStart(nSString, vect(x, y));
                 setMover(mover);
@@ -133,7 +133,7 @@ namespace CutTheRope.iframework.helpers
 
         public virtual void setBBFromFirstQuad()
         {
-            bb = new CTRRectangle((float)Math.Round((double)texture.quadOffsets[0].x), (float)Math.Round((double)texture.quadOffsets[0].y), texture.quadRects[0].w, texture.quadRects[0].h);
+            bb = new CTRRectangle((float)Math.Round(texture.quadOffsets[0].x), (float)Math.Round(texture.quadOffsets[0].y), texture.quadRects[0].w, texture.quadRects[0].h);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
@@ -148,10 +148,10 @@ namespace CutTheRope.iframework.helpers
             Vector v2 = vect(bb.x + bb.w, bb.y);
             Vector v3 = vect(bb.x + bb.w, bb.y + bb.h);
             Vector v4 = vect(bb.x, bb.y + bb.h);
-            v = vectRotateAround(v, (double)DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
-            v2 = vectRotateAround(v2, (double)DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
-            v3 = vectRotateAround(v3, (double)DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
-            v4 = vectRotateAround(v4, (double)DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
+            v = vectRotateAround(v, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
+            v2 = vectRotateAround(v2, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
+            v3 = vectRotateAround(v3, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
+            v4 = vectRotateAround(v4, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
             rbb.tlX = v.x;
             rbb.tlY = v.y;
             rbb.trX = v2.x;

@@ -35,10 +35,10 @@ namespace CutTheRope.windows
             {
                 Texture2D texture2D = (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed) ? _cursorActive : _cursor;
                 Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-                float num = FrameworkTypes.SCREEN_WIDTH / (float)scaledViewRect.Width;
-                float num2 = FrameworkTypes.SCREEN_HEIGHT / (float)scaledViewRect.Height;
+                float num = FrameworkTypes.SCREEN_WIDTH / scaledViewRect.Width;
+                float num2 = FrameworkTypes.SCREEN_HEIGHT / scaledViewRect.Height;
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(texture2D, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)((float)texture2D.Width / num) * 1.5), (int)((double)((float)texture2D.Height / num2) * 1.5)), Color.White);
+                Global.SpriteBatch.Draw(texture2D, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)(texture2D.Width / num) * 1.5), (int)((double)(texture2D.Height / num2) * 1.5)), Color.White);
                 Global.SpriteBatch.End();
             }
         }
@@ -74,26 +74,26 @@ namespace CutTheRope.windows
                     TouchLocation touchLocation;
                     if (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
                     {
-                        touchLocation = new TouchLocation(_touchID, TouchLocationState.Moved, new Vector2((float)mouseStateTranformed.X, (float)mouseStateTranformed.Y));
+                        touchLocation = new TouchLocation(_touchID, TouchLocationState.Moved, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
                     }
                     else
                     {
                         int num = _touchID + 1;
                         _touchID = num;
-                        touchLocation = new TouchLocation(num, TouchLocationState.Pressed, new Vector2((float)mouseStateTranformed.X, (float)mouseStateTranformed.Y));
+                        touchLocation = new TouchLocation(num, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
                     }
                     item = touchLocation;
                 }
                 else if (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
                 {
-                    item = new TouchLocation(_touchID, TouchLocationState.Released, new Vector2((float)_mouseStateTranformed.X, (float)_mouseStateTranformed.Y));
+                    item = new TouchLocation(_touchID, TouchLocationState.Released, new Vector2(_mouseStateTranformed.X, _mouseStateTranformed.Y));
                 }
             }
             else if (mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
             {
                 int num = _touchID + 1;
                 _touchID = num;
-                item = new TouchLocation(num, TouchLocationState.Pressed, new Vector2((float)mouseStateTranformed.X, (float)mouseStateTranformed.Y));
+                item = new TouchLocation(num, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
             }
             if (item.State != TouchLocationState.Invalid)
             {

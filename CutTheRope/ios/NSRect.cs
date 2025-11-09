@@ -24,13 +24,13 @@ namespace CutTheRope.ios
         {
             origin = new NSPoint
             {
-                x = (float)xnaRect.X,
-                y = (float)xnaRect.Y
+                x = xnaRect.X,
+                y = xnaRect.Y
             };
             size = new NSSize
             {
-                width = (float)xnaRect.Width,
-                height = (float)xnaRect.Height
+                width = xnaRect.Width,
+                height = xnaRect.Height
             };
         }
 

@@ -42,7 +42,7 @@ namespace CutTheRope.iframework.helpers
             if (!vectEqual(pos, target))
             {
                 pos = vectAdd(pos, vectMult(offset, delta));
-                pos = vect(round((double)pos.x), round((double)pos.y));
+                pos = vect(round(pos.x), round(pos.y));
                 if (!sameSign(offset.x, target.x - pos.x) || !sameSign(offset.y, target.y - pos.y))
                 {
                     pos = target;
@@ -57,7 +57,7 @@ namespace CutTheRope.iframework.helpers
 
         public virtual void cancelCameraTransformation()
         {
-            OpenGL.glTranslatef((double)pos.x, (double)pos.y, 0.0);
+            OpenGL.glTranslatef(pos.x, pos.y, 0.0);
         }
 
         public CAMERA_TYPE type;

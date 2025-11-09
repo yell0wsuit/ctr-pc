@@ -16,8 +16,8 @@ namespace CutTheRope.game
             if (base.init() != null)
             {
                 Image image = Image.Image_createWithResID(99);
-                qw = (float)image.width * 1.5f;
-                qh = (float)image.height * 1.5f;
+                qw = image.width * 1.5f;
+                qh = image.height * 1.5f;
                 totalCapacity = 200;
                 drawer = new ImageMultiDrawer().initWithImageandCapacity(image, totalCapacity);
                 pollens = new Pollen[totalCapacity];
@@ -57,11 +57,11 @@ namespace CutTheRope.game
             float num5 = num4;
             if (RND(1) == 1)
             {
-                num4 *= 1f + (float)RND(1) / 10f;
+                num4 *= 1f + RND(1) / 10f;
             }
             else
             {
-                num5 *= 1f + (float)RND(1) / 10f;
+                num5 *= 1f + RND(1) / 10f;
             }
             num *= num4;
             num2 *= num5;
@@ -86,7 +86,7 @@ namespace CutTheRope.game
             pollen.startAlpha = 1f;
             pollen.alpha = 0.7f * rND_0_ + 0.3f;
             Quad2D qt = drawer.image.texture.quads[0];
-            Quad3D qv = Quad3D.MakeQuad3D((double)(v.x - (float)(num6 / 2)), (double)(v.y - (float)(num7 / 2)), 0.0, (double)num6, (double)num7);
+            Quad3D qv = Quad3D.MakeQuad3D((double)(v.x - num6 / 2), (double)(v.y - num7 / 2), 0.0, num6, num7);
             drawer.setTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
             if (pollenCount >= totalCapacity)
             {
@@ -107,13 +107,13 @@ namespace CutTheRope.game
             int num = 44;
             Vector vector = g.mover.path[p1];
             Vector vector2 = vectSub(g.mover.path[p2], vector);
-            int num2 = (int)(vectLength(vector2) / (float)num);
+            int num2 = (int)(vectLength(vector2) / num);
             Vector v3 = vectNormalize(vector2);
             for (int i = 0; i <= num2; i++)
             {
-                Vector v4 = vectAdd(vector, vectMult(v3, (float)(i * num)));
-                v4.x += (float)RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
-                v4.y += (float)RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
+                Vector v4 = vectAdd(vector, vectMult(v3, i * num));
+                v4.x += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
+                v4.y += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
                 addPollenAtparentIndex(v4, p1);
             }
         }

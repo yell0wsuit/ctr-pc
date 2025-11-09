@@ -37,9 +37,9 @@ namespace CutTheRope.iframework.visual
             spaceWidth = sw;
             if (_isWvga)
             {
-                charOffset = (float)(int)((double)charOffset / 1.5);
-                lineOffset = (float)(int)((double)lineOffset / 1.5);
-                spaceWidth = (float)(int)((double)spaceWidth / 1.5);
+                charOffset = (int)(charOffset / 1.5);
+                lineOffset = (int)(lineOffset / 1.5);
+                spaceWidth = (int)(spaceWidth / 1.5);
             }
         }
 

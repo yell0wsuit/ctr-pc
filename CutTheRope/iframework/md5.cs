@@ -7,7 +7,7 @@ namespace CutTheRope.iframework
     {
         private static void GET_UINT32(ref uint n, byte[] b, int dataIndex, int i)
         {
-            n = (uint)((int)b[dataIndex + i] | ((int)b[dataIndex + i + 1] << 8) | ((int)b[dataIndex + i + 2] << 16) | ((int)b[dataIndex + i + 3] << 24));
+            n = (uint)(b[dataIndex + i] | (b[dataIndex + i + 1] << 8) | (b[dataIndex + i + 2] << 16) | (b[dataIndex + i + 3] << 24));
         }
 
         private static void PUT_UINT32(uint n, ref byte[] b, int i)

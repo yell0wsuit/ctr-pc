@@ -70,7 +70,7 @@ namespace CutTheRope.iframework.visual
                 p.color.b = p.color.b + p.deltaColor.b * delta;
                 p.color.a = p.color.a + p.deltaColor.a * delta;
                 p.life -= delta;
-                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.x - p.width / 2f), (double)(p.pos.y - p.height / 2f), 0.0, (double)p.width, (double)p.height);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.x - p.width / 2f), (double)(p.pos.y - p.height / 2f), 0.0, p.width, p.height);
                 for (int i = 0; i < 4; i++)
                 {
                     colors[particleIdx * 4 + i] = p.color;

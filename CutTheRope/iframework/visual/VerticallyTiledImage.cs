@@ -22,19 +22,19 @@ namespace CutTheRope.iframework.visual
             preDraw();
             float h = texture.quadRects[tiles[0]].h;
             float h2 = texture.quadRects[tiles[2]].h;
-            float num = (float)height - (h + h2);
+            float num = height - (h + h2);
             if (num >= 0f)
             {
                 GLDrawer.drawImageQuad(texture, tiles[0], drawX + offsets[0], drawY);
-                GLDrawer.drawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, (float)width, num);
+                GLDrawer.drawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, width, num);
                 GLDrawer.drawImageQuad(texture, tiles[2], drawX + offsets[2], drawY + h + num);
             }
             else
             {
                 CTRRectangle r = texture.quadRects[tiles[0]];
                 CTRRectangle r2 = texture.quadRects[tiles[2]];
-                r.h = Math.Min(r.h, (float)height / 2f);
-                r2.h = Math.Min(r2.h, (float)height - r.h);
+                r.h = Math.Min(r.h, height / 2f);
+                r2.h = Math.Min(r2.h, height - r.h);
                 r2.y += texture.quadRects[tiles[2]].h - r2.h;
                 GLDrawer.drawImagePart(texture, r, drawX + offsets[0], drawY);
                 GLDrawer.drawImagePart(texture, r2, drawX + offsets[2], drawY + r.h);
@@ -62,9 +62,9 @@ namespace CutTheRope.iframework.visual
             {
                 width = (int)w3;
             }
-            offsets[0] = ((float)width - w) / 2f;
-            offsets[1] = ((float)width - w2) / 2f;
-            offsets[2] = ((float)width - w3) / 2f;
+            offsets[0] = (width - w) / 2f;
+            offsets[1] = (width - w2) / 2f;
+            offsets[2] = (width - w3) / 2f;
         }
 
         public int[] tiles = new int[3];

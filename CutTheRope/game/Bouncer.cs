@@ -63,17 +63,17 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            t1.x = x - (float)(width / 2);
-            t2.x = x + (float)(width / 2);
-            t1.y = t2.y = (float)((double)y - 5.0);
+            t1.x = x - width / 2;
+            t2.x = x + width / 2;
+            t1.y = t2.y = (float)(y - 5.0);
             b1.x = t1.x;
             b2.x = t2.x;
-            b1.y = b2.y = (float)((double)y + 5.0);
+            b1.y = b2.y = (float)(y + 5.0);
             angle = DEGREES_TO_RADIANS(rotation);
-            t1 = vectRotateAround(t1, (double)angle, x, y);
-            t2 = vectRotateAround(t2, (double)angle, x, y);
-            b1 = vectRotateAround(b1, (double)angle, x, y);
-            b2 = vectRotateAround(b2, (double)angle, x, y);
+            t1 = vectRotateAround(t1, angle, x, y);
+            t2 = vectRotateAround(t2, angle, x, y);
+            b1 = vectRotateAround(b1, angle, x, y);
+            b2 = vectRotateAround(b2, angle, x, y);
         }
 
         private const float BOUNCER_HEIGHT = 10f;

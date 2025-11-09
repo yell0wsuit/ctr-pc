@@ -13,7 +13,7 @@ namespace CutTheRope.iframework.visual
         public override void draw()
         {
             preDraw();
-            GLDrawer.drawImageTiled(texture, q, drawX, drawY, (float)width, (float)height);
+            GLDrawer.drawImageTiled(texture, q, drawX, drawY, width, height);
             postDraw();
         }
 

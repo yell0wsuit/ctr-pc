@@ -20,7 +20,7 @@ namespace CutTheRope.iframework.visual
                 c.anchor = c.parentAnchor = 33;
             }
             c.x = nextElementX;
-            nextElementX += (float)c.width + offset;
+            nextElementX += c.width + offset;
             width = (int)(nextElementX - offset);
             return num;
         }

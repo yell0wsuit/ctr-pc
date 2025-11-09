@@ -19,7 +19,7 @@ namespace CutTheRope.game
             Vector vector = vectSub(v2, v);
             if (!vectEqual(vector, vectZero))
             {
-                Vector v3 = highlighted ? vector : vectMult(vector, ((double)color.a == 1.0) ? 1.02 : 1.0);
+                Vector v3 = highlighted ? vector : vectMult(vector, (color.a == 1.0) ? 1.02 : 1.0);
                 Vector v4 = vectPerp(vector);
                 Vector vector2 = vectNormalize(v4);
                 v4 = vectMult(vector2, size);
@@ -127,15 +127,15 @@ namespace CutTheRope.game
                 rGBAColor4.b *= num2;
             }
             float num3 = vectDistance(vect(pts[0].x, pts[0].y), vect(pts[1].x, pts[1].y));
-            if ((double)num3 <= (double)BUNGEE_REST_LEN + 0.3)
+            if ((double)num3 <= BUNGEE_REST_LEN + 0.3)
             {
                 b.relaxed = 0;
             }
-            else if ((double)num3 <= (double)BUNGEE_REST_LEN + 1.0)
+            else if ((double)num3 <= BUNGEE_REST_LEN + 1.0)
             {
                 b.relaxed = 1;
             }
-            else if ((double)num3 <= (double)BUNGEE_REST_LEN + 4.0)
+            else if ((double)num3 <= BUNGEE_REST_LEN + 4.0)
             {
                 b.relaxed = 2;
             }
@@ -143,7 +143,7 @@ namespace CutTheRope.game
             {
                 b.relaxed = 3;
             }
-            if ((double)num3 > (double)BUNGEE_REST_LEN + 7.0)
+            if ((double)num3 > BUNGEE_REST_LEN + 7.0)
             {
                 float num4 = num3 / BUNGEE_REST_LEN * 2f;
                 rGBAColor3.r *= num4;
@@ -153,19 +153,19 @@ namespace CutTheRope.game
             int num5 = (count - 1) * points;
             float[] array = new float[num5 * 2];
             b.drawPtsCount = num5 * 2;
-            float num6 = 1f / (float)num5;
+            float num6 = 1f / num5;
             float num7 = 0f;
             int num8 = 0;
             int num9 = 0;
             int num10 = 0;
             RGBAColor rGBAColor5 = rGBAColor3;
             RGBAColor rGBAColor6 = rGBAColor4;
-            float num11 = (rGBAColor.r - rGBAColor3.r) / (float)(num5 - 1);
-            float num12 = (rGBAColor.g - rGBAColor3.g) / (float)(num5 - 1);
-            float num13 = (rGBAColor.b - rGBAColor3.b) / (float)(num5 - 1);
-            float num14 = (rGBAColor2.r - rGBAColor4.r) / (float)(num5 - 1);
-            float num15 = (rGBAColor2.g - rGBAColor4.g) / (float)(num5 - 1);
-            float num16 = (rGBAColor2.b - rGBAColor4.b) / (float)(num5 - 1);
+            float num11 = (rGBAColor.r - rGBAColor3.r) / (num5 - 1);
+            float num12 = (rGBAColor.g - rGBAColor3.g) / (num5 - 1);
+            float num13 = (rGBAColor.b - rGBAColor3.b) / (num5 - 1);
+            float num14 = (rGBAColor2.r - rGBAColor4.r) / (num5 - 1);
+            float num15 = (rGBAColor2.g - rGBAColor4.g) / (num5 - 1);
+            float num16 = (rGBAColor2.b - rGBAColor4.b) / (num5 - 1);
             float lx = -1f;
             float ly = -1f;
             float rx = -1f;
@@ -199,12 +199,12 @@ namespace CutTheRope.game
                     num8 = 2;
                     flag = !flag;
                     num10++;
-                    rGBAColor5.r += num11 * (float)(num17 - 1);
-                    rGBAColor5.g += num12 * (float)(num17 - 1);
-                    rGBAColor5.b += num13 * (float)(num17 - 1);
-                    rGBAColor6.r += num14 * (float)(num17 - 1);
-                    rGBAColor6.g += num15 * (float)(num17 - 1);
-                    rGBAColor6.b += num16 * (float)(num17 - 1);
+                    rGBAColor5.r += num11 * (num17 - 1);
+                    rGBAColor5.g += num12 * (num17 - 1);
+                    rGBAColor5.b += num13 * (num17 - 1);
+                    rGBAColor6.r += num14 * (num17 - 1);
+                    rGBAColor6.g += num15 * (num17 - 1);
+                    rGBAColor6.b += num16 * (num17 - 1);
                 }
                 if ((double)num7 == 1.0)
                 {
@@ -248,7 +248,7 @@ namespace CutTheRope.game
                 tail.addConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                 Vector v = vectSub(tail.pos, bungeeAnchor.pos);
                 int num = (int)(len / BUNGEE_REST_LEN + 2f);
-                v = vectDiv(v, (float)num);
+                v = vectDiv(v, num);
                 rollplacingWithOffset(len, v);
                 forceWhite = false;
                 initialCandleAngle = -1f;
@@ -293,22 +293,22 @@ namespace CutTheRope.game
                     constraintedPoint2.setWeight(0.02f);
                     constraintedPoint2.pos = vectAdd(constraintedPoint.pos, off);
                     addPartAt(constraintedPoint2, parts.Count - 1);
-                    tail.changeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, (float)num);
+                    tail.changeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, num);
                     constraintedPoint2.addConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                     rollLen -= BUNGEE_REST_LEN;
                 }
                 else
                 {
-                    int num2 = (int)(rollLen + (float)num);
-                    if ((float)num2 > BUNGEE_REST_LEN)
+                    int num2 = (int)(rollLen + num);
+                    if (num2 > BUNGEE_REST_LEN)
                     {
                         rollLen = BUNGEE_REST_LEN;
-                        num = (int)((float)num2 - BUNGEE_REST_LEN);
+                        num = (int)(num2 - BUNGEE_REST_LEN);
                     }
                     else
                     {
                         ConstraintedPoint n2 = parts[parts.Count - 2];
-                        tail.changeRestLengthToFor((float)num2, n2);
+                        tail.changeRestLengthToFor(num2, n2);
                         rollLen = 0f;
                     }
                 }
@@ -327,23 +327,23 @@ namespace CutTheRope.game
                 {
                     ConstraintedPoint o = parts[num3 - 2];
                     ConstraintedPoint n2 = parts[num3 - 3];
-                    tail.changeConstraintFromTowithRestLength(o, n2, (float)num2);
+                    tail.changeConstraintFromTowithRestLength(o, n2, num2);
                     parts.RemoveAt(parts.Count - 2);
                     num3--;
                     num -= BUNGEE_REST_LEN;
                 }
                 else
                 {
-                    int num4 = (int)((float)num2 - num);
+                    int num4 = (int)(num2 - num);
                     if (num4 < 1)
                     {
                         num = BUNGEE_REST_LEN;
-                        num2 = (int)(BUNGEE_REST_LEN + (float)num4 + 1f);
+                        num2 = (int)(BUNGEE_REST_LEN + num4 + 1f);
                     }
                     else
                     {
                         ConstraintedPoint n3 = parts[num3 - 2];
-                        tail.changeRestLengthToFor((float)num4, n3);
+                        tail.changeRestLengthToFor(num4, n3);
                         num = 0f;
                     }
                 }
@@ -354,7 +354,7 @@ namespace CutTheRope.game
                 Constraint constraint = tail.constraints[j];
                 if (constraint != null && constraint.type == Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN)
                 {
-                    constraint.restLength = (float)(num3 - 1) * (BUNGEE_REST_LEN + 3f);
+                    constraint.restLength = (num3 - 1) * (BUNGEE_REST_LEN + 3f);
                 }
             }
             return num;
@@ -420,7 +420,7 @@ namespace CutTheRope.game
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.addConstraintwithRestLengthofType(bungeeAnchor, (float)i * (BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
+                            constraintedPoint.addConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
                         }
                     }
                     i++;
@@ -435,7 +435,7 @@ namespace CutTheRope.game
 
         public virtual void update(float delta, float koeff)
         {
-            if ((double)cutTime > 0.0)
+            if (cutTime > 0.0)
             {
                 Mover.moveVariableToTarget(ref cutTime, 0f, 1f, delta);
                 if (cutTime < 1.95f && forceWhite)
@@ -474,7 +474,7 @@ namespace CutTheRope.game
                     ConstraintedPoint constraintedPoint = parts[i];
                     array[i] = constraintedPoint.pos;
                 }
-                OpenGL.glLineWidth((double)lineWidth);
+                OpenGL.glLineWidth(lineWidth);
                 drawBungee(this, array, count, 4);
                 OpenGL.glLineWidth(1.0);
                 return;
@@ -510,7 +510,7 @@ namespace CutTheRope.game
                     num++;
                 }
             }
-            OpenGL.glLineWidth((double)lineWidth);
+            OpenGL.glLineWidth(lineWidth);
             int num2 = count - num;
             if (num2 > 0)
             {

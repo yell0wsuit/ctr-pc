@@ -132,7 +132,7 @@ namespace CutTheRope.iframework.helpers
                 fmSins = new float[1024];
                 for (int i = 0; i < 1024; i++)
                 {
-                    fmSins[i] = (float)Math.Sin((double)(i * 2) * 3.141592653589793 / 1024.0);
+                    fmSins[i] = (float)Math.Sin(i * 2 * 3.141592653589793 / 1024.0);
                 }
             }
             if (fmCoss == null)
@@ -140,7 +140,7 @@ namespace CutTheRope.iframework.helpers
                 fmCoss = new float[1024];
                 for (int j = 0; j < 1024; j++)
                 {
-                    fmCoss[j] = (float)Math.Cos((double)(j * 2) * 3.141592653589793 / 1024.0);
+                    fmCoss[j] = (float)Math.Cos(j * 2 * 3.141592653589793 / 1024.0);
                 }
             }
         }
@@ -357,7 +357,7 @@ namespace CutTheRope.iframework.helpers
 
         public static float vectAngleNormalized(Vector v)
         {
-            return (float)Math.Atan2((double)v.y, (double)v.x);
+            return (float)Math.Atan2(v.y, v.x);
         }
 
         public static float vectLength(Vector v)
@@ -382,7 +382,7 @@ namespace CutTheRope.iframework.helpers
 
         private static float vectToAngle(Vector v)
         {
-            return (float)Math.Atan2((double)v.x, (double)v.y);
+            return (float)Math.Atan2(v.x, v.y);
         }
 
         public static float vectDistance(Vector v1, Vector v2)
@@ -501,7 +501,7 @@ namespace CutTheRope.iframework.helpers
 
         public static float FLOAT_RND_RANGE(int S, int F)
         {
-            return (float)RND_RANGE(S * 1000, F * 1000) / 1000f;
+            return RND_RANGE(S * 1000, F * 1000) / 1000f;
         }
 
         public static NSString getMD5Str(NSString input)
@@ -526,7 +526,7 @@ namespace CutTheRope.iframework.helpers
             int num = 0;
             for (int j = 0; j < 16; j++)
             {
-                int num2 = (int)array2[j];
+                int num2 = array2[j];
                 int num3 = (num2 >> 4) & 15;
                 array3[num++] = (char)((num3 < 10) ? (48 + num3) : (97 + num3 - 10));
                 num3 = num2 & 15;

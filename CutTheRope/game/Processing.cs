@@ -32,7 +32,7 @@ namespace CutTheRope.game
                     image.addTimeline(timeline);
                     image.playTimeline(0);
                     Text c = Text.createWithFontandString(3, Application.getString(655425));
-                    HBox hBox = new HBox().initWithOffsetAlignHeight(10f, 16, (float)image.height);
+                    HBox hBox = new HBox().initWithOffsetAlignHeight(10f, 16, image.height);
                     hBox.parentAnchor = hBox.anchor = 18;
                     addChild(hBox);
                     hBox.addChild(image);

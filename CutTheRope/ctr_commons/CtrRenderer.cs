@@ -116,7 +116,7 @@ namespace CutTheRope.ctr_commons
                         {
                             num4 = 1L;
                         }
-                        int fps = (int)(1000000000L * (long)num3 / num4);
+                        int fps = (int)(1000000000L * num3 / num4);
                         playedTicks += DELTA_NANOS;
                         if (timestamp - playedTicks < DELTA_NANOS_THRES)
                         {
@@ -210,8 +210,8 @@ namespace CutTheRope.ctr_commons
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeResize(int width, int height, bool isLowMem)
         {
-            REAL_SCREEN_WIDTH = (float)width;
-            REAL_SCREEN_HEIGHT = (float)height;
+            REAL_SCREEN_WIDTH = width;
+            REAL_SCREEN_HEIGHT = height;
             SCREEN_RATIO = REAL_SCREEN_HEIGHT / REAL_SCREEN_WIDTH;
             IS_WVGA = width > 500 || height > 500;
             IS_QVGA = width < 280 || height < 280;
@@ -226,8 +226,8 @@ namespace CutTheRope.ctr_commons
                 VIEW_SCREEN_HEIGHT = REAL_SCREEN_HEIGHT;
                 VIEW_SCREEN_WIDTH = SCREEN_WIDTH * REAL_SCREEN_HEIGHT / SCREEN_HEIGHT;
             }
-            VIEW_OFFSET_X = ((float)width - VIEW_SCREEN_WIDTH) / 2f;
-            VIEW_OFFSET_Y = ((float)height - VIEW_SCREEN_HEIGHT) / 2f;
+            VIEW_OFFSET_X = (width - VIEW_SCREEN_WIDTH) / 2f;
+            VIEW_OFFSET_Y = (height - VIEW_SCREEN_HEIGHT) / 2f;
             SCREEN_HEIGHT_EXPANDED = SCREEN_HEIGHT * REAL_SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
             SCREEN_WIDTH_EXPANDED = SCREEN_WIDTH * REAL_SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
             SCREEN_OFFSET_Y = (SCREEN_HEIGHT_EXPANDED - SCREEN_HEIGHT) / 2f;
@@ -236,7 +236,7 @@ namespace CutTheRope.ctr_commons
             SCREEN_BG_SCALE_X = SCREEN_WIDTH_EXPANDED / SCREEN_WIDTH;
             if (IS_WVGA)
             {
-                SCREEN_WIDE_BG_SCALE_Y = (float)((double)SCREEN_HEIGHT_EXPANDED * 1.5 / 800.0);
+                SCREEN_WIDE_BG_SCALE_Y = (float)(SCREEN_HEIGHT_EXPANDED * 1.5 / 800.0);
                 SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
                 return;
             }
@@ -289,7 +289,7 @@ namespace CutTheRope.ctr_commons
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(int fps)
         {
             GLCanvas gLCanvas = Application.sharedCanvas();
-            gLCanvas?.drawFPS((float)fps);
+            gLCanvas?.drawFPS(fps);
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeTick(float delta)
@@ -330,7 +330,7 @@ namespace CutTheRope.ctr_commons
 
         private static long DELTA_NANOS = 18181818L;
 
-        private static long DELTA_NANOS_THRES = (long)((double)DELTA_NANOS * 0.35);
+        private static long DELTA_NANOS_THRES = (long)(DELTA_NANOS * 0.35);
 
         private static bool DRAW_NOTHING = false;
 

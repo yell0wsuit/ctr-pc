@@ -30,7 +30,7 @@ namespace CutTheRope.windows
         {
             if (cap == 4)
             {
-                glScissor(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT);
+                glScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
             }
             if (cap == 1)
             {
@@ -434,7 +434,7 @@ namespace CutTheRope.windows
             BasicEffect basicEffect = (!useTexture) ? s_effectColor : (useColor ? s_effectTextureColor : s_effectTexture);
             if (useTexture)
             {
-                basicEffect.Alpha = (float)s_Color.A / 255f;
+                basicEffect.Alpha = s_Color.A / 255f;
                 if (basicEffect.Alpha == 0f)
                 {
                     return basicEffect;
@@ -617,9 +617,9 @@ namespace CutTheRope.windows
             try
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
-                float num = FrameworkTypes.SCREEN_WIDTH / (float)bounds.Width;
-                float num2 = FrameworkTypes.SCREEN_HEIGHT / (float)bounds.Height;
-                Rectangle value = new((int)((float)x / num), (int)((float)y / num2), (int)((float)width / num), (int)((float)height / num2));
+                float num = FrameworkTypes.SCREEN_WIDTH / bounds.Width;
+                float num2 = FrameworkTypes.SCREEN_HEIGHT / bounds.Height;
+                Rectangle value = new((int)(x / num), (int)(y / num2), (int)(width / num), (int)(height / num2));
                 Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(value, bounds);
             }
             catch (Exception)

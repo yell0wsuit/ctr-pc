@@ -91,11 +91,11 @@ namespace CutTheRope.windows
                     Texture2D texture2D = _listBitmap[_currentSplash];
                     Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
                     Rectangle bounds = texture2D.Bounds;
-                    double num5 = (double)currentSize.Width / (double)bounds.Width;
-                    double val2 = (double)currentSize.Height / (double)bounds.Height;
+                    double num5 = currentSize.Width / (double)bounds.Width;
+                    double val2 = currentSize.Height / (double)bounds.Height;
                     double num = Math.Min(num5, val2);
-                    bounds.Width = (int)((double)bounds.Width * num + 0.5);
-                    bounds.Height = (int)((double)bounds.Height * num + 0.5);
+                    bounds.Width = (int)(bounds.Width * num + 0.5);
+                    bounds.Height = (int)(bounds.Height * num + 0.5);
                     bounds.X = (currentSize.Width - bounds.Width) / 2;
                     bounds.Y = (currentSize.Height - bounds.Height) / 2;
                     Color color = Color.White;

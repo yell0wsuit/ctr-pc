@@ -32,31 +32,31 @@ namespace CutTheRope.iframework.visual
             float num5;
             if (vertical)
             {
-                num = (float)width - 2f;
+                num = width - 2f;
                 num2 = 1f;
-                num3 = (float)Math.Round(((double)height - 2.0) / (double)sc.y);
+                num3 = (float)Math.Round((height - 2.0) / sc.y);
                 float num4 = (mp.y != 0f) ? (sp.y / mp.y) : 1f;
-                num5 = (float)(1.0 + ((double)height - 2.0 - (double)num3) * (double)num4);
-                if (num3 > (float)height)
+                num5 = (float)(1.0 + (height - 2.0 - (double)num3) * (double)num4);
+                if (num3 > height)
                 {
                     flag = true;
                 }
             }
             else
             {
-                num3 = (float)height - 2f;
+                num3 = height - 2f;
                 num5 = 1f;
-                num = (float)Math.Round(((double)width - 2.0) / (double)sc.x);
+                num = (float)Math.Round((width - 2.0) / sc.x);
                 float num6 = (mp.x != 0f) ? (sp.x / mp.x) : 1f;
-                num2 = (float)(1.0 + ((double)width - 2.0 - (double)num) * (double)num6);
-                if (num > (float)width)
+                num2 = (float)(1.0 + (width - 2.0 - (double)num) * (double)num6);
+                if (num > width)
                 {
                     flag = true;
                 }
             }
             if (!flag)
             {
-                GLDrawer.drawSolidRectWOBorder(drawX, drawY, (float)width, (float)height, backColor);
+                GLDrawer.drawSolidRectWOBorder(drawX, drawY, width, height, backColor);
                 GLDrawer.drawSolidRectWOBorder(drawX + num2, drawY + num5, num, num3, scrollerColor);
             }
             OpenGL.glEnable(0);
