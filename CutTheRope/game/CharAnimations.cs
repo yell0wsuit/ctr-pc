@@ -62,15 +62,15 @@ namespace CutTheRope.game
             Animation animation2 = this.getAnimation(i2);
             Timeline timeline = animation.getTimeline(a1);
             DynamicArray dynamicArray = (DynamicArray)new DynamicArray().init();
-            dynamicArray.addObject(Action.createAction(animation2, "ACTION_PLAY_TIMELINE", (i1 == 80) ? 1 : 0, a2));
+            dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_PLAY_TIMELINE", (i1 == 80) ? 1 : 0, a2));
             if (animation != animation2)
             {
-                dynamicArray.addObject(Action.createAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
-                dynamicArray.addObject(Action.createAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
-                dynamicArray.addObject(Action.createAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
-                dynamicArray.addObject(Action.createAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
-                dynamicArray.addObject(Action.createAction(animation, "ACTION_SET_VISIBLE", 0, 0));
-                dynamicArray.addObject(Action.createAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
+                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
+                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
+                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
+                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
+                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_VISIBLE", 0, 0));
+                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
             }
             timeline.addKeyFrame(KeyFrame.makeAction(dynamicArray, d));
         }

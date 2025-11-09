@@ -32,13 +32,13 @@ namespace CutTheRope.iframework.visual
         public virtual void addAnimationWithIDDelayLoopCountFirstLastArgumentList(int aid, float d, Timeline.LoopType l, int c, int s, int e)
         {
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(c + 2);
-            timeline.addKeyFrame(KeyFrame.makeAction(new List<Action> { Action.createAction(this, "ACTION_SET_DRAWQUAD", s, 0) }, 0f));
+            timeline.addKeyFrame(KeyFrame.makeAction(new List<CTRAction> { CTRAction.createAction(this, "ACTION_SET_DRAWQUAD", s, 0) }, 0f));
             int num = s;
             for (int i = 1; i < c; i++)
             {
                 num++;
-                List<Action> list = new();
-                list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", num, 0));
+                List<CTRAction> list = new();
+                list.Add(CTRAction.createAction(this, "ACTION_SET_DRAWQUAD", num, 0));
                 timeline.addKeyFrame(KeyFrame.makeAction(list, d));
                 if (i == c - 1 && l == Timeline.LoopType.TIMELINE_REPLAY)
                 {
@@ -60,13 +60,13 @@ namespace CutTheRope.iframework.visual
         public virtual void addAnimationWithIDDelayLoopCountFirstLastArgumentList(int aid, float d, Timeline.LoopType l, int c, int s, int e, List<int> al)
         {
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(c + 2);
-            timeline.addKeyFrame(KeyFrame.makeAction(new List<Action> { Action.createAction(this, "ACTION_SET_DRAWQUAD", s, 0) }, 0f));
+            timeline.addKeyFrame(KeyFrame.makeAction(new List<CTRAction> { CTRAction.createAction(this, "ACTION_SET_DRAWQUAD", s, 0) }, 0f));
             int num2 = 0;
             for (int i = 1; i < c; i++)
             {
                 int num3 = al[num2++];
-                List<Action> list = new();
-                list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", num3, 0));
+                List<CTRAction> list = new();
+                list.Add(CTRAction.createAction(this, "ACTION_SET_DRAWQUAD", num3, 0));
                 timeline.addKeyFrame(KeyFrame.makeAction(list, d));
                 if (i == c - 1 && l == Timeline.LoopType.TIMELINE_REPLAY)
                 {
@@ -82,7 +82,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void switchToAnimationatEndOfAnimationDelay(int a2, int a1, float d)
         {
-            this.getTimeline(a1).addKeyFrame(KeyFrame.makeAction(new List<Action> { Action.createAction(this, "ACTION_PLAY_TIMELINE", 0, a2) }, d));
+            this.getTimeline(a1).addKeyFrame(KeyFrame.makeAction(new List<CTRAction> { CTRAction.createAction(this, "ACTION_PLAY_TIMELINE", 0, a2) }, d));
         }
 
         public virtual void setPauseAtIndexforAnimation(int i, int a)
@@ -92,7 +92,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void setActionTargetParamSubParamAtIndexforAnimation(string action, BaseElement target, int p, int sp, int i, int a)
         {
-            this.getTimeline(a).getTrack(Track.TrackType.TRACK_ACTION).keyFrames[i].value.action.actionSet.Add(Action.createAction(target, action, p, sp));
+            this.getTimeline(a).getTrack(Track.TrackType.TRACK_ACTION).keyFrames[i].value.action.actionSet.Add(CTRAction.createAction(target, action, p, sp));
         }
 
         public virtual int addAnimationWithDelayLoopedCountSequence(float d, Timeline.LoopType l, int c, int s, List<int> al)

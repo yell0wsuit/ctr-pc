@@ -5,6 +5,6 @@ namespace CutTheRope.iframework.visual
 {
     internal class ActionParams
     {
-        public List<Action> actionSet;
+        public List<CTRAction> actionSet;
     }
 }

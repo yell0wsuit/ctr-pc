@@ -25,7 +25,7 @@ namespace CutTheRope.iframework.visual
             this.keyFrames = new KeyFrame[this.keyFramesCapacity];
             if (this.type == Track.TrackType.TRACK_ACTION)
             {
-                this.actionSets = new List<List<Action>>();
+                this.actionSets = new List<List<CTRAction>>();
             }
             return this;
         }
@@ -233,7 +233,7 @@ namespace CutTheRope.iframework.visual
                     {
                         for (int i = 0; i < kf.value.action.actionSet.Count; i++)
                         {
-                            Action action = kf.value.action.actionSet[i];
+                            CTRAction action = kf.value.action.actionSet[i];
                             action.actionTarget.handleAction(action.data);
                         }
                         return;
@@ -515,7 +515,7 @@ namespace CutTheRope.iframework.visual
 
         public float overrun;
 
-        public List<List<Action>> actionSets;
+        public List<List<CTRAction>> actionSets;
 
         public enum TrackType
         {
