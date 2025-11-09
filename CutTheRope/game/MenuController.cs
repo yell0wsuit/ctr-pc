@@ -1820,8 +1820,8 @@ namespace CutTheRope.game
             public override bool onTouchDownXY(float tx, float ty)
             {
                 base.onTouchDownXY(tx, ty);
-                Rectangle r = FrameworkTypes.MakeRectangle(this.drawX + this.bbc.x, this.drawY + this.bbc.y, (float)this.width + this.bbc.w, (float)this.height + this.bbc.h);
-                Rectangle rectangle = CTRMathHelper.rectInRectIntersection(FrameworkTypes.MakeRectangle(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT), r);
+                CTRRectangle r = FrameworkTypes.MakeRectangle(this.drawX + this.bbc.x, this.drawY + this.bbc.y, (float)this.width + this.bbc.w, (float)this.height + this.bbc.h);
+                CTRRectangle rectangle = CTRMathHelper.rectInRectIntersection(FrameworkTypes.MakeRectangle(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT), r);
                 if (CTRMathHelper.pointInRect(tx, ty, r.x, r.y, r.w, r.h) && (double)rectangle.w > (double)r.w / 2.0)
                 {
                     this.delegateValue.onButtonPressed(this.bid);
@@ -1832,7 +1832,7 @@ namespace CutTheRope.game
 
             public int bid;
 
-            public Rectangle bbc;
+            public CTRRectangle bbc;
 
             public ButtonDelegate delegateValue;
         }

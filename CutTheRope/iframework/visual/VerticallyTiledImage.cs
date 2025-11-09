@@ -31,8 +31,8 @@ namespace CutTheRope.iframework.visual
             }
             else
             {
-                Rectangle r = this.texture.quadRects[this.tiles[0]];
-                Rectangle r2 = this.texture.quadRects[this.tiles[2]];
+                CTRRectangle r = this.texture.quadRects[this.tiles[0]];
+                CTRRectangle r2 = this.texture.quadRects[this.tiles[2]];
                 r.h = Math.Min(r.h, (float)this.height / 2f);
                 r2.h = Math.Min(r2.h, (float)this.height - r.h);
                 r2.y += this.texture.quadRects[this.tiles[2]].h - r2.h;

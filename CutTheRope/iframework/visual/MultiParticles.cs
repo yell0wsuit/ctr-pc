@@ -38,7 +38,7 @@ namespace CutTheRope.iframework.visual
             int num = CTRMathHelper.RND(image.texture.quadsCount - 1);
             Quad2D qt = image.texture.quads[num];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            Rectangle rectangle = image.texture.quadRects[num];
+            CTRRectangle rectangle = image.texture.quadRects[num];
             this.drawer.setTextureQuadatVertexQuadatIndex(qt, qv, this.particleCount);
             base.initParticle(ref particle);
             particle.width = rectangle.w * particle.size;

@@ -23,7 +23,7 @@ namespace CutTheRope.iframework.visual
                 this.touchRightInc = 0f;
                 this.touchTopInc = 0f;
                 this.touchBottomInc = 0f;
-                this.forcedTouchZone = new Rectangle(-1f, -1f, -1f, -1f);
+                this.forcedTouchZone = new CTRRectangle(-1f, -1f, -1f, -1f);
             }
             return this;
         }
@@ -53,7 +53,7 @@ namespace CutTheRope.iframework.visual
             this.touchBottomInc = b;
         }
 
-        public virtual void forceTouchRect(Rectangle r)
+        public virtual void forceTouchRect(CTRRectangle r)
         {
             this.forcedTouchZone = r;
         }
@@ -151,7 +151,7 @@ namespace CutTheRope.iframework.visual
 
         public float touchBottomInc;
 
-        public Rectangle forcedTouchZone;
+        public CTRRectangle forcedTouchZone;
 
         public enum BUTTON_STATE
         {

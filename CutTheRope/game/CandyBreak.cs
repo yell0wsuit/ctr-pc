@@ -61,7 +61,7 @@ namespace CutTheRope.game
             Quad2D qt = this.imageGrid.texture.quads[num];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             this.drawer.setTextureQuadatVertexQuadatIndex(qt, qv, this.particleCount);
-            Rectangle rectangle = this.imageGrid.texture.quadRects[num];
+            CTRRectangle rectangle = this.imageGrid.texture.quadRects[num];
             particle.width = rectangle.w * particle.size;
             particle.height = rectangle.h * particle.size;
         }

@@ -235,9 +235,9 @@ namespace CutTheRope.iframework.helpers
             return true;
         }
 
-        public static Rectangle rectInRectIntersection(Rectangle r1, Rectangle r2)
+        public static CTRRectangle rectInRectIntersection(CTRRectangle r1, CTRRectangle r2)
         {
-            Rectangle result = r2;
+            CTRRectangle result = r2;
             result.x = r2.x - r1.x;
             result.y = r2.y - r1.y;
             if (result.x < 0f)

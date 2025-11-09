@@ -223,7 +223,7 @@ namespace CutTheRope.iframework.core
             for (int i = 0; i < num; i++)
             {
                 int num3 = i * 4;
-                Rectangle rect = FrameworkTypes.MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
+                CTRRectangle rect = FrameworkTypes.MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
                 if ((float)num2 < rect.h + rect.y)
                 {
                     num2 = (int)CTRMathHelper.ceil((double)(rect.h + rect.y));

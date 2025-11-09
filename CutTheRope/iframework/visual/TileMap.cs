@@ -150,7 +150,7 @@ namespace CutTheRope.iframework.visual
             {
                 return;
             }
-            Rectangle rectangle = CTRMathHelper.rectInRectIntersection(new Rectangle(num3, num4, (float)this.tileMapWidth, (float)this.tileMapHeight), new Rectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight));
+            CTRRectangle rectangle = CTRMathHelper.rectInRectIntersection(new CTRRectangle(num3, num4, (float)this.tileMapWidth, (float)this.tileMapHeight), new CTRRectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight));
             Vector vector = CTRMathHelper.vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
             Vector vector2 = CTRMathHelper.vect((float)((int)vector.x / this.tileWidth), (float)((int)vector.y / this.tileHeight));
             float num7 = num4 + vector2.y * (float)this.tileHeight;
@@ -180,8 +180,8 @@ namespace CutTheRope.iframework.visual
                 int k = (int)vector2.y;
                 while (k <= num9 && vector3.y < num2 + (float)this.cameraViewHeight)
                 {
-                    Rectangle rectangle2 = CTRMathHelper.rectInRectIntersection(new Rectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight), new Rectangle(vector3.x, vector3.y, (float)this.tileWidth, (float)this.tileHeight));
-                    Rectangle r = new(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
+                    CTRRectangle rectangle2 = CTRMathHelper.rectInRectIntersection(new CTRRectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight), new CTRRectangle(vector3.x, vector3.y, (float)this.tileWidth, (float)this.tileHeight));
+                    CTRRectangle r = new(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
                     int num10 = j;
                     int num11 = k;
                     if (this.repeatedVertically == TileMap.Repeat.REPEAT_EDGES)
