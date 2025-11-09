@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.core
             {
                 return value;
             }
-            string path = (resType != ResourceMgr.ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "";
+            string path = (resType != ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "";
             bool flag = false;
             float scaleX = getNormalScaleX(resID);
             float scaleY = getNormalScaleY(resID);
@@ -46,19 +46,19 @@ namespace CutTheRope.iframework.core
             }
             switch (resType)
             {
-                case ResourceMgr.ResourceType.IMAGE:
+                case ResourceType.IMAGE:
                     value = loadTextureImageInfo(path, null, flag, scaleX, scaleY);
                     break;
-                case ResourceMgr.ResourceType.FONT:
+                case ResourceType.FONT:
                     value = loadVariableFontInfo(path, resID, flag);
                     s_Resources.Remove(resID);
                     break;
-                case ResourceMgr.ResourceType.SOUND:
+                case ResourceType.SOUND:
                     value = loadSoundInfo(path);
                     break;
-                case ResourceMgr.ResourceType.STRINGS:
+                case ResourceType.STRINGS:
                     value = loadStringsInfo(resID);
-                    value = NSObject.NSS(value.ToString().Replace('\u00a0', ' '));
+                    value = NSS(value.ToString().Replace('\u00a0', ' '));
                     break;
             }
             if (value != null)
@@ -91,15 +91,15 @@ namespace CutTheRope.iframework.core
             if (xMLNode != null)
             {
                 string tag = "en";
-                if (ResDataPhoneFull.LANGUAGE == Language.LANG_RU)
+                if (LANGUAGE == Language.LANG_RU)
                 {
                     tag = "ru";
                 }
-                if (ResDataPhoneFull.LANGUAGE == Language.LANG_FR)
+                if (LANGUAGE == Language.LANG_FR)
                 {
                     tag = "fr";
                 }
-                if (ResDataPhoneFull.LANGUAGE == Language.LANG_DE)
+                if (LANGUAGE == Language.LANG_DE)
                 {
                     tag = "de";
                 }
@@ -126,7 +126,7 @@ namespace CutTheRope.iframework.core
             {
                 NSString data2 = xMLNode3.data;
             }
-            Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)loadResource(resID, ResourceMgr.ResourceType.IMAGE), null);
+            Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)loadResource(resID, ResourceType.IMAGE), null);
             font.setCharOffsetLineOffsetSpaceWidth((float)num, (float)num2, (float)num3);
             return font;
         }
@@ -139,7 +139,7 @@ namespace CutTheRope.iframework.core
             }
             bool flag = (i["filter"].intValue() & 1) == 1;
             int defaultAlphaPixelFormat = i["format"].intValue();
-            string text = ResourceMgr.fullPathFromRelativePath(path);
+            string text = fullPathFromRelativePath(path);
             if (flag)
             {
                 CTRTexture2D.setAntiAliasTexParameters();
@@ -166,7 +166,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void setTextureInfo(CTRTexture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
-            t.preCutSize = CTRMathHelper.vectUndefined;
+            t.preCutSize = vectUndefined;
             XMLNode xMLNode = i.findChildWithTagNameRecursively("quads", false);
             if (xMLNode != null)
             {
@@ -197,11 +197,11 @@ namespace CutTheRope.iframework.core
                 array2[k] = list2[k].floatValue();
             }
             setOffsetsInfo(t, array2, list2.Count, scaleX, scaleY);
-            XMLNode xMLNode3 = i.findChildWithTagNameRecursively(NSObject.NSS("preCutWidth"), false);
-            XMLNode xMLNode4 = i.findChildWithTagNameRecursively(NSObject.NSS("preCutHeight"), false);
+            XMLNode xMLNode3 = i.findChildWithTagNameRecursively(NSS("preCutWidth"), false);
+            XMLNode xMLNode4 = i.findChildWithTagNameRecursively(NSS("preCutHeight"), false);
             if (xMLNode3 != null && xMLNode4 != null)
             {
-                t.preCutSize = CTRMathHelper.vect((float)xMLNode3.data.intValue(), (float)xMLNode4.data.intValue());
+                t.preCutSize = vect((float)xMLNode3.data.intValue(), (float)xMLNode4.data.intValue());
                 if (isWvga)
                 {
                     t.preCutSize.x = t.preCutSize.x / 1.5f;
@@ -212,7 +212,7 @@ namespace CutTheRope.iframework.core
 
         private static string fullPathFromRelativePath(string relPath)
         {
-            return ResDataPhoneFull.ContentFolder + relPath;
+            return ContentFolder + relPath;
         }
 
         private void setQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
@@ -223,10 +223,10 @@ namespace CutTheRope.iframework.core
             for (int i = 0; i < num; i++)
             {
                 int num3 = i * 4;
-                CTRRectangle rect = FrameworkTypes.MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
+                CTRRectangle rect = MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
                 if ((float)num2 < rect.h + rect.y)
                 {
-                    num2 = (int)CTRMathHelper.ceil((double)(rect.h + rect.y));
+                    num2 = (int)ceil((double)(rect.h + rect.y));
                 }
                 rect.x /= scaleX;
                 rect.y /= scaleY;
@@ -334,7 +334,7 @@ namespace CutTheRope.iframework.core
         {
             if (resourcesDelegate != null)
             {
-                DelayedDispatcher.DispatchFunc dispatchFunc = new(ResourceMgr.rmgr_internalUpdate);
+                DelayedDispatcher.DispatchFunc dispatchFunc = new(rmgr_internalUpdate);
                 Timer = NSTimer.schedule(dispatchFunc, this, 0.022222223f);
             }
             bUseFake = loadQueue.Count < 100;
@@ -388,12 +388,12 @@ namespace CutTheRope.iframework.core
                 }
                 return;
             }
-            if (ResDataPhoneFull.isSound(resId))
+            if (isSound(resId))
             {
                 Application.sharedSoundMgr().getSound(resId);
                 return;
             }
-            if (ResDataPhoneFull.isFont(resId))
+            if (isFont(resId))
             {
                 Application.getFont(resId);
                 return;
@@ -418,7 +418,7 @@ namespace CutTheRope.iframework.core
                 xmlStrings = null;
                 return;
             }
-            if (ResDataPhoneFull.isSound(resId))
+            if (isSound(resId))
             {
                 Application.sharedSoundMgr().freeSound(resId);
                 return;

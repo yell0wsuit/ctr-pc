@@ -17,10 +17,10 @@ namespace CutTheRope.game
         {
             if (init() != null)
             {
-                width = (int)FrameworkTypes.SCREEN_WIDTH_EXPANDED;
-                height = (int)FrameworkTypes.SCREEN_HEIGHT_EXPANDED + 1;
-                x = 0f - FrameworkTypes.SCREEN_OFFSET_X;
-                y = 0f - FrameworkTypes.SCREEN_OFFSET_Y;
+                width = (int)SCREEN_WIDTH_EXPANDED;
+                height = (int)SCREEN_HEIGHT_EXPANDED + 1;
+                x = 0f - SCREEN_OFFSET_X;
+                y = 0f - SCREEN_OFFSET_Y;
                 blendingMode = 0;
                 if (loading)
                 {
@@ -74,14 +74,14 @@ namespace CutTheRope.game
         {
             if (t == 0)
             {
-                base.setEnabled(true);
+                setEnabled(true);
             }
             base.playTimeline(t);
         }
 
         public void timelineFinished(Timeline t)
         {
-            base.setEnabled(false);
+            setEnabled(false);
         }
 
         public void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)

@@ -12,49 +12,49 @@ namespace CutTheRope.iframework.core
     {
         public static CTRPreferences sharedPreferences()
         {
-            return Application.prefs;
+            return prefs;
         }
 
         public static CTRResourceMgr sharedResourceMgr()
         {
-            return Application.resourceMgr;
+            return resourceMgr;
         }
 
         public static RootController sharedRootController()
         {
-            if (Application.root == null)
+            if (root == null)
             {
-                Application.root = (CTRRootController)new CTRRootController().initWithParent(null);
+                root = (CTRRootController)new CTRRootController().initWithParent(null);
             }
-            return Application.root;
+            return root;
         }
 
         public static ApplicationSettings sharedAppSettings()
         {
-            return Application.appSettings;
+            return appSettings;
         }
 
         public static GLCanvas sharedCanvas()
         {
-            return Application._canvas;
+            return _canvas;
         }
 
         public static SoundMgr sharedSoundMgr()
         {
-            if (Application.soundMgr == null)
+            if (soundMgr == null)
             {
-                Application.soundMgr = new SoundMgr().init();
+                soundMgr = new SoundMgr().init();
             }
-            return Application.soundMgr;
+            return soundMgr;
         }
 
         public static MovieMgr sharedMovieMgr()
         {
-            if (Application.movieMgr == null)
+            if (movieMgr == null)
             {
-                Application.movieMgr = new MovieMgr();
+                movieMgr = new MovieMgr();
             }
-            return Application.movieMgr;
+            return movieMgr;
         }
 
         public virtual ApplicationSettings createAppSettings()
@@ -64,7 +64,7 @@ namespace CutTheRope.iframework.core
 
         public virtual GLCanvas createCanvas()
         {
-            return (GLCanvas)new GLCanvas().initWithFrame(new Rectangle(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT));
+            return (GLCanvas)new GLCanvas().initWithFrame(new Rectangle(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT));
         }
 
         public virtual CTRResourceMgr createResourceMgr()
@@ -89,25 +89,25 @@ namespace CutTheRope.iframework.core
 
         public virtual void applicationDidFinishLaunching(UIApplication application)
         {
-            Application.appSettings = createAppSettings();
-            Application.prefs = createPreferences();
-            if (Application.appSettings.getBool(7))
+            appSettings = createAppSettings();
+            prefs = createPreferences();
+            if (appSettings.getBool(7))
             {
-                string text = Application.sharedPreferences().getStringForKey("PREFS_LOCALE");
+                string text = sharedPreferences().getStringForKey("PREFS_LOCALE");
                 if (text == null || text.Length == 0)
                 {
                     text = (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru") ? "ru" : ((CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de") ? "de" : ((!(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")) ? "en" : "fr"));
                 }
-                Application.appSettings.setString(8, NSObject.NSS(text));
+                appSettings.setString(8, NSS(text));
             }
             updateOrientation();
-            FrameworkTypes.IS_IPAD = false;
-            FrameworkTypes.IS_RETINA = false;
-            Application.root = createRootController();
-            Application.soundMgr = createSoundMgr();
-            Application.movieMgr = createMovieMgr();
-            Application._canvas.touchDelegate = Application.root;
-            Application.root.activate();
+            IS_IPAD = false;
+            IS_RETINA = false;
+            root = createRootController();
+            soundMgr = createSoundMgr();
+            movieMgr = createMovieMgr();
+            _canvas.touchDelegate = root;
+            root.activate();
         }
 
         public virtual MovieMgr createMovieMgr()
@@ -117,25 +117,25 @@ namespace CutTheRope.iframework.core
 
         internal static FontGeneric getFont(int fontResID)
         {
-            return (FontGeneric)Application.sharedResourceMgr().loadResource(fontResID, ResourceMgr.ResourceType.FONT);
+            return (FontGeneric)sharedResourceMgr().loadResource(fontResID, ResourceMgr.ResourceType.FONT);
         }
 
         internal static CTRTexture2D getTexture(int textureResID)
         {
-            return (CTRTexture2D)Application.sharedResourceMgr().loadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            return (CTRTexture2D)sharedResourceMgr().loadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
         }
 
         internal static NSString getString(int strResID)
         {
-            return (NSString)Application.sharedResourceMgr().loadResource(strResID, ResourceMgr.ResourceType.STRINGS);
+            return (NSString)sharedResourceMgr().loadResource(strResID, ResourceMgr.ResourceType.STRINGS);
         }
 
         public virtual void updateOrientation()
         {
-            FrameworkTypes.PORTRAIT_SCREEN_WIDTH = 2560f;
-            FrameworkTypes.PORTRAIT_SCREEN_HEIGHT = 1440f;
-            FrameworkTypes.SCREEN_WIDTH = FrameworkTypes.PORTRAIT_SCREEN_WIDTH;
-            FrameworkTypes.SCREEN_HEIGHT = FrameworkTypes.PORTRAIT_SCREEN_HEIGHT;
+            PORTRAIT_SCREEN_WIDTH = 2560f;
+            PORTRAIT_SCREEN_HEIGHT = 1440f;
+            SCREEN_WIDTH = PORTRAIT_SCREEN_WIDTH;
+            SCREEN_HEIGHT = PORTRAIT_SCREEN_HEIGHT;
         }
 
         private static CTRPreferences prefs;

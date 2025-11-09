@@ -144,7 +144,7 @@ namespace CutTheRope.windows
 
         private void RefreshDesktop()
         {
-            ScreenSizeManager.SHChangeNotify(134217728, 4096, IntPtr.Zero, IntPtr.Zero);
+            SHChangeNotify(134217728, 4096, IntPtr.Zero, IntPtr.Zero);
         }
 
         public void SetWindowMinimumSize(Form form)
@@ -187,9 +187,9 @@ namespace CutTheRope.windows
             {
                 num = 800;
             }
-            if (num > ScreenSizeManager.MAX_WINDOW_WIDTH)
+            if (num > MAX_WINDOW_WIDTH)
             {
-                num = ScreenSizeManager.MAX_WINDOW_WIDTH;
+                num = MAX_WINDOW_WIDTH;
             }
             if (num > displayMode.Width)
             {
@@ -270,8 +270,8 @@ namespace CutTheRope.windows
             _skipChanges = false;
             EnableFullScreen(!isFullScreen);
             Save();
-            CutTheRope.iframework.core.Application.sharedCanvas().reshape();
-            CutTheRope.iframework.core.Application.sharedRootController().fullscreenToggled(!isFullScreen);
+            iframework.core.Application.sharedCanvas().reshape();
+            iframework.core.Application.sharedRootController().fullscreenToggled(!isFullScreen);
             if (!graphicsDeviceManager.IsFullScreen)
             {
                 RefreshDesktop();
@@ -303,9 +303,9 @@ namespace CutTheRope.windows
                     {
                         num = 800;
                     }
-                    if (num > ScreenSizeManager.MAX_WINDOW_WIDTH)
+                    if (num > MAX_WINDOW_WIDTH)
                     {
-                        num = ScreenSizeManager.MAX_WINDOW_WIDTH;
+                        num = MAX_WINDOW_WIDTH;
                     }
                     if (num > ScreenWidth)
                     {
@@ -318,7 +318,7 @@ namespace CutTheRope.windows
                 }
             }
             Save();
-            CutTheRope.iframework.core.Application.sharedCanvas().reshape();
+            iframework.core.Application.sharedCanvas().reshape();
         }
 
         public void ApplyViewportToDevice()

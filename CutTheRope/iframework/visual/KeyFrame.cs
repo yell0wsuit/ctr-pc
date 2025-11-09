@@ -18,7 +18,7 @@ namespace CutTheRope.iframework.visual
                 CTRAction action = (CTRAction)obj;
                 list.Add(action);
             }
-            return KeyFrame.makeAction(list, time);
+            return makeAction(list, time);
         }
 
         public static KeyFrame makeAction(List<CTRAction> actions, float time)
@@ -29,24 +29,24 @@ namespace CutTheRope.iframework.visual
             {
                 timeOffset = time,
                 trackType = Track.TrackType.TRACK_ACTION,
-                transitionType = KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
+                transitionType = TransitionType.FRAME_TRANSITION_LINEAR,
                 value = keyFrameValue
             };
         }
 
         public static KeyFrame makeSingleAction(BaseElement target, string action, int p, int sp, double time)
         {
-            return KeyFrame.makeSingleAction(target, action, p, sp, (float)time);
+            return makeSingleAction(target, action, p, sp, (float)time);
         }
 
         public static KeyFrame makeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
-            return KeyFrame.makeAction(new List<CTRAction> { CTRAction.createAction(target, action, p, sp) }, time);
+            return makeAction(new List<CTRAction> { CTRAction.createAction(target, action, p, sp) }, time);
         }
 
         public static KeyFrame makePos(double x, double y, KeyFrame.TransitionType transition, double time)
         {
-            return KeyFrame.makePos((int)x, (int)y, transition, (float)time);
+            return makePos((int)x, (int)y, transition, (float)time);
         }
 
         public static KeyFrame makePos(int x, int y, KeyFrame.TransitionType transition, float time)
@@ -65,7 +65,7 @@ namespace CutTheRope.iframework.visual
 
         public static KeyFrame makeScale(double x, double y, KeyFrame.TransitionType transition, double time)
         {
-            return KeyFrame.makeScale((float)x, (float)y, transition, (float)time);
+            return makeScale((float)x, (float)y, transition, (float)time);
         }
 
         public static KeyFrame makeScale(float x, float y, KeyFrame.TransitionType transition, float time)
@@ -84,7 +84,7 @@ namespace CutTheRope.iframework.visual
 
         public static KeyFrame makeRotation(double r, KeyFrame.TransitionType transition, double time)
         {
-            return KeyFrame.makeRotation((int)r, transition, (float)time);
+            return makeRotation((int)r, transition, (float)time);
         }
 
         public static KeyFrame makeRotation(int r, KeyFrame.TransitionType transition, float time)
@@ -102,7 +102,7 @@ namespace CutTheRope.iframework.visual
 
         public static KeyFrame makeColor(RGBAColor c, KeyFrame.TransitionType transition, double time)
         {
-            return KeyFrame.makeColor(c, transition, (float)time);
+            return makeColor(c, transition, (float)time);
         }
 
         public static KeyFrame makeColor(RGBAColor c, KeyFrame.TransitionType transition, float time)

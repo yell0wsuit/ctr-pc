@@ -6,7 +6,7 @@ namespace CutTheRope.windows
     {
         public static long currentTimeMillis()
         {
-            return (long)(DateTime.UtcNow - DateTimeJavaHelper.Jan1st1970).TotalMilliseconds;
+            return (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
         }
 
         private static readonly DateTime Jan1st1970 = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

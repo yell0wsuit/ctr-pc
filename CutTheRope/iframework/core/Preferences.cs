@@ -13,28 +13,28 @@ namespace CutTheRope.iframework.core
             {
                 return null;
             }
-            Preferences._loadPreferences();
+            _loadPreferences();
             return this;
         }
 
         public virtual void setIntforKey(int v, string k, bool comit)
         {
-            Preferences._setIntforKey(v, k, comit);
+            _setIntforKey(v, k, comit);
         }
 
         public virtual void setBooleanforKey(bool v, string k, bool comit)
         {
-            Preferences._setBooleanforKey(v, k, comit);
+            _setBooleanforKey(v, k, comit);
         }
 
         public virtual void setStringforKey(string v, string k, bool comit)
         {
-            Preferences._setStringforKey(v, k, comit);
+            _setStringforKey(v, k, comit);
         }
 
         public virtual int getIntForKey(string k)
         {
-            return Preferences._getIntForKey(k);
+            return _getIntForKey(k);
         }
 
         public virtual float getFloatForKey(string k)
@@ -44,52 +44,52 @@ namespace CutTheRope.iframework.core
 
         public virtual bool getBooleanForKey(string k)
         {
-            return Preferences._getBooleanForKey(k);
+            return _getBooleanForKey(k);
         }
 
         public virtual string getStringForKey(string k)
         {
-            return Preferences._getStringForKey(k);
+            return _getStringForKey(k);
         }
 
         public static void _setIntforKey(int v, string key, bool comit)
         {
             int value;
-            if (Preferences.data_.TryGetValue(key, out value))
+            if (data_.TryGetValue(key, out value))
             {
-                Preferences.data_[key] = v;
+                data_[key] = v;
             }
             else
             {
-                Preferences.data_.Add(key, v);
+                data_.Add(key, v);
             }
             if (comit)
             {
-                Preferences._savePreferences();
+                _savePreferences();
             }
         }
 
         private static void _setStringforKey(string v, string k, bool comit)
         {
             string value;
-            if (Preferences.dataStrings_.TryGetValue(k, out value))
+            if (dataStrings_.TryGetValue(k, out value))
             {
-                Preferences.dataStrings_[k] = v;
+                dataStrings_[k] = v;
             }
             else
             {
-                Preferences.dataStrings_.Add(k, v);
+                dataStrings_.Add(k, v);
             }
             if (comit)
             {
-                Preferences._savePreferences();
+                _savePreferences();
             }
         }
 
         public static int _getIntForKey(string k)
         {
             int value;
-            if (Preferences.data_.TryGetValue(k, out value))
+            if (data_.TryGetValue(k, out value))
             {
                 return value;
             }
@@ -103,18 +103,18 @@ namespace CutTheRope.iframework.core
 
         public static bool _getBooleanForKey(string k)
         {
-            return Preferences._getIntForKey(k) != 0;
+            return _getIntForKey(k) != 0;
         }
 
         public static void _setBooleanforKey(bool v, string k, bool comit)
         {
-            Preferences._setIntforKey(v ? 1 : 0, k, comit);
+            _setIntforKey(v ? 1 : 0, k, comit);
         }
 
         private static string _getStringForKey(string k)
         {
             string value;
-            if (Preferences.dataStrings_.TryGetValue(k, out value))
+            if (dataStrings_.TryGetValue(k, out value))
             {
                 return value;
             }
@@ -123,16 +123,16 @@ namespace CutTheRope.iframework.core
 
         public virtual void savePreferences()
         {
-            Preferences._savePreferences();
+            _savePreferences();
         }
 
         public static void _savePreferences()
         {
             try
             {
-                if (!Preferences.GameSaveRequested)
+                if (!GameSaveRequested)
                 {
-                    Preferences.GameSaveRequested = true;
+                    GameSaveRequested = true;
                 }
             }
             catch (Exception)
@@ -144,17 +144,17 @@ namespace CutTheRope.iframework.core
         {
             try
             {
-                if (Preferences.GameSaveRequested)
+                if (GameSaveRequested)
                 {
                     FileStream fileStream = File.Create("ctr_save.bin");
-                    Preferences.SaveToStream(fileStream);
+                    SaveToStream(fileStream);
                     fileStream.Close();
-                    Preferences.GameSaveRequested = false;
+                    GameSaveRequested = false;
                 }
             }
             catch (Exception)
             {
-                Preferences.GameSaveRequested = false;
+                GameSaveRequested = false;
             }
         }
 
@@ -165,14 +165,14 @@ namespace CutTheRope.iframework.core
             try
             {
                 BinaryWriter binaryWriter = new(stream);
-                binaryWriter.Write(Preferences.data_.Count);
-                foreach (KeyValuePair<string, int> item in Preferences.data_)
+                binaryWriter.Write(data_.Count);
+                foreach (KeyValuePair<string, int> item in data_)
                 {
                     binaryWriter.Write(item.Key);
                     binaryWriter.Write(item.Value);
                 }
-                binaryWriter.Write(Preferences.dataStrings_.Count);
-                foreach (KeyValuePair<string, string> item2 in Preferences.dataStrings_)
+                binaryWriter.Write(dataStrings_.Count);
+                foreach (KeyValuePair<string, string> item2 in dataStrings_)
                 {
                     binaryWriter.Write(item2.Key);
                     binaryWriter.Write(item2.Value);
@@ -183,7 +183,7 @@ namespace CutTheRope.iframework.core
             }
             catch (Exception ex)
             {
-                FrameworkTypes._LOG("Error: cannot save, " + ex.ToString());
+                _LOG("Error: cannot save, " + ex.ToString());
                 flag2 = flag;
             }
             return flag2;
@@ -201,14 +201,14 @@ namespace CutTheRope.iframework.core
                 {
                     string key = binaryReader.ReadString();
                     int value = binaryReader.ReadInt32();
-                    Preferences.data_.Add(key, value);
+                    data_.Add(key, value);
                 }
                 num = binaryReader.ReadInt32();
                 for (int j = 0; j < num; j++)
                 {
                     string key2 = binaryReader.ReadString();
                     string value2 = binaryReader.ReadString();
-                    Preferences.dataStrings_.Add(key2, value2);
+                    dataStrings_.Add(key2, value2);
                 }
                 binaryReader.Close();
                 flag = true;
@@ -216,7 +216,7 @@ namespace CutTheRope.iframework.core
             }
             catch (Exception ex)
             {
-                FrameworkTypes._LOG("Error: cannot load, " + ex.ToString());
+                _LOG("Error: cannot load, " + ex.ToString());
                 flag2 = flag;
             }
             return flag2;
@@ -224,7 +224,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void loadPreferences()
         {
-            Preferences._loadPreferences();
+            _loadPreferences();
         }
 
         internal static void _loadPreferences()
@@ -233,7 +233,7 @@ namespace CutTheRope.iframework.core
             if (File.Exists(file))
             {
                 FileStream fileStream = File.OpenRead(file);
-                Preferences.LoadFromStream(fileStream);
+                LoadFromStream(fileStream);
                 fileStream.Close();
             }
         }

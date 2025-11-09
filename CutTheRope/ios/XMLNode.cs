@@ -150,7 +150,7 @@ namespace CutTheRope.ios
                 goto IL_00A3;
             }
         IL_009B:
-            XMLNode.ReadNode(textReader, xMLNode);
+            ReadNode(textReader, xMLNode);
         IL_00A3:
             if ((!flag && !textReader.Read()) || textReader.Depth <= xMLNode.depth)
             {
@@ -161,7 +161,7 @@ namespace CutTheRope.ios
 
         public static XMLNode parseXML(string fileName)
         {
-            return XMLNode.ParseLINQ(fileName);
+            return ParseLINQ(fileName);
         }
 
         private static XMLNode ReadNodeLINQ(XElement nodeLinq, XMLNode parent)
@@ -184,7 +184,7 @@ namespace CutTheRope.ios
             }
             foreach (XElement xelement in nodeLinq.Elements())
             {
-                XMLNode.ReadNodeLINQ(xelement, xMLNode);
+                ReadNodeLINQ(xelement, xMLNode);
             }
             return xMLNode;
         }
@@ -205,7 +205,7 @@ namespace CutTheRope.ios
             {
                 xDocument = XDocument.Parse(ResDataPhoneFull.GetXml(fileName));
             }
-            return XMLNode.ReadNodeLINQ(xDocument.Elements().First<XElement>(), null);
+            return ReadNodeLINQ(xDocument.Elements().First<XElement>(), null);
         }
 
         private int depth;

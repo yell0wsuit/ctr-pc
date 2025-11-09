@@ -25,7 +25,7 @@ namespace CutTheRope.game
 
         public override void activate()
         {
-            FrameworkTypes.AndroidAPI.showBanner();
+            AndroidAPI.showBanner();
             base.activate();
             ((LoadingView)getView(0)).game = nextController == 0;
             showView(0);
@@ -38,7 +38,7 @@ namespace CutTheRope.game
         public virtual void allResourcesLoaded()
         {
             GC.Collect();
-            FrameworkTypes.AndroidAPI.hideBanner();
+            AndroidAPI.hideBanner();
             Application.sharedRootController().setViewTransition(4);
             base.deactivate();
         }

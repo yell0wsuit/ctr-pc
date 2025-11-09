@@ -24,7 +24,7 @@ namespace CutTheRope.iframework.visual
         public static Vector getQuadSize(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.getTexture(textureID);
-            return CTRMathHelper.vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
+            return vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
         public static Vector getQuadOffset(int textureID, int quad)
@@ -35,18 +35,18 @@ namespace CutTheRope.iframework.visual
         public static Vector getQuadCenter(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.getTexture(textureID);
-            return CTRMathHelper.vectAdd(texture2D.quadOffsets[quad], CTRMathHelper.vect(CTRMathHelper.ceil((double)texture2D.quadRects[quad].w / 2.0), CTRMathHelper.ceil((double)texture2D.quadRects[quad].h / 2.0)));
+            return vectAdd(texture2D.quadOffsets[quad], vect(ceil((double)texture2D.quadRects[quad].w / 2.0), ceil((double)texture2D.quadRects[quad].h / 2.0)));
         }
 
         public static Vector getRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)
         {
-            Vector quadOffset = Image.getQuadOffset(textureID, quadToCountFrom);
-            return CTRMathHelper.vectSub(Image.getQuadOffset(textureID, quad), quadOffset);
+            Vector quadOffset = getQuadOffset(textureID, quadToCountFrom);
+            return vectSub(getQuadOffset(textureID, quad), quadOffset);
         }
 
         public static void setElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
         {
-            Vector quadCenter = Image.getQuadCenter(textureID, quad);
+            Vector quadCenter = getQuadCenter(textureID, quad);
             e.x = quadCenter.x;
             e.y = quadCenter.y;
             e.anchor = 18;
@@ -54,14 +54,14 @@ namespace CutTheRope.iframework.visual
 
         public static void setElementPositionWithQuadOffset(BaseElement e, int textureID, int quad)
         {
-            Vector quadOffset = Image.getQuadOffset(textureID, quad);
+            Vector quadOffset = getQuadOffset(textureID, quad);
             e.x = quadOffset.x;
             e.y = quadOffset.y;
         }
 
         public static void setElementPositionWithRelativeQuadOffset(BaseElement e, int textureID, int quadToCountFrom, int quad)
         {
-            Vector relativeQuadOffset = Image.getRelativeQuadOffset(textureID, quadToCountFrom, quad);
+            Vector relativeQuadOffset = getRelativeQuadOffset(textureID, quadToCountFrom, quad);
             e.x = relativeQuadOffset.x;
             e.y = relativeQuadOffset.y;
         }
@@ -73,12 +73,12 @@ namespace CutTheRope.iframework.visual
 
         public static Image Image_createWithResID(int r)
         {
-            return Image.Image_create(Application.getTexture(r));
+            return Image_create(Application.getTexture(r));
         }
 
         public static Image Image_createWithResIDQuad(int r, int q)
         {
-            Image image = Image.Image_create(Application.getTexture(r));
+            Image image = Image_create(Application.getTexture(r));
             image.setDrawQuad(q);
             return image;
         }
@@ -88,7 +88,7 @@ namespace CutTheRope.iframework.visual
             if (init() != null)
             {
                 texture = t;
-                NSObject.NSRET(texture);
+                NSRET(texture);
                 restoreCutTransparency = false;
                 if (texture.quadsCount > 0)
                 {
@@ -121,7 +121,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void doRestoreCutTransparency()
         {
-            if (texture.preCutSize.x != CTRMathHelper.vectUndefined.x)
+            if (texture.preCutSize.x != vectUndefined.x)
             {
                 restoreCutTransparency = true;
                 width = (int)texture.preCutSize.x;
@@ -193,7 +193,7 @@ namespace CutTheRope.iframework.visual
 
         public override void dealloc()
         {
-            NSObject.NSREL(texture);
+            NSREL(texture);
             base.dealloc();
         }
 

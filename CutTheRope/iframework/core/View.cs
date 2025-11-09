@@ -12,8 +12,8 @@ namespace CutTheRope.iframework.core
         {
             if (base.init() != null)
             {
-                width = (int)FrameworkTypes.SCREEN_WIDTH;
-                height = (int)FrameworkTypes.SCREEN_HEIGHT;
+                width = (int)SCREEN_WIDTH;
+                height = (int)SCREEN_HEIGHT;
             }
             return this;
         }

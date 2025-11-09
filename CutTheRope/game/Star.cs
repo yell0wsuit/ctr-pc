@@ -16,12 +16,12 @@ namespace CutTheRope.game
 
         public static Star Star_createWithResID(int r)
         {
-            return Star.Star_create(Application.getTexture(r));
+            return Star_create(Application.getTexture(r));
         }
 
         public static Star Star_createWithResIDQuad(int r, int q)
         {
-            Star star = Star.Star_create(Application.getTexture(r));
+            Star star = Star_create(Application.getTexture(r));
             star.setDrawQuad(q);
             return star;
         }
@@ -54,7 +54,7 @@ namespace CutTheRope.game
         {
             if ((double)timeout > 0.0)
             {
-                timedAnim = Animation.Animation_createWithResID(78);
+                timedAnim = Animation_createWithResID(78);
                 timedAnim.anchor = timedAnim.parentAnchor = 18;
                 float d = timeout / 37f;
                 timedAnim.addAnimationWithIDDelayLoopFirstLast(0, d, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 55);
@@ -83,12 +83,12 @@ namespace CutTheRope.game
             timeline3.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             addTimelinewithID(timeline3, 0);
             playTimeline(0);
-            Timeline.updateTimeline(timeline3, (float)((double)CTRMathHelper.RND_RANGE(0, 20) / 10.0));
-            Animation animation = Animation.Animation_createWithResID(78);
+            Timeline.updateTimeline(timeline3, (float)((double)RND_RANGE(0, 20) / 10.0));
+            Animation animation = Animation_createWithResID(78);
             animation.doRestoreCutTransparency();
             animation.addAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.playTimeline(0);
-            Timeline.updateTimeline(animation.getTimeline(0), (float)((double)CTRMathHelper.RND_RANGE(0, 20) / 10.0));
+            Timeline.updateTimeline(animation.getTimeline(0), (float)((double)RND_RANGE(0, 20) / 10.0));
             animation.anchor = animation.parentAnchor = 18;
             addChild(animation);
         }

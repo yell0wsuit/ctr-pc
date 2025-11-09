@@ -42,11 +42,11 @@ namespace CutTheRope.game
             CTRResourceMgr ctrresourceMgr = Application.sharedResourceMgr();
             ctrresourceMgr.resourcesDelegate = this;
             ctrresourceMgr.initLoading();
-            ctrresourceMgr.loadPack(ResDataPhoneFull.PACK_COMMON);
-            ctrresourceMgr.loadPack(ResDataPhoneFull.PACK_COMMON_IMAGES);
-            ctrresourceMgr.loadPack(ResDataPhoneFull.PACK_MENU);
-            ctrresourceMgr.loadPack(ResDataPhoneFull.PACK_LOCALIZATION_MENU);
-            ctrresourceMgr.loadPack(ResDataPhoneFull.PACK_MUSIC);
+            ctrresourceMgr.loadPack(PACK_COMMON);
+            ctrresourceMgr.loadPack(PACK_COMMON_IMAGES);
+            ctrresourceMgr.loadPack(PACK_MENU);
+            ctrresourceMgr.loadPack(PACK_LOCALIZATION_MENU);
+            ctrresourceMgr.loadPack(PACK_MUSIC);
             ctrresourceMgr.startLoading();
         }
 

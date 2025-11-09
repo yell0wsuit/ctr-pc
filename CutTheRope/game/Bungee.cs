@@ -14,50 +14,50 @@ namespace CutTheRope.game
     {
         private static void drawAntialiasedLineContinued(float x1, float y1, float x2, float y2, float size, RGBAColor color, ref float lx, ref float ly, ref float rx, ref float ry, bool highlighted)
         {
-            Vector v = CutTheRope.iframework.helpers.MathHelper.vect(x1, y1);
-            Vector v2 = CutTheRope.iframework.helpers.MathHelper.vect(x2, y2);
-            Vector vector = CutTheRope.iframework.helpers.MathHelper.vectSub(v2, v);
-            if (!CutTheRope.iframework.helpers.MathHelper.vectEqual(vector, CutTheRope.iframework.helpers.MathHelper.vectZero))
+            Vector v = iframework.helpers.MathHelper.vect(x1, y1);
+            Vector v2 = iframework.helpers.MathHelper.vect(x2, y2);
+            Vector vector = iframework.helpers.MathHelper.vectSub(v2, v);
+            if (!iframework.helpers.MathHelper.vectEqual(vector, iframework.helpers.MathHelper.vectZero))
             {
-                Vector v3 = highlighted ? vector : CutTheRope.iframework.helpers.MathHelper.vectMult(vector, ((double)color.a == 1.0) ? 1.02 : 1.0);
-                Vector v4 = CutTheRope.iframework.helpers.MathHelper.vectPerp(vector);
-                Vector vector2 = CutTheRope.iframework.helpers.MathHelper.vectNormalize(v4);
-                v4 = CutTheRope.iframework.helpers.MathHelper.vectMult(vector2, size);
-                Vector v5 = CutTheRope.iframework.helpers.MathHelper.vectNeg(v4);
-                Vector v6 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v4, vector);
-                Vector v7 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v5, vector);
-                v6 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v6, v);
-                v7 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v7, v);
-                Vector v8 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v4, v3);
-                Vector v9 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v5, v3);
-                Vector vector3 = CutTheRope.iframework.helpers.MathHelper.vectMult(vector2, size + 6f);
-                Vector v10 = CutTheRope.iframework.helpers.MathHelper.vectNeg(vector3);
-                Vector v11 = CutTheRope.iframework.helpers.MathHelper.vectAdd(vector3, vector);
-                Vector v12 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v10, vector);
-                vector3 = CutTheRope.iframework.helpers.MathHelper.vectAdd(vector3, v);
-                v10 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v10, v);
-                v11 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v11, v);
-                v12 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v12, v);
+                Vector v3 = highlighted ? vector : iframework.helpers.MathHelper.vectMult(vector, ((double)color.a == 1.0) ? 1.02 : 1.0);
+                Vector v4 = iframework.helpers.MathHelper.vectPerp(vector);
+                Vector vector2 = iframework.helpers.MathHelper.vectNormalize(v4);
+                v4 = iframework.helpers.MathHelper.vectMult(vector2, size);
+                Vector v5 = iframework.helpers.MathHelper.vectNeg(v4);
+                Vector v6 = iframework.helpers.MathHelper.vectAdd(v4, vector);
+                Vector v7 = iframework.helpers.MathHelper.vectAdd(v5, vector);
+                v6 = iframework.helpers.MathHelper.vectAdd(v6, v);
+                v7 = iframework.helpers.MathHelper.vectAdd(v7, v);
+                Vector v8 = iframework.helpers.MathHelper.vectAdd(v4, v3);
+                Vector v9 = iframework.helpers.MathHelper.vectAdd(v5, v3);
+                Vector vector3 = iframework.helpers.MathHelper.vectMult(vector2, size + 6f);
+                Vector v10 = iframework.helpers.MathHelper.vectNeg(vector3);
+                Vector v11 = iframework.helpers.MathHelper.vectAdd(vector3, vector);
+                Vector v12 = iframework.helpers.MathHelper.vectAdd(v10, vector);
+                vector3 = iframework.helpers.MathHelper.vectAdd(vector3, v);
+                v10 = iframework.helpers.MathHelper.vectAdd(v10, v);
+                v11 = iframework.helpers.MathHelper.vectAdd(v11, v);
+                v12 = iframework.helpers.MathHelper.vectAdd(v12, v);
                 if (lx == -1f)
                 {
-                    v4 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v4, v);
-                    v5 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v5, v);
+                    v4 = iframework.helpers.MathHelper.vectAdd(v4, v);
+                    v5 = iframework.helpers.MathHelper.vectAdd(v5, v);
                 }
                 else
                 {
-                    v4 = CutTheRope.iframework.helpers.MathHelper.vect(lx, ly);
-                    v5 = CutTheRope.iframework.helpers.MathHelper.vect(rx, ry);
+                    v4 = iframework.helpers.MathHelper.vect(lx, ly);
+                    v5 = iframework.helpers.MathHelper.vect(rx, ry);
                 }
-                v8 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v8, v);
-                v9 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v9, v);
+                v8 = iframework.helpers.MathHelper.vectAdd(v8, v);
+                v9 = iframework.helpers.MathHelper.vectAdd(v9, v);
                 lx = v6.x;
                 ly = v6.y;
                 rx = v7.x;
                 ry = v7.y;
-                Vector vector4 = CutTheRope.iframework.helpers.MathHelper.vectSub(v4, vector2);
-                Vector vector5 = CutTheRope.iframework.helpers.MathHelper.vectSub(v8, vector2);
-                Vector vector6 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v5, vector2);
-                Vector vector7 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v9, vector2);
+                Vector vector4 = iframework.helpers.MathHelper.vectSub(v4, vector2);
+                Vector vector5 = iframework.helpers.MathHelper.vectSub(v8, vector2);
+                Vector vector6 = iframework.helpers.MathHelper.vectAdd(v5, vector2);
+                Vector vector7 = iframework.helpers.MathHelper.vectAdd(v9, vector2);
                 float[] pointer =
                 [
                     vector3.x, vector3.y, v11.x, v11.y, v4.x, v4.y, v8.x, v8.y, v5.x, v5.y,
@@ -65,10 +65,10 @@ namespace CutTheRope.game
                 ];
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.a = 0.1f * color.a;
-                Bungee.ccolors[2] = whiteRGBA;
-                Bungee.ccolors[3] = whiteRGBA;
-                Bungee.ccolors[4] = whiteRGBA;
-                Bungee.ccolors[5] = whiteRGBA;
+                ccolors[2] = whiteRGBA;
+                ccolors[3] = whiteRGBA;
+                ccolors[4] = whiteRGBA;
+                ccolors[5] = whiteRGBA;
                 float[] pointer2 =
                 [
                     v4.x, v4.y, v8.x, v8.y, vector4.x, vector4.y, vector5.x, vector5.y, v.x, v.y,
@@ -79,23 +79,23 @@ namespace CutTheRope.game
                 color.r += num;
                 color.g += num;
                 color.b += num;
-                Bungee.ccolors2[2] = color;
-                Bungee.ccolors2[3] = color;
-                Bungee.ccolors2[4] = rGBAColor;
-                Bungee.ccolors2[5] = rGBAColor;
-                Bungee.ccolors2[6] = color;
-                Bungee.ccolors2[7] = color;
+                ccolors2[2] = color;
+                ccolors2[3] = color;
+                ccolors2[4] = rGBAColor;
+                ccolors2[5] = rGBAColor;
+                ccolors2[6] = color;
+                ccolors2[7] = color;
                 OpenGL.glDisableClientState(0);
                 OpenGL.glEnableClientState(13);
                 if (highlighted)
                 {
                     OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
-                    OpenGL.glColorPointer(4, 5, 0, Bungee.ccolors);
+                    OpenGL.glColorPointer(4, 5, 0, ccolors);
                     OpenGL.glVertexPointer(2, 5, 0, pointer);
                     OpenGL.glDrawArrays(8, 0, 8);
                 }
                 OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-                OpenGL.glColorPointer(4, 5, 0, Bungee.ccolors2);
+                OpenGL.glColorPointer(4, 5, 0, ccolors2);
                 OpenGL.glVertexPointer(2, 5, 0, pointer2);
                 OpenGL.glDrawArrays(8, 0, 10);
                 OpenGL.glEnableClientState(0);
@@ -126,16 +126,16 @@ namespace CutTheRope.game
                 rGBAColor4.g *= num2;
                 rGBAColor4.b *= num2;
             }
-            float num3 = CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(pts[0].x, pts[0].y), CutTheRope.iframework.helpers.MathHelper.vect(pts[1].x, pts[1].y));
-            if ((double)num3 <= (double)Bungee.BUNGEE_REST_LEN + 0.3)
+            float num3 = iframework.helpers.MathHelper.vectDistance(iframework.helpers.MathHelper.vect(pts[0].x, pts[0].y), iframework.helpers.MathHelper.vect(pts[1].x, pts[1].y));
+            if ((double)num3 <= (double)BUNGEE_REST_LEN + 0.3)
             {
                 b.relaxed = 0;
             }
-            else if ((double)num3 <= (double)Bungee.BUNGEE_REST_LEN + 1.0)
+            else if ((double)num3 <= (double)BUNGEE_REST_LEN + 1.0)
             {
                 b.relaxed = 1;
             }
-            else if ((double)num3 <= (double)Bungee.BUNGEE_REST_LEN + 4.0)
+            else if ((double)num3 <= (double)BUNGEE_REST_LEN + 4.0)
             {
                 b.relaxed = 2;
             }
@@ -143,9 +143,9 @@ namespace CutTheRope.game
             {
                 b.relaxed = 3;
             }
-            if ((double)num3 > (double)Bungee.BUNGEE_REST_LEN + 7.0)
+            if ((double)num3 > (double)BUNGEE_REST_LEN + 7.0)
             {
-                float num4 = num3 / Bungee.BUNGEE_REST_LEN * 2f;
+                float num4 = num3 / BUNGEE_REST_LEN * 2f;
                 rGBAColor3.r *= num4;
                 rGBAColor4.r *= num4;
             }
@@ -192,7 +192,7 @@ namespace CutTheRope.game
                     int num17 = num8 >> 1;
                     for (int i = 0; i < num17 - 1; i++)
                     {
-                        Bungee.drawAntialiasedLineContinued(array[i * 2], array[i * 2 + 1], array[i * 2 + 2], array[i * 2 + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
+                        drawAntialiasedLineContinued(array[i * 2], array[i * 2 + 1], array[i * 2 + 2], array[i * 2 + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
                     }
                     array[0] = array[num8 - 2];
                     array[1] = array[num8 - 1];
@@ -241,14 +241,14 @@ namespace CutTheRope.game
                     tail.setWeight(1f);
                 }
                 bungeeAnchor.setWeight(0.02f);
-                bungeeAnchor.pos = CutTheRope.iframework.helpers.MathHelper.vect(hx, hy);
-                tail.pos = CutTheRope.iframework.helpers.MathHelper.vect(tx, ty);
+                bungeeAnchor.pos = iframework.helpers.MathHelper.vect(hx, hy);
+                tail.pos = iframework.helpers.MathHelper.vect(tx, ty);
                 addPart(bungeeAnchor);
                 addPart(tail);
-                tail.addConstraintwithRestLengthofType(bungeeAnchor, Bungee.BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
-                Vector v = CutTheRope.iframework.helpers.MathHelper.vectSub(tail.pos, bungeeAnchor.pos);
-                int num = (int)(len / Bungee.BUNGEE_REST_LEN + 2f);
-                v = CutTheRope.iframework.helpers.MathHelper.vectDiv(v, (float)num);
+                tail.addConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                Vector v = iframework.helpers.MathHelper.vectSub(tail.pos, bungeeAnchor.pos);
+                int num = (int)(len / BUNGEE_REST_LEN + 2f);
+                v = iframework.helpers.MathHelper.vectDiv(v, (float)num);
                 rollplacingWithOffset(len, v);
                 forceWhite = false;
                 initialCandleAngle = -1f;
@@ -261,14 +261,14 @@ namespace CutTheRope.game
         public virtual int getLength()
         {
             int num = 0;
-            Vector pos = CutTheRope.iframework.helpers.MathHelper.vectZero;
+            Vector pos = iframework.helpers.MathHelper.vectZero;
             int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
                 ConstraintedPoint constraintedPoint = parts[i];
                 if (i > 0)
                 {
-                    num += (int)CutTheRope.iframework.helpers.MathHelper.vectDistance(pos, constraintedPoint.pos);
+                    num += (int)iframework.helpers.MathHelper.vectDistance(pos, constraintedPoint.pos);
                 }
                 pos = constraintedPoint.pos;
             }
@@ -277,7 +277,7 @@ namespace CutTheRope.game
 
         public virtual void roll(float rollLen)
         {
-            this.rollplacingWithOffset(rollLen, CutTheRope.iframework.helpers.MathHelper.vectZero);
+            this.rollplacingWithOffset(rollLen, iframework.helpers.MathHelper.vectZero);
         }
 
         public virtual void rollplacingWithOffset(float rollLen, Vector off)
@@ -286,24 +286,24 @@ namespace CutTheRope.game
             int num = (int)tail.restLengthFor(i);
             while (rollLen > 0f)
             {
-                if (rollLen >= Bungee.BUNGEE_REST_LEN)
+                if (rollLen >= BUNGEE_REST_LEN)
                 {
                     ConstraintedPoint constraintedPoint = parts[parts.Count - 2];
                     ConstraintedPoint constraintedPoint2 = (ConstraintedPoint)new ConstraintedPoint().init();
                     constraintedPoint2.setWeight(0.02f);
-                    constraintedPoint2.pos = CutTheRope.iframework.helpers.MathHelper.vectAdd(constraintedPoint.pos, off);
+                    constraintedPoint2.pos = iframework.helpers.MathHelper.vectAdd(constraintedPoint.pos, off);
                     addPartAt(constraintedPoint2, parts.Count - 1);
                     tail.changeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, (float)num);
-                    constraintedPoint2.addConstraintwithRestLengthofType(constraintedPoint, Bungee.BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
-                    rollLen -= Bungee.BUNGEE_REST_LEN;
+                    constraintedPoint2.addConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                    rollLen -= BUNGEE_REST_LEN;
                 }
                 else
                 {
                     int num2 = (int)(rollLen + (float)num);
-                    if ((float)num2 > Bungee.BUNGEE_REST_LEN)
+                    if ((float)num2 > BUNGEE_REST_LEN)
                     {
-                        rollLen = Bungee.BUNGEE_REST_LEN;
-                        num = (int)((float)num2 - Bungee.BUNGEE_REST_LEN);
+                        rollLen = BUNGEE_REST_LEN;
+                        num = (int)((float)num2 - BUNGEE_REST_LEN);
                     }
                     else
                     {
@@ -323,22 +323,22 @@ namespace CutTheRope.game
             int num3 = parts.Count;
             while (num > 0f)
             {
-                if (num >= Bungee.BUNGEE_REST_LEN)
+                if (num >= BUNGEE_REST_LEN)
                 {
                     ConstraintedPoint o = parts[num3 - 2];
                     ConstraintedPoint n2 = parts[num3 - 3];
                     tail.changeConstraintFromTowithRestLength(o, n2, (float)num2);
                     parts.RemoveAt(parts.Count - 2);
                     num3--;
-                    num -= Bungee.BUNGEE_REST_LEN;
+                    num -= BUNGEE_REST_LEN;
                 }
                 else
                 {
                     int num4 = (int)((float)num2 - num);
                     if (num4 < 1)
                     {
-                        num = Bungee.BUNGEE_REST_LEN;
-                        num2 = (int)(Bungee.BUNGEE_REST_LEN + (float)num4 + 1f);
+                        num = BUNGEE_REST_LEN;
+                        num2 = (int)(BUNGEE_REST_LEN + (float)num4 + 1f);
                     }
                     else
                     {
@@ -354,7 +354,7 @@ namespace CutTheRope.game
                 Constraint constraint = tail.constraints[j];
                 if (constraint != null && constraint.type == Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN)
                 {
-                    constraint.restLength = (float)(num3 - 1) * (Bungee.BUNGEE_REST_LEN + 3f);
+                    constraint.restLength = (float)(num3 - 1) * (BUNGEE_REST_LEN + 3f);
                 }
             }
             return num;
@@ -382,7 +382,7 @@ namespace CutTheRope.game
                         constraintedPoint3.pos = constraintedPoint2.pos;
                         constraintedPoint3.prevPos = constraintedPoint2.prevPos;
                         addPartAt(constraintedPoint3, part + 1);
-                        constraintedPoint3.addConstraintwithRestLengthofType(constraintedPoint, Bungee.BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                        constraintedPoint3.addConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                         break;
                     }
                 }
@@ -420,7 +420,7 @@ namespace CutTheRope.game
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.addConstraintwithRestLengthofType(bungeeAnchor, (float)i * (Bungee.BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
+                            constraintedPoint.addConstraintwithRestLengthofType(bungeeAnchor, (float)i * (BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
                         }
                     }
                     i++;
@@ -465,7 +465,7 @@ namespace CutTheRope.game
         public override void draw()
         {
             int count = parts.Count;
-            OpenGL.glColor4f(Bungee.s_Color1);
+            OpenGL.glColor4f(s_Color1);
             if (cut == -1)
             {
                 Vector[] array = new Vector[count];
@@ -475,7 +475,7 @@ namespace CutTheRope.game
                     array[i] = constraintedPoint.pos;
                 }
                 OpenGL.glLineWidth((double)lineWidth);
-                Bungee.drawBungee(this, array, count, 4);
+                drawBungee(this, array, count, 4);
                 OpenGL.glLineWidth(1.0);
                 return;
             }
@@ -514,11 +514,11 @@ namespace CutTheRope.game
             int num2 = count - num;
             if (num2 > 0)
             {
-                Bungee.drawBungee(this, array2, num2, 4);
+                drawBungee(this, array2, num2, 4);
             }
             if (num > 0 && !hideTailParts)
             {
-                Bungee.drawBungee(this, array3, num, 4);
+                drawBungee(this, array3, num, 4);
             }
             OpenGL.glLineWidth(1.0);
         }

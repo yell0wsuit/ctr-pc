@@ -11,7 +11,7 @@ namespace CutTheRope.iframework.core
         {
             if (s == 5)
             {
-                return ApplicationSettings.fps;
+                return fps;
             }
             if (s != 6)
             {
@@ -23,7 +23,7 @@ namespace CutTheRope.iframework.core
         public virtual bool getBool(int s)
         {
             bool value = false;
-            ApplicationSettings.DEFAULT_APP_SETTINGS.TryGetValue((ApplicationSettings.AppSettings)s, out value);
+            DEFAULT_APP_SETTINGS.TryGetValue((ApplicationSettings.AppSettings)s, out value);
             return value;
         }
 
@@ -31,28 +31,28 @@ namespace CutTheRope.iframework.core
         {
             if (s != 8)
             {
-                return NSObject.NSS("");
+                return NSS("");
             }
             if (locale != null)
             {
-                return NSObject.NSS(locale);
+                return NSS(locale);
             }
-            switch (ResDataPhoneFull.LANGUAGE)
+            switch (LANGUAGE)
             {
                 case Language.LANG_EN:
-                    return NSObject.NSS("en");
+                    return NSS("en");
                 case Language.LANG_RU:
-                    return NSObject.NSS("ru");
+                    return NSS("ru");
                 case Language.LANG_DE:
-                    return NSObject.NSS("de");
+                    return NSS("de");
                 case Language.LANG_FR:
-                    return NSObject.NSS("fr");
+                    return NSS("fr");
                 case Language.LANG_ZH:
-                    return NSObject.NSS("zh");
+                    return NSS("zh");
                 case Language.LANG_JA:
-                    return NSObject.NSS("ja");
+                    return NSS("ja");
                 default:
-                    return NSObject.NSS("en");
+                    return NSS("en");
             }
         }
 
@@ -61,18 +61,18 @@ namespace CutTheRope.iframework.core
             if (sid == 8)
             {
                 locale = str.ToString();
-                ResDataPhoneFull.LANGUAGE = Language.LANG_EN;
+                LANGUAGE = Language.LANG_EN;
                 if (locale == "ru")
                 {
-                    ResDataPhoneFull.LANGUAGE = Language.LANG_RU;
+                    LANGUAGE = Language.LANG_RU;
                 }
                 else if (locale == "de")
                 {
-                    ResDataPhoneFull.LANGUAGE = Language.LANG_DE;
+                    LANGUAGE = Language.LANG_DE;
                 }
                 if (locale == "fr")
                 {
-                    ResDataPhoneFull.LANGUAGE = Language.LANG_FR;
+                    LANGUAGE = Language.LANG_FR;
                 }
             }
         }
@@ -86,35 +86,35 @@ namespace CutTheRope.iframework.core
         private static Dictionary<ApplicationSettings.AppSettings, bool> DEFAULT_APP_SETTINGS = new()
         {
             {
-                ApplicationSettings.AppSettings.APP_SETTING_INTERACTION_ENABLED,
+                AppSettings.APP_SETTING_INTERACTION_ENABLED,
                 true
             },
             {
-                ApplicationSettings.AppSettings.APP_SETTING_MULTITOUCH_ENABLED,
+                AppSettings.APP_SETTING_MULTITOUCH_ENABLED,
                 true
             },
             {
-                ApplicationSettings.AppSettings.APP_SETTING_STATUSBAR_HIDDEN,
+                AppSettings.APP_SETTING_STATUSBAR_HIDDEN,
                 true
             },
             {
-                ApplicationSettings.AppSettings.APP_SETTING_MAIN_LOOP_TIMERED,
+                AppSettings.APP_SETTING_MAIN_LOOP_TIMERED,
                 true
             },
             {
-                ApplicationSettings.AppSettings.APP_SETTING_FPS_METER_ENABLED,
+                AppSettings.APP_SETTING_FPS_METER_ENABLED,
                 true
             },
             {
-                ApplicationSettings.AppSettings.APP_SETTING_LOCALIZATION_ENABLED,
+                AppSettings.APP_SETTING_LOCALIZATION_ENABLED,
                 true
             },
             {
-                ApplicationSettings.AppSettings.APP_SETTING_RETINA_SUPPORT,
+                AppSettings.APP_SETTING_RETINA_SUPPORT,
                 false
             },
             {
-                ApplicationSettings.AppSettings.APP_SETTING_IPAD_RETINA_SUPPORT,
+                AppSettings.APP_SETTING_IPAD_RETINA_SUPPORT,
                 false
             }
         };

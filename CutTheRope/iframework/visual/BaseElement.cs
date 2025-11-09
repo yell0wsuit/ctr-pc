@@ -143,7 +143,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void preDraw()
         {
-            BaseElement.calculateTopLeft(this);
+            calculateTopLeft(this);
             bool flag = (double)scaleX != 1.0 || (double)scaleY != 1.0;
             bool flag2 = (double)rotation != 0.0;
             bool flag3 = (double)translateX != 0.0 || (double)translateY != 0.0;
@@ -204,11 +204,11 @@ namespace CutTheRope.iframework.visual
         {
             if (!passTransformationsToChilds)
             {
-                BaseElement.restoreTransformations(this);
+                restoreTransformations(this);
             }
             if (!passColorToChilds)
             {
-                BaseElement.restoreColor(this);
+                restoreColor(this);
             }
             int num = 0;
             int num2 = 0;
@@ -227,11 +227,11 @@ namespace CutTheRope.iframework.visual
             }
             if (passTransformationsToChilds)
             {
-                BaseElement.restoreTransformations(this);
+                restoreTransformations(this);
             }
             if (passColorToChilds)
             {
-                BaseElement.restoreColor(this);
+                restoreColor(this);
             }
         }
 
@@ -286,7 +286,7 @@ namespace CutTheRope.iframework.visual
 
         public void setSizeToChildsBounds()
         {
-            BaseElement.calculateTopLeft(this);
+            calculateTopLeft(this);
             float num = drawX;
             float num2 = drawY;
             float num3 = drawX + (float)width;
@@ -296,7 +296,7 @@ namespace CutTheRope.iframework.visual
                 BaseElement value = child.Value;
                 if (value != null)
                 {
-                    BaseElement.calculateTopLeft(value);
+                    calculateTopLeft(value);
                     if (value.drawX < num)
                     {
                         num = value.drawX;
@@ -625,13 +625,13 @@ namespace CutTheRope.iframework.visual
 
         public void setName(string n)
         {
-            NSObject.NSREL(name);
+            NSREL(name);
             name = new NSString(n);
         }
 
         public void setName(NSString n)
         {
-            NSObject.NSREL(name);
+            NSREL(name);
             name = n;
         }
 
@@ -665,7 +665,7 @@ namespace CutTheRope.iframework.visual
             childs = null;
             timelines.Clear();
             timelines = null;
-            NSObject.NSREL(name);
+            NSREL(name);
             base.dealloc();
         }
 

@@ -24,10 +24,10 @@ namespace CutTheRope.game
             radialAccelVar = 1f;
             tangentialAccel = 0f;
             tangentialAccelVar = 1f;
-            x = FrameworkTypes.SCREEN_WIDTH / 2f;
-            y = FrameworkTypes.SCREEN_HEIGHT / 2f;
-            posVar.x = FrameworkTypes.SCREEN_WIDTH / 2f;
-            posVar.y = FrameworkTypes.SCREEN_HEIGHT / 2f;
+            x = SCREEN_WIDTH / 2f;
+            y = SCREEN_HEIGHT / 2f;
+            posVar.x = SCREEN_WIDTH / 2f;
+            posVar.y = SCREEN_HEIGHT / 2f;
             life = 4f;
             lifeVar = 0f;
             size = 1f;
@@ -61,8 +61,8 @@ namespace CutTheRope.game
             OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
             OpenGL.glEnable(0);
             OpenGL.glBindTexture(drawer.image.texture.name());
-            OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(drawer.vertices));
-            OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(drawer.texCoordinates));
+            OpenGL.glVertexPointer(3, 5, 0, toFloatArray(drawer.vertices));
+            OpenGL.glTexCoordPointer(2, 5, 0, toFloatArray(drawer.texCoordinates));
             OpenGL.glEnableClientState(13);
             OpenGL.glBindBuffer(2, colorsID);
             OpenGL.glColorPointer(4, 5, 0, colors);

@@ -22,7 +22,7 @@ namespace CutTheRope.iframework.sfe
         {
             weight = w;
             invWeight = (float)(1.0 / (double)weight);
-            gravity = CTRMathHelper.vect(0f, 784f * weight);
+            gravity = vect(0f, 784f * weight);
         }
 
         public override void dealloc()
@@ -40,11 +40,11 @@ namespace CutTheRope.iframework.sfe
         public virtual void resetAll()
         {
             resetForces();
-            v = CTRMathHelper.vectZero;
-            a = CTRMathHelper.vectZero;
-            pos = CTRMathHelper.vectZero;
-            posDelta = CTRMathHelper.vectZero;
-            totalForce = CTRMathHelper.vectZero;
+            v = vectZero;
+            a = vectZero;
+            pos = vectZero;
+            posDelta = vectZero;
+            totalForce = vectZero;
         }
 
         public virtual void setForcewithID(Vector force, int n)
@@ -58,7 +58,7 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void deleteForce(int n)
         {
-            forces[n] = CTRMathHelper.vectZero;
+            forces[n] = vectZero;
         }
 
         public virtual Vector getForce(int n)
@@ -68,10 +68,10 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void applyImpulseDelta(Vector impulse, float delta)
         {
-            if (!CTRMathHelper.vectEqual(impulse, CTRMathHelper.vectZero))
+            if (!vectEqual(impulse, vectZero))
             {
-                Vector v = CTRMathHelper.vectMult(impulse, (float)((double)delta / 1.0));
-                pos = CTRMathHelper.vectAdd(pos, v);
+                Vector v = vectMult(impulse, (float)((double)delta / 1.0));
+                pos = vectAdd(pos, v);
             }
         }
 
@@ -90,30 +90,30 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void update(float delta)
         {
-            totalForce = CTRMathHelper.vectZero;
+            totalForce = vectZero;
             if (!disableGravity)
             {
-                if (!CTRMathHelper.vectEqual(MaterialPoint.globalGravity, CTRMathHelper.vectZero))
+                if (!vectEqual(globalGravity, vectZero))
                 {
-                    totalForce = CTRMathHelper.vectAdd(totalForce, CTRMathHelper.vectMult(MaterialPoint.globalGravity, weight));
+                    totalForce = vectAdd(totalForce, vectMult(globalGravity, weight));
                 }
                 else
                 {
-                    totalForce = CTRMathHelper.vectAdd(totalForce, gravity);
+                    totalForce = vectAdd(totalForce, gravity);
                 }
             }
             if (highestForceIndex != -1)
             {
                 for (int i = 0; i <= highestForceIndex; i++)
                 {
-                    totalForce = CTRMathHelper.vectAdd(totalForce, forces[i]);
+                    totalForce = vectAdd(totalForce, forces[i]);
                 }
             }
-            totalForce = CTRMathHelper.vectMult(totalForce, invWeight);
-            a = CTRMathHelper.vectMult(totalForce, (float)((double)delta / 1.0));
-            v = CTRMathHelper.vectAdd(v, a);
-            posDelta = CTRMathHelper.vectMult(v, (float)((double)delta / 1.0));
-            pos = CTRMathHelper.vectAdd(pos, posDelta);
+            totalForce = vectMult(totalForce, invWeight);
+            a = vectMult(totalForce, (float)((double)delta / 1.0));
+            v = vectAdd(v, a);
+            posDelta = vectMult(v, (float)((double)delta / 1.0));
+            pos = vectAdd(pos, posDelta);
         }
 
         public virtual void drawForces()

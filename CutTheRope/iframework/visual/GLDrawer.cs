@@ -10,32 +10,32 @@ namespace CutTheRope.iframework.visual
     {
         public static void drawImage(CTRTexture2D image, float x, float y)
         {
-            CTRTexture2D.drawAtPoint(image, CTRMathHelper.vect(x, y));
+            CTRTexture2D.drawAtPoint(image, vect(x, y));
         }
 
         public static void drawImagePart(CTRTexture2D image, CTRRectangle r, double x, double y)
         {
-            GLDrawer.drawImagePart(image, r, (float)x, (float)y);
+            drawImagePart(image, r, (float)x, (float)y);
         }
 
         public static void drawImagePart(CTRTexture2D image, CTRRectangle r, float x, float y)
         {
-            CTRTexture2D.drawRectAtPoint(image, r, CTRMathHelper.vect(x, y));
+            CTRTexture2D.drawRectAtPoint(image, r, vect(x, y));
         }
 
         public static void drawImageQuad(CTRTexture2D image, int q, double x, double y)
         {
-            GLDrawer.drawImageQuad(image, q, (float)x, (float)y);
+            drawImageQuad(image, q, (float)x, (float)y);
         }
 
         public static void drawImageQuad(CTRTexture2D image, int q, float x, float y)
         {
             if (q == -1)
             {
-                GLDrawer.drawImage(image, x, y);
+                drawImage(image, x, y);
                 return;
             }
-            CTRTexture2D.drawQuadAtPoint(image, q, CTRMathHelper.vect(x, y));
+            CTRTexture2D.drawQuadAtPoint(image, q, vect(x, y));
         }
 
         public static void drawImageTiledCool(CTRTexture2D image, int q, float x, float y, float width, float height)
@@ -70,17 +70,17 @@ namespace CutTheRope.iframework.visual
                     {
                         num6 = num2;
                     }
-                    CTRRectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, num5, num6);
-                    GLDrawer.drawImagePart(image, r, x + num4, y + num3);
+                    CTRRectangle r = MakeRectangle(xParam, yParam, num5, num6);
+                    drawImagePart(image, r, x + num4, y + num3);
                 }
             }
         }
 
         public static void drawImageTiled(CTRTexture2D image, int q, float x, float y, float width, float height)
         {
-            if (FrameworkTypes.IS_WVGA)
+            if (IS_WVGA)
             {
-                GLDrawer.drawImageTiledCool(image, q, x, y, width, height);
+                drawImageTiledCool(image, q, x, y, width, height);
                 return;
             }
             float xParam = 0f;
@@ -101,11 +101,11 @@ namespace CutTheRope.iframework.visual
             }
             if (width == num && height == num2)
             {
-                GLDrawer.drawImageQuad(image, q, x, y);
+                drawImageQuad(image, q, x, y);
                 return;
             }
-            int num3 = (int)CTRMathHelper.ceil((double)(width / num));
-            int num12 = (int)CTRMathHelper.ceil((double)(height / num2));
+            int num3 = (int)ceil((double)(width / num));
+            int num12 = (int)ceil((double)(height / num2));
             int num4 = (int)width % (int)num;
             int num5 = (int)height % (int)num2;
             int num6 = (int)((num4 == 0) ? num : ((float)num4));
@@ -119,12 +119,12 @@ namespace CutTheRope.iframework.visual
                 {
                     if (num11 == 0 || num10 == 0)
                     {
-                        CTRRectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, (num11 == 0) ? ((float)num6) : num, (num10 == 0) ? ((float)num7) : num2);
-                        GLDrawer.drawImagePart(image, r, (float)num8, (float)num9);
+                        CTRRectangle r = MakeRectangle(xParam, yParam, (num11 == 0) ? ((float)num6) : num, (num10 == 0) ? ((float)num7) : num2);
+                        drawImagePart(image, r, (float)num8, (float)num9);
                     }
                     else
                     {
-                        GLDrawer.drawImageQuad(image, q, (float)num8, (float)num9);
+                        drawImageQuad(image, q, (float)num8, (float)num9);
                     }
                     num8 += (int)num;
                 }
@@ -144,13 +144,13 @@ namespace CutTheRope.iframework.visual
             {
                 for (int i = 0; i < count - 1; i++)
                 {
-                    array[i] = GLDrawer.calc2PointBezier(ref p[i], ref p[i + 1], delta);
+                    array[i] = calc2PointBezier(ref p[i], ref p[i + 1], delta);
                 }
-                return GLDrawer.calcPathBezier(array, count - 1, delta);
+                return calcPathBezier(array, count - 1, delta);
             }
             if (count == 2)
             {
-                return GLDrawer.calc2PointBezier(ref p[0], ref p[1], delta);
+                return calc2PointBezier(ref p[0], ref p[1], delta);
             }
             return default(Vector);
         }
@@ -171,20 +171,20 @@ namespace CutTheRope.iframework.visual
             float num2 = 0f;
             for (int i = 0; i < vertexCount; i++)
             {
-                glVertices[i * 2] = x + radius * CTRMathHelper.cosf(num2);
-                glVertices[i * 2 + 1] = y + radius * CTRMathHelper.sinf(num2);
+                glVertices[i * 2] = x + radius * cosf(num2);
+                glVertices[i * 2 + 1] = y + radius * sinf(num2);
                 num2 += num;
             }
         }
 
         public static void drawCircleIntersection(float cx1, float cy1, float radius1, float cx2, float cy2, float radius2, int vertexCount, float width, RGBAColor fill)
         {
-            float num = CTRMathHelper.vectDistance(CTRMathHelper.vect(cx1, cy1), CTRMathHelper.vect(cx2, cy2));
+            float num = vectDistance(vect(cx1, cy1), vect(cx2, cy2));
             if (num < radius1 + radius2 && radius1 < num + radius2)
             {
                 float num2 = (radius1 * radius1 - radius2 * radius2 + num * num) / (2f * num);
-                float num3 = CTRMathHelper.acosf((num - num2) / radius2);
-                float num6 = CTRMathHelper.vectAngle(CTRMathHelper.vectSub(CTRMathHelper.vect(cx1, cy1), CTRMathHelper.vect(cx2, cy2)));
+                float num3 = acosf((num - num2) / radius2);
+                float num6 = vectAngle(vectSub(vect(cx1, cy1), vect(cx2, cy2)));
                 float num4 = num6 - num3;
                 float num5 = num6 + num3;
                 if (cx2 > cx1)
@@ -192,7 +192,7 @@ namespace CutTheRope.iframework.visual
                     num4 += 3.1415927f;
                     num5 += 3.1415927f;
                 }
-                GLDrawer.drawAntialiasedCurve2(cx2, cy2, radius2, num4, num5, vertexCount, width, 1f, fill);
+                drawAntialiasedCurve2(cx2, cy2, radius2, num4, num5, vertexCount, width, 1f, fill);
             }
         }
 
@@ -204,10 +204,10 @@ namespace CutTheRope.iframework.visual
             float[] array4 = new float[vertexCount * 2];
             float[] array5 = new float[vertexCount * 2];
             RGBAColor[] array6 = new RGBAColor[(vertexCount - 1) * 6 + 2];
-            GLDrawer.calcCurve(cx, cy, radius + fadeWidth, startAngle, endAngle, vertexCount, array2);
-            GLDrawer.calcCurve(cx, cy, radius, startAngle, endAngle, vertexCount, array3);
-            GLDrawer.calcCurve(cx, cy, radius - width, startAngle, endAngle, vertexCount, array4);
-            GLDrawer.calcCurve(cx, cy, radius - width - fadeWidth, startAngle, endAngle, vertexCount, array5);
+            calcCurve(cx, cy, radius + fadeWidth, startAngle, endAngle, vertexCount, array2);
+            calcCurve(cx, cy, radius, startAngle, endAngle, vertexCount, array3);
+            calcCurve(cx, cy, radius - width, startAngle, endAngle, vertexCount, array4);
+            calcCurve(cx, cy, radius - width - fadeWidth, startAngle, endAngle, vertexCount, array5);
             array[0] = array2[0];
             array[1] = array2[1];
             array6[0] = RGBAColor.transparentRGBA;
@@ -265,10 +265,10 @@ namespace CutTheRope.iframework.visual
         private static void calcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
             float num7 = (endAngle - startAngle) / (float)(vertexCount - 1);
-            float num = CTRMathHelper.tanf(num7);
-            float num2 = CTRMathHelper.cosf(num7);
-            float num3 = radius * CTRMathHelper.cosf(startAngle);
-            float num4 = radius * CTRMathHelper.sinf(startAngle);
+            float num = tanf(num7);
+            float num2 = cosf(num7);
+            float num3 = radius * cosf(startAngle);
+            float num4 = radius * sinf(startAngle);
             for (int i = 0; i < vertexCount; i++)
             {
                 glVertices[i * 2] = num3 + cx;
@@ -284,38 +284,38 @@ namespace CutTheRope.iframework.visual
 
         public static void drawAntialiasedLine(float x1, float y1, float x2, float y2, float size, RGBAColor color)
         {
-            Vector v = CTRMathHelper.vect(x1, y1);
-            Vector vector = CTRMathHelper.vectSub(CTRMathHelper.vect(x2, y2), v);
-            Vector v2 = CTRMathHelper.vectPerp(vector);
-            Vector vector2 = CTRMathHelper.vectNormalize(v2);
-            v2 = CTRMathHelper.vectMult(vector2, size);
-            Vector v3 = CTRMathHelper.vectNeg(v2);
-            Vector v4 = CTRMathHelper.vectAdd(v2, vector);
-            Vector v5 = CTRMathHelper.vectAdd(CTRMathHelper.vectNeg(v2), vector);
-            v2 = CTRMathHelper.vectAdd(v2, v);
-            v3 = CTRMathHelper.vectAdd(v3, v);
-            v4 = CTRMathHelper.vectAdd(v4, v);
-            v5 = CTRMathHelper.vectAdd(v5, v);
-            Vector vector3 = CTRMathHelper.vectSub(v2, vector2);
-            Vector vector4 = CTRMathHelper.vectSub(v4, vector2);
-            Vector vector5 = CTRMathHelper.vectAdd(v3, vector2);
-            Vector vector6 = CTRMathHelper.vectAdd(v5, vector2);
+            Vector v = vect(x1, y1);
+            Vector vector = vectSub(vect(x2, y2), v);
+            Vector v2 = vectPerp(vector);
+            Vector vector2 = vectNormalize(v2);
+            v2 = vectMult(vector2, size);
+            Vector v3 = vectNeg(v2);
+            Vector v4 = vectAdd(v2, vector);
+            Vector v5 = vectAdd(vectNeg(v2), vector);
+            v2 = vectAdd(v2, v);
+            v3 = vectAdd(v3, v);
+            v4 = vectAdd(v4, v);
+            v5 = vectAdd(v5, v);
+            Vector vector3 = vectSub(v2, vector2);
+            Vector vector4 = vectSub(v4, vector2);
+            Vector vector5 = vectAdd(v3, vector2);
+            Vector vector6 = vectAdd(v5, vector2);
             float[] pointer =
             [
                 v2.x, v2.y, v4.x, v4.y, vector3.x, vector3.y, vector4.x, vector4.y, vector5.x, vector5.y,
                 vector6.x, vector6.y, v3.x, v3.y, v5.x, v5.y
             ];
-            GLDrawer.colors[2] = color;
-            GLDrawer.colors[3] = color;
-            GLDrawer.colors[4] = color;
-            GLDrawer.colors[5] = color;
-            OpenGL.glColorPointer_add(4, 5, 0, GLDrawer.colors);
+            colors[2] = color;
+            colors[3] = color;
+            colors[4] = color;
+            colors[5] = color;
+            OpenGL.glColorPointer_add(4, 5, 0, colors);
             OpenGL.glVertexPointer_add(2, 5, 0, pointer);
         }
 
         public static void drawRect(float x, float y, float w, float h, RGBAColor color)
         {
-            GLDrawer.drawPolygon(
+            drawPolygon(
             [
                 x,
                 y,
@@ -330,7 +330,7 @@ namespace CutTheRope.iframework.visual
 
         public static void drawSolidRect(float x, float y, float w, float h, RGBAColor border, RGBAColor fill)
         {
-            GLDrawer.drawSolidPolygon(
+            drawSolidPolygon(
             [
                 x,
                 y,

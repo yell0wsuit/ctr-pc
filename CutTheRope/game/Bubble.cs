@@ -14,12 +14,12 @@ namespace CutTheRope.game
 
         public static Bubble Bubble_createWithResID(int r)
         {
-            return Bubble.Bubble_create(Application.getTexture(r));
+            return Bubble_create(Application.getTexture(r));
         }
 
         public static Bubble Bubble_createWithResIDQuad(int r, int q)
         {
-            Bubble bubble = Bubble.Bubble_create(Application.getTexture(r));
+            Bubble bubble = Bubble_create(Application.getTexture(r));
             bubble.setDrawQuad(q);
             return bubble;
         }

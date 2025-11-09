@@ -12,19 +12,19 @@ namespace CutTheRope.windows
 
         public static Process GetParentProcess()
         {
-            return ParentProcessUtilities.GetParentProcess(Process.GetCurrentProcess().Handle);
+            return GetParentProcess(Process.GetCurrentProcess().Handle);
         }
 
         public static Process GetParentProcess(int id)
         {
-            return ParentProcessUtilities.GetParentProcess(Process.GetProcessById(id).Handle);
+            return GetParentProcess(Process.GetProcessById(id).Handle);
         }
 
         public static Process GetParentProcess(IntPtr handle)
         {
             ParentProcessUtilities processInformation = default(ParentProcessUtilities);
             int returnLength;
-            int num = ParentProcessUtilities.NtQueryInformationProcess(handle, 0, ref processInformation, Marshal.SizeOf(processInformation), out returnLength);
+            int num = NtQueryInformationProcess(handle, 0, ref processInformation, Marshal.SizeOf(processInformation), out returnLength);
             if (num != 0)
             {
                 throw new Win32Exception(num);

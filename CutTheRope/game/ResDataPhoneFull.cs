@@ -8,9 +8,9 @@ namespace CutTheRope.game
     {
         public static string GetXml(string resName)
         {
-            if (ResDataPhoneFull.xmls_ == null)
+            if (xmls_ == null)
             {
-                ResDataPhoneFull.xmls_ = new Dictionary<string, string>
+                xmls_ = new Dictionary<string, string>
                 {
                     { "zeptolab_no_link", "<info format='0' fileFormat='0' filter='1'/>" },
                     { "loaderbar_full", "<info format='0' fileFormat='0' filter='1'/>" },
@@ -122,7 +122,7 @@ namespace CutTheRope.game
                 };
             }
             string value;
-            ResDataPhoneFull.xmls_.TryGetValue(resName, out value);
+            xmls_.TryGetValue(resName, out value);
             return value;
         }
 

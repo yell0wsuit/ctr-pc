@@ -10,18 +10,18 @@ namespace CutTheRope.windows
         private static ContentManager getContentManager(string imgName)
         {
             ContentManager value = null;
-            Images._contentManagers.TryGetValue(imgName, out value);
+            _contentManagers.TryGetValue(imgName, out value);
             if (value == null)
             {
                 value = new ContentManager(Global.XnaGame.Services, "content");
-                Images._contentManagers.Add(imgName, value);
+                _contentManagers.Add(imgName, value);
             }
             return value;
         }
 
         public static Texture2D get(string imgName)
         {
-            ContentManager contentManager = Images.getContentManager(imgName);
+            ContentManager contentManager = getContentManager(imgName);
             Texture2D result = null;
             Texture2D texture2D;
             try
@@ -38,7 +38,7 @@ namespace CutTheRope.windows
 
         public static void free(string imgName)
         {
-            Images.getContentManager(imgName).Unload();
+            getContentManager(imgName).Unload();
         }
 
         private static Dictionary<string, ContentManager> _contentManagers = new();

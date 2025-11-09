@@ -13,12 +13,12 @@ namespace CutTheRope.iframework.visual
 
         public static Animation Animation_createWithResID(int r)
         {
-            return Animation.Animation_create(Application.getTexture(r));
+            return Animation_create(Application.getTexture(r));
         }
 
         public static Animation Animation_createWithResIDQuad(int r, int q)
         {
-            Animation animation = Animation.Animation_createWithResID(r);
+            Animation animation = Animation_createWithResID(r);
             animation?.setDrawQuad(q);
             return animation;
         }

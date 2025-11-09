@@ -23,8 +23,8 @@ namespace CutTheRope.ctr_commons
                 timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-                width = (int)FrameworkTypes.SCREEN_WIDTH;
-                height = (int)FrameworkTypes.SCREEN_HEIGHT;
+                width = (int)SCREEN_WIDTH;
+                height = (int)SCREEN_HEIGHT;
                 addTimeline(timeline);
                 timeline.delegateTimelineDelegate = this;
             }
@@ -86,7 +86,7 @@ namespace CutTheRope.ctr_commons
             OpenGL.glEnable(1);
             OpenGL.glDisable(0);
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            GLDrawer.drawSolidRectWOBorder(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
+            GLDrawer.drawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);
             base.preDraw();
