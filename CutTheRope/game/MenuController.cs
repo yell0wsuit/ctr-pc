@@ -176,7 +176,7 @@ namespace CutTheRope.game
 
         public static Image createAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, Vector offset)
         {
-            int num = ((p > false) ? 1 : 0);
+            int num = (p ? 1 : 0);
             Image image = Image.Image_createWithResIDQuad(8, num);
             Image image2 = Image.Image_createWithResIDQuad(8, q);
             Image.setElementPositionWithRelativeQuadOffset(image2, 8, num, q);
@@ -306,7 +306,7 @@ namespace CutTheRope.game
 
         public static Image createBlankScoresButtonWithIconpressed(int quad, bool pressed)
         {
-            Image image3 = Image.Image_createWithResIDQuad(59, (pressed > false) ? 1 : 0);
+            Image image3 = Image.Image_createWithResIDQuad(59, pressed ? 1 : 0);
             Image image2 = Image.Image_createWithResIDQuad(59, quad);
             image3.addChild(image2);
             image2.parentAnchor = 9;
