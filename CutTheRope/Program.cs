@@ -6,10 +6,8 @@ namespace CutTheRope
     {
         private static void Main(string[] args)
         {
-            using (Game1 game = new())
-            {
-                game.Run();
-            }
+            using Game1 game = new();
+            game.Run();
         }
     }
 }

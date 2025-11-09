@@ -1496,7 +1496,7 @@ namespace CutTheRope.game
                 float num14 = sock3.rotation;
                 sock3.rotation = 0f;
                 sock3.updateRotation();
-                ref Vector ptr = vectRotate(star.posDelta, (double)DEGREES_TO_RADIANS(0f - num14));
+                Vector ptr = vectRotate(star.posDelta, (double)DEGREES_TO_RADIANS(0f - num14));
                 sock3.rotation = num14;
                 sock3.updateRotation();
                 if (ptr.y >= 0.0 && (lineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f) || lineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f)))
@@ -1505,29 +1505,27 @@ namespace CutTheRope.game
                     {
                         continue;
                     }
-                    using (IEnumerator enumerator2 = socks.GetEnumerator())
+                    using IEnumerator enumerator2 = socks.GetEnumerator();
+                    while (enumerator2.MoveNext())
                     {
-                        while (enumerator2.MoveNext())
+                        object obj12 = enumerator2.Current;
+                        Sock sock4 = (Sock)obj12;
+                        if (sock4 != sock3 && sock4.group == sock3.group)
                         {
-                            object obj12 = enumerator2.Current;
-                            Sock sock4 = (Sock)obj12;
-                            if (sock4 != sock3 && sock4.group == sock3.group)
-                            {
-                                sock3.state = Sock.SOCK_RECEIVING;
-                                sock4.state = Sock.SOCK_THROWING;
-                                releaseAllRopes(false);
-                                savedSockSpeed = 0.9f * vectLength(star.v);
-                                savedSockSpeed *= 1.4f;
-                                targetSock = sock4;
-                                sock3.light.playTimeline(0);
-                                sock3.light.visible = true;
-                                CTRSoundMgr._playSound(45);
-                                dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_teleport), null, 0.1);
-                                break;
-                            }
+                            sock3.state = Sock.SOCK_RECEIVING;
+                            sock4.state = Sock.SOCK_THROWING;
+                            releaseAllRopes(false);
+                            savedSockSpeed = 0.9f * vectLength(star.v);
+                            savedSockSpeed *= 1.4f;
+                            targetSock = sock4;
+                            sock3.light.playTimeline(0);
+                            sock3.light.visible = true;
+                            CTRSoundMgr._playSound(45);
+                            dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_teleport), null, 0.1);
+                            break;
                         }
-                        break;
                     }
+                    break;
                 }
                 if (sock3.state != Sock.SOCK_IDLE && sock3.idleTimeout == 0f)
                 {
