@@ -17,7 +17,7 @@ namespace CutTheRope.iframework.visual
             this.postDraw();
         }
 
-        private static TiledImage TiledImage_create(Texture2D t)
+        private static TiledImage TiledImage_create(CTRTexture2D t)
         {
             return (TiledImage)new TiledImage().initWithTexture(t);
         }

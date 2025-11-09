@@ -15,7 +15,7 @@ namespace CutTheRope.iframework.helpers
             return GameObject.GameObject_create(Application.getTexture(r));
         }
 
-        private static GameObject GameObject_create(Texture2D t)
+        private static GameObject GameObject_create(CTRTexture2D t)
         {
             GameObject gameObject = new();
             gameObject.initWithTexture(t);
@@ -29,7 +29,7 @@ namespace CutTheRope.iframework.helpers
             return gameObject;
         }
 
-        public override Image initWithTexture(Texture2D t)
+        public override Image initWithTexture(CTRTexture2D t)
         {
             if (base.initWithTexture(t) != null)
             {

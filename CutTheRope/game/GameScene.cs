@@ -2043,7 +2043,7 @@ namespace CutTheRope.game
             {
                 float num3 = FrameworkTypes.RTD(2.0);
                 int pack = ((CTRRootController)Application.sharedRootController()).getPack();
-                Texture2D texture = Application.getTexture(105 + pack * 2);
+                CTRTexture2D texture = Application.getTexture(105 + pack * 2);
                 int num4 = 0;
                 float num5 = texture.quadOffsets[num4].y;
                 CutTheRope.iframework.Rectangle r = texture.quadRects[num4];
@@ -3449,7 +3449,7 @@ namespace CutTheRope.game
 
         private class GameObjectSpecial : CTRGameObject
         {
-            private static GameScene.GameObjectSpecial GameObjectSpecial_create(Texture2D t)
+            private static GameScene.GameObjectSpecial GameObjectSpecial_create(CTRTexture2D t)
             {
                 GameScene.GameObjectSpecial gameObjectSpecial = new();
                 gameObjectSpecial.initWithTexture(t);

@@ -191,7 +191,7 @@ namespace CutTheRope.ctr_commons
                 Application.sharedMovieMgr().pause();
                 CtrRenderer.gPaused = true;
                 CtrRenderer.gApp?.applicationWillResignActive(null);
-                Texture2D.suspendAll();
+                CTRTexture2D.suspendAll();
             }
         }
 
@@ -201,8 +201,8 @@ namespace CutTheRope.ctr_commons
             {
                 CTRSoundMgr._unpause();
                 Application.sharedMovieMgr().resume();
-                Texture2D.suspendAll();
-                Texture2D.resumeAll();
+                CTRTexture2D.suspendAll();
+                CTRTexture2D.resumeAll();
                 CtrRenderer.gPaused = false;
                 CtrRenderer.gApp?.applicationDidBecomeActive(null);
             }

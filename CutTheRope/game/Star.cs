@@ -9,7 +9,7 @@ namespace CutTheRope.game
 {
     internal class Star : CTRGameObject
     {
-        public static Star Star_create(Texture2D t)
+        public static Star Star_create(CTRTexture2D t)
         {
             return (Star)new Star().initWithTexture(t);
         }

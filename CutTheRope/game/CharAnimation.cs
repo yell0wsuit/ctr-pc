@@ -7,7 +7,7 @@ namespace CutTheRope.game
 {
     internal class CharAnimation : Animation
     {
-        public static CharAnimation CharAnimation_create(Texture2D t)
+        public static CharAnimation CharAnimation_create(CTRTexture2D t)
         {
             return (CharAnimation)new CharAnimation().initWithTexture(t);
         }

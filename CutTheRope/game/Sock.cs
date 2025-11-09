@@ -9,7 +9,7 @@ namespace CutTheRope.game
 {
     internal class Sock : CTRGameObject
     {
-        public static Sock Sock_create(Texture2D t)
+        public static Sock Sock_create(CTRTexture2D t)
         {
             return (Sock)new Sock().initWithTexture(t);
         }

@@ -6,7 +6,7 @@ namespace CutTheRope.iframework.visual
 {
     internal class Animation : Image
     {
-        public static Animation Animation_create(Texture2D t)
+        public static Animation Animation_create(CTRTexture2D t)
         {
             return (Animation)new Animation().initWithTexture(t);
         }

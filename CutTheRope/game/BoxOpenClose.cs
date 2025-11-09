@@ -680,7 +680,7 @@ namespace CutTheRope.game
                 return BoxOpenClose.Confetti.Confetti_create(Application.getTexture(r));
             }
 
-            public static BoxOpenClose.Confetti Confetti_create(Texture2D t)
+            public static BoxOpenClose.Confetti Confetti_create(CTRTexture2D t)
             {
                 return (BoxOpenClose.Confetti)new BoxOpenClose.Confetti().initWithTexture(t);
             }

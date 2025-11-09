@@ -4,7 +4,7 @@ namespace CutTheRope.iframework.visual
 {
     internal class VerticallyTiledImage : Image
     {
-        public override Image initWithTexture(Texture2D t)
+        public override Image initWithTexture(CTRTexture2D t)
         {
             if (base.initWithTexture(t) != null)
             {

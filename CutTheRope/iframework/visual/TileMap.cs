@@ -56,7 +56,7 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void addTileQuadwithID(Texture2D t, int q, int ti)
+        public virtual void addTileQuadwithID(CTRTexture2D t, int q, int ti)
         {
             if (q == -1)
             {
@@ -227,7 +227,7 @@ namespace CutTheRope.iframework.visual
                     {
                         TileEntry tileEntry = this.tiles[num12];
                         ImageMultiDrawer imageMultiDrawer2 = this.drawers[tileEntry.drawerIndex];
-                        Texture2D texture = imageMultiDrawer2.image.texture;
+                        CTRTexture2D texture = imageMultiDrawer2.image.texture;
                         if (tileEntry.quad != -1)
                         {
                             r.x += texture.quadRects[tileEntry.quad].x;

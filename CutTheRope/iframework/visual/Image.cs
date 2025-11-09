@@ -23,7 +23,7 @@ namespace CutTheRope.iframework.visual
 
         public static Vector getQuadSize(int textureID, int quad)
         {
-            Texture2D texture2D = Application.getTexture(textureID);
+            CTRTexture2D texture2D = Application.getTexture(textureID);
             return CTRMathHelper.vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
@@ -34,7 +34,7 @@ namespace CutTheRope.iframework.visual
 
         public static Vector getQuadCenter(int textureID, int quad)
         {
-            Texture2D texture2D = Application.getTexture(textureID);
+            CTRTexture2D texture2D = Application.getTexture(textureID);
             return CTRMathHelper.vectAdd(texture2D.quadOffsets[quad], CTRMathHelper.vect(CTRMathHelper.ceil((double)texture2D.quadRects[quad].w / 2.0), CTRMathHelper.ceil((double)texture2D.quadRects[quad].h / 2.0)));
         }
 
@@ -66,7 +66,7 @@ namespace CutTheRope.iframework.visual
             e.y = relativeQuadOffset.y;
         }
 
-        public static Image Image_create(Texture2D t)
+        public static Image Image_create(CTRTexture2D t)
         {
             return new Image().initWithTexture(t);
         }
@@ -83,7 +83,7 @@ namespace CutTheRope.iframework.visual
             return image;
         }
 
-        public virtual Image initWithTexture(Texture2D t)
+        public virtual Image initWithTexture(CTRTexture2D t)
         {
             if (this.init() != null)
             {
@@ -199,7 +199,7 @@ namespace CutTheRope.iframework.visual
 
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";
 
-        public Texture2D texture;
+        public CTRTexture2D texture;
 
         public bool restoreCutTransparency;
 

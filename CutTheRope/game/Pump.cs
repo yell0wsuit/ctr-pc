@@ -7,7 +7,7 @@ namespace CutTheRope.game
 {
     internal class Pump : GameObject
     {
-        public static Pump Pump_create(Texture2D t)
+        public static Pump Pump_create(CTRTexture2D t)
         {
             return (Pump)new Pump().initWithTexture(t);
         }

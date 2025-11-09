@@ -322,9 +322,9 @@ namespace CutTheRope.iframework.core
 
         private View previousView;
 
-        private Texture2D prevScreenImage;
+        private CTRTexture2D prevScreenImage;
 
-        private Texture2D nextScreenImage;
+        private CTRTexture2D nextScreenImage;
 
         private Grabber screenGrabber;
 

@@ -6,7 +6,7 @@ namespace CutTheRope.iframework.visual
 {
     internal class Button : BaseElement
     {
-        public static Button createWithTextureUpDownID(Texture2D up, Texture2D down, int bID)
+        public static Button createWithTextureUpDownID(CTRTexture2D up, CTRTexture2D down, int bID)
         {
             Image up2 = Image.Image_create(up);
             Image down2 = Image.Image_create(down);
