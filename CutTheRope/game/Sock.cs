@@ -44,10 +44,10 @@ namespace CutTheRope.game
             float num = 140f;
             this.t1.x = this.x - num / 2f - 20f;
             this.t2.x = this.x + num / 2f - 20f;
-            this.t1.y = (this.t2.y = this.y);
+            this.t1.y = this.t2.y = this.y;
             this.b1.x = this.t1.x;
             this.b2.x = this.t2.x;
-            this.b1.y = (this.b2.y = this.y + 15f);
+            this.b1.y = this.b2.y = this.y + 15f;
             this.angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(this.rotation);
             this.t1 = CTRMathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
             this.t2 = CTRMathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);

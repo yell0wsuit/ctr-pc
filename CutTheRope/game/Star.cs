@@ -55,7 +55,7 @@ namespace CutTheRope.game
             if ((double)this.timeout > 0.0)
             {
                 this.timedAnim = Animation.Animation_createWithResID(78);
-                this.timedAnim.anchor = (this.timedAnim.parentAnchor = 18);
+                this.timedAnim.anchor = this.timedAnim.parentAnchor = 18;
                 float d = this.timeout / 37f;
                 this.timedAnim.addAnimationWithIDDelayLoopFirstLast(0, d, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 55);
                 this.timedAnim.playTimeline(0);
@@ -89,7 +89,7 @@ namespace CutTheRope.game
             animation.addAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.playTimeline(0);
             Timeline.updateTimeline(animation.getTimeline(0), (float)((double)CTRMathHelper.RND_RANGE(0, 20) / 10.0));
-            animation.anchor = (animation.parentAnchor = 18);
+            animation.anchor = animation.parentAnchor = 18;
             this.addChild(animation);
         }
 

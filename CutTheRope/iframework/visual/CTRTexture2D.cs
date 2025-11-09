@@ -167,7 +167,7 @@ namespace CutTheRope.iframework.visual
             {
                 CTRTexture2D.tail = this.prev;
             }
-            this.next = (this.prev = null);
+            this.next = this.prev = null;
         }
 
         public virtual CTRTexture2D initWithPath(string path, bool assets)

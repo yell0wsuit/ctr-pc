@@ -54,21 +54,21 @@ namespace CutTheRope.game
             gameScene.gameSceneDelegate = this;
             gameView.addChildwithID(gameScene, 0);
             Button button = MenuController.createButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
-            button.x = (float)(-(float)base.canvas.xOffsetScaled);
+            button.x = (float)-(float)base.canvas.xOffsetScaled;
             gameView.addChildwithID(button, 1);
             Button button2 = MenuController.createButtonWithImageQuad1Quad2IDDelegate(62, 0, 1, 1, this);
-            button2.x = (float)(-(float)base.canvas.xOffsetScaled);
+            button2.x = (float)-(float)base.canvas.xOffsetScaled;
             gameView.addChildwithID(button2, 2);
             Image image = Image.Image_createWithResIDQuad(66, 0);
-            image.anchor = (image.parentAnchor = 10);
-            image.scaleX = (image.scaleY = 1.25f);
+            image.anchor = image.parentAnchor = 10;
+            image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = (float)(-(float)image.height / 2);
             image.passTransformationsToChilds = false;
             this.mapNameLabel = new Text().initWithFont(Application.getFont(4));
             this.mapNameLabel.setName("mapNameLabel");
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             CTRPreferences.getScoreForPackLevel(cTRRootController.getPack(), cTRRootController.getLevel());
-            this.mapNameLabel.anchor = (this.mapNameLabel.parentAnchor = 12);
+            this.mapNameLabel.anchor = this.mapNameLabel.parentAnchor = 12;
             this.mapNameLabel.x = FrameworkTypes.RTD(-10.0) - (float)base.canvas.xOffsetScaled + 256f;
             this.mapNameLabel.y = FrameworkTypes.RTD(-5.0);
             image.addChild(this.mapNameLabel);
@@ -81,7 +81,7 @@ namespace CutTheRope.game
             vBox.addChild(c3);
             Button c4 = MenuController.createButtonWithTextIDDelegate(Application.getString(655400), 4, this);
             vBox.addChild(c4);
-            vBox.anchor = (vBox.parentAnchor = 10);
+            vBox.anchor = vBox.parentAnchor = 10;
             Vector offset = CTRMathHelper.vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
             ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, CTRMathHelper.vectZero);
             ToggleButton toggleButton2 = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(2, this, 11, offset);
@@ -664,8 +664,8 @@ namespace CutTheRope.game
         public override void fullscreenToggled(bool isFullscreen)
         {
             View view = this.getView(0);
-            view.getChild(2).x = (float)(-(float)base.canvas.xOffsetScaled);
-            view.getChild(1).x = (float)(-(float)base.canvas.xOffsetScaled);
+            view.getChild(2).x = (float)-(float)base.canvas.xOffsetScaled;
+            view.getChild(1).x = (float)-(float)base.canvas.xOffsetScaled;
             this.mapNameLabel.x = FrameworkTypes.RTD(-10.0) - (float)base.canvas.xOffsetScaled + 256f;
             GameScene gameScene = (GameScene)view.getChild(0);
             gameScene?.fullscreenToggled(isFullscreen);

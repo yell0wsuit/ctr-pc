@@ -20,7 +20,7 @@ namespace CutTheRope.iframework.visual
                 this.buttonID = bid;
                 this.b1 = new Button().initWithUpElementDownElementandID(u1, d1, 0);
                 this.b2 = new Button().initWithUpElementDownElementandID(u2, d2, 1);
-                this.b1.parentAnchor = (this.b2.parentAnchor = 9);
+                this.b1.parentAnchor = this.b2.parentAnchor = 9;
                 this.width = this.b1.width;
                 this.height = this.b1.height;
                 this.addChildwithID(this.b1, 0);

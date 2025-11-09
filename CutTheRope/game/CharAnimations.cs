@@ -27,7 +27,7 @@ namespace CutTheRope.game
                 this.animations = (DynamicArray)new DynamicArray().init();
             }
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resId);
-            charAnimation.parentAnchor = (charAnimation.anchor = 9);
+            charAnimation.parentAnchor = charAnimation.anchor = 9;
             charAnimation.doRestoreCutTransparency();
             int i = resId - 101;
             this.animations.setObjectAt(charAnimation, i);

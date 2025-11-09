@@ -20,8 +20,8 @@ namespace CutTheRope.game
             Vector vector5 = CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(end, start));
             Vector v3 = CTRMathHelper.vectRperp(vector5);
             Vector v4 = CTRMathHelper.vectPerp(vector5);
-            Vector vector = (CTRMathHelper.vectEqual(frs, CTRMathHelper.vectUndefined) ? CTRMathHelper.vectAdd(start, CTRMathHelper.vectMult(v3, startSize)) : frs);
-            Vector vector2 = (CTRMathHelper.vectEqual(fls, CTRMathHelper.vectUndefined) ? CTRMathHelper.vectAdd(start, CTRMathHelper.vectMult(v4, startSize)) : fls);
+            Vector vector = CTRMathHelper.vectEqual(frs, CTRMathHelper.vectUndefined) ? CTRMathHelper.vectAdd(start, CTRMathHelper.vectMult(v3, startSize)) : frs;
+            Vector vector2 = CTRMathHelper.vectEqual(fls, CTRMathHelper.vectUndefined) ? CTRMathHelper.vectAdd(start, CTRMathHelper.vectMult(v4, startSize)) : fls;
             Vector vector3 = CTRMathHelper.vectAdd(end, CTRMathHelper.vectMult(v3, endSize));
             Vector vector4 = CTRMathHelper.vectAdd(end, CTRMathHelper.vectMult(v4, endSize));
             GLDrawer.drawSolidPolygonWOBorder([vector2.x, vector2.y, vector.x, vector.y, vector3.x, vector3.y, vector4.x, vector4.y], 4, c);
@@ -275,17 +275,17 @@ namespace CutTheRope.game
             this.candy.anchor = 18;
             this.candy.bb = FrameworkTypes.MakeRectangle(142f, 157f, 112f, 104f);
             this.candy.passTransformationsToChilds = false;
-            this.candy.scaleX = (this.candy.scaleY = 0.71f);
+            this.candy.scaleX = this.candy.scaleY = 0.71f;
             this.candyMain = GameObject.GameObject_createWithResIDQuad(63, 1);
             this.candyMain.doRestoreCutTransparency();
-            this.candyMain.anchor = (this.candyMain.parentAnchor = 18);
+            this.candyMain.anchor = this.candyMain.parentAnchor = 18;
             this.candy.addChild(this.candyMain);
-            this.candyMain.scaleX = (this.candyMain.scaleY = 0.71f);
+            this.candyMain.scaleX = this.candyMain.scaleY = 0.71f;
             this.candyTop = GameObject.GameObject_createWithResIDQuad(63, 2);
             this.candyTop.doRestoreCutTransparency();
-            this.candyTop.anchor = (this.candyTop.parentAnchor = 18);
+            this.candyTop.anchor = this.candyTop.parentAnchor = 18;
             this.candy.addChild(this.candyTop);
-            this.candyTop.scaleX = (this.candyTop.scaleY = 0.71f);
+            this.candyTop.scaleX = this.candyTop.scaleY = 0.71f;
             this.candyBlink = Animation.Animation_createWithResID(63);
             this.candyBlink.addAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 8, 17);
             this.candyBlink.addAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 18, new List<int> { 18 });
@@ -293,13 +293,13 @@ namespace CutTheRope.game
             timeline7.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline7.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             this.candyBlink.visible = false;
-            this.candyBlink.anchor = (this.candyBlink.parentAnchor = 18);
-            this.candyBlink.scaleX = (this.candyBlink.scaleY = 0.71f);
+            this.candyBlink.anchor = this.candyBlink.parentAnchor = 18;
+            this.candyBlink.scaleX = this.candyBlink.scaleY = 0.71f;
             this.candy.addChild(this.candyBlink);
             this.candyBubbleAnimation = Animation.Animation_createWithResID(72);
             this.candyBubbleAnimation.x = this.candy.x;
             this.candyBubbleAnimation.y = this.candy.y;
-            this.candyBubbleAnimation.parentAnchor = (this.candyBubbleAnimation.anchor = 18);
+            this.candyBubbleAnimation.parentAnchor = this.candyBubbleAnimation.anchor = 18;
             this.candyBubbleAnimation.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
             this.candyBubbleAnimation.playTimeline(0);
             this.candy.addChild(this.candyBubbleAnimation);
@@ -348,7 +348,7 @@ namespace CutTheRope.game
                         this.special = item2["special"].intValue();
                         this.ropePhysicsSpeed = item2["ropePhysicsSpeed"].floatValue();
                         this.nightLevel = item2["nightLevel"].isEqualToString("true");
-                        this.twoParts = ((!item2["twoParts"].isEqualToString("true")) ? 2 : 0);
+                        this.twoParts = (!item2["twoParts"].isEqualToString("true")) ? 2 : 0;
                         this.ropePhysicsSpeed *= 1.4f;
                     }
                     else if (item2.Name == "candyL")
@@ -356,7 +356,7 @@ namespace CutTheRope.game
                         this.starL.pos.x = (float)item2["x"].intValue() * num + num3 + (float)num4;
                         this.starL.pos.y = (float)item2["y"].intValue() * num + num2 + (float)num5;
                         this.candyL = GameObject.GameObject_createWithResIDQuad(63, 19);
-                        this.candyL.scaleX = (this.candyL.scaleY = 0.71f);
+                        this.candyL.scaleX = this.candyL.scaleY = 0.71f;
                         this.candyL.passTransformationsToChilds = false;
                         this.candyL.doRestoreCutTransparency();
                         this.candyL.retain();
@@ -370,7 +370,7 @@ namespace CutTheRope.game
                         this.starR.pos.x = (float)item2["x"].intValue() * num + num3 + (float)num4;
                         this.starR.pos.y = (float)item2["y"].intValue() * num + num2 + (float)num5;
                         this.candyR = GameObject.GameObject_createWithResIDQuad(63, 20);
-                        this.candyR.scaleX = (this.candyR.scaleY = 0.71f);
+                        this.candyR.scaleX = this.candyR.scaleY = 0.71f;
                         this.candyR.passTransformationsToChilds = false;
                         this.candyR.doRestoreCutTransparency();
                         this.candyR.retain();
@@ -425,7 +425,7 @@ namespace CutTheRope.game
                             NSString newString = item3["text"];
                             tutorialText.setStringandWidth(newString, (float)item3["width"].intValue() * num);
                             tutorialText.color = RGBAColor.transparentRGBA;
-                            float num6 = ((tutorialText.special == 3) ? 12f : 0f);
+                            float num6 = (tutorialText.special == 3) ? 12f : 0f;
                             Timeline timeline3 = new Timeline().initWithMaxKeyFramesOnTrack(4);
                             timeline3.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
                             timeline3.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
@@ -458,7 +458,7 @@ namespace CutTheRope.game
                             gameObjectSpecial.rotation = (float)item3["angle"].intValue();
                             gameObjectSpecial.special = item3["special"].intValue();
                             gameObjectSpecial.parseMover(item3);
-                            float num7 = ((gameObjectSpecial.special == 3 || gameObjectSpecial.special == 4) ? 12f : 0f);
+                            float num7 = (gameObjectSpecial.special == 3 || gameObjectSpecial.special == 4) ? 12f : 0f;
                             Timeline timeline4 = new Timeline().initWithMaxKeyFramesOnTrack(4);
                             timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num7));
                             timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
@@ -507,15 +507,15 @@ namespace CutTheRope.game
                         Bubble bubble = Bubble.Bubble_createWithResIDQuad(75, q2);
                         bubble.doRestoreCutTransparency();
                         bubble.bb = FrameworkTypes.MakeRectangle(48.0, 48.0, 152.0, 152.0);
-                        bubble.initial_x = (bubble.x = (float)item3["x"].intValue() * num + num3 + (float)num4);
-                        bubble.initial_y = (bubble.y = (float)item3["y"].intValue() * num + num2 + (float)num5);
+                        bubble.initial_x = bubble.x = (float)item3["x"].intValue() * num + num3 + (float)num4;
+                        bubble.initial_y = bubble.y = (float)item3["y"].intValue() * num + num2 + (float)num5;
                         bubble.initial_rotation = 0f;
                         bubble.initial_rotatedCircle = null;
                         bubble.anchor = 18;
                         bubble.popped = false;
                         Image image = Image.Image_createWithResIDQuad(75, 0);
                         image.doRestoreCutTransparency();
-                        image.parentAnchor = (image.anchor = 18);
+                        image.parentAnchor = image.anchor = 18;
                         bubble.addChild(image);
                         this.bubbles.addObject(bubble);
                     }
@@ -525,8 +525,8 @@ namespace CutTheRope.game
                         pump.doRestoreCutTransparency();
                         pump.addAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, new List<int> { 2, 3, 0 });
                         pump.bb = FrameworkTypes.MakeRectangle(300f, 300f, 175f, 175f);
-                        pump.initial_x = (pump.x = (float)item3["x"].intValue() * num + num3 + (float)num4);
-                        pump.initial_y = (pump.y = (float)item3["y"].intValue() * num + num2 + (float)num5);
+                        pump.initial_x = pump.x = (float)item3["x"].intValue() * num + num3 + (float)num4;
+                        pump.initial_y = pump.y = (float)item3["y"].intValue() * num + num2 + (float)num5;
                         pump.initial_rotation = 0f;
                         pump.initial_rotatedCircle = null;
                         pump.rotation = item3["angle"].floatValue() + 90f;
@@ -538,7 +538,7 @@ namespace CutTheRope.game
                     {
                         Sock sock = Sock.Sock_createWithResID(85);
                         sock.createAnimations();
-                        sock.scaleX = (sock.scaleY = 0.7f);
+                        sock.scaleX = sock.scaleY = 0.7f;
                         sock.doRestoreCutTransparency();
                         sock.x = (float)item3["x"].intValue() * num + num3 + (float)num4;
                         sock.y = (float)item3["y"].intValue() * num + num2 + (float)num5;
@@ -578,7 +578,7 @@ namespace CutTheRope.game
                         int num8 = -1;
                         if (nSString2.length() > 0)
                         {
-                            num8 = (nSString2.isEqualToString("false") ? (-1) : nSString2.intValue());
+                            num8 = nSString2.isEqualToString("false") ? (-1) : nSString2.intValue();
                         }
                         Spikes spikes = (Spikes)new Spikes().initWithPosXYWidthAndAngleToggled(px, py, w, an, num8);
                         spikes.parseMover(item3);
@@ -615,8 +615,8 @@ namespace CutTheRope.game
                         rotatedCircle.x = num9;
                         rotatedCircle.y = num10;
                         rotatedCircle.rotation = d;
-                        rotatedCircle.inithanlde1 = (rotatedCircle.handle1 = CTRMathHelper.vect(rotatedCircle.x - num11 * num, rotatedCircle.y));
-                        rotatedCircle.inithanlde2 = (rotatedCircle.handle2 = CTRMathHelper.vect(rotatedCircle.x + num11 * num, rotatedCircle.y));
+                        rotatedCircle.inithanlde1 = rotatedCircle.handle1 = CTRMathHelper.vect(rotatedCircle.x - num11 * num, rotatedCircle.y);
+                        rotatedCircle.inithanlde2 = rotatedCircle.handle2 = CTRMathHelper.vect(rotatedCircle.x + num11 * num, rotatedCircle.y);
                         rotatedCircle.handle1 = CTRMathHelper.vectRotateAround(rotatedCircle.handle1, (double)CTRMathHelper.DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.handle2 = CTRMathHelper.vectRotateAround(rotatedCircle.handle2, (double)CTRMathHelper.DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.setSize(num11);
@@ -647,8 +647,8 @@ namespace CutTheRope.game
                         bool flag = item3["part"].isEqualToString("L");
                         bool flag2 = item3["hidePath"].isEqualToString("true");
                         Grab grab = (Grab)new Grab().init();
-                        grab.initial_x = (grab.x = hx);
-                        grab.initial_y = (grab.y = hy);
+                        grab.initial_x = grab.x = hx;
+                        grab.initial_y = grab.y = hy;
                         grab.initial_rotation = 0f;
                         grab.wheel = wheel;
                         grab.setSpider(spider);
@@ -682,7 +682,7 @@ namespace CutTheRope.game
                             ConstraintedPoint constraintedPoint = this.star;
                             if (this.twoParts != 2)
                             {
-                                constraintedPoint = (flag ? this.starL : this.starR);
+                                constraintedPoint = flag ? this.starL : this.starR;
                             }
                             Bungee bungee = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.x, constraintedPoint.pos.y, len);
                             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
@@ -703,9 +703,9 @@ namespace CutTheRope.game
                         this.target.doRestoreCutTransparency();
                         this.target.passColorToChilds = false;
                         NSString nSString3 = item3["x"];
-                        this.target.x = (this.support.x = (float)nSString3.intValue() * num + num3 + (float)num4);
+                        this.target.x = this.support.x = (float)nSString3.intValue() * num + num3 + (float)num4;
                         NSString nSString4 = item3["y"];
-                        this.target.y = (this.support.y = (float)nSString4.intValue() * num + num2 + (float)num5);
+                        this.target.y = this.support.y = (float)nSString4.intValue() * num + num2 + (float)num5;
                         this.target.addImage(101);
                         this.target.addImage(102);
                         this.target.bb = FrameworkTypes.MakeRectangle(264.0, 350.0, 108.0, 2.0);
@@ -785,13 +785,13 @@ namespace CutTheRope.game
             if (this.twoParts != 2)
             {
                 this.candyBubbleAnimationL = Animation.Animation_createWithResID(72);
-                this.candyBubbleAnimationL.parentAnchor = (this.candyBubbleAnimationL.anchor = 18);
+                this.candyBubbleAnimationL.parentAnchor = this.candyBubbleAnimationL.anchor = 18;
                 this.candyBubbleAnimationL.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
                 this.candyBubbleAnimationL.playTimeline(0);
                 this.candyL.addChild(this.candyBubbleAnimationL);
                 this.candyBubbleAnimationL.visible = false;
                 this.candyBubbleAnimationR = Animation.Animation_createWithResID(72);
-                this.candyBubbleAnimationR.parentAnchor = (this.candyBubbleAnimationR.anchor = 18);
+                this.candyBubbleAnimationR.parentAnchor = this.candyBubbleAnimationR.anchor = 18;
                 this.candyBubbleAnimationR.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
                 this.candyBubbleAnimationR.playTimeline(0);
                 this.candyR.addChild(this.candyBubbleAnimationR);
@@ -833,7 +833,7 @@ namespace CutTheRope.game
             text.y = FrameworkTypes.SCREEN_HEIGHT + 15f;
             text2.y = 60f;
             text2.rotationCenterX -= (float)text2.width / 2f;
-            text2.scaleX = (text2.scaleY = 0.7f);
+            text2.scaleX = text2.scaleY = 0.7f;
             text.addChild(text2);
             Timeline timeline6 = new Timeline().initWithMaxKeyFramesOnTrack(5);
             timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
@@ -848,7 +848,7 @@ namespace CutTheRope.game
             for (int m = 0; m < 5; m++)
             {
                 this.dragging[m] = false;
-                this.startPos[m] = (this.prevStartPos[m] = CTRMathHelper.vectZero);
+                this.startPos[m] = this.prevStartPos[m] = CTRMathHelper.vectZero;
             }
             if (this.clickToCut)
             {
@@ -867,7 +867,7 @@ namespace CutTheRope.game
                 this.camera.type = CAMERA_TYPE.CAMERA_SPEED_PIXELS;
                 this.camera.speed = 20f;
                 this.cameraMoveMode = 0;
-                ConstraintedPoint constraintedPoint = ((this.twoParts != 2) ? this.starL : this.star);
+                ConstraintedPoint constraintedPoint = (this.twoParts != 2) ? this.starL : this.star;
                 float num;
                 float num2;
                 if (this.mapWidth > FrameworkTypes.SCREEN_WIDTH)
@@ -1009,7 +1009,7 @@ namespace CutTheRope.game
                 }
             }
             Mover.moveVariableToTarget(ref this.ropeAtOnceTimer, 0.0, 1.0, (double)delta);
-            ConstraintedPoint constraintedPoint4 = ((this.twoParts != 2) ? this.starL : this.star);
+            ConstraintedPoint constraintedPoint4 = (this.twoParts != 2) ? this.starL : this.star;
             float num = constraintedPoint4.pos.x - FrameworkTypes.SCREEN_WIDTH / 2f;
             double num19 = (double)(constraintedPoint4.pos.y - FrameworkTypes.SCREEN_HEIGHT / 2f);
             float num2 = CTRMathHelper.FIT_TO_BOUNDARIES((double)num, 0.0, (double)(this.mapWidth - FrameworkTypes.SCREEN_WIDTH));
@@ -1178,7 +1178,7 @@ namespace CutTheRope.game
                         float num9 = CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(v));
                         if (this.twoParts != 2)
                         {
-                            GameObject gameObject = ((constraintedPoint2 == this.starL) ? this.candyL : this.candyR);
+                            GameObject gameObject = (constraintedPoint2 == this.starL) ? this.candyL : this.candyR;
                             if (!rope.chosenOne)
                             {
                                 rope.initialCandleAngle = gameObject.rotation - num9;
@@ -1269,7 +1269,7 @@ namespace CutTheRope.game
                         }
                         if (this.candyBubbleL != null || this.candyBubbleR != null)
                         {
-                            this.candyBubble = ((this.candyBubbleL != null) ? this.candyBubbleL : this.candyBubbleR);
+                            this.candyBubble = (this.candyBubbleL != null) ? this.candyBubbleL : this.candyBubbleR;
                             this.candyBubbleAnimation.visible = true;
                         }
                         this.lastCandyRotateDelta = 0f;
@@ -1995,8 +1995,8 @@ namespace CutTheRope.game
             }
             this.noCandy = true;
             this.candy.passTransformationsToChilds = true;
-            this.candyMain.scaleX = (this.candyMain.scaleY = 1f);
-            this.candyTop.scaleX = (this.candyTop.scaleY = 1f);
+            this.candyMain.scaleX = this.candyMain.scaleY = 1f;
+            this.candyTop.scaleX = this.candyTop.scaleY = 1f;
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             timeline.addKeyFrame(KeyFrame.makePos((double)this.candy.x, (double)this.candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makePos((double)this.target.x, (double)this.target.y + 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
@@ -2060,7 +2060,7 @@ namespace CutTheRope.game
                     ((Image)obj).draw();
                 }
             }
-            OpenGL.glTranslatef((double)(-(double)base.canvas.xOffsetScaled), 0.0, 0.0);
+            OpenGL.glTranslatef((double)-(double)base.canvas.xOffsetScaled, 0.0, 0.0);
             OpenGL.glPopMatrix();
             OpenGL.glEnable(1);
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
@@ -2248,7 +2248,7 @@ namespace CutTheRope.game
                         for (int l = 0; l < num6 - 1; l++)
                         {
                             float s = num3;
-                            float s2 = ((l == num6 - 2) ? 1f : (num3 + num10));
+                            float s2 = (l == num6 - 2) ? 1f : (num3 + num10);
                             Vector vector3 = CTRMathHelper.vect(array2[l * 2], array2[l * 2 + 1]);
                             Vector vector8 = CTRMathHelper.vect(array2[(l + 1) * 2], array2[(l + 1) * 2 + 1]);
                             Vector vector9 = CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(vector8, vector3));
@@ -2289,7 +2289,7 @@ namespace CutTheRope.game
                 vector.x = p.x - p.bb.w / 2f;
                 Vector vector2 = default(Vector);
                 vector2.x = p.x + p.bb.w / 2f;
-                vector.y = (vector2.y = p.y);
+                vector.y = vector2.y = p.y;
                 if (p.angle != 0.0)
                 {
                     v = CTRMathHelper.vectRotateAround(v, 0.0 - p.angle, p.x, p.y);
@@ -2310,7 +2310,7 @@ namespace CutTheRope.game
             {
                 b.skip = true;
                 Vector vector = CTRMathHelper.vectSub(s.prevPos, s.pos);
-                int num = ((CTRMathHelper.vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y) ? 1 : (-1));
+                int num = (CTRMathHelper.vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y) ? 1 : (-1);
                 float s2 = CTRMathHelper.MAX((double)(CTRMathHelper.vectLength(vector) * 40f), 840.0) * (float)num;
                 Vector impulse = CTRMathHelper.vectMult(CTRMathHelper.vectPerp(CTRMathHelper.vectForAngle(b.angle)), s2);
                 s.pos = CTRMathHelper.vectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
@@ -2468,7 +2468,7 @@ namespace CutTheRope.game
             this.noCandy = true;
             Image image = Image.Image_createWithResIDQuad(64, 12);
             image.doRestoreCutTransparency();
-            this.candy.anchor = (this.candy.parentAnchor = 18);
+            this.candy.anchor = this.candy.parentAnchor = 18;
             this.candy.x = 0f;
             this.candy.y = -5f;
             image.addChild(this.candy);
@@ -2656,7 +2656,7 @@ namespace CutTheRope.game
             if (!this.dragging[ti])
             {
                 this.dragging[ti] = true;
-                this.prevStartPos[ti] = (this.startPos[ti] = vector);
+                this.prevStartPos[ti] = this.startPos[ti] = vector;
             }
             foreach (object obj in this.spikes)
             {
@@ -2857,7 +2857,7 @@ namespace CutTheRope.game
                         a = GameScene.FBOUND_PI(a);
                         rotatedCircle.handle1 = CTRMathHelper.vectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.handle2 = CTRMathHelper.vectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        int num2 = ((num > 0f) ? 46 : 47);
+                        int num2 = (num > 0f) ? 46 : 47;
                         if ((double)Math.Abs(num) < 0.07)
                         {
                             num2 = -1;

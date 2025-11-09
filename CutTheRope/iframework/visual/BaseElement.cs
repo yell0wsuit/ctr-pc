@@ -29,10 +29,10 @@ namespace CutTheRope.iframework.visual
 
         public static void calculateTopLeft(BaseElement e)
         {
-            float num = (e.HasParent ? e.parent.drawX : 0f);
-            float num2 = (e.HasParent ? e.parent.drawY : 0f);
-            int num3 = (e.HasParent ? e.parent.width : 0);
-            int num4 = (e.HasParent ? e.parent.height : 0);
+            float num = e.HasParent ? e.parent.drawX : 0f;
+            float num2 = e.HasParent ? e.parent.drawY : 0f;
+            int num3 = e.HasParent ? e.parent.width : 0;
+            int num4 = e.HasParent ? e.parent.height : 0;
             if (e.parentAnchor != -1)
             {
                 if ((e.parentAnchor & 1) != 0)

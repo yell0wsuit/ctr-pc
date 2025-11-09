@@ -431,7 +431,7 @@ namespace CutTheRope.windows
 
         private static BasicEffect getEffect(bool useTexture, bool useColor)
         {
-            BasicEffect basicEffect = ((!useTexture) ? OpenGL.s_effectColor : (useColor ? OpenGL.s_effectTextureColor : OpenGL.s_effectTexture));
+            BasicEffect basicEffect = (!useTexture) ? OpenGL.s_effectColor : (useColor ? OpenGL.s_effectTextureColor : OpenGL.s_effectTexture);
             if (useTexture)
             {
                 basicEffect.Alpha = (float)OpenGL.s_Color.A / 255f;
@@ -514,7 +514,7 @@ namespace CutTheRope.windows
             }
             bool value = false;
             OpenGL.s_glClientStateFlags.TryGetValue(13, out value);
-            VertexPositionColor[] array = (OpenGL.s_LastVertices_PositionColor = (value ? OpenGL.ConstructColorVertices() : OpenGL.ConstructCurrentColorVertices()));
+            VertexPositionColor[] array = OpenGL.s_LastVertices_PositionColor = value ? OpenGL.ConstructColorVertices() : OpenGL.ConstructCurrentColorVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
@@ -571,7 +571,7 @@ namespace CutTheRope.windows
                 OpenGL.s_LastVertices_PositionNormalTexture = null;
                 return;
             }
-            VertexPositionNormalTexture[] array = (OpenGL.s_LastVertices_PositionNormalTexture = OpenGL.ConstructTexturedVertices());
+            VertexPositionNormalTexture[] array = OpenGL.s_LastVertices_PositionNormalTexture = OpenGL.ConstructTexturedVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
@@ -715,7 +715,7 @@ namespace CutTheRope.windows
 
             public GLVertexPointer(int size, int type, int stride, object pointer)
             {
-                this.pointer_ = ((pointer != null) ? ((float[])pointer) : null);
+                this.pointer_ = (pointer != null) ? ((float[])pointer) : null;
                 this.size_ = size;
             }
 
@@ -741,7 +741,7 @@ namespace CutTheRope.windows
 
             public GLTexCoordPointer(int size, int type, int stride, object pointer)
             {
-                this.pointer_ = ((pointer != null) ? ((float[])pointer) : null);
+                this.pointer_ = (pointer != null) ? ((float[])pointer) : null;
                 this.size_ = size;
             }
 

@@ -32,7 +32,7 @@ namespace CutTheRope.iframework.visual
         {
             if (this.initWithID(n) != null)
             {
-                up.parentAnchor = (down.parentAnchor = 9);
+                up.parentAnchor = down.parentAnchor = 9;
                 this.addChildwithID(up, 0);
                 this.addChildwithID(down, 1);
                 this.setState(Button.BUTTON_STATE.BUTTON_UP);
@@ -60,7 +60,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual bool isInTouchZoneXYforTouchDown(float tx, float ty, bool td)
         {
-            float num = (td ? 0f : 15f);
+            float num = td ? 0f : 15f;
             if (this.forcedTouchZone.w != -1f)
             {
                 return CTRMathHelper.pointInRect(tx, ty, this.drawX + this.forcedTouchZone.x - num, this.drawY + this.forcedTouchZone.y - num, this.forcedTouchZone.w + num * 2f, this.forcedTouchZone.h + num * 2f);

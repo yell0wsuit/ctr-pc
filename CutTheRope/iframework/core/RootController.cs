@@ -106,7 +106,7 @@ namespace CutTheRope.iframework.core
                 {
                     if (this.prevScreenImage != null)
                     {
-                        RGBAColor fill = ((this.viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0));
+                        RGBAColor fill = (this.viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
                         Grabber.drawGrabbedImage(this.prevScreenImage, 0, 0);
                         OpenGL.glDisable(0);
                         OpenGL.glEnable(1);
@@ -129,7 +129,7 @@ namespace CutTheRope.iframework.core
                 }
                 else if (this.nextScreenImage != null)
                 {
-                    RGBAColor fill2 = ((this.viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - (double)num * 2.0));
+                    RGBAColor fill2 = (this.viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - (double)num * 2.0);
                     Grabber.drawGrabbedImage(this.nextScreenImage, 0, 0);
                     OpenGL.glDisable(0);
                     OpenGL.glEnable(1);

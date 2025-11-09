@@ -182,7 +182,7 @@ namespace CutTheRope.windows
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
             this.FullScreenRectChanged(displayMode);
-            int num = ((windowWidth > 0) ? windowWidth : (displayMode.Width - 100));
+            int num = (windowWidth > 0) ? windowWidth : (displayMode.Width - 100);
             if (num < 800)
             {
                 num = 800;
@@ -227,13 +227,13 @@ namespace CutTheRope.windows
             }
             if (this._fullScreenRect.Width >= this._fullScreenRect.Height)
             {
-                int num = (this._fullScreenCropWidth ? this._fullScreenRect.Height : this.ScaledGameHeight(this._fullScreenRect.Width));
-                int num2 = (this._fullScreenCropWidth ? this.ScaledGameWidth(num) : this._fullScreenRect.Width);
+                int num = this._fullScreenCropWidth ? this._fullScreenRect.Height : this.ScaledGameHeight(this._fullScreenRect.Width);
+                int num2 = this._fullScreenCropWidth ? this.ScaledGameWidth(num) : this._fullScreenRect.Width;
                 this._scaledViewRect = new Microsoft.Xna.Framework.Rectangle((this._fullScreenRect.Width - num2) / 2, (this._fullScreenRect.Height - num) / 2, num2, num);
                 return;
             }
-            int num3 = (this._fullScreenCropWidth ? ((int)((float)this._fullScreenRect.Width / 5f * 4f)) : this.ScaledGameHeight(this._fullScreenRect.Width));
-            int num4 = (this._fullScreenCropWidth ? this.ScaledGameWidth(num3) : this._fullScreenRect.Width);
+            int num3 = this._fullScreenCropWidth ? ((int)((float)this._fullScreenRect.Width / 5f * 4f)) : this.ScaledGameHeight(this._fullScreenRect.Width);
+            int num4 = this._fullScreenCropWidth ? this.ScaledGameWidth(num3) : this._fullScreenRect.Width;
             this._scaledViewRect = new Microsoft.Xna.Framework.Rectangle((this._fullScreenRect.Width - num4) / 2, (this._fullScreenRect.Height - num3) / 2, num4, num3);
         }
 
@@ -323,7 +323,7 @@ namespace CutTheRope.windows
 
         public void ApplyViewportToDevice()
         {
-            Microsoft.Xna.Framework.Rectangle bounds = ((!this._isFullScreen) ? Microsoft.Xna.Framework.Rectangle.Intersect(this._scaledViewRect, this._windowRect) : Microsoft.Xna.Framework.Rectangle.Intersect(this._scaledViewRect, this._fullScreenRect));
+            Microsoft.Xna.Framework.Rectangle bounds = (!this._isFullScreen) ? Microsoft.Xna.Framework.Rectangle.Intersect(this._scaledViewRect, this._windowRect) : Microsoft.Xna.Framework.Rectangle.Intersect(this._scaledViewRect, this._fullScreenRect);
             try
             {
                 Global.GraphicsDevice.Viewport = new Viewport(bounds);
