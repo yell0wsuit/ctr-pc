@@ -14,12 +14,12 @@ namespace CutTheRope.game
 
         public static Pump Pump_createWithResID(int r)
         {
-            return Pump.Pump_create(Application.getTexture(r));
+            return Pump_create(Application.getTexture(r));
         }
 
         public static Pump Pump_createWithResIDQuad(int r, int q)
         {
-            Pump pump = Pump.Pump_create(Application.getTexture(r));
+            Pump pump = Pump_create(Application.getTexture(r));
             pump.setDrawQuad(q);
             return pump;
         }
@@ -29,9 +29,9 @@ namespace CutTheRope.game
             t1.x = x - bb.w / 2f;
             t2.x = x + bb.w / 2f;
             t1.y = t2.y = y;
-            angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(rotation);
-            t1 = CTRMathHelper.vectRotateAround(t1, angle, x, y);
-            t2 = CTRMathHelper.vectRotateAround(t2, angle, x, y);
+            angle = (double)DEGREES_TO_RADIANS(rotation);
+            t1 = vectRotateAround(t1, angle, x, y);
+            t2 = vectRotateAround(t2, angle, x, y);
         }
 
         public double angle;

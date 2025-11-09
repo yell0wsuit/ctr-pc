@@ -45,7 +45,7 @@ namespace CutTheRope.windows
 
         public static MouseState GetMouseState()
         {
-            return MouseCursor.TransformMouseState(Global.XnaGame.GetMouseState());
+            return TransformMouseState(Global.XnaGame.GetMouseState());
         }
 
         private static MouseState TransformMouseState(MouseState mouseState)
@@ -65,7 +65,7 @@ namespace CutTheRope.windows
             {
                 Global.XnaGame.SetCursor(_cursorWindows, _mouseStateOriginal);
             }
-            MouseState mouseStateTranformed = MouseCursor.TransformMouseState(_mouseStateOriginal);
+            MouseState mouseStateTranformed = TransformMouseState(_mouseStateOriginal);
             TouchLocation item = default(TouchLocation);
             if (_touchID > 0)
             {
@@ -100,7 +100,7 @@ namespace CutTheRope.windows
                 list.Add(item);
             }
             _mouseStateTranformed = mouseStateTranformed;
-            return CutTheRope.iframework.core.Application.sharedCanvas().convertTouches(list);
+            return iframework.core.Application.sharedCanvas().convertTouches(list);
         }
 
         private Cursor _cursorWindows;

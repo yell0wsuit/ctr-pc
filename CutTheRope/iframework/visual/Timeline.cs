@@ -7,7 +7,7 @@ namespace CutTheRope.iframework.visual
     {
         public virtual void stopTimeline()
         {
-            state = Timeline.TimelineState.TIMELINE_STOPPED;
+            state = TimelineState.TIMELINE_STOPPED;
             deactivateTracks();
         }
 
@@ -24,16 +24,16 @@ namespace CutTheRope.iframework.visual
 
         public void jumpToTrackKeyFrame(int t, int k)
         {
-            if (state == Timeline.TimelineState.TIMELINE_STOPPED)
+            if (state == TimelineState.TIMELINE_STOPPED)
             {
-                state = Timeline.TimelineState.TIMELINE_PAUSED;
+                state = TimelineState.TIMELINE_PAUSED;
             }
             time = tracks[t].getFrameTime(k);
         }
 
         public virtual void playTimeline()
         {
-            if (state != Timeline.TimelineState.TIMELINE_PAUSED)
+            if (state != TimelineState.TIMELINE_PAUSED)
             {
                 time = 0f;
                 timelineDirReverse = false;
@@ -50,18 +50,18 @@ namespace CutTheRope.iframework.visual
                     }
                 }
             }
-            state = Timeline.TimelineState.TIMELINE_PLAYING;
-            Timeline.updateTimeline(this, 0f);
+            state = TimelineState.TIMELINE_PLAYING;
+            updateTimeline(this, 0f);
         }
 
         public virtual void pauseTimeline()
         {
-            state = Timeline.TimelineState.TIMELINE_PAUSED;
+            state = TimelineState.TIMELINE_PAUSED;
         }
 
         public static void updateTimeline(Timeline thiss, float delta)
         {
-            if (thiss.state != Timeline.TimelineState.TIMELINE_PLAYING)
+            if (thiss.state != TimelineState.TIMELINE_PLAYING)
             {
                 return;
             }
@@ -89,7 +89,7 @@ namespace CutTheRope.iframework.visual
             }
             switch (thiss.timelineLoopType)
             {
-                case Timeline.LoopType.TIMELINE_NO_LOOP:
+                case LoopType.TIMELINE_NO_LOOP:
                     if (thiss.time >= thiss.length - 1E-06f)
                     {
                         thiss.stopTimeline();
@@ -99,7 +99,7 @@ namespace CutTheRope.iframework.visual
                         }
                     }
                     break;
-                case Timeline.LoopType.TIMELINE_REPLAY:
+                case LoopType.TIMELINE_REPLAY:
                     if (thiss.time >= thiss.length - 1E-06f)
                     {
                         if (thiss.loopsLimit > 0)
@@ -115,7 +115,7 @@ namespace CutTheRope.iframework.visual
                         return;
                     }
                     break;
-                case Timeline.LoopType.TIMELINE_PING_PONG:
+                case LoopType.TIMELINE_PING_PONG:
                     {
                         bool flag3 = !thiss.timelineDirReverse && thiss.time >= thiss.length - 1E-06f;
                         bool flag2 = thiss.timelineDirReverse && thiss.time <= 1E-06f;
@@ -154,9 +154,9 @@ namespace CutTheRope.iframework.visual
                 maxKeyFrames = m;
                 time = 0f;
                 length = 0f;
-                state = Timeline.TimelineState.TIMELINE_STOPPED;
+                state = TimelineState.TIMELINE_STOPPED;
                 loopsLimit = -1;
-                timelineLoopType = Timeline.LoopType.TIMELINE_NO_LOOP;
+                timelineLoopType = LoopType.TIMELINE_NO_LOOP;
             }
             return this;
         }

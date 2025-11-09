@@ -13,7 +13,7 @@ namespace CutTheRope.iframework.visual
             {
                 return null;
             }
-            image = (Image)NSObject.NSRET(i);
+            image = (Image)NSRET(i);
             numberOfQuadsToDraw = -1;
             totalQuads = n;
             texCoordinates = new Quad2D[totalQuads];
@@ -74,8 +74,8 @@ namespace CutTheRope.iframework.visual
         {
             OpenGL.glEnable(0);
             OpenGL.glBindTexture(image.texture.name());
-            OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(vertices));
-            OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(texCoordinates));
+            OpenGL.glVertexPointer(3, 5, 0, toFloatArray(vertices));
+            OpenGL.glTexCoordPointer(2, 5, 0, toFloatArray(texCoordinates));
             OpenGL.glDrawElements(7, n * 6, indices);
         }
 

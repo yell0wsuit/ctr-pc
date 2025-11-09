@@ -75,12 +75,12 @@ namespace CutTheRope.iframework.visual
 
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(int r)
         {
-            return HorizontallyTiledImage.HorizontallyTiledImage_create(Application.getTexture(r));
+            return HorizontallyTiledImage_create(Application.getTexture(r));
         }
 
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResIDQuad(int r, int q)
         {
-            HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage.HorizontallyTiledImage_create(Application.getTexture(r));
+            HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage_create(Application.getTexture(r));
             horizontallyTiledImage.setDrawQuad(q);
             return horizontallyTiledImage;
         }

@@ -24,12 +24,12 @@ namespace CutTheRope.iframework.visual
 
         public static TiledImage TiledImage_createWithResID(int r)
         {
-            return TiledImage.TiledImage_create(Application.getTexture(r));
+            return TiledImage_create(Application.getTexture(r));
         }
 
         private static TiledImage TiledImage_createWithResIDQuad(int r, int q)
         {
-            TiledImage tiledImage = TiledImage.TiledImage_createWithResID(r);
+            TiledImage tiledImage = TiledImage_createWithResID(r);
             tiledImage.setDrawQuad(q);
             return tiledImage;
         }

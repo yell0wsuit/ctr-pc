@@ -18,16 +18,16 @@ namespace CutTheRope.game
 
         public static void EnableLoopedSounds(bool bEnable)
         {
-            CTRSoundMgr.s_EnableLoopedSounds = bEnable;
-            if (!CTRSoundMgr.s_EnableLoopedSounds)
+            s_EnableLoopedSounds = bEnable;
+            if (!s_EnableLoopedSounds)
             {
-                CTRSoundMgr._stopLoopedSounds();
+                _stopLoopedSounds();
             }
         }
 
         public static SoundEffectInstance _playSoundLooped(int s)
         {
-            if (CTRSoundMgr.s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON"))
+            if (s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON"))
             {
                 return Application.sharedSoundMgr().playSoundLooped(s);
             }
@@ -39,11 +39,11 @@ namespace CutTheRope.game
             int num;
             do
             {
-                num = CTRMathHelper.RND_RANGE(minId, maxId);
+                num = RND_RANGE(minId, maxId);
             }
-            while (num == CTRSoundMgr.prevMusic);
-            CTRSoundMgr.prevMusic = num;
-            CTRSoundMgr._playMusic(num);
+            while (num == prevMusic);
+            prevMusic = num;
+            _playMusic(num);
         }
 
         public static void _playMusic(int f)
@@ -66,8 +66,8 @@ namespace CutTheRope.game
 
         public static void _stopAll()
         {
-            CTRSoundMgr._stopSounds();
-            CTRSoundMgr._stopMusic();
+            _stopSounds();
+            _stopMusic();
         }
 
         public static void _stopMusic()

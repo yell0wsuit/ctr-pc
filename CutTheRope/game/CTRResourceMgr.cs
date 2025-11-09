@@ -22,15 +22,15 @@ namespace CutTheRope.game
                 {
                     if (r == 149)
                     {
-                        if (ResDataPhoneFull.LANGUAGE == Language.LANG_RU)
+                        if (LANGUAGE == Language.LANG_RU)
                         {
                             return 139;
                         }
-                        if (ResDataPhoneFull.LANGUAGE == Language.LANG_DE)
+                        if (LANGUAGE == Language.LANG_DE)
                         {
                             return 138;
                         }
-                        if (ResDataPhoneFull.LANGUAGE == Language.LANG_FR)
+                        if (LANGUAGE == Language.LANG_FR)
                         {
                             return 137;
                         }
@@ -38,15 +38,15 @@ namespace CutTheRope.game
                 }
                 else
                 {
-                    if (ResDataPhoneFull.LANGUAGE == Language.LANG_RU)
+                    if (LANGUAGE == Language.LANG_RU)
                     {
                         return 142;
                     }
-                    if (ResDataPhoneFull.LANGUAGE == Language.LANG_DE)
+                    if (LANGUAGE == Language.LANG_DE)
                     {
                         return 144;
                     }
-                    if (ResDataPhoneFull.LANGUAGE == Language.LANG_FR)
+                    if (LANGUAGE == Language.LANG_FR)
                     {
                         return 143;
                     }
@@ -54,15 +54,15 @@ namespace CutTheRope.game
             }
             else
             {
-                if (ResDataPhoneFull.LANGUAGE == Language.LANG_RU)
+                if (LANGUAGE == Language.LANG_RU)
                 {
                     return 140;
                 }
-                if (ResDataPhoneFull.LANGUAGE == Language.LANG_DE)
+                if (LANGUAGE == Language.LANG_DE)
                 {
                     return 141;
                 }
-                if (ResDataPhoneFull.LANGUAGE == Language.LANG_FR)
+                if (LANGUAGE == Language.LANG_FR)
                 {
                     return 69;
                 }
@@ -72,9 +72,9 @@ namespace CutTheRope.game
 
         public static string XNA_ResName(int resId)
         {
-            if (CTRResourceMgr.resNames_ == null)
+            if (resNames_ == null)
             {
-                CTRResourceMgr.resNames_ = new Dictionary<int, string>
+                resNames_ = new Dictionary<int, string>
                 {
                     { 0, "zeptolab_no_link" },
                     { 1, "loaderbar_full" },
@@ -229,18 +229,18 @@ namespace CutTheRope.game
                 };
             }
             string value;
-            CTRResourceMgr.resNames_.TryGetValue(CTRResourceMgr.handleLocalizedResource(resId), out value);
+            resNames_.TryGetValue(handleLocalizedResource(resId), out value);
             return value;
         }
 
         public override NSObject loadResource(int resID, ResourceMgr.ResourceType resType)
         {
-            return base.loadResource(CTRResourceMgr.handleLocalizedResource(resID), resType);
+            return base.loadResource(handleLocalizedResource(resID), resType);
         }
 
         public override void freeResource(int resID)
         {
-            base.freeResource(CTRResourceMgr.handleLocalizedResource(resID));
+            base.freeResource(handleLocalizedResource(resID));
         }
 
         private static Dictionary<int, string> resNames_;

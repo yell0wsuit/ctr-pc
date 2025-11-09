@@ -21,7 +21,7 @@ namespace CutTheRope.ctr_commons
 
         public override bool onTouchMoveXY(float tx, float ty)
         {
-            if (state == Button.BUTTON_STATE.BUTTON_DOWN)
+            if (state == BUTTON_STATE.BUTTON_DOWN)
             {
                 x = Math.Max(Math.Min(tx - startX, maxX), minX);
                 y = Math.Max(Math.Min(ty - startY, maxY), minY);

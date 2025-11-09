@@ -22,7 +22,7 @@ namespace CutTheRope.iframework.visual
         {
             base.preDraw();
             OpenGL.glDisable(0);
-            CTRMathHelper.MIN(width, height);
+            MIN(width, height);
             bool flag = solid;
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);

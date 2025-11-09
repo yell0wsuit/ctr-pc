@@ -53,15 +53,15 @@ namespace CutTheRope.game
             float num2 = 1f;
             float[] array = [0.3f, 0.3f, 0.5f, 0.5f, 0.6f];
             int num3 = array.Count<float>();
-            float num4 = array[CTRMathHelper.RND_RANGE(0, num3 - 1)];
+            float num4 = array[RND_RANGE(0, num3 - 1)];
             float num5 = num4;
-            if (CTRMathHelper.RND(1) == 1)
+            if (RND(1) == 1)
             {
-                num4 *= 1f + (float)CTRMathHelper.RND(1) / 10f;
+                num4 *= 1f + (float)RND(1) / 10f;
             }
             else
             {
-                num5 *= 1f + (float)CTRMathHelper.RND(1) / 10f;
+                num5 *= 1f + (float)RND(1) / 10f;
             }
             num *= num4;
             num2 *= num5;
@@ -75,7 +75,7 @@ namespace CutTheRope.game
             pollen.y = v.y;
             float num8 = 1f;
             float num9 = Math.Min(num8 - num, num8 - num2);
-            float rND_0_ = CTRMathHelper.RND_0_1;
+            float rND_0_ = RND_0_1;
             pollen.startScaleX = num9 + num;
             pollen.startScaleY = num9 + num2;
             pollen.scaleX = pollen.startScaleX * rND_0_;
@@ -106,14 +106,14 @@ namespace CutTheRope.game
         {
             int num = 44;
             Vector vector = g.mover.path[p1];
-            Vector vector2 = CTRMathHelper.vectSub(g.mover.path[p2], vector);
-            int num2 = (int)(CTRMathHelper.vectLength(vector2) / (float)num);
-            Vector v3 = CTRMathHelper.vectNormalize(vector2);
+            Vector vector2 = vectSub(g.mover.path[p2], vector);
+            int num2 = (int)(vectLength(vector2) / (float)num);
+            Vector v3 = vectNormalize(vector2);
             for (int i = 0; i <= num2; i++)
             {
-                Vector v4 = CTRMathHelper.vectAdd(vector, CTRMathHelper.vectMult(v3, (float)(i * num)));
-                v4.x += (float)CTRMathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-2.0), (int)FrameworkTypes.RTPD(2.0));
-                v4.y += (float)CTRMathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-2.0), (int)FrameworkTypes.RTPD(2.0));
+                Vector v4 = vectAdd(vector, vectMult(v3, (float)(i * num)));
+                v4.x += (float)RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
+                v4.y += (float)RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
                 addPollenAtparentIndex(v4, p1);
             }
         }
@@ -164,8 +164,8 @@ namespace CutTheRope.game
                 OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
                 OpenGL.glEnable(0);
                 OpenGL.glBindTexture(drawer.image.texture.name());
-                OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(drawer.vertices));
-                OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(drawer.texCoordinates));
+                OpenGL.glVertexPointer(3, 5, 0, toFloatArray(drawer.vertices));
+                OpenGL.glTexCoordPointer(2, 5, 0, toFloatArray(drawer.texCoordinates));
                 OpenGL.glEnableClientState(13);
                 OpenGL.glBindBuffer(2, colorsID);
                 OpenGL.glBufferData(2, colors, 3);

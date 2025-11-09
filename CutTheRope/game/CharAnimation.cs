@@ -14,7 +14,7 @@ namespace CutTheRope.game
 
         public static CharAnimation CharAnimation_createWithResID(int r)
         {
-            return CharAnimation.CharAnimation_create(Application.getTexture(r));
+            return CharAnimation_create(Application.getTexture(r));
         }
 
         public override bool handleAction(ActionData a)

@@ -10,7 +10,7 @@ namespace CutTheRope.game
     {
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
-            return CharAnimations.CharAnimations_create(Application.getTexture(r));
+            return CharAnimations_create(Application.getTexture(r));
         }
 
         private static CharAnimations CharAnimations_create(CTRTexture2D t)

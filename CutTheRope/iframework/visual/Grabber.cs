@@ -19,7 +19,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual CTRTexture2D grab()
         {
-            return (CTRTexture2D)new CTRTexture2D().initFromPixels(0, 0, (int)FrameworkTypes.SCREEN_WIDTH, (int)FrameworkTypes.SCREEN_HEIGHT);
+            return (CTRTexture2D)new CTRTexture2D().initFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
         }
 
         public static void drawGrabbedImage(CTRTexture2D t, int x, int y)

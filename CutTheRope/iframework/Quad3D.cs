@@ -6,7 +6,7 @@ namespace CutTheRope.iframework
     {
         public static Quad3D MakeQuad3D(double x, double y, double z, double w, double h)
         {
-            return Quad3D.MakeQuad3D((float)x, (float)y, (float)z, (float)w, (float)h);
+            return MakeQuad3D((float)x, (float)y, (float)z, (float)w, (float)h);
         }
 
         public static Quad3D MakeQuad3D(float x, float y, float z, float w, float h)

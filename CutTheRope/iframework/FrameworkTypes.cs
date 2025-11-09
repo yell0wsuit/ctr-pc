@@ -43,7 +43,7 @@ namespace CutTheRope.iframework
 
         public static CTRRectangle MakeRectangle(double xParam, double yParam, double width, double height)
         {
-            return FrameworkTypes.MakeRectangle((float)xParam, (float)yParam, (float)width, (float)height);
+            return MakeRectangle((float)xParam, (float)yParam, (float)width, (float)height);
         }
 
         public static CTRRectangle MakeRectangle(float xParam, float yParam, float width, float height)
@@ -53,42 +53,42 @@ namespace CutTheRope.iframework
 
         public static float transformToRealX(float x)
         {
-            return x * FrameworkTypes.VIEW_SCREEN_WIDTH / FrameworkTypes.SCREEN_WIDTH + FrameworkTypes.VIEW_OFFSET_X;
+            return x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH + VIEW_OFFSET_X;
         }
 
         public static float transformToRealY(float y)
         {
-            return y * FrameworkTypes.VIEW_SCREEN_HEIGHT / FrameworkTypes.SCREEN_HEIGHT + FrameworkTypes.VIEW_OFFSET_Y;
+            return y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT + VIEW_OFFSET_Y;
         }
 
         public static float transformFromRealX(float x)
         {
-            return (x - FrameworkTypes.VIEW_OFFSET_X) * FrameworkTypes.SCREEN_WIDTH / FrameworkTypes.VIEW_SCREEN_WIDTH;
+            return (x - VIEW_OFFSET_X) * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
         }
 
         public static float transformFromRealY(float y)
         {
-            return (y - FrameworkTypes.VIEW_OFFSET_Y) * FrameworkTypes.SCREEN_HEIGHT / FrameworkTypes.VIEW_SCREEN_HEIGHT;
+            return (y - VIEW_OFFSET_Y) * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
         }
 
         public static float transformToRealW(float w)
         {
-            return w * FrameworkTypes.VIEW_SCREEN_WIDTH / FrameworkTypes.SCREEN_WIDTH;
+            return w * VIEW_SCREEN_WIDTH / SCREEN_WIDTH;
         }
 
         public static float transformToRealH(float h)
         {
-            return h * FrameworkTypes.VIEW_SCREEN_HEIGHT / FrameworkTypes.SCREEN_HEIGHT;
+            return h * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT;
         }
 
         public static float transformFromRealW(float w)
         {
-            return w * FrameworkTypes.SCREEN_WIDTH / FrameworkTypes.VIEW_SCREEN_WIDTH;
+            return w * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
         }
 
         public static float transformFromRealH(float h)
         {
-            return h * FrameworkTypes.SCREEN_HEIGHT / FrameworkTypes.VIEW_SCREEN_HEIGHT;
+            return h * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
         }
 
         public static string ACHIEVEMENT_STRING(string s)
@@ -102,32 +102,32 @@ namespace CutTheRope.iframework
 
         public static float WVGAH(double H, double L)
         {
-            return (float)(FrameworkTypes.IS_WVGA ? H : L);
+            return (float)(IS_WVGA ? H : L);
         }
 
         public static float WVGAD(double V)
         {
-            return (float)(FrameworkTypes.IS_WVGA ? (V * 2.0) : V);
+            return (float)(IS_WVGA ? (V * 2.0) : V);
         }
 
         public static float RT(double H, double L)
         {
-            return (float)(FrameworkTypes.IS_RETINA ? H : L);
+            return (float)(IS_RETINA ? H : L);
         }
 
         public static float RTD(double V)
         {
-            return (float)(FrameworkTypes.IS_RETINA ? (V * 2.0) : V);
+            return (float)(IS_RETINA ? (V * 2.0) : V);
         }
 
         public static float RTPD(double V)
         {
-            return (float)((FrameworkTypes.IS_RETINA | FrameworkTypes.IS_IPAD) ? (V * 2.0) : V);
+            return (float)((IS_RETINA | IS_IPAD) ? (V * 2.0) : V);
         }
 
         public static float CHOOSE3(double P1, double P2, double P3)
         {
-            return FrameworkTypes.WVGAH(P2, P1);
+            return WVGAH(P2, P1);
         }
 
         public const int BLENDING_MODE_SRC_ALPHA = 0;
@@ -184,9 +184,9 @@ namespace CutTheRope.iframework
 
         public static float SCREEN_WIDE_BG_SCALE_X = 1f;
 
-        public static float SCREEN_HEIGHT_EXPANDED = FrameworkTypes.SCREEN_HEIGHT;
+        public static float SCREEN_HEIGHT_EXPANDED = SCREEN_HEIGHT;
 
-        public static float SCREEN_WIDTH_EXPANDED = FrameworkTypes.SCREEN_WIDTH;
+        public static float SCREEN_WIDTH_EXPANDED = SCREEN_WIDTH;
 
         public static float VIEW_SCREEN_WIDTH = 480f;
 
@@ -221,7 +221,7 @@ namespace CutTheRope.iframework
         {
             public static void openUrl(NSString url)
             {
-                FrameworkTypes.AndroidAPI.openUrl(url.ToString());
+                openUrl(url.ToString());
             }
 
             public static void openUrl(string url)

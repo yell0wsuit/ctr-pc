@@ -9,45 +9,45 @@ namespace CutTheRope.ios
     {
         private static void Init()
         {
-            NSTimer.Timers = new List<NSTimer.Entry>();
-            NSTimer.dd = new DelayedDispatcher();
-            NSTimer.is_init = true;
+            Timers = new List<NSTimer.Entry>();
+            dd = new DelayedDispatcher();
+            is_init = true;
         }
 
         public static void registerDelayedObjectCall(DelayedDispatcher.DispatchFunc f, NSObject p, double interval)
         {
-            if (!NSTimer.is_init)
+            if (!is_init)
             {
-                NSTimer.Init();
+                Init();
             }
-            NSTimer.dd.callObjectSelectorParamafterDelay(f, p, interval);
+            dd.callObjectSelectorParamafterDelay(f, p, interval);
         }
 
         public static int schedule(DelayedDispatcher.DispatchFunc f, NSObject p, float interval)
         {
-            if (!NSTimer.is_init)
+            if (!is_init)
             {
-                NSTimer.Init();
+                Init();
             }
             NSTimer.Entry entry = new();
             entry.f = f;
             entry.p = p;
             entry.fireTime = 0f;
             entry.delay = interval;
-            NSTimer.Timers.Add(entry);
-            return NSTimer.Timers.Count<NSTimer.Entry>() - 1;
+            Timers.Add(entry);
+            return Timers.Count<NSTimer.Entry>() - 1;
         }
 
         public static void fireTimers(float delta)
         {
-            if (!NSTimer.is_init)
+            if (!is_init)
             {
-                NSTimer.Init();
+                Init();
             }
-            NSTimer.dd.update(delta);
-            for (int i = 0; i < NSTimer.Timers.Count; i++)
+            dd.update(delta);
+            for (int i = 0; i < Timers.Count; i++)
             {
-                NSTimer.Entry entry = NSTimer.Timers[i];
+                NSTimer.Entry entry = Timers[i];
                 entry.fireTime += delta;
                 if (entry.fireTime >= entry.delay)
                 {
@@ -59,7 +59,7 @@ namespace CutTheRope.ios
 
         public static void stopTimer(int Number)
         {
-            NSTimer.Timers.RemoveAt(Number);
+            Timers.RemoveAt(Number);
         }
 
         private static List<NSTimer.Entry> Timers;

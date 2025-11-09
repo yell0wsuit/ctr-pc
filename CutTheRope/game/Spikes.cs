@@ -47,17 +47,17 @@ namespace CutTheRope.game
                 doRestoreCutTransparency();
                 int num = (t - 1) * 2;
                 int q = 1 + (t - 1) * 2;
-                Image image = Image.Image_createWithResIDQuad(97, num);
-                Image image2 = Image.Image_createWithResIDQuad(97, q);
+                Image image = Image_createWithResIDQuad(97, num);
+                Image image2 = Image_createWithResIDQuad(97, q);
                 image.doRestoreCutTransparency();
                 image2.doRestoreCutTransparency();
                 rotateButton = new Button().initWithUpElementDownElementandID(image, image2, 0);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
                 addChild(rotateButton);
-                Vector quadOffset = Image.getQuadOffset(97, num);
-                Vector quadSize = Image.getQuadSize(97, num);
-                Vector vector = CTRMathHelper.vectSub(CTRMathHelper.vect(image.texture.preCutSize.x, image.texture.preCutSize.y), CTRMathHelper.vectAdd(quadSize, quadOffset));
+                Vector quadOffset = getQuadOffset(97, num);
+                Vector quadSize = getQuadSize(97, num);
+                Vector vector = vectSub(vect(image.texture.preCutSize.x, image.texture.preCutSize.y), vectAdd(quadSize, quadOffset));
                 rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + quadSize.x / 2f, 0f - vector.x + quadSize.x / 2f, 0f - quadOffset.y + quadSize.y / 2f, 0f - vector.y + quadSize.y / 2f);
             }
             passColorToChilds = false;
@@ -79,7 +79,7 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            float num = (!electro) ? texture.quadRects[quadToDraw].w : ((float)width - FrameworkTypes.RTPD(400.0));
+            float num = (!electro) ? texture.quadRects[quadToDraw].w : ((float)width - RTPD(400.0));
             num /= 2f;
             t1.x = x - num;
             t2.x = x + num;
@@ -87,11 +87,11 @@ namespace CutTheRope.game
             b1.x = t1.x;
             b2.x = t2.x;
             b1.y = b2.y = y + 5f;
-            angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(rotation);
-            t1 = CTRMathHelper.vectRotateAround(t1, angle, x, y);
-            t2 = CTRMathHelper.vectRotateAround(t2, angle, x, y);
-            b1 = CTRMathHelper.vectRotateAround(b1, angle, x, y);
-            b2 = CTRMathHelper.vectRotateAround(b2, angle, x, y);
+            angle = (double)DEGREES_TO_RADIANS(rotation);
+            t1 = vectRotateAround(t1, angle, x, y);
+            t2 = vectRotateAround(t2, angle, x, y);
+            b1 = vectRotateAround(b1, angle, x, y);
+            b2 = vectRotateAround(b2, angle, x, y);
         }
 
         public virtual void turnElectroOff()

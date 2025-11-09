@@ -31,11 +31,11 @@ namespace CutTheRope.windows
 
         public static void applyDefault()
         {
-            if (BlendParams.states[0] == null)
+            if (states[0] == null)
             {
-                BlendParams.states[0] = BlendState.Opaque;
+                states[0] = BlendState.Opaque;
             }
-            Global.GraphicsDevice.BlendState = BlendParams.states[0];
+            Global.GraphicsDevice.BlendState = states[0];
             Global.GraphicsDevice.BlendFactor = Color.White;
         }
 
@@ -43,62 +43,62 @@ namespace CutTheRope.windows
         {
             if (defaultBlending || !enabled)
             {
-                if (lastBlend != BlendParams.BlendType.Default)
+                if (lastBlend != BlendType.Default)
                 {
-                    lastBlend = BlendParams.BlendType.Default;
-                    BlendParams.applyDefault();
+                    lastBlend = BlendType.Default;
+                    applyDefault();
                     return;
                 }
             }
             else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
             {
-                if (lastBlend != BlendParams.BlendType.SourceAlpha_InverseSourceAlpha)
+                if (lastBlend != BlendType.SourceAlpha_InverseSourceAlpha)
                 {
-                    lastBlend = BlendParams.BlendType.SourceAlpha_InverseSourceAlpha;
-                    if (BlendParams.states[(int)lastBlend] == null)
+                    lastBlend = BlendType.SourceAlpha_InverseSourceAlpha;
+                    if (states[(int)lastBlend] == null)
                     {
                         BlendState blendState = new();
                         blendState.AlphaSourceBlend = Blend.SourceAlpha;
                         blendState.AlphaDestinationBlend = Blend.InverseSourceAlpha;
                         blendState.ColorDestinationBlend = blendState.AlphaDestinationBlend;
                         blendState.ColorSourceBlend = blendState.AlphaSourceBlend;
-                        BlendParams.states[(int)lastBlend] = blendState;
+                        states[(int)lastBlend] = blendState;
                     }
-                    Global.GraphicsDevice.BlendState = BlendParams.states[(int)lastBlend];
+                    Global.GraphicsDevice.BlendState = states[(int)lastBlend];
                     return;
                 }
             }
             else if (sfactor == BlendingFactor.GL_ONE && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
             {
-                if (lastBlend != BlendParams.BlendType.One_InverseSourceAlpha)
+                if (lastBlend != BlendType.One_InverseSourceAlpha)
                 {
-                    lastBlend = BlendParams.BlendType.One_InverseSourceAlpha;
-                    if (BlendParams.states[(int)lastBlend] == null)
+                    lastBlend = BlendType.One_InverseSourceAlpha;
+                    if (states[(int)lastBlend] == null)
                     {
                         BlendState blendState2 = new();
                         blendState2.AlphaSourceBlend = Blend.One;
                         blendState2.AlphaDestinationBlend = Blend.InverseSourceAlpha;
                         blendState2.ColorDestinationBlend = blendState2.AlphaDestinationBlend;
                         blendState2.ColorSourceBlend = blendState2.AlphaSourceBlend;
-                        BlendParams.states[(int)lastBlend] = blendState2;
+                        states[(int)lastBlend] = blendState2;
                     }
-                    Global.GraphicsDevice.BlendState = BlendParams.states[(int)lastBlend];
+                    Global.GraphicsDevice.BlendState = states[(int)lastBlend];
                     return;
                 }
             }
-            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE && lastBlend != BlendParams.BlendType.SourceAlpha_One)
+            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE && lastBlend != BlendType.SourceAlpha_One)
             {
-                lastBlend = BlendParams.BlendType.SourceAlpha_One;
-                if (BlendParams.states[(int)lastBlend] == null)
+                lastBlend = BlendType.SourceAlpha_One;
+                if (states[(int)lastBlend] == null)
                 {
                     BlendState blendState3 = new();
                     blendState3.AlphaSourceBlend = Blend.SourceAlpha;
                     blendState3.AlphaDestinationBlend = Blend.One;
                     blendState3.ColorDestinationBlend = blendState3.AlphaDestinationBlend;
                     blendState3.ColorSourceBlend = blendState3.AlphaSourceBlend;
-                    BlendParams.states[(int)lastBlend] = blendState3;
+                    states[(int)lastBlend] = blendState3;
                 }
-                Global.GraphicsDevice.BlendState = BlendParams.states[(int)lastBlend];
+                Global.GraphicsDevice.BlendState = states[(int)lastBlend];
             }
         }
 
@@ -113,7 +113,7 @@ namespace CutTheRope.windows
 
         private static BlendState[] states = new BlendState[4];
 
-        private BlendParams.BlendType lastBlend = BlendParams.BlendType.Unknown;
+        private BlendParams.BlendType lastBlend = BlendType.Unknown;
 
         private bool enabled;
 

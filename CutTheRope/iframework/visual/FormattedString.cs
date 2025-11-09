@@ -9,7 +9,7 @@ namespace CutTheRope.iframework.visual
         {
             if (base.init() != null)
             {
-                string_ = (NSString)NSObject.NSRET(str);
+                string_ = (NSString)NSRET(str);
                 width = w;
             }
             return this;

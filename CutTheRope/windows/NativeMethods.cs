@@ -9,7 +9,7 @@ namespace CutTheRope.windows
     {
         public static Cursor LoadCustomCursor(string path)
         {
-            IntPtr intPtr = NativeMethods.LoadCursorFromFile(path);
+            IntPtr intPtr = LoadCursorFromFile(path);
             if (intPtr == IntPtr.Zero)
             {
                 throw new Win32Exception();

@@ -14,7 +14,7 @@ namespace CutTheRope.iframework.visual
             mp = getMaxScroll();
             float num = (float)container.width / (float)width;
             float num2 = (float)container.height / (float)height;
-            sc = CTRMathHelper.vect(num, num2);
+            sc = vect(num, num2);
         }
 
         public override int addChildwithID(BaseElement c, int i)
@@ -69,12 +69,12 @@ namespace CutTheRope.iframework.visual
         {
             if (!passTransformationsToChilds)
             {
-                BaseElement.restoreTransformations(this);
+                restoreTransformations(this);
             }
             container.preDraw();
             if (!container.passTransformationsToChilds)
             {
-                BaseElement.restoreTransformations(container);
+                restoreTransformations(container);
             }
             Dictionary<int, BaseElement> dictionary = container.getChilds();
             int i = 0;
@@ -84,23 +84,23 @@ namespace CutTheRope.iframework.visual
                 BaseElement baseElement = dictionary[i];
                 float num = baseElement.drawX;
                 float num2 = baseElement.drawY;
-                if (baseElement != null && baseElement.visible && CTRMathHelper.rectInRect(num, num2, num + (float)baseElement.width, num2 + (float)baseElement.height, drawX, drawY, drawX + (float)width, drawY + (float)height))
+                if (baseElement != null && baseElement.visible && rectInRect(num, num2, num + (float)baseElement.width, num2 + (float)baseElement.height, drawX, drawY, drawX + (float)width, drawY + (float)height))
                 {
                     baseElement.draw();
                 }
                 else
                 {
-                    BaseElement.calculateTopLeft(baseElement);
+                    calculateTopLeft(baseElement);
                 }
                 i++;
             }
             if (container.passTransformationsToChilds)
             {
-                BaseElement.restoreTransformations(container);
+                restoreTransformations(container);
             }
             if (passTransformationsToChilds)
             {
-                BaseElement.restoreTransformations(this);
+                restoreTransformations(this);
             }
         }
 
@@ -108,7 +108,7 @@ namespace CutTheRope.iframework.visual
         {
             base.update(delta);
             delta = fixedDelta;
-            targetPoint = CTRMathHelper.vectZero;
+            targetPoint = vectZero;
             if ((double)touchTimer > 0.0)
             {
                 touchTimer -= delta;
@@ -134,57 +134,57 @@ namespace CutTheRope.iframework.visual
                     }
                 }
             }
-            if (touchState == ScrollableContainer.TOUCH_STATE.TOUCH_STATE_UP)
+            if (touchState == TOUCH_STATE.TOUCH_STATE_UP)
             {
                 if (shouldBounceHorizontally)
                 {
                     if ((double)container.x > 0.0)
                     {
                         float speed = (float)(50.0 + (double)Math.Abs(container.x) * 5.0);
-                        moveToPointDeltaSpeed(CTRMathHelper.vect(0f, container.y), delta, speed);
+                        moveToPointDeltaSpeed(vect(0f, container.y), delta, speed);
                     }
                     else if (container.x < (float)(-(float)container.width + width) && (double)container.x < 0.0)
                     {
                         float speed2 = (float)(50.0 + (double)Math.Abs((float)(-(float)container.width + width) - container.x) * 5.0);
-                        moveToPointDeltaSpeed(CTRMathHelper.vect((float)(-(float)container.width + width), container.y), delta, speed2);
+                        moveToPointDeltaSpeed(vect((float)(-(float)container.width + width), container.y), delta, speed2);
                     }
                 }
                 if (shouldBounceVertically)
                 {
                     if ((double)container.y > 0.0)
                     {
-                        moveToPointDeltaSpeed(CTRMathHelper.vect(container.x, 0f), delta, (float)(50.0 + (double)Math.Abs(container.y) * 5.0));
+                        moveToPointDeltaSpeed(vect(container.x, 0f), delta, (float)(50.0 + (double)Math.Abs(container.y) * 5.0));
                     }
                     else if (container.y < (float)(-(float)container.height + height) && (double)container.y < 0.0)
                     {
-                        moveToPointDeltaSpeed(CTRMathHelper.vect(container.x, (float)(-(float)container.height + height)), delta, (float)(50.0 + (double)Math.Abs((float)(-(float)container.height + height) - container.y) * 5.0));
+                        moveToPointDeltaSpeed(vect(container.x, (float)(-(float)container.height + height)), delta, (float)(50.0 + (double)Math.Abs((float)(-(float)container.height + height) - container.y) * 5.0));
                     }
                 }
             }
             if (movingToSpoint)
             {
                 Vector vector = spoints[targetSpoint];
-                moveToPointDeltaSpeed(vector, delta, (float)Math.Max(100.0, (double)CTRMathHelper.vectDistance(vector, CTRMathHelper.vect(container.x, container.y)) * 4.0 * (double)spointMoveMultiplier));
+                moveToPointDeltaSpeed(vector, delta, (float)Math.Max(100.0, (double)vectDistance(vector, vect(container.x, container.y)) * 4.0 * (double)spointMoveMultiplier));
                 if (container.x == vector.x && container.y == vector.y)
                 {
                     delegateScrollableContainerProtocol?.scrollableContainerreachedScrollPoint(this, targetSpoint);
                     movingToSpoint = false;
                     targetSpoint = -1;
                     lastTargetSpoint = -1;
-                    move = CTRMathHelper.vectZero;
+                    move = vectZero;
                 }
             }
-            else if (canSkipScrollPoints && spointsNum > 0 && !CTRMathHelper.vectEqual(move, CTRMathHelper.vectZero) && (double)CTRMathHelper.vectLength(move) < 150.0 && targetSpoint == -1)
+            else if (canSkipScrollPoints && spointsNum > 0 && !vectEqual(move, vectZero) && (double)vectLength(move) < 150.0 && targetSpoint == -1)
             {
                 startMovingToSpointInDirection(move);
             }
-            if (!CTRMathHelper.vectEqual(move, CTRMathHelper.vectZero))
+            if (!vectEqual(move, vectZero))
             {
-                CTRMathHelper.vectEqual(targetPoint, CTRMathHelper.vectZero);
-                CTRMathHelper.vect(container.x, container.y);
-                Vector v = CTRMathHelper.vectMult(CTRMathHelper.vectNeg(move), 2f);
-                move = CTRMathHelper.vectAdd(move, CTRMathHelper.vectMult(v, delta));
-                Vector off = CTRMathHelper.vectMult(move, delta);
+                vectEqual(targetPoint, vectZero);
+                vect(container.x, container.y);
+                Vector v = vectMult(vectNeg(move), 2f);
+                move = vectAdd(move, vectMult(v, delta));
+                Vector off = vectMult(move, delta);
                 if ((double)Math.Abs(off.x) < 0.2)
                 {
                     off.x = 0f;
@@ -208,16 +208,16 @@ namespace CutTheRope.iframework.visual
             touchTimer = 0f;
             passTouches = false;
             touchReleaseTimer = 0f;
-            move = CTRMathHelper.vectZero;
+            move = vectZero;
             if (resetScrollOnShow)
             {
-                setScroll(CTRMathHelper.vectZero);
+                setScroll(vectZero);
             }
         }
 
         public override bool onTouchDownXY(float tx, float ty)
         {
-            if (!CTRMathHelper.pointInRect(tx, ty, drawX, drawY, (float)width, (float)height))
+            if (!pointInRect(tx, ty, drawX, drawY, (float)width, (float)height))
             {
                 return false;
             }
@@ -232,15 +232,15 @@ namespace CutTheRope.iframework.visual
             else
             {
                 touchTimer = touchPassTimeout;
-                savedTouch = CTRMathHelper.vect(tx, ty);
-                totalDrag = CTRMathHelper.vectZero;
+                savedTouch = vect(tx, ty);
+                totalDrag = vectZero;
                 passTouches = false;
             }
-            touchState = ScrollableContainer.TOUCH_STATE.TOUCH_STATE_DOWN;
+            touchState = TOUCH_STATE.TOUCH_STATE_DOWN;
             movingByInertion = false;
             movingToSpoint = false;
             targetSpoint = -1;
-            dragStart = CTRMathHelper.vect(tx, ty);
+            dragStart = vect(tx, ty);
             return true;
         }
 
@@ -254,24 +254,24 @@ namespace CutTheRope.iframework.visual
                     return true;
                 }
             }
-            Vector vector = CTRMathHelper.vect(tx, ty);
-            if (CTRMathHelper.vectEqual(dragStart, vector))
+            Vector vector = vect(tx, ty);
+            if (vectEqual(dragStart, vector))
             {
                 return false;
             }
-            if (CTRMathHelper.vectEqual(dragStart, ScrollableContainer.impossibleTouch) && !CTRMathHelper.pointInRect(tx, ty, drawX, drawY, (float)width, (float)height))
+            if (vectEqual(dragStart, impossibleTouch) && !pointInRect(tx, ty, drawX, drawY, (float)width, (float)height))
             {
                 return false;
             }
-            touchState = ScrollableContainer.TOUCH_STATE.TOUCH_STATE_MOVING;
-            if (!CTRMathHelper.vectEqual(dragStart, ScrollableContainer.impossibleTouch))
+            touchState = TOUCH_STATE.TOUCH_STATE_MOVING;
+            if (!vectEqual(dragStart, impossibleTouch))
             {
-                Vector vector2 = CTRMathHelper.vectSub(vector, dragStart);
+                Vector vector2 = vectSub(vector, dragStart);
                 dragStart = vector;
-                vector2.x = CTRMathHelper.FIT_TO_BOUNDARIES(vector2.x, 0f - maxTouchMoveLength, maxTouchMoveLength);
-                vector2.y = CTRMathHelper.FIT_TO_BOUNDARIES(vector2.y, 0f - maxTouchMoveLength, maxTouchMoveLength);
-                totalDrag = CTRMathHelper.vectAdd(totalDrag, vector2);
-                if (((double)touchTimer > 0.0 || untouchChildsOnMove) && CTRMathHelper.vectLength(totalDrag) > touchMoveIgnoreLength)
+                vector2.x = FIT_TO_BOUNDARIES(vector2.x, 0f - maxTouchMoveLength, maxTouchMoveLength);
+                vector2.y = FIT_TO_BOUNDARIES(vector2.y, 0f - maxTouchMoveLength, maxTouchMoveLength);
+                totalDrag = vectAdd(totalDrag, vector2);
+                if (((double)touchTimer > 0.0 || untouchChildsOnMove) && vectLength(totalDrag) > touchMoveIgnoreLength)
                 {
                     touchTimer = 0f;
                     passTouches = false;
@@ -294,7 +294,7 @@ namespace CutTheRope.iframework.visual
                     vector2.y /= 2f;
                 }
                 staticMove = moveContainerBy(vector2);
-                move = CTRMathHelper.vectZero;
+                move = vectZero;
                 inertiaTimeoutLeft = inertiaTimeout;
                 return true;
             }
@@ -325,36 +325,36 @@ namespace CutTheRope.iframework.visual
                     return true;
                 }
             }
-            if (touchState == ScrollableContainer.TOUCH_STATE.TOUCH_STATE_UP)
+            if (touchState == TOUCH_STATE.TOUCH_STATE_UP)
             {
                 return false;
             }
-            touchState = ScrollableContainer.TOUCH_STATE.TOUCH_STATE_UP;
+            touchState = TOUCH_STATE.TOUCH_STATE_UP;
             if ((double)inertiaTimeoutLeft > 0.0)
             {
                 float num = inertiaTimeoutLeft / inertiaTimeout;
-                move = CTRMathHelper.vectMult(staticMove, (float)((double)num * 50.0));
+                move = vectMult(staticMove, (float)((double)num * 50.0));
                 movingByInertion = true;
             }
             if (spointsNum > 0)
             {
                 if (!canSkipScrollPoints)
                 {
-                    if (minAutoScrollToSpointLength != -1f && CTRMathHelper.vectLength(move) > minAutoScrollToSpointLength)
+                    if (minAutoScrollToSpointLength != -1f && vectLength(move) > minAutoScrollToSpointLength)
                     {
                         startMovingToSpointInDirection(move);
                     }
                     else
                     {
-                        startMovingToSpointInDirection(CTRMathHelper.vectZero);
+                        startMovingToSpointInDirection(vectZero);
                     }
                 }
-                else if (CTRMathHelper.vectEqual(move, CTRMathHelper.vectZero))
+                else if (vectEqual(move, vectZero))
                 {
-                    startMovingToSpointInDirection(CTRMathHelper.vectZero);
+                    startMovingToSpointInDirection(vectZero);
                 }
             }
-            dragStart = ScrollableContainer.impossibleTouch;
+            dragStart = impossibleTouch;
             return true;
         }
 
@@ -393,15 +393,15 @@ namespace CutTheRope.iframework.visual
                 touchTimer = 0f;
                 passTouches = false;
                 touchReleaseTimer = 0f;
-                move = CTRMathHelper.vectZero;
+                move = vectZero;
                 container = c;
                 width = (int)w;
                 height = (int)h;
                 container.parentAnchor = 9;
                 container.parent = this;
                 childs[0] = container;
-                dragStart = ScrollableContainer.impossibleTouch;
-                touchState = ScrollableContainer.TOUCH_STATE.TOUCH_STATE_UP;
+                dragStart = impossibleTouch;
+                touchState = TOUCH_STATE.TOUCH_STATE_UP;
             }
             return this;
         }
@@ -435,7 +435,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void addScrollPointAtXYwithID(float sx, float sy, int i)
         {
-            spoints[i] = CTRMathHelper.vect(0f - sx, 0f - sy);
+            spoints[i] = vect(0f - sx, 0f - sy);
             if (i > spointsNum - 1)
             {
                 spointsNum = i + 1;
@@ -454,17 +454,17 @@ namespace CutTheRope.iframework.visual
 
         public virtual Vector getScroll()
         {
-            return CTRMathHelper.vect(0f - container.x, 0f - container.y);
+            return vect(0f - container.x, 0f - container.y);
         }
 
         public virtual Vector getMaxScroll()
         {
-            return CTRMathHelper.vect((float)(container.width - width), (float)(container.height - height));
+            return vect((float)(container.width - width), (float)(container.height - height));
         }
 
         public virtual void setScroll(Vector s)
         {
-            move = CTRMathHelper.vectZero;
+            move = vectZero;
             container.x = 0f - s.x;
             container.y = 0f - s.y;
             movingToSpoint = false;
@@ -474,7 +474,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void placeToScrollPoint(int sp)
         {
-            move = CTRMathHelper.vectZero;
+            move = vectZero;
             container.x = spoints[sp].x;
             container.y = spoints[sp].y;
             movingToSpoint = false;
@@ -502,23 +502,23 @@ namespace CutTheRope.iframework.visual
             spointMoveDirection = d;
             int num = -1;
             float num2 = 9999999f;
-            float num3 = CTRMathHelper.angleTo0_360(CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(d)));
-            Vector v = CTRMathHelper.vect(container.x, container.y);
+            float num3 = angleTo0_360(RADIANS_TO_DEGREES(vectAngleNormalized(d)));
+            Vector v = vect(container.x, container.y);
             for (int i = 0; i < spointsNum; i++)
             {
                 if ((double)spoints[i].x <= 0.0 && (spoints[i].x >= (float)(-(float)container.width + width) || (double)spoints[i].x >= 0.0) && (double)spoints[i].y <= 0.0 && (spoints[i].y >= (float)(-(float)container.height + height) || (double)spoints[i].y >= 0.0))
                 {
-                    float num4 = CTRMathHelper.vectDistance(spoints[i], v);
-                    if ((CTRMathHelper.vectEqual(d, CTRMathHelper.vectZero) || Math.Abs(CTRMathHelper.angleTo0_360(CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(CTRMathHelper.vectSub(spoints[i], v)))) - num3) <= 90f) && num4 < num2)
+                    float num4 = vectDistance(spoints[i], v);
+                    if ((vectEqual(d, vectZero) || Math.Abs(angleTo0_360(RADIANS_TO_DEGREES(vectAngleNormalized(vectSub(spoints[i], v)))) - num3) <= 90f) && num4 < num2)
                     {
                         num = i;
                         num2 = num4;
                     }
                 }
             }
-            if (num == -1 && !CTRMathHelper.vectEqual(d, CTRMathHelper.vectZero))
+            if (num == -1 && !vectEqual(d, vectZero))
             {
-                calculateNearsetScrollPointInDirection(CTRMathHelper.vectZero);
+                calculateNearsetScrollPointInDirection(vectZero);
                 return;
             }
             targetSpoint = num;
@@ -530,11 +530,11 @@ namespace CutTheRope.iframework.visual
             {
                 delegateScrollableContainerProtocol.scrollableContainerchangedTargetScrollPoint(this, targetSpoint);
             }
-            float num6 = CTRMathHelper.angleTo0_360(CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(move)));
-            float num5 = CTRMathHelper.angleTo0_360(CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(CTRMathHelper.vectSub(spoints[targetSpoint], v))));
-            if (Math.Abs(CTRMathHelper.angleTo0_360(num6 - num5)) < 90f)
+            float num6 = angleTo0_360(RADIANS_TO_DEGREES(vectAngleNormalized(move)));
+            float num5 = angleTo0_360(RADIANS_TO_DEGREES(vectAngleNormalized(vectSub(spoints[targetSpoint], v))));
+            if (Math.Abs(angleTo0_360(num6 - num5)) < 90f)
             {
-                spointMoveMultiplier = (float)Math.Max(1.0, (double)CTRMathHelper.vectLength(move) / 500.0);
+                spointMoveMultiplier = (float)Math.Max(1.0, (double)vectLength(move) / 500.0);
             }
             else
             {
@@ -555,7 +555,7 @@ namespace CutTheRope.iframework.visual
             {
                 val2 = (float)Math.Min((double)Math.Max((float)(-(float)container.height + height), val2), 0.0);
             }
-            Vector vector = CTRMathHelper.vectSub(CTRMathHelper.vect(val, val2), CTRMathHelper.vect(container.x, container.y));
+            Vector vector = vectSub(vect(val, val2), vect(container.x, container.y));
             container.x = val;
             container.y = val2;
             return vector;
@@ -563,13 +563,13 @@ namespace CutTheRope.iframework.visual
 
         public virtual void moveToPointDeltaSpeed(Vector tsp, float delta, float speed)
         {
-            Vector v = CTRMathHelper.vectSub(tsp, CTRMathHelper.vect(container.x, container.y));
-            v = CTRMathHelper.vectNormalize(v);
-            v = CTRMathHelper.vectMult(v, speed);
+            Vector v = vectSub(tsp, vect(container.x, container.y));
+            v = vectNormalize(v);
+            v = vectMult(v, speed);
             Mover.moveVariableToTarget(ref container.x, tsp.x, Math.Abs(v.x), delta);
             Mover.moveVariableToTarget(ref container.y, tsp.y, Math.Abs(v.y), delta);
             targetPoint = tsp;
-            move = CTRMathHelper.vectZero;
+            move = vectZero;
         }
 
         public virtual void startMovingToSpointInDirection(Vector d)

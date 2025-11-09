@@ -18,23 +18,23 @@ namespace CutTheRope.ctr_commons
     {
         public static void onSurfaceCreated()
         {
-            if (CtrRenderer.state == 0)
+            if (state == 0)
             {
-                CtrRenderer.state = 1;
+                state = 1;
             }
         }
 
         public static void onSurfaceChanged(int width, int height)
         {
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
+            Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
         }
 
         public static void onPause()
         {
-            if (CtrRenderer.state == 2 || CtrRenderer.state == 5)
+            if (state == 2 || state == 5)
             {
-                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
-                CtrRenderer.state = 3;
+                Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+                state = 3;
             }
         }
 
@@ -44,99 +44,99 @@ namespace CutTheRope.ctr_commons
 
         public static void onPlaybackStarted()
         {
-            CtrRenderer.state = 5;
+            state = 5;
         }
 
         public static void onResume()
         {
-            if (CtrRenderer.state == 3)
+            if (state == 3)
             {
-                CtrRenderer.state = 4;
-                CtrRenderer.onResumeTimeStamp = DateTimeJavaHelper.currentTimeMillis();
-                CtrRenderer.DRAW_NOTHING = false;
+                state = 4;
+                onResumeTimeStamp = DateTimeJavaHelper.currentTimeMillis();
+                DRAW_NOTHING = false;
             }
         }
 
         public static void onDestroy()
         {
-            if (CtrRenderer.state != 1)
+            if (state != 1)
             {
-                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeDestroy();
-                CtrRenderer.state = 1;
+                Java_com_zeptolab_ctr_CtrRenderer_nativeDestroy();
+                state = 1;
             }
         }
 
         public static void update(float gameTime)
         {
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTick(16f);
+            Java_com_zeptolab_ctr_CtrRenderer_nativeTick(16f);
         }
 
         public static void onDrawFrame()
         {
             bool flag = false;
-            if (!CtrRenderer.DRAW_NOTHING && CtrRenderer.state != 0)
+            if (!DRAW_NOTHING && state != 0)
             {
-                if (CtrRenderer.state == 1)
+                if (state == 1)
                 {
-                    CtrRenderer.state = 2;
+                    state = 2;
                 }
-                if (CtrRenderer.state != 3)
+                if (state != 3)
                 {
-                    if (CtrRenderer.state == 4)
+                    if (state == 4)
                     {
-                        if (DateTimeJavaHelper.currentTimeMillis() - CtrRenderer.onResumeTimeStamp >= 500L)
+                        if (DateTimeJavaHelper.currentTimeMillis() - onResumeTimeStamp >= 500L)
                         {
-                            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
-                            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
+                            Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
+                            Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
                             flag = true;
-                            CtrRenderer.state = 2;
+                            state = 2;
                         }
                     }
-                    else if (CtrRenderer.state == 2)
+                    else if (state == 2)
                     {
                         long timestamp = Stopwatch.GetTimestamp();
-                        long num2 = timestamp - CtrRenderer.prevTick;
-                        CtrRenderer.prevTick = timestamp;
+                        long num2 = timestamp - prevTick;
+                        prevTick = timestamp;
                         if (num2 < 1L)
                         {
                             num2 = 1L;
                         }
-                        CtrRenderer.fpsDeltas[CtrRenderer.fpsDeltasPos++] = num2;
-                        int num3 = CtrRenderer.fpsDeltas.Length;
-                        if (CtrRenderer.fpsDeltasPos >= num3)
+                        fpsDeltas[fpsDeltasPos++] = num2;
+                        int num3 = fpsDeltas.Length;
+                        if (fpsDeltasPos >= num3)
                         {
-                            CtrRenderer.fpsDeltasPos = 0;
+                            fpsDeltasPos = 0;
                         }
                         long num4 = 0L;
                         for (int i = 0; i < num3; i++)
                         {
-                            num4 += CtrRenderer.fpsDeltas[i];
+                            num4 += fpsDeltas[i];
                         }
                         if (num4 < 1L)
                         {
                             num4 = 1L;
                         }
                         int fps = (int)(1000000000L * (long)num3 / num4);
-                        CtrRenderer.playedTicks += CtrRenderer.DELTA_NANOS;
-                        if (timestamp - CtrRenderer.playedTicks < CtrRenderer.DELTA_NANOS_THRES)
+                        playedTicks += DELTA_NANOS;
+                        if (timestamp - playedTicks < DELTA_NANOS_THRES)
                         {
-                            if (CtrRenderer.playedTicks < timestamp)
+                            if (playedTicks < timestamp)
                             {
-                                CtrRenderer.playedTicks = timestamp;
+                                playedTicks = timestamp;
                             }
                         }
-                        else if (CtrRenderer.state == 2)
+                        else if (state == 2)
                         {
-                            CtrRenderer.playedTicks += CtrRenderer.DELTA_NANOS;
-                            if (timestamp - CtrRenderer.playedTicks > CtrRenderer.DELTA_NANOS_THRES)
+                            playedTicks += DELTA_NANOS;
+                            if (timestamp - playedTicks > DELTA_NANOS_THRES)
                             {
-                                CtrRenderer.playedTicks = timestamp - CtrRenderer.DELTA_NANOS_THRES;
+                                playedTicks = timestamp - DELTA_NANOS_THRES;
                             }
                         }
-                        if (CtrRenderer.state == 2)
+                        if (state == 2)
                         {
-                            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
-                            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(fps);
+                            Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
+                            Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(fps);
                             flag = true;
                         }
                     }
@@ -157,98 +157,98 @@ namespace CutTheRope.ctr_commons
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeInit(Language language)
         {
-            if (CtrRenderer.gApp != null)
+            if (gApp != null)
             {
-                FrameworkTypes._LOG("Application already created");
+                _LOG("Application already created");
                 return;
             }
-            ResDataPhoneFull.LANGUAGE = language;
-            CutTheRope.iframework.helpers.CTRMathHelper.fmInit();
-            CtrRenderer.gApp = new CTRApp();
-            CtrRenderer.gApp.init();
-            CtrRenderer.gApp.applicationDidFinishLaunching(null);
+            LANGUAGE = language;
+            fmInit();
+            gApp = new CTRApp();
+            gApp.init();
+            gApp.applicationDidFinishLaunching(null);
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDestroy()
         {
-            if (CtrRenderer.gApp == null)
+            if (gApp == null)
             {
-                FrameworkTypes._LOG("Application already destroyed");
+                _LOG("Application already destroyed");
                 return;
             }
             Application.sharedSoundMgr().stopAllSounds();
             Application.sharedPreferences().savePreferences();
-            NSObject.NSREL(CtrRenderer.gApp);
-            CtrRenderer.gApp = null;
-            CtrRenderer.gPaused = false;
+            NSREL(gApp);
+            gApp = null;
+            gPaused = false;
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativePause()
         {
-            if (!CtrRenderer.gPaused)
+            if (!gPaused)
             {
                 CTRSoundMgr._pause();
                 Application.sharedMovieMgr().pause();
-                CtrRenderer.gPaused = true;
-                CtrRenderer.gApp?.applicationWillResignActive(null);
+                gPaused = true;
+                gApp?.applicationWillResignActive(null);
                 CTRTexture2D.suspendAll();
             }
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeResume()
         {
-            if (CtrRenderer.gPaused)
+            if (gPaused)
             {
                 CTRSoundMgr._unpause();
                 Application.sharedMovieMgr().resume();
                 CTRTexture2D.suspendAll();
                 CTRTexture2D.resumeAll();
-                CtrRenderer.gPaused = false;
-                CtrRenderer.gApp?.applicationDidBecomeActive(null);
+                gPaused = false;
+                gApp?.applicationDidBecomeActive(null);
             }
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeResize(int width, int height, bool isLowMem)
         {
-            FrameworkTypes.REAL_SCREEN_WIDTH = (float)width;
-            FrameworkTypes.REAL_SCREEN_HEIGHT = (float)height;
-            FrameworkTypes.SCREEN_RATIO = FrameworkTypes.REAL_SCREEN_HEIGHT / FrameworkTypes.REAL_SCREEN_WIDTH;
-            FrameworkTypes.IS_WVGA = width > 500 || height > 500;
-            FrameworkTypes.IS_QVGA = width < 280 || height < 280;
+            REAL_SCREEN_WIDTH = (float)width;
+            REAL_SCREEN_HEIGHT = (float)height;
+            SCREEN_RATIO = REAL_SCREEN_HEIGHT / REAL_SCREEN_WIDTH;
+            IS_WVGA = width > 500 || height > 500;
+            IS_QVGA = width < 280 || height < 280;
             if (isLowMem)
             {
-                FrameworkTypes.IS_WVGA = false;
+                IS_WVGA = false;
             }
-            FrameworkTypes.VIEW_SCREEN_WIDTH = FrameworkTypes.REAL_SCREEN_WIDTH;
-            FrameworkTypes.VIEW_SCREEN_HEIGHT = FrameworkTypes.SCREEN_HEIGHT * FrameworkTypes.REAL_SCREEN_WIDTH / FrameworkTypes.SCREEN_WIDTH;
-            if (FrameworkTypes.VIEW_SCREEN_HEIGHT > FrameworkTypes.REAL_SCREEN_HEIGHT)
+            VIEW_SCREEN_WIDTH = REAL_SCREEN_WIDTH;
+            VIEW_SCREEN_HEIGHT = SCREEN_HEIGHT * REAL_SCREEN_WIDTH / SCREEN_WIDTH;
+            if (VIEW_SCREEN_HEIGHT > REAL_SCREEN_HEIGHT)
             {
-                FrameworkTypes.VIEW_SCREEN_HEIGHT = FrameworkTypes.REAL_SCREEN_HEIGHT;
-                FrameworkTypes.VIEW_SCREEN_WIDTH = FrameworkTypes.SCREEN_WIDTH * FrameworkTypes.REAL_SCREEN_HEIGHT / FrameworkTypes.SCREEN_HEIGHT;
+                VIEW_SCREEN_HEIGHT = REAL_SCREEN_HEIGHT;
+                VIEW_SCREEN_WIDTH = SCREEN_WIDTH * REAL_SCREEN_HEIGHT / SCREEN_HEIGHT;
             }
-            FrameworkTypes.VIEW_OFFSET_X = ((float)width - FrameworkTypes.VIEW_SCREEN_WIDTH) / 2f;
-            FrameworkTypes.VIEW_OFFSET_Y = ((float)height - FrameworkTypes.VIEW_SCREEN_HEIGHT) / 2f;
-            FrameworkTypes.SCREEN_HEIGHT_EXPANDED = FrameworkTypes.SCREEN_HEIGHT * FrameworkTypes.REAL_SCREEN_HEIGHT / FrameworkTypes.VIEW_SCREEN_HEIGHT;
-            FrameworkTypes.SCREEN_WIDTH_EXPANDED = FrameworkTypes.SCREEN_WIDTH * FrameworkTypes.REAL_SCREEN_WIDTH / FrameworkTypes.VIEW_SCREEN_WIDTH;
-            FrameworkTypes.SCREEN_OFFSET_Y = (FrameworkTypes.SCREEN_HEIGHT_EXPANDED - FrameworkTypes.SCREEN_HEIGHT) / 2f;
-            FrameworkTypes.SCREEN_OFFSET_X = (FrameworkTypes.SCREEN_WIDTH_EXPANDED - FrameworkTypes.SCREEN_WIDTH) / 2f;
-            FrameworkTypes.SCREEN_BG_SCALE_Y = FrameworkTypes.SCREEN_HEIGHT_EXPANDED / FrameworkTypes.SCREEN_HEIGHT;
-            FrameworkTypes.SCREEN_BG_SCALE_X = FrameworkTypes.SCREEN_WIDTH_EXPANDED / FrameworkTypes.SCREEN_WIDTH;
-            if (FrameworkTypes.IS_WVGA)
+            VIEW_OFFSET_X = ((float)width - VIEW_SCREEN_WIDTH) / 2f;
+            VIEW_OFFSET_Y = ((float)height - VIEW_SCREEN_HEIGHT) / 2f;
+            SCREEN_HEIGHT_EXPANDED = SCREEN_HEIGHT * REAL_SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
+            SCREEN_WIDTH_EXPANDED = SCREEN_WIDTH * REAL_SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
+            SCREEN_OFFSET_Y = (SCREEN_HEIGHT_EXPANDED - SCREEN_HEIGHT) / 2f;
+            SCREEN_OFFSET_X = (SCREEN_WIDTH_EXPANDED - SCREEN_WIDTH) / 2f;
+            SCREEN_BG_SCALE_Y = SCREEN_HEIGHT_EXPANDED / SCREEN_HEIGHT;
+            SCREEN_BG_SCALE_X = SCREEN_WIDTH_EXPANDED / SCREEN_WIDTH;
+            if (IS_WVGA)
             {
-                FrameworkTypes.SCREEN_WIDE_BG_SCALE_Y = (float)((double)FrameworkTypes.SCREEN_HEIGHT_EXPANDED * 1.5 / 800.0);
-                FrameworkTypes.SCREEN_WIDE_BG_SCALE_X = FrameworkTypes.SCREEN_BG_SCALE_X;
+                SCREEN_WIDE_BG_SCALE_Y = (float)((double)SCREEN_HEIGHT_EXPANDED * 1.5 / 800.0);
+                SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
                 return;
             }
-            FrameworkTypes.SCREEN_WIDE_BG_SCALE_Y = FrameworkTypes.SCREEN_BG_SCALE_Y;
-            FrameworkTypes.SCREEN_WIDE_BG_SCALE_X = FrameworkTypes.SCREEN_BG_SCALE_X;
+            SCREEN_WIDE_BG_SCALE_Y = SCREEN_BG_SCALE_Y;
+            SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeRender()
         {
             OpenGL.glClearColor(Color.Black);
             OpenGL.glClear(0);
-            if (CtrRenderer.gApp != null)
+            if (gApp != null)
             {
                 Application.sharedRootController().performDraw();
             }
@@ -294,7 +294,7 @@ namespace CutTheRope.ctr_commons
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeTick(float delta)
         {
-            if (CtrRenderer.gApp != null && !CtrRenderer.gPaused)
+            if (gApp != null && !gPaused)
             {
                 float delta2 = delta / 1000f;
                 NSTimer.fireTimers(delta2);
@@ -330,7 +330,7 @@ namespace CutTheRope.ctr_commons
 
         private static long DELTA_NANOS = 18181818L;
 
-        private static long DELTA_NANOS_THRES = (long)((double)CtrRenderer.DELTA_NANOS * 0.35);
+        private static long DELTA_NANOS_THRES = (long)((double)DELTA_NANOS * 0.35);
 
         private static bool DRAW_NOTHING = false;
 

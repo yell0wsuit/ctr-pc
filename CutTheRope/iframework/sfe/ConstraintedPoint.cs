@@ -18,8 +18,8 @@ namespace CutTheRope.iframework.sfe
         {
             if (base.init() != null)
             {
-                prevPos = CTRMathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
-                pin = CTRMathHelper.vect(-1f, -1f);
+                prevPos = vect(2.1474836E+09f, 2.1474836E+09f);
+                pin = vect(-1f, -1f);
                 constraints = new List<Constraint>();
             }
             return this;
@@ -126,7 +126,7 @@ namespace CutTheRope.iframework.sfe
         public override void resetAll()
         {
             base.resetAll();
-            prevPos = CTRMathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
+            prevPos = vect(2.1474836E+09f, 2.1474836E+09f);
             removeConstraints();
         }
 
@@ -137,36 +137,36 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void update(float delta, float koeff)
         {
-            totalForce = CTRMathHelper.vectZero;
+            totalForce = vectZero;
             if (!disableGravity)
             {
-                if (!CTRMathHelper.vectEqual(MaterialPoint.globalGravity, CTRMathHelper.vectZero))
+                if (!vectEqual(globalGravity, vectZero))
                 {
-                    totalForce = CTRMathHelper.vectAdd(totalForce, CTRMathHelper.vectMult(MaterialPoint.globalGravity, weight));
+                    totalForce = vectAdd(totalForce, vectMult(globalGravity, weight));
                 }
                 else
                 {
-                    totalForce = CTRMathHelper.vectAdd(totalForce, gravity);
+                    totalForce = vectAdd(totalForce, gravity);
                 }
             }
             if (highestForceIndex != -1)
             {
                 for (int i = 0; i <= highestForceIndex; i++)
                 {
-                    totalForce = CTRMathHelper.vectAdd(totalForce, forces[i]);
+                    totalForce = vectAdd(totalForce, forces[i]);
                 }
             }
-            totalForce = CTRMathHelper.vectMult(totalForce, invWeight);
-            a = CTRMathHelper.vectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
+            totalForce = vectMult(totalForce, invWeight);
+            a = vectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
             if (prevPos.x == 2.1474836E+09f)
             {
                 prevPos = pos;
             }
             posDelta.x = pos.x - prevPos.x + a.x;
             posDelta.y = pos.y - prevPos.y + a.y;
-            v = CTRMathHelper.vectMult(posDelta, (float)(1.0 / (double)delta));
+            v = vectMult(posDelta, (float)(1.0 / (double)delta));
             prevPos = pos;
-            pos = CTRMathHelper.vectAdd(pos, posDelta);
+            pos = vectAdd(pos, posDelta);
         }
 
         public static void satisfyConstraints(ConstraintedPoint p)
@@ -177,8 +177,8 @@ namespace CutTheRope.iframework.sfe
                 return;
             }
             int count = p.constraints.Count;
-            Vector vector = CTRMathHelper.vectZero;
-            Vector vector2 = CTRMathHelper.vectZero;
+            Vector vector = vectZero;
+            Vector vector2 = vectZero;
             int i = 0;
             while (i < count)
             {
@@ -187,9 +187,9 @@ namespace CutTheRope.iframework.sfe
                 vector.y = constraint.cp.pos.y - p.pos.y;
                 if (vector.x == 0f && vector.y == 0f)
                 {
-                    vector = CTRMathHelper.vect(1f, 1f);
+                    vector = vect(1f, 1f);
                 }
-                float num = CTRMathHelper.vectLength(vector);
+                float num = vectLength(vector);
                 float restLength = constraint.restLength;
                 Constraint.CONSTRAINT type = constraint.type;
                 if (type != Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN)
@@ -225,7 +225,7 @@ namespace CutTheRope.iframework.sfe
                 p.pos.y = p.pos.y + vector.y;
                 if (constraint.cp.pin.x == -1f)
                 {
-                    constraint.cp.pos = CTRMathHelper.vectSub(constraint.cp.pos, vector2);
+                    constraint.cp.pos = vectSub(constraint.cp.pos, vector2);
                     goto IL_01D6;
                 }
                 goto IL_01D6;
@@ -234,36 +234,36 @@ namespace CutTheRope.iframework.sfe
 
         public static void qcpupdate(ConstraintedPoint p, float delta, float koeff)
         {
-            p.totalForce = CTRMathHelper.vectZero;
+            p.totalForce = vectZero;
             if (!p.disableGravity)
             {
-                if (!CTRMathHelper.vectEqual(MaterialPoint.globalGravity, CTRMathHelper.vectZero))
+                if (!vectEqual(globalGravity, vectZero))
                 {
-                    p.totalForce = CTRMathHelper.vectAdd(p.totalForce, CTRMathHelper.vectMult(MaterialPoint.globalGravity, p.weight));
+                    p.totalForce = vectAdd(p.totalForce, vectMult(globalGravity, p.weight));
                 }
                 else
                 {
-                    p.totalForce = CTRMathHelper.vectAdd(p.totalForce, p.gravity);
+                    p.totalForce = vectAdd(p.totalForce, p.gravity);
                 }
             }
             if (p.highestForceIndex != -1)
             {
                 for (int i = 0; i <= p.highestForceIndex; i++)
                 {
-                    p.totalForce = CTRMathHelper.vectAdd(p.totalForce, p.forces[i]);
+                    p.totalForce = vectAdd(p.totalForce, p.forces[i]);
                 }
             }
-            p.totalForce = CTRMathHelper.vectMult(p.totalForce, p.invWeight);
-            p.a = CTRMathHelper.vectMult(p.totalForce, (float)((double)delta / 1.0 * 0.01600000075995922 * (double)koeff));
+            p.totalForce = vectMult(p.totalForce, p.invWeight);
+            p.a = vectMult(p.totalForce, (float)((double)delta / 1.0 * 0.01600000075995922 * (double)koeff));
             if (p.prevPos.x == 2.1474836E+09f)
             {
                 p.prevPos = p.pos;
             }
             p.posDelta.x = p.pos.x - p.prevPos.x + p.a.x;
             p.posDelta.y = p.pos.y - p.prevPos.y + p.a.y;
-            p.v = CTRMathHelper.vectMult(p.posDelta, (float)(1.0 / (double)delta));
+            p.v = vectMult(p.posDelta, (float)(1.0 / (double)delta));
             p.prevPos = p.pos;
-            p.pos = CTRMathHelper.vectAdd(p.pos, p.posDelta);
+            p.pos = vectAdd(p.pos, p.posDelta);
         }
 
         public Vector prevPos;

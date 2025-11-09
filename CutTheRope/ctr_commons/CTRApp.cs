@@ -13,7 +13,7 @@ namespace CutTheRope.ctr_commons
 
         public virtual void applicationWillTerminate(UIApplication application)
         {
-            Application.sharedPreferences().savePreferences();
+            sharedPreferences().savePreferences();
         }
 
         public virtual void applicationDidReceiveMemoryWarning(UIApplication application)
@@ -28,18 +28,18 @@ namespace CutTheRope.ctr_commons
 
         public virtual void applicationWillResignActive(UIApplication application)
         {
-            Application.sharedPreferences().savePreferences();
-            if (Application.root != null && !Application.root.isSuspended())
+            sharedPreferences().savePreferences();
+            if (root != null && !root.isSuspended())
             {
-                Application.root.suspend();
+                root.suspend();
             }
         }
 
         public virtual void applicationDidBecomeActive(UIApplication application)
         {
-            if (Application.root != null && Application.root.isSuspended())
+            if (root != null && root.isSuspended())
             {
-                Application.root.resume();
+                root.resume();
             }
         }
     }

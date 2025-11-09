@@ -16,23 +16,23 @@ namespace CutTheRope.game
 
         public static Sock Sock_createWithResID(int r)
         {
-            return Sock.Sock_create(Application.getTexture(r));
+            return Sock_create(Application.getTexture(r));
         }
 
         public static Sock Sock_createWithResIDQuad(int r, int q)
         {
-            Sock sock = Sock.Sock_create(Application.getTexture(r));
+            Sock sock = Sock_create(Application.getTexture(r));
             sock.setDrawQuad(q);
             return sock;
         }
 
         public virtual void createAnimations()
         {
-            light = Animation.Animation_createWithResID(85);
+            light = Animation_createWithResID(85);
             light.anchor = 34;
             light.parentAnchor = 10;
             light.y = 270f;
-            light.x = FrameworkTypes.RTD(0.0);
+            light.x = RTD(0.0);
             light.addAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 2, new List<int> { 3, 4, 4 });
             light.doRestoreCutTransparency();
             light.visible = false;
@@ -48,11 +48,11 @@ namespace CutTheRope.game
             b1.x = t1.x;
             b2.x = t2.x;
             b1.y = b2.y = y + 15f;
-            angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(rotation);
-            t1 = CTRMathHelper.vectRotateAround(t1, angle, x, y);
-            t2 = CTRMathHelper.vectRotateAround(t2, angle, x, y);
-            b1 = CTRMathHelper.vectRotateAround(b1, angle, x, y);
-            b2 = CTRMathHelper.vectRotateAround(b2, angle, x, y);
+            angle = (double)DEGREES_TO_RADIANS(rotation);
+            t1 = vectRotateAround(t1, angle, x, y);
+            t2 = vectRotateAround(t2, angle, x, y);
+            b1 = vectRotateAround(b1, angle, x, y);
+            b2 = vectRotateAround(b2, angle, x, y);
         }
 
         public override void draw()

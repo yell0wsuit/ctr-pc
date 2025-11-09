@@ -20,7 +20,7 @@ namespace CutTheRope.iframework.media
 
         public static void SetContentManager(ContentManager contentManager)
         {
-            SoundMgr._contentManager = contentManager;
+            _contentManager = contentManager;
         }
 
         public void freeSound(int resId)
@@ -42,7 +42,7 @@ namespace CutTheRope.iframework.media
             SoundEffect soundEffect;
             try
             {
-                value = SoundMgr._contentManager.Load<SoundEffect>("sounds/" + CTRResourceMgr.XNA_ResName(resId));
+                value = _contentManager.Load<SoundEffect>("sounds/" + CTRResourceMgr.XNA_ResName(resId));
                 LoadedSounds.Add(resId, value);
                 soundEffect = value;
             }
@@ -84,7 +84,7 @@ namespace CutTheRope.iframework.media
         public virtual void playMusic(int resId)
         {
             stopMusic();
-            Song song = SoundMgr._contentManager.Load<Song>("sounds/" + CTRResourceMgr.XNA_ResName(resId));
+            Song song = _contentManager.Load<Song>("sounds/" + CTRResourceMgr.XNA_ResName(resId));
             MediaPlayer.IsRepeating = true;
             try
             {
@@ -97,7 +97,7 @@ namespace CutTheRope.iframework.media
 
         public virtual void stopLoopedSounds()
         {
-            SoundMgr.stopList(activeLoopedSounds);
+            stopList(activeLoopedSounds);
             activeLoopedSounds.Clear();
         }
 
@@ -129,7 +129,7 @@ namespace CutTheRope.iframework.media
         {
             try
             {
-                SoundMgr.changeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
+                changeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
                 if (MediaPlayer.State == MediaState.Playing)
                 {
                     MediaPlayer.Pause();
@@ -144,7 +144,7 @@ namespace CutTheRope.iframework.media
         {
             try
             {
-                SoundMgr.changeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+                changeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
                 if (MediaPlayer.State == MediaState.Paused)
                 {
                     MediaPlayer.Resume();

@@ -28,15 +28,15 @@ namespace CutTheRope.game
                     {
                         getTotalScore();
                         int i = 0;
-                        int packsCount = CTRPreferences.getPacksCount();
+                        int packsCount = getPacksCount();
                         while (i < packsCount)
                         {
                             int num = 0;
                             int j = 0;
-                            int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
+                            int levelsInPackCount = getLevelsInPackCount();
                             while (j < levelsInPackCount)
                             {
-                                int intForKey2 = getIntForKey(CTRPreferences.getPackLevelKey("SCORE_", i, j));
+                                int intForKey2 = getIntForKey(getPackLevelKey("SCORE_", i, j));
                                 if (intForKey2 > 5999)
                                 {
                                     num = 150000;
@@ -76,8 +76,8 @@ namespace CutTheRope.game
 
         public static bool isSharewareUnlocked()
         {
-            bool flag = CTRPreferences.isShareware();
-            return !flag || (flag && Preferences._getBooleanForKey("IAP_SHAREWARE"));
+            bool flag = isShareware();
+            return !flag || (flag && _getBooleanForKey("IAP_SHAREWARE"));
         }
 
         public static bool isLiteVersion()
@@ -92,17 +92,17 @@ namespace CutTheRope.game
 
         public static int getStarsForPackLevel(int p, int l)
         {
-            return Preferences._getIntForKey(CTRPreferences.getPackLevelKey("STARS_", p, l));
+            return _getIntForKey(getPackLevelKey("STARS_", p, l));
         }
 
         public static UNLOCKED_STATE getUnlockedForPackLevel(int p, int l)
         {
-            return (UNLOCKED_STATE)Preferences._getIntForKey(CTRPreferences.getPackLevelKey("UNLOCKED_", p, l));
+            return (UNLOCKED_STATE)_getIntForKey(getPackLevelKey("UNLOCKED_", p, l));
         }
 
         public static int getPacksCount()
         {
-            if (!CTRPreferences.isLiteVersion())
+            if (!isLiteVersion())
             {
                 return 11;
             }
@@ -111,7 +111,7 @@ namespace CutTheRope.game
 
         public static int getLevelsInPackCount()
         {
-            if (!CTRPreferences.isLiteVersion())
+            if (!isLiteVersion())
             {
                 return 25;
             }
@@ -122,14 +122,14 @@ namespace CutTheRope.game
         {
             int num = 0;
             int i = 0;
-            int packsCount = CTRPreferences.getPacksCount();
+            int packsCount = getPacksCount();
             while (i < packsCount)
             {
                 int j = 0;
-                int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
+                int levelsInPackCount = getLevelsInPackCount();
                 while (j < levelsInPackCount)
                 {
-                    num += CTRPreferences.getStarsForPackLevel(i, j);
+                    num += getStarsForPackLevel(i, j);
                     j++;
                 }
                 i++;
@@ -139,11 +139,11 @@ namespace CutTheRope.game
 
         public static int packUnlockStars(int n)
         {
-            if (!CTRPreferences.isLiteVersion())
+            if (!isLiteVersion())
             {
-                return CTRPreferences.PACK_UNLOCK_STARS[n];
+                return PACK_UNLOCK_STARS[n];
             }
-            return CTRPreferences.PACK_UNLOCK_STARS_LITE[n];
+            return PACK_UNLOCK_STARS_LITE[n];
         }
 
         private static string getPackLevelKey(string prefs, int p, int l)
@@ -153,7 +153,7 @@ namespace CutTheRope.game
 
         public static void setUnlockedForPackLevel(UNLOCKED_STATE s, int p, int l)
         {
-            Preferences._setIntforKey((int)s, CTRPreferences.getPackLevelKey("UNLOCKED_", p, l), true);
+            _setIntforKey((int)s, getPackLevelKey("UNLOCKED_", p, l), true);
         }
 
         public static int sharewareFreeLevels()
@@ -168,16 +168,16 @@ namespace CutTheRope.game
 
         public static void setLastPack(int p)
         {
-            Preferences._setIntforKey(p, "PREFS_LAST_PACK", true);
+            _setIntforKey(p, "PREFS_LAST_PACK", true);
         }
 
         public static bool isPackPerfect(int p)
         {
             int i = 0;
-            int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
+            int levelsInPackCount = getLevelsInPackCount();
             while (i < levelsInPackCount)
             {
-                if (CTRPreferences.getStarsForPackLevel(p, i) < 3)
+                if (getStarsForPackLevel(p, i) < 3)
                 {
                     return false;
                 }
@@ -188,8 +188,8 @@ namespace CutTheRope.game
 
         public static int getLastPack()
         {
-            int val = Preferences._getIntForKey("PREFS_LAST_PACK");
-            return Math.Min(Math.Max(0, val), CTRPreferences.getPacksCount() + 1);
+            int val = _getIntForKey("PREFS_LAST_PACK");
+            return Math.Min(Math.Max(0, val), getPacksCount() + 1);
         }
 
         public static void gameViewChanged(NSString NameOfView)
@@ -198,27 +198,27 @@ namespace CutTheRope.game
 
         public static int getScoreForPackLevel(int p, int l)
         {
-            return Preferences._getIntForKey("SCORE_" + p.ToString() + "_" + l.ToString());
+            return _getIntForKey("SCORE_" + p.ToString() + "_" + l.ToString());
         }
 
         public static void setScoreForPackLevel(int s, int p, int l)
         {
-            Preferences._setIntforKey(s, "SCORE_" + p.ToString() + "_" + l.ToString(), true);
+            _setIntforKey(s, "SCORE_" + p.ToString() + "_" + l.ToString(), true);
         }
 
         public static void setStarsForPackLevel(int s, int p, int l)
         {
-            Preferences._setIntforKey(s, "STARS_" + p.ToString() + "_" + l.ToString(), true);
+            _setIntforKey(s, "STARS_" + p.ToString() + "_" + l.ToString(), true);
         }
 
         public static int getTotalStarsInPack(int p)
         {
             int num = 0;
             int i = 0;
-            int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
+            int levelsInPackCount = getLevelsInPackCount();
             while (i < levelsInPackCount)
             {
-                num += CTRPreferences.getStarsForPackLevel(p, i);
+                num += getStarsForPackLevel(p, i);
                 i++;
             }
             return num;
@@ -237,17 +237,17 @@ namespace CutTheRope.game
         public void resetToDefaults()
         {
             int i = 0;
-            int packsCount = CTRPreferences.getPacksCount();
+            int packsCount = getPacksCount();
             while (i < packsCount)
             {
                 int j = 0;
-                int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
+                int levelsInPackCount = getLevelsInPackCount();
                 while (j < levelsInPackCount)
                 {
-                    int v = ((i == 0 || (CTRPreferences.isShareware() && i < CTRPreferences.sharewareFreePacks())) && j == 0) ? 1 : 0;
-                    setIntforKey(0, CTRPreferences.getPackLevelKey("SCORE_", i, j), false);
-                    setIntforKey(0, CTRPreferences.getPackLevelKey("STARS_", i, j), false);
-                    setIntforKey(v, CTRPreferences.getPackLevelKey("UNLOCKED_", i, j), false);
+                    int v = ((i == 0 || (isShareware() && i < sharewareFreePacks())) && j == 0) ? 1 : 0;
+                    setIntforKey(0, getPackLevelKey("SCORE_", i, j), false);
+                    setIntforKey(0, getPackLevelKey("STARS_", i, j), false);
+                    setIntforKey(v, getPackLevelKey("UNLOCKED_", i, j), false);
                     j++;
                 }
                 i++;
@@ -276,12 +276,12 @@ namespace CutTheRope.game
                 return;
             }
             int i = 0;
-            int packsCount = CTRPreferences.getPacksCount();
+            int packsCount = getPacksCount();
             while (i < packsCount)
             {
-                if (CTRPreferences.getUnlockedForPackLevel(i, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
+                if (getUnlockedForPackLevel(i, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
                 {
-                    CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED, i, 0);
+                    setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED, i, 0);
                 }
                 i++;
             }
@@ -290,11 +290,11 @@ namespace CutTheRope.game
         private int getTotalScore()
         {
             int num = 0;
-            for (int i = 0; i < CTRPreferences.getPacksCount(); i++)
+            for (int i = 0; i < getPacksCount(); i++)
             {
-                for (int j = 0; j < CTRPreferences.getLevelsInPackCount(); j++)
+                for (int j = 0; j < getLevelsInPackCount(); j++)
                 {
-                    num += getIntForKey(CTRPreferences.getPackLevelKey("SCORE_", i, j));
+                    num += getIntForKey(getPackLevelKey("SCORE_", i, j));
                 }
             }
             return num;
@@ -302,7 +302,7 @@ namespace CutTheRope.game
 
         public void setScoreHash()
         {
-            NSString mD5Str = CTRMathHelper.getMD5Str(NSObject.NSS(getTotalScore().ToString()));
+            NSString mD5Str = getMD5Str(NSS(getTotalScore().ToString()));
             setStringforKey(mD5Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 
@@ -314,15 +314,15 @@ namespace CutTheRope.game
         public void unlockAllLevels(int stars)
         {
             int i = 0;
-            int packsCount = CTRPreferences.getPacksCount();
+            int packsCount = getPacksCount();
             while (i < packsCount)
             {
                 int j = 0;
-                int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
+                int levelsInPackCount = getLevelsInPackCount();
                 while (j < levelsInPackCount)
                 {
-                    setIntforKey(1, CTRPreferences.getPackLevelKey("UNLOCKED_", i, j), false);
-                    setIntforKey(stars, CTRPreferences.getPackLevelKey("STARS_", i, j), false);
+                    setIntforKey(1, getPackLevelKey("UNLOCKED_", i, j), false);
+                    setIntforKey(stars, getPackLevelKey("STARS_", i, j), false);
                     j++;
                 }
                 i++;

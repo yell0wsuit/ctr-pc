@@ -20,7 +20,7 @@ namespace CutTheRope.iframework.visual
         public override void draw()
         {
             base.preDraw();
-            if (CTRMathHelper.vectEqual(sp, CTRMathHelper.vectUndefined) && delegateProvider != null)
+            if (vectEqual(sp, vectUndefined) && delegateProvider != null)
             {
                 delegateProvider(ref sp, ref mp, ref sc);
             }
@@ -71,9 +71,9 @@ namespace CutTheRope.iframework.visual
                 width = (int)w;
                 height = (int)h;
                 vertical = v;
-                sp = CTRMathHelper.vectUndefined;
-                mp = CTRMathHelper.vectUndefined;
-                sc = CTRMathHelper.vectUndefined;
+                sp = vectUndefined;
+                mp = vectUndefined;
+                sc = vectUndefined;
                 backColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.5f);
                 scrollerColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0.5f);
             }

@@ -28,22 +28,22 @@ namespace CutTheRope.iframework.helpers
             }
             if (type == CAMERA_TYPE.CAMERA_SPEED_DELAY)
             {
-                offset = CTRMathHelper.vectMult(CTRMathHelper.vectSub(target, pos), speed);
+                offset = vectMult(vectSub(target, pos), speed);
                 return;
             }
             if (type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
             {
-                offset = CTRMathHelper.vectMult(CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(target, pos)), speed);
+                offset = vectMult(vectNormalize(vectSub(target, pos)), speed);
             }
         }
 
         public virtual void update(float delta)
         {
-            if (!CTRMathHelper.vectEqual(pos, target))
+            if (!vectEqual(pos, target))
             {
-                pos = CTRMathHelper.vectAdd(pos, CTRMathHelper.vectMult(offset, delta));
-                pos = CTRMathHelper.vect(CTRMathHelper.round((double)pos.x), CTRMathHelper.round((double)pos.y));
-                if (!CTRMathHelper.sameSign(offset.x, target.x - pos.x) || !CTRMathHelper.sameSign(offset.y, target.y - pos.y))
+                pos = vectAdd(pos, vectMult(offset, delta));
+                pos = vect(round((double)pos.x), round((double)pos.y));
+                if (!sameSign(offset.x, target.x - pos.x) || !sameSign(offset.y, target.y - pos.y))
                 {
                     pos = target;
                 }

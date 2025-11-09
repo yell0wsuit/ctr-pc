@@ -33,7 +33,7 @@ namespace CutTheRope.iframework
 
         public static RGBAColor MakeRGBA(double r, double g, double b, double a)
         {
-            return RGBAColor.MakeRGBA((float)r, (float)g, (float)b, (float)a);
+            return MakeRGBA((float)r, (float)g, (float)b, (float)a);
         }
 
         public static RGBAColor MakeRGBA(float r, float g, float b, float a)

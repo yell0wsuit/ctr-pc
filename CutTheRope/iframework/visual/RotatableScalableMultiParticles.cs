@@ -11,7 +11,7 @@ namespace CutTheRope.iframework.visual
         {
             base.initParticle(ref particle);
             particle.angle = initialAngle;
-            particle.deltaAngle = CTRMathHelper.DEGREES_TO_RADIANS(rotateSpeed + rotateSpeedVar * CTRMathHelper.RND_MINUS1_1);
+            particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + rotateSpeedVar * RND_MINUS1_1);
             particle.deltaSize = (endSize - size) / particle.life;
         }
 
@@ -19,22 +19,22 @@ namespace CutTheRope.iframework.visual
         {
             if (p.life > 0f)
             {
-                Vector vector = CTRMathHelper.vectZero;
+                Vector vector = vectZero;
                 if (p.pos.x != 0f || p.pos.y != 0f)
                 {
-                    vector = CTRMathHelper.vectNormalize(p.pos);
+                    vector = vectNormalize(p.pos);
                 }
                 Vector v = vector;
-                vector = CTRMathHelper.vectMult(vector, p.radialAccel);
+                vector = vectMult(vector, p.radialAccel);
                 float num = v.x;
                 v.x = 0f - v.y;
                 v.y = num;
-                v = CTRMathHelper.vectMult(v, p.tangentialAccel);
-                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), gravity);
-                v2 = CTRMathHelper.vectMult(v2, delta);
-                p.dir = CTRMathHelper.vectAdd(p.dir, v2);
-                v2 = CTRMathHelper.vectMult(p.dir, delta);
-                p.pos = CTRMathHelper.vectAdd(p.pos, v2);
+                v = vectMult(v, p.tangentialAccel);
+                Vector v2 = vectAdd(vectAdd(vector, v), gravity);
+                v2 = vectMult(v2, delta);
+                p.dir = vectAdd(p.dir, v2);
+                v2 = vectMult(p.dir, delta);
+                p.pos = vectAdd(p.pos, v2);
                 p.color.r = p.color.r + p.deltaColor.r * delta;
                 p.color.g = p.color.g + p.deltaColor.g * delta;
                 p.color.b = p.color.b + p.deltaColor.b * delta;
@@ -53,17 +53,17 @@ namespace CutTheRope.iframework.visual
                 float num10 = p.pos.y + num3 / 2f;
                 float cx = p.pos.x;
                 float cy = p.pos.y;
-                Vector v3 = CTRMathHelper.vect(num4, num5);
-                Vector v4 = CTRMathHelper.vect(num6, num7);
-                Vector v5 = CTRMathHelper.vect(num8, num9);
-                Vector v6 = CTRMathHelper.vect(num11, num10);
+                Vector v3 = vect(num4, num5);
+                Vector v4 = vect(num6, num7);
+                Vector v5 = vect(num8, num9);
+                Vector v6 = vect(num11, num10);
                 p.angle += p.deltaAngle * delta;
-                float cosA = CTRMathHelper.cosf(p.angle);
-                float sinA = CTRMathHelper.sinf(p.angle);
-                v3 = Particles.rotatePreCalc(v3, cosA, sinA, cx, cy);
-                v4 = Particles.rotatePreCalc(v4, cosA, sinA, cx, cy);
-                v5 = Particles.rotatePreCalc(v5, cosA, sinA, cx, cy);
-                v6 = Particles.rotatePreCalc(v6, cosA, sinA, cx, cy);
+                float cosA = cosf(p.angle);
+                float sinA = sinf(p.angle);
+                v3 = rotatePreCalc(v3, cosA, sinA, cx, cy);
+                v4 = rotatePreCalc(v4, cosA, sinA, cx, cy);
+                v5 = rotatePreCalc(v5, cosA, sinA, cx, cy);
+                v6 = rotatePreCalc(v6, cosA, sinA, cx, cy);
                 drawer.vertices[particleIdx] = Quad3D.MakeQuad3DEx(v3.x, v3.y, v4.x, v4.y, v5.x, v5.y, v6.x, v6.y);
                 for (int i = 0; i < 4; i++)
                 {

@@ -21,98 +21,98 @@ namespace CutTheRope.windows
         {
             if (cap == 1)
             {
-                OpenGL.s_Blend.enable();
+                s_Blend.enable();
             }
-            OpenGL.s_glServerSideFlags[cap] = true;
+            s_glServerSideFlags[cap] = true;
         }
 
         public static void glDisable(int cap)
         {
             if (cap == 4)
             {
-                OpenGL.glScissor(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT);
+                glScissor(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT);
             }
             if (cap == 1)
             {
-                OpenGL.s_Blend.disable();
+                s_Blend.disable();
             }
-            OpenGL.s_glServerSideFlags[cap] = false;
+            s_glServerSideFlags[cap] = false;
         }
 
         public static void glEnableClientState(int cap)
         {
-            OpenGL.s_glClientStateFlags[cap] = true;
+            s_glClientStateFlags[cap] = true;
         }
 
         public static void glDisableClientState(int cap)
         {
-            OpenGL.s_glClientStateFlags[cap] = false;
+            s_glClientStateFlags[cap] = false;
         }
 
         public static RenderTarget2D DetachRenderTarget()
         {
-            RenderTarget2D renderTarget2D = OpenGL.s_RenderTarget;
-            OpenGL.s_RenderTarget = null;
+            RenderTarget2D renderTarget2D = s_RenderTarget;
+            s_RenderTarget = null;
             return renderTarget2D;
         }
 
         public static void CopyFromRenderTargetToScreen()
         {
-            if (Global.ScreenSizeManager.IsFullScreen && OpenGL.s_RenderTarget != null)
+            if (Global.ScreenSizeManager.IsFullScreen && s_RenderTarget != null)
             {
                 Global.GraphicsDevice.Clear(Color.Black);
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(OpenGL.s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
+                Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
                 Global.SpriteBatch.End();
             }
         }
 
         public static void glViewport(double x, double y, double width, double height)
         {
-            OpenGL.glViewport((int)x, (int)y, (int)width, (int)height);
+            glViewport((int)x, (int)y, (int)width, (int)height);
         }
 
         public static void glViewport(int x, int y, int width, int height)
         {
-            OpenGL.s_Viewport.X = x;
-            OpenGL.s_Viewport.Y = y;
-            OpenGL.s_Viewport.Width = width;
-            OpenGL.s_Viewport.Height = height;
+            s_Viewport.X = x;
+            s_Viewport.Y = y;
+            s_Viewport.Width = width;
+            s_Viewport.Height = height;
             if (Global.ScreenSizeManager.IsFullScreen)
             {
-                if (OpenGL.s_RenderTarget == null || OpenGL.s_RenderTarget.Bounds.Width != OpenGL.s_Viewport.Bounds.Width || OpenGL.s_RenderTarget.Bounds.Height != OpenGL.s_Viewport.Bounds.Height)
+                if (s_RenderTarget == null || s_RenderTarget.Bounds.Width != s_Viewport.Bounds.Width || s_RenderTarget.Bounds.Height != s_Viewport.Bounds.Height)
                 {
-                    OpenGL.s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, OpenGL.s_Viewport.Width, OpenGL.s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                    s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, s_Viewport.Width, s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None);
                 }
-                Global.GraphicsDevice.SetRenderTarget(OpenGL.s_RenderTarget);
+                Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
                 Global.GraphicsDevice.Clear(Color.Black);
                 return;
             }
-            OpenGL.s_RenderTarget = null;
+            s_RenderTarget = null;
         }
 
         public static void glMatrixMode(int mode)
         {
-            OpenGL.s_glMatrixMode = mode;
+            s_glMatrixMode = mode;
         }
 
         public static void glLoadIdentity()
         {
-            if (OpenGL.s_glMatrixMode == 14)
+            if (s_glMatrixMode == 14)
             {
-                OpenGL.s_matrixModelView = Matrix.Identity;
+                s_matrixModelView = Matrix.Identity;
                 return;
             }
-            if (OpenGL.s_glMatrixMode == 15)
+            if (s_glMatrixMode == 15)
             {
-                OpenGL.s_matrixProjection = Matrix.Identity;
+                s_matrixProjection = Matrix.Identity;
                 return;
             }
-            if (OpenGL.s_glMatrixMode == 16)
+            if (s_glMatrixMode == 16)
             {
                 throw new NotImplementedException();
             }
-            if (OpenGL.s_glMatrixMode != 17)
+            if (s_glMatrixMode != 17)
             {
                 return;
             }
@@ -121,83 +121,83 @@ namespace CutTheRope.windows
 
         public static void glOrthof(double left, double right, double bottom, double top, double near, double far)
         {
-            OpenGL.s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
+            s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
         }
 
         public static void glPopMatrix()
         {
-            if (OpenGL.s_matrixModelViewStack.Count > 0)
+            if (s_matrixModelViewStack.Count > 0)
             {
-                int index = OpenGL.s_matrixModelViewStack.Count - 1;
-                OpenGL.s_matrixModelView = OpenGL.s_matrixModelViewStack[index];
-                OpenGL.s_matrixModelViewStack.RemoveAt(index);
+                int index = s_matrixModelViewStack.Count - 1;
+                s_matrixModelView = s_matrixModelViewStack[index];
+                s_matrixModelViewStack.RemoveAt(index);
             }
         }
 
         public static void glPushMatrix()
         {
-            OpenGL.s_matrixModelViewStack.Add(OpenGL.s_matrixModelView);
+            s_matrixModelViewStack.Add(s_matrixModelView);
         }
 
         public static void glScalef(double x, double y, double z)
         {
-            OpenGL.glScalef((float)x, (float)y, (float)z);
+            glScalef((float)x, (float)y, (float)z);
         }
 
         public static void glScalef(float x, float y, float z)
         {
-            OpenGL.s_matrixModelView = Matrix.CreateScale(x, y, z) * OpenGL.s_matrixModelView;
+            s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
         }
 
         public static void glRotatef(double angle, double x, double y, double z)
         {
-            OpenGL.glRotatef((float)angle, (float)x, (float)y, (float)z);
+            glRotatef((float)angle, (float)x, (float)y, (float)z);
         }
 
         public static void glRotatef(float angle, float x, float y, float z)
         {
-            OpenGL.s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * OpenGL.s_matrixModelView;
+            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
         }
 
         public static void glTranslatef(double x, double y, double z)
         {
-            OpenGL.glTranslatef((float)x, (float)y, (float)z);
+            glTranslatef((float)x, (float)y, (float)z);
         }
 
         public static void glTranslatef(float x, float y, float z)
         {
-            OpenGL.s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * OpenGL.s_matrixModelView;
+            s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
         }
 
         public static void glBindTexture(CutTheRope.iframework.visual.CTRTexture2D t)
         {
-            OpenGL.s_Texture = t;
+            s_Texture = t;
         }
 
         public static void glClearColor(Color c)
         {
-            OpenGL.s_glClearColor = c;
+            s_glClearColor = c;
         }
 
         public static void glClearColorf(double red, double green, double blue, double alpha)
         {
-            OpenGL.s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
+            s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
         }
 
         public static void glClear(int mask_NotUsedParam)
         {
             BlendParams.applyDefault();
-            Global.GraphicsDevice.Clear(OpenGL.s_glClearColor);
+            Global.GraphicsDevice.Clear(s_glClearColor);
         }
 
         public static void glColor4f(Color c)
         {
-            OpenGL.s_Color = c;
+            s_Color = c;
         }
 
         public static void glBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
-            OpenGL.s_Blend = new BlendParams(sfactor, dfactor);
+            s_Blend = new BlendParams(sfactor, dfactor);
         }
 
         public static void drawSegment(float x1, float y1, float x2, float y2, RGBAColor color)
@@ -234,24 +234,24 @@ namespace CutTheRope.windows
 
         public static void glColorPointer(int size, int type, int stride, RGBAColor[] pointer)
         {
-            OpenGL.s_GLColorPointer = pointer;
+            s_GLColorPointer = pointer;
         }
 
         public static void glVertexPointer(int size, int type, int stride, object pointer)
         {
-            OpenGL.s_GLVertexPointer = new OpenGL.GLVertexPointer(size, type, stride, pointer);
+            s_GLVertexPointer = new OpenGL.GLVertexPointer(size, type, stride, pointer);
         }
 
         public static void glTexCoordPointer(int size, int type, int stride, object pointer)
         {
-            OpenGL.s_GLTexCoordPointer = new OpenGL.GLTexCoordPointer(size, type, stride, pointer);
+            s_GLTexCoordPointer = new OpenGL.GLTexCoordPointer(size, type, stride, pointer);
         }
 
         public static void glDrawArrays(int mode, int first, int count)
         {
             if (mode == 8)
             {
-                OpenGL.DrawTriangleStrip(first, count);
+                DrawTriangleStrip(first, count);
                 return;
             }
             if (mode - 9 > 1)
@@ -262,70 +262,70 @@ namespace CutTheRope.windows
 
         public static void glColorPointer_setAdditive(int size)
         {
-            OpenGL.s_GLColorPointer = new RGBAColor[size];
-            OpenGL.s_GLColorPointer_additive_position = 0;
+            s_GLColorPointer = new RGBAColor[size];
+            s_GLColorPointer_additive_position = 0;
         }
 
         public static void glColorPointer_add(int size, int type, int stride, RGBAColor[] pointer)
         {
-            pointer.CopyTo(OpenGL.s_GLColorPointer, OpenGL.s_GLColorPointer_additive_position);
-            OpenGL.s_GLColorPointer_additive_position += pointer.Length;
+            pointer.CopyTo(s_GLColorPointer, s_GLColorPointer_additive_position);
+            s_GLColorPointer_additive_position += pointer.Length;
         }
 
         public static void glVertexPointer_setAdditive(int size, int type, int stride, int length)
         {
-            OpenGL.s_GLVertexPointer = new OpenGL.GLVertexPointer(size, type, stride, new float[length]);
-            OpenGL.s_GLVertexPointer_additive_position = 0;
+            s_GLVertexPointer = new OpenGL.GLVertexPointer(size, type, stride, new float[length]);
+            s_GLVertexPointer_additive_position = 0;
         }
 
         public static void glVertexPointer_add(int size, int type, int stride, float[] pointer)
         {
-            pointer.CopyTo(OpenGL.s_GLVertexPointer.pointer_, OpenGL.s_GLVertexPointer_additive_position);
-            OpenGL.s_GLVertexPointer_additive_position += pointer.Length;
+            pointer.CopyTo(s_GLVertexPointer.pointer_, s_GLVertexPointer_additive_position);
+            s_GLVertexPointer_additive_position += pointer.Length;
         }
 
         private static VertexPositionColor[] ConstructColorVertices()
         {
-            VertexPositionColor[] array = new VertexPositionColor[OpenGL.s_GLVertexPointer.Count];
+            VertexPositionColor[] array = new VertexPositionColor[s_GLVertexPointer.Count];
             int num = 0;
             Vector3 position = default(Vector3);
             for (int i = 0; i < array.Length; i++)
             {
-                position.X = OpenGL.s_GLVertexPointer.pointer_[num++];
-                position.Y = OpenGL.s_GLVertexPointer.pointer_[num++];
-                if (OpenGL.s_GLVertexPointer.size_ == 2)
+                position.X = s_GLVertexPointer.pointer_[num++];
+                position.Y = s_GLVertexPointer.pointer_[num++];
+                if (s_GLVertexPointer.size_ == 2)
                 {
                     position.Z = 0f;
                 }
                 else
                 {
-                    position.Z = OpenGL.s_GLVertexPointer.pointer_[num++];
+                    position.Z = s_GLVertexPointer.pointer_[num++];
                 }
-                array[i] = new VertexPositionColor(position, OpenGL.s_GLColorPointer[i].toXNA());
+                array[i] = new VertexPositionColor(position, s_GLColorPointer[i].toXNA());
             }
             return array;
         }
 
         private static VertexPositionColor[] ConstructCurrentColorVertices()
         {
-            VertexPositionColor[] array = new VertexPositionColor[OpenGL.s_GLVertexPointer.Count];
+            VertexPositionColor[] array = new VertexPositionColor[s_GLVertexPointer.Count];
             int num = 0;
             for (int i = 0; i < array.Length; i++)
             {
                 Vector3 position = default(Vector3);
-                position.X = OpenGL.s_GLVertexPointer.pointer_[num++];
-                position.Y = OpenGL.s_GLVertexPointer.pointer_[num++];
-                if (OpenGL.s_GLVertexPointer.size_ == 2)
+                position.X = s_GLVertexPointer.pointer_[num++];
+                position.Y = s_GLVertexPointer.pointer_[num++];
+                if (s_GLVertexPointer.size_ == 2)
                 {
                     position.Z = 0f;
                 }
                 else
                 {
-                    position.Z = OpenGL.s_GLVertexPointer.pointer_[num++];
+                    position.Z = s_GLVertexPointer.pointer_[num++];
                 }
-                array[i] = new VertexPositionColor(position, OpenGL.s_Color);
+                array[i] = new VertexPositionColor(position, s_Color);
             }
-            OpenGL.s_GLVertexPointer = null;
+            s_GLVertexPointer = null;
             return array;
         }
 
@@ -341,35 +341,35 @@ namespace CutTheRope.windows
 
         private static VertexPositionNormalTexture[] ConstructTexturedVertices()
         {
-            VertexPositionNormalTexture[] array = new VertexPositionNormalTexture[OpenGL.s_GLVertexPointer.Count];
+            VertexPositionNormalTexture[] array = new VertexPositionNormalTexture[s_GLVertexPointer.Count];
             int num = 0;
             int num2 = 0;
             for (int i = 0; i < array.Length; i++)
             {
                 Vector3 position = default(Vector3);
-                position.X = OpenGL.s_GLVertexPointer.pointer_[num++];
-                position.Y = OpenGL.s_GLVertexPointer.pointer_[num++];
-                if (OpenGL.s_GLVertexPointer.size_ == 2)
+                position.X = s_GLVertexPointer.pointer_[num++];
+                position.Y = s_GLVertexPointer.pointer_[num++];
+                if (s_GLVertexPointer.size_ == 2)
                 {
                     position.Z = 0f;
                 }
                 else
                 {
-                    position.Z = OpenGL.s_GLVertexPointer.pointer_[num++];
+                    position.Z = s_GLVertexPointer.pointer_[num++];
                 }
                 Vector2 textureCoordinate = default(Vector2);
-                textureCoordinate.X = OpenGL.s_GLTexCoordPointer.pointer_[num2++];
-                textureCoordinate.Y = OpenGL.s_GLTexCoordPointer.pointer_[num2++];
+                textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
+                textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
                 int num3 = 2;
-                while (num3 < OpenGL.s_GLTexCoordPointer.size_)
+                while (num3 < s_GLTexCoordPointer.size_)
                 {
                     num3++;
                     num2++;
                 }
-                array[i] = new VertexPositionNormalTexture(position, OpenGL.normal, textureCoordinate);
+                array[i] = new VertexPositionNormalTexture(position, normal, textureCoordinate);
             }
-            OpenGL.s_GLTexCoordPointer = null;
-            OpenGL.s_GLVertexPointer = null;
+            s_GLTexCoordPointer = null;
+            s_GLVertexPointer = null;
             return array;
         }
 
@@ -381,118 +381,118 @@ namespace CutTheRope.windows
             for (int i = 0; i < array.Length; i++)
             {
                 Vector3 position = default(Vector3);
-                position.X = OpenGL.s_GLVertexPointer.pointer_[num++];
-                position.Y = OpenGL.s_GLVertexPointer.pointer_[num++];
-                if (OpenGL.s_GLVertexPointer.size_ == 2)
+                position.X = s_GLVertexPointer.pointer_[num++];
+                position.Y = s_GLVertexPointer.pointer_[num++];
+                if (s_GLVertexPointer.size_ == 2)
                 {
                     position.Z = 0f;
                 }
                 else
                 {
-                    position.Z = OpenGL.s_GLVertexPointer.pointer_[num++];
+                    position.Z = s_GLVertexPointer.pointer_[num++];
                 }
                 Vector2 textureCoordinate = default(Vector2);
-                textureCoordinate.X = OpenGL.s_GLTexCoordPointer.pointer_[num2++];
-                textureCoordinate.Y = OpenGL.s_GLTexCoordPointer.pointer_[num2++];
+                textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
+                textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
                 int num3 = 2;
-                while (num3 < OpenGL.s_GLTexCoordPointer.size_)
+                while (num3 < s_GLTexCoordPointer.size_)
                 {
                     num3++;
                     num2++;
                 }
-                Color color = OpenGL.s_GLColorPointer[i].toXNA();
+                Color color = s_GLColorPointer[i].toXNA();
                 array[i] = new VertexPositionColorTexture(position, color, textureCoordinate);
             }
-            OpenGL.s_GLTexCoordPointer = null;
-            OpenGL.s_GLVertexPointer = null;
+            s_GLTexCoordPointer = null;
+            s_GLVertexPointer = null;
             return array;
         }
 
         public static void Init()
         {
-            OpenGL.InitRasterizerState();
-            OpenGL.s_glServerSideFlags[0] = true;
-            OpenGL.s_glClientStateFlags[0] = true;
-            OpenGL.s_effectTexture = new BasicEffect(Global.GraphicsDevice);
-            OpenGL.s_effectTexture.VertexColorEnabled = false;
-            OpenGL.s_effectTexture.TextureEnabled = true;
-            OpenGL.s_effectTexture.View = Matrix.Identity;
-            OpenGL.s_effectTextureColor = new BasicEffect(Global.GraphicsDevice);
-            OpenGL.s_effectTextureColor.VertexColorEnabled = true;
-            OpenGL.s_effectTextureColor.TextureEnabled = true;
-            OpenGL.s_effectTextureColor.View = Matrix.Identity;
-            OpenGL.s_effectColor = new BasicEffect(Global.GraphicsDevice);
-            OpenGL.s_effectColor.VertexColorEnabled = true;
-            OpenGL.s_effectColor.TextureEnabled = false;
-            OpenGL.s_effectColor.Alpha = 1f;
-            OpenGL.s_effectColor.Texture = null;
-            OpenGL.s_effectColor.View = Matrix.Identity;
+            InitRasterizerState();
+            s_glServerSideFlags[0] = true;
+            s_glClientStateFlags[0] = true;
+            s_effectTexture = new BasicEffect(Global.GraphicsDevice);
+            s_effectTexture.VertexColorEnabled = false;
+            s_effectTexture.TextureEnabled = true;
+            s_effectTexture.View = Matrix.Identity;
+            s_effectTextureColor = new BasicEffect(Global.GraphicsDevice);
+            s_effectTextureColor.VertexColorEnabled = true;
+            s_effectTextureColor.TextureEnabled = true;
+            s_effectTextureColor.View = Matrix.Identity;
+            s_effectColor = new BasicEffect(Global.GraphicsDevice);
+            s_effectColor.VertexColorEnabled = true;
+            s_effectColor.TextureEnabled = false;
+            s_effectColor.Alpha = 1f;
+            s_effectColor.Texture = null;
+            s_effectColor.View = Matrix.Identity;
         }
 
         private static BasicEffect getEffect(bool useTexture, bool useColor)
         {
-            BasicEffect basicEffect = (!useTexture) ? OpenGL.s_effectColor : (useColor ? OpenGL.s_effectTextureColor : OpenGL.s_effectTexture);
+            BasicEffect basicEffect = (!useTexture) ? s_effectColor : (useColor ? s_effectTextureColor : s_effectTexture);
             if (useTexture)
             {
-                basicEffect.Alpha = (float)OpenGL.s_Color.A / 255f;
+                basicEffect.Alpha = (float)s_Color.A / 255f;
                 if (basicEffect.Alpha == 0f)
                 {
                     return basicEffect;
                 }
-                if (OpenGL.s_Texture_OptimizeLastUsed != OpenGL.s_Texture)
+                if (s_Texture_OptimizeLastUsed != s_Texture)
                 {
-                    basicEffect.Texture = OpenGL.s_Texture.xnaTexture_;
-                    OpenGL.s_Texture_OptimizeLastUsed = OpenGL.s_Texture;
+                    basicEffect.Texture = s_Texture.xnaTexture_;
+                    s_Texture_OptimizeLastUsed = s_Texture;
                 }
-                basicEffect.DiffuseColor = OpenGL.s_Color.ToVector3();
-                Global.GraphicsDevice.RasterizerState = OpenGL.s_rasterizerStateTexture;
+                basicEffect.DiffuseColor = s_Color.ToVector3();
+                Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
                 Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
             }
             else
             {
-                Global.GraphicsDevice.RasterizerState = OpenGL.s_rasterizerStateSolidColor;
+                Global.GraphicsDevice.RasterizerState = s_rasterizerStateSolidColor;
             }
-            basicEffect.World = OpenGL.s_matrixModelView;
-            basicEffect.Projection = OpenGL.s_matrixProjection;
-            OpenGL.s_Blend.apply();
+            basicEffect.World = s_matrixModelView;
+            basicEffect.Projection = s_matrixProjection;
+            s_Blend.apply();
             return basicEffect;
         }
 
         private static void InitRasterizerState()
         {
-            OpenGL.s_rasterizerStateSolidColor = new RasterizerState();
-            OpenGL.s_rasterizerStateSolidColor.FillMode = FillMode.Solid;
-            OpenGL.s_rasterizerStateSolidColor.CullMode = CullMode.None;
-            OpenGL.s_rasterizerStateSolidColor.ScissorTestEnable = true;
-            OpenGL.s_rasterizerStateTexture = new RasterizerState();
-            OpenGL.s_rasterizerStateTexture.CullMode = CullMode.None;
-            OpenGL.s_rasterizerStateTexture.ScissorTestEnable = true;
+            s_rasterizerStateSolidColor = new RasterizerState();
+            s_rasterizerStateSolidColor.FillMode = FillMode.Solid;
+            s_rasterizerStateSolidColor.CullMode = CullMode.None;
+            s_rasterizerStateSolidColor.ScissorTestEnable = true;
+            s_rasterizerStateTexture = new RasterizerState();
+            s_rasterizerStateTexture.CullMode = CullMode.None;
+            s_rasterizerStateTexture.ScissorTestEnable = true;
         }
 
         private static void DrawTriangleStrip(int first, int count)
         {
             bool value = false;
-            OpenGL.s_glServerSideFlags.TryGetValue(0, out value);
+            s_glServerSideFlags.TryGetValue(0, out value);
             if (value)
             {
-                OpenGL.s_glClientStateFlags.TryGetValue(0, out value);
+                s_glClientStateFlags.TryGetValue(0, out value);
             }
             if (value)
             {
-                OpenGL.DrawTriangleStripTextured(first, count);
+                DrawTriangleStripTextured(first, count);
                 return;
             }
-            OpenGL.DrawTriangleStripColored(first, count);
+            DrawTriangleStripColored(first, count);
         }
 
         public static VertexPositionColor[] GetLastVertices_PositionColor()
         {
-            return OpenGL.s_LastVertices_PositionColor;
+            return s_LastVertices_PositionColor;
         }
 
         public static void Optimized_DrawTriangleStripColored(VertexPositionColor[] vertices)
         {
-            BasicEffect effect = OpenGL.getEffect(false, true);
+            BasicEffect effect = getEffect(false, true);
             if (effect.Alpha == 0f)
             {
                 return;
@@ -506,15 +506,15 @@ namespace CutTheRope.windows
 
         private static void DrawTriangleStripColored(int first, int count)
         {
-            BasicEffect effect = OpenGL.getEffect(false, true);
+            BasicEffect effect = getEffect(false, true);
             if (effect.Alpha == 0f)
             {
-                OpenGL.s_LastVertices_PositionColor = null;
+                s_LastVertices_PositionColor = null;
                 return;
             }
             bool value = false;
-            OpenGL.s_glClientStateFlags.TryGetValue(13, out value);
-            VertexPositionColor[] array = OpenGL.s_LastVertices_PositionColor = value ? OpenGL.ConstructColorVertices() : OpenGL.ConstructCurrentColorVertices();
+            s_glClientStateFlags.TryGetValue(13, out value);
+            VertexPositionColor[] array = s_LastVertices_PositionColor = value ? ConstructColorVertices() : ConstructCurrentColorVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
@@ -524,12 +524,12 @@ namespace CutTheRope.windows
 
         private static void DrawTriangleStripTextured(int first, int count)
         {
-            BasicEffect effect = OpenGL.getEffect(true, false);
+            BasicEffect effect = getEffect(true, false);
             if (effect.Alpha == 0f)
             {
                 return;
             }
-            VertexPositionNormalTexture[] array = OpenGL.ConstructTexturedVertices();
+            VertexPositionNormalTexture[] array = ConstructTexturedVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
@@ -539,12 +539,12 @@ namespace CutTheRope.windows
 
         public static VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
         {
-            return OpenGL.s_LastVertices_PositionNormalTexture;
+            return s_LastVertices_PositionNormalTexture;
         }
 
         public static void Optimized_DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
-            BasicEffect effect = OpenGL.getEffect(true, false);
+            BasicEffect effect = getEffect(true, false);
             if (effect.Alpha == 0f)
             {
                 return;
@@ -559,19 +559,19 @@ namespace CutTheRope.windows
         private static void DrawTriangleList(int first, int count, short[] indices)
         {
             bool value = false;
-            OpenGL.s_glClientStateFlags.TryGetValue(13, out value);
+            s_glClientStateFlags.TryGetValue(13, out value);
             if (value)
             {
-                OpenGL.DrawTriangleListColored(first, count, indices);
+                DrawTriangleListColored(first, count, indices);
                 return;
             }
-            BasicEffect effect = OpenGL.getEffect(true, false);
+            BasicEffect effect = getEffect(true, false);
             if (effect.Alpha == 0f)
             {
-                OpenGL.s_LastVertices_PositionNormalTexture = null;
+                s_LastVertices_PositionNormalTexture = null;
                 return;
             }
-            VertexPositionNormalTexture[] array = OpenGL.s_LastVertices_PositionNormalTexture = OpenGL.ConstructTexturedVertices();
+            VertexPositionNormalTexture[] array = s_LastVertices_PositionNormalTexture = ConstructTexturedVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
@@ -585,13 +585,13 @@ namespace CutTheRope.windows
             {
                 return;
             }
-            BasicEffect effect = OpenGL.getEffect(true, true);
+            BasicEffect effect = getEffect(true, true);
             if (effect.Alpha == 0f)
             {
                 return;
             }
             int num = count / 3 * 2;
-            VertexPositionColorTexture[] vertexData = OpenGL.ConstructTexturedColoredVertices(num);
+            VertexPositionColorTexture[] vertexData = ConstructTexturedColoredVertices(num);
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
@@ -603,13 +603,13 @@ namespace CutTheRope.windows
         {
             if (mode == 7)
             {
-                OpenGL.DrawTriangleList(0, count, indices);
+                DrawTriangleList(0, count, indices);
             }
         }
 
         public static void glScissor(double x, double y, double width, double height)
         {
-            OpenGL.glScissor((int)x, (int)y, (int)width, (int)height);
+            glScissor((int)x, (int)y, (int)width, (int)height);
         }
 
         public static void glScissor(int x, int y, int width, int height)
@@ -620,7 +620,7 @@ namespace CutTheRope.windows
                 float num = FrameworkTypes.SCREEN_WIDTH / (float)bounds.Width;
                 float num2 = FrameworkTypes.SCREEN_HEIGHT / (float)bounds.Height;
                 Microsoft.Xna.Framework.Rectangle value = new((int)((float)x / num), (int)((float)y / num2), (int)((float)width / num), (int)((float)height / num2));
-                Global.GraphicsDevice.ScissorRectangle = Microsoft.Xna.Framework.Rectangle.Intersect(value, bounds);
+                Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(value, bounds);
             }
             catch (Exception)
             {
@@ -629,17 +629,17 @@ namespace CutTheRope.windows
 
         public static void glLineWidth(double width)
         {
-            OpenGL.s_LineWidth = width;
+            s_LineWidth = width;
         }
 
         public static void setScissorRectangle(double x, double y, double w, double h)
         {
-            OpenGL.setScissorRectangle((float)x, (float)y, (float)w, (float)h);
+            setScissorRectangle((float)x, (float)y, (float)w, (float)h);
         }
 
         public static void setScissorRectangle(float x, float y, float w, float h)
         {
-            OpenGL.glScissor((double)x, (double)y, (double)w, (double)h);
+            glScissor((double)x, (double)y, (double)w, (double)h);
         }
 
         private static Dictionary<int, bool> s_glServerSideFlags = new();

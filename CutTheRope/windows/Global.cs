@@ -12,11 +12,11 @@ namespace CutTheRope.windows
         {
             get
             {
-                return Global.spriteBatch_;
+                return spriteBatch_;
             }
             set
             {
-                Global.spriteBatch_ = value;
+                spriteBatch_ = value;
             }
         }
 
@@ -26,11 +26,11 @@ namespace CutTheRope.windows
         {
             get
             {
-                return Global.graphicsDevice_;
+                return graphicsDevice_;
             }
             set
             {
-                Global.graphicsDevice_ = value;
+                graphicsDevice_ = value;
             }
         }
 
@@ -40,11 +40,11 @@ namespace CutTheRope.windows
         {
             get
             {
-                return Global.graphicsDeviceManager_;
+                return graphicsDeviceManager_;
             }
             set
             {
-                Global.graphicsDeviceManager_ = value;
+                graphicsDeviceManager_ = value;
             }
         }
 
@@ -54,11 +54,11 @@ namespace CutTheRope.windows
         {
             get
             {
-                return Global.screenSizeManager_;
+                return screenSizeManager_;
             }
             set
             {
-                Global.screenSizeManager_ = value;
+                screenSizeManager_ = value;
             }
         }
 
@@ -67,7 +67,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return Global.mouseCursor_;
+                return mouseCursor_;
             }
         }
 
@@ -77,11 +77,11 @@ namespace CutTheRope.windows
         {
             get
             {
-                return Global.game_;
+                return game_;
             }
             set
             {
-                Global.game_ = value;
+                game_ = value;
             }
         }
 

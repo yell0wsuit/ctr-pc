@@ -11,7 +11,7 @@ namespace CutTheRope.iframework.visual
     {
         public static Text createWithFontandString(int i, string str)
         {
-            return Text.createWithFontandString(i, NSObject.NSS(str));
+            return createWithFontandString(i, NSS(str));
         }
 
         public static Text createWithFontandString(int i, NSString str)
@@ -25,7 +25,7 @@ namespace CutTheRope.iframework.visual
         {
             if (init() != null)
             {
-                font = (FontGeneric)NSObject.NSRET(i);
+                font = (FontGeneric)NSRET(i);
                 formattedStrings = new List<FormattedString>();
                 width = -1;
                 height = -1;
@@ -40,7 +40,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void setString(string newString)
         {
-            setString(NSObject.NSS(newString));
+            setString(NSS(newString));
         }
 
         public virtual void setString(NSString newString)
@@ -105,9 +105,9 @@ namespace CutTheRope.iframework.visual
             float num4 = 0f;
             int num5 = (int)font.fontHeight();
             int num6 = 0;
-            char[] characters2 = NSObject.NSS("..").getCharacters();
+            char[] characters2 = NSS("..").getCharacters();
             int num7 = (int)font.getCharOffset(characters2, 0, 2);
-            int num8 = (int)((maxHeight == -1f) ? ((float)formattedStrings.Count) : CTRMathHelper.MIN((float)formattedStrings.Count, maxHeight / ((float)num5 + font.getLineOffset())));
+            int num8 = (int)((maxHeight == -1f) ? ((float)formattedStrings.Count) : MIN((float)formattedStrings.Count, maxHeight / ((float)num5 + font.getLineOffset())));
             bool flag = num8 != formattedStrings.Count;
             int[] array2 = new int[num];
             for (int k = 0; k < num8; k++)
@@ -173,7 +173,7 @@ namespace CutTheRope.iframework.visual
             }
             if (maxHeight != -1f)
             {
-                height = (int)CTRMathHelper.MIN((float)height, maxHeight);
+                height = (int)MIN((float)height, maxHeight);
             }
         }
 

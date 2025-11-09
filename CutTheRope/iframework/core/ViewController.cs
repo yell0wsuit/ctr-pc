@@ -18,7 +18,7 @@ namespace CutTheRope.iframework.core
         {
             if (base.init() != null)
             {
-                controllerState = ViewController.ControllerState.CONTROLLER_DEACTIVE;
+                controllerState = ControllerState.CONTROLLER_DEACTIVE;
                 views = new Dictionary<int, View>();
                 childs = new Dictionary<int, ViewController>();
                 activeViewID = -1;
@@ -31,7 +31,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void activate()
         {
-            controllerState = ViewController.ControllerState.CONTROLLER_ACTIVE;
+            controllerState = ControllerState.CONTROLLER_ACTIVE;
             Application.sharedRootController().onControllerActivated(this);
         }
 
@@ -42,7 +42,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void deactivateImmediately()
         {
-            controllerState = ViewController.ControllerState.CONTROLLER_DEACTIVE;
+            controllerState = ControllerState.CONTROLLER_DEACTIVE;
             if (activeViewID != -1)
             {
                 hideActiveView();
@@ -53,7 +53,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void pause()
         {
-            controllerState = ViewController.ControllerState.CONTROLLER_PAUSED;
+            controllerState = ControllerState.CONTROLLER_PAUSED;
             Application.sharedRootController().onControllerPaused(this);
             if (activeViewID != -1)
             {
@@ -64,7 +64,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void unpause()
         {
-            controllerState = ViewController.ControllerState.CONTROLLER_ACTIVE;
+            controllerState = ControllerState.CONTROLLER_ACTIVE;
             if (activeChildID != -1)
             {
                 activeChildID = -1;
@@ -186,7 +186,7 @@ namespace CutTheRope.iframework.core
             foreach (KeyValuePair<int, ViewController> child in childs)
             {
                 ViewController value = child.Value;
-                if (value != null && value.controllerState != ViewController.ControllerState.CONTROLLER_DEACTIVE)
+                if (value != null && value.controllerState != ControllerState.CONTROLLER_DEACTIVE)
                 {
                     return false;
                 }

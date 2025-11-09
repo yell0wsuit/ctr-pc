@@ -15,12 +15,12 @@ namespace CutTheRope.game
 
         private static Bouncer Bouncer_createWithResID(int r)
         {
-            return Bouncer.Bouncer_create(Application.getTexture(r));
+            return Bouncer_create(Application.getTexture(r));
         }
 
         private static Bouncer Bouncer_createWithResIDQuad(int r, int q)
         {
-            Bouncer bouncer = Bouncer.Bouncer_create(Application.getTexture(r));
+            Bouncer bouncer = Bouncer_create(Application.getTexture(r));
             bouncer.setDrawQuad(q);
             return bouncer;
         }
@@ -47,7 +47,7 @@ namespace CutTheRope.game
             x = px;
             y = py;
             updateRotation();
-            int i = base.addAnimationDelayLoopFirstLast(0.04f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 4);
+            int i = addAnimationDelayLoopFirstLast(0.04f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 4);
             getTimeline(i).addKeyFrame(KeyFrame.makeSingleAction(this, "ACTION_SET_DRAWQUAD", 0, 0, 0.04f));
             return this;
         }
@@ -69,11 +69,11 @@ namespace CutTheRope.game
             b1.x = t1.x;
             b2.x = t2.x;
             b1.y = b2.y = (float)((double)y + 5.0);
-            angle = CTRMathHelper.DEGREES_TO_RADIANS(rotation);
-            t1 = CTRMathHelper.vectRotateAround(t1, (double)angle, x, y);
-            t2 = CTRMathHelper.vectRotateAround(t2, (double)angle, x, y);
-            b1 = CTRMathHelper.vectRotateAround(b1, (double)angle, x, y);
-            b2 = CTRMathHelper.vectRotateAround(b2, (double)angle, x, y);
+            angle = DEGREES_TO_RADIANS(rotation);
+            t1 = vectRotateAround(t1, (double)angle, x, y);
+            t2 = vectRotateAround(t2, (double)angle, x, y);
+            b1 = vectRotateAround(b1, (double)angle, x, y);
+            b2 = vectRotateAround(b2, (double)angle, x, y);
         }
 
         private const float BOUNCER_HEIGHT = 10f;
