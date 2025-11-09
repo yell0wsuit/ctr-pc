@@ -18,7 +18,7 @@ namespace CutTheRope.game
         // Token: 0x06000478 RID: 1144 RVA: 0x00019DEE File Offset: 0x00017FEE
         private static CharAnimations CharAnimations_create(Texture2D t)
         {
-            CharAnimations charAnimations = new CharAnimations();
+            CharAnimations charAnimations = new();
             charAnimations.initWithTexture(t);
             return charAnimations;
         }

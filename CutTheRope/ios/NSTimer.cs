@@ -33,7 +33,7 @@ namespace CutTheRope.ios
             {
                 NSTimer.Init();
             }
-            NSTimer.Entry entry = new NSTimer.Entry();
+            NSTimer.Entry entry = new();
             entry.f = f;
             entry.p = p;
             entry.fireTime = 0f;

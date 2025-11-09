@@ -656,7 +656,7 @@ namespace CutTheRope.iframework.visual
         public ScrollableContainerProtocol delegateScrollableContainerProtocol;
 
         // Token: 0x0400019F RID: 415
-        private static readonly Vector impossibleTouch = new Vector(-1000f, -1000f);
+        private static readonly Vector impossibleTouch = new(-1000f, -1000f);
 
         // Token: 0x040001A0 RID: 416
         private BaseElement container;

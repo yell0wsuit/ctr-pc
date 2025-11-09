@@ -485,8 +485,8 @@ namespace CutTheRope.iframework.helpers
         // Token: 0x0600038A RID: 906 RVA: 0x00014080 File Offset: 0x00012280
         public static bool lineInRect(float x1, float y1, float x2, float y2, float rx, float ry, float w, float h)
         {
-            VectorClass vectorClass = new VectorClass(new Vector(x1, y1));
-            VectorClass vectorClass2 = new VectorClass(new Vector(x2, y2));
+            VectorClass vectorClass = new(new Vector(x1, y1));
+            VectorClass vectorClass2 = new(new Vector(x2, y2));
             float num = rx + w;
             float num2 = ry + h;
             int num3 = MathHelper.vcode(rx, ry, num, num2, vectorClass.v);
@@ -584,7 +584,7 @@ namespace CutTheRope.iframework.helpers
                 array[i * 2] = (byte)((data[i] & '\uff00') >> 8);
                 array[i * 2 + 1] = (byte)(data[i] & 'ÿ');
             }
-            md5.md5_context ctx = new md5.md5_context();
+            md5.md5_context ctx = new();
             md5.md5_starts(ref ctx);
             md5.md5_update(ref ctx, array, (uint)array.Length);
             byte[] array2 = new byte[16];
@@ -622,7 +622,7 @@ namespace CutTheRope.iframework.helpers
         private const int COHEN_TOP = 8;
 
         // Token: 0x04000286 RID: 646
-        private static Random random_ = new Random();
+        private static Random random_ = new();
 
         // Token: 0x04000287 RID: 647
         private static long ARC4RANDOM_MAX = 4294967296L;
@@ -634,9 +634,9 @@ namespace CutTheRope.iframework.helpers
         private static float[] fmCoss;
 
         // Token: 0x0400028A RID: 650
-        public static readonly Vector vectZero = new Vector(0f, 0f);
+        public static readonly Vector vectZero = new(0f, 0f);
 
         // Token: 0x0400028B RID: 651
-        public static readonly Vector vectUndefined = new Vector(2.1474836E+09f, 2.1474836E+09f);
+        public static readonly Vector vectUndefined = new(2.1474836E+09f, 2.1474836E+09f);
     }
 }

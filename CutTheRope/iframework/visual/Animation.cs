@@ -46,7 +46,7 @@ namespace CutTheRope.iframework.visual
             for (int i = 1; i < c; i++)
             {
                 num++;
-                List<Action> list = new List<Action>();
+                List<Action> list = new();
                 list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", num, 0));
                 timeline.addKeyFrame(KeyFrame.makeAction(list, d));
                 if (i == c - 1 && l == Timeline.LoopType.TIMELINE_REPLAY)
@@ -76,7 +76,7 @@ namespace CutTheRope.iframework.visual
             for (int i = 1; i < c; i++)
             {
                 int num3 = al[num2++];
-                List<Action> list = new List<Action>();
+                List<Action> list = new();
                 list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", num3, 0));
                 timeline.addKeyFrame(KeyFrame.makeAction(list, d));
                 if (i == c - 1 && l == Timeline.LoopType.TIMELINE_REPLAY)

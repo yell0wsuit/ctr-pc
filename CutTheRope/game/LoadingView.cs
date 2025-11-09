@@ -69,6 +69,6 @@ namespace CutTheRope.game
         public bool game;
 
         // Token: 0x0400044B RID: 1099
-        private static Color s_Color1 = new Color(0.85f, 0.85f, 0.85f, 1f);
+        private static Color s_Color1 = new(0.85f, 0.85f, 0.85f, 1f);
     }
 }

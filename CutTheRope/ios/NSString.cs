@@ -212,7 +212,7 @@ namespace CutTheRope.ios
         // Token: 0x060000F1 RID: 241 RVA: 0x0000562C File Offset: 0x0000382C
         public List<NSString> componentsSeparatedByString(char ch)
         {
-            List<NSString> list = new List<NSString>();
+            List<NSString> list = new();
             char[] separator = new char[] { ch };
             foreach (string rhs in this.value_.Split(separator))
             {

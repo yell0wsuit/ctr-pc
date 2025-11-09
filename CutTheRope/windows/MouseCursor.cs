@@ -63,7 +63,7 @@ namespace CutTheRope.windows
         // Token: 0x06000063 RID: 99 RVA: 0x000039C4 File Offset: 0x00001BC4
         public List<TouchLocation> GetTouchLocation()
         {
-            List<TouchLocation> list = new List<TouchLocation>();
+            List<TouchLocation> list = new();
             this._mouseStateOriginal = Global.XnaGame.GetMouseState();
             if (this._mouseStateOriginal.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
             {

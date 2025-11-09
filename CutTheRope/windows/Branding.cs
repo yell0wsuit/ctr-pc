@@ -32,7 +32,7 @@ namespace CutTheRope.windows
         // Token: 0x06000044 RID: 68 RVA: 0x000032FC File Offset: 0x000014FC
         public void LoadSplashScreens()
         {
-            List<string> list2 = new List<string> { "BMP", "GIF", "EXIF", "JPG", "JPEG", "PNG", "TIFF" };
+            List<string> list2 = new() { "BMP", "GIF", "EXIF", "JPG", "JPEG", "PNG", "TIFF" };
             int num = 1;
             for (; ; )
             {
@@ -41,7 +41,7 @@ namespace CutTheRope.windows
                 {
                     try
                     {
-                        FileStream fileStream = new FileStream("branding/splash" + num.ToString() + "." + item, FileMode.Open, FileAccess.Read);
+                        FileStream fileStream = new("branding/splash" + num.ToString() + "." + item, FileMode.Open, FileAccess.Read);
                         texture2D = Texture2D.FromStream(Global.GraphicsDevice, fileStream);
                         fileStream.Close();
                         this._listBitmap.Add(texture2D);
@@ -144,7 +144,7 @@ namespace CutTheRope.windows
         private const int SPLASH_TIME_FULL_MSEC = 3700;
 
         // Token: 0x04000037 RID: 55
-        private List<Texture2D> _listBitmap = new List<Texture2D>();
+        private List<Texture2D> _listBitmap = new();
 
         // Token: 0x04000038 RID: 56
         private TimeSpan _currentSplashTime;

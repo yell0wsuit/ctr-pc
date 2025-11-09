@@ -31,7 +31,7 @@ namespace CutTheRope.iframework.sfe
         // Token: 0x060002D1 RID: 721 RVA: 0x00011448 File Offset: 0x0000F648
         public virtual void addConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
         {
-            Constraint constraint = new Constraint();
+            Constraint constraint = new();
             constraint.init();
             constraint.cp = c;
             constraint.restLength = r;

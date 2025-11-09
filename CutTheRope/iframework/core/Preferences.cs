@@ -184,7 +184,7 @@ namespace CutTheRope.iframework.core
             bool flag2;
             try
             {
-                BinaryWriter binaryWriter = new BinaryWriter(stream);
+                BinaryWriter binaryWriter = new(stream);
                 binaryWriter.Write(Preferences.data_.Count);
                 foreach (KeyValuePair<string, int> item in Preferences.data_)
                 {
@@ -216,7 +216,7 @@ namespace CutTheRope.iframework.core
             bool flag2;
             try
             {
-                BinaryReader binaryReader = new BinaryReader(stream);
+                BinaryReader binaryReader = new(stream);
                 int num = binaryReader.ReadInt32();
                 for (int i = 0; i < num; i++)
                 {
@@ -262,10 +262,10 @@ namespace CutTheRope.iframework.core
         }
 
         // Token: 0x040002A5 RID: 677
-        private static Dictionary<string, int> data_ = new Dictionary<string, int>();
+        private static Dictionary<string, int> data_ = new();
 
         // Token: 0x040002A6 RID: 678
-        private static Dictionary<string, string> dataStrings_ = new Dictionary<string, string>();
+        private static Dictionary<string, string> dataStrings_ = new();
 
         // Token: 0x040002A7 RID: 679
         public static bool GameSaveRequested = false;

@@ -641,7 +641,7 @@ namespace CutTheRope.game
         };
 
         // Token: 0x04000316 RID: 790
-        private static Color s_Color1 = new Color(0f, 0f, 0.4f, 1f);
+        private static Color s_Color1 = new(0f, 0f, 0.4f, 1f);
 
         // Token: 0x020000C3 RID: 195
         private enum BUNGEE_MODE

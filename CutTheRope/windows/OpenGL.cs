@@ -683,7 +683,7 @@ namespace CutTheRope.windows
                 Microsoft.Xna.Framework.Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
                 float num = FrameworkTypes.SCREEN_WIDTH / (float)bounds.Width;
                 float num2 = FrameworkTypes.SCREEN_HEIGHT / (float)bounds.Height;
-                Microsoft.Xna.Framework.Rectangle value = new Microsoft.Xna.Framework.Rectangle((int)((float)x / num), (int)((float)y / num2), (int)((float)width / num), (int)((float)height / num2));
+                Microsoft.Xna.Framework.Rectangle value = new((int)((float)x / num), (int)((float)y / num2), (int)((float)width / num), (int)((float)height / num2));
                 Global.GraphicsDevice.ScissorRectangle = Microsoft.Xna.Framework.Rectangle.Intersect(value, bounds);
             }
             catch (Exception)
@@ -710,10 +710,10 @@ namespace CutTheRope.windows
         }
 
         // Token: 0x0400005E RID: 94
-        private static Dictionary<int, bool> s_glServerSideFlags = new Dictionary<int, bool>();
+        private static Dictionary<int, bool> s_glServerSideFlags = new();
 
         // Token: 0x0400005F RID: 95
-        private static Dictionary<int, bool> s_glClientStateFlags = new Dictionary<int, bool>();
+        private static Dictionary<int, bool> s_glClientStateFlags = new();
 
         // Token: 0x04000060 RID: 96
         private static RenderTarget2D s_RenderTarget;
@@ -725,7 +725,7 @@ namespace CutTheRope.windows
         private static int s_glMatrixMode;
 
         // Token: 0x04000063 RID: 99
-        private static List<Matrix> s_matrixModelViewStack = new List<Matrix>();
+        private static List<Matrix> s_matrixModelViewStack = new();
 
         // Token: 0x04000064 RID: 100
         private static Matrix s_matrixModelView = Matrix.Identity;
@@ -746,7 +746,7 @@ namespace CutTheRope.windows
         private static Color s_Color = Color.White;
 
         // Token: 0x0400006A RID: 106
-        private static BlendParams s_Blend = new BlendParams();
+        private static BlendParams s_Blend = new();
 
         // Token: 0x0400006B RID: 107
         private static RGBAColor[] s_GLColorPointer;
@@ -764,7 +764,7 @@ namespace CutTheRope.windows
         private static int s_GLVertexPointer_additive_position;
 
         // Token: 0x04000070 RID: 112
-        private static Vector3 normal = new Vector3(0f, 0f, 1f);
+        private static Vector3 normal = new(0f, 0f, 1f);
 
         // Token: 0x04000071 RID: 113
         private static BasicEffect s_effectTexture;
@@ -788,7 +788,7 @@ namespace CutTheRope.windows
         private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture = null;
 
         // Token: 0x04000078 RID: 120
-        private static Microsoft.Xna.Framework.Rectangle ScreenRect = new Microsoft.Xna.Framework.Rectangle(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
+        private static Microsoft.Xna.Framework.Rectangle ScreenRect = new(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
 
         // Token: 0x04000079 RID: 121
         private static double s_LineWidth;

@@ -62,6 +62,6 @@ namespace CutTheRope.iframework.visual
         }
 
         // Token: 0x040000FC RID: 252
-        private List<BaseElement> removeList = new List<BaseElement>();
+        private List<BaseElement> removeList = new();
     }
 }

@@ -102,10 +102,10 @@ namespace CutTheRope.windows
         private static GraphicsDeviceManager graphicsDeviceManager_;
 
         // Token: 0x04000052 RID: 82
-        private static ScreenSizeManager screenSizeManager_ = new ScreenSizeManager(2560, 1440);
+        private static ScreenSizeManager screenSizeManager_ = new(2560, 1440);
 
         // Token: 0x04000053 RID: 83
-        private static MouseCursor mouseCursor_ = new MouseCursor();
+        private static MouseCursor mouseCursor_ = new();
 
         // Token: 0x04000054 RID: 84
         private static Game1 game_;
