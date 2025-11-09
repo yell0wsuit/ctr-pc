@@ -286,7 +286,7 @@ namespace CutTheRope.iframework.visual
 
         public int particleIdx;
 
-        public Particles.ParticlesFinished particlesDelegate;
+        public ParticlesFinished particlesDelegate;
 
         // (Invoke) Token: 0x06000668 RID: 1640
         public delegate void ParticlesFinished(Particles p);

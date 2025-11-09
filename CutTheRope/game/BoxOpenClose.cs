@@ -249,7 +249,7 @@ namespace CutTheRope.game
 
         public virtual BaseElement createConfettiParticleNear(Vector p)
         {
-            BoxOpenClose.Confetti confetti = Confetti.Confetti_createWithResID(65);
+            Confetti confetti = Confetti.Confetti_createWithResID(65);
             confetti.doRestoreCutTransparency();
             int num = RND_RANGE(0, 2);
             int num2 = 18;
@@ -668,21 +668,21 @@ namespace CutTheRope.game
 
         public float raDelay;
 
-        public BoxOpenClose.boxClosed delegateboxClosed;
+        public boxClosed delegateboxClosed;
 
         // (Invoke) Token: 0x06000674 RID: 1652
         public delegate void boxClosed();
 
         private class Confetti : Animation
         {
-            public static BoxOpenClose.Confetti Confetti_createWithResID(int r)
+            public static Confetti Confetti_createWithResID(int r)
             {
                 return Confetti_create(Application.getTexture(r));
             }
 
-            public static BoxOpenClose.Confetti Confetti_create(CTRTexture2D t)
+            public static Confetti Confetti_create(CTRTexture2D t)
             {
-                return (BoxOpenClose.Confetti)new BoxOpenClose.Confetti().initWithTexture(t);
+                return (Confetti)new Confetti().initWithTexture(t);
             }
 
             public override void update(float delta)

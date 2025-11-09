@@ -113,7 +113,7 @@ namespace CutTheRope.windows
 
         private static BlendState[] states = new BlendState[4];
 
-        private BlendParams.BlendType lastBlend = BlendType.Unknown;
+        private BlendType lastBlend = BlendType.Unknown;
 
         private bool enabled;
 

@@ -169,7 +169,7 @@ namespace CutTheRope.windows
             s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
         }
 
-        public static void glBindTexture(CutTheRope.iframework.visual.CTRTexture2D t)
+        public static void glBindTexture(CTRTexture2D t)
         {
             s_Texture = t;
         }
@@ -239,12 +239,12 @@ namespace CutTheRope.windows
 
         public static void glVertexPointer(int size, int type, int stride, object pointer)
         {
-            s_GLVertexPointer = new OpenGL.GLVertexPointer(size, type, stride, pointer);
+            s_GLVertexPointer = new GLVertexPointer(size, type, stride, pointer);
         }
 
         public static void glTexCoordPointer(int size, int type, int stride, object pointer)
         {
-            s_GLTexCoordPointer = new OpenGL.GLTexCoordPointer(size, type, stride, pointer);
+            s_GLTexCoordPointer = new GLTexCoordPointer(size, type, stride, pointer);
         }
 
         public static void glDrawArrays(int mode, int first, int count)
@@ -274,7 +274,7 @@ namespace CutTheRope.windows
 
         public static void glVertexPointer_setAdditive(int size, int type, int stride, int length)
         {
-            s_GLVertexPointer = new OpenGL.GLVertexPointer(size, type, stride, new float[length]);
+            s_GLVertexPointer = new GLVertexPointer(size, type, stride, new float[length]);
             s_GLVertexPointer_additive_position = 0;
         }
 
@@ -500,7 +500,7 @@ namespace CutTheRope.windows
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, vertices, 0, vertices.Length - 2);
+                Global.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, vertices, 0, vertices.Length - 2);
             }
         }
 
@@ -518,7 +518,7 @@ namespace CutTheRope.windows
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleStrip, array, 0, array.Length - 2);
+                Global.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, array, 0, array.Length - 2);
             }
         }
 
@@ -533,7 +533,7 @@ namespace CutTheRope.windows
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleStrip, array, 0, array.Length - 2);
+                Global.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, array, 0, array.Length - 2);
             }
         }
 
@@ -552,7 +552,7 @@ namespace CutTheRope.windows
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3);
+                Global.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3);
             }
         }
 
@@ -575,7 +575,7 @@ namespace CutTheRope.windows
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, array, 0, array.Length, indices, 0, indices.Length / 3);
+                Global.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, array, 0, array.Length, indices, 0, indices.Length / 3);
             }
         }
 
@@ -595,7 +595,7 @@ namespace CutTheRope.windows
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.TriangleList, vertexData, 0, num, indices, 0, count / 3);
+                Global.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexData, 0, num, indices, 0, count / 3);
             }
         }
 
@@ -616,10 +616,10 @@ namespace CutTheRope.windows
         {
             try
             {
-                Microsoft.Xna.Framework.Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
+                Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
                 float num = FrameworkTypes.SCREEN_WIDTH / (float)bounds.Width;
                 float num2 = FrameworkTypes.SCREEN_HEIGHT / (float)bounds.Height;
-                Microsoft.Xna.Framework.Rectangle value = new((int)((float)x / num), (int)((float)y / num2), (int)((float)width / num), (int)((float)height / num2));
+                Rectangle value = new((int)((float)x / num), (int)((float)y / num2), (int)((float)width / num), (int)((float)height / num2));
                 Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(value, bounds);
             }
             catch (Exception)
@@ -658,9 +658,9 @@ namespace CutTheRope.windows
 
         private static Matrix s_matrixProjection = Matrix.Identity;
 
-        private static CutTheRope.iframework.visual.CTRTexture2D s_Texture;
+        private static CTRTexture2D s_Texture;
 
-        private static CutTheRope.iframework.visual.CTRTexture2D s_Texture_OptimizeLastUsed;
+        private static CTRTexture2D s_Texture_OptimizeLastUsed;
 
         private static Color s_glClearColor = Color.White;
 
@@ -670,9 +670,9 @@ namespace CutTheRope.windows
 
         private static RGBAColor[] s_GLColorPointer;
 
-        private static OpenGL.GLVertexPointer s_GLVertexPointer;
+        private static GLVertexPointer s_GLVertexPointer;
 
-        private static OpenGL.GLTexCoordPointer s_GLTexCoordPointer;
+        private static GLTexCoordPointer s_GLTexCoordPointer;
 
         private static int s_GLColorPointer_additive_position;
 
@@ -694,7 +694,7 @@ namespace CutTheRope.windows
 
         private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture = null;
 
-        private static Microsoft.Xna.Framework.Rectangle ScreenRect = new(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
+        private static Rectangle ScreenRect = new(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
 
         private static double s_LineWidth;
 

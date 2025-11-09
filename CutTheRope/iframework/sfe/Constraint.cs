@@ -9,7 +9,7 @@ namespace CutTheRope.iframework.sfe
 
         public float restLength;
 
-        public Constraint.CONSTRAINT type;
+        public CONSTRAINT type;
 
         public enum CONSTRAINT
         {

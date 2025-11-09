@@ -23,7 +23,7 @@ namespace CutTheRope.iframework
             return (x << (int)n) | ((x & uint.MaxValue) >> (int)(32U - n));
         }
 
-        private static void P(ref uint a, uint b, uint c, uint d, uint k, uint s, uint t, uint[] X, md5.FuncF F)
+        private static void P(ref uint a, uint b, uint c, uint d, uint k, uint s, uint t, uint[] X, FuncF F)
         {
             a += F(b, c, d) + X[(int)k] + t;
             a = S(a, s) + b;
@@ -49,7 +49,7 @@ namespace CutTheRope.iframework
             return y ^ (x | ~z);
         }
 
-        public static void md5_starts(ref md5.md5_context ctx)
+        public static void md5_starts(ref md5_context ctx)
         {
             ctx.total[0] = 0U;
             ctx.total[1] = 0U;
@@ -59,7 +59,7 @@ namespace CutTheRope.iframework
             ctx.state[3] = 271733878U;
         }
 
-        public static void md5_process(ref md5.md5_context ctx, byte[] data, int dataIndex)
+        public static void md5_process(ref md5_context ctx, byte[] data, int dataIndex)
         {
             uint[] array = new uint[16];
             GET_UINT32(ref array[0], data, dataIndex, 0);
@@ -82,7 +82,7 @@ namespace CutTheRope.iframework
             uint a2 = ctx.state[1];
             uint a3 = ctx.state[2];
             uint a4 = ctx.state[3];
-            md5.FuncF f = new md5.FuncF(F_1);
+            FuncF f = new FuncF(F_1);
             P(ref a, a2, a3, a4, 0U, 7U, 3614090360U, array, f);
             P(ref a4, a, a2, a3, 1U, 12U, 3905402710U, array, f);
             P(ref a3, a4, a, a2, 2U, 17U, 606105819U, array, f);
@@ -99,7 +99,7 @@ namespace CutTheRope.iframework
             P(ref a4, a, a2, a3, 13U, 12U, 4254626195U, array, f);
             P(ref a3, a4, a, a2, 14U, 17U, 2792965006U, array, f);
             P(ref a2, a3, a4, a, 15U, 22U, 1236535329U, array, f);
-            f = new md5.FuncF(F_2);
+            f = new FuncF(F_2);
             P(ref a, a2, a3, a4, 1U, 5U, 4129170786U, array, f);
             P(ref a4, a, a2, a3, 6U, 9U, 3225465664U, array, f);
             P(ref a3, a4, a, a2, 11U, 14U, 643717713U, array, f);
@@ -116,7 +116,7 @@ namespace CutTheRope.iframework
             P(ref a4, a, a2, a3, 2U, 9U, 4243563512U, array, f);
             P(ref a3, a4, a, a2, 7U, 14U, 1735328473U, array, f);
             P(ref a2, a3, a4, a, 12U, 20U, 2368359562U, array, f);
-            f = new md5.FuncF(F_3);
+            f = new FuncF(F_3);
             P(ref a, a2, a3, a4, 5U, 4U, 4294588738U, array, f);
             P(ref a4, a, a2, a3, 8U, 11U, 2272392833U, array, f);
             P(ref a3, a4, a, a2, 11U, 16U, 1839030562U, array, f);
@@ -133,7 +133,7 @@ namespace CutTheRope.iframework
             P(ref a4, a, a2, a3, 12U, 11U, 3873151461U, array, f);
             P(ref a3, a4, a, a2, 15U, 16U, 530742520U, array, f);
             P(ref a2, a3, a4, a, 2U, 23U, 3299628645U, array, f);
-            f = new md5.FuncF(F_4);
+            f = new FuncF(F_4);
             P(ref a, a2, a3, a4, 0U, 6U, 4096336452U, array, f);
             P(ref a4, a, a2, a3, 7U, 10U, 1126891415U, array, f);
             P(ref a3, a4, a, a2, 14U, 15U, 2878612391U, array, f);
@@ -156,7 +156,7 @@ namespace CutTheRope.iframework
             ctx.state[3] += a4;
         }
 
-        public static void md5_update(ref md5.md5_context ctx, byte[] input, uint length)
+        public static void md5_update(ref md5_context ctx, byte[] input, uint length)
         {
             if (length == 0U)
             {
@@ -192,7 +192,7 @@ namespace CutTheRope.iframework
             }
         }
 
-        public static void md5_finish(ref md5.md5_context ctx, byte[] digest)
+        public static void md5_finish(ref md5_context ctx, byte[] digest)
         {
             byte[] b = new byte[8];
             uint num2 = (ctx.total[0] >> 29) | (ctx.total[1] << 3);

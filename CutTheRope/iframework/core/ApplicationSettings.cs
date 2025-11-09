@@ -23,7 +23,7 @@ namespace CutTheRope.iframework.core
         public virtual bool getBool(int s)
         {
             bool value = false;
-            DEFAULT_APP_SETTINGS.TryGetValue((ApplicationSettings.AppSettings)s, out value);
+            DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out value);
             return value;
         }
 
@@ -79,11 +79,11 @@ namespace CutTheRope.iframework.core
 
         private static int fps = 60;
 
-        private ApplicationSettings.ORIENTATION orientation;
+        private ORIENTATION orientation;
 
         private string locale;
 
-        private static Dictionary<ApplicationSettings.AppSettings, bool> DEFAULT_APP_SETTINGS = new()
+        private static Dictionary<AppSettings, bool> DEFAULT_APP_SETTINGS = new()
         {
             {
                 AppSettings.APP_SETTING_INTERACTION_ENABLED,

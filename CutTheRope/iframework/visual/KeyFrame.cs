@@ -44,12 +44,12 @@ namespace CutTheRope.iframework.visual
             return makeAction(new List<CTRAction> { CTRAction.createAction(target, action, p, sp) }, time);
         }
 
-        public static KeyFrame makePos(double x, double y, KeyFrame.TransitionType transition, double time)
+        public static KeyFrame makePos(double x, double y, TransitionType transition, double time)
         {
             return makePos((int)x, (int)y, transition, (float)time);
         }
 
-        public static KeyFrame makePos(int x, int y, KeyFrame.TransitionType transition, float time)
+        public static KeyFrame makePos(int x, int y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.pos.x = (float)x;
@@ -63,12 +63,12 @@ namespace CutTheRope.iframework.visual
             };
         }
 
-        public static KeyFrame makeScale(double x, double y, KeyFrame.TransitionType transition, double time)
+        public static KeyFrame makeScale(double x, double y, TransitionType transition, double time)
         {
             return makeScale((float)x, (float)y, transition, (float)time);
         }
 
-        public static KeyFrame makeScale(float x, float y, KeyFrame.TransitionType transition, float time)
+        public static KeyFrame makeScale(float x, float y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.scale.scaleX = x;
@@ -82,12 +82,12 @@ namespace CutTheRope.iframework.visual
             };
         }
 
-        public static KeyFrame makeRotation(double r, KeyFrame.TransitionType transition, double time)
+        public static KeyFrame makeRotation(double r, TransitionType transition, double time)
         {
             return makeRotation((int)r, transition, (float)time);
         }
 
-        public static KeyFrame makeRotation(int r, KeyFrame.TransitionType transition, float time)
+        public static KeyFrame makeRotation(int r, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.rotation.angle = (float)r;
@@ -100,12 +100,12 @@ namespace CutTheRope.iframework.visual
             };
         }
 
-        public static KeyFrame makeColor(RGBAColor c, KeyFrame.TransitionType transition, double time)
+        public static KeyFrame makeColor(RGBAColor c, TransitionType transition, double time)
         {
             return makeColor(c, transition, (float)time);
         }
 
-        public static KeyFrame makeColor(RGBAColor c, KeyFrame.TransitionType transition, float time)
+        public static KeyFrame makeColor(RGBAColor c, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.color.rgba = c;
@@ -122,7 +122,7 @@ namespace CutTheRope.iframework.visual
 
         public Track.TrackType trackType;
 
-        public KeyFrame.TransitionType transitionType;
+        public TransitionType transitionType;
 
         public KeyFrameValue value;
 

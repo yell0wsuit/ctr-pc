@@ -562,7 +562,7 @@ namespace CutTheRope.game
 
         public virtual BaseElement createPackElementforContainer(int n, ScrollableContainer c)
         {
-            MenuController.TouchBaseElement touchBaseElement = (MenuController.TouchBaseElement)new MenuController.TouchBaseElement().init();
+            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().init();
             touchBaseElement.delegateValue = this;
             BaseElement baseElement = (BaseElement)new BaseElement().init();
             baseElement.setName("boxContainer");
@@ -628,7 +628,7 @@ namespace CutTheRope.game
                 {
                     int q2 = 0;
                     int q3 = 1;
-                    MenuController.MonsterSlot monsterSlot = MonsterSlot.MonsterSlot_createWithResIDQuad(52, q2);
+                    MonsterSlot monsterSlot = MonsterSlot.MonsterSlot_createWithResIDQuad(52, q2);
                     monsterSlot.c = c;
                     monsterSlot.doRestoreCutTransparency();
                     monsterSlot.anchor = 9;
@@ -728,7 +728,7 @@ namespace CutTheRope.game
             float num3 = 0f + getPackOffset();
             for (int i = 0; i < CTRPreferences.getPacksCount() + 1; i++)
             {
-                MenuController.TouchBaseElement touchBaseElement = (MenuController.TouchBaseElement)createPackElementforContainer(i, packContainer);
+                TouchBaseElement touchBaseElement = (TouchBaseElement)createPackElementforContainer(i, packContainer);
                 boxes[i] = touchBaseElement;
                 hBox2.addChild(touchBaseElement);
                 touchBaseElement.x -= 0f;
@@ -941,7 +941,7 @@ namespace CutTheRope.game
         {
             bool flag = CTRPreferences.getUnlockedForPackLevel(p, l) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED;
             int starsForPackLevel = CTRPreferences.getStarsForPackLevel(p, l);
-            MenuController.TouchBaseElement touchBaseElement = (MenuController.TouchBaseElement)new MenuController.TouchBaseElement().init();
+            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().init();
             touchBaseElement.bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0);
             touchBaseElement.delegateValue = this;
             Image image;
@@ -1839,19 +1839,19 @@ namespace CutTheRope.game
 
         public class MonsterSlot : Image
         {
-            public static MenuController.MonsterSlot MonsterSlot_create(CTRTexture2D t)
+            public static MonsterSlot MonsterSlot_create(CTRTexture2D t)
             {
-                return (MenuController.MonsterSlot)new MenuController.MonsterSlot().initWithTexture(t);
+                return (MonsterSlot)new MonsterSlot().initWithTexture(t);
             }
 
-            public static MenuController.MonsterSlot MonsterSlot_createWithResID(int r)
+            public static MonsterSlot MonsterSlot_createWithResID(int r)
             {
                 return MonsterSlot_create(Application.getTexture(r));
             }
 
-            public static MenuController.MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
+            public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
-                MenuController.MonsterSlot monsterSlot = MonsterSlot_create(Application.getTexture(r));
+                MonsterSlot monsterSlot = MonsterSlot_create(Application.getTexture(r));
                 monsterSlot.setDrawQuad(q);
                 return monsterSlot;
             }

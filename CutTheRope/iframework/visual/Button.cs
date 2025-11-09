@@ -68,7 +68,7 @@ namespace CutTheRope.iframework.visual
             return pointInRect(tx, ty, drawX - touchLeftInc - num, drawY - touchTopInc - num, (float)width + (touchLeftInc + touchRightInc) + num * 2f, (float)height + (touchTopInc + touchBottomInc) + num * 2f);
         }
 
-        public virtual void setState(Button.BUTTON_STATE s)
+        public virtual void setState(BUTTON_STATE s)
         {
             state = s;
             BaseElement child3 = getChild(0);
@@ -139,7 +139,7 @@ namespace CutTheRope.iframework.visual
 
         public int buttonID;
 
-        public Button.BUTTON_STATE state;
+        public BUTTON_STATE state;
 
         public ButtonDelegate delegateButtonDelegate;
 

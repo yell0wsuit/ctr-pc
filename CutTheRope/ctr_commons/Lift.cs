@@ -64,7 +64,7 @@ namespace CutTheRope.ctr_commons
 
         public float startY;
 
-        public Lift.PercentXY liftDelegate;
+        public PercentXY liftDelegate;
 
         public float minX;
 

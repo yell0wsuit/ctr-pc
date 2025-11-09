@@ -18,12 +18,12 @@ namespace CutTheRope.iframework.helpers
             base.dealloc();
         }
 
-        public virtual void callObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc s, NSObject p, double d)
+        public virtual void callObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, double d)
         {
             callObjectSelectorParamafterDelay(s, p, (float)d);
         }
 
-        public virtual void callObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc s, NSObject p, float d)
+        public virtual void callObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, float d)
         {
             Dispatch item = new Dispatch().initWithObjectSelectorParamafterDelay(s, p, d);
             dispatchers.Add(item);
@@ -51,7 +51,7 @@ namespace CutTheRope.iframework.helpers
             dispatchers.Clear();
         }
 
-        public virtual void cancelDispatchWithObjectSelectorParam(DelayedDispatcher.DispatchFunc s, NSObject p)
+        public virtual void cancelDispatchWithObjectSelectorParam(DispatchFunc s, NSObject p)
         {
             throw new NotImplementedException();
         }

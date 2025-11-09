@@ -86,7 +86,7 @@ namespace CutTheRope.iframework.visual
 
         public Vector sc;
 
-        public Scrollbar.ProvideScrollPosMaxScrollPosScrollCoeff delegateProvider;
+        public ProvideScrollPosMaxScrollPosScrollCoeff delegateProvider;
 
         public bool vertical;
 

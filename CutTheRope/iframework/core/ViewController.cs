@@ -329,7 +329,7 @@ namespace CutTheRope.iframework.core
 
         public const int FAKE_TOUCH_UP_TO_DEACTIVATE_BUTTONS = -10000;
 
-        public ViewController.ControllerState controllerState;
+        public ControllerState controllerState;
 
         public int activeViewID;
 
