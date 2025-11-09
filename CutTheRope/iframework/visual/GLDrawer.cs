@@ -13,12 +13,12 @@ namespace CutTheRope.iframework.visual
             CTRTexture2D.drawAtPoint(image, CTRMathHelper.vect(x, y));
         }
 
-        public static void drawImagePart(CTRTexture2D image, Rectangle r, double x, double y)
+        public static void drawImagePart(CTRTexture2D image, CTRRectangle r, double x, double y)
         {
             GLDrawer.drawImagePart(image, r, (float)x, (float)y);
         }
 
-        public static void drawImagePart(CTRTexture2D image, Rectangle r, float x, float y)
+        public static void drawImagePart(CTRTexture2D image, CTRRectangle r, float x, float y)
         {
             CTRTexture2D.drawRectAtPoint(image, r, CTRMathHelper.vect(x, y));
         }
@@ -70,7 +70,7 @@ namespace CutTheRope.iframework.visual
                     {
                         num6 = num2;
                     }
-                    Rectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, num5, num6);
+                    CTRRectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, num5, num6);
                     GLDrawer.drawImagePart(image, r, x + num4, y + num3);
                 }
             }
@@ -119,7 +119,7 @@ namespace CutTheRope.iframework.visual
                 {
                     if (num11 == 0 || num10 == 0)
                     {
-                        Rectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, (num11 == 0) ? ((float)num6) : num, (num10 == 0) ? ((float)num7) : num2);
+                        CTRRectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, (num11 == 0) ? ((float)num6) : num, (num10 == 0) ? ((float)num7) : num2);
                         GLDrawer.drawImagePart(image, r, (float)num8, (float)num9);
                     }
                     else
@@ -132,7 +132,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public static Quad2D getTextureCoordinates(CTRTexture2D t, Rectangle r)
+        public static Quad2D getTextureCoordinates(CTRTexture2D t, CTRRectangle r)
         {
             return Quad2D.MakeQuad2D(t._invWidth * r.x, t._invHeight * r.y, t._invWidth * r.w, t._invHeight * r.h);
         }

@@ -73,7 +73,7 @@ namespace CutTheRope.game
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25));
                 this.addTimelinewithID(timeline2, 1);
             }
-            this.bb = new Rectangle(22f, 20f, 30f, 30f);
+            this.bb = new CTRRectangle(22f, 20f, 30f, 30f);
             Timeline timeline3 = new Timeline().initWithMaxKeyFramesOnTrack(5);
             timeline3.addKeyFrame(KeyFrame.makePos((int)this.x, (int)this.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0f));
             timeline3.addKeyFrame(KeyFrame.makePos((int)this.x, (int)this.y - 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));

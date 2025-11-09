@@ -2046,7 +2046,7 @@ namespace CutTheRope.game
                 CTRTexture2D texture = Application.getTexture(105 + pack * 2);
                 int num4 = 0;
                 float num5 = texture.quadOffsets[num4].y;
-                CutTheRope.iframework.Rectangle r = texture.quadRects[num4];
+                CutTheRope.iframework.CTRRectangle r = texture.quadRects[num4];
                 r.y += num3;
                 r.h -= num3 * 2f;
                 GLDrawer.drawImagePart(texture, r, 0.0, (double)(num5 + num3));

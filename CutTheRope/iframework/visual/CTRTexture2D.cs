@@ -10,7 +10,7 @@ namespace CutTheRope.iframework.visual
 {
     internal class CTRTexture2D : NSObject
     {
-        public static void drawRectAtPoint(CTRTexture2D t, Rectangle rect, Vector point)
+        public static void drawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
         {
             float num = t._invWidth * rect.x;
             float num2 = t._invHeight * rect.y;
@@ -48,11 +48,11 @@ namespace CutTheRope.iframework.visual
         {
             this.quadsCount = n;
             this.quads = new Quad2D[this.quadsCount];
-            this.quadRects = new Rectangle[this.quadsCount];
+            this.quadRects = new CTRRectangle[this.quadsCount];
             this.quadOffsets = new Vector[this.quadsCount];
         }
 
-        public virtual void setQuadAt(Rectangle rect, int n)
+        public virtual void setQuadAt(CTRRectangle rect, int n)
         {
             this.quads[n] = GLDrawer.getTextureCoordinates(this, rect);
             this.quadRects[n] = rect;
@@ -328,7 +328,7 @@ namespace CutTheRope.iframework.visual
 
         public Vector[] quadOffsets;
 
-        public Rectangle[] quadRects;
+        public CTRRectangle[] quadRects;
 
         public int quadsCount;
 

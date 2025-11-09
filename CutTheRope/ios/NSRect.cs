@@ -34,7 +34,7 @@ namespace CutTheRope.ios
             };
         }
 
-        public NSRect(CutTheRope.iframework.Rectangle ctrRect)
+        public NSRect(CTRRectangle ctrRect)
         {
             this.origin = new NSPoint
             {

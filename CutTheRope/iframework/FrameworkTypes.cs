@@ -41,14 +41,14 @@ namespace CutTheRope.iframework
             return array;
         }
 
-        public static Rectangle MakeRectangle(double xParam, double yParam, double width, double height)
+        public static CTRRectangle MakeRectangle(double xParam, double yParam, double width, double height)
         {
             return FrameworkTypes.MakeRectangle((float)xParam, (float)yParam, (float)width, (float)height);
         }
 
-        public static Rectangle MakeRectangle(float xParam, float yParam, float width, float height)
+        public static CTRRectangle MakeRectangle(float xParam, float yParam, float width, float height)
         {
-            return new Rectangle(xParam, yParam, width, height);
+            return new CTRRectangle(xParam, yParam, width, height);
         }
 
         public static float transformToRealX(float x)

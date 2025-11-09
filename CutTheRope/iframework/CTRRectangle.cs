@@ -2,9 +2,9 @@ using System;
 
 namespace CutTheRope.iframework
 {
-    internal struct Rectangle
+    internal struct CTRRectangle
     {
-        public Rectangle(double xParam, double yParam, double width, double height)
+        public CTRRectangle(double xParam, double yParam, double width, double height)
         {
             this.x = (float)xParam;
             this.y = (float)yParam;
@@ -12,7 +12,7 @@ namespace CutTheRope.iframework
             this.h = (float)height;
         }
 
-        public Rectangle(float xParam, float yParam, float width, float height)
+        public CTRRectangle(float xParam, float yParam, float width, float height)
         {
             this.x = xParam;
             this.y = yParam;

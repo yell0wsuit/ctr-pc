@@ -33,7 +33,7 @@ namespace CutTheRope.iframework.helpers
         {
             if (base.initWithTexture(t) != null)
             {
-                this.bb = new Rectangle(0f, 0f, (float)this.width, (float)this.height);
+                this.bb = new CTRRectangle(0f, 0f, (float)this.width, (float)this.height);
                 this.rbb = new Quad2D(this.bb.x, this.bb.y, this.bb.w, this.bb.h);
                 this.anchor = 18;
                 this.rotatedBB = false;
@@ -92,11 +92,11 @@ namespace CutTheRope.iframework.helpers
                 if (nSString != null)
                 {
                     List<NSString> list = nSString.componentsSeparatedByString(',');
-                    this.bb = new Rectangle((float)list[0].intValue(), (float)list[1].intValue(), (float)list[2].intValue(), (float)list[3].intValue());
+                    this.bb = new CTRRectangle((float)list[0].intValue(), (float)list[1].intValue(), (float)list[2].intValue(), (float)list[3].intValue());
                 }
                 else
                 {
-                    this.bb = new Rectangle(0f, 0f, (float)this.width, (float)this.height);
+                    this.bb = new CTRRectangle(0f, 0f, (float)this.width, (float)this.height);
                 }
                 this.rbb = new Quad2D(this.bb.x, this.bb.y, this.bb.w, this.bb.h);
                 this.parseMover(xml);
@@ -133,7 +133,7 @@ namespace CutTheRope.iframework.helpers
 
         public virtual void setBBFromFirstQuad()
         {
-            this.bb = new Rectangle((float)Math.Round((double)this.texture.quadOffsets[0].x), (float)Math.Round((double)this.texture.quadOffsets[0].y), this.texture.quadRects[0].w, this.texture.quadRects[0].h);
+            this.bb = new CTRRectangle((float)Math.Round((double)this.texture.quadOffsets[0].x), (float)Math.Round((double)this.texture.quadOffsets[0].y), this.texture.quadRects[0].w, this.texture.quadRects[0].h);
             this.rbb = new Quad2D(this.bb.x, this.bb.y, this.bb.w, this.bb.h);
         }
 
@@ -237,7 +237,7 @@ namespace CutTheRope.iframework.helpers
 
         public Mover mover;
 
-        public Rectangle bb;
+        public CTRRectangle bb;
 
         public Quad2D rbb;
 
