@@ -60,22 +60,22 @@ namespace CutTheRope.game
                 Vector vector5 = CutTheRope.iframework.helpers.MathHelper.vectSub(v8, vector2);
                 Vector vector6 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v5, vector2);
                 Vector vector7 = CutTheRope.iframework.helpers.MathHelper.vectAdd(v9, vector2);
-                float[] pointer = new float[]
-                {
+                float[] pointer =
+                [
                     vector3.x, vector3.y, v11.x, v11.y, v4.x, v4.y, v8.x, v8.y, v5.x, v5.y,
                     v9.x, v9.y, v10.x, v10.y, v12.x, v12.y
-                };
+                ];
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.a = 0.1f * color.a;
                 Bungee.ccolors[2] = whiteRGBA;
                 Bungee.ccolors[3] = whiteRGBA;
                 Bungee.ccolors[4] = whiteRGBA;
                 Bungee.ccolors[5] = whiteRGBA;
-                float[] pointer2 = new float[]
-                {
+                float[] pointer2 =
+                [
                     v4.x, v4.y, v8.x, v8.y, vector4.x, vector4.y, vector5.x, vector5.y, v.x, v.y,
                     v2.x, v2.y, vector6.x, vector6.y, vector7.x, vector7.y, v5.x, v5.y, v9.x, v9.y
-                };
+                ];
                 RGBAColor rGBAColor = color;
                 float num = 0.15f * color.a;
                 color.r += num;
@@ -613,8 +613,8 @@ namespace CutTheRope.game
         public bool hideTailParts;
 
         // Token: 0x04000314 RID: 788
-        private static RGBAColor[] ccolors = new RGBAColor[]
-        {
+        private static RGBAColor[] ccolors =
+        [
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -623,11 +623,11 @@ namespace CutTheRope.game
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-        };
+        ];
 
         // Token: 0x04000315 RID: 789
-        private static RGBAColor[] ccolors2 = new RGBAColor[]
-        {
+        private static RGBAColor[] ccolors2 =
+        [
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -638,7 +638,7 @@ namespace CutTheRope.game
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-        };
+        ];
 
         // Token: 0x04000316 RID: 790
         private static Color s_Color1 = new(0f, 0f, 0.4f, 1f);

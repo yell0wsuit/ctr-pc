@@ -213,7 +213,7 @@ namespace CutTheRope.ios
         public List<NSString> componentsSeparatedByString(char ch)
         {
             List<NSString> list = new();
-            char[] separator = new char[] { ch };
+            char[] separator = [ch];
             foreach (string rhs in this.value_.Split(separator))
             {
                 list.Add(new NSString(rhs));

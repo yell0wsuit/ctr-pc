@@ -26,7 +26,7 @@ namespace CutTheRope.game
             Vector vector2 = (CutTheRope.iframework.helpers.MathHelper.vectEqual(fls, CutTheRope.iframework.helpers.MathHelper.vectUndefined) ? CutTheRope.iframework.helpers.MathHelper.vectAdd(start, CutTheRope.iframework.helpers.MathHelper.vectMult(v4, startSize)) : fls);
             Vector vector3 = CutTheRope.iframework.helpers.MathHelper.vectAdd(end, CutTheRope.iframework.helpers.MathHelper.vectMult(v3, endSize));
             Vector vector4 = CutTheRope.iframework.helpers.MathHelper.vectAdd(end, CutTheRope.iframework.helpers.MathHelper.vectMult(v4, endSize));
-            GLDrawer.drawSolidPolygonWOBorder(new float[] { vector2.x, vector2.y, vector.x, vector.y, vector3.x, vector3.y, vector4.x, vector4.y }, 4, c);
+            GLDrawer.drawSolidPolygonWOBorder([vector2.x, vector2.y, vector.x, vector.y, vector3.x, vector3.y, vector4.x, vector4.y], 4, c);
             le = vector4;
             re = vector3;
         }

@@ -172,8 +172,8 @@ namespace CutTheRope.iframework.visual
                 num += this.texture.quadOffsets[n].x;
                 num2 += this.texture.quadOffsets[n].y;
             }
-            float[] pointer = new float[]
-            {
+            float[] pointer =
+            [
                 num,
                 num2,
                 num + w,
@@ -182,7 +182,7 @@ namespace CutTheRope.iframework.visual
                 num2 + h,
                 num + w,
                 num2 + h
-            };
+            ];
             OpenGL.glEnable(0);
             OpenGL.glBindTexture(this.texture.name());
             OpenGL.glVertexPointer(2, 5, 0, pointer);

@@ -31,7 +31,7 @@ namespace CutTheRope.iframework.visual
         {
             if (t != null)
             {
-                float[] pointer = new float[] { 0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT };
+                float[] pointer = [0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT];
                 float[] array = new float[12];
                 array[0] = (float)x;
                 array[1] = (float)y;

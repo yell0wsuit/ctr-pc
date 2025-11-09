@@ -82,7 +82,7 @@ namespace CutTheRope.iframework
         // Token: 0x06000141 RID: 321 RVA: 0x00006D82 File Offset: 0x00004F82
         public float[] toFloatArray()
         {
-            return new float[] { this.r, this.g, this.b, this.a };
+            return [this.r, this.g, this.b, this.a];
         }
 
         // Token: 0x06000142 RID: 322 RVA: 0x00006DB0 File Offset: 0x00004FB0

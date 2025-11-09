@@ -619,17 +619,17 @@ namespace CutTheRope.game
         private bool playLevelScroll;
 
         // Token: 0x0400036B RID: 875
-        private static int[] PACK_UNLOCK_STARS_LITE = new int[]
-        {
+        private static int[] PACK_UNLOCK_STARS_LITE =
+        [
             0, 20, 80, 170, 240, 300, 350, 400, 450, 500,
             550
-        };
+        ];
 
         // Token: 0x0400036C RID: 876
-        private static int[] PACK_UNLOCK_STARS = new int[]
-        {
+        private static int[] PACK_UNLOCK_STARS =
+        [
             0, 30, 80, 170, 240, 300, 350, 400, 450, 500,
             550
-        };
+        ];
     }
 }
