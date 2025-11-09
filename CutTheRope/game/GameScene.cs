@@ -1843,7 +1843,7 @@ namespace CutTheRope.game
                 this.resetBungeeHighlight();
                 bool flag12 = false;
                 Vector p = CutTheRope.iframework.helpers.MathHelper.vectAdd(this.slastTouch, this.camera.pos);
-                if (this.gravityButton != null && ((Button)this.gravityButton.getChild((this.gravityButton.on() > false) ? 1 : 0)).isInTouchZoneXYforTouchDown(p.x, p.y, true))
+                if (this.gravityButton != null && ((Button)this.gravityButton.getChild(this.gravityButton.on() ? 1 : 0)).isInTouchZoneXYforTouchDown(p.x, p.y, true))
                 {
                     flag12 = true;
                 }
@@ -2651,7 +2651,7 @@ namespace CutTheRope.game
             {
                 return true;
             }
-            if (this.gravityButton != null && ((Button)this.gravityButton.getChild((this.gravityButton.on() > false) ? 1 : 0)).isInTouchZoneXYforTouchDown(tx + this.camera.pos.x, ty + this.camera.pos.y, true))
+            if (this.gravityButton != null && ((Button)this.gravityButton.getChild(this.gravityButton.on() ? 1 : 0)).isInTouchZoneXYforTouchDown(tx + this.camera.pos.x, ty + this.camera.pos.y, true))
             {
                 this.gravityTouchDown = ti;
             }
@@ -2794,7 +2794,7 @@ namespace CutTheRope.game
             }
             if (this.gravityButton != null && this.gravityTouchDown == ti)
             {
-                if (((Button)this.gravityButton.getChild((this.gravityButton.on() > false) ? 1 : 0)).isInTouchZoneXYforTouchDown(tx + this.camera.pos.x, ty + this.camera.pos.y, true))
+                if (((Button)this.gravityButton.getChild(this.gravityButton.on() ? 1 : 0)).isInTouchZoneXYforTouchDown(tx + this.camera.pos.x, ty + this.camera.pos.y, true))
                 {
                     this.gravityButton.toggle();
                     this.onButtonPressed(0);

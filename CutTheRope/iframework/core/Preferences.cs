@@ -108,7 +108,7 @@ namespace CutTheRope.iframework.core
 
         public static void _setBooleanforKey(bool v, string k, bool comit)
         {
-            Preferences._setIntforKey((v > false) ? 1 : 0, k, comit);
+            Preferences._setIntforKey(v ? 1 : 0, k, comit);
         }
 
         private static string _getStringForKey(string k)
