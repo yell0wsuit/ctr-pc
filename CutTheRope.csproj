@@ -11,7 +11,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
-    <StartupObject>CutTheRope.CutTheRope.Program</StartupObject>
+    <StartupObject>CutTheRope.Program</StartupObject>
     <AssemblyVersion>1.0.0.33</AssemblyVersion>
     <FileVersion>1.0.0.33</FileVersion>
     <InformationalVersion>1.0.0.33</InformationalVersion>
