@@ -9,15 +9,15 @@ namespace CutTheRope.iframework.visual
             int num = base.addChildwithID(c, i);
             if (this.align == 1)
             {
-                c.anchor = (c.parentAnchor = 9);
+                c.anchor = c.parentAnchor = 9;
             }
             else if (this.align == 4)
             {
-                c.anchor = (c.parentAnchor = 12);
+                c.anchor = c.parentAnchor = 12;
             }
             else if (this.align == 2)
             {
-                c.anchor = (c.parentAnchor = 10);
+                c.anchor = c.parentAnchor = 10;
             }
             c.y = this.nextElementY;
             this.nextElementY += (float)c.height + this.offset;

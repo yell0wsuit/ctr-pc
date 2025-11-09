@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.visual
                 num = (float)this.width - 2f;
                 num2 = 1f;
                 num3 = (float)Math.Round(((double)this.height - 2.0) / (double)this.sc.y);
-                float num4 = ((this.mp.y != 0f) ? (this.sp.y / this.mp.y) : 1f);
+                float num4 = (this.mp.y != 0f) ? (this.sp.y / this.mp.y) : 1f;
                 num5 = (float)(1.0 + ((double)this.height - 2.0 - (double)num3) * (double)num4);
                 if (num3 > (float)this.height)
                 {
@@ -47,7 +47,7 @@ namespace CutTheRope.iframework.visual
                 num3 = (float)this.height - 2f;
                 num5 = 1f;
                 num = (float)Math.Round(((double)this.width - 2.0) / (double)this.sc.x);
-                float num6 = ((this.mp.x != 0f) ? (this.sp.x / this.mp.x) : 1f);
+                float num6 = (this.mp.x != 0f) ? (this.sp.x / this.mp.x) : 1f;
                 num2 = (float)(1.0 + ((double)this.width - 2.0 - (double)num) * (double)num6);
                 if (num > (float)this.width)
                 {

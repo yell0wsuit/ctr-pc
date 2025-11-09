@@ -17,7 +17,7 @@ namespace CutTheRope.game
                 Text text = new Text().initWithFont(Application.getFont(3));
                 text.setAlignment(2);
                 text.setStringandWidth(Application.getString(655387), 300f);
-                text.anchor = (text.parentAnchor = 18);
+                text.anchor = text.parentAnchor = 18;
                 loadingView.addChild(text);
             }
             return this;

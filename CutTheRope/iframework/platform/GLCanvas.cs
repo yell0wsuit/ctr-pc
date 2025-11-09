@@ -34,8 +34,8 @@ namespace CutTheRope.iframework.platform
         {
             this.xOffset = 0;
             this.yOffset = 0;
-            this.origWidth = (this.backingWidth = 2560);
-            this.origHeight = (this.backingHeight = 1440);
+            this.origWidth = this.backingWidth = 2560;
+            this.origHeight = this.backingHeight = 1440;
             this.aspect = (float)this.backingHeight / (float)this.backingWidth;
             this.touchesCount = 0;
             return this;
@@ -81,7 +81,7 @@ namespace CutTheRope.iframework.platform
             if (Global.ScreenSizeManager.IsFullScreen)
             {
                 this.xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
-                this.xOffsetScaled = (int)((double)((float)(-(float)this.xOffset) * 1f) / Global.ScreenSizeManager.WidthAspectRatio);
+                this.xOffsetScaled = (int)((double)((float)-(float)this.xOffset * 1f) / Global.ScreenSizeManager.WidthAspectRatio);
                 this.isFullscreen = true;
             }
             else

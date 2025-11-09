@@ -19,7 +19,7 @@ namespace CutTheRope.game
             Vector vector = CutTheRope.iframework.helpers.MathHelper.vectSub(v2, v);
             if (!CutTheRope.iframework.helpers.MathHelper.vectEqual(vector, CutTheRope.iframework.helpers.MathHelper.vectZero))
             {
-                Vector v3 = (highlighted ? vector : CutTheRope.iframework.helpers.MathHelper.vectMult(vector, ((double)color.a == 1.0) ? 1.02 : 1.0));
+                Vector v3 = highlighted ? vector : CutTheRope.iframework.helpers.MathHelper.vectMult(vector, ((double)color.a == 1.0) ? 1.02 : 1.0);
                 Vector v4 = CutTheRope.iframework.helpers.MathHelper.vectPerp(vector);
                 Vector vector2 = CutTheRope.iframework.helpers.MathHelper.vectNormalize(v4);
                 v4 = CutTheRope.iframework.helpers.MathHelper.vectMult(vector2, size);
@@ -105,7 +105,7 @@ namespace CutTheRope.game
 
         private static void drawBungee(Bungee b, Vector[] pts, int count, int points)
         {
-            float num = ((b.cut == -1 || b.forceWhite) ? 1f : (b.cutTime / 1.95f));
+            float num = (b.cut == -1 || b.forceWhite) ? 1f : (b.cutTime / 1.95f);
             RGBAColor rGBAColor = RGBAColor.MakeRGBA(0.475 * (double)num, 0.305 * (double)num, 0.185 * (double)num, (double)num);
             RGBAColor rGBAColor2 = RGBAColor.MakeRGBA(0.6755555555555556 * (double)num, 0.44 * (double)num, 0.27555555555555555 * (double)num, (double)num);
             RGBAColor rGBAColor3 = RGBAColor.MakeRGBA(0.19 * (double)num, 0.122 * (double)num, 0.074 * (double)num, (double)num);
@@ -187,7 +187,7 @@ namespace CutTheRope.game
                 b.drawPts[num9++] = vector.y;
                 if (num8 >= 8 || (double)num7 == 1.0)
                 {
-                    RGBAColor color = (b.forceWhite ? RGBAColor.whiteRGBA : ((!flag) ? rGBAColor6 : rGBAColor5));
+                    RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : ((!flag) ? rGBAColor6 : rGBAColor5);
                     OpenGL.glColor4f(color.toXNA());
                     int num17 = num8 >> 1;
                     for (int i = 0; i < num17 - 1; i++)
@@ -364,7 +364,7 @@ namespace CutTheRope.game
         {
             this.forceWhite = false;
             ConstraintedPoint constraintedPoint = this.parts[part];
-            ConstraintedPoint constraintedPoint2 = ((part + 1 >= this.parts.Count) ? null : this.parts[part + 1]);
+            ConstraintedPoint constraintedPoint2 = (part + 1 >= this.parts.Count) ? null : this.parts[part + 1];
             if (constraintedPoint2 == null)
             {
                 constraintedPoint.removeConstraints();

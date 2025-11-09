@@ -14,11 +14,11 @@ namespace CutTheRope.game
             {
                 View view = (View)new View().initFullscreen();
                 Image image = Image.Image_createWithResID(0);
-                image.parentAnchor = (image.anchor = 18);
-                image.scaleX = (image.scaleY = 1.25f);
+                image.parentAnchor = image.anchor = 18;
+                image.scaleX = image.scaleY = 1.25f;
                 view.addChild(image);
                 this.bar = TiledImage.TiledImage_createWithResID(1);
-                this.bar.parentAnchor = (this.bar.anchor = 9);
+                this.bar.parentAnchor = this.bar.anchor = 9;
                 this.bar.setTile(-1);
                 this.bar.x = 738f;
                 this.bar.y = 1056f;

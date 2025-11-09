@@ -115,7 +115,7 @@ namespace CutTheRope.iframework.visual
                 FormattedString formattedString = this.formattedStrings[k];
                 int num9 = formattedString.string_.length();
                 char[] characters3 = formattedString.string_.getCharacters();
-                float num10 = ((this.align == 1) ? 0f : ((this.align != 2) ? (this.wrapWidth - formattedString.width) : ((this.wrapWidth - formattedString.width) / 2f)));
+                float num10 = (this.align == 1) ? 0f : ((this.align != 2) ? (this.wrapWidth - formattedString.width) : ((this.wrapWidth - formattedString.width) / 2f));
                 for (int l = 0; l < num9; l++)
                 {
                     if (characters3[l] != '*')

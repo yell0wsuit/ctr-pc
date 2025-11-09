@@ -85,7 +85,7 @@ namespace CutTheRope.iframework
             md5.FuncF funcF;
             if ((funcF = md5.<> O.< 0 > __F_1) == null)
             {
-                funcF = (md5.<> O.< 0 > __F_1 = new md5.FuncF(md5.F_1));
+                funcF = md5.<> O.< 0 > __F_1 = new md5.FuncF(md5.F_1);
             }
             md5.FuncF f = funcF;
             md5.P(ref a, a2, a3, a4, 0U, 7U, 3614090360U, array, f);
@@ -107,7 +107,7 @@ namespace CutTheRope.iframework
             md5.FuncF funcF2;
             if ((funcF2 = md5.<> O.< 1 > __F_2) == null)
             {
-                funcF2 = (md5.<> O.< 1 > __F_2 = new md5.FuncF(md5.F_2));
+                funcF2 = md5.<> O.< 1 > __F_2 = new md5.FuncF(md5.F_2);
             }
             f = funcF2;
             md5.P(ref a, a2, a3, a4, 1U, 5U, 4129170786U, array, f);
@@ -129,7 +129,7 @@ namespace CutTheRope.iframework
             md5.FuncF funcF3;
             if ((funcF3 = md5.<> O.< 2 > __F_3) == null)
             {
-                funcF3 = (md5.<> O.< 2 > __F_3 = new md5.FuncF(md5.F_3));
+                funcF3 = md5.<> O.< 2 > __F_3 = new md5.FuncF(md5.F_3);
             }
             f = funcF3;
             md5.P(ref a, a2, a3, a4, 5U, 4U, 4294588738U, array, f);
@@ -151,7 +151,7 @@ namespace CutTheRope.iframework
             md5.FuncF funcF4;
             if ((funcF4 = md5.<> O.< 3 > __F_4) == null)
             {
-                funcF4 = (md5.<> O.< 3 > __F_4 = new md5.FuncF(md5.F_4));
+                funcF4 = md5.<> O.< 3 > __F_4 = new md5.FuncF(md5.F_4);
             }
             f = funcF4;
             md5.P(ref a, a2, a3, a4, 0U, 6U, 4096336452U, array, f);
@@ -219,7 +219,7 @@ namespace CutTheRope.iframework
             md5.PUT_UINT32(ctx.total[0] << 3, ref b, 0);
             md5.PUT_UINT32(num2, ref b, 4);
             uint num = ctx.total[0] & 63U;
-            uint length = ((num < 56U) ? (56U - num) : (120U - num));
+            uint length = (num < 56U) ? (56U - num) : (120U - num);
             md5.md5_update(ref ctx, md5.md5_padding, length);
             md5.md5_update(ref ctx, b, 8U);
             md5.PUT_UINT32(ctx.state[0], ref digest, 0);

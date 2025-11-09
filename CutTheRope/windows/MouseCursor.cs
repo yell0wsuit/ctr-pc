@@ -33,7 +33,7 @@ namespace CutTheRope.windows
         {
             if (this._enabled && !Global.XnaGame.IsMouseVisible && this._mouseStateOriginal.X >= 0 && this._mouseStateOriginal.Y >= 0)
             {
-                Texture2D texture2D = ((this._mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed) ? this._cursorActive : this._cursor);
+                Texture2D texture2D = (this._mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed) ? this._cursorActive : this._cursor;
                 Microsoft.Xna.Framework.Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
                 float num = FrameworkTypes.SCREEN_WIDTH / (float)scaledViewRect.Width;
                 float num2 = FrameworkTypes.SCREEN_HEIGHT / (float)scaledViewRect.Height;

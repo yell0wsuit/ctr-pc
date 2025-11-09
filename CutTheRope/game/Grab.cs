@@ -71,7 +71,7 @@ namespace CutTheRope.game
             this.wheelImage2.rotation += num;
             this.wheelImage3.rotation += num;
             this.wheelHighlight.rotation += num;
-            num = ((num > 0f) ? CTRMathHelper.MIN((double)CTRMathHelper.MAX(1.0, (double)num), 4.5) : CTRMathHelper.MAX((double)CTRMathHelper.MIN(-1.0, (double)num), -4.5));
+            num = (num > 0f) ? CTRMathHelper.MIN((double)CTRMathHelper.MAX(1.0, (double)num), 4.5) : CTRMathHelper.MAX((double)CTRMathHelper.MIN(-1.0, (double)num), -4.5);
             float num2 = 0f;
             if (this.rope != null)
             {
@@ -133,19 +133,19 @@ namespace CutTheRope.game
                 if (CTRMathHelper.ABS(vector.x) > 15f)
                 {
                     float num = 10f;
-                    t = ((vector.x > 0f) ? num : (0f - num));
+                    t = (vector.x > 0f) ? num : (0f - num);
                 }
                 Mover.moveVariableToTarget(ref this.bee.rotation, t, 60f, delta);
             }
             if (this.wheel && this.wheelDirty)
             {
-                float num2 = ((this.rope == null) ? 0f : ((float)this.rope.getLength() * 0.7f));
+                float num2 = (this.rope == null) ? 0f : ((float)this.rope.getLength() * 0.7f);
                 if (num2 == 0f)
                 {
-                    this.wheelImage2.scaleX = (this.wheelImage2.scaleY = 0f);
+                    this.wheelImage2.scaleX = this.wheelImage2.scaleY = 0f;
                     return;
                 }
-                this.wheelImage2.scaleX = (this.wheelImage2.scaleY = CTRMathHelper.MAX(0f, CTRMathHelper.MIN(1.2, 1.0 - (double)FrameworkTypes.RT((double)(num2 / 1400f), (double)num2 / 700.0))));
+                this.wheelImage2.scaleX = this.wheelImage2.scaleY = CTRMathHelper.MAX(0f, CTRMathHelper.MIN(1.2, 1.0 - (double)FrameworkTypes.RT((double)(num2 / 1400f), (double)num2 / 700.0)));
             }
         }
 
@@ -308,9 +308,9 @@ namespace CutTheRope.game
                 int r2 = CTRMathHelper.RND_RANGE(76, 77);
                 this.back = Image.Image_createWithResIDQuad(r2, 0);
                 this.back.doRestoreCutTransparency();
-                this.back.anchor = (this.back.parentAnchor = 18);
+                this.back.anchor = this.back.parentAnchor = 18;
                 this.front = Image.Image_createWithResIDQuad(r2, 1);
-                this.front.anchor = (this.front.parentAnchor = 18);
+                this.front.anchor = this.front.parentAnchor = 18;
                 this.addChild(this.back);
                 this.addChild(this.front);
                 this.back.visible = false;
@@ -320,9 +320,9 @@ namespace CutTheRope.game
             {
                 this.back = Image.Image_createWithResIDQuad(74, 0);
                 this.back.doRestoreCutTransparency();
-                this.back.anchor = (this.back.parentAnchor = 18);
+                this.back.anchor = this.back.parentAnchor = 18;
                 this.front = Image.Image_createWithResIDQuad(74, 1);
-                this.front.anchor = (this.front.parentAnchor = 18);
+                this.front.anchor = this.front.parentAnchor = 18;
                 this.addChild(this.back);
                 this.addChild(this.front);
                 this.back.visible = false;
@@ -341,16 +341,16 @@ namespace CutTheRope.game
             if (this.wheel)
             {
                 this.wheelImage = Image.Image_createWithResIDQuad(81, 0);
-                this.wheelImage.anchor = (this.wheelImage.parentAnchor = 18);
+                this.wheelImage.anchor = this.wheelImage.parentAnchor = 18;
                 this.addChild(this.wheelImage);
                 this.wheelImage.visible = false;
                 this.wheelImage2 = Image.Image_createWithResIDQuad(81, 1);
                 this.wheelImage2.passTransformationsToChilds = false;
                 this.wheelHighlight = Image.Image_createWithResIDQuad(81, 2);
-                this.wheelHighlight.anchor = (this.wheelHighlight.parentAnchor = 18);
+                this.wheelHighlight.anchor = this.wheelHighlight.parentAnchor = 18;
                 this.wheelImage2.addChild(this.wheelHighlight);
                 this.wheelImage3 = Image.Image_createWithResIDQuad(81, 3);
-                this.wheelImage3.anchor = (this.wheelImage3.parentAnchor = (this.wheelImage2.anchor = (this.wheelImage2.parentAnchor = 18)));
+                this.wheelImage3.anchor = this.wheelImage3.parentAnchor = this.wheelImage2.anchor = this.wheelImage2.parentAnchor = 18;
                 this.wheelImage2.addChild(this.wheelImage3);
                 this.addChild(this.wheelImage2);
                 this.wheelImage2.visible = false;
@@ -372,11 +372,11 @@ namespace CutTheRope.game
                 this.moveBackground.x = -74f;
                 this.grabMoverHighlight = Image.Image_createWithResIDQuad(82, 3);
                 this.grabMoverHighlight.visible = false;
-                this.grabMoverHighlight.anchor = (this.grabMoverHighlight.parentAnchor = 18);
+                this.grabMoverHighlight.anchor = this.grabMoverHighlight.parentAnchor = 18;
                 this.addChild(this.grabMoverHighlight);
                 this.grabMover = Image.Image_createWithResIDQuad(82, 4);
                 this.grabMover.visible = false;
-                this.grabMover.anchor = (this.grabMover.parentAnchor = 18);
+                this.grabMover.anchor = this.grabMover.parentAnchor = 18;
                 this.addChild(this.grabMover);
                 this.grabMover.addChild(this.moveBackground);
                 if (this.moveVertical)
@@ -409,7 +409,7 @@ namespace CutTheRope.game
             this.bee.doRestoreCutTransparency();
             this.bee.parentAnchor = 18;
             Animation animation = Animation.Animation_createWithResID(98);
-            animation.parentAnchor = (animation.anchor = 9);
+            animation.parentAnchor = animation.anchor = 9;
             animation.doRestoreCutTransparency();
             animation.addAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.playTimeline(0);
@@ -420,7 +420,7 @@ namespace CutTheRope.game
             this.bee.y = 0f - quadOffset.y;
             this.bee.rotationCenterX = quadOffset.x - (float)(this.bee.width / 2);
             this.bee.rotationCenterY = quadOffset.y - (float)(this.bee.height / 2);
-            this.bee.scaleX = (this.bee.scaleY = 0.7692308f);
+            this.bee.scaleX = this.bee.scaleY = 0.7692308f;
             this.addChild(this.bee);
         }
 

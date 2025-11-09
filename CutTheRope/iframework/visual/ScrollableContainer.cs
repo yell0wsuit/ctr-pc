@@ -575,7 +575,7 @@ namespace CutTheRope.iframework.visual
         public virtual void startMovingToSpointInDirection(Vector d)
         {
             this.movingToSpoint = true;
-            this.targetSpoint = (this.lastTargetSpoint = -1);
+            this.targetSpoint = this.lastTargetSpoint = -1;
             this.calculateNearsetScrollPointInDirection(d);
         }
 

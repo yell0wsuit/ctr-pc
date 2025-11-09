@@ -64,15 +64,15 @@ namespace CutTheRope.game
         {
             this.size = value;
             float num = this.size / 167f;
-            this.vinilHighlightL.scaleX = (this.vinilHighlightL.scaleY = (this.vinilHighlightR.scaleY = num));
+            this.vinilHighlightL.scaleX = this.vinilHighlightL.scaleY = this.vinilHighlightR.scaleY = num;
             this.vinilHighlightR.scaleX = 0f - num;
-            this.vinil.scaleX = (this.vinil.scaleY = num);
-            float num2 = ((num >= 0.4f) ? num : 0.4f);
-            this.vinilStickerL.scaleX = (this.vinilStickerL.scaleY = (this.vinilStickerR.scaleY = num2));
+            this.vinil.scaleX = this.vinil.scaleY = num;
+            float num2 = (num >= 0.4f) ? num : 0.4f;
+            this.vinilStickerL.scaleX = this.vinilStickerL.scaleY = this.vinilStickerR.scaleY = num2;
             this.vinilStickerR.scaleX = 0f - num2;
-            float num3 = ((num >= 0.75f) ? num : 0.75f);
-            this.vinilControllerL.scaleX = (this.vinilControllerL.scaleY = (this.vinilControllerR.scaleX = (this.vinilControllerR.scaleY = num3)));
-            this.vinilActiveControllerL.scaleX = (this.vinilActiveControllerL.scaleY = (this.vinilActiveControllerR.scaleX = (this.vinilActiveControllerR.scaleY = num3)));
+            float num3 = (num >= 0.75f) ? num : 0.75f;
+            this.vinilControllerL.scaleX = this.vinilControllerL.scaleY = this.vinilControllerR.scaleX = this.vinilControllerR.scaleY = num3;
+            this.vinilActiveControllerL.scaleX = this.vinilActiveControllerL.scaleY = this.vinilActiveControllerR.scaleX = this.vinilActiveControllerR.scaleY = num3;
             this.vinilCenter.scaleX = 1f - (1f - this.vinilStickerL.scaleX) * 0.5f;
             this.vinilCenter.scaleY = this.vinilCenter.scaleX;
             this.sizeInPixels = (float)this.vinilHighlightL.width * this.vinilHighlightL.scaleX;
@@ -164,17 +164,17 @@ namespace CutTheRope.game
 
         public virtual void updateChildPositions()
         {
-            this.vinil.x = (this.vinilCenter.x = this.x);
-            this.vinil.y = (this.vinilCenter.y = this.y);
+            this.vinil.x = this.vinilCenter.x = this.x;
+            this.vinil.y = this.vinilCenter.y = this.y;
             float num = (float)(this.vinilHighlightL.width / 2) * (1f - this.vinilHighlightL.scaleX);
             float num2 = (float)(this.vinilHighlightL.height / 2) * (1f - this.vinilHighlightL.scaleY);
             float num3 = this.sizeInPixels - FrameworkTypes.RTPD((double)(this.CONTROLLER_SHIFT_PARAM1 - this.CONTROLLER_SHIFT_PARAM2 * this.size)) + (1f - this.vinilControllerL.scaleX) * (float)(this.vinilControllerL.width / 2);
             this.vinilHighlightL.x = this.x + num;
             this.vinilHighlightR.x = this.x - num;
-            this.vinilHighlightL.y = (this.vinilHighlightR.y = this.y - num2);
+            this.vinilHighlightL.y = this.vinilHighlightR.y = this.y - num2;
             this.vinilControllerL.x = this.x - num3;
             this.vinilControllerR.x = this.x + num3;
-            this.vinilControllerL.y = (this.vinilControllerR.y = this.y);
+            this.vinilControllerL.y = this.vinilControllerR.y = this.y;
             this.vinilActiveControllerL.x = this.vinilControllerL.x;
             this.vinilActiveControllerL.y = this.vinilControllerL.y;
             this.vinilActiveControllerR.x = this.vinilControllerR.x;

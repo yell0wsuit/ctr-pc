@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.core
             {
                 return value;
             }
-            string path = ((resType != ResourceMgr.ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "");
+            string path = (resType != ResourceMgr.ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "";
             bool flag = false;
             float scaleX = this.getNormalScaleX(resID);
             float scaleY = this.getNormalScaleY(resID);
@@ -337,7 +337,7 @@ namespace CutTheRope.iframework.core
                 DelayedDispatcher.DispatchFunc dispatchFunc;
                 if ((dispatchFunc = ResourceMgr.<> O.< 0 > __rmgr_internalUpdate) == null)
                 {
-                    dispatchFunc = (ResourceMgr.<> O.< 0 > __rmgr_internalUpdate = new DelayedDispatcher.DispatchFunc(ResourceMgr.rmgr_internalUpdate));
+                    dispatchFunc = ResourceMgr.<> O.< 0 > __rmgr_internalUpdate = new DelayedDispatcher.DispatchFunc(ResourceMgr.rmgr_internalUpdate);
                 }
                 this.Timer = NSTimer.schedule(dispatchFunc, this, 0.022222223f);
             }

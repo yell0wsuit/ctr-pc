@@ -25,7 +25,7 @@ namespace CutTheRope.game
                 FontGeneric font = Application.getFont(4);
                 Text text = new Text().initWithFont(font);
                 text.setString(NSObject.NSS("Loading..."));
-                text.anchor = (text.parentAnchor = 18);
+                text.anchor = text.parentAnchor = 18;
                 view.addChild(text);
                 this.addViewwithID(view, 1);
                 this.setNormalMode();
@@ -46,9 +46,9 @@ namespace CutTheRope.game
             text.setString(NSObject.NSS("START"));
             Text text2 = new Text().initWithFont(font);
             text2.setString(NSObject.NSS("START"));
-            text2.scaleX = (text2.scaleY = 1.2f);
+            text2.scaleX = text2.scaleY = 1.2f;
             Button button = new Button().initWithUpElementDownElementandID(text, text2, 0);
-            button.anchor = (button.parentAnchor = 34);
+            button.anchor = button.parentAnchor = 34;
             button.delegateButtonDelegate = this;
             view.addChild(button);
             this.addViewwithID(view, 0);

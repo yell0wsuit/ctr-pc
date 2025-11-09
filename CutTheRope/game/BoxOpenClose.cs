@@ -49,7 +49,7 @@ namespace CutTheRope.game
                         Text text21 = (Text)this.result.getChildWithName("dataValue");
                         text21.setEnabled(true);
                         Text text22 = (Text)this.result.getChildWithName("scoreValue");
-                        text28.color.a = (text21.color.a = (text22.color.a = 1f - this.raDelay / 0.2f));
+                        text28.color.a = text21.color.a = text22.color.a = 1f - this.raDelay / 0.2f;
                         if (flag)
                         {
                             this.raState = 2;
@@ -78,7 +78,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement = (Text)this.result.getChildWithName("dataTitle");
                         Text text23 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement.color.a = (text23.color.a = this.raDelay / 0.2f);
+                        baseElement.color.a = text23.color.a = this.raDelay / 0.2f;
                         if (flag)
                         {
                             this.raState = 4;
@@ -95,7 +95,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement2 = (Text)this.result.getChildWithName("dataTitle");
                         Text text24 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement2.color.a = (text24.color.a = 1f - this.raDelay / 0.2f);
+                        baseElement2.color.a = text24.color.a = 1f - this.raDelay / 0.2f;
                         if (flag)
                         {
                             this.raState = 5;
@@ -124,7 +124,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement3 = (Text)this.result.getChildWithName("dataTitle");
                         Text text25 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement3.color.a = (text25.color.a = this.raDelay / 0.2f);
+                        baseElement3.color.a = text25.color.a = this.raDelay / 0.2f;
                         if (flag)
                         {
                             this.raState = 7;
@@ -141,7 +141,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement4 = (Text)this.result.getChildWithName("dataTitle");
                         Text text26 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement4.color.a = (text26.color.a = 1f - this.raDelay / 0.2f);
+                        baseElement4.color.a = text26.color.a = 1f - this.raDelay / 0.2f;
                         if (flag)
                         {
                             this.raState = 8;
@@ -164,8 +164,8 @@ namespace CutTheRope.game
             {
                 this.result = (BaseElement)new BaseElement().init();
                 this.addChildwithID(this.result, 1);
-                this.anchor = (this.parentAnchor = 18);
-                this.result.anchor = (this.result.parentAnchor = 18);
+                this.anchor = this.parentAnchor = 18;
+                this.result.anchor = this.result.parentAnchor = 18;
                 this.result.setEnabled(false);
                 Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
@@ -365,9 +365,9 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             int num9 = 126 + cTRRootController.getPack();
             Image image = Image.Image_createWithResIDQuad(67, 16);
-            image.rotationCenterX = (float)(-(float)image.width) / 2f + 1f;
-            image.rotationCenterY = (float)(-(float)image.height) / 2f + 1f;
-            image.scaleX = (image.scaleY = 4f);
+            image.rotationCenterX = (float)-(float)image.width / 2f + 1f;
+            image.rotationCenterY = (float)-(float)image.height / 2f + 1f;
+            image.scaleX = image.scaleY = 4f;
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
             {
@@ -388,7 +388,7 @@ namespace CutTheRope.game
             Image image2 = Image.Image_createWithResIDQuad(num9, 0);
             Image image3 = Image.Image_createWithResIDQuad(num9, 0);
             image2.x = num2;
-            image2.rotationCenterX = (float)(-(float)image2.width) / 2f;
+            image2.rotationCenterX = (float)-(float)image2.width / 2f;
             image3.rotationCenterX = image2.rotationCenterX;
             image3.rotation = 180f;
             image3.x = FrameworkTypes.SCREEN_WIDTH - (FrameworkTypes.SCREEN_WIDTH / 2f - (float)image2.width);
@@ -471,7 +471,7 @@ namespace CutTheRope.game
             image5.playTimeline(0);
             Image image6 = Image.Image_createWithResIDQuad(num9, 1);
             Image image7 = Image.Image_createWithResIDQuad(num9, 1);
-            image6.rotationCenterX = (float)(-(float)image6.width) / 2f;
+            image6.rotationCenterX = (float)-(float)image6.width / 2f;
             image7.rotationCenterX = image6.rotationCenterX;
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
@@ -532,7 +532,7 @@ namespace CutTheRope.game
                         DelayedDispatcher.DispatchFunc dispatchFunc;
                         if ((dispatchFunc = BoxOpenClose.<> O.< 0 > __selector_removeOpenCloseAnims) == null)
                         {
-                            dispatchFunc = (BoxOpenClose.<> O.< 0 > __selector_removeOpenCloseAnims = new DelayedDispatcher.DispatchFunc(BoxOpenClose.selector_removeOpenCloseAnims));
+                            dispatchFunc = BoxOpenClose.<> O.< 0 > __selector_removeOpenCloseAnims = new DelayedDispatcher.DispatchFunc(BoxOpenClose.selector_removeOpenCloseAnims);
                         }
                         NSTimer.registerDelayedObjectCall(dispatchFunc, this, 0.001);
                         if (this.result.isEnabled())
@@ -548,7 +548,7 @@ namespace CutTheRope.game
                         DelayedDispatcher.DispatchFunc dispatchFunc2;
                         if ((dispatchFunc2 = BoxOpenClose.<> O.< 1 > __selector_postBoxClosed) == null)
                         {
-                            dispatchFunc2 = (BoxOpenClose.<> O.< 1 > __selector_postBoxClosed = new DelayedDispatcher.DispatchFunc(BoxOpenClose.selector_postBoxClosed));
+                            dispatchFunc2 = BoxOpenClose.<> O.< 1 > __selector_postBoxClosed = new DelayedDispatcher.DispatchFunc(BoxOpenClose.selector_postBoxClosed);
                         }
                         NSTimer.registerDelayedObjectCall(dispatchFunc2, this, 0.001);
                         break;
@@ -585,7 +585,7 @@ namespace CutTheRope.game
             BaseElement baseElement = (Text)this.result.getChildWithName("dataTitle");
             Text text2 = (Text)this.result.getChildWithName("dataValue");
             Text text3 = (Text)this.result.getChildWithName("scoreValue");
-            baseElement.color.a = (text2.color.a = (text3.color.a = 1f));
+            baseElement.color.a = text2.color.a = text3.color.a = 1f;
         }
 
         public virtual void createOpenCloseAnims()

@@ -53,7 +53,7 @@ namespace CutTheRope.game
                 image2.doRestoreCutTransparency();
                 this.rotateButton = new Button().initWithUpElementDownElementandID(image, image2, 0);
                 this.rotateButton.delegateButtonDelegate = this;
-                this.rotateButton.anchor = (this.rotateButton.parentAnchor = 18);
+                this.rotateButton.anchor = this.rotateButton.parentAnchor = 18;
                 this.addChild(this.rotateButton);
                 Vector quadOffset = Image.getQuadOffset(97, num);
                 Vector quadSize = Image.getQuadSize(97, num);
@@ -62,7 +62,7 @@ namespace CutTheRope.game
             }
             this.passColorToChilds = false;
             this.spikesNormal = false;
-            this.origRotation = (this.rotation = (float)an);
+            this.origRotation = this.rotation = (float)an;
             this.x = px;
             this.y = py;
             this.setToggled(t);
@@ -79,14 +79,14 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            float num = ((!this.electro) ? this.texture.quadRects[this.quadToDraw].w : ((float)this.width - FrameworkTypes.RTPD(400.0)));
+            float num = (!this.electro) ? this.texture.quadRects[this.quadToDraw].w : ((float)this.width - FrameworkTypes.RTPD(400.0));
             num /= 2f;
             this.t1.x = this.x - num;
             this.t2.x = this.x + num;
-            this.t1.y = (this.t2.y = this.y - 5f);
+            this.t1.y = this.t2.y = this.y - 5f;
             this.b1.x = this.t1.x;
             this.b2.x = this.t2.x;
-            this.b1.y = (this.b2.y = this.y + 5f);
+            this.b1.y = this.b2.y = this.y + 5f;
             this.angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(this.rotation);
             this.t1 = CTRMathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
             this.t2 = CTRMathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);

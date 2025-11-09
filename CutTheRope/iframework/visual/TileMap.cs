@@ -138,13 +138,13 @@ namespace CutTheRope.iframework.visual
             {
                 float num13 = num4 - num2;
                 int num5 = (int)num13 % this.tileMapHeight;
-                num4 = ((num13 >= 0f) ? ((float)(num5 - this.tileMapHeight) + num2) : ((float)num5 + num2));
+                num4 = (num13 >= 0f) ? ((float)(num5 - this.tileMapHeight) + num2) : ((float)num5 + num2);
             }
             if (this.repeatedHorizontally != TileMap.Repeat.REPEAT_NONE)
             {
                 float num14 = num3 - num;
                 int num6 = (int)num14 % this.tileMapWidth;
-                num3 = ((num14 >= 0f) ? ((float)(num6 - this.tileMapWidth) + num) : ((float)num6 + num));
+                num3 = (num14 >= 0f) ? ((float)(num6 - this.tileMapWidth) + num) : ((float)num6 + num);
             }
             if (!CTRMathHelper.rectInRect(num, num2, num + (float)this.cameraViewWidth, num2 + (float)this.cameraViewHeight, num3, num4, num3 + (float)this.tileMapWidth, num4 + (float)this.tileMapHeight))
             {
@@ -266,8 +266,8 @@ namespace CutTheRope.iframework.visual
             {
                 this.maxColsOnScreen = Math.Min(this.maxColsOnScreen, this.columns);
             }
-            this.width = (this.tileMapWidth = this.columns * this.tileWidth);
-            this.height = (this.tileMapHeight = this.rows * this.tileHeight);
+            this.width = this.tileMapWidth = this.columns * this.tileWidth;
+            this.height = this.tileMapHeight = this.rows * this.tileHeight;
         }
 
         public int[,] matrix;

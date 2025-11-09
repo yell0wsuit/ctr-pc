@@ -213,7 +213,7 @@ namespace CutTheRope.iframework.sfe
             IL_00F8:
                 vector2 = vector;
                 float num2 = constraint.cp.invWeight;
-                float num3 = ((num > 1f) ? num : 1f);
+                float num3 = (num > 1f) ? num : 1f;
                 float num4 = (num - restLength) / (num3 * (p.invWeight + num2));
                 float num5 = p.invWeight * num4;
                 vector.x *= num5;

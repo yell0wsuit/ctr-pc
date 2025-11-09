@@ -244,7 +244,7 @@ namespace CutTheRope.game
                 int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
                 while (j < levelsInPackCount)
                 {
-                    int v = (((i == 0 || (CTRPreferences.isShareware() && i < CTRPreferences.sharewareFreePacks())) && j == 0) ? 1 : 0);
+                    int v = ((i == 0 || (CTRPreferences.isShareware() && i < CTRPreferences.sharewareFreePacks())) && j == 0) ? 1 : 0;
                     this.setIntforKey(0, CTRPreferences.getPackLevelKey("SCORE_", i, j), false);
                     this.setIntforKey(0, CTRPreferences.getPackLevelKey("STARS_", i, j), false);
                     this.setIntforKey(v, CTRPreferences.getPackLevelKey("UNLOCKED_", i, j), false);
