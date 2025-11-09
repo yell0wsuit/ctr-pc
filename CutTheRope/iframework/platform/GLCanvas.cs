@@ -17,10 +17,10 @@ namespace CutTheRope.iframework.platform
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
                 Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
-                _bounds.size.width = (float)currentSize.Width;
-                _bounds.size.height = (float)currentSize.Height;
-                _bounds.origin.x = (float)currentSize.X;
-                _bounds.origin.y = (float)currentSize.Y;
+                _bounds.size.width = currentSize.Width;
+                _bounds.size.height = currentSize.Height;
+                _bounds.origin.x = currentSize.X;
+                _bounds.origin.y = currentSize.Y;
                 return _bounds;
             }
         }
@@ -36,7 +36,7 @@ namespace CutTheRope.iframework.platform
             yOffset = 0;
             origWidth = backingWidth = 2560;
             origHeight = backingHeight = 1440;
-            aspect = (float)backingHeight / (float)backingWidth;
+            aspect = backingHeight / (float)backingWidth;
             touchesCount = 0;
             return this;
         }
@@ -93,7 +93,7 @@ namespace CutTheRope.iframework.platform
             OpenGL.glViewport(xOffset, yOffset, backingWidth, backingHeight);
             OpenGL.glMatrixMode(15);
             OpenGL.glLoadIdentity();
-            OpenGL.glOrthof(0.0, (double)origWidth, (double)origHeight, 0.0, -1.0, 1.0);
+            OpenGL.glOrthof(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
             OpenGL.glMatrixMode(14);
             OpenGL.glLoadIdentity();
         }

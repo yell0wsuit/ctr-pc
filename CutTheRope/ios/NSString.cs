@@ -136,7 +136,7 @@ namespace CutTheRope.ios
                 else
                 {
                     num *= 10;
-                    num += (int)(value_[num2++] - '0');
+                    num += value_[num2++] - '0';
                 }
             }
             return num * num4;
@@ -178,15 +178,15 @@ namespace CutTheRope.ios
                 }
                 else
                 {
-                    num *= (float)num5;
-                    num += ((float)value_[num2++] - 48f) / (float)num6;
+                    num *= num5;
+                    num += (value_[num2++] - 48f) / num6;
                     if (num6 > 1)
                     {
                         num6 *= 10;
                     }
                 }
             }
-            return num * (float)num4;
+            return num * num4;
         }
 
         public List<NSString> componentsSeparatedByString(char ch)

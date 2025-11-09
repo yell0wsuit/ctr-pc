@@ -356,8 +356,8 @@ namespace CutTheRope
                 CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
             }
             MouseState mouseState = windows.MouseCursor.GetMouseState();
-            iframework.core.Application.sharedRootController().mouseMoved(CtrRenderer.transformX((float)mouseState.X), CtrRenderer.transformY((float)mouseState.Y));
-            CtrRenderer.update((float)gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            iframework.core.Application.sharedRootController().mouseMoved(CtrRenderer.transformX(mouseState.X), CtrRenderer.transformY(mouseState.Y));
+            CtrRenderer.update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
             base.Update(gameTime);
         }
 

@@ -29,7 +29,7 @@ namespace CutTheRope.game
             t1.x = x - bb.w / 2f;
             t2.x = x + bb.w / 2f;
             t1.y = t2.y = y;
-            angle = (double)DEGREES_TO_RADIANS(rotation);
+            angle = DEGREES_TO_RADIANS(rotation);
             t1 = vectRotateAround(t1, angle, x, y);
             t2 = vectRotateAround(t2, angle, x, y);
         }

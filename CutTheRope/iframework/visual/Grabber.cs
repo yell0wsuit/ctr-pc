@@ -28,14 +28,14 @@ namespace CutTheRope.iframework.visual
             {
                 float[] pointer = [0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT];
                 float[] array = new float[12];
-                array[0] = (float)x;
-                array[1] = (float)y;
-                array[3] = (float)(t._realWidth + x);
-                array[4] = (float)y;
-                array[6] = (float)x;
-                array[7] = (float)(t._realHeight + y);
-                array[9] = (float)(t._realWidth + x);
-                array[10] = (float)(t._realHeight + y);
+                array[0] = x;
+                array[1] = y;
+                array[3] = t._realWidth + x;
+                array[4] = y;
+                array[6] = x;
+                array[7] = t._realHeight + y;
+                array[9] = t._realWidth + x;
+                array[10] = t._realHeight + y;
                 float[] pointer2 = array;
                 OpenGL.glEnable(0);
                 OpenGL.glBindTexture(t.name());

@@ -107,7 +107,7 @@ namespace CutTheRope.iframework.visual
             int num6 = 0;
             char[] characters2 = NSS("..").getCharacters();
             int num7 = (int)font.getCharOffset(characters2, 0, 2);
-            int num8 = (int)((maxHeight == -1f) ? ((float)formattedStrings.Count) : MIN((float)formattedStrings.Count, maxHeight / ((float)num5 + font.getLineOffset())));
+            int num8 = (int)((maxHeight == -1f) ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (num5 + font.getLineOffset())));
             bool flag = num8 != formattedStrings.Count;
             int[] array2 = new int[num];
             for (int k = 0; k < num8; k++)
@@ -146,19 +146,19 @@ namespace CutTheRope.iframework.visual
                             int charQuad2 = font.getCharQuad('.');
                             ImageMultiDrawer imageMultiDrawer2 = multiDrawers[charmapIndex2];
                             int num11 = (int)font.getCharWidth('.');
-                            if (l == num9 - 1 || (l == num9 - 2 && num10 + (float)(3 * (num11 + num7)) + font.getCharWidth(' ') > wrapWidth))
+                            if (l == num9 - 1 || (l == num9 - 2 && num10 + 3 * (num11 + num7) + font.getCharWidth(' ') > wrapWidth))
                             {
                                 imageMultiDrawer2.mapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
-                                num10 += (float)(num11 + num7);
+                                num10 += num11 + num7;
                                 imageMultiDrawer2.mapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
-                                num10 += (float)(num11 + num7);
+                                num10 += num11 + num7;
                                 imageMultiDrawer2.mapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
                                 break;
                             }
                         }
                     }
                 }
-                num4 += (float)num5 + font.getLineOffset();
+                num4 += num5 + font.getLineOffset();
             }
             stringLength = num6;
             if (formattedStrings.Count <= 1)
@@ -168,12 +168,12 @@ namespace CutTheRope.iframework.visual
             }
             else
             {
-                height = (int)((font.fontHeight() + font.getLineOffset()) * (float)formattedStrings.Count - font.getLineOffset());
+                height = (int)((font.fontHeight() + font.getLineOffset()) * formattedStrings.Count - font.getLineOffset());
                 width = (int)wrapWidth;
             }
             if (maxHeight != -1f)
             {
-                height = (int)MIN((float)height, maxHeight);
+                height = (int)MIN(height, maxHeight);
             }
         }
 
@@ -273,8 +273,8 @@ namespace CutTheRope.iframework.visual
             NSRange range = default(NSRange);
             for (int i = 0; i < num9; i++)
             {
-                int num10 = (int)array[i << 1];
-                int num11 = (int)array[(i << 1) + 1];
+                int num10 = array[i << 1];
+                int num11 = array[(i << 1) + 1];
                 range.location = (uint)num10;
                 range.length = (uint)(num11 - num10);
                 NSString str = string_.substringWithRange(range);

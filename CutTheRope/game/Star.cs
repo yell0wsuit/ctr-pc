@@ -37,7 +37,7 @@ namespace CutTheRope.game
 
         public override void update(float delta)
         {
-            if ((double)timeout > 0.0 && (double)time > 0.0)
+            if (timeout > 0.0 && time > 0.0)
             {
                 Mover.moveVariableToTarget(ref time, 0f, 1f, delta);
             }
@@ -52,7 +52,7 @@ namespace CutTheRope.game
 
         public virtual void createAnimations()
         {
-            if ((double)timeout > 0.0)
+            if (timeout > 0.0)
             {
                 timedAnim = Animation_createWithResID(78);
                 timedAnim.anchor = timedAnim.parentAnchor = 18;
@@ -83,12 +83,12 @@ namespace CutTheRope.game
             timeline3.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             addTimelinewithID(timeline3, 0);
             playTimeline(0);
-            Timeline.updateTimeline(timeline3, (float)((double)RND_RANGE(0, 20) / 10.0));
+            Timeline.updateTimeline(timeline3, (float)(RND_RANGE(0, 20) / 10.0));
             Animation animation = Animation_createWithResID(78);
             animation.doRestoreCutTransparency();
             animation.addAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.playTimeline(0);
-            Timeline.updateTimeline(animation.getTimeline(0), (float)((double)RND_RANGE(0, 20) / 10.0));
+            Timeline.updateTimeline(animation.getTimeline(0), (float)(RND_RANGE(0, 20) / 10.0));
             animation.anchor = animation.parentAnchor = 18;
             addChild(animation);
         }

@@ -127,7 +127,7 @@ namespace CutTheRope.iframework.core
                 NSString data2 = xMLNode3.data;
             }
             Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)loadResource(resID, ResourceType.IMAGE), null);
-            font.setCharOffsetLineOffsetSpaceWidth((float)num, (float)num2, (float)num3);
+            font.setCharOffsetLineOffsetSpaceWidth(num, num2, num3);
             return font;
         }
 
@@ -201,7 +201,7 @@ namespace CutTheRope.iframework.core
             XMLNode xMLNode4 = i.findChildWithTagNameRecursively(NSS("preCutHeight"), false);
             if (xMLNode3 != null && xMLNode4 != null)
             {
-                t.preCutSize = vect((float)xMLNode3.data.intValue(), (float)xMLNode4.data.intValue());
+                t.preCutSize = vect(xMLNode3.data.intValue(), xMLNode4.data.intValue());
                 if (isWvga)
                 {
                     t.preCutSize.x = t.preCutSize.x / 1.5f;
@@ -224,7 +224,7 @@ namespace CutTheRope.iframework.core
             {
                 int num3 = i * 4;
                 CTRRectangle rect = MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
-                if ((float)num2 < rect.h + rect.y)
+                if (num2 < rect.h + rect.y)
                 {
                     num2 = (int)ceil((double)(rect.h + rect.y));
                 }

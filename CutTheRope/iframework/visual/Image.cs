@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.visual
         public static Vector getQuadCenter(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.getTexture(textureID);
-            return vectAdd(texture2D.quadOffsets[quad], vect(ceil((double)texture2D.quadRects[quad].w / 2.0), ceil((double)texture2D.quadRects[quad].h / 2.0)));
+            return vectAdd(texture2D.quadOffsets[quad], vect(ceil(texture2D.quadRects[quad].w / 2.0), ceil(texture2D.quadRects[quad].h / 2.0)));
         }
 
         public static Vector getRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)

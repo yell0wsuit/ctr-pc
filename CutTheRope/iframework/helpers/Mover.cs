@@ -15,7 +15,7 @@ namespace CutTheRope.iframework.helpers
             {
                 pathLen = 0;
                 pathCapacity = l;
-                rotateSpeed = (float)num2;
+                rotateSpeed = num2;
                 if (pathCapacity > 0)
                 {
                     path = new Vector[pathCapacity];
@@ -26,7 +26,7 @@ namespace CutTheRope.iframework.helpers
                     moveSpeed = new float[pathCapacity];
                     for (int j = 0; j < moveSpeed.Length; j++)
                     {
-                        moveSpeed[j] = (float)num;
+                        moveSpeed[j] = num;
                     }
                 }
                 paused = false;
@@ -49,7 +49,7 @@ namespace CutTheRope.iframework.helpers
                 bool flag = p.characterAtIndex(1) == 'C';
                 int num = p.substringFromIndex(2).intValue();
                 int num2 = num / 2;
-                float num3 = (float)(6.283185307179586 / (double)num2);
+                float num3 = (float)(6.283185307179586 / num2);
                 if (!flag)
                 {
                     num3 = 0f - num3;
@@ -57,8 +57,8 @@ namespace CutTheRope.iframework.helpers
                 float num4 = 0f;
                 for (int i = 0; i < num2; i++)
                 {
-                    float x = s.x + (float)num * (float)Math.Cos((double)num4);
-                    float y = s.y + (float)num * (float)Math.Sin((double)num4);
+                    float x = s.x + num * (float)Math.Cos((double)num4);
+                    float y = s.y + num * (float)Math.Sin((double)num4);
                     addPathPoint(vect(x, y));
                     num4 += num3;
                 }
@@ -194,7 +194,7 @@ namespace CutTheRope.iframework.helpers
                     angle_ = angle_initial;
                     return;
                 }
-                angle_ += (double)(rotateSpeed * delta);
+                angle_ += rotateSpeed * delta;
             }
         }
 

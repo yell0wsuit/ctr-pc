@@ -15,7 +15,7 @@ namespace CutTheRope.game
         public virtual void setSize(float value)
         {
             size = value;
-            float num = size / ((float)vinilTL.width + (float)vinilTR.width * (1f - vinilTL.scaleX));
+            float num = size / (vinilTL.width + vinilTR.width * (1f - vinilTL.scaleX));
             vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = num;
             vinilHighlightR.scaleX = 0f - num;
             vinilBL.scaleX = vinilBL.scaleY = vinilBR.scaleY = num;
@@ -31,7 +31,7 @@ namespace CutTheRope.game
             vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = num3;
             vinilCenter.scaleX = 1f - (1f - vinilStickerL.scaleX) * 0.5f;
             vinilCenter.scaleY = vinilCenter.scaleX;
-            sizeInPixels = (float)vinilHighlightL.width * vinilHighlightL.scaleX;
+            sizeInPixels = vinilHighlightL.width * vinilHighlightL.scaleX;
             updateChildPositions();
         }
 
@@ -87,11 +87,11 @@ namespace CutTheRope.game
                 soundPlaying = -1;
                 vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
                 vinilStickerL.anchor = 20;
-                vinilStickerL.rotationCenterX = (float)vinilStickerL.width / 2f;
+                vinilStickerL.rotationCenterX = vinilStickerL.width / 2f;
                 vinilStickerR = Image.Image_createWithResIDQuad(103, 2);
                 vinilStickerR.scaleX = -1f;
                 vinilStickerR.anchor = 20;
-                vinilStickerR.rotationCenterX = (float)vinilStickerR.width / 2f;
+                vinilStickerR.rotationCenterX = vinilStickerR.width / 2f;
                 vinilCenter = Image.Image_createWithResIDQuad(103, 3);
                 vinilCenter.anchor = 18;
                 vinilHighlightL = Image.Image_createWithResIDQuad(103, 1);
@@ -170,7 +170,7 @@ namespace CutTheRope.game
             vinilBR.draw();
             OpenGL.glDisable(0);
             OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            if (isRightControllerActive() || isLeftControllerActive() || (double)color.a < 1.0)
+            if (isRightControllerActive() || isLeftControllerActive() || color.a < 1.0)
             {
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.a = 1f - color.a;
@@ -199,8 +199,8 @@ namespace CutTheRope.game
             vinilStickerR.draw();
             OpenGL.glDisable(0);
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            GLDrawer.drawAntialiasedCurve2(x, y, (float)vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
-            GLDrawer.drawAntialiasedCurve2(x, y, (float)(vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
+            GLDrawer.drawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
+            GLDrawer.drawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             vinilControllerL.color = color;
@@ -229,13 +229,13 @@ namespace CutTheRope.game
         {
             vinilCenter.x = x;
             vinilCenter.y = y;
-            float num = (float)(vinilHighlightL.width / 2) * (1f - vinilHighlightL.scaleX);
-            float num2 = (float)(vinilHighlightL.height / 2) * (1f - vinilHighlightL.scaleY);
-            float num3 = (float)(vinilBL.width + 4) / 2f * (1f - vinilBL.scaleX);
-            float num4 = (float)(vinilBL.height + 4) / 2f * (1f - vinilBL.scaleY);
+            float num = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
+            float num2 = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
+            float num3 = (vinilBL.width + 4) / 2f * (1f - vinilBL.scaleX);
+            float num4 = (vinilBL.height + 4) / 2f * (1f - vinilBL.scaleY);
             float num5 = (Math.Abs(vinilControllerR.scaleX) < 1f) ? ((1f - Math.Abs(vinilControllerR.scaleX)) * 10f) : 0f;
             float num6 = (Math.Abs(vinilTL.scaleX) < 0.45f) ? ((0.45f - Math.Abs(vinilTL.scaleX)) * 10f + 1f) : 0f;
-            float num7 = Math.Abs((float)vinilBL.height * vinilBL.scaleY) - Math.Abs((float)vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - num5 - num6;
+            float num7 = Math.Abs(vinilBL.height * vinilBL.scaleY) - Math.Abs(vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - num5 - num6;
             vinilHighlightL.x = x + num;
             vinilHighlightR.x = x - num;
             vinilHighlightL.y = vinilHighlightR.y = y - num2;

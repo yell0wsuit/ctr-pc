@@ -23,7 +23,7 @@ namespace CutTheRope.game
                 bar.x = 738f;
                 bar.y = 1056f;
                 image.addChild(bar);
-                barTotalWidth = (float)bar.width;
+                barTotalWidth = bar.width;
                 addViewwithID(view, 1);
                 view.release();
             }
@@ -33,7 +33,7 @@ namespace CutTheRope.game
         public override void update(float t)
         {
             base.update(t);
-            float num = (float)Application.sharedResourceMgr().getPercentLoaded();
+            float num = Application.sharedResourceMgr().getPercentLoaded();
             bar.width = (int)(barTotalWidth * num / 100f);
         }
 

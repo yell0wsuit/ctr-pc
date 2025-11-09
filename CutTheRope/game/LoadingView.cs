@@ -18,7 +18,7 @@ namespace CutTheRope.game
             preDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             int num7 = 126 + cTRRootController.getPack();
-            float num2 = (float)Application.sharedResourceMgr().getPercentLoaded();
+            float num2 = Application.sharedResourceMgr().getPercentLoaded();
             CTRTexture2D texture = Application.getTexture(num7);
             OpenGL.glColor4f(s_Color1);
             Vector quadSize = Image.getQuadSize(num7, 0);
@@ -35,7 +35,7 @@ namespace CutTheRope.game
             if (!game)
             {
                 OpenGL.glEnable(4);
-                OpenGL.setScissorRectangle(0.0, 0.0, (double)SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
+                OpenGL.setScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
             }
             OpenGL.glColor4f(Color.White);
             num3 = Image.getQuadOffset(5, 0).x;

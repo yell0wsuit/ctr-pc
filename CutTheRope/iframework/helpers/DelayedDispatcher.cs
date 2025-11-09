@@ -36,7 +36,7 @@ namespace CutTheRope.iframework.helpers
             {
                 Dispatch dispatch = dispatchers[i];
                 dispatch.delay -= d;
-                if ((double)dispatch.delay <= 0.0)
+                if (dispatch.delay <= 0.0)
                 {
                     dispatch.dispatch();
                     dispatchers.Remove(dispatch);

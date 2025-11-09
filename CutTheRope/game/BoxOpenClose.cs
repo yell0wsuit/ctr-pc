@@ -60,8 +60,8 @@ namespace CutTheRope.game
                     }
                 case 2:
                     {
-                        cstarBonus = (int)((float)starBonus * raDelay);
-                        cscore = (int)((1f - raDelay) * (float)starBonus);
+                        cstarBonus = (int)(starBonus * raDelay);
+                        cscore = (int)((1f - raDelay) * starBonus);
                         ((Text)result.getChildWithName("dataValue")).setString(cstarBonus.ToString());
                         Text text29 = (Text)result.getChildWithName("scoreValue");
                         text29.setEnabled(true);
@@ -83,8 +83,8 @@ namespace CutTheRope.game
                         {
                             raState = 4;
                             raDelay = 0.2f;
-                            int num = (int)Math.Floor((double)(round((double)time) / 60f));
-                            int num2 = (int)(round((double)time) - (float)num * 60f);
+                            int num = (int)Math.Floor((double)(round(time) / 60f));
+                            int num2 = (int)(round(time) - num * 60f);
                             ((Text)result.getChildWithName("dataTitle")).setString(Application.getString(655377));
                             ((Text)result.getChildWithName("dataValue")).setString(NSS(num.ToString() + ":" + num2.ToString("D2")));
                             return;
@@ -107,9 +107,9 @@ namespace CutTheRope.game
                 case 5:
                     {
                         ctime = time * raDelay;
-                        cscore = (int)((float)starBonus + (1f - raDelay) * (float)timeBonus);
-                        int num3 = (int)Math.Floor((double)round((double)ctime) / 60.0);
-                        int num4 = (int)((double)round((double)ctime) - (double)num3 * 60.0);
+                        cscore = (int)(starBonus + (1f - raDelay) * timeBonus);
+                        int num3 = (int)Math.Floor((double)round(ctime) / 60.0);
+                        int num4 = (int)((double)round(ctime) - num3 * 60.0);
                         ((Text)result.getChildWithName("dataValue")).setString(NSS(num3.ToString() + ":" + num4.ToString("D2")));
                         ((Text)result.getChildWithName("scoreValue")).setString(cscore.ToString());
                         if (flag)
@@ -267,8 +267,8 @@ namespace CutTheRope.game
                 num2 = 9;
                 num3 = 17;
             }
-            float num4 = (float)RND_RANGE((int)RTPD(-100.0), (int)SCREEN_WIDTH);
-            float num5 = (float)RND_RANGE((int)RTPD(-40.0), (int)RTPD(100.0));
+            float num4 = RND_RANGE((int)RTPD(-100.0), (int)SCREEN_WIDTH);
+            float num5 = RND_RANGE((int)RTPD(-40.0), (int)RTPD(100.0));
             float num6 = FLOAT_RND_RANGE(2, 5);
             int i = confetti.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, num2, num3);
             confetti.ani = confetti.getTimeline(i);
@@ -281,7 +281,7 @@ namespace CutTheRope.game
             timeline.addKeyFrame(KeyFrame.makePos((double)num4, (double)(num5 + FLOAT_RND_RANGE((int)RTPD(150.0), (int)RTPD(400.0))), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)num6));
             timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-            timeline.addKeyFrame(KeyFrame.makeRotation((double)RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.addKeyFrame(KeyFrame.makeRotation(RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makeRotation(RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
             confetti.addTimeline(timeline);
             confetti.playTimeline(1);
@@ -391,7 +391,7 @@ namespace CutTheRope.game
             image2.rotationCenterX = (float)-(float)image2.width / 2f;
             image3.rotationCenterX = image2.rotationCenterX;
             image3.rotation = 180f;
-            image3.x = SCREEN_WIDTH - (SCREEN_WIDTH / 2f - (float)image2.width);
+            image3.x = SCREEN_WIDTH - (SCREEN_WIDTH / 2f - image2.width);
             image3.y = -0.5f;
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
@@ -438,7 +438,7 @@ namespace CutTheRope.game
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.addKeyFrame(KeyFrame.makePos((double)((float)image2.width - num4), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(image2.width - num4), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makePos((double)num7, (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
@@ -446,7 +446,7 @@ namespace CutTheRope.game
             else
             {
                 timeline.addKeyFrame(KeyFrame.makePos((double)RTD(-15.0), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos((double)((float)image2.width - num4), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(image2.width - num4), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
@@ -455,7 +455,7 @@ namespace CutTheRope.game
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - (float)image2.width + num5), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - image2.width + num5), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH + num8), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
@@ -463,7 +463,7 @@ namespace CutTheRope.game
             else
             {
                 timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - RTD(9.0)), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - (float)image2.width + num6), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - image2.width + num6), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
@@ -476,7 +476,7 @@ namespace CutTheRope.game
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.addKeyFrame(KeyFrame.makePos((double)(image2.x + (float)image2.width - RTD(6.0)), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(image2.x + image2.width - RTD(6.0)), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makePos(-25.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
@@ -484,7 +484,7 @@ namespace CutTheRope.game
             else
             {
                 timeline.addKeyFrame(KeyFrame.makePos((double)(image2.x + 0f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos((double)((float)image2.width - 16f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(image2.width - 16f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
@@ -494,15 +494,15 @@ namespace CutTheRope.game
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - (float)image2.width + RTD(7.0)), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos((double)SCREEN_WIDTH, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - image2.width + RTD(7.0)), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.addKeyFrame(KeyFrame.makePos(SCREEN_WIDTH, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             else
             {
                 timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - 40f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - (float)image2.width + 20f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.addKeyFrame(KeyFrame.makePos((double)(SCREEN_WIDTH - image2.width + 20f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }

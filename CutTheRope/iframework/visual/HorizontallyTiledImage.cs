@@ -23,7 +23,7 @@ namespace CutTheRope.iframework.visual
             preDraw();
             float w = texture.quadRects[tiles[0]].w;
             float w2 = texture.quadRects[tiles[2]].w;
-            float num = (float)width - (w + w2);
+            float num = width - (w + w2);
             if (num >= 0f)
             {
                 GLDrawer.drawImageQuad(texture, tiles[0], drawX, drawY + offsets[0]);
@@ -34,8 +34,8 @@ namespace CutTheRope.iframework.visual
             {
                 CTRRectangle r = texture.quadRects[tiles[0]];
                 CTRRectangle r2 = texture.quadRects[tiles[2]];
-                r.w = Math.Min(r.w, (float)width / 2f);
-                r2.w = Math.Min(r2.w, (float)width - r.w);
+                r.w = Math.Min(r.w, width / 2f);
+                r2.w = Math.Min(r2.w, width - r.w);
                 r2.x += texture.quadRects[tiles[2]].w - r2.w;
                 GLDrawer.drawImagePart(texture, r, drawX, drawY + offsets[0]);
                 GLDrawer.drawImagePart(texture, r2, drawX + r.w, drawY + offsets[2]);
@@ -63,9 +63,9 @@ namespace CutTheRope.iframework.visual
             {
                 height = (int)h3;
             }
-            offsets[0] = ((float)height - h) / 2f;
-            offsets[1] = ((float)height - h2) / 2f;
-            offsets[2] = ((float)height - h3) / 2f;
+            offsets[0] = (height - h) / 2f;
+            offsets[1] = (height - h2) / 2f;
+            offsets[2] = (height - h3) / 2f;
         }
 
         public static HorizontallyTiledImage HorizontallyTiledImage_create(CTRTexture2D t)

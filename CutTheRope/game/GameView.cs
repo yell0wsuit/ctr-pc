@@ -51,7 +51,7 @@ namespace CutTheRope.game
                 }
             }
             GameScene gameScene = (GameScene)getChild(0);
-            if ((double)gameScene.dimTime > 0.0)
+            if (gameScene.dimTime > 0.0)
             {
                 float num2 = gameScene.dimTime / 0.15f;
                 if (gameScene.restartState == 0)

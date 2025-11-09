@@ -135,7 +135,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return (double)_scaledViewRect.Width / (double)_gameWidth;
+                return _scaledViewRect.Width / (double)_gameWidth;
             }
         }
 
@@ -164,19 +164,19 @@ namespace CutTheRope.windows
 
         public float TransformViewToGameX(float x)
         {
-            return x * (float)_gameWidth / (float)_scaledViewRect.Width;
+            return x * _gameWidth / _scaledViewRect.Width;
         }
 
         public float TransformViewToGameY(float y)
         {
-            return y * (float)_gameHeight / (float)_scaledViewRect.Height;
+            return y * _gameHeight / _scaledViewRect.Height;
         }
 
         public ScreenSizeManager(int gameWidth, int gameHeight)
         {
             _gameWidth = gameWidth;
             _gameHeight = gameHeight;
-            _gameAspectRatio = (double)gameHeight / (double)gameWidth;
+            _gameAspectRatio = gameHeight / (double)gameWidth;
         }
 
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
@@ -206,12 +206,12 @@ namespace CutTheRope.windows
 
         public int ScaledGameWidth(int scaledHeight)
         {
-            return (int)((double)scaledHeight / _gameAspectRatio + 0.5);
+            return (int)(scaledHeight / _gameAspectRatio + 0.5);
         }
 
         public int ScaledGameHeight(int scaledWidth)
         {
-            return (int)((double)scaledWidth * _gameAspectRatio + 0.5);
+            return (int)(scaledWidth * _gameAspectRatio + 0.5);
         }
 
         private void UpdateScaledView()
@@ -232,7 +232,7 @@ namespace CutTheRope.windows
                 _scaledViewRect = new Microsoft.Xna.Framework.Rectangle((_fullScreenRect.Width - num2) / 2, (_fullScreenRect.Height - num) / 2, num2, num);
                 return;
             }
-            int num3 = _fullScreenCropWidth ? ((int)((float)_fullScreenRect.Width / 5f * 4f)) : ScaledGameHeight(_fullScreenRect.Width);
+            int num3 = _fullScreenCropWidth ? ((int)(_fullScreenRect.Width / 5f * 4f)) : ScaledGameHeight(_fullScreenRect.Width);
             int num4 = _fullScreenCropWidth ? ScaledGameWidth(num3) : _fullScreenRect.Width;
             _scaledViewRect = new Microsoft.Xna.Framework.Rectangle((_fullScreenRect.Width - num4) / 2, (_fullScreenRect.Height - num3) / 2, num4, num3);
         }

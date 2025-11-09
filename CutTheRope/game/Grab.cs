@@ -75,7 +75,7 @@ namespace CutTheRope.game
             float num2 = 0f;
             if (rope != null)
             {
-                num2 = (float)rope.getLength();
+                num2 = rope.getLength();
             }
             if (rope != null)
             {
@@ -118,7 +118,7 @@ namespace CutTheRope.game
             if (hideRadius)
             {
                 radiusAlpha -= 1.5f * delta;
-                if ((double)radiusAlpha <= 0.0)
+                if (radiusAlpha <= 0.0)
                 {
                     radius = -1f;
                     hideRadius = false;
@@ -139,7 +139,7 @@ namespace CutTheRope.game
             }
             if (wheel && wheelDirty)
             {
-                float num2 = (rope == null) ? 0f : ((float)rope.getLength() * 0.7f);
+                float num2 = (rope == null) ? 0f : (rope.getLength() * 0.7f);
                 if (num2 == 0f)
                 {
                     wheelImage2.scaleX = wheelImage2.scaleY = 0f;
@@ -209,7 +209,7 @@ namespace CutTheRope.game
 
         public virtual void drawBack()
         {
-            if ((double)moveLength > 0.0)
+            if (moveLength > 0.0)
             {
                 moveBackground.draw();
             }
@@ -220,7 +220,7 @@ namespace CutTheRope.game
             OpenGL.glDisable(0);
             if (radius != -1f || hideRadius)
             {
-                RGBAColor rGBAColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, (double)radiusAlpha);
+                RGBAColor rGBAColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
                 drawGrabCircle(this, x, y, radius, vertexCount, rGBAColor);
             }
             OpenGL.glColor4f(Color.White);
@@ -250,7 +250,7 @@ namespace CutTheRope.game
             bungee?.draw();
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
-            if ((double)moveLength <= 0.0)
+            if (moveLength <= 0.0)
             {
                 front.draw();
             }
@@ -363,12 +363,12 @@ namespace CutTheRope.game
             moveLength = l;
             moveVertical = v;
             moveOffset = o;
-            if ((double)moveLength > 0.0)
+            if (moveLength > 0.0)
             {
                 moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(82);
                 moveBackground.setTileHorizontallyLeftCenterRight(0, 2, 1);
                 moveBackground.width = (int)(l + 142f);
-                moveBackground.rotationCenterX = 0f - round((double)moveBackground.width / 2.0) + 74f;
+                moveBackground.rotationCenterX = 0f - round(moveBackground.width / 2.0) + 74f;
                 moveBackground.x = -74f;
                 grabMoverHighlight = Image_createWithResIDQuad(82, 3);
                 grabMoverHighlight.visible = false;
@@ -418,8 +418,8 @@ namespace CutTheRope.game
             Vector quadOffset = getQuadOffset(98, 0);
             bee.x = 0f - quadOffset.x;
             bee.y = 0f - quadOffset.y;
-            bee.rotationCenterX = quadOffset.x - (float)(bee.width / 2);
-            bee.rotationCenterY = quadOffset.y - (float)(bee.height / 2);
+            bee.rotationCenterX = quadOffset.x - bee.width / 2;
+            bee.rotationCenterY = quadOffset.y - bee.height / 2;
             bee.scaleX = bee.scaleY = 0.7692308f;
             addChild(bee);
         }

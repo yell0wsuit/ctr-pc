@@ -22,11 +22,11 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDisable(0);
             if (solid)
             {
-                GLDrawer.drawSolidRectWOBorder(drawX, drawY, (float)width, (float)height, color);
+                GLDrawer.drawSolidRectWOBorder(drawX, drawY, width, height, color);
             }
             else
             {
-                GLDrawer.drawRect(drawX, drawY, (float)width, (float)height, color);
+                GLDrawer.drawRect(drawX, drawY, width, height, color);
             }
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);

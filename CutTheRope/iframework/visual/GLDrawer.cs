@@ -46,8 +46,8 @@ namespace CutTheRope.iframework.visual
             float num2;
             if (q == -1)
             {
-                num = (float)image._realWidth;
-                num2 = (float)image._realHeight;
+                num = image._realWidth;
+                num2 = image._realHeight;
             }
             else
             {
@@ -89,8 +89,8 @@ namespace CutTheRope.iframework.visual
             float num2;
             if (q == -1)
             {
-                num = (float)image._realWidth;
-                num2 = (float)image._realHeight;
+                num = image._realWidth;
+                num2 = image._realHeight;
             }
             else
             {
@@ -108,8 +108,8 @@ namespace CutTheRope.iframework.visual
             int num12 = (int)ceil((double)(height / num2));
             int num4 = (int)width % (int)num;
             int num5 = (int)height % (int)num2;
-            int num6 = (int)((num4 == 0) ? num : ((float)num4));
-            int num7 = (int)((num5 == 0) ? num2 : ((float)num5));
+            int num6 = (int)((num4 == 0) ? num : num4);
+            int num7 = (int)((num5 == 0) ? num2 : num5);
             int num8 = (int)x;
             int num9 = (int)y;
             for (int num10 = num12 - 1; num10 >= 0; num10--)
@@ -119,12 +119,12 @@ namespace CutTheRope.iframework.visual
                 {
                     if (num11 == 0 || num10 == 0)
                     {
-                        CTRRectangle r = MakeRectangle(xParam, yParam, (num11 == 0) ? ((float)num6) : num, (num10 == 0) ? ((float)num7) : num2);
-                        drawImagePart(image, r, (float)num8, (float)num9);
+                        CTRRectangle r = MakeRectangle(xParam, yParam, (num11 == 0) ? num6 : num, (num10 == 0) ? num7 : num2);
+                        drawImagePart(image, r, num8, num9);
                     }
                     else
                     {
-                        drawImageQuad(image, q, (float)num8, (float)num9);
+                        drawImageQuad(image, q, num8, num9);
                     }
                     num8 += (int)num;
                 }
@@ -167,7 +167,7 @@ namespace CutTheRope.iframework.visual
 
         public static void calcCircle(float x, float y, float radius, int vertexCount, float[] glVertices)
         {
-            float num = (float)(6.283185307179586 / (double)vertexCount);
+            float num = (float)(6.283185307179586 / vertexCount);
             float num2 = 0f;
             for (int i = 0; i < vertexCount; i++)
             {
@@ -264,7 +264,7 @@ namespace CutTheRope.iframework.visual
 
         private static void calcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
-            float num7 = (endAngle - startAngle) / (float)(vertexCount - 1);
+            float num7 = (endAngle - startAngle) / (vertexCount - 1);
             float num = tanf(num7);
             float num2 = cosf(num7);
             float num3 = radius * cosf(startAngle);

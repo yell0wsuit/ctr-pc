@@ -79,7 +79,7 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            float num = (!electro) ? texture.quadRects[quadToDraw].w : ((float)width - RTPD(400.0));
+            float num = (!electro) ? texture.quadRects[quadToDraw].w : (width - RTPD(400.0));
             num /= 2f;
             t1.x = x - num;
             t2.x = x + num;
@@ -87,7 +87,7 @@ namespace CutTheRope.game
             b1.x = t1.x;
             b2.x = t2.x;
             b1.y = b2.y = y + 5f;
-            angle = (double)DEGREES_TO_RADIANS(rotation);
+            angle = DEGREES_TO_RADIANS(rotation);
             t1 = vectRotateAround(t1, angle, x, y);
             t2 = vectRotateAround(t2, angle, x, y);
             b1 = vectRotateAround(b1, angle, x, y);
@@ -118,7 +118,7 @@ namespace CutTheRope.game
         {
             spikesNormal = !spikesNormal;
             removeTimeline(2);
-            float num = (float)(spikesNormal ? 90 : 0);
+            float num = spikesNormal ? 90 : 0;
             float num2 = origRotation + num;
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             timeline.addKeyFrame(KeyFrame.makeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
@@ -154,7 +154,7 @@ namespace CutTheRope.game
             if (electroOn)
             {
                 Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
-                if ((double)electroTimer == 0.0)
+                if (electroTimer == 0.0)
                 {
                     turnElectroOff();
                     return;
@@ -163,7 +163,7 @@ namespace CutTheRope.game
             else
             {
                 Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
-                if ((double)electroTimer == 0.0)
+                if (electroTimer == 0.0)
                 {
                     turnElectroOn();
                 }

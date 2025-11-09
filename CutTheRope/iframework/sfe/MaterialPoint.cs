@@ -21,7 +21,7 @@ namespace CutTheRope.iframework.sfe
         public virtual void setWeight(float w)
         {
             weight = w;
-            invWeight = (float)(1.0 / (double)weight);
+            invWeight = (float)(1.0 / weight);
             gravity = vect(0f, 784f * weight);
         }
 
@@ -80,7 +80,7 @@ namespace CutTheRope.iframework.sfe
             int num = (int)(delta / p) + 1;
             if (num != 0)
             {
-                delta /= (float)num;
+                delta /= num;
             }
             for (int i = 0; i < num; i++)
             {
