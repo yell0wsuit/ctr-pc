@@ -112,14 +112,14 @@ namespace CutTheRope.ctr_commons
         public override bool onTouchUpXY(float tx, float ty)
         {
             bool flag = base.onTouchUpXY(tx, ty);
-            this.container.startMovingToSpointInDirection(MathHelper.vectZero);
+            this.container.startMovingToSpointInDirection(CTRMathHelper.vectZero);
             return flag;
         }
 
         public void percentXY(float px, float py)
         {
             Vector maxScroll = this.container.getMaxScroll();
-            this.container.setScroll(MathHelper.vect(maxScroll.x * px, maxScroll.y * py));
+            this.container.setScroll(CTRMathHelper.vect(maxScroll.x * px, maxScroll.y * py));
         }
 
         public virtual void updateLift()
@@ -152,7 +152,7 @@ namespace CutTheRope.ctr_commons
             this.limitPoints = new int[this.spointsNum];
             for (int i = 0; i < this.spointsNum; i++)
             {
-                Vector vector = MathHelper.vectNeg(this.container.getScrollPoint(i));
+                Vector vector = CTRMathHelper.vectNeg(this.container.getScrollPoint(i));
                 float num = 0f;
                 float num2 = 0f;
                 if (maxScroll.x != 0f)
@@ -165,7 +165,7 @@ namespace CutTheRope.ctr_commons
                 }
                 float num3 = (this.lift.maxX - this.lift.minX) * num + this.lift.minX;
                 float num4 = (this.lift.maxY - this.lift.minY) * num2 + this.lift.minY;
-                this.spoints[i] = MathHelper.vect(num3, num4);
+                this.spoints[i] = CTRMathHelper.vect(num3, num4);
             }
             for (int j = 0; j < this.spointsNum; j++)
             {

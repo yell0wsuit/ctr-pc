@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace CutTheRope.iframework
 {
-    internal class FrameworkTypes : MathHelper
+    internal class FrameworkTypes : CTRMathHelper
     {
         // (get) Token: 0x06000108 RID: 264 RVA: 0x00005BCC File Offset: 0x00003DCC
         public GLCanvas canvas

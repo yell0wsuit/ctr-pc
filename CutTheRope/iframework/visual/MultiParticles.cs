@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.visual
         public override void initParticle(ref Particle particle)
         {
             Image image = this.imageGrid;
-            int num = MathHelper.RND(image.texture.quadsCount - 1);
+            int num = CTRMathHelper.RND(image.texture.quadsCount - 1);
             Quad2D qt = image.texture.quads[num];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             Rectangle rectangle = image.texture.quadRects[num];
@@ -49,22 +49,22 @@ namespace CutTheRope.iframework.visual
         {
             if (p.life > 0f)
             {
-                Vector vector = MathHelper.vectZero;
+                Vector vector = CTRMathHelper.vectZero;
                 if (p.pos.x != 0f || p.pos.y != 0f)
                 {
-                    vector = MathHelper.vectNormalize(p.pos);
+                    vector = CTRMathHelper.vectNormalize(p.pos);
                 }
                 Vector v = vector;
-                vector = MathHelper.vectMult(vector, p.radialAccel);
+                vector = CTRMathHelper.vectMult(vector, p.radialAccel);
                 float num = v.x;
                 v.x = 0f - v.y;
                 v.y = num;
-                v = MathHelper.vectMult(v, p.tangentialAccel);
-                Vector v2 = MathHelper.vectAdd(MathHelper.vectAdd(vector, v), this.gravity);
-                v2 = MathHelper.vectMult(v2, delta);
-                p.dir = MathHelper.vectAdd(p.dir, v2);
-                v2 = MathHelper.vectMult(p.dir, delta);
-                p.pos = MathHelper.vectAdd(p.pos, v2);
+                v = CTRMathHelper.vectMult(v, p.tangentialAccel);
+                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), this.gravity);
+                v2 = CTRMathHelper.vectMult(v2, delta);
+                p.dir = CTRMathHelper.vectAdd(p.dir, v2);
+                v2 = CTRMathHelper.vectMult(p.dir, delta);
+                p.pos = CTRMathHelper.vectAdd(p.pos, v2);
                 p.color.r = p.color.r + p.deltaColor.r * delta;
                 p.color.g = p.color.g + p.deltaColor.g * delta;
                 p.color.b = p.color.b + p.deltaColor.b * delta;

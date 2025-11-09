@@ -43,8 +43,8 @@ namespace CutTheRope.game
 
         public virtual float getRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
-            Vector v3 = CutTheRope.iframework.helpers.MathHelper.vectSub(v1, c);
-            return CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(CutTheRope.iframework.helpers.MathHelper.vectSub(v2, c)) - CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v3));
+            Vector v3 = CTRMathHelper.vectSub(v1, c);
+            return CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(CTRMathHelper.vectSub(v2, c)) - CTRMathHelper.vectAngleNormalized(v3));
         }
 
         public virtual void handleWheelTouch(Vector v)
@@ -59,7 +59,7 @@ namespace CutTheRope.game
                 return;
             }
             CTRSoundMgr._playSound(36);
-            float num = this.getRotateAngleForStartEndCenter(this.lastWheelTouch, v, CutTheRope.iframework.helpers.MathHelper.vect(this.x, this.y));
+            float num = this.getRotateAngleForStartEndCenter(this.lastWheelTouch, v, CTRMathHelper.vect(this.x, this.y));
             if ((double)num > 180.0)
             {
                 num -= 360f;
@@ -71,7 +71,7 @@ namespace CutTheRope.game
             this.wheelImage2.rotation += num;
             this.wheelImage3.rotation += num;
             this.wheelHighlight.rotation += num;
-            num = ((num > 0f) ? CutTheRope.iframework.helpers.MathHelper.MIN((double)CutTheRope.iframework.helpers.MathHelper.MAX(1.0, (double)num), 4.5) : CutTheRope.iframework.helpers.MathHelper.MAX((double)CutTheRope.iframework.helpers.MathHelper.MIN(-1.0, (double)num), -4.5));
+            num = ((num > 0f) ? CTRMathHelper.MIN((double)CTRMathHelper.MAX(1.0, (double)num), 4.5) : CTRMathHelper.MAX((double)CTRMathHelper.MIN(-1.0, (double)num), -4.5));
             float num2 = 0f;
             if (this.rope != null)
             {
@@ -100,7 +100,7 @@ namespace CutTheRope.game
             base.update(delta);
             if (this.launcher && this.rope != null)
             {
-                this.rope.bungeeAnchor.pos = CutTheRope.iframework.helpers.MathHelper.vect(this.x, this.y);
+                this.rope.bungeeAnchor.pos = CTRMathHelper.vect(this.x, this.y);
                 this.rope.bungeeAnchor.pin = this.rope.bungeeAnchor.pos;
                 if (this.launcherIncreaseSpeed)
                 {
@@ -128,9 +128,9 @@ namespace CutTheRope.game
             {
                 Vector vector2 = this.mover.path[this.mover.targetPoint];
                 Vector pos = this.mover.pos;
-                Vector vector = CutTheRope.iframework.helpers.MathHelper.vectSub(vector2, pos);
+                Vector vector = CTRMathHelper.vectSub(vector2, pos);
                 float t = 0f;
-                if (CutTheRope.iframework.helpers.MathHelper.ABS(vector.x) > 15f)
+                if (CTRMathHelper.ABS(vector.x) > 15f)
                 {
                     float num = 10f;
                     t = ((vector.x > 0f) ? num : (0f - num));
@@ -145,7 +145,7 @@ namespace CutTheRope.game
                     this.wheelImage2.scaleX = (this.wheelImage2.scaleY = 0f);
                     return;
                 }
-                this.wheelImage2.scaleX = (this.wheelImage2.scaleY = CutTheRope.iframework.helpers.MathHelper.MAX(0f, CutTheRope.iframework.helpers.MathHelper.MIN(1.2, 1.0 - (double)FrameworkTypes.RT((double)(num2 / 1400f), (double)num2 / 700.0))));
+                this.wheelImage2.scaleX = (this.wheelImage2.scaleY = CTRMathHelper.MAX(0f, CTRMathHelper.MIN(1.2, 1.0 - (double)FrameworkTypes.RT((double)(num2 / 1400f), (double)num2 / 700.0))));
             }
         }
 
@@ -173,14 +173,14 @@ namespace CutTheRope.game
                 int i = 0;
                 while (i < this.rope.drawPtsCount)
                 {
-                    Vector vector = CutTheRope.iframework.helpers.MathHelper.vect(this.rope.drawPts[i], this.rope.drawPts[i + 1]);
-                    Vector vector2 = CutTheRope.iframework.helpers.MathHelper.vect(this.rope.drawPts[i + 2], this.rope.drawPts[i + 3]);
-                    float num2 = CutTheRope.iframework.helpers.MathHelper.MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, CutTheRope.iframework.helpers.MathHelper.vectDistance(vector, vector2));
+                    Vector vector = CTRMathHelper.vect(this.rope.drawPts[i], this.rope.drawPts[i + 1]);
+                    Vector vector2 = CTRMathHelper.vect(this.rope.drawPts[i + 2], this.rope.drawPts[i + 3]);
+                    float num2 = CTRMathHelper.MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, CTRMathHelper.vectDistance(vector, vector2));
                     if (this.spiderPos >= num && (this.spiderPos < num + num2 || i > this.rope.drawPtsCount - 3))
                     {
                         float num3 = this.spiderPos - num;
-                        Vector v = CutTheRope.iframework.helpers.MathHelper.vectSub(vector2, vector);
-                        v = CutTheRope.iframework.helpers.MathHelper.vectMult(v, num3 / num2);
+                        Vector v = CTRMathHelper.vectSub(vector2, vector);
+                        v = CTRMathHelper.vectMult(v, num3 / num2);
                         this.spider.x = vector.x + v.x;
                         this.spider.y = vector.y + v.y;
                         if (i > this.rope.drawPtsCount - 3)
@@ -189,7 +189,7 @@ namespace CutTheRope.game
                         }
                         if (this.spider.getCurrentTimelineIndex() != 0)
                         {
-                            this.spider.rotation = CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v)) + 270f;
+                            this.spider.rotation = CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(v)) + 270f;
                             break;
                         }
                         break;
@@ -290,7 +290,7 @@ namespace CutTheRope.game
             this.launcherIncreaseSpeed = true;
             this.launcherSpeed = 130f;
             Mover mover = new Mover().initWithPathCapacityMoveSpeedRotateSpeed(100, this.launcherSpeed, 0f);
-            mover.setPathFromStringandStart(NSObject.NSS("RC30"), CutTheRope.iframework.helpers.MathHelper.vect(this.x, this.y));
+            mover.setPathFromStringandStart(NSObject.NSS("RC30"), CTRMathHelper.vect(this.x, this.y));
             this.setMover(mover);
             mover.start();
         }
@@ -305,7 +305,7 @@ namespace CutTheRope.game
             this.radius = r;
             if (this.radius == -1f)
             {
-                int r2 = CutTheRope.iframework.helpers.MathHelper.RND_RANGE(76, 77);
+                int r2 = CTRMathHelper.RND_RANGE(76, 77);
                 this.back = Image.Image_createWithResIDQuad(r2, 0);
                 this.back.doRestoreCutTransparency();
                 this.back.anchor = (this.back.parentAnchor = 18);
@@ -329,7 +329,7 @@ namespace CutTheRope.game
                 this.front.visible = false;
                 this.radiusAlpha = 1f;
                 this.hideRadius = false;
-                this.vertexCount = (int)CutTheRope.iframework.helpers.MathHelper.MAX(16f, this.radius);
+                this.vertexCount = (int)CTRMathHelper.MAX(16f, this.radius);
                 this.vertexCount /= 2;
                 if (this.vertexCount % 2 != 0)
                 {
@@ -368,7 +368,7 @@ namespace CutTheRope.game
                 this.moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(82);
                 this.moveBackground.setTileHorizontallyLeftCenterRight(0, 2, 1);
                 this.moveBackground.width = (int)(l + 142f);
-                this.moveBackground.rotationCenterX = 0f - CutTheRope.iframework.helpers.MathHelper.round((double)this.moveBackground.width / 2.0) + 74f;
+                this.moveBackground.rotationCenterX = 0f - CTRMathHelper.round((double)this.moveBackground.width / 2.0) + 74f;
                 this.moveBackground.x = -74f;
                 this.grabMoverHighlight = Image.Image_createWithResIDQuad(82, 3);
                 this.grabMoverHighlight.visible = false;
@@ -413,7 +413,7 @@ namespace CutTheRope.game
             animation.doRestoreCutTransparency();
             animation.addAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.playTimeline(0);
-            animation.jumpTo(CutTheRope.iframework.helpers.MathHelper.RND_RANGE(0, 2));
+            animation.jumpTo(CTRMathHelper.RND_RANGE(0, 2));
             this.bee.addChild(animation);
             Vector quadOffset = Image.getQuadOffset(98, 0);
             this.bee.x = 0f - quadOffset.x;

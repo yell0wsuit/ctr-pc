@@ -302,7 +302,7 @@ namespace CutTheRope.game
 
         public void setScoreHash()
         {
-            NSString mD5Str = MathHelper.getMD5Str(NSObject.NSS(this.getTotalScore().ToString()));
+            NSString mD5Str = CTRMathHelper.getMD5Str(NSObject.NSS(this.getTotalScore().ToString()));
             this.setStringforKey(mD5Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 

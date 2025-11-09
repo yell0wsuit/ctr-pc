@@ -82,8 +82,8 @@ namespace CutTheRope.game
             Button c4 = MenuController.createButtonWithTextIDDelegate(Application.getString(655400), 4, this);
             vBox.addChild(c4);
             vBox.anchor = (vBox.parentAnchor = 10);
-            Vector offset = MathHelper.vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
-            ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, MathHelper.vectZero);
+            Vector offset = CTRMathHelper.vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
+            ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, CTRMathHelper.vectZero);
             ToggleButton toggleButton2 = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(2, this, 11, offset);
             HBox hBox = new HBox().initWithOffsetAlignHeight(-10f, 16, (float)toggleButton.height);
             hBox.addChild(toggleButton2);

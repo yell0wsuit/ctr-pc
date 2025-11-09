@@ -163,7 +163,7 @@ namespace CutTheRope.ctr_commons
                 return;
             }
             ResDataPhoneFull.LANGUAGE = language;
-            CutTheRope.iframework.helpers.MathHelper.fmInit();
+            CutTheRope.iframework.helpers.CTRMathHelper.fmInit();
             CtrRenderer.gApp = new CTRApp();
             CtrRenderer.gApp.init();
             CtrRenderer.gApp.applicationDidFinishLaunching(null);

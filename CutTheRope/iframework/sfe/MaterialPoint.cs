@@ -22,7 +22,7 @@ namespace CutTheRope.iframework.sfe
         {
             this.weight = w;
             this.invWeight = (float)(1.0 / (double)this.weight);
-            this.gravity = MathHelper.vect(0f, 784f * this.weight);
+            this.gravity = CTRMathHelper.vect(0f, 784f * this.weight);
         }
 
         public override void dealloc()
@@ -40,11 +40,11 @@ namespace CutTheRope.iframework.sfe
         public virtual void resetAll()
         {
             this.resetForces();
-            this.v = MathHelper.vectZero;
-            this.a = MathHelper.vectZero;
-            this.pos = MathHelper.vectZero;
-            this.posDelta = MathHelper.vectZero;
-            this.totalForce = MathHelper.vectZero;
+            this.v = CTRMathHelper.vectZero;
+            this.a = CTRMathHelper.vectZero;
+            this.pos = CTRMathHelper.vectZero;
+            this.posDelta = CTRMathHelper.vectZero;
+            this.totalForce = CTRMathHelper.vectZero;
         }
 
         public virtual void setForcewithID(Vector force, int n)
@@ -58,7 +58,7 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void deleteForce(int n)
         {
-            this.forces[n] = MathHelper.vectZero;
+            this.forces[n] = CTRMathHelper.vectZero;
         }
 
         public virtual Vector getForce(int n)
@@ -68,10 +68,10 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void applyImpulseDelta(Vector impulse, float delta)
         {
-            if (!MathHelper.vectEqual(impulse, MathHelper.vectZero))
+            if (!CTRMathHelper.vectEqual(impulse, CTRMathHelper.vectZero))
             {
-                Vector v = MathHelper.vectMult(impulse, (float)((double)delta / 1.0));
-                this.pos = MathHelper.vectAdd(this.pos, v);
+                Vector v = CTRMathHelper.vectMult(impulse, (float)((double)delta / 1.0));
+                this.pos = CTRMathHelper.vectAdd(this.pos, v);
             }
         }
 
@@ -90,30 +90,30 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void update(float delta)
         {
-            this.totalForce = MathHelper.vectZero;
+            this.totalForce = CTRMathHelper.vectZero;
             if (!this.disableGravity)
             {
-                if (!MathHelper.vectEqual(MaterialPoint.globalGravity, MathHelper.vectZero))
+                if (!CTRMathHelper.vectEqual(MaterialPoint.globalGravity, CTRMathHelper.vectZero))
                 {
-                    this.totalForce = MathHelper.vectAdd(this.totalForce, MathHelper.vectMult(MaterialPoint.globalGravity, this.weight));
+                    this.totalForce = CTRMathHelper.vectAdd(this.totalForce, CTRMathHelper.vectMult(MaterialPoint.globalGravity, this.weight));
                 }
                 else
                 {
-                    this.totalForce = MathHelper.vectAdd(this.totalForce, this.gravity);
+                    this.totalForce = CTRMathHelper.vectAdd(this.totalForce, this.gravity);
                 }
             }
             if (this.highestForceIndex != -1)
             {
                 for (int i = 0; i <= this.highestForceIndex; i++)
                 {
-                    this.totalForce = MathHelper.vectAdd(this.totalForce, this.forces[i]);
+                    this.totalForce = CTRMathHelper.vectAdd(this.totalForce, this.forces[i]);
                 }
             }
-            this.totalForce = MathHelper.vectMult(this.totalForce, this.invWeight);
-            this.a = MathHelper.vectMult(this.totalForce, (float)((double)delta / 1.0));
-            this.v = MathHelper.vectAdd(this.v, this.a);
-            this.posDelta = MathHelper.vectMult(this.v, (float)((double)delta / 1.0));
-            this.pos = MathHelper.vectAdd(this.pos, this.posDelta);
+            this.totalForce = CTRMathHelper.vectMult(this.totalForce, this.invWeight);
+            this.a = CTRMathHelper.vectMult(this.totalForce, (float)((double)delta / 1.0));
+            this.v = CTRMathHelper.vectAdd(this.v, this.a);
+            this.posDelta = CTRMathHelper.vectMult(this.v, (float)((double)delta / 1.0));
+            this.pos = CTRMathHelper.vectAdd(this.pos, this.posDelta);
         }
 
         public virtual void drawForces()

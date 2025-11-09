@@ -39,7 +39,7 @@ namespace CutTheRope.game
             int num;
             do
             {
-                num = MathHelper.RND_RANGE(minId, maxId);
+                num = CTRMathHelper.RND_RANGE(minId, maxId);
             }
             while (num == CTRSoundMgr.prevMusic);
             CTRSoundMgr.prevMusic = num;

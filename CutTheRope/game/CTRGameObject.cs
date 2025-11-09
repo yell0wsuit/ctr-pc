@@ -28,7 +28,7 @@ namespace CutTheRope.game
                 CTRMover cTRMover = (CTRMover)new CTRMover().initWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
                 cTRMover.angle_ = (double)this.rotation;
                 cTRMover.angle_initial = cTRMover.angle_;
-                cTRMover.setPathFromStringandStart(nSString2, MathHelper.vect(this.x, this.y));
+                cTRMover.setPathFromStringandStart(nSString2, CTRMathHelper.vect(this.x, this.y));
                 this.setMover(cTRMover);
                 cTRMover.start();
             }

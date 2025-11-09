@@ -83,8 +83,8 @@ namespace CutTheRope.game
                         {
                             this.raState = 4;
                             this.raDelay = 0.2f;
-                            int num = (int)Math.Floor((double)(MathHelper.round((double)this.time) / 60f));
-                            int num2 = (int)(MathHelper.round((double)this.time) - (float)num * 60f);
+                            int num = (int)Math.Floor((double)(CTRMathHelper.round((double)this.time) / 60f));
+                            int num2 = (int)(CTRMathHelper.round((double)this.time) - (float)num * 60f);
                             ((Text)this.result.getChildWithName("dataTitle")).setString(Application.getString(655377));
                             ((Text)this.result.getChildWithName("dataValue")).setString(NSObject.NSS(num.ToString() + ":" + num2.ToString("D2")));
                             return;
@@ -108,8 +108,8 @@ namespace CutTheRope.game
                     {
                         this.ctime = this.time * this.raDelay;
                         this.cscore = (int)((float)this.starBonus + (1f - this.raDelay) * (float)this.timeBonus);
-                        int num3 = (int)Math.Floor((double)MathHelper.round((double)this.ctime) / 60.0);
-                        int num4 = (int)((double)MathHelper.round((double)this.ctime) - (double)num3 * 60.0);
+                        int num3 = (int)Math.Floor((double)CTRMathHelper.round((double)this.ctime) / 60.0);
+                        int num4 = (int)((double)CTRMathHelper.round((double)this.ctime) - (double)num3 * 60.0);
                         ((Text)this.result.getChildWithName("dataValue")).setString(NSObject.NSS(num3.ToString() + ":" + num4.ToString("D2")));
                         ((Text)this.result.getChildWithName("scoreValue")).setString(this.cscore.ToString());
                         if (flag)
@@ -251,7 +251,7 @@ namespace CutTheRope.game
         {
             BoxOpenClose.Confetti confetti = BoxOpenClose.Confetti.Confetti_createWithResID(65);
             confetti.doRestoreCutTransparency();
-            int num = MathHelper.RND_RANGE(0, 2);
+            int num = CTRMathHelper.RND_RANGE(0, 2);
             int num2 = 18;
             int num3 = 26;
             if (num != 1)
@@ -267,22 +267,22 @@ namespace CutTheRope.game
                 num2 = 9;
                 num3 = 17;
             }
-            float num4 = (float)MathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-100.0), (int)FrameworkTypes.SCREEN_WIDTH);
-            float num5 = (float)MathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-40.0), (int)FrameworkTypes.RTPD(100.0));
-            float num6 = MathHelper.FLOAT_RND_RANGE(2, 5);
+            float num4 = (float)CTRMathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-100.0), (int)FrameworkTypes.SCREEN_WIDTH);
+            float num5 = (float)CTRMathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-40.0), (int)FrameworkTypes.RTPD(100.0));
+            float num6 = CTRMathHelper.FLOAT_RND_RANGE(2, 5);
             int i = confetti.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, num2, num3);
             confetti.ani = confetti.getTimeline(i);
             confetti.ani.playTimeline();
-            confetti.ani.jumpToTrackKeyFrame(4, MathHelper.RND_RANGE(0, num3 - num2 - 1));
+            confetti.ani.jumpToTrackKeyFrame(4, CTRMathHelper.RND_RANGE(0, num3 - num2 - 1));
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
             timeline.addKeyFrame(KeyFrame.makePos((double)num4, (double)num5, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makePos((double)num4, (double)(num5 + MathHelper.FLOAT_RND_RANGE((int)FrameworkTypes.RTPD(150.0), (int)FrameworkTypes.RTPD(400.0))), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)num6));
+            timeline.addKeyFrame(KeyFrame.makePos((double)num4, (double)(num5 + CTRMathHelper.FLOAT_RND_RANGE((int)FrameworkTypes.RTPD(150.0), (int)FrameworkTypes.RTPD(400.0))), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)num6));
             timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-            timeline.addKeyFrame(KeyFrame.makeRotation((double)MathHelper.RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeRotation(MathHelper.RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
+            timeline.addKeyFrame(KeyFrame.makeRotation((double)CTRMathHelper.RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.addKeyFrame(KeyFrame.makeRotation(CTRMathHelper.RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
             confetti.addTimeline(timeline);
             confetti.playTimeline(1);
             return confetti;
@@ -355,7 +355,7 @@ namespace CutTheRope.game
         {
             for (int i = 0; i < 70; i++)
             {
-                this.confettiAnims.addChild(this.createConfettiParticleNear(MathHelper.vectZero));
+                this.confettiAnims.addChild(this.createConfettiParticleNear(CTRMathHelper.vectZero));
             }
         }
 

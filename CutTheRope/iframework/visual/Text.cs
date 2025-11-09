@@ -107,7 +107,7 @@ namespace CutTheRope.iframework.visual
             int num6 = 0;
             char[] characters2 = NSObject.NSS("..").getCharacters();
             int num7 = (int)this.font.getCharOffset(characters2, 0, 2);
-            int num8 = (int)((this.maxHeight == -1f) ? ((float)this.formattedStrings.Count) : MathHelper.MIN((float)this.formattedStrings.Count, this.maxHeight / ((float)num5 + this.font.getLineOffset())));
+            int num8 = (int)((this.maxHeight == -1f) ? ((float)this.formattedStrings.Count) : CTRMathHelper.MIN((float)this.formattedStrings.Count, this.maxHeight / ((float)num5 + this.font.getLineOffset())));
             bool flag = num8 != this.formattedStrings.Count;
             int[] array2 = new int[num];
             for (int k = 0; k < num8; k++)
@@ -173,7 +173,7 @@ namespace CutTheRope.iframework.visual
             }
             if (this.maxHeight != -1f)
             {
-                this.height = (int)MathHelper.MIN((float)this.height, this.maxHeight);
+                this.height = (int)CTRMathHelper.MIN((float)this.height, this.maxHeight);
             }
         }
 

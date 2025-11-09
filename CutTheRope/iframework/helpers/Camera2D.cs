@@ -28,22 +28,22 @@ namespace CutTheRope.iframework.helpers
             }
             if (this.type == CAMERA_TYPE.CAMERA_SPEED_DELAY)
             {
-                this.offset = MathHelper.vectMult(MathHelper.vectSub(this.target, this.pos), this.speed);
+                this.offset = CTRMathHelper.vectMult(CTRMathHelper.vectSub(this.target, this.pos), this.speed);
                 return;
             }
             if (this.type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
             {
-                this.offset = MathHelper.vectMult(MathHelper.vectNormalize(MathHelper.vectSub(this.target, this.pos)), this.speed);
+                this.offset = CTRMathHelper.vectMult(CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(this.target, this.pos)), this.speed);
             }
         }
 
         public virtual void update(float delta)
         {
-            if (!MathHelper.vectEqual(this.pos, this.target))
+            if (!CTRMathHelper.vectEqual(this.pos, this.target))
             {
-                this.pos = MathHelper.vectAdd(this.pos, MathHelper.vectMult(this.offset, delta));
-                this.pos = MathHelper.vect(MathHelper.round((double)this.pos.x), MathHelper.round((double)this.pos.y));
-                if (!MathHelper.sameSign(this.offset.x, this.target.x - this.pos.x) || !MathHelper.sameSign(this.offset.y, this.target.y - this.pos.y))
+                this.pos = CTRMathHelper.vectAdd(this.pos, CTRMathHelper.vectMult(this.offset, delta));
+                this.pos = CTRMathHelper.vect(CTRMathHelper.round((double)this.pos.x), CTRMathHelper.round((double)this.pos.y));
+                if (!CTRMathHelper.sameSign(this.offset.x, this.target.x - this.pos.x) || !CTRMathHelper.sameSign(this.offset.y, this.target.y - this.pos.y))
                 {
                     this.pos = this.target;
                 }

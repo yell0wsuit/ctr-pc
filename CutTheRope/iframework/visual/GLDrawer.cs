@@ -10,7 +10,7 @@ namespace CutTheRope.iframework.visual
     {
         public static void drawImage(Texture2D image, float x, float y)
         {
-            Texture2D.drawAtPoint(image, MathHelper.vect(x, y));
+            Texture2D.drawAtPoint(image, CTRMathHelper.vect(x, y));
         }
 
         public static void drawImagePart(Texture2D image, Rectangle r, double x, double y)
@@ -20,7 +20,7 @@ namespace CutTheRope.iframework.visual
 
         public static void drawImagePart(Texture2D image, Rectangle r, float x, float y)
         {
-            Texture2D.drawRectAtPoint(image, r, MathHelper.vect(x, y));
+            Texture2D.drawRectAtPoint(image, r, CTRMathHelper.vect(x, y));
         }
 
         public static void drawImageQuad(Texture2D image, int q, double x, double y)
@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.visual
                 GLDrawer.drawImage(image, x, y);
                 return;
             }
-            Texture2D.drawQuadAtPoint(image, q, MathHelper.vect(x, y));
+            Texture2D.drawQuadAtPoint(image, q, CTRMathHelper.vect(x, y));
         }
 
         public static void drawImageTiledCool(Texture2D image, int q, float x, float y, float width, float height)
@@ -104,8 +104,8 @@ namespace CutTheRope.iframework.visual
                 GLDrawer.drawImageQuad(image, q, x, y);
                 return;
             }
-            int num3 = (int)MathHelper.ceil((double)(width / num));
-            int num12 = (int)MathHelper.ceil((double)(height / num2));
+            int num3 = (int)CTRMathHelper.ceil((double)(width / num));
+            int num12 = (int)CTRMathHelper.ceil((double)(height / num2));
             int num4 = (int)width % (int)num;
             int num5 = (int)height % (int)num2;
             int num6 = (int)((num4 == 0) ? num : ((float)num4));
@@ -171,20 +171,20 @@ namespace CutTheRope.iframework.visual
             float num2 = 0f;
             for (int i = 0; i < vertexCount; i++)
             {
-                glVertices[i * 2] = x + radius * MathHelper.cosf(num2);
-                glVertices[i * 2 + 1] = y + radius * MathHelper.sinf(num2);
+                glVertices[i * 2] = x + radius * CTRMathHelper.cosf(num2);
+                glVertices[i * 2 + 1] = y + radius * CTRMathHelper.sinf(num2);
                 num2 += num;
             }
         }
 
         public static void drawCircleIntersection(float cx1, float cy1, float radius1, float cx2, float cy2, float radius2, int vertexCount, float width, RGBAColor fill)
         {
-            float num = MathHelper.vectDistance(MathHelper.vect(cx1, cy1), MathHelper.vect(cx2, cy2));
+            float num = CTRMathHelper.vectDistance(CTRMathHelper.vect(cx1, cy1), CTRMathHelper.vect(cx2, cy2));
             if (num < radius1 + radius2 && radius1 < num + radius2)
             {
                 float num2 = (radius1 * radius1 - radius2 * radius2 + num * num) / (2f * num);
-                float num3 = MathHelper.acosf((num - num2) / radius2);
-                float num6 = MathHelper.vectAngle(MathHelper.vectSub(MathHelper.vect(cx1, cy1), MathHelper.vect(cx2, cy2)));
+                float num3 = CTRMathHelper.acosf((num - num2) / radius2);
+                float num6 = CTRMathHelper.vectAngle(CTRMathHelper.vectSub(CTRMathHelper.vect(cx1, cy1), CTRMathHelper.vect(cx2, cy2)));
                 float num4 = num6 - num3;
                 float num5 = num6 + num3;
                 if (cx2 > cx1)
@@ -265,10 +265,10 @@ namespace CutTheRope.iframework.visual
         private static void calcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
             float num7 = (endAngle - startAngle) / (float)(vertexCount - 1);
-            float num = MathHelper.tanf(num7);
-            float num2 = MathHelper.cosf(num7);
-            float num3 = radius * MathHelper.cosf(startAngle);
-            float num4 = radius * MathHelper.sinf(startAngle);
+            float num = CTRMathHelper.tanf(num7);
+            float num2 = CTRMathHelper.cosf(num7);
+            float num3 = radius * CTRMathHelper.cosf(startAngle);
+            float num4 = radius * CTRMathHelper.sinf(startAngle);
             for (int i = 0; i < vertexCount; i++)
             {
                 glVertices[i * 2] = num3 + cx;
@@ -284,22 +284,22 @@ namespace CutTheRope.iframework.visual
 
         public static void drawAntialiasedLine(float x1, float y1, float x2, float y2, float size, RGBAColor color)
         {
-            Vector v = MathHelper.vect(x1, y1);
-            Vector vector = MathHelper.vectSub(MathHelper.vect(x2, y2), v);
-            Vector v2 = MathHelper.vectPerp(vector);
-            Vector vector2 = MathHelper.vectNormalize(v2);
-            v2 = MathHelper.vectMult(vector2, size);
-            Vector v3 = MathHelper.vectNeg(v2);
-            Vector v4 = MathHelper.vectAdd(v2, vector);
-            Vector v5 = MathHelper.vectAdd(MathHelper.vectNeg(v2), vector);
-            v2 = MathHelper.vectAdd(v2, v);
-            v3 = MathHelper.vectAdd(v3, v);
-            v4 = MathHelper.vectAdd(v4, v);
-            v5 = MathHelper.vectAdd(v5, v);
-            Vector vector3 = MathHelper.vectSub(v2, vector2);
-            Vector vector4 = MathHelper.vectSub(v4, vector2);
-            Vector vector5 = MathHelper.vectAdd(v3, vector2);
-            Vector vector6 = MathHelper.vectAdd(v5, vector2);
+            Vector v = CTRMathHelper.vect(x1, y1);
+            Vector vector = CTRMathHelper.vectSub(CTRMathHelper.vect(x2, y2), v);
+            Vector v2 = CTRMathHelper.vectPerp(vector);
+            Vector vector2 = CTRMathHelper.vectNormalize(v2);
+            v2 = CTRMathHelper.vectMult(vector2, size);
+            Vector v3 = CTRMathHelper.vectNeg(v2);
+            Vector v4 = CTRMathHelper.vectAdd(v2, vector);
+            Vector v5 = CTRMathHelper.vectAdd(CTRMathHelper.vectNeg(v2), vector);
+            v2 = CTRMathHelper.vectAdd(v2, v);
+            v3 = CTRMathHelper.vectAdd(v3, v);
+            v4 = CTRMathHelper.vectAdd(v4, v);
+            v5 = CTRMathHelper.vectAdd(v5, v);
+            Vector vector3 = CTRMathHelper.vectSub(v2, vector2);
+            Vector vector4 = CTRMathHelper.vectSub(v4, vector2);
+            Vector vector5 = CTRMathHelper.vectAdd(v3, vector2);
+            Vector vector6 = CTRMathHelper.vectAdd(v5, vector2);
             float[] pointer =
             [
                 v2.x, v2.y, v4.x, v4.y, vector3.x, vector3.y, vector4.x, vector4.y, vector5.x, vector5.y,

@@ -23,22 +23,22 @@ namespace CutTheRope.iframework.visual
         {
             if (p.life > 0f)
             {
-                Vector vector = MathHelper.vectZero;
+                Vector vector = CTRMathHelper.vectZero;
                 if (p.pos.x != 0f || p.pos.y != 0f)
                 {
-                    vector = MathHelper.vectNormalize(p.pos);
+                    vector = CTRMathHelper.vectNormalize(p.pos);
                 }
                 Vector v = vector;
-                vector = MathHelper.vectMult(vector, p.radialAccel);
+                vector = CTRMathHelper.vectMult(vector, p.radialAccel);
                 float num = v.x;
                 v.x = 0f - v.y;
                 v.y = num;
-                v = MathHelper.vectMult(v, p.tangentialAccel);
-                Vector v2 = MathHelper.vectAdd(MathHelper.vectAdd(vector, v), this.gravity);
-                v2 = MathHelper.vectMult(v2, delta);
-                p.dir = MathHelper.vectAdd(p.dir, v2);
-                v2 = MathHelper.vectMult(p.dir, delta);
-                p.pos = MathHelper.vectAdd(p.pos, v2);
+                v = CTRMathHelper.vectMult(v, p.tangentialAccel);
+                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), this.gravity);
+                v2 = CTRMathHelper.vectMult(v2, delta);
+                p.dir = CTRMathHelper.vectAdd(p.dir, v2);
+                v2 = CTRMathHelper.vectMult(p.dir, delta);
+                p.pos = CTRMathHelper.vectAdd(p.pos, v2);
                 p.color.r = p.color.r + p.deltaColor.r * delta;
                 p.color.g = p.color.g + p.deltaColor.g * delta;
                 p.color.b = p.color.b + p.deltaColor.b * delta;
@@ -153,34 +153,34 @@ namespace CutTheRope.iframework.visual
 
         public virtual void initParticle(ref Particle particle)
         {
-            particle.pos.x = this.x + this.posVar.x * MathHelper.RND_MINUS1_1;
-            particle.pos.y = this.y + this.posVar.y * MathHelper.RND_MINUS1_1;
+            particle.pos.x = this.x + this.posVar.x * CTRMathHelper.RND_MINUS1_1;
+            particle.pos.y = this.y + this.posVar.y * CTRMathHelper.RND_MINUS1_1;
             particle.startPos = particle.pos;
-            float num = MathHelper.DEGREES_TO_RADIANS(this.angle + this.angleVar * MathHelper.RND_MINUS1_1);
+            float num = CTRMathHelper.DEGREES_TO_RADIANS(this.angle + this.angleVar * CTRMathHelper.RND_MINUS1_1);
             Vector v = default(Vector);
-            v.y = MathHelper.sinf(num);
-            v.x = MathHelper.cosf(num);
-            float s = this.speed + this.speedVar * MathHelper.RND_MINUS1_1;
-            particle.dir = MathHelper.vectMult(v, s);
-            particle.radialAccel = this.radialAccel + this.radialAccelVar * MathHelper.RND_MINUS1_1;
-            particle.tangentialAccel = this.tangentialAccel + this.tangentialAccelVar * MathHelper.RND_MINUS1_1;
-            particle.life = this.life + this.lifeVar * MathHelper.RND_MINUS1_1;
+            v.y = CTRMathHelper.sinf(num);
+            v.x = CTRMathHelper.cosf(num);
+            float s = this.speed + this.speedVar * CTRMathHelper.RND_MINUS1_1;
+            particle.dir = CTRMathHelper.vectMult(v, s);
+            particle.radialAccel = this.radialAccel + this.radialAccelVar * CTRMathHelper.RND_MINUS1_1;
+            particle.tangentialAccel = this.tangentialAccel + this.tangentialAccelVar * CTRMathHelper.RND_MINUS1_1;
+            particle.life = this.life + this.lifeVar * CTRMathHelper.RND_MINUS1_1;
             RGBAColor rGBAColor = default(RGBAColor);
-            rGBAColor.r = this.startColor.r + this.startColorVar.r * MathHelper.RND_MINUS1_1;
-            rGBAColor.g = this.startColor.g + this.startColorVar.g * MathHelper.RND_MINUS1_1;
-            rGBAColor.b = this.startColor.b + this.startColorVar.b * MathHelper.RND_MINUS1_1;
-            rGBAColor.a = this.startColor.a + this.startColorVar.a * MathHelper.RND_MINUS1_1;
+            rGBAColor.r = this.startColor.r + this.startColorVar.r * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor.g = this.startColor.g + this.startColorVar.g * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor.b = this.startColor.b + this.startColorVar.b * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor.a = this.startColor.a + this.startColorVar.a * CTRMathHelper.RND_MINUS1_1;
             RGBAColor rGBAColor2 = default(RGBAColor);
-            rGBAColor2.r = this.endColor.r + this.endColorVar.r * MathHelper.RND_MINUS1_1;
-            rGBAColor2.g = this.endColor.g + this.endColorVar.g * MathHelper.RND_MINUS1_1;
-            rGBAColor2.b = this.endColor.b + this.endColorVar.b * MathHelper.RND_MINUS1_1;
-            rGBAColor2.a = this.endColor.a + this.endColorVar.a * MathHelper.RND_MINUS1_1;
+            rGBAColor2.r = this.endColor.r + this.endColorVar.r * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor2.g = this.endColor.g + this.endColorVar.g * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor2.b = this.endColor.b + this.endColorVar.b * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor2.a = this.endColor.a + this.endColorVar.a * CTRMathHelper.RND_MINUS1_1;
             particle.color = rGBAColor;
             particle.deltaColor.r = (rGBAColor2.r - rGBAColor.r) / particle.life;
             particle.deltaColor.g = (rGBAColor2.g - rGBAColor.g) / particle.life;
             particle.deltaColor.b = (rGBAColor2.b - rGBAColor.b) / particle.life;
             particle.deltaColor.a = (rGBAColor2.a - rGBAColor.a) / particle.life;
-            particle.size = this.size + this.sizeVar * MathHelper.RND_MINUS1_1;
+            particle.size = this.size + this.sizeVar * CTRMathHelper.RND_MINUS1_1;
         }
 
         public virtual void startSystem(int initialParticles)

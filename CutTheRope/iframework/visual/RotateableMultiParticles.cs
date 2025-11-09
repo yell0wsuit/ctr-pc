@@ -11,29 +11,29 @@ namespace CutTheRope.iframework.visual
         {
             base.initParticle(ref particle);
             particle.angle = 0f;
-            particle.deltaAngle = MathHelper.DEGREES_TO_RADIANS(this.rotateSpeed + this.rotateSpeedVar * MathHelper.RND_MINUS1_1);
+            particle.deltaAngle = CTRMathHelper.DEGREES_TO_RADIANS(this.rotateSpeed + this.rotateSpeedVar * CTRMathHelper.RND_MINUS1_1);
         }
 
         public override void updateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
             {
-                Vector vector = MathHelper.vectZero;
+                Vector vector = CTRMathHelper.vectZero;
                 if (p.pos.x != 0f || p.pos.y != 0f)
                 {
-                    vector = MathHelper.vectNormalize(p.pos);
+                    vector = CTRMathHelper.vectNormalize(p.pos);
                 }
                 Vector v = vector;
-                vector = MathHelper.vectMult(vector, p.radialAccel);
+                vector = CTRMathHelper.vectMult(vector, p.radialAccel);
                 float num = v.x;
                 v.x = 0f - v.y;
                 v.y = num;
-                v = MathHelper.vectMult(v, p.tangentialAccel);
-                Vector v2 = MathHelper.vectAdd(MathHelper.vectAdd(vector, v), this.gravity);
-                v2 = MathHelper.vectMult(v2, delta);
-                p.dir = MathHelper.vectAdd(p.dir, v2);
-                v2 = MathHelper.vectMult(p.dir, delta);
-                p.pos = MathHelper.vectAdd(p.pos, v2);
+                v = CTRMathHelper.vectMult(v, p.tangentialAccel);
+                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), this.gravity);
+                v2 = CTRMathHelper.vectMult(v2, delta);
+                p.dir = CTRMathHelper.vectAdd(p.dir, v2);
+                v2 = CTRMathHelper.vectMult(p.dir, delta);
+                p.pos = CTRMathHelper.vectAdd(p.pos, v2);
                 p.color.r = p.color.r + p.deltaColor.r * delta;
                 p.color.g = p.color.g + p.deltaColor.g * delta;
                 p.color.b = p.color.b + p.deltaColor.b * delta;
@@ -49,13 +49,13 @@ namespace CutTheRope.iframework.visual
                 float num8 = p.pos.y + p.height / 2f;
                 float cx = p.pos.x;
                 float cy = p.pos.y;
-                Vector v3 = MathHelper.vect(num2, num3);
-                Vector v4 = MathHelper.vect(num4, num5);
-                Vector v5 = MathHelper.vect(num6, num7);
-                Vector v6 = MathHelper.vect(num9, num8);
+                Vector v3 = CTRMathHelper.vect(num2, num3);
+                Vector v4 = CTRMathHelper.vect(num4, num5);
+                Vector v5 = CTRMathHelper.vect(num6, num7);
+                Vector v6 = CTRMathHelper.vect(num9, num8);
                 p.angle += p.deltaAngle * delta;
-                float cosA = MathHelper.cosf(p.angle);
-                float sinA = MathHelper.sinf(p.angle);
+                float cosA = CTRMathHelper.cosf(p.angle);
+                float sinA = CTRMathHelper.sinf(p.angle);
                 v3 = Particles.rotatePreCalc(v3, cosA, sinA, cx, cy);
                 v4 = Particles.rotatePreCalc(v4, cosA, sinA, cx, cy);
                 v5 = Particles.rotatePreCalc(v5, cosA, sinA, cx, cy);
