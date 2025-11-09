@@ -9,74 +9,74 @@ namespace CutTheRope.iframework.visual
     {
         public virtual ImageMultiDrawer initWithImageandCapacity(Image i, int n)
         {
-            if (this.init() == null)
+            if (init() == null)
             {
                 return null;
             }
-            this.image = (Image)NSObject.NSRET(i);
-            this.numberOfQuadsToDraw = -1;
-            this.totalQuads = n;
-            this.texCoordinates = new Quad2D[this.totalQuads];
-            this.vertices = new Quad3D[this.totalQuads];
-            this.indices = new short[this.totalQuads * 6];
-            this.initIndices();
+            image = (Image)NSObject.NSRET(i);
+            numberOfQuadsToDraw = -1;
+            totalQuads = n;
+            texCoordinates = new Quad2D[totalQuads];
+            vertices = new Quad3D[totalQuads];
+            indices = new short[totalQuads * 6];
+            initIndices();
             return this;
         }
 
         private void freeWithCheck()
         {
-            this.texCoordinates = null;
-            this.vertices = null;
-            this.indices = null;
+            texCoordinates = null;
+            vertices = null;
+            indices = null;
         }
 
         public override void dealloc()
         {
-            this.freeWithCheck();
-            this.image = null;
+            freeWithCheck();
+            image = null;
             base.dealloc();
         }
 
         private void initIndices()
         {
-            for (int i = 0; i < this.totalQuads; i++)
+            for (int i = 0; i < totalQuads; i++)
             {
-                this.indices[i * 6] = (short)(i * 4);
-                this.indices[i * 6 + 1] = (short)(i * 4 + 1);
-                this.indices[i * 6 + 2] = (short)(i * 4 + 2);
-                this.indices[i * 6 + 3] = (short)(i * 4 + 3);
-                this.indices[i * 6 + 4] = (short)(i * 4 + 2);
-                this.indices[i * 6 + 5] = (short)(i * 4 + 1);
+                indices[i * 6] = (short)(i * 4);
+                indices[i * 6 + 1] = (short)(i * 4 + 1);
+                indices[i * 6 + 2] = (short)(i * 4 + 2);
+                indices[i * 6 + 3] = (short)(i * 4 + 3);
+                indices[i * 6 + 4] = (short)(i * 4 + 2);
+                indices[i * 6 + 5] = (short)(i * 4 + 1);
             }
         }
 
         public void setTextureQuadatVertexQuadatIndex(Quad2D qt, Quad3D qv, int n)
         {
-            if (n >= this.totalQuads)
+            if (n >= totalQuads)
             {
-                this.resizeCapacity(n + 1);
+                resizeCapacity(n + 1);
             }
-            this.texCoordinates[n] = qt;
-            this.vertices[n] = qv;
+            texCoordinates[n] = qt;
+            vertices[n] = qv;
         }
 
         public void mapTextureQuadAtXYatIndex(int q, float dx, float dy, int n)
         {
-            if (n >= this.totalQuads)
+            if (n >= totalQuads)
             {
-                this.resizeCapacity(n + 1);
+                resizeCapacity(n + 1);
             }
-            this.texCoordinates[n] = this.image.texture.quads[q];
-            this.vertices[n] = Quad3D.MakeQuad3D((double)(dx + this.image.texture.quadOffsets[q].x), (double)(dy + this.image.texture.quadOffsets[q].y), 0.0, (double)this.image.texture.quadRects[q].w, (double)this.image.texture.quadRects[q].h);
+            texCoordinates[n] = image.texture.quads[q];
+            vertices[n] = Quad3D.MakeQuad3D((double)(dx + image.texture.quadOffsets[q].x), (double)(dy + image.texture.quadOffsets[q].y), 0.0, (double)image.texture.quadRects[q].w, (double)image.texture.quadRects[q].h);
         }
 
         private void drawNumberOfQuads(int n)
         {
             OpenGL.glEnable(0);
-            OpenGL.glBindTexture(this.image.texture.name());
-            OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(this.vertices));
-            OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(this.texCoordinates));
-            OpenGL.glDrawElements(7, n * 6, this.indices);
+            OpenGL.glBindTexture(image.texture.name());
+            OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(vertices));
+            OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(texCoordinates));
+            OpenGL.glDrawElements(7, n * 6, indices);
         }
 
         private void drawNumberOfQuadsStartingFrom(int n, int s)
@@ -86,53 +86,53 @@ namespace CutTheRope.iframework.visual
 
         public void optimize(VertexPositionNormalTexture[] v)
         {
-            if (v != null && this.verticesOptimized == null)
+            if (v != null && verticesOptimized == null)
             {
-                this.verticesOptimized = v;
+                verticesOptimized = v;
             }
         }
 
         public void drawAllQuads()
         {
-            if (this.verticesOptimized == null)
+            if (verticesOptimized == null)
             {
-                this.drawNumberOfQuads(this.totalQuads);
+                drawNumberOfQuads(totalQuads);
                 return;
             }
             OpenGL.glEnable(0);
-            OpenGL.glBindTexture(this.image.texture.name());
-            OpenGL.Optimized_DrawTriangleList(this.verticesOptimized, this.indices);
+            OpenGL.glBindTexture(image.texture.name());
+            OpenGL.Optimized_DrawTriangleList(verticesOptimized, indices);
         }
 
         public override void draw()
         {
-            this.preDraw();
-            OpenGL.glTranslatef(this.drawX, this.drawY, 0f);
-            if (this.numberOfQuadsToDraw == -1)
+            preDraw();
+            OpenGL.glTranslatef(drawX, drawY, 0f);
+            if (numberOfQuadsToDraw == -1)
             {
-                this.drawAllQuads();
+                drawAllQuads();
             }
-            else if (this.numberOfQuadsToDraw > 0)
+            else if (numberOfQuadsToDraw > 0)
             {
-                this.drawNumberOfQuads(this.numberOfQuadsToDraw);
+                drawNumberOfQuads(numberOfQuadsToDraw);
             }
-            OpenGL.glTranslatef(0f - this.drawX, 0f - this.drawY, 0f);
-            this.postDraw();
+            OpenGL.glTranslatef(0f - drawX, 0f - drawY, 0f);
+            postDraw();
         }
 
         private void resizeCapacity(int n)
         {
-            if (n != this.totalQuads)
+            if (n != totalQuads)
             {
-                this.totalQuads = n;
-                this.texCoordinates = new Quad2D[this.totalQuads];
-                this.vertices = new Quad3D[this.totalQuads];
-                this.indices = new short[this.totalQuads * 6];
-                if (this.texCoordinates == null || this.vertices == null || this.indices == null)
+                totalQuads = n;
+                texCoordinates = new Quad2D[totalQuads];
+                vertices = new Quad3D[totalQuads];
+                indices = new short[totalQuads * 6];
+                if (texCoordinates == null || vertices == null || indices == null)
                 {
-                    this.freeWithCheck();
+                    freeWithCheck();
                 }
-                this.initIndices();
+                initIndices();
             }
         }
 

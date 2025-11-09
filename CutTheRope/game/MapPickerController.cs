@@ -13,9 +13,9 @@ namespace CutTheRope.game
         {
             if (base.initWithParent(p) != null)
             {
-                this.selectedMap = null;
-                this.maplist = null;
-                this.createPickerView();
+                selectedMap = null;
+                maplist = null;
+                createPickerView();
                 View view = (View)new View().initFullscreen();
                 RectangleElement rectangleElement = (RectangleElement)new RectangleElement().init();
                 rectangleElement.color = RGBAColor.whiteRGBA;
@@ -27,8 +27,8 @@ namespace CutTheRope.game
                 text.setString(NSObject.NSS("Loading..."));
                 text.anchor = text.parentAnchor = 18;
                 view.addChild(text);
-                this.addViewwithID(view, 1);
-                this.setNormalMode();
+                addViewwithID(view, 1);
+                setNormalMode();
             }
             return this;
         }
@@ -51,23 +51,23 @@ namespace CutTheRope.game
             button.anchor = button.parentAnchor = 34;
             button.delegateButtonDelegate = this;
             view.addChild(button);
-            this.addViewwithID(view, 0);
+            addViewwithID(view, 0);
         }
 
         public override void activate()
         {
             base.activate();
-            if (this.autoLoad)
+            if (autoLoad)
             {
                 string text = "maps/";
-                NSString nsstring = this.selectedMap;
+                NSString nsstring = selectedMap;
                 NSString nSString = NSObject.NSS(text + (nsstring?.ToString()));
                 XMLNode xMLNode = XMLNode.parseXML(nSString.ToString());
-                this.xmlLoaderFinishedWithfromwithSuccess(xMLNode, nSString, xMLNode != null);
+                xmlLoaderFinishedWithfromwithSuccess(xMLNode, nSString, xMLNode != null);
                 return;
             }
-            this.showView(0);
-            this.loadList();
+            showView(0);
+            loadList();
         }
 
         public virtual void loadList()
@@ -84,39 +84,39 @@ namespace CutTheRope.game
             if (rootNode != null)
             {
                 CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-                bool flag = this.autoLoad;
+                bool flag = autoLoad;
                 ctrrootController.setMap(rootNode);
-                ctrrootController.setMapName(this.selectedMap);
-                ctrrootController.setMapsList(this.maplist);
-                this.deactivate();
+                ctrrootController.setMapName(selectedMap);
+                ctrrootController.setMapsList(maplist);
+                deactivate();
             }
         }
 
         public virtual void setNormalMode()
         {
-            this.autoLoad = false;
+            autoLoad = false;
             ((CTRRootController)Application.sharedRootController()).setPicker(true);
         }
 
         public virtual void setAutoLoadMap(NSString map)
         {
-            this.autoLoad = true;
+            autoLoad = true;
             ((CTRRootController)Application.sharedRootController()).setPicker(false);
-            NSObject.NSREL(this.selectedMap);
-            this.selectedMap = (NSString)NSObject.NSRET(map);
+            NSObject.NSREL(selectedMap);
+            selectedMap = (NSString)NSObject.NSRET(map);
         }
 
         public virtual void onButtonPressed(int n)
         {
             if (n == 0)
             {
-                this.loadList();
+                loadList();
             }
         }
 
         public override void dealloc()
         {
-            NSObject.NSREL(this.selectedMap);
+            NSObject.NSREL(selectedMap);
             base.dealloc();
         }
 

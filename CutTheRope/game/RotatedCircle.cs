@@ -15,106 +15,106 @@ namespace CutTheRope.game
         {
             if (base.init() != null)
             {
-                this.containedObjects = (DynamicArray)new DynamicArray().init();
-                this.soundPlaying = -1;
-                this.vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
-                this.vinilStickerL.anchor = 20;
-                this.vinilStickerL.parentAnchor = 18;
-                this.vinilStickerL.rotationCenterX = (float)this.vinilStickerL.width / 2f;
-                this.vinilStickerR = Image.Image_createWithResIDQuad(103, 2);
-                this.vinilStickerR.scaleX = -1f;
-                this.vinilStickerR.anchor = 20;
-                this.vinilStickerR.parentAnchor = 18;
-                this.vinilStickerR.rotationCenterX = (float)this.vinilStickerR.width / 2f;
-                this.vinilCenter = Image.Image_createWithResIDQuad(103, 3);
-                this.vinilCenter.anchor = 18;
-                this.vinilHighlightL = Image.Image_createWithResIDQuad(103, 1);
-                this.vinilHighlightL.anchor = 12;
-                this.vinilHighlightR = Image.Image_createWithResIDQuad(103, 1);
-                this.vinilHighlightR.scaleX = -1f;
-                this.vinilHighlightR.anchor = 9;
-                this.vinilControllerL = Image.Image_createWithResIDQuad(103, 5);
-                this.vinilControllerL.anchor = 18;
-                this.vinilControllerL.rotation = 90f;
-                this.vinilControllerR = Image.Image_createWithResIDQuad(103, 5);
-                this.vinilControllerR.anchor = 18;
-                this.vinilControllerR.rotation = -90f;
-                this.vinilActiveControllerL = Image.Image_createWithResIDQuad(103, 4);
-                this.vinilActiveControllerL.anchor = this.vinilControllerL.anchor;
-                this.vinilActiveControllerL.rotation = this.vinilControllerL.rotation;
-                this.vinilActiveControllerL.visible = false;
-                this.vinilActiveControllerR = Image.Image_createWithResIDQuad(103, 4);
-                this.vinilActiveControllerR.anchor = this.vinilControllerR.anchor;
-                this.vinilActiveControllerR.rotation = this.vinilControllerR.rotation;
-                this.vinilActiveControllerR.visible = false;
-                this.vinil = Image.Image_createWithResIDQuad(103, 0);
-                this.vinil.anchor = 18;
-                this.passColorToChilds = false;
-                this.addChild(this.vinilStickerL);
-                this.addChild(this.vinilStickerR);
-                this.addChild(this.vinilActiveControllerL);
-                this.addChild(this.vinilActiveControllerR);
-                this.addChild(this.vinilControllerL);
-                this.addChild(this.vinilControllerR);
+                containedObjects = (DynamicArray)new DynamicArray().init();
+                soundPlaying = -1;
+                vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
+                vinilStickerL.anchor = 20;
+                vinilStickerL.parentAnchor = 18;
+                vinilStickerL.rotationCenterX = (float)vinilStickerL.width / 2f;
+                vinilStickerR = Image.Image_createWithResIDQuad(103, 2);
+                vinilStickerR.scaleX = -1f;
+                vinilStickerR.anchor = 20;
+                vinilStickerR.parentAnchor = 18;
+                vinilStickerR.rotationCenterX = (float)vinilStickerR.width / 2f;
+                vinilCenter = Image.Image_createWithResIDQuad(103, 3);
+                vinilCenter.anchor = 18;
+                vinilHighlightL = Image.Image_createWithResIDQuad(103, 1);
+                vinilHighlightL.anchor = 12;
+                vinilHighlightR = Image.Image_createWithResIDQuad(103, 1);
+                vinilHighlightR.scaleX = -1f;
+                vinilHighlightR.anchor = 9;
+                vinilControllerL = Image.Image_createWithResIDQuad(103, 5);
+                vinilControllerL.anchor = 18;
+                vinilControllerL.rotation = 90f;
+                vinilControllerR = Image.Image_createWithResIDQuad(103, 5);
+                vinilControllerR.anchor = 18;
+                vinilControllerR.rotation = -90f;
+                vinilActiveControllerL = Image.Image_createWithResIDQuad(103, 4);
+                vinilActiveControllerL.anchor = vinilControllerL.anchor;
+                vinilActiveControllerL.rotation = vinilControllerL.rotation;
+                vinilActiveControllerL.visible = false;
+                vinilActiveControllerR = Image.Image_createWithResIDQuad(103, 4);
+                vinilActiveControllerR.anchor = vinilControllerR.anchor;
+                vinilActiveControllerR.rotation = vinilControllerR.rotation;
+                vinilActiveControllerR.visible = false;
+                vinil = Image.Image_createWithResIDQuad(103, 0);
+                vinil.anchor = 18;
+                passColorToChilds = false;
+                addChild(vinilStickerL);
+                addChild(vinilStickerR);
+                addChild(vinilActiveControllerL);
+                addChild(vinilActiveControllerR);
+                addChild(vinilControllerL);
+                addChild(vinilControllerR);
             }
             return this;
         }
 
         public virtual void setSize(float value)
         {
-            this.size = value;
-            float num = this.size / 167f;
-            this.vinilHighlightL.scaleX = this.vinilHighlightL.scaleY = this.vinilHighlightR.scaleY = num;
-            this.vinilHighlightR.scaleX = 0f - num;
-            this.vinil.scaleX = this.vinil.scaleY = num;
+            size = value;
+            float num = size / 167f;
+            vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = num;
+            vinilHighlightR.scaleX = 0f - num;
+            vinil.scaleX = vinil.scaleY = num;
             float num2 = (num >= 0.4f) ? num : 0.4f;
-            this.vinilStickerL.scaleX = this.vinilStickerL.scaleY = this.vinilStickerR.scaleY = num2;
-            this.vinilStickerR.scaleX = 0f - num2;
+            vinilStickerL.scaleX = vinilStickerL.scaleY = vinilStickerR.scaleY = num2;
+            vinilStickerR.scaleX = 0f - num2;
             float num3 = (num >= 0.75f) ? num : 0.75f;
-            this.vinilControllerL.scaleX = this.vinilControllerL.scaleY = this.vinilControllerR.scaleX = this.vinilControllerR.scaleY = num3;
-            this.vinilActiveControllerL.scaleX = this.vinilActiveControllerL.scaleY = this.vinilActiveControllerR.scaleX = this.vinilActiveControllerR.scaleY = num3;
-            this.vinilCenter.scaleX = 1f - (1f - this.vinilStickerL.scaleX) * 0.5f;
-            this.vinilCenter.scaleY = this.vinilCenter.scaleX;
-            this.sizeInPixels = (float)this.vinilHighlightL.width * this.vinilHighlightL.scaleX;
-            this.updateChildPositions();
+            vinilControllerL.scaleX = vinilControllerL.scaleY = vinilControllerR.scaleX = vinilControllerR.scaleY = num3;
+            vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = num3;
+            vinilCenter.scaleX = 1f - (1f - vinilStickerL.scaleX) * 0.5f;
+            vinilCenter.scaleY = vinilCenter.scaleX;
+            sizeInPixels = (float)vinilHighlightL.width * vinilHighlightL.scaleX;
+            updateChildPositions();
         }
 
         public virtual bool hasOneHandle()
         {
-            return !this.vinilControllerL.visible;
+            return !vinilControllerL.visible;
         }
 
         public virtual void setHasOneHandle(bool value)
         {
-            this.vinilControllerL.visible = !value;
+            vinilControllerL.visible = !value;
         }
 
         public virtual bool isLeftControllerActive()
         {
-            return this.vinilActiveControllerL.visible;
+            return vinilActiveControllerL.visible;
         }
 
         public virtual void setIsLeftControllerActive(bool value)
         {
-            this.vinilActiveControllerL.visible = value;
+            vinilActiveControllerL.visible = value;
         }
 
         public virtual bool isRightControllerActive()
         {
-            return this.vinilActiveControllerR.visible;
+            return vinilActiveControllerR.visible;
         }
 
         public virtual void setIsRightControllerActive(bool value)
         {
-            this.vinilActiveControllerR.visible = value;
+            vinilActiveControllerR.visible = value;
         }
 
         public virtual bool containsSameObjectWithAnotherCircle()
         {
-            foreach (object obj in this.circlesArray)
+            foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
-                if (item != this && this.containsSameObjectWithCircle(item))
+                if (item != this && containsSameObjectWithCircle(item))
                 {
                     return true;
                 }
@@ -124,70 +124,70 @@ namespace CutTheRope.game
 
         public override void draw()
         {
-            if (this.isRightControllerActive() || this.isLeftControllerActive())
+            if (isRightControllerActive() || isLeftControllerActive())
             {
                 OpenGL.glDisable(0);
                 OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
-                if ((double)this.color.a != 1.0)
+                if ((double)color.a != 1.0)
                 {
-                    whiteRGBA.a = this.color.a;
+                    whiteRGBA.a = color.a;
                 }
-                GLDrawer.drawAntialiasedCurve2(this.x, this.y, this.sizeInPixels + this.ACTIVE_CIRCLE_WIDTH * this.vinilControllerL.scaleX, 0f, 6.2831855f, 81, (this.ACTIVE_CIRCLE_WIDTH + FrameworkTypes.RTPD(1.0) * 3f) * this.vinilControllerL.scaleX, 5f, whiteRGBA);
+                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX, 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + FrameworkTypes.RTPD(1.0) * 3f) * vinilControllerL.scaleX, 5f, whiteRGBA);
                 OpenGL.glColor4f(Color.White);
                 OpenGL.glEnable(0);
             }
-            this.vinilHighlightL.color = this.color;
-            this.vinilHighlightR.color = this.color;
-            this.vinilControllerL.color = this.color;
-            this.vinilControllerR.color = this.color;
-            this.vinil.color = this.color;
-            this.vinil.draw();
+            vinilHighlightL.color = color;
+            vinilHighlightR.color = color;
+            vinilControllerL.color = color;
+            vinilControllerR.color = color;
+            vinil.color = color;
+            vinil.draw();
             OpenGL.glDisable(0);
             OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            foreach (object obj in this.circlesArray)
+            foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
-                if (item != this && item.containsSameObjectWithAnotherCircle() && this.circlesArray.getObjectIndex(item) < this.circlesArray.getObjectIndex(this))
+                if (item != this && item.containsSameObjectWithAnotherCircle() && circlesArray.getObjectIndex(item) < circlesArray.getObjectIndex(this))
                 {
-                    GLDrawer.drawCircleIntersection(this.x, this.y, this.sizeInPixels, item.x, item.y, item.sizeInPixels, 81, this.OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, this.CONTOUR_COLOR);
+                    GLDrawer.drawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
-            this.vinilHighlightL.draw();
-            this.vinilHighlightR.draw();
+            vinilHighlightL.draw();
+            vinilHighlightR.draw();
             base.draw();
-            this.vinilCenter.draw();
+            vinilCenter.draw();
         }
 
         public virtual void updateChildPositions()
         {
-            this.vinil.x = this.vinilCenter.x = this.x;
-            this.vinil.y = this.vinilCenter.y = this.y;
-            float num = (float)(this.vinilHighlightL.width / 2) * (1f - this.vinilHighlightL.scaleX);
-            float num2 = (float)(this.vinilHighlightL.height / 2) * (1f - this.vinilHighlightL.scaleY);
-            float num3 = this.sizeInPixels - FrameworkTypes.RTPD((double)(this.CONTROLLER_SHIFT_PARAM1 - this.CONTROLLER_SHIFT_PARAM2 * this.size)) + (1f - this.vinilControllerL.scaleX) * (float)(this.vinilControllerL.width / 2);
-            this.vinilHighlightL.x = this.x + num;
-            this.vinilHighlightR.x = this.x - num;
-            this.vinilHighlightL.y = this.vinilHighlightR.y = this.y - num2;
-            this.vinilControllerL.x = this.x - num3;
-            this.vinilControllerR.x = this.x + num3;
-            this.vinilControllerL.y = this.vinilControllerR.y = this.y;
-            this.vinilActiveControllerL.x = this.vinilControllerL.x;
-            this.vinilActiveControllerL.y = this.vinilControllerL.y;
-            this.vinilActiveControllerR.x = this.vinilControllerR.x;
-            this.vinilActiveControllerR.y = this.vinilControllerR.y;
+            vinil.x = vinilCenter.x = x;
+            vinil.y = vinilCenter.y = y;
+            float num = (float)(vinilHighlightL.width / 2) * (1f - vinilHighlightL.scaleX);
+            float num2 = (float)(vinilHighlightL.height / 2) * (1f - vinilHighlightL.scaleY);
+            float num3 = sizeInPixels - FrameworkTypes.RTPD((double)(CONTROLLER_SHIFT_PARAM1 - CONTROLLER_SHIFT_PARAM2 * size)) + (1f - vinilControllerL.scaleX) * (float)(vinilControllerL.width / 2);
+            vinilHighlightL.x = x + num;
+            vinilHighlightR.x = x - num;
+            vinilHighlightL.y = vinilHighlightR.y = y - num2;
+            vinilControllerL.x = x - num3;
+            vinilControllerR.x = x + num3;
+            vinilControllerL.y = vinilControllerR.y = y;
+            vinilActiveControllerL.x = vinilControllerL.x;
+            vinilActiveControllerL.y = vinilControllerL.y;
+            vinilActiveControllerR.x = vinilControllerR.x;
+            vinilActiveControllerR.y = vinilControllerR.y;
         }
 
         public virtual bool containsSameObjectWithCircle(RotatedCircle anotherCircle)
         {
-            if (this.x == anotherCircle.x && this.y == anotherCircle.y && this.size == anotherCircle.size)
+            if (x == anotherCircle.x && y == anotherCircle.y && size == anotherCircle.size)
             {
                 return false;
             }
-            foreach (object obj in this.containedObjects)
+            foreach (object obj in containedObjects)
             {
                 GameObject containedObject = (GameObject)obj;
                 if (anotherCircle.containedObjects.getObjectIndex(containedObject) != -1)
@@ -201,18 +201,18 @@ namespace CutTheRope.game
         public virtual NSObject copy()
         {
             RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().init();
-            rotatedCircle.x = this.x;
-            rotatedCircle.y = this.y;
-            rotatedCircle.rotation = this.rotation;
-            rotatedCircle.circlesArray = this.circlesArray;
-            rotatedCircle.containedObjects = this.containedObjects;
+            rotatedCircle.x = x;
+            rotatedCircle.y = y;
+            rotatedCircle.rotation = rotation;
+            rotatedCircle.circlesArray = circlesArray;
+            rotatedCircle.containedObjects = containedObjects;
             rotatedCircle.operating = -1;
-            rotatedCircle.handle1 = CTRMathHelper.vect(rotatedCircle.x - FrameworkTypes.RTPD((double)(this.size * 3f)), rotatedCircle.y);
-            rotatedCircle.handle2 = CTRMathHelper.vect(rotatedCircle.x + FrameworkTypes.RTPD((double)(this.size * 3f)), rotatedCircle.y);
+            rotatedCircle.handle1 = CTRMathHelper.vect(rotatedCircle.x - FrameworkTypes.RTPD((double)(size * 3f)), rotatedCircle.y);
+            rotatedCircle.handle2 = CTRMathHelper.vect(rotatedCircle.x + FrameworkTypes.RTPD((double)(size * 3f)), rotatedCircle.y);
             rotatedCircle.handle1 = CTRMathHelper.vectRotateAround(rotatedCircle.handle1, (double)CTRMathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.handle2 = CTRMathHelper.vectRotateAround(rotatedCircle.handle2, (double)CTRMathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.setSize(this.size);
-            rotatedCircle.setHasOneHandle(this.hasOneHandle_);
+            rotatedCircle.setSize(size);
+            rotatedCircle.setHasOneHandle(hasOneHandle_);
             rotatedCircle.vinilControllerL.visible = false;
             rotatedCircle.vinilControllerR.visible = false;
             return rotatedCircle;
@@ -220,11 +220,11 @@ namespace CutTheRope.game
 
         public override void dealloc()
         {
-            this.vinilCenter.release();
-            this.vinilHighlightL.release();
-            this.vinilHighlightR.release();
-            this.vinil.release();
-            this.containedObjects.release();
+            vinilCenter.release();
+            vinilHighlightL.release();
+            vinilHighlightR.release();
+            vinil.release();
+            containedObjects.release();
             base.dealloc();
         }
 

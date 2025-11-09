@@ -12,15 +12,15 @@ namespace CutTheRope.iframework.core
         {
             if (base.init() != null)
             {
-                this.width = (int)FrameworkTypes.SCREEN_WIDTH;
-                this.height = (int)FrameworkTypes.SCREEN_HEIGHT;
+                width = (int)FrameworkTypes.SCREEN_WIDTH;
+                height = (int)FrameworkTypes.SCREEN_HEIGHT;
             }
             return this;
         }
 
         public override NSObject init()
         {
-            return this.initFullscreen();
+            return initFullscreen();
         }
 
         public override void draw()

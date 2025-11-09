@@ -7,56 +7,56 @@ namespace CutTheRope.iframework.visual
     {
         public virtual void stopTimeline()
         {
-            this.state = Timeline.TimelineState.TIMELINE_STOPPED;
-            this.deactivateTracks();
+            state = Timeline.TimelineState.TIMELINE_STOPPED;
+            deactivateTracks();
         }
 
         public virtual void deactivateTracks()
         {
-            for (int i = 0; i < this.tracks.Length; i++)
+            for (int i = 0; i < tracks.Length; i++)
             {
-                if (this.tracks[i] != null)
+                if (tracks[i] != null)
                 {
-                    this.tracks[i].state = Track.TrackState.TRACK_NOT_ACTIVE;
+                    tracks[i].state = Track.TrackState.TRACK_NOT_ACTIVE;
                 }
             }
         }
 
         public void jumpToTrackKeyFrame(int t, int k)
         {
-            if (this.state == Timeline.TimelineState.TIMELINE_STOPPED)
+            if (state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
-                this.state = Timeline.TimelineState.TIMELINE_PAUSED;
+                state = Timeline.TimelineState.TIMELINE_PAUSED;
             }
-            this.time = this.tracks[t].getFrameTime(k);
+            time = tracks[t].getFrameTime(k);
         }
 
         public virtual void playTimeline()
         {
-            if (this.state != Timeline.TimelineState.TIMELINE_PAUSED)
+            if (state != Timeline.TimelineState.TIMELINE_PAUSED)
             {
-                this.time = 0f;
-                this.timelineDirReverse = false;
-                this.length = 0f;
+                time = 0f;
+                timelineDirReverse = false;
+                length = 0f;
                 for (int i = 0; i < 5; i++)
                 {
-                    if (this.tracks[i] != null)
+                    if (tracks[i] != null)
                     {
-                        this.tracks[i].updateRange();
-                        if (this.tracks[i].endTime > this.length)
+                        tracks[i].updateRange();
+                        if (tracks[i].endTime > length)
                         {
-                            this.length = this.tracks[i].endTime;
+                            length = tracks[i].endTime;
                         }
                     }
                 }
             }
-            this.state = Timeline.TimelineState.TIMELINE_PLAYING;
+            state = Timeline.TimelineState.TIMELINE_PLAYING;
             Timeline.updateTimeline(this, 0f);
         }
 
         public virtual void pauseTimeline()
         {
-            this.state = Timeline.TimelineState.TIMELINE_PAUSED;
+            state = Timeline.TimelineState.TIMELINE_PAUSED;
         }
 
         public static void updateTimeline(Timeline thiss, float delta)
@@ -151,39 +151,39 @@ namespace CutTheRope.iframework.visual
         {
             if (base.init() != null)
             {
-                this.maxKeyFrames = m;
-                this.time = 0f;
-                this.length = 0f;
-                this.state = Timeline.TimelineState.TIMELINE_STOPPED;
-                this.loopsLimit = -1;
-                this.timelineLoopType = Timeline.LoopType.TIMELINE_NO_LOOP;
+                maxKeyFrames = m;
+                time = 0f;
+                length = 0f;
+                state = Timeline.TimelineState.TIMELINE_STOPPED;
+                loopsLimit = -1;
+                timelineLoopType = Timeline.LoopType.TIMELINE_NO_LOOP;
             }
             return this;
         }
 
         public virtual void addKeyFrame(KeyFrame k)
         {
-            int i = (this.tracks[(int)k.trackType] != null) ? this.tracks[(int)k.trackType].keyFramesCount : 0;
-            this.setKeyFrameAt(k, i);
+            int i = (tracks[(int)k.trackType] != null) ? tracks[(int)k.trackType].keyFramesCount : 0;
+            setKeyFrameAt(k, i);
         }
 
         public virtual void setKeyFrameAt(KeyFrame k, int i)
         {
-            if (this.tracks[(int)k.trackType] == null)
+            if (tracks[(int)k.trackType] == null)
             {
-                this.tracks[(int)k.trackType] = new Track().initWithTimelineTypeandMaxKeyFrames(this, k.trackType, this.maxKeyFrames);
+                tracks[(int)k.trackType] = new Track().initWithTimelineTypeandMaxKeyFrames(this, k.trackType, maxKeyFrames);
             }
-            this.tracks[(int)k.trackType].setKeyFrameAt(k, i);
+            tracks[(int)k.trackType].setKeyFrameAt(k, i);
         }
 
         public virtual void setTimelineLoopType(Timeline.LoopType l)
         {
-            this.timelineLoopType = l;
+            timelineLoopType = l;
         }
 
         public virtual Track getTrack(Track.TrackType tt)
         {
-            return this.tracks[(int)tt];
+            return tracks[(int)tt];
         }
 
         private const int TRACKS_COUNT = 5;

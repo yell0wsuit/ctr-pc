@@ -11,61 +11,61 @@ namespace CutTheRope.iframework.visual
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    this.tiles[i] = -1;
+                    tiles[i] = -1;
                 }
-                this.align = 18;
+                align = 18;
             }
             return this;
         }
 
         public override void draw()
         {
-            this.preDraw();
-            float w = this.texture.quadRects[this.tiles[0]].w;
-            float w2 = this.texture.quadRects[this.tiles[2]].w;
-            float num = (float)this.width - (w + w2);
+            preDraw();
+            float w = texture.quadRects[tiles[0]].w;
+            float w2 = texture.quadRects[tiles[2]].w;
+            float num = (float)width - (w + w2);
             if (num >= 0f)
             {
-                GLDrawer.drawImageQuad(this.texture, this.tiles[0], this.drawX, this.drawY + this.offsets[0]);
-                GLDrawer.drawImageTiledCool(this.texture, this.tiles[1], this.drawX + w, this.drawY + this.offsets[1], num, this.texture.quadRects[this.tiles[1]].h);
-                GLDrawer.drawImageQuad(this.texture, this.tiles[2], this.drawX + w + num, this.drawY + this.offsets[2]);
+                GLDrawer.drawImageQuad(texture, tiles[0], drawX, drawY + offsets[0]);
+                GLDrawer.drawImageTiledCool(texture, tiles[1], drawX + w, drawY + offsets[1], num, texture.quadRects[tiles[1]].h);
+                GLDrawer.drawImageQuad(texture, tiles[2], drawX + w + num, drawY + offsets[2]);
             }
             else
             {
-                CTRRectangle r = this.texture.quadRects[this.tiles[0]];
-                CTRRectangle r2 = this.texture.quadRects[this.tiles[2]];
-                r.w = Math.Min(r.w, (float)this.width / 2f);
-                r2.w = Math.Min(r2.w, (float)this.width - r.w);
-                r2.x += this.texture.quadRects[this.tiles[2]].w - r2.w;
-                GLDrawer.drawImagePart(this.texture, r, this.drawX, this.drawY + this.offsets[0]);
-                GLDrawer.drawImagePart(this.texture, r2, this.drawX + r.w, this.drawY + this.offsets[2]);
+                CTRRectangle r = texture.quadRects[tiles[0]];
+                CTRRectangle r2 = texture.quadRects[tiles[2]];
+                r.w = Math.Min(r.w, (float)width / 2f);
+                r2.w = Math.Min(r2.w, (float)width - r.w);
+                r2.x += texture.quadRects[tiles[2]].w - r2.w;
+                GLDrawer.drawImagePart(texture, r, drawX, drawY + offsets[0]);
+                GLDrawer.drawImagePart(texture, r2, drawX + r.w, drawY + offsets[2]);
             }
-            this.postDraw();
+            postDraw();
         }
 
         public virtual void setTileHorizontallyLeftCenterRight(int l, int c, int r)
         {
-            this.tiles[0] = l;
-            this.tiles[1] = c;
-            this.tiles[2] = r;
-            float h = this.texture.quadRects[this.tiles[0]].h;
-            float h2 = this.texture.quadRects[this.tiles[1]].h;
-            float h3 = this.texture.quadRects[this.tiles[2]].h;
+            tiles[0] = l;
+            tiles[1] = c;
+            tiles[2] = r;
+            float h = texture.quadRects[tiles[0]].h;
+            float h2 = texture.quadRects[tiles[1]].h;
+            float h3 = texture.quadRects[tiles[2]].h;
             if (h >= h2 && h >= h3)
             {
-                this.height = (int)h;
+                height = (int)h;
             }
             else if (h2 >= h && h2 >= h3)
             {
-                this.height = (int)h2;
+                height = (int)h2;
             }
             else
             {
-                this.height = (int)h3;
+                height = (int)h3;
             }
-            this.offsets[0] = ((float)this.height - h) / 2f;
-            this.offsets[1] = ((float)this.height - h2) / 2f;
-            this.offsets[2] = ((float)this.height - h3) / 2f;
+            offsets[0] = ((float)height - h) / 2f;
+            offsets[1] = ((float)height - h2) / 2f;
+            offsets[2] = ((float)height - h3) / 2f;
         }
 
         public static HorizontallyTiledImage HorizontallyTiledImage_create(CTRTexture2D t)

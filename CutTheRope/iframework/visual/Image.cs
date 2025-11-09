@@ -13,9 +13,9 @@ namespace CutTheRope.iframework.visual
         {
             get
             {
-                if (this.texture != null)
+                if (texture != null)
                 {
-                    return this.texture._resName;
+                    return texture._resName;
                 }
                 return "ERROR: texture == null";
             }
@@ -85,18 +85,18 @@ namespace CutTheRope.iframework.visual
 
         public virtual Image initWithTexture(CTRTexture2D t)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.texture = t;
-                NSObject.NSRET(this.texture);
-                this.restoreCutTransparency = false;
-                if (this.texture.quadsCount > 0)
+                texture = t;
+                NSObject.NSRET(texture);
+                restoreCutTransparency = false;
+                if (texture.quadsCount > 0)
                 {
-                    this.setDrawQuad(0);
+                    setDrawQuad(0);
                 }
                 else
                 {
-                    this.setDrawFullImage();
+                    setDrawFullImage();
                 }
             }
             return this;
@@ -104,55 +104,55 @@ namespace CutTheRope.iframework.visual
 
         public virtual void setDrawFullImage()
         {
-            this.quadToDraw = -1;
-            this.width = this.texture._realWidth;
-            this.height = this.texture._realHeight;
+            quadToDraw = -1;
+            width = texture._realWidth;
+            height = texture._realHeight;
         }
 
         public virtual void setDrawQuad(int n)
         {
-            this.quadToDraw = n;
-            if (!this.restoreCutTransparency)
+            quadToDraw = n;
+            if (!restoreCutTransparency)
             {
-                this.width = (int)this.texture.quadRects[n].w;
-                this.height = (int)this.texture.quadRects[n].h;
+                width = (int)texture.quadRects[n].w;
+                height = (int)texture.quadRects[n].h;
             }
         }
 
         public virtual void doRestoreCutTransparency()
         {
-            if (this.texture.preCutSize.x != CTRMathHelper.vectUndefined.x)
+            if (texture.preCutSize.x != CTRMathHelper.vectUndefined.x)
             {
-                this.restoreCutTransparency = true;
-                this.width = (int)this.texture.preCutSize.x;
-                this.height = (int)this.texture.preCutSize.y;
+                restoreCutTransparency = true;
+                width = (int)texture.preCutSize.x;
+                height = (int)texture.preCutSize.y;
             }
         }
 
         public override void draw()
         {
-            this.preDraw();
-            if (this.quadToDraw == -1)
+            preDraw();
+            if (quadToDraw == -1)
             {
-                GLDrawer.drawImage(this.texture, this.drawX, this.drawY);
+                GLDrawer.drawImage(texture, drawX, drawY);
             }
             else
             {
-                this.drawQuad(this.quadToDraw);
+                drawQuad(quadToDraw);
             }
-            this.postDraw();
+            postDraw();
         }
 
         public virtual void drawQuad(int n)
         {
-            float w = this.texture.quadRects[n].w;
-            float h = this.texture.quadRects[n].h;
-            float num = this.drawX;
-            float num2 = this.drawY;
-            if (this.restoreCutTransparency)
+            float w = texture.quadRects[n].w;
+            float h = texture.quadRects[n].h;
+            float num = drawX;
+            float num2 = drawY;
+            if (restoreCutTransparency)
             {
-                num += this.texture.quadOffsets[n].x;
-                num2 += this.texture.quadOffsets[n].y;
+                num += texture.quadOffsets[n].x;
+                num2 += texture.quadOffsets[n].y;
             }
             float[] pointer =
             [
@@ -166,9 +166,9 @@ namespace CutTheRope.iframework.visual
                 num2 + h
             ];
             OpenGL.glEnable(0);
-            OpenGL.glBindTexture(this.texture.name());
+            OpenGL.glBindTexture(texture.name());
             OpenGL.glVertexPointer(2, 5, 0, pointer);
-            OpenGL.glTexCoordPointer(2, 5, 0, this.texture.quads[n].toFloatArray());
+            OpenGL.glTexCoordPointer(2, 5, 0, texture.quads[n].toFloatArray());
             OpenGL.glDrawArrays(8, 0, 4);
         }
 
@@ -180,7 +180,7 @@ namespace CutTheRope.iframework.visual
             }
             if (a.actionName == "ACTION_SET_DRAWQUAD")
             {
-                this.setDrawQuad(a.actionParam);
+                setDrawQuad(a.actionParam);
                 return true;
             }
             return false;
@@ -193,7 +193,7 @@ namespace CutTheRope.iframework.visual
 
         public override void dealloc()
         {
-            NSObject.NSREL(this.texture);
+            NSObject.NSREL(texture);
             base.dealloc();
         }
 

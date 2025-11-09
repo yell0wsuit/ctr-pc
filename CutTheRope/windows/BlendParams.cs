@@ -8,25 +8,25 @@ namespace CutTheRope.windows
     {
         public BlendParams()
         {
-            this.defaultBlending = true;
+            defaultBlending = true;
         }
 
         public BlendParams(BlendingFactor s, BlendingFactor d)
         {
-            this.sfactor = s;
-            this.dfactor = d;
-            this.defaultBlending = false;
-            this.enabled = true;
+            sfactor = s;
+            dfactor = d;
+            defaultBlending = false;
+            enabled = true;
         }
 
         public void enable()
         {
-            this.enabled = true;
+            enabled = true;
         }
 
         public void disable()
         {
-            this.enabled = false;
+            enabled = false;
         }
 
         public static void applyDefault()
@@ -41,72 +41,72 @@ namespace CutTheRope.windows
 
         public void apply()
         {
-            if (this.defaultBlending || !this.enabled)
+            if (defaultBlending || !enabled)
             {
-                if (this.lastBlend != BlendParams.BlendType.Default)
+                if (lastBlend != BlendParams.BlendType.Default)
                 {
-                    this.lastBlend = BlendParams.BlendType.Default;
+                    lastBlend = BlendParams.BlendType.Default;
                     BlendParams.applyDefault();
                     return;
                 }
             }
-            else if (this.sfactor == BlendingFactor.GL_SRC_ALPHA && this.dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
+            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
             {
-                if (this.lastBlend != BlendParams.BlendType.SourceAlpha_InverseSourceAlpha)
+                if (lastBlend != BlendParams.BlendType.SourceAlpha_InverseSourceAlpha)
                 {
-                    this.lastBlend = BlendParams.BlendType.SourceAlpha_InverseSourceAlpha;
-                    if (BlendParams.states[(int)this.lastBlend] == null)
+                    lastBlend = BlendParams.BlendType.SourceAlpha_InverseSourceAlpha;
+                    if (BlendParams.states[(int)lastBlend] == null)
                     {
                         BlendState blendState = new();
                         blendState.AlphaSourceBlend = Blend.SourceAlpha;
                         blendState.AlphaDestinationBlend = Blend.InverseSourceAlpha;
                         blendState.ColorDestinationBlend = blendState.AlphaDestinationBlend;
                         blendState.ColorSourceBlend = blendState.AlphaSourceBlend;
-                        BlendParams.states[(int)this.lastBlend] = blendState;
+                        BlendParams.states[(int)lastBlend] = blendState;
                     }
-                    Global.GraphicsDevice.BlendState = BlendParams.states[(int)this.lastBlend];
+                    Global.GraphicsDevice.BlendState = BlendParams.states[(int)lastBlend];
                     return;
                 }
             }
-            else if (this.sfactor == BlendingFactor.GL_ONE && this.dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
+            else if (sfactor == BlendingFactor.GL_ONE && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
             {
-                if (this.lastBlend != BlendParams.BlendType.One_InverseSourceAlpha)
+                if (lastBlend != BlendParams.BlendType.One_InverseSourceAlpha)
                 {
-                    this.lastBlend = BlendParams.BlendType.One_InverseSourceAlpha;
-                    if (BlendParams.states[(int)this.lastBlend] == null)
+                    lastBlend = BlendParams.BlendType.One_InverseSourceAlpha;
+                    if (BlendParams.states[(int)lastBlend] == null)
                     {
                         BlendState blendState2 = new();
                         blendState2.AlphaSourceBlend = Blend.One;
                         blendState2.AlphaDestinationBlend = Blend.InverseSourceAlpha;
                         blendState2.ColorDestinationBlend = blendState2.AlphaDestinationBlend;
                         blendState2.ColorSourceBlend = blendState2.AlphaSourceBlend;
-                        BlendParams.states[(int)this.lastBlend] = blendState2;
+                        BlendParams.states[(int)lastBlend] = blendState2;
                     }
-                    Global.GraphicsDevice.BlendState = BlendParams.states[(int)this.lastBlend];
+                    Global.GraphicsDevice.BlendState = BlendParams.states[(int)lastBlend];
                     return;
                 }
             }
-            else if (this.sfactor == BlendingFactor.GL_SRC_ALPHA && this.dfactor == BlendingFactor.GL_ONE && this.lastBlend != BlendParams.BlendType.SourceAlpha_One)
+            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE && lastBlend != BlendParams.BlendType.SourceAlpha_One)
             {
-                this.lastBlend = BlendParams.BlendType.SourceAlpha_One;
-                if (BlendParams.states[(int)this.lastBlend] == null)
+                lastBlend = BlendParams.BlendType.SourceAlpha_One;
+                if (BlendParams.states[(int)lastBlend] == null)
                 {
                     BlendState blendState3 = new();
                     blendState3.AlphaSourceBlend = Blend.SourceAlpha;
                     blendState3.AlphaDestinationBlend = Blend.One;
                     blendState3.ColorDestinationBlend = blendState3.AlphaDestinationBlend;
                     blendState3.ColorSourceBlend = blendState3.AlphaSourceBlend;
-                    BlendParams.states[(int)this.lastBlend] = blendState3;
+                    BlendParams.states[(int)lastBlend] = blendState3;
                 }
-                Global.GraphicsDevice.BlendState = BlendParams.states[(int)this.lastBlend];
+                Global.GraphicsDevice.BlendState = BlendParams.states[(int)lastBlend];
             }
         }
 
         public override string ToString()
         {
-            if (!this.defaultBlending)
+            if (!defaultBlending)
             {
-                return string.Concat(new object[] { "BlendParams(src=", this.sfactor, ", dst=", this.dfactor, ", enabled=", this.enabled, ")" });
+                return string.Concat(new object[] { "BlendParams(src=", sfactor, ", dst=", dfactor, ", enabled=", enabled, ")" });
             }
             return "BlendParams(default)";
         }

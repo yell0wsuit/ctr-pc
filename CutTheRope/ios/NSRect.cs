@@ -8,12 +8,12 @@ namespace CutTheRope.ios
     {
         public NSRect(float _x, float _y, float _w, float _h)
         {
-            this.origin = new NSPoint
+            origin = new NSPoint
             {
                 x = _x,
                 y = _y
             };
-            this.size = new NSSize
+            size = new NSSize
             {
                 width = _w,
                 height = _h
@@ -22,12 +22,12 @@ namespace CutTheRope.ios
 
         public NSRect(Microsoft.Xna.Framework.Rectangle xnaRect)
         {
-            this.origin = new NSPoint
+            origin = new NSPoint
             {
                 x = (float)xnaRect.X,
                 y = (float)xnaRect.Y
             };
-            this.size = new NSSize
+            size = new NSSize
             {
                 width = (float)xnaRect.Width,
                 height = (float)xnaRect.Height
@@ -36,12 +36,12 @@ namespace CutTheRope.ios
 
         public NSRect(CTRRectangle ctrRect)
         {
-            this.origin = new NSPoint
+            origin = new NSPoint
             {
                 x = ctrRect.x,
                 y = ctrRect.y
             };
-            this.size = new NSSize
+            size = new NSSize
             {
                 width = ctrRect.w,
                 height = ctrRect.h

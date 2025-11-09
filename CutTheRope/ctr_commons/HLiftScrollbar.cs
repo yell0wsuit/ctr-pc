@@ -16,49 +16,49 @@ namespace CutTheRope.ctr_commons
         {
             if (base.initWithTexture(Application.getTexture(resID)) != null)
             {
-                this.setDrawQuad(bq);
+                setDrawQuad(bq);
                 Image up = Image.Image_createWithResIDQuad(resID, lq);
                 Image image = Image.Image_createWithResIDQuad(resID, lqp);
                 Vector relativeQuadOffset = Image.getRelativeQuadOffset(resID, lq, lqp);
                 image.x += relativeQuadOffset.x;
                 image.y += relativeQuadOffset.y;
-                this.lift = (Lift)new Lift().initWithUpElementDownElementandID(up, image, 0);
-                this.lift.parentAnchor = 17;
-                this.lift.anchor = 18;
-                this.lift.minX = 1f;
-                this.lift.maxX = (float)this.width - this.lift.minX;
-                this.lift.liftDelegate = new Lift.PercentXY(this.percentXY);
+                lift = (Lift)new Lift().initWithUpElementDownElementandID(up, image, 0);
+                lift.parentAnchor = 17;
+                lift.anchor = 18;
+                lift.minX = 1f;
+                lift.maxX = (float)width - lift.minX;
+                lift.liftDelegate = new Lift.PercentXY(percentXY);
                 int num = 45;
-                this.lift.setTouchIncreaseLeftRightTopBottom((float)num, (float)num, -5f, 10f);
-                this.addChild(this.lift);
-                this.spointsNum = 0;
-                this.spoints = null;
-                this.activeSpoint = 0;
+                lift.setTouchIncreaseLeftRightTopBottom((float)num, (float)num, -5f, 10f);
+                addChild(lift);
+                spointsNum = 0;
+                spoints = null;
+                activeSpoint = 0;
             }
             return this;
         }
 
         public virtual Vector getScrollPoint(int i)
         {
-            return this.spoints[i];
+            return spoints[i];
         }
 
         public virtual int getTotalScrollPoints()
         {
-            return this.spointsNum;
+            return spointsNum;
         }
 
         public virtual void updateActiveSpoint()
         {
             int i = 0;
-            while (i < this.spointsNum)
+            while (i < spointsNum)
             {
-                if (this.lift.x <= this.spointsLimits[i].x)
+                if (lift.x <= spointsLimits[i].x)
                 {
-                    this.activeSpoint = this.limitPoints[i];
-                    if (this.delegateLiftScrollbarDelegate != null)
+                    activeSpoint = limitPoints[i];
+                    if (delegateLiftScrollbarDelegate != null)
                     {
-                        this.delegateLiftScrollbarDelegate.changedActiveSpointFromTo(0, this.activeSpoint);
+                        delegateLiftScrollbarDelegate.changedActiveSpointFromTo(0, activeSpoint);
                         return;
                     }
                     break;
@@ -73,34 +73,34 @@ namespace CutTheRope.ctr_commons
         public override void update(float delta)
         {
             base.update(delta);
-            this.updateLift();
-            for (int i = 0; i < this.spointsNum; i++)
+            updateLift();
+            for (int i = 0; i < spointsNum; i++)
             {
-                if (this.lift.x <= this.spointsLimits[i].x)
+                if (lift.x <= spointsLimits[i].x)
                 {
-                    int num = this.limitPoints[i];
-                    if (this.activeSpoint != num)
+                    int num = limitPoints[i];
+                    if (activeSpoint != num)
                     {
-                        this.delegateLiftScrollbarDelegate?.changedActiveSpointFromTo(this.activeSpoint, num);
-                        this.activeSpoint = num;
+                        delegateLiftScrollbarDelegate?.changedActiveSpointFromTo(activeSpoint, num);
+                        activeSpoint = num;
                     }
                     return;
                 }
             }
-            if (this.lift.x >= this.spointsLimits[this.spointsNum - 1].x && this.activeSpoint != this.limitPoints[this.spointsNum - 1])
+            if (lift.x >= spointsLimits[spointsNum - 1].x && activeSpoint != limitPoints[spointsNum - 1])
             {
-                this.delegateLiftScrollbarDelegate?.changedActiveSpointFromTo(this.activeSpoint, this.limitPoints[this.spointsNum - 1]);
-                this.activeSpoint = this.limitPoints[this.spointsNum - 1];
+                delegateLiftScrollbarDelegate?.changedActiveSpointFromTo(activeSpoint, limitPoints[spointsNum - 1]);
+                activeSpoint = limitPoints[spointsNum - 1];
             }
         }
 
         public override void dealloc()
         {
-            this.spoints = null;
-            this.spointsLimits = null;
-            this.limitPoints = null;
-            this.container = null;
-            this.delegateLiftScrollbarDelegate = null;
+            spoints = null;
+            spointsLimits = null;
+            limitPoints = null;
+            container = null;
+            delegateLiftScrollbarDelegate = null;
             base.dealloc();
         }
 
@@ -112,20 +112,20 @@ namespace CutTheRope.ctr_commons
         public override bool onTouchUpXY(float tx, float ty)
         {
             bool flag = base.onTouchUpXY(tx, ty);
-            this.container.startMovingToSpointInDirection(CTRMathHelper.vectZero);
+            container.startMovingToSpointInDirection(CTRMathHelper.vectZero);
             return flag;
         }
 
         public void percentXY(float px, float py)
         {
-            Vector maxScroll = this.container.getMaxScroll();
-            this.container.setScroll(CTRMathHelper.vect(maxScroll.x * px, maxScroll.y * py));
+            Vector maxScroll = container.getMaxScroll();
+            container.setScroll(CTRMathHelper.vect(maxScroll.x * px, maxScroll.y * py));
         }
 
         public virtual void updateLift()
         {
-            Vector scroll = this.container.getScroll();
-            Vector maxScroll = this.container.getMaxScroll();
+            Vector scroll = container.getScroll();
+            Vector maxScroll = container.getMaxScroll();
             float num = 0f;
             float num2 = 0f;
             if (maxScroll.x != 0f)
@@ -136,23 +136,23 @@ namespace CutTheRope.ctr_commons
             {
                 num2 = scroll.y / maxScroll.y;
             }
-            this.lift.x = (this.lift.maxX - this.lift.minX) * num + this.lift.minX;
-            this.lift.y = (this.lift.maxY - this.lift.minY) * num2 + this.lift.minY;
+            lift.x = (lift.maxX - lift.minX) * num + lift.minX;
+            lift.y = (lift.maxY - lift.minY) * num2 + lift.minY;
         }
 
         public virtual void calcScrollPoints()
         {
-            Vector maxScroll = this.container.getMaxScroll();
-            this.spointsNum = this.container.getTotalScrollPoints();
-            this.spoints = null;
-            this.spointsLimits = null;
-            this.limitPoints = null;
-            this.spoints = new Vector[this.spointsNum];
-            this.spointsLimits = new Vector[this.spointsNum];
-            this.limitPoints = new int[this.spointsNum];
-            for (int i = 0; i < this.spointsNum; i++)
+            Vector maxScroll = container.getMaxScroll();
+            spointsNum = container.getTotalScrollPoints();
+            spoints = null;
+            spointsLimits = null;
+            limitPoints = null;
+            spoints = new Vector[spointsNum];
+            spointsLimits = new Vector[spointsNum];
+            limitPoints = new int[spointsNum];
+            for (int i = 0; i < spointsNum; i++)
             {
-                Vector vector = CTRMathHelper.vectNeg(this.container.getScrollPoint(i));
+                Vector vector = CTRMathHelper.vectNeg(container.getScrollPoint(i));
                 float num = 0f;
                 float num2 = 0f;
                 if (maxScroll.x != 0f)
@@ -163,38 +163,38 @@ namespace CutTheRope.ctr_commons
                 {
                     num2 = vector.y / maxScroll.y;
                 }
-                float num3 = (this.lift.maxX - this.lift.minX) * num + this.lift.minX;
-                float num4 = (this.lift.maxY - this.lift.minY) * num2 + this.lift.minY;
-                this.spoints[i] = CTRMathHelper.vect(num3, num4);
+                float num3 = (lift.maxX - lift.minX) * num + lift.minX;
+                float num4 = (lift.maxY - lift.minY) * num2 + lift.minY;
+                spoints[i] = CTRMathHelper.vect(num3, num4);
             }
-            for (int j = 0; j < this.spointsNum; j++)
+            for (int j = 0; j < spointsNum; j++)
             {
-                this.spointsLimits[j] = this.spoints[j];
-                this.limitPoints[j] = j;
+                spointsLimits[j] = spoints[j];
+                limitPoints[j] = j;
             }
             bool flag = true;
             while (flag)
             {
                 flag = false;
-                for (int k = 0; k < this.spointsNum - 1; k++)
+                for (int k = 0; k < spointsNum - 1; k++)
                 {
-                    if (this.spointsLimits[k].x > this.spointsLimits[k + 1].x)
+                    if (spointsLimits[k].x > spointsLimits[k + 1].x)
                     {
                         flag = true;
-                        Vector vector2 = this.spointsLimits[k];
-                        this.spointsLimits[k] = this.spointsLimits[k + 1];
-                        this.spointsLimits[k + 1] = vector2;
-                        int num5 = this.limitPoints[k];
-                        this.limitPoints[k] = this.limitPoints[k + 1];
-                        this.limitPoints[k + 1] = num5;
+                        Vector vector2 = spointsLimits[k];
+                        spointsLimits[k] = spointsLimits[k + 1];
+                        spointsLimits[k + 1] = vector2;
+                        int num5 = limitPoints[k];
+                        limitPoints[k] = limitPoints[k + 1];
+                        limitPoints[k + 1] = num5;
                     }
                 }
             }
-            for (int l = 0; l < this.spointsNum - 1; l++)
+            for (int l = 0; l < spointsNum - 1; l++)
             {
-                Vector vector3 = this.spointsLimits[l];
-                Vector vector4 = this.spointsLimits[l + 1];
-                Vector[] array = this.spointsLimits;
+                Vector vector3 = spointsLimits[l];
+                Vector vector4 = spointsLimits[l + 1];
+                Vector[] array = spointsLimits;
                 int num6 = l;
                 array[num6].x = array[num6].x + (vector4.x - vector3.x) / 2f;
             }
@@ -202,11 +202,11 @@ namespace CutTheRope.ctr_commons
 
         public virtual void setContainer(ScrollableContainer c)
         {
-            this.container = c;
-            if (this.container != null)
+            container = c;
+            if (container != null)
             {
-                this.calcScrollPoints();
-                this.updateLift();
+                calcScrollPoints();
+                updateLift();
             }
         }
 

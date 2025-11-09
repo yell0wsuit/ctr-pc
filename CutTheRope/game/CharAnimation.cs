@@ -23,9 +23,9 @@ namespace CutTheRope.game
             {
                 if (a.actionParam == 1)
                 {
-                    this.parent.color = RGBAColor.transparentRGBA;
+                    parent.color = RGBAColor.transparentRGBA;
                 }
-                this.playTimeline(a.actionSubParam);
+                playTimeline(a.actionSubParam);
                 return true;
             }
             return base.handleAction(a);

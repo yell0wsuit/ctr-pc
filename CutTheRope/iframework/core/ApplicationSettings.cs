@@ -17,7 +17,7 @@ namespace CutTheRope.iframework.core
             {
                 throw new NotImplementedException();
             }
-            return (int)this.orientation;
+            return (int)orientation;
         }
 
         public virtual bool getBool(int s)
@@ -33,9 +33,9 @@ namespace CutTheRope.iframework.core
             {
                 return NSObject.NSS("");
             }
-            if (this.locale != null)
+            if (locale != null)
             {
-                return NSObject.NSS(this.locale);
+                return NSObject.NSS(locale);
             }
             switch (ResDataPhoneFull.LANGUAGE)
             {
@@ -60,17 +60,17 @@ namespace CutTheRope.iframework.core
         {
             if (sid == 8)
             {
-                this.locale = str.ToString();
+                locale = str.ToString();
                 ResDataPhoneFull.LANGUAGE = Language.LANG_EN;
-                if (this.locale == "ru")
+                if (locale == "ru")
                 {
                     ResDataPhoneFull.LANGUAGE = Language.LANG_RU;
                 }
-                else if (this.locale == "de")
+                else if (locale == "de")
                 {
                     ResDataPhoneFull.LANGUAGE = Language.LANG_DE;
                 }
-                if (this.locale == "fr")
+                if (locale == "fr")
                 {
                     ResDataPhoneFull.LANGUAGE = Language.LANG_FR;
                 }

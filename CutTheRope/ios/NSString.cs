@@ -7,50 +7,50 @@ namespace CutTheRope.ios
     {
         public NSString()
         {
-            this.value_ = "";
+            value_ = "";
         }
 
         public NSString(string rhs)
         {
-            this.value_ = rhs;
+            value_ = rhs;
         }
 
         public override string ToString()
         {
-            return this.value_;
+            return value_;
         }
 
         public int length()
         {
-            if (this.value_ == null)
+            if (value_ == null)
             {
                 return 0;
             }
-            return this.value_.Length;
+            return value_.Length;
         }
 
         public bool isEqualToString(NSString str)
         {
-            return this.isEqualToString(str.value_);
+            return isEqualToString(str.value_);
         }
 
         public bool isEqualToString(string str)
         {
-            if (this.value_ == null)
+            if (value_ == null)
             {
                 return str == null;
             }
-            return str != null && this.value_ == str;
+            return str != null && value_ == str;
         }
 
         public int IndexOf(char c)
         {
-            return this.value_.IndexOf(c);
+            return value_.IndexOf(c);
         }
 
         public NSRange rangeOfString(NSString str)
         {
-            return this.rangeOfString(str.value_);
+            return rangeOfString(str.value_);
         }
 
         public NSRange rangeOfString(string str)
@@ -60,7 +60,7 @@ namespace CutTheRope.ios
             result.location = 0U;
             if (str.Length > 0)
             {
-                int num = this.value_.IndexOf(str);
+                int num = value_.IndexOf(str);
                 if (num > -1)
                 {
                     result.length = (uint)str.Length;
@@ -72,63 +72,63 @@ namespace CutTheRope.ios
 
         public char characterAtIndex(int n)
         {
-            return this.value_[n];
+            return value_[n];
         }
 
         public NSString copy()
         {
-            return new NSString(this.value_);
+            return new NSString(value_);
         }
 
         public void getCharacters(char[] to)
         {
-            int num = Math.Min(to.Length - 1, this.length());
+            int num = Math.Min(to.Length - 1, length());
             for (int i = 0; i < num; i++)
             {
-                to[i] = this.value_[i];
+                to[i] = value_[i];
             }
             to[num] = '\0';
         }
 
         public char[] getCharacters()
         {
-            char[] array = new char[this.length() + 1];
-            this.getCharacters(array);
+            char[] array = new char[length() + 1];
+            getCharacters(array);
             return array;
         }
 
         public NSString substringWithRange(NSRange range)
         {
-            return new NSString(this.value_.Substring((int)range.location, (int)range.length));
+            return new NSString(value_.Substring((int)range.location, (int)range.length));
         }
 
         public NSString substringFromIndex(int n)
         {
-            return new NSString(this.value_.Substring(n));
+            return new NSString(value_.Substring(n));
         }
 
         public NSString substringToIndex(int n)
         {
-            return new NSString(this.value_.Substring(0, n));
+            return new NSString(value_.Substring(0, n));
         }
 
         public int intValue()
         {
-            if (this.value_.Length == 0)
+            if (value_.Length == 0)
             {
                 return 0;
             }
             int num = 0;
             int num2 = 0;
-            int num3 = this.value_.Length;
+            int num3 = value_.Length;
             int num4 = 1;
             while (num2 < num3)
             {
-                if (this.value_[num2] == ' ')
+                if (value_[num2] == ' ')
                 {
                     num2++;
                 }
-                else if (this.value_[num2] == '-')
+                else if (value_[num2] == '-')
                 {
                     num4 = -1;
                     num2++;
@@ -136,7 +136,7 @@ namespace CutTheRope.ios
                 else
                 {
                     num *= 10;
-                    num += (int)(this.value_[num2++] - '0');
+                    num += (int)(value_[num2++] - '0');
                 }
             }
             return num * num4;
@@ -144,33 +144,33 @@ namespace CutTheRope.ios
 
         public bool boolValue()
         {
-            return this.value_.Length != 0 && this.value_.ToLower() == "true";
+            return value_.Length != 0 && value_.ToLower() == "true";
         }
 
         public float floatValue()
         {
-            if (this.value_.Length == 0)
+            if (value_.Length == 0)
             {
                 return 0f;
             }
             float num = 0f;
             int num2 = 0;
-            int num3 = this.value_.Length;
+            int num3 = value_.Length;
             int num4 = 1;
             int num5 = 10;
             int num6 = 1;
             while (num2 < num3)
             {
-                if (this.value_[num2] == ' ')
+                if (value_[num2] == ' ')
                 {
                     num2++;
                 }
-                else if (this.value_[num2] == '-')
+                else if (value_[num2] == '-')
                 {
                     num4 = -1;
                     num2++;
                 }
-                else if (this.value_[num2] == ',' || this.value_[num2] == '.')
+                else if (value_[num2] == ',' || value_[num2] == '.')
                 {
                     num5 = 1;
                     num6 = 10;
@@ -179,7 +179,7 @@ namespace CutTheRope.ios
                 else
                 {
                     num *= (float)num5;
-                    num += ((float)this.value_[num2++] - 48f) / (float)num6;
+                    num += ((float)value_[num2++] - 48f) / (float)num6;
                     if (num6 > 1)
                     {
                         num6 *= 10;
@@ -193,7 +193,7 @@ namespace CutTheRope.ios
         {
             List<NSString> list = new();
             char[] separator = [ch];
-            foreach (string rhs in this.value_.Split(separator))
+            foreach (string rhs in value_.Split(separator))
             {
                 list.Add(new NSString(rhs));
             }
@@ -202,12 +202,12 @@ namespace CutTheRope.ios
 
         public bool hasPrefix(NSString prefix)
         {
-            return this.value_.StartsWith(prefix.ToString());
+            return value_.StartsWith(prefix.ToString());
         }
 
         public bool hasSuffix(string p)
         {
-            return this.value_.EndsWith(p);
+            return value_.EndsWith(p);
         }
 
         private string value_;

@@ -7,7 +7,7 @@ namespace CutTheRope.iframework.visual
     {
         public KeyFrame()
         {
-            this.value = new KeyFrameValue();
+            value = new KeyFrameValue();
         }
 
         public static KeyFrame makeAction(DynamicArray actions, float time)

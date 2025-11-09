@@ -12,21 +12,21 @@ namespace CutTheRope.game
         {
             if (base.init() != null)
             {
-                if (!this.getBooleanForKey("PREFS_EXIST"))
+                if (!getBooleanForKey("PREFS_EXIST"))
                 {
-                    this.setBooleanforKey(true, "PREFS_EXIST", true);
-                    this.setIntforKey(0, "PREFS_GAME_STARTS", true);
-                    this.setIntforKey(0, "PREFS_LEVELS_WON", true);
-                    this.resetToDefaults();
-                    this.resetMusicSound();
-                    this.firstLaunch = true;
-                    this.playLevelScroll = false;
+                    setBooleanforKey(true, "PREFS_EXIST", true);
+                    setIntforKey(0, "PREFS_GAME_STARTS", true);
+                    setIntforKey(0, "PREFS_LEVELS_WON", true);
+                    resetToDefaults();
+                    resetMusicSound();
+                    firstLaunch = true;
+                    playLevelScroll = false;
                 }
                 else
                 {
-                    if (this.getIntForKey("PREFS_VERSION") < 1)
+                    if (getIntForKey("PREFS_VERSION") < 1)
                     {
-                        this.getTotalScore();
+                        getTotalScore();
                         int i = 0;
                         int packsCount = CTRPreferences.getPacksCount();
                         while (i < packsCount)
@@ -36,7 +36,7 @@ namespace CutTheRope.game
                             int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
                             while (j < levelsInPackCount)
                             {
-                                int intForKey2 = this.getIntForKey(CTRPreferences.getPackLevelKey("SCORE_", i, j));
+                                int intForKey2 = getIntForKey(CTRPreferences.getPackLevelKey("SCORE_", i, j));
                                 if (intForKey2 > 5999)
                                 {
                                     num = 150000;
@@ -47,26 +47,26 @@ namespace CutTheRope.game
                             }
                             if (num > 149999)
                             {
-                                this.resetToDefaults();
-                                this.resetMusicSound();
+                                resetToDefaults();
+                                resetMusicSound();
                                 break;
                             }
                             i++;
                         }
-                        this.setScoreHash();
+                        setScoreHash();
                     }
-                    this.firstLaunch = false;
-                    this.playLevelScroll = false;
+                    firstLaunch = false;
+                    playLevelScroll = false;
                 }
-                this.setIntforKey(2, "PREFS_VERSION", true);
+                setIntforKey(2, "PREFS_VERSION", true);
             }
             return this;
         }
 
         private void resetMusicSound()
         {
-            this.setBooleanforKey(true, "SOUND_ON", true);
-            this.setBooleanforKey(true, "MUSIC_ON", true);
+            setBooleanforKey(true, "SOUND_ON", true);
+            setBooleanforKey(true, "MUSIC_ON", true);
         }
 
         private static bool isShareware()
@@ -245,33 +245,33 @@ namespace CutTheRope.game
                 while (j < levelsInPackCount)
                 {
                     int v = ((i == 0 || (CTRPreferences.isShareware() && i < CTRPreferences.sharewareFreePacks())) && j == 0) ? 1 : 0;
-                    this.setIntforKey(0, CTRPreferences.getPackLevelKey("SCORE_", i, j), false);
-                    this.setIntforKey(0, CTRPreferences.getPackLevelKey("STARS_", i, j), false);
-                    this.setIntforKey(v, CTRPreferences.getPackLevelKey("UNLOCKED_", i, j), false);
+                    setIntforKey(0, CTRPreferences.getPackLevelKey("SCORE_", i, j), false);
+                    setIntforKey(0, CTRPreferences.getPackLevelKey("STARS_", i, j), false);
+                    setIntforKey(v, CTRPreferences.getPackLevelKey("UNLOCKED_", i, j), false);
                     j++;
                 }
                 i++;
             }
-            this.setIntforKey(0, "PREFS_ROPES_CUT", true);
-            this.setIntforKey(0, "PREFS_BUBBLES_POPPED", true);
-            this.setIntforKey(0, "PREFS_SPIDERS_BUSTED", true);
-            this.setIntforKey(0, "PREFS_CANDIES_LOST", true);
-            this.setIntforKey(0, "PREFS_CANDIES_UNITED", true);
-            this.setIntforKey(0, "PREFS_SOCKS_USED", true);
-            this.setIntforKey(0, "PREFS_SELECTED_CANDY", true);
-            this.setBooleanforKey(false, "PREFS_CANDY_WAS_CHANGED", true);
-            this.setBooleanforKey(true, "PREFS_GAME_CENTER_ENABLED", true);
-            this.setIntforKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
-            this.setIntforKey(0, "PREFS_LAST_PACK", true);
-            this.setBooleanforKey(true, "PREFS_WINDOW_FULLSCREEN", true);
-            this.checkForUnlockIAP();
-            this.savePreferences();
-            this.setScoreHash();
+            setIntforKey(0, "PREFS_ROPES_CUT", true);
+            setIntforKey(0, "PREFS_BUBBLES_POPPED", true);
+            setIntforKey(0, "PREFS_SPIDERS_BUSTED", true);
+            setIntforKey(0, "PREFS_CANDIES_LOST", true);
+            setIntforKey(0, "PREFS_CANDIES_UNITED", true);
+            setIntforKey(0, "PREFS_SOCKS_USED", true);
+            setIntforKey(0, "PREFS_SELECTED_CANDY", true);
+            setBooleanforKey(false, "PREFS_CANDY_WAS_CHANGED", true);
+            setBooleanforKey(true, "PREFS_GAME_CENTER_ENABLED", true);
+            setIntforKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
+            setIntforKey(0, "PREFS_LAST_PACK", true);
+            setBooleanforKey(true, "PREFS_WINDOW_FULLSCREEN", true);
+            checkForUnlockIAP();
+            savePreferences();
+            setScoreHash();
         }
 
         private void checkForUnlockIAP()
         {
-            if (!this.getBooleanForKey("IAP_UNLOCK"))
+            if (!getBooleanForKey("IAP_UNLOCK"))
             {
                 return;
             }
@@ -294,7 +294,7 @@ namespace CutTheRope.game
             {
                 for (int j = 0; j < CTRPreferences.getLevelsInPackCount(); j++)
                 {
-                    num += this.getIntForKey(CTRPreferences.getPackLevelKey("SCORE_", i, j));
+                    num += getIntForKey(CTRPreferences.getPackLevelKey("SCORE_", i, j));
                 }
             }
             return num;
@@ -302,8 +302,8 @@ namespace CutTheRope.game
 
         public void setScoreHash()
         {
-            NSString mD5Str = CTRMathHelper.getMD5Str(NSObject.NSS(this.getTotalScore().ToString()));
-            this.setStringforKey(mD5Str.ToString(), "PREFS_SCORE_HASH", true);
+            NSString mD5Str = CTRMathHelper.getMD5Str(NSObject.NSS(getTotalScore().ToString()));
+            setStringforKey(mD5Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 
         internal static bool isFirstLaunch()
@@ -321,13 +321,13 @@ namespace CutTheRope.game
                 int levelsInPackCount = CTRPreferences.getLevelsInPackCount();
                 while (j < levelsInPackCount)
                 {
-                    this.setIntforKey(1, CTRPreferences.getPackLevelKey("UNLOCKED_", i, j), false);
-                    this.setIntforKey(stars, CTRPreferences.getPackLevelKey("STARS_", i, j), false);
+                    setIntforKey(1, CTRPreferences.getPackLevelKey("UNLOCKED_", i, j), false);
+                    setIntforKey(stars, CTRPreferences.getPackLevelKey("STARS_", i, j), false);
                     j++;
                 }
                 i++;
             }
-            this.savePreferences();
+            savePreferences();
         }
 
         internal bool isScoreHashValid()

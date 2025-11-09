@@ -6,11 +6,11 @@ namespace CutTheRope.iframework.visual
     {
         public KeyFrameValue()
         {
-            this.action = new ActionParams();
-            this.scale = new ScaleParams();
-            this.pos = new PosParams();
-            this.rotation = new RotationParams();
-            this.color = new ColorParams();
+            action = new ActionParams();
+            scale = new ScaleParams();
+            pos = new PosParams();
+            rotation = new RotationParams();
+            color = new ColorParams();
         }
 
         public PosParams pos;

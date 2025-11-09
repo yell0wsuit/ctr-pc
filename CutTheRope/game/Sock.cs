@@ -28,39 +28,39 @@ namespace CutTheRope.game
 
         public virtual void createAnimations()
         {
-            this.light = Animation.Animation_createWithResID(85);
-            this.light.anchor = 34;
-            this.light.parentAnchor = 10;
-            this.light.y = 270f;
-            this.light.x = FrameworkTypes.RTD(0.0);
-            this.light.addAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 2, new List<int> { 3, 4, 4 });
-            this.light.doRestoreCutTransparency();
-            this.light.visible = false;
-            this.addChild(this.light);
+            light = Animation.Animation_createWithResID(85);
+            light.anchor = 34;
+            light.parentAnchor = 10;
+            light.y = 270f;
+            light.x = FrameworkTypes.RTD(0.0);
+            light.addAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 2, new List<int> { 3, 4, 4 });
+            light.doRestoreCutTransparency();
+            light.visible = false;
+            addChild(light);
         }
 
         public virtual void updateRotation()
         {
             float num = 140f;
-            this.t1.x = this.x - num / 2f - 20f;
-            this.t2.x = this.x + num / 2f - 20f;
-            this.t1.y = this.t2.y = this.y;
-            this.b1.x = this.t1.x;
-            this.b2.x = this.t2.x;
-            this.b1.y = this.b2.y = this.y + 15f;
-            this.angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(this.rotation);
-            this.t1 = CTRMathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
-            this.t2 = CTRMathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);
-            this.b1 = CTRMathHelper.vectRotateAround(this.b1, this.angle, this.x, this.y);
-            this.b2 = CTRMathHelper.vectRotateAround(this.b2, this.angle, this.x, this.y);
+            t1.x = x - num / 2f - 20f;
+            t2.x = x + num / 2f - 20f;
+            t1.y = t2.y = y;
+            b1.x = t1.x;
+            b2.x = t2.x;
+            b1.y = b2.y = y + 15f;
+            angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(rotation);
+            t1 = CTRMathHelper.vectRotateAround(t1, angle, x, y);
+            t2 = CTRMathHelper.vectRotateAround(t2, angle, x, y);
+            b1 = CTRMathHelper.vectRotateAround(b1, angle, x, y);
+            b2 = CTRMathHelper.vectRotateAround(b2, angle, x, y);
         }
 
         public override void draw()
         {
-            Timeline timeline = this.light.getCurrentTimeline();
+            Timeline timeline = light.getCurrentTimeline();
             if (timeline != null && timeline.state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
-                this.light.visible = false;
+                light.visible = false;
             }
             base.draw();
         }
@@ -72,9 +72,9 @@ namespace CutTheRope.game
         public override void update(float delta)
         {
             base.update(delta);
-            if (this.mover != null)
+            if (mover != null)
             {
-                this.updateRotation();
+                updateRotation();
             }
         }
 

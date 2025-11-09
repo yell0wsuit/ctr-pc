@@ -28,7 +28,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._windowRect.Width;
+                return _windowRect.Width;
             }
         }
 
@@ -37,7 +37,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._windowRect.Height;
+                return _windowRect.Height;
             }
         }
 
@@ -46,7 +46,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._fullScreenRect.Width;
+                return _fullScreenRect.Width;
             }
         }
 
@@ -55,7 +55,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._fullScreenRect.Height;
+                return _fullScreenRect.Height;
             }
         }
 
@@ -64,7 +64,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._isFullScreen;
+                return _isFullScreen;
             }
         }
 
@@ -73,11 +73,11 @@ namespace CutTheRope.windows
         {
             get
             {
-                if (this.IsFullScreen)
+                if (IsFullScreen)
                 {
-                    return this._fullScreenRect;
+                    return _fullScreenRect;
                 }
-                return this._windowRect;
+                return _windowRect;
             }
         }
 
@@ -86,7 +86,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._gameWidth;
+                return _gameWidth;
             }
         }
 
@@ -95,7 +95,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._gameHeight;
+                return _gameHeight;
             }
         }
 
@@ -104,7 +104,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._scaledViewRect;
+                return _scaledViewRect;
             }
         }
 
@@ -113,7 +113,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._skipChanges;
+                return _skipChanges;
             }
         }
 
@@ -122,10 +122,10 @@ namespace CutTheRope.windows
         {
             set
             {
-                if (this._fullScreenCropWidth != value)
+                if (_fullScreenCropWidth != value)
                 {
-                    this._fullScreenCropWidth = value;
-                    this.UpdateScaledView();
+                    _fullScreenCropWidth = value;
+                    UpdateScaledView();
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return (double)this._scaledViewRect.Width / (double)this._gameWidth;
+                return (double)_scaledViewRect.Width / (double)_gameWidth;
             }
         }
 
@@ -149,39 +149,39 @@ namespace CutTheRope.windows
 
         public void SetWindowMinimumSize(Form form)
         {
-            form.MinimumSize = new Size(800, this.ScaledGameHeight(800));
+            form.MinimumSize = new Size(800, ScaledGameHeight(800));
         }
 
         public int TransformWindowToViewX(int x)
         {
-            return x - this._scaledViewRect.X;
+            return x - _scaledViewRect.X;
         }
 
         public int TransformWindowToViewY(int y)
         {
-            return y - this._scaledViewRect.Y;
+            return y - _scaledViewRect.Y;
         }
 
         public float TransformViewToGameX(float x)
         {
-            return x * (float)this._gameWidth / (float)this._scaledViewRect.Width;
+            return x * (float)_gameWidth / (float)_scaledViewRect.Width;
         }
 
         public float TransformViewToGameY(float y)
         {
-            return y * (float)this._gameHeight / (float)this._scaledViewRect.Height;
+            return y * (float)_gameHeight / (float)_scaledViewRect.Height;
         }
 
         public ScreenSizeManager(int gameWidth, int gameHeight)
         {
-            this._gameWidth = gameWidth;
-            this._gameHeight = gameHeight;
-            this._gameAspectRatio = (double)gameHeight / (double)gameWidth;
+            _gameWidth = gameWidth;
+            _gameHeight = gameHeight;
+            _gameAspectRatio = (double)gameHeight / (double)gameWidth;
         }
 
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
-            this.FullScreenRectChanged(displayMode);
+            FullScreenRectChanged(displayMode);
             int num = (windowWidth > 0) ? windowWidth : (displayMode.Width - 100);
             if (num < 800)
             {
@@ -195,111 +195,111 @@ namespace CutTheRope.windows
             {
                 num = displayMode.Width;
             }
-            this.WindowRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, num, this.ScaledGameHeight(num)));
+            WindowRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, num, ScaledGameHeight(num)));
             if (isFullScreen)
             {
-                this.ToggleFullScreen();
+                ToggleFullScreen();
                 return;
             }
-            this.ApplyWindowSize(this.WindowWidth);
+            ApplyWindowSize(WindowWidth);
         }
 
         public int ScaledGameWidth(int scaledHeight)
         {
-            return (int)((double)scaledHeight / this._gameAspectRatio + 0.5);
+            return (int)((double)scaledHeight / _gameAspectRatio + 0.5);
         }
 
         public int ScaledGameHeight(int scaledWidth)
         {
-            return (int)((double)scaledWidth * this._gameAspectRatio + 0.5);
+            return (int)((double)scaledWidth * _gameAspectRatio + 0.5);
         }
 
         private void UpdateScaledView()
         {
-            if (this._skipChanges)
+            if (_skipChanges)
             {
                 return;
             }
-            if (!this._isFullScreen)
+            if (!_isFullScreen)
             {
-                this._scaledViewRect = this._windowRect;
+                _scaledViewRect = _windowRect;
                 return;
             }
-            if (this._fullScreenRect.Width >= this._fullScreenRect.Height)
+            if (_fullScreenRect.Width >= _fullScreenRect.Height)
             {
-                int num = this._fullScreenCropWidth ? this._fullScreenRect.Height : this.ScaledGameHeight(this._fullScreenRect.Width);
-                int num2 = this._fullScreenCropWidth ? this.ScaledGameWidth(num) : this._fullScreenRect.Width;
-                this._scaledViewRect = new Microsoft.Xna.Framework.Rectangle((this._fullScreenRect.Width - num2) / 2, (this._fullScreenRect.Height - num) / 2, num2, num);
+                int num = _fullScreenCropWidth ? _fullScreenRect.Height : ScaledGameHeight(_fullScreenRect.Width);
+                int num2 = _fullScreenCropWidth ? ScaledGameWidth(num) : _fullScreenRect.Width;
+                _scaledViewRect = new Microsoft.Xna.Framework.Rectangle((_fullScreenRect.Width - num2) / 2, (_fullScreenRect.Height - num) / 2, num2, num);
                 return;
             }
-            int num3 = this._fullScreenCropWidth ? ((int)((float)this._fullScreenRect.Width / 5f * 4f)) : this.ScaledGameHeight(this._fullScreenRect.Width);
-            int num4 = this._fullScreenCropWidth ? this.ScaledGameWidth(num3) : this._fullScreenRect.Width;
-            this._scaledViewRect = new Microsoft.Xna.Framework.Rectangle((this._fullScreenRect.Width - num4) / 2, (this._fullScreenRect.Height - num3) / 2, num4, num3);
+            int num3 = _fullScreenCropWidth ? ((int)((float)_fullScreenRect.Width / 5f * 4f)) : ScaledGameHeight(_fullScreenRect.Width);
+            int num4 = _fullScreenCropWidth ? ScaledGameWidth(num3) : _fullScreenRect.Width;
+            _scaledViewRect = new Microsoft.Xna.Framework.Rectangle((_fullScreenRect.Width - num4) / 2, (_fullScreenRect.Height - num3) / 2, num4, num3);
         }
 
         public void ApplyWindowSize(int width)
         {
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
             graphicsDeviceManager.PreferredBackBufferWidth = width;
-            graphicsDeviceManager.PreferredBackBufferHeight = this.ScaledGameHeight(width);
+            graphicsDeviceManager.PreferredBackBufferHeight = ScaledGameHeight(width);
             graphicsDeviceManager.ApplyChanges();
-            this.WindowRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
+            WindowRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
         }
 
         public void ToggleFullScreen()
         {
-            this._skipChanges = true;
+            _skipChanges = true;
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
             bool isFullScreen = graphicsDeviceManager.IsFullScreen;
-            bool fullScreenCropWidth = this._fullScreenCropWidth;
-            this.FullScreenCropWidth = true;
+            bool fullScreenCropWidth = _fullScreenCropWidth;
+            FullScreenCropWidth = true;
             if (isFullScreen)
             {
-                graphicsDeviceManager.PreferredBackBufferWidth = this._windowRect.Width;
-                graphicsDeviceManager.PreferredBackBufferHeight = this._windowRect.Height;
+                graphicsDeviceManager.PreferredBackBufferWidth = _windowRect.Width;
+                graphicsDeviceManager.PreferredBackBufferHeight = _windowRect.Height;
             }
             else
             {
-                graphicsDeviceManager.PreferredBackBufferWidth = this._fullScreenRect.Width;
-                graphicsDeviceManager.PreferredBackBufferHeight = this._fullScreenRect.Height;
+                graphicsDeviceManager.PreferredBackBufferWidth = _fullScreenRect.Width;
+                graphicsDeviceManager.PreferredBackBufferHeight = _fullScreenRect.Height;
             }
             graphicsDeviceManager.IsFullScreen = !isFullScreen;
             graphicsDeviceManager.ApplyChanges();
-            this.ApplyViewportToDevice();
-            this.FullScreenCropWidth = fullScreenCropWidth;
-            this._skipChanges = false;
-            this.EnableFullScreen(!isFullScreen);
-            this.Save();
+            ApplyViewportToDevice();
+            FullScreenCropWidth = fullScreenCropWidth;
+            _skipChanges = false;
+            EnableFullScreen(!isFullScreen);
+            Save();
             CutTheRope.iframework.core.Application.sharedCanvas().reshape();
             CutTheRope.iframework.core.Application.sharedRootController().fullscreenToggled(!isFullScreen);
             if (!graphicsDeviceManager.IsFullScreen)
             {
-                this.RefreshDesktop();
+                RefreshDesktop();
             }
         }
 
         public void FixWindowSize(Microsoft.Xna.Framework.Rectangle newWindowRect)
         {
-            if (this._skipChanges)
+            if (_skipChanges)
             {
                 return;
             }
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
-            this.FullScreenRectChanged(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode);
-            if (!this.IsFullScreen)
+            FullScreenRectChanged(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode);
+            if (!IsFullScreen)
             {
                 try
                 {
                     int num = graphicsDeviceManager.PreferredBackBufferWidth;
-                    if (newWindowRect.Width != this.WindowWidth)
+                    if (newWindowRect.Width != WindowWidth)
                     {
                         num = newWindowRect.Width;
                     }
-                    else if (newWindowRect.Height != this.WindowHeight)
+                    else if (newWindowRect.Height != WindowHeight)
                     {
-                        num = this.ScaledGameWidth(newWindowRect.Height);
+                        num = ScaledGameWidth(newWindowRect.Height);
                     }
-                    if (num < 800 || this.ScaledGameHeight(num) < this.ScaledGameHeight(800))
+                    if (num < 800 || ScaledGameHeight(num) < ScaledGameHeight(800))
                     {
                         num = 800;
                     }
@@ -307,23 +307,23 @@ namespace CutTheRope.windows
                     {
                         num = ScreenSizeManager.MAX_WINDOW_WIDTH;
                     }
-                    if (num > this.ScreenWidth)
+                    if (num > ScreenWidth)
                     {
-                        num = this.ScreenWidth;
+                        num = ScreenWidth;
                     }
-                    this.ApplyWindowSize(num);
+                    ApplyWindowSize(num);
                 }
                 catch (Exception)
                 {
                 }
             }
-            this.Save();
+            Save();
             CutTheRope.iframework.core.Application.sharedCanvas().reshape();
         }
 
         public void ApplyViewportToDevice()
         {
-            Microsoft.Xna.Framework.Rectangle bounds = (!this._isFullScreen) ? Microsoft.Xna.Framework.Rectangle.Intersect(this._scaledViewRect, this._windowRect) : Microsoft.Xna.Framework.Rectangle.Intersect(this._scaledViewRect, this._fullScreenRect);
+            Microsoft.Xna.Framework.Rectangle bounds = (!_isFullScreen) ? Microsoft.Xna.Framework.Rectangle.Intersect(_scaledViewRect, _windowRect) : Microsoft.Xna.Framework.Rectangle.Intersect(_scaledViewRect, _fullScreenRect);
             try
             {
                 Global.GraphicsDevice.Viewport = new Viewport(bounds);
@@ -335,42 +335,42 @@ namespace CutTheRope.windows
 
         public void Save()
         {
-            Preferences._setIntforKey(this._windowRect.Width, "PREFS_WINDOW_WIDTH", false);
-            Preferences._setIntforKey(this._windowRect.Height, "PREFS_WINDOW_HEIGHT", false);
-            Preferences._setBooleanforKey(this._isFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
+            Preferences._setIntforKey(_windowRect.Width, "PREFS_WINDOW_WIDTH", false);
+            Preferences._setIntforKey(_windowRect.Height, "PREFS_WINDOW_HEIGHT", false);
+            Preferences._setBooleanforKey(_isFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
         }
 
         private void WindowRectChanged(Microsoft.Xna.Framework.Rectangle newWindowRect)
         {
-            if (!this._skipChanges)
+            if (!_skipChanges)
             {
-                this._windowRect = newWindowRect;
-                this._windowRect.X = 0;
-                this._windowRect.Y = 0;
-                this.UpdateScaledView();
+                _windowRect = newWindowRect;
+                _windowRect.X = 0;
+                _windowRect.Y = 0;
+                UpdateScaledView();
             }
         }
 
         private void FullScreenRectChanged(DisplayMode d)
         {
-            this.FullScreenRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, d.Width, d.Height));
+            FullScreenRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, d.Width, d.Height));
         }
 
         private void FullScreenRectChanged(Microsoft.Xna.Framework.Rectangle r)
         {
-            if (!this._skipChanges)
+            if (!_skipChanges)
             {
-                this._fullScreenRect = r;
-                this.UpdateScaledView();
+                _fullScreenRect = r;
+                UpdateScaledView();
             }
         }
 
         private void EnableFullScreen(bool bFull)
         {
-            if (!this._skipChanges)
+            if (!_skipChanges)
             {
-                this._isFullScreen = bFull;
-                this.UpdateScaledView();
+                _isFullScreen = bFull;
+                UpdateScaledView();
             }
         }
 

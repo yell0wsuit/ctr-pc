@@ -6,9 +6,9 @@ namespace CutTheRope.iframework
     {
         public PointSprite(float xx, float yy, float s)
         {
-            this.x = xx;
-            this.y = yy;
-            this.size = s;
+            x = xx;
+            y = yy;
+            size = s;
         }
 
         public float x;

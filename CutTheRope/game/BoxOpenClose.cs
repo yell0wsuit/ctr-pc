@@ -13,142 +13,142 @@ namespace CutTheRope.game
         public override void update(float delta)
         {
             base.update(delta);
-            if (this.boxAnim != 2)
+            if (boxAnim != 2)
             {
                 return;
             }
-            bool flag = Mover.moveVariableToTarget(ref this.raDelay, 0.0, 1.0, (double)delta);
-            switch (this.raState)
+            bool flag = Mover.moveVariableToTarget(ref raDelay, 0.0, 1.0, (double)delta);
+            switch (raState)
             {
                 case -1:
                     {
-                        this.cscore = 0;
-                        this.ctime = this.time;
-                        this.cstarBonus = this.starBonus;
-                        ((Text)this.result.getChildWithName("scoreValue")).setString(this.cscore.ToString());
-                        Text text27 = (Text)this.result.getChildWithName("dataTitle");
+                        cscore = 0;
+                        ctime = time;
+                        cstarBonus = starBonus;
+                        ((Text)result.getChildWithName("scoreValue")).setString(cscore.ToString());
+                        Text text27 = (Text)result.getChildWithName("dataTitle");
                         Image.setElementPositionWithQuadOffset(text27, 67, 5);
                         text27.setString(Application.getString(655378));
-                        ((Text)this.result.getChildWithName("dataValue")).setString(this.cstarBonus.ToString());
-                        this.raState = 1;
-                        this.raDelay = 1f;
+                        ((Text)result.getChildWithName("dataValue")).setString(cstarBonus.ToString());
+                        raState = 1;
+                        raDelay = 1f;
                         return;
                     }
                 case 0:
                     if (flag)
                     {
-                        this.raState = 1;
-                        this.raDelay = 0.2f;
+                        raState = 1;
+                        raDelay = 0.2f;
                         return;
                     }
                     break;
                 case 1:
                     {
-                        Text text28 = (Text)this.result.getChildWithName("dataTitle");
+                        Text text28 = (Text)result.getChildWithName("dataTitle");
                         text28.setEnabled(true);
-                        Text text21 = (Text)this.result.getChildWithName("dataValue");
+                        Text text21 = (Text)result.getChildWithName("dataValue");
                         text21.setEnabled(true);
-                        Text text22 = (Text)this.result.getChildWithName("scoreValue");
-                        text28.color.a = text21.color.a = text22.color.a = 1f - this.raDelay / 0.2f;
+                        Text text22 = (Text)result.getChildWithName("scoreValue");
+                        text28.color.a = text21.color.a = text22.color.a = 1f - raDelay / 0.2f;
                         if (flag)
                         {
-                            this.raState = 2;
-                            this.raDelay = 1f;
+                            raState = 2;
+                            raDelay = 1f;
                             return;
                         }
                         break;
                     }
                 case 2:
                     {
-                        this.cstarBonus = (int)((float)this.starBonus * this.raDelay);
-                        this.cscore = (int)((1f - this.raDelay) * (float)this.starBonus);
-                        ((Text)this.result.getChildWithName("dataValue")).setString(this.cstarBonus.ToString());
-                        Text text29 = (Text)this.result.getChildWithName("scoreValue");
+                        cstarBonus = (int)((float)starBonus * raDelay);
+                        cscore = (int)((1f - raDelay) * (float)starBonus);
+                        ((Text)result.getChildWithName("dataValue")).setString(cstarBonus.ToString());
+                        Text text29 = (Text)result.getChildWithName("scoreValue");
                         text29.setEnabled(true);
-                        text29.setString(this.cscore.ToString());
+                        text29.setString(cscore.ToString());
                         if (flag)
                         {
-                            this.raState = 3;
-                            this.raDelay = 0.2f;
+                            raState = 3;
+                            raDelay = 0.2f;
                             return;
                         }
                         break;
                     }
                 case 3:
                     {
-                        BaseElement baseElement = (Text)this.result.getChildWithName("dataTitle");
-                        Text text23 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement.color.a = text23.color.a = this.raDelay / 0.2f;
+                        BaseElement baseElement = (Text)result.getChildWithName("dataTitle");
+                        Text text23 = (Text)result.getChildWithName("dataValue");
+                        baseElement.color.a = text23.color.a = raDelay / 0.2f;
                         if (flag)
                         {
-                            this.raState = 4;
-                            this.raDelay = 0.2f;
-                            int num = (int)Math.Floor((double)(CTRMathHelper.round((double)this.time) / 60f));
-                            int num2 = (int)(CTRMathHelper.round((double)this.time) - (float)num * 60f);
-                            ((Text)this.result.getChildWithName("dataTitle")).setString(Application.getString(655377));
-                            ((Text)this.result.getChildWithName("dataValue")).setString(NSObject.NSS(num.ToString() + ":" + num2.ToString("D2")));
+                            raState = 4;
+                            raDelay = 0.2f;
+                            int num = (int)Math.Floor((double)(CTRMathHelper.round((double)time) / 60f));
+                            int num2 = (int)(CTRMathHelper.round((double)time) - (float)num * 60f);
+                            ((Text)result.getChildWithName("dataTitle")).setString(Application.getString(655377));
+                            ((Text)result.getChildWithName("dataValue")).setString(NSObject.NSS(num.ToString() + ":" + num2.ToString("D2")));
                             return;
                         }
                         break;
                     }
                 case 4:
                     {
-                        BaseElement baseElement2 = (Text)this.result.getChildWithName("dataTitle");
-                        Text text24 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement2.color.a = text24.color.a = 1f - this.raDelay / 0.2f;
+                        BaseElement baseElement2 = (Text)result.getChildWithName("dataTitle");
+                        Text text24 = (Text)result.getChildWithName("dataValue");
+                        baseElement2.color.a = text24.color.a = 1f - raDelay / 0.2f;
                         if (flag)
                         {
-                            this.raState = 5;
-                            this.raDelay = 1f;
+                            raState = 5;
+                            raDelay = 1f;
                             return;
                         }
                         break;
                     }
                 case 5:
                     {
-                        this.ctime = this.time * this.raDelay;
-                        this.cscore = (int)((float)this.starBonus + (1f - this.raDelay) * (float)this.timeBonus);
-                        int num3 = (int)Math.Floor((double)CTRMathHelper.round((double)this.ctime) / 60.0);
-                        int num4 = (int)((double)CTRMathHelper.round((double)this.ctime) - (double)num3 * 60.0);
-                        ((Text)this.result.getChildWithName("dataValue")).setString(NSObject.NSS(num3.ToString() + ":" + num4.ToString("D2")));
-                        ((Text)this.result.getChildWithName("scoreValue")).setString(this.cscore.ToString());
+                        ctime = time * raDelay;
+                        cscore = (int)((float)starBonus + (1f - raDelay) * (float)timeBonus);
+                        int num3 = (int)Math.Floor((double)CTRMathHelper.round((double)ctime) / 60.0);
+                        int num4 = (int)((double)CTRMathHelper.round((double)ctime) - (double)num3 * 60.0);
+                        ((Text)result.getChildWithName("dataValue")).setString(NSObject.NSS(num3.ToString() + ":" + num4.ToString("D2")));
+                        ((Text)result.getChildWithName("scoreValue")).setString(cscore.ToString());
                         if (flag)
                         {
-                            this.raState = 6;
-                            this.raDelay = 0.2f;
+                            raState = 6;
+                            raDelay = 0.2f;
                             return;
                         }
                         break;
                     }
                 case 6:
                     {
-                        BaseElement baseElement3 = (Text)this.result.getChildWithName("dataTitle");
-                        Text text25 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement3.color.a = text25.color.a = this.raDelay / 0.2f;
+                        BaseElement baseElement3 = (Text)result.getChildWithName("dataTitle");
+                        Text text25 = (Text)result.getChildWithName("dataValue");
+                        baseElement3.color.a = text25.color.a = raDelay / 0.2f;
                         if (flag)
                         {
-                            this.raState = 7;
-                            this.raDelay = 0.2f;
-                            Text text30 = (Text)this.result.getChildWithName("dataTitle");
+                            raState = 7;
+                            raDelay = 0.2f;
+                            Text text30 = (Text)result.getChildWithName("dataTitle");
                             Image.setElementPositionWithQuadOffset(text30, 67, 7);
                             text30.setString(Application.getString(655379));
-                            ((Text)this.result.getChildWithName("dataValue")).setString("");
+                            ((Text)result.getChildWithName("dataValue")).setString("");
                             return;
                         }
                         break;
                     }
                 case 7:
                     {
-                        BaseElement baseElement4 = (Text)this.result.getChildWithName("dataTitle");
-                        Text text26 = (Text)this.result.getChildWithName("dataValue");
-                        baseElement4.color.a = text26.color.a = 1f - this.raDelay / 0.2f;
+                        BaseElement baseElement4 = (Text)result.getChildWithName("dataTitle");
+                        Text text26 = (Text)result.getChildWithName("dataValue");
+                        baseElement4.color.a = text26.color.a = 1f - raDelay / 0.2f;
                         if (flag)
                         {
-                            this.raState = 8;
-                            if (this.shouldShowImprovedResult)
+                            raState = 8;
+                            if (shouldShowImprovedResult)
                             {
-                                this.stamp.setEnabled(true);
-                                this.stamp.playTimeline(0);
+                                stamp.setEnabled(true);
+                                stamp.playTimeline(0);
                             }
                         }
                         break;
@@ -160,89 +160,89 @@ namespace CutTheRope.game
 
         public virtual NSObject initWithButtonDelegate(ButtonDelegate b)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.result = (BaseElement)new BaseElement().init();
-                this.addChildwithID(this.result, 1);
-                this.anchor = this.parentAnchor = 18;
-                this.result.anchor = this.result.parentAnchor = 18;
-                this.result.setEnabled(false);
+                result = (BaseElement)new BaseElement().init();
+                addChildwithID(result, 1);
+                anchor = parentAnchor = 18;
+                result.anchor = result.parentAnchor = 18;
+                result.setEnabled(false);
                 Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-                this.result.addTimelinewithID(timeline, 0);
+                result.addTimelinewithID(timeline, 0);
                 timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-                this.result.addTimelinewithID(timeline, 1);
+                result.addTimelinewithID(timeline, 1);
                 Image image = Image.Image_createWithResIDQuad(67, 14);
                 image.anchor = 18;
                 image.setName("star1");
                 Image.setElementPositionWithQuadOffset(image, 67, 0);
-                this.result.addChild(image);
+                result.addChild(image);
                 Image image2 = Image.Image_createWithResIDQuad(67, 14);
                 image2.anchor = 18;
                 image2.setName("star2");
                 Image.setElementPositionWithQuadOffset(image2, 67, 1);
-                this.result.addChild(image2);
+                result.addChild(image2);
                 Image image3 = Image.Image_createWithResIDQuad(67, 14);
                 image3.anchor = 18;
                 image3.setName("star3");
                 Image.setElementPositionWithQuadOffset(image3, 67, 2);
-                this.result.addChild(image3);
+                result.addChild(image3);
                 Text text = new Text().initWithFont(Application.getFont(3));
                 text.setString(Application.getString(655372));
                 Image.setElementPositionWithQuadOffset(text, 67, 3);
                 text.anchor = 18;
                 text.setName("passText");
-                this.result.addChild(text);
+                result.addChild(text);
                 Image image4 = Image.Image_createWithResIDQuad(67, 15);
                 image4.anchor = 18;
                 Image.setElementPositionWithQuadOffset(image4, 67, 4);
-                this.result.addChild(image4);
-                this.stamp = Image.Image_createWithResIDQuad(70, 0);
+                result.addChild(image4);
+                stamp = Image.Image_createWithResIDQuad(70, 0);
                 Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(7);
                 timeline2.addKeyFrame(KeyFrame.makeScale(3.0, 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline2.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-                this.stamp.addTimeline(timeline2);
-                this.stamp.anchor = 18;
-                this.stamp.setEnabled(false);
-                Image.setElementPositionWithQuadOffset(this.stamp, 67, 12);
-                this.result.addChild(this.stamp);
+                stamp.addTimeline(timeline2);
+                stamp.anchor = 18;
+                stamp.setEnabled(false);
+                Image.setElementPositionWithQuadOffset(stamp, 67, 12);
+                result.addChild(stamp);
                 Button button = MenuController.createShortButtonWithTextIDDelegate(Application.getString(655384), 8, b);
                 button.anchor = 18;
                 Image.setElementPositionWithQuadOffset(button, 67, 11);
-                this.result.addChild(button);
+                result.addChild(button);
                 Button button2 = MenuController.createShortButtonWithTextIDDelegate(Application.getString(655385), 9, b);
                 button2.anchor = 18;
                 Image.setElementPositionWithQuadOffset(button2, 67, 10);
-                this.result.addChild(button2);
+                result.addChild(button2);
                 Button button3 = MenuController.createShortButtonWithTextIDDelegate(Application.getString(655386), 5, b);
                 button3.anchor = 18;
                 Image.setElementPositionWithQuadOffset(button3, 67, 9);
-                this.result.addChild(button3);
+                result.addChild(button3);
                 Text text2 = new Text().initWithFont(Application.getFont(4));
                 text2.setName("dataTitle");
                 text2.anchor = 18;
                 Image.setElementPositionWithQuadOffset(text2, 67, 5);
-                this.result.addChild(text2);
+                result.addChild(text2);
                 Text text3 = new Text().initWithFont(Application.getFont(4));
                 text3.setName("dataValue");
                 text3.anchor = 18;
                 Image.setElementPositionWithQuadOffset(text3, 67, 6);
-                this.result.addChild(text3);
+                result.addChild(text3);
                 Text text4 = new Text().initWithFont(Application.getFont(68));
                 text4.setName("scoreValue");
                 text4.anchor = 18;
                 Image.setElementPositionWithQuadOffset(text4, 67, 8);
-                this.result.addChild(text4);
-                this.confettiAnims = (BaseElement)new BaseElement().init();
-                this.result.addChild(this.confettiAnims);
-                this.openCloseAnims = null;
-                this.boxAnim = -1;
-                this.delegateboxClosed = null;
+                result.addChild(text4);
+                confettiAnims = (BaseElement)new BaseElement().init();
+                result.addChild(confettiAnims);
+                openCloseAnims = null;
+                boxAnim = -1;
+                delegateboxClosed = null;
             }
             return this;
         }
@@ -290,78 +290,78 @@ namespace CutTheRope.game
 
         public virtual void levelFirstStart()
         {
-            this.boxAnim = 0;
-            this.removeOpenCloseAnims();
-            this.showOpenAnim();
-            if (this.result.isEnabled())
+            boxAnim = 0;
+            removeOpenCloseAnims();
+            showOpenAnim();
+            if (result.isEnabled())
             {
-                this.result.playTimeline(1);
+                result.playTimeline(1);
             }
         }
 
         public virtual void levelStart()
         {
-            this.boxAnim = 1;
-            this.removeOpenCloseAnims();
-            this.showOpenAnim();
-            if (this.result.isEnabled())
+            boxAnim = 1;
+            removeOpenCloseAnims();
+            showOpenAnim();
+            if (result.isEnabled())
             {
-                this.result.playTimeline(1);
+                result.playTimeline(1);
             }
         }
 
         public virtual void levelWon()
         {
-            this.boxAnim = 2;
-            this.raState = -1;
-            this.removeOpenCloseAnims();
-            this.showCloseAnim();
-            ((Text)this.result.getChildWithName("scoreValue")).setEnabled(false);
-            Text text = (Text)this.result.getChildWithName("dataTitle");
+            boxAnim = 2;
+            raState = -1;
+            removeOpenCloseAnims();
+            showCloseAnim();
+            ((Text)result.getChildWithName("scoreValue")).setEnabled(false);
+            Text text = (Text)result.getChildWithName("dataTitle");
             text.setEnabled(false);
             Image.setElementPositionWithQuadOffset(text, 67, 5);
-            ((Text)this.result.getChildWithName("dataValue")).setEnabled(false);
-            this.result.playTimeline(0);
-            this.result.setEnabled(true);
-            this.stamp.setEnabled(false);
+            ((Text)result.getChildWithName("dataValue")).setEnabled(false);
+            result.playTimeline(0);
+            result.setEnabled(true);
+            stamp.setEnabled(false);
         }
 
         public virtual void levelLost()
         {
-            this.boxAnim = 3;
-            this.removeOpenCloseAnims();
-            this.showCloseAnim();
+            boxAnim = 3;
+            removeOpenCloseAnims();
+            showCloseAnim();
         }
 
         public virtual void levelQuit()
         {
-            this.boxAnim = 4;
-            this.result.setEnabled(false);
-            this.removeOpenCloseAnims();
-            this.showCloseAnim();
+            boxAnim = 4;
+            result.setEnabled(false);
+            removeOpenCloseAnims();
+            showCloseAnim();
         }
 
         public virtual void showOpenAnim()
         {
-            this.showOpenCloseAnim(true);
+            showOpenCloseAnim(true);
         }
 
         public virtual void showCloseAnim()
         {
-            this.showOpenCloseAnim(false);
+            showOpenCloseAnim(false);
         }
 
         public virtual void showConfetti()
         {
             for (int i = 0; i < 70; i++)
             {
-                this.confettiAnims.addChild(this.createConfettiParticleNear(CTRMathHelper.vectZero));
+                confettiAnims.addChild(createConfettiParticleNear(CTRMathHelper.vectZero));
             }
         }
 
         public virtual void showOpenCloseAnim(bool open)
         {
-            this.createOpenCloseAnims();
+            createOpenCloseAnims();
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             int num9 = 126 + cTRRootController.getPack();
             Image image = Image.Image_createWithResIDQuad(67, 16);
@@ -382,7 +382,7 @@ namespace CutTheRope.game
             image.addTimelinewithID(timeline, 0);
             image.playTimeline(0);
             timeline.delegateTimelineDelegate = this;
-            this.openCloseAnims.addChild(image);
+            openCloseAnims.addChild(image);
             Vector quadSize = Image.getQuadSize(num9, 0);
             float num2 = FrameworkTypes.SCREEN_WIDTH / 2f - quadSize.x;
             Image image2 = Image.Image_createWithResIDQuad(num9, 0);
@@ -490,7 +490,7 @@ namespace CutTheRope.game
             }
             image6.addTimelinewithID(timeline, 0);
             image6.playTimeline(0);
-            this.openCloseAnims.addChild(image6);
+            openCloseAnims.addChild(image6);
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
             {
@@ -508,13 +508,13 @@ namespace CutTheRope.game
             }
             image7.addTimelinewithID(timeline, 0);
             image7.playTimeline(0);
-            this.openCloseAnims.addChild(image7);
-            this.openCloseAnims.addChild(image2);
-            this.openCloseAnims.addChild(image3);
-            if (this.boxAnim == 0)
+            openCloseAnims.addChild(image7);
+            openCloseAnims.addChild(image2);
+            openCloseAnims.addChild(image3);
+            if (boxAnim == 0)
             {
-                this.openCloseAnims.addChild(image4);
-                this.openCloseAnims.addChild(image5);
+                openCloseAnims.addChild(image4);
+                openCloseAnims.addChild(image5);
             }
         }
 
@@ -524,7 +524,7 @@ namespace CutTheRope.game
 
         public virtual void timelineFinished(Timeline t)
         {
-            switch (this.boxAnim)
+            switch (boxAnim)
             {
                 case 0:
                 case 1:
@@ -535,10 +535,10 @@ namespace CutTheRope.game
                             dispatchFunc = BoxOpenClose.<> O.< 0 > __selector_removeOpenCloseAnims = new DelayedDispatcher.DispatchFunc(BoxOpenClose.selector_removeOpenCloseAnims);
                         }
                         NSTimer.registerDelayedObjectCall(dispatchFunc, this, 0.001);
-                        if (this.result.isEnabled())
+                        if (result.isEnabled())
                         {
-                            this.confettiAnims.removeAllChilds();
-                            this.result.setEnabled(false);
+                            confettiAnims.removeAllChilds();
+                            result.setEnabled(false);
                             return;
                         }
                         break;
@@ -565,33 +565,33 @@ namespace CutTheRope.game
 
         public virtual void postBoxClosed()
         {
-            if (this.delegateboxClosed != null)
+            if (delegateboxClosed != null)
             {
-                this.delegateboxClosed();
+                delegateboxClosed();
             }
-            if (this.shouldShowConfetti)
+            if (shouldShowConfetti)
             {
-                this.showConfetti();
+                showConfetti();
             }
         }
 
         public virtual void removeOpenCloseAnims()
         {
-            if (this.getChild(0) != null)
+            if (getChild(0) != null)
             {
-                this.removeChild(this.openCloseAnims);
-                this.openCloseAnims = null;
+                removeChild(openCloseAnims);
+                openCloseAnims = null;
             }
-            BaseElement baseElement = (Text)this.result.getChildWithName("dataTitle");
-            Text text2 = (Text)this.result.getChildWithName("dataValue");
-            Text text3 = (Text)this.result.getChildWithName("scoreValue");
+            BaseElement baseElement = (Text)result.getChildWithName("dataTitle");
+            Text text2 = (Text)result.getChildWithName("dataValue");
+            Text text3 = (Text)result.getChildWithName("scoreValue");
             baseElement.color.a = text2.color.a = text3.color.a = 1f;
         }
 
         public virtual void createOpenCloseAnims()
         {
-            this.openCloseAnims = (BaseElement)new BaseElement().init();
-            this.addChildwithID(this.openCloseAnims, 0);
+            openCloseAnims = (BaseElement)new BaseElement().init();
+            addChildwithID(openCloseAnims, 0);
         }
 
         private static void selector_removeOpenCloseAnims(NSObject obj)
@@ -688,7 +688,7 @@ namespace CutTheRope.game
             public override void update(float delta)
             {
                 base.update(delta);
-                Timeline.updateTimeline(this.ani, delta);
+                Timeline.updateTimeline(ani, delta);
             }
 
             public Timeline ani;

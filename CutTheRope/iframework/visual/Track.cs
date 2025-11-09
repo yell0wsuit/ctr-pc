@@ -8,49 +8,49 @@ namespace CutTheRope.iframework.visual
     {
         public Track()
         {
-            this.elementPrevState = new KeyFrame();
-            this.currentStepPerSecond = new KeyFrame();
-            this.currentStepAcceleration = new KeyFrame();
+            elementPrevState = new KeyFrame();
+            currentStepPerSecond = new KeyFrame();
+            currentStepAcceleration = new KeyFrame();
         }
 
         public virtual Track initWithTimelineTypeandMaxKeyFrames(Timeline timeline, Track.TrackType trackType, int m)
         {
-            this.t = timeline;
-            this.type = trackType;
-            this.state = Track.TrackState.TRACK_NOT_ACTIVE;
-            this.relative = false;
-            this.nextKeyFrame = -1;
-            this.keyFramesCount = 0;
-            this.keyFramesCapacity = m;
-            this.keyFrames = new KeyFrame[this.keyFramesCapacity];
-            if (this.type == Track.TrackType.TRACK_ACTION)
+            t = timeline;
+            type = trackType;
+            state = Track.TrackState.TRACK_NOT_ACTIVE;
+            relative = false;
+            nextKeyFrame = -1;
+            keyFramesCount = 0;
+            keyFramesCapacity = m;
+            keyFrames = new KeyFrame[keyFramesCapacity];
+            if (type == Track.TrackType.TRACK_ACTION)
             {
-                this.actionSets = new List<List<CTRAction>>();
+                actionSets = new List<List<CTRAction>>();
             }
             return this;
         }
 
         public virtual void initActionKeyFrameandTime(KeyFrame kf, float time)
         {
-            this.keyFrameTimeLeft = time;
-            this.setElementFromKeyFrame(kf);
-            if (this.overrun > 0f)
+            keyFrameTimeLeft = time;
+            setElementFromKeyFrame(kf);
+            if (overrun > 0f)
             {
-                Track.updateActionTrack(this, this.overrun);
-                this.overrun = 0f;
+                Track.updateActionTrack(this, overrun);
+                overrun = 0f;
             }
         }
 
         public virtual void setKeyFrameAt(KeyFrame k, int i)
         {
-            this.keyFrames[i] = k;
-            if (i >= this.keyFramesCount)
+            keyFrames[i] = k;
+            if (i >= keyFramesCount)
             {
-                this.keyFramesCount = i + 1;
+                keyFramesCount = i + 1;
             }
-            if (this.type == Track.TrackType.TRACK_ACTION)
+            if (type == Track.TrackType.TRACK_ACTION)
             {
-                this.actionSets.Add(k.value.action.actionSet);
+                actionSets.Add(k.value.action.actionSet);
             }
         }
 
@@ -59,175 +59,175 @@ namespace CutTheRope.iframework.visual
             float num = 0f;
             for (int i = 0; i <= f; i++)
             {
-                num += this.keyFrames[i].timeOffset;
+                num += keyFrames[i].timeOffset;
             }
             return num;
         }
 
         public virtual void updateRange()
         {
-            this.startTime = this.getFrameTime(0);
-            this.endTime = this.getFrameTime(this.keyFramesCount - 1);
+            startTime = getFrameTime(0);
+            endTime = getFrameTime(keyFramesCount - 1);
         }
 
         private void initKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
         {
-            this.keyFrameTimeLeft = time;
-            this.setKeyFrameFromElement(this.elementPrevState);
-            this.setElementFromKeyFrame(src);
-            switch (this.type)
+            keyFrameTimeLeft = time;
+            setKeyFrameFromElement(elementPrevState);
+            setElementFromKeyFrame(src);
+            switch (type)
             {
                 case Track.TrackType.TRACK_POSITION:
-                    this.currentStepPerSecond.value.pos.x = (dst.value.pos.x - src.value.pos.x) / this.keyFrameTimeLeft;
-                    this.currentStepPerSecond.value.pos.y = (dst.value.pos.y - src.value.pos.y) / this.keyFrameTimeLeft;
+                    currentStepPerSecond.value.pos.x = (dst.value.pos.x - src.value.pos.x) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.pos.y = (dst.value.pos.y - src.value.pos.y) / keyFrameTimeLeft;
                     break;
                 case Track.TrackType.TRACK_SCALE:
-                    this.currentStepPerSecond.value.scale.scaleX = (dst.value.scale.scaleX - src.value.scale.scaleX) / this.keyFrameTimeLeft;
-                    this.currentStepPerSecond.value.scale.scaleY = (dst.value.scale.scaleY - src.value.scale.scaleY) / this.keyFrameTimeLeft;
+                    currentStepPerSecond.value.scale.scaleX = (dst.value.scale.scaleX - src.value.scale.scaleX) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.scale.scaleY = (dst.value.scale.scaleY - src.value.scale.scaleY) / keyFrameTimeLeft;
                     break;
                 case Track.TrackType.TRACK_ROTATION:
-                    this.currentStepPerSecond.value.rotation.angle = (dst.value.rotation.angle - src.value.rotation.angle) / this.keyFrameTimeLeft;
+                    currentStepPerSecond.value.rotation.angle = (dst.value.rotation.angle - src.value.rotation.angle) / keyFrameTimeLeft;
                     break;
                 case Track.TrackType.TRACK_COLOR:
-                    this.currentStepPerSecond.value.color.rgba.r = (dst.value.color.rgba.r - src.value.color.rgba.r) / this.keyFrameTimeLeft;
-                    this.currentStepPerSecond.value.color.rgba.g = (dst.value.color.rgba.g - src.value.color.rgba.g) / this.keyFrameTimeLeft;
-                    this.currentStepPerSecond.value.color.rgba.b = (dst.value.color.rgba.b - src.value.color.rgba.b) / this.keyFrameTimeLeft;
-                    this.currentStepPerSecond.value.color.rgba.a = (dst.value.color.rgba.a - src.value.color.rgba.a) / this.keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.r = (dst.value.color.rgba.r - src.value.color.rgba.r) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.g = (dst.value.color.rgba.g - src.value.color.rgba.g) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.b = (dst.value.color.rgba.b - src.value.color.rgba.b) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.a = (dst.value.color.rgba.a - src.value.color.rgba.a) / keyFrameTimeLeft;
                     break;
             }
             if (dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN || dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT)
             {
-                switch (this.type)
+                switch (type)
                 {
                     case Track.TrackType.TRACK_POSITION:
-                        this.currentStepPerSecond.value.pos.x *= 2f;
-                        this.currentStepPerSecond.value.pos.y *= 2f;
-                        this.currentStepAcceleration.value.pos.x = this.currentStepPerSecond.value.pos.x / this.keyFrameTimeLeft;
-                        this.currentStepAcceleration.value.pos.y = this.currentStepPerSecond.value.pos.y / this.keyFrameTimeLeft;
+                        currentStepPerSecond.value.pos.x *= 2f;
+                        currentStepPerSecond.value.pos.y *= 2f;
+                        currentStepAcceleration.value.pos.x = currentStepPerSecond.value.pos.x / keyFrameTimeLeft;
+                        currentStepAcceleration.value.pos.y = currentStepPerSecond.value.pos.y / keyFrameTimeLeft;
                         if (dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN)
                         {
-                            this.currentStepPerSecond.value.pos.x = 0f;
-                            this.currentStepPerSecond.value.pos.y = 0f;
+                            currentStepPerSecond.value.pos.x = 0f;
+                            currentStepPerSecond.value.pos.y = 0f;
                         }
                         else
                         {
-                            this.currentStepAcceleration.value.pos.x *= -1f;
-                            this.currentStepAcceleration.value.pos.y *= -1f;
+                            currentStepAcceleration.value.pos.x *= -1f;
+                            currentStepAcceleration.value.pos.y *= -1f;
                         }
                         break;
                     case Track.TrackType.TRACK_SCALE:
-                        this.currentStepPerSecond.value.scale.scaleX *= 2f;
-                        this.currentStepPerSecond.value.scale.scaleY *= 2f;
-                        this.currentStepAcceleration.value.scale.scaleX = this.currentStepPerSecond.value.scale.scaleX / this.keyFrameTimeLeft;
-                        this.currentStepAcceleration.value.scale.scaleY = this.currentStepPerSecond.value.scale.scaleY / this.keyFrameTimeLeft;
+                        currentStepPerSecond.value.scale.scaleX *= 2f;
+                        currentStepPerSecond.value.scale.scaleY *= 2f;
+                        currentStepAcceleration.value.scale.scaleX = currentStepPerSecond.value.scale.scaleX / keyFrameTimeLeft;
+                        currentStepAcceleration.value.scale.scaleY = currentStepPerSecond.value.scale.scaleY / keyFrameTimeLeft;
                         if (dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN)
                         {
-                            this.currentStepPerSecond.value.scale.scaleX = 0f;
-                            this.currentStepPerSecond.value.scale.scaleY = 0f;
+                            currentStepPerSecond.value.scale.scaleX = 0f;
+                            currentStepPerSecond.value.scale.scaleY = 0f;
                         }
                         else
                         {
-                            this.currentStepAcceleration.value.scale.scaleX *= -1f;
-                            this.currentStepAcceleration.value.scale.scaleY *= -1f;
+                            currentStepAcceleration.value.scale.scaleX *= -1f;
+                            currentStepAcceleration.value.scale.scaleY *= -1f;
                         }
                         break;
                     case Track.TrackType.TRACK_ROTATION:
-                        this.currentStepPerSecond.value.rotation.angle *= 2f;
-                        this.currentStepAcceleration.value.rotation.angle = this.currentStepPerSecond.value.rotation.angle / this.keyFrameTimeLeft;
+                        currentStepPerSecond.value.rotation.angle *= 2f;
+                        currentStepAcceleration.value.rotation.angle = currentStepPerSecond.value.rotation.angle / keyFrameTimeLeft;
                         if (dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN)
                         {
-                            this.currentStepPerSecond.value.rotation.angle = 0f;
+                            currentStepPerSecond.value.rotation.angle = 0f;
                         }
                         else
                         {
-                            this.currentStepAcceleration.value.rotation.angle *= -1f;
+                            currentStepAcceleration.value.rotation.angle *= -1f;
                         }
                         break;
                     case Track.TrackType.TRACK_COLOR:
                         {
-                            ColorParams color = this.currentStepPerSecond.value.color;
+                            ColorParams color = currentStepPerSecond.value.color;
                             color.rgba.r = color.rgba.r * 2f;
-                            ColorParams color2 = this.currentStepPerSecond.value.color;
+                            ColorParams color2 = currentStepPerSecond.value.color;
                             color2.rgba.g = color2.rgba.g * 2f;
-                            ColorParams color3 = this.currentStepPerSecond.value.color;
+                            ColorParams color3 = currentStepPerSecond.value.color;
                             color3.rgba.b = color3.rgba.b * 2f;
-                            ColorParams color4 = this.currentStepPerSecond.value.color;
+                            ColorParams color4 = currentStepPerSecond.value.color;
                             color4.rgba.a = color4.rgba.a * 2f;
-                            this.currentStepAcceleration.value.color.rgba.r = this.currentStepPerSecond.value.color.rgba.r / this.keyFrameTimeLeft;
-                            this.currentStepAcceleration.value.color.rgba.g = this.currentStepPerSecond.value.color.rgba.g / this.keyFrameTimeLeft;
-                            this.currentStepAcceleration.value.color.rgba.b = this.currentStepPerSecond.value.color.rgba.b / this.keyFrameTimeLeft;
-                            this.currentStepAcceleration.value.color.rgba.a = this.currentStepPerSecond.value.color.rgba.a / this.keyFrameTimeLeft;
+                            currentStepAcceleration.value.color.rgba.r = currentStepPerSecond.value.color.rgba.r / keyFrameTimeLeft;
+                            currentStepAcceleration.value.color.rgba.g = currentStepPerSecond.value.color.rgba.g / keyFrameTimeLeft;
+                            currentStepAcceleration.value.color.rgba.b = currentStepPerSecond.value.color.rgba.b / keyFrameTimeLeft;
+                            currentStepAcceleration.value.color.rgba.a = currentStepPerSecond.value.color.rgba.a / keyFrameTimeLeft;
                             if (dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN)
                             {
-                                this.currentStepPerSecond.value.color.rgba.r = 0f;
-                                this.currentStepPerSecond.value.color.rgba.g = 0f;
-                                this.currentStepPerSecond.value.color.rgba.b = 0f;
-                                this.currentStepPerSecond.value.color.rgba.a = 0f;
+                                currentStepPerSecond.value.color.rgba.r = 0f;
+                                currentStepPerSecond.value.color.rgba.g = 0f;
+                                currentStepPerSecond.value.color.rgba.b = 0f;
+                                currentStepPerSecond.value.color.rgba.a = 0f;
                             }
                             else
                             {
-                                ColorParams color5 = this.currentStepAcceleration.value.color;
+                                ColorParams color5 = currentStepAcceleration.value.color;
                                 color5.rgba.r = color5.rgba.r * -1f;
-                                ColorParams color6 = this.currentStepAcceleration.value.color;
+                                ColorParams color6 = currentStepAcceleration.value.color;
                                 color6.rgba.g = color6.rgba.g * -1f;
-                                ColorParams color7 = this.currentStepAcceleration.value.color;
+                                ColorParams color7 = currentStepAcceleration.value.color;
                                 color7.rgba.b = color7.rgba.b * -1f;
-                                ColorParams color8 = this.currentStepAcceleration.value.color;
+                                ColorParams color8 = currentStepAcceleration.value.color;
                                 color8.rgba.a = color8.rgba.a * -1f;
                             }
                             break;
                         }
                 }
             }
-            if (this.overrun > 0f)
+            if (overrun > 0f)
             {
-                Track.updateTrack(this, this.overrun);
-                this.overrun = 0f;
+                Track.updateTrack(this, overrun);
+                overrun = 0f;
             }
         }
 
         public virtual void setElementFromKeyFrame(KeyFrame kf)
         {
-            switch (this.type)
+            switch (type)
             {
                 case Track.TrackType.TRACK_POSITION:
-                    if (!this.relative)
+                    if (!relative)
                     {
-                        this.t.element.x = kf.value.pos.x;
-                        this.t.element.y = kf.value.pos.y;
+                        t.element.x = kf.value.pos.x;
+                        t.element.y = kf.value.pos.y;
                         return;
                     }
-                    this.t.element.x = this.elementPrevState.value.pos.x + kf.value.pos.x;
-                    this.t.element.y = this.elementPrevState.value.pos.y + kf.value.pos.y;
+                    t.element.x = elementPrevState.value.pos.x + kf.value.pos.x;
+                    t.element.y = elementPrevState.value.pos.y + kf.value.pos.y;
                     return;
                 case Track.TrackType.TRACK_SCALE:
-                    if (!this.relative)
+                    if (!relative)
                     {
-                        this.t.element.scaleX = kf.value.scale.scaleX;
-                        this.t.element.scaleY = kf.value.scale.scaleY;
+                        t.element.scaleX = kf.value.scale.scaleX;
+                        t.element.scaleY = kf.value.scale.scaleY;
                         return;
                     }
-                    this.t.element.scaleX = this.elementPrevState.value.scale.scaleX + kf.value.scale.scaleX;
-                    this.t.element.scaleY = this.elementPrevState.value.scale.scaleY + kf.value.scale.scaleY;
+                    t.element.scaleX = elementPrevState.value.scale.scaleX + kf.value.scale.scaleX;
+                    t.element.scaleY = elementPrevState.value.scale.scaleY + kf.value.scale.scaleY;
                     return;
                 case Track.TrackType.TRACK_ROTATION:
-                    if (!this.relative)
+                    if (!relative)
                     {
-                        this.t.element.rotation = kf.value.rotation.angle;
+                        t.element.rotation = kf.value.rotation.angle;
                         return;
                     }
-                    this.t.element.rotation = this.elementPrevState.value.rotation.angle + kf.value.rotation.angle;
+                    t.element.rotation = elementPrevState.value.rotation.angle + kf.value.rotation.angle;
                     return;
                 case Track.TrackType.TRACK_COLOR:
-                    if (!this.relative)
+                    if (!relative)
                     {
-                        this.t.element.color = kf.value.color.rgba;
+                        t.element.color = kf.value.color.rgba;
                         return;
                     }
-                    this.t.element.color.r = this.elementPrevState.value.color.rgba.r + kf.value.color.rgba.r;
-                    this.t.element.color.g = this.elementPrevState.value.color.rgba.g + kf.value.color.rgba.g;
-                    this.t.element.color.b = this.elementPrevState.value.color.rgba.b + kf.value.color.rgba.b;
-                    this.t.element.color.a = this.elementPrevState.value.color.rgba.a + kf.value.color.rgba.a;
+                    t.element.color.r = elementPrevState.value.color.rgba.r + kf.value.color.rgba.r;
+                    t.element.color.g = elementPrevState.value.color.rgba.g + kf.value.color.rgba.g;
+                    t.element.color.b = elementPrevState.value.color.rgba.b + kf.value.color.rgba.b;
+                    t.element.color.a = elementPrevState.value.color.rgba.a + kf.value.color.rgba.a;
                     return;
                 case Track.TrackType.TRACK_ACTION:
                     {
@@ -245,21 +245,21 @@ namespace CutTheRope.iframework.visual
 
         private void setKeyFrameFromElement(KeyFrame kf)
         {
-            switch (this.type)
+            switch (type)
             {
                 case Track.TrackType.TRACK_POSITION:
-                    kf.value.pos.x = this.t.element.x;
-                    kf.value.pos.y = this.t.element.y;
+                    kf.value.pos.x = t.element.x;
+                    kf.value.pos.y = t.element.y;
                     return;
                 case Track.TrackType.TRACK_SCALE:
-                    kf.value.scale.scaleX = this.t.element.scaleX;
-                    kf.value.scale.scaleY = this.t.element.scaleY;
+                    kf.value.scale.scaleX = t.element.scaleX;
+                    kf.value.scale.scaleY = t.element.scaleY;
                     return;
                 case Track.TrackType.TRACK_ROTATION:
-                    kf.value.rotation.angle = this.t.element.rotation;
+                    kf.value.rotation.angle = t.element.rotation;
                     return;
                 case Track.TrackType.TRACK_COLOR:
-                    kf.value.color.rgba = this.t.element.color;
+                    kf.value.color.rgba = t.element.color;
                     break;
                 case Track.TrackType.TRACK_ACTION:
                     break;

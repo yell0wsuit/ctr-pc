@@ -10,7 +10,7 @@ namespace CutTheRope.iframework.core
 
         public VectorClass(Vector Value)
         {
-            this.v = Value;
+            v = Value;
         }
 
         public Vector v;

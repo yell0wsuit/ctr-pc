@@ -8,50 +8,50 @@ namespace CutTheRope.iframework.visual
         {
             if (n <= 1)
             {
-                this.toggle();
+                toggle();
             }
-            this.delegateButtonDelegate?.onButtonPressed(this.buttonID);
+            delegateButtonDelegate?.onButtonPressed(buttonID);
         }
 
         public ToggleButton initWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, int bid)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.buttonID = bid;
-                this.b1 = new Button().initWithUpElementDownElementandID(u1, d1, 0);
-                this.b2 = new Button().initWithUpElementDownElementandID(u2, d2, 1);
-                this.b1.parentAnchor = this.b2.parentAnchor = 9;
-                this.width = this.b1.width;
-                this.height = this.b1.height;
-                this.addChildwithID(this.b1, 0);
-                this.addChildwithID(this.b2, 1);
-                this.b2.setEnabled(false);
-                this.b1.delegateButtonDelegate = this;
-                this.b2.delegateButtonDelegate = this;
+                buttonID = bid;
+                b1 = new Button().initWithUpElementDownElementandID(u1, d1, 0);
+                b2 = new Button().initWithUpElementDownElementandID(u2, d2, 1);
+                b1.parentAnchor = b2.parentAnchor = 9;
+                width = b1.width;
+                height = b1.height;
+                addChildwithID(b1, 0);
+                addChildwithID(b2, 1);
+                b2.setEnabled(false);
+                b1.delegateButtonDelegate = this;
+                b2.delegateButtonDelegate = this;
             }
             return this;
         }
 
         public void setTouchIncreaseLeftRightTopBottom(double l, double r, double t, double b)
         {
-            this.setTouchIncreaseLeftRightTopBottom((float)l, (float)r, (float)t, (float)b);
+            setTouchIncreaseLeftRightTopBottom((float)l, (float)r, (float)t, (float)b);
         }
 
         public void setTouchIncreaseLeftRightTopBottom(float l, float r, float t, float b)
         {
-            this.b1.setTouchIncreaseLeftRightTopBottom(l, r, t, b);
-            this.b2.setTouchIncreaseLeftRightTopBottom(l, r, t, b);
+            b1.setTouchIncreaseLeftRightTopBottom(l, r, t, b);
+            b2.setTouchIncreaseLeftRightTopBottom(l, r, t, b);
         }
 
         public void toggle()
         {
-            this.b1.setEnabled(!this.b1.isEnabled());
-            this.b2.setEnabled(!this.b2.isEnabled());
+            b1.setEnabled(!b1.isEnabled());
+            b2.setEnabled(!b2.isEnabled());
         }
 
         public bool on()
         {
-            return this.b2.isEnabled();
+            return b2.isEnabled();
         }
 
         public ButtonDelegate delegateButtonDelegate;

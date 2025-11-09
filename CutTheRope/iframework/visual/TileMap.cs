@@ -9,49 +9,49 @@ namespace CutTheRope.iframework.visual
     {
         public override void draw()
         {
-            int count = this.drawers.Count;
+            int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {
-                ImageMultiDrawer imageMultiDrawer = this.drawers[i];
+                ImageMultiDrawer imageMultiDrawer = drawers[i];
                 imageMultiDrawer?.draw();
             }
         }
 
         public override void dealloc()
         {
-            this.matrix = null;
-            this.drawers.Clear();
-            this.drawers = null;
-            this.tiles.Clear();
-            this.tiles = null;
+            matrix = null;
+            drawers.Clear();
+            drawers = null;
+            tiles.Clear();
+            tiles = null;
             base.dealloc();
         }
 
         public virtual TileMap initWithRowsColumns(int r, int c)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.rows = r;
-                this.columns = c;
-                this.cameraViewWidth = (int)FrameworkTypes.SCREEN_WIDTH;
-                this.cameraViewHeight = (int)FrameworkTypes.SCREEN_HEIGHT;
-                this.parallaxRatio = 1f;
-                this.drawers = new List<ImageMultiDrawer>();
-                this.tiles = new Dictionary<int, TileEntry>();
-                this.matrix = new int[this.columns, this.rows];
-                for (int i = 0; i < this.columns; i++)
+                rows = r;
+                columns = c;
+                cameraViewWidth = (int)FrameworkTypes.SCREEN_WIDTH;
+                cameraViewHeight = (int)FrameworkTypes.SCREEN_HEIGHT;
+                parallaxRatio = 1f;
+                drawers = new List<ImageMultiDrawer>();
+                tiles = new Dictionary<int, TileEntry>();
+                matrix = new int[columns, rows];
+                for (int i = 0; i < columns; i++)
                 {
-                    for (int j = 0; j < this.rows; j++)
+                    for (int j = 0; j < rows; j++)
                     {
-                        this.matrix[i, j] = -1;
+                        matrix[i, j] = -1;
                     }
                 }
-                this.repeatedVertically = TileMap.Repeat.REPEAT_NONE;
-                this.repeatedHorizontally = TileMap.Repeat.REPEAT_NONE;
-                this.horizontalRandom = false;
-                this.verticalRandom = false;
-                this.restoreTileTransparency = true;
-                this.randomSeed = CTRMathHelper.RND_RANGE(1000, 2000);
+                repeatedVertically = TileMap.Repeat.REPEAT_NONE;
+                repeatedHorizontally = TileMap.Repeat.REPEAT_NONE;
+                horizontalRandom = false;
+                verticalRandom = false;
+                restoreTileTransparency = true;
+                randomSeed = CTRMathHelper.RND_RANGE(1000, 2000);
             }
             return this;
         }
@@ -60,44 +60,44 @@ namespace CutTheRope.iframework.visual
         {
             if (q == -1)
             {
-                this.tileWidth = t._realWidth;
-                this.tileHeight = t._realHeight;
+                tileWidth = t._realWidth;
+                tileHeight = t._realHeight;
             }
             else
             {
-                this.tileWidth = (int)t.quadRects[q].w;
-                this.tileHeight = (int)t.quadRects[q].h;
+                tileWidth = (int)t.quadRects[q].w;
+                tileHeight = (int)t.quadRects[q].h;
             }
-            this.updateVars();
+            updateVars();
             int num = -1;
-            for (int i = 0; i < this.drawers.Count; i++)
+            for (int i = 0; i < drawers.Count; i++)
             {
-                ImageMultiDrawer imageMultiDrawer = this.drawers[i];
+                ImageMultiDrawer imageMultiDrawer = drawers[i];
                 if (imageMultiDrawer.image.texture == t)
                 {
                     num = i;
                 }
-                if (imageMultiDrawer.image.texture._realWidth == this.tileWidth)
+                if (imageMultiDrawer.image.texture._realWidth == tileWidth)
                 {
                     int realHeight = imageMultiDrawer.image.texture._realHeight;
-                    int num2 = this.tileHeight;
+                    int num2 = tileHeight;
                 }
             }
             if (num == -1)
             {
                 Image image = Image.Image_create(t);
-                if (this.restoreTileTransparency)
+                if (restoreTileTransparency)
                 {
                     image.doRestoreCutTransparency();
                 }
-                ImageMultiDrawer item = new ImageMultiDrawer().initWithImageandCapacity(image, this.maxRowsOnScreen * this.maxColsOnScreen);
-                num = this.drawers.Count;
-                this.drawers.Add(item);
+                ImageMultiDrawer item = new ImageMultiDrawer().initWithImageandCapacity(image, maxRowsOnScreen * maxColsOnScreen);
+                num = drawers.Count;
+                drawers.Add(item);
             }
             TileEntry tileEntry = new();
             tileEntry.drawerIndex = num;
             tileEntry.quad = q;
-            this.tiles[ti] = tileEntry;
+            tiles[ti] = tileEntry;
         }
 
         public virtual void fillStartAtRowColumnRowsColumnswithTile(int r, int c, int rs, int cs, int ti)
@@ -106,127 +106,127 @@ namespace CutTheRope.iframework.visual
             {
                 for (int j = r; j < r + rs; j++)
                 {
-                    this.matrix[i, j] = ti;
+                    matrix[i, j] = ti;
                 }
             }
         }
 
         public virtual void setParallaxRatio(float r)
         {
-            this.parallaxRatio = r;
+            parallaxRatio = r;
         }
 
         public virtual void setRepeatHorizontally(TileMap.Repeat r)
         {
-            this.repeatedHorizontally = r;
-            this.updateVars();
+            repeatedHorizontally = r;
+            updateVars();
         }
 
         public virtual void setRepeatVertically(TileMap.Repeat r)
         {
-            this.repeatedVertically = r;
-            this.updateVars();
+            repeatedVertically = r;
+            updateVars();
         }
 
         public virtual void updateWithCameraPos(Vector pos)
         {
-            float num = (float)Math.Round((double)(pos.x / this.parallaxRatio));
-            float num2 = (float)Math.Round((double)(pos.y / this.parallaxRatio));
-            float num3 = this.x;
-            float num4 = this.y;
-            if (this.repeatedVertically != TileMap.Repeat.REPEAT_NONE)
+            float num = (float)Math.Round((double)(pos.x / parallaxRatio));
+            float num2 = (float)Math.Round((double)(pos.y / parallaxRatio));
+            float num3 = x;
+            float num4 = y;
+            if (repeatedVertically != TileMap.Repeat.REPEAT_NONE)
             {
                 float num13 = num4 - num2;
-                int num5 = (int)num13 % this.tileMapHeight;
-                num4 = (num13 >= 0f) ? ((float)(num5 - this.tileMapHeight) + num2) : ((float)num5 + num2);
+                int num5 = (int)num13 % tileMapHeight;
+                num4 = (num13 >= 0f) ? ((float)(num5 - tileMapHeight) + num2) : ((float)num5 + num2);
             }
-            if (this.repeatedHorizontally != TileMap.Repeat.REPEAT_NONE)
+            if (repeatedHorizontally != TileMap.Repeat.REPEAT_NONE)
             {
                 float num14 = num3 - num;
-                int num6 = (int)num14 % this.tileMapWidth;
-                num3 = (num14 >= 0f) ? ((float)(num6 - this.tileMapWidth) + num) : ((float)num6 + num);
+                int num6 = (int)num14 % tileMapWidth;
+                num3 = (num14 >= 0f) ? ((float)(num6 - tileMapWidth) + num) : ((float)num6 + num);
             }
-            if (!CTRMathHelper.rectInRect(num, num2, num + (float)this.cameraViewWidth, num2 + (float)this.cameraViewHeight, num3, num4, num3 + (float)this.tileMapWidth, num4 + (float)this.tileMapHeight))
+            if (!CTRMathHelper.rectInRect(num, num2, num + (float)cameraViewWidth, num2 + (float)cameraViewHeight, num3, num4, num3 + (float)tileMapWidth, num4 + (float)tileMapHeight))
             {
                 return;
             }
-            CTRRectangle rectangle = CTRMathHelper.rectInRectIntersection(new CTRRectangle(num3, num4, (float)this.tileMapWidth, (float)this.tileMapHeight), new CTRRectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight));
+            CTRRectangle rectangle = CTRMathHelper.rectInRectIntersection(new CTRRectangle(num3, num4, (float)tileMapWidth, (float)tileMapHeight), new CTRRectangle(num, num2, (float)cameraViewWidth, (float)cameraViewHeight));
             Vector vector = CTRMathHelper.vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
-            Vector vector2 = CTRMathHelper.vect((float)((int)vector.x / this.tileWidth), (float)((int)vector.y / this.tileHeight));
-            float num7 = num4 + vector2.y * (float)this.tileHeight;
-            Vector vector3 = CTRMathHelper.vect(num3 + vector2.x * (float)this.tileWidth, num7);
-            int count = this.drawers.Count;
+            Vector vector2 = CTRMathHelper.vect((float)((int)vector.x / tileWidth), (float)((int)vector.y / tileHeight));
+            float num7 = num4 + vector2.y * (float)tileHeight;
+            Vector vector3 = CTRMathHelper.vect(num3 + vector2.x * (float)tileWidth, num7);
+            int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {
-                ImageMultiDrawer imageMultiDrawer = this.drawers[i];
+                ImageMultiDrawer imageMultiDrawer = drawers[i];
                 if (imageMultiDrawer != null)
                 {
                     imageMultiDrawer.numberOfQuadsToDraw = 0;
                 }
             }
-            int num8 = (int)(vector2.x + (float)this.maxColsOnScreen - 1f);
-            int num9 = (int)(vector2.y + (float)this.maxRowsOnScreen - 1f);
-            if (this.repeatedVertically == TileMap.Repeat.REPEAT_NONE)
+            int num8 = (int)(vector2.x + (float)maxColsOnScreen - 1f);
+            int num9 = (int)(vector2.y + (float)maxRowsOnScreen - 1f);
+            if (repeatedVertically == TileMap.Repeat.REPEAT_NONE)
             {
-                num9 = Math.Min(this.rows - 1, num9);
+                num9 = Math.Min(rows - 1, num9);
             }
-            if (this.repeatedHorizontally == TileMap.Repeat.REPEAT_NONE)
+            if (repeatedHorizontally == TileMap.Repeat.REPEAT_NONE)
             {
-                num8 = Math.Min(this.columns - 1, num8);
+                num8 = Math.Min(columns - 1, num8);
             }
             for (int j = (int)vector2.x; j <= num8; j++)
             {
                 vector3.y = num7;
                 int k = (int)vector2.y;
-                while (k <= num9 && vector3.y < num2 + (float)this.cameraViewHeight)
+                while (k <= num9 && vector3.y < num2 + (float)cameraViewHeight)
                 {
-                    CTRRectangle rectangle2 = CTRMathHelper.rectInRectIntersection(new CTRRectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight), new CTRRectangle(vector3.x, vector3.y, (float)this.tileWidth, (float)this.tileHeight));
+                    CTRRectangle rectangle2 = CTRMathHelper.rectInRectIntersection(new CTRRectangle(num, num2, (float)cameraViewWidth, (float)cameraViewHeight), new CTRRectangle(vector3.x, vector3.y, (float)tileWidth, (float)tileHeight));
                     CTRRectangle r = new(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
                     int num10 = j;
                     int num11 = k;
-                    if (this.repeatedVertically == TileMap.Repeat.REPEAT_EDGES)
+                    if (repeatedVertically == TileMap.Repeat.REPEAT_EDGES)
                     {
-                        if (vector3.y < this.y)
+                        if (vector3.y < y)
                         {
                             num11 = 0;
                         }
-                        else if (vector3.y >= this.y + (float)this.tileMapHeight)
+                        else if (vector3.y >= y + (float)tileMapHeight)
                         {
-                            num11 = this.rows - 1;
+                            num11 = rows - 1;
                         }
                     }
-                    if (this.repeatedHorizontally == TileMap.Repeat.REPEAT_EDGES)
+                    if (repeatedHorizontally == TileMap.Repeat.REPEAT_EDGES)
                     {
-                        if (vector3.x < this.x)
+                        if (vector3.x < x)
                         {
                             num10 = 0;
                         }
-                        else if (vector3.x >= this.x + (float)this.tileMapWidth)
+                        else if (vector3.x >= x + (float)tileMapWidth)
                         {
-                            num10 = this.columns - 1;
+                            num10 = columns - 1;
                         }
                     }
-                    if (this.horizontalRandom)
+                    if (horizontalRandom)
                     {
-                        num10 = Math.Abs((int)(CTRMathHelper.fmSin(vector3.x) * (float)this.randomSeed) % this.columns);
+                        num10 = Math.Abs((int)(CTRMathHelper.fmSin(vector3.x) * (float)randomSeed) % columns);
                     }
-                    if (this.verticalRandom)
+                    if (verticalRandom)
                     {
-                        num11 = Math.Abs((int)(CTRMathHelper.fmSin(vector3.y) * (float)this.randomSeed) % this.rows);
+                        num11 = Math.Abs((int)(CTRMathHelper.fmSin(vector3.y) * (float)randomSeed) % rows);
                     }
-                    if (num10 >= this.columns)
+                    if (num10 >= columns)
                     {
-                        num10 %= this.columns;
+                        num10 %= columns;
                     }
-                    if (num11 >= this.rows)
+                    if (num11 >= rows)
                     {
-                        num11 %= this.rows;
+                        num11 %= rows;
                     }
-                    int num12 = this.matrix[num10, num11];
+                    int num12 = matrix[num10, num11];
                     if (num12 >= 0)
                     {
-                        TileEntry tileEntry = this.tiles[num12];
-                        ImageMultiDrawer imageMultiDrawer2 = this.drawers[tileEntry.drawerIndex];
+                        TileEntry tileEntry = tiles[num12];
+                        ImageMultiDrawer imageMultiDrawer2 = drawers[tileEntry.drawerIndex];
                         CTRTexture2D texture = imageMultiDrawer2.image.texture;
                         if (tileEntry.quad != -1)
                         {
@@ -243,11 +243,11 @@ namespace CutTheRope.iframework.visual
                         imageMultiDrawer4.numberOfQuadsToDraw = numberOfQuadsToDraw + 1;
                         imageMultiDrawer3.setTextureQuadatVertexQuadatIndex(quad2D, quad3D, numberOfQuadsToDraw);
                     }
-                    vector3.y += (float)this.tileHeight;
+                    vector3.y += (float)tileHeight;
                     k++;
                 }
-                vector3.x += (float)this.tileWidth;
-                if (vector3.x >= num + (float)this.cameraViewWidth)
+                vector3.x += (float)tileWidth;
+                if (vector3.x >= num + (float)cameraViewWidth)
                 {
                     break;
                 }
@@ -256,18 +256,18 @@ namespace CutTheRope.iframework.visual
 
         public virtual void updateVars()
         {
-            this.maxColsOnScreen = 2 + (int)Math.Floor((double)(this.cameraViewWidth / (this.tileWidth + 1)));
-            this.maxRowsOnScreen = 2 + (int)Math.Floor((double)(this.cameraViewHeight / (this.tileHeight + 1)));
-            if (this.repeatedVertically == TileMap.Repeat.REPEAT_NONE)
+            maxColsOnScreen = 2 + (int)Math.Floor((double)(cameraViewWidth / (tileWidth + 1)));
+            maxRowsOnScreen = 2 + (int)Math.Floor((double)(cameraViewHeight / (tileHeight + 1)));
+            if (repeatedVertically == TileMap.Repeat.REPEAT_NONE)
             {
-                this.maxRowsOnScreen = Math.Min(this.maxRowsOnScreen, this.rows);
+                maxRowsOnScreen = Math.Min(maxRowsOnScreen, rows);
             }
-            if (this.repeatedHorizontally == TileMap.Repeat.REPEAT_NONE)
+            if (repeatedHorizontally == TileMap.Repeat.REPEAT_NONE)
             {
-                this.maxColsOnScreen = Math.Min(this.maxColsOnScreen, this.columns);
+                maxColsOnScreen = Math.Min(maxColsOnScreen, columns);
             }
-            this.width = this.tileMapWidth = this.columns * this.tileWidth;
-            this.height = this.tileMapHeight = this.rows * this.tileHeight;
+            width = tileMapWidth = columns * tileWidth;
+            height = tileMapHeight = rows * tileHeight;
         }
 
         public int[,] matrix;

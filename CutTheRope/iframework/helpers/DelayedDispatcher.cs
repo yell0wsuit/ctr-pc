@@ -8,47 +8,47 @@ namespace CutTheRope.iframework.helpers
     {
         public DelayedDispatcher()
         {
-            this.dispatchers = new List<Dispatch>();
+            dispatchers = new List<Dispatch>();
         }
 
         public override void dealloc()
         {
-            this.dispatchers.Clear();
-            this.dispatchers = null;
+            dispatchers.Clear();
+            dispatchers = null;
             base.dealloc();
         }
 
         public virtual void callObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc s, NSObject p, double d)
         {
-            this.callObjectSelectorParamafterDelay(s, p, (float)d);
+            callObjectSelectorParamafterDelay(s, p, (float)d);
         }
 
         public virtual void callObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc s, NSObject p, float d)
         {
             Dispatch item = new Dispatch().initWithObjectSelectorParamafterDelay(s, p, d);
-            this.dispatchers.Add(item);
+            dispatchers.Add(item);
         }
 
         public virtual void update(float d)
         {
-            int count = this.dispatchers.Count;
+            int count = dispatchers.Count;
             for (int i = 0; i < count; i++)
             {
-                Dispatch dispatch = this.dispatchers[i];
+                Dispatch dispatch = dispatchers[i];
                 dispatch.delay -= d;
                 if ((double)dispatch.delay <= 0.0)
                 {
                     dispatch.dispatch();
-                    this.dispatchers.Remove(dispatch);
+                    dispatchers.Remove(dispatch);
                     i--;
-                    count = this.dispatchers.Count;
+                    count = dispatchers.Count;
                 }
             }
         }
 
         public virtual void cancelAllDispatches()
         {
-            this.dispatchers.Clear();
+            dispatchers.Clear();
         }
 
         public virtual void cancelDispatchWithObjectSelectorParam(DelayedDispatcher.DispatchFunc s, NSObject p)

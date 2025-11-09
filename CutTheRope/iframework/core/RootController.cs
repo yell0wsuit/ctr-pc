@@ -15,62 +15,62 @@ namespace CutTheRope.iframework.core
         {
             if (base.initWithParent(p) != null)
             {
-                this.viewTransition = -1;
-                this.transitionTime = -1f;
-                this.previousView = null;
-                this.transitionDelay = 0.4f;
-                this.screenGrabber = (Grabber)new Grabber().init();
-                this.prevScreenImage = null;
-                this.nextScreenImage = null;
-                this.deactivateCurrentController = false;
+                viewTransition = -1;
+                transitionTime = -1f;
+                previousView = null;
+                transitionDelay = 0.4f;
+                screenGrabber = (Grabber)new Grabber().init();
+                prevScreenImage = null;
+                nextScreenImage = null;
+                deactivateCurrentController = false;
             }
             return this;
         }
 
         public void performTick(float delta)
         {
-            this.lastTime += delta;
-            if (this.transitionTime == -1f)
+            lastTime += delta;
+            if (transitionTime == -1f)
             {
-                this.currentController.update(delta);
+                currentController.update(delta);
             }
-            if (this.deactivateCurrentController)
+            if (deactivateCurrentController)
             {
-                this.deactivateCurrentController = false;
-                this.currentController.deactivateImmediately();
+                deactivateCurrentController = false;
+                currentController.deactivateImmediately();
             }
         }
 
         public bool isTransitionActive()
         {
-            return this.transitionTime != -1f;
+            return transitionTime != -1f;
         }
 
         public void performDraw()
         {
-            if (this.currentController.activeViewID == -1)
+            if (currentController.activeViewID == -1)
             {
                 return;
             }
             Application.sharedCanvas().beforeRender();
             OpenGL.glPushMatrix();
-            this.applyLandscape();
-            if (this.transitionTime == -1f)
+            applyLandscape();
+            if (transitionTime == -1f)
             {
-                this.currentController.activeView().draw();
+                currentController.activeView().draw();
             }
             else
             {
-                this.drawViewTransition();
-                if (this.lastTime > this.transitionTime)
+                drawViewTransition();
+                if (lastTime > transitionTime)
                 {
-                    this.transitionTime = -1f;
-                    NSObject.NSREL(this.prevScreenImage);
-                    this.prevScreenImage?.xnaTexture_.Dispose();
-                    this.prevScreenImage = null;
-                    NSObject.NSREL(this.nextScreenImage);
-                    this.nextScreenImage?.xnaTexture_.Dispose();
-                    this.nextScreenImage = null;
+                    transitionTime = -1f;
+                    NSObject.NSREL(prevScreenImage);
+                    prevScreenImage?.xnaTexture_.Dispose();
+                    prevScreenImage = null;
+                    NSObject.NSREL(nextScreenImage);
+                    nextScreenImage?.xnaTexture_.Dispose();
+                    nextScreenImage = null;
                 }
             }
             OpenGL.glPopMatrix();
@@ -83,12 +83,12 @@ namespace CutTheRope.iframework.core
 
         public virtual void setViewTransition(int transition)
         {
-            this.viewTransition = transition;
+            viewTransition = transition;
         }
 
         private void setViewTransitionDelay(float delay)
         {
-            this.transitionDelay = delay;
+            transitionDelay = delay;
         }
 
         private void drawViewTransition()
@@ -98,16 +98,16 @@ namespace CutTheRope.iframework.core
             OpenGL.glEnable(1);
             OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
             Application.sharedCanvas().setDefaultRealProjection();
-            int num2 = this.viewTransition;
+            int num2 = viewTransition;
             if (num2 - 4 <= 1)
             {
-                float num = CTRMathHelper.MIN(1.0, (double)((this.transitionDelay - (this.transitionTime - this.lastTime)) / this.transitionDelay));
+                float num = CTRMathHelper.MIN(1.0, (double)((transitionDelay - (transitionTime - lastTime)) / transitionDelay));
                 if ((double)num < 0.5)
                 {
-                    if (this.prevScreenImage != null)
+                    if (prevScreenImage != null)
                     {
-                        RGBAColor fill = (this.viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
-                        Grabber.drawGrabbedImage(this.prevScreenImage, 0, 0);
+                        RGBAColor fill = (viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
+                        Grabber.drawGrabbedImage(prevScreenImage, 0, 0);
                         OpenGL.glDisable(0);
                         OpenGL.glEnable(1);
                         OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
@@ -116,7 +116,7 @@ namespace CutTheRope.iframework.core
                     }
                     else
                     {
-                        if (this.viewTransition == 4)
+                        if (viewTransition == 4)
                         {
                             OpenGL.glClearColor(Color.Black);
                         }
@@ -127,10 +127,10 @@ namespace CutTheRope.iframework.core
                         OpenGL.glClear(0);
                     }
                 }
-                else if (this.nextScreenImage != null)
+                else if (nextScreenImage != null)
                 {
-                    RGBAColor fill2 = (this.viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - (double)num * 2.0);
-                    Grabber.drawGrabbedImage(this.nextScreenImage, 0, 0);
+                    RGBAColor fill2 = (viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - (double)num * 2.0);
+                    Grabber.drawGrabbedImage(nextScreenImage, 0, 0);
                     OpenGL.glDisable(0);
                     OpenGL.glEnable(1);
                     OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
@@ -139,7 +139,7 @@ namespace CutTheRope.iframework.core
                 }
                 else
                 {
-                    if (this.viewTransition == 4)
+                    if (viewTransition == 4)
                     {
                         OpenGL.glClearColor(Color.Black);
                     }
@@ -150,7 +150,7 @@ namespace CutTheRope.iframework.core
                     OpenGL.glClear(0);
                 }
             }
-            this.applyLandscape();
+            applyLandscape();
             OpenGL.glDisable(0);
             OpenGL.glDisable(1);
         }
@@ -166,130 +166,130 @@ namespace CutTheRope.iframework.core
 
         public virtual void onControllerActivated(ViewController c)
         {
-            this.setCurrentController(c);
+            setCurrentController(c);
         }
 
         public virtual void onControllerDeactivated(ViewController c)
         {
-            this.setCurrentController(null);
+            setCurrentController(null);
         }
 
         public virtual void onControllerPaused(ViewController c)
         {
-            this.setCurrentController(null);
+            setCurrentController(null);
         }
 
         public virtual void onControllerUnpaused(ViewController c)
         {
-            this.setCurrentController(c);
+            setCurrentController(c);
         }
 
         public virtual void onControllerDeactivationRequest(ViewController c)
         {
-            this.deactivateCurrentController = true;
+            deactivateCurrentController = true;
         }
 
         public virtual void onControllerViewShow(View v)
         {
-            if (this.viewTransition != -1 && this.previousView != null)
+            if (viewTransition != -1 && previousView != null)
             {
                 Application.sharedCanvas().setDefaultProjection();
                 OpenGL.glClearColor(Color.Black);
                 OpenGL.glClear(0);
-                this.transitionTime = this.lastTime + this.transitionDelay;
-                this.applyLandscape();
-                this.currentController.activeView().draw();
-                NSObject.NSREL(this.nextScreenImage);
-                this.nextScreenImage?.xnaTexture_.Dispose();
-                this.nextScreenImage = this.screenGrabber.grab();
-                NSObject.NSRET(this.nextScreenImage);
+                transitionTime = lastTime + transitionDelay;
+                applyLandscape();
+                currentController.activeView().draw();
+                NSObject.NSREL(nextScreenImage);
+                nextScreenImage?.xnaTexture_.Dispose();
+                nextScreenImage = screenGrabber.grab();
+                NSObject.NSRET(nextScreenImage);
                 OpenGL.glLoadIdentity();
             }
         }
 
         public virtual void onControllerViewHide(View v)
         {
-            this.previousView = v;
-            if (this.viewTransition != -1 && this.previousView != null)
+            previousView = v;
+            if (viewTransition != -1 && previousView != null)
             {
                 Application.sharedCanvas().setDefaultProjection();
                 OpenGL.glClearColor(Color.Black);
                 OpenGL.glClear(0);
-                this.applyLandscape();
-                this.previousView.draw();
-                NSObject.NSREL(this.prevScreenImage);
-                this.prevScreenImage?.xnaTexture_.Dispose();
-                this.prevScreenImage = this.screenGrabber.grab();
-                NSObject.NSRET(this.prevScreenImage);
+                applyLandscape();
+                previousView.draw();
+                NSObject.NSREL(prevScreenImage);
+                prevScreenImage?.xnaTexture_.Dispose();
+                prevScreenImage = screenGrabber.grab();
+                NSObject.NSRET(prevScreenImage);
                 OpenGL.glLoadIdentity();
             }
         }
 
         public virtual bool isSuspended()
         {
-            return this.suspended;
+            return suspended;
         }
 
         public virtual void suspend()
         {
-            this.suspended = true;
+            suspended = true;
         }
 
         public virtual void resume()
         {
-            this.suspended = false;
+            suspended = false;
         }
 
         public override bool mouseMoved(float x, float y)
         {
-            return this.currentController.mouseMoved(x, y);
+            return currentController.mouseMoved(x, y);
         }
 
         public override bool backButtonPressed()
         {
-            return this.suspended || this.transitionTime != -1f || this.currentController.backButtonPressed();
+            return suspended || transitionTime != -1f || currentController.backButtonPressed();
         }
 
         public override bool menuButtonPressed()
         {
-            return this.suspended || this.transitionTime != -1f || this.currentController.menuButtonPressed();
+            return suspended || transitionTime != -1f || currentController.menuButtonPressed();
         }
 
         public override bool touchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            return !this.suspended && (this.transitionTime != -1f || this.currentController.touchesBeganwithEvent(touches));
+            return !suspended && (transitionTime != -1f || currentController.touchesBeganwithEvent(touches));
         }
 
         public override bool touchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            return !this.suspended && (this.transitionTime != -1f || this.currentController.touchesMovedwithEvent(touches));
+            return !suspended && (transitionTime != -1f || currentController.touchesMovedwithEvent(touches));
         }
 
         public override bool touchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            return !this.suspended && (this.transitionTime != -1f || this.currentController.touchesEndedwithEvent(touches));
+            return !suspended && (transitionTime != -1f || currentController.touchesEndedwithEvent(touches));
         }
 
         public override bool touchesCancelledwithEvent(IList<TouchLocation> touches)
         {
-            return this.currentController.touchesCancelledwithEvent(touches);
+            return currentController.touchesCancelledwithEvent(touches);
         }
 
         public virtual void setCurrentController(ViewController c)
         {
-            this.currentController = c;
+            currentController = c;
         }
 
         public virtual ViewController getCurrentController()
         {
-            return this.currentController;
+            return currentController;
         }
 
         public override void fullscreenToggled(bool isFullscreen)
         {
             try
             {
-                this.currentController.fullscreenToggled(isFullscreen);
+                currentController.fullscreenToggled(isFullscreen);
             }
             catch (Exception)
             {

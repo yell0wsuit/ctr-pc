@@ -9,10 +9,10 @@ namespace CutTheRope.iframework
         public Color toXNA()
         {
             Color result = default(Color);
-            int num = (int)(this.r * 255f);
-            int num2 = (int)(this.g * 255f);
-            int num3 = (int)(this.b * 255f);
-            int num4 = (int)(this.a * 255f);
+            int num = (int)(r * 255f);
+            int num2 = (int)(g * 255f);
+            int num3 = (int)(b * 255f);
+            int num4 = (int)(a * 255f);
             result.R = (byte)((num >= 0) ? ((num > 255) ? 255 : num) : 0);
             result.G = (byte)((num2 >= 0) ? ((num2 > 255) ? 255 : num2) : 0);
             result.B = (byte)((num3 >= 0) ? ((num3 > 255) ? 255 : num3) : 0);
@@ -23,7 +23,7 @@ namespace CutTheRope.iframework
         public Color toWhiteAlphaXNA()
         {
             Color result = default(Color);
-            int num = (int)(this.a * 255f);
+            int num = (int)(a * 255f);
             result.R = byte.MaxValue;
             result.G = byte.MaxValue;
             result.B = byte.MaxValue;
@@ -48,31 +48,31 @@ namespace CutTheRope.iframework
 
         public RGBAColor(double _r, double _g, double _b, double _a)
         {
-            this.r = (float)_r;
-            this.g = (float)_g;
-            this.b = (float)_b;
-            this.a = (float)_a;
+            r = (float)_r;
+            g = (float)_g;
+            b = (float)_b;
+            a = (float)_a;
         }
 
         public RGBAColor(float _r, float _g, float _b, float _a)
         {
-            this.r = _r;
-            this.g = _g;
-            this.b = _b;
-            this.a = _a;
+            r = _r;
+            g = _g;
+            b = _b;
+            a = _a;
         }
 
         private void init(float _r, float _g, float _b, float _a)
         {
-            this.r = _r;
-            this.g = _g;
-            this.b = _b;
-            this.a = _a;
+            r = _r;
+            g = _g;
+            b = _b;
+            a = _a;
         }
 
         public float[] toFloatArray()
         {
-            return [this.r, this.g, this.b, this.a];
+            return [r, g, b, a];
         }
 
         public static float[] toFloatArray(RGBAColor[] colors)

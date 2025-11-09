@@ -15,7 +15,7 @@ namespace CutTheRope.game
             OpenGL.glEnable(0);
             OpenGL.glEnable(1);
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            this.preDraw();
+            preDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             int num7 = 126 + cTRRootController.getPack();
             float num2 = (float)Application.sharedResourceMgr().getPercentLoaded();
@@ -32,7 +32,7 @@ namespace CutTheRope.game
             GLDrawer.drawImageQuad(texture, 0, (double)(FrameworkTypes.SCREEN_WIDTH / 2f), 0.5);
             OpenGL.glPopMatrix();
             CTRTexture2D texture2 = Application.getTexture(5);
-            if (!this.game)
+            if (!game)
             {
                 OpenGL.glEnable(4);
                 OpenGL.setScissorRectangle(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
@@ -42,11 +42,11 @@ namespace CutTheRope.game
             GLDrawer.drawImageQuad(texture2, 0, (double)num3, 80.0);
             num3 = Image.getQuadOffset(5, 1).x;
             GLDrawer.drawImageQuad(texture2, 1, (double)num3, 80.0);
-            if (!this.game)
+            if (!game)
             {
                 OpenGL.glDisable(4);
             }
-            if (this.game)
+            if (game)
             {
                 Vector quadOffset = Image.getQuadOffset(5, 3);
                 float num5 = (float)(1250.0 * (double)num2 / 100.0);
@@ -57,7 +57,7 @@ namespace CutTheRope.game
                 float num6 = (float)(1120.0 * (double)num2 / 100.0);
                 GLDrawer.drawImageQuad(texture2, 2, 1084.0, (double)num6 - 100.0);
             }
-            this.postDraw();
+            postDraw();
             OpenGL.glColor4f(Color.White);
             OpenGL.glDisable(0);
             OpenGL.glDisable(1);

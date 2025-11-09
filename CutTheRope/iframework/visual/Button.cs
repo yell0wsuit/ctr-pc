@@ -15,64 +15,64 @@ namespace CutTheRope.iframework.visual
 
         public virtual Button initWithID(int n)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.buttonID = n;
-                this.state = Button.BUTTON_STATE.BUTTON_UP;
-                this.touchLeftInc = 0f;
-                this.touchRightInc = 0f;
-                this.touchTopInc = 0f;
-                this.touchBottomInc = 0f;
-                this.forcedTouchZone = new CTRRectangle(-1f, -1f, -1f, -1f);
+                buttonID = n;
+                state = Button.BUTTON_STATE.BUTTON_UP;
+                touchLeftInc = 0f;
+                touchRightInc = 0f;
+                touchTopInc = 0f;
+                touchBottomInc = 0f;
+                forcedTouchZone = new CTRRectangle(-1f, -1f, -1f, -1f);
             }
             return this;
         }
 
         public virtual Button initWithUpElementDownElementandID(BaseElement up, BaseElement down, int n)
         {
-            if (this.initWithID(n) != null)
+            if (initWithID(n) != null)
             {
                 up.parentAnchor = down.parentAnchor = 9;
-                this.addChildwithID(up, 0);
-                this.addChildwithID(down, 1);
-                this.setState(Button.BUTTON_STATE.BUTTON_UP);
+                addChildwithID(up, 0);
+                addChildwithID(down, 1);
+                setState(Button.BUTTON_STATE.BUTTON_UP);
             }
             return this;
         }
 
         public void setTouchIncreaseLeftRightTopBottom(double l, double r, double t, double b)
         {
-            this.setTouchIncreaseLeftRightTopBottom((float)l, (float)r, (float)t, (float)b);
+            setTouchIncreaseLeftRightTopBottom((float)l, (float)r, (float)t, (float)b);
         }
 
         public virtual void setTouchIncreaseLeftRightTopBottom(float l, float r, float t, float b)
         {
-            this.touchLeftInc = l;
-            this.touchRightInc = r;
-            this.touchTopInc = t;
-            this.touchBottomInc = b;
+            touchLeftInc = l;
+            touchRightInc = r;
+            touchTopInc = t;
+            touchBottomInc = b;
         }
 
         public virtual void forceTouchRect(CTRRectangle r)
         {
-            this.forcedTouchZone = r;
+            forcedTouchZone = r;
         }
 
         public virtual bool isInTouchZoneXYforTouchDown(float tx, float ty, bool td)
         {
             float num = td ? 0f : 15f;
-            if (this.forcedTouchZone.w != -1f)
+            if (forcedTouchZone.w != -1f)
             {
-                return CTRMathHelper.pointInRect(tx, ty, this.drawX + this.forcedTouchZone.x - num, this.drawY + this.forcedTouchZone.y - num, this.forcedTouchZone.w + num * 2f, this.forcedTouchZone.h + num * 2f);
+                return CTRMathHelper.pointInRect(tx, ty, drawX + forcedTouchZone.x - num, drawY + forcedTouchZone.y - num, forcedTouchZone.w + num * 2f, forcedTouchZone.h + num * 2f);
             }
-            return CTRMathHelper.pointInRect(tx, ty, this.drawX - this.touchLeftInc - num, this.drawY - this.touchTopInc - num, (float)this.width + (this.touchLeftInc + this.touchRightInc) + num * 2f, (float)this.height + (this.touchTopInc + this.touchBottomInc) + num * 2f);
+            return CTRMathHelper.pointInRect(tx, ty, drawX - touchLeftInc - num, drawY - touchTopInc - num, (float)width + (touchLeftInc + touchRightInc) + num * 2f, (float)height + (touchTopInc + touchBottomInc) + num * 2f);
         }
 
         public virtual void setState(Button.BUTTON_STATE s)
         {
-            this.state = s;
-            BaseElement child3 = this.getChild(0);
-            BaseElement child2 = this.getChild(1);
+            state = s;
+            BaseElement child3 = getChild(0);
+            BaseElement child2 = getChild(1);
             child3.setEnabled(s == Button.BUTTON_STATE.BUTTON_UP);
             child2.setEnabled(s == Button.BUTTON_STATE.BUTTON_DOWN);
         }
@@ -80,9 +80,9 @@ namespace CutTheRope.iframework.visual
         public override bool onTouchDownXY(float tx, float ty)
         {
             base.onTouchDownXY(tx, ty);
-            if (this.state == Button.BUTTON_STATE.BUTTON_UP && this.isInTouchZoneXYforTouchDown(tx, ty, true))
+            if (state == Button.BUTTON_STATE.BUTTON_UP && isInTouchZoneXYforTouchDown(tx, ty, true))
             {
-                this.setState(Button.BUTTON_STATE.BUTTON_DOWN);
+                setState(Button.BUTTON_STATE.BUTTON_DOWN);
                 return true;
             }
             return false;
@@ -91,12 +91,12 @@ namespace CutTheRope.iframework.visual
         public override bool onTouchUpXY(float tx, float ty)
         {
             base.onTouchUpXY(tx, ty);
-            if (this.state == Button.BUTTON_STATE.BUTTON_DOWN)
+            if (state == Button.BUTTON_STATE.BUTTON_DOWN)
             {
-                this.setState(Button.BUTTON_STATE.BUTTON_UP);
-                if (this.isInTouchZoneXYforTouchDown(tx, ty, false))
+                setState(Button.BUTTON_STATE.BUTTON_UP);
+                if (isInTouchZoneXYforTouchDown(tx, ty, false))
                 {
-                    this.delegateButtonDelegate?.onButtonPressed(this.buttonID);
+                    delegateButtonDelegate?.onButtonPressed(buttonID);
                     return true;
                 }
             }
@@ -106,13 +106,13 @@ namespace CutTheRope.iframework.visual
         public override bool onTouchMoveXY(float tx, float ty)
         {
             base.onTouchMoveXY(tx, ty);
-            if (this.state == Button.BUTTON_STATE.BUTTON_DOWN)
+            if (state == Button.BUTTON_STATE.BUTTON_DOWN)
             {
-                if (this.isInTouchZoneXYforTouchDown(tx, ty, false))
+                if (isInTouchZoneXYforTouchDown(tx, ty, false))
                 {
                     return true;
                 }
-                this.setState(Button.BUTTON_STATE.BUTTON_UP);
+                setState(Button.BUTTON_STATE.BUTTON_UP);
             }
             return false;
         }
@@ -123,9 +123,9 @@ namespace CutTheRope.iframework.visual
             c.parentAnchor = 9;
             if (i == 1)
             {
-                this.width = c.width;
-                this.height = c.height;
-                this.setState(Button.BUTTON_STATE.BUTTON_UP);
+                width = c.width;
+                height = c.height;
+                setState(Button.BUTTON_STATE.BUTTON_UP);
             }
             return num;
         }

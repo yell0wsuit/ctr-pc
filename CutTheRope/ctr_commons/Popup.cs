@@ -19,13 +19,13 @@ namespace CutTheRope.ctr_commons
                 timeline.addKeyFrame(KeyFrame.makeScale(1.1, 1.1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                this.addTimeline(timeline);
+                addTimeline(timeline);
                 timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-                this.width = (int)FrameworkTypes.SCREEN_WIDTH;
-                this.height = (int)FrameworkTypes.SCREEN_HEIGHT;
-                this.addTimeline(timeline);
+                width = (int)FrameworkTypes.SCREEN_WIDTH;
+                height = (int)FrameworkTypes.SCREEN_HEIGHT;
+                addTimeline(timeline);
                 timeline.delegateTimelineDelegate = this;
             }
             return this;
@@ -37,26 +37,26 @@ namespace CutTheRope.ctr_commons
 
         public virtual void timelineFinished(Timeline t)
         {
-            View view = (View)this.parent;
+            View view = (View)parent;
             view?.removeChild(this);
         }
 
         public virtual void showPopup()
         {
             Application.sharedRootController().deactivateAllButtons();
-            this.isShow = true;
-            this.playTimeline(0);
+            isShow = true;
+            playTimeline(0);
         }
 
         public virtual void hidePopup()
         {
-            this.isShow = false;
-            this.playTimeline(1);
+            isShow = false;
+            playTimeline(1);
         }
 
         public override bool onTouchDownXY(float tx, float ty)
         {
-            if (this.isShow)
+            if (isShow)
             {
                 base.onTouchDownXY(tx, ty);
             }
@@ -65,7 +65,7 @@ namespace CutTheRope.ctr_commons
 
         public override bool onTouchUpXY(float tx, float ty)
         {
-            if (this.isShow)
+            if (isShow)
             {
                 base.onTouchUpXY(tx, ty);
             }
@@ -74,7 +74,7 @@ namespace CutTheRope.ctr_commons
 
         public override bool onTouchMoveXY(float tx, float ty)
         {
-            if (this.isShow)
+            if (isShow)
             {
                 base.onTouchMoveXY(tx, ty);
             }

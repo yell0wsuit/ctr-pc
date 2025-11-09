@@ -7,25 +7,25 @@ namespace CutTheRope.iframework.core
     {
         public Vector(Vector2 v)
         {
-            this.x = v.X;
-            this.y = v.Y;
+            x = v.X;
+            y = v.Y;
         }
 
         public Vector(double xParam, double yParam)
         {
-            this.x = (float)xParam;
-            this.y = (float)yParam;
+            x = (float)xParam;
+            y = (float)yParam;
         }
 
         public Vector(float xParam, float yParam)
         {
-            this.x = xParam;
-            this.y = yParam;
+            x = xParam;
+            y = yParam;
         }
 
         public Vector2 toXNA()
         {
-            return new Vector2(this.x, this.y);
+            return new Vector2(x, y);
         }
 
         public override string ToString()
@@ -33,9 +33,9 @@ namespace CutTheRope.iframework.core
             return string.Concat(new string[]
             {
                 "Vector(x=",
-                this.x.ToString(),
+                x.ToString(),
                 ",y=",
-                this.y.ToString(),
+                y.ToString(),
                 ")"
             });
         }

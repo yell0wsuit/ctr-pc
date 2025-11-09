@@ -26,7 +26,7 @@ namespace CutTheRope.iframework.visual
         public virtual void addAnimationWithIDDelayLoopFirstLast(int aid, float d, Timeline.LoopType l, int s, int e)
         {
             int c = e - s + 1;
-            this.addAnimationWithIDDelayLoopCountFirstLastArgumentList(aid, d, l, c, s, e);
+            addAnimationWithIDDelayLoopCountFirstLastArgumentList(aid, d, l, c, s, e);
         }
 
         public virtual void addAnimationWithIDDelayLoopCountFirstLastArgumentList(int aid, float d, Timeline.LoopType l, int c, int s, int e)
@@ -49,12 +49,12 @@ namespace CutTheRope.iframework.visual
             {
                 timeline.setTimelineLoopType(l);
             }
-            this.addTimelinewithID(timeline, aid);
+            addTimelinewithID(timeline, aid);
         }
 
         public virtual void addAnimationWithIDDelayLoopCountSequence(int aid, float d, Timeline.LoopType l, int c, int s, List<int> al)
         {
-            this.addAnimationWithIDDelayLoopCountFirstLastArgumentList(aid, d, l, c, s, -1, al);
+            addAnimationWithIDDelayLoopCountFirstLastArgumentList(aid, d, l, c, s, -1, al);
         }
 
         public virtual void addAnimationWithIDDelayLoopCountFirstLastArgumentList(int aid, float d, Timeline.LoopType l, int c, int s, int e, List<int> al)
@@ -77,51 +77,51 @@ namespace CutTheRope.iframework.visual
             {
                 timeline.setTimelineLoopType(l);
             }
-            this.addTimelinewithID(timeline, aid);
+            addTimelinewithID(timeline, aid);
         }
 
         public virtual void switchToAnimationatEndOfAnimationDelay(int a2, int a1, float d)
         {
-            this.getTimeline(a1).addKeyFrame(KeyFrame.makeAction(new List<CTRAction> { CTRAction.createAction(this, "ACTION_PLAY_TIMELINE", 0, a2) }, d));
+            getTimeline(a1).addKeyFrame(KeyFrame.makeAction(new List<CTRAction> { CTRAction.createAction(this, "ACTION_PLAY_TIMELINE", 0, a2) }, d));
         }
 
         public virtual void setPauseAtIndexforAnimation(int i, int a)
         {
-            this.setActionTargetParamSubParamAtIndexforAnimation("ACTION_PAUSE_TIMELINE", this, 0, 0, i, a);
+            setActionTargetParamSubParamAtIndexforAnimation("ACTION_PAUSE_TIMELINE", this, 0, 0, i, a);
         }
 
         public virtual void setActionTargetParamSubParamAtIndexforAnimation(string action, BaseElement target, int p, int sp, int i, int a)
         {
-            this.getTimeline(a).getTrack(Track.TrackType.TRACK_ACTION).keyFrames[i].value.action.actionSet.Add(CTRAction.createAction(target, action, p, sp));
+            getTimeline(a).getTrack(Track.TrackType.TRACK_ACTION).keyFrames[i].value.action.actionSet.Add(CTRAction.createAction(target, action, p, sp));
         }
 
         public virtual int addAnimationWithDelayLoopedCountSequence(float d, Timeline.LoopType l, int c, int s, List<int> al)
         {
-            int count = this.timelines.Count;
-            this.addAnimationWithIDDelayLoopCountFirstLastArgumentList(count, d, l, c, s, -1, al);
+            int count = timelines.Count;
+            addAnimationWithIDDelayLoopCountFirstLastArgumentList(count, d, l, c, s, -1, al);
             return count;
         }
 
         public void setDelayatIndexforAnimation(float d, int i, int a)
         {
-            this.getTimeline(a).getTrack(Track.TrackType.TRACK_ACTION).keyFrames[i].timeOffset = d;
+            getTimeline(a).getTrack(Track.TrackType.TRACK_ACTION).keyFrames[i].timeOffset = d;
         }
 
         public int addAnimationDelayLoopFirstLast(double d, Timeline.LoopType l, int s, int e)
         {
-            return this.addAnimationDelayLoopFirstLast((float)d, l, s, e);
+            return addAnimationDelayLoopFirstLast((float)d, l, s, e);
         }
 
         public int addAnimationDelayLoopFirstLast(float d, Timeline.LoopType l, int s, int e)
         {
-            int count = this.timelines.Count;
-            this.addAnimationWithIDDelayLoopFirstLast(count, d, l, s, e);
+            int count = timelines.Count;
+            addAnimationWithIDDelayLoopFirstLast(count, d, l, s, e);
             return count;
         }
 
         public void jumpTo(int i)
         {
-            this.getCurrentTimeline().jumpToTrackKeyFrame(4, i);
+            getCurrentTimeline().jumpToTrackKeyFrame(4, i);
         }
     }
 }

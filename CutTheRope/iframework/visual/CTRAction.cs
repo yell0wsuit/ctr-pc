@@ -7,7 +7,7 @@ namespace CutTheRope.iframework.visual
     {
         public CTRAction()
         {
-            this.data = new ActionData();
+            data = new ActionData();
         }
 
         public static CTRAction createAction(BaseElement target, string action, int p, int sp)

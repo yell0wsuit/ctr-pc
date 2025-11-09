@@ -10,36 +10,36 @@ namespace CutTheRope.iframework.sfe
         {
             if (base.init() != null)
             {
-                this.relaxationTimes = 1;
-                this.parts = new List<ConstraintedPoint>();
+                relaxationTimes = 1;
+                parts = new List<ConstraintedPoint>();
             }
             return this;
         }
 
         public virtual void addPart(ConstraintedPoint cp)
         {
-            this.parts.Add(cp);
+            parts.Add(cp);
         }
 
         public virtual void addPartAt(ConstraintedPoint cp, int p)
         {
-            this.parts.Insert(p, cp);
+            parts.Insert(p, cp);
         }
 
         public virtual void update(float delta)
         {
-            int count = this.parts.Count;
+            int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
-                ConstraintedPoint constraintedPoint = this.parts[i];
+                ConstraintedPoint constraintedPoint = parts[i];
                 constraintedPoint?.update(delta);
             }
-            int count2 = this.parts.Count;
-            for (int j = 0; j < this.relaxationTimes; j++)
+            int count2 = parts.Count;
+            for (int j = 0; j < relaxationTimes; j++)
             {
                 for (int k = 0; k < count2; k++)
                 {
-                    ConstraintedPoint.satisfyConstraints(this.parts[k]);
+                    ConstraintedPoint.satisfyConstraints(parts[k]);
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace CutTheRope.iframework.sfe
 
         public override void dealloc()
         {
-            this.parts = null;
+            parts = null;
             base.dealloc();
         }
 

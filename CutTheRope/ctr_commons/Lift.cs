@@ -7,45 +7,45 @@ namespace CutTheRope.ctr_commons
     {
         public override bool onTouchDownXY(float tx, float ty)
         {
-            this.startX = tx - this.x;
-            this.startY = ty - this.y;
+            startX = tx - x;
+            startY = ty - y;
             return base.onTouchDownXY(tx, ty);
         }
 
         public override bool onTouchUpXY(float tx, float ty)
         {
-            this.startX = 0f;
-            this.startY = 0f;
+            startX = 0f;
+            startY = 0f;
             return base.onTouchUpXY(tx, ty);
         }
 
         public override bool onTouchMoveXY(float tx, float ty)
         {
-            if (this.state == Button.BUTTON_STATE.BUTTON_DOWN)
+            if (state == Button.BUTTON_STATE.BUTTON_DOWN)
             {
-                this.x = Math.Max(Math.Min(tx - this.startX, this.maxX), this.minX);
-                this.y = Math.Max(Math.Min(ty - this.startY, this.maxY), this.minY);
-                if (this.maxX != 0f)
+                x = Math.Max(Math.Min(tx - startX, maxX), minX);
+                y = Math.Max(Math.Min(ty - startY, maxY), minY);
+                if (maxX != 0f)
                 {
-                    float num = (this.x - this.minX) / (this.maxX - this.minX);
-                    if (num != this.xPercent)
+                    float num = (x - minX) / (maxX - minX);
+                    if (num != xPercent)
                     {
-                        this.xPercent = num;
-                        if (this.liftDelegate != null)
+                        xPercent = num;
+                        if (liftDelegate != null)
                         {
-                            this.liftDelegate(this.xPercent, this.yPercent);
+                            liftDelegate(xPercent, yPercent);
                         }
                     }
                 }
-                if (this.maxY != 0f)
+                if (maxY != 0f)
                 {
-                    float num2 = (this.y - this.minY) / (this.maxY - this.minY);
-                    if (num2 != this.yPercent)
+                    float num2 = (y - minY) / (maxY - minY);
+                    if (num2 != yPercent)
                     {
-                        this.yPercent = num2;
-                        if (this.liftDelegate != null)
+                        yPercent = num2;
+                        if (liftDelegate != null)
                         {
-                            this.liftDelegate(this.xPercent, this.yPercent);
+                            liftDelegate(xPercent, yPercent);
                         }
                     }
                 }
@@ -56,7 +56,7 @@ namespace CutTheRope.ctr_commons
 
         public override void dealloc()
         {
-            this.liftDelegate = null;
+            liftDelegate = null;
             base.dealloc();
         }
 

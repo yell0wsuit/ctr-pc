@@ -16,7 +16,7 @@ namespace CutTheRope.ios
         {
             get
             {
-                return this.name;
+                return name;
             }
         }
 
@@ -25,7 +25,7 @@ namespace CutTheRope.ios
         {
             get
             {
-                return this.value;
+                return value;
             }
         }
 
@@ -34,7 +34,7 @@ namespace CutTheRope.ios
             get
             {
                 string rhs = null;
-                if (!this.attributes_.TryGetValue(key, out rhs))
+                if (!attributes_.TryGetValue(key, out rhs))
                 {
                     return new NSString("");
                 }
@@ -44,28 +44,28 @@ namespace CutTheRope.ios
 
         public XMLNode()
         {
-            this.parent = null;
-            this.childs_ = new List<XMLNode>();
-            this.attributes_ = new Dictionary<string, string>();
+            parent = null;
+            childs_ = new List<XMLNode>();
+            attributes_ = new Dictionary<string, string>();
         }
 
         public bool attributes()
         {
-            return this.attributes_ != null && this.attributes_.Count > 0;
+            return attributes_ != null && attributes_.Count > 0;
         }
 
         public List<XMLNode> childs()
         {
-            return this.childs_;
+            return childs_;
         }
 
         public XMLNode findChildWithTagNameAndAttributeNameValueRecursively(string tag, string attrName, string attrVal, bool recursively)
         {
-            if (this.childs() == null)
+            if (childs() == null)
             {
                 return null;
             }
-            foreach (XMLNode item in this.childs_)
+            foreach (XMLNode item in childs_)
             {
                 string text;
                 if (item.name == tag && item.attributes() && item.attributes_.TryGetValue(attrName, out text) && text == attrVal)
@@ -86,16 +86,16 @@ namespace CutTheRope.ios
 
         public XMLNode findChildWithTagNameRecursively(NSString tag, bool recursively)
         {
-            return this.findChildWithTagNameRecursively(tag.ToString(), recursively);
+            return findChildWithTagNameRecursively(tag.ToString(), recursively);
         }
 
         public XMLNode findChildWithTagNameRecursively(string tag, bool recursively)
         {
-            if (this.childs() == null)
+            if (childs() == null)
             {
                 return null;
             }
-            foreach (XMLNode item in this.childs_)
+            foreach (XMLNode item in childs_)
             {
                 if (item.name == tag)
                 {

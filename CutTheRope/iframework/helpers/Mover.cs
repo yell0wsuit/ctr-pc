@@ -13,32 +13,32 @@ namespace CutTheRope.iframework.helpers
             int num2 = (int)r_;
             if (base.init() != null)
             {
-                this.pathLen = 0;
-                this.pathCapacity = l;
-                this.rotateSpeed = (float)num2;
-                if (this.pathCapacity > 0)
+                pathLen = 0;
+                pathCapacity = l;
+                rotateSpeed = (float)num2;
+                if (pathCapacity > 0)
                 {
-                    this.path = new Vector[this.pathCapacity];
-                    for (int i = 0; i < this.path.Length; i++)
+                    path = new Vector[pathCapacity];
+                    for (int i = 0; i < path.Length; i++)
                     {
-                        this.path[i] = default(Vector);
+                        path[i] = default(Vector);
                     }
-                    this.moveSpeed = new float[this.pathCapacity];
-                    for (int j = 0; j < this.moveSpeed.Length; j++)
+                    moveSpeed = new float[pathCapacity];
+                    for (int j = 0; j < moveSpeed.Length; j++)
                     {
-                        this.moveSpeed[j] = (float)num;
+                        moveSpeed[j] = (float)num;
                     }
                 }
-                this.paused = false;
+                paused = false;
             }
             return this;
         }
 
         public virtual void setMoveSpeed(float ms)
         {
-            for (int i = 0; i < this.pathCapacity; i++)
+            for (int i = 0; i < pathCapacity; i++)
             {
-                this.moveSpeed[i] = ms;
+                moveSpeed[i] = ms;
             }
         }
 
@@ -59,12 +59,12 @@ namespace CutTheRope.iframework.helpers
                 {
                     float x = s.x + (float)num * (float)Math.Cos((double)num4);
                     float y = s.y + (float)num * (float)Math.Sin((double)num4);
-                    this.addPathPoint(CTRMathHelper.vect(x, y));
+                    addPathPoint(CTRMathHelper.vect(x, y));
                     num4 += num3;
                 }
                 return;
             }
-            this.addPathPoint(s);
+            addPathPoint(s);
             if (p.characterAtIndex(p.length() - 1) == ',')
             {
                 p = p.substringToIndex(p.length() - 1);
@@ -74,91 +74,91 @@ namespace CutTheRope.iframework.helpers
             {
                 NSString nSString2 = list[j];
                 NSString nSString3 = list[j + 1];
-                this.addPathPoint(CTRMathHelper.vect(s.x + nSString2.floatValue(), s.y + nSString3.floatValue()));
+                addPathPoint(CTRMathHelper.vect(s.x + nSString2.floatValue(), s.y + nSString3.floatValue()));
             }
         }
 
         public virtual void addPathPoint(Vector v)
         {
-            Vector[] array = this.path;
-            int num = this.pathLen;
-            this.pathLen = num + 1;
+            Vector[] array = path;
+            int num = pathLen;
+            pathLen = num + 1;
             array[num] = v;
         }
 
         public virtual void start()
         {
-            if (this.pathLen > 0)
+            if (pathLen > 0)
             {
-                this.pos = this.path[0];
-                this.targetPoint = 1;
-                this.calculateOffset();
+                pos = path[0];
+                targetPoint = 1;
+                calculateOffset();
             }
         }
 
         public virtual void pause()
         {
-            this.paused = true;
+            paused = true;
         }
 
         public virtual void unpause()
         {
-            this.paused = false;
+            paused = false;
         }
 
         public virtual void setRotateSpeed(float rs)
         {
-            this.rotateSpeed = rs;
+            rotateSpeed = rs;
         }
 
         public virtual void jumpToPoint(int p)
         {
-            this.targetPoint = p;
-            this.pos = this.path[this.targetPoint];
-            this.calculateOffset();
+            targetPoint = p;
+            pos = path[targetPoint];
+            calculateOffset();
         }
 
         public virtual void calculateOffset()
         {
-            Vector v = this.path[this.targetPoint];
-            this.offset = CTRMathHelper.vectMult(CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(v, this.pos)), this.moveSpeed[this.targetPoint]);
+            Vector v = path[targetPoint];
+            offset = CTRMathHelper.vectMult(CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(v, pos)), moveSpeed[targetPoint]);
         }
 
         public virtual void setMoveSpeedforPoint(float ms, int i)
         {
-            this.moveSpeed[i] = ms;
+            moveSpeed[i] = ms;
         }
 
         public virtual void setMoveReverse(bool r)
         {
-            this.reverse = r;
+            reverse = r;
         }
 
         public virtual void update(float delta)
         {
-            if (this.paused)
+            if (paused)
             {
                 return;
             }
-            if (this.pathLen > 0)
+            if (pathLen > 0)
             {
-                Vector v = this.path[this.targetPoint];
+                Vector v = path[targetPoint];
                 bool flag = false;
-                if (!CTRMathHelper.vectEqual(this.pos, v))
+                if (!CTRMathHelper.vectEqual(pos, v))
                 {
                     float num = delta;
-                    if (this.overrun != 0f)
+                    if (overrun != 0f)
                     {
-                        num += this.overrun;
-                        this.overrun = 0f;
+                        num += overrun;
+                        overrun = 0f;
                     }
-                    this.pos = CTRMathHelper.vectAdd(this.pos, CTRMathHelper.vectMult(this.offset, num));
-                    if (!CTRMathHelper.sameSign(this.offset.x, v.x - this.pos.x) || !CTRMathHelper.sameSign(this.offset.y, v.y - this.pos.y))
+                    pos = CTRMathHelper.vectAdd(pos, CTRMathHelper.vectMult(offset, num));
+                    if (!CTRMathHelper.sameSign(offset.x, v.x - pos.x) || !CTRMathHelper.sameSign(offset.y, v.y - pos.y))
                     {
-                        this.overrun = CTRMathHelper.vectLength(CTRMathHelper.vectSub(this.pos, v));
-                        float num2 = CTRMathHelper.vectLength(this.offset);
-                        this.overrun /= num2;
-                        this.pos = v;
+                        overrun = CTRMathHelper.vectLength(CTRMathHelper.vectSub(pos, v));
+                        float num2 = CTRMathHelper.vectLength(offset);
+                        overrun /= num2;
+                        pos = v;
                         flag = true;
                     }
                 }
@@ -168,40 +168,40 @@ namespace CutTheRope.iframework.helpers
                 }
                 if (flag)
                 {
-                    if (this.reverse)
+                    if (reverse)
                     {
-                        this.targetPoint--;
-                        if (this.targetPoint < 0)
+                        targetPoint--;
+                        if (targetPoint < 0)
                         {
-                            this.targetPoint = this.pathLen - 1;
+                            targetPoint = pathLen - 1;
                         }
                     }
                     else
                     {
-                        this.targetPoint++;
-                        if (this.targetPoint >= this.pathLen)
+                        targetPoint++;
+                        if (targetPoint >= pathLen)
                         {
-                            this.targetPoint = 0;
+                            targetPoint = 0;
                         }
                     }
-                    this.calculateOffset();
+                    calculateOffset();
                 }
             }
-            if (this.rotateSpeed != 0f)
+            if (rotateSpeed != 0f)
             {
-                if (this.use_angle_initial && this.targetPoint == 0)
+                if (use_angle_initial && targetPoint == 0)
                 {
-                    this.angle_ = this.angle_initial;
+                    angle_ = angle_initial;
                     return;
                 }
-                this.angle_ += (double)(this.rotateSpeed * delta);
+                angle_ += (double)(rotateSpeed * delta);
             }
         }
 
         public override void dealloc()
         {
-            this.path = null;
-            this.moveSpeed = null;
+            path = null;
+            moveSpeed = null;
             base.dealloc();
         }
 

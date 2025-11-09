@@ -9,11 +9,11 @@ namespace CutTheRope.game
     {
         public override void parseMover(XMLNode xml)
         {
-            this.rotation = 0f;
+            rotation = 0f;
             NSString nSString = xml["angle"];
             if (nSString != null)
             {
-                this.rotation = nSString.floatValue();
+                rotation = nSString.floatValue();
             }
             NSString nSString2 = xml["path"];
             if (nSString2 != null && nSString2.length() != 0)
@@ -26,10 +26,10 @@ namespace CutTheRope.game
                 float m_ = xml["moveSpeed"].floatValue() * 3.3f;
                 float r_ = xml["rotateSpeed"].floatValue();
                 CTRMover cTRMover = (CTRMover)new CTRMover().initWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
-                cTRMover.angle_ = (double)this.rotation;
+                cTRMover.angle_ = (double)rotation;
                 cTRMover.angle_initial = cTRMover.angle_;
-                cTRMover.setPathFromStringandStart(nSString2, CTRMathHelper.vect(this.x, this.y));
-                this.setMover(cTRMover);
+                cTRMover.setPathFromStringandStart(nSString2, CTRMathHelper.vect(x, y));
+                setMover(cTRMover);
                 cTRMover.start();
             }
         }

@@ -9,7 +9,7 @@ internal class DynamicArrayEnumerator : IEnumerator
     {
         get
         {
-            return this.Current;
+            return Current;
         }
     }
 
@@ -21,7 +21,7 @@ internal class DynamicArrayEnumerator : IEnumerator
             NSObject nsobject;
             try
             {
-                nsobject = this._map[this.position];
+                nsobject = _map[position];
             }
             catch (IndexOutOfRangeException)
             {
@@ -33,19 +33,19 @@ internal class DynamicArrayEnumerator : IEnumerator
 
     public DynamicArrayEnumerator(NSObject[] list, int highestIndex)
     {
-        this._map = list;
-        this._highestIndex = highestIndex;
+        _map = list;
+        _highestIndex = highestIndex;
     }
 
     public bool MoveNext()
     {
-        this.position++;
-        return this.position < this._highestIndex + 1;
+        position++;
+        return position < _highestIndex + 1;
     }
 
     public void Reset()
     {
-        this.position = -1;
+        position = -1;
     }
 
     public NSObject[] _map;

@@ -7,14 +7,14 @@ namespace CutTheRope.iframework.visual
     {
         public virtual void setTile(int t)
         {
-            this.q = t;
+            q = t;
         }
 
         public override void draw()
         {
-            this.preDraw();
-            GLDrawer.drawImageTiled(this.texture, this.q, this.drawX, this.drawY, (float)this.width, (float)this.height);
-            this.postDraw();
+            preDraw();
+            GLDrawer.drawImageTiled(texture, q, drawX, drawY, (float)width, (float)height);
+            postDraw();
         }
 
         private static TiledImage TiledImage_create(CTRTexture2D t)

@@ -38,134 +38,134 @@ namespace CutTheRope.game
                         break;
                 }
             }
-            if (this.initWithTexture(Application.getTexture(textureResID)) == null)
+            if (initWithTexture(Application.getTexture(textureResID)) == null)
             {
                 return null;
             }
             if (t > 0)
             {
-                this.doRestoreCutTransparency();
+                doRestoreCutTransparency();
                 int num = (t - 1) * 2;
                 int q = 1 + (t - 1) * 2;
                 Image image = Image.Image_createWithResIDQuad(97, num);
                 Image image2 = Image.Image_createWithResIDQuad(97, q);
                 image.doRestoreCutTransparency();
                 image2.doRestoreCutTransparency();
-                this.rotateButton = new Button().initWithUpElementDownElementandID(image, image2, 0);
-                this.rotateButton.delegateButtonDelegate = this;
-                this.rotateButton.anchor = this.rotateButton.parentAnchor = 18;
-                this.addChild(this.rotateButton);
+                rotateButton = new Button().initWithUpElementDownElementandID(image, image2, 0);
+                rotateButton.delegateButtonDelegate = this;
+                rotateButton.anchor = rotateButton.parentAnchor = 18;
+                addChild(rotateButton);
                 Vector quadOffset = Image.getQuadOffset(97, num);
                 Vector quadSize = Image.getQuadSize(97, num);
                 Vector vector = CTRMathHelper.vectSub(CTRMathHelper.vect(image.texture.preCutSize.x, image.texture.preCutSize.y), CTRMathHelper.vectAdd(quadSize, quadOffset));
-                this.rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + quadSize.x / 2f, 0f - vector.x + quadSize.x / 2f, 0f - quadOffset.y + quadSize.y / 2f, 0f - vector.y + quadSize.y / 2f);
+                rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + quadSize.x / 2f, 0f - vector.x + quadSize.x / 2f, 0f - quadOffset.y + quadSize.y / 2f, 0f - vector.y + quadSize.y / 2f);
             }
-            this.passColorToChilds = false;
-            this.spikesNormal = false;
-            this.origRotation = this.rotation = (float)an;
-            this.x = px;
-            this.y = py;
-            this.setToggled(t);
-            this.updateRotation();
+            passColorToChilds = false;
+            spikesNormal = false;
+            origRotation = rotation = (float)an;
+            x = px;
+            y = py;
+            setToggled(t);
+            updateRotation();
             if (w == 5)
             {
-                this.addAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 0);
-                this.addAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 4);
-                this.doRestoreCutTransparency();
+                addAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 0);
+                addAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 4);
+                doRestoreCutTransparency();
             }
-            this.touchIndex = -1;
+            touchIndex = -1;
             return this;
         }
 
         public virtual void updateRotation()
         {
-            float num = (!this.electro) ? this.texture.quadRects[this.quadToDraw].w : ((float)this.width - FrameworkTypes.RTPD(400.0));
+            float num = (!electro) ? texture.quadRects[quadToDraw].w : ((float)width - FrameworkTypes.RTPD(400.0));
             num /= 2f;
-            this.t1.x = this.x - num;
-            this.t2.x = this.x + num;
-            this.t1.y = this.t2.y = this.y - 5f;
-            this.b1.x = this.t1.x;
-            this.b2.x = this.t2.x;
-            this.b1.y = this.b2.y = this.y + 5f;
-            this.angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(this.rotation);
-            this.t1 = CTRMathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
-            this.t2 = CTRMathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);
-            this.b1 = CTRMathHelper.vectRotateAround(this.b1, this.angle, this.x, this.y);
-            this.b2 = CTRMathHelper.vectRotateAround(this.b2, this.angle, this.x, this.y);
+            t1.x = x - num;
+            t2.x = x + num;
+            t1.y = t2.y = y - 5f;
+            b1.x = t1.x;
+            b2.x = t2.x;
+            b1.y = b2.y = y + 5f;
+            angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(rotation);
+            t1 = CTRMathHelper.vectRotateAround(t1, angle, x, y);
+            t2 = CTRMathHelper.vectRotateAround(t2, angle, x, y);
+            b1 = CTRMathHelper.vectRotateAround(b1, angle, x, y);
+            b2 = CTRMathHelper.vectRotateAround(b2, angle, x, y);
         }
 
         public virtual void turnElectroOff()
         {
-            this.electroOn = false;
-            this.playTimeline(0);
-            this.electroTimer = this.offTime;
-            if (this.sndElectric != null)
+            electroOn = false;
+            playTimeline(0);
+            electroTimer = offTime;
+            if (sndElectric != null)
             {
-                this.sndElectric.Stop();
-                this.sndElectric = null;
+                sndElectric.Stop();
+                sndElectric = null;
             }
         }
 
         public virtual void turnElectroOn()
         {
-            this.electroOn = true;
-            this.playTimeline(1);
-            this.electroTimer = this.onTime;
-            this.sndElectric = CTRSoundMgr._playSoundLooped(28);
+            electroOn = true;
+            playTimeline(1);
+            electroTimer = onTime;
+            sndElectric = CTRSoundMgr._playSoundLooped(28);
         }
 
         public virtual void rotateSpikes()
         {
-            this.spikesNormal = !this.spikesNormal;
-            this.removeTimeline(2);
-            float num = (float)(this.spikesNormal ? 90 : 0);
-            float num2 = this.origRotation + num;
+            spikesNormal = !spikesNormal;
+            removeTimeline(2);
+            float num = (float)(spikesNormal ? 90 : 0);
+            float num2 = origRotation + num;
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline.addKeyFrame(KeyFrame.makeRotation((int)this.rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-            timeline.addKeyFrame(KeyFrame.makeRotation((int)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(num2 - this.rotation) / 90f * 0.3f));
+            timeline.addKeyFrame(KeyFrame.makeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
+            timeline.addKeyFrame(KeyFrame.makeRotation((int)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(num2 - rotation) / 90f * 0.3f));
             timeline.delegateTimelineDelegate = this;
-            this.addTimelinewithID(timeline, 2);
-            this.playTimeline(2);
-            this.updateRotationFlag = true;
-            this.rotateButton.scaleX = 0f - this.rotateButton.scaleX;
+            addTimelinewithID(timeline, 2);
+            playTimeline(2);
+            updateRotationFlag = true;
+            rotateButton.scaleX = 0f - rotateButton.scaleX;
         }
 
         public virtual void setToggled(int t)
         {
-            this.toggled = t;
+            toggled = t;
         }
 
         public virtual int getToggled()
         {
-            return this.toggled;
+            return toggled;
         }
 
         public override void update(float delta)
         {
             base.update(delta);
-            if (this.mover != null || this.updateRotationFlag)
+            if (mover != null || updateRotationFlag)
             {
-                this.updateRotation();
+                updateRotation();
             }
-            if (!this.electro)
+            if (!electro)
             {
                 return;
             }
-            if (this.electroOn)
+            if (electroOn)
             {
-                Mover.moveVariableToTarget(ref this.electroTimer, 0f, 1f, delta);
-                if ((double)this.electroTimer == 0.0)
+                Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
+                if ((double)electroTimer == 0.0)
                 {
-                    this.turnElectroOff();
+                    turnElectroOff();
                     return;
                 }
             }
             else
             {
-                Mover.moveVariableToTarget(ref this.electroTimer, 0f, 1f, delta);
-                if ((double)this.electroTimer == 0.0)
+                Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
+                if ((double)electroTimer == 0.0)
                 {
-                    this.turnElectroOn();
+                    turnElectroOn();
                 }
             }
         }
@@ -176,15 +176,15 @@ namespace CutTheRope.game
 
         public virtual void timelineFinished(Timeline t)
         {
-            this.updateRotationFlag = false;
+            updateRotationFlag = false;
         }
 
         public virtual void onButtonPressed(int n)
         {
             if (n == 0)
             {
-                this.delegateRotateAllSpikesWithID(this.toggled);
-                if (this.spikesNormal)
+                delegateRotateAllSpikesWithID(toggled);
+                if (spikesNormal)
                 {
                     CTRSoundMgr._playSound(42);
                     return;

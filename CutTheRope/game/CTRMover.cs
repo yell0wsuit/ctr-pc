@@ -27,12 +27,12 @@ namespace CutTheRope.game
                 {
                     float x = s.x + (float)num * CTRMathHelper.cosf(num4);
                     float y = s.y + (float)num * CTRMathHelper.sinf(num4);
-                    this.addPathPoint(CTRMathHelper.vect(x, y));
+                    addPathPoint(CTRMathHelper.vect(x, y));
                     num4 += num3;
                 }
                 return;
             }
-            this.addPathPoint(s);
+            addPathPoint(s);
             if (p.characterAtIndex(p.length() - 1) == ',')
             {
                 p = p.substringToIndex(p.length() - 1);
@@ -42,7 +42,7 @@ namespace CutTheRope.game
             {
                 NSString nSString2 = list[j];
                 NSString nSString3 = list[j + 1];
-                this.addPathPoint(CTRMathHelper.vect(s.x + nSString2.floatValue() * 3f, s.y + nSString3.floatValue() * 3f));
+                addPathPoint(CTRMathHelper.vect(s.x + nSString2.floatValue() * 3f, s.y + nSString3.floatValue() * 3f));
             }
         }
     }

@@ -14,43 +14,43 @@ namespace CutTheRope.game
             {
                 return null;
             }
-            this.duration = 2f;
-            this.gravity.x = 0f;
-            this.gravity.y = 500f;
-            this.angle = -90f;
-            this.angleVar = 50f;
-            this.speed = 150f;
-            this.speedVar = 70f;
-            this.radialAccel = 0f;
-            this.radialAccelVar = 1f;
-            this.tangentialAccel = 0f;
-            this.tangentialAccelVar = 1f;
-            this.posVar.x = 0f;
-            this.posVar.y = 0f;
-            this.life = 3f;
-            this.lifeVar = 0f;
-            this.size = 1f;
-            this.sizeVar = 0f;
-            this.emissionRate = 100f;
-            this.startColor.r = 1f;
-            this.startColor.g = 1f;
-            this.startColor.b = 1f;
-            this.startColor.a = 1f;
-            this.startColorVar.r = 0f;
-            this.startColorVar.g = 0f;
-            this.startColorVar.b = 0f;
-            this.startColorVar.a = 0f;
-            this.endColor.r = 1f;
-            this.endColor.g = 1f;
-            this.endColor.b = 1f;
-            this.endColor.a = 1f;
-            this.endColorVar.r = 0f;
-            this.endColorVar.g = 0f;
-            this.endColorVar.b = 0f;
-            this.endColorVar.a = 0f;
-            this.rotateSpeed = 0f;
-            this.rotateSpeedVar = 600f;
-            this.blendAdditive = false;
+            duration = 2f;
+            gravity.x = 0f;
+            gravity.y = 500f;
+            angle = -90f;
+            angleVar = 50f;
+            speed = 150f;
+            speedVar = 70f;
+            radialAccel = 0f;
+            radialAccelVar = 1f;
+            tangentialAccel = 0f;
+            tangentialAccelVar = 1f;
+            posVar.x = 0f;
+            posVar.y = 0f;
+            life = 3f;
+            lifeVar = 0f;
+            size = 1f;
+            sizeVar = 0f;
+            emissionRate = 100f;
+            startColor.r = 1f;
+            startColor.g = 1f;
+            startColor.b = 1f;
+            startColor.a = 1f;
+            startColorVar.r = 0f;
+            startColorVar.g = 0f;
+            startColorVar.b = 0f;
+            startColorVar.a = 0f;
+            endColor.r = 1f;
+            endColor.g = 1f;
+            endColor.b = 1f;
+            endColor.a = 1f;
+            endColorVar.r = 0f;
+            endColorVar.g = 0f;
+            endColorVar.b = 0f;
+            endColorVar.a = 0f;
+            rotateSpeed = 0f;
+            rotateSpeedVar = 600f;
+            blendAdditive = false;
             return this;
         }
 
@@ -58,27 +58,27 @@ namespace CutTheRope.game
         {
             base.initParticle(ref particle);
             int num = CTRMathHelper.RND_RANGE(3, 7);
-            Quad2D qt = this.imageGrid.texture.quads[num];
+            Quad2D qt = imageGrid.texture.quads[num];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            this.drawer.setTextureQuadatVertexQuadatIndex(qt, qv, this.particleCount);
-            CTRRectangle rectangle = this.imageGrid.texture.quadRects[num];
+            drawer.setTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
+            CTRRectangle rectangle = imageGrid.texture.quadRects[num];
             particle.width = rectangle.w * particle.size;
             particle.height = rectangle.h * particle.size;
         }
 
         public override void draw()
         {
-            this.preDraw();
+            preDraw();
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
             OpenGL.glEnable(0);
-            OpenGL.glBindTexture(this.drawer.image.texture.name());
-            OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(this.drawer.vertices));
-            OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(this.drawer.texCoordinates));
-            OpenGL.glBindBuffer(2, this.colorsID);
-            OpenGL.glDrawElements(7, this.particleIdx * 6, this.drawer.indices);
+            OpenGL.glBindTexture(drawer.image.texture.name());
+            OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(drawer.vertices));
+            OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(drawer.texCoordinates));
+            OpenGL.glBindBuffer(2, colorsID);
+            OpenGL.glDrawElements(7, particleIdx * 6, drawer.indices);
             OpenGL.glBindBuffer(2, 0U);
             OpenGL.glDisableClientState(13);
-            this.postDraw();
+            postDraw();
         }
     }
 }

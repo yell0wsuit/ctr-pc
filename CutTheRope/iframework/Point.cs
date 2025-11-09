@@ -6,8 +6,8 @@ namespace CutTheRope.iframework
     {
         public Point(float xx, float yy)
         {
-            this.x = xx;
-            this.y = yy;
+            x = xx;
+            y = yy;
         }
 
         public float x;

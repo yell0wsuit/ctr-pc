@@ -11,7 +11,7 @@ namespace CutTheRope.iframework.visual
         {
             if (base.init() != null)
             {
-                this.solid = true;
+                solid = true;
             }
             return this;
         }
@@ -20,13 +20,13 @@ namespace CutTheRope.iframework.visual
         {
             base.preDraw();
             OpenGL.glDisable(0);
-            if (this.solid)
+            if (solid)
             {
-                GLDrawer.drawSolidRectWOBorder(this.drawX, this.drawY, (float)this.width, (float)this.height, this.color);
+                GLDrawer.drawSolidRectWOBorder(drawX, drawY, (float)width, (float)height, color);
             }
             else
             {
-                GLDrawer.drawRect(this.drawX, this.drawY, (float)this.width, (float)this.height, this.color);
+                GLDrawer.drawRect(drawX, drawY, (float)width, (float)height, color);
             }
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);

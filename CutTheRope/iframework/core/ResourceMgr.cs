@@ -13,57 +13,57 @@ namespace CutTheRope.iframework.core
         public virtual bool hasResource(int resID)
         {
             NSObject value = null;
-            this.s_Resources.TryGetValue(resID, out value);
+            s_Resources.TryGetValue(resID, out value);
             return value != null;
         }
 
         public virtual void addResourceToLoadQueue(int resID)
         {
-            this.loadQueue.Add(resID);
-            this.loadCount++;
+            loadQueue.Add(resID);
+            loadCount++;
         }
 
         public void clearCachedResources()
         {
-            this.s_Resources = new Dictionary<int, NSObject>();
+            s_Resources = new Dictionary<int, NSObject>();
         }
 
         public virtual NSObject loadResource(int resID, ResourceMgr.ResourceType resType)
         {
             NSObject value = null;
-            if (this.s_Resources.TryGetValue(resID, out value))
+            if (s_Resources.TryGetValue(resID, out value))
             {
                 return value;
             }
             string path = (resType != ResourceMgr.ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "";
             bool flag = false;
-            float scaleX = this.getNormalScaleX(resID);
-            float scaleY = this.getNormalScaleY(resID);
+            float scaleX = getNormalScaleX(resID);
+            float scaleY = getNormalScaleY(resID);
             if (flag)
             {
-                scaleX = this.getWvgaScaleX(resID);
-                scaleY = this.getWvgaScaleY(resID);
+                scaleX = getWvgaScaleX(resID);
+                scaleY = getWvgaScaleY(resID);
             }
             switch (resType)
             {
                 case ResourceMgr.ResourceType.IMAGE:
-                    value = this.loadTextureImageInfo(path, null, flag, scaleX, scaleY);
+                    value = loadTextureImageInfo(path, null, flag, scaleX, scaleY);
                     break;
                 case ResourceMgr.ResourceType.FONT:
-                    value = this.loadVariableFontInfo(path, resID, flag);
-                    this.s_Resources.Remove(resID);
+                    value = loadVariableFontInfo(path, resID, flag);
+                    s_Resources.Remove(resID);
                     break;
                 case ResourceMgr.ResourceType.SOUND:
-                    value = this.loadSoundInfo(path);
+                    value = loadSoundInfo(path);
                     break;
                 case ResourceMgr.ResourceType.STRINGS:
-                    value = this.loadStringsInfo(resID);
+                    value = loadStringsInfo(resID);
                     value = NSObject.NSS(value.ToString().Replace('\u00a0', ' '));
                     break;
             }
             if (value != null)
             {
-                this.s_Resources.Add(resID, value);
+                s_Resources.Add(resID, value);
             }
             return value;
         }
@@ -76,14 +76,14 @@ namespace CutTheRope.iframework.core
         public NSString loadStringsInfo(int key)
         {
             key &= 65535;
-            if (this.xmlStrings == null)
+            if (xmlStrings == null)
             {
-                this.xmlStrings = XMLNode.parseXML("menu_strings.xml");
+                xmlStrings = XMLNode.parseXML("menu_strings.xml");
             }
             XMLNode xMLNode = null;
             try
             {
-                xMLNode = this.xmlStrings.childs()[key];
+                xMLNode = xmlStrings.childs()[key];
             }
             catch (Exception)
             {
@@ -126,7 +126,7 @@ namespace CutTheRope.iframework.core
             {
                 NSString data2 = xMLNode3.data;
             }
-            Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)this.loadResource(resID, ResourceMgr.ResourceType.IMAGE), null);
+            Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)loadResource(resID, ResourceMgr.ResourceType.IMAGE), null);
             font.setCharOffsetLineOffsetSpaceWidth((float)num, (float)num2, (float)num3);
             return font;
         }
@@ -160,7 +160,7 @@ namespace CutTheRope.iframework.core
                 texture2D.setWvga();
             }
             texture2D.setScale(scaleX, scaleY);
-            this.setTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
+            setTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
             return texture2D;
         }
 
@@ -178,7 +178,7 @@ namespace CutTheRope.iframework.core
                     {
                         array[j] = list[j].floatValue();
                     }
-                    this.setQuadsInfo(t, array, list.Count, scaleX, scaleY);
+                    setQuadsInfo(t, array, list.Count, scaleX, scaleY);
                 }
             }
             XMLNode xMLNode2 = i.findChildWithTagNameRecursively("offsets", false);
@@ -196,7 +196,7 @@ namespace CutTheRope.iframework.core
             {
                 array2[k] = list2[k].floatValue();
             }
-            this.setOffsetsInfo(t, array2, list2.Count, scaleX, scaleY);
+            setOffsetsInfo(t, array2, list2.Count, scaleX, scaleY);
             XMLNode xMLNode3 = i.findChildWithTagNameRecursively(NSObject.NSS("preCutWidth"), false);
             XMLNode xMLNode4 = i.findChildWithTagNameRecursively(NSObject.NSS("preCutHeight"), false);
             if (xMLNode3 != null && xMLNode4 != null)
@@ -285,18 +285,18 @@ namespace CutTheRope.iframework.core
 
         public virtual void initLoading()
         {
-            this.loadQueue.Clear();
-            this.loaded = 0;
-            this.loadCount = 0;
+            loadQueue.Clear();
+            loaded = 0;
+            loadCount = 0;
         }
 
         public virtual int getPercentLoaded()
         {
-            if (this.loadCount == 0)
+            if (loadCount == 0)
             {
                 return 100;
             }
-            return 100 * this.loaded / this.getLoadCount();
+            return 100 * loaded / getLoadCount();
         }
 
         public virtual void loadPack(int[] pack)
@@ -304,7 +304,7 @@ namespace CutTheRope.iframework.core
             int i = 0;
             while (pack[i] != -1)
             {
-                this.addResourceToLoadQueue(pack[i]);
+                addResourceToLoadQueue(pack[i]);
                 i++;
             }
         }
@@ -314,62 +314,62 @@ namespace CutTheRope.iframework.core
             int i = 0;
             while (pack[i] != -1)
             {
-                this.freeResource(pack[i]);
+                freeResource(pack[i]);
                 i++;
             }
         }
 
         public virtual void loadImmediately()
         {
-            while (this.loadQueue.Count != 0)
+            while (loadQueue.Count != 0)
             {
-                int resId = this.loadQueue[0];
-                this.loadQueue.RemoveAt(0);
-                this.loadResource(resId);
-                this.loaded++;
+                int resId = loadQueue[0];
+                loadQueue.RemoveAt(0);
+                loadResource(resId);
+                loaded++;
             }
         }
 
         public virtual void startLoading()
         {
-            if (this.resourcesDelegate != null)
+            if (resourcesDelegate != null)
             {
                 DelayedDispatcher.DispatchFunc dispatchFunc;
                 if ((dispatchFunc = ResourceMgr.<> O.< 0 > __rmgr_internalUpdate) == null)
                 {
                     dispatchFunc = ResourceMgr.<> O.< 0 > __rmgr_internalUpdate = new DelayedDispatcher.DispatchFunc(ResourceMgr.rmgr_internalUpdate);
                 }
-                this.Timer = NSTimer.schedule(dispatchFunc, this, 0.022222223f);
+                Timer = NSTimer.schedule(dispatchFunc, this, 0.022222223f);
             }
-            this.bUseFake = this.loadQueue.Count < 100;
+            bUseFake = loadQueue.Count < 100;
         }
 
         private int getLoadCount()
         {
-            if (!this.bUseFake)
+            if (!bUseFake)
             {
-                return this.loadCount;
+                return loadCount;
             }
             return 100;
         }
 
         public void update()
         {
-            if (this.loadQueue.Count > 0)
+            if (loadQueue.Count > 0)
             {
-                int resId = this.loadQueue[0];
-                this.loadQueue.RemoveAt(0);
-                this.loadResource(resId);
+                int resId = loadQueue[0];
+                loadQueue.RemoveAt(0);
+                loadResource(resId);
             }
-            this.loaded++;
-            if (this.loaded >= this.getLoadCount())
+            loaded++;
+            if (loaded >= getLoadCount())
             {
-                if (this.Timer >= 0)
+                if (Timer >= 0)
                 {
-                    NSTimer.stopTimer(this.Timer);
+                    NSTimer.stopTimer(Timer);
                 }
-                this.Timer = -1;
-                this.resourcesDelegate.allResourcesLoaded();
+                Timer = -1;
+                resourcesDelegate.allResourcesLoaded();
             }
         }
 
@@ -386,9 +386,9 @@ namespace CutTheRope.iframework.core
             }
             if (10 == resId)
             {
-                if (this.xmlStrings == null)
+                if (xmlStrings == null)
                 {
-                    this.xmlStrings = XMLNode.parseXML("menu_strings.xml");
+                    xmlStrings = XMLNode.parseXML("menu_strings.xml");
                 }
                 return;
             }
@@ -419,7 +419,7 @@ namespace CutTheRope.iframework.core
             }
             if (10 == resId)
             {
-                this.xmlStrings = null;
+                xmlStrings = null;
                 return;
             }
             if (ResDataPhoneFull.isSound(resId))
@@ -428,10 +428,10 @@ namespace CutTheRope.iframework.core
                 return;
             }
             NSObject value = null;
-            if (this.s_Resources.TryGetValue(resId, out value))
+            if (s_Resources.TryGetValue(resId, out value))
             {
                 value?.dealloc();
-                this.s_Resources.Remove(resId);
+                s_Resources.Remove(resId);
             }
         }
 
