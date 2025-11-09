@@ -416,7 +416,7 @@ namespace CutTheRope.game
                     {
                         if (!shouldSkipTutorialElement(item3))
                         {
-                            GameScene.TutorialText tutorialText = (GameScene.TutorialText)new GameScene.TutorialText().initWithFont(Application.getFont(4));
+                            TutorialText tutorialText = (TutorialText)new TutorialText().initWithFont(Application.getFont(4));
                             tutorialText.color = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.9);
                             tutorialText.x = (float)item3["x"].intValue() * num + num3 + (float)num4;
                             tutorialText.y = (float)item3["y"].intValue() * num + num2 + (float)num5;
@@ -451,7 +451,7 @@ namespace CutTheRope.game
                         if (!shouldSkipTutorialElement(item3))
                         {
                             int q = new NSString(item3.Name.Substring(8)).intValue() - 1;
-                            GameScene.GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
+                            GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
                             gameObjectSpecial.color = RGBAColor.transparentRGBA;
                             gameObjectSpecial.x = (float)item3["x"].intValue() * num + num3 + (float)num4;
                             gameObjectSpecial.y = (float)item3["y"].intValue() * num + num2 + (float)num5;
@@ -993,7 +993,7 @@ namespace CutTheRope.game
             {
                 for (int j = 0; j < fingerCuts[i].count(); j++)
                 {
-                    GameScene.FingerCut fingerCut = (GameScene.FingerCut)fingerCuts[i].objectAtIndex(j);
+                    FingerCut fingerCut = (FingerCut)fingerCuts[i].objectAtIndex(j);
                     if (Mover.moveVariableToTarget(ref fingerCut.c.a, 0.0, 10.0, (double)delta))
                     {
                         fingerCuts[i].removeObject(fingerCut);
@@ -1808,7 +1808,7 @@ namespace CutTheRope.game
                 special = 0;
                 foreach (object obj16 in tutorials)
                 {
-                    GameScene.TutorialText tutorial2 = (GameScene.TutorialText)obj16;
+                    TutorialText tutorial2 = (TutorialText)obj16;
                     if (tutorial2.special == 1)
                     {
                         tutorial2.playTimeline(0);
@@ -1816,7 +1816,7 @@ namespace CutTheRope.game
                 }
                 foreach (object obj17 in tutorialImages)
                 {
-                    GameScene.GameObjectSpecial tutorialImage2 = (GameScene.GameObjectSpecial)obj17;
+                    GameObjectSpecial tutorialImage2 = (GameObjectSpecial)obj17;
                     if (tutorialImage2.special == 1)
                     {
                         tutorialImage2.playTimeline(0);
@@ -2046,7 +2046,7 @@ namespace CutTheRope.game
                 CTRTexture2D texture = Application.getTexture(105 + pack * 2);
                 int num4 = 0;
                 float num5 = texture.quadOffsets[num4].y;
-                CutTheRope.iframework.CTRRectangle r = texture.quadRects[num4];
+                CTRRectangle r = texture.quadRects[num4];
                 r.y += num3;
                 r.h -= num3 * 2f;
                 GLDrawer.drawImagePart(texture, r, 0.0, (double)(num5 + num3));
@@ -2191,7 +2191,7 @@ namespace CutTheRope.game
                     int num5 = 0;
                     while (j < num)
                     {
-                        GameScene.FingerCut fingerCut = (GameScene.FingerCut)fingerCuts[i].objectAtIndex(j);
+                        FingerCut fingerCut = (FingerCut)fingerCuts[i].objectAtIndex(j);
                         if (j == 0)
                         {
                             array[num5++] = fingerCut.start;
@@ -2202,7 +2202,7 @@ namespace CutTheRope.game
                     List<Vector> list = new();
                     Vector vector = default(Vector);
                     bool flag = true;
-                    for (int k = 0; k < array.Count<Vector>(); k++)
+                    for (int k = 0; k < array.Count(); k++)
                     {
                         if (k == 0)
                         {
@@ -2218,7 +2218,7 @@ namespace CutTheRope.game
                     if (!flag)
                     {
                         array = list.ToArray();
-                        num = array.Count<Vector>() - 1;
+                        num = array.Count() - 1;
                         int num6 = num * 2;
                         float[] array2 = new float[num6 * 2];
                         float num7 = 1f / (float)num6;
@@ -2231,7 +2231,7 @@ namespace CutTheRope.game
                                 num8 = 1f;
                             }
                             Vector vector2 = GLDrawer.calcPathBezier(array, num + 1, num8);
-                            if (num9 > array2.Count<float>() - 2)
+                            if (num9 > array2.Count() - 2)
                             {
                                 break;
                             }
@@ -2984,7 +2984,7 @@ namespace CutTheRope.game
             {
                 Vector start = vectAdd(startPos[ti], camera.pos);
                 Vector end = vectAdd(vect(tx, ty), camera.pos);
-                GameScene.FingerCut fingerCut = (GameScene.FingerCut)new GameScene.FingerCut().init();
+                FingerCut fingerCut = (FingerCut)new FingerCut().init();
                 fingerCut.start = start;
                 fingerCut.end = end;
                 fingerCut.startSize = 5f;
@@ -2994,7 +2994,7 @@ namespace CutTheRope.game
                 int num4 = 0;
                 foreach (object obj2 in fingerCuts[ti])
                 {
-                    GameScene.FingerCut item = (GameScene.FingerCut)obj2;
+                    FingerCut item = (FingerCut)obj2;
                     num4 += cutWithRazorOrLine1Line2Immediate(null, item.start, item.end, false);
                 }
                 if (num4 > 0)
@@ -3449,16 +3449,16 @@ namespace CutTheRope.game
 
         private class GameObjectSpecial : CTRGameObject
         {
-            private static GameScene.GameObjectSpecial GameObjectSpecial_create(CTRTexture2D t)
+            private static GameObjectSpecial GameObjectSpecial_create(CTRTexture2D t)
             {
-                GameScene.GameObjectSpecial gameObjectSpecial = new();
+                GameObjectSpecial gameObjectSpecial = new();
                 gameObjectSpecial.initWithTexture(t);
                 return gameObjectSpecial;
             }
 
-            public static GameScene.GameObjectSpecial GameObjectSpecial_createWithResIDQuad(int r, int q)
+            public static GameObjectSpecial GameObjectSpecial_createWithResIDQuad(int r, int q)
             {
-                GameScene.GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.getTexture(r));
+                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.getTexture(r));
                 gameObjectSpecial.setDrawQuad(q);
                 return gameObjectSpecial;
             }

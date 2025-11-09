@@ -560,7 +560,7 @@ namespace CutTheRope.iframework.visual
         public virtual bool onTouchDownXY(float tx, float ty)
         {
             bool flag = false;
-            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse<KeyValuePair<int, BaseElement>>())
+            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
                 if (value != null && value.touchable && value.onTouchDownXY(tx, ty) && !flag)
@@ -578,7 +578,7 @@ namespace CutTheRope.iframework.visual
         public virtual bool onTouchUpXY(float tx, float ty)
         {
             bool flag = false;
-            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse<KeyValuePair<int, BaseElement>>())
+            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
                 if (value != null && value.touchable && value.onTouchUpXY(tx, ty) && !flag)
@@ -596,7 +596,7 @@ namespace CutTheRope.iframework.visual
         public virtual bool onTouchMoveXY(float tx, float ty)
         {
             bool flag = false;
-            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse<KeyValuePair<int, BaseElement>>())
+            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
                 if (value != null && value.touchable && value.onTouchMoveXY(tx, ty) && !flag)

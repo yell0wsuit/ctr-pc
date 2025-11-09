@@ -247,7 +247,7 @@ namespace CutTheRope
             if (form != null)
             {
                 Global.ScreenSizeManager.SetWindowMinimumSize(form);
-                form.BackColor = global::System.Drawing.Color.Black;
+                form.BackColor = System.Drawing.Color.Black;
                 form.Resize += form_Resize;
             }
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());

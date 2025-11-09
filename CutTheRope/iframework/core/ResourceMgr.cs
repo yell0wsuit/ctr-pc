@@ -28,7 +28,7 @@ namespace CutTheRope.iframework.core
             s_Resources = new Dictionary<int, NSObject>();
         }
 
-        public virtual NSObject loadResource(int resID, ResourceMgr.ResourceType resType)
+        public virtual NSObject loadResource(int resID, ResourceType resType)
         {
             NSObject value = null;
             if (s_Resources.TryGetValue(resID, out value))

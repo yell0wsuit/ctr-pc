@@ -13,7 +13,7 @@ namespace CutTheRope.iframework.visual
             currentStepAcceleration = new KeyFrame();
         }
 
-        public virtual Track initWithTimelineTypeandMaxKeyFrames(Timeline timeline, Track.TrackType trackType, int m)
+        public virtual Track initWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
         {
             t = timeline;
             type = trackType;
@@ -485,9 +485,9 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public Track.TrackType type;
+        public TrackType type;
 
-        public Track.TrackState state;
+        public TrackState state;
 
         public bool relative;
 

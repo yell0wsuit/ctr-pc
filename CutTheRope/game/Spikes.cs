@@ -233,7 +233,7 @@ namespace CutTheRope.game
 
         public int touchIndex;
 
-        public Spikes.rotateAllSpikesWithID delegateRotateAllSpikesWithID;
+        public rotateAllSpikesWithID delegateRotateAllSpikesWithID;
 
         private SoundEffectInstance sndElectric;
 

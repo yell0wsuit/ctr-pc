@@ -176,7 +176,7 @@ namespace CutTheRope.iframework.visual
             tracks[(int)k.trackType].setKeyFrameAt(k, i);
         }
 
-        public virtual void setTimelineLoopType(Timeline.LoopType l)
+        public virtual void setTimelineLoopType(LoopType l)
         {
             timelineLoopType = l;
         }
@@ -192,7 +192,7 @@ namespace CutTheRope.iframework.visual
 
         public BaseElement element;
 
-        public Timeline.TimelineState state;
+        public TimelineState state;
 
         public float time;
 
@@ -204,7 +204,7 @@ namespace CutTheRope.iframework.visual
 
         private int maxKeyFrames;
 
-        private Timeline.LoopType timelineLoopType;
+        private LoopType timelineLoopType;
 
         private Track[] tracks = new Track[5];
 

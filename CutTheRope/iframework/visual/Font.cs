@@ -15,7 +15,7 @@ namespace CutTheRope.iframework.visual
                 height = charmapfile.quadRects[0].h;
                 chars = strParam.copy();
                 sortedChars = chars.getCharacters();
-                Array.Sort<char>(sortedChars);
+                Array.Sort(sortedChars);
                 charOffset = 0f;
                 lineOffset = 0f;
             }
@@ -50,7 +50,7 @@ namespace CutTheRope.iframework.visual
 
         public override bool canDraw(char c)
         {
-            return c == ' ' || Array.BinarySearch<char>(sortedChars, c) >= 0;
+            return c == ' ' || Array.BinarySearch(sortedChars, c) >= 0;
         }
 
         public override float getCharWidth(char c)

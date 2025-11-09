@@ -205,7 +205,7 @@ namespace CutTheRope.ios
             {
                 xDocument = XDocument.Parse(ResDataPhoneFull.GetXml(fileName));
             }
-            return ReadNodeLINQ(xDocument.Elements().First<XElement>(), null);
+            return ReadNodeLINQ(xDocument.Elements().First(), null);
         }
 
         private int depth;

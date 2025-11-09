@@ -116,13 +116,13 @@ namespace CutTheRope.iframework.visual
             parallaxRatio = r;
         }
 
-        public virtual void setRepeatHorizontally(TileMap.Repeat r)
+        public virtual void setRepeatHorizontally(Repeat r)
         {
             repeatedHorizontally = r;
             updateVars();
         }
 
-        public virtual void setRepeatVertically(TileMap.Repeat r)
+        public virtual void setRepeatVertically(Repeat r)
         {
             repeatedVertically = r;
             updateVars();
@@ -294,9 +294,9 @@ namespace CutTheRope.iframework.visual
 
         private int randomSeed;
 
-        private TileMap.Repeat repeatedVertically;
+        private Repeat repeatedVertically;
 
-        private TileMap.Repeat repeatedHorizontally;
+        private Repeat repeatedHorizontally;
 
         private float parallaxRatio;
 

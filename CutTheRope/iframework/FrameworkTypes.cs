@@ -23,7 +23,7 @@ namespace CutTheRope.iframework
 
         public static float[] toFloatArray(Quad2D[] quads)
         {
-            float[] array = new float[quads.Count<Quad2D>() * 8];
+            float[] array = new float[quads.Count() * 8];
             for (int i = 0; i < quads.Length; i++)
             {
                 quads[i].toFloatArray().CopyTo(array, i * 8);
@@ -33,7 +33,7 @@ namespace CutTheRope.iframework
 
         public static float[] toFloatArray(Quad3D[] quads)
         {
-            float[] array = new float[quads.Count<Quad3D>() * 12];
+            float[] array = new float[quads.Count() * 12];
             for (int i = 0; i < quads.Length; i++)
             {
                 quads[i].toFloatArray().CopyTo(array, i * 12);

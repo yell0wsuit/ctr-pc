@@ -215,7 +215,7 @@ namespace CutTheRope.iframework.visual
         {
         }
 
-        public static void setDefaultAlphaPixelFormat(CTRTexture2D.Texture2DPixelFormat format)
+        public static void setDefaultAlphaPixelFormat(Texture2DPixelFormat format)
         {
             _defaultAlphaPixelFormat = format;
         }
@@ -298,7 +298,7 @@ namespace CutTheRope.iframework.visual
 
         private const int UNDEFINED_TEXTURE = 65536;
 
-        public Microsoft.Xna.Framework.Graphics.Texture2D xnaTexture_;
+        public Texture2D xnaTexture_;
 
         public string _resName;
 
@@ -320,7 +320,7 @@ namespace CutTheRope.iframework.visual
 
         private float _scaleY;
 
-        private CTRTexture2D.Texture2DPixelFormat _format;
+        private Texture2DPixelFormat _format;
 
         private Vector _size;
 
@@ -344,13 +344,13 @@ namespace CutTheRope.iframework.visual
 
         private bool _isWvga;
 
-        private CTRTexture2D.TexParams _localTexParams;
+        private TexParams _localTexParams;
 
-        private static CTRTexture2D.TexParams _defaultTexParams;
+        private static TexParams _defaultTexParams;
 
-        private static CTRTexture2D.TexParams _texParams;
+        private static TexParams _texParams;
 
-        private static CTRTexture2D.TexParams _texParamsCopy;
+        private static TexParams _texParamsCopy;
 
         private bool PixelCorrectionDone;
 
@@ -362,9 +362,9 @@ namespace CutTheRope.iframework.visual
 
         private CTRTexture2D prev;
 
-        public static CTRTexture2D.Texture2DPixelFormat kTexture2DPixelFormat_Default = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
+        public static Texture2DPixelFormat kTexture2DPixelFormat_Default = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
 
-        private static CTRTexture2D.Texture2DPixelFormat _defaultAlphaPixelFormat = kTexture2DPixelFormat_Default;
+        private static Texture2DPixelFormat _defaultAlphaPixelFormat = kTexture2DPixelFormat_Default;
 
         public enum Texture2DPixelFormat
         {

@@ -9,7 +9,7 @@ namespace CutTheRope.ios
     {
         private static void Init()
         {
-            Timers = new List<NSTimer.Entry>();
+            Timers = new List<Entry>();
             dd = new DelayedDispatcher();
             is_init = true;
         }
@@ -29,13 +29,13 @@ namespace CutTheRope.ios
             {
                 Init();
             }
-            NSTimer.Entry entry = new();
+            Entry entry = new();
             entry.f = f;
             entry.p = p;
             entry.fireTime = 0f;
             entry.delay = interval;
             Timers.Add(entry);
-            return Timers.Count<NSTimer.Entry>() - 1;
+            return Timers.Count() - 1;
         }
 
         public static void fireTimers(float delta)
@@ -47,7 +47,7 @@ namespace CutTheRope.ios
             dd.update(delta);
             for (int i = 0; i < Timers.Count; i++)
             {
-                NSTimer.Entry entry = Timers[i];
+                Entry entry = Timers[i];
                 entry.fireTime += delta;
                 if (entry.fireTime >= entry.delay)
                 {
@@ -62,7 +62,7 @@ namespace CutTheRope.ios
             Timers.RemoveAt(Number);
         }
 
-        private static List<NSTimer.Entry> Timers;
+        private static List<Entry> Timers;
 
         private static DelayedDispatcher dd;
 

@@ -20,7 +20,7 @@ namespace CutTheRope.ios
             };
         }
 
-        public NSRect(Microsoft.Xna.Framework.Rectangle xnaRect)
+        public NSRect(Rectangle xnaRect)
         {
             origin = new NSPoint
             {

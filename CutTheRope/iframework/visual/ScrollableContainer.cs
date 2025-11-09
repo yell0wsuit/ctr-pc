@@ -635,7 +635,7 @@ namespace CutTheRope.iframework.visual
 
         private Vector targetPoint;
 
-        private ScrollableContainer.TOUCH_STATE touchState;
+        private TOUCH_STATE touchState;
 
         public float touchTimer;
 
