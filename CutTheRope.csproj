@@ -11,7 +11,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
-    <StartupObject>CutTheRope.Program</StartupObject>
+    <StartupObject>CutTheRope.CutTheRope.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.1" />
