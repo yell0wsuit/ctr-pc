@@ -125,34 +125,22 @@ namespace CutTheRope.iframework.platform
 
         public virtual void touchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            if (this.touchDelegate != null)
-            {
-                this.touchDelegate.touchesBeganwithEvent(touches);
-            }
+            this.touchDelegate?.touchesBeganwithEvent(touches);
         }
 
         public virtual void touchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            if (this.touchDelegate != null)
-            {
-                this.touchDelegate.touchesMovedwithEvent(touches);
-            }
+            this.touchDelegate?.touchesMovedwithEvent(touches);
         }
 
         public virtual void touchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            if (this.touchDelegate != null)
-            {
-                this.touchDelegate.touchesEndedwithEvent(touches);
-            }
+            this.touchDelegate?.touchesEndedwithEvent(touches);
         }
 
         public virtual void touchesCancelledwithEvent(IList<TouchLocation> touches)
         {
-            if (this.touchDelegate != null)
-            {
-                this.touchDelegate.touchesCancelledwithEvent(touches);
-            }
+            this.touchDelegate?.touchesCancelledwithEvent(touches);
         }
 
         public virtual bool backButtonPressed()

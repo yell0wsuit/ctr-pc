@@ -61,7 +61,7 @@ namespace CutTheRope.game
             {
                 string text = "maps/";
                 NSString nsstring = this.selectedMap;
-                NSString nSString = NSObject.NSS(text + ((nsstring != null) ? nsstring.ToString() : null));
+                NSString nSString = NSObject.NSS(text + (nsstring?.ToString()));
                 XMLNode xMLNode = XMLNode.parseXML(nSString.ToString());
                 this.xmlLoaderFinishedWithfromwithSuccess(xMLNode, nSString, xMLNode != null);
                 return;

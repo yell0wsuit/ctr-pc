@@ -190,10 +190,7 @@ namespace CutTheRope.ctr_commons
                 CTRSoundMgr._pause();
                 Application.sharedMovieMgr().pause();
                 CtrRenderer.gPaused = true;
-                if (CtrRenderer.gApp != null)
-                {
-                    CtrRenderer.gApp.applicationWillResignActive(null);
-                }
+                CtrRenderer.gApp?.applicationWillResignActive(null);
                 Texture2D.suspendAll();
             }
         }
@@ -207,10 +204,7 @@ namespace CutTheRope.ctr_commons
                 Texture2D.suspendAll();
                 Texture2D.resumeAll();
                 CtrRenderer.gPaused = false;
-                if (CtrRenderer.gApp != null)
-                {
-                    CtrRenderer.gApp.applicationDidBecomeActive(null);
-                }
+                CtrRenderer.gApp?.applicationDidBecomeActive(null);
             }
         }
 
@@ -295,10 +289,7 @@ namespace CutTheRope.ctr_commons
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(int fps)
         {
             GLCanvas gLCanvas = Application.sharedCanvas();
-            if (gLCanvas != null)
-            {
-                gLCanvas.drawFPS((float)fps);
-            }
+            gLCanvas?.drawFPS((float)fps);
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeTick(float delta)

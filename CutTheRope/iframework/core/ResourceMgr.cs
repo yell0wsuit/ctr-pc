@@ -430,10 +430,7 @@ namespace CutTheRope.iframework.core
             NSObject value = null;
             if (this.s_Resources.TryGetValue(resId, out value))
             {
-                if (value != null)
-                {
-                    value.dealloc();
-                }
+                value?.dealloc();
                 this.s_Resources.Remove(resId);
             }
         }

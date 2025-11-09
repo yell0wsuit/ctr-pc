@@ -310,10 +310,7 @@ namespace CutTheRope.game
             for (int i = 0; i < 3; i++)
             {
                 Timeline timeline2 = this.hudStar[i].getCurrentTimeline();
-                if (timeline2 != null)
-                {
-                    timeline2.stopTimeline();
-                }
+                timeline2?.stopTimeline();
                 this.hudStar[i].setDrawQuad(0);
             }
             int num4 = 0;
@@ -960,20 +957,11 @@ namespace CutTheRope.game
                 this.removeChild(this.gravityButton);
             }
             this.pollenDrawer.release();
-            if (this.earthAnims != null)
-            {
-                this.earthAnims.release();
-            }
+            this.earthAnims?.release();
             this.candy.release();
             this.star.release();
-            if (this.candyL != null)
-            {
-                this.candyL.release();
-            }
-            if (this.candyR != null)
-            {
-                this.candyR.release();
-            }
+            this.candyL?.release();
+            this.candyR?.release();
             this.starL.release();
             this.starR.release();
             this.razors.release();
@@ -1100,10 +1088,7 @@ namespace CutTheRope.game
                     }
                     if (rope.cut == -1 || (double)rope.cutTime != 0.0)
                     {
-                        if (rope != null)
-                        {
-                            rope.update(delta * this.ropePhysicsSpeed);
-                        }
+                        rope?.update(delta * this.ropePhysicsSpeed);
                         if (!grab.hasSpider)
                         {
                             goto IL_0478;
@@ -2080,10 +2065,7 @@ namespace CutTheRope.game
             OpenGL.glEnable(1);
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
             this.pollenDrawer.draw();
-            if (this.gravityButton != null)
-            {
-                this.gravityButton.draw();
-            }
+            this.gravityButton?.draw();
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
@@ -3150,10 +3132,7 @@ namespace CutTheRope.game
         private void selector_gameWon(NSObject param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
-            if (this.gameSceneDelegate != null)
-            {
-                this.gameSceneDelegate.gameWon();
-            }
+            this.gameSceneDelegate?.gameWon();
         }
 
         private void selector_animateLevelRestart(NSObject param)

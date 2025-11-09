@@ -13,11 +13,11 @@ namespace CutTheRope.iframework.media
             this.url = moviePath;
             if (Global.ScreenSizeManager.CurrentSize.Width <= 1024)
             {
-                this.video = Global.XnaGame.Content.Load<Video>("video/" + ((moviePath != null) ? moviePath.ToString() : null));
+                this.video = Global.XnaGame.Content.Load<Video>("video/" + (moviePath?.ToString()));
             }
             else
             {
-                this.video = Global.XnaGame.Content.Load<Video>("video_hd/" + ((moviePath != null) ? moviePath.ToString() : null));
+                this.video = Global.XnaGame.Content.Load<Video>("video_hd/" + (moviePath?.ToString()));
             }
             this.player = new VideoPlayer();
             this.player.IsLooped = false;
@@ -41,10 +41,7 @@ namespace CutTheRope.iframework.media
 
         public void stop()
         {
-            if (this.player != null)
-            {
-                this.player.Stop();
-            }
+            this.player?.Stop();
         }
 
         public void pause()
@@ -52,10 +49,7 @@ namespace CutTheRope.iframework.media
             if (!this.paused)
             {
                 this.paused = true;
-                if (this.player != null)
-                {
-                    this.player.Pause();
-                }
+                this.player?.Pause();
             }
         }
 
@@ -92,10 +86,7 @@ namespace CutTheRope.iframework.media
                 this.player = null;
                 this.video = null;
                 this.paused = false;
-                if (this.delegateMovieMgrDelegate != null)
-                {
-                    this.delegateMovieMgrDelegate.moviePlaybackFinished(this.url);
-                }
+                this.delegateMovieMgrDelegate?.moviePlaybackFinished(this.url);
             }
         }
 

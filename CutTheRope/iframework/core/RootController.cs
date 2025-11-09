@@ -66,16 +66,10 @@ namespace CutTheRope.iframework.core
                 {
                     this.transitionTime = -1f;
                     NSObject.NSREL(this.prevScreenImage);
-                    if (this.prevScreenImage != null)
-                    {
-                        this.prevScreenImage.xnaTexture_.Dispose();
-                    }
+                    this.prevScreenImage?.xnaTexture_.Dispose();
                     this.prevScreenImage = null;
                     NSObject.NSREL(this.nextScreenImage);
-                    if (this.nextScreenImage != null)
-                    {
-                        this.nextScreenImage.xnaTexture_.Dispose();
-                    }
+                    this.nextScreenImage?.xnaTexture_.Dispose();
                     this.nextScreenImage = null;
                 }
             }
@@ -206,10 +200,7 @@ namespace CutTheRope.iframework.core
                 this.applyLandscape();
                 this.currentController.activeView().draw();
                 NSObject.NSREL(this.nextScreenImage);
-                if (this.nextScreenImage != null)
-                {
-                    this.nextScreenImage.xnaTexture_.Dispose();
-                }
+                this.nextScreenImage?.xnaTexture_.Dispose();
                 this.nextScreenImage = this.screenGrabber.grab();
                 NSObject.NSRET(this.nextScreenImage);
                 OpenGL.glLoadIdentity();
@@ -227,10 +218,7 @@ namespace CutTheRope.iframework.core
                 this.applyLandscape();
                 this.previousView.draw();
                 NSObject.NSREL(this.prevScreenImage);
-                if (this.prevScreenImage != null)
-                {
-                    this.prevScreenImage.xnaTexture_.Dispose();
-                }
+                this.prevScreenImage?.xnaTexture_.Dispose();
                 this.prevScreenImage = this.screenGrabber.grab();
                 NSObject.NSRET(this.prevScreenImage);
                 OpenGL.glLoadIdentity();

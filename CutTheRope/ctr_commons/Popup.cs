@@ -38,10 +38,7 @@ namespace CutTheRope.ctr_commons
         public virtual void timelineFinished(Timeline t)
         {
             View view = (View)this.parent;
-            if (view != null)
-            {
-                view.removeChild(this);
-            }
+            view?.removeChild(this);
         }
 
         public virtual void showPopup()

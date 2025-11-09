@@ -81,10 +81,7 @@ namespace CutTheRope.ctr_commons
                     int num = this.limitPoints[i];
                     if (this.activeSpoint != num)
                     {
-                        if (this.delegateLiftScrollbarDelegate != null)
-                        {
-                            this.delegateLiftScrollbarDelegate.changedActiveSpointFromTo(this.activeSpoint, num);
-                        }
+                        this.delegateLiftScrollbarDelegate?.changedActiveSpointFromTo(this.activeSpoint, num);
                         this.activeSpoint = num;
                     }
                     return;
@@ -92,10 +89,7 @@ namespace CutTheRope.ctr_commons
             }
             if (this.lift.x >= this.spointsLimits[this.spointsNum - 1].x && this.activeSpoint != this.limitPoints[this.spointsNum - 1])
             {
-                if (this.delegateLiftScrollbarDelegate != null)
-                {
-                    this.delegateLiftScrollbarDelegate.changedActiveSpointFromTo(this.activeSpoint, this.limitPoints[this.spointsNum - 1]);
-                }
+                this.delegateLiftScrollbarDelegate?.changedActiveSpointFromTo(this.activeSpoint, this.limitPoints[this.spointsNum - 1]);
                 this.activeSpoint = this.limitPoints[this.spointsNum - 1];
             }
         }
