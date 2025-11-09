@@ -82,12 +82,7 @@ namespace CutTheRope.iframework
             uint a2 = ctx.state[1];
             uint a3 = ctx.state[2];
             uint a4 = ctx.state[3];
-            md5.FuncF funcF;
-            if ((funcF = md5.<> O.< 0 > __F_1) == null)
-            {
-                funcF = md5.<> O.< 0 > __F_1 = new md5.FuncF(F_1);
-            }
-            md5.FuncF f = funcF;
+            md5.FuncF f = new md5.FuncF(F_1);
             P(ref a, a2, a3, a4, 0U, 7U, 3614090360U, array, f);
             P(ref a4, a, a2, a3, 1U, 12U, 3905402710U, array, f);
             P(ref a3, a4, a, a2, 2U, 17U, 606105819U, array, f);
@@ -104,12 +99,7 @@ namespace CutTheRope.iframework
             P(ref a4, a, a2, a3, 13U, 12U, 4254626195U, array, f);
             P(ref a3, a4, a, a2, 14U, 17U, 2792965006U, array, f);
             P(ref a2, a3, a4, a, 15U, 22U, 1236535329U, array, f);
-            md5.FuncF funcF2;
-            if ((funcF2 = md5.<> O.< 1 > __F_2) == null)
-            {
-                funcF2 = md5.<> O.< 1 > __F_2 = new md5.FuncF(F_2);
-            }
-            f = funcF2;
+            f = new md5.FuncF(F_2);
             P(ref a, a2, a3, a4, 1U, 5U, 4129170786U, array, f);
             P(ref a4, a, a2, a3, 6U, 9U, 3225465664U, array, f);
             P(ref a3, a4, a, a2, 11U, 14U, 643717713U, array, f);
@@ -126,12 +116,7 @@ namespace CutTheRope.iframework
             P(ref a4, a, a2, a3, 2U, 9U, 4243563512U, array, f);
             P(ref a3, a4, a, a2, 7U, 14U, 1735328473U, array, f);
             P(ref a2, a3, a4, a, 12U, 20U, 2368359562U, array, f);
-            md5.FuncF funcF3;
-            if ((funcF3 = md5.<> O.< 2 > __F_3) == null)
-            {
-                funcF3 = md5.<> O.< 2 > __F_3 = new md5.FuncF(F_3);
-            }
-            f = funcF3;
+            f = new md5.FuncF(F_3);
             P(ref a, a2, a3, a4, 5U, 4U, 4294588738U, array, f);
             P(ref a4, a, a2, a3, 8U, 11U, 2272392833U, array, f);
             P(ref a3, a4, a, a2, 11U, 16U, 1839030562U, array, f);
@@ -148,12 +133,7 @@ namespace CutTheRope.iframework
             P(ref a4, a, a2, a3, 12U, 11U, 3873151461U, array, f);
             P(ref a3, a4, a, a2, 15U, 16U, 530742520U, array, f);
             P(ref a2, a3, a4, a, 2U, 23U, 3299628645U, array, f);
-            md5.FuncF funcF4;
-            if ((funcF4 = md5.<> O.< 3 > __F_4) == null)
-            {
-                funcF4 = md5.<> O.< 3 > __F_4 = new md5.FuncF(F_4);
-            }
-            f = funcF4;
+            f = new md5.FuncF(F_4);
             P(ref a, a2, a3, a4, 0U, 6U, 4096336452U, array, f);
             P(ref a4, a, a2, a3, 7U, 10U, 1126891415U, array, f);
             P(ref a3, a4, a, a2, 14U, 15U, 2878612391U, array, f);
@@ -255,17 +235,5 @@ namespace CutTheRope.iframework
 
         // (Invoke) Token: 0x06000664 RID: 1636
         private delegate uint FuncF(uint x, uint y, uint z);
-
-        [CompilerGenerated]
-        private static class <>O
-		{
-						public static md5.FuncF<0> __F_1;
-
-        public static md5.FuncF<1> __F_2;
-
-        public static md5.FuncF<2> __F_3;
-
-        public static md5.FuncF<3> __F_4;
     }
-}
 }
