@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using CutTheRope.windows;
+using System;
+using System.Linq;
 
 namespace CutTheRope.game
 {

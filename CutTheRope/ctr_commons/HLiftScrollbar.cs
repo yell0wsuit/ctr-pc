@@ -1,7 +1,7 @@
-﻿using System;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
+using System;
 
 namespace CutTheRope.ctr_commons
 {

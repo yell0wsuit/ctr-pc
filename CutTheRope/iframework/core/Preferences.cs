@@ -1,7 +1,7 @@
-﻿using System;
+using CutTheRope.ios;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.core
 {

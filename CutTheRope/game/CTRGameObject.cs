@@ -1,7 +1,7 @@
-﻿using System;
 using CutTheRope.iframework;
 using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
+using System;
 
 namespace CutTheRope.game
 {

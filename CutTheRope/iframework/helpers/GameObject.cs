@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using CutTheRope.windows;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace CutTheRope.iframework.helpers
 {

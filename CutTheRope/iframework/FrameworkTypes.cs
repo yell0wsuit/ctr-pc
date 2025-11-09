@@ -1,12 +1,12 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.platform;
 using CutTheRope.ios;
 using CutTheRope.windows;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 
 namespace CutTheRope.iframework
 {

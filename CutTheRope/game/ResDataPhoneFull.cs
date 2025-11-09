@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
 using CutTheRope.iframework;
+using System;
+using System.Collections.Generic;
 
 namespace CutTheRope.game
 {

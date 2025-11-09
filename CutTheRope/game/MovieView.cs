@@ -1,6 +1,6 @@
-﻿using System;
 using CutTheRope.iframework.core;
 using CutTheRope.windows;
+using System;
 
 namespace CutTheRope.game
 {

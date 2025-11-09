@@ -1,6 +1,6 @@
-﻿using System;
 using CutTheRope.ios;
 using CutTheRope.windows;
+using System;
 
 namespace CutTheRope.iframework.visual
 {

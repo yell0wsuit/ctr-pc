@@ -1,8 +1,8 @@
-﻿using System;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using CutTheRope.windows;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace CutTheRope.iframework.core
 {

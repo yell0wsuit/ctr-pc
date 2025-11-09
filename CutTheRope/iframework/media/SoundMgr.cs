@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
 using CutTheRope.game;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
+using System;
+using System.Collections.Generic;
 
 namespace CutTheRope.iframework.media
 {

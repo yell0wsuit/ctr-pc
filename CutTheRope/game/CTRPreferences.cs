@@ -1,8 +1,8 @@
-﻿using System;
 using CutTheRope.ctr_commons;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
+using System;
 
 namespace CutTheRope.game
 {

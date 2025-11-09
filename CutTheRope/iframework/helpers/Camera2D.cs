@@ -1,7 +1,7 @@
-﻿using System;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
 using CutTheRope.windows;
+using System;
 
 namespace CutTheRope.iframework.helpers
 {
