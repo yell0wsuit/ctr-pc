@@ -24,7 +24,7 @@ namespace CutTheRope.iframework.visual
         public static Vector getQuadSize(int textureID, int quad)
         {
             Texture2D texture2D = Application.getTexture(textureID);
-            return MathHelper.vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
+            return CTRMathHelper.vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
         public static Vector getQuadOffset(int textureID, int quad)
@@ -35,13 +35,13 @@ namespace CutTheRope.iframework.visual
         public static Vector getQuadCenter(int textureID, int quad)
         {
             Texture2D texture2D = Application.getTexture(textureID);
-            return MathHelper.vectAdd(texture2D.quadOffsets[quad], MathHelper.vect(MathHelper.ceil((double)texture2D.quadRects[quad].w / 2.0), MathHelper.ceil((double)texture2D.quadRects[quad].h / 2.0)));
+            return CTRMathHelper.vectAdd(texture2D.quadOffsets[quad], CTRMathHelper.vect(CTRMathHelper.ceil((double)texture2D.quadRects[quad].w / 2.0), CTRMathHelper.ceil((double)texture2D.quadRects[quad].h / 2.0)));
         }
 
         public static Vector getRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)
         {
             Vector quadOffset = Image.getQuadOffset(textureID, quadToCountFrom);
-            return MathHelper.vectSub(Image.getQuadOffset(textureID, quad), quadOffset);
+            return CTRMathHelper.vectSub(Image.getQuadOffset(textureID, quad), quadOffset);
         }
 
         public static void setElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
@@ -121,7 +121,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void doRestoreCutTransparency()
         {
-            if (this.texture.preCutSize.x != MathHelper.vectUndefined.x)
+            if (this.texture.preCutSize.x != CTRMathHelper.vectUndefined.x)
             {
                 this.restoreCutTransparency = true;
                 this.width = (int)this.texture.preCutSize.x;

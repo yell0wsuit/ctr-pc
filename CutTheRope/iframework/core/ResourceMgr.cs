@@ -166,7 +166,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void setTextureInfo(Texture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
-            t.preCutSize = MathHelper.vectUndefined;
+            t.preCutSize = CTRMathHelper.vectUndefined;
             XMLNode xMLNode = i.findChildWithTagNameRecursively("quads", false);
             if (xMLNode != null)
             {
@@ -201,7 +201,7 @@ namespace CutTheRope.iframework.core
             XMLNode xMLNode4 = i.findChildWithTagNameRecursively(NSObject.NSS("preCutHeight"), false);
             if (xMLNode3 != null && xMLNode4 != null)
             {
-                t.preCutSize = MathHelper.vect((float)xMLNode3.data.intValue(), (float)xMLNode4.data.intValue());
+                t.preCutSize = CTRMathHelper.vect((float)xMLNode3.data.intValue(), (float)xMLNode4.data.intValue());
                 if (isWvga)
                 {
                     t.preCutSize.x = t.preCutSize.x / 1.5f;
@@ -226,7 +226,7 @@ namespace CutTheRope.iframework.core
                 Rectangle rect = FrameworkTypes.MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
                 if ((float)num2 < rect.h + rect.y)
                 {
-                    num2 = (int)MathHelper.ceil((double)(rect.h + rect.y));
+                    num2 = (int)CTRMathHelper.ceil((double)(rect.h + rect.y));
                 }
                 rect.x /= scaleX;
                 rect.y /= scaleY;

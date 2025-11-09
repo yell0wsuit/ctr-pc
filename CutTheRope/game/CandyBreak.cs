@@ -57,7 +57,7 @@ namespace CutTheRope.game
         public override void initParticle(ref Particle particle)
         {
             base.initParticle(ref particle);
-            int num = MathHelper.RND_RANGE(3, 7);
+            int num = CTRMathHelper.RND_RANGE(3, 7);
             Quad2D qt = this.imageGrid.texture.quads[num];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             this.drawer.setTextureQuadatVertexQuadatIndex(qt, qv, this.particleCount);

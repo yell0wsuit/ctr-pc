@@ -101,7 +101,7 @@ namespace CutTheRope.iframework.core
             int num2 = this.viewTransition;
             if (num2 - 4 <= 1)
             {
-                float num = CutTheRope.iframework.helpers.MathHelper.MIN(1.0, (double)((this.transitionDelay - (this.transitionTime - this.lastTime)) / this.transitionDelay));
+                float num = CTRMathHelper.MIN(1.0, (double)((this.transitionDelay - (this.transitionTime - this.lastTime)) / this.transitionDelay));
                 if ((double)num < 0.5)
                 {
                     if (this.prevScreenImage != null)

@@ -57,7 +57,7 @@ namespace CutTheRope.game
                 this.addChild(this.rotateButton);
                 Vector quadOffset = Image.getQuadOffset(97, num);
                 Vector quadSize = Image.getQuadSize(97, num);
-                Vector vector = MathHelper.vectSub(MathHelper.vect(image.texture.preCutSize.x, image.texture.preCutSize.y), MathHelper.vectAdd(quadSize, quadOffset));
+                Vector vector = CTRMathHelper.vectSub(CTRMathHelper.vect(image.texture.preCutSize.x, image.texture.preCutSize.y), CTRMathHelper.vectAdd(quadSize, quadOffset));
                 this.rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + quadSize.x / 2f, 0f - vector.x + quadSize.x / 2f, 0f - quadOffset.y + quadSize.y / 2f, 0f - vector.y + quadSize.y / 2f);
             }
             this.passColorToChilds = false;
@@ -87,11 +87,11 @@ namespace CutTheRope.game
             this.b1.x = this.t1.x;
             this.b2.x = this.t2.x;
             this.b1.y = (this.b2.y = this.y + 5f);
-            this.angle = (double)MathHelper.DEGREES_TO_RADIANS(this.rotation);
-            this.t1 = MathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
-            this.t2 = MathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);
-            this.b1 = MathHelper.vectRotateAround(this.b1, this.angle, this.x, this.y);
-            this.b2 = MathHelper.vectRotateAround(this.b2, this.angle, this.x, this.y);
+            this.angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(this.rotation);
+            this.t1 = CTRMathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
+            this.t2 = CTRMathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);
+            this.b1 = CTRMathHelper.vectRotateAround(this.b1, this.angle, this.x, this.y);
+            this.b2 = CTRMathHelper.vectRotateAround(this.b2, this.angle, this.x, this.y);
         }
 
         public virtual void turnElectroOff()

@@ -17,13 +17,13 @@ namespace CutTheRope.game
     {
         private static void drawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
         {
-            Vector vector5 = CutTheRope.iframework.helpers.MathHelper.vectNormalize(CutTheRope.iframework.helpers.MathHelper.vectSub(end, start));
-            Vector v3 = CutTheRope.iframework.helpers.MathHelper.vectRperp(vector5);
-            Vector v4 = CutTheRope.iframework.helpers.MathHelper.vectPerp(vector5);
-            Vector vector = (CutTheRope.iframework.helpers.MathHelper.vectEqual(frs, CutTheRope.iframework.helpers.MathHelper.vectUndefined) ? CutTheRope.iframework.helpers.MathHelper.vectAdd(start, CutTheRope.iframework.helpers.MathHelper.vectMult(v3, startSize)) : frs);
-            Vector vector2 = (CutTheRope.iframework.helpers.MathHelper.vectEqual(fls, CutTheRope.iframework.helpers.MathHelper.vectUndefined) ? CutTheRope.iframework.helpers.MathHelper.vectAdd(start, CutTheRope.iframework.helpers.MathHelper.vectMult(v4, startSize)) : fls);
-            Vector vector3 = CutTheRope.iframework.helpers.MathHelper.vectAdd(end, CutTheRope.iframework.helpers.MathHelper.vectMult(v3, endSize));
-            Vector vector4 = CutTheRope.iframework.helpers.MathHelper.vectAdd(end, CutTheRope.iframework.helpers.MathHelper.vectMult(v4, endSize));
+            Vector vector5 = CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(end, start));
+            Vector v3 = CTRMathHelper.vectRperp(vector5);
+            Vector v4 = CTRMathHelper.vectPerp(vector5);
+            Vector vector = (CTRMathHelper.vectEqual(frs, CTRMathHelper.vectUndefined) ? CTRMathHelper.vectAdd(start, CTRMathHelper.vectMult(v3, startSize)) : frs);
+            Vector vector2 = (CTRMathHelper.vectEqual(fls, CTRMathHelper.vectUndefined) ? CTRMathHelper.vectAdd(start, CTRMathHelper.vectMult(v4, startSize)) : fls);
+            Vector vector3 = CTRMathHelper.vectAdd(end, CTRMathHelper.vectMult(v3, endSize));
+            Vector vector4 = CTRMathHelper.vectAdd(end, CTRMathHelper.vectMult(v4, endSize));
             GLDrawer.drawSolidPolygonWOBorder([vector2.x, vector2.y, vector.x, vector.y, vector3.x, vector3.y, vector4.x, vector4.y], 4, c);
             le = vector4;
             re = vector3;
@@ -503,7 +503,7 @@ namespace CutTheRope.game
                     }
                     else if (item3.Name == "bubble")
                     {
-                        int q2 = CutTheRope.iframework.helpers.MathHelper.RND_RANGE(1, 3);
+                        int q2 = CTRMathHelper.RND_RANGE(1, 3);
                         Bubble bubble = Bubble.Bubble_createWithResIDQuad(75, q2);
                         bubble.doRestoreCutTransparency();
                         bubble.bb = FrameworkTypes.MakeRectangle(48.0, 48.0, 152.0, 152.0);
@@ -615,10 +615,10 @@ namespace CutTheRope.game
                         rotatedCircle.x = num9;
                         rotatedCircle.y = num10;
                         rotatedCircle.rotation = d;
-                        rotatedCircle.inithanlde1 = (rotatedCircle.handle1 = CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle.x - num11 * num, rotatedCircle.y));
-                        rotatedCircle.inithanlde2 = (rotatedCircle.handle2 = CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle.x + num11 * num, rotatedCircle.y));
-                        rotatedCircle.handle1 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(rotatedCircle.handle1, (double)CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(rotatedCircle.handle2, (double)CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.inithanlde1 = (rotatedCircle.handle1 = CTRMathHelper.vect(rotatedCircle.x - num11 * num, rotatedCircle.y));
+                        rotatedCircle.inithanlde2 = (rotatedCircle.handle2 = CTRMathHelper.vect(rotatedCircle.x + num11 * num, rotatedCircle.y));
+                        rotatedCircle.handle1 = CTRMathHelper.vectRotateAround(rotatedCircle.handle1, (double)CTRMathHelper.DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle2 = CTRMathHelper.vectRotateAround(rotatedCircle.handle2, (double)CTRMathHelper.DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.setSize(num11);
                         rotatedCircle.setHasOneHandle(hasOneHandle);
                         this.rotatedCircles.addObject(rotatedCircle);
@@ -778,7 +778,7 @@ namespace CutTheRope.game
                         this.blinkTimer = 3;
                         this.blink.doRestoreCutTransparency();
                         this.target.addChild(this.blink);
-                        this.idlesTimer = CutTheRope.iframework.helpers.MathHelper.RND_RANGE(5, 20);
+                        this.idlesTimer = CTRMathHelper.RND_RANGE(5, 20);
                     }
                 }
             }
@@ -818,7 +818,7 @@ namespace CutTheRope.game
             this.time = 0f;
             this.score = 0;
             this.gravityNormal = true;
-            MaterialPoint.globalGravity = CutTheRope.iframework.helpers.MathHelper.vect(0f, 784f);
+            MaterialPoint.globalGravity = CTRMathHelper.vect(0f, 784f);
             this.dimTime = 0f;
             this.ropesCutAtOnce = 0;
             this.ropeAtOnceTimer = 0f;
@@ -848,7 +848,7 @@ namespace CutTheRope.game
             for (int m = 0; m < 5; m++)
             {
                 this.dragging[m] = false;
-                this.startPos[m] = (this.prevStartPos[m] = CutTheRope.iframework.helpers.MathHelper.vectZero);
+                this.startPos[m] = (this.prevStartPos[m] = CTRMathHelper.vectZero);
             }
             if (this.clickToCut)
             {
@@ -895,10 +895,10 @@ namespace CutTheRope.game
                 }
                 double num6 = (double)(constraintedPoint.pos.x - FrameworkTypes.SCREEN_WIDTH / 2f);
                 float num3 = constraintedPoint.pos.y - FrameworkTypes.SCREEN_HEIGHT / 2f;
-                float num4 = CutTheRope.iframework.helpers.MathHelper.FIT_TO_BOUNDARIES(num6, 0.0, (double)(this.mapWidth - FrameworkTypes.SCREEN_WIDTH));
-                float num5 = CutTheRope.iframework.helpers.MathHelper.FIT_TO_BOUNDARIES((double)num3, 0.0, (double)(this.mapHeight - FrameworkTypes.SCREEN_HEIGHT));
+                float num4 = CTRMathHelper.FIT_TO_BOUNDARIES(num6, 0.0, (double)(this.mapWidth - FrameworkTypes.SCREEN_WIDTH));
+                float num5 = CTRMathHelper.FIT_TO_BOUNDARIES((double)num3, 0.0, (double)(this.mapHeight - FrameworkTypes.SCREEN_HEIGHT));
                 this.camera.moveToXYImmediate(num, num2, true);
-                this.initialCameraToStarDistance = CutTheRope.iframework.helpers.MathHelper.vectDistance(this.camera.pos, CutTheRope.iframework.helpers.MathHelper.vect(num4, num5));
+                this.initialCameraToStarDistance = CTRMathHelper.vectDistance(this.camera.pos, CTRMathHelper.vect(num4, num5));
                 return;
             }
             this.ignoreTouches = false;
@@ -926,7 +926,7 @@ namespace CutTheRope.game
             this.idlesTimer--;
             if (this.idlesTimer == 0)
             {
-                if (CutTheRope.iframework.helpers.MathHelper.RND_RANGE(0, 1) == 1)
+                if (CTRMathHelper.RND_RANGE(0, 1) == 1)
                 {
                     this.target.playTimeline(1);
                 }
@@ -934,7 +934,7 @@ namespace CutTheRope.game
                 {
                     this.target.playTimeline(2);
                 }
-                this.idlesTimer = CutTheRope.iframework.helpers.MathHelper.RND_RANGE(5, 20);
+                this.idlesTimer = CTRMathHelper.RND_RANGE(5, 20);
             }
         }
 
@@ -1012,8 +1012,8 @@ namespace CutTheRope.game
             ConstraintedPoint constraintedPoint4 = ((this.twoParts != 2) ? this.starL : this.star);
             float num = constraintedPoint4.pos.x - FrameworkTypes.SCREEN_WIDTH / 2f;
             double num19 = (double)(constraintedPoint4.pos.y - FrameworkTypes.SCREEN_HEIGHT / 2f);
-            float num2 = CutTheRope.iframework.helpers.MathHelper.FIT_TO_BOUNDARIES((double)num, 0.0, (double)(this.mapWidth - FrameworkTypes.SCREEN_WIDTH));
-            float num3 = CutTheRope.iframework.helpers.MathHelper.FIT_TO_BOUNDARIES(num19, 0.0, (double)(this.mapHeight - FrameworkTypes.SCREEN_HEIGHT));
+            float num2 = CTRMathHelper.FIT_TO_BOUNDARIES((double)num, 0.0, (double)(this.mapWidth - FrameworkTypes.SCREEN_WIDTH));
+            float num3 = CTRMathHelper.FIT_TO_BOUNDARIES(num19, 0.0, (double)(this.mapHeight - FrameworkTypes.SCREEN_HEIGHT));
             this.camera.moveToXYImmediate(num2, num3, false);
             if (!this.freezeCamera || this.camera.type != CAMERA_TYPE.CAMERA_SPEED_DELAY)
             {
@@ -1026,7 +1026,7 @@ namespace CutTheRope.game
                 float num6 = 400f;
                 float a = 1000f;
                 float a2 = 300f;
-                float num7 = CutTheRope.iframework.helpers.MathHelper.vectDistance(this.camera.pos, CutTheRope.iframework.helpers.MathHelper.vect(num2, num3));
+                float num7 = CTRMathHelper.vectDistance(this.camera.pos, CTRMathHelper.vect(num2, num3));
                 if (num7 < num4)
                 {
                     this.ignoreTouches = false;
@@ -1041,12 +1041,12 @@ namespace CutTheRope.game
                 else if ((double)num7 > (double)this.initialCameraToStarDistance / 2.0)
                 {
                     this.camera.speed += delta * num5;
-                    this.camera.speed = CutTheRope.iframework.helpers.MathHelper.MIN(a, this.camera.speed);
+                    this.camera.speed = CTRMathHelper.MIN(a, this.camera.speed);
                 }
                 else
                 {
                     this.camera.speed -= delta * num6;
-                    this.camera.speed = CutTheRope.iframework.helpers.MathHelper.MAX(a2, this.camera.speed);
+                    this.camera.speed = CTRMathHelper.MAX(a2, this.camera.speed);
                 }
                 if ((double)Math.Abs(this.camera.pos.x - num2) < 1.0 && (double)Math.Abs(this.camera.pos.y - num3) < 1.0)
                 {
@@ -1074,7 +1074,7 @@ namespace CutTheRope.game
                     {
                         if (grab.rope != null)
                         {
-                            grab.rope.bungeeAnchor.pos = CutTheRope.iframework.helpers.MathHelper.vect(grab.x, grab.y);
+                            grab.rope.bungeeAnchor.pos = CTRMathHelper.vect(grab.x, grab.y);
                             grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
                         }
                         if (grab.radius != -1f)
@@ -1112,7 +1112,7 @@ namespace CutTheRope.game
                     {
                         if (this.twoParts != 2)
                         {
-                            if (!this.noCandyL && CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(grab.x, grab.y), this.starL.pos) <= grab.radius + 42f)
+                            if (!this.noCandyL && CTRMathHelper.vectDistance(CTRMathHelper.vect(grab.x, grab.y), this.starL.pos) <= grab.radius + 42f)
                             {
                                 Bungee bungee = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, this.starL, this.starL.pos.x, this.starL.pos.y, grab.radius + 42f);
                                 bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
@@ -1124,7 +1124,7 @@ namespace CutTheRope.game
                                     CTRSoundMgr._playSound(44);
                                 }
                             }
-                            if (!this.noCandyR && grab.rope == null && CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(grab.x, grab.y), this.starR.pos) <= grab.radius + 42f)
+                            if (!this.noCandyR && grab.rope == null && CTRMathHelper.vectDistance(CTRMathHelper.vect(grab.x, grab.y), this.starR.pos) <= grab.radius + 42f)
                             {
                                 Bungee bungee2 = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, this.starR, this.starR.pos.x, this.starR.pos.y, grab.radius + 42f);
                                 bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
@@ -1137,7 +1137,7 @@ namespace CutTheRope.game
                                 }
                             }
                         }
-                        else if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(grab.x, grab.y), this.star.pos) <= grab.radius + 42f)
+                        else if (CTRMathHelper.vectDistance(CTRMathHelper.vect(grab.x, grab.y), this.star.pos) <= grab.radius + 42f)
                         {
                             Bungee bungee3 = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, this.star, this.star.pos.x, this.star.pos.y, grab.radius + 42f);
                             bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
@@ -1156,7 +1156,7 @@ namespace CutTheRope.game
                     }
                     MaterialPoint bungeeAnchor = rope.bungeeAnchor;
                     ConstraintedPoint constraintedPoint2 = rope.parts[rope.parts.Count - 1];
-                    Vector v = CutTheRope.iframework.helpers.MathHelper.vectSub(bungeeAnchor.pos, constraintedPoint2.pos);
+                    Vector v = CTRMathHelper.vectSub(bungeeAnchor.pos, constraintedPoint2.pos);
                     bool flag4 = false;
                     if (this.twoParts != 2)
                     {
@@ -1175,7 +1175,7 @@ namespace CutTheRope.game
                     }
                     if (rope.relaxed != 0 && rope.cut == -1 && flag4)
                     {
-                        float num9 = CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v));
+                        float num9 = CTRMathHelper.RADIANS_TO_DEGREES(CTRMathHelper.vectAngleNormalized(v));
                         if (this.twoParts != 2)
                         {
                             GameObject gameObject = ((constraintedPoint2 == this.starL) ? this.candyL : this.candyR);
@@ -1215,18 +1215,18 @@ namespace CutTheRope.game
                 {
                     if (!flag2 && !this.noCandyL)
                     {
-                        this.candyL.rotation += CutTheRope.iframework.helpers.MathHelper.MIN(5.0, (double)this.lastCandyRotateDeltaL);
+                        this.candyL.rotation += CTRMathHelper.MIN(5.0, (double)this.lastCandyRotateDeltaL);
                         this.lastCandyRotateDeltaL *= 0.98f;
                     }
                     if (!flag3 && !this.noCandyR)
                     {
-                        this.candyR.rotation += CutTheRope.iframework.helpers.MathHelper.MIN(5.0, (double)this.lastCandyRotateDeltaR);
+                        this.candyR.rotation += CTRMathHelper.MIN(5.0, (double)this.lastCandyRotateDeltaR);
                         this.lastCandyRotateDeltaR *= 0.98f;
                     }
                 }
                 else if (!flag && !this.noCandy)
                 {
-                    this.candyMain.rotation += CutTheRope.iframework.helpers.MathHelper.MIN(5.0, (double)this.lastCandyRotateDelta);
+                    this.candyMain.rotation += CTRMathHelper.MIN(5.0, (double)this.lastCandyRotateDelta);
                     this.lastCandyRotateDelta *= 0.98f;
                 }
             }
@@ -1280,10 +1280,10 @@ namespace CutTheRope.game
                         this.candy.x = this.star.pos.x;
                         this.candy.y = this.star.pos.y;
                         BaseElement.calculateTopLeft(this.candy);
-                        Vector vector = CutTheRope.iframework.helpers.MathHelper.vectSub(this.starL.pos, this.starL.prevPos);
-                        Vector vector2 = CutTheRope.iframework.helpers.MathHelper.vectSub(this.starR.pos, this.starR.prevPos);
-                        Vector v2 = CutTheRope.iframework.helpers.MathHelper.vect((vector.x + vector2.x) / 2f, (vector.y + vector2.y) / 2f);
-                        this.star.prevPos = CutTheRope.iframework.helpers.MathHelper.vectSub(this.star.pos, v2);
+                        Vector vector = CTRMathHelper.vectSub(this.starL.pos, this.starL.prevPos);
+                        Vector vector2 = CTRMathHelper.vectSub(this.starR.pos, this.starR.prevPos);
+                        Vector v2 = CTRMathHelper.vect((vector.x + vector2.x) / 2f, (vector.y + vector2.y) / 2f);
+                        this.star.prevPos = CTRMathHelper.vectSub(this.star.pos, v2);
                         int num10 = this.bungees.count();
                         for (int m = 0; m < num10; m++)
                         {
@@ -1318,7 +1318,7 @@ namespace CutTheRope.game
                 if (!this.noCandyL && !this.noCandyR && GameObject.objectsIntersect(this.candyL, this.candyR) && this.twoParts == 0)
                 {
                     this.twoParts = 1;
-                    this.partsDist = CutTheRope.iframework.helpers.MathHelper.vectDistance(this.starL.pos, this.starR.pos);
+                    this.partsDist = CTRMathHelper.vectDistance(this.starL.pos, this.starR.pos);
                     this.starL.addConstraintwithRestLengthofType(this.starR, this.partsDist, Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
                     this.starR.addConstraintwithRestLengthofType(this.starL, this.partsDist, Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
                 }
@@ -1371,7 +1371,7 @@ namespace CutTheRope.game
                 float num12 = 85f;
                 if (this.twoParts != 2)
                 {
-                    if (!this.noCandyL && !bubble3.popped && CutTheRope.iframework.helpers.MathHelper.pointInRect(this.candyL.x, this.candyL.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                    if (!this.noCandyL && !bubble3.popped && CTRMathHelper.pointInRect(this.candyL.x, this.candyL.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
                     {
                         if (this.candyBubbleL != null)
                         {
@@ -1384,7 +1384,7 @@ namespace CutTheRope.game
                         bubble3.removeChildWithID(0);
                         break;
                     }
-                    if (!this.noCandyR && !bubble3.popped && CutTheRope.iframework.helpers.MathHelper.pointInRect(this.candyR.x, this.candyR.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                    if (!this.noCandyR && !bubble3.popped && CTRMathHelper.pointInRect(this.candyR.x, this.candyR.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
                     {
                         if (this.candyBubbleR != null)
                         {
@@ -1398,7 +1398,7 @@ namespace CutTheRope.game
                         break;
                     }
                 }
-                else if (!this.noCandy && !bubble3.popped && CutTheRope.iframework.helpers.MathHelper.pointInRect(this.candy.x, this.candy.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                else if (!this.noCandy && !bubble3.popped && CTRMathHelper.pointInRect(this.candy.x, this.candy.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
                 {
                     if (this.candyBubble != null)
                     {
@@ -1416,7 +1416,7 @@ namespace CutTheRope.game
                     foreach (object obj4 in this.rotatedCircles)
                     {
                         RotatedCircle rotatedCircle5 = (RotatedCircle)obj4;
-                        if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(bubble3.x, bubble3.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle5.x, rotatedCircle5.y)) < rotatedCircle5.sizeInPixels)
+                        if (CTRMathHelper.vectDistance(CTRMathHelper.vect(bubble3.x, bubble3.y), CTRMathHelper.vect(rotatedCircle5.x, rotatedCircle5.y)) < rotatedCircle5.sizeInPixels)
                         {
                             bubble3.withoutShadow = true;
                         }
@@ -1447,7 +1447,7 @@ namespace CutTheRope.game
                 foreach (object obj9 in this.bungees)
                 {
                     Grab bungee4 = (Grab)obj9;
-                    if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(bungee4.x, bungee4.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + FrameworkTypes.RTPD(5.0) * 3f)
+                    if (CTRMathHelper.vectDistance(CTRMathHelper.vect(bungee4.x, bungee4.y), CTRMathHelper.vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + FrameworkTypes.RTPD(5.0) * 3f)
                     {
                         if (rotatedCircle7.containedObjects.getObjectIndex(bungee4) == -1)
                         {
@@ -1462,7 +1462,7 @@ namespace CutTheRope.game
                 foreach (object obj10 in this.bubbles)
                 {
                     Bubble bubble4 = (Bubble)obj10;
-                    if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(bubble4.x, bubble4.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + FrameworkTypes.RTPD(10.0) * 3f)
+                    if (CTRMathHelper.vectDistance(CTRMathHelper.vect(bubble4.x, bubble4.y), CTRMathHelper.vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + FrameworkTypes.RTPD(10.0) * 3f)
                     {
                         if (rotatedCircle7.containedObjects.getObjectIndex(bubble4) == -1)
                         {
@@ -1496,10 +1496,10 @@ namespace CutTheRope.game
                 float num14 = sock3.rotation;
                 sock3.rotation = 0f;
                 sock3.updateRotation();
-                ref Vector ptr = CutTheRope.iframework.helpers.MathHelper.vectRotate(this.star.posDelta, (double)CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(0f - num14));
+                ref Vector ptr = CTRMathHelper.vectRotate(this.star.posDelta, (double)CTRMathHelper.DEGREES_TO_RADIANS(0f - num14));
                 sock3.rotation = num14;
                 sock3.updateRotation();
-                if ((double)ptr.y >= 0.0 && (CutTheRope.iframework.helpers.MathHelper.lineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, this.star.pos.x - num13, this.star.pos.y - num13, num13 * 2f, num13 * 2f) || CutTheRope.iframework.helpers.MathHelper.lineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, this.star.pos.x - num13, this.star.pos.y - num13, num13 * 2f, num13 * 2f)))
+                if ((double)ptr.y >= 0.0 && (CTRMathHelper.lineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, this.star.pos.x - num13, this.star.pos.y - num13, num13 * 2f, num13 * 2f) || CTRMathHelper.lineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, this.star.pos.x - num13, this.star.pos.y - num13, num13 * 2f, num13 * 2f)))
                 {
                     if (sock3.state != Sock.SOCK_IDLE)
                     {
@@ -1516,7 +1516,7 @@ namespace CutTheRope.game
                                 sock3.state = Sock.SOCK_RECEIVING;
                                 sock4.state = Sock.SOCK_THROWING;
                                 this.releaseAllRopes(false);
-                                this.savedSockSpeed = 0.9f * CutTheRope.iframework.helpers.MathHelper.vectLength(this.star.v);
+                                this.savedSockSpeed = 0.9f * CTRMathHelper.vectLength(this.star.v);
                                 this.savedSockSpeed *= 1.4f;
                                 this.targetSock = sock4;
                                 sock3.light.playTimeline(0);
@@ -1538,7 +1538,7 @@ namespace CutTheRope.game
             {
                 Razor razor = (Razor)obj13;
                 razor.update(delta);
-                this.cutWithRazorOrLine1Line2Immediate(razor, CutTheRope.iframework.helpers.MathHelper.vectZero, CutTheRope.iframework.helpers.MathHelper.vectZero, false);
+                this.cutWithRazorOrLine1Line2Immediate(razor, CTRMathHelper.vectZero, CTRMathHelper.vectZero, false);
             }
             foreach (object obj14 in this.spikes)
             {
@@ -1551,19 +1551,19 @@ namespace CutTheRope.game
                     bool flag6;
                     if (this.twoParts != 2)
                     {
-                        flag6 = (CutTheRope.iframework.helpers.MathHelper.lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, this.starL.pos.x - num15, this.starL.pos.y - num15, num15 * 2f, num15 * 2f) || CutTheRope.iframework.helpers.MathHelper.lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, this.starL.pos.x - num15, this.starL.pos.y - num15, num15 * 2f, num15 * 2f)) && !this.noCandyL;
+                        flag6 = (CTRMathHelper.lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, this.starL.pos.x - num15, this.starL.pos.y - num15, num15 * 2f, num15 * 2f) || CTRMathHelper.lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, this.starL.pos.x - num15, this.starL.pos.y - num15, num15 * 2f, num15 * 2f)) && !this.noCandyL;
                         if (flag6)
                         {
                             flag5 = true;
                         }
                         else
                         {
-                            flag6 = (CutTheRope.iframework.helpers.MathHelper.lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, this.starR.pos.x - num15, this.starR.pos.y - num15, num15 * 2f, num15 * 2f) || CutTheRope.iframework.helpers.MathHelper.lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, this.starR.pos.x - num15, this.starR.pos.y - num15, num15 * 2f, num15 * 2f)) && !this.noCandyR;
+                            flag6 = (CTRMathHelper.lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, this.starR.pos.x - num15, this.starR.pos.y - num15, num15 * 2f, num15 * 2f) || CTRMathHelper.lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, this.starR.pos.x - num15, this.starR.pos.y - num15, num15 * 2f, num15 * 2f)) && !this.noCandyR;
                         }
                     }
                     else
                     {
-                        flag6 = (CutTheRope.iframework.helpers.MathHelper.lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, this.star.pos.x - num15, this.star.pos.y - num15, num15 * 2f, num15 * 2f) || CutTheRope.iframework.helpers.MathHelper.lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, this.star.pos.x - num15, this.star.pos.y - num15, num15 * 2f, num15 * 2f)) && !this.noCandy;
+                        flag6 = (CTRMathHelper.lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, this.star.pos.x - num15, this.star.pos.y - num15, num15 * 2f, num15 * 2f) || CTRMathHelper.lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, this.star.pos.x - num15, this.star.pos.y - num15, num15 * 2f, num15 * 2f)) && !this.noCandy;
                     }
                     if (flag6)
                     {
@@ -1636,19 +1636,19 @@ namespace CutTheRope.game
                 bool flag8;
                 if (this.twoParts != 2)
                 {
-                    flag8 = (CutTheRope.iframework.helpers.MathHelper.lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, this.starL.pos.x - num16, this.starL.pos.y - num16, num16 * 2f, num16 * 2f) || CutTheRope.iframework.helpers.MathHelper.lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, this.starL.pos.x - num16, this.starL.pos.y - num16, num16 * 2f, num16 * 2f)) && !this.noCandyL;
+                    flag8 = (CTRMathHelper.lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, this.starL.pos.x - num16, this.starL.pos.y - num16, num16 * 2f, num16 * 2f) || CTRMathHelper.lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, this.starL.pos.x - num16, this.starL.pos.y - num16, num16 * 2f, num16 * 2f)) && !this.noCandyL;
                     if (flag8)
                     {
                         flag7 = true;
                     }
                     else
                     {
-                        flag8 = (CutTheRope.iframework.helpers.MathHelper.lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, this.starR.pos.x - num16, this.starR.pos.y - num16, num16 * 2f, num16 * 2f) || CutTheRope.iframework.helpers.MathHelper.lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, this.starR.pos.x - num16, this.starR.pos.y - num16, num16 * 2f, num16 * 2f)) && !this.noCandyR;
+                        flag8 = (CTRMathHelper.lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, this.starR.pos.x - num16, this.starR.pos.y - num16, num16 * 2f, num16 * 2f) || CTRMathHelper.lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, this.starR.pos.x - num16, this.starR.pos.y - num16, num16 * 2f, num16 * 2f)) && !this.noCandyR;
                     }
                 }
                 else
                 {
-                    flag8 = (CutTheRope.iframework.helpers.MathHelper.lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, this.star.pos.x - num16, this.star.pos.y - num16, num16 * 2f, num16 * 2f) || CutTheRope.iframework.helpers.MathHelper.lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, this.star.pos.x - num16, this.star.pos.y - num16, num16 * 2f, num16 * 2f)) && !this.noCandy;
+                    flag8 = (CTRMathHelper.lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, this.star.pos.x - num16, this.star.pos.y - num16, num16 * 2f, num16 * 2f) || CTRMathHelper.lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, this.star.pos.x - num16, this.star.pos.y - num16, num16 * 2f, num16 * 2f)) && !this.noCandy;
                 }
                 if (flag8)
                 {
@@ -1681,22 +1681,22 @@ namespace CutTheRope.game
                 {
                     if (this.gravityButton != null && !this.gravityNormal)
                     {
-                        this.starL.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 - num17), delta);
+                        this.starL.applyImpulseDelta(CTRMathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 - num17), delta);
                     }
                     else
                     {
-                        this.starL.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 + num17), delta);
+                        this.starL.applyImpulseDelta(CTRMathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 + num17), delta);
                     }
                 }
                 if (this.candyBubbleR != null)
                 {
                     if (this.gravityButton != null && !this.gravityNormal)
                     {
-                        this.starR.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 - num17), delta);
+                        this.starR.applyImpulseDelta(CTRMathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 - num17), delta);
                     }
                     else
                     {
-                        this.starR.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 + num17), delta);
+                        this.starR.applyImpulseDelta(CTRMathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 + num17), delta);
                     }
                 }
             }
@@ -1706,13 +1706,13 @@ namespace CutTheRope.game
                 {
                     if (this.gravityButton != null && !this.gravityNormal)
                     {
-                        this.starL.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 - num17), delta);
-                        this.starR.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 - num17), delta);
+                        this.starL.applyImpulseDelta(CTRMathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 - num17), delta);
+                        this.starR.applyImpulseDelta(CTRMathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 - num17), delta);
                     }
                     else
                     {
-                        this.starL.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 + num17), delta);
-                        this.starR.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 + num17), delta);
+                        this.starL.applyImpulseDelta(CTRMathHelper.vect((0f - this.starL.v.x) / num18, (0f - this.starL.v.y) / num18 + num17), delta);
+                        this.starR.applyImpulseDelta(CTRMathHelper.vect((0f - this.starR.v.x) / num18, (0f - this.starR.v.y) / num18 + num17), delta);
                     }
                 }
             }
@@ -1720,18 +1720,18 @@ namespace CutTheRope.game
             {
                 if (this.gravityButton != null && !this.gravityNormal)
                 {
-                    this.star.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.star.v.x) / num18, (0f - this.star.v.y) / num18 - num17), delta);
+                    this.star.applyImpulseDelta(CTRMathHelper.vect((0f - this.star.v.x) / num18, (0f - this.star.v.y) / num18 - num17), delta);
                 }
                 else
                 {
-                    this.star.applyImpulseDelta(CutTheRope.iframework.helpers.MathHelper.vect((0f - this.star.v.x) / num18, (0f - this.star.v.y) / num18 + num17), delta);
+                    this.star.applyImpulseDelta(CTRMathHelper.vect((0f - this.star.v.x) / num18, (0f - this.star.v.y) / num18 + num17), delta);
                 }
             }
             if (!this.noCandy)
             {
                 if (!this.mouthOpen)
                 {
-                    if (CutTheRope.iframework.helpers.MathHelper.vectDistance(this.star.pos, CutTheRope.iframework.helpers.MathHelper.vect(this.target.x, this.target.y)) < 200f)
+                    if (CTRMathHelper.vectDistance(this.star.pos, CTRMathHelper.vect(this.target.x, this.target.y)) < 200f)
                     {
                         this.mouthOpen = true;
                         this.target.playTimeline(7);
@@ -1744,7 +1744,7 @@ namespace CutTheRope.game
                     Mover.moveVariableToTarget(ref this.mouthCloseTimer, 0.0, 1.0, (double)delta);
                     if ((double)this.mouthCloseTimer <= 0.0)
                     {
-                        if (CutTheRope.iframework.helpers.MathHelper.vectDistance(this.star.pos, CutTheRope.iframework.helpers.MathHelper.vect(this.target.x, this.target.y)) > 200f)
+                        if (CTRMathHelper.vectDistance(this.star.pos, CTRMathHelper.vect(this.target.x, this.target.y)) > 200f)
                         {
                             this.mouthOpen = false;
                             this.target.playTimeline(8);
@@ -1827,7 +1827,7 @@ namespace CutTheRope.game
             {
                 this.resetBungeeHighlight();
                 bool flag12 = false;
-                Vector p = CutTheRope.iframework.helpers.MathHelper.vectAdd(this.slastTouch, this.camera.pos);
+                Vector p = CTRMathHelper.vectAdd(this.slastTouch, this.camera.pos);
                 if (this.gravityButton != null && ((Button)this.gravityButton.getChild(this.gravityButton.on() ? 1 : 0)).isInTouchZoneXYforTouchDown(p.x, p.y, true))
                 {
                     flag12 = true;
@@ -1837,17 +1837,17 @@ namespace CutTheRope.game
                     foreach (object obj18 in this.bubbles)
                     {
                         Bubble bubble5 = (Bubble)obj18;
-                        if (this.candyBubble != null && CutTheRope.iframework.helpers.MathHelper.pointInRect(p.x, p.y, this.star.pos.x - 60f, this.star.pos.y - 60f, 120f, 120f))
+                        if (this.candyBubble != null && CTRMathHelper.pointInRect(p.x, p.y, this.star.pos.x - 60f, this.star.pos.y - 60f, 120f, 120f))
                         {
                             flag12 = true;
                             break;
                         }
-                        if (this.candyBubbleL != null && CutTheRope.iframework.helpers.MathHelper.pointInRect(p.x, p.y, this.starL.pos.x - 60f, this.starL.pos.y - 60f, 120f, 120f))
+                        if (this.candyBubbleL != null && CTRMathHelper.pointInRect(p.x, p.y, this.starL.pos.x - 60f, this.starL.pos.y - 60f, 120f, 120f))
                         {
                             flag12 = true;
                             break;
                         }
-                        if (this.candyBubbleR != null && CutTheRope.iframework.helpers.MathHelper.pointInRect(p.x, p.y, this.starR.pos.x - 60f, this.starR.pos.y - 60f, 120f, 120f))
+                        if (this.candyBubbleR != null && CTRMathHelper.pointInRect(p.x, p.y, this.starR.pos.x - 60f, this.starR.pos.y - 60f, 120f, 120f))
                         {
                             flag12 = true;
                             break;
@@ -1879,7 +1879,7 @@ namespace CutTheRope.game
                         flag12 = true;
                         break;
                     }
-                    if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(p.x, p.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle8.handle1.x, rotatedCircle8.handle1.y)) <= 90f || CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(p.x, p.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle8.handle2.x, rotatedCircle8.handle2.y)) <= 90f)
+                    if (CTRMathHelper.vectDistance(CTRMathHelper.vect(p.x, p.y), CTRMathHelper.vect(rotatedCircle8.handle1.x, rotatedCircle8.handle1.y)) <= 90f || CTRMathHelper.vectDistance(CTRMathHelper.vect(p.x, p.y), CTRMathHelper.vect(rotatedCircle8.handle2.x, rotatedCircle8.handle2.y)) <= 90f)
                     {
                         flag12 = true;
                         break;
@@ -1888,12 +1888,12 @@ namespace CutTheRope.game
                 foreach (object obj22 in this.bungees)
                 {
                     Grab bungee5 = (Grab)obj22;
-                    if (bungee5.wheel && CutTheRope.iframework.helpers.MathHelper.pointInRect(p.x, p.y, bungee5.x - 110f, bungee5.y - 110f, 220f, 220f))
+                    if (bungee5.wheel && CTRMathHelper.pointInRect(p.x, p.y, bungee5.x - 110f, bungee5.y - 110f, 220f, 220f))
                     {
                         flag12 = true;
                         break;
                     }
-                    if ((double)bungee5.moveLength > 0.0 && (CutTheRope.iframework.helpers.MathHelper.pointInRect(p.x, p.y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
+                    if ((double)bungee5.moveLength > 0.0 && (CTRMathHelper.pointInRect(p.x, p.y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
                     {
                         flag12 = true;
                         break;
@@ -1930,16 +1930,16 @@ namespace CutTheRope.game
             {
                 this.targetSock.light.playTimeline(0);
                 this.targetSock.light.visible = true;
-                Vector v = CutTheRope.iframework.helpers.MathHelper.vect(0f, -16f);
-                v = CutTheRope.iframework.helpers.MathHelper.vectRotate(v, (double)CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(this.targetSock.rotation));
+                Vector v = CTRMathHelper.vect(0f, -16f);
+                v = CTRMathHelper.vectRotate(v, (double)CTRMathHelper.DEGREES_TO_RADIANS(this.targetSock.rotation));
                 this.star.pos.x = this.targetSock.x;
                 this.star.pos.y = this.targetSock.y;
-                this.star.pos = CutTheRope.iframework.helpers.MathHelper.vectAdd(this.star.pos, v);
+                this.star.pos = CTRMathHelper.vectAdd(this.star.pos, v);
                 this.star.prevPos.x = this.star.pos.x;
                 this.star.prevPos.y = this.star.pos.y;
-                this.star.v = CutTheRope.iframework.helpers.MathHelper.vectMult(CutTheRope.iframework.helpers.MathHelper.vectRotate(CutTheRope.iframework.helpers.MathHelper.vect(0f, -1f), (double)CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(this.targetSock.rotation)), this.savedSockSpeed);
-                this.star.posDelta = CutTheRope.iframework.helpers.MathHelper.vectDiv(this.star.v, 60f);
-                this.star.prevPos = CutTheRope.iframework.helpers.MathHelper.vectSub(this.star.pos, this.star.posDelta);
+                this.star.v = CTRMathHelper.vectMult(CTRMathHelper.vectRotate(CTRMathHelper.vect(0f, -1f), (double)CTRMathHelper.DEGREES_TO_RADIANS(this.targetSock.rotation)), this.savedSockSpeed);
+                this.star.posDelta = CTRMathHelper.vectDiv(this.star.v, 60f);
+                this.star.prevPos = CTRMathHelper.vectSub(this.star.pos, this.star.posDelta);
                 this.targetSock = null;
             }
         }
@@ -1977,11 +1977,11 @@ namespace CutTheRope.game
 
         public virtual void calculateScore()
         {
-            this.timeBonus = (int)CutTheRope.iframework.helpers.MathHelper.MAX(0f, 30f - this.time) * 100;
+            this.timeBonus = (int)CTRMathHelper.MAX(0f, 30f - this.time) * 100;
             this.timeBonus /= 10;
             this.timeBonus *= 10;
             this.starBonus = 1000 * this.starsCollected;
-            this.score = (int)CutTheRope.iframework.helpers.MathHelper.ceil((double)(this.timeBonus + this.starBonus));
+            this.score = (int)CTRMathHelper.ceil((double)(this.timeBonus + this.starBonus));
         }
 
         public virtual void gameWon()
@@ -2029,7 +2029,7 @@ namespace CutTheRope.game
             this.camera.applyCameraTransformation();
             OpenGL.glEnable(0);
             OpenGL.glDisable(1);
-            Vector pos = CutTheRope.iframework.helpers.MathHelper.vectDiv(this.camera.pos, 1.25f);
+            Vector pos = CTRMathHelper.vectDiv(this.camera.pos, 1.25f);
             this.back.updateWithCameraPos(pos);
             float num = (float)base.canvas.xOffsetScaled;
             float num2 = 0f;
@@ -2249,22 +2249,22 @@ namespace CutTheRope.game
                         {
                             float s = num3;
                             float s2 = ((l == num6 - 2) ? 1f : (num3 + num10));
-                            Vector vector3 = CutTheRope.iframework.helpers.MathHelper.vect(array2[l * 2], array2[l * 2 + 1]);
-                            Vector vector8 = CutTheRope.iframework.helpers.MathHelper.vect(array2[(l + 1) * 2], array2[(l + 1) * 2 + 1]);
-                            Vector vector9 = CutTheRope.iframework.helpers.MathHelper.vectNormalize(CutTheRope.iframework.helpers.MathHelper.vectSub(vector8, vector3));
-                            Vector v4 = CutTheRope.iframework.helpers.MathHelper.vectRperp(vector9);
-                            Vector v5 = CutTheRope.iframework.helpers.MathHelper.vectPerp(vector9);
+                            Vector vector3 = CTRMathHelper.vect(array2[l * 2], array2[l * 2 + 1]);
+                            Vector vector8 = CTRMathHelper.vect(array2[(l + 1) * 2], array2[(l + 1) * 2 + 1]);
+                            Vector vector9 = CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(vector8, vector3));
+                            Vector v4 = CTRMathHelper.vectRperp(vector9);
+                            Vector v5 = CTRMathHelper.vectPerp(vector9);
                             if (num4 == 0)
                             {
-                                Vector vector4 = CutTheRope.iframework.helpers.MathHelper.vectAdd(vector3, CutTheRope.iframework.helpers.MathHelper.vectMult(v4, s));
-                                Vector vector5 = CutTheRope.iframework.helpers.MathHelper.vectAdd(vector3, CutTheRope.iframework.helpers.MathHelper.vectMult(v5, s));
+                                Vector vector4 = CTRMathHelper.vectAdd(vector3, CTRMathHelper.vectMult(v4, s));
+                                Vector vector5 = CTRMathHelper.vectAdd(vector3, CTRMathHelper.vectMult(v5, s));
                                 array3[num4++] = vector5.x;
                                 array3[num4++] = vector5.y;
                                 array3[num4++] = vector4.x;
                                 array3[num4++] = vector4.y;
                             }
-                            Vector vector6 = CutTheRope.iframework.helpers.MathHelper.vectAdd(vector8, CutTheRope.iframework.helpers.MathHelper.vectMult(v4, s2));
-                            Vector vector7 = CutTheRope.iframework.helpers.MathHelper.vectAdd(vector8, CutTheRope.iframework.helpers.MathHelper.vectMult(v5, s2));
+                            Vector vector6 = CTRMathHelper.vectAdd(vector8, CTRMathHelper.vectMult(v4, s2));
+                            Vector vector7 = CTRMathHelper.vectAdd(vector8, CTRMathHelper.vectMult(v5, s2));
                             array3[num4++] = vector7.x;
                             array3[num4++] = vector7.y;
                             array3[num4++] = vector6.x;
@@ -2284,7 +2284,7 @@ namespace CutTheRope.game
             float num = 624f;
             if (GameObject.rectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
             {
-                Vector v = CutTheRope.iframework.helpers.MathHelper.vect(c.x, c.y);
+                Vector v = CTRMathHelper.vect(c.x, c.y);
                 Vector vector = default(Vector);
                 vector.x = p.x - p.bb.w / 2f;
                 Vector vector2 = default(Vector);
@@ -2292,13 +2292,13 @@ namespace CutTheRope.game
                 vector.y = (vector2.y = p.y);
                 if (p.angle != 0.0)
                 {
-                    v = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(v, 0.0 - p.angle, p.x, p.y);
+                    v = CTRMathHelper.vectRotateAround(v, 0.0 - p.angle, p.x, p.y);
                 }
-                if (v.y < vector.y && CutTheRope.iframework.helpers.MathHelper.rectInRect((float)((double)v.x - (double)c.bb.w / 2.0), (float)((double)v.y - (double)c.bb.h / 2.0), (float)((double)v.x + (double)c.bb.w / 2.0), (float)((double)v.y + (double)c.bb.h / 2.0), vector.x, vector.y - num, vector2.x, vector2.y))
+                if (v.y < vector.y && CTRMathHelper.rectInRect((float)((double)v.x - (double)c.bb.w / 2.0), (float)((double)v.y - (double)c.bb.h / 2.0), (float)((double)v.x + (double)c.bb.w / 2.0), (float)((double)v.y + (double)c.bb.h / 2.0), vector.x, vector.y - num, vector2.x, vector2.y))
                 {
                     float num2 = num * 2f * (num - (vector.y - v.y)) / num;
-                    Vector v2 = CutTheRope.iframework.helpers.MathHelper.vect(0f, 0f - num2);
-                    v2 = CutTheRope.iframework.helpers.MathHelper.vectRotate(v2, p.angle);
+                    Vector v2 = CTRMathHelper.vect(0f, 0f - num2);
+                    v2 = CTRMathHelper.vectRotate(v2, p.angle);
                     s.applyImpulseDelta(v2, 0.016f);
                 }
             }
@@ -2309,15 +2309,15 @@ namespace CutTheRope.game
             if (!b.skip)
             {
                 b.skip = true;
-                Vector vector = CutTheRope.iframework.helpers.MathHelper.vectSub(s.prevPos, s.pos);
-                int num = ((CutTheRope.iframework.helpers.MathHelper.vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y) ? 1 : (-1));
-                float s2 = CutTheRope.iframework.helpers.MathHelper.MAX((double)(CutTheRope.iframework.helpers.MathHelper.vectLength(vector) * 40f), 840.0) * (float)num;
-                Vector impulse = CutTheRope.iframework.helpers.MathHelper.vectMult(CutTheRope.iframework.helpers.MathHelper.vectPerp(CutTheRope.iframework.helpers.MathHelper.vectForAngle(b.angle)), s2);
-                s.pos = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
-                s.prevPos = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
+                Vector vector = CTRMathHelper.vectSub(s.prevPos, s.pos);
+                int num = ((CTRMathHelper.vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y) ? 1 : (-1));
+                float s2 = CTRMathHelper.MAX((double)(CTRMathHelper.vectLength(vector) * 40f), 840.0) * (float)num;
+                Vector impulse = CTRMathHelper.vectMult(CTRMathHelper.vectPerp(CTRMathHelper.vectForAngle(b.angle)), s2);
+                s.pos = CTRMathHelper.vectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
+                s.prevPos = CTRMathHelper.vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
                 s.prevPos.y = s.pos.y;
-                s.pos = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(s.pos, (double)b.angle, b.x, b.y);
-                s.prevPos = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(s.prevPos, (double)b.angle, b.x, b.y);
+                s.pos = CTRMathHelper.vectRotateAround(s.pos, (double)b.angle, b.x, b.y);
+                s.prevPos = CTRMathHelper.vectRotateAround(s.prevPos, (double)b.angle, b.x, b.y);
                 s.applyImpulseDelta(impulse, delta);
                 b.playTimeline(0);
                 CTRSoundMgr._playSound(41);
@@ -2327,12 +2327,12 @@ namespace CutTheRope.game
         public virtual void operatePump(Pump p)
         {
             p.playTimeline(0);
-            CTRSoundMgr._playSound(CutTheRope.iframework.helpers.MathHelper.RND_RANGE(29, 32));
+            CTRSoundMgr._playSound(CTRMathHelper.RND_RANGE(29, 32));
             Image grid = Image.Image_createWithResID(83);
-            PumpDirt pumpDirt = new PumpDirt().initWithTotalParticlesAngleandImageGrid(5, CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES((float)p.angle) - 90f, grid);
+            PumpDirt pumpDirt = new PumpDirt().initWithTotalParticlesAngleandImageGrid(5, CTRMathHelper.RADIANS_TO_DEGREES((float)p.angle) - 90f, grid);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(this.aniPool.particlesFinished);
-            Vector v = CutTheRope.iframework.helpers.MathHelper.vect(p.x + 80f, p.y);
-            v = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
+            Vector v = CTRMathHelper.vect(p.x + 80f, p.y);
+            v = CTRMathHelper.vectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
             pumpDirt.x = v.x;
             pumpDirt.y = v.y;
             pumpDirt.startSystem(5);
@@ -2370,7 +2370,7 @@ namespace CutTheRope.game
                         bool flag = false;
                         if (r == null)
                         {
-                            flag = (!grab.wheel || !CutTheRope.iframework.helpers.MathHelper.lineInRect(v1.x, v1.y, v2.x, v2.y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && base.lineInLine(v1.x, v1.y, v2.x, v2.y, constraintedPoint.pos.x, constraintedPoint.pos.y, constraintedPoint2.pos.x, constraintedPoint2.pos.y);
+                            flag = (!grab.wheel || !CTRMathHelper.lineInRect(v1.x, v1.y, v2.x, v2.y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && base.lineInLine(v1.x, v1.y, v2.x, v2.y, constraintedPoint.pos.x, constraintedPoint.pos.y, constraintedPoint2.pos.x, constraintedPoint2.pos.y);
                         }
                         else if (constraintedPoint.prevPos.x != 2.1474836E+09f)
                         {
@@ -2378,7 +2378,7 @@ namespace CutTheRope.game
                             float y1t = GameScene.minOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
                             float x1r = GameScene.maxOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
                             float y1b = GameScene.maxOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
-                            flag = CutTheRope.iframework.helpers.MathHelper.rectInRect(num2, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + (float)r.width, r.drawY + (float)r.height);
+                            flag = CTRMathHelper.rectInRect(num2, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + (float)r.width, r.drawY + (float)r.height);
                         }
                         if (flag)
                         {
@@ -2432,7 +2432,7 @@ namespace CutTheRope.game
                 timeline.addKeyFrame(KeyFrame.makePos((double)g.spider.x, (double)(g.spider.y + FrameworkTypes.SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
             }
             timeline.addKeyFrame(KeyFrame.makeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeRotation((double)CutTheRope.iframework.helpers.MathHelper.RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+            timeline.addKeyFrame(KeyFrame.makeRotation((double)CTRMathHelper.RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
             image.addTimelinewithID(timeline, 0);
             image.playTimeline(0);
             image.x = g.spider.x;
@@ -2535,7 +2535,7 @@ namespace CutTheRope.game
 
         public virtual bool handleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
         {
-            if (CutTheRope.iframework.helpers.MathHelper.pointInRect(tx + this.camera.pos.x, ty + this.camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
+            if (CTRMathHelper.pointInRect(tx + this.camera.pos.x, ty + this.camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
             {
                 this.popCandyBubble(s == this.starL);
                 int num = Preferences._getIntForKey("PREFS_BUBBLES_POPPED") + 1;
@@ -2570,7 +2570,7 @@ namespace CutTheRope.game
             float num = 60f;
             Bungee result = null;
             float num2 = num;
-            Vector v = CutTheRope.iframework.helpers.MathHelper.vect(tx, ty);
+            Vector v = CTRMathHelper.vect(tx, ty);
             for (int i = 0; i < this.bungees.count(); i++)
             {
                 Grab grab2 = (Grab)this.bungees.objectAtIndex(i);
@@ -2579,8 +2579,8 @@ namespace CutTheRope.game
                 {
                     for (int j = 0; j < rope.drawPtsCount; j += 2)
                     {
-                        Vector vector = CutTheRope.iframework.helpers.MathHelper.vect(rope.drawPts[j], rope.drawPts[j + 1]);
-                        float num3 = CutTheRope.iframework.helpers.MathHelper.vectDistance(vector, v);
+                        Vector vector = CTRMathHelper.vect(rope.drawPts[j], rope.drawPts[j + 1]);
+                        float num3 = CTRMathHelper.vectDistance(vector, v);
                         if (num3 < num && num3 < num2)
                         {
                             num2 = num3;
@@ -2608,8 +2608,8 @@ namespace CutTheRope.game
             for (int i = 0; i < rope.parts.Count - 1; i++)
             {
                 ConstraintedPoint constraintedPoint = rope.parts[i];
-                float num3 = CutTheRope.iframework.helpers.MathHelper.vectDistance(constraintedPoint.pos, v);
-                if (num3 < num2 && (!g.wheel || !CutTheRope.iframework.helpers.MathHelper.pointInRect(constraintedPoint.pos.x, constraintedPoint.pos.y, g.x - 110f, g.y - 110f, 220f, 220f)))
+                float num3 = CTRMathHelper.vectDistance(constraintedPoint.pos, v);
+                if (num3 < num2 && (!g.wheel || !CTRMathHelper.pointInRect(constraintedPoint.pos.x, constraintedPoint.pos.y, g.x - 110f, g.y - 110f, 220f, 220f)))
                 {
                     num2 = num3;
                     result = rope;
@@ -2637,7 +2637,7 @@ namespace CutTheRope.game
             {
                 this.gravityTouchDown = ti;
             }
-            Vector vector = CutTheRope.iframework.helpers.MathHelper.vect(tx, ty);
+            Vector vector = CTRMathHelper.vect(tx, ty);
             if (this.candyBubble != null && this.handleBubbleTouchXY(this.star, tx, ty))
             {
                 return true;
@@ -2671,7 +2671,7 @@ namespace CutTheRope.game
             for (int i = 0; i < num; i++)
             {
                 Pump pump = (Pump)this.pumps.objectAtIndex(i);
-                if (GameObject.pointInObject(CutTheRope.iframework.helpers.MathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y), pump))
+                if (GameObject.pointInObject(CTRMathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y), pump))
                 {
                     pump.pumpTouchTimer = 0.05f;
                     pump.pumpTouch = ti;
@@ -2684,8 +2684,8 @@ namespace CutTheRope.game
             foreach (object obj2 in this.rotatedCircles)
             {
                 RotatedCircle rotatedCircle2 = (RotatedCircle)obj2;
-                float num2 = CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y), rotatedCircle2.handle1);
-                float num3 = CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y), rotatedCircle2.handle2);
+                float num2 = CTRMathHelper.vectDistance(CTRMathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y), rotatedCircle2.handle1);
+                float num3 = CTRMathHelper.vectDistance(CTRMathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y), rotatedCircle2.handle2);
                 if ((num2 < 90f && !rotatedCircle2.hasOneHandle()) || num3 < 90f)
                 {
                     foreach (object obj3 in this.rotatedCircles)
@@ -2693,7 +2693,7 @@ namespace CutTheRope.game
                         RotatedCircle rotatedCircle3 = (RotatedCircle)obj3;
                         if (this.rotatedCircles.getObjectIndex(rotatedCircle3) > this.rotatedCircles.getObjectIndex(rotatedCircle2))
                         {
-                            float num4 = CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle3.x, rotatedCircle3.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle2.x, rotatedCircle2.y));
+                            float num4 = CTRMathHelper.vectDistance(CTRMathHelper.vect(rotatedCircle3.x, rotatedCircle3.y), CTRMathHelper.vect(rotatedCircle2.x, rotatedCircle2.y));
                             if (num4 + rotatedCircle3.sizeInPixels <= rotatedCircle2.sizeInPixels)
                             {
                                 flag = true;
@@ -2704,7 +2704,7 @@ namespace CutTheRope.game
                             }
                         }
                     }
-                    rotatedCircle2.lastTouch = CutTheRope.iframework.helpers.MathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y);
+                    rotatedCircle2.lastTouch = CTRMathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y);
                     rotatedCircle2.operating = ti;
                     if (num2 < 90f)
                     {
@@ -2739,12 +2739,12 @@ namespace CutTheRope.game
             foreach (object obj4 in this.bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.wheel && CutTheRope.iframework.helpers.MathHelper.pointInRect(tx + this.camera.pos.x, ty + this.camera.pos.y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
+                if (bungee.wheel && CTRMathHelper.pointInRect(tx + this.camera.pos.x, ty + this.camera.pos.y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
                 {
-                    bungee.handleWheelTouch(CutTheRope.iframework.helpers.MathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y));
+                    bungee.handleWheelTouch(CTRMathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y));
                     bungee.wheelOperating = ti;
                 }
-                if ((double)bungee.moveLength > 0.0 && CutTheRope.iframework.helpers.MathHelper.pointInRect(tx + this.camera.pos.x, ty + this.camera.pos.y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
+                if ((double)bungee.moveLength > 0.0 && CTRMathHelper.pointInRect(tx + this.camera.pos.x, ty + this.camera.pos.y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
                     bungee.moverDragging = ti;
                     return true;
@@ -2827,7 +2827,7 @@ namespace CutTheRope.game
             {
                 return true;
             }
-            Vector vector = CutTheRope.iframework.helpers.MathHelper.vect(tx, ty);
+            Vector vector = CTRMathHelper.vect(tx, ty);
             if (ti >= 5)
             {
                 return true;
@@ -2835,7 +2835,7 @@ namespace CutTheRope.game
             foreach (object obj in this.pumps)
             {
                 Pump pump3 = (Pump)obj;
-                if (pump3.pumpTouch == ti && (double)pump3.pumpTouchTimer != 0.0 && (double)CutTheRope.iframework.helpers.MathHelper.vectDistance(this.startPos[ti], vector) > 10.0)
+                if (pump3.pumpTouch == ti && (double)pump3.pumpTouchTimer != 0.0 && (double)CTRMathHelper.vectDistance(this.startPos[ti], vector) > 10.0)
                 {
                     pump3.pumpTouchTimer = 0f;
                 }
@@ -2847,16 +2847,16 @@ namespace CutTheRope.game
                     RotatedCircle rotatedCircle = (RotatedCircle)this.rotatedCircles[i];
                     if (rotatedCircle != null && rotatedCircle.operating == ti)
                     {
-                        Vector v = CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle.x, rotatedCircle.y);
-                        Vector vector2 = CutTheRope.iframework.helpers.MathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y);
-                        Vector v2 = CutTheRope.iframework.helpers.MathHelper.vectSub(rotatedCircle.lastTouch, v);
-                        float num = CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(CutTheRope.iframework.helpers.MathHelper.vectSub(vector2, v)) - CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v2);
-                        float initial_rotation = CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation);
-                        rotatedCircle.rotation += CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(num);
-                        float a = CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation);
+                        Vector v = CTRMathHelper.vect(rotatedCircle.x, rotatedCircle.y);
+                        Vector vector2 = CTRMathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y);
+                        Vector v2 = CTRMathHelper.vectSub(rotatedCircle.lastTouch, v);
+                        float num = CTRMathHelper.vectAngleNormalized(CTRMathHelper.vectSub(vector2, v)) - CTRMathHelper.vectAngleNormalized(v2);
+                        float initial_rotation = CTRMathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation);
+                        rotatedCircle.rotation += CTRMathHelper.RADIANS_TO_DEGREES(num);
+                        float a = CTRMathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation);
                         a = GameScene.FBOUND_PI(a);
-                        rotatedCircle.handle1 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle1 = CTRMathHelper.vectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle2 = CTRMathHelper.vectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
                         int num2 = ((num > 0f) ? 46 : 47);
                         if ((double)Math.Abs(num) < 0.07)
                         {
@@ -2870,7 +2870,7 @@ namespace CutTheRope.game
                         for (int j = 0; j < this.bungees.count(); j++)
                         {
                             Grab grab = (Grab)this.bungees[j];
-                            if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(grab.x, grab.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
+                            if (CTRMathHelper.vectDistance(CTRMathHelper.vect(grab.x, grab.y), CTRMathHelper.vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (grab.initial_rotatedCircle != rotatedCircle)
                                 {
@@ -2879,14 +2879,14 @@ namespace CutTheRope.game
                                     grab.initial_rotatedCircle = rotatedCircle;
                                     grab.initial_rotation = initial_rotation;
                                 }
-                                float a2 = CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation) - grab.initial_rotation;
+                                float a2 = CTRMathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation) - grab.initial_rotation;
                                 a2 = GameScene.FBOUND_PI(a2);
-                                Vector vector3 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(CutTheRope.iframework.helpers.MathHelper.vect(grab.initial_x, grab.initial_y), (double)a2, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector3 = CTRMathHelper.vectRotateAround(CTRMathHelper.vect(grab.initial_x, grab.initial_y), (double)a2, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = vector3.x;
                                 grab.y = vector3.y;
                                 if (grab.rope != null)
                                 {
-                                    grab.rope.bungeeAnchor.pos = CutTheRope.iframework.helpers.MathHelper.vect(grab.x, grab.y);
+                                    grab.rope.bungeeAnchor.pos = CTRMathHelper.vect(grab.x, grab.y);
                                     grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
                                 }
                                 if (grab.radius != -1f)
@@ -2898,7 +2898,7 @@ namespace CutTheRope.game
                         for (int k = 0; k < this.pumps.count(); k++)
                         {
                             Pump pump4 = (Pump)this.pumps[k];
-                            if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(pump4.x, pump4.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
+                            if (CTRMathHelper.vectDistance(CTRMathHelper.vect(pump4.x, pump4.y), CTRMathHelper.vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (pump4.initial_rotatedCircle != rotatedCircle)
                                 {
@@ -2907,19 +2907,19 @@ namespace CutTheRope.game
                                     pump4.initial_rotatedCircle = rotatedCircle;
                                     pump4.initial_rotation = initial_rotation;
                                 }
-                                float a3 = CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation) - pump4.initial_rotation;
+                                float a3 = CTRMathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation) - pump4.initial_rotation;
                                 a3 = GameScene.FBOUND_PI(a3);
-                                Vector vector4 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(CutTheRope.iframework.helpers.MathHelper.vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector4 = CTRMathHelper.vectRotateAround(CTRMathHelper.vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
                                 pump4.x = vector4.x;
                                 pump4.y = vector4.y;
-                                pump4.rotation += CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(num);
+                                pump4.rotation += CTRMathHelper.RADIANS_TO_DEGREES(num);
                                 pump4.updateRotation();
                             }
                         }
                         for (int l = 0; l < this.bubbles.count(); l++)
                         {
                             Bubble bubble = (Bubble)this.bubbles[l];
-                            if (CutTheRope.iframework.helpers.MathHelper.vectDistance(CutTheRope.iframework.helpers.MathHelper.vect(bubble.x, bubble.y), CutTheRope.iframework.helpers.MathHelper.vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != this.candyBubble && bubble != this.candyBubbleR && bubble != this.candyBubbleL)
+                            if (CTRMathHelper.vectDistance(CTRMathHelper.vect(bubble.x, bubble.y), CTRMathHelper.vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != this.candyBubble && bubble != this.candyBubbleR && bubble != this.candyBubbleL)
                             {
                                 if (bubble.initial_rotatedCircle != rotatedCircle)
                                 {
@@ -2928,16 +2928,16 @@ namespace CutTheRope.game
                                     bubble.initial_rotatedCircle = rotatedCircle;
                                     bubble.initial_rotation = initial_rotation;
                                 }
-                                float a4 = CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation) - bubble.initial_rotation;
+                                float a4 = CTRMathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation) - bubble.initial_rotation;
                                 a4 = GameScene.FBOUND_PI(a4);
-                                Vector vector5 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(CutTheRope.iframework.helpers.MathHelper.vect(bubble.initial_x, bubble.initial_y), (double)a4, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector5 = CTRMathHelper.vectRotateAround(CTRMathHelper.vect(bubble.initial_x, bubble.initial_y), (double)a4, rotatedCircle.x, rotatedCircle.y);
                                 bubble.x = vector5.x;
                                 bubble.y = vector5.y;
                             }
                         }
-                        if (CutTheRope.iframework.helpers.MathHelper.pointInRect(this.target.x, this.target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
+                        if (CTRMathHelper.pointInRect(this.target.x, this.target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
                         {
-                            Vector vector6 = CutTheRope.iframework.helpers.MathHelper.vectRotateAround(CutTheRope.iframework.helpers.MathHelper.vect(this.target.x, this.target.y), (double)num, rotatedCircle.x, rotatedCircle.y);
+                            Vector vector6 = CTRMathHelper.vectRotateAround(CTRMathHelper.vect(this.target.x, this.target.y), (double)num, rotatedCircle.x, rotatedCircle.y);
                             this.target.x = vector6.x;
                             this.target.y = vector6.y;
                         }
@@ -2954,22 +2954,22 @@ namespace CutTheRope.game
                 {
                     if (grab2.wheel && grab2.wheelOperating == ti)
                     {
-                        grab2.handleWheelRotate(CutTheRope.iframework.helpers.MathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y));
+                        grab2.handleWheelRotate(CTRMathHelper.vect(tx + this.camera.pos.x, ty + this.camera.pos.y));
                         return true;
                     }
                     if ((double)grab2.moveLength > 0.0 && grab2.moverDragging == ti)
                     {
                         if (grab2.moveVertical)
                         {
-                            grab2.y = CutTheRope.iframework.helpers.MathHelper.FIT_TO_BOUNDARIES(ty + this.camera.pos.y, grab2.minMoveValue, grab2.maxMoveValue);
+                            grab2.y = CTRMathHelper.FIT_TO_BOUNDARIES(ty + this.camera.pos.y, grab2.minMoveValue, grab2.maxMoveValue);
                         }
                         else
                         {
-                            grab2.x = CutTheRope.iframework.helpers.MathHelper.FIT_TO_BOUNDARIES(tx + this.camera.pos.x, grab2.minMoveValue, grab2.maxMoveValue);
+                            grab2.x = CTRMathHelper.FIT_TO_BOUNDARIES(tx + this.camera.pos.x, grab2.minMoveValue, grab2.maxMoveValue);
                         }
                         if (grab2.rope != null)
                         {
-                            grab2.rope.bungeeAnchor.pos = CutTheRope.iframework.helpers.MathHelper.vect(grab2.x, grab2.y);
+                            grab2.rope.bungeeAnchor.pos = CTRMathHelper.vect(grab2.x, grab2.y);
                             grab2.rope.bungeeAnchor.pin = grab2.rope.bungeeAnchor.pos;
                         }
                         if (grab2.radius != -1f)
@@ -2982,8 +2982,8 @@ namespace CutTheRope.game
             }
             if (this.dragging[ti])
             {
-                Vector start = CutTheRope.iframework.helpers.MathHelper.vectAdd(this.startPos[ti], this.camera.pos);
-                Vector end = CutTheRope.iframework.helpers.MathHelper.vectAdd(CutTheRope.iframework.helpers.MathHelper.vect(tx, ty), this.camera.pos);
+                Vector start = CTRMathHelper.vectAdd(this.startPos[ti], this.camera.pos);
+                Vector end = CTRMathHelper.vectAdd(CTRMathHelper.vect(tx, ty), this.camera.pos);
                 GameScene.FingerCut fingerCut = (GameScene.FingerCut)new GameScene.FingerCut().init();
                 fingerCut.start = start;
                 fingerCut.end = end;
@@ -3044,7 +3044,7 @@ namespace CutTheRope.game
             {
                 return false;
             }
-            this.slastTouch = CutTheRope.iframework.helpers.MathHelper.vect(tx, ty);
+            this.slastTouch = CTRMathHelper.vect(tx, ty);
             return true;
         }
 

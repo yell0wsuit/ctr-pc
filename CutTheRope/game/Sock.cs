@@ -48,11 +48,11 @@ namespace CutTheRope.game
             this.b1.x = this.t1.x;
             this.b2.x = this.t2.x;
             this.b1.y = (this.b2.y = this.y + 15f);
-            this.angle = (double)MathHelper.DEGREES_TO_RADIANS(this.rotation);
-            this.t1 = MathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
-            this.t2 = MathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);
-            this.b1 = MathHelper.vectRotateAround(this.b1, this.angle, this.x, this.y);
-            this.b2 = MathHelper.vectRotateAround(this.b2, this.angle, this.x, this.y);
+            this.angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(this.rotation);
+            this.t1 = CTRMathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
+            this.t2 = CTRMathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);
+            this.b1 = CTRMathHelper.vectRotateAround(this.b1, this.angle, this.x, this.y);
+            this.b2 = CTRMathHelper.vectRotateAround(this.b2, this.angle, this.x, this.y);
         }
 
         public override void draw()

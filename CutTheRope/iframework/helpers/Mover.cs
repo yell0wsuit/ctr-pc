@@ -59,7 +59,7 @@ namespace CutTheRope.iframework.helpers
                 {
                     float x = s.x + (float)num * (float)Math.Cos((double)num4);
                     float y = s.y + (float)num * (float)Math.Sin((double)num4);
-                    this.addPathPoint(MathHelper.vect(x, y));
+                    this.addPathPoint(CTRMathHelper.vect(x, y));
                     num4 += num3;
                 }
                 return;
@@ -74,7 +74,7 @@ namespace CutTheRope.iframework.helpers
             {
                 NSString nSString2 = list[j];
                 NSString nSString3 = list[j + 1];
-                this.addPathPoint(MathHelper.vect(s.x + nSString2.floatValue(), s.y + nSString3.floatValue()));
+                this.addPathPoint(CTRMathHelper.vect(s.x + nSString2.floatValue(), s.y + nSString3.floatValue()));
             }
         }
 
@@ -121,7 +121,7 @@ namespace CutTheRope.iframework.helpers
         public virtual void calculateOffset()
         {
             Vector v = this.path[this.targetPoint];
-            this.offset = MathHelper.vectMult(MathHelper.vectNormalize(MathHelper.vectSub(v, this.pos)), this.moveSpeed[this.targetPoint]);
+            this.offset = CTRMathHelper.vectMult(CTRMathHelper.vectNormalize(CTRMathHelper.vectSub(v, this.pos)), this.moveSpeed[this.targetPoint]);
         }
 
         public virtual void setMoveSpeedforPoint(float ms, int i)
@@ -144,7 +144,7 @@ namespace CutTheRope.iframework.helpers
             {
                 Vector v = this.path[this.targetPoint];
                 bool flag = false;
-                if (!MathHelper.vectEqual(this.pos, v))
+                if (!CTRMathHelper.vectEqual(this.pos, v))
                 {
                     float num = delta;
                     if (this.overrun != 0f)
@@ -152,11 +152,11 @@ namespace CutTheRope.iframework.helpers
                         num += this.overrun;
                         this.overrun = 0f;
                     }
-                    this.pos = MathHelper.vectAdd(this.pos, MathHelper.vectMult(this.offset, num));
-                    if (!MathHelper.sameSign(this.offset.x, v.x - this.pos.x) || !MathHelper.sameSign(this.offset.y, v.y - this.pos.y))
+                    this.pos = CTRMathHelper.vectAdd(this.pos, CTRMathHelper.vectMult(this.offset, num));
+                    if (!CTRMathHelper.sameSign(this.offset.x, v.x - this.pos.x) || !CTRMathHelper.sameSign(this.offset.y, v.y - this.pos.y))
                     {
-                        this.overrun = MathHelper.vectLength(MathHelper.vectSub(this.pos, v));
-                        float num2 = MathHelper.vectLength(this.offset);
+                        this.overrun = CTRMathHelper.vectLength(CTRMathHelper.vectSub(this.pos, v));
+                        float num2 = CTRMathHelper.vectLength(this.offset);
                         this.overrun /= num2;
                         this.pos = v;
                         flag = true;

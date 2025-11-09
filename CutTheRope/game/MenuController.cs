@@ -263,8 +263,8 @@ namespace CutTheRope.game
             BaseElement baseElement2 = MenuController.createElementWithResIdquad(res, quad);
             BaseElement baseElement3 = MenuController.createElementWithResIdquad(res, quad2);
             BaseElement baseElement4 = MenuController.createElementWithResIdquad(res, quad2);
-            int width = MathHelper.MAX(baseElement.width, baseElement3.width);
-            int height = MathHelper.MAX(baseElement.height, baseElement3.height);
+            int width = CTRMathHelper.MAX(baseElement.width, baseElement3.width);
+            int height = CTRMathHelper.MAX(baseElement.height, baseElement3.height);
             baseElement.width = (baseElement2.width = width);
             baseElement.height = (baseElement2.height = height);
             baseElement3.width = (baseElement4.width = width);
@@ -385,7 +385,7 @@ namespace CutTheRope.game
             menuView.addChild(baseElement);
             BaseElement baseElement2 = MenuController.createControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.getString(655423), -1, null);
             BaseElement baseElement3 = MenuController.createControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.getString(655422), 11, this);
-            HBox hBox = new HBox().initWithOffsetAlignHeight(FrameworkTypes.RTPD(80.0), 16, (float)MathHelper.MAX(baseElement2.height, baseElement3.height));
+            HBox hBox = new HBox().initWithOffsetAlignHeight(FrameworkTypes.RTPD(80.0), 16, (float)CTRMathHelper.MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = (hBox.anchor = 18);
             hBox.addChild(baseElement2);
             hBox.addChild(baseElement3);
@@ -402,8 +402,8 @@ namespace CutTheRope.game
             menuView.addChild(image);
             VBox vBox = new VBox().initWithOffsetAlignWidth(5f, 2, FrameworkTypes.SCREEN_WIDTH);
             vBox.anchor = (vBox.parentAnchor = 18);
-            Vector offset = MathHelper.vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
-            ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 6, MathHelper.vectZero);
+            Vector offset = CTRMathHelper.vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
+            ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 6, CTRMathHelper.vectZero);
             ToggleButton toggleButton2 = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(2, this, 5, offset);
             HBox hBox2 = new HBox().initWithOffsetAlignHeight(-10f, 16, (float)toggleButton.height);
             hBox2.addChild(toggleButton2);
@@ -1320,7 +1320,7 @@ namespace CutTheRope.game
                         return;
                     }
                 case 7:
-                    this.aboutContainer.setScroll(MathHelper.vect(0f, 0f));
+                    this.aboutContainer.setScroll(CTRMathHelper.vect(0f, 0f));
                     this.aboutAutoScroll = true;
                     this.showView(3);
                     return;
@@ -1528,7 +1528,7 @@ namespace CutTheRope.game
                 Vector scroll = this.aboutContainer.getScroll();
                 Vector maxScroll = this.aboutContainer.getMaxScroll();
                 scroll.y += 0.5f;
-                scroll.y = MathHelper.FIT_TO_BOUNDARIES((double)scroll.y, 0.0, (double)maxScroll.y);
+                scroll.y = CTRMathHelper.FIT_TO_BOUNDARIES((double)scroll.y, 0.0, (double)maxScroll.y);
                 this.aboutContainer.setScroll(scroll);
                 return;
             }
@@ -1821,8 +1821,8 @@ namespace CutTheRope.game
             {
                 base.onTouchDownXY(tx, ty);
                 Rectangle r = FrameworkTypes.MakeRectangle(this.drawX + this.bbc.x, this.drawY + this.bbc.y, (float)this.width + this.bbc.w, (float)this.height + this.bbc.h);
-                Rectangle rectangle = MathHelper.rectInRectIntersection(FrameworkTypes.MakeRectangle(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT), r);
-                if (MathHelper.pointInRect(tx, ty, r.x, r.y, r.w, r.h) && (double)rectangle.w > (double)r.w / 2.0)
+                Rectangle rectangle = CTRMathHelper.rectInRectIntersection(FrameworkTypes.MakeRectangle(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT), r);
+                if (CTRMathHelper.pointInRect(tx, ty, r.x, r.y, r.w, r.h) && (double)rectangle.w > (double)r.w / 2.0)
                 {
                     this.delegateValue.onButtonPressed(this.bid);
                     return true;

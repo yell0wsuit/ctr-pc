@@ -5,14 +5,14 @@ using System;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class MathHelper : ResDataPhoneFull
+    internal class CTRMathHelper : ResDataPhoneFull
     {
         // (get) Token: 0x0600034D RID: 845 RVA: 0x000137FA File Offset: 0x000119FA
         public static float RND_MINUS1_1
         {
             get
             {
-                return (float)(MathHelper.arc4random() / (double)MathHelper.ARC4RANDOM_MAX * 2.0 - 1.0);
+                return (float)(arc4random() / (double)ARC4RANDOM_MAX * 2.0 - 1.0);
             }
         }
 
@@ -21,7 +21,7 @@ namespace CutTheRope.iframework.helpers
         {
             get
             {
-                return (float)(MathHelper.arc4random() / (double)MathHelper.ARC4RANDOM_MAX);
+                return (float)(arc4random() / (double)ARC4RANDOM_MAX);
             }
         }
 
@@ -72,22 +72,22 @@ namespace CutTheRope.iframework.helpers
 
         public static int RND(int n)
         {
-            return MathHelper.RND_RANGE(0, n);
+            return RND_RANGE(0, n);
         }
 
         public static int RND_RANGE(int n, int m)
         {
-            return MathHelper.random_.Next(n, m + 1);
+            return random_.Next(n, m + 1);
         }
 
         public static uint arc4random()
         {
-            return (uint)MathHelper.random_.Next(int.MinValue, int.MaxValue);
+            return (uint)random_.Next(int.MinValue, int.MaxValue);
         }
 
         public static float FIT_TO_BOUNDARIES(double V, double MINV, double MAXV)
         {
-            return MathHelper.FIT_TO_BOUNDARIES((float)V, (float)MINV, (float)MAXV);
+            return FIT_TO_BOUNDARIES((float)V, (float)MINV, (float)MAXV);
         }
 
         public static float FIT_TO_BOUNDARIES(float V, float MINV, float MAXV)
@@ -127,20 +127,20 @@ namespace CutTheRope.iframework.helpers
 
         public static void fmInit()
         {
-            if (MathHelper.fmSins == null)
+            if (fmSins == null)
             {
-                MathHelper.fmSins = new float[1024];
+                fmSins = new float[1024];
                 for (int i = 0; i < 1024; i++)
                 {
-                    MathHelper.fmSins[i] = (float)Math.Sin((double)(i * 2) * 3.141592653589793 / 1024.0);
+                    fmSins[i] = (float)Math.Sin((double)(i * 2) * 3.141592653589793 / 1024.0);
                 }
             }
-            if (MathHelper.fmCoss == null)
+            if (fmCoss == null)
             {
-                MathHelper.fmCoss = new float[1024];
+                fmCoss = new float[1024];
                 for (int j = 0; j < 1024; j++)
                 {
-                    MathHelper.fmCoss[j] = (float)Math.Cos((double)(j * 2) * 3.141592653589793 / 1024.0);
+                    fmCoss[j] = (float)Math.Cos((double)(j * 2) * 3.141592653589793 / 1024.0);
                 }
             }
         }
@@ -149,14 +149,14 @@ namespace CutTheRope.iframework.helpers
         {
             int num = (int)((double)(angle * 1024f) / 3.141592653589793 / 2.0);
             num &= 1023;
-            return MathHelper.fmSins[num];
+            return fmSins[num];
         }
 
         public static float fmCos(float angle)
         {
             int num = (int)((double)(angle * 1024f) / 3.141592653589793 / 2.0);
             num &= 1023;
-            return MathHelper.fmCoss[num];
+            return fmCoss[num];
         }
 
         public static bool sameSign(float a, float b)
@@ -186,7 +186,7 @@ namespace CutTheRope.iframework.helpers
             array2[1] = tr2;
             array2[2] = br2;
             array2[3] = bl2;
-            return MathHelper.overlaps1Way(array, array2) && MathHelper.overlaps1Way(array2, array);
+            return overlaps1Way(array, array2) && overlaps1Way(array2, array);
         }
 
         public static float DEGREES_TO_RADIANS(float D)
@@ -203,21 +203,21 @@ namespace CutTheRope.iframework.helpers
         {
             Vector[] array = new Vector[2];
             float[] array2 = new float[2];
-            array[0] = MathHelper.vectSub(corner[1], corner[0]);
-            array[1] = MathHelper.vectSub(corner[3], corner[0]);
+            array[0] = vectSub(corner[1], corner[0]);
+            array[1] = vectSub(corner[3], corner[0]);
             for (int i = 0; i < 2; i++)
             {
-                array[i] = MathHelper.vectDiv(array[i], MathHelper.vectLengthsq(array[i]));
-                array2[i] = MathHelper.vectDot(corner[0], array[i]);
+                array[i] = vectDiv(array[i], vectLengthsq(array[i]));
+                array2[i] = vectDot(corner[0], array[i]);
             }
             for (int j = 0; j < 2; j++)
             {
-                float num = MathHelper.vectDot(other[0], array[j]);
+                float num = vectDot(other[0], array[j]);
                 float num2 = num;
                 float num3 = num;
                 for (int k = 1; k < 4; k++)
                 {
-                    num = MathHelper.vectDot(other[k], array[j]);
+                    num = vectDot(other[k], array[j]);
                     if (num < num2)
                     {
                         num2 = num;
@@ -302,7 +302,7 @@ namespace CutTheRope.iframework.helpers
 
         public static Vector vectMult(Vector v, double s)
         {
-            return MathHelper.vectMult(v, (float)s);
+            return vectMult(v, (float)s);
         }
 
         public static Vector vectMult(Vector v, float s)
@@ -337,7 +337,7 @@ namespace CutTheRope.iframework.helpers
 
         private static Vector vectProject(Vector v1, Vector v2)
         {
-            return MathHelper.vectMult(v2, MathHelper.vectDot(v1, v2) / MathHelper.vectDot(v2, v2));
+            return vectMult(v2, vectDot(v1, v2) / vectDot(v2, v2));
         }
 
         private static Vector vectRotateByVector(Vector v1, Vector v2)
@@ -362,22 +362,22 @@ namespace CutTheRope.iframework.helpers
 
         public static float vectLength(Vector v)
         {
-            return (float)Math.Sqrt((double)MathHelper.vectDot(v, v));
+            return (float)Math.Sqrt((double)vectDot(v, v));
         }
 
         public static float vectLengthsq(Vector v)
         {
-            return MathHelper.vectDot(v, v);
+            return vectDot(v, v);
         }
 
         public static Vector vectNormalize(Vector v)
         {
-            return MathHelper.vectMult(v, 1f / MathHelper.vectLength(v));
+            return vectMult(v, 1f / vectLength(v));
         }
 
         public static Vector vectForAngle(float a)
         {
-            return new Vector(MathHelper.fmCos(a), MathHelper.fmSin(a));
+            return new Vector(fmCos(a), fmSin(a));
         }
 
         private static float vectToAngle(Vector v)
@@ -387,13 +387,13 @@ namespace CutTheRope.iframework.helpers
 
         public static float vectDistance(Vector v1, Vector v2)
         {
-            return MathHelper.vectLength(MathHelper.vectSub(v1, v2));
+            return vectLength(vectSub(v1, v2));
         }
 
         public static Vector vectRotate(Vector v, double rad)
         {
-            float num = MathHelper.fmCos((float)rad);
-            float num2 = MathHelper.fmSin((float)rad);
+            float num = fmCos((float)rad);
+            float num2 = fmSin((float)rad);
             float num3 = v.x * num - v.y * num2;
             float yParam = v.x * num2 + v.y * num;
             return new Vector(num3, yParam);
@@ -404,7 +404,7 @@ namespace CutTheRope.iframework.helpers
             Vector v2 = v;
             v2.x -= cx;
             v2.y -= cy;
-            v2 = MathHelper.vectRotate(v2, rad);
+            v2 = vectRotate(v2, rad);
             v2.x += cx;
             v2.y += cy;
             return v2;
@@ -412,7 +412,7 @@ namespace CutTheRope.iframework.helpers
 
         private static Vector vectSidePerp(Vector v1, Vector v2)
         {
-            return MathHelper.vectNormalize(MathHelper.vectRperp(MathHelper.vectSub(v2, v1)));
+            return vectNormalize(vectRperp(vectSub(v2, v1)));
         }
 
         private static int vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
@@ -426,8 +426,8 @@ namespace CutTheRope.iframework.helpers
             VectorClass vectorClass2 = new(new Vector(x2, y2));
             float num = rx + w;
             float num2 = ry + h;
-            int num3 = MathHelper.vcode(rx, ry, num, num2, vectorClass.v);
-            int num4 = MathHelper.vcode(rx, ry, num, num2, vectorClass2.v);
+            int num3 = vcode(rx, ry, num, num2, vectorClass.v);
+            int num4 = vcode(rx, ry, num, num2, vectorClass2.v);
             while (num3 != 0 || num4 != 0)
             {
                 if ((num3 & num4) != 0)
@@ -472,11 +472,11 @@ namespace CutTheRope.iframework.helpers
                 }
                 if (num5 == num3)
                 {
-                    num3 = MathHelper.vcode(rx, ry, num, num2, vectorClass.v);
+                    num3 = vcode(rx, ry, num, num2, vectorClass.v);
                 }
                 else
                 {
-                    num4 = MathHelper.vcode(rx, ry, num, num2, vectorClass2.v);
+                    num4 = vcode(rx, ry, num, num2, vectorClass2.v);
                 }
             }
             return true;
@@ -501,12 +501,12 @@ namespace CutTheRope.iframework.helpers
 
         public static float FLOAT_RND_RANGE(int S, int F)
         {
-            return (float)MathHelper.RND_RANGE(S * 1000, F * 1000) / 1000f;
+            return (float)RND_RANGE(S * 1000, F * 1000) / 1000f;
         }
 
         public static NSString getMD5Str(NSString input)
         {
-            return MathHelper.getMD5(input.getCharacters());
+            return getMD5(input.getCharacters());
         }
 
         public static NSString getMD5(char[] data)

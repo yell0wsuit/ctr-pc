@@ -56,7 +56,7 @@ namespace CutTheRope.iframework.visual
         {
             this.quads[n] = GLDrawer.getTextureCoordinates(this, rect);
             this.quadRects[n] = rect;
-            this.quadOffsets[n] = MathHelper.vectZero;
+            this.quadOffsets[n] = CTRMathHelper.vectZero;
         }
 
         public virtual void setWvga()

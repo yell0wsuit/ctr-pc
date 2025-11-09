@@ -83,12 +83,12 @@ namespace CutTheRope.game
             timeline3.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             this.addTimelinewithID(timeline3, 0);
             this.playTimeline(0);
-            Timeline.updateTimeline(timeline3, (float)((double)MathHelper.RND_RANGE(0, 20) / 10.0));
+            Timeline.updateTimeline(timeline3, (float)((double)CTRMathHelper.RND_RANGE(0, 20) / 10.0));
             Animation animation = Animation.Animation_createWithResID(78);
             animation.doRestoreCutTransparency();
             animation.addAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.playTimeline(0);
-            Timeline.updateTimeline(animation.getTimeline(0), (float)((double)MathHelper.RND_RANGE(0, 20) / 10.0));
+            Timeline.updateTimeline(animation.getTimeline(0), (float)((double)CTRMathHelper.RND_RANGE(0, 20) / 10.0));
             animation.anchor = (animation.parentAnchor = 18);
             this.addChild(animation);
         }

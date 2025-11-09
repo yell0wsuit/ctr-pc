@@ -25,9 +25,9 @@ namespace CutTheRope.game
                 float num4 = 0f;
                 for (int i = 0; i < num2; i++)
                 {
-                    float x = s.x + (float)num * MathHelper.cosf(num4);
-                    float y = s.y + (float)num * MathHelper.sinf(num4);
-                    this.addPathPoint(MathHelper.vect(x, y));
+                    float x = s.x + (float)num * CTRMathHelper.cosf(num4);
+                    float y = s.y + (float)num * CTRMathHelper.sinf(num4);
+                    this.addPathPoint(CTRMathHelper.vect(x, y));
                     num4 += num3;
                 }
                 return;
@@ -42,7 +42,7 @@ namespace CutTheRope.game
             {
                 NSString nSString2 = list[j];
                 NSString nSString3 = list[j + 1];
-                this.addPathPoint(MathHelper.vect(s.x + nSString2.floatValue() * 3f, s.y + nSString3.floatValue() * 3f));
+                this.addPathPoint(CTRMathHelper.vect(s.x + nSString2.floatValue() * 3f, s.y + nSString3.floatValue() * 3f));
             }
         }
     }

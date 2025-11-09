@@ -51,7 +51,7 @@ namespace CutTheRope.iframework.visual
                 this.horizontalRandom = false;
                 this.verticalRandom = false;
                 this.restoreTileTransparency = true;
-                this.randomSeed = MathHelper.RND_RANGE(1000, 2000);
+                this.randomSeed = CTRMathHelper.RND_RANGE(1000, 2000);
             }
             return this;
         }
@@ -146,15 +146,15 @@ namespace CutTheRope.iframework.visual
                 int num6 = (int)num14 % this.tileMapWidth;
                 num3 = ((num14 >= 0f) ? ((float)(num6 - this.tileMapWidth) + num) : ((float)num6 + num));
             }
-            if (!MathHelper.rectInRect(num, num2, num + (float)this.cameraViewWidth, num2 + (float)this.cameraViewHeight, num3, num4, num3 + (float)this.tileMapWidth, num4 + (float)this.tileMapHeight))
+            if (!CTRMathHelper.rectInRect(num, num2, num + (float)this.cameraViewWidth, num2 + (float)this.cameraViewHeight, num3, num4, num3 + (float)this.tileMapWidth, num4 + (float)this.tileMapHeight))
             {
                 return;
             }
-            Rectangle rectangle = MathHelper.rectInRectIntersection(new Rectangle(num3, num4, (float)this.tileMapWidth, (float)this.tileMapHeight), new Rectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight));
-            Vector vector = MathHelper.vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
-            Vector vector2 = MathHelper.vect((float)((int)vector.x / this.tileWidth), (float)((int)vector.y / this.tileHeight));
+            Rectangle rectangle = CTRMathHelper.rectInRectIntersection(new Rectangle(num3, num4, (float)this.tileMapWidth, (float)this.tileMapHeight), new Rectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight));
+            Vector vector = CTRMathHelper.vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
+            Vector vector2 = CTRMathHelper.vect((float)((int)vector.x / this.tileWidth), (float)((int)vector.y / this.tileHeight));
             float num7 = num4 + vector2.y * (float)this.tileHeight;
-            Vector vector3 = MathHelper.vect(num3 + vector2.x * (float)this.tileWidth, num7);
+            Vector vector3 = CTRMathHelper.vect(num3 + vector2.x * (float)this.tileWidth, num7);
             int count = this.drawers.Count;
             for (int i = 0; i < count; i++)
             {
@@ -180,7 +180,7 @@ namespace CutTheRope.iframework.visual
                 int k = (int)vector2.y;
                 while (k <= num9 && vector3.y < num2 + (float)this.cameraViewHeight)
                 {
-                    Rectangle rectangle2 = MathHelper.rectInRectIntersection(new Rectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight), new Rectangle(vector3.x, vector3.y, (float)this.tileWidth, (float)this.tileHeight));
+                    Rectangle rectangle2 = CTRMathHelper.rectInRectIntersection(new Rectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight), new Rectangle(vector3.x, vector3.y, (float)this.tileWidth, (float)this.tileHeight));
                     Rectangle r = new(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
                     int num10 = j;
                     int num11 = k;
@@ -208,11 +208,11 @@ namespace CutTheRope.iframework.visual
                     }
                     if (this.horizontalRandom)
                     {
-                        num10 = Math.Abs((int)(MathHelper.fmSin(vector3.x) * (float)this.randomSeed) % this.columns);
+                        num10 = Math.Abs((int)(CTRMathHelper.fmSin(vector3.x) * (float)this.randomSeed) % this.columns);
                     }
                     if (this.verticalRandom)
                     {
-                        num11 = Math.Abs((int)(MathHelper.fmSin(vector3.y) * (float)this.randomSeed) % this.rows);
+                        num11 = Math.Abs((int)(CTRMathHelper.fmSin(vector3.y) * (float)this.randomSeed) % this.rows);
                     }
                     if (num10 >= this.columns)
                     {
