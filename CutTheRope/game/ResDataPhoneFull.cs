@@ -4,10 +4,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000090 RID: 144
     internal class ResDataPhoneFull
     {
-        // Token: 0x060005BE RID: 1470 RVA: 0x0002F2E8 File Offset: 0x0002D4E8
         public static string GetXml(string resName)
         {
             if (ResDataPhoneFull.xmls_ == null)
@@ -128,7 +126,6 @@ namespace CutTheRope.game
             return value;
         }
 
-        // Token: 0x060005BF RID: 1471 RVA: 0x0002F9C8 File Offset: 0x0002DBC8
         public static bool isSound(int id)
         {
             switch (id)
@@ -179,2352 +176,1577 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060005C0 RID: 1472 RVA: 0x0002FA93 File Offset: 0x0002DC93
         public static bool isFont(int id)
         {
             return id == 3 || id == 4 || id == 68;
         }
 
-        // Token: 0x040004C5 RID: 1221
         public const int IMG_DEFAULT = 0;
 
-        // Token: 0x040004C6 RID: 1222
         public const int IMG_LOADERBAR_FULL = 1;
 
-        // Token: 0x040004C7 RID: 1223
         public const int IMG_MENU_BUTTON_DEFAULT = 2;
 
-        // Token: 0x040004C8 RID: 1224
         public const int FNT_BIG_FONT = 3;
 
-        // Token: 0x040004C9 RID: 1225
         public const int FNT_SMALL_FONT = 4;
 
-        // Token: 0x040004CA RID: 1226
         public const int IMG_MENU_LOADING = 5;
 
-        // Token: 0x040004CB RID: 1227
         public const int IMG_MENU_NOTIFICATION = 6;
 
-        // Token: 0x040004CC RID: 1228
         public const int IMG_MENU_ACHIEVEMENT = 7;
 
-        // Token: 0x040004CD RID: 1229
         public const int IMG_MENU_OPTIONS = 8;
 
-        // Token: 0x040004CE RID: 1230
         public const int SND_TAP = 9;
 
-        // Token: 0x040004CF RID: 1231
         public const int STR_MENU = 10;
 
-        // Token: 0x040004D0 RID: 1232
         public const int SND_BUTTON = 11;
 
-        // Token: 0x040004D1 RID: 1233
         public const int SND_BUBBLE_BREAK = 12;
 
-        // Token: 0x040004D2 RID: 1234
         public const int SND_BUBBLE = 13;
 
-        // Token: 0x040004D3 RID: 1235
         public const int SND_CANDY_BREAK = 14;
 
-        // Token: 0x040004D4 RID: 1236
         public const int SND_MONSTER_CHEWING = 15;
 
-        // Token: 0x040004D5 RID: 1237
         public const int SND_MONSTER_CLOSE = 16;
 
-        // Token: 0x040004D6 RID: 1238
         public const int SND_MONSTER_OPEN = 17;
 
-        // Token: 0x040004D7 RID: 1239
         public const int SND_MONSTER_SAD = 18;
 
-        // Token: 0x040004D8 RID: 1240
         public const int SND_RING = 19;
 
-        // Token: 0x040004D9 RID: 1241
         public const int SND_ROPE_BLEAK_1 = 20;
 
-        // Token: 0x040004DA RID: 1242
         public const int SND_ROPE_BLEAK_2 = 21;
 
-        // Token: 0x040004DB RID: 1243
         public const int SND_ROPE_BLEAK_3 = 22;
 
-        // Token: 0x040004DC RID: 1244
         public const int SND_ROPE_BLEAK_4 = 23;
 
-        // Token: 0x040004DD RID: 1245
         public const int SND_ROPE_GET = 24;
 
-        // Token: 0x040004DE RID: 1246
         public const int SND_STAR_1 = 25;
 
-        // Token: 0x040004DF RID: 1247
         public const int SND_STAR_2 = 26;
 
-        // Token: 0x040004E0 RID: 1248
         public const int SND_STAR_3 = 27;
 
-        // Token: 0x040004E1 RID: 1249
         public const int SND_ELECTRIC = 28;
 
-        // Token: 0x040004E2 RID: 1250
         public const int SND_PUMP_1 = 29;
 
-        // Token: 0x040004E3 RID: 1251
         public const int SND_PUMP_2 = 30;
 
-        // Token: 0x040004E4 RID: 1252
         public const int SND_PUMP_3 = 31;
 
-        // Token: 0x040004E5 RID: 1253
         public const int SND_PUMP_4 = 32;
 
-        // Token: 0x040004E6 RID: 1254
         public const int SND_SPIDER_ACTIVATE = 33;
 
-        // Token: 0x040004E7 RID: 1255
         public const int SND_SPIDER_FALL = 34;
 
-        // Token: 0x040004E8 RID: 1256
         public const int SND_SPIDER_WIN = 35;
 
-        // Token: 0x040004E9 RID: 1257
         public const int SND_WHEEL = 36;
 
-        // Token: 0x040004EA RID: 1258
         public const int SND_WIN = 37;
 
-        // Token: 0x040004EB RID: 1259
         public const int SND_GRAVITY_OFF = 38;
 
-        // Token: 0x040004EC RID: 1260
         public const int SND_GRAVITY_ON = 39;
 
-        // Token: 0x040004ED RID: 1261
         public const int SND_CANDY_LINK = 40;
 
-        // Token: 0x040004EE RID: 1262
         public const int SND_BOUNCER = 41;
 
-        // Token: 0x040004EF RID: 1263
         public const int SND_SPIKE_ROTATE_IN = 42;
 
-        // Token: 0x040004F0 RID: 1264
         public const int SND_SPIKE_ROTATE_OUT = 43;
 
-        // Token: 0x040004F1 RID: 1265
         public const int SND_BUZZ = 44;
 
-        // Token: 0x040004F2 RID: 1266
         public const int SND_TELEPORT = 45;
 
-        // Token: 0x040004F3 RID: 1267
         public const int SND_SCRATCH_IN = 46;
 
-        // Token: 0x040004F4 RID: 1268
         public const int SND_SCRATCH_OUT = 47;
 
-        // Token: 0x040004F5 RID: 1269
         public const int IMG_MENU_BGR = 48;
 
-        // Token: 0x040004F6 RID: 1270
         public const int IMG_MENU_POPUP = 49;
 
-        // Token: 0x040004F7 RID: 1271
         public const int IMG_MENU_LOGO = 50;
 
-        // Token: 0x040004F8 RID: 1272
         public const int IMG_MENU_LEVEL_SELECTION = 51;
 
-        // Token: 0x040004F9 RID: 1273
         public const int IMG_MENU_PACK_SELECTION = 52;
 
-        // Token: 0x040004FA RID: 1274
         public const int IMG_MENU_PACK_SELECTION2 = 53;
 
-        // Token: 0x040004FB RID: 1275
         public const int IMG_MENU_EXTRA_BUTTONS = 54;
 
-        // Token: 0x040004FC RID: 1276
         public const int IMG_MENU_SCROLLBAR = 55;
 
-        // Token: 0x040004FD RID: 1277
         public const int IMG_MENU_LEADERBOARD = 56;
 
-        // Token: 0x040004FE RID: 1278
         public const int IMG_MENU_PROCESSING = 57;
 
-        // Token: 0x040004FF RID: 1279
         public const int IMG_MENU_SCROLLBAR_CHANGENAME = 58;
 
-        // Token: 0x04000500 RID: 1280
         public const int IMG_MENU_BUTTON_ACHIV_CUP = 59;
 
-        // Token: 0x04000501 RID: 1281
         public const int IMG_MENU_BGR_SHADOW = 60;
 
-        // Token: 0x04000502 RID: 1282
         public const int IMG_MENU_BUTTON_SHORT = 61;
 
-        // Token: 0x04000503 RID: 1283
         public const int IMG_HUD_BUTTONS = 62;
 
-        // Token: 0x04000504 RID: 1284
         public const int IMG_OBJ_CANDY_01 = 63;
 
-        // Token: 0x04000505 RID: 1285
         public const int IMG_OBJ_SPIDER = 64;
 
-        // Token: 0x04000506 RID: 1286
         public const int IMG_CONFETTI_PARTICLES = 65;
 
-        // Token: 0x04000507 RID: 1287
         public const int IMG_MENU_PAUSE = 66;
 
-        // Token: 0x04000508 RID: 1288
         public const int IMG_MENU_RESULT = 67;
 
-        // Token: 0x04000509 RID: 1289
         public const int FNT_FONT_NUMBERS_BIG = 68;
 
-        // Token: 0x0400050A RID: 1290
         public const int IMG_HUD_BUTTONS_EN = 69;
 
-        // Token: 0x0400050B RID: 1291
         public const int IMG_MENU_RESULT_EN = 70;
 
-        // Token: 0x0400050C RID: 1292
         public const int IMG_OBJ_STAR_DISAPPEAR = 71;
 
-        // Token: 0x0400050D RID: 1293
         public const int IMG_OBJ_BUBBLE_FLIGHT = 72;
 
-        // Token: 0x0400050E RID: 1294
         public const int IMG_OBJ_BUBBLE_POP = 73;
 
-        // Token: 0x0400050F RID: 1295
         public const int IMG_OBJ_HOOK_AUTO = 74;
 
-        // Token: 0x04000510 RID: 1296
         public const int IMG_OBJ_BUBBLE_ATTACHED = 75;
 
-        // Token: 0x04000511 RID: 1297
         public const int IMG_OBJ_HOOK_01 = 76;
 
-        // Token: 0x04000512 RID: 1298
         public const int IMG_OBJ_HOOK_02 = 77;
 
-        // Token: 0x04000513 RID: 1299
         public const int IMG_OBJ_STAR_IDLE = 78;
 
-        // Token: 0x04000514 RID: 1300
         public const int IMG_HUD_STAR = 79;
 
-        // Token: 0x04000515 RID: 1301
         public const int IMG_CHAR_ANIMATIONS = 80;
 
-        // Token: 0x04000516 RID: 1302
         public const int IMG_OBJ_HOOK_REGULATED = 81;
 
-        // Token: 0x04000517 RID: 1303
         public const int IMG_OBJ_HOOK_MOVABLE = 82;
 
-        // Token: 0x04000518 RID: 1304
         public const int IMG_OBJ_PUMP = 83;
 
-        // Token: 0x04000519 RID: 1305
         public const int IMG_TUTORIAL_SIGNS = 84;
 
-        // Token: 0x0400051A RID: 1306
         public const int IMG_OBJ_SOCKS = 85;
 
-        // Token: 0x0400051B RID: 1307
         public const int IMG_OBJ_BOUNCER_01 = 86;
 
-        // Token: 0x0400051C RID: 1308
         public const int IMG_OBJ_BOUNCER_02 = 87;
 
-        // Token: 0x0400051D RID: 1309
         public const int IMG_OBJ_SPIKES_01 = 88;
 
-        // Token: 0x0400051E RID: 1310
         public const int IMG_OBJ_SPIKES_02 = 89;
 
-        // Token: 0x0400051F RID: 1311
         public const int IMG_OBJ_SPIKES_03 = 90;
 
-        // Token: 0x04000520 RID: 1312
         public const int IMG_OBJ_SPIKES_04 = 91;
 
-        // Token: 0x04000521 RID: 1313
         public const int IMG_OBJ_ELECTRODES = 92;
 
-        // Token: 0x04000522 RID: 1314
         public const int IMG_OBJ_ROTATABLE_SPIKES_01 = 93;
 
-        // Token: 0x04000523 RID: 1315
         public const int IMG_OBJ_ROTATABLE_SPIKES_02 = 94;
 
-        // Token: 0x04000524 RID: 1316
         public const int IMG_OBJ_ROTATABLE_SPIKES_03 = 95;
 
-        // Token: 0x04000525 RID: 1317
         public const int IMG_OBJ_ROTATABLE_SPIKES_04 = 96;
 
-        // Token: 0x04000526 RID: 1318
         public const int IMG_OBJ_ROTATABLE_SPIKES_BUTTON = 97;
 
-        // Token: 0x04000527 RID: 1319
         public const int IMG_OBJ_BEE_HD = 98;
 
-        // Token: 0x04000528 RID: 1320
         public const int IMG_OBJ_POLLEN_HD = 99;
 
-        // Token: 0x04000529 RID: 1321
         public const int IMG_CHAR_SUPPORTS = 100;
 
-        // Token: 0x0400052A RID: 1322
         public const int IMG_CHAR_ANIMATIONS2 = 101;
 
-        // Token: 0x0400052B RID: 1323
         public const int IMG_CHAR_ANIMATIONS3 = 102;
 
-        // Token: 0x0400052C RID: 1324
         public const int IMG_OBJ_VINIL = 103;
 
-        // Token: 0x0400052D RID: 1325
         public const int IMG_BGR_01_P1 = 104;
 
-        // Token: 0x0400052E RID: 1326
         public const int IMG_BGR_01_P2 = 105;
 
-        // Token: 0x0400052F RID: 1327
         public const int IMG_BGR_02_P1 = 106;
 
-        // Token: 0x04000530 RID: 1328
         public const int IMG_BGR_02_P2 = 107;
 
-        // Token: 0x04000531 RID: 1329
         public const int IMG_BGR_03_P1 = 108;
 
-        // Token: 0x04000532 RID: 1330
         public const int IMG_BGR_03_P2 = 109;
 
-        // Token: 0x04000533 RID: 1331
         public const int IMG_BGR_04_P1 = 110;
 
-        // Token: 0x04000534 RID: 1332
         public const int IMG_BGR_04_P2 = 111;
 
-        // Token: 0x04000535 RID: 1333
         public const int IMG_BGR_05_P1 = 112;
 
-        // Token: 0x04000536 RID: 1334
         public const int IMG_BGR_05_P2 = 113;
 
-        // Token: 0x04000537 RID: 1335
         public const int IMG_BGR_06_P1 = 114;
 
-        // Token: 0x04000538 RID: 1336
         public const int IMG_BGR_06_P2 = 115;
 
-        // Token: 0x04000539 RID: 1337
         public const int IMG_BGR_07_P1 = 116;
 
-        // Token: 0x0400053A RID: 1338
         public const int IMG_BGR_07_P2 = 117;
 
-        // Token: 0x0400053B RID: 1339
         public const int IMG_BGR_08_P1 = 118;
 
-        // Token: 0x0400053C RID: 1340
         public const int IMG_BGR_08_P2 = 119;
 
-        // Token: 0x0400053D RID: 1341
         public const int IMG_BGR_09_P1 = 120;
 
-        // Token: 0x0400053E RID: 1342
         public const int IMG_BGR_09_P2 = 121;
 
-        // Token: 0x0400053F RID: 1343
         public const int IMG_BGR_10_P1 = 122;
 
-        // Token: 0x04000540 RID: 1344
         public const int IMG_BGR_10_P2 = 123;
 
-        // Token: 0x04000541 RID: 1345
         public const int IMG_BGR_11_P1 = 124;
 
-        // Token: 0x04000542 RID: 1346
         public const int IMG_BGR_11_P2 = 125;
 
-        // Token: 0x04000543 RID: 1347
         public const int IMG_BGR_COVER_01 = 126;
 
-        // Token: 0x04000544 RID: 1348
         public const int IMG_BGR_COVER_02 = 127;
 
-        // Token: 0x04000545 RID: 1349
         public const int IMG_BGR_COVER_03 = 128;
 
-        // Token: 0x04000546 RID: 1350
         public const int IMG_BGR_COVER_04 = 129;
 
-        // Token: 0x04000547 RID: 1351
         public const int IMG_BGR_COVER_05 = 130;
 
-        // Token: 0x04000548 RID: 1352
         public const int IMG_BGR_COVER_06 = 131;
 
-        // Token: 0x04000549 RID: 1353
         public const int IMG_BGR_COVER_07 = 132;
 
-        // Token: 0x0400054A RID: 1354
         public const int IMG_BGR_COVER_08 = 133;
 
-        // Token: 0x0400054B RID: 1355
         public const int IMG_BGR_COVER_09 = 134;
 
-        // Token: 0x0400054C RID: 1356
         public const int IMG_BGR_COVER_10 = 135;
 
-        // Token: 0x0400054D RID: 1357
         public const int IMG_BGR_COVER_11 = 136;
 
-        // Token: 0x0400054E RID: 1358
         public const int IMG_MENU_EXTRA_BUTTONS_FR = 137;
 
-        // Token: 0x0400054F RID: 1359
         public const int IMG_MENU_EXTRA_BUTTONS_GR = 138;
 
-        // Token: 0x04000550 RID: 1360
         public const int IMG_MENU_EXTRA_BUTTONS_RU = 139;
 
-        // Token: 0x04000551 RID: 1361
         public const int IMG_HUD_BUTTONS_RU = 140;
 
-        // Token: 0x04000552 RID: 1362
         public const int IMG_HUD_BUTTONS_GR = 141;
 
-        // Token: 0x04000553 RID: 1363
         public const int IMG_MENU_RESULT_RU = 142;
 
-        // Token: 0x04000554 RID: 1364
         public const int IMG_MENU_RESULT_FR = 143;
 
-        // Token: 0x04000555 RID: 1365
         public const int IMG_MENU_RESULT_GR = 144;
 
-        // Token: 0x04000556 RID: 1366
         public const int SND_MENU_MUSIC = 145;
 
-        // Token: 0x04000557 RID: 1367
         public const int SND_GAME_MUSIC = 146;
 
-        // Token: 0x04000558 RID: 1368
         public const int SND_GAME_MUSIC2 = 147;
 
-        // Token: 0x04000559 RID: 1369
         public const int SND_GAME_MUSIC3 = 148;
 
-        // Token: 0x0400055A RID: 1370
         public const int IMG_MENU_EXTRA_BUTTONS_EN = 149;
 
-        // Token: 0x0400055B RID: 1371
         public const int RESOURCES_COUNT = 150;
 
-        // Token: 0x0400055C RID: 1372
         public const int SOUND_FIRST = 9;
 
-        // Token: 0x0400055D RID: 1373
         public const int SOUND_LAST = 47;
 
-        // Token: 0x0400055E RID: 1374
         internal const int IMG_MENU_BUTTON_DEFAULT_default_idle = 0;
 
-        // Token: 0x0400055F RID: 1375
         internal const int IMG_MENU_BUTTON_DEFAULT_default_pressed = 1;
 
-        // Token: 0x04000560 RID: 1376
         internal const int IMG_MENU_LOADING_tape_left = 0;
 
-        // Token: 0x04000561 RID: 1377
         internal const int IMG_MENU_LOADING_tape_right = 1;
 
-        // Token: 0x04000562 RID: 1378
         internal const int IMG_MENU_LOADING_scotch = 2;
 
-        // Token: 0x04000563 RID: 1379
         internal const int IMG_MENU_LOADING_knife = 3;
 
-        // Token: 0x04000564 RID: 1380
         internal const int IMG_MENU_NOTIFICATION_body = 0;
 
-        // Token: 0x04000565 RID: 1381
         internal const int IMG_MENU_NOTIFICATION__text = 1;
 
-        // Token: 0x04000566 RID: 1382
         internal const int IMG_MENU_NOTIFICATION__unlocked = 2;
 
-        // Token: 0x04000567 RID: 1383
         internal const int IMG_MENU_NOTIFICATION__achievement = 3;
 
-        // Token: 0x04000568 RID: 1384
         internal const int IMG_MENU_NOTIFICATION__name = 4;
 
-        // Token: 0x04000569 RID: 1385
         internal const int IMG_MENU_ACHIEVEMENT_achievement_bronze_scissors = 0;
 
-        // Token: 0x0400056A RID: 1386
         internal const int IMG_MENU_ACHIEVEMENT_achievement_silver_scissors = 1;
 
-        // Token: 0x0400056B RID: 1387
         internal const int IMG_MENU_ACHIEVEMENT_achievement_golden_scissors = 2;
 
-        // Token: 0x0400056C RID: 1388
         internal const int IMG_MENU_ACHIEVEMENT_achievement_rope_cutter = 3;
 
-        // Token: 0x0400056D RID: 1389
         internal const int IMG_MENU_ACHIEVEMENT_achievement_rope_cutter_maniac = 4;
 
-        // Token: 0x0400056E RID: 1390
         internal const int IMG_MENU_ACHIEVEMENT_achievement_bubble_popper = 5;
 
-        // Token: 0x0400056F RID: 1391
         internal const int IMG_MENU_ACHIEVEMENT_achievement_spider_buster = 6;
 
-        // Token: 0x04000570 RID: 1392
         internal const int IMG_MENU_ACHIEVEMENT_achievement_weight_loser = 7;
 
-        // Token: 0x04000571 RID: 1393
         internal const int IMG_MENU_ACHIEVEMENT_achievement_quick_finger = 8;
 
-        // Token: 0x04000572 RID: 1394
         internal const int IMG_MENU_ACHIEVEMENT_achievement_master_finger = 9;
 
-        // Token: 0x04000573 RID: 1395
         internal const int IMG_MENU_ACHIEVEMENT_achievement_cardboard_box = 10;
 
-        // Token: 0x04000574 RID: 1396
         internal const int IMG_MENU_ACHIEVEMENT_achievement_fabric_box = 11;
 
-        // Token: 0x04000575 RID: 1397
         internal const int IMG_MENU_ACHIEVEMENT_achievement_foil_box = 12;
 
-        // Token: 0x04000576 RID: 1398
         internal const int IMG_MENU_ACHIEVEMENT_achievement_gift_box = 13;
 
-        // Token: 0x04000577 RID: 1399
         internal const int IMG_MENU_ACHIEVEMENT_achievement_cosmic_box = 14;
 
-        // Token: 0x04000578 RID: 1400
         internal const int IMG_MENU_ACHIEVEMENT_achievement_valentine_box = 15;
 
-        // Token: 0x04000579 RID: 1401
         internal const int IMG_MENU_ACHIEVEMENT_achievement_magic_box = 16;
 
-        // Token: 0x0400057A RID: 1402
         internal const int IMG_MENU_ACHIEVEMENT_achievement_toy_box = 17;
 
-        // Token: 0x0400057B RID: 1403
         internal const int IMG_MENU_ACHIEVEMENT_achievement_tool_box = 18;
 
-        // Token: 0x0400057C RID: 1404
         internal const int IMG_MENU_ACHIEVEMENT_achievement_buzz_box = 19;
 
-        // Token: 0x0400057D RID: 1405
         internal const int IMG_MENU_ACHIEVEMENT_achievement_dj_box = 20;
 
-        // Token: 0x0400057E RID: 1406
         internal const int IMG_MENU_ACHIEVEMENT_achievement_cardboard_box_perfe = 21;
 
-        // Token: 0x0400057F RID: 1407
         internal const int IMG_MENU_ACHIEVEMENT_achievement_fabric_box_perfect = 22;
 
-        // Token: 0x04000580 RID: 1408
         internal const int IMG_MENU_ACHIEVEMENT_achievement_foil_box_perfect = 23;
 
-        // Token: 0x04000581 RID: 1409
         internal const int IMG_MENU_ACHIEVEMENT_achievement_magic_box_perfect = 24;
 
-        // Token: 0x04000582 RID: 1410
         internal const int IMG_MENU_ACHIEVEMENT_achievement_cosmic_box_perfect = 25;
 
-        // Token: 0x04000583 RID: 1411
         internal const int IMG_MENU_ACHIEVEMENT_achievement_valentine_box_perfe = 26;
 
-        // Token: 0x04000584 RID: 1412
         internal const int IMG_MENU_ACHIEVEMENT_achievement_gift_box_perfect = 27;
 
-        // Token: 0x04000585 RID: 1413
         internal const int IMG_MENU_ACHIEVEMENT_achievement_toy_box_perfect = 28;
 
-        // Token: 0x04000586 RID: 1414
         internal const int IMG_MENU_ACHIEVEMENT_achievement_tool_box_perfect = 29;
 
-        // Token: 0x04000587 RID: 1415
         internal const int IMG_MENU_ACHIEVEMENT_achievement_buzz_box_perfect = 30;
 
-        // Token: 0x04000588 RID: 1416
         internal const int IMG_MENU_ACHIEVEMENT_achievement_dj_box_perfect = 31;
 
-        // Token: 0x04000589 RID: 1417
         internal const int IMG_MENU_ACHIEVEMENT_achievement_ultimate_rope_cutte = 32;
 
-        // Token: 0x0400058A RID: 1418
         internal const int IMG_MENU_ACHIEVEMENT_achievement_bubble_master = 33;
 
-        // Token: 0x0400058B RID: 1419
         internal const int IMG_MENU_ACHIEVEMENT_achievement_spider_tamer = 34;
 
-        // Token: 0x0400058C RID: 1420
         internal const int IMG_MENU_ACHIEVEMENT_achievement_calorie_minimizer = 35;
 
-        // Token: 0x0400058D RID: 1421
         internal const int IMG_MENU_ACHIEVEMENT_achievement_tummy_teaser = 36;
 
-        // Token: 0x0400058E RID: 1422
         internal const int IMG_MENU_ACHIEVEMENT_achievement_romantic_soul = 37;
 
-        // Token: 0x0400058F RID: 1423
         internal const int IMG_MENU_ACHIEVEMENT_achievement_magician = 38;
 
-        // Token: 0x04000590 RID: 1424
         internal const int IMG_MENU_ACHIEVEMENT_achievement_spider_lover = 39;
 
-        // Token: 0x04000591 RID: 1425
         internal const int IMG_MENU_ACHIEVEMENT_achievement_candy_juggler = 40;
 
-        // Token: 0x04000592 RID: 1426
         internal const int IMG_MENU_ACHIEVEMENT_empty_achievement = 41;
 
-        // Token: 0x04000593 RID: 1427
         internal const int IMG_MENU_ACHIEVEMENT__scrollbar = 42;
 
-        // Token: 0x04000594 RID: 1428
         internal const int IMG_MENU_ACHIEVEMENT__ach_description = 43;
 
-        // Token: 0x04000595 RID: 1429
         internal const int IMG_MENU_ACHIEVEMENT__ach_name = 44;
 
-        // Token: 0x04000596 RID: 1430
         internal const int IMG_MENU_ACHIEVEMENT__block_spacing = 45;
 
-        // Token: 0x04000597 RID: 1431
         internal const int IMG_MENU_ACHIEVEMENT__container_size = 46;
 
-        // Token: 0x04000598 RID: 1432
         internal const int IMG_MENU_ACHIEVEMENT__container = 47;
 
-        // Token: 0x04000599 RID: 1433
         internal const int IMG_MENU_OPTIONS_short_button_idle = 0;
 
-        // Token: 0x0400059A RID: 1434
         internal const int IMG_MENU_OPTIONS_short_button_pressed = 1;
 
-        // Token: 0x0400059B RID: 1435
         internal const int IMG_MENU_OPTIONS_sound_ico = 2;
 
-        // Token: 0x0400059C RID: 1436
         internal const int IMG_MENU_OPTIONS_music_ico = 3;
 
-        // Token: 0x0400059D RID: 1437
         internal const int IMG_MENU_OPTIONS_cross = 4;
 
-        // Token: 0x0400059E RID: 1438
         internal const int IMG_MENU_OPTIONS_image_drag_to_cut = 5;
 
-        // Token: 0x0400059F RID: 1439
         internal const int IMG_MENU_OPTIONS_image_click_to_cut = 6;
 
-        // Token: 0x040005A0 RID: 1440
         internal const int IMG_MENU_OPTIONS_check_left = 7;
 
-        // Token: 0x040005A1 RID: 1441
         internal const int IMG_MENU_OPTIONS_check_right = 8;
 
-        // Token: 0x040005A2 RID: 1442
         internal const int IMG_MENU_OPTIONS__title_click_to_cut = 9;
 
-        // Token: 0x040005A3 RID: 1443
         internal const int IMG_MENU_OPTIONS__title_drag_to_cut = 10;
 
-        // Token: 0x040005A4 RID: 1444
         internal const int IMG_MENU_OPTIONS__cross_sound = 11;
 
-        // Token: 0x040005A5 RID: 1445
         internal const int IMG_MENU_OPTIONS__short_button_left = 12;
 
-        // Token: 0x040005A6 RID: 1446
         internal const int STR_MENU_ABOUT_SPECIAL_THANKS = 655417;
 
-        // Token: 0x040005A7 RID: 1447
         internal const int STR_MENU_ABOUT_TEXT = 655416;
 
-        // Token: 0x040005A8 RID: 1448
         internal const int STR_MENU_ACHIEVEMENT_GAINED = 655396;
 
-        // Token: 0x040005A9 RID: 1449
         internal const int STR_MENU_ACHIEVEMENT_UNLOCKED = 655504;
 
-        // Token: 0x040005AA RID: 1450
         internal const int STR_MENU_QUIT = 655505;
 
-        // Token: 0x040005AB RID: 1451
         internal const int STR_MENU_QUIT_BUTTON = 655506;
 
-        // Token: 0x040005AC RID: 1452
         internal const int STR_MENU_FACEBOOK_BUTTON = 655507;
 
-        // Token: 0x040005AD RID: 1453
         internal const int STR_MENU_AC_BRONZE_SCISSORS = 655426;
 
-        // Token: 0x040005AE RID: 1454
         internal const int STR_MENU_AC_BRONZE_SCISSORS_DESCR = 655443;
 
-        // Token: 0x040005AF RID: 1455
         internal const int STR_MENU_AC_BUBBLE_MASTER = 655433;
 
-        // Token: 0x040005B0 RID: 1456
         internal const int STR_MENU_AC_BUBBLE_MASTER_DESCR = 655450;
 
-        // Token: 0x040005B1 RID: 1457
         internal const int STR_MENU_AC_BUBBLE_POPPER = 655432;
 
-        // Token: 0x040005B2 RID: 1458
         internal const int STR_MENU_AC_BUBBLE_POPPER_DESCR = 655449;
 
-        // Token: 0x040005B3 RID: 1459
         internal const int STR_MENU_AC_BUZZ_BOX_COMPLETED = 655469;
 
-        // Token: 0x040005B4 RID: 1460
         internal const int STR_MENU_AC_BUZZ_BOX_DESCR = 655491;
 
-        // Token: 0x040005B5 RID: 1461
         internal const int STR_MENU_AC_BUZZ_BOX_PERFECT = 655480;
 
-        // Token: 0x040005B6 RID: 1462
         internal const int STR_MENU_AC_BUZZ_BOX_PERFECT_DESCR = 655502;
 
-        // Token: 0x040005B7 RID: 1463
         internal const int STR_MENU_AC_CALORIE_MINIMIZER = 655437;
 
-        // Token: 0x040005B8 RID: 1464
         internal const int STR_MENU_AC_CALORIE_MINIMIZER_DESCR = 655454;
 
-        // Token: 0x040005B9 RID: 1465
         internal const int STR_MENU_AC_CARDBOARD_BOX_COMPLETED = 655460;
 
-        // Token: 0x040005BA RID: 1466
         internal const int STR_MENU_AC_CARDBOARD_BOX_DESCR = 655482;
 
-        // Token: 0x040005BB RID: 1467
         internal const int STR_MENU_AC_CARDBOARD_BOX_PERFECT = 655471;
 
-        // Token: 0x040005BC RID: 1468
         internal const int STR_MENU_AC_CARDBOARD_BOX_PERFECT_DESCR = 655493;
 
-        // Token: 0x040005BD RID: 1469
         internal const int STR_MENU_AC_COSMIC_BOX_COMPLETED = 655467;
 
-        // Token: 0x040005BE RID: 1470
         internal const int STR_MENU_AC_COSMIC_BOX_DESCR = 655489;
 
-        // Token: 0x040005BF RID: 1471
         internal const int STR_MENU_AC_COSMIC_BOX_PERFECT = 655478;
 
-        // Token: 0x040005C0 RID: 1472
         internal const int STR_MENU_AC_COSMIC_BOX_PERFECT_DESCR = 655500;
 
-        // Token: 0x040005C1 RID: 1473
         internal const int STR_MENU_AC_DJ_BOX_COMPLETED = 655470;
 
-        // Token: 0x040005C2 RID: 1474
         internal const int STR_MENU_AC_DJ_BOX_DESCR = 655492;
 
-        // Token: 0x040005C3 RID: 1475
         internal const int STR_MENU_AC_DJ_BOX_PERFECT = 655481;
 
-        // Token: 0x040005C4 RID: 1476
         internal const int STR_MENU_AC_DJ_BOX_PERFECT_DESCR = 655503;
 
-        // Token: 0x040005C5 RID: 1477
         internal const int STR_MENU_AC_FABRIC_BOX_COMPLETED = 655461;
 
-        // Token: 0x040005C6 RID: 1478
         internal const int STR_MENU_AC_FABRIC_BOX_DESCR = 655483;
 
-        // Token: 0x040005C7 RID: 1479
         internal const int STR_MENU_AC_FABRIC_BOX_PERFECT = 655472;
 
-        // Token: 0x040005C8 RID: 1480
         internal const int STR_MENU_AC_FABRIC_BOX_PERFECT_DESCR = 655494;
 
-        // Token: 0x040005C9 RID: 1481
         internal const int STR_MENU_AC_FOIL_BOX_COMPLETED = 655462;
 
-        // Token: 0x040005CA RID: 1482
         internal const int STR_MENU_AC_FOIL_BOX_DESCR = 655484;
 
-        // Token: 0x040005CB RID: 1483
         internal const int STR_MENU_AC_FOIL_BOX_PERFECT = 655473;
 
-        // Token: 0x040005CC RID: 1484
         internal const int STR_MENU_AC_FOIL_BOX_PERFECT_DESCR = 655495;
 
-        // Token: 0x040005CD RID: 1485
         internal const int STR_MENU_AC_GIFT_BOX_COMPLETED = 655466;
 
-        // Token: 0x040005CE RID: 1486
         internal const int STR_MENU_AC_GIFT_BOX_DESCR = 655488;
 
-        // Token: 0x040005CF RID: 1487
         internal const int STR_MENU_AC_GIFT_BOX_PERFECT = 655477;
 
-        // Token: 0x040005D0 RID: 1488
         internal const int STR_MENU_AC_GIFT_BOX_PERFECT_DESCR = 655499;
 
-        // Token: 0x040005D1 RID: 1489
         internal const int STR_MENU_AC_GOLDEN_SCISSORS = 655428;
 
-        // Token: 0x040005D2 RID: 1490
         internal const int STR_MENU_AC_GOLDEN_SCISSORS_DESCR = 655445;
 
-        // Token: 0x040005D3 RID: 1491
         internal const int STR_MENU_AC_MAGICIAN = 655442;
 
-        // Token: 0x040005D4 RID: 1492
         internal const int STR_MENU_AC_MAGICIAN_DESCR = 655459;
 
-        // Token: 0x040005D5 RID: 1493
         internal const int STR_MENU_AC_MAGIC_BOX_COMPLETED = 655463;
 
-        // Token: 0x040005D6 RID: 1494
         internal const int STR_MENU_AC_MAGIC_BOX_DESCR = 655485;
 
-        // Token: 0x040005D7 RID: 1495
         internal const int STR_MENU_AC_MAGIC_BOX_PERFECT = 655474;
 
-        // Token: 0x040005D8 RID: 1496
         internal const int STR_MENU_AC_MAGIC_BOX_PERFECT_DESCR = 655496;
 
-        // Token: 0x040005D9 RID: 1497
         internal const int STR_MENU_AC_MASTER_FINGER = 655439;
 
-        // Token: 0x040005DA RID: 1498
         internal const int STR_MENU_AC_MASTER_FINGER_DESCR = 655456;
 
-        // Token: 0x040005DB RID: 1499
         internal const int STR_MENU_AC_QUICK_FINGER = 655438;
 
-        // Token: 0x040005DC RID: 1500
         internal const int STR_MENU_AC_QUICK_FINGER_DESCR = 655455;
 
-        // Token: 0x040005DD RID: 1501
         internal const int STR_MENU_AC_ROMANTIC_SOUL = 655441;
 
-        // Token: 0x040005DE RID: 1502
         internal const int STR_MENU_AC_ROMANTIC_SOUL_DESCR = 655458;
 
-        // Token: 0x040005DF RID: 1503
         internal const int STR_MENU_AC_ROPE_CUTTER = 655429;
 
-        // Token: 0x040005E0 RID: 1504
         internal const int STR_MENU_AC_ROPE_CUTTER_DESCR = 655446;
 
-        // Token: 0x040005E1 RID: 1505
         internal const int STR_MENU_AC_ROPE_CUTTER_MANIAC = 655430;
 
-        // Token: 0x040005E2 RID: 1506
         internal const int STR_MENU_AC_ROPE_CUTTER_MANIAC_DESCR = 655447;
 
-        // Token: 0x040005E3 RID: 1507
         internal const int STR_MENU_AC_SILVER_SCISSORS = 655427;
 
-        // Token: 0x040005E4 RID: 1508
         internal const int STR_MENU_AC_SILVER_SCISSORS_DESCR = 655444;
 
-        // Token: 0x040005E5 RID: 1509
         internal const int STR_MENU_AC_SPIDER_BUSTER = 655434;
 
-        // Token: 0x040005E6 RID: 1510
         internal const int STR_MENU_AC_SPIDER_BUSTER_DESCR = 655451;
 
-        // Token: 0x040005E7 RID: 1511
         internal const int STR_MENU_AC_SPIDER_TAMER = 655435;
 
-        // Token: 0x040005E8 RID: 1512
         internal const int STR_MENU_AC_SPIDER_TAMER_DESCR = 655452;
 
-        // Token: 0x040005E9 RID: 1513
         internal const int STR_MENU_AC_TOOLBOX_COMPLETED = 655468;
 
-        // Token: 0x040005EA RID: 1514
         internal const int STR_MENU_AC_TOOLBOX_DESCR = 655490;
 
-        // Token: 0x040005EB RID: 1515
         internal const int STR_MENU_AC_TOOLBOX_PERFECT = 655479;
 
-        // Token: 0x040005EC RID: 1516
         internal const int STR_MENU_AC_TOOLBOX_PERFECT_DESCR = 655501;
 
-        // Token: 0x040005ED RID: 1517
         internal const int STR_MENU_AC_TOY_BOX_COMPLETED = 655465;
 
-        // Token: 0x040005EE RID: 1518
         internal const int STR_MENU_AC_TOY_BOX_DESCR = 655487;
 
-        // Token: 0x040005EF RID: 1519
         internal const int STR_MENU_AC_TOY_BOX_PERFECT = 655476;
 
-        // Token: 0x040005F0 RID: 1520
         internal const int STR_MENU_AC_TOY_BOX_PERFECT_DESCR = 655498;
 
-        // Token: 0x040005F1 RID: 1521
         internal const int STR_MENU_AC_TUMMY_TEASER = 655440;
 
-        // Token: 0x040005F2 RID: 1522
         internal const int STR_MENU_AC_TUMMY_TEASER_DESCR = 655457;
 
-        // Token: 0x040005F3 RID: 1523
         internal const int STR_MENU_AC_ULTIMATE_ROPE_CUTTER = 655431;
 
-        // Token: 0x040005F4 RID: 1524
         internal const int STR_MENU_AC_ULTIMATE_ROPE_CUTTER_DESCR = 655448;
 
-        // Token: 0x040005F5 RID: 1525
         internal const int STR_MENU_AC_VALENTINE_BOX_COMPLETED = 655464;
 
-        // Token: 0x040005F6 RID: 1526
         internal const int STR_MENU_AC_VALENTINE_BOX_DESCR = 655486;
 
-        // Token: 0x040005F7 RID: 1527
         internal const int STR_MENU_AC_VALENTINE_BOX_PERFECT = 655475;
 
-        // Token: 0x040005F8 RID: 1528
         internal const int STR_MENU_AC_VALENTINE_BOX_PERFECT_DESCR = 655497;
 
-        // Token: 0x040005F9 RID: 1529
         internal const int STR_MENU_AC_WEIGHT_LOSER = 655436;
 
-        // Token: 0x040005FA RID: 1530
         internal const int STR_MENU_AC_WEIGHT_LOSER_DESCR = 655453;
 
-        // Token: 0x040005FB RID: 1531
         internal const int STR_MENU_BEST_SCORE = 655380;
 
-        // Token: 0x040005FC RID: 1532
         internal const int STR_MENU_BOX10_LABEL = 655413;
 
-        // Token: 0x040005FD RID: 1533
         internal const int STR_MENU_BOX11_LABEL = 655414;
 
-        // Token: 0x040005FE RID: 1534
         internal const int STR_MENU_BOX1_LABEL = 655404;
 
-        // Token: 0x040005FF RID: 1535
         internal const int STR_MENU_BOX2_LABEL = 655405;
 
-        // Token: 0x04000600 RID: 1536
         internal const int STR_MENU_BOX3_LABEL = 655406;
 
-        // Token: 0x04000601 RID: 1537
         internal const int STR_MENU_BOX4_LABEL = 655407;
 
-        // Token: 0x04000602 RID: 1538
         internal const int STR_MENU_BOX5_LABEL = 655408;
 
-        // Token: 0x04000603 RID: 1539
         internal const int STR_MENU_BOX6_LABEL = 655409;
 
-        // Token: 0x04000604 RID: 1540
         internal const int STR_MENU_BOX7_LABEL = 655410;
 
-        // Token: 0x04000605 RID: 1541
         internal const int STR_MENU_BOX8_LABEL = 655411;
 
-        // Token: 0x04000606 RID: 1542
         internal const int STR_MENU_BOX9_LABEL = 655412;
 
-        // Token: 0x04000607 RID: 1543
         internal const int STR_MENU_BOX_SOON_LABEL = 655415;
 
-        // Token: 0x04000608 RID: 1544
         internal const int STR_MENU_CANCEL = 655403;
 
-        // Token: 0x04000609 RID: 1545
         internal const int STR_MENU_CANT_UNLOCK_TEXT1 = 655391;
 
-        // Token: 0x0400060A RID: 1546
         internal const int STR_MENU_CANT_UNLOCK_TEXT2 = 655392;
 
-        // Token: 0x0400060B RID: 1547
         internal const int STR_MENU_CANT_UNLOCK_TEXT3 = 655393;
 
-        // Token: 0x0400060C RID: 1548
         internal const int STR_MENU_CHANGE_TITLE = 655424;
 
-        // Token: 0x0400060D RID: 1549
         internal const int STR_MENU_CLICK_TO_CUT = 655422;
 
-        // Token: 0x0400060E RID: 1550
         internal const int STR_MENU_CONTINUE = 655397;
 
-        // Token: 0x0400060F RID: 1551
         internal const int STR_MENU_CREDITS = 655365;
 
-        // Token: 0x04000610 RID: 1552
         internal const int STR_MENU_CRYSTAL = 655366;
 
-        // Token: 0x04000611 RID: 1553
         internal const int STR_MENU_DRAG_TO_CUT = 655423;
 
-        // Token: 0x04000612 RID: 1554
         internal const int STR_MENU_EXTRAS = 655362;
 
-        // Token: 0x04000613 RID: 1555
         internal const int STR_MENU_FINAL_SCORE = 655379;
 
-        // Token: 0x04000614 RID: 1556
         internal const int STR_MENU_FULL_VERSION = 655363;
 
-        // Token: 0x04000615 RID: 1557
         internal const int STR_MENU_GAME_FINISHED_TEXT = 655394;
 
-        // Token: 0x04000616 RID: 1558
         internal const int STR_MENU_GAME_FINISHED_TEXT2 = 655395;
 
-        // Token: 0x04000617 RID: 1559
         internal const int STR_MENU_LANGUAGE = 655370;
 
-        // Token: 0x04000618 RID: 1560
         internal const int STR_MENU_LEADERBOARD_EDIT = 655420;
 
-        // Token: 0x04000619 RID: 1561
         internal const int STR_MENU_LEADERBOARD_NAME = 655418;
 
-        // Token: 0x0400061A RID: 1562
         internal const int STR_MENU_LEADERBOARD_NO_DATA = 655421;
 
-        // Token: 0x0400061B RID: 1563
         internal const int STR_MENU_LEADERBOARD_SCORE = 655419;
 
-        // Token: 0x0400061C RID: 1564
         internal const int STR_MENU_LEVEL = 655376;
 
-        // Token: 0x0400061D RID: 1565
         internal const int STR_MENU_LEVEL_CLEARED1 = 655372;
 
-        // Token: 0x0400061E RID: 1566
         internal const int STR_MENU_LEVEL_CLEARED2 = 655373;
 
-        // Token: 0x0400061F RID: 1567
         internal const int STR_MENU_LEVEL_CLEARED3 = 655374;
 
-        // Token: 0x04000620 RID: 1568
         internal const int STR_MENU_LEVEL_CLEARED4 = 655375;
 
-        // Token: 0x04000621 RID: 1569
         internal const int STR_MENU_LEVEL_SELECT = 655399;
 
-        // Token: 0x04000622 RID: 1570
         internal const int STR_MENU_LOADING = 655387;
 
-        // Token: 0x04000623 RID: 1571
         internal const int STR_MENU_MAIN_MENU = 655400;
 
-        // Token: 0x04000624 RID: 1572
         internal const int STR_MENU_MENU = 655386;
 
-        // Token: 0x04000625 RID: 1573
         internal const int STR_MENU_MUSIC_OFF = 655367;
 
-        // Token: 0x04000626 RID: 1574
         internal const int STR_MENU_NEXT = 655385;
 
-        // Token: 0x04000627 RID: 1575
         internal const int STR_MENU_NO = 655383;
 
-        // Token: 0x04000628 RID: 1576
         internal const int STR_MENU_OK = 655389;
 
-        // Token: 0x04000629 RID: 1577
         internal const int STR_MENU_OPTIONS = 655361;
 
-        // Token: 0x0400062A RID: 1578
         internal const int STR_MENU_PLAY = 655360;
 
-        // Token: 0x0400062B RID: 1579
         internal const int STR_MENU_PROCESSING = 655425;
 
-        // Token: 0x0400062C RID: 1580
         internal const int STR_MENU_RATEME_TEXT = 655402;
 
-        // Token: 0x0400062D RID: 1581
         internal const int STR_MENU_RATEME_TITLE = 655401;
 
-        // Token: 0x0400062E RID: 1582
         internal const int STR_MENU_REPLAY = 655384;
 
-        // Token: 0x0400062F RID: 1583
         internal const int STR_MENU_RESET = 655364;
 
-        // Token: 0x04000630 RID: 1584
         internal const int STR_MENU_RESET_TEXT = 655371;
 
-        // Token: 0x04000631 RID: 1585
         internal const int STR_MENU_SCORE = 655381;
 
-        // Token: 0x04000632 RID: 1586
         internal const int STR_MENU_SKIP_LEVEL = 655398;
 
-        // Token: 0x04000633 RID: 1587
         internal const int STR_MENU_SOUNDS_OFF = 655369;
 
-        // Token: 0x04000634 RID: 1588
         internal const int STR_MENU_SOUNDS_ON = 655368;
 
-        // Token: 0x04000635 RID: 1589
         internal const int STR_MENU_STAR_BONUS = 655378;
 
-        // Token: 0x04000636 RID: 1590
         internal const int STR_MENU_TIME = 655377;
 
-        // Token: 0x04000637 RID: 1591
         internal const int STR_MENU_TOTAL_STARS = 655388;
 
-        // Token: 0x04000638 RID: 1592
         internal const int STR_MENU_UNLOCK_HINT = 655390;
 
-        // Token: 0x04000639 RID: 1593
         internal const int STR_MENU_YES = 655382;
 
-        // Token: 0x0400063A RID: 1594
         internal const int IMG_MENU_BGR_bgr_default = 0;
 
-        // Token: 0x0400063B RID: 1595
         internal const int IMG_MENU_BGR_bgr_main_menu = 1;
 
-        // Token: 0x0400063C RID: 1596
         internal const int IMG_MENU_POPUP_popup = 0;
 
-        // Token: 0x0400063D RID: 1597
         internal const int IMG_MENU_POPUP_text_1 = 1;
 
-        // Token: 0x0400063E RID: 1598
         internal const int IMG_MENU_POPUP_text_2 = 2;
 
-        // Token: 0x0400063F RID: 1599
         internal const int IMG_MENU_POPUP_text_3 = 3;
 
-        // Token: 0x04000640 RID: 1600
         internal const int IMG_MENU_POPUP_button = 4;
 
-        // Token: 0x04000641 RID: 1601
         internal const int IMG_MENU_POPUP_stars_value = 5;
 
-        // Token: 0x04000642 RID: 1602
         internal const int IMG_MENU_LOGO_logo = 0;
 
-        // Token: 0x04000643 RID: 1603
         internal const int IMG_MENU_LOGO_zeptolab_logo = 1;
 
-        // Token: 0x04000644 RID: 1604
         internal const int IMG_MENU_LOGO_sm_logo = 2;
 
-        // Token: 0x04000645 RID: 1605
         internal const int IMG_MENU_LEVEL_SELECTION_level_playable = 0;
 
-        // Token: 0x04000646 RID: 1606
         internal const int IMG_MENU_LEVEL_SELECTION_level_locked = 1;
 
-        // Token: 0x04000647 RID: 1607
         internal const int IMG_MENU_LEVEL_SELECTION_stars_0 = 2;
 
-        // Token: 0x04000648 RID: 1608
         internal const int IMG_MENU_LEVEL_SELECTION_stars_1 = 3;
 
-        // Token: 0x04000649 RID: 1609
         internal const int IMG_MENU_LEVEL_SELECTION_stars_2 = 4;
 
-        // Token: 0x0400064A RID: 1610
         internal const int IMG_MENU_LEVEL_SELECTION_stars_3 = 5;
 
-        // Token: 0x0400064B RID: 1611
         internal const int IMG_MENU_PACK_SELECTION_box_back_01 = 0;
 
-        // Token: 0x0400064C RID: 1612
         internal const int IMG_MENU_PACK_SELECTION_monster_01 = 1;
 
-        // Token: 0x0400064D RID: 1613
         internal const int IMG_MENU_PACK_SELECTION_lock = 2;
 
-        // Token: 0x0400064E RID: 1614
         internal const int IMG_MENU_PACK_SELECTION_star = 3;
 
-        // Token: 0x0400064F RID: 1615
         internal const int IMG_MENU_PACK_SELECTION_box_01 = 4;
 
-        // Token: 0x04000650 RID: 1616
         internal const int IMG_MENU_PACK_SELECTION_box_02 = 5;
 
-        // Token: 0x04000651 RID: 1617
         internal const int IMG_MENU_PACK_SELECTION_box_03 = 6;
 
-        // Token: 0x04000652 RID: 1618
         internal const int IMG_MENU_PACK_SELECTION_box_04_ = 7;
 
-        // Token: 0x04000653 RID: 1619
         internal const int IMG_MENU_PACK_SELECTION_box_05 = 8;
 
-        // Token: 0x04000654 RID: 1620
         internal const int IMG_MENU_PACK_SELECTION_box_06 = 9;
 
-        // Token: 0x04000655 RID: 1621
         internal const int IMG_MENU_PACK_SELECTION_box_07 = 10;
 
-        // Token: 0x04000656 RID: 1622
         internal const int IMG_MENU_PACK_SELECTION_slon_down = 11;
 
-        // Token: 0x04000657 RID: 1623
         internal const int IMG_MENU_PACK_SELECTION_slot_up = 12;
 
-        // Token: 0x04000658 RID: 1624
         internal const int IMG_MENU_PACK_SELECTION_arrow_left = 13;
 
-        // Token: 0x04000659 RID: 1625
         internal const int IMG_MENU_PACK_SELECTION_arrow_left_actve = 14;
 
-        // Token: 0x0400065A RID: 1626
         internal const int IMG_MENU_PACK_SELECTION2_box_07 = 0;
 
-        // Token: 0x0400065B RID: 1627
         internal const int IMG_MENU_PACK_SELECTION2_box_08 = 1;
 
-        // Token: 0x0400065C RID: 1628
         internal const int IMG_MENU_PACK_SELECTION2_box_09 = 2;
 
-        // Token: 0x0400065D RID: 1629
         internal const int IMG_MENU_PACK_SELECTION2_box_10 = 3;
 
-        // Token: 0x0400065E RID: 1630
         internal const int IMG_MENU_PACK_SELECTION2_box_11 = 4;
 
-        // Token: 0x0400065F RID: 1631
         internal const int IMG_MENU_PACK_SELECTION2_box_soon = 5;
 
-        // Token: 0x04000660 RID: 1632
         internal const int IMG_MENU_EXTRA_BUTTONS_back_idle = 0;
 
-        // Token: 0x04000661 RID: 1633
         internal const int IMG_MENU_EXTRA_BUTTONS_back_pressed = 1;
 
-        // Token: 0x04000662 RID: 1634
         internal const int IMG_MENU_EXTRA_BUTTONS_button_facebook = 2;
 
-        // Token: 0x04000663 RID: 1635
         internal const int IMG_MENU_EXTRA_BUTTONS_button_twitter = 3;
 
-        // Token: 0x04000664 RID: 1636
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_ru = 4;
 
-        // Token: 0x04000665 RID: 1637
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_de = 5;
 
-        // Token: 0x04000666 RID: 1638
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_fr = 6;
 
-        // Token: 0x04000667 RID: 1639
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_en = 7;
 
-        // Token: 0x04000668 RID: 1640
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_ja = 8;
 
-        // Token: 0x04000669 RID: 1641
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_zh = 9;
 
-        // Token: 0x0400066A RID: 1642
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_ko = 10;
 
-        // Token: 0x0400066B RID: 1643
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_es = 11;
 
-        // Token: 0x0400066C RID: 1644
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_br = 12;
 
-        // Token: 0x0400066D RID: 1645
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_it = 13;
 
-        // Token: 0x0400066E RID: 1646
         internal const int IMG_MENU_EXTRA_BUTTONS_lang_nl = 14;
 
-        // Token: 0x0400066F RID: 1647
         internal const int IMG_MENU_SCROLLBAR_scroll_mini = 0;
 
-        // Token: 0x04000670 RID: 1648
         internal const int IMG_MENU_SCROLLBAR_scroll_big = 1;
 
-        // Token: 0x04000671 RID: 1649
         internal const int IMG_MENU_SCROLLBAR_candy_idle = 2;
 
-        // Token: 0x04000672 RID: 1650
         internal const int IMG_MENU_SCROLLBAR_candy_pressed = 3;
 
-        // Token: 0x04000673 RID: 1651
         internal const int IMG_MENU_LEADERBOARD_edit_button = 0;
 
-        // Token: 0x04000674 RID: 1652
         internal const int IMG_MENU_LEADERBOARD_place = 1;
 
-        // Token: 0x04000675 RID: 1653
         internal const int IMG_MENU_LEADERBOARD__scrollbar = 2;
 
-        // Token: 0x04000676 RID: 1654
         internal const int IMG_MENU_LEADERBOARD__place = 3;
 
-        // Token: 0x04000677 RID: 1655
         internal const int IMG_MENU_LEADERBOARD__number = 4;
 
-        // Token: 0x04000678 RID: 1656
         internal const int IMG_MENU_LEADERBOARD___block_spacing = 5;
 
-        // Token: 0x04000679 RID: 1657
         internal const int IMG_MENU_LEADERBOARD__name = 6;
 
-        // Token: 0x0400067A RID: 1658
         internal const int IMG_MENU_LEADERBOARD__center_title_box = 7;
 
-        // Token: 0x0400067B RID: 1659
         internal const int IMG_MENU_LEADERBOARD__center_control = 8;
 
-        // Token: 0x0400067C RID: 1660
         internal const int IMG_MENU_LEADERBOARD__title_name = 9;
 
-        // Token: 0x0400067D RID: 1661
         internal const int IMG_MENU_LEADERBOARD__title_score = 10;
 
-        // Token: 0x0400067E RID: 1662
         internal const int IMG_MENU_LEADERBOARD__score = 11;
 
-        // Token: 0x0400067F RID: 1663
         internal const int IMG_MENU_LEADERBOARD_title_decor = 12;
 
-        // Token: 0x04000680 RID: 1664
         internal const int IMG_MENU_LEADERBOARD__container = 13;
 
-        // Token: 0x04000681 RID: 1665
         internal const int IMG_MENU_LEADERBOARD__container_size = 14;
 
-        // Token: 0x04000682 RID: 1666
         internal const int IMG_MENU_PROCESSING_candy = 0;
 
-        // Token: 0x04000683 RID: 1667
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME_back = 0;
 
-        // Token: 0x04000684 RID: 1668
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME_cursor = 1;
 
-        // Token: 0x04000685 RID: 1669
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME_short_pressed = 2;
 
-        // Token: 0x04000686 RID: 1670
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME_short_idle = 3;
 
-        // Token: 0x04000687 RID: 1671
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__short_pressed2 = 4;
 
-        // Token: 0x04000688 RID: 1672
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__short_idle2 = 5;
 
-        // Token: 0x04000689 RID: 1673
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__name = 6;
 
-        // Token: 0x0400068A RID: 1674
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__description = 7;
 
-        // Token: 0x0400068B RID: 1675
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__title = 8;
 
-        // Token: 0x0400068C RID: 1676
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__cancel_button = 9;
 
-        // Token: 0x0400068D RID: 1677
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__accept_button = 10;
 
-        // Token: 0x0400068E RID: 1678
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__container_start = 11;
 
-        // Token: 0x0400068F RID: 1679
         internal const int IMG_MENU_SCROLLBAR_CHANGENAME__container_end = 12;
 
-        // Token: 0x04000690 RID: 1680
         internal const int IMG_MENU_BUTTON_ACHIV_CUP_button_idle = 0;
 
-        // Token: 0x04000691 RID: 1681
         internal const int IMG_MENU_BUTTON_ACHIV_CUP_button_pressed = 1;
 
-        // Token: 0x04000692 RID: 1682
         internal const int IMG_MENU_BUTTON_ACHIV_CUP_stars = 2;
 
-        // Token: 0x04000693 RID: 1683
         internal const int IMG_MENU_BUTTON_ACHIV_CUP_cup = 3;
 
-        // Token: 0x04000694 RID: 1684
         internal const int IMG_MENU_BGR_SHADOW_bgr_shadow = 0;
 
-        // Token: 0x04000695 RID: 1685
         internal const int IMG_MENU_BUTTON_SHORT_short_pressed = 0;
 
-        // Token: 0x04000696 RID: 1686
         internal const int IMG_MENU_BUTTON_SHORT_short_idle = 1;
 
-        // Token: 0x04000697 RID: 1687
         internal const int IMG_HUD_BUTTONS_restart = 0;
 
-        // Token: 0x04000698 RID: 1688
         internal const int IMG_HUD_BUTTONS_restart_touch = 1;
 
-        // Token: 0x04000699 RID: 1689
         internal const int IMG_OBJ_CANDY_01_candy_bottom = 0;
 
-        // Token: 0x0400069A RID: 1690
         internal const int IMG_OBJ_CANDY_01_candy_main = 1;
 
-        // Token: 0x0400069B RID: 1691
         internal const int IMG_OBJ_CANDY_01_candy_top = 2;
 
-        // Token: 0x0400069C RID: 1692
         internal const int IMG_OBJ_CANDY_01_piece_01 = 3;
 
-        // Token: 0x0400069D RID: 1693
         internal const int IMG_OBJ_CANDY_01_piece_02 = 4;
 
-        // Token: 0x0400069E RID: 1694
         internal const int IMG_OBJ_CANDY_01_piece_03 = 5;
 
-        // Token: 0x0400069F RID: 1695
         internal const int IMG_OBJ_CANDY_01_piece_04 = 6;
 
-        // Token: 0x040006A0 RID: 1696
         internal const int IMG_OBJ_CANDY_01_piece_05 = 7;
 
-        // Token: 0x040006A1 RID: 1697
         internal const int IMG_OBJ_CANDY_01_highlight_start = 8;
 
-        // Token: 0x040006A2 RID: 1698
         internal const int IMG_OBJ_CANDY_01_highlight_end = 17;
 
-        // Token: 0x040006A3 RID: 1699
         internal const int IMG_OBJ_CANDY_01_glow = 18;
 
-        // Token: 0x040006A4 RID: 1700
         internal const int IMG_OBJ_CANDY_01_part_1 = 19;
 
-        // Token: 0x040006A5 RID: 1701
         internal const int IMG_OBJ_CANDY_01_part_2 = 20;
 
-        // Token: 0x040006A6 RID: 1702
         internal const int IMG_OBJ_CANDY_01_part_fx_start = 21;
 
-        // Token: 0x040006A7 RID: 1703
         internal const int IMG_OBJ_CANDY_01_part_fx_end = 25;
 
-        // Token: 0x040006A8 RID: 1704
         internal const int IMG_OBJ_SPIDER_activation_start = 0;
 
-        // Token: 0x040006A9 RID: 1705
         internal const int IMG_OBJ_SPIDER_activation_end = 6;
 
-        // Token: 0x040006AA RID: 1706
         internal const int IMG_OBJ_SPIDER_crawl_start = 7;
 
-        // Token: 0x040006AB RID: 1707
         internal const int IMG_OBJ_SPIDER_crawl_end = 10;
 
-        // Token: 0x040006AC RID: 1708
         internal const int IMG_OBJ_SPIDER_busted = 11;
 
-        // Token: 0x040006AD RID: 1709
         internal const int IMG_OBJ_SPIDER_stealing = 12;
 
-        // Token: 0x040006AE RID: 1710
         internal const int IMG_CONFETTI_PARTICLES_particle_3_start = 0;
 
-        // Token: 0x040006AF RID: 1711
         internal const int IMG_CONFETTI_PARTICLES_particle_3_end = 8;
 
-        // Token: 0x040006B0 RID: 1712
         internal const int IMG_CONFETTI_PARTICLES_particle_2_start = 9;
 
-        // Token: 0x040006B1 RID: 1713
         internal const int IMG_CONFETTI_PARTICLES_particle_2_end = 17;
 
-        // Token: 0x040006B2 RID: 1714
         internal const int IMG_CONFETTI_PARTICLES_particle_1_start = 18;
 
-        // Token: 0x040006B3 RID: 1715
         internal const int IMG_CONFETTI_PARTICLES_particle_1_end = 26;
 
-        // Token: 0x040006B4 RID: 1716
         internal const int IMG_MENU_PAUSE_screen_top = 0;
 
-        // Token: 0x040006B5 RID: 1717
         internal const int IMG_MENU_RESULT_p_star_1 = 0;
 
-        // Token: 0x040006B6 RID: 1718
         internal const int IMG_MENU_RESULT_p_star_2 = 1;
 
-        // Token: 0x040006B7 RID: 1719
         internal const int IMG_MENU_RESULT_p_star_3 = 2;
 
-        // Token: 0x040006B8 RID: 1720
         internal const int IMG_MENU_RESULT_p_title = 3;
 
-        // Token: 0x040006B9 RID: 1721
         internal const int IMG_MENU_RESULT_p_line_1 = 4;
 
-        // Token: 0x040006BA RID: 1722
         internal const int IMG_MENU_RESULT_p_data = 5;
 
-        // Token: 0x040006BB RID: 1723
         internal const int IMG_MENU_RESULT_p_data_value = 6;
 
-        // Token: 0x040006BC RID: 1724
         internal const int IMG_MENU_RESULT_p_final = 7;
 
-        // Token: 0x040006BD RID: 1725
         internal const int IMG_MENU_RESULT_p_score_value = 8;
 
-        // Token: 0x040006BE RID: 1726
         internal const int IMG_MENU_RESULT_p_button_3 = 9;
 
-        // Token: 0x040006BF RID: 1727
         internal const int IMG_MENU_RESULT_p_button_2 = 10;
 
-        // Token: 0x040006C0 RID: 1728
         internal const int IMG_MENU_RESULT_p_button_1 = 11;
 
-        // Token: 0x040006C1 RID: 1729
         internal const int IMG_MENU_RESULT_p_stamp = 12;
 
-        // Token: 0x040006C2 RID: 1730
         internal const int IMG_MENU_RESULT_star = 13;
 
-        // Token: 0x040006C3 RID: 1731
         internal const int IMG_MENU_RESULT_star_empty = 14;
 
-        // Token: 0x040006C4 RID: 1732
         internal const int IMG_MENU_RESULT_line = 15;
 
-        // Token: 0x040006C5 RID: 1733
         internal const int IMG_MENU_RESULT_dark_area = 16;
 
-        // Token: 0x040006C6 RID: 1734
         internal const int IMG_HUD_BUTTONS_EN_menu = 0;
 
-        // Token: 0x040006C7 RID: 1735
         internal const int IMG_HUD_BUTTONS_EN_menu_touch = 1;
 
-        // Token: 0x040006C8 RID: 1736
         internal const int IMG_MENU_RESULT_EN_en = 0;
 
-        // Token: 0x040006C9 RID: 1737
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_1 = 0;
 
-        // Token: 0x040006CA RID: 1738
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_2 = 1;
 
-        // Token: 0x040006CB RID: 1739
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_3 = 2;
 
-        // Token: 0x040006CC RID: 1740
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_4 = 3;
 
-        // Token: 0x040006CD RID: 1741
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_5 = 4;
 
-        // Token: 0x040006CE RID: 1742
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_6 = 5;
 
-        // Token: 0x040006CF RID: 1743
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_7 = 6;
 
-        // Token: 0x040006D0 RID: 1744
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_8 = 7;
 
-        // Token: 0x040006D1 RID: 1745
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_9 = 8;
 
-        // Token: 0x040006D2 RID: 1746
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_10 = 9;
 
-        // Token: 0x040006D3 RID: 1747
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_11 = 10;
 
-        // Token: 0x040006D4 RID: 1748
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_12 = 11;
 
-        // Token: 0x040006D5 RID: 1749
         internal const int IMG_OBJ_STAR_DISAPPEAR_Frame_13 = 12;
 
-        // Token: 0x040006D6 RID: 1750
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_1 = 0;
 
-        // Token: 0x040006D7 RID: 1751
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_2 = 1;
 
-        // Token: 0x040006D8 RID: 1752
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_3 = 2;
 
-        // Token: 0x040006D9 RID: 1753
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_4 = 3;
 
-        // Token: 0x040006DA RID: 1754
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_5 = 4;
 
-        // Token: 0x040006DB RID: 1755
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_6 = 5;
 
-        // Token: 0x040006DC RID: 1756
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_7 = 6;
 
-        // Token: 0x040006DD RID: 1757
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_8 = 7;
 
-        // Token: 0x040006DE RID: 1758
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_9 = 8;
 
-        // Token: 0x040006DF RID: 1759
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_10 = 9;
 
-        // Token: 0x040006E0 RID: 1760
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_11 = 10;
 
-        // Token: 0x040006E1 RID: 1761
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_12 = 11;
 
-        // Token: 0x040006E2 RID: 1762
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_13 = 12;
 
-        // Token: 0x040006E3 RID: 1763
         internal const int IMG_OBJ_BUBBLE_FLIGHT_Frame_14 = 13;
 
-        // Token: 0x040006E4 RID: 1764
         internal const int IMG_OBJ_BUBBLE_POP_Frame_1 = 0;
 
-        // Token: 0x040006E5 RID: 1765
         internal const int IMG_OBJ_BUBBLE_POP_Frame_2 = 1;
 
-        // Token: 0x040006E6 RID: 1766
         internal const int IMG_OBJ_BUBBLE_POP_Frame_3 = 2;
 
-        // Token: 0x040006E7 RID: 1767
         internal const int IMG_OBJ_BUBBLE_POP_Frame_4 = 3;
 
-        // Token: 0x040006E8 RID: 1768
         internal const int IMG_OBJ_BUBBLE_POP_Frame_5 = 4;
 
-        // Token: 0x040006E9 RID: 1769
         internal const int IMG_OBJ_BUBBLE_POP_Frame_6 = 5;
 
-        // Token: 0x040006EA RID: 1770
         internal const int IMG_OBJ_BUBBLE_POP_Frame_7 = 6;
 
-        // Token: 0x040006EB RID: 1771
         internal const int IMG_OBJ_BUBBLE_POP_Frame_8 = 7;
 
-        // Token: 0x040006EC RID: 1772
         internal const int IMG_OBJ_BUBBLE_POP_Frame_9 = 8;
 
-        // Token: 0x040006ED RID: 1773
         internal const int IMG_OBJ_BUBBLE_POP_Frame_10 = 9;
 
-        // Token: 0x040006EE RID: 1774
         internal const int IMG_OBJ_BUBBLE_POP_Frame_11 = 10;
 
-        // Token: 0x040006EF RID: 1775
         internal const int IMG_OBJ_BUBBLE_POP_Frame_12 = 11;
 
-        // Token: 0x040006F0 RID: 1776
         internal const int IMG_OBJ_HOOK_AUTO_bottom = 0;
 
-        // Token: 0x040006F1 RID: 1777
         internal const int IMG_OBJ_HOOK_AUTO_top = 1;
 
-        // Token: 0x040006F2 RID: 1778
         internal const int IMG_OBJ_BUBBLE_ATTACHED_bubble = 0;
 
-        // Token: 0x040006F3 RID: 1779
         internal const int IMG_OBJ_BUBBLE_ATTACHED_stain_01 = 1;
 
-        // Token: 0x040006F4 RID: 1780
         internal const int IMG_OBJ_BUBBLE_ATTACHED_stain_02 = 2;
 
-        // Token: 0x040006F5 RID: 1781
         internal const int IMG_OBJ_BUBBLE_ATTACHED_stain_03 = 3;
 
-        // Token: 0x040006F6 RID: 1782
         internal const int IMG_OBJ_HOOK_01_bottom = 0;
 
-        // Token: 0x040006F7 RID: 1783
         internal const int IMG_OBJ_HOOK_01_top = 1;
 
-        // Token: 0x040006F8 RID: 1784
         internal const int IMG_OBJ_HOOK_02_bottom = 0;
 
-        // Token: 0x040006F9 RID: 1785
         internal const int IMG_OBJ_HOOK_02_top = 1;
 
-        // Token: 0x040006FA RID: 1786
         internal const int IMG_OBJ_STAR_IDLE_glow = 0;
 
-        // Token: 0x040006FB RID: 1787
         internal const int IMG_OBJ_STAR_IDLE_idle_start = 1;
 
-        // Token: 0x040006FC RID: 1788
         internal const int IMG_OBJ_STAR_IDLE_idle_end = 18;
 
-        // Token: 0x040006FD RID: 1789
         internal const int IMG_OBJ_STAR_IDLE_timed_start = 19;
 
-        // Token: 0x040006FE RID: 1790
         internal const int IMG_OBJ_STAR_IDLE_timed_end = 55;
 
-        // Token: 0x040006FF RID: 1791
         internal const int IMG_OBJ_STAR_IDLE_gravity_down = 56;
 
-        // Token: 0x04000700 RID: 1792
         internal const int IMG_OBJ_STAR_IDLE_gravity_up = 57;
 
-        // Token: 0x04000701 RID: 1793
         internal const int IMG_OBJ_STAR_IDLE_window = 58;
 
-        // Token: 0x04000702 RID: 1794
         internal const int IMG_HUD_STAR_Frame_1 = 0;
 
-        // Token: 0x04000703 RID: 1795
         internal const int IMG_HUD_STAR_Frame_2 = 1;
 
-        // Token: 0x04000704 RID: 1796
         internal const int IMG_HUD_STAR_Frame_3 = 2;
 
-        // Token: 0x04000705 RID: 1797
         internal const int IMG_HUD_STAR_Frame_4 = 3;
 
-        // Token: 0x04000706 RID: 1798
         internal const int IMG_HUD_STAR_Frame_5 = 4;
 
-        // Token: 0x04000707 RID: 1799
         internal const int IMG_HUD_STAR_Frame_6 = 5;
 
-        // Token: 0x04000708 RID: 1800
         internal const int IMG_HUD_STAR_Frame_7 = 6;
 
-        // Token: 0x04000709 RID: 1801
         internal const int IMG_HUD_STAR_Frame_8 = 7;
 
-        // Token: 0x0400070A RID: 1802
         internal const int IMG_HUD_STAR_Frame_9 = 8;
 
-        // Token: 0x0400070B RID: 1803
         internal const int IMG_HUD_STAR_Frame_10 = 9;
 
-        // Token: 0x0400070C RID: 1804
         internal const int IMG_HUD_STAR_Frame_11 = 10;
 
-        // Token: 0x0400070D RID: 1805
         internal const int IMG_CHAR_ANIMATIONS_idle_start = 0;
 
-        // Token: 0x0400070E RID: 1806
         internal const int IMG_CHAR_ANIMATIONS_idle_end = 18;
 
-        // Token: 0x0400070F RID: 1807
         internal const int IMG_CHAR_ANIMATIONS_mouth_open_start = 19;
 
-        // Token: 0x04000710 RID: 1808
         internal const int IMG_CHAR_ANIMATIONS_mouth_open_end = 27;
 
-        // Token: 0x04000711 RID: 1809
         internal const int IMG_CHAR_ANIMATIONS_mouth_close_start = 28;
 
-        // Token: 0x04000712 RID: 1810
         internal const int IMG_CHAR_ANIMATIONS_mouth_close_end = 31;
 
-        // Token: 0x04000713 RID: 1811
         internal const int IMG_CHAR_ANIMATIONS_chew_start = 32;
 
-        // Token: 0x04000714 RID: 1812
         internal const int IMG_CHAR_ANIMATIONS_chew_end = 40;
 
-        // Token: 0x04000715 RID: 1813
         internal const int IMG_CHAR_ANIMATIONS_blink_start = 41;
 
-        // Token: 0x04000716 RID: 1814
         internal const int IMG_CHAR_ANIMATIONS_blink_end = 42;
 
-        // Token: 0x04000717 RID: 1815
         internal const int IMG_CHAR_ANIMATIONS_idle2_start = 43;
 
-        // Token: 0x04000718 RID: 1816
         internal const int IMG_CHAR_ANIMATIONS_idle2_end = 67;
 
-        // Token: 0x04000719 RID: 1817
         internal const int IMG_CHAR_ANIMATIONS_idle3_start = 68;
 
-        // Token: 0x0400071A RID: 1818
         internal const int IMG_CHAR_ANIMATIONS_idle3_end = 83;
 
-        // Token: 0x0400071B RID: 1819
         internal const int IMG_OBJ_HOOK_REGULATED_bottom = 0;
 
-        // Token: 0x0400071C RID: 1820
         internal const int IMG_OBJ_HOOK_REGULATED_rope = 1;
 
-        // Token: 0x0400071D RID: 1821
         internal const int IMG_OBJ_HOOK_REGULATED_active = 2;
 
-        // Token: 0x0400071E RID: 1822
         internal const int IMG_OBJ_HOOK_REGULATED_top = 3;
 
-        // Token: 0x0400071F RID: 1823
         internal const int IMG_OBJ_HOOK_MOVABLE_bottom_tile_left = 0;
 
-        // Token: 0x04000720 RID: 1824
         internal const int IMG_OBJ_HOOK_MOVABLE_bottom_tile_right = 1;
 
-        // Token: 0x04000721 RID: 1825
         internal const int IMG_OBJ_HOOK_MOVABLE_bottom_tile_middle = 2;
 
-        // Token: 0x04000722 RID: 1826
         internal const int IMG_OBJ_HOOK_MOVABLE_active = 3;
 
-        // Token: 0x04000723 RID: 1827
         internal const int IMG_OBJ_HOOK_MOVABLE_top = 4;
 
-        // Token: 0x04000724 RID: 1828
         internal const int IMG_OBJ_PUMP_pump_start = 0;
 
-        // Token: 0x04000725 RID: 1829
         internal const int IMG_OBJ_PUMP_pump_end = 5;
 
-        // Token: 0x04000726 RID: 1830
         internal const int IMG_OBJ_PUMP_particle_1 = 6;
 
-        // Token: 0x04000727 RID: 1831
         internal const int IMG_OBJ_PUMP_particle_2 = 7;
 
-        // Token: 0x04000728 RID: 1832
         internal const int IMG_OBJ_PUMP_particle_3 = 8;
 
-        // Token: 0x04000729 RID: 1833
         internal const int IMG_TUTORIAL_SIGNS_cut_line = 0;
 
-        // Token: 0x0400072A RID: 1834
         internal const int IMG_TUTORIAL_SIGNS_arrow_1 = 1;
 
-        // Token: 0x0400072B RID: 1835
         internal const int IMG_TUTORIAL_SIGNS_arrow_2 = 2;
 
-        // Token: 0x0400072C RID: 1836
         internal const int IMG_TUTORIAL_SIGNS_arrow_3 = 3;
 
-        // Token: 0x0400072D RID: 1837
         internal const int IMG_TUTORIAL_SIGNS_pop = 4;
 
-        // Token: 0x0400072E RID: 1838
         internal const int IMG_TUTORIAL_SIGNS_warning = 5;
 
-        // Token: 0x0400072F RID: 1839
         internal const int IMG_TUTORIAL_SIGNS_marks = 6;
 
-        // Token: 0x04000730 RID: 1840
         internal const int IMG_TUTORIAL_SIGNS_reset = 7;
 
-        // Token: 0x04000731 RID: 1841
         internal const int IMG_TUTORIAL_SIGNS_tip = 8;
 
-        // Token: 0x04000732 RID: 1842
         internal const int IMG_TUTORIAL_SIGNS_finger = 9;
 
-        // Token: 0x04000733 RID: 1843
         internal const int IMG_TUTORIAL_SIGNS_fingers = 10;
 
-        // Token: 0x04000734 RID: 1844
         internal const int IMG_OBJ_SOCKS_hat_01 = 0;
 
-        // Token: 0x04000735 RID: 1845
         internal const int IMG_OBJ_SOCKS_hat_02 = 1;
 
-        // Token: 0x04000736 RID: 1846
         internal const int IMG_OBJ_SOCKS_glow_start = 2;
 
-        // Token: 0x04000737 RID: 1847
         internal const int IMG_OBJ_SOCKS_level = 3;
 
-        // Token: 0x04000738 RID: 1848
         internal const int IMG_OBJ_SOCKS_glow_end = 4;
 
-        // Token: 0x04000739 RID: 1849
         internal const int IMG_OBJ_BOUNCER_01_start = 0;
 
-        // Token: 0x0400073A RID: 1850
         internal const int IMG_OBJ_BOUNCER_01_Frame_2 = 1;
 
-        // Token: 0x0400073B RID: 1851
         internal const int IMG_OBJ_BOUNCER_01_Frame_3 = 2;
 
-        // Token: 0x0400073C RID: 1852
         internal const int IMG_OBJ_BOUNCER_01_Frame_4 = 3;
 
-        // Token: 0x0400073D RID: 1853
         internal const int IMG_OBJ_BOUNCER_01_end = 4;
 
-        // Token: 0x0400073E RID: 1854
         internal const int IMG_OBJ_BOUNCER_02_start_ = 0;
 
-        // Token: 0x0400073F RID: 1855
         internal const int IMG_OBJ_BOUNCER_02_Frame_2 = 1;
 
-        // Token: 0x04000740 RID: 1856
         internal const int IMG_OBJ_BOUNCER_02_Frame_3 = 2;
 
-        // Token: 0x04000741 RID: 1857
         internal const int IMG_OBJ_BOUNCER_02_Frame_4 = 3;
 
-        // Token: 0x04000742 RID: 1858
         internal const int IMG_OBJ_BOUNCER_02_end = 4;
 
-        // Token: 0x04000743 RID: 1859
         internal const int IMG_OBJ_SPIKES_01_size_1 = 0;
 
-        // Token: 0x04000744 RID: 1860
         internal const int IMG_OBJ_SPIKES_02_size_2 = 0;
 
-        // Token: 0x04000745 RID: 1861
         internal const int IMG_OBJ_SPIKES_03_size_3 = 0;
 
-        // Token: 0x04000746 RID: 1862
         internal const int IMG_OBJ_SPIKES_04_size_4 = 0;
 
-        // Token: 0x04000747 RID: 1863
         internal const int IMG_OBJ_ELECTRODES_base = 0;
 
-        // Token: 0x04000748 RID: 1864
         internal const int IMG_OBJ_ELECTRODES_electric_start = 1;
 
-        // Token: 0x04000749 RID: 1865
         internal const int IMG_OBJ_ELECTRODES_electric_end = 4;
 
-        // Token: 0x0400074A RID: 1866
         internal const int IMG_OBJ_ROTATABLE_SPIKES_01_Shape_3 = 0;
 
-        // Token: 0x0400074B RID: 1867
         internal const int IMG_OBJ_ROTATABLE_SPIKES_02_size_2 = 0;
 
-        // Token: 0x0400074C RID: 1868
         internal const int IMG_OBJ_ROTATABLE_SPIKES_03_size_3 = 0;
 
-        // Token: 0x0400074D RID: 1869
         internal const int IMG_OBJ_ROTATABLE_SPIKES_04_size_4 = 0;
 
-        // Token: 0x0400074E RID: 1870
         internal const int IMG_OBJ_ROTATABLE_SPIKES_BUTTON_button_1 = 0;
 
-        // Token: 0x0400074F RID: 1871
         internal const int IMG_OBJ_ROTATABLE_SPIKES_BUTTON_button_1_pressed = 1;
 
-        // Token: 0x04000750 RID: 1872
         internal const int IMG_OBJ_ROTATABLE_SPIKES_BUTTON_button_2 = 2;
 
-        // Token: 0x04000751 RID: 1873
         internal const int IMG_OBJ_ROTATABLE_SPIKES_BUTTON_button_2_pressed = 3;
 
-        // Token: 0x04000752 RID: 1874
         internal const int IMG_OBJ_BEE_HD__rotation_center = 0;
 
-        // Token: 0x04000753 RID: 1875
         internal const int IMG_OBJ_BEE_HD_obj_bee = 1;
 
-        // Token: 0x04000754 RID: 1876
         internal const int IMG_OBJ_BEE_HD_wings_start = 2;
 
-        // Token: 0x04000755 RID: 1877
         internal const int IMG_OBJ_BEE_HD_wings_end = 4;
 
-        // Token: 0x04000756 RID: 1878
         internal const int IMG_OBJ_POLLEN_HD_obj_pollen = 0;
 
-        // Token: 0x04000757 RID: 1879
         internal const int IMG_CHAR_SUPPORTS_support_01 = 0;
 
-        // Token: 0x04000758 RID: 1880
         internal const int IMG_CHAR_SUPPORTS_support_02 = 1;
 
-        // Token: 0x04000759 RID: 1881
         internal const int IMG_CHAR_SUPPORTS_support_03 = 2;
 
-        // Token: 0x0400075A RID: 1882
         internal const int IMG_CHAR_SUPPORTS_support_07 = 3;
 
-        // Token: 0x0400075B RID: 1883
         internal const int IMG_CHAR_SUPPORTS_support_06 = 4;
 
-        // Token: 0x0400075C RID: 1884
         internal const int IMG_CHAR_SUPPORTS_support_08 = 5;
 
-        // Token: 0x0400075D RID: 1885
         internal const int IMG_CHAR_SUPPORTS_support_04 = 6;
 
-        // Token: 0x0400075E RID: 1886
         internal const int IMG_CHAR_SUPPORTS_support_05 = 7;
 
-        // Token: 0x0400075F RID: 1887
         internal const int IMG_CHAR_SUPPORTS_support_09 = 8;
 
-        // Token: 0x04000760 RID: 1888
         internal const int IMG_CHAR_SUPPORTS_support_10 = 9;
 
-        // Token: 0x04000761 RID: 1889
         internal const int IMG_CHAR_SUPPORTS_support_11 = 10;
 
-        // Token: 0x04000762 RID: 1890
         internal const int IMG_CHAR_ANIMATIONS2_excited_start = 0;
 
-        // Token: 0x04000763 RID: 1891
         internal const int IMG_CHAR_ANIMATIONS2_excited_end = 19;
 
-        // Token: 0x04000764 RID: 1892
         internal const int IMG_CHAR_ANIMATIONS2_puzzled_start = 20;
 
-        // Token: 0x04000765 RID: 1893
         internal const int IMG_CHAR_ANIMATIONS2_puzzled_end = 46;
 
-        // Token: 0x04000766 RID: 1894
         internal const int IMG_CHAR_ANIMATIONS2_greeting_start = 47;
 
-        // Token: 0x04000767 RID: 1895
         internal const int IMG_CHAR_ANIMATIONS2_greeting_end = 76;
 
-        // Token: 0x04000768 RID: 1896
         internal const int IMG_CHAR_ANIMATIONS3_fail_start = 0;
 
-        // Token: 0x04000769 RID: 1897
         internal const int IMG_CHAR_ANIMATIONS3_fail_end = 12;
 
-        // Token: 0x0400076A RID: 1898
         internal const int IMG_OBJ_VINIL_obj_vinil = 0;
 
-        // Token: 0x0400076B RID: 1899
         internal const int IMG_OBJ_VINIL_obj_vinil_highlight = 1;
 
-        // Token: 0x0400076C RID: 1900
         internal const int IMG_OBJ_VINIL_odj_vinil_sticker = 2;
 
-        // Token: 0x0400076D RID: 1901
         internal const int IMG_OBJ_VINIL_obj_vinil_center = 3;
 
-        // Token: 0x0400076E RID: 1902
         internal const int IMG_OBJ_VINIL_obj_controller_active = 4;
 
-        // Token: 0x0400076F RID: 1903
         internal const int IMG_OBJ_VINIL_obj_controller = 5;
 
-        // Token: 0x04000770 RID: 1904
         internal const int IMG_BGR_01_P1_bgr = 0;
 
-        // Token: 0x04000771 RID: 1905
         internal const int IMG_BGR_01_P2_vert_transition = 0;
 
-        // Token: 0x04000772 RID: 1906
         internal const int IMG_BGR_02_P1_bgr = 0;
 
-        // Token: 0x04000773 RID: 1907
         internal const int IMG_BGR_02_P2_vert_transition = 0;
 
-        // Token: 0x04000774 RID: 1908
         internal const int IMG_BGR_03_P1_bgr = 0;
 
-        // Token: 0x04000775 RID: 1909
         internal const int IMG_BGR_03_P2_vert_transition = 0;
 
-        // Token: 0x04000776 RID: 1910
         internal const int IMG_BGR_04_P1_bgr = 0;
 
-        // Token: 0x04000777 RID: 1911
         internal const int IMG_BGR_04_P2_vert_transition = 0;
 
-        // Token: 0x04000778 RID: 1912
         internal const int IMG_BGR_05_P1_bgr = 0;
 
-        // Token: 0x04000779 RID: 1913
         internal const int IMG_BGR_05_P2_vert_transition = 0;
 
-        // Token: 0x0400077A RID: 1914
         internal const int IMG_BGR_06_P1_bgr = 0;
 
-        // Token: 0x0400077B RID: 1915
         internal const int IMG_BGR_06_P2_vert_transition = 0;
 
-        // Token: 0x0400077C RID: 1916
         internal const int IMG_BGR_07_P1_bgr = 0;
 
-        // Token: 0x0400077D RID: 1917
         internal const int IMG_BGR_07_P2_vert_transition = 0;
 
-        // Token: 0x0400077E RID: 1918
         internal const int IMG_BGR_08_P1_bgr = 0;
 
-        // Token: 0x0400077F RID: 1919
         internal const int IMG_BGR_08_P1__position_window = 1;
 
-        // Token: 0x04000780 RID: 1920
         internal const int IMG_BGR_08_P2_vert_transition = 0;
 
-        // Token: 0x04000781 RID: 1921
         internal const int IMG_BGR_08_P2__position_window = 1;
 
-        // Token: 0x04000782 RID: 1922
         internal const int IMG_BGR_09_P1_bgr = 0;
 
-        // Token: 0x04000783 RID: 1923
         internal const int IMG_BGR_09_P2_vert_transition = 0;
 
-        // Token: 0x04000784 RID: 1924
         internal const int IMG_BGR_10_P1_bgr = 0;
 
-        // Token: 0x04000785 RID: 1925
         internal const int IMG_BGR_10_P2_vert_transition = 0;
 
-        // Token: 0x04000786 RID: 1926
         internal const int IMG_BGR_11_P1_bgr = 0;
 
-        // Token: 0x04000787 RID: 1927
         internal const int IMG_BGR_11_P2_vert_transition = 0;
 
-        // Token: 0x04000788 RID: 1928
         internal const int IMG_BGR_COVER_01_bgr = 0;
 
-        // Token: 0x04000789 RID: 1929
         internal const int IMG_BGR_COVER_01_side = 1;
 
-        // Token: 0x0400078A RID: 1930
         internal const int IMG_BGR_COVER_02_top = 0;
 
-        // Token: 0x0400078B RID: 1931
         internal const int IMG_BGR_COVER_02_side = 1;
 
-        // Token: 0x0400078C RID: 1932
         internal const int IMG_BGR_COVER_03_top = 0;
 
-        // Token: 0x0400078D RID: 1933
         internal const int IMG_BGR_COVER_03_side = 1;
 
-        // Token: 0x0400078E RID: 1934
         internal const int IMG_BGR_COVER_04_bgr = 0;
 
-        // Token: 0x0400078F RID: 1935
         internal const int IMG_BGR_COVER_04_side = 1;
 
-        // Token: 0x04000790 RID: 1936
         internal const int IMG_BGR_COVER_05_top = 0;
 
-        // Token: 0x04000791 RID: 1937
         internal const int IMG_BGR_COVER_05_side = 1;
 
-        // Token: 0x04000792 RID: 1938
         internal const int IMG_BGR_COVER_06_top = 0;
 
-        // Token: 0x04000793 RID: 1939
         internal const int IMG_BGR_COVER_06_side = 1;
 
-        // Token: 0x04000794 RID: 1940
         internal const int IMG_BGR_COVER_07_top = 0;
 
-        // Token: 0x04000795 RID: 1941
         internal const int IMG_BGR_COVER_07_side = 1;
 
-        // Token: 0x04000796 RID: 1942
         internal const int IMG_BGR_COVER_08_top = 0;
 
-        // Token: 0x04000797 RID: 1943
         internal const int IMG_BGR_COVER_08_side = 1;
 
-        // Token: 0x04000798 RID: 1944
         internal const int IMG_BGR_COVER_09_top = 0;
 
-        // Token: 0x04000799 RID: 1945
         internal const int IMG_BGR_COVER_09_side = 1;
 
-        // Token: 0x0400079A RID: 1946
         internal const int IMG_BGR_COVER_10_top = 0;
 
-        // Token: 0x0400079B RID: 1947
         internal const int IMG_BGR_COVER_10_side = 1;
 
-        // Token: 0x0400079C RID: 1948
         internal const int IMG_BGR_COVER_11_top = 0;
 
-        // Token: 0x0400079D RID: 1949
         internal const int IMG_BGR_COVER_11_side = 1;
 
-        // Token: 0x0400079E RID: 1950
         internal const int IMG_MENU_EXTRA_BUTTONS_FR_follow_us = 0;
 
-        // Token: 0x0400079F RID: 1951
         internal const int IMG_MENU_EXTRA_BUTTONS_GR_follow_us = 0;
 
-        // Token: 0x040007A0 RID: 1952
         internal const int IMG_MENU_EXTRA_BUTTONS_RU_follow_us = 0;
 
-        // Token: 0x040007A1 RID: 1953
         internal const int IMG_HUD_BUTTONS_RU_menu = 0;
 
-        // Token: 0x040007A2 RID: 1954
         internal const int IMG_HUD_BUTTONS_RU_menu_touch = 1;
 
-        // Token: 0x040007A3 RID: 1955
         internal const int IMG_HUD_BUTTONS_GR_menu = 0;
 
-        // Token: 0x040007A4 RID: 1956
         internal const int IMG_HUD_BUTTONS_GR_menu_touch = 1;
 
-        // Token: 0x040007A5 RID: 1957
         internal const int IMG_MENU_RESULT_RU_stamp_ru = 0;
 
-        // Token: 0x040007A6 RID: 1958
         internal const int IMG_MENU_RESULT_FR_stamp = 0;
 
-        // Token: 0x040007A7 RID: 1959
         internal const int IMG_MENU_RESULT_GR_stamp_gr = 0;
 
-        // Token: 0x040007A8 RID: 1960
         internal const int IMG_MENU_EXTRA_BUTTONS_EN_en = 0;
 
-        // Token: 0x040007A9 RID: 1961
         public static string ContentFolder = "";
 
-        // Token: 0x040007AA RID: 1962
         internal static int[] PACK_STARTUP = [0, 1, -1];
 
-        // Token: 0x040007AB RID: 1963
         internal static int[] PACK_COMMON_IMAGES = [2, 3, 4, 5, 6, 7, 8, -1];
 
-        // Token: 0x040007AC RID: 1964
         internal static int[] PACK_COMMON =
-        [
-            9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+[
+    9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
             19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
             29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
             39, 40, 41, 42, 43, 44, 45, 46, 47, -1
-        ];
+];
 
-        // Token: 0x040007AD RID: 1965
         internal static int[] PACK_MENU =
-        [
-            48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
+[
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
             58, 59, 60, -1
-        ];
+];
 
-        // Token: 0x040007AE RID: 1966
         internal static int[] PACK_GAME =
-        [
-            61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+[
+    61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
             -1
-        ];
+];
 
-        // Token: 0x040007AF RID: 1967
         internal static int[] PACK_GAME_NORMAL =
-        [
-            71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
+[
+    71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
             81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
             91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
             101, 102, 103, -1
-        ];
+];
 
-        // Token: 0x040007B0 RID: 1968
         internal static int[] PACK_GAME_01 = [104, 105, -1];
 
-        // Token: 0x040007B1 RID: 1969
         internal static int[] PACK_GAME_02 = [106, 107, -1];
 
-        // Token: 0x040007B2 RID: 1970
         internal static int[] PACK_GAME_03 = [108, 109, -1];
 
-        // Token: 0x040007B3 RID: 1971
         internal static int[] PACK_GAME_04 = [110, 111, -1];
 
-        // Token: 0x040007B4 RID: 1972
         internal static int[] PACK_GAME_05 = [112, 113, -1];
 
-        // Token: 0x040007B5 RID: 1973
         internal static int[] PACK_GAME_06 = [114, 115, -1];
 
-        // Token: 0x040007B6 RID: 1974
         internal static int[] PACK_GAME_07 = [116, 117, -1];
 
-        // Token: 0x040007B7 RID: 1975
         internal static int[] PACK_GAME_08 = [118, 119, -1];
 
-        // Token: 0x040007B8 RID: 1976
         internal static int[] PACK_GAME_09 = [120, 121, -1];
 
-        // Token: 0x040007B9 RID: 1977
         internal static int[] PACK_GAME_10 = [122, 123, -1];
 
-        // Token: 0x040007BA RID: 1978
         internal static int[] PACK_GAME_11 = [124, 125, -1];
 
-        // Token: 0x040007BB RID: 1979
         internal static int[] PACK_GAME_COVER_01 = [126, -1];
 
-        // Token: 0x040007BC RID: 1980
         internal static int[] PACK_GAME_COVER_02 = [127, -1];
 
-        // Token: 0x040007BD RID: 1981
         internal static int[] PACK_GAME_COVER_03 = [128, -1];
 
-        // Token: 0x040007BE RID: 1982
         internal static int[] PACK_GAME_COVER_04 = [129, -1];
 
-        // Token: 0x040007BF RID: 1983
         internal static int[] PACK_GAME_COVER_05 = [130, -1];
 
-        // Token: 0x040007C0 RID: 1984
         internal static int[] PACK_GAME_COVER_06 = [131, -1];
 
-        // Token: 0x040007C1 RID: 1985
         internal static int[] PACK_GAME_COVER_07 = [132, -1];
 
-        // Token: 0x040007C2 RID: 1986
         internal static int[] PACK_GAME_COVER_08 = [133, -1];
 
-        // Token: 0x040007C3 RID: 1987
         internal static int[] PACK_GAME_COVER_09 = [134, -1];
 
-        // Token: 0x040007C4 RID: 1988
         internal static int[] PACK_GAME_COVER_10 = [135, -1];
 
-        // Token: 0x040007C5 RID: 1989
         internal static int[] PACK_GAME_COVER_11 = [136, -1];
 
-        // Token: 0x040007C6 RID: 1990
         internal static int[] PACK_LOCALIZATION = [137, 138, 139, 140, 141, 142, 143, 144, -1];
 
-        // Token: 0x040007C7 RID: 1991
         internal static int[] PACK_MUSIC = [145, 146, 147, 148, -1];
 
-        // Token: 0x040007C8 RID: 1992
         internal static int[] PACK_LOCALIZATION_MENU = [149, -1];
 
-        // Token: 0x040007C9 RID: 1993
         public static Language LANGUAGE = Language.LANG_EN;
 
-        // Token: 0x040007CA RID: 1994
         private static Dictionary<string, string> xmls_;
     }
 }

@@ -8,10 +8,8 @@ using System.Runtime.CompilerServices;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200006F RID: 111
     internal class BoxOpenClose : BaseElement, TimelineDelegate
     {
-        // Token: 0x06000446 RID: 1094 RVA: 0x00016ABC File Offset: 0x00014CBC
         public override void update(float delta)
         {
             base.update(delta);
@@ -160,7 +158,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000447 RID: 1095 RVA: 0x000170C8 File Offset: 0x000152C8
         public virtual NSObject initWithButtonDelegate(ButtonDelegate b)
         {
             if (this.init() != null)
@@ -250,7 +247,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000448 RID: 1096 RVA: 0x00017568 File Offset: 0x00015768
         public virtual BaseElement createConfettiParticleNear(Vector p)
         {
             BoxOpenClose.Confetti confetti = BoxOpenClose.Confetti.Confetti_createWithResID(65);
@@ -292,7 +288,6 @@ namespace CutTheRope.game
             return confetti;
         }
 
-        // Token: 0x06000449 RID: 1097 RVA: 0x0001776E File Offset: 0x0001596E
         public virtual void levelFirstStart()
         {
             this.boxAnim = 0;
@@ -304,7 +299,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600044A RID: 1098 RVA: 0x0001779C File Offset: 0x0001599C
         public virtual void levelStart()
         {
             this.boxAnim = 1;
@@ -316,7 +310,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600044B RID: 1099 RVA: 0x000177CC File Offset: 0x000159CC
         public virtual void levelWon()
         {
             this.boxAnim = 2;
@@ -333,7 +326,6 @@ namespace CutTheRope.game
             this.stamp.setEnabled(false);
         }
 
-        // Token: 0x0600044C RID: 1100 RVA: 0x00017871 File Offset: 0x00015A71
         public virtual void levelLost()
         {
             this.boxAnim = 3;
@@ -341,7 +333,6 @@ namespace CutTheRope.game
             this.showCloseAnim();
         }
 
-        // Token: 0x0600044D RID: 1101 RVA: 0x00017886 File Offset: 0x00015A86
         public virtual void levelQuit()
         {
             this.boxAnim = 4;
@@ -350,19 +341,16 @@ namespace CutTheRope.game
             this.showCloseAnim();
         }
 
-        // Token: 0x0600044E RID: 1102 RVA: 0x000178A7 File Offset: 0x00015AA7
         public virtual void showOpenAnim()
         {
             this.showOpenCloseAnim(true);
         }
 
-        // Token: 0x0600044F RID: 1103 RVA: 0x000178B0 File Offset: 0x00015AB0
         public virtual void showCloseAnim()
         {
             this.showOpenCloseAnim(false);
         }
 
-        // Token: 0x06000450 RID: 1104 RVA: 0x000178BC File Offset: 0x00015ABC
         public virtual void showConfetti()
         {
             for (int i = 0; i < 70; i++)
@@ -371,7 +359,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000451 RID: 1105 RVA: 0x000178F0 File Offset: 0x00015AF0
         public virtual void showOpenCloseAnim(bool open)
         {
             this.createOpenCloseAnims();
@@ -531,12 +518,10 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000452 RID: 1106 RVA: 0x00018475 File Offset: 0x00016675
         public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        // Token: 0x06000453 RID: 1107 RVA: 0x00018478 File Offset: 0x00016678
         public virtual void timelineFinished(Timeline t)
         {
             switch (this.boxAnim)
@@ -578,7 +563,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000454 RID: 1108 RVA: 0x00018530 File Offset: 0x00016730
         public virtual void postBoxClosed()
         {
             if (this.delegateboxClosed != null)
@@ -591,7 +575,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000455 RID: 1109 RVA: 0x00018554 File Offset: 0x00016754
         public virtual void removeOpenCloseAnims()
         {
             if (this.getChild(0) != null)
@@ -605,162 +588,117 @@ namespace CutTheRope.game
             baseElement.color.a = (text2.color.a = (text3.color.a = 1f));
         }
 
-        // Token: 0x06000456 RID: 1110 RVA: 0x000185E9 File Offset: 0x000167E9
         public virtual void createOpenCloseAnims()
         {
             this.openCloseAnims = (BaseElement)new BaseElement().init();
             this.addChildwithID(this.openCloseAnims, 0);
         }
 
-        // Token: 0x06000457 RID: 1111 RVA: 0x0001860E File Offset: 0x0001680E
         private static void selector_removeOpenCloseAnims(NSObject obj)
         {
             ((BoxOpenClose)obj).removeOpenCloseAnims();
         }
 
-        // Token: 0x06000458 RID: 1112 RVA: 0x0001861B File Offset: 0x0001681B
         private static void selector_postBoxClosed(NSObject obj)
         {
             ((BoxOpenClose)obj).postBoxClosed();
         }
 
-        // Token: 0x040002D6 RID: 726
         private const float aminationTime = 0.5f;
 
-        // Token: 0x040002D7 RID: 727
         public const int BOX_ANIM_LEVEL_FIRST_START = 0;
 
-        // Token: 0x040002D8 RID: 728
         public const int BOX_ANIM_LEVEL_START = 1;
 
-        // Token: 0x040002D9 RID: 729
         public const int BOX_ANIM_LEVEL_WON = 2;
 
-        // Token: 0x040002DA RID: 730
         public const int BOX_ANIM_LEVEL_LOST = 3;
 
-        // Token: 0x040002DB RID: 731
         public const int BOX_ANIM_LEVEL_QUIT = 4;
 
-        // Token: 0x040002DC RID: 732
         public const int RESULT_STATE_WAIT = 0;
 
-        // Token: 0x040002DD RID: 733
         public const int RESULT_STATE_SHOW_STAR_BONUS = 1;
 
-        // Token: 0x040002DE RID: 734
         public const int RESULT_STATE_COUNTDOWN_STAR_BONUS = 2;
 
-        // Token: 0x040002DF RID: 735
         public const int RESULT_STATE_HIDE_STAR_BONUS = 3;
 
-        // Token: 0x040002E0 RID: 736
         public const int RESULT_STATE_SHOW_TIME_BONUS = 4;
 
-        // Token: 0x040002E1 RID: 737
         public const int RESULT_STATE_COUNTDOWN_TIME_BONUS = 5;
 
-        // Token: 0x040002E2 RID: 738
         public const int RESULT_STATE_HIDE_TIME_BONUS = 6;
 
-        // Token: 0x040002E3 RID: 739
         public const int RESULT_STATE_SHOW_FINAL_SCORE = 7;
 
-        // Token: 0x040002E4 RID: 740
         public const int RESULTS_SHOW_ANIM = 0;
 
-        // Token: 0x040002E5 RID: 741
         public const int RESULTS_HIDE_ANIM = 1;
 
-        // Token: 0x040002E6 RID: 742
         public BaseElement openCloseAnims;
 
-        // Token: 0x040002E7 RID: 743
         public BaseElement confettiAnims;
 
-        // Token: 0x040002E8 RID: 744
         public BaseElement result;
 
-        // Token: 0x040002E9 RID: 745
         public int boxAnim;
 
-        // Token: 0x040002EA RID: 746
         public bool shouldShowConfetti;
 
-        // Token: 0x040002EB RID: 747
         public bool shouldShowImprovedResult;
 
-        // Token: 0x040002EC RID: 748
         public Image stamp;
 
-        // Token: 0x040002ED RID: 749
         public int raState;
 
-        // Token: 0x040002EE RID: 750
         public int timeBonus;
 
-        // Token: 0x040002EF RID: 751
         public int starBonus;
 
-        // Token: 0x040002F0 RID: 752
         public int score;
 
-        // Token: 0x040002F1 RID: 753
         public float time;
 
-        // Token: 0x040002F2 RID: 754
         public float ctime;
 
-        // Token: 0x040002F3 RID: 755
         public int cstarBonus;
 
-        // Token: 0x040002F4 RID: 756
         public int cscore;
 
-        // Token: 0x040002F5 RID: 757
         public float raDelay;
 
-        // Token: 0x040002F6 RID: 758
         public BoxOpenClose.boxClosed delegateboxClosed;
 
-        // Token: 0x020000C0 RID: 192
         // (Invoke) Token: 0x06000674 RID: 1652
         public delegate void boxClosed();
 
-        // Token: 0x020000C1 RID: 193
         private class Confetti : Animation
         {
-            // Token: 0x06000677 RID: 1655 RVA: 0x00033C09 File Offset: 0x00031E09
             public static BoxOpenClose.Confetti Confetti_createWithResID(int r)
             {
                 return BoxOpenClose.Confetti.Confetti_create(Application.getTexture(r));
             }
 
-            // Token: 0x06000678 RID: 1656 RVA: 0x00033C16 File Offset: 0x00031E16
             public static BoxOpenClose.Confetti Confetti_create(Texture2D t)
             {
                 return (BoxOpenClose.Confetti)new BoxOpenClose.Confetti().initWithTexture(t);
             }
 
-            // Token: 0x06000679 RID: 1657 RVA: 0x00033C28 File Offset: 0x00031E28
             public override void update(float delta)
             {
                 base.update(delta);
                 Timeline.updateTimeline(this.ani, delta);
             }
 
-            // Token: 0x040008E6 RID: 2278
             public Timeline ani;
         }
 
-        // Token: 0x020000C2 RID: 194
         [CompilerGenerated]
         private static class <>O
 		{
-			// Token: 0x040008E7 RID: 2279
-			public static DelayedDispatcher.DispatchFunc<0> __selector_removeOpenCloseAnims;
+						public static DelayedDispatcher.DispatchFunc<0> __selector_removeOpenCloseAnims;
 
-        // Token: 0x040008E8 RID: 2280
         public static DelayedDispatcher.DispatchFunc<1> __selector_postBoxClosed;
     }
 }

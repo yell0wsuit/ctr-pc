@@ -5,10 +5,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000097 RID: 151
     internal class StarsBreak : RotateableMultiParticles
     {
-        // Token: 0x06000604 RID: 1540 RVA: 0x000324E4 File Offset: 0x000306E4
         public override Particles initWithTotalParticlesandImageGrid(int p, Image grid)
         {
             if (base.initWithTotalParticlesandImageGrid(p, grid) == null)
@@ -57,7 +55,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000605 RID: 1541 RVA: 0x00032724 File Offset: 0x00030924
         public override void draw()
         {
             this.preDraw();

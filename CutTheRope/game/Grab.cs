@@ -9,10 +9,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000080 RID: 128
     internal class Grab : CTRGameObject
     {
-        // Token: 0x0600053D RID: 1341 RVA: 0x000266CC File Offset: 0x000248CC
         private static void drawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
             OpenGL.glColor4f(color.toXNA());
@@ -31,7 +29,6 @@ namespace CutTheRope.game
             OpenGL.glLineWidth(1.0);
         }
 
-        // Token: 0x0600053E RID: 1342 RVA: 0x0002678C File Offset: 0x0002498C
         public override NSObject init()
         {
             if (base.init() != null)
@@ -44,20 +41,17 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x0600053F RID: 1343 RVA: 0x000267C8 File Offset: 0x000249C8
         public virtual float getRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
             Vector v3 = CutTheRope.iframework.helpers.MathHelper.vectSub(v1, c);
             return CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(CutTheRope.iframework.helpers.MathHelper.vectSub(v2, c)) - CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v3));
         }
 
-        // Token: 0x06000540 RID: 1344 RVA: 0x000267F5 File Offset: 0x000249F5
         public virtual void handleWheelTouch(Vector v)
         {
             this.lastWheelTouch = v;
         }
 
-        // Token: 0x06000541 RID: 1345 RVA: 0x00026800 File Offset: 0x00024A00
         public virtual void handleWheelRotate(Vector v)
         {
             if (this.lastWheelTouch.x - v.x == 0f && this.lastWheelTouch.y - v.y == 0f)
@@ -101,7 +95,6 @@ namespace CutTheRope.game
             this.lastWheelTouch = v;
         }
 
-        // Token: 0x06000542 RID: 1346 RVA: 0x00026994 File Offset: 0x00024B94
         public override void update(float delta)
         {
             base.update(delta);
@@ -156,7 +149,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000543 RID: 1347 RVA: 0x00026BEC File Offset: 0x00024DEC
         public virtual void updateSpider(float delta)
         {
             if (this.hasSpider && this.shouldActivate)
@@ -215,7 +207,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000544 RID: 1348 RVA: 0x00026DC4 File Offset: 0x00024FC4
         public virtual void drawBack()
         {
             if ((double)this.moveLength > 0.0)
@@ -236,7 +227,6 @@ namespace CutTheRope.game
             OpenGL.glEnable(0);
         }
 
-        // Token: 0x06000545 RID: 1349 RVA: 0x00026E70 File Offset: 0x00025070
         public void drawBungee()
         {
             Bungee bungee = this.rope;
@@ -246,7 +236,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000546 RID: 1350 RVA: 0x00026E90 File Offset: 0x00025090
         public override void draw()
         {
             base.preDraw();
@@ -286,13 +275,11 @@ namespace CutTheRope.game
             base.postDraw();
         }
 
-        // Token: 0x06000547 RID: 1351 RVA: 0x00026F80 File Offset: 0x00025180
         public virtual void drawSpider()
         {
             this.spider.draw();
         }
 
-        // Token: 0x06000548 RID: 1352 RVA: 0x00026F8D File Offset: 0x0002518D
         public virtual void setRope(Bungee r)
         {
             this.rope = r;
@@ -303,7 +290,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000549 RID: 1353 RVA: 0x00026FB0 File Offset: 0x000251B0
         public virtual void setLauncher()
         {
             this.launcher = true;
@@ -315,13 +301,11 @@ namespace CutTheRope.game
             mover.start();
         }
 
-        // Token: 0x0600054A RID: 1354 RVA: 0x0002701C File Offset: 0x0002521C
         public virtual void reCalcCircle()
         {
             GLDrawer.calcCircle(this.x, this.y, this.radius, this.vertexCount, this.vertices);
         }
 
-        // Token: 0x0600054B RID: 1355 RVA: 0x00027044 File Offset: 0x00025244
         public virtual void setRadius(float r)
         {
             this.radius = r;
@@ -380,7 +364,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600054C RID: 1356 RVA: 0x00027334 File Offset: 0x00025534
         public virtual void setMoveLengthVerticalOffset(float l, bool v, float o)
         {
             this.moveLength = l;
@@ -425,7 +408,6 @@ namespace CutTheRope.game
             this.moverDragging = -1;
         }
 
-        // Token: 0x0600054D RID: 1357 RVA: 0x0002758C File Offset: 0x0002578C
         public virtual void setBee()
         {
             this.bee = Image.Image_createWithResIDQuad(98, 1);
@@ -448,7 +430,6 @@ namespace CutTheRope.game
             this.addChild(this.bee);
         }
 
-        // Token: 0x0600054E RID: 1358 RVA: 0x000276C0 File Offset: 0x000258C0
         public virtual void setSpider(bool s)
         {
             this.hasSpider = s;
@@ -467,14 +448,12 @@ namespace CutTheRope.game
             this.addChild(this.spider);
         }
 
-        // Token: 0x0600054F RID: 1359 RVA: 0x0002778F File Offset: 0x0002598F
         public virtual void destroyRope()
         {
             this.rope.release();
             this.rope = null;
         }
 
-        // Token: 0x06000550 RID: 1360 RVA: 0x000277A3 File Offset: 0x000259A3
         public override void dealloc()
         {
             if (this.vertices != null)
@@ -485,136 +464,91 @@ namespace CutTheRope.game
             base.dealloc();
         }
 
-        // Token: 0x0400041F RID: 1055
         public const float SPIDER_SPEED = 117f;
 
-        // Token: 0x04000420 RID: 1056
         public Image back;
 
-        // Token: 0x04000421 RID: 1057
         public Image front;
 
-        // Token: 0x04000422 RID: 1058
         public Bungee rope;
 
-        // Token: 0x04000423 RID: 1059
         public float radius;
 
-        // Token: 0x04000424 RID: 1060
         public float radiusAlpha;
 
-        // Token: 0x04000425 RID: 1061
         public bool hideRadius;
 
-        // Token: 0x04000426 RID: 1062
         public float[] vertices;
 
-        // Token: 0x04000427 RID: 1063
         public int vertexCount;
 
-        // Token: 0x04000428 RID: 1064
         public bool wheel;
 
-        // Token: 0x04000429 RID: 1065
         public Image wheelHighlight;
 
-        // Token: 0x0400042A RID: 1066
         public Image wheelImage;
 
-        // Token: 0x0400042B RID: 1067
         public Image wheelImage2;
 
-        // Token: 0x0400042C RID: 1068
         public Image wheelImage3;
 
-        // Token: 0x0400042D RID: 1069
         public int wheelOperating;
 
-        // Token: 0x0400042E RID: 1070
         public Vector lastWheelTouch;
 
-        // Token: 0x0400042F RID: 1071
         public float moveLength;
 
-        // Token: 0x04000430 RID: 1072
         public bool moveVertical;
 
-        // Token: 0x04000431 RID: 1073
         public float moveOffset;
 
-        // Token: 0x04000432 RID: 1074
         public HorizontallyTiledImage moveBackground;
 
-        // Token: 0x04000433 RID: 1075
         public Image grabMoverHighlight;
 
-        // Token: 0x04000434 RID: 1076
         public Image grabMover;
 
-        // Token: 0x04000435 RID: 1077
         public int moverDragging;
 
-        // Token: 0x04000436 RID: 1078
         public float minMoveValue;
 
-        // Token: 0x04000437 RID: 1079
         public float maxMoveValue;
 
-        // Token: 0x04000438 RID: 1080
         public bool hasSpider;
 
-        // Token: 0x04000439 RID: 1081
         public bool spiderActive;
 
-        // Token: 0x0400043A RID: 1082
         public Animation spider;
 
-        // Token: 0x0400043B RID: 1083
         public float spiderPos;
 
-        // Token: 0x0400043C RID: 1084
         public bool shouldActivate;
 
-        // Token: 0x0400043D RID: 1085
         public bool wheelDirty;
 
-        // Token: 0x0400043E RID: 1086
         public bool launcher;
 
-        // Token: 0x0400043F RID: 1087
         public float launcherSpeed;
 
-        // Token: 0x04000440 RID: 1088
         public bool launcherIncreaseSpeed;
 
-        // Token: 0x04000441 RID: 1089
         public float initial_rotation;
 
-        // Token: 0x04000442 RID: 1090
         public float initial_x;
 
-        // Token: 0x04000443 RID: 1091
         public float initial_y;
 
-        // Token: 0x04000444 RID: 1092
         public RotatedCircle initial_rotatedCircle;
 
-        // Token: 0x04000445 RID: 1093
         public bool baloon;
 
-        // Token: 0x04000446 RID: 1094
         public Image bee;
 
-        // Token: 0x020000C8 RID: 200
         private enum SPIDER_ANI
         {
-            // Token: 0x040008F8 RID: 2296
             SPIDER_START_ANI,
-            // Token: 0x040008F9 RID: 2297
             SPIDER_WALK_ANI,
-            // Token: 0x040008FA RID: 2298
             SPIDER_BUSTED_ANI,
-            // Token: 0x040008FB RID: 2299
             SPIDER_CATCH_ANI
         }
     }

@@ -5,10 +5,8 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000040 RID: 64
     internal class RectangleElement : BaseElement
     {
-        // Token: 0x0600022C RID: 556 RVA: 0x0000B35D File Offset: 0x0000955D
         public override NSObject init()
         {
             if (base.init() != null)
@@ -18,7 +16,6 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x0600022D RID: 557 RVA: 0x0000B370 File Offset: 0x00009570
         public override void draw()
         {
             base.preDraw();
@@ -36,7 +33,6 @@ namespace CutTheRope.iframework.visual
             base.postDraw();
         }
 
-        // Token: 0x0400018A RID: 394
         public bool solid;
     }
 }

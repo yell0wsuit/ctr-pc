@@ -6,34 +6,28 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x02000033 RID: 51
     internal class GLDrawer : NSObject
     {
-        // Token: 0x060001BE RID: 446 RVA: 0x000088F0 File Offset: 0x00006AF0
         public static void drawImage(Texture2D image, float x, float y)
         {
             Texture2D.drawAtPoint(image, MathHelper.vect(x, y));
         }
 
-        // Token: 0x060001BF RID: 447 RVA: 0x000088FF File Offset: 0x00006AFF
         public static void drawImagePart(Texture2D image, Rectangle r, double x, double y)
         {
             GLDrawer.drawImagePart(image, r, (float)x, (float)y);
         }
 
-        // Token: 0x060001C0 RID: 448 RVA: 0x0000890C File Offset: 0x00006B0C
         public static void drawImagePart(Texture2D image, Rectangle r, float x, float y)
         {
             Texture2D.drawRectAtPoint(image, r, MathHelper.vect(x, y));
         }
 
-        // Token: 0x060001C1 RID: 449 RVA: 0x0000891C File Offset: 0x00006B1C
         public static void drawImageQuad(Texture2D image, int q, double x, double y)
         {
             GLDrawer.drawImageQuad(image, q, (float)x, (float)y);
         }
 
-        // Token: 0x060001C2 RID: 450 RVA: 0x00008929 File Offset: 0x00006B29
         public static void drawImageQuad(Texture2D image, int q, float x, float y)
         {
             if (q == -1)
@@ -44,7 +38,6 @@ namespace CutTheRope.iframework.visual
             Texture2D.drawQuadAtPoint(image, q, MathHelper.vect(x, y));
         }
 
-        // Token: 0x060001C3 RID: 451 RVA: 0x00008948 File Offset: 0x00006B48
         public static void drawImageTiledCool(Texture2D image, int q, float x, float y, float width, float height)
         {
             float xParam = 0f;
@@ -83,7 +76,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060001C4 RID: 452 RVA: 0x00008A24 File Offset: 0x00006C24
         public static void drawImageTiled(Texture2D image, int q, float x, float y, float width, float height)
         {
             if (FrameworkTypes.IS_WVGA)
@@ -140,13 +132,11 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060001C5 RID: 453 RVA: 0x00008B86 File Offset: 0x00006D86
         public static Quad2D getTextureCoordinates(Texture2D t, Rectangle r)
         {
             return Quad2D.MakeQuad2D(t._invWidth * r.x, t._invHeight * r.y, t._invWidth * r.w, t._invHeight * r.h);
         }
 
-        // Token: 0x060001C6 RID: 454 RVA: 0x00008BC4 File Offset: 0x00006DC4
         public static Vector calcPathBezier(Vector[] p, int count, float delta)
         {
             Vector[] array = new Vector[count - 1];
@@ -165,7 +155,6 @@ namespace CutTheRope.iframework.visual
             return default(Vector);
         }
 
-        // Token: 0x060001C7 RID: 455 RVA: 0x00008C38 File Offset: 0x00006E38
         public static Vector calc2PointBezier(ref Vector a, ref Vector b, float delta)
         {
             float num = 1f - delta;
@@ -176,7 +165,6 @@ namespace CutTheRope.iframework.visual
             };
         }
 
-        // Token: 0x060001C8 RID: 456 RVA: 0x00008C88 File Offset: 0x00006E88
         public static void calcCircle(float x, float y, float radius, int vertexCount, float[] glVertices)
         {
             float num = (float)(6.283185307179586 / (double)vertexCount);
@@ -189,7 +177,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060001C9 RID: 457 RVA: 0x00008CDC File Offset: 0x00006EDC
         public static void drawCircleIntersection(float cx1, float cy1, float radius1, float cx2, float cy2, float radius2, int vertexCount, float width, RGBAColor fill)
         {
             float num = MathHelper.vectDistance(MathHelper.vect(cx1, cy1), MathHelper.vect(cx2, cy2));
@@ -209,7 +196,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060001CA RID: 458 RVA: 0x00008D80 File Offset: 0x00006F80
         public static void drawAntialiasedCurve2(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float width, float fadeWidth, RGBAColor fill)
         {
             float[] array = new float[(vertexCount - 1) * 12 + 4];
@@ -276,7 +262,6 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDisableClientState(13);
         }
 
-        // Token: 0x060001CB RID: 459 RVA: 0x00009114 File Offset: 0x00007314
         private static void calcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
             float num7 = (endAngle - startAngle) / (float)(vertexCount - 1);
@@ -297,7 +282,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x060001CC RID: 460 RVA: 0x00009194 File Offset: 0x00007394
         public static void drawAntialiasedLine(float x1, float y1, float x2, float y2, float size, RGBAColor color)
         {
             Vector v = MathHelper.vect(x1, y1);
@@ -329,7 +313,6 @@ namespace CutTheRope.iframework.visual
             OpenGL.glVertexPointer_add(2, 5, 0, pointer);
         }
 
-        // Token: 0x060001CD RID: 461 RVA: 0x00009333 File Offset: 0x00007533
         public static void drawRect(float x, float y, float w, float h, RGBAColor color)
         {
             GLDrawer.drawPolygon(
@@ -345,7 +328,6 @@ namespace CutTheRope.iframework.visual
             ], 4, color);
         }
 
-        // Token: 0x060001CE RID: 462 RVA: 0x0000936B File Offset: 0x0000756B
         public static void drawSolidRect(float x, float y, float w, float h, RGBAColor border, RGBAColor fill)
         {
             GLDrawer.drawSolidPolygon(
@@ -361,7 +343,6 @@ namespace CutTheRope.iframework.visual
             ], 4, border, fill);
         }
 
-        // Token: 0x060001CF RID: 463 RVA: 0x000093A8 File Offset: 0x000075A8
         public static void drawSolidRectWOBorder(float x, float y, float w, float h, RGBAColor fill)
         {
             float[] pointer =
@@ -380,7 +361,6 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDrawArrays(8, 0, 4);
         }
 
-        // Token: 0x060001D0 RID: 464 RVA: 0x00009401 File Offset: 0x00007601
         public static void drawPolygon(float[] vertices, int vertexCount, RGBAColor color)
         {
             OpenGL.glColor4f(color.toXNA());
@@ -388,7 +368,6 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDrawArrays(9, 0, vertexCount);
         }
 
-        // Token: 0x060001D1 RID: 465 RVA: 0x00009421 File Offset: 0x00007621
         public static void drawSolidPolygon(float[] vertices, int vertexCount, RGBAColor border, RGBAColor fill)
         {
             OpenGL.glVertexPointer(2, 5, 0, vertices);
@@ -398,7 +377,6 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDrawArrays(9, 0, vertexCount);
         }
 
-        // Token: 0x060001D2 RID: 466 RVA: 0x00009455 File Offset: 0x00007655
         public static void drawSolidPolygonWOBorder(float[] vertices, int vertexCount, RGBAColor fill)
         {
             OpenGL.glVertexPointer(2, 5, 0, vertices);
@@ -406,10 +384,9 @@ namespace CutTheRope.iframework.visual
             OpenGL.glDrawArrays(8, 0, vertexCount);
         }
 
-        // Token: 0x04000139 RID: 313
         private static RGBAColor[] colors =
-        [
-            RGBAColor.transparentRGBA,
+[
+    RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -417,6 +394,6 @@ namespace CutTheRope.iframework.visual
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-        ];
+];
     }
 }

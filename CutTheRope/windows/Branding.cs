@@ -6,10 +6,8 @@ using System.IO;
 
 namespace CutTheRope.windows
 {
-    // Token: 0x02000009 RID: 9
     public class Branding
     {
-        // Token: 0x17000008 RID: 8
         // (get) Token: 0x06000042 RID: 66 RVA: 0x000032D1 File Offset: 0x000014D1
         public bool IsLoaded
         {
@@ -19,7 +17,6 @@ namespace CutTheRope.windows
             }
         }
 
-        // Token: 0x17000009 RID: 9
         // (get) Token: 0x06000043 RID: 67 RVA: 0x000032D9 File Offset: 0x000014D9
         public bool IsFinished
         {
@@ -29,7 +26,6 @@ namespace CutTheRope.windows
             }
         }
 
-        // Token: 0x06000044 RID: 68 RVA: 0x000032FC File Offset: 0x000014FC
         public void LoadSplashScreens()
         {
             List<string> list2 = new() { "BMP", "GIF", "EXIF", "JPG", "JPEG", "PNG", "TIFF" };
@@ -60,7 +56,6 @@ namespace CutTheRope.windows
             this._isLoaded = true;
         }
 
-        // Token: 0x06000045 RID: 69 RVA: 0x00003400 File Offset: 0x00001600
         public void Update(GameTime gameTime)
         {
             if (this._waitFirstDraw)
@@ -81,7 +76,6 @@ namespace CutTheRope.windows
             }
         }
 
-        // Token: 0x06000046 RID: 70 RVA: 0x00003474 File Offset: 0x00001674
         public void Draw(GameTime gameTime)
         {
             try
@@ -131,31 +125,22 @@ namespace CutTheRope.windows
             }
         }
 
-        // Token: 0x04000033 RID: 51
         private const int SPLASH_TIME_MSEC = 3000;
 
-        // Token: 0x04000034 RID: 52
         private const int SPLASH_FADE_IN_TIME_MSEC = 200;
 
-        // Token: 0x04000035 RID: 53
         private const int SPLASH_FADE_OUT_TIME_MSEC = 500;
 
-        // Token: 0x04000036 RID: 54
         private const int SPLASH_TIME_FULL_MSEC = 3700;
 
-        // Token: 0x04000037 RID: 55
         private List<Texture2D> _listBitmap = new();
 
-        // Token: 0x04000038 RID: 56
         private TimeSpan _currentSplashTime;
 
-        // Token: 0x04000039 RID: 57
         private int _currentSplash;
 
-        // Token: 0x0400003A RID: 58
         private bool _isLoaded;
 
-        // Token: 0x0400003B RID: 59
         private bool _waitFirstDraw = true;
     }
 }

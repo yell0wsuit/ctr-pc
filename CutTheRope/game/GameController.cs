@@ -12,10 +12,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    // Token: 0x0200007B RID: 123
     internal class GameController : ViewController, ButtonDelegate, GameSceneDelegate
     {
-        // Token: 0x060004DE RID: 1246 RVA: 0x0001B8E8 File Offset: 0x00019AE8
         public override void update(float t)
         {
             if (!this.isGamePaused && Global.XnaGame.IsKeyPressed(Keys.F5))
@@ -25,7 +23,6 @@ namespace CutTheRope.game
             base.update(t);
         }
 
-        // Token: 0x060004DF RID: 1247 RVA: 0x0001B90E File Offset: 0x00019B0E
         public override NSObject initWithParent(ViewController p)
         {
             if (base.initWithParent(p) != null)
@@ -35,7 +32,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x060004E0 RID: 1248 RVA: 0x0001B920 File Offset: 0x00019B20
         public override void activate()
         {
             GameController.postFlurryLevelEvent("LEVEL_STARTED");
@@ -47,7 +43,6 @@ namespace CutTheRope.game
             this.showView(0);
         }
 
-        // Token: 0x060004E1 RID: 1249 RVA: 0x0001B960 File Offset: 0x00019B60
         public virtual void createGameView()
         {
             for (int i = 0; i < 5; i++)
@@ -113,14 +108,12 @@ namespace CutTheRope.game
             gameView.addChildwithID(boxOpenClose, 4);
         }
 
-        // Token: 0x060004E2 RID: 1250 RVA: 0x0001BCB0 File Offset: 0x00019EB0
         public virtual void initGameView()
         {
             this.setPaused(false);
             this.levelFirstStart();
         }
 
-        // Token: 0x060004E3 RID: 1251 RVA: 0x0001BCC0 File Offset: 0x00019EC0
         public virtual void levelFirstStart()
         {
             View view = this.getView(0);
@@ -131,7 +124,6 @@ namespace CutTheRope.game
             view.getChild(2).touchable = true;
         }
 
-        // Token: 0x060004E4 RID: 1252 RVA: 0x0001BD14 File Offset: 0x00019F14
         public virtual void levelStart()
         {
             View view = this.getView(0);
@@ -143,7 +135,6 @@ namespace CutTheRope.game
             view.getChild(4).touchable = false;
         }
 
-        // Token: 0x060004E5 RID: 1253 RVA: 0x0001BD73 File Offset: 0x00019F73
         public virtual void levelQuit()
         {
             View view = this.getView(0);
@@ -151,7 +142,6 @@ namespace CutTheRope.game
             view.getChild(0).touchable = false;
         }
 
-        // Token: 0x060004E6 RID: 1254 RVA: 0x0001BD9C File Offset: 0x00019F9C
         public static void checkForBoxPerfect(int pack)
         {
             if (CTRPreferences.isPackPerfect(pack))
@@ -173,7 +163,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060004E7 RID: 1255 RVA: 0x0001BE54 File Offset: 0x0001A054
         public virtual void boxClosed()
         {
             CTRPreferences cTRPreferences = Application.sharedPreferences();
@@ -234,7 +223,6 @@ namespace CutTheRope.game
             this.boxCloseHandled = true;
         }
 
-        // Token: 0x060004E8 RID: 1256 RVA: 0x0001C000 File Offset: 0x0001A200
         public virtual void levelWon()
         {
             this.boxCloseHandled = false;
@@ -290,26 +278,22 @@ namespace CutTheRope.game
             this.unlockNextLevel();
         }
 
-        // Token: 0x060004E9 RID: 1257 RVA: 0x0001C1FA File Offset: 0x0001A3FA
         public virtual void levelLost()
         {
             ((BoxOpenClose)this.getView(0).getChild(4)).levelLost();
         }
 
-        // Token: 0x060004EA RID: 1258 RVA: 0x0001C213 File Offset: 0x0001A413
         public virtual void gameWon()
         {
             GameController.postFlurryLevelEvent(NSObject.NSS("LEVEL_WON"));
             this.levelWon();
         }
 
-        // Token: 0x060004EB RID: 1259 RVA: 0x0001C22A File Offset: 0x0001A42A
         public virtual void gameLost()
         {
             GameController.postFlurryLevelEvent(NSObject.NSS("LEVEL_LOST"));
         }
 
-        // Token: 0x060004EC RID: 1260 RVA: 0x0001C23B File Offset: 0x0001A43B
         public virtual bool lastLevelInPack()
         {
             if (((CTRRootController)Application.sharedRootController()).getLevel() == CTRPreferences.getLevelsInPackCount() - 1)
@@ -321,7 +305,6 @@ namespace CutTheRope.game
             return false;
         }
 
-        // Token: 0x060004ED RID: 1261 RVA: 0x0001C264 File Offset: 0x0001A464
         public virtual void unlockNextLevel()
         {
             CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
@@ -333,7 +316,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060004EE RID: 1262 RVA: 0x0001C2A8 File Offset: 0x0001A4A8
         public virtual void onButtonPressed(int n)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
@@ -454,11 +436,10 @@ namespace CutTheRope.game
                 this.deactivate();
                 return;
             }
-            ((GameScene)view.getChild(0)).loadNextMap();
+    ((GameScene)view.getChild(0)).loadNextMap();
             this.levelStart();
         }
 
-        // Token: 0x060004EF RID: 1263 RVA: 0x0001C53C File Offset: 0x0001A73C
         public virtual void setPaused(bool p)
         {
             if (!p)
@@ -488,7 +469,6 @@ namespace CutTheRope.game
             this.mapNameLabel.setString(NSObject.NSS(Application.getString(655380) + ": " + scoreForPackLevel));
         }
 
-        // Token: 0x060004F0 RID: 1264 RVA: 0x0001C624 File Offset: 0x0001A824
         public override bool touchesBeganwithEvent(IList<TouchLocation> touches)
         {
             View view = this.getView(0);
@@ -525,7 +505,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x060004F1 RID: 1265 RVA: 0x0001C700 File Offset: 0x0001A900
         public override bool touchesEndedwithEvent(IList<TouchLocation> touches)
         {
             GameScene gameScene = (GameScene)this.getView(0).getChild(0);
@@ -564,7 +543,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x060004F2 RID: 1266 RVA: 0x0001C7E4 File Offset: 0x0001A9E4
         public override bool touchesMovedwithEvent(IList<TouchLocation> touches)
         {
             GameScene gameScene = (GameScene)this.getView(0).getChild(0);
@@ -598,17 +576,14 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x060004F3 RID: 1267 RVA: 0x0001C8B0 File Offset: 0x0001AAB0
         private static void postFlurryLevelEvent(string s)
         {
         }
 
-        // Token: 0x060004F4 RID: 1268 RVA: 0x0001C8B2 File Offset: 0x0001AAB2
         private static void postFlurryLevelEvent(NSString s)
         {
         }
 
-        // Token: 0x060004F5 RID: 1269 RVA: 0x0001C8B4 File Offset: 0x0001AAB4
         public override bool backButtonPressed()
         {
             View view = this.getView(0);
@@ -627,7 +602,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x060004F6 RID: 1270 RVA: 0x0001C910 File Offset: 0x0001AB10
         public override bool menuButtonPressed()
         {
             View view = this.getView(0);
@@ -642,7 +616,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x060004F7 RID: 1271 RVA: 0x0001C954 File Offset: 0x0001AB54
         public virtual void onNextLevel()
         {
             CTRPreferences.gameViewChanged(NSObject.NSS("game"));
@@ -654,11 +627,10 @@ namespace CutTheRope.game
                 this.deactivate();
                 return;
             }
-            ((GameScene)view.getChild(0)).loadNextMap();
+    ((GameScene)view.getChild(0)).loadNextMap();
             this.levelStart();
         }
 
-        // Token: 0x060004F8 RID: 1272 RVA: 0x0001C9B8 File Offset: 0x0001ABB8
         public virtual void releaseAllTouches(GameScene gs)
         {
             for (int i = 0; i < 5; i++)
@@ -668,13 +640,11 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x060004F9 RID: 1273 RVA: 0x0001C9EC File Offset: 0x0001ABEC
         public virtual void setAdSkipper(object skipper)
         {
             GameView gameView = (GameView)this.getView(0);
         }
 
-        // Token: 0x060004FA RID: 1274 RVA: 0x0001C9FC File Offset: 0x0001ABFC
         public override bool mouseMoved(float x, float y)
         {
             View view = this.getView(0);
@@ -691,7 +661,6 @@ namespace CutTheRope.game
             return true;
         }
 
-        // Token: 0x060004FB RID: 1275 RVA: 0x0001CA3C File Offset: 0x0001AC3C
         public override void fullscreenToggled(bool isFullscreen)
         {
             View view = this.getView(0);
@@ -705,67 +674,46 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x04000382 RID: 898
         private const int BUTTON_PAUSE_RESUME = 0;
 
-        // Token: 0x04000383 RID: 899
         private const int BUTTON_PAUSE_RESTART = 1;
 
-        // Token: 0x04000384 RID: 900
         private const int BUTTON_PAUSE_SKIP = 2;
 
-        // Token: 0x04000385 RID: 901
         private const int BUTTON_PAUSE_LEVEL_SELECT = 3;
 
-        // Token: 0x04000386 RID: 902
         private const int BUTTON_PAUSE_EXIT = 4;
 
-        // Token: 0x04000387 RID: 903
         public const int BUTTON_WIN_EXIT = 5;
 
-        // Token: 0x04000388 RID: 904
         private const int BUTTON_PAUSE = 6;
 
-        // Token: 0x04000389 RID: 905
         private const int BUTTON_NEXT_LEVEL = 7;
 
-        // Token: 0x0400038A RID: 906
         public const int BUTTON_WIN_RESTART = 8;
 
-        // Token: 0x0400038B RID: 907
         public const int BUTTON_WIN_NEXT_LEVEL = 9;
 
-        // Token: 0x0400038C RID: 908
         private const int BUTTON_MUSIC_TOGGLE = 10;
 
-        // Token: 0x0400038D RID: 909
         private const int BUTTON_SOUND_TOGGLE = 11;
 
-        // Token: 0x0400038E RID: 910
         public const int EXIT_CODE_FROM_PAUSE_MENU = 0;
 
-        // Token: 0x0400038F RID: 911
         public const int EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT = 1;
 
-        // Token: 0x04000390 RID: 912
         public const int EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT_NEXT_PACK = 2;
 
-        // Token: 0x04000391 RID: 913
         private bool isGamePaused;
 
-        // Token: 0x04000392 RID: 914
         public int exitCode;
 
-        // Token: 0x04000393 RID: 915
         private Text mapNameLabel;
 
-        // Token: 0x04000394 RID: 916
         private int[] touchAddressMap = new int[5];
 
-        // Token: 0x04000395 RID: 917
         private int tmpDimTime;
 
-        // Token: 0x04000396 RID: 918
         private bool boxCloseHandled;
     }
 }

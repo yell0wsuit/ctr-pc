@@ -6,16 +6,13 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000074 RID: 116
     internal class CharAnimations : GameObject
     {
-        // Token: 0x06000477 RID: 1143 RVA: 0x00019DE1 File Offset: 0x00017FE1
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
             return CharAnimations.CharAnimations_create(Application.getTexture(r));
         }
 
-        // Token: 0x06000478 RID: 1144 RVA: 0x00019DEE File Offset: 0x00017FEE
         private static CharAnimations CharAnimations_create(Texture2D t)
         {
             CharAnimations charAnimations = new();
@@ -23,7 +20,6 @@ namespace CutTheRope.game
             return charAnimations;
         }
 
-        // Token: 0x06000479 RID: 1145 RVA: 0x00019E00 File Offset: 0x00018000
         public virtual void addImage(int resId)
         {
             if (this.animations == null)
@@ -39,7 +35,6 @@ namespace CutTheRope.game
             charAnimation.setEnabled(false);
         }
 
-        // Token: 0x0600047A RID: 1146 RVA: 0x00019E69 File Offset: 0x00018069
         public override void dealloc()
         {
             this.animations.removeAllObjects();
@@ -47,13 +42,11 @@ namespace CutTheRope.game
             base.dealloc();
         }
 
-        // Token: 0x0600047B RID: 1147 RVA: 0x00019E83 File Offset: 0x00018083
         public virtual void addAnimationWithIDDelayLoopFirstLast(int a, int aid, float d, Timeline.LoopType l, int s, int e)
         {
             ((CharAnimation)this.animations.objectAtIndex(a - 101)).addAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
         }
 
-        // Token: 0x0600047C RID: 1148 RVA: 0x00019EA6 File Offset: 0x000180A6
         public virtual Animation getAnimation(int resID)
         {
             if (resID == 80)
@@ -63,7 +56,6 @@ namespace CutTheRope.game
             return (Animation)this.animations.objectAtIndex(resID - 101);
         }
 
-        // Token: 0x0600047D RID: 1149 RVA: 0x00019EC4 File Offset: 0x000180C4
         public virtual void switchToAnimationatEndOfAnimationDelay(int i2, int a2, int i1, int a1, float d)
         {
             Animation animation = this.getAnimation(i1);
@@ -83,7 +75,6 @@ namespace CutTheRope.game
             timeline.addKeyFrame(KeyFrame.makeAction(dynamicArray, d));
         }
 
-        // Token: 0x0600047E RID: 1150 RVA: 0x00019F9C File Offset: 0x0001819C
         public virtual void playAnimationtimeline(int resID, int t)
         {
             if (this.getCurrentTimeline() != null)
@@ -107,7 +98,6 @@ namespace CutTheRope.game
             animation.playTimeline(t);
         }
 
-        // Token: 0x0600047F RID: 1151 RVA: 0x0001A034 File Offset: 0x00018234
         public override void playTimeline(int t)
         {
             foreach (object obj in this.animations)
@@ -118,7 +108,6 @@ namespace CutTheRope.game
             base.playTimeline(t);
         }
 
-        // Token: 0x04000317 RID: 791
         public DynamicArray animations;
     }
 }

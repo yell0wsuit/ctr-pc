@@ -5,10 +5,8 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x0200003B RID: 59
     internal class MultiParticles : Particles
     {
-        // Token: 0x06000215 RID: 533 RVA: 0x0000A51C File Offset: 0x0000871C
         public virtual Particles initWithTotalParticlesandImageGrid(int numberOfParticles, Image image)
         {
             if (this.init() == null)
@@ -34,7 +32,6 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x06000216 RID: 534 RVA: 0x0000A5D0 File Offset: 0x000087D0
         public override void initParticle(ref Particle particle)
         {
             Image image = this.imageGrid;
@@ -48,7 +45,6 @@ namespace CutTheRope.iframework.visual
             particle.height = rectangle.h * particle.size;
         }
 
-        // Token: 0x06000217 RID: 535 RVA: 0x0000A678 File Offset: 0x00008878
         public override void updateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -91,7 +87,6 @@ namespace CutTheRope.iframework.visual
             this.particleCount--;
         }
 
-        // Token: 0x06000218 RID: 536 RVA: 0x0000A910 File Offset: 0x00008B10
         public override void update(float delta)
         {
             base.update(delta);
@@ -120,7 +115,6 @@ namespace CutTheRope.iframework.visual
             OpenGL.glBindBuffer(2, 0U);
         }
 
-        // Token: 0x06000219 RID: 537 RVA: 0x0000AA04 File Offset: 0x00008C04
         public override void draw()
         {
             this.preDraw();
@@ -146,7 +140,6 @@ namespace CutTheRope.iframework.visual
             this.postDraw();
         }
 
-        // Token: 0x0600021A RID: 538 RVA: 0x0000AAE0 File Offset: 0x00008CE0
         public override void dealloc()
         {
             this.drawer = null;
@@ -154,10 +147,8 @@ namespace CutTheRope.iframework.visual
             base.dealloc();
         }
 
-        // Token: 0x04000154 RID: 340
         public ImageMultiDrawer drawer;
 
-        // Token: 0x04000155 RID: 341
         public Image imageGrid;
     }
 }

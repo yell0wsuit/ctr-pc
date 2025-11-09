@@ -10,10 +10,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000071 RID: 113
     internal class Bungee : ConstraintSystem
     {
-        // Token: 0x0600045F RID: 1119 RVA: 0x000186BC File Offset: 0x000168BC
         private static void drawAntialiasedLineContinued(float x1, float y1, float x2, float y2, float size, RGBAColor color, ref float lx, ref float ly, ref float rx, ref float ry, bool highlighted)
         {
             Vector v = CutTheRope.iframework.helpers.MathHelper.vect(x1, y1);
@@ -105,7 +103,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000460 RID: 1120 RVA: 0x00018B54 File Offset: 0x00016D54
         private static void drawBungee(Bungee b, Vector[] pts, int count, int points)
         {
             float num = ((b.cut == -1 || b.forceWhite) ? 1f : (b.cutTime / 1.95f));
@@ -217,7 +214,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000461 RID: 1121 RVA: 0x0001905C File Offset: 0x0001725C
         public virtual NSObject initWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
         {
             if (this.init() != null)
@@ -262,7 +258,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000462 RID: 1122 RVA: 0x000191B4 File Offset: 0x000173B4
         public virtual int getLength()
         {
             int num = 0;
@@ -280,13 +275,11 @@ namespace CutTheRope.game
             return num;
         }
 
-        // Token: 0x06000463 RID: 1123 RVA: 0x0001920D File Offset: 0x0001740D
         public virtual void roll(float rollLen)
         {
             this.rollplacingWithOffset(rollLen, CutTheRope.iframework.helpers.MathHelper.vectZero);
         }
 
-        // Token: 0x06000464 RID: 1124 RVA: 0x0001921C File Offset: 0x0001741C
         public virtual void rollplacingWithOffset(float rollLen, Vector off)
         {
             ConstraintedPoint i = this.parts[this.parts.Count - 2];
@@ -322,7 +315,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000465 RID: 1125 RVA: 0x00019344 File Offset: 0x00017544
         public virtual float rollBack(float amount)
         {
             float num = amount;
@@ -368,7 +360,6 @@ namespace CutTheRope.game
             return num;
         }
 
-        // Token: 0x06000466 RID: 1126 RVA: 0x000194A0 File Offset: 0x000176A0
         public virtual void removePart(int part)
         {
             this.forceWhite = false;
@@ -406,7 +397,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000467 RID: 1127 RVA: 0x000195BE File Offset: 0x000177BE
         public virtual void setCut(int part)
         {
             this.cut = part;
@@ -414,7 +404,6 @@ namespace CutTheRope.game
             this.forceWhite = true;
         }
 
-        // Token: 0x06000468 RID: 1128 RVA: 0x000195DC File Offset: 0x000177DC
         public virtual void strengthen()
         {
             int count = this.parts.Count;
@@ -439,13 +428,11 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x06000469 RID: 1129 RVA: 0x0001965E File Offset: 0x0001785E
         public override void update(float delta)
         {
             this.update(delta, 1f);
         }
 
-        // Token: 0x0600046A RID: 1130 RVA: 0x0001966C File Offset: 0x0001786C
         public virtual void update(float delta, float koeff)
         {
             if ((double)this.cutTime > 0.0)
@@ -475,7 +462,6 @@ namespace CutTheRope.game
             }
         }
 
-        // Token: 0x0600046B RID: 1131 RVA: 0x0001973C File Offset: 0x0001793C
         public override void draw()
         {
             int count = this.parts.Count;
@@ -537,85 +523,60 @@ namespace CutTheRope.game
             OpenGL.glLineWidth(1.0);
         }
 
-        // Token: 0x0600046C RID: 1132 RVA: 0x000198BA File Offset: 0x00017ABA
         public override void dealloc()
         {
             base.dealloc();
         }
 
-        // Token: 0x040002FD RID: 765
         private const float ROLLBACK_K = 0.5f;
 
-        // Token: 0x040002FE RID: 766
         private const int BUNGEE_BEZIER_POINTS = 4;
 
-        // Token: 0x040002FF RID: 767
         public const int BUNGEE_RELAXION_TIMES = 30;
 
-        // Token: 0x04000300 RID: 768
         private const float MAX_BUNGEE_SEGMENTS = 20f;
 
-        // Token: 0x04000301 RID: 769
         private const float DEFAULT_PART_WEIGHT = 0.02f;
 
-        // Token: 0x04000302 RID: 770
         private const float STRENGTHENED_PART_WEIGHT = 0.5f;
 
-        // Token: 0x04000303 RID: 771
         private const float CUT_DISSAPPEAR_TIMEOUT = 2f;
 
-        // Token: 0x04000304 RID: 772
         private const float WHITE_TIMEOUT = 0.05f;
 
-        // Token: 0x04000305 RID: 773
         public bool highlighted;
 
-        // Token: 0x04000306 RID: 774
         public static float BUNGEE_REST_LEN = 105f;
 
-        // Token: 0x04000307 RID: 775
         public ConstraintedPoint bungeeAnchor;
 
-        // Token: 0x04000308 RID: 776
         public ConstraintedPoint tail;
 
-        // Token: 0x04000309 RID: 777
         public int cut;
 
-        // Token: 0x0400030A RID: 778
         public int relaxed;
 
-        // Token: 0x0400030B RID: 779
         public float initialCandleAngle;
 
-        // Token: 0x0400030C RID: 780
         public bool chosenOne;
 
-        // Token: 0x0400030D RID: 781
         public int bungeeMode;
 
-        // Token: 0x0400030E RID: 782
         public bool forceWhite;
 
-        // Token: 0x0400030F RID: 783
         public float cutTime;
 
-        // Token: 0x04000310 RID: 784
         public float[] drawPts = new float[200];
 
-        // Token: 0x04000311 RID: 785
         public int drawPtsCount;
 
-        // Token: 0x04000312 RID: 786
         public float lineWidth;
 
-        // Token: 0x04000313 RID: 787
         public bool hideTailParts;
 
-        // Token: 0x04000314 RID: 788
         private static RGBAColor[] ccolors =
-        [
-            RGBAColor.transparentRGBA,
+[
+    RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -623,12 +584,11 @@ namespace CutTheRope.game
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-        ];
+];
 
-        // Token: 0x04000315 RID: 789
         private static RGBAColor[] ccolors2 =
-        [
-            RGBAColor.transparentRGBA,
+[
+    RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -638,17 +598,13 @@ namespace CutTheRope.game
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-        ];
+];
 
-        // Token: 0x04000316 RID: 790
         private static Color s_Color1 = new(0f, 0f, 0.4f, 1f);
 
-        // Token: 0x020000C3 RID: 195
         private enum BUNGEE_MODE
         {
-            // Token: 0x040008EA RID: 2282
             BUNGEE_MODE_NORMAL,
-            // Token: 0x040008EB RID: 2283
             BUNGEE_MODE_LOCKED
         }
     }

@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    // Token: 0x0200004D RID: 77
     internal class TileMap : BaseElement
     {
-        // Token: 0x06000295 RID: 661 RVA: 0x0000E728 File Offset: 0x0000C928
         public override void draw()
         {
             int count = this.drawers.Count;
@@ -22,7 +20,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x06000296 RID: 662 RVA: 0x0000E763 File Offset: 0x0000C963
         public override void dealloc()
         {
             this.matrix = null;
@@ -33,7 +30,6 @@ namespace CutTheRope.iframework.visual
             base.dealloc();
         }
 
-        // Token: 0x06000297 RID: 663 RVA: 0x0000E798 File Offset: 0x0000C998
         public virtual TileMap initWithRowsColumns(int r, int c)
         {
             if (this.init() != null)
@@ -63,7 +59,6 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        // Token: 0x06000298 RID: 664 RVA: 0x0000E878 File Offset: 0x0000CA78
         public virtual void addTileQuadwithID(Texture2D t, int q, int ti)
         {
             if (q == -1)
@@ -108,7 +103,6 @@ namespace CutTheRope.iframework.visual
             this.tiles[ti] = tileEntry;
         }
 
-        // Token: 0x06000299 RID: 665 RVA: 0x0000E9B0 File Offset: 0x0000CBB0
         public virtual void fillStartAtRowColumnRowsColumnswithTile(int r, int c, int rs, int cs, int ti)
         {
             for (int i = c; i < c + cs; i++)
@@ -120,27 +114,23 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x0600029A RID: 666 RVA: 0x0000E9E9 File Offset: 0x0000CBE9
         public virtual void setParallaxRatio(float r)
         {
             this.parallaxRatio = r;
         }
 
-        // Token: 0x0600029B RID: 667 RVA: 0x0000E9F2 File Offset: 0x0000CBF2
         public virtual void setRepeatHorizontally(TileMap.Repeat r)
         {
             this.repeatedHorizontally = r;
             this.updateVars();
         }
 
-        // Token: 0x0600029C RID: 668 RVA: 0x0000EA01 File Offset: 0x0000CC01
         public virtual void setRepeatVertically(TileMap.Repeat r)
         {
             this.repeatedVertically = r;
             this.updateVars();
         }
 
-        // Token: 0x0600029D RID: 669 RVA: 0x0000EA10 File Offset: 0x0000CC10
         public virtual void updateWithCameraPos(Vector pos)
         {
             float num = (float)Math.Round((double)(pos.x / this.parallaxRatio));
@@ -267,7 +257,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        // Token: 0x0600029E RID: 670 RVA: 0x0000EF48 File Offset: 0x0000D148
         public virtual void updateVars()
         {
             this.maxColsOnScreen = 2 + (int)Math.Floor((double)(this.cameraViewWidth / (this.tileWidth + 1)));
@@ -284,74 +273,50 @@ namespace CutTheRope.iframework.visual
             this.height = (this.tileMapHeight = this.rows * this.tileHeight);
         }
 
-        // Token: 0x040001FB RID: 507
         public int[,] matrix;
 
-        // Token: 0x040001FC RID: 508
         private int rows;
 
-        // Token: 0x040001FD RID: 509
         private int columns;
 
-        // Token: 0x040001FE RID: 510
         private List<ImageMultiDrawer> drawers;
 
-        // Token: 0x040001FF RID: 511
         private Dictionary<int, TileEntry> tiles;
 
-        // Token: 0x04000200 RID: 512
         private int cameraViewWidth;
 
-        // Token: 0x04000201 RID: 513
         private int cameraViewHeight;
 
-        // Token: 0x04000202 RID: 514
         private int tileMapWidth;
 
-        // Token: 0x04000203 RID: 515
         private int tileMapHeight;
 
-        // Token: 0x04000204 RID: 516
         private int maxRowsOnScreen;
 
-        // Token: 0x04000205 RID: 517
         private int maxColsOnScreen;
 
-        // Token: 0x04000206 RID: 518
         private int randomSeed;
 
-        // Token: 0x04000207 RID: 519
         private TileMap.Repeat repeatedVertically;
 
-        // Token: 0x04000208 RID: 520
         private TileMap.Repeat repeatedHorizontally;
 
-        // Token: 0x04000209 RID: 521
         private float parallaxRatio;
 
-        // Token: 0x0400020A RID: 522
         private int tileWidth;
 
-        // Token: 0x0400020B RID: 523
         private int tileHeight;
 
-        // Token: 0x0400020C RID: 524
         private bool horizontalRandom;
 
-        // Token: 0x0400020D RID: 525
         private bool verticalRandom;
 
-        // Token: 0x0400020E RID: 526
         private bool restoreTileTransparency;
 
-        // Token: 0x020000B3 RID: 179
         public enum Repeat
         {
-            // Token: 0x040008AC RID: 2220
             REPEAT_NONE,
-            // Token: 0x040008AD RID: 2221
             REPEAT_ALL,
-            // Token: 0x040008AE RID: 2222
             REPEAT_EDGES
         }
     }

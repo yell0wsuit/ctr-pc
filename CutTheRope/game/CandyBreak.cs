@@ -6,10 +6,8 @@ using System;
 
 namespace CutTheRope.game
 {
-    // Token: 0x02000072 RID: 114
     internal class CandyBreak : RotateableMultiParticles
     {
-        // Token: 0x0600046F RID: 1135 RVA: 0x00019A04 File Offset: 0x00017C04
         public override Particles initWithTotalParticlesandImageGrid(int p, Image grid)
         {
             if (base.initWithTotalParticlesandImageGrid(p, grid) == null)
@@ -56,7 +54,6 @@ namespace CutTheRope.game
             return this;
         }
 
-        // Token: 0x06000470 RID: 1136 RVA: 0x00019C18 File Offset: 0x00017E18
         public override void initParticle(ref Particle particle)
         {
             base.initParticle(ref particle);
@@ -69,7 +66,6 @@ namespace CutTheRope.game
             particle.height = rectangle.h * particle.size;
         }
 
-        // Token: 0x06000471 RID: 1137 RVA: 0x00019CBC File Offset: 0x00017EBC
         public override void draw()
         {
             this.preDraw();
