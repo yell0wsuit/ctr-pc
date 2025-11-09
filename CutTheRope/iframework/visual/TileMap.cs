@@ -102,7 +102,7 @@ namespace CutTheRope.iframework.visual
                 num = this.drawers.Count;
                 this.drawers.Add(item);
             }
-            TileEntry tileEntry = new TileEntry();
+            TileEntry tileEntry = new();
             tileEntry.drawerIndex = num;
             tileEntry.quad = q;
             this.tiles[ti] = tileEntry;
@@ -194,7 +194,7 @@ namespace CutTheRope.iframework.visual
                 while (k <= num9 && vector3.y < num2 + (float)this.cameraViewHeight)
                 {
                     Rectangle rectangle2 = MathHelper.rectInRectIntersection(new Rectangle(num, num2, (float)this.cameraViewWidth, (float)this.cameraViewHeight), new Rectangle(vector3.x, vector3.y, (float)this.tileWidth, (float)this.tileHeight));
-                    Rectangle r = new Rectangle(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
+                    Rectangle r = new(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
                     int num10 = j;
                     int num11 = k;
                     if (this.repeatedVertically == TileMap.Repeat.REPEAT_EDGES)

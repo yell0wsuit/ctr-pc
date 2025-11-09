@@ -46,6 +46,6 @@ namespace CutTheRope.windows
         }
 
         // Token: 0x04000055 RID: 85
-        private static Dictionary<string, ContentManager> _contentManagers = new Dictionary<string, ContentManager>();
+        private static Dictionary<string, ContentManager> _contentManagers = new();
     }
 }

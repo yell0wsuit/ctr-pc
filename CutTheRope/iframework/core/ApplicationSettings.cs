@@ -92,7 +92,7 @@ namespace CutTheRope.iframework.core
         private string locale;
 
         // Token: 0x040002A4 RID: 676
-        private static Dictionary<ApplicationSettings.AppSettings, bool> DEFAULT_APP_SETTINGS = new Dictionary<ApplicationSettings.AppSettings, bool>
+        private static Dictionary<ApplicationSettings.AppSettings, bool> DEFAULT_APP_SETTINGS = new()
         {
             {
                 ApplicationSettings.AppSettings.APP_SETTING_INTERACTION_ENABLED,

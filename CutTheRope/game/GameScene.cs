@@ -2246,7 +2246,7 @@ namespace CutTheRope.game
                         array[num5++] = fingerCut.end;
                         j++;
                     }
-                    List<Vector> list = new List<Vector>();
+                    List<Vector> list = new();
                     Vector vector = default(Vector);
                     bool flag = true;
                     for (int k = 0; k < array.Count<Vector>(); k++)
@@ -3672,7 +3672,7 @@ namespace CutTheRope.game
             // Token: 0x0600067E RID: 1662 RVA: 0x00033C5D File Offset: 0x00031E5D
             private static GameScene.GameObjectSpecial GameObjectSpecial_create(Texture2D t)
             {
-                GameScene.GameObjectSpecial gameObjectSpecial = new GameScene.GameObjectSpecial();
+                GameScene.GameObjectSpecial gameObjectSpecial = new();
                 gameObjectSpecial.initWithTexture(t);
                 return gameObjectSpecial;
             }

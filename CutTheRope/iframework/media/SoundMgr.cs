@@ -61,7 +61,7 @@ namespace CutTheRope.iframework.media
         // Token: 0x0600031B RID: 795 RVA: 0x00012578 File Offset: 0x00010778
         private void ClearStopped()
         {
-            List<SoundEffectInstance> list = new List<SoundEffectInstance>();
+            List<SoundEffectInstance> list = new();
             foreach (SoundEffectInstance activeSound in this.activeSounds)
             {
                 if (activeSound != null && activeSound.State != SoundState.Stopped)

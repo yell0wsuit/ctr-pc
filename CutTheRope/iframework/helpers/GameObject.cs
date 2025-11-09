@@ -20,7 +20,7 @@ namespace CutTheRope.iframework.helpers
         // Token: 0x0600033B RID: 827 RVA: 0x00012B61 File Offset: 0x00010D61
         private static GameObject GameObject_create(Texture2D t)
         {
-            GameObject gameObject = new GameObject();
+            GameObject gameObject = new();
             gameObject.initWithTexture(t);
             return gameObject;
         }

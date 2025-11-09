@@ -133,7 +133,7 @@ namespace CutTheRope.ios
             {
                 return null;
             }
-            XMLNode xMLNode = new XMLNode();
+            XMLNode xMLNode = new();
             if (parent != null)
             {
                 xMLNode.parent = parent;
@@ -179,7 +179,7 @@ namespace CutTheRope.ios
         // Token: 0x06000106 RID: 262 RVA: 0x00005A7C File Offset: 0x00003C7C
         private static XMLNode ReadNodeLINQ(XElement nodeLinq, XMLNode parent)
         {
-            XMLNode xMLNode = new XMLNode();
+            XMLNode xMLNode = new();
             if (parent != null)
             {
                 xMLNode.parent = parent;

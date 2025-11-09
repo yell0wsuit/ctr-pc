@@ -12,6 +12,6 @@ namespace CutTheRope.windows
         }
 
         // Token: 0x0400003C RID: 60
-        private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime Jan1st1970 = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 }

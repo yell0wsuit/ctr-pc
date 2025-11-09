@@ -88,7 +88,7 @@ namespace CutTheRope.iframework
         // Token: 0x06000142 RID: 322 RVA: 0x00006DB0 File Offset: 0x00004FB0
         public static float[] toFloatArray(RGBAColor[] colors)
         {
-            List<float> list = new List<float>();
+            List<float> list = new();
             for (int i = 0; i < colors.Length; i++)
             {
                 list.AddRange(colors[i].toFloatArray());
@@ -97,28 +97,28 @@ namespace CutTheRope.iframework
         }
 
         // Token: 0x040000EA RID: 234
-        public static readonly RGBAColor transparentRGBA = new RGBAColor(0f, 0f, 0f, 0f);
+        public static readonly RGBAColor transparentRGBA = new(0f, 0f, 0f, 0f);
 
         // Token: 0x040000EB RID: 235
-        public static readonly RGBAColor solidOpaqueRGBA = new RGBAColor(1f, 1f, 1f, 1f);
+        public static readonly RGBAColor solidOpaqueRGBA = new(1f, 1f, 1f, 1f);
 
         // Token: 0x040000EC RID: 236
         public static readonly Color solidOpaqueRGBA_Xna = Color.White;
 
         // Token: 0x040000ED RID: 237
-        public static readonly RGBAColor redRGBA = new RGBAColor(1.0, 0.0, 0.0, 1.0);
+        public static readonly RGBAColor redRGBA = new(1.0, 0.0, 0.0, 1.0);
 
         // Token: 0x040000EE RID: 238
-        public static readonly RGBAColor blueRGBA = new RGBAColor(0.0, 0.0, 1.0, 1.0);
+        public static readonly RGBAColor blueRGBA = new(0.0, 0.0, 1.0, 1.0);
 
         // Token: 0x040000EF RID: 239
-        public static readonly RGBAColor greenRGBA = new RGBAColor(0.0, 1.0, 0.0, 1.0);
+        public static readonly RGBAColor greenRGBA = new(0.0, 1.0, 0.0, 1.0);
 
         // Token: 0x040000F0 RID: 240
-        public static readonly RGBAColor blackRGBA = new RGBAColor(0.0, 0.0, 0.0, 1.0);
+        public static readonly RGBAColor blackRGBA = new(0.0, 0.0, 0.0, 1.0);
 
         // Token: 0x040000F1 RID: 241
-        public static readonly RGBAColor whiteRGBA = new RGBAColor(1.0, 1.0, 1.0, 1.0);
+        public static readonly RGBAColor whiteRGBA = new(1.0, 1.0, 1.0, 1.0);
 
         // Token: 0x040000F2 RID: 242
         public float r;

@@ -471,7 +471,7 @@ namespace CutTheRope.iframework.core
         public ResourceMgrDelegate resourcesDelegate;
 
         // Token: 0x040002A9 RID: 681
-        private Dictionary<int, NSObject> s_Resources = new Dictionary<int, NSObject>();
+        private Dictionary<int, NSObject> s_Resources = new();
 
         // Token: 0x040002AA RID: 682
         private XMLNode xmlStrings;
@@ -483,7 +483,7 @@ namespace CutTheRope.iframework.core
         private int loadCount;
 
         // Token: 0x040002AD RID: 685
-        private List<int> loadQueue = new List<int>();
+        private List<int> loadQueue = new();
 
         // Token: 0x040002AE RID: 686
         private int Timer;

@@ -409,7 +409,7 @@ namespace CutTheRope
             base.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
             Global.ScreenSizeManager.FullScreenCropWidth = false;
             Global.ScreenSizeManager.ApplyViewportToDevice();
-            Microsoft.Xna.Framework.Rectangle destinationRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, base.GraphicsDevice.Viewport.Width, base.GraphicsDevice.Viewport.Height);
+            Microsoft.Xna.Framework.Rectangle destinationRectangle = new(0, 0, base.GraphicsDevice.Viewport.Width, base.GraphicsDevice.Viewport.Height);
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
             Global.SpriteBatch.Draw(texture, destinationRectangle, Microsoft.Xna.Framework.Color.White);
             Global.SpriteBatch.End();
@@ -487,7 +487,7 @@ namespace CutTheRope
         private Cursor _cursorLast;
 
         // Token: 0x04000019 RID: 25
-        private Dictionary<Microsoft.Xna.Framework.Input.Keys, bool> keyState = new Dictionary<Microsoft.Xna.Framework.Input.Keys, bool>();
+        private Dictionary<Microsoft.Xna.Framework.Input.Keys, bool> keyState = new();
 
         // Token: 0x0400001A RID: 26
         private KeyboardState keyboardStateXna;

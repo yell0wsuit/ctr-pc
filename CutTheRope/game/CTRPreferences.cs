@@ -610,7 +610,7 @@ namespace CutTheRope.game
         public const string acDJPerfect = "com.zeptolab.ctr.djboxperfect";
 
         // Token: 0x04000368 RID: 872
-        public RemoteDataManager remoteDataManager = new RemoteDataManager();
+        public RemoteDataManager remoteDataManager = new();
 
         // Token: 0x04000369 RID: 873
         private bool firstLaunch;
