@@ -14,50 +14,50 @@ namespace CutTheRope.game
     {
         private static void drawAntialiasedLineContinued(float x1, float y1, float x2, float y2, float size, RGBAColor color, ref float lx, ref float ly, ref float rx, ref float ry, bool highlighted)
         {
-            Vector v = iframework.helpers.MathHelper.vect(x1, y1);
-            Vector v2 = iframework.helpers.MathHelper.vect(x2, y2);
-            Vector vector = iframework.helpers.MathHelper.vectSub(v2, v);
-            if (!iframework.helpers.MathHelper.vectEqual(vector, iframework.helpers.MathHelper.vectZero))
+            Vector v = vect(x1, y1);
+            Vector v2 = vect(x2, y2);
+            Vector vector = vectSub(v2, v);
+            if (!vectEqual(vector, vectZero))
             {
-                Vector v3 = highlighted ? vector : iframework.helpers.MathHelper.vectMult(vector, ((double)color.a == 1.0) ? 1.02 : 1.0);
-                Vector v4 = iframework.helpers.MathHelper.vectPerp(vector);
-                Vector vector2 = iframework.helpers.MathHelper.vectNormalize(v4);
-                v4 = iframework.helpers.MathHelper.vectMult(vector2, size);
-                Vector v5 = iframework.helpers.MathHelper.vectNeg(v4);
-                Vector v6 = iframework.helpers.MathHelper.vectAdd(v4, vector);
-                Vector v7 = iframework.helpers.MathHelper.vectAdd(v5, vector);
-                v6 = iframework.helpers.MathHelper.vectAdd(v6, v);
-                v7 = iframework.helpers.MathHelper.vectAdd(v7, v);
-                Vector v8 = iframework.helpers.MathHelper.vectAdd(v4, v3);
-                Vector v9 = iframework.helpers.MathHelper.vectAdd(v5, v3);
-                Vector vector3 = iframework.helpers.MathHelper.vectMult(vector2, size + 6f);
-                Vector v10 = iframework.helpers.MathHelper.vectNeg(vector3);
-                Vector v11 = iframework.helpers.MathHelper.vectAdd(vector3, vector);
-                Vector v12 = iframework.helpers.MathHelper.vectAdd(v10, vector);
-                vector3 = iframework.helpers.MathHelper.vectAdd(vector3, v);
-                v10 = iframework.helpers.MathHelper.vectAdd(v10, v);
-                v11 = iframework.helpers.MathHelper.vectAdd(v11, v);
-                v12 = iframework.helpers.MathHelper.vectAdd(v12, v);
+                Vector v3 = highlighted ? vector : vectMult(vector, ((double)color.a == 1.0) ? 1.02 : 1.0);
+                Vector v4 = vectPerp(vector);
+                Vector vector2 = vectNormalize(v4);
+                v4 = vectMult(vector2, size);
+                Vector v5 = vectNeg(v4);
+                Vector v6 = vectAdd(v4, vector);
+                Vector v7 = vectAdd(v5, vector);
+                v6 = vectAdd(v6, v);
+                v7 = vectAdd(v7, v);
+                Vector v8 = vectAdd(v4, v3);
+                Vector v9 = vectAdd(v5, v3);
+                Vector vector3 = vectMult(vector2, size + 6f);
+                Vector v10 = vectNeg(vector3);
+                Vector v11 = vectAdd(vector3, vector);
+                Vector v12 = vectAdd(v10, vector);
+                vector3 = vectAdd(vector3, v);
+                v10 = vectAdd(v10, v);
+                v11 = vectAdd(v11, v);
+                v12 = vectAdd(v12, v);
                 if (lx == -1f)
                 {
-                    v4 = iframework.helpers.MathHelper.vectAdd(v4, v);
-                    v5 = iframework.helpers.MathHelper.vectAdd(v5, v);
+                    v4 = vectAdd(v4, v);
+                    v5 = vectAdd(v5, v);
                 }
                 else
                 {
-                    v4 = iframework.helpers.MathHelper.vect(lx, ly);
-                    v5 = iframework.helpers.MathHelper.vect(rx, ry);
+                    v4 = vect(lx, ly);
+                    v5 = vect(rx, ry);
                 }
-                v8 = iframework.helpers.MathHelper.vectAdd(v8, v);
-                v9 = iframework.helpers.MathHelper.vectAdd(v9, v);
+                v8 = vectAdd(v8, v);
+                v9 = vectAdd(v9, v);
                 lx = v6.x;
                 ly = v6.y;
                 rx = v7.x;
                 ry = v7.y;
-                Vector vector4 = iframework.helpers.MathHelper.vectSub(v4, vector2);
-                Vector vector5 = iframework.helpers.MathHelper.vectSub(v8, vector2);
-                Vector vector6 = iframework.helpers.MathHelper.vectAdd(v5, vector2);
-                Vector vector7 = iframework.helpers.MathHelper.vectAdd(v9, vector2);
+                Vector vector4 = vectSub(v4, vector2);
+                Vector vector5 = vectSub(v8, vector2);
+                Vector vector6 = vectAdd(v5, vector2);
+                Vector vector7 = vectAdd(v9, vector2);
                 float[] pointer =
                 [
                     vector3.x, vector3.y, v11.x, v11.y, v4.x, v4.y, v8.x, v8.y, v5.x, v5.y,
@@ -126,7 +126,7 @@ namespace CutTheRope.game
                 rGBAColor4.g *= num2;
                 rGBAColor4.b *= num2;
             }
-            float num3 = iframework.helpers.MathHelper.vectDistance(iframework.helpers.MathHelper.vect(pts[0].x, pts[0].y), iframework.helpers.MathHelper.vect(pts[1].x, pts[1].y));
+            float num3 = vectDistance(vect(pts[0].x, pts[0].y), vect(pts[1].x, pts[1].y));
             if ((double)num3 <= (double)BUNGEE_REST_LEN + 0.3)
             {
                 b.relaxed = 0;
@@ -241,14 +241,14 @@ namespace CutTheRope.game
                     tail.setWeight(1f);
                 }
                 bungeeAnchor.setWeight(0.02f);
-                bungeeAnchor.pos = iframework.helpers.MathHelper.vect(hx, hy);
-                tail.pos = iframework.helpers.MathHelper.vect(tx, ty);
+                bungeeAnchor.pos = vect(hx, hy);
+                tail.pos = vect(tx, ty);
                 addPart(bungeeAnchor);
                 addPart(tail);
                 tail.addConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
-                Vector v = iframework.helpers.MathHelper.vectSub(tail.pos, bungeeAnchor.pos);
+                Vector v = vectSub(tail.pos, bungeeAnchor.pos);
                 int num = (int)(len / BUNGEE_REST_LEN + 2f);
-                v = iframework.helpers.MathHelper.vectDiv(v, (float)num);
+                v = vectDiv(v, (float)num);
                 rollplacingWithOffset(len, v);
                 forceWhite = false;
                 initialCandleAngle = -1f;
@@ -261,14 +261,14 @@ namespace CutTheRope.game
         public virtual int getLength()
         {
             int num = 0;
-            Vector pos = iframework.helpers.MathHelper.vectZero;
+            Vector pos = vectZero;
             int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
                 ConstraintedPoint constraintedPoint = parts[i];
                 if (i > 0)
                 {
-                    num += (int)iframework.helpers.MathHelper.vectDistance(pos, constraintedPoint.pos);
+                    num += (int)vectDistance(pos, constraintedPoint.pos);
                 }
                 pos = constraintedPoint.pos;
             }
@@ -277,7 +277,7 @@ namespace CutTheRope.game
 
         public virtual void roll(float rollLen)
         {
-            this.rollplacingWithOffset(rollLen, iframework.helpers.MathHelper.vectZero);
+            this.rollplacingWithOffset(rollLen, vectZero);
         }
 
         public virtual void rollplacingWithOffset(float rollLen, Vector off)
@@ -291,7 +291,7 @@ namespace CutTheRope.game
                     ConstraintedPoint constraintedPoint = parts[parts.Count - 2];
                     ConstraintedPoint constraintedPoint2 = (ConstraintedPoint)new ConstraintedPoint().init();
                     constraintedPoint2.setWeight(0.02f);
-                    constraintedPoint2.pos = iframework.helpers.MathHelper.vectAdd(constraintedPoint.pos, off);
+                    constraintedPoint2.pos = vectAdd(constraintedPoint.pos, off);
                     addPartAt(constraintedPoint2, parts.Count - 1);
                     tail.changeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, (float)num);
                     constraintedPoint2.addConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
