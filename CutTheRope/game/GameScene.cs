@@ -1505,11 +1505,9 @@ namespace CutTheRope.game
                     {
                         continue;
                     }
-                    using IEnumerator enumerator2 = socks.GetEnumerator();
-                    while (enumerator2.MoveNext())
+
+                    foreach (Sock sock4 in socks)
                     {
-                        object obj12 = enumerator2.Current;
-                        Sock sock4 = (Sock)obj12;
                         if (sock4 != sock3 && sock4.group == sock3.group)
                         {
                             sock3.state = Sock.SOCK_RECEIVING;
@@ -1525,7 +1523,6 @@ namespace CutTheRope.game
                             break;
                         }
                     }
-                    break;
                 }
                 if (sock3.state != Sock.SOCK_IDLE && sock3.idleTimeout == 0f)
                 {
