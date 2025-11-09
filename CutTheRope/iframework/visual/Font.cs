@@ -9,61 +9,61 @@ namespace CutTheRope.iframework.visual
         {
             if (base.init() != null)
             {
-                this._isWvga = charmapfile.isWvga();
-                this.charmap = new Image().initWithTexture(charmapfile);
-                this.quadsCount = charmapfile.quadsCount;
-                this.height = charmapfile.quadRects[0].h;
-                this.chars = strParam.copy();
-                this.sortedChars = this.chars.getCharacters();
-                Array.Sort<char>(this.sortedChars);
-                this.charOffset = 0f;
-                this.lineOffset = 0f;
+                _isWvga = charmapfile.isWvga();
+                charmap = new Image().initWithTexture(charmapfile);
+                quadsCount = charmapfile.quadsCount;
+                height = charmapfile.quadRects[0].h;
+                chars = strParam.copy();
+                sortedChars = chars.getCharacters();
+                Array.Sort<char>(sortedChars);
+                charOffset = 0f;
+                lineOffset = 0f;
             }
             return this;
         }
 
         public override void dealloc()
         {
-            this.chars = null;
-            this.sortedChars = null;
-            this.charmap = null;
+            chars = null;
+            sortedChars = null;
+            charmap = null;
             base.dealloc();
         }
 
         public override void setCharOffsetLineOffsetSpaceWidth(float co, float lo, float sw)
         {
-            this.charOffset = co;
-            this.lineOffset = lo;
-            this.spaceWidth = sw;
-            if (this._isWvga)
+            charOffset = co;
+            lineOffset = lo;
+            spaceWidth = sw;
+            if (_isWvga)
             {
-                this.charOffset = (float)(int)((double)this.charOffset / 1.5);
-                this.lineOffset = (float)(int)((double)this.lineOffset / 1.5);
-                this.spaceWidth = (float)(int)((double)this.spaceWidth / 1.5);
+                charOffset = (float)(int)((double)charOffset / 1.5);
+                lineOffset = (float)(int)((double)lineOffset / 1.5);
+                spaceWidth = (float)(int)((double)spaceWidth / 1.5);
             }
         }
 
         public override float fontHeight()
         {
-            return this.height;
+            return height;
         }
 
         public override bool canDraw(char c)
         {
-            return c == ' ' || Array.BinarySearch<char>(this.sortedChars, c) >= 0;
+            return c == ' ' || Array.BinarySearch<char>(sortedChars, c) >= 0;
         }
 
         public override float getCharWidth(char c)
         {
             if (c == ' ')
             {
-                return this.spaceWidth;
+                return spaceWidth;
             }
             if (c == '*')
             {
                 return 0f;
             }
-            return this.charmap.texture.quadRects[this.getCharQuad(c)].w;
+            return charmap.texture.quadRects[getCharQuad(c)].w;
         }
 
         public override int getCharmapIndex(char c)
@@ -73,7 +73,7 @@ namespace CutTheRope.iframework.visual
 
         public override int getCharQuad(char c)
         {
-            int num = this.chars.IndexOf(c);
+            int num = chars.IndexOf(c);
             if (num >= 0)
             {
                 return num;
@@ -87,7 +87,7 @@ namespace CutTheRope.iframework.visual
             {
                 return 0f;
             }
-            return this.charOffset;
+            return charOffset;
         }
 
         public override int totalCharmaps()
@@ -97,7 +97,7 @@ namespace CutTheRope.iframework.visual
 
         public override Image getCharmap(int i)
         {
-            return this.charmap;
+            return charmap;
         }
 
         private NSString chars;

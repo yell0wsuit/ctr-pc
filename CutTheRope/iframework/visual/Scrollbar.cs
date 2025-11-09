@@ -11,18 +11,18 @@ namespace CutTheRope.iframework.visual
         public override void update(float delta)
         {
             base.update(delta);
-            if (this.delegateProvider != null)
+            if (delegateProvider != null)
             {
-                this.delegateProvider(ref this.sp, ref this.mp, ref this.sc);
+                delegateProvider(ref sp, ref mp, ref sc);
             }
         }
 
         public override void draw()
         {
             base.preDraw();
-            if (CTRMathHelper.vectEqual(this.sp, CTRMathHelper.vectUndefined) && this.delegateProvider != null)
+            if (CTRMathHelper.vectEqual(sp, CTRMathHelper.vectUndefined) && delegateProvider != null)
             {
-                this.delegateProvider(ref this.sp, ref this.mp, ref this.sc);
+                delegateProvider(ref sp, ref mp, ref sc);
             }
             OpenGL.glDisable(0);
             bool flag = false;
@@ -30,34 +30,34 @@ namespace CutTheRope.iframework.visual
             float num2;
             float num3;
             float num5;
-            if (this.vertical)
+            if (vertical)
             {
-                num = (float)this.width - 2f;
+                num = (float)width - 2f;
                 num2 = 1f;
-                num3 = (float)Math.Round(((double)this.height - 2.0) / (double)this.sc.y);
-                float num4 = (this.mp.y != 0f) ? (this.sp.y / this.mp.y) : 1f;
-                num5 = (float)(1.0 + ((double)this.height - 2.0 - (double)num3) * (double)num4);
-                if (num3 > (float)this.height)
+                num3 = (float)Math.Round(((double)height - 2.0) / (double)sc.y);
+                float num4 = (mp.y != 0f) ? (sp.y / mp.y) : 1f;
+                num5 = (float)(1.0 + ((double)height - 2.0 - (double)num3) * (double)num4);
+                if (num3 > (float)height)
                 {
                     flag = true;
                 }
             }
             else
             {
-                num3 = (float)this.height - 2f;
+                num3 = (float)height - 2f;
                 num5 = 1f;
-                num = (float)Math.Round(((double)this.width - 2.0) / (double)this.sc.x);
-                float num6 = (this.mp.x != 0f) ? (this.sp.x / this.mp.x) : 1f;
-                num2 = (float)(1.0 + ((double)this.width - 2.0 - (double)num) * (double)num6);
-                if (num > (float)this.width)
+                num = (float)Math.Round(((double)width - 2.0) / (double)sc.x);
+                float num6 = (mp.x != 0f) ? (sp.x / mp.x) : 1f;
+                num2 = (float)(1.0 + ((double)width - 2.0 - (double)num) * (double)num6);
+                if (num > (float)width)
                 {
                     flag = true;
                 }
             }
             if (!flag)
             {
-                GLDrawer.drawSolidRectWOBorder(this.drawX, this.drawY, (float)this.width, (float)this.height, this.backColor);
-                GLDrawer.drawSolidRectWOBorder(this.drawX + num2, this.drawY + num5, num, num3, this.scrollerColor);
+                GLDrawer.drawSolidRectWOBorder(drawX, drawY, (float)width, (float)height, backColor);
+                GLDrawer.drawSolidRectWOBorder(drawX + num2, drawY + num5, num, num3, scrollerColor);
             }
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);
@@ -66,16 +66,16 @@ namespace CutTheRope.iframework.visual
 
         public virtual Scrollbar initWithWidthHeightVertical(float w, float h, bool v)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.width = (int)w;
-                this.height = (int)h;
-                this.vertical = v;
-                this.sp = CTRMathHelper.vectUndefined;
-                this.mp = CTRMathHelper.vectUndefined;
-                this.sc = CTRMathHelper.vectUndefined;
-                this.backColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.5f);
-                this.scrollerColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0.5f);
+                width = (int)w;
+                height = (int)h;
+                vertical = v;
+                sp = CTRMathHelper.vectUndefined;
+                mp = CTRMathHelper.vectUndefined;
+                sc = CTRMathHelper.vectUndefined;
+                backColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.5f);
+                scrollerColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0.5f);
             }
             return this;
         }

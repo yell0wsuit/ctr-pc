@@ -49,15 +49,15 @@ namespace CutTheRope.iframework
 
         public float[] toFloatArray()
         {
-            if (this._array == null)
+            if (_array == null)
             {
-                this._array =
+                _array =
                 [
-                    this.blX, this.blY, this.blZ, this.brX, this.brY, this.brZ, this.tlX, this.tlY, this.tlZ, this.trX,
-                    this.trY, this.trZ
+                    blX, blY, blZ, brX, brY, brZ, tlX, tlY, tlZ, trX,
+                    trY, trZ
                 ];
             }
-            return this._array;
+            return _array;
         }
 
         private float blX;

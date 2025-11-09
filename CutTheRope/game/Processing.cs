@@ -15,13 +15,13 @@ namespace CutTheRope.game
 
         public virtual NSObject initWithLoading(bool loading)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.width = (int)FrameworkTypes.SCREEN_WIDTH_EXPANDED;
-                this.height = (int)FrameworkTypes.SCREEN_HEIGHT_EXPANDED + 1;
-                this.x = 0f - FrameworkTypes.SCREEN_OFFSET_X;
-                this.y = 0f - FrameworkTypes.SCREEN_OFFSET_Y;
-                this.blendingMode = 0;
+                width = (int)FrameworkTypes.SCREEN_WIDTH_EXPANDED;
+                height = (int)FrameworkTypes.SCREEN_HEIGHT_EXPANDED + 1;
+                x = 0f - FrameworkTypes.SCREEN_OFFSET_X;
+                y = 0f - FrameworkTypes.SCREEN_OFFSET_Y;
+                blendingMode = 0;
                 if (loading)
                 {
                     Image image = Image.Image_createWithResIDQuad(57, 0);
@@ -34,20 +34,20 @@ namespace CutTheRope.game
                     Text c = Text.createWithFontandString(3, Application.getString(655425));
                     HBox hBox = new HBox().initWithOffsetAlignHeight(10f, 16, (float)image.height);
                     hBox.parentAnchor = hBox.anchor = 18;
-                    this.addChild(hBox);
+                    addChild(hBox);
                     hBox.addChild(image);
                     hBox.addChild(c);
                 }
                 Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                this.addTimeline(timeline2);
+                addTimeline(timeline2);
                 timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline2.delegateTimelineDelegate = this;
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                this.addTimeline(timeline2);
-                this.playTimeline(0);
+                addTimeline(timeline2);
+                playTimeline(0);
             }
             return this;
         }

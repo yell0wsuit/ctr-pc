@@ -41,34 +41,34 @@ namespace CutTheRope.iframework.visual
 
         public bool isWvga()
         {
-            return this._isWvga;
+            return _isWvga;
         }
 
         public virtual void setQuadsCapacity(int n)
         {
-            this.quadsCount = n;
-            this.quads = new Quad2D[this.quadsCount];
-            this.quadRects = new CTRRectangle[this.quadsCount];
-            this.quadOffsets = new Vector[this.quadsCount];
+            quadsCount = n;
+            quads = new Quad2D[quadsCount];
+            quadRects = new CTRRectangle[quadsCount];
+            quadOffsets = new Vector[quadsCount];
         }
 
         public virtual void setQuadAt(CTRRectangle rect, int n)
         {
-            this.quads[n] = GLDrawer.getTextureCoordinates(this, rect);
-            this.quadRects[n] = rect;
-            this.quadOffsets[n] = CTRMathHelper.vectZero;
+            quads[n] = GLDrawer.getTextureCoordinates(this, rect);
+            quadRects[n] = rect;
+            quadOffsets[n] = CTRMathHelper.vectZero;
         }
 
         public virtual void setWvga()
         {
-            this._isWvga = true;
+            _isWvga = true;
         }
 
         public virtual void setScale(float scaleX, float scaleY)
         {
-            this._scaleX = scaleX;
-            this._scaleY = scaleY;
-            this.calculateForQuickDrawing();
+            _scaleX = scaleX;
+            _scaleY = scaleY;
+            calculateForQuickDrawing();
         }
 
         public static void drawQuadAtPoint(CTRTexture2D t, int q, Vector point)
@@ -113,18 +113,18 @@ namespace CutTheRope.iframework.visual
 
         public virtual void calculateForQuickDrawing()
         {
-            if (this._isWvga)
+            if (_isWvga)
             {
-                this._realWidth = (int)(this._width * this._maxS / this._scaleX);
-                this._realHeight = (int)(this._height * this._maxT / this._scaleY);
-                this._invWidth = 1f / (this._width / this._scaleX);
-                this._invHeight = 1f / (this._height / this._scaleY);
+                _realWidth = (int)(_width * _maxS / _scaleX);
+                _realHeight = (int)(_height * _maxT / _scaleY);
+                _invWidth = 1f / (_width / _scaleX);
+                _invHeight = 1f / (_height / _scaleY);
                 return;
             }
-            this._realWidth = (int)(this._width * this._maxS);
-            this._realHeight = (int)(this._height * this._maxT);
-            this._invWidth = 1f / this._width;
-            this._invHeight = 1f / this._height;
+            _realWidth = (int)(_width * _maxS);
+            _realHeight = (int)(_height * _maxT);
+            _invWidth = 1f / _width;
+            _invHeight = 1f / _height;
         }
 
         public static void setAntiAliasTexParameters()
@@ -137,10 +137,10 @@ namespace CutTheRope.iframework.visual
 
         public virtual void reg()
         {
-            this.prev = CTRTexture2D.tail;
-            if (this.prev != null)
+            prev = CTRTexture2D.tail;
+            if (prev != null)
             {
-                this.prev.next = this;
+                prev.next = this;
             }
             else
             {
@@ -151,23 +151,23 @@ namespace CutTheRope.iframework.visual
 
         public virtual void unreg()
         {
-            if (this.prev != null)
+            if (prev != null)
             {
-                this.prev.next = this.next;
+                prev.next = next;
             }
             else
             {
-                CTRTexture2D.root = this.next;
+                CTRTexture2D.root = next;
             }
-            if (this.next != null)
+            if (next != null)
             {
-                this.next.prev = this.prev;
+                next.prev = prev;
             }
             else
             {
-                CTRTexture2D.tail = this.prev;
+                CTRTexture2D.tail = prev;
             }
-            this.next = this.prev = null;
+            next = prev = null;
         }
 
         public virtual CTRTexture2D initWithPath(string path, bool assets)
@@ -176,19 +176,19 @@ namespace CutTheRope.iframework.visual
             {
                 return null;
             }
-            this._resName = path;
-            this._name = 65536U;
-            this._localTexParams = CTRTexture2D._texParams;
-            this.reg();
-            this.xnaTexture_ = Images.get(path);
-            if (this.xnaTexture_ == null)
+            _resName = path;
+            _name = 65536U;
+            _localTexParams = CTRTexture2D._texParams;
+            reg();
+            xnaTexture_ = Images.get(path);
+            if (xnaTexture_ == null)
             {
                 return null;
             }
-            this.imageLoaded(this.xnaTexture_.Width, this.xnaTexture_.Height);
-            this.quadsCount = 0;
-            this.calculateForQuickDrawing();
-            this.resume();
+            imageLoaded(xnaTexture_.Width, xnaTexture_.Height);
+            quadsCount = 0;
+            calculateForQuickDrawing();
+            resume();
             return this;
         }
 
@@ -199,16 +199,16 @@ namespace CutTheRope.iframework.visual
 
         private void imageLoaded(int w, int h)
         {
-            this._lowypoint = h;
+            _lowypoint = h;
             int num = CTRTexture2D.calcRealSize(w);
             int num2 = CTRTexture2D.calcRealSize(h);
-            this._size = new Vector((float)num, (float)num2);
-            this._width = (uint)num;
-            this._height = (uint)num2;
-            this._format = CTRTexture2D._defaultAlphaPixelFormat;
-            this._maxS = (float)w / (float)num;
-            this._maxT = (float)h / (float)num2;
-            this._hasPremultipliedAlpha = true;
+            _size = new Vector((float)num, (float)num2);
+            _width = (uint)num;
+            _height = (uint)num2;
+            _format = CTRTexture2D._defaultAlphaPixelFormat;
+            _maxS = (float)w / (float)num;
+            _maxT = (float)h / (float)num2;
+            _hasPremultipliedAlpha = true;
         }
 
         private void resume()
@@ -222,7 +222,7 @@ namespace CutTheRope.iframework.visual
 
         public void optimizeMemory()
         {
-            int lowypoint = this._lowypoint;
+            int lowypoint = _lowypoint;
         }
 
         public virtual void suspend()
@@ -251,10 +251,10 @@ namespace CutTheRope.iframework.visual
             {
                 return null;
             }
-            this._name = 65536U;
-            this._lowypoint = -1;
-            this._localTexParams = CTRTexture2D._defaultTexParams;
-            this.reg();
+            _name = 65536U;
+            _lowypoint = -1;
+            _localTexParams = CTRTexture2D._defaultTexParams;
+            reg();
             int num = CTRTexture2D.calcRealSize(w);
             int num2 = CTRTexture2D.calcRealSize(h);
             float transitionTime = Application.sharedRootController().transitionTime;
@@ -273,26 +273,26 @@ namespace CutTheRope.iframework.visual
             }
             Global.GraphicsDevice.SetRenderTarget(null);
             Application.sharedRootController().transitionTime = transitionTime;
-            this.xnaTexture_ = renderTarget;
-            this._format = CTRTexture2D.Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
-            this._size = new Vector((float)num, (float)num2);
-            this._width = (uint)num;
-            this._height = (uint)num2;
-            this._maxS = (float)w / (float)num;
-            this._maxT = (float)h / (float)num2;
-            this._hasPremultipliedAlpha = true;
-            this.quadsCount = 0;
-            this.calculateForQuickDrawing();
-            this.resume();
+            xnaTexture_ = renderTarget;
+            _format = CTRTexture2D.Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
+            _size = new Vector((float)num, (float)num2);
+            _width = (uint)num;
+            _height = (uint)num2;
+            _maxS = (float)w / (float)num;
+            _maxT = (float)h / (float)num2;
+            _hasPremultipliedAlpha = true;
+            quadsCount = 0;
+            calculateForQuickDrawing();
+            resume();
             return this;
         }
 
         public override void dealloc()
         {
-            if (this.xnaTexture_ != null)
+            if (xnaTexture_ != null)
             {
-                Images.free(this._resName);
-                this.xnaTexture_ = null;
+                Images.free(_resName);
+                xnaTexture_ = null;
             }
         }
 

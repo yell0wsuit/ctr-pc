@@ -11,7 +11,7 @@ namespace CutTheRope.iframework.visual
         {
             base.initParticle(ref particle);
             particle.angle = 0f;
-            particle.deltaAngle = CTRMathHelper.DEGREES_TO_RADIANS(this.rotateSpeed + this.rotateSpeedVar * CTRMathHelper.RND_MINUS1_1);
+            particle.deltaAngle = CTRMathHelper.DEGREES_TO_RADIANS(rotateSpeed + rotateSpeedVar * CTRMathHelper.RND_MINUS1_1);
         }
 
         public override void updateParticle(ref Particle p, float delta)
@@ -29,7 +29,7 @@ namespace CutTheRope.iframework.visual
                 v.x = 0f - v.y;
                 v.y = num;
                 v = CTRMathHelper.vectMult(v, p.tangentialAccel);
-                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), this.gravity);
+                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), gravity);
                 v2 = CTRMathHelper.vectMult(v2, delta);
                 p.dir = CTRMathHelper.vectAdd(p.dir, v2);
                 v2 = CTRMathHelper.vectMult(p.dir, delta);
@@ -60,48 +60,48 @@ namespace CutTheRope.iframework.visual
                 v4 = Particles.rotatePreCalc(v4, cosA, sinA, cx, cy);
                 v5 = Particles.rotatePreCalc(v5, cosA, sinA, cx, cy);
                 v6 = Particles.rotatePreCalc(v6, cosA, sinA, cx, cy);
-                this.drawer.vertices[this.particleIdx] = Quad3D.MakeQuad3DEx(v3.x, v3.y, v4.x, v4.y, v5.x, v5.y, v6.x, v6.y);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3DEx(v3.x, v3.y, v4.x, v4.y, v5.x, v5.y, v6.x, v6.y);
                 for (int i = 0; i < 4; i++)
                 {
-                    this.colors[this.particleIdx * 4 + i] = p.color;
+                    colors[particleIdx * 4 + i] = p.color;
                 }
-                this.particleIdx++;
+                particleIdx++;
                 return;
             }
-            if (this.particleIdx != this.particleCount - 1)
+            if (particleIdx != particleCount - 1)
             {
-                this.particles[this.particleIdx] = this.particles[this.particleCount - 1];
-                this.drawer.vertices[this.particleIdx] = this.drawer.vertices[this.particleCount - 1];
-                this.drawer.texCoordinates[this.particleIdx] = this.drawer.texCoordinates[this.particleCount - 1];
+                particles[particleIdx] = particles[particleCount - 1];
+                drawer.vertices[particleIdx] = drawer.vertices[particleCount - 1];
+                drawer.texCoordinates[particleIdx] = drawer.texCoordinates[particleCount - 1];
             }
-            this.particleCount--;
+            particleCount--;
         }
 
         public override void update(float delta)
         {
             base.update(delta);
-            if (this.active && this.emissionRate != 0f)
+            if (active && emissionRate != 0f)
             {
-                float num = 1f / this.emissionRate;
-                this.emitCounter += delta;
-                while (this.particleCount < this.totalParticles && this.emitCounter > num)
+                float num = 1f / emissionRate;
+                emitCounter += delta;
+                while (particleCount < totalParticles && emitCounter > num)
                 {
-                    this.addParticle();
-                    this.emitCounter -= num;
+                    addParticle();
+                    emitCounter -= num;
                 }
-                this.elapsed += delta;
-                if (this.duration != -1f && this.duration < this.elapsed)
+                elapsed += delta;
+                if (duration != -1f && duration < elapsed)
                 {
-                    this.stopSystem();
+                    stopSystem();
                 }
             }
-            this.particleIdx = 0;
-            while (this.particleIdx < this.particleCount)
+            particleIdx = 0;
+            while (particleIdx < particleCount)
             {
-                this.updateParticle(ref this.particles[this.particleIdx], delta);
+                updateParticle(ref particles[particleIdx], delta);
             }
-            OpenGL.glBindBuffer(2, this.colorsID);
-            OpenGL.glBufferData(2, this.colors, 3);
+            OpenGL.glBindBuffer(2, colorsID);
+            OpenGL.glBufferData(2, colors, 3);
             OpenGL.glBindBuffer(2, 0U);
         }
 

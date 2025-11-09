@@ -7,7 +7,7 @@ namespace CutTheRope.iframework.visual
     {
         public AnimationsPool()
         {
-            this.init();
+            init();
         }
 
         public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
@@ -16,20 +16,20 @@ namespace CutTheRope.iframework.visual
 
         public virtual void timelineFinished(Timeline t)
         {
-            if (this.getChildId(t.element) != -1)
+            if (getChildId(t.element) != -1)
             {
-                this.removeList.Add(t.element);
+                removeList.Add(t.element);
             }
         }
 
         public override void update(float delta)
         {
-            int count = this.removeList.Count;
+            int count = removeList.Count;
             for (int i = 0; i < count; i++)
             {
-                this.removeChild(this.removeList[i]);
+                removeChild(removeList[i]);
             }
-            this.removeList.Clear();
+            removeList.Clear();
             base.update(delta);
         }
 
@@ -40,16 +40,16 @@ namespace CutTheRope.iframework.visual
 
         public virtual void particlesFinished(Particles p)
         {
-            if (this.getChildId(p) != -1)
+            if (getChildId(p) != -1)
             {
-                this.removeList.Add(p);
+                removeList.Add(p);
             }
         }
 
         public override void dealloc()
         {
-            this.removeList.Clear();
-            this.removeList = null;
+            removeList.Clear();
+            removeList = null;
             base.dealloc();
         }
 

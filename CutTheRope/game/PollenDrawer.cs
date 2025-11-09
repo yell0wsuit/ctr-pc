@@ -16,34 +16,34 @@ namespace CutTheRope.game
             if (base.init() != null)
             {
                 Image image = Image.Image_createWithResID(99);
-                this.qw = (float)image.width * 1.5f;
-                this.qh = (float)image.height * 1.5f;
-                this.totalCapacity = 200;
-                this.drawer = new ImageMultiDrawer().initWithImageandCapacity(image, this.totalCapacity);
-                this.pollens = new Pollen[this.totalCapacity];
-                this.colors = new RGBAColor[4 * this.totalCapacity];
-                OpenGL.glGenBuffers(1, ref this.colorsID);
+                qw = (float)image.width * 1.5f;
+                qh = (float)image.height * 1.5f;
+                totalCapacity = 200;
+                drawer = new ImageMultiDrawer().initWithImageandCapacity(image, totalCapacity);
+                pollens = new Pollen[totalCapacity];
+                colors = new RGBAColor[4 * totalCapacity];
+                OpenGL.glGenBuffers(1, ref colorsID);
             }
             return this;
         }
 
         public override void dealloc()
         {
-            if (this.pollens != null)
+            if (pollens != null)
             {
-                this.pollens = null;
+                pollens = null;
             }
-            if (this.colors != null)
+            if (colors != null)
             {
-                this.colors = null;
-                OpenGL.glDeleteBuffers(1, ref this.colorsID);
+                colors = null;
+                OpenGL.glDeleteBuffers(1, ref colorsID);
             }
-            if (this.vertices != null)
+            if (vertices != null)
             {
-                this.vertices = null;
-                OpenGL.glDeleteBuffers(1, ref this.verticesID);
+                vertices = null;
+                OpenGL.glDeleteBuffers(1, ref verticesID);
             }
-            this.drawer = null;
+            drawer = null;
             base.dealloc();
         }
 
@@ -65,8 +65,8 @@ namespace CutTheRope.game
             }
             num *= num4;
             num2 *= num5;
-            int num6 = (int)this.qw;
-            int num7 = (int)this.qh;
+            int num6 = (int)qw;
+            int num7 = (int)qh;
             num6 *= (int)num;
             num7 *= (int)num2;
             Pollen pollen = default(Pollen);
@@ -85,21 +85,21 @@ namespace CutTheRope.game
             pollen.endAlpha = 0.3f;
             pollen.startAlpha = 1f;
             pollen.alpha = 0.7f * rND_0_ + 0.3f;
-            Quad2D qt = this.drawer.image.texture.quads[0];
+            Quad2D qt = drawer.image.texture.quads[0];
             Quad3D qv = Quad3D.MakeQuad3D((double)(v.x - (float)(num6 / 2)), (double)(v.y - (float)(num7 / 2)), 0.0, (double)num6, (double)num7);
-            this.drawer.setTextureQuadatVertexQuadatIndex(qt, qv, this.pollenCount);
-            if (this.pollenCount >= this.totalCapacity)
+            drawer.setTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
+            if (pollenCount >= totalCapacity)
             {
-                this.totalCapacity = this.pollenCount;
-                this.pollens = new Pollen[this.totalCapacity + 1];
-                this.colors = new RGBAColor[4 * (this.totalCapacity + 1)];
+                totalCapacity = pollenCount;
+                pollens = new Pollen[totalCapacity + 1];
+                colors = new RGBAColor[4 * (totalCapacity + 1)];
             }
             for (int i = 0; i < 4; i++)
             {
-                this.colors[this.pollenCount * 4 + i] = RGBAColor.whiteRGBA;
+                colors[pollenCount * 4 + i] = RGBAColor.whiteRGBA;
             }
-            this.pollens[this.pollenCount] = pollen;
-            this.pollenCount++;
+            pollens[pollenCount] = pollen;
+            pollenCount++;
         }
 
         public virtual void fillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
@@ -114,67 +114,67 @@ namespace CutTheRope.game
                 Vector v4 = CTRMathHelper.vectAdd(vector, CTRMathHelper.vectMult(v3, (float)(i * num)));
                 v4.x += (float)CTRMathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-2.0), (int)FrameworkTypes.RTPD(2.0));
                 v4.y += (float)CTRMathHelper.RND_RANGE((int)FrameworkTypes.RTPD(-2.0), (int)FrameworkTypes.RTPD(2.0));
-                this.addPollenAtparentIndex(v4, p1);
+                addPollenAtparentIndex(v4, p1);
             }
         }
 
         public override void update(float delta)
         {
             base.update(delta);
-            this.drawer.update(delta);
-            for (int i = 0; i < this.pollenCount; i++)
+            drawer.update(delta);
+            for (int i = 0; i < pollenCount; i++)
             {
-                if (Mover.moveVariableToTarget(ref this.pollens[i].scaleX, this.pollens[i].endScaleX, 1f, delta))
+                if (Mover.moveVariableToTarget(ref pollens[i].scaleX, pollens[i].endScaleX, 1f, delta))
                 {
-                    float startScaleX = this.pollens[i].startScaleX;
-                    this.pollens[i].startScaleX = this.pollens[i].endScaleX;
-                    this.pollens[i].endScaleX = startScaleX;
+                    float startScaleX = pollens[i].startScaleX;
+                    pollens[i].startScaleX = pollens[i].endScaleX;
+                    pollens[i].endScaleX = startScaleX;
                 }
-                if (Mover.moveVariableToTarget(ref this.pollens[i].scaleY, this.pollens[i].endScaleY, 1f, delta))
+                if (Mover.moveVariableToTarget(ref pollens[i].scaleY, pollens[i].endScaleY, 1f, delta))
                 {
-                    float startScaleY = this.pollens[i].startScaleY;
-                    this.pollens[i].startScaleY = this.pollens[i].endScaleY;
-                    this.pollens[i].endScaleY = startScaleY;
+                    float startScaleY = pollens[i].startScaleY;
+                    pollens[i].startScaleY = pollens[i].endScaleY;
+                    pollens[i].endScaleY = startScaleY;
                 }
-                float num = this.qw * this.pollens[i].scaleX;
-                float num2 = this.qh * this.pollens[i].scaleY;
-                this.drawer.vertices[i] = Quad3D.MakeQuad3D((double)(this.pollens[i].x - num / 2f), (double)(this.pollens[i].y - num2 / 2f), 0.0, (double)num, (double)num2);
-                if (Mover.moveVariableToTarget(ref this.pollens[i].alpha, this.pollens[i].endAlpha, 1f, delta))
+                float num = qw * pollens[i].scaleX;
+                float num2 = qh * pollens[i].scaleY;
+                drawer.vertices[i] = Quad3D.MakeQuad3D((double)(pollens[i].x - num / 2f), (double)(pollens[i].y - num2 / 2f), 0.0, (double)num, (double)num2);
+                if (Mover.moveVariableToTarget(ref pollens[i].alpha, pollens[i].endAlpha, 1f, delta))
                 {
-                    float startAlpha = this.pollens[i].startAlpha;
-                    this.pollens[i].startAlpha = this.pollens[i].endAlpha;
-                    this.pollens[i].endAlpha = startAlpha;
+                    float startAlpha = pollens[i].startAlpha;
+                    pollens[i].startAlpha = pollens[i].endAlpha;
+                    pollens[i].endAlpha = startAlpha;
                 }
-                float alpha = this.pollens[i].alpha;
+                float alpha = pollens[i].alpha;
                 for (int j = 0; j < 4; j++)
                 {
-                    this.colors[i * 4 + j] = RGBAColor.MakeRGBA(alpha, alpha, alpha, alpha);
+                    colors[i * 4 + j] = RGBAColor.MakeRGBA(alpha, alpha, alpha, alpha);
                 }
             }
-            OpenGL.glBindBuffer(2, this.colorsID);
-            OpenGL.glBufferData(2, this.colors, 3);
+            OpenGL.glBindBuffer(2, colorsID);
+            OpenGL.glBufferData(2, colors, 3);
             OpenGL.glBindBuffer(2, 0U);
         }
 
         public override void draw()
         {
-            if (this.pollenCount >= 2)
+            if (pollenCount >= 2)
             {
-                this.preDraw();
+                preDraw();
                 OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
                 OpenGL.glEnable(0);
-                OpenGL.glBindTexture(this.drawer.image.texture.name());
-                OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(this.drawer.vertices));
-                OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(this.drawer.texCoordinates));
+                OpenGL.glBindTexture(drawer.image.texture.name());
+                OpenGL.glVertexPointer(3, 5, 0, FrameworkTypes.toFloatArray(drawer.vertices));
+                OpenGL.glTexCoordPointer(2, 5, 0, FrameworkTypes.toFloatArray(drawer.texCoordinates));
                 OpenGL.glEnableClientState(13);
-                OpenGL.glBindBuffer(2, this.colorsID);
-                OpenGL.glBufferData(2, this.colors, 3);
-                OpenGL.glColorPointer(4, 5, 0, this.colors);
-                OpenGL.glDrawElements(7, (this.pollenCount - 1) * 6, this.drawer.indices);
+                OpenGL.glBindBuffer(2, colorsID);
+                OpenGL.glBufferData(2, colors, 3);
+                OpenGL.glColorPointer(4, 5, 0, colors);
+                OpenGL.glDrawElements(7, (pollenCount - 1) * 6, drawer.indices);
                 OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
                 OpenGL.glBindBuffer(2, 0U);
                 OpenGL.glDisableClientState(13);
-                this.postDraw();
+                postDraw();
             }
         }
 

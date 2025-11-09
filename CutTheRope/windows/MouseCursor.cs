@@ -15,30 +15,30 @@ namespace CutTheRope.windows
     {
         public void Enable(bool b)
         {
-            this._enabled = b;
+            _enabled = b;
         }
 
         public void ReleaseButtons()
         {
-            this._mouseStateTranformed = new MouseState(this._mouseStateTranformed.X, this._mouseStateTranformed.Y, this._mouseStateTranformed.ScrollWheelValue, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released);
+            _mouseStateTranformed = new MouseState(_mouseStateTranformed.X, _mouseStateTranformed.Y, _mouseStateTranformed.ScrollWheelValue, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released);
         }
 
         public void Load(ContentManager cm)
         {
-            this._cursorWindows = NativeMethods.LoadCustomCursor("content/cursor_windows.cur");
-            this._cursorActiveWindows = NativeMethods.LoadCustomCursor("content/cursor_active_windows.cur");
+            _cursorWindows = NativeMethods.LoadCustomCursor("content/cursor_windows.cur");
+            _cursorActiveWindows = NativeMethods.LoadCustomCursor("content/cursor_active_windows.cur");
         }
 
         public void Draw()
         {
-            if (this._enabled && !Global.XnaGame.IsMouseVisible && this._mouseStateOriginal.X >= 0 && this._mouseStateOriginal.Y >= 0)
+            if (_enabled && !Global.XnaGame.IsMouseVisible && _mouseStateOriginal.X >= 0 && _mouseStateOriginal.Y >= 0)
             {
-                Texture2D texture2D = (this._mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed) ? this._cursorActive : this._cursor;
+                Texture2D texture2D = (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed) ? _cursorActive : _cursor;
                 Microsoft.Xna.Framework.Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
                 float num = FrameworkTypes.SCREEN_WIDTH / (float)scaledViewRect.Width;
                 float num2 = FrameworkTypes.SCREEN_HEIGHT / (float)scaledViewRect.Height;
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(texture2D, new Microsoft.Xna.Framework.Rectangle(this._mouseStateTranformed.X, this._mouseStateTranformed.Y, (int)((double)((float)texture2D.Width / num) * 1.5), (int)((double)((float)texture2D.Height / num2) * 1.5)), Color.White);
+                Global.SpriteBatch.Draw(texture2D, new Microsoft.Xna.Framework.Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)((float)texture2D.Width / num) * 1.5), (int)((double)((float)texture2D.Height / num2) * 1.5)), Color.White);
                 Global.SpriteBatch.End();
             }
         }
@@ -56,50 +56,50 @@ namespace CutTheRope.windows
         public List<TouchLocation> GetTouchLocation()
         {
             List<TouchLocation> list = new();
-            this._mouseStateOriginal = Global.XnaGame.GetMouseState();
-            if (this._mouseStateOriginal.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+            _mouseStateOriginal = Global.XnaGame.GetMouseState();
+            if (_mouseStateOriginal.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
             {
-                Global.XnaGame.SetCursor(this._cursorActiveWindows, this._mouseStateOriginal);
+                Global.XnaGame.SetCursor(_cursorActiveWindows, _mouseStateOriginal);
             }
             else
             {
-                Global.XnaGame.SetCursor(this._cursorWindows, this._mouseStateOriginal);
+                Global.XnaGame.SetCursor(_cursorWindows, _mouseStateOriginal);
             }
-            MouseState mouseStateTranformed = MouseCursor.TransformMouseState(this._mouseStateOriginal);
+            MouseState mouseStateTranformed = MouseCursor.TransformMouseState(_mouseStateOriginal);
             TouchLocation item = default(TouchLocation);
-            if (this._touchID > 0)
+            if (_touchID > 0)
             {
                 if (mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
                 {
                     TouchLocation touchLocation;
-                    if (this._mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                    if (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
                     {
-                        touchLocation = new TouchLocation(this._touchID, TouchLocationState.Moved, new Vector2((float)mouseStateTranformed.X, (float)mouseStateTranformed.Y));
+                        touchLocation = new TouchLocation(_touchID, TouchLocationState.Moved, new Vector2((float)mouseStateTranformed.X, (float)mouseStateTranformed.Y));
                     }
                     else
                     {
-                        int num = this._touchID + 1;
-                        this._touchID = num;
+                        int num = _touchID + 1;
+                        _touchID = num;
                         touchLocation = new TouchLocation(num, TouchLocationState.Pressed, new Vector2((float)mouseStateTranformed.X, (float)mouseStateTranformed.Y));
                     }
                     item = touchLocation;
                 }
-                else if (this._mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                else if (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
                 {
-                    item = new TouchLocation(this._touchID, TouchLocationState.Released, new Vector2((float)this._mouseStateTranformed.X, (float)this._mouseStateTranformed.Y));
+                    item = new TouchLocation(_touchID, TouchLocationState.Released, new Vector2((float)_mouseStateTranformed.X, (float)_mouseStateTranformed.Y));
                 }
             }
             else if (mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
             {
-                int num = this._touchID + 1;
-                this._touchID = num;
+                int num = _touchID + 1;
+                _touchID = num;
                 item = new TouchLocation(num, TouchLocationState.Pressed, new Vector2((float)mouseStateTranformed.X, (float)mouseStateTranformed.Y));
             }
             if (item.State != TouchLocationState.Invalid)
             {
                 list.Add(item);
             }
-            this._mouseStateTranformed = mouseStateTranformed;
+            _mouseStateTranformed = mouseStateTranformed;
             return CutTheRope.iframework.core.Application.sharedCanvas().convertTouches(list);
         }
 

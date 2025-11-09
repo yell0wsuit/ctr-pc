@@ -17,14 +17,14 @@ namespace CutTheRope.game
                 image.parentAnchor = image.anchor = 18;
                 image.scaleX = image.scaleY = 1.25f;
                 view.addChild(image);
-                this.bar = TiledImage.TiledImage_createWithResID(1);
-                this.bar.parentAnchor = this.bar.anchor = 9;
-                this.bar.setTile(-1);
-                this.bar.x = 738f;
-                this.bar.y = 1056f;
-                image.addChild(this.bar);
-                this.barTotalWidth = (float)this.bar.width;
-                this.addViewwithID(view, 1);
+                bar = TiledImage.TiledImage_createWithResID(1);
+                bar.parentAnchor = bar.anchor = 9;
+                bar.setTile(-1);
+                bar.x = 738f;
+                bar.y = 1056f;
+                image.addChild(bar);
+                barTotalWidth = (float)bar.width;
+                addViewwithID(view, 1);
                 view.release();
             }
             return this;
@@ -34,7 +34,7 @@ namespace CutTheRope.game
         {
             base.update(t);
             float num = (float)Application.sharedResourceMgr().getPercentLoaded();
-            this.bar.width = (int)(this.barTotalWidth * num / 100f);
+            bar.width = (int)(barTotalWidth * num / 100f);
         }
 
         public virtual void moviePlaybackFinished(NSString url)
@@ -53,8 +53,8 @@ namespace CutTheRope.game
         public override void activate()
         {
             base.activate();
-            this.showView(1);
-            this.moviePlaybackFinished(null);
+            showView(1);
+            moviePlaybackFinished(null);
         }
 
         public virtual void resourceLoaded(int resName)
@@ -64,7 +64,7 @@ namespace CutTheRope.game
         public virtual void allResourcesLoaded()
         {
             Application.sharedRootController().setViewTransition(4);
-            this.deactivate();
+            deactivate();
         }
 
         private const int VIEW_CHILLINGO_MOVIE = 0;

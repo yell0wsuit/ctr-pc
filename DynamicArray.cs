@@ -8,18 +8,18 @@ internal class DynamicArray : NSObject, IEnumerable
     {
         get
         {
-            return this.map[key];
+            return map[key];
         }
     }
 
     public IEnumerator GetEnumerator()
     {
-        return new DynamicArrayEnumerator(this.map, this.highestIndex);
+        return new DynamicArrayEnumerator(map, highestIndex);
     }
 
     public override NSObject init()
     {
-        this.initWithCapacityandOverReallocValue(10, 10);
+        initWithCapacityandOverReallocValue(10, 10);
         return this;
     }
 
@@ -27,149 +27,149 @@ internal class DynamicArray : NSObject, IEnumerable
     {
         if (base.init() != null)
         {
-            this.size = c;
-            this.highestIndex = -1;
-            this.overRealloc = 0;
-            this.mutationsCount = 0UL;
-            this.map = new NSObject[this.size];
+            size = c;
+            highestIndex = -1;
+            overRealloc = 0;
+            mutationsCount = 0UL;
+            map = new NSObject[size];
         }
         return this;
     }
 
     public virtual NSObject initWithCapacityandOverReallocValue(int c, int v)
     {
-        if (this.initWithCapacity(c) != null)
+        if (initWithCapacity(c) != null)
         {
-            this.overRealloc = v;
+            overRealloc = v;
         }
         return this;
     }
 
     public virtual int count()
     {
-        return this.highestIndex + 1;
+        return highestIndex + 1;
     }
 
     public virtual int capacity()
     {
-        return this.size;
+        return size;
     }
 
     public virtual void setNewSize(int k)
     {
-        int num = k + this.overRealloc;
+        int num = k + overRealloc;
         NSObject[] array = new NSObject[num];
-        Array.Copy(this.map, array, Math.Min(this.map.Length, array.Length));
-        this.map = array;
-        this.size = num;
+        Array.Copy(map, array, Math.Min(map.Length, array.Length));
+        map = array;
+        size = num;
     }
 
     public virtual int addObject(NSObject obj)
     {
-        int num = this.highestIndex + 1;
-        this.setObjectAt(obj, num);
+        int num = highestIndex + 1;
+        setObjectAt(obj, num);
         return num;
     }
 
     public virtual void setObjectAt(NSObject obj, int k)
     {
-        if (k >= this.size)
+        if (k >= size)
         {
-            this.setNewSize(k + 1);
+            setNewSize(k + 1);
         }
-        if (this.map[k] != null)
+        if (map[k] != null)
         {
-            this.map[k].release();
-            this.map[k] = null;
+            map[k].release();
+            map[k] = null;
         }
-        if (this.highestIndex < k)
+        if (highestIndex < k)
         {
-            this.highestIndex = k;
+            highestIndex = k;
         }
-        this.map[k] = obj;
-        this.map[k].retain();
-        this.mutationsCount += 1UL;
+        map[k] = obj;
+        map[k].retain();
+        mutationsCount += 1UL;
     }
 
     public virtual NSObject firstObject()
     {
-        return this.objectAtIndex(0);
+        return objectAtIndex(0);
     }
 
     public virtual NSObject lastObject()
     {
-        if (this.highestIndex == -1)
+        if (highestIndex == -1)
         {
             return null;
         }
-        return this.objectAtIndex(this.highestIndex);
+        return objectAtIndex(highestIndex);
     }
 
     public virtual NSObject objectAtIndex(int k)
     {
-        return this.map[k];
+        return map[k];
     }
 
     public virtual void unsetAll()
     {
-        for (int i = 0; i <= this.highestIndex; i++)
+        for (int i = 0; i <= highestIndex; i++)
         {
-            if (this.map[i] != null)
+            if (map[i] != null)
             {
-                this.unsetObjectAtIndex(i);
+                unsetObjectAtIndex(i);
             }
         }
     }
 
     public virtual void unsetObjectAtIndex(int k)
     {
-        this.map[k].release();
-        this.map[k] = null;
-        this.mutationsCount += 1UL;
+        map[k].release();
+        map[k] = null;
+        mutationsCount += 1UL;
     }
 
     public virtual void insertObjectatIndex(NSObject obj, int k)
     {
-        if (k >= this.size || this.highestIndex + 1 >= this.size)
+        if (k >= size || highestIndex + 1 >= size)
         {
-            this.setNewSize(this.size + 1);
+            setNewSize(size + 1);
         }
-        this.highestIndex++;
-        for (int num = this.highestIndex; num > k; num--)
+        highestIndex++;
+        for (int num = highestIndex; num > k; num--)
         {
-            this.map[num] = this.map[num - 1];
+            map[num] = map[num - 1];
         }
-        this.map[k] = obj;
-        this.map[k].retain();
-        this.mutationsCount += 1UL;
+        map[k] = obj;
+        map[k].retain();
+        mutationsCount += 1UL;
     }
 
     public virtual void removeObjectAtIndex(int k)
     {
-        NSObject nSObject = this.map[k];
+        NSObject nSObject = map[k];
         nSObject?.release();
-        for (int i = k; i < this.highestIndex; i++)
+        for (int i = k; i < highestIndex; i++)
         {
-            this.map[i] = this.map[i + 1];
+            map[i] = map[i + 1];
         }
-        this.map[this.highestIndex] = null;
-        this.highestIndex--;
-        this.mutationsCount += 1UL;
+        map[highestIndex] = null;
+        highestIndex--;
+        mutationsCount += 1UL;
     }
 
     public virtual void removeAllObjects()
     {
-        this.unsetAll();
-        this.highestIndex = -1;
+        unsetAll();
+        highestIndex = -1;
     }
 
     public virtual void removeObject(NSObject obj)
     {
-        for (int i = 0; i <= this.highestIndex; i++)
+        for (int i = 0; i <= highestIndex; i++)
         {
-            if (this.map[i] == obj)
+            if (map[i] == obj)
             {
-                this.removeObjectAtIndex(i);
+                removeObjectAtIndex(i);
                 return;
             }
         }
@@ -177,21 +177,21 @@ internal class DynamicArray : NSObject, IEnumerable
 
     public virtual int getFirstEmptyIndex()
     {
-        for (int i = 0; i < this.size; i++)
+        for (int i = 0; i < size; i++)
         {
-            if (this.map[i] == null)
+            if (map[i] == null)
             {
                 return i;
             }
         }
-        return this.size;
+        return size;
     }
 
     public virtual int getObjectIndex(NSObject obj)
     {
-        for (int i = 0; i < this.size; i++)
+        for (int i = 0; i < size; i++)
         {
-            if (this.map[i] == obj)
+            if (map[i] == obj)
             {
                 return i;
             }
@@ -201,16 +201,16 @@ internal class DynamicArray : NSObject, IEnumerable
 
     public override void dealloc()
     {
-        for (int i = 0; i <= this.highestIndex; i++)
+        for (int i = 0; i <= highestIndex; i++)
         {
-            if (this.map[i] != null)
+            if (map[i] != null)
             {
-                this.map[i].release();
-                this.map[i] = null;
+                map[i].release();
+                map[i] = null;
             }
         }
-        NSObject.free(this.map);
-        this.map = null;
+        NSObject.free(map);
+        map = null;
         base.dealloc();
     }
 

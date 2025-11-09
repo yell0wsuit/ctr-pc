@@ -9,15 +9,15 @@ namespace CutTheRope.iframework.visual
         {
             if (base.init() != null)
             {
-                this.string_ = (NSString)NSObject.NSRET(str);
-                this.width = w;
+                string_ = (NSString)NSObject.NSRET(str);
+                width = w;
             }
             return this;
         }
 
         public override void dealloc()
         {
-            this.string_ = null;
+            string_ = null;
             base.dealloc();
         }
 

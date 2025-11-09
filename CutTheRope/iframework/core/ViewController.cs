@@ -11,27 +11,27 @@ namespace CutTheRope.iframework.core
     {
         public ViewController()
         {
-            this.views = new Dictionary<int, View>();
+            views = new Dictionary<int, View>();
         }
 
         public virtual NSObject initWithParent(ViewController p)
         {
             if (base.init() != null)
             {
-                this.controllerState = ViewController.ControllerState.CONTROLLER_DEACTIVE;
-                this.views = new Dictionary<int, View>();
-                this.childs = new Dictionary<int, ViewController>();
-                this.activeViewID = -1;
-                this.activeChildID = -1;
-                this.pausedViewID = -1;
-                this.parent = p;
+                controllerState = ViewController.ControllerState.CONTROLLER_DEACTIVE;
+                views = new Dictionary<int, View>();
+                childs = new Dictionary<int, ViewController>();
+                activeViewID = -1;
+                activeChildID = -1;
+                pausedViewID = -1;
+                parent = p;
             }
             return this;
         }
 
         public virtual void activate()
         {
-            this.controllerState = ViewController.ControllerState.CONTROLLER_ACTIVE;
+            controllerState = ViewController.ControllerState.CONTROLLER_ACTIVE;
             Application.sharedRootController().onControllerActivated(this);
         }
 
@@ -42,93 +42,93 @@ namespace CutTheRope.iframework.core
 
         public virtual void deactivateImmediately()
         {
-            this.controllerState = ViewController.ControllerState.CONTROLLER_DEACTIVE;
-            if (this.activeViewID != -1)
+            controllerState = ViewController.ControllerState.CONTROLLER_DEACTIVE;
+            if (activeViewID != -1)
             {
-                this.hideActiveView();
+                hideActiveView();
             }
             Application.sharedRootController().onControllerDeactivated(this);
-            this.parent.onChildDeactivated(this.parent.activeChildID);
+            parent.onChildDeactivated(parent.activeChildID);
         }
 
         public virtual void pause()
         {
-            this.controllerState = ViewController.ControllerState.CONTROLLER_PAUSED;
+            controllerState = ViewController.ControllerState.CONTROLLER_PAUSED;
             Application.sharedRootController().onControllerPaused(this);
-            if (this.activeViewID != -1)
+            if (activeViewID != -1)
             {
-                this.pausedViewID = this.activeViewID;
-                this.hideActiveView();
+                pausedViewID = activeViewID;
+                hideActiveView();
             }
         }
 
         public virtual void unpause()
         {
-            this.controllerState = ViewController.ControllerState.CONTROLLER_ACTIVE;
-            if (this.activeChildID != -1)
+            controllerState = ViewController.ControllerState.CONTROLLER_ACTIVE;
+            if (activeChildID != -1)
             {
-                this.activeChildID = -1;
+                activeChildID = -1;
             }
             Application.sharedRootController().onControllerUnpaused(this);
-            if (this.pausedViewID != -1)
+            if (pausedViewID != -1)
             {
-                this.showView(this.pausedViewID);
+                showView(pausedViewID);
             }
         }
 
         public virtual void update(float delta)
         {
-            if (this.activeViewID != -1)
+            if (activeViewID != -1)
             {
-                this.activeView().update(delta);
+                activeView().update(delta);
             }
         }
 
         public virtual void addViewwithID(View v, int n)
         {
             View value;
-            this.views.TryGetValue(n, out value);
-            this.views[n] = v;
+            views.TryGetValue(n, out value);
+            views[n] = v;
         }
 
         public virtual void deleteView(int n)
         {
-            this.views[n] = null;
+            views[n] = null;
         }
 
         public virtual void hideActiveView()
         {
-            View view = this.views[this.activeViewID];
+            View view = views[activeViewID];
             Application.sharedRootController().onControllerViewHide(view);
             if (view != null)
             {
                 view.onTouchUpXY(-10000f, -10000f);
                 view.hide();
             }
-            this.activeViewID = -1;
+            activeViewID = -1;
         }
 
         public virtual void showView(int n)
         {
-            if (this.activeViewID != -1)
+            if (activeViewID != -1)
             {
-                this.hideActiveView();
+                hideActiveView();
             }
-            this.activeViewID = n;
-            View view = this.views[n];
+            activeViewID = n;
+            View view = views[n];
             Application.sharedRootController().onControllerViewShow(view);
             view.show();
         }
 
         public virtual View activeView()
         {
-            return this.views[this.activeViewID];
+            return views[activeViewID];
         }
 
         public virtual View getView(int n)
         {
             View value = null;
-            this.views.TryGetValue(n, out value);
+            views.TryGetValue(n, out value);
             return value;
         }
 
@@ -136,54 +136,54 @@ namespace CutTheRope.iframework.core
         {
             ViewController viewController = null;
             viewController?.dealloc();
-            this.childs[n] = c;
+            childs[n] = c;
         }
 
         public virtual void deleteChild(int n)
         {
             ViewController value = null;
-            if (this.childs.TryGetValue(n, out value))
+            if (childs.TryGetValue(n, out value))
             {
                 value.dealloc();
-                this.childs[n] = null;
+                childs[n] = null;
             }
         }
 
         public virtual void deactivateActiveChild()
         {
-            this.childs[this.activeChildID].deactivate();
-            this.activeChildID = -1;
+            childs[activeChildID].deactivate();
+            activeChildID = -1;
         }
 
         public virtual void activateChild(int n)
         {
-            if (this.activeChildID != -1)
+            if (activeChildID != -1)
             {
-                this.deactivateActiveChild();
+                deactivateActiveChild();
             }
-            this.pause();
-            this.activeChildID = n;
-            this.childs[n].activate();
+            pause();
+            activeChildID = n;
+            childs[n].activate();
         }
 
         public virtual void onChildDeactivated(int n)
         {
-            this.unpause();
+            unpause();
         }
 
         public virtual ViewController activeChild()
         {
-            return this.childs[this.activeChildID];
+            return childs[activeChildID];
         }
 
         public virtual ViewController getChild(int n)
         {
-            return this.childs[n];
+            return childs[n];
         }
 
         private bool checkNoChildsActive()
         {
-            foreach (KeyValuePair<int, ViewController> child in this.childs)
+            foreach (KeyValuePair<int, ViewController> child in childs)
             {
                 ViewController value = child.Value;
                 if (value != null && value.controllerState != ViewController.ControllerState.CONTROLLER_DEACTIVE)
@@ -201,11 +201,11 @@ namespace CutTheRope.iframework.core
 
         public virtual bool touchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            if (this.activeViewID == -1)
+            if (activeViewID == -1)
             {
                 return false;
             }
-            View view = this.activeView();
+            View view = activeView();
             int num = -1;
             for (int i = 0; i < touches.Count; i++)
             {
@@ -225,30 +225,30 @@ namespace CutTheRope.iframework.core
 
         public void deactivateAllButtons()
         {
-            if (this.activeViewID != -1)
+            if (activeViewID != -1)
             {
-                View view = this.views[this.activeViewID];
+                View view = views[activeViewID];
                 if (view != null)
                 {
                     view.onTouchUpXY(-1f, -1f);
                     return;
                 }
             }
-            else if (this.childs != null)
+            else if (childs != null)
             {
                 ViewController value;
-                this.childs.TryGetValue(this.activeChildID, out value);
+                childs.TryGetValue(activeChildID, out value);
                 value?.deactivateAllButtons();
             }
         }
 
         public virtual bool touchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            if (this.activeViewID == -1)
+            if (activeViewID == -1)
             {
                 return false;
             }
-            View view = this.activeView();
+            View view = activeView();
             int num = -1;
             for (int i = 0; i < touches.Count; i++)
             {
@@ -268,11 +268,11 @@ namespace CutTheRope.iframework.core
 
         public virtual bool touchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            if (this.activeViewID == -1)
+            if (activeViewID == -1)
             {
                 return false;
             }
-            View view = this.activeView();
+            View view = activeView();
             int num = -1;
             for (int i = 0; i < touches.Count; i++)
             {
@@ -301,10 +301,10 @@ namespace CutTheRope.iframework.core
 
         public override void dealloc()
         {
-            this.views.Clear();
-            this.views = null;
-            this.childs.Clear();
-            this.childs = null;
+            views.Clear();
+            views = null;
+            childs.Clear();
+            childs = null;
             base.dealloc();
         }
 

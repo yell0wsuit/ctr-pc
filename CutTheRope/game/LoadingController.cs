@@ -13,7 +13,7 @@ namespace CutTheRope.game
             if (base.initWithParent(p) != null)
             {
                 LoadingView loadingView = (LoadingView)new LoadingView().initFullscreen();
-                this.addViewwithID(loadingView, 0);
+                addViewwithID(loadingView, 0);
                 Text text = new Text().initWithFont(Application.getFont(3));
                 text.setAlignment(2);
                 text.setStringandWidth(Application.getString(655387), 300f);
@@ -27,8 +27,8 @@ namespace CutTheRope.game
         {
             FrameworkTypes.AndroidAPI.showBanner();
             base.activate();
-            ((LoadingView)this.getView(0)).game = this.nextController == 0;
-            this.showView(0);
+            ((LoadingView)getView(0)).game = nextController == 0;
+            showView(0);
         }
 
         public virtual void resourceLoaded(int res)

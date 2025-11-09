@@ -6,19 +6,19 @@ namespace CutTheRope.iframework
     {
         public Quad2D(float x, float y, float w, float h)
         {
-            this.tlX = x;
-            this.tlY = y;
-            this.trX = x + w;
-            this.trY = y;
-            this.blX = x;
-            this.blY = y + h;
-            this.brX = x + w;
-            this.brY = y + h;
+            tlX = x;
+            tlY = y;
+            trX = x + w;
+            trY = y;
+            blX = x;
+            blY = y + h;
+            brX = x + w;
+            brY = y + h;
         }
 
         public float[] toFloatArray()
         {
-            return [this.tlX, this.tlY, this.trX, this.trY, this.blX, this.blY, this.brX, this.brY];
+            return [tlX, tlY, trX, trY, blX, blY, brX, brY];
         }
 
         public static Quad2D MakeQuad2D(float x, float y, float w, float h)

@@ -10,7 +10,7 @@ namespace CutTheRope.iframework.sfe
     {
         public override void dealloc()
         {
-            this.constraints = null;
+            constraints = null;
             base.dealloc();
         }
 
@@ -18,9 +18,9 @@ namespace CutTheRope.iframework.sfe
         {
             if (base.init() != null)
             {
-                this.prevPos = CTRMathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
-                this.pin = CTRMathHelper.vect(-1f, -1f);
-                this.constraints = new List<Constraint>();
+                prevPos = CTRMathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
+                pin = CTRMathHelper.vect(-1f, -1f);
+                constraints = new List<Constraint>();
             }
             return this;
         }
@@ -32,16 +32,16 @@ namespace CutTheRope.iframework.sfe
             constraint.cp = c;
             constraint.restLength = r;
             constraint.type = t;
-            this.constraints.Add(constraint);
+            constraints.Add(constraint);
         }
 
         public virtual void removeConstraint(ConstraintedPoint o)
         {
-            for (int i = 0; i < this.constraints.Count; i++)
+            for (int i = 0; i < constraints.Count; i++)
             {
-                if (this.constraints[i].cp == o)
+                if (constraints[i].cp == o)
                 {
-                    this.constraints.RemoveAt(i);
+                    constraints.RemoveAt(i);
                     return;
                 }
             }
@@ -49,15 +49,15 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void removeConstraints()
         {
-            this.constraints = new List<Constraint>();
+            constraints = new List<Constraint>();
         }
 
         public virtual void changeConstraintFromTo(ConstraintedPoint o, ConstraintedPoint n)
         {
-            int count = this.constraints.Count;
+            int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
-                Constraint constraint = this.constraints[i];
+                Constraint constraint = constraints[i];
                 if (constraint != null && constraint.cp == o)
                 {
                     constraint.cp = n;
@@ -68,10 +68,10 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void changeConstraintFromTowithRestLength(ConstraintedPoint o, ConstraintedPoint n, float l)
         {
-            int count = this.constraints.Count;
+            int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
-                Constraint constraint = this.constraints[i];
+                Constraint constraint = constraints[i];
                 if (constraint != null && constraint.cp == o)
                 {
                     constraint.cp = n;
@@ -83,10 +83,10 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void changeRestLengthToFor(float l, ConstraintedPoint n)
         {
-            int count = this.constraints.Count;
+            int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
-                Constraint constraint = this.constraints[i];
+                Constraint constraint = constraints[i];
                 if (constraint != null && constraint.cp == n)
                 {
                     constraint.restLength = l;
@@ -97,10 +97,10 @@ namespace CutTheRope.iframework.sfe
 
         public virtual bool hasConstraintTo(ConstraintedPoint p)
         {
-            int count = this.constraints.Count;
+            int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
-                Constraint constraint = this.constraints[i];
+                Constraint constraint = constraints[i];
                 if (constraint != null && constraint.cp == p)
                 {
                     return true;
@@ -111,10 +111,10 @@ namespace CutTheRope.iframework.sfe
 
         public virtual float restLengthFor(ConstraintedPoint n)
         {
-            int count = this.constraints.Count;
+            int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
-                Constraint constraint = this.constraints[i];
+                Constraint constraint = constraints[i];
                 if (constraint != null && constraint.cp == n)
                 {
                     return constraint.restLength;
@@ -126,47 +126,47 @@ namespace CutTheRope.iframework.sfe
         public override void resetAll()
         {
             base.resetAll();
-            this.prevPos = CTRMathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
-            this.removeConstraints();
+            prevPos = CTRMathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
+            removeConstraints();
         }
 
         public override void update(float delta)
         {
-            this.update(delta, 1f);
+            update(delta, 1f);
         }
 
         public virtual void update(float delta, float koeff)
         {
-            this.totalForce = CTRMathHelper.vectZero;
-            if (!this.disableGravity)
+            totalForce = CTRMathHelper.vectZero;
+            if (!disableGravity)
             {
                 if (!CTRMathHelper.vectEqual(MaterialPoint.globalGravity, CTRMathHelper.vectZero))
                 {
-                    this.totalForce = CTRMathHelper.vectAdd(this.totalForce, CTRMathHelper.vectMult(MaterialPoint.globalGravity, this.weight));
+                    totalForce = CTRMathHelper.vectAdd(totalForce, CTRMathHelper.vectMult(MaterialPoint.globalGravity, weight));
                 }
                 else
                 {
-                    this.totalForce = CTRMathHelper.vectAdd(this.totalForce, this.gravity);
+                    totalForce = CTRMathHelper.vectAdd(totalForce, gravity);
                 }
             }
-            if (this.highestForceIndex != -1)
+            if (highestForceIndex != -1)
             {
-                for (int i = 0; i <= this.highestForceIndex; i++)
+                for (int i = 0; i <= highestForceIndex; i++)
                 {
-                    this.totalForce = CTRMathHelper.vectAdd(this.totalForce, this.forces[i]);
+                    totalForce = CTRMathHelper.vectAdd(totalForce, forces[i]);
                 }
             }
-            this.totalForce = CTRMathHelper.vectMult(this.totalForce, this.invWeight);
-            this.a = CTRMathHelper.vectMult(this.totalForce, (double)delta / 1.0 * (double)delta / 1.0);
-            if (this.prevPos.x == 2.1474836E+09f)
+            totalForce = CTRMathHelper.vectMult(totalForce, invWeight);
+            a = CTRMathHelper.vectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
+            if (prevPos.x == 2.1474836E+09f)
             {
-                this.prevPos = this.pos;
+                prevPos = pos;
             }
-            this.posDelta.x = this.pos.x - this.prevPos.x + this.a.x;
-            this.posDelta.y = this.pos.y - this.prevPos.y + this.a.y;
-            this.v = CTRMathHelper.vectMult(this.posDelta, (float)(1.0 / (double)delta));
-            this.prevPos = this.pos;
-            this.pos = CTRMathHelper.vectAdd(this.pos, this.posDelta);
+            posDelta.x = pos.x - prevPos.x + a.x;
+            posDelta.y = pos.y - prevPos.y + a.y;
+            v = CTRMathHelper.vectMult(posDelta, (float)(1.0 / (double)delta));
+            prevPos = pos;
+            pos = CTRMathHelper.vectAdd(pos, posDelta);
         }
 
         public static void satisfyConstraints(ConstraintedPoint p)

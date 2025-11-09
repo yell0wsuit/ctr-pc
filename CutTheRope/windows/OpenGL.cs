@@ -705,18 +705,18 @@ namespace CutTheRope.windows
             {
                 get
                 {
-                    if (this.pointer_ == null || this.size_ == 0)
+                    if (pointer_ == null || size_ == 0)
                     {
                         return 0;
                     }
-                    return this.pointer_.Length / this.size_;
+                    return pointer_.Length / size_;
                 }
             }
 
             public GLVertexPointer(int size, int type, int stride, object pointer)
             {
-                this.pointer_ = (pointer != null) ? ((float[])pointer) : null;
-                this.size_ = size;
+                pointer_ = (pointer != null) ? ((float[])pointer) : null;
+                size_ = size;
             }
 
             public int size_;
@@ -731,18 +731,18 @@ namespace CutTheRope.windows
             {
                 get
                 {
-                    if (this.pointer_ == null || this.size_ == 0)
+                    if (pointer_ == null || size_ == 0)
                     {
                         return 0;
                     }
-                    return this.pointer_.Length / this.size_;
+                    return pointer_.Length / size_;
                 }
             }
 
             public GLTexCoordPointer(int size, int type, int stride, object pointer)
             {
-                this.pointer_ = (pointer != null) ? ((float[])pointer) : null;
-                this.size_ = size;
+                pointer_ = (pointer != null) ? ((float[])pointer) : null;
+                size_ = size;
             }
 
             public int size_;

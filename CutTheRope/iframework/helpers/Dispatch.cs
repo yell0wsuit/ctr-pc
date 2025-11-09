@@ -7,17 +7,17 @@ namespace CutTheRope.iframework.helpers
     {
         public virtual Dispatch initWithObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc callThisFunc, NSObject p, float d)
         {
-            this.callThis = callThisFunc;
-            this.param = p;
-            this.delay = d;
+            callThis = callThisFunc;
+            param = p;
+            delay = d;
             return this;
         }
 
         public virtual void dispatch()
         {
-            if (this.callThis != null)
+            if (callThis != null)
             {
-                this.callThis(this.param);
+                callThis(param);
             }
         }
 

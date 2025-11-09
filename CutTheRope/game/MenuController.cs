@@ -375,7 +375,7 @@ namespace CutTheRope.game
                 baseElement2.addChild(image);
             }
             menuView.addChild(baseElement);
-            this.addViewwithID(menuView, 0);
+            addViewwithID(menuView, 0);
         }
 
         public virtual void createOptions()
@@ -438,7 +438,7 @@ namespace CutTheRope.game
             button.setName("backb");
             button.x = (float)base.canvas.xOffsetScaled;
             menuView.addChild(button);
-            this.addViewwithID(menuView, 1);
+            addViewwithID(menuView, 1);
         }
 
         public virtual void createReset()
@@ -464,7 +464,7 @@ namespace CutTheRope.game
             button3.setName("backb");
             button3.x = (float)base.canvas.xOffsetScaled;
             menuView.addChild(button3);
-            this.addViewwithID(menuView, 4);
+            addViewwithID(menuView, 4);
         }
 
         public virtual void createMovieView()
@@ -475,7 +475,7 @@ namespace CutTheRope.game
             rectangleElement.height = (int)FrameworkTypes.SCREEN_HEIGHT;
             rectangleElement.color = RGBAColor.blackRGBA;
             movieView.addChild(rectangleElement);
-            this.addViewwithID(movieView, 7);
+            addViewwithID(movieView, 7);
         }
 
         public virtual void createAbout()
@@ -511,8 +511,8 @@ namespace CutTheRope.game
             Text text2 = new Text().initWithFont(Application.getFont(4));
             text2.setAlignment(2);
             text2.setStringandWidth(NSObject.NSS(text), (float)(int)num);
-            this.aboutContainer = new ScrollableContainer().initWithWidthHeightContainer(num, h, vBox);
-            this.aboutContainer.anchor = this.aboutContainer.parentAnchor = 18;
+            aboutContainer = new ScrollableContainer().initWithWidthHeightContainer(num, h, vBox);
+            aboutContainer.anchor = aboutContainer.parentAnchor = 18;
             vBox.addChild(text2);
             Image c2 = Image.Image_createWithResIDQuad(50, 2);
             vBox.addChild(c2);
@@ -521,13 +521,13 @@ namespace CutTheRope.game
             text3.setAlignment(2);
             text3.setStringandWidth(@string, num);
             vBox.addChild(text3);
-            baseElement.addChild(this.aboutContainer);
+            baseElement.addChild(aboutContainer);
             menuView.addChild(baseElement);
             Button button = MenuController.createBackButtonWithDelegateID(this, 10);
             button.setName("backb");
             button.x = (float)base.canvas.xOffsetScaled;
             menuView.addChild(button);
-            this.addViewwithID(menuView, 3);
+            addViewwithID(menuView, 3);
         }
 
         public virtual HBox createTextWithStar(NSString t)
@@ -552,7 +552,7 @@ namespace CutTheRope.game
         public virtual float getPackOffset()
         {
             float num = FrameworkTypes.SCREEN_WIDTH + (float)(base.canvas.xOffset * 2);
-            float boxWidth = this.getBoxWidth();
+            float boxWidth = getBoxWidth();
             if (boxWidth * 3f > num - 200f)
             {
                 return boxWidth / 2f;
@@ -607,7 +607,7 @@ namespace CutTheRope.game
                 image2.doRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 image.addChild(image2);
-                HBox hBox = this.createTextWithStar(NSObject.NSS(num.ToString()));
+                HBox hBox = createTextWithStar(NSObject.NSS(num.ToString()));
                 hBox.anchor = hBox.parentAnchor = 18;
                 hBox.y = 110f;
                 image2.addChild(hBox);
@@ -638,10 +638,10 @@ namespace CutTheRope.game
                     Image image3 = Image.Image_createWithResIDQuad(52, q3);
                     image3.doRestoreCutTransparency();
                     image3.anchor = 17;
-                    monsterSlot.s = (float)(image.width * (n - 1)) + -20f * (float)n + this.packContainer.x + 50f;
+                    monsterSlot.s = (float)(image.width * (n - 1)) + -20f * (float)n + packContainer.x + 50f;
                     monsterSlot.e = monsterSlot.s + 1200f;
-                    image3.x = this.packContainer.x - 0f + (float)monsterSlot.width + -20f - this.getPackOffset();
-                    image3.y = this.packContainer.y + FrameworkTypes.SCREEN_HEIGHT / 2f;
+                    image3.x = packContainer.x - 0f + (float)monsterSlot.width + -20f - getPackOffset();
+                    image3.y = packContainer.y + FrameworkTypes.SCREEN_HEIGHT / 2f;
                     image3.parentAnchor = -1;
                     monsterSlot.addChild(image3);
                 }
@@ -696,28 +696,28 @@ namespace CutTheRope.game
             BaseElement baseElement = MenuController.createBackgroundWithLogo(false);
             string text = Application.getString(655388).ToString();
             text = text.Replace("%d", "");
-            HBox hBox = this.createTextWithStar(NSObject.NSS(text + CTRPreferences.getTotalStars().ToString()));
+            HBox hBox = createTextWithStar(NSObject.NSS(text + CTRPreferences.getTotalStars().ToString()));
             hBox.x = -30f - (float)base.canvas.xOffsetScaled;
             hBox.y = 40f;
             hBox.setName("text");
             HBox hBox2 = new HBox().initWithOffsetAlignHeight(-20f, 16, FrameworkTypes.SCREEN_HEIGHT);
             float num = FrameworkTypes.SCREEN_WIDTH + (float)(base.canvas.xOffset * 2);
-            float boxWidth = this.getBoxWidth();
+            float boxWidth = getBoxWidth();
             float num2 = boxWidth * 3f;
             if (num2 > num - 200f)
             {
                 num2 = boxWidth * 2f;
             }
-            this.packContainer = new ScrollableContainer().initWithWidthHeightContainer(num2, FrameworkTypes.SCREEN_HEIGHT, hBox2);
-            this.packContainer.minAutoScrollToSpointLength = FrameworkTypes.RTD(5.0);
-            this.packContainer.shouldBounceHorizontally = true;
-            this.packContainer.resetScrollOnShow = false;
-            this.packContainer.dontHandleTouchDownsHandledByChilds = true;
-            this.packContainer.dontHandleTouchMovesHandledByChilds = true;
-            this.packContainer.dontHandleTouchUpsHandledByChilds = true;
-            this.packContainer.turnScrollPointsOnWithCapacity(CTRPreferences.getPacksCount() + 2);
-            this.packContainer.delegateScrollableContainerProtocol = this;
-            this.packContainer.x = FrameworkTypes.SCREEN_WIDTH / 2f - (float)(this.packContainer.width / 2);
+            packContainer = new ScrollableContainer().initWithWidthHeightContainer(num2, FrameworkTypes.SCREEN_HEIGHT, hBox2);
+            packContainer.minAutoScrollToSpointLength = FrameworkTypes.RTD(5.0);
+            packContainer.shouldBounceHorizontally = true;
+            packContainer.resetScrollOnShow = false;
+            packContainer.dontHandleTouchDownsHandledByChilds = true;
+            packContainer.dontHandleTouchMovesHandledByChilds = true;
+            packContainer.dontHandleTouchUpsHandledByChilds = true;
+            packContainer.turnScrollPointsOnWithCapacity(CTRPreferences.getPacksCount() + 2);
+            packContainer.delegateScrollableContainerProtocol = this;
+            packContainer.x = FrameworkTypes.SCREEN_WIDTH / 2f - (float)(packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
             baseElement.addChild(hBox);
             CTRTexture2D texture = Application.getTexture(52);
@@ -725,15 +725,15 @@ namespace CutTheRope.game
             baseElement2.width = (int)texture.preCutSize.x;
             baseElement2.height = (int)texture.preCutSize.y;
             hBox2.addChild(baseElement2);
-            float num3 = 0f + this.getPackOffset();
+            float num3 = 0f + getPackOffset();
             for (int i = 0; i < CTRPreferences.getPacksCount() + 1; i++)
             {
-                MenuController.TouchBaseElement touchBaseElement = (MenuController.TouchBaseElement)this.createPackElementforContainer(i, this.packContainer);
-                this.boxes[i] = touchBaseElement;
+                MenuController.TouchBaseElement touchBaseElement = (MenuController.TouchBaseElement)createPackElementforContainer(i, packContainer);
+                boxes[i] = touchBaseElement;
                 hBox2.addChild(touchBaseElement);
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
-                this.packContainer.addScrollPointAtXY((double)num3, 0.0);
+                packContainer.addScrollPointAtXY((double)num3, 0.0);
                 touchBaseElement.bbc = FrameworkTypes.MakeRectangle(0f, 0f, -20f, 0f);
                 num3 += (float)touchBaseElement.width + -20f;
             }
@@ -741,45 +741,45 @@ namespace CutTheRope.game
             Image image = Image.Image_createWithResIDQuad(52, 11);
             image.anchor = 17;
             image.y += FrameworkTypes.SCREEN_HEIGHT / 2f;
-            image.x = this.packContainer.x - 2f;
+            image.x = packContainer.x - 2f;
             baseElement.addChild(image);
             Image image2 = Image.Image_createWithResIDQuad(52, 11);
             image2.anchor = 20;
             image2.y += FrameworkTypes.SCREEN_HEIGHT / 2f;
-            image2.x = this.packContainer.x + (float)this.packContainer.width + 2f;
+            image2.x = packContainer.x + (float)packContainer.width + 2f;
             baseElement.addChild(image2);
             image2.scaleX = image2.scaleY = -1f;
-            baseElement.addChild(this.packContainer);
+            baseElement.addChild(packContainer);
             Image image3 = Image.Image_createWithResIDQuad(52, 12);
             image3.anchor = 20;
             image3.y += FrameworkTypes.SCREEN_HEIGHT / 2f;
-            image3.x = this.packContainer.x + 3f;
+            image3.x = packContainer.x + 3f;
             baseElement.addChild(image3);
             Image image4 = Image.Image_createWithResIDQuad(52, 12);
             image4.anchor = 17;
             image4.y += FrameworkTypes.SCREEN_HEIGHT / 2f;
-            image4.x = this.packContainer.x + (float)this.packContainer.width - 3f;
+            image4.x = packContainer.x + (float)packContainer.width - 3f;
             image4.scaleX = image4.scaleY = -1f;
             baseElement.addChild(image4);
-            this.prevb = MenuController.createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 21, this);
-            this.prevb.parentAnchor = 17;
-            this.prevb.anchor = 20;
-            this.prevb.x = this.packContainer.x - 40f;
-            baseElement.addChild(this.prevb);
-            this.nextb = MenuController.createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 20, this);
-            this.nextb.anchor = this.nextb.parentAnchor = 17;
-            this.nextb.x = this.packContainer.x + (float)this.packContainer.width + 40f;
-            this.nextb.scaleX = -1f;
-            baseElement.addChild(this.nextb);
+            prevb = MenuController.createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 21, this);
+            prevb.parentAnchor = 17;
+            prevb.anchor = 20;
+            prevb.x = packContainer.x - 40f;
+            baseElement.addChild(prevb);
+            nextb = MenuController.createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 20, this);
+            nextb.anchor = nextb.parentAnchor = 17;
+            nextb.x = packContainer.x + (float)packContainer.width + 40f;
+            nextb.scaleX = -1f;
+            baseElement.addChild(nextb);
             menuView.addChild(baseElement);
-            this.addViewwithID(menuView, 5);
+            addViewwithID(menuView, 5);
             Button button = MenuController.createBackButtonWithDelegateID(this, 35);
             button.setName("backb");
             button.x = (float)base.canvas.xOffsetScaled;
             menuView.addChild(button);
             int lastPack = CTRPreferences.getLastPack();
-            this.packContainer.placeToScrollPoint(lastPack);
-            this.scrollableContainerchangedTargetScrollPoint(this.packContainer, lastPack);
+            packContainer.placeToScrollPoint(lastPack);
+            scrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
 
         public virtual void createLeaderboards()
@@ -822,7 +822,7 @@ namespace CutTheRope.game
             text3.y += 50f;
             popup.addChild(text3);
             int totalStars = CTRPreferences.getTotalStars();
-            HBox hBox = this.createTextWithStar(NSObject.NSS((CTRPreferences.packUnlockStars(cTRRootController.getPack() + 1) - totalStars).ToString()));
+            HBox hBox = createTextWithStar(NSObject.NSS((CTRPreferences.packUnlockStars(cTRRootController.getPack() + 1) - totalStars).ToString()));
             hBox.anchor = 18;
             Image.setElementPositionWithQuadOffset(hBox, 49, 5);
             hBox.y -= (float)num;
@@ -832,7 +832,7 @@ namespace CutTheRope.game
             Image.setElementPositionWithQuadOffset(button, 49, 4);
             popup.addChild(button);
             popup.showPopup();
-            this.activeView().addChild(popup);
+            activeView().addChild(popup);
         }
 
         public virtual void showGameFinishedPopup()
@@ -861,7 +861,7 @@ namespace CutTheRope.game
             Image.setElementPositionWithQuadOffset(button, 49, 4);
             image.addChild(button);
             popup.showPopup();
-            this.activeView().addChild(popup);
+            activeView().addChild(popup);
         }
 
         public virtual void showYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
@@ -888,52 +888,52 @@ namespace CutTheRope.game
             Image.setElementPositionWithQuadOffset(button2, 49, 4);
             image.addChild(button2);
             popup.showPopup();
-            this.ep = popup;
-            this.activeView().addChild(popup);
+            ep = popup;
+            activeView().addChild(popup);
         }
 
         public virtual void scrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
         {
-            this.currentPack = i;
-            this.pack = i;
-            this.scrollPacksLeft = 0;
-            this.scrollPacksRight = 0;
-            this.bScrolling = false;
-            if (this.prevb.isEnabled())
+            currentPack = i;
+            pack = i;
+            scrollPacksLeft = 0;
+            scrollPacksRight = 0;
+            bScrolling = false;
+            if (prevb.isEnabled())
             {
-                this.prevb.setState(Button.BUTTON_STATE.BUTTON_UP);
+                prevb.setState(Button.BUTTON_STATE.BUTTON_UP);
             }
-            if (this.nextb.isEnabled())
+            if (nextb.isEnabled())
             {
-                this.nextb.setState(Button.BUTTON_STATE.BUTTON_UP);
+                nextb.setState(Button.BUTTON_STATE.BUTTON_UP);
             }
             if (i == CTRPreferences.getPacksCount())
             {
                 return;
             }
-            this.boxes[i].getChildWithName("boxContainer").playTimeline(0);
+            boxes[i].getChildWithName("boxContainer").playTimeline(0);
             UNLOCKED_STATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(i, 0);
-            BaseElement childWithName = this.boxes[i].getChildWithName("lockHideMe");
+            BaseElement childWithName = boxes[i].getChildWithName("lockHideMe");
             if (childWithName != null && unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED)
             {
                 CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_UNLOCKED, i, 0);
                 childWithName.playTimeline(0);
             }
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (this.showNextPackStatus && i == cTRRootController.getPack() + 1)
+            if (showNextPackStatus && i == cTRRootController.getPack() + 1)
             {
-                this.showNextPackStatus = false;
+                showNextPackStatus = false;
                 if (unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
                 {
-                    this.showCantUnlockPopup();
+                    showCantUnlockPopup();
                 }
             }
         }
 
         public virtual void scrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i)
         {
-            this.currentPack = i;
-            this.pack = i;
+            currentPack = i;
+            pack = i;
             CTRPreferences.setLastPack(i);
         }
 
@@ -977,7 +977,7 @@ namespace CutTheRope.game
         {
             float num = 0.3f;
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
-            int num4 = 126 + this.pack;
+            int num4 = 126 + pack;
             Image image = Image.Image_createWithResIDQuad(num4, 0);
             Image image2 = Image.Image_createWithResIDQuad(num4, 0);
             Vector quadSize = Image.getQuadSize(num4, 0);
@@ -1017,7 +1017,7 @@ namespace CutTheRope.game
             image5.addTimeline(timeline3);
             image5.playTimeline(1);
             menuView.addChild(image5);
-            HBox hBox = this.createTextWithStar(NSObject.NSS(CTRPreferences.getTotalStarsInPack(this.pack).ToString() + "/" + (CTRPreferences.getLevelsInPackCount() * 3).ToString()));
+            HBox hBox = createTextWithStar(NSObject.NSS(CTRPreferences.getTotalStarsInPack(pack).ToString() + "/" + (CTRPreferences.getLevelsInPackCount() * 3).ToString()));
             hBox.x = -20f;
             hBox.y = 20f;
             float of = 55f;
@@ -1034,7 +1034,7 @@ namespace CutTheRope.game
                 HBox hBox2 = new HBox().initWithOffsetAlignHeight(of2, 16, h);
                 for (int j = 0; j < num2; j++)
                 {
-                    hBox2.addChild(this.createButtonForLevelPack(num3++, this.pack));
+                    hBox2.addChild(createButtonForLevelPack(num3++, pack));
                 }
                 vBox.addChild(hBox2);
             }
@@ -1059,52 +1059,52 @@ namespace CutTheRope.game
             button.addTimeline(timeline6);
             button.x = (float)base.canvas.xOffsetScaled;
             menuView.addChild(button);
-            this.addViewwithID(menuView, 6);
+            addViewwithID(menuView, 6);
         }
 
         public override NSObject initWithParent(ViewController p)
         {
             if (base.initWithParent(p) != null)
             {
-                this.ddMainMenu = (DelayedDispatcher)new DelayedDispatcher().init();
-                this.ddPackSelect = (DelayedDispatcher)new DelayedDispatcher().init();
-                this.createMainMenu();
-                this.createOptions();
-                this.createReset();
-                this.createAbout();
-                this.createMovieView();
-                this.createPackSelect();
-                this.createLeaderboards();
-                this.createAchievements();
+                ddMainMenu = (DelayedDispatcher)new DelayedDispatcher().init();
+                ddPackSelect = (DelayedDispatcher)new DelayedDispatcher().init();
+                createMainMenu();
+                createOptions();
+                createReset();
+                createAbout();
+                createMovieView();
+                createPackSelect();
+                createLeaderboards();
+                createAchievements();
                 MapPickerController c = (MapPickerController)new MapPickerController().initWithParent(this);
-                this.addChildwithID(c, 0);
+                addChildwithID(c, 0);
             }
             return this;
         }
 
         public override void dealloc()
         {
-            this.ddMainMenu.cancelAllDispatches();
-            this.ddMainMenu.dealloc();
-            this.ddMainMenu = null;
-            this.ddPackSelect.cancelAllDispatches();
-            this.ddPackSelect.dealloc();
-            this.ddPackSelect = null;
+            ddMainMenu.cancelAllDispatches();
+            ddMainMenu.dealloc();
+            ddMainMenu = null;
+            ddPackSelect.cancelAllDispatches();
+            ddPackSelect.dealloc();
+            ddPackSelect = null;
             base.dealloc();
         }
 
         public override void activate()
         {
-            this.showNextPackStatus = false;
+            showNextPackStatus = false;
             base.activate();
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            this.pack = cTRRootController.getPack();
-            if (this.viewToShow == 6)
+            pack = cTRRootController.getPack();
+            if (viewToShow == 6)
             {
-                this.currentPack = this.pack;
-                this.preLevelSelect();
+                currentPack = pack;
+                preLevelSelect();
             }
-            this.showView(this.viewToShow);
+            showView(viewToShow);
             CTRSoundMgr._stopMusic();
             CTRSoundMgr._playMusic(145);
         }
@@ -1115,13 +1115,13 @@ namespace CutTheRope.game
             int num = cTRRootController.getPack();
             if (num < CTRPreferences.getPacksCount() - 1)
             {
-                this.packContainer.delegateScrollableContainerProtocol = this;
-                this.packContainer.moveToScrollPointmoveMultiplier(num + 1, 0.8);
-                this.showNextPackStatus = true;
+                packContainer.delegateScrollableContainerProtocol = this;
+                packContainer.moveToScrollPointmoveMultiplier(num + 1, 0.8);
+                showNextPackStatus = true;
                 return;
             }
-            this.replayingIntroMovie = false;
-            this.packContainer.placeToScrollPoint(cTRRootController.getPack() + 1);
+            replayingIntroMovie = false;
+            packContainer.placeToScrollPoint(cTRRootController.getPack() + 1);
             CTRSoundMgr._stopMusic();
             Application.sharedMovieMgr().delegateMovieMgrDelegate = this;
             Application.sharedMovieMgr().playURL(NSObject.NSS("outro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
@@ -1131,15 +1131,15 @@ namespace CutTheRope.game
         {
             base.onChildDeactivated(n);
             ((CTRRootController)Application.sharedRootController()).setSurvival(false);
-            this.deactivate();
+            deactivate();
         }
 
         public virtual void moviePlaybackFinished(NSString url)
         {
-            if (this.replayingIntroMovie)
+            if (replayingIntroMovie)
             {
-                this.replayingIntroMovie = false;
-                this.activateChild(0);
+                replayingIntroMovie = false;
+                activateChild(0);
                 return;
             }
             if (url != null)
@@ -1148,19 +1148,19 @@ namespace CutTheRope.game
             }
             if (CTRPreferences.shouldPlayLevelScroll())
             {
-                this.packContainer.placeToScrollPoint(CTRPreferences.getPacksCount() - 1);
-                this.packContainer.moveToScrollPointmoveMultiplier(0, 0.6);
+                packContainer.placeToScrollPoint(CTRPreferences.getPacksCount() - 1);
+                packContainer.moveToScrollPointmoveMultiplier(0, 0.6);
                 CTRPreferences.disablePlayLevelScroll();
             }
             else
             {
-                this.packContainer.placeToScrollPoint(CTRPreferences.getLastPack());
+                packContainer.placeToScrollPoint(CTRPreferences.getLastPack());
             }
-            this.showView(5);
+            showView(5);
             if (url != null && url.hasSuffix("outro"))
             {
-                this.packContainer.moveToScrollPointmoveMultiplier(CTRPreferences.getPacksCount(), 0.8);
-                this.showGameFinishedPopup();
+                packContainer.moveToScrollPointmoveMultiplier(CTRPreferences.getPacksCount(), 0.8);
+                showGameFinishedPopup();
             }
         }
 
@@ -1168,7 +1168,7 @@ namespace CutTheRope.game
         {
             CTRResourceMgr cTRResourceMgr = Application.sharedResourceMgr();
             int[] array = null;
-            switch (this.pack)
+            switch (pack)
             {
                 case 0:
                     array = ResDataPhoneFull.PACK_GAME_COVER_01;
@@ -1207,37 +1207,37 @@ namespace CutTheRope.game
             cTRResourceMgr.initLoading();
             cTRResourceMgr.loadPack(array);
             cTRResourceMgr.loadImmediately();
-            if (this.getView(6) != null)
+            if (getView(6) != null)
             {
-                this.deleteView(6);
+                deleteView(6);
             }
-            this.createLevelSelect();
+            createLevelSelect();
         }
 
         public virtual void timelineFinished(Timeline t)
         {
             CTRSoundMgr._stopMusic();
             CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-            ctrrootController.setPack(this.pack);
-            ctrrootController.setLevel(this.level);
+            ctrrootController.setPack(pack);
+            ctrrootController.setLevel(level);
             Application.sharedRootController().setViewTransition(-1);
-            ((MapPickerController)this.getChild(0)).setAutoLoadMap(LevelsList.LEVEL_NAMES[this.pack, this.level]);
-            if (this.pack == 0 && this.level == 0 && CTRPreferences.getScoreForPackLevel(0, 0) != 0)
+            ((MapPickerController)getChild(0)).setAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
+            if (pack == 0 && level == 0 && CTRPreferences.getScoreForPackLevel(0, 0) != 0)
             {
-                this.replayingIntroMovie = true;
-                this.showView(7);
+                replayingIntroMovie = true;
+                showView(7);
                 CTRSoundMgr._stopMusic();
                 Application.sharedMovieMgr().delegateMovieMgrDelegate = this;
                 Application.sharedMovieMgr().playURL(NSObject.NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
                 return;
             }
-            this.activateChild(0);
+            activateChild(0);
         }
 
         public virtual void recreateOptions()
         {
-            this.deleteView(1);
-            this.createOptions();
+            deleteView(1);
+            createOptions();
         }
 
         public virtual void onButtonPressed(int n)
@@ -1248,12 +1248,12 @@ namespace CutTheRope.game
             }
             if (n >= 1000)
             {
-                this.level = n - 1000;
-                this.activeView().getChildWithName("levelsBox").playTimeline(0);
-                this.activeView().getChildWithName("shadow").playTimeline(0);
-                this.activeView().getChildWithName("levelsBack").playTimeline(0);
-                this.activeView().getChildWithName("starText").playTimeline(0);
-                this.activeView().getChildWithName("backButton").playTimeline(0);
+                level = n - 1000;
+                activeView().getChildWithName("levelsBox").playTimeline(0);
+                activeView().getChildWithName("shadow").playTimeline(0);
+                activeView().getChildWithName("levelsBack").playTimeline(0);
+                activeView().getChildWithName("starText").playTimeline(0);
+                activeView().getChildWithName("backButton").playTimeline(0);
                 return;
             }
             switch (n)
@@ -1264,32 +1264,32 @@ namespace CutTheRope.game
                         {
                             GameController.checkForBoxPerfect(i);
                         }
-                        this.replayingIntroMovie = false;
+                        replayingIntroMovie = false;
                         if (CTRPreferences.getScoreForPackLevel(0, 0) == 0)
                         {
-                            this.showView(7);
+                            showView(7);
                             CTRSoundMgr._stopMusic();
                             Application.sharedMovieMgr().delegateMovieMgrDelegate = this;
                             Application.sharedMovieMgr().playURL(NSObject.NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
                             return;
                         }
-                        this.moviePlaybackFinished(null);
+                        moviePlaybackFinished(null);
                         return;
                     }
                 case 1:
-                    this.showView(1);
+                    showView(1);
                     return;
                 case 2:
                     ((CTRRootController)Application.sharedRootController()).setPack(0);
-                    this.preLevelSelect();
+                    preLevelSelect();
                     Application.sharedRootController().setViewTransition(-1);
-                    ((MapPickerController)this.getChild(0)).setNormalMode();
-                    this.activateChild(0);
+                    ((MapPickerController)getChild(0)).setNormalMode();
+                    activateChild(0);
                     return;
                 case 3:
                     {
                         CTRSoundMgr._stopMusic();
-                        this.pack = 0;
+                        pack = 0;
                         Application.sharedRootController().setViewTransition(-1);
                         CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
                         CTRResourceMgr ctrresourceMgr = Application.sharedResourceMgr();
@@ -1297,8 +1297,8 @@ namespace CutTheRope.game
                         ctrresourceMgr.loadPack(ResDataPhoneFull.PACK_GAME_COVER_01);
                         ctrresourceMgr.loadImmediately();
                         ctrrootController.setSurvival(true);
-                        ctrrootController.setPack(this.pack);
-                        this.deactivate();
+                        ctrrootController.setPack(pack);
+                        deactivate();
                         return;
                     }
                 case 4:
@@ -1320,19 +1320,19 @@ namespace CutTheRope.game
                         return;
                     }
                 case 7:
-                    this.aboutContainer.setScroll(CTRMathHelper.vect(0f, 0f));
-                    this.aboutAutoScroll = true;
-                    this.showView(3);
+                    aboutContainer.setScroll(CTRMathHelper.vect(0f, 0f));
+                    aboutAutoScroll = true;
+                    showView(3);
                     return;
                 case 8:
-                    this.showView(4);
+                    showView(4);
                     return;
                 case 9:
                 case 18:
                 case 19:
                     break;
                 case 10:
-                    this.showView(1);
+                    showView(1);
                     return;
                 case 11:
                     {
@@ -1342,24 +1342,24 @@ namespace CutTheRope.game
                         return;
                     }
                 case 12:
-                    this.showView(5);
-                    this.packContainer.moveToScrollPointmoveMultiplier(this.pack, 0.8);
+                    showView(5);
+                    packContainer.moveToScrollPointmoveMultiplier(pack, 0.8);
                     return;
                 case 13:
                     {
                         CTRPreferences ctrpreferences = Application.sharedPreferences();
                         ctrpreferences.resetToDefaults();
                         ctrpreferences.savePreferences();
-                        this.deleteView(5);
-                        this.createPackSelect();
-                        this.showView(1);
+                        deleteView(5);
+                        createPackSelect();
+                        showView(1);
                         return;
                     }
                 case 14:
-                    this.showView(1);
+                    showView(1);
                     return;
                 case 15:
-                    ((Popup)this.activeView().getChildWithName("popup")).hidePopup();
+                    ((Popup)activeView().getChildWithName("popup")).hidePopup();
                     return;
                 case 16:
                     FrameworkTypes.AndroidAPI.openUrl("http://twitter.com/zeptolab");
@@ -1369,22 +1369,22 @@ namespace CutTheRope.game
                     return;
                 case 20:
                     {
-                        int num2 = this.currentPack;
-                        int num3 = this.scrollPacksLeft + 1;
-                        this.scrollPacksLeft = num3;
-                        int sp2 = this.FixScrollPoint(num2 + num3 - this.scrollPacksRight);
-                        this.packContainer.moveToScrollPointmoveMultiplier(sp2, 0.8);
-                        this.bScrolling = true;
+                        int num2 = currentPack;
+                        int num3 = scrollPacksLeft + 1;
+                        scrollPacksLeft = num3;
+                        int sp2 = FixScrollPoint(num2 + num3 - scrollPacksRight);
+                        packContainer.moveToScrollPointmoveMultiplier(sp2, 0.8);
+                        bScrolling = true;
                         return;
                     }
                 case 21:
                     {
-                        int num4 = this.currentPack;
-                        int num3 = this.scrollPacksRight + 1;
-                        this.scrollPacksRight = num3;
-                        int sp3 = this.FixScrollPoint(num4 - num3 + this.scrollPacksLeft);
-                        this.packContainer.moveToScrollPointmoveMultiplier(sp3, 0.8);
-                        this.bScrolling = true;
+                        int num4 = currentPack;
+                        int num3 = scrollPacksRight + 1;
+                        scrollPacksRight = num3;
+                        int sp3 = FixScrollPoint(num4 - num3 + scrollPacksLeft);
+                        packContainer.moveToScrollPointmoveMultiplier(sp3, 0.8);
+                        bScrolling = true;
                         break;
                     }
                 case 22:
@@ -1421,16 +1421,16 @@ namespace CutTheRope.game
                         ctrresourceMgr2.initLoading();
                         ctrresourceMgr2.loadPack(ResDataPhoneFull.PACK_LOCALIZATION_MENU);
                         ctrresourceMgr2.loadImmediately();
-                        this.deleteView(5);
-                        this.createPackSelect();
-                        this.deleteView(0);
-                        this.createMainMenu();
-                        this.deleteView(4);
-                        this.createReset();
-                        this.deleteView(3);
-                        this.createAbout();
-                        this.createLeaderboards();
-                        this.ddMainMenu.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(this.selector_recreateOptions), null, 0.01);
+                        deleteView(5);
+                        createPackSelect();
+                        deleteView(0);
+                        createMainMenu();
+                        deleteView(4);
+                        createReset();
+                        deleteView(3);
+                        createAbout();
+                        createLeaderboards();
+                        ddMainMenu.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_recreateOptions), null, 0.01);
                         ((CTRRootController)Application.sharedRootController()).recreateLoadingController();
                         return;
                     }
@@ -1447,17 +1447,17 @@ namespace CutTheRope.game
                 case 33:
                 case 34:
                     {
-                        if (this.pack != n - 23)
+                        if (pack != n - 23)
                         {
-                            this.packContainer.moveToScrollPointmoveMultiplier(n - 23, 0.8);
+                            packContainer.moveToScrollPointmoveMultiplier(n - 23, 0.8);
                             return;
                         }
-                        CTRPreferences.setLastPack(this.pack);
+                        CTRPreferences.setLastPack(pack);
                         bool flag5 = CTRPreferences.getUnlockedForPackLevel(n - 23, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED && n - 23 != CTRPreferences.getPacksCount();
                         if (n != 34 && !flag5)
                         {
-                            this.preLevelSelect();
-                            this.showView(6);
+                            preLevelSelect();
+                            showView(6);
                             return;
                         }
                         break;
@@ -1479,22 +1479,22 @@ namespace CutTheRope.game
                         array5[1] = NSObject.NSS("OP_BACK_PRESSED");
                         NSString nsstring = array4[n - 35];
                         NSString nsstring2 = array5[n - 35];
-                        this.showView(0);
+                        showView(0);
                         return;
                     }
                 case 39:
                     Global.XnaGame.Exit();
                     return;
                 case 40:
-                    if (this.ep != null)
+                    if (ep != null)
                     {
-                        this.ep.hidePopup();
-                        this.ep = null;
+                        ep.hidePopup();
+                        ep = null;
                         return;
                     }
                     break;
                 case 41:
-                    this.showYesNoPopup(Application.getString(655505), 39, 40);
+                    showYesNoPopup(Application.getString(655505), 39, 40);
                     return;
                 default:
                     return;
@@ -1503,9 +1503,9 @@ namespace CutTheRope.game
 
         private int FixScrollPoint(int moveToPack)
         {
-            if (moveToPack >= this.packContainer.getTotalScrollPoints())
+            if (moveToPack >= packContainer.getTotalScrollPoints())
             {
-                moveToPack = this.packContainer.getTotalScrollPoints() - 1;
+                moveToPack = packContainer.getTotalScrollPoints() - 1;
             }
             else if (moveToPack < 0)
             {
@@ -1523,44 +1523,44 @@ namespace CutTheRope.game
                 movieMgr.update();
                 return;
             }
-            if (this.activeViewID == 3 && this.aboutAutoScroll)
+            if (activeViewID == 3 && aboutAutoScroll)
             {
-                Vector scroll = this.aboutContainer.getScroll();
-                Vector maxScroll = this.aboutContainer.getMaxScroll();
+                Vector scroll = aboutContainer.getScroll();
+                Vector maxScroll = aboutContainer.getMaxScroll();
                 scroll.y += 0.5f;
                 scroll.y = CTRMathHelper.FIT_TO_BOUNDARIES((double)scroll.y, 0.0, (double)maxScroll.y);
-                this.aboutContainer.setScroll(scroll);
+                aboutContainer.setScroll(scroll);
                 return;
             }
-            if (this.activeViewID == 5 && this.ddPackSelect != null)
+            if (activeViewID == 5 && ddPackSelect != null)
             {
-                this.ddPackSelect.update(delta);
+                ddPackSelect.update(delta);
                 if (Global.XnaGame.IsKeyPressed(Keys.Left))
                 {
-                    this.onButtonPressed(21);
+                    onButtonPressed(21);
                     return;
                 }
                 if (Global.XnaGame.IsKeyPressed(Keys.Right))
                 {
-                    this.onButtonPressed(20);
+                    onButtonPressed(20);
                     return;
                 }
-                if ((Global.XnaGame.IsKeyPressed(Keys.Space) || Global.XnaGame.IsKeyPressed(Keys.Enter)) && !this.bScrolling)
+                if ((Global.XnaGame.IsKeyPressed(Keys.Space) || Global.XnaGame.IsKeyPressed(Keys.Enter)) && !bScrolling)
                 {
-                    this.onButtonPressed(23 + this.currentPack);
+                    onButtonPressed(23 + currentPack);
                     return;
                 }
             }
             else
             {
-                if (this.activeViewID == 0 && this.ddMainMenu != null)
+                if (activeViewID == 0 && ddMainMenu != null)
                 {
-                    this.ddMainMenu.update(delta);
+                    ddMainMenu.update(delta);
                     return;
                 }
-                if (this.activeViewID == 1 && this.ddMainMenu != null)
+                if (activeViewID == 1 && ddMainMenu != null)
                 {
-                    this.ddMainMenu.update(delta);
+                    ddMainMenu.update(delta);
                 }
             }
         }
@@ -1568,9 +1568,9 @@ namespace CutTheRope.game
         public override bool touchesBeganwithEvent(IList<TouchLocation> touches)
         {
             bool flag = base.touchesBeganwithEvent(touches);
-            if (this.activeViewID == 3 && this.aboutAutoScroll)
+            if (activeViewID == 3 && aboutAutoScroll)
             {
-                this.aboutAutoScroll = false;
+                aboutAutoScroll = false;
             }
             return flag;
         }
@@ -1581,21 +1581,21 @@ namespace CutTheRope.game
 
         public override void fullscreenToggled(bool isFullscreen)
         {
-            this.deleteView(5);
-            this.createPackSelect();
-            BaseElement childWithName = this.getView(0).getChild(0).getChildWithName("container");
+            deleteView(5);
+            createPackSelect();
+            BaseElement childWithName = getView(0).getChild(0).getChildWithName("container");
             if (childWithName != null)
             {
                 childWithName.x = (float)-(float)base.canvas.xOffsetScaled;
             }
-            BaseElement childWithName2 = this.getView(5).getChild(0).getChildWithName("text");
+            BaseElement childWithName2 = getView(5).getChild(0).getChildWithName("text");
             if (childWithName2 != null)
             {
                 childWithName2.x = -20f - (float)base.canvas.xOffsetScaled;
             }
             for (int i = 0; i < 10; i++)
             {
-                View view3 = this.getView(i);
+                View view3 = getView(i);
                 if (view3 != null)
                 {
                     BaseElement childWithName3 = view3.getChildWithName("backb");
@@ -1605,7 +1605,7 @@ namespace CutTheRope.game
                     }
                 }
             }
-            BaseElement view4 = this.getView(6);
+            BaseElement view4 = getView(6);
             if (view4 != null)
             {
                 view4.getChildWithName("backButton").x = (float)base.canvas.xOffsetScaled;
@@ -1615,37 +1615,37 @@ namespace CutTheRope.game
 
         public void selector_recreateOptions(NSObject param)
         {
-            this.recreateOptions();
+            recreateOptions();
         }
 
         public override bool backButtonPressed()
         {
-            int num = this.activeViewID;
+            int num = activeViewID;
             if (num == 0)
             {
-                if (this.ep != null)
+                if (ep != null)
                 {
-                    this.onButtonPressed(40);
+                    onButtonPressed(40);
                 }
                 else
                 {
-                    this.onButtonPressed(41);
+                    onButtonPressed(41);
                 }
             }
             switch (num)
             {
                 case 1:
-                    this.onButtonPressed(36);
+                    onButtonPressed(36);
                     break;
                 case 3:
                 case 4:
-                    this.onButtonPressed(10);
+                    onButtonPressed(10);
                     break;
                 case 5:
-                    this.onButtonPressed(35);
+                    onButtonPressed(35);
                     break;
                 case 6:
-                    this.onButtonPressed(12);
+                    onButtonPressed(12);
                     break;
             }
             return true;
@@ -1820,11 +1820,11 @@ namespace CutTheRope.game
             public override bool onTouchDownXY(float tx, float ty)
             {
                 base.onTouchDownXY(tx, ty);
-                CTRRectangle r = FrameworkTypes.MakeRectangle(this.drawX + this.bbc.x, this.drawY + this.bbc.y, (float)this.width + this.bbc.w, (float)this.height + this.bbc.h);
+                CTRRectangle r = FrameworkTypes.MakeRectangle(drawX + bbc.x, drawY + bbc.y, (float)width + bbc.w, (float)height + bbc.h);
                 CTRRectangle rectangle = CTRMathHelper.rectInRectIntersection(FrameworkTypes.MakeRectangle(0.0, 0.0, (double)FrameworkTypes.SCREEN_WIDTH, (double)FrameworkTypes.SCREEN_HEIGHT), r);
                 if (CTRMathHelper.pointInRect(tx, ty, r.x, r.y, r.w, r.h) && (double)rectangle.w > (double)r.w / 2.0)
                 {
-                    this.delegateValue.onButtonPressed(this.bid);
+                    delegateValue.onButtonPressed(bid);
                     return true;
                 }
                 return false;
@@ -1858,24 +1858,24 @@ namespace CutTheRope.game
 
             public override void draw()
             {
-                this.preDraw();
-                if (this.quadToDraw == -1)
+                preDraw();
+                if (quadToDraw == -1)
                 {
-                    GLDrawer.drawImage(this.texture, this.drawX, this.drawY);
+                    GLDrawer.drawImage(texture, drawX, drawY);
                 }
                 else
                 {
-                    this.drawQuad(this.quadToDraw);
+                    drawQuad(quadToDraw);
                 }
-                float num = this.c.getScroll().x;
+                float num = c.getScroll().x;
                 Vector preCutSize = Application.getTexture(52).preCutSize;
-                if (num >= this.s && num < this.e)
+                if (num >= s && num < e)
                 {
                     num -= preCutSize.x + -20f;
-                    float num2 = num - (this.s + this.e) / 2f;
+                    float num2 = num - (s + e) / 2f;
                     OpenGL.setScissorRectangle(250.0 - (double)num2, 0.0, 200.0, (double)FrameworkTypes.SCREEN_HEIGHT);
-                    this.postDraw();
-                    OpenGL.setScissorRectangle(this.c.drawX, this.c.drawY, (float)this.c.width, (float)this.c.height);
+                    postDraw();
+                    OpenGL.setScissorRectangle(c.drawX, c.drawY, (float)c.width, (float)c.height);
                 }
             }
 

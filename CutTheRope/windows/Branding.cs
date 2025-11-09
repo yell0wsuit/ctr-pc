@@ -13,7 +13,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this._isLoaded;
+                return _isLoaded;
             }
         }
 
@@ -22,7 +22,7 @@ namespace CutTheRope.windows
         {
             get
             {
-                return this.IsLoaded && this._currentSplash >= this._listBitmap.Count;
+                return IsLoaded && _currentSplash >= _listBitmap.Count;
             }
         }
 
@@ -40,7 +40,7 @@ namespace CutTheRope.windows
                         FileStream fileStream = new("branding/splash" + num.ToString() + "." + item, FileMode.Open, FileAccess.Read);
                         texture2D = Texture2D.FromStream(Global.GraphicsDevice, fileStream);
                         fileStream.Close();
-                        this._listBitmap.Add(texture2D);
+                        _listBitmap.Add(texture2D);
                         break;
                     }
                     catch (Exception)
@@ -53,22 +53,22 @@ namespace CutTheRope.windows
                 }
                 num++;
             }
-            this._isLoaded = true;
+            _isLoaded = true;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (this._waitFirstDraw)
+            if (_waitFirstDraw)
             {
                 return;
             }
             try
             {
-                this._currentSplashTime += gameTime.ElapsedGameTime;
-                if (this._currentSplashTime.TotalMilliseconds >= 3700.0)
+                _currentSplashTime += gameTime.ElapsedGameTime;
+                if (_currentSplashTime.TotalMilliseconds >= 3700.0)
                 {
-                    this._currentSplash++;
-                    this._currentSplashTime = default(TimeSpan);
+                    _currentSplash++;
+                    _currentSplashTime = default(TimeSpan);
                 }
             }
             catch (Exception)
@@ -80,15 +80,15 @@ namespace CutTheRope.windows
         {
             try
             {
-                if (this.IsLoaded && !this.IsFinished)
+                if (IsLoaded && !IsFinished)
                 {
-                    if (this._waitFirstDraw)
+                    if (_waitFirstDraw)
                     {
-                        this._waitFirstDraw = false;
-                        this._currentSplash = 0;
-                        this._currentSplashTime = default(TimeSpan);
+                        _waitFirstDraw = false;
+                        _currentSplash = 0;
+                        _currentSplashTime = default(TimeSpan);
                     }
-                    Texture2D texture2D = this._listBitmap[this._currentSplash];
+                    Texture2D texture2D = _listBitmap[_currentSplash];
                     Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
                     Rectangle bounds = texture2D.Bounds;
                     double num5 = (double)currentSize.Width / (double)bounds.Width;
@@ -99,12 +99,12 @@ namespace CutTheRope.windows
                     bounds.X = (currentSize.Width - bounds.Width) / 2;
                     bounds.Y = (currentSize.Height - bounds.Height) / 2;
                     Color color = Color.White;
-                    if (this._currentSplashTime.TotalMilliseconds < 200.0)
+                    if (_currentSplashTime.TotalMilliseconds < 200.0)
                     {
-                        float num2 = (float)(this._currentSplashTime.TotalMilliseconds / 200.0);
+                        float num2 = (float)(_currentSplashTime.TotalMilliseconds / 200.0);
                         color = new Color(num2, num2, num2, num2);
                     }
-                    double num3 = 3000.0 - this._currentSplashTime.TotalMilliseconds;
+                    double num3 = 3000.0 - _currentSplashTime.TotalMilliseconds;
                     if (num3 < 500.0)
                     {
                         if (num3 < 0.0)

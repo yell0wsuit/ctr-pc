@@ -12,7 +12,7 @@ namespace CutTheRope.iframework.visual
             Quad2D qt = imageGrid.texture.quads[num];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             CTRRectangle rectangle = imageGrid.texture.quadRects[num];
-            this.drawer.setTextureQuadatVertexQuadatIndex(qt, qv, this.particleCount);
+            drawer.setTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
             base.initParticle(ref particle);
             particle.width = rectangle.w;
             particle.height = rectangle.h;

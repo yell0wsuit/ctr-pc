@@ -30,59 +30,59 @@ namespace CutTheRope.game
         {
             if (base.init() != null)
             {
-                this.timedAnim = null;
+                timedAnim = null;
             }
             return this;
         }
 
         public override void update(float delta)
         {
-            if ((double)this.timeout > 0.0 && (double)this.time > 0.0)
+            if ((double)timeout > 0.0 && (double)time > 0.0)
             {
-                Mover.moveVariableToTarget(ref this.time, 0f, 1f, delta);
+                Mover.moveVariableToTarget(ref time, 0f, 1f, delta);
             }
             base.update(delta);
         }
 
         public override void draw()
         {
-            this.timedAnim?.draw();
+            timedAnim?.draw();
             base.draw();
         }
 
         public virtual void createAnimations()
         {
-            if ((double)this.timeout > 0.0)
+            if ((double)timeout > 0.0)
             {
-                this.timedAnim = Animation.Animation_createWithResID(78);
-                this.timedAnim.anchor = this.timedAnim.parentAnchor = 18;
-                float d = this.timeout / 37f;
-                this.timedAnim.addAnimationWithIDDelayLoopFirstLast(0, d, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 55);
-                this.timedAnim.playTimeline(0);
-                this.time = this.timeout;
-                this.timedAnim.visible = false;
-                this.addChild(this.timedAnim);
+                timedAnim = Animation.Animation_createWithResID(78);
+                timedAnim.anchor = timedAnim.parentAnchor = 18;
+                float d = timeout / 37f;
+                timedAnim.addAnimationWithIDDelayLoopFirstLast(0, d, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 55);
+                timedAnim.playTimeline(0);
+                time = timeout;
+                timedAnim.visible = false;
+                addChild(timedAnim);
                 Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                this.timedAnim.addTimelinewithID(timeline, 1);
+                timedAnim.addTimelinewithID(timeline, 1);
                 Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline2.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline2.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25));
-                this.addTimelinewithID(timeline2, 1);
+                addTimelinewithID(timeline2, 1);
             }
-            this.bb = new CTRRectangle(22f, 20f, 30f, 30f);
+            bb = new CTRRectangle(22f, 20f, 30f, 30f);
             Timeline timeline3 = new Timeline().initWithMaxKeyFramesOnTrack(5);
-            timeline3.addKeyFrame(KeyFrame.makePos((int)this.x, (int)this.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0f));
-            timeline3.addKeyFrame(KeyFrame.makePos((int)this.x, (int)this.y - 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
-            timeline3.addKeyFrame(KeyFrame.makePos((int)this.x, (int)this.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-            timeline3.addKeyFrame(KeyFrame.makePos((int)this.x, (int)this.y + 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
-            timeline3.addKeyFrame(KeyFrame.makePos((int)this.x, (int)this.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.addKeyFrame(KeyFrame.makePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0f));
+            timeline3.addKeyFrame(KeyFrame.makePos((int)x, (int)y - 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.addKeyFrame(KeyFrame.makePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.addKeyFrame(KeyFrame.makePos((int)x, (int)y + 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.addKeyFrame(KeyFrame.makePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
             timeline3.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-            this.addTimelinewithID(timeline3, 0);
-            this.playTimeline(0);
+            addTimelinewithID(timeline3, 0);
+            playTimeline(0);
             Timeline.updateTimeline(timeline3, (float)((double)CTRMathHelper.RND_RANGE(0, 20) / 10.0));
             Animation animation = Animation.Animation_createWithResID(78);
             animation.doRestoreCutTransparency();
@@ -90,7 +90,7 @@ namespace CutTheRope.game
             animation.playTimeline(0);
             Timeline.updateTimeline(animation.getTimeline(0), (float)((double)CTRMathHelper.RND_RANGE(0, 20) / 10.0));
             animation.anchor = animation.parentAnchor = 18;
-            this.addChild(animation);
+            addChild(animation);
         }
 
         public float time;

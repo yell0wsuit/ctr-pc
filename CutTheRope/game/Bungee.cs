@@ -216,44 +216,44 @@ namespace CutTheRope.game
 
         public virtual NSObject initWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.relaxationTimes = 30;
-                this.lineWidth = 10f;
-                this.cut = -1;
-                this.bungeeMode = 0;
-                this.highlighted = false;
+                relaxationTimes = 30;
+                lineWidth = 10f;
+                cut = -1;
+                bungeeMode = 0;
+                highlighted = false;
                 if (h != null)
                 {
-                    this.bungeeAnchor = h;
+                    bungeeAnchor = h;
                 }
                 else
                 {
-                    this.bungeeAnchor = (ConstraintedPoint)new ConstraintedPoint().init();
+                    bungeeAnchor = (ConstraintedPoint)new ConstraintedPoint().init();
                 }
                 if (t != null)
                 {
-                    this.tail = t;
+                    tail = t;
                 }
                 else
                 {
-                    this.tail = (ConstraintedPoint)new ConstraintedPoint().init();
-                    this.tail.setWeight(1f);
+                    tail = (ConstraintedPoint)new ConstraintedPoint().init();
+                    tail.setWeight(1f);
                 }
-                this.bungeeAnchor.setWeight(0.02f);
-                this.bungeeAnchor.pos = CutTheRope.iframework.helpers.MathHelper.vect(hx, hy);
-                this.tail.pos = CutTheRope.iframework.helpers.MathHelper.vect(tx, ty);
-                this.addPart(this.bungeeAnchor);
-                this.addPart(this.tail);
-                this.tail.addConstraintwithRestLengthofType(this.bungeeAnchor, Bungee.BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
-                Vector v = CutTheRope.iframework.helpers.MathHelper.vectSub(this.tail.pos, this.bungeeAnchor.pos);
+                bungeeAnchor.setWeight(0.02f);
+                bungeeAnchor.pos = CutTheRope.iframework.helpers.MathHelper.vect(hx, hy);
+                tail.pos = CutTheRope.iframework.helpers.MathHelper.vect(tx, ty);
+                addPart(bungeeAnchor);
+                addPart(tail);
+                tail.addConstraintwithRestLengthofType(bungeeAnchor, Bungee.BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                Vector v = CutTheRope.iframework.helpers.MathHelper.vectSub(tail.pos, bungeeAnchor.pos);
                 int num = (int)(len / Bungee.BUNGEE_REST_LEN + 2f);
                 v = CutTheRope.iframework.helpers.MathHelper.vectDiv(v, (float)num);
-                this.rollplacingWithOffset(len, v);
-                this.forceWhite = false;
-                this.initialCandleAngle = -1f;
-                this.chosenOne = false;
-                this.hideTailParts = false;
+                rollplacingWithOffset(len, v);
+                forceWhite = false;
+                initialCandleAngle = -1f;
+                chosenOne = false;
+                hideTailParts = false;
             }
             return this;
         }
@@ -262,10 +262,10 @@ namespace CutTheRope.game
         {
             int num = 0;
             Vector pos = CutTheRope.iframework.helpers.MathHelper.vectZero;
-            int count = this.parts.Count;
+            int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
-                ConstraintedPoint constraintedPoint = this.parts[i];
+                ConstraintedPoint constraintedPoint = parts[i];
                 if (i > 0)
                 {
                     num += (int)CutTheRope.iframework.helpers.MathHelper.vectDistance(pos, constraintedPoint.pos);
@@ -282,18 +282,18 @@ namespace CutTheRope.game
 
         public virtual void rollplacingWithOffset(float rollLen, Vector off)
         {
-            ConstraintedPoint i = this.parts[this.parts.Count - 2];
-            int num = (int)this.tail.restLengthFor(i);
+            ConstraintedPoint i = parts[parts.Count - 2];
+            int num = (int)tail.restLengthFor(i);
             while (rollLen > 0f)
             {
                 if (rollLen >= Bungee.BUNGEE_REST_LEN)
                 {
-                    ConstraintedPoint constraintedPoint = this.parts[this.parts.Count - 2];
+                    ConstraintedPoint constraintedPoint = parts[parts.Count - 2];
                     ConstraintedPoint constraintedPoint2 = (ConstraintedPoint)new ConstraintedPoint().init();
                     constraintedPoint2.setWeight(0.02f);
                     constraintedPoint2.pos = CutTheRope.iframework.helpers.MathHelper.vectAdd(constraintedPoint.pos, off);
-                    this.addPartAt(constraintedPoint2, this.parts.Count - 1);
-                    this.tail.changeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, (float)num);
+                    addPartAt(constraintedPoint2, parts.Count - 1);
+                    tail.changeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, (float)num);
                     constraintedPoint2.addConstraintwithRestLengthofType(constraintedPoint, Bungee.BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                     rollLen -= Bungee.BUNGEE_REST_LEN;
                 }
@@ -307,8 +307,8 @@ namespace CutTheRope.game
                     }
                     else
                     {
-                        ConstraintedPoint n2 = this.parts[this.parts.Count - 2];
-                        this.tail.changeRestLengthToFor((float)num2, n2);
+                        ConstraintedPoint n2 = parts[parts.Count - 2];
+                        tail.changeRestLengthToFor((float)num2, n2);
                         rollLen = 0f;
                     }
                 }
@@ -318,17 +318,17 @@ namespace CutTheRope.game
         public virtual float rollBack(float amount)
         {
             float num = amount;
-            ConstraintedPoint i = this.parts[this.parts.Count - 2];
-            int num2 = (int)this.tail.restLengthFor(i);
-            int num3 = this.parts.Count;
+            ConstraintedPoint i = parts[parts.Count - 2];
+            int num2 = (int)tail.restLengthFor(i);
+            int num3 = parts.Count;
             while (num > 0f)
             {
                 if (num >= Bungee.BUNGEE_REST_LEN)
                 {
-                    ConstraintedPoint o = this.parts[num3 - 2];
-                    ConstraintedPoint n2 = this.parts[num3 - 3];
-                    this.tail.changeConstraintFromTowithRestLength(o, n2, (float)num2);
-                    this.parts.RemoveAt(this.parts.Count - 2);
+                    ConstraintedPoint o = parts[num3 - 2];
+                    ConstraintedPoint n2 = parts[num3 - 3];
+                    tail.changeConstraintFromTowithRestLength(o, n2, (float)num2);
+                    parts.RemoveAt(parts.Count - 2);
                     num3--;
                     num -= Bungee.BUNGEE_REST_LEN;
                 }
@@ -342,16 +342,16 @@ namespace CutTheRope.game
                     }
                     else
                     {
-                        ConstraintedPoint n3 = this.parts[num3 - 2];
-                        this.tail.changeRestLengthToFor((float)num4, n3);
+                        ConstraintedPoint n3 = parts[num3 - 2];
+                        tail.changeRestLengthToFor((float)num4, n3);
                         num = 0f;
                     }
                 }
             }
-            int count = this.tail.constraints.Count;
+            int count = tail.constraints.Count;
             for (int j = 0; j < count; j++)
             {
-                Constraint constraint = this.tail.constraints[j];
+                Constraint constraint = tail.constraints[j];
                 if (constraint != null && constraint.type == Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN)
                 {
                     constraint.restLength = (float)(num3 - 1) * (Bungee.BUNGEE_REST_LEN + 3f);
@@ -362,9 +362,9 @@ namespace CutTheRope.game
 
         public virtual void removePart(int part)
         {
-            this.forceWhite = false;
-            ConstraintedPoint constraintedPoint = this.parts[part];
-            ConstraintedPoint constraintedPoint2 = (part + 1 >= this.parts.Count) ? null : this.parts[part + 1];
+            forceWhite = false;
+            ConstraintedPoint constraintedPoint = parts[part];
+            ConstraintedPoint constraintedPoint2 = (part + 1 >= parts.Count) ? null : parts[part + 1];
             if (constraintedPoint2 == null)
             {
                 constraintedPoint.removeConstraints();
@@ -381,16 +381,16 @@ namespace CutTheRope.game
                         constraintedPoint3.setWeight(1E-05f);
                         constraintedPoint3.pos = constraintedPoint2.pos;
                         constraintedPoint3.prevPos = constraintedPoint2.prevPos;
-                        this.addPartAt(constraintedPoint3, part + 1);
+                        addPartAt(constraintedPoint3, part + 1);
                         constraintedPoint3.addConstraintwithRestLengthofType(constraintedPoint, Bungee.BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                         break;
                     }
                 }
             }
-            for (int j = 0; j < this.parts.Count; j++)
+            for (int j = 0; j < parts.Count; j++)
             {
-                ConstraintedPoint constraintedPoint4 = this.parts[j];
-                if (constraintedPoint4 != this.tail)
+                ConstraintedPoint constraintedPoint4 = parts[j];
+                if (constraintedPoint4 != tail)
                 {
                     constraintedPoint4.setWeight(1E-05f);
                 }
@@ -399,28 +399,28 @@ namespace CutTheRope.game
 
         public virtual void setCut(int part)
         {
-            this.cut = part;
-            this.cutTime = 2f;
-            this.forceWhite = true;
+            cut = part;
+            cutTime = 2f;
+            forceWhite = true;
         }
 
         public virtual void strengthen()
         {
-            int count = this.parts.Count;
+            int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
-                ConstraintedPoint constraintedPoint = this.parts[i];
+                ConstraintedPoint constraintedPoint = parts[i];
                 if (constraintedPoint != null)
                 {
-                    if (this.bungeeAnchor.pin.x != -1f)
+                    if (bungeeAnchor.pin.x != -1f)
                     {
-                        if (constraintedPoint != this.tail)
+                        if (constraintedPoint != tail)
                         {
                             constraintedPoint.setWeight(0.5f);
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.addConstraintwithRestLengthofType(this.bungeeAnchor, (float)i * (Bungee.BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
+                            constraintedPoint.addConstraintwithRestLengthofType(bungeeAnchor, (float)i * (Bungee.BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
                         }
                     }
                     i++;
@@ -430,51 +430,51 @@ namespace CutTheRope.game
 
         public override void update(float delta)
         {
-            this.update(delta, 1f);
+            update(delta, 1f);
         }
 
         public virtual void update(float delta, float koeff)
         {
-            if ((double)this.cutTime > 0.0)
+            if ((double)cutTime > 0.0)
             {
-                Mover.moveVariableToTarget(ref this.cutTime, 0f, 1f, delta);
-                if (this.cutTime < 1.95f && this.forceWhite)
+                Mover.moveVariableToTarget(ref cutTime, 0f, 1f, delta);
+                if (cutTime < 1.95f && forceWhite)
                 {
-                    this.removePart(this.cut);
+                    removePart(cut);
                 }
             }
-            int count = this.parts.Count;
+            int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
-                ConstraintedPoint constraintedPoint = this.parts[i];
-                if (constraintedPoint != this.tail)
+                ConstraintedPoint constraintedPoint = parts[i];
+                if (constraintedPoint != tail)
                 {
                     ConstraintedPoint.qcpupdate(constraintedPoint, delta, koeff);
                 }
             }
-            for (int j = 0; j < this.relaxationTimes; j++)
+            for (int j = 0; j < relaxationTimes; j++)
             {
-                int count2 = this.parts.Count;
+                int count2 = parts.Count;
                 for (int k = 0; k < count2; k++)
                 {
-                    ConstraintedPoint.satisfyConstraints(this.parts[k]);
+                    ConstraintedPoint.satisfyConstraints(parts[k]);
                 }
             }
         }
 
         public override void draw()
         {
-            int count = this.parts.Count;
+            int count = parts.Count;
             OpenGL.glColor4f(Bungee.s_Color1);
-            if (this.cut == -1)
+            if (cut == -1)
             {
                 Vector[] array = new Vector[count];
                 for (int i = 0; i < count; i++)
                 {
-                    ConstraintedPoint constraintedPoint = this.parts[i];
+                    ConstraintedPoint constraintedPoint = parts[i];
                     array[i] = constraintedPoint.pos;
                 }
-                OpenGL.glLineWidth((double)this.lineWidth);
+                OpenGL.glLineWidth((double)lineWidth);
                 Bungee.drawBungee(this, array, count, 4);
                 OpenGL.glLineWidth(1.0);
                 return;
@@ -485,11 +485,11 @@ namespace CutTheRope.game
             int num = 0;
             for (int j = 0; j < count; j++)
             {
-                ConstraintedPoint constraintedPoint2 = this.parts[j];
+                ConstraintedPoint constraintedPoint2 = parts[j];
                 bool flag2 = true;
                 if (j > 0)
                 {
-                    ConstraintedPoint p = this.parts[j - 1];
+                    ConstraintedPoint p = parts[j - 1];
                     if (!constraintedPoint2.hasConstraintTo(p))
                     {
                         flag2 = false;
@@ -510,13 +510,13 @@ namespace CutTheRope.game
                     num++;
                 }
             }
-            OpenGL.glLineWidth((double)this.lineWidth);
+            OpenGL.glLineWidth((double)lineWidth);
             int num2 = count - num;
             if (num2 > 0)
             {
                 Bungee.drawBungee(this, array2, num2, 4);
             }
-            if (num > 0 && !this.hideTailParts)
+            if (num > 0 && !hideTailParts)
             {
                 Bungee.drawBungee(this, array3, num, 4);
             }

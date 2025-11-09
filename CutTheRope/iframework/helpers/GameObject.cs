@@ -33,11 +33,11 @@ namespace CutTheRope.iframework.helpers
         {
             if (base.initWithTexture(t) != null)
             {
-                this.bb = new CTRRectangle(0f, 0f, (float)this.width, (float)this.height);
-                this.rbb = new Quad2D(this.bb.x, this.bb.y, this.bb.w, this.bb.h);
-                this.anchor = 18;
-                this.rotatedBB = false;
-                this.topLeftCalculated = false;
+                bb = new CTRRectangle(0f, 0f, (float)width, (float)height);
+                rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
+                anchor = 18;
+                rotatedBB = false;
+                topLeftCalculated = false;
             }
             return this;
         }
@@ -45,37 +45,37 @@ namespace CutTheRope.iframework.helpers
         public override void update(float delta)
         {
             base.update(delta);
-            if (!this.topLeftCalculated)
+            if (!topLeftCalculated)
             {
                 BaseElement.calculateTopLeft(this);
-                this.topLeftCalculated = true;
+                topLeftCalculated = true;
             }
-            if (this.mover != null)
+            if (mover != null)
             {
-                this.mover.update(delta);
-                this.x = this.mover.pos.x;
-                this.y = this.mover.pos.y;
-                if (this.rotatedBB)
+                mover.update(delta);
+                x = mover.pos.x;
+                y = mover.pos.y;
+                if (rotatedBB)
                 {
-                    this.rotateWithBB((float)this.mover.angle_);
+                    rotateWithBB((float)mover.angle_);
                     return;
                 }
-                this.rotation = (float)this.mover.angle_;
+                rotation = (float)mover.angle_;
             }
         }
 
         public override void draw()
         {
             base.draw();
-            if (this.isDrawBB)
+            if (isDrawBB)
             {
-                this.drawBB();
+                drawBB();
             }
         }
 
         public override void dealloc()
         {
-            NSObject.NSREL(this.mover);
+            NSObject.NSREL(mover);
             base.dealloc();
         }
 
@@ -85,28 +85,28 @@ namespace CutTheRope.iframework.helpers
             {
                 float num = (float)xml["x"].intValue();
                 float num2 = (float)xml["y"].intValue();
-                this.x = (float)tx + num;
-                this.y = (float)ty + num2;
-                this.type = t;
+                x = (float)tx + num;
+                y = (float)ty + num2;
+                type = t;
                 NSString nSString = xml["bb"];
                 if (nSString != null)
                 {
                     List<NSString> list = nSString.componentsSeparatedByString(',');
-                    this.bb = new CTRRectangle((float)list[0].intValue(), (float)list[1].intValue(), (float)list[2].intValue(), (float)list[3].intValue());
+                    bb = new CTRRectangle((float)list[0].intValue(), (float)list[1].intValue(), (float)list[2].intValue(), (float)list[3].intValue());
                 }
                 else
                 {
-                    this.bb = new CTRRectangle(0f, 0f, (float)this.width, (float)this.height);
+                    bb = new CTRRectangle(0f, 0f, (float)width, (float)height);
                 }
-                this.rbb = new Quad2D(this.bb.x, this.bb.y, this.bb.w, this.bb.h);
-                this.parseMover(xml);
+                rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
+                parseMover(xml);
             }
             return this;
         }
 
         public virtual void parseMover(XMLNode xml)
         {
-            this.rotation = xml["angle"].floatValue();
+            rotation = xml["angle"].floatValue();
             NSString nSString = xml["path"];
             if (nSString != null && nSString.length() != 0)
             {
@@ -118,63 +118,63 @@ namespace CutTheRope.iframework.helpers
                 float m_ = xml["moveSpeed"].floatValue();
                 float r_ = xml["rotateSpeed"].floatValue();
                 Mover mover = new Mover().initWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
-                mover.angle_ = (double)this.rotation;
+                mover.angle_ = (double)rotation;
                 mover.angle_initial = mover.angle_;
-                mover.setPathFromStringandStart(nSString, CTRMathHelper.vect(this.x, this.y));
-                this.setMover(mover);
+                mover.setPathFromStringandStart(nSString, CTRMathHelper.vect(x, y));
+                setMover(mover);
                 mover.start();
             }
         }
 
         public virtual void setMover(Mover m)
         {
-            this.mover = m;
+            mover = m;
         }
 
         public virtual void setBBFromFirstQuad()
         {
-            this.bb = new CTRRectangle((float)Math.Round((double)this.texture.quadOffsets[0].x), (float)Math.Round((double)this.texture.quadOffsets[0].y), this.texture.quadRects[0].w, this.texture.quadRects[0].h);
-            this.rbb = new Quad2D(this.bb.x, this.bb.y, this.bb.w, this.bb.h);
+            bb = new CTRRectangle((float)Math.Round((double)texture.quadOffsets[0].x), (float)Math.Round((double)texture.quadOffsets[0].y), texture.quadRects[0].w, texture.quadRects[0].h);
+            rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
         public virtual void rotateWithBB(float a)
         {
-            if (!this.rotatedBB)
+            if (!rotatedBB)
             {
-                this.rotatedBB = true;
+                rotatedBB = true;
             }
-            this.rotation = a;
-            Vector v = CTRMathHelper.vect(this.bb.x, this.bb.y);
-            Vector v2 = CTRMathHelper.vect(this.bb.x + this.bb.w, this.bb.y);
-            Vector v3 = CTRMathHelper.vect(this.bb.x + this.bb.w, this.bb.y + this.bb.h);
-            Vector v4 = CTRMathHelper.vect(this.bb.x, this.bb.y + this.bb.h);
-            v = CTRMathHelper.vectRotateAround(v, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)this.width / 2.0 + (double)this.rotationCenterX), (float)((double)this.height / 2.0 + (double)this.rotationCenterY));
-            v2 = CTRMathHelper.vectRotateAround(v2, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)this.width / 2.0 + (double)this.rotationCenterX), (float)((double)this.height / 2.0 + (double)this.rotationCenterY));
-            v3 = CTRMathHelper.vectRotateAround(v3, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)this.width / 2.0 + (double)this.rotationCenterX), (float)((double)this.height / 2.0 + (double)this.rotationCenterY));
-            v4 = CTRMathHelper.vectRotateAround(v4, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)this.width / 2.0 + (double)this.rotationCenterX), (float)((double)this.height / 2.0 + (double)this.rotationCenterY));
-            this.rbb.tlX = v.x;
-            this.rbb.tlY = v.y;
-            this.rbb.trX = v2.x;
-            this.rbb.trY = v2.y;
-            this.rbb.brX = v3.x;
-            this.rbb.brY = v3.y;
-            this.rbb.blX = v4.x;
-            this.rbb.blY = v4.y;
+            rotation = a;
+            Vector v = CTRMathHelper.vect(bb.x, bb.y);
+            Vector v2 = CTRMathHelper.vect(bb.x + bb.w, bb.y);
+            Vector v3 = CTRMathHelper.vect(bb.x + bb.w, bb.y + bb.h);
+            Vector v4 = CTRMathHelper.vect(bb.x, bb.y + bb.h);
+            v = CTRMathHelper.vectRotateAround(v, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
+            v2 = CTRMathHelper.vectRotateAround(v2, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
+            v3 = CTRMathHelper.vectRotateAround(v3, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
+            v4 = CTRMathHelper.vectRotateAround(v4, (double)CTRMathHelper.DEGREES_TO_RADIANS(a), (float)((double)width / 2.0 + (double)rotationCenterX), (float)((double)height / 2.0 + (double)rotationCenterY));
+            rbb.tlX = v.x;
+            rbb.tlY = v.y;
+            rbb.trX = v2.x;
+            rbb.trY = v2.y;
+            rbb.brX = v3.x;
+            rbb.brY = v3.y;
+            rbb.blX = v4.x;
+            rbb.blY = v4.y;
         }
 
         public virtual void drawBB()
         {
             OpenGL.glDisable(0);
-            if (this.rotatedBB)
+            if (rotatedBB)
             {
-                OpenGL.drawSegment(this.drawX + this.rbb.tlX, this.drawY + this.rbb.tlY, this.drawX + this.rbb.trX, this.drawY + this.rbb.trY, RGBAColor.redRGBA);
-                OpenGL.drawSegment(this.drawX + this.rbb.trX, this.drawY + this.rbb.trY, this.drawX + this.rbb.brX, this.drawY + this.rbb.brY, RGBAColor.redRGBA);
-                OpenGL.drawSegment(this.drawX + this.rbb.brX, this.drawY + this.rbb.brY, this.drawX + this.rbb.blX, this.drawY + this.rbb.blY, RGBAColor.redRGBA);
-                OpenGL.drawSegment(this.drawX + this.rbb.blX, this.drawY + this.rbb.blY, this.drawX + this.rbb.tlX, this.drawY + this.rbb.tlY, RGBAColor.redRGBA);
+                OpenGL.drawSegment(drawX + rbb.tlX, drawY + rbb.tlY, drawX + rbb.trX, drawY + rbb.trY, RGBAColor.redRGBA);
+                OpenGL.drawSegment(drawX + rbb.trX, drawY + rbb.trY, drawX + rbb.brX, drawY + rbb.brY, RGBAColor.redRGBA);
+                OpenGL.drawSegment(drawX + rbb.brX, drawY + rbb.brY, drawX + rbb.blX, drawY + rbb.blY, RGBAColor.redRGBA);
+                OpenGL.drawSegment(drawX + rbb.blX, drawY + rbb.blY, drawX + rbb.tlX, drawY + rbb.tlY, RGBAColor.redRGBA);
             }
             else
             {
-                GLDrawer.drawRect(this.drawX + this.bb.x, this.drawY + this.bb.y, this.bb.w, this.bb.h, RGBAColor.redRGBA);
+                GLDrawer.drawRect(drawX + bb.x, drawY + bb.y, bb.w, bb.h, RGBAColor.redRGBA);
             }
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);

@@ -7,37 +7,37 @@ namespace CutTheRope.iframework.visual
         public override int addChildwithID(BaseElement c, int i)
         {
             int num = base.addChildwithID(c, i);
-            if (this.align == 1)
+            if (align == 1)
             {
                 c.anchor = c.parentAnchor = 9;
             }
-            else if (this.align == 4)
+            else if (align == 4)
             {
                 c.anchor = c.parentAnchor = 12;
             }
-            else if (this.align == 2)
+            else if (align == 2)
             {
                 c.anchor = c.parentAnchor = 10;
             }
-            c.y = this.nextElementY;
-            this.nextElementY += (float)c.height + this.offset;
-            this.height = (int)(this.nextElementY - this.offset);
+            c.y = nextElementY;
+            nextElementY += (float)c.height + offset;
+            height = (int)(nextElementY - offset);
             return num;
         }
 
         public virtual VBox initWithOffsetAlignWidth(double of, int a, double w)
         {
-            return this.initWithOffsetAlignWidth((float)of, a, (float)w);
+            return initWithOffsetAlignWidth((float)of, a, (float)w);
         }
 
         public virtual VBox initWithOffsetAlignWidth(float of, int a, float w)
         {
-            if (this.init() != null)
+            if (init() != null)
             {
-                this.offset = of;
-                this.align = a;
-                this.nextElementY = 0f;
-                this.width = (int)w;
+                offset = of;
+                align = a;
+                nextElementY = 0f;
+                width = (int)w;
             }
             return this;
         }

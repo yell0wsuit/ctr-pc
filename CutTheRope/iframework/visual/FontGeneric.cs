@@ -13,8 +13,8 @@ namespace CutTheRope.iframework.visual
             float num3 = 0f;
             for (int i = 0; i < num2; i++)
             {
-                num3 = this.getCharOffset(characters, i, num2);
-                num += this.getCharWidth(characters[i]) + num3;
+                num3 = getCharOffset(characters, i, num2);
+                num += getCharWidth(characters[i]) + num3;
             }
             return num - num3;
         }
@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual float getLineOffset()
         {
-            return this.lineOffset;
+            return lineOffset;
         }
 
         public virtual void notifyTextCreated(Text st)

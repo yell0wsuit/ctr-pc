@@ -89,8 +89,8 @@ namespace CutTheRope.iframework.core
 
         public virtual void applicationDidFinishLaunching(UIApplication application)
         {
-            Application.appSettings = this.createAppSettings();
-            Application.prefs = this.createPreferences();
+            Application.appSettings = createAppSettings();
+            Application.prefs = createPreferences();
             if (Application.appSettings.getBool(7))
             {
                 string text = Application.sharedPreferences().getStringForKey("PREFS_LOCALE");
@@ -100,12 +100,12 @@ namespace CutTheRope.iframework.core
                 }
                 Application.appSettings.setString(8, NSObject.NSS(text));
             }
-            this.updateOrientation();
+            updateOrientation();
             FrameworkTypes.IS_IPAD = false;
             FrameworkTypes.IS_RETINA = false;
-            Application.root = this.createRootController();
-            Application.soundMgr = this.createSoundMgr();
-            Application.movieMgr = this.createMovieMgr();
+            Application.root = createRootController();
+            Application.soundMgr = createSoundMgr();
+            Application.movieMgr = createMovieMgr();
             Application._canvas.touchDelegate = Application.root;
             Application.root.activate();
         }

@@ -13,18 +13,18 @@ namespace CutTheRope.iframework.visual
         {
             get
             {
-                return this.parent != null;
+                return parent != null;
             }
         }
 
         public bool AnchorHas(int f)
         {
-            return ((int)this.anchor & f) != 0;
+            return ((int)anchor & f) != 0;
         }
 
         public bool ParentAnchorHas(int f)
         {
-            return ((int)this.parentAnchor & f) != 0;
+            return ((int)parentAnchor & f) != 0;
         }
 
         public static void calculateTopLeft(BaseElement e)
@@ -109,75 +109,75 @@ namespace CutTheRope.iframework.visual
 
         public override NSObject init()
         {
-            this.visible = true;
-            this.touchable = true;
-            this.updateable = true;
-            this.name = null;
-            this.x = 0f;
-            this.y = 0f;
-            this.drawX = 0f;
-            this.drawY = 0f;
-            this.width = 0;
-            this.height = 0;
-            this.rotation = 0f;
-            this.rotationCenterX = 0f;
-            this.rotationCenterY = 0f;
-            this.scaleX = 1f;
-            this.scaleY = 1f;
-            this.color = RGBAColor.solidOpaqueRGBA;
-            this.translateX = 0f;
-            this.translateY = 0f;
-            this.parentAnchor = -1;
-            this.parent = null;
-            this.anchor = 9;
-            this.childs = new Dictionary<int, BaseElement>();
-            this.timelines = new Dictionary<int, Timeline>();
-            this.currentTimeline = null;
-            this.currentTimelineIndex = -1;
-            this.passTransformationsToChilds = true;
-            this.passColorToChilds = true;
-            this.passTouchEventsToAllChilds = false;
-            this.blendingMode = -1;
+            visible = true;
+            touchable = true;
+            updateable = true;
+            name = null;
+            x = 0f;
+            y = 0f;
+            drawX = 0f;
+            drawY = 0f;
+            width = 0;
+            height = 0;
+            rotation = 0f;
+            rotationCenterX = 0f;
+            rotationCenterY = 0f;
+            scaleX = 1f;
+            scaleY = 1f;
+            color = RGBAColor.solidOpaqueRGBA;
+            translateX = 0f;
+            translateY = 0f;
+            parentAnchor = -1;
+            parent = null;
+            anchor = 9;
+            childs = new Dictionary<int, BaseElement>();
+            timelines = new Dictionary<int, Timeline>();
+            currentTimeline = null;
+            currentTimelineIndex = -1;
+            passTransformationsToChilds = true;
+            passColorToChilds = true;
+            passTouchEventsToAllChilds = false;
+            blendingMode = -1;
             return this;
         }
 
         public virtual void preDraw()
         {
             BaseElement.calculateTopLeft(this);
-            bool flag = (double)this.scaleX != 1.0 || (double)this.scaleY != 1.0;
-            bool flag2 = (double)this.rotation != 0.0;
-            bool flag3 = (double)this.translateX != 0.0 || (double)this.translateY != 0.0;
+            bool flag = (double)scaleX != 1.0 || (double)scaleY != 1.0;
+            bool flag2 = (double)rotation != 0.0;
+            bool flag3 = (double)translateX != 0.0 || (double)translateY != 0.0;
             if (flag || flag2 || flag3)
             {
                 OpenGL.glPushMatrix();
-                this.pushM = true;
+                pushM = true;
                 if (flag || flag2)
                 {
-                    float num = this.drawX + (float)(this.width >> 1) + this.rotationCenterX;
-                    float num2 = this.drawY + (float)(this.height >> 1) + this.rotationCenterY;
+                    float num = drawX + (float)(width >> 1) + rotationCenterX;
+                    float num2 = drawY + (float)(height >> 1) + rotationCenterY;
                     OpenGL.glTranslatef(num, num2, 0f);
                     if (flag2)
                     {
-                        OpenGL.glRotatef(this.rotation, 0f, 0f, 1f);
+                        OpenGL.glRotatef(rotation, 0f, 0f, 1f);
                     }
                     if (flag)
                     {
-                        OpenGL.glScalef(this.scaleX, this.scaleY, 1f);
+                        OpenGL.glScalef(scaleX, scaleY, 1f);
                     }
                     OpenGL.glTranslatef(0f - num, 0f - num2, 0f);
                 }
                 if (flag3)
                 {
-                    OpenGL.glTranslatef(this.translateX, this.translateY, 0f);
+                    OpenGL.glTranslatef(translateX, translateY, 0f);
                 }
             }
-            if (!RGBAColor.RGBAEqual(this.color, RGBAColor.solidOpaqueRGBA))
+            if (!RGBAColor.RGBAEqual(color, RGBAColor.solidOpaqueRGBA))
             {
-                OpenGL.glColor4f(this.color.toWhiteAlphaXNA());
+                OpenGL.glColor4f(color.toWhiteAlphaXNA());
             }
-            if (this.blendingMode != -1)
+            if (blendingMode != -1)
             {
-                switch (this.blendingMode)
+                switch (blendingMode)
                 {
                     case 0:
                         OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
@@ -196,26 +196,26 @@ namespace CutTheRope.iframework.visual
 
         public virtual void draw()
         {
-            this.preDraw();
-            this.postDraw();
+            preDraw();
+            postDraw();
         }
 
         public virtual void postDraw()
         {
-            if (!this.passTransformationsToChilds)
+            if (!passTransformationsToChilds)
             {
                 BaseElement.restoreTransformations(this);
             }
-            if (!this.passColorToChilds)
+            if (!passColorToChilds)
             {
                 BaseElement.restoreColor(this);
             }
             int num = 0;
             int num2 = 0;
-            while (num < this.childs.Count)
+            while (num < childs.Count)
             {
                 BaseElement value;
-                if (this.childs.TryGetValue(num2, out value))
+                if (childs.TryGetValue(num2, out value))
                 {
                     if (value != null && value.visible)
                     {
@@ -225,11 +225,11 @@ namespace CutTheRope.iframework.visual
                 }
                 num2++;
             }
-            if (this.passTransformationsToChilds)
+            if (passTransformationsToChilds)
             {
                 BaseElement.restoreTransformations(this);
             }
-            if (this.passColorToChilds)
+            if (passColorToChilds)
             {
                 BaseElement.restoreColor(this);
             }
@@ -239,10 +239,10 @@ namespace CutTheRope.iframework.visual
         {
             int num = 0;
             int num2 = 0;
-            while (num < this.childs.Count)
+            while (num < childs.Count)
             {
                 BaseElement value;
-                if (this.childs.TryGetValue(num2, out value))
+                if (childs.TryGetValue(num2, out value))
                 {
                     if (value != null && value.updateable)
                     {
@@ -252,20 +252,20 @@ namespace CutTheRope.iframework.visual
                 }
                 num2++;
             }
-            if (this.currentTimeline != null)
+            if (currentTimeline != null)
             {
-                Timeline.updateTimeline(this.currentTimeline, delta);
+                Timeline.updateTimeline(currentTimeline, delta);
             }
         }
 
         public BaseElement getChildWithName(NSString n)
         {
-            return this.getChildWithName(n.ToString());
+            return getChildWithName(n.ToString());
         }
 
         public BaseElement getChildWithName(string n)
         {
-            foreach (KeyValuePair<int, BaseElement> child in this.childs)
+            foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null)
@@ -287,11 +287,11 @@ namespace CutTheRope.iframework.visual
         public void setSizeToChildsBounds()
         {
             BaseElement.calculateTopLeft(this);
-            float num = this.drawX;
-            float num2 = this.drawY;
-            float num3 = this.drawX + (float)this.width;
-            float num4 = this.drawY + (float)this.height;
-            foreach (KeyValuePair<int, BaseElement> child in this.childs)
+            float num = drawX;
+            float num2 = drawY;
+            float num3 = drawX + (float)width;
+            float num4 = drawY + (float)height;
+            foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null)
@@ -315,35 +315,35 @@ namespace CutTheRope.iframework.visual
                     }
                 }
             }
-            this.width = (int)(num3 - num);
-            this.height = (int)(num4 - num2);
+            width = (int)(num3 - num);
+            height = (int)(num4 - num2);
         }
 
         public virtual bool handleAction(ActionData a)
         {
             if (a.actionName == "ACTION_SET_VISIBLE")
             {
-                this.visible = a.actionSubParam != 0;
+                visible = a.actionSubParam != 0;
             }
             else if (a.actionName == "ACTION_SET_UPDATEABLE")
             {
-                this.updateable = a.actionSubParam != 0;
+                updateable = a.actionSubParam != 0;
             }
             else if (a.actionName == "ACTION_SET_TOUCHABLE")
             {
-                this.touchable = a.actionSubParam != 0;
+                touchable = a.actionSubParam != 0;
             }
             else if (a.actionName == "ACTION_PLAY_TIMELINE")
             {
-                this.playTimeline(a.actionSubParam);
+                playTimeline(a.actionSubParam);
             }
             else if (a.actionName == "ACTION_PAUSE_TIMELINE")
             {
-                this.pauseCurrentTimeline();
+                pauseCurrentTimeline();
             }
             else if (a.actionName == "ACTION_STOP_TIMELINE")
             {
-                this.stopCurrentTimeline();
+                stopCurrentTimeline();
             }
             else
             {
@@ -351,7 +351,7 @@ namespace CutTheRope.iframework.visual
                 {
                     return false;
                 }
-                this.getCurrentTimeline().jumpToTrackKeyFrame(a.actionParam, a.actionSubParam);
+                getCurrentTimeline().jumpToTrackKeyFrame(a.actionParam, a.actionSubParam);
             }
             return true;
         }
@@ -393,7 +393,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual int addChild(BaseElement c)
         {
-            return this.addChildwithID(c, -1);
+            return addChildwithID(c, -1);
         }
 
         public virtual int addChildwithID(BaseElement c, int i)
@@ -404,28 +404,28 @@ namespace CutTheRope.iframework.visual
             {
                 i = 0;
                 BaseElement value;
-                while (this.childs.TryGetValue(i, out value))
+                while (childs.TryGetValue(i, out value))
                 {
                     if (value == null)
                     {
-                        this.childs[i] = c;
+                        childs[i] = c;
                         break;
                     }
                     i++;
                 }
-                this.childs.Add(i, c);
+                childs.Add(i, c);
             }
-            else if (this.childs.TryGetValue(i, out value2))
+            else if (childs.TryGetValue(i, out value2))
             {
                 if (value2 != c)
                 {
                     value2.dealloc();
                 }
-                this.childs[i] = c;
+                childs[i] = c;
             }
             else
             {
-                this.childs.Add(i, c);
+                childs.Add(i, c);
             }
             return i;
         }
@@ -433,28 +433,28 @@ namespace CutTheRope.iframework.visual
         public virtual void removeChildWithID(int i)
         {
             BaseElement value = null;
-            if (this.childs.TryGetValue(i, out value))
+            if (childs.TryGetValue(i, out value))
             {
                 if (value != null)
                 {
                     value.parent = null;
                 }
-                this.childs.Remove(i);
+                childs.Remove(i);
             }
         }
 
         public void removeAllChilds()
         {
-            this.childs.Clear();
+            childs.Clear();
         }
 
         public virtual void removeChild(BaseElement c)
         {
-            foreach (KeyValuePair<int, BaseElement> child in this.childs)
+            foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 if (c.Equals(child.Value))
                 {
-                    this.childs.Remove(child.Key);
+                    childs.Remove(child.Key);
                     break;
                 }
             }
@@ -463,14 +463,14 @@ namespace CutTheRope.iframework.visual
         public virtual BaseElement getChild(int i)
         {
             BaseElement value = null;
-            this.childs.TryGetValue(i, out value);
+            childs.TryGetValue(i, out value);
             return value;
         }
 
         public virtual int getChildId(BaseElement c)
         {
             int result = -1;
-            foreach (KeyValuePair<int, BaseElement> child in this.childs)
+            foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 if (c.Equals(child.Value))
                 {
@@ -482,91 +482,91 @@ namespace CutTheRope.iframework.visual
 
         public virtual int childsCount()
         {
-            return this.childs.Count;
+            return childs.Count;
         }
 
         public virtual Dictionary<int, BaseElement> getChilds()
         {
-            return this.childs;
+            return childs;
         }
 
         public virtual int addTimeline(Timeline t)
         {
-            int count = this.timelines.Count;
-            this.addTimelinewithID(t, count);
+            int count = timelines.Count;
+            addTimelinewithID(t, count);
             return count;
         }
 
         public virtual void addTimelinewithID(Timeline t, int i)
         {
             t.element = this;
-            this.timelines[i] = t;
+            timelines[i] = t;
         }
 
         public virtual void removeTimeline(int i)
         {
-            if (this.currentTimelineIndex == i)
+            if (currentTimelineIndex == i)
             {
-                this.stopCurrentTimeline();
+                stopCurrentTimeline();
             }
-            this.timelines.Remove(i);
+            timelines.Remove(i);
         }
 
         public virtual void playTimeline(int t)
         {
             Timeline value = null;
-            this.timelines.TryGetValue(t, out value);
+            timelines.TryGetValue(t, out value);
             if (value != null)
             {
-                if (this.currentTimeline != null && this.currentTimeline.state != Timeline.TimelineState.TIMELINE_STOPPED)
+                if (currentTimeline != null && currentTimeline.state != Timeline.TimelineState.TIMELINE_STOPPED)
                 {
-                    this.currentTimeline.stopTimeline();
+                    currentTimeline.stopTimeline();
                 }
-                this.currentTimelineIndex = t;
-                this.currentTimeline = value;
-                this.currentTimeline.playTimeline();
+                currentTimelineIndex = t;
+                currentTimeline = value;
+                currentTimeline.playTimeline();
             }
         }
 
         public virtual void pauseCurrentTimeline()
         {
-            this.currentTimeline.pauseTimeline();
+            currentTimeline.pauseTimeline();
         }
 
         public virtual void stopCurrentTimeline()
         {
-            this.currentTimeline.stopTimeline();
-            this.currentTimeline = null;
-            this.currentTimelineIndex = -1;
+            currentTimeline.stopTimeline();
+            currentTimeline = null;
+            currentTimelineIndex = -1;
         }
 
         public virtual Timeline getCurrentTimeline()
         {
-            return this.currentTimeline;
+            return currentTimeline;
         }
 
         public int getCurrentTimelineIndex()
         {
-            return this.currentTimelineIndex;
+            return currentTimelineIndex;
         }
 
         public virtual Timeline getTimeline(int n)
         {
             Timeline value = null;
-            this.timelines.TryGetValue(n, out value);
+            timelines.TryGetValue(n, out value);
             return value;
         }
 
         public virtual bool onTouchDownXY(float tx, float ty)
         {
             bool flag = false;
-            foreach (KeyValuePair<int, BaseElement> item in this.childs.Reverse<KeyValuePair<int, BaseElement>>())
+            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse<KeyValuePair<int, BaseElement>>())
             {
                 BaseElement value = item.Value;
                 if (value != null && value.touchable && value.onTouchDownXY(tx, ty) && !flag)
                 {
                     flag = true;
-                    if (!this.passTouchEventsToAllChilds)
+                    if (!passTouchEventsToAllChilds)
                     {
                         return flag;
                     }
@@ -578,13 +578,13 @@ namespace CutTheRope.iframework.visual
         public virtual bool onTouchUpXY(float tx, float ty)
         {
             bool flag = false;
-            foreach (KeyValuePair<int, BaseElement> item in this.childs.Reverse<KeyValuePair<int, BaseElement>>())
+            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse<KeyValuePair<int, BaseElement>>())
             {
                 BaseElement value = item.Value;
                 if (value != null && value.touchable && value.onTouchUpXY(tx, ty) && !flag)
                 {
                     flag = true;
-                    if (!this.passTouchEventsToAllChilds)
+                    if (!passTouchEventsToAllChilds)
                     {
                         return flag;
                     }
@@ -596,13 +596,13 @@ namespace CutTheRope.iframework.visual
         public virtual bool onTouchMoveXY(float tx, float ty)
         {
             bool flag = false;
-            foreach (KeyValuePair<int, BaseElement> item in this.childs.Reverse<KeyValuePair<int, BaseElement>>())
+            foreach (KeyValuePair<int, BaseElement> item in childs.Reverse<KeyValuePair<int, BaseElement>>())
             {
                 BaseElement value = item.Value;
                 if (value != null && value.touchable && value.onTouchMoveXY(tx, ty) && !flag)
                 {
                     flag = true;
-                    if (!this.passTouchEventsToAllChilds)
+                    if (!passTouchEventsToAllChilds)
                     {
                         return flag;
                     }
@@ -613,31 +613,31 @@ namespace CutTheRope.iframework.visual
 
         public void setEnabled(bool e)
         {
-            this.visible = e;
-            this.touchable = e;
-            this.updateable = e;
+            visible = e;
+            touchable = e;
+            updateable = e;
         }
 
         public bool isEnabled()
         {
-            return this.visible && this.touchable && this.updateable;
+            return visible && touchable && updateable;
         }
 
         public void setName(string n)
         {
-            NSObject.NSREL(this.name);
-            this.name = new NSString(n);
+            NSObject.NSREL(name);
+            name = new NSString(n);
         }
 
         public void setName(NSString n)
         {
-            NSObject.NSREL(this.name);
-            this.name = n;
+            NSObject.NSREL(name);
+            name = n;
         }
 
         public virtual void show()
         {
-            foreach (KeyValuePair<int, BaseElement> child in this.childs)
+            foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null && value.visible)
@@ -649,7 +649,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void hide()
         {
-            foreach (KeyValuePair<int, BaseElement> child in this.childs)
+            foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null && value.visible)
@@ -661,11 +661,11 @@ namespace CutTheRope.iframework.visual
 
         public override void dealloc()
         {
-            this.childs.Clear();
-            this.childs = null;
-            this.timelines.Clear();
-            this.timelines = null;
-            NSObject.NSREL(this.name);
+            childs.Clear();
+            childs = null;
+            timelines.Clear();
+            timelines = null;
+            NSObject.NSREL(name);
             base.dealloc();
         }
 

@@ -241,9 +241,9 @@ namespace CutTheRope.iframework
         {
             public md5_context()
             {
-                this.total = new uint[2];
-                this.state = new uint[4];
-                this.buffer = new byte[64];
+                total = new uint[2];
+                state = new uint[4];
+                buffer = new byte[64];
             }
 
             public uint[] total;

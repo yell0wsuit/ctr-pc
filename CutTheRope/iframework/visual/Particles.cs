@@ -34,7 +34,7 @@ namespace CutTheRope.iframework.visual
                 v.x = 0f - v.y;
                 v.y = num;
                 v = CTRMathHelper.vectMult(v, p.tangentialAccel);
-                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), this.gravity);
+                Vector v2 = CTRMathHelper.vectAdd(CTRMathHelper.vectAdd(vector, v), gravity);
                 v2 = CTRMathHelper.vectMult(v2, delta);
                 p.dir = CTRMathHelper.vectAdd(p.dir, v2);
                 v2 = CTRMathHelper.vectMult(p.dir, delta);
@@ -44,176 +44,176 @@ namespace CutTheRope.iframework.visual
                 p.color.b = p.color.b + p.deltaColor.b * delta;
                 p.color.a = p.color.a + p.deltaColor.a * delta;
                 p.life -= delta;
-                this.vertices[this.particleIdx].x = p.pos.x;
-                this.vertices[this.particleIdx].y = p.pos.y;
-                this.vertices[this.particleIdx].size = p.size;
-                this.colors[this.particleIdx] = p.color;
-                this.particleIdx++;
+                vertices[particleIdx].x = p.pos.x;
+                vertices[particleIdx].y = p.pos.y;
+                vertices[particleIdx].size = p.size;
+                colors[particleIdx] = p.color;
+                particleIdx++;
                 return;
             }
-            if (this.particleIdx != this.particleCount - 1)
+            if (particleIdx != particleCount - 1)
             {
-                this.particles[this.particleIdx] = this.particles[this.particleCount - 1];
+                particles[particleIdx] = particles[particleCount - 1];
             }
-            this.particleCount--;
+            particleCount--;
         }
 
         public override void update(float delta)
         {
             base.update(delta);
-            if (this.particlesDelegate != null && this.particleCount == 0 && !this.active)
+            if (particlesDelegate != null && particleCount == 0 && !active)
             {
-                this.particlesDelegate(this);
+                particlesDelegate(this);
                 return;
             }
-            if (this.vertices == null)
+            if (vertices == null)
             {
                 return;
             }
-            if (this.active && this.emissionRate != 0f)
+            if (active && emissionRate != 0f)
             {
-                float num = 1f / this.emissionRate;
-                this.emitCounter += delta;
-                while (this.particleCount < this.totalParticles && this.emitCounter > num)
+                float num = 1f / emissionRate;
+                emitCounter += delta;
+                while (particleCount < totalParticles && emitCounter > num)
                 {
-                    this.addParticle();
-                    this.emitCounter -= num;
+                    addParticle();
+                    emitCounter -= num;
                 }
-                this.elapsed += delta;
-                if (this.duration != -1f && this.duration < this.elapsed)
+                elapsed += delta;
+                if (duration != -1f && duration < elapsed)
                 {
-                    this.stopSystem();
+                    stopSystem();
                 }
             }
-            this.particleIdx = 0;
-            while (this.particleIdx < this.particleCount)
+            particleIdx = 0;
+            while (particleIdx < particleCount)
             {
-                this.updateParticle(ref this.particles[this.particleIdx], delta);
+                updateParticle(ref particles[particleIdx], delta);
             }
-            OpenGL.glBindBuffer(2, this.verticesID);
-            OpenGL.glBufferData(2, this.vertices, 3);
-            OpenGL.glBindBuffer(2, this.colorsID);
-            OpenGL.glBufferData(2, this.colors, 3);
+            OpenGL.glBindBuffer(2, verticesID);
+            OpenGL.glBufferData(2, vertices, 3);
+            OpenGL.glBindBuffer(2, colorsID);
+            OpenGL.glBufferData(2, colors, 3);
             OpenGL.glBindBuffer(2, 0U);
         }
 
         public override void dealloc()
         {
-            this.particles = null;
-            this.vertices = null;
-            this.colors = null;
-            OpenGL.glDeleteBuffers(1, ref this.verticesID);
-            OpenGL.glDeleteBuffers(1, ref this.colorsID);
-            this.texture = null;
+            particles = null;
+            vertices = null;
+            colors = null;
+            OpenGL.glDeleteBuffers(1, ref verticesID);
+            OpenGL.glDeleteBuffers(1, ref colorsID);
+            texture = null;
             base.dealloc();
         }
 
         public override void draw()
         {
-            this.preDraw();
-            this.postDraw();
+            preDraw();
+            postDraw();
         }
 
         public virtual Particles initWithTotalParticles(int numberOfParticles)
         {
-            if (this.init() == null)
+            if (init() == null)
             {
                 return null;
             }
-            this.width = (int)FrameworkTypes.SCREEN_WIDTH;
-            this.height = (int)FrameworkTypes.SCREEN_HEIGHT;
-            this.totalParticles = numberOfParticles;
-            this.particles = new Particle[this.totalParticles];
-            this.vertices = new PointSprite[this.totalParticles];
-            this.colors = new RGBAColor[this.totalParticles];
-            if (this.particles == null || this.vertices == null || this.colors == null)
+            width = (int)FrameworkTypes.SCREEN_WIDTH;
+            height = (int)FrameworkTypes.SCREEN_HEIGHT;
+            totalParticles = numberOfParticles;
+            particles = new Particle[totalParticles];
+            vertices = new PointSprite[totalParticles];
+            colors = new RGBAColor[totalParticles];
+            if (particles == null || vertices == null || colors == null)
             {
-                this.particles = null;
-                this.vertices = null;
-                this.colors = null;
+                particles = null;
+                vertices = null;
+                colors = null;
                 return null;
             }
-            this.active = false;
-            this.blendAdditive = false;
-            OpenGL.glGenBuffers(1, ref this.verticesID);
-            OpenGL.glGenBuffers(1, ref this.colorsID);
+            active = false;
+            blendAdditive = false;
+            OpenGL.glGenBuffers(1, ref verticesID);
+            OpenGL.glGenBuffers(1, ref colorsID);
             return this;
         }
 
         public virtual bool addParticle()
         {
-            if (this.isFull())
+            if (isFull())
             {
                 return false;
             }
-            this.initParticle(ref this.particles[this.particleCount]);
-            this.particleCount++;
+            initParticle(ref particles[particleCount]);
+            particleCount++;
             return true;
         }
 
         public virtual void initParticle(ref Particle particle)
         {
-            particle.pos.x = this.x + this.posVar.x * CTRMathHelper.RND_MINUS1_1;
-            particle.pos.y = this.y + this.posVar.y * CTRMathHelper.RND_MINUS1_1;
+            particle.pos.x = x + posVar.x * CTRMathHelper.RND_MINUS1_1;
+            particle.pos.y = y + posVar.y * CTRMathHelper.RND_MINUS1_1;
             particle.startPos = particle.pos;
-            float num = CTRMathHelper.DEGREES_TO_RADIANS(this.angle + this.angleVar * CTRMathHelper.RND_MINUS1_1);
+            float num = CTRMathHelper.DEGREES_TO_RADIANS(angle + angleVar * CTRMathHelper.RND_MINUS1_1);
             Vector v = default(Vector);
             v.y = CTRMathHelper.sinf(num);
             v.x = CTRMathHelper.cosf(num);
-            float s = this.speed + this.speedVar * CTRMathHelper.RND_MINUS1_1;
+            float s = speed + speedVar * CTRMathHelper.RND_MINUS1_1;
             particle.dir = CTRMathHelper.vectMult(v, s);
-            particle.radialAccel = this.radialAccel + this.radialAccelVar * CTRMathHelper.RND_MINUS1_1;
-            particle.tangentialAccel = this.tangentialAccel + this.tangentialAccelVar * CTRMathHelper.RND_MINUS1_1;
-            particle.life = this.life + this.lifeVar * CTRMathHelper.RND_MINUS1_1;
+            particle.radialAccel = radialAccel + radialAccelVar * CTRMathHelper.RND_MINUS1_1;
+            particle.tangentialAccel = tangentialAccel + tangentialAccelVar * CTRMathHelper.RND_MINUS1_1;
+            particle.life = life + lifeVar * CTRMathHelper.RND_MINUS1_1;
             RGBAColor rGBAColor = default(RGBAColor);
-            rGBAColor.r = this.startColor.r + this.startColorVar.r * CTRMathHelper.RND_MINUS1_1;
-            rGBAColor.g = this.startColor.g + this.startColorVar.g * CTRMathHelper.RND_MINUS1_1;
-            rGBAColor.b = this.startColor.b + this.startColorVar.b * CTRMathHelper.RND_MINUS1_1;
-            rGBAColor.a = this.startColor.a + this.startColorVar.a * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor.r = startColor.r + startColorVar.r * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor.g = startColor.g + startColorVar.g * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor.b = startColor.b + startColorVar.b * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor.a = startColor.a + startColorVar.a * CTRMathHelper.RND_MINUS1_1;
             RGBAColor rGBAColor2 = default(RGBAColor);
-            rGBAColor2.r = this.endColor.r + this.endColorVar.r * CTRMathHelper.RND_MINUS1_1;
-            rGBAColor2.g = this.endColor.g + this.endColorVar.g * CTRMathHelper.RND_MINUS1_1;
-            rGBAColor2.b = this.endColor.b + this.endColorVar.b * CTRMathHelper.RND_MINUS1_1;
-            rGBAColor2.a = this.endColor.a + this.endColorVar.a * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor2.r = endColor.r + endColorVar.r * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor2.g = endColor.g + endColorVar.g * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor2.b = endColor.b + endColorVar.b * CTRMathHelper.RND_MINUS1_1;
+            rGBAColor2.a = endColor.a + endColorVar.a * CTRMathHelper.RND_MINUS1_1;
             particle.color = rGBAColor;
             particle.deltaColor.r = (rGBAColor2.r - rGBAColor.r) / particle.life;
             particle.deltaColor.g = (rGBAColor2.g - rGBAColor.g) / particle.life;
             particle.deltaColor.b = (rGBAColor2.b - rGBAColor.b) / particle.life;
             particle.deltaColor.a = (rGBAColor2.a - rGBAColor.a) / particle.life;
-            particle.size = this.size + this.sizeVar * CTRMathHelper.RND_MINUS1_1;
+            particle.size = size + sizeVar * CTRMathHelper.RND_MINUS1_1;
         }
 
         public virtual void startSystem(int initialParticles)
         {
-            this.particleCount = 0;
-            while (this.particleCount < initialParticles)
+            particleCount = 0;
+            while (particleCount < initialParticles)
             {
-                this.addParticle();
+                addParticle();
             }
-            this.active = true;
+            active = true;
         }
 
         public virtual void stopSystem()
         {
-            this.active = false;
-            this.elapsed = this.duration;
-            this.emitCounter = 0f;
+            active = false;
+            elapsed = duration;
+            emitCounter = 0f;
         }
 
         public virtual void resetSystem()
         {
-            this.elapsed = 0f;
-            this.emitCounter = 0f;
+            elapsed = 0f;
+            emitCounter = 0f;
         }
 
         public virtual bool isFull()
         {
-            return this.particleCount == this.totalParticles;
+            return particleCount == totalParticles;
         }
 
         public virtual void setBlendAdditive(bool b)
         {
-            this.blendAdditive = b;
+            blendAdditive = b;
         }
 
         public bool active;

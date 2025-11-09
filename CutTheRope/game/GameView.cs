@@ -32,10 +32,10 @@ namespace CutTheRope.game
         public override void draw()
         {
             Global.MouseCursor.Enable(true);
-            int num = this.childsCount();
+            int num = childsCount();
             for (int i = 0; i < num; i++)
             {
-                BaseElement child = this.getChild(i);
+                BaseElement child = getChild(i);
                 if (child != null && child.visible)
                 {
                     if (i == 3)
@@ -50,7 +50,7 @@ namespace CutTheRope.game
                     child.draw();
                 }
             }
-            GameScene gameScene = (GameScene)this.getChild(0);
+            GameScene gameScene = (GameScene)getChild(0);
             if ((double)gameScene.dimTime > 0.0)
             {
                 float num2 = gameScene.dimTime / 0.15f;

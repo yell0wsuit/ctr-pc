@@ -12,8 +12,8 @@ namespace CutTheRope.iframework.visual
         {
             if (base.init() != null)
             {
-                this.vertextCount = 32;
-                this.solid = true;
+                vertextCount = 32;
+                solid = true;
             }
             return this;
         }
@@ -22,8 +22,8 @@ namespace CutTheRope.iframework.visual
         {
             base.preDraw();
             OpenGL.glDisable(0);
-            CTRMathHelper.MIN(this.width, this.height);
-            bool flag = this.solid;
+            CTRMathHelper.MIN(width, height);
+            bool flag = solid;
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);
             base.postDraw();

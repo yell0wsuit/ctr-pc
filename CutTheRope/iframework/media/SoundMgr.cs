@@ -12,9 +12,9 @@ namespace CutTheRope.iframework.media
     {
         public new SoundMgr init()
         {
-            this.LoadedSounds = new Dictionary<int, SoundEffect>();
-            this.activeSounds = new List<SoundEffectInstance>();
-            this.activeLoopedSounds = new List<SoundEffectInstance>();
+            LoadedSounds = new Dictionary<int, SoundEffect>();
+            activeSounds = new List<SoundEffectInstance>();
+            activeLoopedSounds = new List<SoundEffectInstance>();
             return this;
         }
 
@@ -25,7 +25,7 @@ namespace CutTheRope.iframework.media
 
         public void freeSound(int resId)
         {
-            this.LoadedSounds.Remove(resId);
+            LoadedSounds.Remove(resId);
         }
 
         public SoundEffect getSound(int resId)
@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.media
                 return null;
             }
             SoundEffect value;
-            if (this.LoadedSounds.TryGetValue(resId, out value))
+            if (LoadedSounds.TryGetValue(resId, out value))
             {
                 return value;
             }
@@ -43,7 +43,7 @@ namespace CutTheRope.iframework.media
             try
             {
                 value = SoundMgr._contentManager.Load<SoundEffect>("sounds/" + CTRResourceMgr.XNA_ResName(resId));
-                this.LoadedSounds.Add(resId, value);
+                LoadedSounds.Add(resId, value);
                 soundEffect = value;
             }
             catch (Exception)
@@ -56,34 +56,34 @@ namespace CutTheRope.iframework.media
         private void ClearStopped()
         {
             List<SoundEffectInstance> list = new();
-            foreach (SoundEffectInstance activeSound in this.activeSounds)
+            foreach (SoundEffectInstance activeSound in activeSounds)
             {
                 if (activeSound != null && activeSound.State != SoundState.Stopped)
                 {
                     list.Add(activeSound);
                 }
             }
-            this.activeSounds.Clear();
-            this.activeSounds = list;
+            activeSounds.Clear();
+            activeSounds = list;
         }
 
         public virtual void playSound(int sid)
         {
-            this.ClearStopped();
-            this.activeSounds.Add(this.play(sid, false));
+            ClearStopped();
+            activeSounds.Add(play(sid, false));
         }
 
         public virtual SoundEffectInstance playSoundLooped(int sid)
         {
-            this.ClearStopped();
-            SoundEffectInstance soundEffectInstance = this.play(sid, true);
-            this.activeLoopedSounds.Add(soundEffectInstance);
+            ClearStopped();
+            SoundEffectInstance soundEffectInstance = play(sid, true);
+            activeLoopedSounds.Add(soundEffectInstance);
             return soundEffectInstance;
         }
 
         public virtual void playMusic(int resId)
         {
-            this.stopMusic();
+            stopMusic();
             Song song = SoundMgr._contentManager.Load<Song>("sounds/" + CTRResourceMgr.XNA_ResName(resId));
             MediaPlayer.IsRepeating = true;
             try
@@ -97,13 +97,13 @@ namespace CutTheRope.iframework.media
 
         public virtual void stopLoopedSounds()
         {
-            SoundMgr.stopList(this.activeLoopedSounds);
-            this.activeLoopedSounds.Clear();
+            SoundMgr.stopList(activeLoopedSounds);
+            activeLoopedSounds.Clear();
         }
 
         public virtual void stopAllSounds()
         {
-            this.stopLoopedSounds();
+            stopLoopedSounds();
         }
 
         public virtual void stopMusic()
@@ -129,7 +129,7 @@ namespace CutTheRope.iframework.media
         {
             try
             {
-                SoundMgr.changeListState(this.activeLoopedSounds, SoundState.Playing, SoundState.Paused);
+                SoundMgr.changeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
                 if (MediaPlayer.State == MediaState.Playing)
                 {
                     MediaPlayer.Pause();
@@ -144,7 +144,7 @@ namespace CutTheRope.iframework.media
         {
             try
             {
-                SoundMgr.changeListState(this.activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+                SoundMgr.changeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
                 if (MediaPlayer.State == MediaState.Paused)
                 {
                     MediaPlayer.Resume();
@@ -161,7 +161,7 @@ namespace CutTheRope.iframework.media
             SoundEffectInstance soundEffectInstance2;
             try
             {
-                soundEffectInstance = this.getSound(sid).CreateInstance();
+                soundEffectInstance = getSound(sid).CreateInstance();
                 soundEffectInstance.IsLooped = l;
                 soundEffectInstance.Play();
                 soundEffectInstance2 = soundEffectInstance;

@@ -17,49 +17,49 @@ namespace CutTheRope.iframework.platform
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
                 Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
-                this._bounds.size.width = (float)currentSize.Width;
-                this._bounds.size.height = (float)currentSize.Height;
-                this._bounds.origin.x = (float)currentSize.X;
-                this._bounds.origin.y = (float)currentSize.Y;
-                return this._bounds;
+                _bounds.size.width = (float)currentSize.Width;
+                _bounds.size.height = (float)currentSize.Height;
+                _bounds.origin.x = (float)currentSize.X;
+                _bounds.origin.y = (float)currentSize.Y;
+                return _bounds;
             }
         }
 
         public virtual NSObject initWithFrame(Rectangle frame)
         {
-            return this.initWithFrame(new NSRect(frame));
+            return initWithFrame(new NSRect(frame));
         }
 
         public virtual NSObject initWithFrame(NSRect frame_UNUSED)
         {
-            this.xOffset = 0;
-            this.yOffset = 0;
-            this.origWidth = this.backingWidth = 2560;
-            this.origHeight = this.backingHeight = 1440;
-            this.aspect = (float)this.backingHeight / (float)this.backingWidth;
-            this.touchesCount = 0;
+            xOffset = 0;
+            yOffset = 0;
+            origWidth = backingWidth = 2560;
+            origHeight = backingHeight = 1440;
+            aspect = (float)backingHeight / (float)backingWidth;
+            touchesCount = 0;
             return this;
         }
 
         public virtual void initFPSMeterWithFont(Font font)
         {
-            this.fpsFont = font;
-            this.fpsText = new Text().initWithFont(this.fpsFont);
+            fpsFont = font;
+            fpsText = new Text().initWithFont(fpsFont);
         }
 
         public virtual void drawFPS(float fps)
         {
-            if (this.fpsText != null && this.fpsFont != null)
+            if (fpsText != null && fpsFont != null)
             {
                 NSString @string = NSObject.NSS(fps.ToString("F1"));
-                this.fpsText.setString(@string);
+                fpsText.setString(@string);
                 OpenGL.glColor4f(Color.White);
                 OpenGL.glEnable(0);
                 OpenGL.glEnable(1);
                 OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-                this.fpsText.x = 5f;
-                this.fpsText.y = 5f;
-                this.fpsText.draw();
+                fpsText.x = 5f;
+                fpsText.y = 5f;
+                fpsText.draw();
                 OpenGL.glDisable(1);
                 OpenGL.glDisable(0);
             }
@@ -73,27 +73,27 @@ namespace CutTheRope.iframework.platform
 
         public virtual void setDefaultRealProjection()
         {
-            this.setDefaultProjection();
+            setDefaultProjection();
         }
 
         public virtual void setDefaultProjection()
         {
             if (Global.ScreenSizeManager.IsFullScreen)
             {
-                this.xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
-                this.xOffsetScaled = (int)((double)((float)-(float)this.xOffset * 1f) / Global.ScreenSizeManager.WidthAspectRatio);
-                this.isFullscreen = true;
+                xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
+                xOffsetScaled = (int)((double)((float)-(float)xOffset * 1f) / Global.ScreenSizeManager.WidthAspectRatio);
+                isFullscreen = true;
             }
             else
             {
-                this.xOffset = 0;
-                this.xOffsetScaled = 0;
-                this.isFullscreen = false;
+                xOffset = 0;
+                xOffsetScaled = 0;
+                isFullscreen = false;
             }
-            OpenGL.glViewport(this.xOffset, this.yOffset, this.backingWidth, this.backingHeight);
+            OpenGL.glViewport(xOffset, yOffset, backingWidth, backingHeight);
             OpenGL.glMatrixMode(15);
             OpenGL.glLoadIdentity();
-            OpenGL.glOrthof(0.0, (double)this.origWidth, (double)this.origHeight, 0.0, -1.0, 1.0);
+            OpenGL.glOrthof(0.0, (double)origWidth, (double)origHeight, 0.0, -1.0, 1.0);
             OpenGL.glMatrixMode(14);
             OpenGL.glLoadIdentity();
         }
@@ -104,7 +104,7 @@ namespace CutTheRope.iframework.platform
 
         public virtual void show()
         {
-            this.setDefaultProjection();
+            setDefaultProjection();
         }
 
         public virtual void hide()
@@ -114,9 +114,9 @@ namespace CutTheRope.iframework.platform
         public virtual void reshape()
         {
             Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-            this.backingWidth = scaledViewRect.Width;
-            this.backingHeight = scaledViewRect.Height;
-            this.setDefaultProjection();
+            backingWidth = scaledViewRect.Width;
+            backingHeight = scaledViewRect.Height;
+            setDefaultProjection();
         }
 
         public virtual void swapBuffers()
@@ -125,32 +125,32 @@ namespace CutTheRope.iframework.platform
 
         public virtual void touchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            this.touchDelegate?.touchesBeganwithEvent(touches);
+            touchDelegate?.touchesBeganwithEvent(touches);
         }
 
         public virtual void touchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            this.touchDelegate?.touchesMovedwithEvent(touches);
+            touchDelegate?.touchesMovedwithEvent(touches);
         }
 
         public virtual void touchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            this.touchDelegate?.touchesEndedwithEvent(touches);
+            touchDelegate?.touchesEndedwithEvent(touches);
         }
 
         public virtual void touchesCancelledwithEvent(IList<TouchLocation> touches)
         {
-            this.touchDelegate?.touchesCancelledwithEvent(touches);
+            touchDelegate?.touchesCancelledwithEvent(touches);
         }
 
         public virtual bool backButtonPressed()
         {
-            return this.touchDelegate != null && this.touchDelegate.backButtonPressed();
+            return touchDelegate != null && touchDelegate.backButtonPressed();
         }
 
         public virtual bool menuButtonPressed()
         {
-            return this.touchDelegate != null && this.touchDelegate.menuButtonPressed();
+            return touchDelegate != null && touchDelegate.menuButtonPressed();
         }
 
         public List<TouchLocation> convertTouches(List<TouchLocation> touches)
@@ -170,7 +170,7 @@ namespace CutTheRope.iframework.platform
 
         public virtual void beforeRender()
         {
-            this.setDefaultProjection();
+            setDefaultProjection();
             OpenGL.glDisable(1);
             OpenGL.glEnableClientState(11);
             OpenGL.glEnableClientState(12);

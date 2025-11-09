@@ -26,12 +26,12 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            this.t1.x = this.x - this.bb.w / 2f;
-            this.t2.x = this.x + this.bb.w / 2f;
-            this.t1.y = this.t2.y = this.y;
-            this.angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(this.rotation);
-            this.t1 = CTRMathHelper.vectRotateAround(this.t1, this.angle, this.x, this.y);
-            this.t2 = CTRMathHelper.vectRotateAround(this.t2, this.angle, this.x, this.y);
+            t1.x = x - bb.w / 2f;
+            t2.x = x + bb.w / 2f;
+            t1.y = t2.y = y;
+            angle = (double)CTRMathHelper.DEGREES_TO_RADIANS(rotation);
+            t1 = CTRMathHelper.vectRotateAround(t1, angle, x, y);
+            t2 = CTRMathHelper.vectRotateAround(t2, angle, x, y);
         }
 
         public double angle;
