@@ -1,4 +1,11 @@
 using CutTheRope.iframework;
+using CutTheRope.iframework.core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
+using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.desktop
@@ -51,7 +58,7 @@ namespace CutTheRope.desktop
 
         public List<TouchLocation> GetTouchLocation()
         {
-            List<TouchLocation> list = [];
+            List<TouchLocation> list = new();
             _mouseStateOriginal = Global.XnaGame.GetMouseState();
             MouseState mouseStateTranformed = TransformMouseState(_mouseStateOriginal);
             TouchLocation item = default(TouchLocation);

@@ -1,3 +1,5 @@
+using System;
+
 namespace CutTheRope.iframework.helpers
 {
     public enum CAMERA_TYPE

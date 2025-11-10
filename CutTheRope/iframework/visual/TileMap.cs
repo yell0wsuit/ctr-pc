@@ -1,4 +1,5 @@
 using CutTheRope.iframework.core;
+using CutTheRope.iframework.helpers;
 using System;
 using System.Collections.Generic;
 
@@ -35,8 +36,8 @@ namespace CutTheRope.iframework.visual
                 cameraViewWidth = (int)SCREEN_WIDTH;
                 cameraViewHeight = (int)SCREEN_HEIGHT;
                 parallaxRatio = 1f;
-                drawers = [];
-                tiles = [];
+                drawers = new List<ImageMultiDrawer>();
+                tiles = new Dictionary<int, TileEntry>();
                 matrix = new int[columns, rows];
                 for (int i = 0; i < columns; i++)
                 {
@@ -93,11 +94,9 @@ namespace CutTheRope.iframework.visual
                 num = drawers.Count;
                 drawers.Add(item);
             }
-            TileEntry tileEntry = new()
-            {
-                drawerIndex = num,
-                quad = q
-            };
+            TileEntry tileEntry = new();
+            tileEntry.drawerIndex = num;
+            tileEntry.quad = q;
             tiles[ti] = tileEntry;
         }
 
@@ -154,8 +153,8 @@ namespace CutTheRope.iframework.visual
             CTRRectangle rectangle = rectInRectIntersection(new CTRRectangle(num3, num4, tileMapWidth, tileMapHeight), new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight));
             Vector vector = vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
             Vector vector2 = vect((int)vector.x / tileWidth, (int)vector.y / tileHeight);
-            float num7 = num4 + (vector2.y * tileHeight);
-            Vector vector3 = vect(num3 + (vector2.x * tileWidth), num7);
+            float num7 = num4 + vector2.y * tileHeight;
+            Vector vector3 = vect(num3 + vector2.x * tileWidth, num7);
             int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {

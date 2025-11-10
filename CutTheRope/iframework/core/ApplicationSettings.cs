@@ -1,3 +1,4 @@
+using CutTheRope.game;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,15 @@ namespace CutTheRope.iframework.core
     {
         public virtual int getInt(int s)
         {
-            return s == 5 ? fps : s != 6 ? throw new NotImplementedException() : (int)orientation;
+            if (s == 5)
+            {
+                return fps;
+            }
+            if (s != 6)
+            {
+                throw new NotImplementedException();
+            }
+            return (int)orientation;
         }
 
         public virtual bool getBool(int s)
@@ -20,20 +29,31 @@ namespace CutTheRope.iframework.core
 
         public virtual NSString getString(int s)
         {
-            return s != 8
-                ? NSS("")
-                : locale != null
-                ? NSS(locale)
-                : LANGUAGE switch
-                {
-                    Language.LANG_EN => NSS("en"),
-                    Language.LANG_RU => NSS("ru"),
-                    Language.LANG_DE => NSS("de"),
-                    Language.LANG_FR => NSS("fr"),
-                    Language.LANG_ZH => NSS("zh"),
-                    Language.LANG_JA => NSS("ja"),
-                    _ => NSS("en"),
-                };
+            if (s != 8)
+            {
+                return NSS("");
+            }
+            if (locale != null)
+            {
+                return NSS(locale);
+            }
+            switch (LANGUAGE)
+            {
+                case Language.LANG_EN:
+                    return NSS("en");
+                case Language.LANG_RU:
+                    return NSS("ru");
+                case Language.LANG_DE:
+                    return NSS("de");
+                case Language.LANG_FR:
+                    return NSS("fr");
+                case Language.LANG_ZH:
+                    return NSS("zh");
+                case Language.LANG_JA:
+                    return NSS("ja");
+                default:
+                    return NSS("en");
+            }
         }
 
         public virtual void setString(int sid, NSString str)
@@ -57,13 +77,13 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        private static readonly int fps = 60;
+        private static int fps = 60;
 
-        private readonly ORIENTATION orientation;
+        private ORIENTATION orientation;
 
         private string locale;
 
-        private static readonly Dictionary<AppSettings, bool> DEFAULT_APP_SETTINGS = new()
+        private static Dictionary<AppSettings, bool> DEFAULT_APP_SETTINGS = new()
         {
             {
                 AppSettings.APP_SETTING_INTERACTION_ENABLED,

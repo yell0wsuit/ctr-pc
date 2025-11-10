@@ -1,6 +1,7 @@
 using CutTheRope.ctr_commons;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 
@@ -10,7 +11,7 @@ namespace CutTheRope.iframework.core
     {
         public ViewController()
         {
-            views = [];
+            views = new Dictionary<int, View>();
         }
 
         public virtual NSObject initWithParent(ViewController p)
@@ -18,8 +19,8 @@ namespace CutTheRope.iframework.core
             if (base.init() != null)
             {
                 controllerState = ControllerState.CONTROLLER_DEACTIVE;
-                views = [];
-                childs = [];
+                views = new Dictionary<int, View>();
+                childs = new Dictionary<int, ViewController>();
                 activeViewID = -1;
                 activeChildID = -1;
                 pausedViewID = -1;

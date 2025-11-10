@@ -1,5 +1,7 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
+using Microsoft.Xna.Framework;
+using System;
 
 namespace CutTheRope.game
 {

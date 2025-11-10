@@ -1,6 +1,8 @@
+using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
+using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.game
@@ -23,8 +25,8 @@ namespace CutTheRope.game
                 float num4 = 0f;
                 for (int i = 0; i < num2; i++)
                 {
-                    float x = s.x + (num * cosf(num4));
-                    float y = s.y + (num * sinf(num4));
+                    float x = s.x + num * cosf(num4);
+                    float y = s.y + num * sinf(num4);
                     addPathPoint(vect(x, y));
                     num4 += num3;
                 }
@@ -40,7 +42,7 @@ namespace CutTheRope.game
             {
                 NSString nSString2 = list[j];
                 NSString nSString3 = list[j + 1];
-                addPathPoint(vect(s.x + (nSString2.floatValue() * 3f), s.y + (nSString3.floatValue() * 3f)));
+                addPathPoint(vect(s.x + nSString2.floatValue() * 3f, s.y + nSString3.floatValue() * 3f));
             }
         }
     }

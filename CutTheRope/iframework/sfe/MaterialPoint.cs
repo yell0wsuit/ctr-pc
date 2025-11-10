@@ -1,5 +1,7 @@
 using CutTheRope.iframework.core;
+using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
+using System;
 
 namespace CutTheRope.iframework.sfe
 {
@@ -91,7 +93,14 @@ namespace CutTheRope.iframework.sfe
             totalForce = vectZero;
             if (!disableGravity)
             {
-                totalForce = !vectEqual(globalGravity, vectZero) ? vectAdd(totalForce, vectMult(globalGravity, weight)) : vectAdd(totalForce, gravity);
+                if (!vectEqual(globalGravity, vectZero))
+                {
+                    totalForce = vectAdd(totalForce, vectMult(globalGravity, weight));
+                }
+                else
+                {
+                    totalForce = vectAdd(totalForce, gravity);
+                }
             }
             if (highestForceIndex != -1)
             {

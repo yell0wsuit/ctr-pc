@@ -3,6 +3,9 @@ using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.media;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -88,7 +91,14 @@ namespace CutTheRope
             SoundMgr.SetContentManager(Content);
             OpenGL.Init();
             Global.MouseCursor.Load(Content);
-            Window.AllowUserResizing = UseWindowMode_TODO_ChangeFullScreenResolution || true;
+            if (UseWindowMode_TODO_ChangeFullScreenResolution)
+            {
+                Window.AllowUserResizing = true;
+            }
+            else
+            {
+                Window.AllowUserResizing = true;
+            }
             Preferences._loadPreferences();
             int num = Preferences._getIntForKey("PREFS_WINDOW_WIDTH");
             bool isFullScreen = !UseWindowMode_TODO_ChangeFullScreenResolution && (num <= 0 || Preferences._getBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
@@ -162,7 +172,14 @@ namespace CutTheRope
                 frameCounter = 0;
                 Preferences.Update();
             }
-            IsFixedTimeStep = (frameRate > 0 && frameRate < 50) || true;
+            if (frameRate > 0 && frameRate < 50)
+            {
+                IsFixedTimeStep = true;
+            }
+            else
+            {
+                IsFixedTimeStep = true;
+            }
             keyboardStateXna = Keyboard.GetState();
             if ((IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.F11) || ((IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftAlt) || IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightAlt)) && IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))) && !UseWindowMode_TODO_ChangeFullScreenResolution)
             {
@@ -266,7 +283,7 @@ namespace CutTheRope
 
         private bool UseWindowMode_TODO_ChangeFullScreenResolution = true;
 
-        private readonly Dictionary<Microsoft.Xna.Framework.Input.Keys, bool> keyState = [];
+        private Dictionary<Microsoft.Xna.Framework.Input.Keys, bool> keyState = new();
 
         private KeyboardState keyboardStateXna;
 

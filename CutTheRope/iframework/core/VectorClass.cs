@@ -1,3 +1,5 @@
+using System;
+
 namespace CutTheRope.iframework.core
 {
     public class VectorClass

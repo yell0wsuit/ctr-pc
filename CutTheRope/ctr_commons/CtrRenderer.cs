@@ -2,9 +2,12 @@ using CutTheRope.desktop;
 using CutTheRope.game;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
+using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,7 +31,7 @@ namespace CutTheRope.ctr_commons
 
         public static void onPause()
         {
-            if (state is 2 or 5)
+            if (state == 2 || state == 5)
             {
                 Java_com_zeptolab_ctr_CtrRenderer_nativePause();
                 state = 3;
@@ -325,9 +328,9 @@ namespace CutTheRope.ctr_commons
 
         private static long prevTick = 0L;
 
-        private static readonly long DELTA_NANOS = 18181818L;
+        private static long DELTA_NANOS = 18181818L;
 
-        private static readonly long DELTA_NANOS_THRES = (long)(DELTA_NANOS * 0.35);
+        private static long DELTA_NANOS_THRES = (long)(DELTA_NANOS * 0.35);
 
         private static bool DRAW_NOTHING = false;
 
@@ -335,7 +338,7 @@ namespace CutTheRope.ctr_commons
 
         private static bool gPaused = false;
 
-        private static readonly long[] fpsDeltas = new long[10];
+        private static long[] fpsDeltas = new long[10];
 
         private static int fpsDeltasPos = 0;
     }

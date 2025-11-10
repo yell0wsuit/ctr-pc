@@ -22,7 +22,11 @@ namespace CutTheRope.ios
 
         public int length()
         {
-            return value_ == null ? 0 : value_.Length;
+            if (value_ == null)
+            {
+                return 0;
+            }
+            return value_.Length;
         }
 
         public bool isEqualToString(NSString str)
@@ -32,7 +36,11 @@ namespace CutTheRope.ios
 
         public bool isEqualToString(string str)
         {
-            return value_ == null ? str == null : str != null && value_ == str;
+            if (value_ == null)
+            {
+                return str == null;
+            }
+            return str != null && value_ == str;
         }
 
         public int IndexOf(char c)
@@ -162,7 +170,7 @@ namespace CutTheRope.ios
                     num4 = -1;
                     num2++;
                 }
-                else if (value_[num2] is ',' or '.')
+                else if (value_[num2] == ',' || value_[num2] == '.')
                 {
                     num5 = 1;
                     num6 = 10;
@@ -183,7 +191,7 @@ namespace CutTheRope.ios
 
         public List<NSString> componentsSeparatedByString(char ch)
         {
-            List<NSString> list = [];
+            List<NSString> list = new();
             char[] separator = [ch];
             foreach (string rhs in value_.Split(separator))
             {
@@ -202,6 +210,6 @@ namespace CutTheRope.ios
             return value_.EndsWith(p);
         }
 
-        private readonly string value_;
+        private string value_;
     }
 }

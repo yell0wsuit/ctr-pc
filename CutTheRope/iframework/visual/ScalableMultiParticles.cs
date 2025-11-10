@@ -1,3 +1,6 @@
+using CutTheRope.iframework.helpers;
+using System;
+
 namespace CutTheRope.iframework.visual
 {
     internal class ScalableMultiParticles : MultiParticles

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
@@ -52,6 +53,6 @@ namespace CutTheRope.iframework.visual
             base.dealloc();
         }
 
-        private List<BaseElement> removeList = [];
+        private List<BaseElement> removeList = new();
     }
 }

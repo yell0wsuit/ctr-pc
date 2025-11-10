@@ -4,6 +4,7 @@ using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CutTheRope.iframework.core
 {
@@ -24,7 +25,7 @@ namespace CutTheRope.iframework.core
 
         public void clearCachedResources()
         {
-            s_Resources = [];
+            s_Resources = new Dictionary<int, NSObject>();
         }
 
         public virtual NSObject loadResource(int resID, ResourceType resType)
@@ -291,7 +292,11 @@ namespace CutTheRope.iframework.core
 
         public virtual int getPercentLoaded()
         {
-            return loadCount == 0 ? 100 : 100 * loaded / getLoadCount();
+            if (loadCount == 0)
+            {
+                return 100;
+            }
+            return 100 * loaded / getLoadCount();
         }
 
         public virtual void loadPack(int[] pack)
@@ -337,7 +342,11 @@ namespace CutTheRope.iframework.core
 
         private int getLoadCount()
         {
-            return !bUseFake ? loadCount : 100;
+            if (!bUseFake)
+            {
+                return loadCount;
+            }
+            return 100;
         }
 
         public void update()
@@ -424,7 +433,7 @@ namespace CutTheRope.iframework.core
 
         public ResourceMgrDelegate resourcesDelegate;
 
-        private Dictionary<int, NSObject> s_Resources = [];
+        private Dictionary<int, NSObject> s_Resources = new();
 
         private XMLNode xmlStrings;
 
@@ -432,7 +441,7 @@ namespace CutTheRope.iframework.core
 
         private int loadCount;
 
-        private readonly List<int> loadQueue = [];
+        private List<int> loadQueue = new();
 
         private int Timer;
 

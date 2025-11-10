@@ -1,5 +1,6 @@
 using CutTheRope.ctr_commons;
 using CutTheRope.iframework.core;
+using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
 using System;
 
@@ -101,12 +102,20 @@ namespace CutTheRope.game
 
         public static int getPacksCount()
         {
-            return !isLiteVersion() ? 11 : 2;
+            if (!isLiteVersion())
+            {
+                return 11;
+            }
+            return 2;
         }
 
         public static int getLevelsInPackCount()
         {
-            return !isLiteVersion() ? 25 : 9;
+            if (!isLiteVersion())
+            {
+                return 25;
+            }
+            return 9;
         }
 
         public static int getTotalStars()
@@ -130,7 +139,11 @@ namespace CutTheRope.game
 
         public static int packUnlockStars(int n)
         {
-            return !isLiteVersion() ? PACK_UNLOCK_STARS[n] : PACK_UNLOCK_STARS_LITE[n];
+            if (!isLiteVersion())
+            {
+                return PACK_UNLOCK_STARS[n];
+            }
+            return PACK_UNLOCK_STARS_LITE[n];
         }
 
         private static string getPackLevelKey(string prefs, int p, int l)
@@ -488,13 +501,13 @@ namespace CutTheRope.game
 
         private bool playLevelScroll;
 
-        private static readonly int[] PACK_UNLOCK_STARS_LITE =
+        private static int[] PACK_UNLOCK_STARS_LITE =
 [
     0, 20, 80, 170, 240, 300, 350, 400, 450, 500,
             550
 ];
 
-        private static readonly int[] PACK_UNLOCK_STARS =
+        private static int[] PACK_UNLOCK_STARS =
 [
     0, 30, 80, 170, 240, 300, 350, 400, 450, 500,
             550
