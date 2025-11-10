@@ -1,5 +1,4 @@
 using CutTheRope.iframework;
-using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.game
@@ -128,57 +127,17 @@ namespace CutTheRope.game
 
         public static bool isSound(int id)
         {
-            switch (id)
+            return id switch
             {
-                case 9:
-                case 11:
-                case 12:
-                case 13:
-                case 14:
-                case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                case 24:
-                case 25:
-                case 26:
-                case 27:
-                case 28:
-                case 29:
-                case 30:
-                case 31:
-                case 32:
-                case 33:
-                case 34:
-                case 35:
-                case 36:
-                case 37:
-                case 38:
-                case 39:
-                case 40:
-                case 41:
-                case 42:
-                case 43:
-                case 44:
-                case 45:
-                case 46:
-                case 47:
-                    return true;
-                case 10:
-                    return false;
-                default:
-                    return id >= 145 && id <= 148;
-            }
+                9 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 40 or 41 or 42 or 43 or 44 or 45 or 46 or 47 => true,
+                10 => false,
+                _ => id is >= 145 and <= 148,
+            };
         }
 
         public static bool isFont(int id)
         {
-            return id == 3 || id == 4 || id == 68;
+            return id is 3 or 4 or 68;
         }
 
         public const int IMG_DEFAULT = 0;

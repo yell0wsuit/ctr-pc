@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.game
 {
     internal interface GameSceneDelegate

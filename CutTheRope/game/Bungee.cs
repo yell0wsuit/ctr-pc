@@ -5,8 +5,6 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using Microsoft.Xna.Framework;
-using System;
 
 namespace CutTheRope.game
 {
@@ -127,22 +125,9 @@ namespace CutTheRope.game
                 rGBAColor4.b *= num2;
             }
             float num3 = vectDistance(vect(pts[0].x, pts[0].y), vect(pts[1].x, pts[1].y));
-            if ((double)num3 <= BUNGEE_REST_LEN + 0.3)
-            {
-                b.relaxed = 0;
-            }
-            else if ((double)num3 <= BUNGEE_REST_LEN + 1.0)
-            {
-                b.relaxed = 1;
-            }
-            else if ((double)num3 <= BUNGEE_REST_LEN + 4.0)
-            {
-                b.relaxed = 2;
-            }
-            else
-            {
-                b.relaxed = 3;
-            }
+            b.relaxed = (double)num3 <= BUNGEE_REST_LEN + 0.3
+                ? 0
+                : (double)num3 <= BUNGEE_REST_LEN + 1.0 ? 1 : (double)num3 <= BUNGEE_REST_LEN + 4.0 ? 2 : 3;
             if ((double)num3 > BUNGEE_REST_LEN + 7.0)
             {
                 float num4 = num3 / BUNGEE_REST_LEN * 2f;
@@ -192,7 +177,7 @@ namespace CutTheRope.game
                     int num17 = num8 >> 1;
                     for (int i = 0; i < num17 - 1; i++)
                     {
-                        drawAntialiasedLineContinued(array[i * 2], array[i * 2 + 1], array[i * 2 + 2], array[i * 2 + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
+                        drawAntialiasedLineContinued(array[i * 2], array[(i * 2) + 1], array[(i * 2) + 2], array[(i * 2) + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
                     }
                     array[0] = array[num8 - 2];
                     array[1] = array[num8 - 1];
@@ -223,14 +208,7 @@ namespace CutTheRope.game
                 cut = -1;
                 bungeeMode = 0;
                 highlighted = false;
-                if (h != null)
-                {
-                    bungeeAnchor = h;
-                }
-                else
-                {
-                    bungeeAnchor = (ConstraintedPoint)new ConstraintedPoint().init();
-                }
+                bungeeAnchor = h ?? (ConstraintedPoint)new ConstraintedPoint().init();
                 if (t != null)
                 {
                     tail = t;
@@ -247,7 +225,7 @@ namespace CutTheRope.game
                 addPart(tail);
                 tail.addConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                 Vector v = vectSub(tail.pos, bungeeAnchor.pos);
-                int num = (int)(len / BUNGEE_REST_LEN + 2f);
+                int num = (int)((len / BUNGEE_REST_LEN) + 2f);
                 v = vectDiv(v, num);
                 rollplacingWithOffset(len, v);
                 forceWhite = false;
@@ -574,7 +552,7 @@ namespace CutTheRope.game
 
         public bool hideTailParts;
 
-        private static RGBAColor[] ccolors =
+        private static readonly RGBAColor[] ccolors =
 [
     RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -586,7 +564,7 @@ namespace CutTheRope.game
             RGBAColor.transparentRGBA
 ];
 
-        private static RGBAColor[] ccolors2 =
+        private static readonly RGBAColor[] ccolors2 =
 [
     RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,

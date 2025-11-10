@@ -3,8 +3,6 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using Microsoft.Xna.Framework;
-using System;
 
 namespace CutTheRope.game
 {
@@ -12,11 +10,7 @@ namespace CutTheRope.game
     {
         public override NSObject initFullscreen()
         {
-            if (base.initFullscreen() == null)
-            {
-                return null;
-            }
-            return this;
+            return base.initFullscreen() == null ? null : (NSObject)this;
         }
 
         public override void show()

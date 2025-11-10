@@ -1,8 +1,5 @@
 using CutTheRope.game;
 using CutTheRope.ios;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 
@@ -12,9 +9,9 @@ namespace CutTheRope.iframework.media
     {
         public new SoundMgr init()
         {
-            LoadedSounds = new Dictionary<int, SoundEffect>();
-            activeSounds = new List<SoundEffectInstance>();
-            activeLoopedSounds = new List<SoundEffectInstance>();
+            LoadedSounds = [];
+            activeSounds = [];
+            activeLoopedSounds = [];
             return this;
         }
 
@@ -30,7 +27,7 @@ namespace CutTheRope.iframework.media
 
         public SoundEffect getSound(int resId)
         {
-            if (resId >= 145 && resId <= 148)
+            if (resId is >= 145 and <= 148)
             {
                 return null;
             }
@@ -55,7 +52,7 @@ namespace CutTheRope.iframework.media
 
         private void ClearStopped()
         {
-            List<SoundEffectInstance> list = new();
+            List<SoundEffectInstance> list = [];
             foreach (SoundEffectInstance activeSound in activeSounds)
             {
                 if (activeSound != null && activeSound.State != SoundState.Stopped)

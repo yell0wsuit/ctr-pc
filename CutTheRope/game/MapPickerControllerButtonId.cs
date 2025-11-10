@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.game
 {
     internal enum MapPickerControllerButtonId

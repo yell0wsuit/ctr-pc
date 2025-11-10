@@ -1,4 +1,3 @@
-using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
 using System;
 
@@ -61,11 +60,9 @@ namespace CutTheRope.iframework.visual
         public virtual bool isInTouchZoneXYforTouchDown(float tx, float ty, bool td)
         {
             float num = td ? 0f : 15f;
-            if (forcedTouchZone.w != -1f)
-            {
-                return pointInRect(tx, ty, drawX + forcedTouchZone.x - num, drawY + forcedTouchZone.y - num, forcedTouchZone.w + num * 2f, forcedTouchZone.h + num * 2f);
-            }
-            return pointInRect(tx, ty, drawX - touchLeftInc - num, drawY - touchTopInc - num, width + (touchLeftInc + touchRightInc) + num * 2f, height + (touchTopInc + touchBottomInc) + num * 2f);
+            return forcedTouchZone.w != -1f
+                ? pointInRect(tx, ty, drawX + forcedTouchZone.x - num, drawY + forcedTouchZone.y - num, forcedTouchZone.w + (num * 2f), forcedTouchZone.h + (num * 2f))
+                : pointInRect(tx, ty, drawX - touchLeftInc - num, drawY - touchTopInc - num, width + (touchLeftInc + touchRightInc) + (num * 2f), height + (touchTopInc + touchBottomInc) + (num * 2f));
         }
 
         public virtual void setState(BUTTON_STATE s)

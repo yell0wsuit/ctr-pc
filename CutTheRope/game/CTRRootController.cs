@@ -1,5 +1,4 @@
 using CutTheRope.ctr_commons;
-using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
 using System;
@@ -226,7 +225,7 @@ namespace CutTheRope.game
                         {
                             menuController3.viewToShow = 0;
                         }
-                        if (nextController == 2 || nextController == 4)
+                        if (nextController is 2 or 4)
                         {
                             menuController3.viewToShow = 6;
                         }
@@ -272,21 +271,7 @@ namespace CutTheRope.game
                             resourceMgr.loadPack(PACK_MENU);
                             resourceMgr.startLoading();
                             LoadingController loadingController = (LoadingController)getChild(2);
-                            if (exitCode != 0)
-                            {
-                                if (exitCode != 1)
-                                {
-                                    loadingController.nextController = 3;
-                                }
-                                else
-                                {
-                                    loadingController.nextController = 2;
-                                }
-                            }
-                            else
-                            {
-                                loadingController.nextController = 1;
-                            }
+                            loadingController.nextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
                             activateChild(2);
                             GC.Collect();
                         }

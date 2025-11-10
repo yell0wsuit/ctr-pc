@@ -1,8 +1,5 @@
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.media;
-using Microsoft.Xna.Framework.Audio;
-using System;
 
 namespace CutTheRope.game
 {
@@ -27,11 +24,7 @@ namespace CutTheRope.game
 
         public static SoundEffectInstance _playSoundLooped(int s)
         {
-            if (s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON"))
-            {
-                return Application.sharedSoundMgr().playSoundLooped(s);
-            }
-            return null;
+            return s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON") ? Application.sharedSoundMgr().playSoundLooped(s) : null;
         }
 
         public static void _playRandomMusic(int minId, int maxId)

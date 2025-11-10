@@ -1,6 +1,5 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using System;
 
 namespace CutTheRope.game
 {

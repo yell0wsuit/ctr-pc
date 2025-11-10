@@ -4,7 +4,6 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace CutTheRope.game
 {
@@ -49,7 +48,7 @@ namespace CutTheRope.game
                         Text text21 = (Text)result.getChildWithName("dataValue");
                         text21.setEnabled(true);
                         Text text22 = (Text)result.getChildWithName("scoreValue");
-                        text28.color.a = text21.color.a = text22.color.a = 1f - raDelay / 0.2f;
+                        text28.color.a = text21.color.a = text22.color.a = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 2;
@@ -84,7 +83,7 @@ namespace CutTheRope.game
                             raState = 4;
                             raDelay = 0.2f;
                             int num = (int)Math.Floor((double)(round(time) / 60f));
-                            int num2 = (int)(round(time) - num * 60f);
+                            int num2 = (int)(round(time) - (num * 60f));
                             ((Text)result.getChildWithName("dataTitle")).setString(Application.getString(655377));
                             ((Text)result.getChildWithName("dataValue")).setString(NSS(num.ToString() + ":" + num2.ToString("D2")));
                             return;
@@ -95,7 +94,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement2 = (Text)result.getChildWithName("dataTitle");
                         Text text24 = (Text)result.getChildWithName("dataValue");
-                        baseElement2.color.a = text24.color.a = 1f - raDelay / 0.2f;
+                        baseElement2.color.a = text24.color.a = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 5;
@@ -107,9 +106,9 @@ namespace CutTheRope.game
                 case 5:
                     {
                         ctime = time * raDelay;
-                        cscore = (int)(starBonus + (1f - raDelay) * timeBonus);
+                        cscore = (int)(starBonus + ((1f - raDelay) * timeBonus));
                         int num3 = (int)Math.Floor((double)round(ctime) / 60.0);
-                        int num4 = (int)((double)round(ctime) - num3 * 60.0);
+                        int num4 = (int)((double)round(ctime) - (num3 * 60.0));
                         ((Text)result.getChildWithName("dataValue")).setString(NSS(num3.ToString() + ":" + num4.ToString("D2")));
                         ((Text)result.getChildWithName("scoreValue")).setString(cscore.ToString());
                         if (flag)
@@ -141,7 +140,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement4 = (Text)result.getChildWithName("dataTitle");
                         Text text26 = (Text)result.getChildWithName("dataValue");
-                        baseElement4.color.a = text26.color.a = 1f - raDelay / 0.2f;
+                        baseElement4.color.a = text26.color.a = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 8;
@@ -365,8 +364,8 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             int num9 = 126 + cTRRootController.getPack();
             Image image = Image.Image_createWithResIDQuad(67, 16);
-            image.rotationCenterX = (float)-(float)image.width / 2f + 1f;
-            image.rotationCenterY = (float)-(float)image.height / 2f + 1f;
+            image.rotationCenterX = ((float)-(float)image.width / 2f) + 1f;
+            image.rotationCenterY = ((float)-(float)image.height / 2f) + 1f;
             image.scaleX = image.scaleY = 4f;
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
@@ -384,14 +383,14 @@ namespace CutTheRope.game
             timeline.delegateTimelineDelegate = this;
             openCloseAnims.addChild(image);
             Vector quadSize = Image.getQuadSize(num9, 0);
-            float num2 = SCREEN_WIDTH / 2f - quadSize.x;
+            float num2 = (SCREEN_WIDTH / 2f) - quadSize.x;
             Image image2 = Image.Image_createWithResIDQuad(num9, 0);
             Image image3 = Image.Image_createWithResIDQuad(num9, 0);
             image2.x = num2;
             image2.rotationCenterX = (float)-(float)image2.width / 2f;
             image3.rotationCenterX = image2.rotationCenterX;
             image3.rotation = 180f;
-            image3.x = SCREEN_WIDTH - (SCREEN_WIDTH / 2f - image2.width);
+            image3.x = SCREEN_WIDTH - ((SCREEN_WIDTH / 2f) - image2.width);
             image3.y = -0.5f;
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
