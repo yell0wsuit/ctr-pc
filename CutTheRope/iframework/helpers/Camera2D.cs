@@ -1,6 +1,6 @@
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
-using CutTheRope.windows;
+using CutTheRope.desktop;
 using System;
 
 namespace CutTheRope.iframework.helpers

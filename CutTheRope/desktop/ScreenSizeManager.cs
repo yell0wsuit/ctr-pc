@@ -2,11 +2,8 @@ using CutTheRope.iframework.core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
-namespace CutTheRope.windows
+namespace CutTheRope.desktop
 {
     internal class ScreenSizeManager
     {
@@ -139,19 +136,6 @@ namespace CutTheRope.windows
             }
         }
 
-        [DllImport("Shell32.dll")]
-        private static extern int SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
-
-        private void RefreshDesktop()
-        {
-            SHChangeNotify(134217728, 4096, IntPtr.Zero, IntPtr.Zero);
-        }
-
-        public void SetWindowMinimumSize(Form form)
-        {
-            form.MinimumSize = new Size(800, ScaledGameHeight(800));
-        }
-
         public int TransformWindowToViewX(int x)
         {
             return x - _scaledViewRect.X;
@@ -272,10 +256,6 @@ namespace CutTheRope.windows
             Save();
             iframework.core.Application.sharedCanvas().reshape();
             iframework.core.Application.sharedRootController().fullscreenToggled(!isFullScreen);
-            if (!graphicsDeviceManager.IsFullScreen)
-            {
-                RefreshDesktop();
-            }
         }
 
         public void FixWindowSize(Microsoft.Xna.Framework.Rectangle newWindowRect)

@@ -2,31 +2,20 @@ using CutTheRope.ctr_commons;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.media;
-using CutTheRope.windows;
+using CutTheRope.desktop;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace CutTheRope
 {
     public class Game1 : Game
     {
         // (get) Token: 0x06000022 RID: 34 RVA: 0x00002517 File Offset: 0x00000717
-        private bool IsMinimized
-        {
-            get
-            {
-                return WindowAsForm().WindowState == FormWindowState.Minimized;
-            }
-        }
-
         public Game1()
         {
             Global.XnaGame = this;
@@ -46,111 +35,15 @@ namespace CutTheRope
             TargetElapsedTime = TimeSpan.FromTicks(166666L);
             IsFixedTimeStep = false;
             InactiveSleepTime = TimeSpan.FromTicks(500000L);
-            IsMouseVisible = true;
+            IsMouseVisible = false;
             Activated += Game1_Activated;
             Deactivated += Game1_Deactivated;
             Exiting += Game1_Exiting;
-            parentProcess = ParentProcessUtilities.GetParentProcess();
-            Form form = WindowAsForm();
-            form.MouseMove += form_MouseMove;
-            form.MouseUp += form_MouseUp;
-            form.MouseDown += form_MouseDown;
-        }
-
-        private void form_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseState_X = e.X;
-            mouseState_Y = e.Y;
-            MouseButtons button = e.Button;
-            if (button <= MouseButtons.Right)
-            {
-                if (button != MouseButtons.Left)
-                {
-                    if (button == MouseButtons.Right)
-                    {
-                        mouseState_RightButton = Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-                    }
-                }
-                else
-                {
-                    mouseState_LeftButton = Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-                }
-            }
-            else if (button != MouseButtons.Middle)
-            {
-                if (button != MouseButtons.XButton1)
-                {
-                    if (button == MouseButtons.XButton2)
-                    {
-                        mouseState_XButton2 = Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-                    }
-                }
-                else
-                {
-                    mouseState_XButton1 = Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-                }
-            }
-            else
-            {
-                mouseState_MiddleButton = Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-            }
-            if (_DrawMovie && e.Button == MouseButtons.Left)
-            {
-                iframework.core.Application.sharedMovieMgr().stop();
-            }
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
-        }
-
-        private void form_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseState_X = e.X;
-            mouseState_Y = e.Y;
-            MouseButtons button = e.Button;
-            if (button <= MouseButtons.Right)
-            {
-                if (button != MouseButtons.Left)
-                {
-                    if (button == MouseButtons.Right)
-                    {
-                        mouseState_RightButton = Microsoft.Xna.Framework.Input.ButtonState.Released;
-                    }
-                }
-                else
-                {
-                    mouseState_LeftButton = Microsoft.Xna.Framework.Input.ButtonState.Released;
-                }
-            }
-            else if (button != MouseButtons.Middle)
-            {
-                if (button != MouseButtons.XButton1)
-                {
-                    if (button == MouseButtons.XButton2)
-                    {
-                        mouseState_XButton2 = Microsoft.Xna.Framework.Input.ButtonState.Released;
-                    }
-                }
-                else
-                {
-                    mouseState_XButton1 = Microsoft.Xna.Framework.Input.ButtonState.Released;
-                }
-            }
-            else
-            {
-                mouseState_MiddleButton = Microsoft.Xna.Framework.Input.ButtonState.Released;
-            }
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
-        }
-
-        private void form_MouseMove(object sender, MouseEventArgs e)
-        {
-            mouseState_X = e.X;
-            mouseState_Y = e.Y;
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
         }
 
         public MouseState GetMouseState()
         {
-            return new MouseState(mouseState_X, mouseState_Y, mouseState_ScrollWheelValue, mouseState_LeftButton, mouseState_MiddleButton, mouseState_RightButton, mouseState_XButton1, mouseState_XButton2);
+            return _currentMouseState;
         }
 
         private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
@@ -160,34 +53,6 @@ namespace CutTheRope
             {
                 UseWindowMode_TODO_ChangeFullScreenResolution = true;
             }
-        }
-
-        private void form_Resize(object sender, EventArgs e)
-        {
-            if (Global.ScreenSizeManager.SkipSizeChanges)
-            {
-                return;
-            }
-            Form form = WindowAsForm();
-            if (form.WindowState == FormWindowState.Maximized)
-            {
-                form.WindowState = FormWindowState.Normal;
-                bool isFullScreen = Global.ScreenSizeManager.IsFullScreen;
-            }
-        }
-
-        public void SetCursor(Cursor cursor, MouseState mouseState)
-        {
-            if (Window.ClientBounds.Contains(Window.ClientBounds.X + mouseState.X, Window.ClientBounds.Y + mouseState.Y) && _cursorLast != cursor)
-            {
-                WindowAsForm().Cursor = cursor;
-                _cursorLast = cursor;
-            }
-        }
-
-        private Form WindowAsForm()
-        {
-            return (Form)Control.FromHandle(Window.Handle);
         }
 
         private void Window_ClientSizeChanged(object sender, EventArgs e)
@@ -226,14 +91,9 @@ namespace CutTheRope
             SoundMgr.SetContentManager(Content);
             OpenGL.Init();
             Global.MouseCursor.Load(Content);
-            Form form = WindowAsForm();
             if (UseWindowMode_TODO_ChangeFullScreenResolution)
             {
                 Window.AllowUserResizing = true;
-                if (form != null)
-                {
-                    form.MaximizeBox = false;
-                }
             }
             else
             {
@@ -244,12 +104,6 @@ namespace CutTheRope
             bool isFullScreen = !UseWindowMode_TODO_ChangeFullScreenResolution && (num <= 0 || Preferences._getBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
             Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, num, isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
-            if (form != null)
-            {
-                Global.ScreenSizeManager.SetWindowMinimumSize(form);
-                form.BackColor = System.Drawing.Color.Black;
-                form.Resize += form_Resize;
-            }
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
             CtrRenderer.onSurfaceCreated();
             CtrRenderer.onSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
@@ -318,10 +172,6 @@ namespace CutTheRope
                 frameCounter = 0;
                 Preferences.Update();
             }
-            if (IsMinimized)
-            {
-                return;
-            }
             if (frameRate > 0 && frameRate < 50)
             {
                 IsFixedTimeStep = true;
@@ -355,7 +205,9 @@ namespace CutTheRope
                 iframework.core.Application.sharedMovieMgr().stop();
                 CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
             }
-            MouseState mouseState = windows.MouseCursor.GetMouseState();
+            _currentMouseState = Mouse.GetState();
+            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
+            MouseState mouseState = desktop.MouseCursor.GetMouseState();
             iframework.core.Application.sharedRootController().mouseMoved(CtrRenderer.transformX(mouseState.X), CtrRenderer.transformY(mouseState.Y));
             CtrRenderer.update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
             base.Update(gameTime);
@@ -427,27 +279,9 @@ namespace CutTheRope
 
         private bool _altEnterPressed;
 
-        private Process parentProcess;
-
-        private int mouseState_X;
-
-        private int mouseState_Y;
-
-        private int mouseState_ScrollWheelValue;
-
-        private Microsoft.Xna.Framework.Input.ButtonState mouseState_LeftButton;
-
-        private Microsoft.Xna.Framework.Input.ButtonState mouseState_MiddleButton;
-
-        private Microsoft.Xna.Framework.Input.ButtonState mouseState_RightButton;
-
-        private Microsoft.Xna.Framework.Input.ButtonState mouseState_XButton1;
-
-        private Microsoft.Xna.Framework.Input.ButtonState mouseState_XButton2;
+        private MouseState _currentMouseState;
 
         private bool UseWindowMode_TODO_ChangeFullScreenResolution = true;
-
-        private Cursor _cursorLast;
 
         private Dictionary<Microsoft.Xna.Framework.Input.Keys, bool> keyState = new();
 

@@ -6,8 +6,6 @@
     <RootNamespace>CutTheRope</RootNamespace>
     <AssemblyName>CutTheRope</AssemblyName>
     <TargetFramework>net9.0-windows</TargetFramework>
-    <UseWindowsForms>True</UseWindowsForms>
-    <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
