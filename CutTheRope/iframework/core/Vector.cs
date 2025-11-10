@@ -1,3 +1,6 @@
+using Microsoft.Xna.Framework;
+using System;
+
 namespace CutTheRope.iframework.core
 {
     public struct Vector

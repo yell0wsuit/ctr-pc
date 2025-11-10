@@ -9,7 +9,7 @@ namespace CutTheRope.ios
     {
         private static void Init()
         {
-            Timers = [];
+            Timers = new List<Entry>();
             dd = new DelayedDispatcher();
             is_init = true;
         }
@@ -29,13 +29,11 @@ namespace CutTheRope.ios
             {
                 Init();
             }
-            Entry entry = new()
-            {
-                f = f,
-                p = p,
-                fireTime = 0f,
-                delay = interval
-            };
+            Entry entry = new();
+            entry.f = f;
+            entry.p = p;
+            entry.fireTime = 0f;
+            entry.delay = interval;
             Timers.Add(entry);
             return Timers.Count() - 1;
         }

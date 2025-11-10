@@ -1,4 +1,5 @@
 using CutTheRope.game;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,25 +12,41 @@ namespace CutTheRope.ios
     internal class XMLNode
     {
         // (get) Token: 0x060000FB RID: 251 RVA: 0x000057CA File Offset: 0x000039CA
-        public string Name => name;
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+        }
 
         // (get) Token: 0x060000FC RID: 252 RVA: 0x000057D2 File Offset: 0x000039D2
-        public NSString data => value;
+        public NSString data
+        {
+            get
+            {
+                return value;
+            }
+        }
 
         public NSString this[string key]
         {
             get
             {
                 string rhs = null;
-                return !attributes_.TryGetValue(key, out rhs) ? new NSString("") : new NSString(rhs);
+                if (!attributes_.TryGetValue(key, out rhs))
+                {
+                    return new NSString("");
+                }
+                return new NSString(rhs);
             }
         }
 
         public XMLNode()
         {
             parent = null;
-            childs_ = [];
-            attributes_ = [];
+            childs_ = new List<XMLNode>();
+            attributes_ = new Dictionary<string, string>();
         }
 
         public bool attributes()
@@ -195,12 +212,12 @@ namespace CutTheRope.ios
 
         private XMLNode parent;
 
-        private readonly List<XMLNode> childs_;
+        private List<XMLNode> childs_;
 
         private string name;
 
         private NSString value;
 
-        private readonly Dictionary<string, string> attributes_;
+        private Dictionary<string, string> attributes_;
     }
 }

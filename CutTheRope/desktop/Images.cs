@@ -1,3 +1,5 @@
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -39,6 +41,6 @@ namespace CutTheRope.desktop
             getContentManager(imgName).Unload();
         }
 
-        private static readonly Dictionary<string, ContentManager> _contentManagers = [];
+        private static Dictionary<string, ContentManager> _contentManagers = new();
     }
 }

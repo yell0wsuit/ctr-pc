@@ -1,8 +1,13 @@
 using CutTheRope.ctr_commons;
 using CutTheRope.desktop;
+using CutTheRope.iframework;
 using CutTheRope.iframework.core;
+using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
+using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.game
@@ -192,11 +197,11 @@ namespace CutTheRope.game
             }
             checkForBoxPerfect(pack);
             int totalStars = CTRPreferences.getTotalStars();
-            if (totalStars is >= 50 and < 150)
+            if (totalStars >= 50 && totalStars < 150)
             {
                 CTRRootController.postAchievementName("677900534", ACHIEVEMENT_STRING("\"Bronze Scissors\""));
             }
-            else if (totalStars is >= 150 and < 300)
+            else if (totalStars >= 150 && totalStars < 300)
             {
                 CTRRootController.postAchievementName("681508185", ACHIEVEMENT_STRING("\"Silver Scissors\""));
             }
@@ -702,7 +707,7 @@ namespace CutTheRope.game
 
         private Text mapNameLabel;
 
-        private readonly int[] touchAddressMap = new int[5];
+        private int[] touchAddressMap = new int[5];
 
         private int tmpDimTime;
 

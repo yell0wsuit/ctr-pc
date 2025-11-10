@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace CutTheRope.iframework
 {
@@ -214,7 +215,7 @@ namespace CutTheRope.iframework
             md5_padding = array;
         }
 
-        private static readonly byte[] md5_padding;
+        private static byte[] md5_padding;
 
         public class md5_context
         {

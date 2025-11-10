@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
@@ -11,7 +12,7 @@ namespace CutTheRope.iframework.visual
 
         public static KeyFrame makeAction(DynamicArray actions, float time)
         {
-            List<CTRAction> list = [];
+            List<CTRAction> list = new();
             foreach (object obj in actions)
             {
                 CTRAction action = (CTRAction)obj;
@@ -40,7 +41,7 @@ namespace CutTheRope.iframework.visual
 
         public static KeyFrame makeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
-            return makeAction([CTRAction.createAction(target, action, p, sp)], time);
+            return makeAction(new List<CTRAction> { CTRAction.createAction(target, action, p, sp) }, time);
         }
 
         public static KeyFrame makePos(double x, double y, TransitionType transition, double time)

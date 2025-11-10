@@ -3,6 +3,7 @@ using CutTheRope.iframework.media;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+using System;
 using System.Globalization;
 
 namespace CutTheRope.iframework.core
@@ -139,13 +140,13 @@ namespace CutTheRope.iframework.core
 
         private static CTRPreferences prefs;
 
-        private static readonly CTRResourceMgr resourceMgr = (CTRResourceMgr)new CTRResourceMgr().init();
+        private static CTRResourceMgr resourceMgr = (CTRResourceMgr)new CTRResourceMgr().init();
 
         protected static RootController root;
 
         private static ApplicationSettings appSettings;
 
-        private static readonly GLCanvas _canvas = (GLCanvas)new GLCanvas().initWithFrame(default(Rectangle));
+        private static GLCanvas _canvas = (GLCanvas)new GLCanvas().initWithFrame(default(Rectangle));
 
         private static SoundMgr soundMgr;
 

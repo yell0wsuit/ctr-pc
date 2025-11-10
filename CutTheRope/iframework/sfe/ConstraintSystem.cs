@@ -11,7 +11,7 @@ namespace CutTheRope.iframework.sfe
             if (base.init() != null)
             {
                 relaxationTimes = 1;
-                parts = [];
+                parts = new List<ConstraintedPoint>();
             }
             return this;
         }

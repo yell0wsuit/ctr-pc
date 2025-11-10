@@ -2,6 +2,7 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
+using System;
 
 namespace CutTheRope.game
 {
@@ -48,7 +49,11 @@ namespace CutTheRope.game
 
         public virtual Animation getAnimation(int resID)
         {
-            return resID == 80 ? this : (Animation)animations.objectAtIndex(resID - 101);
+            if (resID == 80)
+            {
+                return this;
+            }
+            return (Animation)animations.objectAtIndex(resID - 101);
         }
 
         public virtual void switchToAnimationatEndOfAnimationDelay(int i2, int a2, int i1, int a1, float d)
@@ -82,7 +87,14 @@ namespace CutTheRope.game
             }
             Animation animation = getAnimation(resID);
             animation.setEnabled(true);
-            color = animation == this ? RGBAColor.solidOpaqueRGBA : RGBAColor.transparentRGBA;
+            if (animation == this)
+            {
+                color = RGBAColor.solidOpaqueRGBA;
+            }
+            else
+            {
+                color = RGBAColor.transparentRGBA;
+            }
             animation.playTimeline(t);
         }
 
