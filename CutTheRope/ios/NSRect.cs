@@ -1,6 +1,5 @@
 using CutTheRope.iframework;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace CutTheRope.ios
 {

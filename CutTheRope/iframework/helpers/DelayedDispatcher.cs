@@ -8,7 +8,7 @@ namespace CutTheRope.iframework.helpers
     {
         public DelayedDispatcher()
         {
-            dispatchers = new List<Dispatch>();
+            dispatchers = [];
         }
 
         public override void dealloc()

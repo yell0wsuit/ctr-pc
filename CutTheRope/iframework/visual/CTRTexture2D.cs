@@ -1,10 +1,8 @@
 using CutTheRope.ctr_commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace CutTheRope.iframework.visual
 {
@@ -14,8 +12,8 @@ namespace CutTheRope.iframework.visual
         {
             float num = t._invWidth * rect.x;
             float num2 = t._invHeight * rect.y;
-            float num3 = num + t._invWidth * rect.w;
-            float num4 = num2 + t._invHeight * rect.h;
+            float num3 = num + (t._invWidth * rect.w);
+            float num4 = num2 + (t._invHeight * rect.h);
             float[] pointer = [num, num2, num3, num2, num, num4, num3, num4];
             float[] array = new float[12];
             array[0] = point.x;
@@ -346,13 +344,13 @@ namespace CutTheRope.iframework.visual
 
         private TexParams _localTexParams;
 
-        private static TexParams _defaultTexParams;
+        private static readonly TexParams _defaultTexParams;
 
-        private static TexParams _texParams;
+        private static readonly TexParams _texParams;
 
-        private static TexParams _texParamsCopy;
+        private static readonly TexParams _texParamsCopy;
 
-        private bool PixelCorrectionDone;
+        private readonly bool PixelCorrectionDone;
 
         private static CTRTexture2D root;
 
@@ -379,13 +377,13 @@ namespace CutTheRope.iframework.visual
 
         private struct TexParams
         {
-            private uint minFilter;
+            private readonly uint minFilter;
 
-            private uint magFilter;
+            private readonly uint magFilter;
 
-            private uint wrapS;
+            private readonly uint wrapS;
 
-            private uint wrapT;
+            private readonly uint wrapT;
         }
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope
 {
     internal static class Program

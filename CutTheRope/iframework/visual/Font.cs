@@ -55,15 +55,7 @@ namespace CutTheRope.iframework.visual
 
         public override float getCharWidth(char c)
         {
-            if (c == ' ')
-            {
-                return spaceWidth;
-            }
-            if (c == '*')
-            {
-                return 0f;
-            }
-            return charmap.texture.quadRects[getCharQuad(c)].w;
+            return c == ' ' ? spaceWidth : c == '*' ? 0f : charmap.texture.quadRects[getCharQuad(c)].w;
         }
 
         public override int getCharmapIndex(char c)
@@ -74,20 +66,12 @@ namespace CutTheRope.iframework.visual
         public override int getCharQuad(char c)
         {
             int num = chars.IndexOf(c);
-            if (num >= 0)
-            {
-                return num;
-            }
-            return -1;
+            return num >= 0 ? num : -1;
         }
 
         public override float getCharOffset(char[] s, int c, int len)
         {
-            if (c == len - 1)
-            {
-                return 0f;
-            }
-            return charOffset;
+            return c == len - 1 ? 0f : charOffset;
         }
 
         public override int totalCharmaps()

@@ -1,9 +1,5 @@
-using CutTheRope.iframework;
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
@@ -33,7 +29,7 @@ namespace CutTheRope.game
             light.parentAnchor = 10;
             light.y = 270f;
             light.x = RTD(0.0);
-            light.addAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 2, new List<int> { 3, 4, 4 });
+            light.addAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 2, [3, 4, 4]);
             light.doRestoreCutTransparency();
             light.visible = false;
             addChild(light);
@@ -42,8 +38,8 @@ namespace CutTheRope.game
         public virtual void updateRotation()
         {
             float num = 140f;
-            t1.x = x - num / 2f - 20f;
-            t2.x = x + num / 2f - 20f;
+            t1.x = x - (num / 2f) - 20f;
+            t2.x = x + (num / 2f) - 20f;
             t1.y = t2.y = y;
             b1.x = t1.x;
             b2.x = t2.x;

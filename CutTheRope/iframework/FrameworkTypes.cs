@@ -13,13 +13,7 @@ namespace CutTheRope.iframework
     internal class FrameworkTypes : CTRMathHelper
     {
         // (get) Token: 0x06000108 RID: 264 RVA: 0x00005BCC File Offset: 0x00003DCC
-        public GLCanvas canvas
-        {
-            get
-            {
-                return Application.sharedCanvas();
-            }
-        }
+        public GLCanvas canvas => Application.sharedCanvas();
 
         public static float[] toFloatArray(Quad2D[] quads)
         {
@@ -53,12 +47,12 @@ namespace CutTheRope.iframework
 
         public static float transformToRealX(float x)
         {
-            return x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH + VIEW_OFFSET_X;
+            return (x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH) + VIEW_OFFSET_X;
         }
 
         public static float transformToRealY(float y)
         {
-            return y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT + VIEW_OFFSET_Y;
+            return (y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT) + VIEW_OFFSET_Y;
         }
 
         public static float transformFromRealX(float x)

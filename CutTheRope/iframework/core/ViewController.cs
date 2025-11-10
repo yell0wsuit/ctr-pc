@@ -11,7 +11,7 @@ namespace CutTheRope.iframework.core
     {
         public ViewController()
         {
-            views = new Dictionary<int, View>();
+            views = [];
         }
 
         public virtual NSObject initWithParent(ViewController p)
@@ -19,8 +19,8 @@ namespace CutTheRope.iframework.core
             if (base.init() != null)
             {
                 controllerState = ControllerState.CONTROLLER_DEACTIVE;
-                views = new Dictionary<int, View>();
-                childs = new Dictionary<int, ViewController>();
+                views = [];
+                childs = [];
                 activeViewID = -1;
                 activeChildID = -1;
                 pausedViewID = -1;

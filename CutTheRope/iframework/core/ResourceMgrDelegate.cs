@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.iframework.core
 {
     internal interface ResourceMgrDelegate

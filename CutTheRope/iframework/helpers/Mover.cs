@@ -57,8 +57,8 @@ namespace CutTheRope.iframework.helpers
                 float num4 = 0f;
                 for (int i = 0; i < num2; i++)
                 {
-                    float x = s.x + num * (float)Math.Cos((double)num4);
-                    float y = s.y + num * (float)Math.Sin((double)num4);
+                    float x = s.x + (num * (float)Math.Cos((double)num4));
+                    float y = s.y + (num * (float)Math.Sin((double)num4));
                     addPathPoint(vect(x, y));
                     num4 += num3;
                 }

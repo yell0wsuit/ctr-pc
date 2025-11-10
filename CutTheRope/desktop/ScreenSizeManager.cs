@@ -8,111 +8,37 @@ namespace CutTheRope.desktop
     internal class ScreenSizeManager
     {
         // (get) Token: 0x060000AF RID: 175 RVA: 0x00004B78 File Offset: 0x00002D78
-        public static int MAX_WINDOW_WIDTH
-        {
-            get
-            {
-                if (Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef)
-                {
-                    return 4096;
-                }
-                return 2048;
-            }
-        }
+        public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
 
         // (get) Token: 0x060000B0 RID: 176 RVA: 0x00004B92 File Offset: 0x00002D92
-        public int WindowWidth
-        {
-            get
-            {
-                return _windowRect.Width;
-            }
-        }
+        public int WindowWidth => _windowRect.Width;
 
         // (get) Token: 0x060000B1 RID: 177 RVA: 0x00004B9F File Offset: 0x00002D9F
-        public int WindowHeight
-        {
-            get
-            {
-                return _windowRect.Height;
-            }
-        }
+        public int WindowHeight => _windowRect.Height;
 
         // (get) Token: 0x060000B2 RID: 178 RVA: 0x00004BAC File Offset: 0x00002DAC
-        public int ScreenWidth
-        {
-            get
-            {
-                return _fullScreenRect.Width;
-            }
-        }
+        public int ScreenWidth => _fullScreenRect.Width;
 
         // (get) Token: 0x060000B3 RID: 179 RVA: 0x00004BB9 File Offset: 0x00002DB9
-        public int ScreenHeight
-        {
-            get
-            {
-                return _fullScreenRect.Height;
-            }
-        }
+        public int ScreenHeight => _fullScreenRect.Height;
 
         // (get) Token: 0x060000B4 RID: 180 RVA: 0x00004BC6 File Offset: 0x00002DC6
-        public bool IsFullScreen
-        {
-            get
-            {
-                return _isFullScreen;
-            }
-        }
+        public bool IsFullScreen => _isFullScreen;
 
         // (get) Token: 0x060000B5 RID: 181 RVA: 0x00004BCE File Offset: 0x00002DCE
-        public Microsoft.Xna.Framework.Rectangle CurrentSize
-        {
-            get
-            {
-                if (IsFullScreen)
-                {
-                    return _fullScreenRect;
-                }
-                return _windowRect;
-            }
-        }
+        public Microsoft.Xna.Framework.Rectangle CurrentSize => IsFullScreen ? _fullScreenRect : _windowRect;
 
         // (get) Token: 0x060000B6 RID: 182 RVA: 0x00004BE5 File Offset: 0x00002DE5
-        public int GameWidth
-        {
-            get
-            {
-                return _gameWidth;
-            }
-        }
+        public int GameWidth => _gameWidth;
 
         // (get) Token: 0x060000B7 RID: 183 RVA: 0x00004BED File Offset: 0x00002DED
-        public int GameHeight
-        {
-            get
-            {
-                return _gameHeight;
-            }
-        }
+        public int GameHeight => _gameHeight;
 
         // (get) Token: 0x060000B8 RID: 184 RVA: 0x00004BF5 File Offset: 0x00002DF5
-        public Microsoft.Xna.Framework.Rectangle ScaledViewRect
-        {
-            get
-            {
-                return _scaledViewRect;
-            }
-        }
+        public Microsoft.Xna.Framework.Rectangle ScaledViewRect => _scaledViewRect;
 
         // (get) Token: 0x060000B9 RID: 185 RVA: 0x00004BFD File Offset: 0x00002DFD
-        public bool SkipSizeChanges
-        {
-            get
-            {
-                return _skipChanges;
-            }
-        }
+        public bool SkipSizeChanges => _skipChanges;
 
         // (set) Token: 0x060000BA RID: 186 RVA: 0x00004C05 File Offset: 0x00002E05
         public bool FullScreenCropWidth
@@ -128,13 +54,7 @@ namespace CutTheRope.desktop
         }
 
         // (get) Token: 0x060000BB RID: 187 RVA: 0x00004C1D File Offset: 0x00002E1D
-        public double WidthAspectRatio
-        {
-            get
-            {
-                return _scaledViewRect.Width / (double)_gameWidth;
-            }
-        }
+        public double WidthAspectRatio => _scaledViewRect.Width / (double)_gameWidth;
 
         public int TransformWindowToViewX(int x)
         {
@@ -190,12 +110,12 @@ namespace CutTheRope.desktop
 
         public int ScaledGameWidth(int scaledHeight)
         {
-            return (int)(scaledHeight / _gameAspectRatio + 0.5);
+            return (int)((scaledHeight / _gameAspectRatio) + 0.5);
         }
 
         public int ScaledGameHeight(int scaledWidth)
         {
-            return (int)(scaledWidth * _gameAspectRatio + 0.5);
+            return (int)((scaledWidth * _gameAspectRatio) + 0.5);
         }
 
         private void UpdateScaledView()
@@ -362,11 +282,11 @@ namespace CutTheRope.desktop
 
         private Microsoft.Xna.Framework.Rectangle _fullScreenRect;
 
-        private int _gameWidth;
+        private readonly int _gameWidth;
 
-        private int _gameHeight;
+        private readonly int _gameHeight;
 
-        private double _gameAspectRatio;
+        private readonly double _gameAspectRatio;
 
         private Microsoft.Xna.Framework.Rectangle _scaledViewRect;
 

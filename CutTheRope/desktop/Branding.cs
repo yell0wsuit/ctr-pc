@@ -9,26 +9,14 @@ namespace CutTheRope.desktop
     public class Branding
     {
         // (get) Token: 0x06000042 RID: 66 RVA: 0x000032D1 File Offset: 0x000014D1
-        public bool IsLoaded
-        {
-            get
-            {
-                return _isLoaded;
-            }
-        }
+        public bool IsLoaded => _isLoaded;
 
         // (get) Token: 0x06000043 RID: 67 RVA: 0x000032D9 File Offset: 0x000014D9
-        public bool IsFinished
-        {
-            get
-            {
-                return IsLoaded && _currentSplash >= _listBitmap.Count;
-            }
-        }
+        public bool IsFinished => IsLoaded && _currentSplash >= _listBitmap.Count;
 
         public void LoadSplashScreens()
         {
-            List<string> list2 = new() { "BMP", "GIF", "EXIF", "JPG", "JPEG", "PNG", "TIFF" };
+            List<string> list2 = ["BMP", "GIF", "EXIF", "JPG", "JPEG", "PNG", "TIFF"];
             int num = 1;
             for (; ; )
             {
@@ -94,8 +82,8 @@ namespace CutTheRope.desktop
                     double num5 = currentSize.Width / (double)bounds.Width;
                     double val2 = currentSize.Height / (double)bounds.Height;
                     double num = Math.Min(num5, val2);
-                    bounds.Width = (int)(bounds.Width * num + 0.5);
-                    bounds.Height = (int)(bounds.Height * num + 0.5);
+                    bounds.Width = (int)((bounds.Width * num) + 0.5);
+                    bounds.Height = (int)((bounds.Height * num) + 0.5);
                     bounds.X = (currentSize.Width - bounds.Width) / 2;
                     bounds.Y = (currentSize.Height - bounds.Height) / 2;
                     Color color = Color.White;
@@ -133,7 +121,7 @@ namespace CutTheRope.desktop
 
         private const int SPLASH_TIME_FULL_MSEC = 3700;
 
-        private List<Texture2D> _listBitmap = new();
+        private readonly List<Texture2D> _listBitmap = [];
 
         private TimeSpan _currentSplashTime;
 

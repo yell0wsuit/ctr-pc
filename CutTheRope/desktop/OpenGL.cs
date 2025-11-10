@@ -293,14 +293,7 @@ namespace CutTheRope.desktop
             {
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
-                if (s_GLVertexPointer.size_ == 2)
-                {
-                    position.Z = 0f;
-                }
-                else
-                {
-                    position.Z = s_GLVertexPointer.pointer_[num++];
-                }
+                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
                 array[i] = new VertexPositionColor(position, s_GLColorPointer[i].toXNA());
             }
             return array;
@@ -315,14 +308,7 @@ namespace CutTheRope.desktop
                 Vector3 position = default(Vector3);
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
-                if (s_GLVertexPointer.size_ == 2)
-                {
-                    position.Z = 0f;
-                }
-                else
-                {
-                    position.Z = s_GLVertexPointer.pointer_[num++];
-                }
+                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
                 array[i] = new VertexPositionColor(position, s_Color);
             }
             s_GLVertexPointer = null;
@@ -349,14 +335,7 @@ namespace CutTheRope.desktop
                 Vector3 position = default(Vector3);
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
-                if (s_GLVertexPointer.size_ == 2)
-                {
-                    position.Z = 0f;
-                }
-                else
-                {
-                    position.Z = s_GLVertexPointer.pointer_[num++];
-                }
+                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
                 Vector2 textureCoordinate = default(Vector2);
                 textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
                 textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
@@ -383,14 +362,7 @@ namespace CutTheRope.desktop
                 Vector3 position = default(Vector3);
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
-                if (s_GLVertexPointer.size_ == 2)
-                {
-                    position.Z = 0f;
-                }
-                else
-                {
-                    position.Z = s_GLVertexPointer.pointer_[num++];
-                }
+                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
                 Vector2 textureCoordinate = default(Vector2);
                 textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
                 textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
@@ -413,20 +385,26 @@ namespace CutTheRope.desktop
             InitRasterizerState();
             s_glServerSideFlags[0] = true;
             s_glClientStateFlags[0] = true;
-            s_effectTexture = new BasicEffect(Global.GraphicsDevice);
-            s_effectTexture.VertexColorEnabled = false;
-            s_effectTexture.TextureEnabled = true;
-            s_effectTexture.View = Matrix.Identity;
-            s_effectTextureColor = new BasicEffect(Global.GraphicsDevice);
-            s_effectTextureColor.VertexColorEnabled = true;
-            s_effectTextureColor.TextureEnabled = true;
-            s_effectTextureColor.View = Matrix.Identity;
-            s_effectColor = new BasicEffect(Global.GraphicsDevice);
-            s_effectColor.VertexColorEnabled = true;
-            s_effectColor.TextureEnabled = false;
-            s_effectColor.Alpha = 1f;
-            s_effectColor.Texture = null;
-            s_effectColor.View = Matrix.Identity;
+            s_effectTexture = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = false,
+                TextureEnabled = true,
+                View = Matrix.Identity
+            };
+            s_effectTextureColor = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = true,
+                View = Matrix.Identity
+            };
+            s_effectColor = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = false,
+                Alpha = 1f,
+                Texture = null,
+                View = Matrix.Identity
+            };
         }
 
         private static BasicEffect getEffect(bool useTexture, bool useColor)
@@ -460,13 +438,17 @@ namespace CutTheRope.desktop
 
         private static void InitRasterizerState()
         {
-            s_rasterizerStateSolidColor = new RasterizerState();
-            s_rasterizerStateSolidColor.FillMode = FillMode.Solid;
-            s_rasterizerStateSolidColor.CullMode = CullMode.None;
-            s_rasterizerStateSolidColor.ScissorTestEnable = true;
-            s_rasterizerStateTexture = new RasterizerState();
-            s_rasterizerStateTexture.CullMode = CullMode.None;
-            s_rasterizerStateTexture.ScissorTestEnable = true;
+            s_rasterizerStateSolidColor = new RasterizerState
+            {
+                FillMode = FillMode.Solid,
+                CullMode = CullMode.None,
+                ScissorTestEnable = true
+            };
+            s_rasterizerStateTexture = new RasterizerState
+            {
+                CullMode = CullMode.None,
+                ScissorTestEnable = true
+            };
         }
 
         private static void DrawTriangleStrip(int first, int count)
@@ -642,9 +624,9 @@ namespace CutTheRope.desktop
             glScissor((double)x, (double)y, (double)w, (double)h);
         }
 
-        private static Dictionary<int, bool> s_glServerSideFlags = new();
+        private static readonly Dictionary<int, bool> s_glServerSideFlags = [];
 
-        private static Dictionary<int, bool> s_glClientStateFlags = new();
+        private static readonly Dictionary<int, bool> s_glClientStateFlags = [];
 
         private static RenderTarget2D s_RenderTarget;
 
@@ -652,7 +634,7 @@ namespace CutTheRope.desktop
 
         private static int s_glMatrixMode;
 
-        private static List<Matrix> s_matrixModelViewStack = new();
+        private static readonly List<Matrix> s_matrixModelViewStack = [];
 
         private static Matrix s_matrixModelView = Matrix.Identity;
 
@@ -701,17 +683,7 @@ namespace CutTheRope.desktop
         private class GLVertexPointer
         {
             // (get) Token: 0x06000653 RID: 1619 RVA: 0x00033AD0 File Offset: 0x00031CD0
-            public int Count
-            {
-                get
-                {
-                    if (pointer_ == null || size_ == 0)
-                    {
-                        return 0;
-                    }
-                    return pointer_.Length / size_;
-                }
-            }
+            public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
 
             public GLVertexPointer(int size, int type, int stride, object pointer)
             {
@@ -727,17 +699,7 @@ namespace CutTheRope.desktop
         private class GLTexCoordPointer
         {
             // (get) Token: 0x06000655 RID: 1621 RVA: 0x00033B16 File Offset: 0x00031D16
-            public int Count
-            {
-                get
-                {
-                    if (pointer_ == null || size_ == 0)
-                    {
-                        return 0;
-                    }
-                    return pointer_.Length / size_;
-                }
-            }
+            public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
 
             public GLTexCoordPointer(int size, int type, int stride, object pointer)
             {

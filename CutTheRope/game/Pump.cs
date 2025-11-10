@@ -1,7 +1,6 @@
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using System;
 
 namespace CutTheRope.game
 {
@@ -26,8 +25,8 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            t1.x = x - bb.w / 2f;
-            t2.x = x + bb.w / 2f;
+            t1.x = x - (bb.w / 2f);
+            t2.x = x + (bb.w / 2f);
             t1.y = t2.y = y;
             angle = DEGREES_TO_RADIANS(rotation);
             t1 = vectRotateAround(t1, angle, x, y);

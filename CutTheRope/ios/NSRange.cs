@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.ios
 {
     internal struct NSRange

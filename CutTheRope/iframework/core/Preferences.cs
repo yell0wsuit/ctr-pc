@@ -89,11 +89,7 @@ namespace CutTheRope.iframework.core
         public static int _getIntForKey(string k)
         {
             int value;
-            if (data_.TryGetValue(k, out value))
-            {
-                return value;
-            }
-            return 0;
+            return data_.TryGetValue(k, out value) ? value : 0;
         }
 
         private static float _getFloatForKey(string k)
@@ -114,11 +110,7 @@ namespace CutTheRope.iframework.core
         private static string _getStringForKey(string k)
         {
             string value;
-            if (dataStrings_.TryGetValue(k, out value))
-            {
-                return value;
-            }
-            return "";
+            return dataStrings_.TryGetValue(k, out value) ? value : "";
         }
 
         public virtual void savePreferences()
@@ -238,9 +230,9 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        private static Dictionary<string, int> data_ = new();
+        private static readonly Dictionary<string, int> data_ = [];
 
-        private static Dictionary<string, string> dataStrings_ = new();
+        private static readonly Dictionary<string, string> dataStrings_ = [];
 
         public static bool GameSaveRequested = false;
     }

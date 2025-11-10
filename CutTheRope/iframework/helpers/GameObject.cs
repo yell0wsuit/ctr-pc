@@ -113,7 +113,7 @@ namespace CutTheRope.iframework.helpers
                 int i = 100;
                 if (nSString.characterAtIndex(0) == 'R')
                 {
-                    i = nSString.substringFromIndex(2).intValue() / 2 + 1;
+                    i = (nSString.substringFromIndex(2).intValue() / 2) + 1;
                 }
                 float m_ = xml["moveSpeed"].floatValue();
                 float r_ = xml["rotateSpeed"].floatValue();
@@ -148,10 +148,10 @@ namespace CutTheRope.iframework.helpers
             Vector v2 = vect(bb.x + bb.w, bb.y);
             Vector v3 = vect(bb.x + bb.w, bb.y + bb.h);
             Vector v4 = vect(bb.x, bb.y + bb.h);
-            v = vectRotateAround(v, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
-            v2 = vectRotateAround(v2, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
-            v3 = vectRotateAround(v3, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
-            v4 = vectRotateAround(v4, (double)DEGREES_TO_RADIANS(a), (float)(width / 2.0 + rotationCenterX), (float)(height / 2.0 + rotationCenterY));
+            v = vectRotateAround(v, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
+            v2 = vectRotateAround(v2, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
+            v3 = vectRotateAround(v3, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
+            v4 = vectRotateAround(v4, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
             rbb.tlX = v.x;
             rbb.tlY = v.y;
             rbb.trX = v2.x;
