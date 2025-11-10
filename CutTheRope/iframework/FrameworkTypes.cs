@@ -1,8 +1,8 @@
+using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.platform;
 using CutTheRope.ios;
-using CutTheRope.desktop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
