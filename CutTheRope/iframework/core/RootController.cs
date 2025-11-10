@@ -1,9 +1,6 @@
 using CutTheRope.desktop;
-using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 
@@ -129,7 +126,7 @@ namespace CutTheRope.iframework.core
                 }
                 else if (nextScreenImage != null)
                 {
-                    RGBAColor fill2 = (viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - (double)num * 2.0);
+                    RGBAColor fill2 = (viewTransition == 4) ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - ((double)num * 2.0)) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - ((double)num * 2.0));
                     Grabber.drawGrabbedImage(nextScreenImage, 0, 0);
                     OpenGL.glDisable(0);
                     OpenGL.glEnable(1);

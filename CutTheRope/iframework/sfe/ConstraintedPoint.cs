@@ -1,7 +1,5 @@
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
-using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.iframework.sfe
@@ -20,7 +18,7 @@ namespace CutTheRope.iframework.sfe
             {
                 prevPos = vect(2.1474836E+09f, 2.1474836E+09f);
                 pin = vect(-1f, -1f);
-                constraints = new List<Constraint>();
+                constraints = [];
             }
             return this;
         }
@@ -49,7 +47,7 @@ namespace CutTheRope.iframework.sfe
 
         public virtual void removeConstraints()
         {
-            constraints = new List<Constraint>();
+            constraints = [];
         }
 
         public virtual void changeConstraintFromTo(ConstraintedPoint o, ConstraintedPoint n)
@@ -140,14 +138,7 @@ namespace CutTheRope.iframework.sfe
             totalForce = vectZero;
             if (!disableGravity)
             {
-                if (!vectEqual(globalGravity, vectZero))
-                {
-                    totalForce = vectAdd(totalForce, vectMult(globalGravity, weight));
-                }
-                else
-                {
-                    totalForce = vectAdd(totalForce, gravity);
-                }
+                totalForce = !vectEqual(globalGravity, vectZero) ? vectAdd(totalForce, vectMult(globalGravity, weight)) : vectAdd(totalForce, gravity);
             }
             if (highestForceIndex != -1)
             {
@@ -237,14 +228,9 @@ namespace CutTheRope.iframework.sfe
             p.totalForce = vectZero;
             if (!p.disableGravity)
             {
-                if (!vectEqual(globalGravity, vectZero))
-                {
-                    p.totalForce = vectAdd(p.totalForce, vectMult(globalGravity, p.weight));
-                }
-                else
-                {
-                    p.totalForce = vectAdd(p.totalForce, p.gravity);
-                }
+                p.totalForce = !vectEqual(globalGravity, vectZero)
+                    ? vectAdd(p.totalForce, vectMult(globalGravity, p.weight))
+                    : vectAdd(p.totalForce, p.gravity);
             }
             if (p.highestForceIndex != -1)
             {

@@ -1,5 +1,4 @@
 using CutTheRope.iframework;
-using System;
 
 namespace CutTheRope.ios
 {

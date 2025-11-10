@@ -4,8 +4,6 @@ using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using Microsoft.Xna.Framework;
-using System;
 
 namespace CutTheRope.game
 {
@@ -73,7 +71,7 @@ namespace CutTheRope.game
             float num3 = (num >= 0.75f) ? num : 0.75f;
             vinilControllerL.scaleX = vinilControllerL.scaleY = vinilControllerR.scaleX = vinilControllerR.scaleY = num3;
             vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = num3;
-            vinilCenter.scaleX = 1f - (1f - vinilStickerL.scaleX) * 0.5f;
+            vinilCenter.scaleX = 1f - ((1f - vinilStickerL.scaleX) * 0.5f);
             vinilCenter.scaleY = vinilCenter.scaleX;
             sizeInPixels = vinilHighlightL.width * vinilHighlightL.scaleX;
             updateChildPositions();
@@ -133,7 +131,7 @@ namespace CutTheRope.game
                 {
                     whiteRGBA.a = color.a;
                 }
-                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX, 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + RTPD(1.0) * 3f) * vinilControllerL.scaleX, 5f, whiteRGBA);
+                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
                 OpenGL.glColor4f(Color.White);
                 OpenGL.glEnable(0);
             }
@@ -168,7 +166,7 @@ namespace CutTheRope.game
             vinil.y = vinilCenter.y = y;
             float num = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
             float num2 = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
-            float num3 = sizeInPixels - RTPD((double)(CONTROLLER_SHIFT_PARAM1 - CONTROLLER_SHIFT_PARAM2 * size)) + (1f - vinilControllerL.scaleX) * (vinilControllerL.width / 2);
+            float num3 = sizeInPixels - RTPD((double)(CONTROLLER_SHIFT_PARAM1 - (CONTROLLER_SHIFT_PARAM2 * size))) + ((1f - vinilControllerL.scaleX) * (vinilControllerL.width / 2));
             vinilHighlightL.x = x + num;
             vinilHighlightR.x = x - num;
             vinilHighlightL.y = vinilHighlightR.y = y - num2;
@@ -284,18 +282,18 @@ namespace CutTheRope.game
 
         private Image vinil;
 
-        private bool hasOneHandle_;
+        private readonly bool hasOneHandle_;
 
         private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.2);
 
-        private float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
+        private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
 
-        private float OUTER_CIRCLE_WIDTH = RTPD(7.0) * 3f;
+        private readonly float OUTER_CIRCLE_WIDTH = RTPD(7.0) * 3f;
 
-        private float ACTIVE_CIRCLE_WIDTH = RTPD(3.0) * 3f;
+        private readonly float ACTIVE_CIRCLE_WIDTH = RTPD(3.0) * 3f;
 
-        private float CONTROLLER_SHIFT_PARAM1 = 67.5f;
+        private readonly float CONTROLLER_SHIFT_PARAM1 = 67.5f;
 
-        private float CONTROLLER_SHIFT_PARAM2 = 0.089999996f;
+        private readonly float CONTROLLER_SHIFT_PARAM2 = 0.089999996f;
     }
 }

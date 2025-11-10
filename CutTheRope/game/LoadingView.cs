@@ -1,9 +1,6 @@
 using CutTheRope.desktop;
-using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using Microsoft.Xna.Framework;
-using System;
 
 namespace CutTheRope.game
 {
@@ -22,10 +19,10 @@ namespace CutTheRope.game
             CTRTexture2D texture = Application.getTexture(num7);
             OpenGL.glColor4f(s_Color1);
             Vector quadSize = Image.getQuadSize(num7, 0);
-            float num3 = SCREEN_WIDTH / 2f - quadSize.x;
+            float num3 = (SCREEN_WIDTH / 2f) - quadSize.x;
             GLDrawer.drawImageQuad(texture, 0, (double)num3, 0.0);
             OpenGL.glPushMatrix();
-            float num4 = SCREEN_WIDTH / 2f + quadSize.x / 2f;
+            float num4 = (SCREEN_WIDTH / 2f) + (quadSize.x / 2f);
             OpenGL.glTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
             OpenGL.glRotatef(180.0, 0.0, 0.0, 1.0);
             OpenGL.glTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);

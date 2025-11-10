@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.iframework.visual
 {
     internal class ToggleButton : BaseElement, ButtonDelegate

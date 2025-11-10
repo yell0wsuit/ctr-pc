@@ -206,7 +206,7 @@ namespace CutTheRope.iframework.visual
 
         private LoopType timelineLoopType;
 
-        private Track[] tracks = new Track[5];
+        private readonly Track[] tracks = new Track[5];
 
         public enum TimelineState
         {

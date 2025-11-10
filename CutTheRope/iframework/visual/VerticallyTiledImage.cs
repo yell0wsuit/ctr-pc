@@ -50,18 +50,7 @@ namespace CutTheRope.iframework.visual
             float w = texture.quadRects[tiles[0]].w;
             float w2 = texture.quadRects[tiles[1]].w;
             float w3 = texture.quadRects[tiles[2]].w;
-            if (w >= w2 && w >= w3)
-            {
-                width = (int)w;
-            }
-            else if (w2 >= w && w2 >= w3)
-            {
-                width = (int)w2;
-            }
-            else
-            {
-                width = (int)w3;
-            }
+            width = w >= w2 && w >= w3 ? (int)w : w2 >= w && w2 >= w3 ? (int)w2 : (int)w3;
             offsets[0] = (width - w) / 2f;
             offsets[1] = (width - w2) / 2f;
             offsets[2] = (width - w3) / 2f;

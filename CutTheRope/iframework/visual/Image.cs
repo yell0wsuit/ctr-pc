@@ -1,6 +1,5 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
 using System;
 
@@ -9,17 +8,7 @@ namespace CutTheRope.iframework.visual
     internal class Image : BaseElement
     {
         // (get) Token: 0x060001E5 RID: 485 RVA: 0x00009A46 File Offset: 0x00007C46
-        public string _ResName
-        {
-            get
-            {
-                if (texture != null)
-                {
-                    return texture._resName;
-                }
-                return "ERROR: texture == null";
-            }
-        }
+        public string _ResName => texture != null ? texture._resName : "ERROR: texture == null";
 
         public static Vector getQuadSize(int textureID, int quad)
         {

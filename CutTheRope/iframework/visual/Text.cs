@@ -1,8 +1,6 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
-using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
@@ -26,11 +24,11 @@ namespace CutTheRope.iframework.visual
             if (init() != null)
             {
                 font = (FontGeneric)NSRET(i);
-                formattedStrings = new List<FormattedString>();
+                formattedStrings = [];
                 width = -1;
                 height = -1;
                 align = 1;
-                multiDrawers = new List<ImageMultiDrawer>();
+                multiDrawers = [];
                 wrapLongWords = false;
                 maxHeight = -1f;
             }
@@ -88,7 +86,7 @@ namespace CutTheRope.iframework.visual
             int[] array = new int[num];
             for (int i = 0; i < num2; i++)
             {
-                if (characters[i] != ' ' && characters[i] != '*' && characters[i] != '\n')
+                if (characters[i] is not ' ' and not '*' and not '\n')
                 {
                     array[font.getCharmapIndex(characters[i])]++;
                 }
@@ -146,7 +144,7 @@ namespace CutTheRope.iframework.visual
                             int charQuad2 = font.getCharQuad('.');
                             ImageMultiDrawer imageMultiDrawer2 = multiDrawers[charmapIndex2];
                             int num11 = (int)font.getCharWidth('.');
-                            if (l == num9 - 1 || (l == num9 - 2 && num10 + 3 * (num11 + num7) + font.getCharWidth(' ') > wrapWidth))
+                            if (l == num9 - 1 || (l == num9 - 2 && num10 + (3 * (num11 + num7)) + font.getCharWidth(' ') > wrapWidth))
                             {
                                 imageMultiDrawer2.mapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
                                 num10 += num11 + num7;
@@ -168,7 +166,7 @@ namespace CutTheRope.iframework.visual
             }
             else
             {
-                height = (int)((font.fontHeight() + font.getLineOffset()) * formattedStrings.Count - font.getLineOffset());
+                height = (int)(((font.fontHeight() + font.getLineOffset()) * formattedStrings.Count) - font.getLineOffset());
                 width = (int)wrapWidth;
             }
             if (maxHeight != -1f)
@@ -225,7 +223,7 @@ namespace CutTheRope.iframework.visual
             while (num8 < num)
             {
                 char c = characters[num8++];
-                if (c == ' ' || c == '\n' || c == '*')
+                if (c is ' ' or '\n' or '*')
                 {
                     num7 += num4;
                     num6 = num8 - 1;
