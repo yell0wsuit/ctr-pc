@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.desktop
 {
     public class GLenum

@@ -1,8 +1,6 @@
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using System;
 
 namespace CutTheRope.game
 {
@@ -63,8 +61,8 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            t1.x = x - width / 2;
-            t2.x = x + width / 2;
+            t1.x = x - (width / 2);
+            t2.x = x + (width / 2);
             t1.y = t2.y = (float)(y - 5.0);
             b1.x = t1.x;
             b2.x = t2.x;

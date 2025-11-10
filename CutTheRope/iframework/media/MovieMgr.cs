@@ -2,7 +2,6 @@ using CutTheRope.desktop;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using System;
 
 namespace CutTheRope.iframework.media
 {
@@ -11,27 +10,20 @@ namespace CutTheRope.iframework.media
         public void playURL(NSString moviePath, bool mute)
         {
             url = moviePath;
-            if (Global.ScreenSizeManager.CurrentSize.Width <= 1024)
+            video = Global.ScreenSizeManager.CurrentSize.Width <= 1024
+                ? Global.XnaGame.Content.Load<Video>("video/" + (moviePath?.ToString()))
+                : Global.XnaGame.Content.Load<Video>("video_hd/" + (moviePath?.ToString()));
+            player = new VideoPlayer
             {
-                video = Global.XnaGame.Content.Load<Video>("video/" + (moviePath?.ToString()));
-            }
-            else
-            {
-                video = Global.XnaGame.Content.Load<Video>("video_hd/" + (moviePath?.ToString()));
-            }
-            player = new VideoPlayer();
-            player.IsLooped = false;
-            player.IsMuted = mute;
+                IsLooped = false,
+                IsMuted = mute
+            };
             waitForStart = true;
         }
 
         public Texture2D getTexture()
         {
-            if (player != null && player.State != MediaState.Stopped)
-            {
-                return player.GetTexture();
-            }
-            return null;
+            return player != null && player.State != MediaState.Stopped ? player.GetTexture() : null;
         }
 
         public bool isPlaying()

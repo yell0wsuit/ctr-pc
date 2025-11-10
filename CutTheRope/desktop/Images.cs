@@ -41,6 +41,6 @@ namespace CutTheRope.desktop
             getContentManager(imgName).Unload();
         }
 
-        private static Dictionary<string, ContentManager> _contentManagers = new();
+        private static readonly Dictionary<string, ContentManager> _contentManagers = [];
     }
 }

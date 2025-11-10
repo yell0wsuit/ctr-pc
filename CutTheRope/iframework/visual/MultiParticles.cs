@@ -1,7 +1,5 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using System;
 
 namespace CutTheRope.iframework.visual
 {
@@ -65,15 +63,15 @@ namespace CutTheRope.iframework.visual
                 p.dir = vectAdd(p.dir, v2);
                 v2 = vectMult(p.dir, delta);
                 p.pos = vectAdd(p.pos, v2);
-                p.color.r = p.color.r + p.deltaColor.r * delta;
-                p.color.g = p.color.g + p.deltaColor.g * delta;
-                p.color.b = p.color.b + p.deltaColor.b * delta;
-                p.color.a = p.color.a + p.deltaColor.a * delta;
+                p.color.r = p.color.r + (p.deltaColor.r * delta);
+                p.color.g = p.color.g + (p.deltaColor.g * delta);
+                p.color.b = p.color.b + (p.deltaColor.b * delta);
+                p.color.a = p.color.a + (p.deltaColor.a * delta);
                 p.life -= delta;
-                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.x - p.width / 2f), (double)(p.pos.y - p.height / 2f), 0.0, p.width, p.height);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.x - (p.width / 2f)), (double)(p.pos.y - (p.height / 2f)), 0.0, p.width, p.height);
                 for (int i = 0; i < 4; i++)
                 {
-                    colors[particleIdx * 4 + i] = p.color;
+                    colors[(particleIdx * 4) + i] = p.color;
                 }
                 particleIdx++;
                 return;

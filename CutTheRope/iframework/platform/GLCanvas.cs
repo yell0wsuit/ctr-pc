@@ -3,7 +3,6 @@ using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
-using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.iframework.platform
@@ -196,7 +195,7 @@ namespace CutTheRope.iframework.platform
 
         private Text fpsText;
 
-        private bool mouseDown;
+        private readonly bool mouseDown;
 
         private NSSize cursorOrigSize;
 

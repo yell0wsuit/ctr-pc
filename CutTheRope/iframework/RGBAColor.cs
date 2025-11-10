@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.iframework
@@ -77,7 +76,7 @@ namespace CutTheRope.iframework
 
         public static float[] toFloatArray(RGBAColor[] colors)
         {
-            List<float> list = new();
+            List<float> list = [];
             for (int i = 0; i < colors.Length; i++)
             {
                 list.AddRange(colors[i].toFloatArray());

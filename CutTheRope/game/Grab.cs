@@ -5,7 +5,6 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace CutTheRope.game
 {
@@ -21,7 +20,7 @@ namespace CutTheRope.game
             OpenGL.glVertexPointer_setAdditive(2, 5, 0, s.vertexCount * 16);
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                GLDrawer.drawAntialiasedLine(s.vertices[i * 2], s.vertices[i * 2 + 1], s.vertices[i * 2 + 2], s.vertices[i * 2 + 3], 3f, color);
+                GLDrawer.drawAntialiasedLine(s.vertices[i * 2], s.vertices[(i * 2) + 1], s.vertices[(i * 2) + 2], s.vertices[(i * 2) + 3], 3f, color);
             }
             OpenGL.glDrawArrays(8, 0, 8);
             OpenGL.glEnableClientState(0);
@@ -418,8 +417,8 @@ namespace CutTheRope.game
             Vector quadOffset = getQuadOffset(98, 0);
             bee.x = 0f - quadOffset.x;
             bee.y = 0f - quadOffset.y;
-            bee.rotationCenterX = quadOffset.x - bee.width / 2;
-            bee.rotationCenterY = quadOffset.y - bee.height / 2;
+            bee.rotationCenterX = quadOffset.x - (bee.width / 2);
+            bee.rotationCenterY = quadOffset.y - (bee.height / 2);
             bee.scaleX = bee.scaleY = 0.7692308f;
             addChild(bee);
         }

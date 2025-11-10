@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.iframework
 {
     internal struct Point

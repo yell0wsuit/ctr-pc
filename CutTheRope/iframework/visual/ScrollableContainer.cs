@@ -140,12 +140,12 @@ namespace CutTheRope.iframework.visual
                 {
                     if (container.x > 0.0)
                     {
-                        float speed = (float)(50.0 + (double)Math.Abs(container.x) * 5.0);
+                        float speed = (float)(50.0 + ((double)Math.Abs(container.x) * 5.0));
                         moveToPointDeltaSpeed(vect(0f, container.y), delta, speed);
                     }
                     else if (container.x < (float)(-(float)container.width + width) && container.x < 0.0)
                     {
-                        float speed2 = (float)(50.0 + (double)Math.Abs((float)(-(float)container.width + width) - container.x) * 5.0);
+                        float speed2 = (float)(50.0 + ((double)Math.Abs((float)(-(float)container.width + width) - container.x) * 5.0));
                         moveToPointDeltaSpeed(vect((float)(-(float)container.width + width), container.y), delta, speed2);
                     }
                 }
@@ -153,11 +153,11 @@ namespace CutTheRope.iframework.visual
                 {
                     if (container.y > 0.0)
                     {
-                        moveToPointDeltaSpeed(vect(container.x, 0f), delta, (float)(50.0 + (double)Math.Abs(container.y) * 5.0));
+                        moveToPointDeltaSpeed(vect(container.x, 0f), delta, (float)(50.0 + ((double)Math.Abs(container.y) * 5.0)));
                     }
                     else if (container.y < (float)(-(float)container.height + height) && container.y < 0.0)
                     {
-                        moveToPointDeltaSpeed(vect(container.x, (float)(-(float)container.height + height)), delta, (float)(50.0 + (double)Math.Abs((float)(-(float)container.height + height) - container.y) * 5.0));
+                        moveToPointDeltaSpeed(vect(container.x, (float)(-(float)container.height + height)), delta, (float)(50.0 + ((double)Math.Abs((float)(-(float)container.height + height) - container.y) * 5.0)));
                     }
                 }
             }
@@ -532,14 +532,7 @@ namespace CutTheRope.iframework.visual
             }
             float num6 = angleTo0_360(RADIANS_TO_DEGREES(vectAngleNormalized(move)));
             float num5 = angleTo0_360(RADIANS_TO_DEGREES(vectAngleNormalized(vectSub(spoints[targetSpoint], v))));
-            if (Math.Abs(angleTo0_360(num6 - num5)) < 90f)
-            {
-                spointMoveMultiplier = (float)Math.Max(1.0, (double)vectLength(move) / 500.0);
-            }
-            else
-            {
-                spointMoveMultiplier = 0.5f;
-            }
+            spointMoveMultiplier = Math.Abs(angleTo0_360(num6 - num5)) < 90f ? (float)Math.Max(1.0, (double)vectLength(move) / 500.0) : 0.5f;
             lastTargetSpoint = targetSpoint;
         }
 

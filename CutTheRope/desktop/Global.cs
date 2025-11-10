@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace CutTheRope.desktop
 {
@@ -10,79 +9,38 @@ namespace CutTheRope.desktop
         // (set) Token: 0x0600004C RID: 76 RVA: 0x000036CF File Offset: 0x000018CF
         public static SpriteBatch SpriteBatch
         {
-            get
-            {
-                return spriteBatch_;
-            }
-            set
-            {
-                spriteBatch_ = value;
-            }
+            get => spriteBatch_; set => spriteBatch_ = value;
         }
 
         // (get) Token: 0x0600004D RID: 77 RVA: 0x000036D7 File Offset: 0x000018D7
         // (set) Token: 0x0600004E RID: 78 RVA: 0x000036DE File Offset: 0x000018DE
         public static GraphicsDevice GraphicsDevice
         {
-            get
-            {
-                return graphicsDevice_;
-            }
-            set
-            {
-                graphicsDevice_ = value;
-            }
+            get => graphicsDevice_; set => graphicsDevice_ = value;
         }
 
         // (get) Token: 0x0600004F RID: 79 RVA: 0x000036E6 File Offset: 0x000018E6
         // (set) Token: 0x06000050 RID: 80 RVA: 0x000036ED File Offset: 0x000018ED
         public static GraphicsDeviceManager GraphicsDeviceManager
         {
-            get
-            {
-                return graphicsDeviceManager_;
-            }
-            set
-            {
-                graphicsDeviceManager_ = value;
-            }
+            get => graphicsDeviceManager_; set => graphicsDeviceManager_ = value;
         }
 
         // (get) Token: 0x06000051 RID: 81 RVA: 0x000036F5 File Offset: 0x000018F5
         // (set) Token: 0x06000052 RID: 82 RVA: 0x000036FC File Offset: 0x000018FC
         public static ScreenSizeManager ScreenSizeManager
         {
-            get
-            {
-                return screenSizeManager_;
-            }
-            set
-            {
-                screenSizeManager_ = value;
-            }
+            get => screenSizeManager_; set => screenSizeManager_ = value;
         }
 
         // (get) Token: 0x06000053 RID: 83 RVA: 0x00003704 File Offset: 0x00001904
-        public static MouseCursor MouseCursor
-        {
-            get
-            {
-                return mouseCursor_;
-            }
-        }
+        public static MouseCursor MouseCursor => mouseCursor_;
 
         // (get) Token: 0x06000054 RID: 84 RVA: 0x0000370B File Offset: 0x0000190B
         // (set) Token: 0x06000055 RID: 85 RVA: 0x00003712 File Offset: 0x00001912
         public static Game1 XnaGame
         {
-            get
-            {
-                return game_;
-            }
-            set
-            {
-                game_ = value;
-            }
+            get => game_; set => game_ = value;
         }
 
         private static SpriteBatch spriteBatch_;
@@ -93,7 +51,7 @@ namespace CutTheRope.desktop
 
         private static ScreenSizeManager screenSizeManager_ = new(2560, 1440);
 
-        private static MouseCursor mouseCursor_ = new();
+        private static readonly MouseCursor mouseCursor_ = new();
 
         private static Game1 game_;
     }

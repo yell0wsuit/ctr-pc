@@ -1,5 +1,4 @@
 using CutTheRope.ios;
-using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
@@ -25,7 +24,7 @@ namespace CutTheRope.iframework.visual
             keyFrames = new KeyFrame[keyFramesCapacity];
             if (type == TrackType.TRACK_ACTION)
             {
-                actionSets = new List<List<CTRAction>>();
+                actionSets = [];
             }
             return this;
         }
@@ -95,7 +94,7 @@ namespace CutTheRope.iframework.visual
                     currentStepPerSecond.value.color.rgba.a = (dst.value.color.rgba.a - src.value.color.rgba.a) / keyFrameTimeLeft;
                     break;
             }
-            if (dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN || dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT)
+            if (dst.transitionType is KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN or KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT)
             {
                 switch (type)
                 {
@@ -363,7 +362,7 @@ namespace CutTheRope.iframework.visual
                 return;
             }
             thiss.keyFrameTimeLeft -= delta;
-            if (thiss.keyFrames[thiss.nextKeyFrame].transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN || thiss.keyFrames[thiss.nextKeyFrame].transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT)
+            if (thiss.keyFrames[thiss.nextKeyFrame].transitionType is KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN or KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT)
             {
                 KeyFrame keyFrame = thiss.currentStepPerSecond;
                 switch (thiss.type)
@@ -374,8 +373,8 @@ namespace CutTheRope.iframework.visual
                             float num9 = thiss.currentStepAcceleration.value.pos.y * delta;
                             thiss.currentStepPerSecond.value.pos.x += num8;
                             thiss.currentStepPerSecond.value.pos.y += num9;
-                            timeline.element.x += (keyFrame.value.pos.x + num8 / 2f) * delta;
-                            timeline.element.y += (keyFrame.value.pos.y + num9 / 2f) * delta;
+                            timeline.element.x += (keyFrame.value.pos.x + (num8 / 2f)) * delta;
+                            timeline.element.y += (keyFrame.value.pos.y + (num9 / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_SCALE:
@@ -384,27 +383,27 @@ namespace CutTheRope.iframework.visual
                             float num11 = thiss.currentStepAcceleration.value.scale.scaleY * delta;
                             thiss.currentStepPerSecond.value.scale.scaleX += num10;
                             thiss.currentStepPerSecond.value.scale.scaleY += num11;
-                            timeline.element.scaleX += (keyFrame.value.scale.scaleX + num10 / 2f) * delta;
-                            timeline.element.scaleY += (keyFrame.value.scale.scaleY + num11 / 2f) * delta;
+                            timeline.element.scaleX += (keyFrame.value.scale.scaleX + (num10 / 2f)) * delta;
+                            timeline.element.scaleY += (keyFrame.value.scale.scaleY + (num11 / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_ROTATION:
                         {
                             float num12 = thiss.currentStepAcceleration.value.rotation.angle * delta;
                             thiss.currentStepPerSecond.value.rotation.angle += num12;
-                            timeline.element.rotation += (keyFrame.value.rotation.angle + num12 / 2f) * delta;
+                            timeline.element.rotation += (keyFrame.value.rotation.angle + (num12 / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_COLOR:
                         {
                             ColorParams color = thiss.currentStepPerSecond.value.color;
-                            color.rgba.r = color.rgba.r + thiss.currentStepAcceleration.value.color.rgba.r * delta;
+                            color.rgba.r = color.rgba.r + (thiss.currentStepAcceleration.value.color.rgba.r * delta);
                             ColorParams color2 = thiss.currentStepPerSecond.value.color;
-                            color2.rgba.g = color2.rgba.g + thiss.currentStepAcceleration.value.color.rgba.g * delta;
+                            color2.rgba.g = color2.rgba.g + (thiss.currentStepAcceleration.value.color.rgba.g * delta);
                             ColorParams color3 = thiss.currentStepPerSecond.value.color;
-                            color3.rgba.b = color3.rgba.b + thiss.currentStepAcceleration.value.color.rgba.b * delta;
+                            color3.rgba.b = color3.rgba.b + (thiss.currentStepAcceleration.value.color.rgba.b * delta);
                             ColorParams color4 = thiss.currentStepPerSecond.value.color;
-                            color4.rgba.a = color4.rgba.a + thiss.currentStepAcceleration.value.color.rgba.a * delta;
+                            color4.rgba.a = color4.rgba.a + (thiss.currentStepAcceleration.value.color.rgba.a * delta);
                             float num13 = thiss.currentStepAcceleration.value.color.rgba.r * delta;
                             float num14 = thiss.currentStepAcceleration.value.color.rgba.g * delta;
                             float num15 = thiss.currentStepAcceleration.value.color.rgba.b * delta;
@@ -418,13 +417,13 @@ namespace CutTheRope.iframework.visual
                             ColorParams color8 = thiss.currentStepPerSecond.value.color;
                             color8.rgba.a = color8.rgba.a + num16;
                             BaseElement element = timeline.element;
-                            element.color.r = element.color.r + (keyFrame.value.color.rgba.r + num13 / 2f) * delta;
+                            element.color.r = element.color.r + ((keyFrame.value.color.rgba.r + (num13 / 2f)) * delta);
                             BaseElement element2 = timeline.element;
-                            element2.color.g = element2.color.g + (keyFrame.value.color.rgba.g + num14 / 2f) * delta;
+                            element2.color.g = element2.color.g + ((keyFrame.value.color.rgba.g + (num14 / 2f)) * delta);
                             BaseElement element3 = timeline.element;
-                            element3.color.b = element3.color.b + (keyFrame.value.color.rgba.b + num15 / 2f) * delta;
+                            element3.color.b = element3.color.b + ((keyFrame.value.color.rgba.b + (num15 / 2f)) * delta);
                             BaseElement element4 = timeline.element;
-                            element4.color.a = element4.color.a + (keyFrame.value.color.rgba.a + num16 / 2f) * delta;
+                            element4.color.a = element4.color.a + ((keyFrame.value.color.rgba.a + (num16 / 2f)) * delta);
                             break;
                         }
                 }
@@ -447,13 +446,13 @@ namespace CutTheRope.iframework.visual
                     case TrackType.TRACK_COLOR:
                         {
                             BaseElement element5 = timeline.element;
-                            element5.color.r = element5.color.r + thiss.currentStepPerSecond.value.color.rgba.r * delta;
+                            element5.color.r = element5.color.r + (thiss.currentStepPerSecond.value.color.rgba.r * delta);
                             BaseElement element6 = timeline.element;
-                            element6.color.g = element6.color.g + thiss.currentStepPerSecond.value.color.rgba.g * delta;
+                            element6.color.g = element6.color.g + (thiss.currentStepPerSecond.value.color.rgba.g * delta);
                             BaseElement element7 = timeline.element;
-                            element7.color.b = element7.color.b + thiss.currentStepPerSecond.value.color.rgba.b * delta;
+                            element7.color.b = element7.color.b + (thiss.currentStepPerSecond.value.color.rgba.b * delta);
                             BaseElement element8 = timeline.element;
-                            element8.color.a = element8.color.a + thiss.currentStepPerSecond.value.color.rgba.a * delta;
+                            element8.color.a = element8.color.a + (thiss.currentStepPerSecond.value.color.rgba.a * delta);
                             break;
                         }
                 }

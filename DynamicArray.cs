@@ -4,13 +4,7 @@ using System.Collections;
 
 internal class DynamicArray : NSObject, IEnumerable
 {
-    public NSObject this[int key]
-    {
-        get
-        {
-            return map[key];
-        }
-    }
+    public NSObject this[int key] => map[key];
 
     public IEnumerator GetEnumerator()
     {
@@ -98,11 +92,7 @@ internal class DynamicArray : NSObject, IEnumerable
 
     public virtual NSObject lastObject()
     {
-        if (highestIndex == -1)
-        {
-            return null;
-        }
-        return objectAtIndex(highestIndex);
+        return highestIndex == -1 ? null : objectAtIndex(highestIndex);
     }
 
     public virtual NSObject objectAtIndex(int k)

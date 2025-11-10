@@ -1,5 +1,3 @@
-using System;
-
 namespace CutTheRope.ctr_commons
 {
     internal interface LiftScrollbarDelegate
