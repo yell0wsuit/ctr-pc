@@ -1,6 +1,6 @@
 using System;
 
-namespace CutTheRope.windows
+namespace CutTheRope.desktop
 {
     public class GLenum
     {

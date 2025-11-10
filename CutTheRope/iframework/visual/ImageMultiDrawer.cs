@@ -1,5 +1,5 @@
 using CutTheRope.ios;
-using CutTheRope.windows;
+using CutTheRope.desktop;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 

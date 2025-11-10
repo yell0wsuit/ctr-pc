@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace CutTheRope.windows
+namespace CutTheRope.desktop
 {
     public class Branding
     {

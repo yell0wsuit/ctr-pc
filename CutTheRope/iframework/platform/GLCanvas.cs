@@ -1,6 +1,6 @@
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using CutTheRope.windows;
+using CutTheRope.desktop;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;

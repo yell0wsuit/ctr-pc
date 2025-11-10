@@ -1,7 +1,7 @@
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.ios;
-using CutTheRope.windows;
+using CutTheRope.desktop;
 using System;
 using System.Collections.Generic;
 

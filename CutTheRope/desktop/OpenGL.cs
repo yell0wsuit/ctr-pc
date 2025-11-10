@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace CutTheRope.windows
+namespace CutTheRope.desktop
 {
     internal class OpenGL
     {

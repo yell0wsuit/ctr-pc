@@ -4,7 +4,7 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using CutTheRope.windows;
+using CutTheRope.desktop;
 using Microsoft.Xna.Framework;
 using System;
 

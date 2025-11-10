@@ -5,7 +5,7 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.media;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using CutTheRope.windows;
+using CutTheRope.desktop;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
