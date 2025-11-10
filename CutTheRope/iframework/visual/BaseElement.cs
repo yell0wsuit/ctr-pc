@@ -1,5 +1,5 @@
-using CutTheRope.ios;
 using CutTheRope.desktop;
+using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
 using System.Linq;

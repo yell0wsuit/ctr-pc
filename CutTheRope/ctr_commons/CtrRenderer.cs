@@ -1,3 +1,4 @@
+using CutTheRope.desktop;
 using CutTheRope.game;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -5,7 +6,6 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using CutTheRope.desktop;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
