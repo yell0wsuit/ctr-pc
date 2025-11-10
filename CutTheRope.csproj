@@ -20,7 +20,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.263" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.4.1" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
