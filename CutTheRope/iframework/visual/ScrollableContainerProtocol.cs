@@ -1,9 +1,9 @@
 namespace CutTheRope.iframework.visual
 {
-    internal interface ScrollableContainerProtocol
+    internal interface IScrollableContainerProtocol
     {
-        void scrollableContainerreachedScrollPoint(ScrollableContainer e, int i);
+        void ScrollableContainerreachedScrollPoint(ScrollableContainer e, int i);
 
-        void scrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i);
+        void ScrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i);
     }
 }

@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace CutTheRope.game
 {
-    internal class CTRSoundMgr : SoundMgr
+    internal sealed class CTRSoundMgr : SoundMgr
     {
-        public static void _playSound(int s)
+        public static new void PlaySound(int s)
         {
             if (Preferences._getBooleanForKey("SOUND_ON"))
             {
-                Application.sharedSoundMgr().playSound(s);
+                Application.SharedSoundMgr().PlaySound(s);
             }
         }
 
@@ -19,16 +19,16 @@ namespace CutTheRope.game
             s_EnableLoopedSounds = bEnable;
             if (!s_EnableLoopedSounds)
             {
-                _stopLoopedSounds();
+                StopLoopedSounds();
             }
         }
 
-        public static SoundEffectInstance _playSoundLooped(int s)
+        public static new SoundEffectInstance PlaySoundLooped(int s)
         {
-            return s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON") ? Application.sharedSoundMgr().playSoundLooped(s) : null;
+            return s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
         }
 
-        public static void _playRandomMusic(int minId, int maxId)
+        public static void PlayRandomMusic(int minId, int maxId)
         {
             int num;
             do
@@ -37,46 +37,46 @@ namespace CutTheRope.game
             }
             while (num == prevMusic);
             prevMusic = num;
-            _playMusic(num);
+            PlayMusic(num);
         }
 
-        public static void _playMusic(int f)
+        public static new void PlayMusic(int f)
         {
             if (Preferences._getBooleanForKey("MUSIC_ON"))
             {
-                Application.sharedSoundMgr().playMusic(f);
+                Application.SharedSoundMgr().PlayMusic(f);
             }
         }
 
-        public static void _stopLoopedSounds()
+        public static new void StopLoopedSounds()
         {
-            Application.sharedSoundMgr().stopLoopedSounds();
+            Application.SharedSoundMgr().StopLoopedSounds();
         }
 
-        public static void _stopSounds()
+        public static void StopSounds()
         {
-            Application.sharedSoundMgr().stopAllSounds();
+            Application.SharedSoundMgr().StopAllSounds();
         }
 
-        public static void _stopAll()
+        public static void StopAll()
         {
-            _stopSounds();
-            _stopMusic();
+            StopSounds();
+            StopMusic();
         }
 
-        public static void _stopMusic()
+        public static new void StopMusic()
         {
-            Application.sharedSoundMgr().stopMusic();
+            Application.SharedSoundMgr().StopMusic();
         }
 
-        public static void _pause()
+        public static new void Pause()
         {
-            Application.sharedSoundMgr().pause();
+            Application.SharedSoundMgr().Pause();
         }
 
-        public static void _unpause()
+        public static new void Unpause()
         {
-            Application.sharedSoundMgr().unpause();
+            Application.SharedSoundMgr().Unpause();
         }
 
         private static bool s_EnableLoopedSounds = true;

@@ -1,4 +1,5 @@
 using CutTheRope.iframework;
+using CutTheRope.iframework.platform;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.desktop
 {
-    internal class MouseCursor
+    internal sealed class MouseCursor
     {
         public void Enable(bool b)
         {
@@ -17,7 +18,7 @@ namespace CutTheRope.desktop
 
         public void ReleaseButtons()
         {
-            _mouseStateTranformed = new MouseState(_mouseStateTranformed.X, _mouseStateTranformed.Y, _mouseStateTranformed.ScrollWheelValue, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released, Microsoft.Xna.Framework.Input.ButtonState.Released);
+            _mouseStateTranformed = new MouseState(_mouseStateTranformed.X, _mouseStateTranformed.Y, _mouseStateTranformed.ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
         }
 
         public void Load(ContentManager cm)
@@ -34,7 +35,7 @@ namespace CutTheRope.desktop
                 {
                     return;
                 }
-                Texture2D texture2D = (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed) ? _cursorActive : _cursor;
+                Texture2D texture2D = _mouseStateTranformed.LeftButton == ButtonState.Pressed ? _cursorActive : _cursor;
                 Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
                 float num = FrameworkTypes.SCREEN_WIDTH / scaledViewRect.Width;
                 float num2 = FrameworkTypes.SCREEN_HEIGHT / scaledViewRect.Height;
@@ -59,13 +60,13 @@ namespace CutTheRope.desktop
             List<TouchLocation> list = [];
             _mouseStateOriginal = Global.XnaGame.GetMouseState();
             MouseState mouseStateTranformed = TransformMouseState(_mouseStateOriginal);
-            TouchLocation item = default(TouchLocation);
+            TouchLocation item = default;
             if (_touchID > 0)
             {
-                if (mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                if (mouseStateTranformed.LeftButton == ButtonState.Pressed)
                 {
                     TouchLocation touchLocation;
-                    if (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                    if (_mouseStateTranformed.LeftButton == ButtonState.Pressed)
                     {
                         touchLocation = new TouchLocation(_touchID, TouchLocationState.Moved, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
                     }
@@ -77,12 +78,12 @@ namespace CutTheRope.desktop
                     }
                     item = touchLocation;
                 }
-                else if (_mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                else if (_mouseStateTranformed.LeftButton == ButtonState.Pressed)
                 {
                     item = new TouchLocation(_touchID, TouchLocationState.Released, new Vector2(_mouseStateTranformed.X, _mouseStateTranformed.Y));
                 }
             }
-            else if (mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+            else if (mouseStateTranformed.LeftButton == ButtonState.Pressed)
             {
                 int num = _touchID + 1;
                 _touchID = num;
@@ -93,7 +94,7 @@ namespace CutTheRope.desktop
                 list.Add(item);
             }
             _mouseStateTranformed = mouseStateTranformed;
-            return iframework.core.Application.sharedCanvas().convertTouches(list);
+            return GLCanvas.ConvertTouches(list);
         }
 
         private Texture2D _cursor;

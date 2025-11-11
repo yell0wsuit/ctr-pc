@@ -4,11 +4,11 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class Camera2D : NSObject
+    internal sealed class Camera2D : NSObject
     {
-        public virtual Camera2D initWithSpeedandType(float s, CAMERA_TYPE t)
+        public Camera2D InitWithSpeedandType(float s, CAMERATYPE t)
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 speed = s;
                 type = t;
@@ -16,7 +16,7 @@ namespace CutTheRope.iframework.helpers
             return this;
         }
 
-        public virtual void moveToXYImmediate(float x, float y, bool immediate)
+        public void MoveToXYImmediate(float x, float y, bool immediate)
         {
             target.x = x;
             target.y = y;
@@ -25,41 +25,41 @@ namespace CutTheRope.iframework.helpers
                 pos = target;
                 return;
             }
-            if (type == CAMERA_TYPE.CAMERA_SPEED_DELAY)
+            if (type == CAMERATYPE.CAMERASPEEDDELAY)
             {
-                offset = vectMult(vectSub(target, pos), speed);
+                offset = VectMult(VectSub(target, pos), speed);
                 return;
             }
-            if (type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
+            if (type == CAMERATYPE.CAMERASPEEDPIXELS)
             {
-                offset = vectMult(vectNormalize(vectSub(target, pos)), speed);
+                offset = VectMult(VectNormalize(VectSub(target, pos)), speed);
             }
         }
 
-        public virtual void update(float delta)
+        public void Update(float delta)
         {
-            if (!vectEqual(pos, target))
+            if (!VectEqual(pos, target))
             {
-                pos = vectAdd(pos, vectMult(offset, delta));
-                pos = vect(round(pos.x), round(pos.y));
-                if (!sameSign(offset.x, target.x - pos.x) || !sameSign(offset.y, target.y - pos.y))
+                pos = VectAdd(pos, VectMult(offset, delta));
+                pos = Vect(Round(pos.x), Round(pos.y));
+                if (!SameSign(offset.x, target.x - pos.x) || !SameSign(offset.y, target.y - pos.y))
                 {
                     pos = target;
                 }
             }
         }
 
-        public virtual void applyCameraTransformation()
+        public void ApplyCameraTransformation()
         {
-            OpenGL.glTranslatef((double)(0f - pos.x), (double)(0f - pos.y), 0.0);
+            OpenGL.GlTranslatef((double)(0f - pos.x), (double)(0f - pos.y), 0.0);
         }
 
-        public virtual void cancelCameraTransformation()
+        public void CancelCameraTransformation()
         {
-            OpenGL.glTranslatef(pos.x, pos.y, 0.0);
+            OpenGL.GlTranslatef(pos.x, pos.y, 0.0);
         }
 
-        public CAMERA_TYPE type;
+        public CAMERATYPE type;
 
         public float speed;
 

@@ -5,60 +5,60 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class LoadingView : View
+    internal sealed class LoadingView : View
     {
-        public override void draw()
+        public override void Draw()
         {
             Global.MouseCursor.Enable(false);
-            OpenGL.glEnable(0);
-            OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            preDraw();
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            int num7 = 126 + cTRRootController.getPack();
-            float num2 = Application.sharedResourceMgr().getPercentLoaded();
-            CTRTexture2D texture = Application.getTexture(num7);
-            OpenGL.glColor4f(s_Color1);
-            Vector quadSize = Image.getQuadSize(num7, 0);
+            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(1);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            PreDraw();
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            int num7 = 126 + cTRRootController.GetPack();
+            float num2 = Application.SharedResourceMgr().GetPercentLoaded();
+            CTRTexture2D texture = Application.GetTexture(num7);
+            OpenGL.GlColor4f(s_Color1);
+            Vector quadSize = Image.GetQuadSize(num7, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.x;
-            GLDrawer.drawImageQuad(texture, 0, (double)num3, 0.0);
-            OpenGL.glPushMatrix();
+            GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
+            OpenGL.GlPushMatrix();
             float num4 = (SCREEN_WIDTH / 2f) + (quadSize.x / 2f);
-            OpenGL.glTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
-            OpenGL.glRotatef(180.0, 0.0, 0.0, 1.0);
-            OpenGL.glTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
-            GLDrawer.drawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
-            OpenGL.glPopMatrix();
-            CTRTexture2D texture2 = Application.getTexture(5);
+            OpenGL.GlTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
+            OpenGL.GlRotatef(180.0, 0.0, 0.0, 1.0);
+            OpenGL.GlTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
+            GLDrawer.DrawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
+            OpenGL.GlPopMatrix();
+            CTRTexture2D texture2 = Application.GetTexture(5);
             if (!game)
             {
-                OpenGL.glEnable(4);
-                OpenGL.setScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
+                OpenGL.GlEnable(4);
+                OpenGL.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
             }
-            OpenGL.glColor4f(Color.White);
-            num3 = Image.getQuadOffset(5, 0).x;
-            GLDrawer.drawImageQuad(texture2, 0, (double)num3, 80.0);
-            num3 = Image.getQuadOffset(5, 1).x;
-            GLDrawer.drawImageQuad(texture2, 1, (double)num3, 80.0);
+            OpenGL.GlColor4f(Color.White);
+            num3 = Image.GetQuadOffset(5, 0).x;
+            GLDrawer.DrawImageQuad(texture2, 0, (double)num3, 80.0);
+            num3 = Image.GetQuadOffset(5, 1).x;
+            GLDrawer.DrawImageQuad(texture2, 1, (double)num3, 80.0);
             if (!game)
             {
-                OpenGL.glDisable(4);
+                OpenGL.GlDisable(4);
             }
             if (game)
             {
-                Vector quadOffset = Image.getQuadOffset(5, 3);
+                Vector quadOffset = Image.GetQuadOffset(5, 3);
                 float num5 = (float)(1250.0 * (double)num2 / 100.0);
-                GLDrawer.drawImageQuad(texture2, 3, quadOffset.x, 700f - num5);
+                GLDrawer.DrawImageQuad(texture2, 3, quadOffset.x, 700f - num5);
             }
             else
             {
                 float num6 = (float)(1120.0 * (double)num2 / 100.0);
-                GLDrawer.drawImageQuad(texture2, 2, 1084.0, (double)num6 - 100.0);
+                GLDrawer.DrawImageQuad(texture2, 2, 1084.0, (double)num6 - 100.0);
             }
-            postDraw();
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glDisable(0);
-            OpenGL.glDisable(1);
+            PostDraw();
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(1);
         }
 
         public bool game;

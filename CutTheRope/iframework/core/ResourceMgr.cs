@@ -4,59 +4,58 @@ using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CutTheRope.iframework.core
 {
     internal class ResourceMgr : NSObject
     {
-        public virtual bool hasResource(int resID)
+        public virtual bool HasResource(int resID)
         {
-            NSObject value = null;
-            s_Resources.TryGetValue(resID, out value);
+            _ = s_Resources.TryGetValue(resID, out NSObject value);
             return value != null;
         }
 
-        public virtual void addResourceToLoadQueue(int resID)
+        public virtual void AddResourceToLoadQueue(int resID)
         {
             loadQueue.Add(resID);
             loadCount++;
         }
 
-        public void clearCachedResources()
+        public void ClearCachedResources()
         {
             s_Resources = [];
         }
 
-        public virtual NSObject loadResource(int resID, ResourceType resType)
+        public virtual NSObject LoadResource(int resID, ResourceType resType)
         {
-            NSObject value = null;
-            if (s_Resources.TryGetValue(resID, out value))
+            if (s_Resources.TryGetValue(resID, out NSObject value))
             {
                 return value;
             }
-            string path = (resType != ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "";
+            string path = resType != ResourceType.STRINGS ? CTRResourceMgr.XNA_ResName(resID) : "";
             bool flag = false;
-            float scaleX = getNormalScaleX(resID);
-            float scaleY = getNormalScaleY(resID);
+            float scaleX = GetNormalScaleX(resID);
+            float scaleY = GetNormalScaleY(resID);
             if (flag)
             {
-                scaleX = getWvgaScaleX(resID);
-                scaleY = getWvgaScaleY(resID);
+                scaleX = GetWvgaScaleX(resID);
+                scaleY = GetWvgaScaleY(resID);
             }
             switch (resType)
             {
                 case ResourceType.IMAGE:
-                    value = loadTextureImageInfo(path, null, flag, scaleX, scaleY);
+                    value = LoadTextureImageInfo(path, null, flag, scaleX, scaleY);
                     break;
                 case ResourceType.FONT:
-                    value = loadVariableFontInfo(path, resID, flag);
-                    s_Resources.Remove(resID);
+                    value = LoadVariableFontInfo(path, resID, flag);
+                    _ = s_Resources.Remove(resID);
                     break;
                 case ResourceType.SOUND:
-                    value = loadSoundInfo(path);
+                    value = LoadSoundInfo(path);
                     break;
                 case ResourceType.STRINGS:
-                    value = loadStringsInfo(resID);
+                    value = LoadStringsInfo(resID);
                     value = NSS(value.ToString().Replace('\u00a0', ' '));
                     break;
             }
@@ -67,22 +66,19 @@ namespace CutTheRope.iframework.core
             return value;
         }
 
-        public virtual NSObject loadSoundInfo(string path)
+        public virtual NSObject LoadSoundInfo(string path)
         {
-            return new NSObject().init();
+            return new NSObject().Init();
         }
 
-        public NSString loadStringsInfo(int key)
+        public NSString LoadStringsInfo(int key)
         {
             key &= 65535;
-            if (xmlStrings == null)
-            {
-                xmlStrings = XMLNode.parseXML("menu_strings.xml");
-            }
+            xmlStrings ??= XMLNode.ParseXML("menu_strings.xml");
             XMLNode xMLNode = null;
             try
             {
-                xMLNode = xmlStrings.childs()[key];
+                xMLNode = xmlStrings.Childs()[key];
             }
             catch (Exception)
             {
@@ -90,102 +86,93 @@ namespace CutTheRope.iframework.core
             if (xMLNode != null)
             {
                 string tag = "en";
-                if (LANGUAGE == Language.LANG_RU)
+                if (LANGUAGE == Language.LANGRU)
                 {
                     tag = "ru";
                 }
-                if (LANGUAGE == Language.LANG_FR)
+                if (LANGUAGE == Language.LANGFR)
                 {
                     tag = "fr";
                 }
-                if (LANGUAGE == Language.LANG_DE)
+                if (LANGUAGE == Language.LANGDE)
                 {
                     tag = "de";
                 }
-                XMLNode xMLNode2 = xMLNode.findChildWithTagNameRecursively(tag, false);
-                if (xMLNode2 == null)
-                {
-                    xMLNode2 = xMLNode.findChildWithTagNameRecursively("en", false);
-                }
-                return xMLNode2.data;
+                XMLNode xMLNode2 = xMLNode.FindChildWithTagNameRecursively(tag, false);
+                xMLNode2 ??= xMLNode.FindChildWithTagNameRecursively("en", false);
+                return xMLNode2.Data;
             }
             return new NSString();
         }
 
-        public virtual FontGeneric loadVariableFontInfo(string path, int resID, bool isWvga)
+        public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
         {
-            XMLNode xmlnode = XMLNode.parseXML(path);
-            int num = xmlnode["charoff"].intValue();
-            int num2 = xmlnode["lineoff"].intValue();
-            int num3 = xmlnode["space"].intValue();
-            XMLNode xMLNode2 = xmlnode.findChildWithTagNameRecursively("chars", false);
-            XMLNode xMLNode3 = xmlnode.findChildWithTagNameRecursively("kerning", false);
-            NSString data = xMLNode2.data;
+            XMLNode xmlnode = XMLNode.ParseXML(path);
+            int num = xmlnode["charoff"].IntValue();
+            int num2 = xmlnode["lineoff"].IntValue();
+            int num3 = xmlnode["space"].IntValue();
+            XMLNode xMLNode2 = xmlnode.FindChildWithTagNameRecursively("chars", false);
+            XMLNode xMLNode3 = xmlnode.FindChildWithTagNameRecursively("kerning", false);
+            NSString data = xMLNode2.Data;
             if (xMLNode3 != null)
             {
-                NSString data2 = xMLNode3.data;
+                _ = xMLNode3.Data;
             }
-            Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)loadResource(resID, ResourceType.IMAGE), null);
-            font.setCharOffsetLineOffsetSpaceWidth(num, num2, num3);
+            Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)LoadResource(resID, ResourceType.IMAGE), null);
+            font.SetCharOffsetLineOffsetSpaceWidth(num, num2, num3);
             return font;
         }
 
-        public virtual CTRTexture2D loadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
+        public virtual CTRTexture2D LoadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
-            if (i == null)
-            {
-                i = XMLNode.parseXML(path);
-            }
-            bool flag = (i["filter"].intValue() & 1) == 1;
-            int defaultAlphaPixelFormat = i["format"].intValue();
-            string text = fullPathFromRelativePath(path);
+            i ??= XMLNode.ParseXML(path);
+            bool flag = (i["filter"].IntValue() & 1) == 1;
+            int defaultAlphaPixelFormat = i["format"].IntValue();
+            string text = FullPathFromRelativePath(path);
             if (flag)
             {
-                CTRTexture2D.setAntiAliasTexParameters();
+                CTRTexture2D.SetAntiAliasTexParameters();
             }
             else
             {
-                CTRTexture2D.setAliasTexParameters();
+                CTRTexture2D.SetAliasTexParameters();
             }
-            CTRTexture2D.setDefaultAlphaPixelFormat((CTRTexture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
-            CTRTexture2D texture2D = new CTRTexture2D().initWithPath(text, true);
-            if (texture2D == null)
-            {
-                throw new Exception("texture not found: " + text);
-            }
-            CTRTexture2D.setDefaultAlphaPixelFormat(CTRTexture2D.kTexture2DPixelFormat_Default);
+            CTRTexture2D.SetDefaultAlphaPixelFormat((CTRTexture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
+            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(text, true)
+                ?? throw new FileNotFoundException("texture not found: " + text, text);
+            CTRTexture2D.SetDefaultAlphaPixelFormat(CTRTexture2D.kTexture2DPixelFormat_Default);
             if (isWvga)
             {
-                texture2D.setWvga();
+                texture2D.SetWvga();
             }
-            texture2D.setScale(scaleX, scaleY);
-            setTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
+            texture2D.SetScale(scaleX, scaleY);
+            SetTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
             return texture2D;
         }
 
-        public virtual void setTextureInfo(CTRTexture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
+        public virtual void SetTextureInfo(CTRTexture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
             t.preCutSize = vectUndefined;
-            XMLNode xMLNode = i.findChildWithTagNameRecursively("quads", false);
+            XMLNode xMLNode = i.FindChildWithTagNameRecursively("quads", false);
             if (xMLNode != null)
             {
-                List<NSString> list = xMLNode.data.componentsSeparatedByString(',');
+                List<NSString> list = xMLNode.Data.ComponentsSeparatedByString(',');
                 if (list != null && list.Count > 0)
                 {
                     float[] array = new float[list.Count];
                     for (int j = 0; j < list.Count; j++)
                     {
-                        array[j] = list[j].floatValue();
+                        array[j] = list[j].FloatValue();
                     }
-                    setQuadsInfo(t, array, list.Count, scaleX, scaleY);
+                    SetQuadsInfo(t, array, list.Count, scaleX, scaleY);
                 }
             }
-            XMLNode xMLNode2 = i.findChildWithTagNameRecursively("offsets", false);
+            XMLNode xMLNode2 = i.FindChildWithTagNameRecursively("offsets", false);
             if (xMLNode2 == null)
             {
                 return;
             }
-            List<NSString> list2 = xMLNode2.data.componentsSeparatedByString(',');
+            List<NSString> list2 = xMLNode2.Data.ComponentsSeparatedByString(',');
             if (list2 == null || list2.Count <= 0)
             {
                 return;
@@ -193,31 +180,31 @@ namespace CutTheRope.iframework.core
             float[] array2 = new float[list2.Count];
             for (int k = 0; k < list2.Count; k++)
             {
-                array2[k] = list2[k].floatValue();
+                array2[k] = list2[k].FloatValue();
             }
-            setOffsetsInfo(t, array2, list2.Count, scaleX, scaleY);
-            XMLNode xMLNode3 = i.findChildWithTagNameRecursively(NSS("preCutWidth"), false);
-            XMLNode xMLNode4 = i.findChildWithTagNameRecursively(NSS("preCutHeight"), false);
+            SetOffsetsInfo(t, array2, list2.Count, scaleX, scaleY);
+            XMLNode xMLNode3 = i.FindChildWithTagNameRecursively(NSS("preCutWidth"), false);
+            XMLNode xMLNode4 = i.FindChildWithTagNameRecursively(NSS("preCutHeight"), false);
             if (xMLNode3 != null && xMLNode4 != null)
             {
-                t.preCutSize = vect(xMLNode3.data.intValue(), xMLNode4.data.intValue());
+                t.preCutSize = Vect(xMLNode3.Data.IntValue(), xMLNode4.Data.IntValue());
                 if (isWvga)
                 {
-                    t.preCutSize.x = t.preCutSize.x / 1.5f;
-                    t.preCutSize.y = t.preCutSize.y / 1.5f;
+                    t.preCutSize.x /= 1.5f;
+                    t.preCutSize.y /= 1.5f;
                 }
             }
         }
 
-        private static string fullPathFromRelativePath(string relPath)
+        private static string FullPathFromRelativePath(string relPath)
         {
             return ContentFolder + relPath;
         }
 
-        private void setQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
+        private static void SetQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = data.Length / 4;
-            t.setQuadsCapacity(num);
+            t.SetQuadsCapacity(num);
             int num2 = -1;
             for (int i = 0; i < num; i++)
             {
@@ -225,22 +212,22 @@ namespace CutTheRope.iframework.core
                 CTRRectangle rect = MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
                 if (num2 < rect.h + rect.y)
                 {
-                    num2 = (int)ceil((double)(rect.h + rect.y));
+                    num2 = (int)Ceil((double)(rect.h + rect.y));
                 }
                 rect.x /= scaleX;
                 rect.y /= scaleY;
                 rect.w /= scaleX;
                 rect.h /= scaleY;
-                t.setQuadAt(rect, i);
+                t.SetQuadAt(rect, i);
             }
             if (num2 != -1)
             {
                 t._lowypoint = num2;
             }
-            t.optimizeMemory();
+            CTRTexture2D.OptimizeMemory();
         }
 
-        private void setOffsetsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
+        private static void SetOffsetsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = size / 2;
             for (int i = 0; i < num; i++)
@@ -257,115 +244,115 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        public virtual bool isWvgaResource(int r)
+        public virtual bool IsWvgaResource(int r)
         {
             return r - 126 > 10;
         }
 
-        public virtual float getNormalScaleX(int r)
+        public virtual float GetNormalScaleX(int r)
         {
             return 1f;
         }
 
-        public virtual float getNormalScaleY(int r)
+        public virtual float GetNormalScaleY(int r)
         {
             return 1f;
         }
 
-        public virtual float getWvgaScaleX(int r)
+        public virtual float GetWvgaScaleX(int r)
         {
             return 1.5f;
         }
 
-        public virtual float getWvgaScaleY(int r)
+        public virtual float GetWvgaScaleY(int r)
         {
             return 1.5f;
         }
 
-        public virtual void initLoading()
+        public virtual void InitLoading()
         {
             loadQueue.Clear();
             loaded = 0;
             loadCount = 0;
         }
 
-        public virtual int getPercentLoaded()
+        public virtual int GetPercentLoaded()
         {
-            return loadCount == 0 ? 100 : 100 * loaded / getLoadCount();
+            return loadCount == 0 ? 100 : 100 * loaded / GetLoadCount();
         }
 
-        public virtual void loadPack(int[] pack)
-        {
-            int i = 0;
-            while (pack[i] != -1)
-            {
-                addResourceToLoadQueue(pack[i]);
-                i++;
-            }
-        }
-
-        public virtual void freePack(int[] pack)
+        public virtual void LoadPack(int[] pack)
         {
             int i = 0;
             while (pack[i] != -1)
             {
-                freeResource(pack[i]);
+                AddResourceToLoadQueue(pack[i]);
                 i++;
             }
         }
 
-        public virtual void loadImmediately()
+        public virtual void FreePack(int[] pack)
+        {
+            int i = 0;
+            while (pack[i] != -1)
+            {
+                FreeResource(pack[i]);
+                i++;
+            }
+        }
+
+        public virtual void LoadImmediately()
         {
             while (loadQueue.Count != 0)
             {
                 int resId = loadQueue[0];
                 loadQueue.RemoveAt(0);
-                loadResource(resId);
+                LoadResource(resId);
                 loaded++;
             }
         }
 
-        public virtual void startLoading()
+        public virtual void StartLoading()
         {
             if (resourcesDelegate != null)
             {
-                DelayedDispatcher.DispatchFunc dispatchFunc = new(rmgr_internalUpdate);
-                Timer = NSTimer.schedule(dispatchFunc, this, 0.022222223f);
+                DelayedDispatcher.DispatchFunc dispatchFunc = new(Rmgr_internalUpdate);
+                Timer = NSTimer.Schedule(dispatchFunc, this, 0.022222223f);
             }
             bUseFake = loadQueue.Count < 100;
         }
 
-        private int getLoadCount()
+        private int GetLoadCount()
         {
             return !bUseFake ? loadCount : 100;
         }
 
-        public void update()
+        public void Update()
         {
             if (loadQueue.Count > 0)
             {
                 int resId = loadQueue[0];
                 loadQueue.RemoveAt(0);
-                loadResource(resId);
+                LoadResource(resId);
             }
             loaded++;
-            if (loaded >= getLoadCount())
+            if (loaded >= GetLoadCount())
             {
                 if (Timer >= 0)
                 {
-                    NSTimer.stopTimer(Timer);
+                    NSTimer.StopTimer(Timer);
                 }
                 Timer = -1;
-                resourcesDelegate.allResourcesLoaded();
+                resourcesDelegate.AllResourcesLoaded();
             }
         }
 
-        private static void rmgr_internalUpdate(NSObject obj)
+        private static void Rmgr_internalUpdate(NSObject obj)
         {
-            ((ResourceMgr)obj).update();
+            ((ResourceMgr)obj).Update();
         }
 
-        private void loadResource(int resId)
+        private void LoadResource(int resId)
         {
             if (150 < resId)
             {
@@ -373,32 +360,29 @@ namespace CutTheRope.iframework.core
             }
             if (10 == resId)
             {
-                if (xmlStrings == null)
-                {
-                    xmlStrings = XMLNode.parseXML("menu_strings.xml");
-                }
+                xmlStrings ??= XMLNode.ParseXML("menu_strings.xml");
                 return;
             }
-            if (isSound(resId))
+            if (IsSound(resId))
             {
-                Application.sharedSoundMgr().getSound(resId);
+                _ = Application.SharedSoundMgr().GetSound(resId);
                 return;
             }
-            if (isFont(resId))
+            if (IsFont(resId))
             {
-                Application.getFont(resId);
+                _ = Application.GetFont(resId);
                 return;
             }
             try
             {
-                Application.getTexture(resId);
+                _ = Application.GetTexture(resId);
             }
             catch (Exception)
             {
             }
         }
 
-        public virtual void freeResource(int resId)
+        public virtual void FreeResource(int resId)
         {
             if (150 < resId)
             {
@@ -409,20 +393,19 @@ namespace CutTheRope.iframework.core
                 xmlStrings = null;
                 return;
             }
-            if (isSound(resId))
+            if (IsSound(resId))
             {
-                Application.sharedSoundMgr().freeSound(resId);
+                Application.SharedSoundMgr().FreeSound(resId);
                 return;
             }
-            NSObject value = null;
-            if (s_Resources.TryGetValue(resId, out value))
+            if (s_Resources.TryGetValue(resId, out NSObject value))
             {
-                value?.dealloc();
-                s_Resources.Remove(resId);
+                value?.Dealloc();
+                _ = s_Resources.Remove(resId);
             }
         }
 
-        public ResourceMgrDelegate resourcesDelegate;
+        public IResourceMgrDelegate resourcesDelegate;
 
         private Dictionary<int, NSObject> s_Resources = [];
 

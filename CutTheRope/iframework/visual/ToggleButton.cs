@@ -1,58 +1,58 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class ToggleButton : BaseElement, ButtonDelegate
+    internal sealed class ToggleButton : BaseElement, IButtonDelegation
     {
-        public virtual void onButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n <= 1)
             {
-                toggle();
+                Toggle();
             }
-            delegateButtonDelegate?.onButtonPressed(buttonID);
+            delegateButtonDelegate?.OnButtonPressed(buttonID);
         }
 
-        public ToggleButton initWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, int bid)
+        public ToggleButton InitWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, int bid)
         {
-            if (init() != null)
+            if (Init() != null)
             {
                 buttonID = bid;
-                b1 = new Button().initWithUpElementDownElementandID(u1, d1, 0);
-                b2 = new Button().initWithUpElementDownElementandID(u2, d2, 1);
+                b1 = new Button().InitWithUpElementDownElementandID(u1, d1, 0);
+                b2 = new Button().InitWithUpElementDownElementandID(u2, d2, 1);
                 b1.parentAnchor = b2.parentAnchor = 9;
                 width = b1.width;
                 height = b1.height;
-                addChildwithID(b1, 0);
-                addChildwithID(b2, 1);
-                b2.setEnabled(false);
+                _ = AddChildwithID(b1, 0);
+                _ = AddChildwithID(b2, 1);
+                b2.SetEnabled(false);
                 b1.delegateButtonDelegate = this;
                 b2.delegateButtonDelegate = this;
             }
             return this;
         }
 
-        public void setTouchIncreaseLeftRightTopBottom(double l, double r, double t, double b)
+        public void SetTouchIncreaseLeftRightTopBottom(double l, double r, double t, double b)
         {
-            setTouchIncreaseLeftRightTopBottom((float)l, (float)r, (float)t, (float)b);
+            SetTouchIncreaseLeftRightTopBottom((float)l, (float)r, (float)t, (float)b);
         }
 
-        public void setTouchIncreaseLeftRightTopBottom(float l, float r, float t, float b)
+        public void SetTouchIncreaseLeftRightTopBottom(float l, float r, float t, float b)
         {
-            b1.setTouchIncreaseLeftRightTopBottom(l, r, t, b);
-            b2.setTouchIncreaseLeftRightTopBottom(l, r, t, b);
+            b1.SetTouchIncreaseLeftRightTopBottom(l, r, t, b);
+            b2.SetTouchIncreaseLeftRightTopBottom(l, r, t, b);
         }
 
-        public void toggle()
+        public void Toggle()
         {
-            b1.setEnabled(!b1.isEnabled());
-            b2.setEnabled(!b2.isEnabled());
+            b1.SetEnabled(!b1.IsEnabled());
+            b2.SetEnabled(!b2.IsEnabled());
         }
 
-        public bool on()
+        public bool On()
         {
-            return b2.isEnabled();
+            return b2.IsEnabled();
         }
 
-        public ButtonDelegate delegateButtonDelegate;
+        public IButtonDelegation delegateButtonDelegate;
 
         private int buttonID;
 
@@ -62,8 +62,8 @@ namespace CutTheRope.iframework.visual
 
         private enum TOGGLE_BUTTON
         {
-            TOGGLE_BUTTON_FACE1,
-            TOGGLE_BUTTON_FACE2
+            BUTTON_FACE1,
+            BUTTON_FACE2
         }
     }
 }

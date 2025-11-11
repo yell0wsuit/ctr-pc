@@ -1,15 +1,9 @@
 namespace CutTheRope.iframework
 {
-    internal struct Point
+    internal struct Point(float xx, float yy)
     {
-        public Point(float xx, float yy)
-        {
-            x = xx;
-            y = yy;
-        }
+        public float x = xx;
 
-        public float x;
-
-        public float y;
+        public float y = yy;
     }
 }

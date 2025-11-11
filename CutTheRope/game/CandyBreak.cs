@@ -4,11 +4,11 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class CandyBreak : RotateableMultiParticles
+    internal sealed class CandyBreak : RotateableMultiParticles
     {
-        public override Particles initWithTotalParticlesandImageGrid(int p, Image grid)
+        public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {
-            if (base.initWithTotalParticlesandImageGrid(p, grid) == null)
+            if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
             {
                 return null;
             }
@@ -52,31 +52,31 @@ namespace CutTheRope.game
             return this;
         }
 
-        public override void initParticle(ref Particle particle)
+        public override void InitParticle(ref Particle particle)
         {
-            base.initParticle(ref particle);
+            base.InitParticle(ref particle);
             int num = RND_RANGE(3, 7);
             Quad2D qt = imageGrid.texture.quads[num];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            drawer.setTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
+            drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
             CTRRectangle rectangle = imageGrid.texture.quadRects[num];
             particle.width = rectangle.w * particle.size;
             particle.height = rectangle.h * particle.size;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(drawer.image.texture.name());
-            OpenGL.glVertexPointer(3, 5, 0, toFloatArray(drawer.vertices));
-            OpenGL.glTexCoordPointer(2, 5, 0, toFloatArray(drawer.texCoordinates));
-            OpenGL.glBindBuffer(2, colorsID);
-            OpenGL.glDrawElements(7, particleIdx * 6, drawer.indices);
-            OpenGL.glBindBuffer(2, 0U);
-            OpenGL.glDisableClientState(13);
-            postDraw();
+            PreDraw();
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(drawer.image.texture.Name());
+            OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(drawer.vertices));
+            OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(drawer.texCoordinates));
+            OpenGL.GlBindBuffer(2, colorsID);
+            OpenGL.GlDrawElements(7, particleIdx * 6, drawer.indices);
+            OpenGL.GlBindBuffer(2, 0U);
+            OpenGL.GlDisableClientState(13);
+            PostDraw();
         }
     }
 }

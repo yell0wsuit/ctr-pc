@@ -5,39 +5,39 @@ namespace CutTheRope.iframework.sfe
 {
     internal class MaterialPoint : NSObject
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 forces = new Vector[10];
-                setWeight(1f);
-                resetAll();
+                SetWeight(1f);
+                ResetAll();
             }
             return this;
         }
 
-        public virtual void setWeight(float w)
+        public virtual void SetWeight(float w)
         {
             weight = w;
             invWeight = (float)(1.0 / weight);
-            gravity = vect(0f, 784f * weight);
+            gravity = Vect(0f, 784f * weight);
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             forces = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual void resetForces()
+        public virtual void ResetForces()
         {
             forces = new Vector[10];
             highestForceIndex = -1;
         }
 
-        public virtual void resetAll()
+        public virtual void ResetAll()
         {
-            resetForces();
+            ResetForces();
             v = vectZero;
             a = vectZero;
             pos = vectZero;
@@ -45,7 +45,7 @@ namespace CutTheRope.iframework.sfe
             totalForce = vectZero;
         }
 
-        public virtual void setForcewithID(Vector force, int n)
+        public virtual void SetForcewithID(Vector force, int n)
         {
             forces[n] = force;
             if (n > highestForceIndex)
@@ -54,26 +54,26 @@ namespace CutTheRope.iframework.sfe
             }
         }
 
-        public virtual void deleteForce(int n)
+        public virtual void DeleteForce(int n)
         {
             forces[n] = vectZero;
         }
 
-        public virtual Vector getForce(int n)
+        public virtual Vector GetForce(int n)
         {
             return forces[n];
         }
 
-        public virtual void applyImpulseDelta(Vector impulse, float delta)
+        public virtual void ApplyImpulseDelta(Vector impulse, float delta)
         {
-            if (!vectEqual(impulse, vectZero))
+            if (!VectEqual(impulse, vectZero))
             {
-                Vector v = vectMult(impulse, (float)((double)delta / 1.0));
-                pos = vectAdd(pos, v);
+                Vector v = VectMult(impulse, (float)((double)delta / 1.0));
+                pos = VectAdd(pos, v);
             }
         }
 
-        public virtual void updatewithPrecision(float delta, float p)
+        public virtual void UpdatewithPrecision(float delta, float p)
         {
             int num = (int)(delta / p) + 1;
             if (num != 0)
@@ -82,32 +82,32 @@ namespace CutTheRope.iframework.sfe
             }
             for (int i = 0; i < num; i++)
             {
-                update(delta);
+                Update(delta);
             }
         }
 
-        public virtual void update(float delta)
+        public virtual void Update(float delta)
         {
             totalForce = vectZero;
             if (!disableGravity)
             {
-                totalForce = !vectEqual(globalGravity, vectZero) ? vectAdd(totalForce, vectMult(globalGravity, weight)) : vectAdd(totalForce, gravity);
+                totalForce = !VectEqual(globalGravity, vectZero) ? VectAdd(totalForce, VectMult(globalGravity, weight)) : VectAdd(totalForce, gravity);
             }
             if (highestForceIndex != -1)
             {
                 for (int i = 0; i <= highestForceIndex; i++)
                 {
-                    totalForce = vectAdd(totalForce, forces[i]);
+                    totalForce = VectAdd(totalForce, forces[i]);
                 }
             }
-            totalForce = vectMult(totalForce, invWeight);
-            a = vectMult(totalForce, (float)((double)delta / 1.0));
-            v = vectAdd(v, a);
-            posDelta = vectMult(v, (float)((double)delta / 1.0));
-            pos = vectAdd(pos, posDelta);
+            totalForce = VectMult(totalForce, invWeight);
+            a = VectMult(totalForce, (float)((double)delta / 1.0));
+            v = VectAdd(v, a);
+            posDelta = VectMult(v, (float)((double)delta / 1.0));
+            pos = VectAdd(pos, posDelta);
         }
 
-        public virtual void drawForces()
+        public virtual void DrawForces()
         {
         }
 

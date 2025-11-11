@@ -2,54 +2,54 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class AnimationsPool : BaseElement, TimelineDelegate
+    internal sealed class AnimationsPool : BaseElement, ITimelineDelegate
     {
         public AnimationsPool()
         {
-            init();
+            _ = Init();
         }
 
-        public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public virtual void timelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
-            if (getChildId(t.element) != -1)
+            if (GetChildId(t.element) != -1)
             {
                 removeList.Add(t.element);
             }
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
             int count = removeList.Count;
             for (int i = 0; i < count; i++)
             {
-                removeChild(removeList[i]);
+                RemoveChild(removeList[i]);
             }
             removeList.Clear();
-            base.update(delta);
+            base.Update(delta);
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            base.draw();
+            base.Draw();
         }
 
-        public virtual void particlesFinished(Particles p)
+        public void ParticlesFinished(Particles p)
         {
-            if (getChildId(p) != -1)
+            if (GetChildId(p) != -1)
             {
                 removeList.Add(p);
             }
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             removeList.Clear();
             removeList = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
         private List<BaseElement> removeList = [];

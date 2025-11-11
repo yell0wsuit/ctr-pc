@@ -5,25 +5,22 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Scrollbar : BaseElement
+    internal sealed class Scrollbar : BaseElement
     {
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
-            if (delegateProvider != null)
-            {
-                delegateProvider(ref sp, ref mp, ref sc);
-            }
+            base.Update(delta);
+            delegateProvider?.Invoke(ref sp, ref mp, ref sc);
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            base.preDraw();
-            if (vectEqual(sp, vectUndefined) && delegateProvider != null)
+            base.PreDraw();
+            if (VectEqual(sp, vectUndefined) && delegateProvider != null)
             {
                 delegateProvider(ref sp, ref mp, ref sc);
             }
-            OpenGL.glDisable(0);
+            OpenGL.GlDisable(0);
             bool flag = false;
             float num;
             float num2;
@@ -34,7 +31,7 @@ namespace CutTheRope.iframework.visual
                 num = width - 2f;
                 num2 = 1f;
                 num3 = (float)Math.Round((height - 2.0) / sc.y);
-                float num4 = (mp.y != 0f) ? (sp.y / mp.y) : 1f;
+                float num4 = mp.y != 0f ? sp.y / mp.y : 1f;
                 num5 = (float)(1.0 + ((height - 2.0 - (double)num3) * (double)num4));
                 if (num3 > height)
                 {
@@ -46,7 +43,7 @@ namespace CutTheRope.iframework.visual
                 num3 = height - 2f;
                 num5 = 1f;
                 num = (float)Math.Round((width - 2.0) / sc.x);
-                float num6 = (mp.x != 0f) ? (sp.x / mp.x) : 1f;
+                float num6 = mp.x != 0f ? sp.x / mp.x : 1f;
                 num2 = (float)(1.0 + ((width - 2.0 - (double)num) * (double)num6));
                 if (num > width)
                 {
@@ -55,17 +52,17 @@ namespace CutTheRope.iframework.visual
             }
             if (!flag)
             {
-                GLDrawer.drawSolidRectWOBorder(drawX, drawY, width, height, backColor);
-                GLDrawer.drawSolidRectWOBorder(drawX + num2, drawY + num5, num, num3, scrollerColor);
+                GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, backColor);
+                GLDrawer.DrawSolidRectWOBorder(drawX + num2, drawY + num5, num, num3, scrollerColor);
             }
-            OpenGL.glEnable(0);
-            OpenGL.glColor4f(Color.White);
-            base.postDraw();
+            OpenGL.GlEnable(0);
+            OpenGL.GlColor4f(Color.White);
+            base.PostDraw();
         }
 
-        public virtual Scrollbar initWithWidthHeightVertical(float w, float h, bool v)
+        public Scrollbar InitWithWidthHeightVertical(float w, float h, bool v)
         {
-            if (init() != null)
+            if (Init() != null)
             {
                 width = (int)w;
                 height = (int)h;

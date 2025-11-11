@@ -7,9 +7,9 @@ namespace CutTheRope.iframework.core
 {
     internal class Preferences : NSObject
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() == null)
+            if (base.Init() == null)
             {
                 return null;
             }
@@ -17,45 +17,44 @@ namespace CutTheRope.iframework.core
             return this;
         }
 
-        public virtual void setIntforKey(int v, string k, bool comit)
+        public virtual void SetIntforKey(int v, string k, bool comit)
         {
             _setIntforKey(v, k, comit);
         }
 
-        public virtual void setBooleanforKey(bool v, string k, bool comit)
+        public virtual void SetBooleanforKey(bool v, string k, bool comit)
         {
             _setBooleanforKey(v, k, comit);
         }
 
-        public virtual void setStringforKey(string v, string k, bool comit)
+        public virtual void SetStringforKey(string v, string k, bool comit)
         {
             _setStringforKey(v, k, comit);
         }
 
-        public virtual int getIntForKey(string k)
+        public virtual int GetIntForKey(string k)
         {
             return _getIntForKey(k);
         }
 
-        public virtual float getFloatForKey(string k)
+        public virtual float GetFloatForKey(string k)
         {
             return 0f;
         }
 
-        public virtual bool getBooleanForKey(string k)
+        public virtual bool GetBooleanForKey(string k)
         {
             return _getBooleanForKey(k);
         }
 
-        public virtual string getStringForKey(string k)
+        public virtual string GetStringForKey(string k)
         {
             return _getStringForKey(k);
         }
 
         public static void _setIntforKey(int v, string key, bool comit)
         {
-            int value;
-            if (data_.TryGetValue(key, out value))
+            if (data_.TryGetValue(key, out _))
             {
                 data_[key] = v;
             }
@@ -71,8 +70,7 @@ namespace CutTheRope.iframework.core
 
         private static void _setStringforKey(string v, string k, bool comit)
         {
-            string value;
-            if (dataStrings_.TryGetValue(k, out value))
+            if (dataStrings_.TryGetValue(k, out _))
             {
                 dataStrings_[k] = v;
             }
@@ -88,8 +86,7 @@ namespace CutTheRope.iframework.core
 
         public static int _getIntForKey(string k)
         {
-            int value;
-            return data_.TryGetValue(k, out value) ? value : 0;
+            return data_.TryGetValue(k, out int value) ? value : 0;
         }
 
         private static float _getFloatForKey(string k)
@@ -109,8 +106,7 @@ namespace CutTheRope.iframework.core
 
         private static string _getStringForKey(string k)
         {
-            string value;
-            return dataStrings_.TryGetValue(k, out value) ? value : "";
+            return dataStrings_.TryGetValue(k, out string value) ? value : "";
         }
 
         public virtual void savePreferences()
@@ -139,7 +135,7 @@ namespace CutTheRope.iframework.core
                 if (GameSaveRequested)
                 {
                     FileStream fileStream = File.Create("ctr_save.bin");
-                    SaveToStream(fileStream);
+                    _ = SaveToStream(fileStream);
                     fileStream.Close();
                     GameSaveRequested = false;
                 }
@@ -175,7 +171,7 @@ namespace CutTheRope.iframework.core
             }
             catch (Exception ex)
             {
-                _LOG("Error: cannot save, " + ex.ToString());
+                LOG("Error: cannot save, " + ex.ToString());
                 flag2 = flag;
             }
             return flag2;
@@ -208,7 +204,7 @@ namespace CutTheRope.iframework.core
             }
             catch (Exception ex)
             {
-                _LOG("Error: cannot load, " + ex.ToString());
+                LOG("Error: cannot load, " + ex.ToString());
                 flag2 = flag;
             }
             return flag2;
@@ -225,7 +221,7 @@ namespace CutTheRope.iframework.core
             if (File.Exists(file))
             {
                 FileStream fileStream = File.OpenRead(file);
-                LoadFromStream(fileStream);
+                _ = LoadFromStream(fileStream);
                 fileStream.Close();
             }
         }
@@ -234,6 +230,6 @@ namespace CutTheRope.iframework.core
 
         private static readonly Dictionary<string, string> dataStrings_ = [];
 
-        public static bool GameSaveRequested = false;
+        public static bool GameSaveRequested;
     }
 }

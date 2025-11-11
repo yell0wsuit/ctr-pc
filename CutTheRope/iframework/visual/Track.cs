@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Track : NSObject
+    internal sealed class Track : NSObject
     {
         public Track()
         {
@@ -12,7 +12,7 @@ namespace CutTheRope.iframework.visual
             currentStepAcceleration = new KeyFrame();
         }
 
-        public virtual Track initWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
+        public Track InitWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
         {
             t = timeline;
             type = trackType;
@@ -29,18 +29,18 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void initActionKeyFrameandTime(KeyFrame kf, float time)
+        public void InitActionKeyFrameandTime(KeyFrame kf, float time)
         {
             keyFrameTimeLeft = time;
-            setElementFromKeyFrame(kf);
+            SetElementFromKeyFrame(kf);
             if (overrun > 0f)
             {
-                updateActionTrack(this, overrun);
+                UpdateActionTrack(this, overrun);
                 overrun = 0f;
             }
         }
 
-        public virtual void setKeyFrameAt(KeyFrame k, int i)
+        public void SetKeyFrameAt(KeyFrame k, int i)
         {
             keyFrames[i] = k;
             if (i >= keyFramesCount)
@@ -53,7 +53,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual float getFrameTime(int f)
+        public float GetFrameTime(int f)
         {
             float num = 0f;
             for (int i = 0; i <= f; i++)
@@ -63,17 +63,17 @@ namespace CutTheRope.iframework.visual
             return num;
         }
 
-        public virtual void updateRange()
+        public void UpdateRange()
         {
-            startTime = getFrameTime(0);
-            endTime = getFrameTime(keyFramesCount - 1);
+            startTime = GetFrameTime(0);
+            endTime = GetFrameTime(keyFramesCount - 1);
         }
 
-        private void initKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
+        private void InitKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
         {
             keyFrameTimeLeft = time;
-            setKeyFrameFromElement(elementPrevState);
-            setElementFromKeyFrame(src);
+            SetKeyFrameFromElement(elementPrevState);
+            SetElementFromKeyFrame(src);
             switch (type)
             {
                 case TrackType.TRACK_POSITION:
@@ -145,13 +145,13 @@ namespace CutTheRope.iframework.visual
                     case TrackType.TRACK_COLOR:
                         {
                             ColorParams color = currentStepPerSecond.value.color;
-                            color.rgba.r = color.rgba.r * 2f;
+                            color.rgba.r *= 2f;
                             ColorParams color2 = currentStepPerSecond.value.color;
-                            color2.rgba.g = color2.rgba.g * 2f;
+                            color2.rgba.g *= 2f;
                             ColorParams color3 = currentStepPerSecond.value.color;
-                            color3.rgba.b = color3.rgba.b * 2f;
+                            color3.rgba.b *= 2f;
                             ColorParams color4 = currentStepPerSecond.value.color;
-                            color4.rgba.a = color4.rgba.a * 2f;
+                            color4.rgba.a *= 2f;
                             currentStepAcceleration.value.color.rgba.r = currentStepPerSecond.value.color.rgba.r / keyFrameTimeLeft;
                             currentStepAcceleration.value.color.rgba.g = currentStepPerSecond.value.color.rgba.g / keyFrameTimeLeft;
                             currentStepAcceleration.value.color.rgba.b = currentStepPerSecond.value.color.rgba.b / keyFrameTimeLeft;
@@ -166,13 +166,13 @@ namespace CutTheRope.iframework.visual
                             else
                             {
                                 ColorParams color5 = currentStepAcceleration.value.color;
-                                color5.rgba.r = color5.rgba.r * -1f;
+                                color5.rgba.r *= -1f;
                                 ColorParams color6 = currentStepAcceleration.value.color;
-                                color6.rgba.g = color6.rgba.g * -1f;
+                                color6.rgba.g *= -1f;
                                 ColorParams color7 = currentStepAcceleration.value.color;
-                                color7.rgba.b = color7.rgba.b * -1f;
+                                color7.rgba.b *= -1f;
                                 ColorParams color8 = currentStepAcceleration.value.color;
-                                color8.rgba.a = color8.rgba.a * -1f;
+                                color8.rgba.a *= -1f;
                             }
                             break;
                         }
@@ -180,12 +180,12 @@ namespace CutTheRope.iframework.visual
             }
             if (overrun > 0f)
             {
-                updateTrack(this, overrun);
+                UpdateTrack(this, overrun);
                 overrun = 0f;
             }
         }
 
-        public virtual void setElementFromKeyFrame(KeyFrame kf)
+        public void SetElementFromKeyFrame(KeyFrame kf)
         {
             switch (type)
             {
@@ -233,7 +233,7 @@ namespace CutTheRope.iframework.visual
                         for (int i = 0; i < kf.value.action.actionSet.Count; i++)
                         {
                             CTRAction action = kf.value.action.actionSet[i];
-                            action.actionTarget.handleAction(action.data);
+                            _ = action.actionTarget.HandleAction(action.data);
                         }
                         return;
                     }
@@ -242,7 +242,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        private void setKeyFrameFromElement(KeyFrame kf)
+        private void SetKeyFrameFromElement(KeyFrame kf)
         {
             switch (type)
             {
@@ -267,7 +267,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public static void updateActionTrack(Track thiss, float delta)
+        public static void UpdateActionTrack(Track thiss, float delta)
         {
             if (thiss == null)
             {
@@ -285,10 +285,10 @@ namespace CutTheRope.iframework.visual
                             thiss.nextKeyFrame = 0;
                             thiss.overrun = thiss.t.time - thiss.startTime;
                             thiss.nextKeyFrame++;
-                            thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                            thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                             return;
                         }
-                        thiss.initActionKeyFrameandTime(thiss.keyFrames[0], 0f);
+                        thiss.InitActionKeyFrameandTime(thiss.keyFrames[0], 0f);
                         return;
                     }
                 }
@@ -300,10 +300,10 @@ namespace CutTheRope.iframework.visual
                         thiss.nextKeyFrame = thiss.keyFramesCount - 1;
                         thiss.overrun = thiss.endTime - thiss.t.time;
                         thiss.nextKeyFrame--;
-                        thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                        thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
                         return;
                     }
-                    thiss.initActionKeyFrameandTime(thiss.keyFrames[0], 0f);
+                    thiss.InitActionKeyFrameandTime(thiss.keyFrames[0], 0f);
                 }
                 return;
             }
@@ -312,33 +312,33 @@ namespace CutTheRope.iframework.visual
             {
                 if (thiss.t != null && thiss.t.delegateTimelineDelegate != null)
                 {
-                    thiss.t.delegateTimelineDelegate.timelinereachedKeyFramewithIndex(thiss.t, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
+                    thiss.t.delegateTimelineDelegate.TimelinereachedKeyFramewithIndex(thiss.t, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
                 }
                 thiss.overrun = 0f - thiss.keyFrameTimeLeft;
                 if (thiss.nextKeyFrame == thiss.keyFramesCount - 1)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (thiss.nextKeyFrame == 0)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (!thiss.t.timelineDirReverse)
                 {
                     thiss.nextKeyFrame++;
-                    thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                    thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                     return;
                 }
                 thiss.nextKeyFrame--;
-                thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
             }
         }
 
-        public static void updateTrack(Track thiss, float delta)
+        public static void UpdateTrack(Track thiss, float delta)
         {
             Timeline timeline = thiss.t;
             if (thiss.state == TrackState.TRACK_NOT_ACTIVE)
@@ -351,13 +351,13 @@ namespace CutTheRope.iframework.visual
                         thiss.nextKeyFrame = 0;
                         thiss.overrun = timeline.time - thiss.startTime;
                         thiss.nextKeyFrame++;
-                        thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                        thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                         return;
                     }
                     thiss.nextKeyFrame = thiss.keyFramesCount - 1;
                     thiss.overrun = thiss.endTime - timeline.time;
                     thiss.nextKeyFrame--;
-                    thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                    thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
                 }
                 return;
             }
@@ -397,33 +397,33 @@ namespace CutTheRope.iframework.visual
                     case TrackType.TRACK_COLOR:
                         {
                             ColorParams color = thiss.currentStepPerSecond.value.color;
-                            color.rgba.r = color.rgba.r + (thiss.currentStepAcceleration.value.color.rgba.r * delta);
+                            color.rgba.r += thiss.currentStepAcceleration.value.color.rgba.r * delta;
                             ColorParams color2 = thiss.currentStepPerSecond.value.color;
-                            color2.rgba.g = color2.rgba.g + (thiss.currentStepAcceleration.value.color.rgba.g * delta);
+                            color2.rgba.g += thiss.currentStepAcceleration.value.color.rgba.g * delta;
                             ColorParams color3 = thiss.currentStepPerSecond.value.color;
-                            color3.rgba.b = color3.rgba.b + (thiss.currentStepAcceleration.value.color.rgba.b * delta);
+                            color3.rgba.b += thiss.currentStepAcceleration.value.color.rgba.b * delta;
                             ColorParams color4 = thiss.currentStepPerSecond.value.color;
-                            color4.rgba.a = color4.rgba.a + (thiss.currentStepAcceleration.value.color.rgba.a * delta);
+                            color4.rgba.a += thiss.currentStepAcceleration.value.color.rgba.a * delta;
                             float num13 = thiss.currentStepAcceleration.value.color.rgba.r * delta;
                             float num14 = thiss.currentStepAcceleration.value.color.rgba.g * delta;
                             float num15 = thiss.currentStepAcceleration.value.color.rgba.b * delta;
                             float num16 = thiss.currentStepAcceleration.value.color.rgba.a * delta;
                             ColorParams color5 = thiss.currentStepPerSecond.value.color;
-                            color5.rgba.r = color5.rgba.r + num13;
+                            color5.rgba.r += num13;
                             ColorParams color6 = thiss.currentStepPerSecond.value.color;
-                            color6.rgba.g = color6.rgba.g + num14;
+                            color6.rgba.g += num14;
                             ColorParams color7 = thiss.currentStepPerSecond.value.color;
-                            color7.rgba.b = color7.rgba.b + num15;
+                            color7.rgba.b += num15;
                             ColorParams color8 = thiss.currentStepPerSecond.value.color;
-                            color8.rgba.a = color8.rgba.a + num16;
+                            color8.rgba.a += num16;
                             BaseElement element = timeline.element;
-                            element.color.r = element.color.r + ((keyFrame.value.color.rgba.r + (num13 / 2f)) * delta);
+                            element.color.r += (keyFrame.value.color.rgba.r + (num13 / 2f)) * delta;
                             BaseElement element2 = timeline.element;
-                            element2.color.g = element2.color.g + ((keyFrame.value.color.rgba.g + (num14 / 2f)) * delta);
+                            element2.color.g += (keyFrame.value.color.rgba.g + (num14 / 2f)) * delta;
                             BaseElement element3 = timeline.element;
-                            element3.color.b = element3.color.b + ((keyFrame.value.color.rgba.b + (num15 / 2f)) * delta);
+                            element3.color.b += (keyFrame.value.color.rgba.b + (num15 / 2f)) * delta;
                             BaseElement element4 = timeline.element;
-                            element4.color.a = element4.color.a + ((keyFrame.value.color.rgba.a + (num16 / 2f)) * delta);
+                            element4.color.a += (keyFrame.value.color.rgba.a + (num16 / 2f)) * delta;
                             break;
                         }
                 }
@@ -446,41 +446,41 @@ namespace CutTheRope.iframework.visual
                     case TrackType.TRACK_COLOR:
                         {
                             BaseElement element5 = timeline.element;
-                            element5.color.r = element5.color.r + (thiss.currentStepPerSecond.value.color.rgba.r * delta);
+                            element5.color.r += thiss.currentStepPerSecond.value.color.rgba.r * delta;
                             BaseElement element6 = timeline.element;
-                            element6.color.g = element6.color.g + (thiss.currentStepPerSecond.value.color.rgba.g * delta);
+                            element6.color.g += thiss.currentStepPerSecond.value.color.rgba.g * delta;
                             BaseElement element7 = timeline.element;
-                            element7.color.b = element7.color.b + (thiss.currentStepPerSecond.value.color.rgba.b * delta);
+                            element7.color.b += thiss.currentStepPerSecond.value.color.rgba.b * delta;
                             BaseElement element8 = timeline.element;
-                            element8.color.a = element8.color.a + (thiss.currentStepPerSecond.value.color.rgba.a * delta);
+                            element8.color.a += thiss.currentStepPerSecond.value.color.rgba.a * delta;
                             break;
                         }
                 }
             }
             if (thiss.keyFrameTimeLeft <= 1E-06f)
             {
-                timeline.delegateTimelineDelegate?.timelinereachedKeyFramewithIndex(timeline, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
+                timeline.delegateTimelineDelegate?.TimelinereachedKeyFramewithIndex(timeline, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
                 thiss.overrun = 0f - thiss.keyFrameTimeLeft;
                 if (thiss.nextKeyFrame == thiss.keyFramesCount - 1)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (thiss.nextKeyFrame == 0)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (!timeline.timelineDirReverse)
                 {
                     thiss.nextKeyFrame++;
-                    thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                    thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                     return;
                 }
                 thiss.nextKeyFrame--;
-                thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
             }
         }
 

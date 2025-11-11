@@ -2,7 +2,7 @@ using CutTheRope.ios;
 using System;
 using System.Collections;
 
-internal class DynamicArray : NSObject, IEnumerable
+internal sealed class DynamicArray : NSObject, IEnumerable
 {
     public NSObject this[int key] => map[key];
 
@@ -11,15 +11,15 @@ internal class DynamicArray : NSObject, IEnumerable
         return new DynamicArrayEnumerator(map, highestIndex);
     }
 
-    public override NSObject init()
+    public override NSObject Init()
     {
-        initWithCapacityandOverReallocValue(10, 10);
+        _ = InitWithCapacityandOverReallocValue(10, 10);
         return this;
     }
 
-    public virtual NSObject initWithCapacity(int c)
+    public NSObject InitWithCapacity(int c)
     {
-        if (base.init() != null)
+        if (base.Init() != null)
         {
             size = c;
             highestIndex = -1;
@@ -30,26 +30,26 @@ internal class DynamicArray : NSObject, IEnumerable
         return this;
     }
 
-    public virtual NSObject initWithCapacityandOverReallocValue(int c, int v)
+    public NSObject InitWithCapacityandOverReallocValue(int c, int v)
     {
-        if (initWithCapacity(c) != null)
+        if (InitWithCapacity(c) != null)
         {
             overRealloc = v;
         }
         return this;
     }
 
-    public virtual int count()
+    public int Count()
     {
         return highestIndex + 1;
     }
 
-    public virtual int capacity()
+    public int Capacity()
     {
         return size;
     }
 
-    public virtual void setNewSize(int k)
+    public void SetNewSize(int k)
     {
         int num = k + overRealloc;
         NSObject[] array = new NSObject[num];
@@ -58,22 +58,22 @@ internal class DynamicArray : NSObject, IEnumerable
         size = num;
     }
 
-    public virtual int addObject(NSObject obj)
+    public int AddObject(NSObject obj)
     {
         int num = highestIndex + 1;
-        setObjectAt(obj, num);
+        SetObjectAt(obj, num);
         return num;
     }
 
-    public virtual void setObjectAt(NSObject obj, int k)
+    public void SetObjectAt(NSObject obj, int k)
     {
         if (k >= size)
         {
-            setNewSize(k + 1);
+            SetNewSize(k + 1);
         }
         if (map[k] != null)
         {
-            map[k].release();
+            map[k].Release();
             map[k] = null;
         }
         if (highestIndex < k)
@@ -81,48 +81,48 @@ internal class DynamicArray : NSObject, IEnumerable
             highestIndex = k;
         }
         map[k] = obj;
-        map[k].retain();
+        map[k].Retain();
         mutationsCount += 1UL;
     }
 
-    public virtual NSObject firstObject()
+    public NSObject FirstObject()
     {
-        return objectAtIndex(0);
+        return ObjectAtIndex(0);
     }
 
-    public virtual NSObject lastObject()
+    public NSObject LastObject()
     {
-        return highestIndex == -1 ? null : objectAtIndex(highestIndex);
+        return highestIndex == -1 ? null : ObjectAtIndex(highestIndex);
     }
 
-    public virtual NSObject objectAtIndex(int k)
+    public NSObject ObjectAtIndex(int k)
     {
         return map[k];
     }
 
-    public virtual void unsetAll()
+    public void UnsetAll()
     {
         for (int i = 0; i <= highestIndex; i++)
         {
             if (map[i] != null)
             {
-                unsetObjectAtIndex(i);
+                UnsetObjectAtIndex(i);
             }
         }
     }
 
-    public virtual void unsetObjectAtIndex(int k)
+    public void UnsetObjectAtIndex(int k)
     {
-        map[k].release();
+        map[k].Release();
         map[k] = null;
         mutationsCount += 1UL;
     }
 
-    public virtual void insertObjectatIndex(NSObject obj, int k)
+    public void InsertObjectatIndex(NSObject obj, int k)
     {
         if (k >= size || highestIndex + 1 >= size)
         {
-            setNewSize(size + 1);
+            SetNewSize(size + 1);
         }
         highestIndex++;
         for (int num = highestIndex; num > k; num--)
@@ -130,14 +130,14 @@ internal class DynamicArray : NSObject, IEnumerable
             map[num] = map[num - 1];
         }
         map[k] = obj;
-        map[k].retain();
+        map[k].Retain();
         mutationsCount += 1UL;
     }
 
-    public virtual void removeObjectAtIndex(int k)
+    public void RemoveObjectAtIndex(int k)
     {
         NSObject nSObject = map[k];
-        nSObject?.release();
+        nSObject?.Release();
         for (int i = k; i < highestIndex; i++)
         {
             map[i] = map[i + 1];
@@ -147,25 +147,25 @@ internal class DynamicArray : NSObject, IEnumerable
         mutationsCount += 1UL;
     }
 
-    public virtual void removeAllObjects()
+    public void RemoveAllObjects()
     {
-        unsetAll();
+        UnsetAll();
         highestIndex = -1;
     }
 
-    public virtual void removeObject(NSObject obj)
+    public void RemoveObject(NSObject obj)
     {
         for (int i = 0; i <= highestIndex; i++)
         {
             if (map[i] == obj)
             {
-                removeObjectAtIndex(i);
+                RemoveObjectAtIndex(i);
                 return;
             }
         }
     }
 
-    public virtual int getFirstEmptyIndex()
+    public int GetFirstEmptyIndex()
     {
         for (int i = 0; i < size; i++)
         {
@@ -177,7 +177,7 @@ internal class DynamicArray : NSObject, IEnumerable
         return size;
     }
 
-    public virtual int getObjectIndex(NSObject obj)
+    public int GetObjectIndex(NSObject obj)
     {
         for (int i = 0; i < size; i++)
         {
@@ -189,19 +189,19 @@ internal class DynamicArray : NSObject, IEnumerable
         return -1;
     }
 
-    public override void dealloc()
+    public override void Dealloc()
     {
         for (int i = 0; i <= highestIndex; i++)
         {
             if (map[i] != null)
             {
-                map[i].release();
+                map[i].Release();
                 map[i] = null;
             }
         }
-        free(map);
+        Free(map);
         map = null;
-        base.dealloc();
+        base.Dealloc();
     }
 
     public const int DEFAULT_CAPACITY = 10;

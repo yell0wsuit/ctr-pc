@@ -2,16 +2,16 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class CTRAction : NSObject
+    internal sealed class CTRAction : NSObject
     {
         public CTRAction()
         {
             data = new ActionData();
         }
 
-        public static CTRAction createAction(BaseElement target, string action, int p, int sp)
+        public static CTRAction CreateAction(BaseElement target, string action, int p, int sp)
         {
-            CTRAction action2 = (CTRAction)new CTRAction().init();
+            CTRAction action2 = (CTRAction)new CTRAction().Init();
             action2.actionTarget = target;
             action2.data.actionName = action;
             action2.data.actionParam = p;

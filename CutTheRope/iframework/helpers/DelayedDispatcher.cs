@@ -4,59 +4,59 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class DelayedDispatcher : NSObject
+    internal sealed class DelayedDispatcher : NSObject
     {
         public DelayedDispatcher()
         {
             dispatchers = [];
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             dispatchers.Clear();
             dispatchers = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual void callObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, double d)
+        public void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, double d)
         {
-            callObjectSelectorParamafterDelay(s, p, (float)d);
+            CallObjectSelectorParamafterDelay(s, p, (float)d);
         }
 
-        public virtual void callObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, float d)
+        public void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, float d)
         {
-            Dispatch item = new Dispatch().initWithObjectSelectorParamafterDelay(s, p, d);
+            DispatchClass item = new DispatchClass().InitWithObjectSelectorParamafterDelay(s, p, d);
             dispatchers.Add(item);
         }
 
-        public virtual void update(float d)
+        public void Update(float d)
         {
             int count = dispatchers.Count;
             for (int i = 0; i < count; i++)
             {
-                Dispatch dispatch = dispatchers[i];
+                DispatchClass dispatch = dispatchers[i];
                 dispatch.delay -= d;
                 if (dispatch.delay <= 0.0)
                 {
-                    dispatch.dispatch();
-                    dispatchers.Remove(dispatch);
+                    dispatch.Dispatch();
+                    _ = dispatchers.Remove(dispatch);
                     i--;
                     count = dispatchers.Count;
                 }
             }
         }
 
-        public virtual void cancelAllDispatches()
+        public void CancelAllDispatches()
         {
             dispatchers.Clear();
         }
 
-        public virtual void cancelDispatchWithObjectSelectorParam(DispatchFunc s, NSObject p)
+        public void CancelDispatchWithObjectSelectorParam(DispatchFunc s, NSObject p)
         {
             throw new NotImplementedException();
         }
 
-        private List<Dispatch> dispatchers;
+        private List<DispatchClass> dispatchers;
 
         // (Invoke) Token: 0x06000670 RID: 1648
         public delegate void DispatchFunc(NSObject param);

@@ -6,30 +6,30 @@ namespace CutTheRope.iframework.visual
 {
     internal class RectangleElement : BaseElement
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 solid = true;
             }
             return this;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            base.preDraw();
-            OpenGL.glDisable(0);
+            base.PreDraw();
+            OpenGL.GlDisable(0);
             if (solid)
             {
-                GLDrawer.drawSolidRectWOBorder(drawX, drawY, width, height, color);
+                GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, color);
             }
             else
             {
-                GLDrawer.drawRect(drawX, drawY, width, height, color);
+                GLDrawer.DrawRect(drawX, drawY, width, height, color);
             }
-            OpenGL.glEnable(0);
-            OpenGL.glColor4f(Color.White);
-            base.postDraw();
+            OpenGL.GlEnable(0);
+            OpenGL.GlColor4f(Color.White);
+            base.PostDraw();
         }
 
         public bool solid;

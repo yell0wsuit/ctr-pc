@@ -5,95 +5,92 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class CharAnimations : GameObject
+    internal sealed class CharAnimations : GameObject
     {
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
-            return CharAnimations_create(Application.getTexture(r));
+            return CharAnimations_create(Application.GetTexture(r));
         }
 
         private static CharAnimations CharAnimations_create(CTRTexture2D t)
         {
             CharAnimations charAnimations = new();
-            charAnimations.initWithTexture(t);
+            _ = charAnimations.InitWithTexture(t);
             return charAnimations;
         }
 
-        public virtual void addImage(int resId)
+        public void AddImage(int resId)
         {
-            if (animations == null)
-            {
-                animations = (DynamicArray)new DynamicArray().init();
-            }
+            animations ??= (DynamicArray)new DynamicArray().Init();
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resId);
             charAnimation.parentAnchor = charAnimation.anchor = 9;
-            charAnimation.doRestoreCutTransparency();
+            charAnimation.DoRestoreCutTransparency();
             int i = resId - 101;
-            animations.setObjectAt(charAnimation, i);
-            addChild(charAnimation);
-            charAnimation.setEnabled(false);
+            animations.SetObjectAt(charAnimation, i);
+            _ = AddChild(charAnimation);
+            charAnimation.SetEnabled(false);
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
-            animations.removeAllObjects();
+            animations.RemoveAllObjects();
             animations = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual void addAnimationWithIDDelayLoopFirstLast(int a, int aid, float d, Timeline.LoopType l, int s, int e)
+        public void AddAnimationWithIDDelayLoopFirstLast(int a, int aid, float d, Timeline.LoopType l, int s, int e)
         {
-            ((CharAnimation)animations.objectAtIndex(a - 101)).addAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
+            ((CharAnimation)animations.ObjectAtIndex(a - 101)).AddAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
         }
 
-        public virtual Animation getAnimation(int resID)
+        public Animation GetAnimation(int resID)
         {
-            return resID == 80 ? this : (Animation)animations.objectAtIndex(resID - 101);
+            return resID == 80 ? this : (Animation)animations.ObjectAtIndex(resID - 101);
         }
 
-        public virtual void switchToAnimationatEndOfAnimationDelay(int i2, int a2, int i1, int a1, float d)
+        public void SwitchToAnimationatEndOfAnimationDelay(int i2, int a2, int i1, int a1, float d)
         {
-            Animation animation = getAnimation(i1);
-            Animation animation2 = getAnimation(i2);
-            Timeline timeline = animation.getTimeline(a1);
-            DynamicArray dynamicArray = (DynamicArray)new DynamicArray().init();
-            dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_PLAY_TIMELINE", (i1 == 80) ? 1 : 0, a2));
+            Animation animation = GetAnimation(i1);
+            Animation animation2 = GetAnimation(i2);
+            Timeline timeline = animation.GetTimeline(a1);
+            DynamicArray dynamicArray = (DynamicArray)new DynamicArray().Init();
+            _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_PLAY_TIMELINE", i1 == 80 ? 1 : 0, a2));
             if (animation != animation2)
             {
-                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
-                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
-                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
-                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
-                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_VISIBLE", 0, 0));
-                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
+                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
+                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
+                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
+                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
+                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation, "ACTION_SET_VISIBLE", 0, 0));
+                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
             }
-            timeline.addKeyFrame(KeyFrame.makeAction(dynamicArray, d));
+            timeline.AddKeyFrame(KeyFrame.MakeAction(dynamicArray, d));
         }
 
-        public virtual void playAnimationtimeline(int resID, int t)
+        public void PlayAnimationtimeline(int resID, int t)
         {
-            if (getCurrentTimeline() != null)
+            if (GetCurrentTimeline() != null)
             {
-                stopCurrentTimeline();
+                StopCurrentTimeline();
             }
             foreach (object obj in animations)
             {
-                ((Animation)obj).setEnabled(false);
+                ((Animation)obj).SetEnabled(false);
             }
-            Animation animation = getAnimation(resID);
-            animation.setEnabled(true);
+            Animation animation = GetAnimation(resID);
+            animation.SetEnabled(true);
             color = animation == this ? RGBAColor.solidOpaqueRGBA : RGBAColor.transparentRGBA;
-            animation.playTimeline(t);
+            animation.PlayTimeline(t);
         }
 
-        public override void playTimeline(int t)
+        public override void PlayTimeline(int t)
         {
             foreach (object obj in animations)
             {
-                ((Animation)obj).setEnabled(false);
+                ((Animation)obj).SetEnabled(false);
             }
             color = RGBAColor.solidOpaqueRGBA;
-            base.playTimeline(t);
+            base.PlayTimeline(t);
         }
 
         public DynamicArray animations;

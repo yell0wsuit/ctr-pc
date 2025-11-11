@@ -6,117 +6,116 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class MapPickerController : ViewController, ButtonDelegate
+    internal sealed class MapPickerController : ViewController, IButtonDelegation
     {
-        public override NSObject initWithParent(ViewController p)
+        public override NSObject InitWithParent(ViewController p)
         {
-            if (base.initWithParent(p) != null)
+            if (base.InitWithParent(p) != null)
             {
                 selectedMap = null;
                 maplist = null;
-                createPickerView();
-                View view = (View)new View().initFullscreen();
-                RectangleElement rectangleElement = (RectangleElement)new RectangleElement().init();
+                CreatePickerView();
+                View view = (View)new View().InitFullscreen();
+                RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
                 rectangleElement.color = RGBAColor.whiteRGBA;
                 rectangleElement.width = (int)SCREEN_WIDTH;
                 rectangleElement.height = (int)SCREEN_HEIGHT;
-                view.addChild(rectangleElement);
-                FontGeneric font = Application.getFont(4);
-                Text text = new Text().initWithFont(font);
-                text.setString(NSS("Loading..."));
+                _ = view.AddChild(rectangleElement);
+                FontGeneric font = Application.GetFont(4);
+                Text text = new Text().InitWithFont(font);
+                text.SetString(NSS("Loading..."));
                 text.anchor = text.parentAnchor = 18;
-                view.addChild(text);
-                addViewwithID(view, 1);
-                setNormalMode();
+                _ = view.AddChild(text);
+                AddViewwithID(view, 1);
+                SetNormalMode();
             }
             return this;
         }
 
-        public virtual void createPickerView()
+        public void CreatePickerView()
         {
-            View view = (View)new View().initFullscreen();
-            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().init();
+            View view = (View)new View().InitFullscreen();
+            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
             rectangleElement.color = RGBAColor.whiteRGBA;
             rectangleElement.width = (int)SCREEN_WIDTH;
             rectangleElement.height = (int)SCREEN_HEIGHT;
-            view.addChild(rectangleElement);
-            FontGeneric font = Application.getFont(4);
-            Text text = new Text().initWithFont(font);
-            text.setString(NSS("START"));
-            Text text2 = new Text().initWithFont(font);
-            text2.setString(NSS("START"));
+            _ = view.AddChild(rectangleElement);
+            FontGeneric font = Application.GetFont(4);
+            Text text = new Text().InitWithFont(font);
+            text.SetString(NSS("START"));
+            Text text2 = new Text().InitWithFont(font);
+            text2.SetString(NSS("START"));
             text2.scaleX = text2.scaleY = 1.2f;
-            Button button = new Button().initWithUpElementDownElementandID(text, text2, 0);
+            Button button = new Button().InitWithUpElementDownElementandID(text, text2, 0);
             button.anchor = button.parentAnchor = 34;
             button.delegateButtonDelegate = this;
-            view.addChild(button);
-            addViewwithID(view, 0);
+            _ = view.AddChild(button);
+            AddViewwithID(view, 0);
         }
 
-        public override void activate()
+        public override void Activate()
         {
-            base.activate();
+            base.Activate();
             if (autoLoad)
             {
                 string text = "maps/";
                 NSString nsstring = selectedMap;
                 NSString nSString = NSS(text + (nsstring?.ToString()));
-                XMLNode xMLNode = XMLNode.parseXML(nSString.ToString());
-                xmlLoaderFinishedWithfromwithSuccess(xMLNode, nSString, xMLNode != null);
+                XMLNode xMLNode = XMLNode.ParseXML(nSString.ToString());
+                XmlLoaderFinishedWithfromwithSuccess(xMLNode, nSString, xMLNode != null);
                 return;
             }
-            showView(0);
-            loadList();
+            ShowView(0);
+            LoadList();
         }
 
-        public virtual void loadList()
+        public static void LoadList()
         {
         }
 
-        public override void deactivate()
+        public override void Deactivate()
         {
-            base.deactivate();
+            base.Deactivate();
         }
 
-        public virtual void xmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
         {
             if (rootNode != null)
             {
-                CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-                bool flag = autoLoad;
-                ctrrootController.setMap(rootNode);
-                ctrrootController.setMapName(selectedMap);
-                ctrrootController.setMapsList(maplist);
-                deactivate();
+                CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+                ctrrootController.SetMap(rootNode);
+                ctrrootController.SetMapName(selectedMap);
+                CTRRootController.SetMapsList(maplist);
+                Deactivate();
             }
         }
 
-        public virtual void setNormalMode()
+        public void SetNormalMode()
         {
             autoLoad = false;
-            ((CTRRootController)Application.sharedRootController()).setPicker(true);
+            ((CTRRootController)Application.SharedRootController()).SetPicker(true);
         }
 
-        public virtual void setAutoLoadMap(NSString map)
+        public void SetAutoLoadMap(NSString map)
         {
             autoLoad = true;
-            ((CTRRootController)Application.sharedRootController()).setPicker(false);
+            ((CTRRootController)Application.SharedRootController()).SetPicker(false);
             NSREL(selectedMap);
             selectedMap = (NSString)NSRET(map);
         }
 
-        public virtual void onButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n == 0)
             {
-                loadList();
+                LoadList();
             }
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             NSREL(selectedMap);
-            base.dealloc();
+            base.Dealloc();
         }
 
         private NSString selectedMap;

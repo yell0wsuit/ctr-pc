@@ -5,30 +5,30 @@ namespace CutTheRope.game
 {
     internal class CTRGameObject : GameObject
     {
-        public override void parseMover(XMLNode xml)
+        public override void ParseMover(XMLNode xml)
         {
             rotation = 0f;
             NSString nSString = xml["angle"];
             if (nSString != null)
             {
-                rotation = nSString.floatValue();
+                rotation = nSString.FloatValue();
             }
             NSString nSString2 = xml["path"];
-            if (nSString2 != null && nSString2.length() != 0)
+            if (nSString2 != null && nSString2.Length() != 0)
             {
                 int i = 100;
-                if (nSString2.characterAtIndex(0) == 'R')
+                if (nSString2.CharacterAtIndex(0) == 'R')
                 {
-                    i = ((int)((int)RTD(nSString2.substringFromIndex(2).intValue()) * 3.3f) / 2) + 1;
+                    i = ((int)((int)RTD(nSString2.SubstringFromIndex(2).IntValue()) * 3.3f) / 2) + 1;
                 }
-                float m_ = xml["moveSpeed"].floatValue() * 3.3f;
-                float r_ = xml["rotateSpeed"].floatValue();
-                CTRMover cTRMover = (CTRMover)new CTRMover().initWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
+                float m_ = xml["moveSpeed"].FloatValue() * 3.3f;
+                float r_ = xml["rotateSpeed"].FloatValue();
+                CTRMover cTRMover = (CTRMover)new CTRMover().InitWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
                 cTRMover.angle_ = rotation;
                 cTRMover.angle_initial = cTRMover.angle_;
-                cTRMover.setPathFromStringandStart(nSString2, vect(x, y));
-                setMover(cTRMover);
-                cTRMover.start();
+                cTRMover.SetPathFromStringandStart(nSString2, Vect(x, y));
+                SetMover(cTRMover);
+                cTRMover.Start();
             }
         }
     }

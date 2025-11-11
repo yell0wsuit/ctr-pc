@@ -1,4 +1,4 @@
-using CutTheRope.ctr_commons;
+using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -10,127 +10,128 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 
 namespace CutTheRope.game
 {
-    internal class MenuController : ViewController, ButtonDelegate, MovieMgrDelegate, ScrollableContainerProtocol, TimelineDelegate
+    internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
-        public static Button createButtonWithTextIDDelegate(NSString str, int bid, ButtonDelegate d)
+        public static Button CreateButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
-            FontGeneric font = Application.getFont(3);
-            Text text = new Text().initWithFont(font);
-            text.setString(str);
-            Text text2 = new Text().initWithFont(font);
-            text2.setString(str);
+            FontGeneric font = Application.GetFont(3);
+            Text text = new Text().InitWithFont(font);
+            text.SetString(str);
+            Text text2 = new Text().InitWithFont(font);
+            text2.SetString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
-            Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
-            button.setTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
+            _ = image.AddChild(text);
+            _ = image2.AddChild(text2);
+            Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
+            button.SetTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
             button.delegateButtonDelegate = d;
             return button;
         }
 
-        public static Button createShortButtonWithTextIDDelegate(NSString str, int bid, ButtonDelegate d)
+        public static Button CreateShortButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(61, 1);
             Image image2 = Image.Image_createWithResIDQuad(61, 0);
-            FontGeneric font = Application.getFont(3);
-            Text text = new Text().initWithFont(font);
-            text.setString(str);
-            Text text2 = new Text().initWithFont(font);
-            text2.setString(str);
+            FontGeneric font = Application.GetFont(3);
+            Text text = new Text().InitWithFont(font);
+            text.SetString(str);
+            Text text2 = new Text().InitWithFont(font);
+            text2.SetString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
-            Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
-            button.setTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
+            _ = image.AddChild(text);
+            _ = image2.AddChild(text2);
+            Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
+            button.SetTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
             button.delegateButtonDelegate = d;
             return button;
         }
 
-        public static ToggleButton createToggleButtonWithText1Text2IDDelegate(NSString str1, NSString str2, int bid, ButtonDelegate d)
+        public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(NSString str1, NSString str2, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
             Image image3 = Image.Image_createWithResIDQuad(2, 0);
             Image image4 = Image.Image_createWithResIDQuad(2, 1);
-            FontGeneric font = Application.getFont(3);
-            Text text = new Text().initWithFont(font);
-            text.setString(str1);
-            Text text2 = new Text().initWithFont(font);
-            text2.setString(str1);
-            Text text3 = new Text().initWithFont(font);
-            text3.setString(str2);
-            Text text4 = new Text().initWithFont(font);
-            text4.setString(str2);
+            FontGeneric font = Application.GetFont(3);
+            Text text = new Text().InitWithFont(font);
+            text.SetString(str1);
+            Text text2 = new Text().InitWithFont(font);
+            text2.SetString(str1);
+            Text text3 = new Text().InitWithFont(font);
+            text3.SetString(str2);
+            Text text4 = new Text().InitWithFont(font);
+            text4.SetString(str2);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
             text3.anchor = text3.parentAnchor = 18;
             text4.anchor = text4.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
-            image3.addChild(text3);
-            image4.addChild(text4);
-            ToggleButton toggleButton = new ToggleButton().initWithUpElement1DownElement1UpElement2DownElement2andID(image, image2, image3, image4, bid);
-            toggleButton.setTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
+            _ = image.AddChild(text);
+            _ = image2.AddChild(text2);
+            _ = image3.AddChild(text3);
+            _ = image4.AddChild(text4);
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(image, image2, image3, image4, bid);
+            toggleButton.SetTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
         }
 
-        public static Button createBackButtonWithDelegateID(ButtonDelegate d, int bid)
+        public static Button CreateBackButtonWithDelegateID(IButtonDelegation d, int bid)
         {
-            Button button = createButtonWithImageQuad1Quad2IDDelegate(54, 0, 1, bid, d);
+            Button button = CreateButtonWithImageQuad1Quad2IDDelegate(54, 0, 1, bid, d);
             button.anchor = button.parentAnchor = 33;
             return button;
         }
 
-        public static Button createButtonWithImageIDDelegate(int resID, int bid, ButtonDelegate d)
+        public static Button CreateButtonWithImageIDDelegate(int resID, int bid, IButtonDelegation d)
         {
-            CTRTexture2D texture = Application.getTexture(resID);
+            CTRTexture2D texture = Application.GetTexture(resID);
             Image up = Image.Image_create(texture);
             Image image = Image.Image_create(texture);
             image.scaleX = 1.2f;
             image.scaleY = 1.2f;
-            Button button = new Button().initWithUpElementDownElementandID(up, image, bid);
-            button.setTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
+            Button button = new Button().InitWithUpElementDownElementandID(up, image, bid);
+            button.SetTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
             button.delegateButtonDelegate = d;
             return button;
         }
 
-        public static Button createButton2WithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, ButtonDelegate d)
+        public static Button CreateButton2WithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegation d)
         {
             Image up = Image.Image_createWithResIDQuad(res, q1);
             Image image = Image.Image_createWithResIDQuad(res, q2);
-            Vector relativeQuadOffset = Image.getRelativeQuadOffset(res, q2, q1);
+            Vector relativeQuadOffset = Image.GetRelativeQuadOffset(res, q2, q1);
             image.x -= relativeQuadOffset.x;
             image.y -= relativeQuadOffset.y;
-            Button button = new Button().initWithUpElementDownElementandID(up, image, bid);
+            Button button = new Button().InitWithUpElementDownElementandID(up, image, bid);
             button.delegateButtonDelegate = d;
             return button;
         }
 
-        public static Button createButtonWithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, ButtonDelegate d)
+        public static Button CreateButtonWithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(res, q1);
             Image image2 = Image.Image_createWithResIDQuad(res, q2);
-            image.doRestoreCutTransparency();
-            image2.doRestoreCutTransparency();
-            Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
+            image.DoRestoreCutTransparency();
+            image2.DoRestoreCutTransparency();
+            Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
             button.delegateButtonDelegate = d;
-            CTRTexture2D texture = Application.getTexture(res);
-            button.forceTouchRect(MakeRectangle(texture.quadOffsets[q1].x, texture.quadOffsets[q1].y, texture.quadRects[q1].w, texture.quadRects[q1].h));
+            CTRTexture2D texture = Application.GetTexture(res);
+            button.ForceTouchRect(MakeRectangle(texture.quadOffsets[q1].x, texture.quadOffsets[q1].y, texture.quadRects[q1].w, texture.quadRects[q1].h));
             return button;
         }
 
-        public static BaseElement createBackgroundWithLogowithShadow(bool l, bool s)
+        public static BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s)
         {
-            BaseElement baseElement = (BaseElement)new BaseElement().init();
+            BaseElement baseElement = (BaseElement)new BaseElement().Init();
             baseElement.width = (int)SCREEN_WIDTH;
             baseElement.height = (int)SCREEN_HEIGHT;
             Image image = Image.Image_createWithResIDQuad(48, 0);
@@ -138,7 +139,7 @@ namespace CutTheRope.game
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = image.height / 2;
             image.passTransformationsToChilds = false;
-            baseElement.addChild(image);
+            _ = baseElement.AddChild(image);
             if (l)
             {
                 Image image2 = Image.Image_createWithResIDQuad(48, 1);
@@ -146,119 +147,119 @@ namespace CutTheRope.game
                 image2.scaleX = image2.scaleY = 1.25f;
                 image2.passTransformationsToChilds = false;
                 image2.rotationCenterY = image2.height / 2;
-                image.addChild(image2);
+                _ = image.AddChild(image2);
                 Image image3 = Image.Image_createWithResIDQuad(50, 0);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
-                baseElement.addChild(image3);
+                _ = baseElement.AddChild(image3);
             }
             if (s)
             {
                 Image image4 = Image.Image_createWithResIDQuad(60, 0);
                 image4.anchor = image4.parentAnchor = 18;
                 image4.scaleX = image4.scaleY = 2f;
-                Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
-                timeline.addKeyFrame(KeyFrame.makeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
-                timeline.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                image4.addTimeline(timeline);
-                image4.playTimeline(0);
-                baseElement.addChild(image4);
+                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
+                timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = image4.AddTimeline(timeline);
+                image4.PlayTimeline(0);
+                _ = baseElement.AddChild(image4);
             }
             return baseElement;
         }
 
-        public static BaseElement createBackgroundWithLogo(bool l)
+        public static BaseElement CreateBackgroundWithLogo(bool l)
         {
-            return createBackgroundWithLogowithShadow(l, true);
+            return CreateBackgroundWithLogowithShadow(l, true);
         }
 
-        public static Image createAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, Vector offset)
+        public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, Vector offset)
         {
             int num = p ? 1 : 0;
             Image image = Image.Image_createWithResIDQuad(8, num);
             Image image2 = Image.Image_createWithResIDQuad(8, q);
-            Image.setElementPositionWithRelativeQuadOffset(image2, 8, num, q);
+            Image.SetElementPositionWithRelativeQuadOffset(image2, 8, num, q);
             image2.parentAnchor = image2.anchor = 9;
             image2.x += offset.x;
             image2.y += offset.y;
-            image.addChild(image2);
+            _ = image.AddChild(image2);
             if (b)
             {
                 image2.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
                 Image image3 = Image.Image_createWithResIDQuad(8, 4);
                 image3.parentAnchor = image3.anchor = 9;
-                Image.setElementPositionWithRelativeQuadOffset(image3, 8, num, 4);
-                image.addChild(image3);
+                Image.SetElementPositionWithRelativeQuadOffset(image3, 8, num, 4);
+                _ = image.AddChild(image3);
             }
             return image;
         }
 
-        public static ToggleButton createAudioButtonWithQuadDelegateIDiconOffset(int q, ButtonDelegate delegateValue, int bid, Vector offset)
+        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, int bid, Vector offset)
         {
-            Image u = createAudioElementForQuadwithCrosspressediconOffset(q, false, false, offset);
-            Image d = createAudioElementForQuadwithCrosspressediconOffset(q, false, true, offset);
-            Image u2 = createAudioElementForQuadwithCrosspressediconOffset(q, true, false, offset);
-            Image d2 = createAudioElementForQuadwithCrosspressediconOffset(q, true, true, offset);
-            ToggleButton toggleButton = new ToggleButton().initWithUpElement1DownElement1UpElement2DownElement2andID(u, d, u2, d2, bid);
+            Image u = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false, offset);
+            Image d = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true, offset);
+            Image u2 = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, false, offset);
+            Image d2 = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, true, offset);
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d, u2, d2, bid);
             toggleButton.delegateButtonDelegate = delegateValue;
             return toggleButton;
         }
 
-        public static Button createLanguageButtonWithIDDelegate(int bid, ButtonDelegate d)
+        public static Button CreateLanguageButtonWithIDDelegate(int bid, IButtonDelegation d)
         {
-            NSString @string = Application.sharedAppSettings().getString(8);
+            NSString @string = Application.SharedAppSettings().GetString(8);
             int q = 7;
-            if (@string.isEqualToString("ru"))
+            if (@string.IsEqualToString("ru"))
             {
                 q = 4;
             }
-            else if (@string.isEqualToString("de"))
+            else if (@string.IsEqualToString("de"))
             {
                 q = 5;
             }
-            else if (@string.isEqualToString("fr"))
+            else if (@string.IsEqualToString("fr"))
             {
                 q = 6;
             }
-            NSString string2 = Application.getString(655370);
+            NSString string2 = Application.GetString(655370);
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
-            FontGeneric font = Application.getFont(3);
-            Text text = new Text().initWithFont(font);
-            text.setString(string2);
-            Text text2 = new Text().initWithFont(font);
-            text2.setString(string2);
+            FontGeneric font = Application.GetFont(3);
+            Text text = new Text().InitWithFont(font);
+            text.SetString(string2);
+            Text text2 = new Text().InitWithFont(font);
+            text2.SetString(string2);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
+            _ = image.AddChild(text);
+            _ = image2.AddChild(text2);
             Image image3 = Image.Image_createWithResIDQuad(54, q);
             Image image4 = Image.Image_createWithResIDQuad(54, q);
             image4.parentAnchor = image3.parentAnchor = 20;
             image4.anchor = image3.anchor = 20;
-            text.addChild(image3);
-            text2.addChild(image4);
+            _ = text.AddChild(image3);
+            _ = text2.AddChild(image4);
             text.width += (int)(image3.width + RTPD(10.0));
             text2.width += (int)(image4.width + RTPD(10.0));
-            Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
-            button.setTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
+            Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
+            button.SetTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
             button.delegateButtonDelegate = d;
             return button;
         }
 
-        public static BaseElement createElementWithResIdquad(int resId, int quad)
+        public static BaseElement CreateElementWithResIdquad(int resId, int quad)
         {
-            return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : (BaseElement)new BaseElement().init();
+            return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : (BaseElement)new BaseElement().Init();
         }
 
-        public static ToggleButton createToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, ButtonDelegate delegateValue)
+        public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
-            BaseElement baseElement = createElementWithResIdquad(res, quad);
-            BaseElement baseElement2 = createElementWithResIdquad(res, quad);
-            BaseElement baseElement3 = createElementWithResIdquad(res, quad2);
-            BaseElement baseElement4 = createElementWithResIdquad(res, quad2);
+            BaseElement baseElement = CreateElementWithResIdquad(res, quad);
+            BaseElement baseElement2 = CreateElementWithResIdquad(res, quad);
+            BaseElement baseElement3 = CreateElementWithResIdquad(res, quad2);
+            BaseElement baseElement4 = CreateElementWithResIdquad(res, quad2);
             int width = MAX(baseElement.width, baseElement3.width);
             int height = MAX(baseElement.height, baseElement3.height);
             baseElement.width = baseElement2.width = width;
@@ -266,152 +267,152 @@ namespace CutTheRope.game
             baseElement3.width = baseElement4.width = width;
             baseElement3.height = baseElement4.height = height;
             baseElement2.scaleX = baseElement2.scaleY = baseElement4.scaleX = baseElement4.scaleY = 1.2f;
-            ToggleButton toggleButton = new ToggleButton().initWithUpElement1DownElement1UpElement2DownElement2andID(baseElement, baseElement2, baseElement3, baseElement4, bId);
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(baseElement, baseElement2, baseElement3, baseElement4, bId);
             toggleButton.delegateButtonDelegate = delegateValue;
             return toggleButton;
         }
 
-        public static BaseElement createControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, NSString str, int bId, ButtonDelegate delegateValue)
+        public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, NSString str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(8, q);
-            Text text = Text.createWithFontandString(4, str);
+            Text text = Text.CreateWithFontandString(4, str);
             text.parentAnchor = 9;
             text.anchor = 18;
             text.scaleX = text.scaleY = 0.75f;
-            image.addChild(text);
-            Image.setElementPositionWithRelativeQuadOffset(text, 8, q, tq);
+            _ = image.AddChild(text);
+            Image.SetElementPositionWithRelativeQuadOffset(text, 8, q, tq);
             if (bId != -1)
             {
-                ToggleButton toggleButton = createToggleButtonWithResquadquad2buttonIDdelegate(8, -1, 8, bId, delegateValue);
-                toggleButton.setName("button");
+                ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(8, -1, 8, bId, delegateValue);
+                toggleButton.SetName("button");
                 toggleButton.parentAnchor = 9;
-                Image.setElementPositionWithRelativeQuadOffset(toggleButton, 8, q, 8);
-                image.addChild(toggleButton);
+                Image.SetElementPositionWithRelativeQuadOffset(toggleButton, 8, q, 8);
+                _ = image.AddChild(toggleButton);
                 int num = (image.width / 2) - (toggleButton.width / 2);
-                toggleButton.setTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85, 0.0);
+                toggleButton.SetTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85, 0.0);
             }
             else
             {
                 Image image2 = Image.Image_createWithResIDQuad(8, 7);
                 image2.parentAnchor = 9;
-                Image.setElementPositionWithRelativeQuadOffset(image2, 8, q, 7);
-                image.addChild(image2);
+                Image.SetElementPositionWithRelativeQuadOffset(image2, 8, q, 7);
+                _ = image.AddChild(image2);
             }
             return image;
         }
 
-        public static Image createBlankScoresButtonWithIconpressed(int quad, bool pressed)
+        public static Image CreateBlankScoresButtonWithIconpressed(int quad, bool pressed)
         {
             Image image3 = Image.Image_createWithResIDQuad(59, pressed ? 1 : 0);
             Image image2 = Image.Image_createWithResIDQuad(59, quad);
-            image3.addChild(image2);
+            _ = image3.AddChild(image2);
             image2.parentAnchor = 9;
-            Image.setElementPositionWithRelativeQuadOffset(image2, 59, 0, quad);
+            Image.SetElementPositionWithRelativeQuadOffset(image2, 59, 0, quad);
             return image3;
         }
 
-        public static Button createScoresButtonWithIconbuttonIDdelegate(int quad, int bId, ButtonDelegate delegateValue)
+        public static Button CreateScoresButtonWithIconbuttonIDdelegate(int quad, int bId, IButtonDelegation delegateValue)
         {
-            Image up = createBlankScoresButtonWithIconpressed(quad, false);
-            Image image = createBlankScoresButtonWithIconpressed(quad, true);
-            Image.setElementPositionWithRelativeQuadOffset(image, 59, 0, 1);
-            Button button = new Button().initWithUpElementDownElementandID(up, image, bId);
+            Image up = CreateBlankScoresButtonWithIconpressed(quad, false);
+            Image image = CreateBlankScoresButtonWithIconpressed(quad, true);
+            Image.SetElementPositionWithRelativeQuadOffset(image, 59, 0, 1);
+            Button button = new Button().InitWithUpElementDownElementandID(up, image, bId);
             button.delegateButtonDelegate = delegateValue;
             return button;
         }
 
-        public virtual void createMainMenu()
+        public void CreateMainMenu()
         {
-            MenuView menuView = (MenuView)new MenuView().initFullscreen();
-            BaseElement baseElement = createBackgroundWithLogo(true);
-            VBox vBox = new VBox().initWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
+            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            BaseElement baseElement = CreateBackgroundWithLogo(true);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
-            Button c = createButtonWithTextIDDelegate(Application.getString(655360), 0, this);
-            vBox.addChild(c);
-            Button c2 = createButtonWithTextIDDelegate(Application.getString(655361), 1, this);
-            vBox.addChild(c2);
-            Button c3 = createButtonWithTextIDDelegate(Application.getString(655506), 41, this);
-            vBox.addChild(c3);
-            baseElement.addChild(vBox);
-            bool flag = Application.getString(655507).length() > 0;
+            Button c = CreateButtonWithTextIDDelegate(Application.GetString(655360), 0, this);
+            _ = vBox.AddChild(c);
+            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(655361), 1, this);
+            _ = vBox.AddChild(c2);
+            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(655506), 41, this);
+            _ = vBox.AddChild(c3);
+            _ = baseElement.AddChild(vBox);
+            bool flag = Application.GetString(655507).Length() > 0;
             if (flag)
             {
-                BaseElement baseElement2 = (BaseElement)new BaseElement().init();
-                baseElement2.setName("container");
+                BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
+                baseElement2.SetName("container");
                 baseElement2.parentAnchor = baseElement2.anchor = 18;
                 baseElement2.width = baseElement.width;
                 baseElement2.height = baseElement.height;
-                baseElement2.x -= canvas.xOffsetScaled;
-                baseElement.addChild(baseElement2);
-                CTRTexture2D texture = Application.getTexture(54);
-                Button button = createButton2WithImageQuad1Quad2IDDelegate(54, 3, 3, 16, this);
+                baseElement2.x -= Canvas.xOffsetScaled;
+                _ = baseElement.AddChild(baseElement2);
+                CTRTexture2D texture = Application.GetTexture(54);
+                Button button = CreateButton2WithImageQuad1Quad2IDDelegate(54, 3, 3, 16, this);
                 button.anchor = 9;
                 button.parentAnchor = 36;
-                Image.setElementPositionWithQuadOffset(button, 54, 3);
+                Image.SetElementPositionWithQuadOffset(button, 54, 3);
                 button.x -= texture.preCutSize.x;
                 button.y -= texture.preCutSize.y;
-                baseElement2.addChild(button);
-                Button button2 = createButton2WithImageQuad1Quad2IDDelegate(54, 2, 2, 17, this);
+                _ = baseElement2.AddChild(button);
+                Button button2 = CreateButton2WithImageQuad1Quad2IDDelegate(54, 2, 2, 17, this);
                 button2.anchor = 9;
                 button2.parentAnchor = 36;
-                Image.setElementPositionWithQuadOffset(button2, 54, 2);
+                Image.SetElementPositionWithQuadOffset(button2, 54, 2);
                 button2.x -= texture.preCutSize.x;
                 button2.y -= texture.preCutSize.y;
                 if (flag)
                 {
-                    baseElement2.addChild(button2);
+                    _ = baseElement2.AddChild(button2);
                 }
                 Image image = Image.Image_createWithResIDQuad(149, 0);
                 image.anchor = 9;
                 image.parentAnchor = 36;
-                Image.setElementPositionWithQuadOffset(image, 149, 0);
+                Image.SetElementPositionWithQuadOffset(image, 149, 0);
                 image.x -= texture.preCutSize.x;
                 image.y -= texture.preCutSize.y;
-                baseElement2.addChild(image);
+                _ = baseElement2.AddChild(image);
             }
-            menuView.addChild(baseElement);
-            addViewwithID(menuView, 0);
+            _ = menuView.AddChild(baseElement);
+            AddViewwithID(menuView, 0);
         }
 
-        public virtual void createOptions()
+        public void CreateOptions()
         {
-            MenuView menuView = (MenuView)new MenuView().initFullscreen();
-            BaseElement baseElement = createBackgroundWithLogowithShadow(false, false);
-            menuView.addChild(baseElement);
-            BaseElement baseElement2 = createControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.getString(655423), -1, null);
-            BaseElement baseElement3 = createControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.getString(655422), 11, this);
-            HBox hBox = new HBox().initWithOffsetAlignHeight(RTPD(80.0), 16, MAX(baseElement2.height, baseElement3.height));
+            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
+            _ = menuView.AddChild(baseElement);
+            BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString(655423), -1, null);
+            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.GetString(655422), 11, this);
+            HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80.0), 16, MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = hBox.anchor = 18;
-            hBox.addChild(baseElement2);
-            hBox.addChild(baseElement3);
-            menuView.addChild(hBox);
+            _ = hBox.AddChild(baseElement2);
+            _ = hBox.AddChild(baseElement3);
+            _ = menuView.AddChild(hBox);
             Image image = Image.Image_createWithResIDQuad(60, 0);
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
-            Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
-            timeline.addKeyFrame(KeyFrame.makeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
-            timeline.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-            image.addTimeline(timeline);
-            image.playTimeline(0);
-            menuView.addChild(image);
-            VBox vBox = new VBox().initWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
+            timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            _ = image.AddTimeline(timeline);
+            image.PlayTimeline(0);
+            _ = menuView.AddChild(image);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 18;
-            Vector offset = vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
-            ToggleButton toggleButton = createAudioButtonWithQuadDelegateIDiconOffset(3, this, 6, vectZero);
-            ToggleButton toggleButton2 = createAudioButtonWithQuadDelegateIDiconOffset(2, this, 5, offset);
-            HBox hBox2 = new HBox().initWithOffsetAlignHeight(-10f, 16, toggleButton.height);
-            hBox2.addChild(toggleButton2);
-            hBox2.addChild(toggleButton);
-            vBox.addChild(hBox2);
-            Button c = createLanguageButtonWithIDDelegate(22, this);
-            vBox.addChild(c);
-            Button c2 = createButtonWithTextIDDelegate(Application.getString(655364), 8, this);
-            vBox.addChild(c2);
-            Button c3 = createButtonWithTextIDDelegate(Application.getString(655365), 7, this);
-            vBox.addChild(c3);
-            baseElement.addChild(vBox);
+            Vector offset = VectSub(Image.GetQuadCenter(8, 0), Image.GetQuadOffset(8, 12));
+            ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, 6, vectZero);
+            ToggleButton toggleButton2 = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, 5, offset);
+            HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
+            _ = hBox2.AddChild(toggleButton2);
+            _ = hBox2.AddChild(toggleButton);
+            _ = vBox.AddChild(hBox2);
+            Button c = CreateLanguageButtonWithIDDelegate(22, this);
+            _ = vBox.AddChild(c);
+            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(655364), 8, this);
+            _ = vBox.AddChild(c2);
+            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(655365), 7, this);
+            _ = vBox.AddChild(c3);
+            _ = baseElement.AddChild(vBox);
             hBox.y = (vBox.height / 2) + 10;
             vBox.y = -(float)hBox.height / 2;
             bool flag4 = Preferences._getBooleanForKey("SOUND_ON");
@@ -419,66 +420,66 @@ namespace CutTheRope.game
             bool flag3 = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
             if (!flag4)
             {
-                toggleButton2.toggle();
+                toggleButton2.Toggle();
             }
             if (!flag2)
             {
-                toggleButton.toggle();
+                toggleButton.Toggle();
             }
-            ToggleButton toggleButton3 = (ToggleButton)baseElement3.getChildWithName("button");
+            ToggleButton toggleButton3 = (ToggleButton)baseElement3.GetChildWithName("button");
             if (flag3 && toggleButton3 != null)
             {
-                toggleButton3.toggle();
+                toggleButton3.Toggle();
             }
-            Button button = createBackButtonWithDelegateID(this, 36);
-            button.setName("backb");
-            button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
-            addViewwithID(menuView, 1);
+            Button button = CreateBackButtonWithDelegateID(this, 36);
+            button.SetName("backb");
+            button.x = Canvas.xOffsetScaled;
+            _ = menuView.AddChild(button);
+            AddViewwithID(menuView, 1);
         }
 
-        public virtual void createReset()
+        public void CreateReset()
         {
-            MenuView menuView = (MenuView)new MenuView().initFullscreen();
-            BaseElement baseElement = createBackgroundWithLogo(false);
-            Text text = new Text().initWithFont(Application.getFont(3));
-            text.setAlignment(2);
-            text.setStringandWidth(Application.getString(655371), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
+            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            BaseElement baseElement = CreateBackgroundWithLogo(false);
+            Text text = new Text().InitWithFont(Application.GetFont(3));
+            text.SetAlignment(2);
+            text.SetStringandWidth(Application.GetString(655371), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
             text.anchor = text.parentAnchor = 18;
-            baseElement.addChild(text);
+            _ = baseElement.AddChild(text);
             text.y = -200f;
-            Button button = createButtonWithTextIDDelegate(Application.getString(655382), 13, this);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString(655382), 13, this);
             button.anchor = button.parentAnchor = 34;
             button.y = -540f;
-            Button button2 = createButtonWithTextIDDelegate(Application.getString(655383), 14, this);
+            Button button2 = CreateButtonWithTextIDDelegate(Application.GetString(655383), 14, this);
             button2.anchor = button2.parentAnchor = 34;
             button2.y = -320f;
-            baseElement.addChild(button);
-            baseElement.addChild(button2);
-            menuView.addChild(baseElement);
-            Button button3 = createBackButtonWithDelegateID(this, 10);
-            button3.setName("backb");
-            button3.x = canvas.xOffsetScaled;
-            menuView.addChild(button3);
-            addViewwithID(menuView, 4);
+            _ = baseElement.AddChild(button);
+            _ = baseElement.AddChild(button2);
+            _ = menuView.AddChild(baseElement);
+            Button button3 = CreateBackButtonWithDelegateID(this, 10);
+            button3.SetName("backb");
+            button3.x = Canvas.xOffsetScaled;
+            _ = menuView.AddChild(button3);
+            AddViewwithID(menuView, 4);
         }
 
-        public virtual void createMovieView()
+        public void CreateMovieView()
         {
-            MovieView movieView = (MovieView)new MovieView().initFullscreen();
-            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().init();
+            MovieView movieView = (MovieView)new MovieView().InitFullscreen();
+            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
             rectangleElement.width = (int)SCREEN_WIDTH;
             rectangleElement.height = (int)SCREEN_HEIGHT;
             rectangleElement.color = RGBAColor.blackRGBA;
-            movieView.addChild(rectangleElement);
-            addViewwithID(movieView, 7);
+            _ = movieView.AddChild(rectangleElement);
+            AddViewwithID(movieView, 7);
         }
 
-        public virtual void createAbout()
+        public void CreateAbout()
         {
-            MenuView menuView = (MenuView)new MenuView().initFullscreen();
-            BaseElement baseElement = createBackgroundWithLogo(false);
-            string text = Application.getString(655416).ToString();
+            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            BaseElement baseElement = CreateBackgroundWithLogo(false);
+            string text = Application.GetString(655416).ToString();
             string[] separator = ["%@"];
             string[] array = text.Split(separator, StringSplitOptions.None);
             for (int i = 0; i < array.Length; i++)
@@ -497,73 +498,73 @@ namespace CutTheRope.game
             }
             float num = 1300f;
             float h = 1100f;
-            VBox vBox = new VBox().initWithOffsetAlignWidth(0f, 2, num);
-            BaseElement baseElement2 = (BaseElement)new BaseElement().init();
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(0f, 2, num);
+            BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
             baseElement2.width = (int)num;
             baseElement2.height = 100;
-            vBox.addChild(baseElement2);
+            _ = vBox.AddChild(baseElement2);
             Image c = Image.Image_createWithResIDQuad(50, 1);
-            vBox.addChild(c);
-            Text text2 = new Text().initWithFont(Application.getFont(4));
-            text2.setAlignment(2);
-            text2.setStringandWidth(NSS(text), (int)num);
-            aboutContainer = new ScrollableContainer().initWithWidthHeightContainer(num, h, vBox);
+            _ = vBox.AddChild(c);
+            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            text2.SetAlignment(2);
+            text2.SetStringandWidth(NSS(text), (int)num);
+            aboutContainer = new ScrollableContainer().InitWithWidthHeightContainer(num, h, vBox);
             aboutContainer.anchor = aboutContainer.parentAnchor = 18;
-            vBox.addChild(text2);
+            _ = vBox.AddChild(text2);
             Image c2 = Image.Image_createWithResIDQuad(50, 2);
-            vBox.addChild(c2);
-            NSString @string = Application.getString(655417);
-            Text text3 = new Text().initWithFont(Application.getFont(4));
-            text3.setAlignment(2);
-            text3.setStringandWidth(@string, num);
-            vBox.addChild(text3);
-            baseElement.addChild(aboutContainer);
-            menuView.addChild(baseElement);
-            Button button = createBackButtonWithDelegateID(this, 10);
-            button.setName("backb");
-            button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
-            addViewwithID(menuView, 3);
+            _ = vBox.AddChild(c2);
+            NSString @string = Application.GetString(655417);
+            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            text3.SetAlignment(2);
+            text3.SetStringandWidth(@string, num);
+            _ = vBox.AddChild(text3);
+            _ = baseElement.AddChild(aboutContainer);
+            _ = menuView.AddChild(baseElement);
+            Button button = CreateBackButtonWithDelegateID(this, 10);
+            button.SetName("backb");
+            button.x = Canvas.xOffsetScaled;
+            _ = menuView.AddChild(button);
+            AddViewwithID(menuView, 3);
         }
 
-        public virtual HBox createTextWithStar(NSString t)
+        public static HBox CreateTextWithStar(NSString t)
         {
-            HBox hbox = new HBox().initWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
-            Text text = new Text().initWithFont(Application.getFont(3));
-            text.setString(t);
+            HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
+            Text text = new Text().InitWithFont(Application.GetFont(3));
+            text.SetString(t);
             text.scaleX = text.scaleY = 0.7f;
             text.rotationCenterX = -(float)text.width / 2;
             text.width = (int)(text.width * 0.7f);
-            hbox.addChild(text);
+            _ = hbox.AddChild(text);
             Image c = Image.Image_createWithResIDQuad(52, 3);
-            hbox.addChild(c);
+            _ = hbox.AddChild(c);
             return hbox;
         }
 
-        public virtual float getBoxWidth()
+        public static float GetBoxWidth()
         {
-            return Image.getQuadSize(52, 4).x + (Image.getQuadOffset(52, 4).x * 2f);
+            return Image.GetQuadSize(52, 4).x + (Image.GetQuadOffset(52, 4).x * 2f);
         }
 
-        public virtual float getPackOffset()
+        public static float GetPackOffset()
         {
-            float num = SCREEN_WIDTH + (canvas.xOffset * 2);
-            float boxWidth = getBoxWidth();
+            float num = SCREEN_WIDTH + (Canvas.xOffset * 2);
+            float boxWidth = GetBoxWidth();
             return boxWidth * 3f > num - 200f ? boxWidth / 2f : 0f;
         }
 
-        public virtual BaseElement createPackElementforContainer(int n, ScrollableContainer c)
+        public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
-            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().init();
+            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
             touchBaseElement.delegateValue = this;
-            BaseElement baseElement = (BaseElement)new BaseElement().init();
-            baseElement.setName("boxContainer");
+            BaseElement baseElement = (BaseElement)new BaseElement().Init();
+            baseElement.SetName("boxContainer");
             baseElement.anchor = baseElement.parentAnchor = 12;
-            touchBaseElement.addChild(baseElement);
-            int totalStars = CTRPreferences.getTotalStars();
-            if (n > 0 && n < CTRPreferences.getPacksCount() && CTRPreferences.getUnlockedForPackLevel(n, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED && totalStars >= CTRPreferences.packUnlockStars(n))
+            _ = touchBaseElement.AddChild(baseElement);
+            int totalStars = CTRPreferences.GetTotalStars();
+            if (n > 0 && n < CTRPreferences.GetPacksCount() && CTRPreferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.LOCKED && totalStars >= CTRPreferences.PackUnlockStars(n))
             {
-                CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED, n, 0);
+                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
             int r = 52;
             int q = 4 + n;
@@ -573,159 +574,159 @@ namespace CutTheRope.game
                 q = n - 6;
             }
             NSString nsstring;
-            if (n == CTRPreferences.getPacksCount())
+            if (n == CTRPreferences.GetPacksCount())
             {
-                nsstring = Application.getString(655415);
+                nsstring = Application.GetString(655415);
             }
             else
             {
-                string text3 = (n + 1).ToString();
+                string text3 = (n + 1).ToString(CultureInfo.InvariantCulture);
                 string text4 = ". ";
-                NSString @string = Application.getString(655404 + n);
+                NSString @string = Application.GetString(655404 + n);
                 nsstring = NSS(text3 + text4 + (@string?.ToString()));
             }
             NSString nSString = nsstring;
-            UNLOCKED_STATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(n, 0);
-            bool flag = unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED && n != CTRPreferences.getPacksCount();
+            UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
+            bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
             touchBaseElement.bid = 23 + n;
             Image image = Image.Image_createWithResIDQuad(r, q);
-            image.doRestoreCutTransparency();
+            image.DoRestoreCutTransparency();
             image.anchor = image.parentAnchor = 9;
             if (flag)
             {
-                baseElement.addChild(image);
-                int num = CTRPreferences.packUnlockStars(n);
+                _ = baseElement.AddChild(image);
+                int num = CTRPreferences.PackUnlockStars(n);
                 Image image2 = Image.Image_createWithResIDQuad(52, 2);
-                image2.doRestoreCutTransparency();
+                image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
-                image.addChild(image2);
-                HBox hBox = createTextWithStar(NSS(num.ToString()));
+                _ = image.AddChild(image2);
+                HBox hBox = CreateTextWithStar(NSS(num.ToString(CultureInfo.InvariantCulture)));
                 hBox.anchor = hBox.parentAnchor = 18;
                 hBox.y = 110f;
-                image2.addChild(hBox);
-                Text text = new Text().initWithFont(Application.getFont(4));
-                NSString newString = NSS(Application.getString(655390).ToString().Replace("%d", num.ToString()));
-                text.setAlignment(2);
+                _ = image2.AddChild(hBox);
+                Text text = new Text().InitWithFont(Application.GetFont(4));
+                NSString newString = NSS(Application.GetString(655390).ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture)));
+                text.SetAlignment(2);
                 text.anchor = 10;
                 text.parentAnchor = 34;
-                text.setStringandWidth(newString, 700f);
+                text.SetStringandWidth(newString, 700f);
                 text.y = -70f;
                 text.scaleX = text.scaleY = 0.7f;
                 text.rotationCenterY = -(float)text.height / 2;
-                touchBaseElement.addChild(text);
+                _ = touchBaseElement.AddChild(text);
             }
             else
             {
-                if (n != CTRPreferences.getPacksCount())
+                if (n != CTRPreferences.GetPacksCount())
                 {
                     int q2 = 0;
                     int q3 = 1;
                     MonsterSlot monsterSlot = MonsterSlot.MonsterSlot_createWithResIDQuad(52, q2);
                     monsterSlot.c = c;
-                    monsterSlot.doRestoreCutTransparency();
+                    monsterSlot.DoRestoreCutTransparency();
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
-                    baseElement.addChild(monsterSlot);
+                    _ = baseElement.AddChild(monsterSlot);
                     Image image3 = Image.Image_createWithResIDQuad(52, q3);
-                    image3.doRestoreCutTransparency();
+                    image3.DoRestoreCutTransparency();
                     image3.anchor = 17;
                     monsterSlot.s = (image.width * (n - 1)) + (-20f * n) + packContainer.x + 50f;
                     monsterSlot.e = monsterSlot.s + 1200f;
-                    image3.x = packContainer.x - 0f + monsterSlot.width + -20f - getPackOffset();
+                    image3.x = packContainer.x - 0f + monsterSlot.width + -20f - GetPackOffset();
                     image3.y = packContainer.y + (SCREEN_HEIGHT / 2f);
                     image3.parentAnchor = -1;
-                    monsterSlot.addChild(image3);
+                    _ = monsterSlot.AddChild(image3);
                 }
-                baseElement.addChild(image);
-                if (unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED)
+                _ = baseElement.AddChild(image);
+                if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
                 {
                     Image image4 = Image.Image_createWithResIDQuad(52, 2);
-                    image4.setName("lockHideMe");
-                    image4.doRestoreCutTransparency();
+                    image4.SetName("lockHideMe");
+                    image4.DoRestoreCutTransparency();
                     image4.anchor = image4.parentAnchor = 9;
-                    baseElement.addChild(image4);
-                    Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
-                    timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                    timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
-                    timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                    timeline.addKeyFrame(KeyFrame.makeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
-                    image4.addTimeline(timeline);
+                    _ = baseElement.AddChild(image4);
+                    Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
+                    _ = image4.AddTimeline(timeline);
                 }
             }
-            Text text2 = new Text().initWithFont(Application.getFont(3));
+            Text text2 = new Text().InitWithFont(Application.GetFont(3));
             text2.anchor = text2.parentAnchor = 10;
             text2.scaleX = text2.scaleY = 0.75f;
-            if (LANGUAGE is Language.LANG_DE or Language.LANG_EN)
+            if (LANGUAGE is Language.LANGDE or Language.LANGEN)
             {
                 text2.scaleX = 0.7f;
             }
-            text2.setAlignment(2);
-            if (n != CTRPreferences.getPacksCount())
+            text2.SetAlignment(2);
+            if (n != CTRPreferences.GetPacksCount())
             {
-                text2.setString(nSString);
+                text2.SetString(nSString);
             }
             else
             {
-                text2.setStringandWidth(nSString, 656.0);
+                text2.SetStringandWidth(nSString, 656.0);
             }
             text2.y = 120f;
-            image.addChild(text2);
-            Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(4);
-            timeline2.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline2.addKeyFrame(KeyFrame.makeScale(0.95, 1.05, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.15));
-            timeline2.addKeyFrame(KeyFrame.makeScale(1.05, 0.95, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.2));
-            timeline2.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25));
-            baseElement.addTimeline(timeline2);
+            _ = image.AddChild(text2);
+            Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(0.95, 1.05, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.15));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.05, 0.95, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.2));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25));
+            _ = baseElement.AddTimeline(timeline2);
             baseElement.height = touchBaseElement.height = image.height;
             baseElement.width = touchBaseElement.width = image.width;
             return touchBaseElement;
         }
 
-        public virtual void createPackSelect()
+        public void CreatePackSelect()
         {
-            MenuView menuView = (MenuView)new MenuView().initFullscreen();
-            BaseElement baseElement = createBackgroundWithLogo(false);
-            string text = Application.getString(655388).ToString();
+            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            BaseElement baseElement = CreateBackgroundWithLogo(false);
+            string text = Application.GetString(655388).ToString();
             text = text.Replace("%d", "");
-            HBox hBox = createTextWithStar(NSS(text + CTRPreferences.getTotalStars().ToString()));
-            hBox.x = -30f - canvas.xOffsetScaled;
+            HBox hBox = CreateTextWithStar(NSS(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture)));
+            hBox.x = -30f - Canvas.xOffsetScaled;
             hBox.y = 40f;
-            hBox.setName("text");
-            HBox hBox2 = new HBox().initWithOffsetAlignHeight(-20f, 16, SCREEN_HEIGHT);
-            float num = SCREEN_WIDTH + (canvas.xOffset * 2);
-            float boxWidth = getBoxWidth();
+            hBox.SetName("text");
+            HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-20f, 16, SCREEN_HEIGHT);
+            float num = SCREEN_WIDTH + (Canvas.xOffset * 2);
+            float boxWidth = GetBoxWidth();
             float num2 = boxWidth * 3f;
             if (num2 > num - 200f)
             {
                 num2 = boxWidth * 2f;
             }
-            packContainer = new ScrollableContainer().initWithWidthHeightContainer(num2, SCREEN_HEIGHT, hBox2);
+            packContainer = new ScrollableContainer().InitWithWidthHeightContainer(num2, SCREEN_HEIGHT, hBox2);
             packContainer.minAutoScrollToSpointLength = RTD(5.0);
             packContainer.shouldBounceHorizontally = true;
             packContainer.resetScrollOnShow = false;
             packContainer.dontHandleTouchDownsHandledByChilds = true;
             packContainer.dontHandleTouchMovesHandledByChilds = true;
             packContainer.dontHandleTouchUpsHandledByChilds = true;
-            packContainer.turnScrollPointsOnWithCapacity(CTRPreferences.getPacksCount() + 2);
+            packContainer.TurnScrollPointsOnWithCapacity(CTRPreferences.GetPacksCount() + 2);
             packContainer.delegateScrollableContainerProtocol = this;
             packContainer.x = (SCREEN_WIDTH / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
-            baseElement.addChild(hBox);
-            CTRTexture2D texture = Application.getTexture(52);
-            BaseElement baseElement2 = (BaseElement)new BaseElement().init();
+            _ = baseElement.AddChild(hBox);
+            CTRTexture2D texture = Application.GetTexture(52);
+            BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
             baseElement2.width = (int)texture.preCutSize.x;
             baseElement2.height = (int)texture.preCutSize.y;
-            hBox2.addChild(baseElement2);
-            float num3 = 0f + getPackOffset();
-            for (int i = 0; i < CTRPreferences.getPacksCount() + 1; i++)
+            _ = hBox2.AddChild(baseElement2);
+            float num3 = 0f + GetPackOffset();
+            for (int i = 0; i < CTRPreferences.GetPacksCount() + 1; i++)
             {
-                TouchBaseElement touchBaseElement = (TouchBaseElement)createPackElementforContainer(i, packContainer);
+                TouchBaseElement touchBaseElement = (TouchBaseElement)CreatePackElementforContainer(i, packContainer);
                 boxes[i] = touchBaseElement;
-                hBox2.addChild(touchBaseElement);
+                _ = hBox2.AddChild(touchBaseElement);
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
-                packContainer.addScrollPointAtXY((double)num3, 0.0);
+                _ = packContainer.AddScrollPointAtXY((double)num3, 0.0);
                 touchBaseElement.bbc = MakeRectangle(0f, 0f, -20f, 0f);
                 num3 += touchBaseElement.width + -20f;
             }
@@ -734,206 +735,206 @@ namespace CutTheRope.game
             image.anchor = 17;
             image.y += SCREEN_HEIGHT / 2f;
             image.x = packContainer.x - 2f;
-            baseElement.addChild(image);
+            _ = baseElement.AddChild(image);
             Image image2 = Image.Image_createWithResIDQuad(52, 11);
             image2.anchor = 20;
             image2.y += SCREEN_HEIGHT / 2f;
             image2.x = packContainer.x + packContainer.width + 2f;
-            baseElement.addChild(image2);
+            _ = baseElement.AddChild(image2);
             image2.scaleX = image2.scaleY = -1f;
-            baseElement.addChild(packContainer);
+            _ = baseElement.AddChild(packContainer);
             Image image3 = Image.Image_createWithResIDQuad(52, 12);
             image3.anchor = 20;
             image3.y += SCREEN_HEIGHT / 2f;
             image3.x = packContainer.x + 3f;
-            baseElement.addChild(image3);
+            _ = baseElement.AddChild(image3);
             Image image4 = Image.Image_createWithResIDQuad(52, 12);
             image4.anchor = 17;
             image4.y += SCREEN_HEIGHT / 2f;
             image4.x = packContainer.x + packContainer.width - 3f;
             image4.scaleX = image4.scaleY = -1f;
-            baseElement.addChild(image4);
-            prevb = createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 21, this);
+            _ = baseElement.AddChild(image4);
+            prevb = CreateButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 21, this);
             prevb.parentAnchor = 17;
             prevb.anchor = 20;
             prevb.x = packContainer.x - 40f;
-            baseElement.addChild(prevb);
-            nextb = createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 20, this);
+            _ = baseElement.AddChild(prevb);
+            nextb = CreateButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 20, this);
             nextb.anchor = nextb.parentAnchor = 17;
             nextb.x = packContainer.x + packContainer.width + 40f;
             nextb.scaleX = -1f;
-            baseElement.addChild(nextb);
-            menuView.addChild(baseElement);
-            addViewwithID(menuView, 5);
-            Button button = createBackButtonWithDelegateID(this, 35);
-            button.setName("backb");
-            button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
-            int lastPack = CTRPreferences.getLastPack();
-            packContainer.placeToScrollPoint(lastPack);
-            scrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
+            _ = baseElement.AddChild(nextb);
+            _ = menuView.AddChild(baseElement);
+            AddViewwithID(menuView, 5);
+            Button button = CreateBackButtonWithDelegateID(this, 35);
+            button.SetName("backb");
+            button.x = Canvas.xOffsetScaled;
+            _ = menuView.AddChild(button);
+            int lastPack = CTRPreferences.GetLastPack();
+            packContainer.PlaceToScrollPoint(lastPack);
+            ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
 
-        public virtual void createLeaderboards()
+        public static void CreateLeaderboards()
         {
         }
 
-        public virtual void createAchievements()
+        public static void CreateAchievements()
         {
         }
 
-        public virtual void showCantUnlockPopup()
+        public void ShowCantUnlockPopup()
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            Popup popup = (Popup)new Popup().init();
-            popup.setName("popup");
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            Popup popup = (Popup)new Popup().Init();
+            popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
-            image.doRestoreCutTransparency();
-            popup.addChild(image);
+            image.DoRestoreCutTransparency();
+            _ = popup.AddChild(image);
             int num = 20;
             image.scaleX = 1.3f;
-            Text text = new Text().initWithFont(Application.getFont(3));
-            text.setAlignment(2);
-            text.setString(Application.getString(655391));
+            Text text = new Text().InitWithFont(Application.GetFont(3));
+            text.SetAlignment(2);
+            text.SetString(Application.GetString(655391));
             text.anchor = 18;
-            Image.setElementPositionWithQuadOffset(text, 49, 1);
+            Image.SetElementPositionWithQuadOffset(text, 49, 1);
             text.y -= num;
-            popup.addChild(text);
-            Text text2 = new Text().initWithFont(Application.getFont(3));
-            text2.setAlignment(2);
-            text2.setString(Application.getString(655392));
+            _ = popup.AddChild(text);
+            Text text2 = new Text().InitWithFont(Application.GetFont(3));
+            text2.SetAlignment(2);
+            text2.SetString(Application.GetString(655392));
             text2.anchor = 18;
-            Image.setElementPositionWithQuadOffset(text2, 49, 2);
-            popup.addChild(text2);
+            Image.SetElementPositionWithQuadOffset(text2, 49, 2);
+            _ = popup.AddChild(text2);
             text2.y -= num;
-            Text text3 = new Text().initWithFont(Application.getFont(4));
-            text3.setAlignment(2);
-            text3.setStringandWidth(Application.getString(655393), 600f);
+            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            text3.SetAlignment(2);
+            text3.SetStringandWidth(Application.GetString(655393), 600f);
             text3.anchor = 18;
-            Image.setElementPositionWithQuadOffset(text3, 49, 3);
+            Image.SetElementPositionWithQuadOffset(text3, 49, 3);
             text3.y += 50f;
-            popup.addChild(text3);
-            int totalStars = CTRPreferences.getTotalStars();
-            HBox hBox = createTextWithStar(NSS((CTRPreferences.packUnlockStars(cTRRootController.getPack() + 1) - totalStars).ToString()));
+            _ = popup.AddChild(text3);
+            int totalStars = CTRPreferences.GetTotalStars();
+            HBox hBox = CreateTextWithStar(NSS((CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars).ToString(CultureInfo.InvariantCulture)));
             hBox.anchor = 18;
-            Image.setElementPositionWithQuadOffset(hBox, 49, 5);
+            Image.SetElementPositionWithQuadOffset(hBox, 49, 5);
             hBox.y -= num;
-            popup.addChild(hBox);
-            Button button = createButtonWithTextIDDelegate(Application.getString(655389), 15, this);
+            _ = popup.AddChild(hBox);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString(655389), 15, this);
             button.anchor = 18;
-            Image.setElementPositionWithQuadOffset(button, 49, 4);
-            popup.addChild(button);
-            popup.showPopup();
-            activeView().addChild(popup);
+            Image.SetElementPositionWithQuadOffset(button, 49, 4);
+            _ = popup.AddChild(button);
+            popup.ShowPopup();
+            _ = ActiveView().AddChild(popup);
         }
 
-        public virtual void showGameFinishedPopup()
+        public void ShowGameFinishedPopup()
         {
-            Popup popup = (Popup)new Popup().init();
-            popup.setName("popup");
+            Popup popup = (Popup)new Popup().Init();
+            popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
-            image.doRestoreCutTransparency();
-            popup.addChild(image);
-            Text text = new Text().initWithFont(Application.getFont(3));
-            text.setAlignment(2);
-            text.setStringandWidth(Application.getString(655394), 600.0);
+            image.DoRestoreCutTransparency();
+            _ = popup.AddChild(image);
+            Text text = new Text().InitWithFont(Application.GetFont(3));
+            text.SetAlignment(2);
+            text.SetStringandWidth(Application.GetString(655394), 600.0);
             text.anchor = 18;
-            Image.setElementPositionWithQuadOffset(text, 49, 2);
+            Image.SetElementPositionWithQuadOffset(text, 49, 2);
             text.y -= 170f;
-            image.addChild(text);
-            Text text2 = new Text().initWithFont(Application.getFont(4));
-            text2.setAlignment(2);
-            text2.setStringandWidth(Application.getString(655395), 700.0);
+            _ = image.AddChild(text);
+            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            text2.SetAlignment(2);
+            text2.SetStringandWidth(Application.GetString(655395), 700.0);
             text2.anchor = 18;
-            Image.setElementPositionWithQuadOffset(text2, 49, 3);
+            Image.SetElementPositionWithQuadOffset(text2, 49, 3);
             text2.y += 30f;
-            image.addChild(text2);
-            Button button = createButtonWithTextIDDelegate(Application.getString(655389), 15, this);
+            _ = image.AddChild(text2);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString(655389), 15, this);
             button.anchor = 18;
-            Image.setElementPositionWithQuadOffset(button, 49, 4);
-            image.addChild(button);
-            popup.showPopup();
-            activeView().addChild(popup);
+            Image.SetElementPositionWithQuadOffset(button, 49, 4);
+            _ = image.AddChild(button);
+            popup.ShowPopup();
+            _ = ActiveView().AddChild(popup);
         }
 
-        public virtual void showYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
+        public void ShowYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
         {
-            Popup popup = (Popup)new Popup().init();
-            popup.setName("popup");
+            Popup popup = (Popup)new Popup().Init();
+            popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
-            image.doRestoreCutTransparency();
-            popup.addChild(image);
-            Text text = new Text().initWithFont(Application.getFont(3));
-            text.setAlignment(2);
-            text.setStringandWidth(str, 680.0);
+            image.DoRestoreCutTransparency();
+            _ = popup.AddChild(image);
+            Text text = new Text().InitWithFont(Application.GetFont(3));
+            text.SetAlignment(2);
+            text.SetStringandWidth(str, 680.0);
             text.anchor = 18;
-            Image.setElementPositionWithQuadOffset(text, 49, 2);
+            Image.SetElementPositionWithQuadOffset(text, 49, 2);
             text.y -= 120f;
-            image.addChild(text);
-            Button button = createButtonWithTextIDDelegate(Application.getString(655382), buttonYesId, this);
+            _ = image.AddChild(text);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString(655382), buttonYesId, this);
             button.anchor = 18;
-            Image.setElementPositionWithQuadOffset(button, 49, 4);
+            Image.SetElementPositionWithQuadOffset(button, 49, 4);
             button.y -= button.height;
-            image.addChild(button);
-            Button button2 = createButtonWithTextIDDelegate(Application.getString(655383), buttonNoId, this);
+            _ = image.AddChild(button);
+            Button button2 = CreateButtonWithTextIDDelegate(Application.GetString(655383), buttonNoId, this);
             button2.anchor = 18;
-            Image.setElementPositionWithQuadOffset(button2, 49, 4);
-            image.addChild(button2);
-            popup.showPopup();
+            Image.SetElementPositionWithQuadOffset(button2, 49, 4);
+            _ = image.AddChild(button2);
+            popup.ShowPopup();
             ep = popup;
-            activeView().addChild(popup);
+            _ = ActiveView().AddChild(popup);
         }
 
-        public virtual void scrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
+        public void ScrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
         {
             currentPack = i;
             pack = i;
             scrollPacksLeft = 0;
             scrollPacksRight = 0;
             bScrolling = false;
-            if (prevb.isEnabled())
+            if (prevb.IsEnabled())
             {
-                prevb.setState(Button.BUTTON_STATE.BUTTON_UP);
+                prevb.SetState(Button.BUTTON_STATE.BUTTON_UP);
             }
-            if (nextb.isEnabled())
+            if (nextb.IsEnabled())
             {
-                nextb.setState(Button.BUTTON_STATE.BUTTON_UP);
+                nextb.SetState(Button.BUTTON_STATE.BUTTON_UP);
             }
-            if (i == CTRPreferences.getPacksCount())
+            if (i == CTRPreferences.GetPacksCount())
             {
                 return;
             }
-            boxes[i].getChildWithName("boxContainer").playTimeline(0);
-            UNLOCKED_STATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(i, 0);
-            BaseElement childWithName = boxes[i].getChildWithName("lockHideMe");
-            if (childWithName != null && unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED)
+            boxes[i].GetChildWithName("boxContainer").PlayTimeline(0);
+            UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(i, 0);
+            BaseElement childWithName = boxes[i].GetChildWithName("lockHideMe");
+            if (childWithName != null && unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
             {
-                CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_UNLOCKED, i, 0);
-                childWithName.playTimeline(0);
+                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, i, 0);
+                childWithName.PlayTimeline(0);
             }
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (showNextPackStatus && i == cTRRootController.getPack() + 1)
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (showNextPackStatus && i == cTRRootController.GetPack() + 1)
             {
                 showNextPackStatus = false;
-                if (unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
+                if (unlockedForPackLevel == UNLOCKEDSTATE.LOCKED)
                 {
-                    showCantUnlockPopup();
+                    ShowCantUnlockPopup();
                 }
             }
         }
 
-        public virtual void scrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i)
+        public void ScrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i)
         {
             currentPack = i;
             pack = i;
-            CTRPreferences.setLastPack(i);
+            CTRPreferences.SetLastPack(i);
         }
 
-        public virtual BaseElement createButtonForLevelPack(int l, int p)
+        public BaseElement CreateButtonForLevelPack(int l, int p)
         {
-            bool flag = CTRPreferences.getUnlockedForPackLevel(p, l) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED;
-            int starsForPackLevel = CTRPreferences.getStarsForPackLevel(p, l);
-            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().init();
+            bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
+            int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
+            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
             touchBaseElement.bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0);
             touchBaseElement.delegateValue = this;
             Image image;
@@ -941,224 +942,224 @@ namespace CutTheRope.game
             {
                 touchBaseElement.bid = -1;
                 image = Image.Image_createWithResIDQuad(51, 1);
-                image.doRestoreCutTransparency();
+                image.DoRestoreCutTransparency();
             }
             else
             {
                 touchBaseElement.bid = 1000 + l;
                 image = Image.Image_createWithResIDQuad(51, 0);
-                image.doRestoreCutTransparency();
-                Text text = new Text().initWithFont(Application.getFont(3));
-                NSString @string = NSS((l + 1).ToString());
-                text.setString(@string);
+                image.DoRestoreCutTransparency();
+                Text text = new Text().InitWithFont(Application.GetFont(3));
+                NSString @string = NSS((l + 1).ToString(CultureInfo.InvariantCulture));
+                text.SetString(@string);
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
-                image.addChild(text);
+                _ = image.AddChild(text);
                 Image image2 = Image.Image_createWithResIDQuad(51, 2 + starsForPackLevel);
-                image2.doRestoreCutTransparency();
+                image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
-                image.addChild(image2);
+                _ = image.AddChild(image2);
             }
             image.anchor = image.parentAnchor = 18;
-            touchBaseElement.addChild(image);
-            touchBaseElement.setSizeToChildsBounds();
+            _ = touchBaseElement.AddChild(image);
+            touchBaseElement.SetSizeToChildsBounds();
             return touchBaseElement;
         }
 
-        public virtual void createLevelSelect()
+        public void CreateLevelSelect()
         {
             float num = 0.3f;
-            MenuView menuView = (MenuView)new MenuView().initFullscreen();
+            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
             int num4 = 126 + pack;
             Image image = Image.Image_createWithResIDQuad(num4, 0);
             Image image2 = Image.Image_createWithResIDQuad(num4, 0);
-            Vector quadSize = Image.getQuadSize(num4, 0);
+            Vector quadSize = Image.GetQuadSize(num4, 0);
             float x = (SCREEN_WIDTH / 2f) - quadSize.x;
             image.x = x;
             image2.x = SCREEN_WIDTH / 2f;
             image2.rotation = 180f;
             image2.y -= 0.5f;
-            Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
-            timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.85, 0.85, 0.85, 1.0), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            image.addTimeline(timeline);
-            image.setName("levelsBack");
-            image.addChild(image2);
-            menuView.addChild(image);
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85, 0.85, 0.85, 1.0), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
+            _ = image.AddTimeline(timeline);
+            image.SetName("levelsBack");
+            _ = image.AddChild(image2);
+            _ = menuView.AddChild(image);
             Image image3 = Image.Image_createWithResIDQuad(5, 0);
             Image image4 = Image.Image_createWithResIDQuad(5, 1);
-            image3.x = Image.getQuadOffset(5, 0).x;
+            image3.x = Image.GetQuadOffset(5, 0).x;
             image3.y = 80f;
-            image4.x = Image.getQuadOffset(5, 1).x;
+            image4.x = Image.GetQuadOffset(5, 1).x;
             image4.y = 80f;
-            menuView.addChild(image3);
-            menuView.addChild(image4);
+            _ = menuView.AddChild(image3);
+            _ = menuView.AddChild(image4);
             Image image5 = Image.Image_createWithResIDQuad(60, 0);
-            image5.setName("shadow");
+            image5.SetName("shadow");
             image5.anchor = image5.parentAnchor = 18;
             image5.scaleX = image5.scaleY = 2f;
-            Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline2.addKeyFrame(KeyFrame.makeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline2.addKeyFrame(KeyFrame.makeScale(5.0, 5.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)num));
+            Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(5.0, 5.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)num));
             timeline2.delegateTimelineDelegate = this;
-            image5.addTimeline(timeline2);
-            Timeline timeline3 = new Timeline().initWithMaxKeyFramesOnTrack(3);
-            timeline3.addKeyFrame(KeyFrame.makeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline3.addKeyFrame(KeyFrame.makeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
-            timeline3.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-            image5.addTimeline(timeline3);
-            image5.playTimeline(1);
-            menuView.addChild(image5);
-            HBox hBox = createTextWithStar(NSS(CTRPreferences.getTotalStarsInPack(pack).ToString() + "/" + (CTRPreferences.getLevelsInPackCount() * 3).ToString()));
+            _ = image5.AddTimeline(timeline2);
+            Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+            timeline3.AddKeyFrame(KeyFrame.MakeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline3.AddKeyFrame(KeyFrame.MakeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
+            timeline3.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            _ = image5.AddTimeline(timeline3);
+            image5.PlayTimeline(1);
+            _ = menuView.AddChild(image5);
+            HBox hBox = CreateTextWithStar(NSS(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount() * 3).ToString(CultureInfo.InvariantCulture)));
             hBox.x = -20f;
             hBox.y = 20f;
             float of = 55f;
             float of2 = 10f;
             float h = 202.79999f;
-            VBox vBox = new VBox().initWithOffsetAlignWidth(of, 2, SCREEN_WIDTH);
-            vBox.setName("levelsBox");
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(of, 2, SCREEN_WIDTH);
+            vBox.SetName("levelsBox");
             vBox.x = 0f;
             vBox.y = 110f;
             int num2 = 5;
             int num3 = 0;
             for (int i = 0; i < num2; i++)
             {
-                HBox hBox2 = new HBox().initWithOffsetAlignHeight(of2, 16, h);
+                HBox hBox2 = new HBox().InitWithOffsetAlignHeight(of2, 16, h);
                 for (int j = 0; j < num2; j++)
                 {
-                    hBox2.addChild(createButtonForLevelPack(num3++, pack));
+                    _ = hBox2.AddChild(CreateButtonForLevelPack(num3++, pack));
                 }
-                vBox.addChild(hBox2);
+                _ = vBox.AddChild(hBox2);
             }
-            Timeline timeline4 = new Timeline().initWithMaxKeyFramesOnTrack(3);
-            timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            vBox.addTimeline(timeline4);
+            Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
+            _ = vBox.AddTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
-            hBox.setName("starText");
-            hBox.x = -(float)canvas.xOffsetScaled;
-            Timeline timeline5 = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            hBox.addTimeline(timeline5);
-            menuView.addChild(hBox);
-            menuView.addChild(vBox);
-            Button button = createBackButtonWithDelegateID(this, 12);
-            button.setName("backButton");
-            Timeline timeline6 = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            button.addTimeline(timeline6);
-            button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
-            addViewwithID(menuView, 6);
+            hBox.SetName("starText");
+            hBox.x = -(float)Canvas.xOffsetScaled;
+            Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
+            _ = hBox.AddTimeline(timeline5);
+            _ = menuView.AddChild(hBox);
+            _ = menuView.AddChild(vBox);
+            Button button = CreateBackButtonWithDelegateID(this, 12);
+            button.SetName("backButton");
+            Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
+            _ = button.AddTimeline(timeline6);
+            button.x = Canvas.xOffsetScaled;
+            _ = menuView.AddChild(button);
+            AddViewwithID(menuView, 6);
         }
 
-        public override NSObject initWithParent(ViewController p)
+        public override NSObject InitWithParent(ViewController p)
         {
-            if (base.initWithParent(p) != null)
+            if (base.InitWithParent(p) != null)
             {
-                ddMainMenu = (DelayedDispatcher)new DelayedDispatcher().init();
-                ddPackSelect = (DelayedDispatcher)new DelayedDispatcher().init();
-                createMainMenu();
-                createOptions();
-                createReset();
-                createAbout();
-                createMovieView();
-                createPackSelect();
-                createLeaderboards();
-                createAchievements();
-                MapPickerController c = (MapPickerController)new MapPickerController().initWithParent(this);
-                addChildwithID(c, 0);
+                ddMainMenu = (DelayedDispatcher)new DelayedDispatcher().Init();
+                ddPackSelect = (DelayedDispatcher)new DelayedDispatcher().Init();
+                CreateMainMenu();
+                CreateOptions();
+                CreateReset();
+                CreateAbout();
+                CreateMovieView();
+                CreatePackSelect();
+                CreateLeaderboards();
+                CreateAchievements();
+                MapPickerController c = (MapPickerController)new MapPickerController().InitWithParent(this);
+                AddChildwithID(c, 0);
             }
             return this;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
-            ddMainMenu.cancelAllDispatches();
-            ddMainMenu.dealloc();
+            ddMainMenu.CancelAllDispatches();
+            ddMainMenu.Dealloc();
             ddMainMenu = null;
-            ddPackSelect.cancelAllDispatches();
-            ddPackSelect.dealloc();
+            ddPackSelect.CancelAllDispatches();
+            ddPackSelect.Dealloc();
             ddPackSelect = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public override void activate()
+        public override void Activate()
         {
             showNextPackStatus = false;
-            base.activate();
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            pack = cTRRootController.getPack();
+            base.Activate();
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            pack = cTRRootController.GetPack();
             if (viewToShow == 6)
             {
                 currentPack = pack;
-                preLevelSelect();
+                PreLevelSelect();
             }
-            showView(viewToShow);
-            CTRSoundMgr._stopMusic();
-            CTRSoundMgr._playMusic(145);
+            ShowView(viewToShow);
+            CTRSoundMgr.StopMusic();
+            CTRSoundMgr.PlayMusic(145);
         }
 
-        public virtual void showNextPack()
+        public void ShowNextPack()
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            int num = cTRRootController.getPack();
-            if (num < CTRPreferences.getPacksCount() - 1)
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            int num = cTRRootController.GetPack();
+            if (num < CTRPreferences.GetPacksCount() - 1)
             {
                 packContainer.delegateScrollableContainerProtocol = this;
-                packContainer.moveToScrollPointmoveMultiplier(num + 1, 0.8);
+                packContainer.MoveToScrollPointmoveMultiplier(num + 1, 0.8);
                 showNextPackStatus = true;
                 return;
             }
             replayingIntroMovie = false;
-            packContainer.placeToScrollPoint(cTRRootController.getPack() + 1);
-            CTRSoundMgr._stopMusic();
-            Application.sharedMovieMgr().delegateMovieMgrDelegate = this;
-            Application.sharedMovieMgr().playURL(NSS("outro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
+            packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
+            CTRSoundMgr.StopMusic();
+            Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
+            Application.SharedMovieMgr().PlayURL(NSS("outro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
         }
 
-        public override void onChildDeactivated(int n)
+        public override void OnChildDeactivated(int n)
         {
-            base.onChildDeactivated(n);
-            ((CTRRootController)Application.sharedRootController()).setSurvival(false);
-            deactivate();
+            base.OnChildDeactivated(n);
+            ((CTRRootController)Application.SharedRootController()).SetSurvival(false);
+            Deactivate();
         }
 
-        public virtual void moviePlaybackFinished(NSString url)
+        public void MoviePlaybackFinished(NSString url)
         {
             if (replayingIntroMovie)
             {
                 replayingIntroMovie = false;
-                activateChild(0);
+                ActivateChild(0);
                 return;
             }
             if (url != null)
             {
-                CTRSoundMgr._playMusic(145);
+                CTRSoundMgr.PlayMusic(145);
             }
-            if (CTRPreferences.shouldPlayLevelScroll())
+            if (CTRPreferences.ShouldPlayLevelScroll())
             {
-                packContainer.placeToScrollPoint(CTRPreferences.getPacksCount() - 1);
-                packContainer.moveToScrollPointmoveMultiplier(0, 0.6);
-                CTRPreferences.disablePlayLevelScroll();
+                packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
+                packContainer.MoveToScrollPointmoveMultiplier(0, 0.6);
+                CTRPreferences.DisablePlayLevelScroll();
             }
             else
             {
-                packContainer.placeToScrollPoint(CTRPreferences.getLastPack());
+                packContainer.PlaceToScrollPoint(CTRPreferences.GetLastPack());
             }
-            showView(5);
-            if (url != null && url.hasSuffix("outro"))
+            ShowView(5);
+            if (url != null && url.HasSuffix("outro"))
             {
-                packContainer.moveToScrollPointmoveMultiplier(CTRPreferences.getPacksCount(), 0.8);
-                showGameFinishedPopup();
+                packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8);
+                ShowGameFinishedPopup();
             }
         }
 
-        public virtual void preLevelSelect()
+        public void PreLevelSelect()
         {
-            CTRResourceMgr cTRResourceMgr = Application.sharedResourceMgr();
+            CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
             int[] array = null;
             switch (pack)
             {
@@ -1196,105 +1197,105 @@ namespace CutTheRope.game
                     array = PACK_GAME_COVER_11;
                     break;
             }
-            cTRResourceMgr.initLoading();
-            cTRResourceMgr.loadPack(array);
-            cTRResourceMgr.loadImmediately();
-            if (getView(6) != null)
+            cTRResourceMgr.InitLoading();
+            cTRResourceMgr.LoadPack(array);
+            cTRResourceMgr.LoadImmediately();
+            if (GetView(6) != null)
             {
-                deleteView(6);
+                DeleteView(6);
             }
-            createLevelSelect();
+            CreateLevelSelect();
         }
 
-        public virtual void timelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
-            CTRSoundMgr._stopMusic();
-            CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-            ctrrootController.setPack(pack);
-            ctrrootController.setLevel(level);
-            Application.sharedRootController().setViewTransition(-1);
-            ((MapPickerController)getChild(0)).setAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
-            if (pack == 0 && level == 0 && CTRPreferences.getScoreForPackLevel(0, 0) != 0)
+            CTRSoundMgr.StopMusic();
+            CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+            ctrrootController.SetPack(pack);
+            ctrrootController.SetLevel(level);
+            Application.SharedRootController().SetViewTransition(-1);
+            ((MapPickerController)GetChild(0)).SetAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
+            if (pack == 0 && level == 0 && CTRPreferences.GetScoreForPackLevel(0, 0) != 0)
             {
                 replayingIntroMovie = true;
-                showView(7);
-                CTRSoundMgr._stopMusic();
-                Application.sharedMovieMgr().delegateMovieMgrDelegate = this;
-                Application.sharedMovieMgr().playURL(NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
+                ShowView(7);
+                CTRSoundMgr.StopMusic();
+                Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
+                Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
                 return;
             }
-            activateChild(0);
+            ActivateChild(0);
         }
 
-        public virtual void recreateOptions()
+        public void RecreateOptions()
         {
-            deleteView(1);
-            createOptions();
+            DeleteView(1);
+            CreateOptions();
         }
 
-        public virtual void onButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n is not (-1) and not 34)
             {
-                CTRSoundMgr._playSound(9);
+                CTRSoundMgr.PlaySound(9);
             }
             if (n >= 1000)
             {
                 level = n - 1000;
-                activeView().getChildWithName("levelsBox").playTimeline(0);
-                activeView().getChildWithName("shadow").playTimeline(0);
-                activeView().getChildWithName("levelsBack").playTimeline(0);
-                activeView().getChildWithName("starText").playTimeline(0);
-                activeView().getChildWithName("backButton").playTimeline(0);
+                ActiveView().GetChildWithName("levelsBox").PlayTimeline(0);
+                ActiveView().GetChildWithName("shadow").PlayTimeline(0);
+                ActiveView().GetChildWithName("levelsBack").PlayTimeline(0);
+                ActiveView().GetChildWithName("starText").PlayTimeline(0);
+                ActiveView().GetChildWithName("backButton").PlayTimeline(0);
                 return;
             }
             switch (n)
             {
                 case 0:
                     {
-                        for (int i = 0; i < CTRPreferences.getPacksCount(); i++)
+                        for (int i = 0; i < CTRPreferences.GetPacksCount(); i++)
                         {
-                            GameController.checkForBoxPerfect(i);
+                            GameController.CheckForBoxPerfect(i);
                         }
                         replayingIntroMovie = false;
-                        if (CTRPreferences.getScoreForPackLevel(0, 0) == 0)
+                        if (CTRPreferences.GetScoreForPackLevel(0, 0) == 0)
                         {
-                            showView(7);
-                            CTRSoundMgr._stopMusic();
-                            Application.sharedMovieMgr().delegateMovieMgrDelegate = this;
-                            Application.sharedMovieMgr().playURL(NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
+                            ShowView(7);
+                            CTRSoundMgr.StopMusic();
+                            Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
+                            Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
                             return;
                         }
-                        moviePlaybackFinished(null);
+                        MoviePlaybackFinished(null);
                         return;
                     }
                 case 1:
-                    showView(1);
+                    ShowView(1);
                     return;
                 case 2:
-                    ((CTRRootController)Application.sharedRootController()).setPack(0);
-                    preLevelSelect();
-                    Application.sharedRootController().setViewTransition(-1);
-                    ((MapPickerController)getChild(0)).setNormalMode();
-                    activateChild(0);
+                    ((CTRRootController)Application.SharedRootController()).SetPack(0);
+                    PreLevelSelect();
+                    Application.SharedRootController().SetViewTransition(-1);
+                    ((MapPickerController)GetChild(0)).SetNormalMode();
+                    ActivateChild(0);
                     return;
                 case 3:
                     {
-                        CTRSoundMgr._stopMusic();
+                        CTRSoundMgr.StopMusic();
                         pack = 0;
-                        Application.sharedRootController().setViewTransition(-1);
-                        CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-                        CTRResourceMgr ctrresourceMgr = Application.sharedResourceMgr();
-                        ctrresourceMgr.initLoading();
-                        ctrresourceMgr.loadPack(PACK_GAME_COVER_01);
-                        ctrresourceMgr.loadImmediately();
-                        ctrrootController.setSurvival(true);
-                        ctrrootController.setPack(pack);
-                        deactivate();
+                        Application.SharedRootController().SetViewTransition(-1);
+                        CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+                        CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
+                        ctrresourceMgr.InitLoading();
+                        ctrresourceMgr.LoadPack(PACK_GAME_COVER_01);
+                        ctrresourceMgr.LoadImmediately();
+                        ctrrootController.SetSurvival(true);
+                        ctrrootController.SetPack(pack);
+                        Deactivate();
                         return;
                     }
                 case 4:
-                    CTRRootController.openFullVersionPage();
+                    CTRRootController.OpenFullVersionPage();
                     return;
                 case 5:
                     Preferences._setBooleanforKey(!Preferences._getBooleanForKey("SOUND_ON"), "SOUND_ON", true);
@@ -1305,59 +1306,59 @@ namespace CutTheRope.game
                         Preferences._setBooleanforKey(!flag6, "MUSIC_ON", true);
                         if (flag6)
                         {
-                            CTRSoundMgr._stopMusic();
+                            CTRSoundMgr.StopMusic();
                             return;
                         }
-                        CTRSoundMgr._playMusic(145);
+                        CTRSoundMgr.PlayMusic(145);
                         return;
                     }
                 case 7:
-                    aboutContainer.setScroll(vect(0f, 0f));
+                    aboutContainer.SetScroll(Vect(0f, 0f));
                     aboutAutoScroll = true;
-                    showView(3);
+                    ShowView(3);
                     return;
                 case 8:
-                    showView(4);
+                    ShowView(4);
                     return;
                 case 9:
                 case 18:
                 case 19:
                     break;
                 case 10:
-                    showView(1);
+                    ShowView(1);
                     return;
                 case 11:
                     {
                         bool flag7 = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
                         Preferences._setBooleanforKey(!flag7, "PREFS_CLICK_TO_CUT", true);
-                        NSS(flag7 ? "off" : "on");
+                        _ = NSS(flag7 ? "off" : "on");
                         return;
                     }
                 case 12:
-                    showView(5);
-                    packContainer.moveToScrollPointmoveMultiplier(pack, 0.8);
+                    ShowView(5);
+                    packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8);
                     return;
                 case 13:
                     {
-                        CTRPreferences ctrpreferences = Application.sharedPreferences();
-                        ctrpreferences.resetToDefaults();
+                        CTRPreferences ctrpreferences = Application.SharedPreferences();
+                        ctrpreferences.ResetToDefaults();
                         ctrpreferences.savePreferences();
-                        deleteView(5);
-                        createPackSelect();
-                        showView(1);
+                        DeleteView(5);
+                        CreatePackSelect();
+                        ShowView(1);
                         return;
                     }
                 case 14:
-                    showView(1);
+                    ShowView(1);
                     return;
                 case 15:
-                    ((Popup)activeView().getChildWithName("popup")).hidePopup();
+                    ((Popup)ActiveView().GetChildWithName("popup")).HidePopup();
                     return;
                 case 16:
-                    AndroidAPI.openUrl("http://twitter.com/zeptolab");
+                    AndroidAPI.OpenUrl("http://twitter.com/zeptolab");
                     return;
                 case 17:
-                    AndroidAPI.openUrl("http://www.facebook.com/cuttherope");
+                    AndroidAPI.OpenUrl("http://www.facebook.com/cuttherope");
                     return;
                 case 20:
                     {
@@ -1365,7 +1366,7 @@ namespace CutTheRope.game
                         int num3 = scrollPacksLeft + 1;
                         scrollPacksLeft = num3;
                         int sp2 = FixScrollPoint(num2 + num3 - scrollPacksRight);
-                        packContainer.moveToScrollPointmoveMultiplier(sp2, 0.8);
+                        packContainer.MoveToScrollPointmoveMultiplier(sp2, 0.8);
                         bScrolling = true;
                         return;
                     }
@@ -1375,13 +1376,13 @@ namespace CutTheRope.game
                         int num3 = scrollPacksRight + 1;
                         scrollPacksRight = num3;
                         int sp3 = FixScrollPoint(num4 - num3 + scrollPacksLeft);
-                        packContainer.moveToScrollPointmoveMultiplier(sp3, 0.8);
+                        packContainer.MoveToScrollPointmoveMultiplier(sp3, 0.8);
                         bScrolling = true;
                         break;
                     }
                 case 22:
                     {
-                        NSString @string = Application.sharedAppSettings().getString(8);
+                        NSString @string = Application.SharedAppSettings().GetString(8);
                         NSString[] array3 =
                         [
                     NSS("en"),
@@ -1393,37 +1394,37 @@ namespace CutTheRope.game
                         bool flag4 = false;
                         for (int j = 0; j < num; j++)
                         {
-                            if (@string.isEqualToString(array3[j]))
+                            if (@string.IsEqualToString(array3[j]))
                             {
                                 NSString nSString = array3[(j + 1) % num];
-                                Application.sharedAppSettings().setString(8, nSString);
-                                Application.sharedPreferences().setStringforKey(nSString.ToString(), "PREFS_LOCALE", true);
+                                Application.SharedAppSettings().SetString(8, nSString);
+                                Application.SharedPreferences().SetStringforKey(nSString.ToString(), "PREFS_LOCALE", true);
                                 flag4 = true;
                                 break;
                             }
                         }
                         if (!flag4)
                         {
-                            Application.sharedAppSettings().setString(8, array3[1]);
-                            Application.sharedPreferences().setStringforKey(array3[1].ToString(), "PREFS_LOCALE", true);
+                            Application.SharedAppSettings().SetString(8, array3[1]);
+                            Application.SharedPreferences().SetStringforKey(array3[1].ToString(), "PREFS_LOCALE", true);
                         }
-                        CTRResourceMgr ctrresourceMgr2 = Application.sharedResourceMgr();
-                        ctrresourceMgr2.freePack(PACK_LOCALIZATION_MENU);
-                        ctrresourceMgr2.clearCachedResources();
-                        ctrresourceMgr2.initLoading();
-                        ctrresourceMgr2.loadPack(PACK_LOCALIZATION_MENU);
-                        ctrresourceMgr2.loadImmediately();
-                        deleteView(5);
-                        createPackSelect();
-                        deleteView(0);
-                        createMainMenu();
-                        deleteView(4);
-                        createReset();
-                        deleteView(3);
-                        createAbout();
-                        createLeaderboards();
-                        ddMainMenu.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_recreateOptions), null, 0.01);
-                        ((CTRRootController)Application.sharedRootController()).recreateLoadingController();
+                        CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
+                        ctrresourceMgr2.FreePack(PACK_LOCALIZATION_MENU);
+                        ctrresourceMgr2.ClearCachedResources();
+                        ctrresourceMgr2.InitLoading();
+                        ctrresourceMgr2.LoadPack(PACK_LOCALIZATION_MENU);
+                        ctrresourceMgr2.LoadImmediately();
+                        DeleteView(5);
+                        CreatePackSelect();
+                        DeleteView(0);
+                        CreateMainMenu();
+                        DeleteView(4);
+                        CreateReset();
+                        DeleteView(3);
+                        CreateAbout();
+                        CreateLeaderboards();
+                        ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01);
+                        ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
                         return;
                     }
                 case 23:
@@ -1441,15 +1442,15 @@ namespace CutTheRope.game
                     {
                         if (pack != n - 23)
                         {
-                            packContainer.moveToScrollPointmoveMultiplier(n - 23, 0.8);
+                            packContainer.MoveToScrollPointmoveMultiplier(n - 23, 0.8);
                             return;
                         }
-                        CTRPreferences.setLastPack(pack);
-                        bool flag5 = CTRPreferences.getUnlockedForPackLevel(n - 23, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED && n - 23 != CTRPreferences.getPacksCount();
+                        CTRPreferences.SetLastPack(pack);
+                        bool flag5 = CTRPreferences.GetUnlockedForPackLevel(n - 23, 0) == UNLOCKEDSTATE.LOCKED && n - 23 != CTRPreferences.GetPacksCount();
                         if (n != 34 && !flag5)
                         {
-                            preLevelSelect();
-                            showView(6);
+                            PreLevelSelect();
+                            ShowView(6);
                             return;
                         }
                         break;
@@ -1471,7 +1472,7 @@ namespace CutTheRope.game
                         array5[1] = NSS("OP_BACK_PRESSED");
                         NSString nsstring = array4[n - 35];
                         NSString nsstring2 = array5[n - 35];
-                        showView(0);
+                        ShowView(0);
                         return;
                     }
                 case 39:
@@ -1480,13 +1481,13 @@ namespace CutTheRope.game
                 case 40:
                     if (ep != null)
                     {
-                        ep.hidePopup();
+                        ep.HidePopup();
                         ep = null;
                         return;
                     }
                     break;
                 case 41:
-                    showYesNoPopup(Application.getString(655505), 39, 40);
+                    ShowYesNoPopup(Application.GetString(655505), 39, 40);
                     return;
                 default:
                     return;
@@ -1495,9 +1496,9 @@ namespace CutTheRope.game
 
         private int FixScrollPoint(int moveToPack)
         {
-            if (moveToPack >= packContainer.getTotalScrollPoints())
+            if (moveToPack >= packContainer.GetTotalScrollPoints())
             {
-                moveToPack = packContainer.getTotalScrollPoints() - 1;
+                moveToPack = packContainer.GetTotalScrollPoints() - 1;
             }
             else if (moveToPack < 0)
             {
@@ -1506,40 +1507,40 @@ namespace CutTheRope.game
             return moveToPack;
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
-            MovieMgr movieMgr = Application.sharedMovieMgr();
-            if (movieMgr.isPlaying())
+            base.Update(delta);
+            MovieMgr movieMgr = Application.SharedMovieMgr();
+            if (movieMgr.IsPlaying())
             {
-                movieMgr.update();
+                movieMgr.Update();
                 return;
             }
             if (activeViewID == 3 && aboutAutoScroll)
             {
-                Vector scroll = aboutContainer.getScroll();
-                Vector maxScroll = aboutContainer.getMaxScroll();
+                Vector scroll = aboutContainer.GetScroll();
+                Vector maxScroll = aboutContainer.GetMaxScroll();
                 scroll.y += 0.5f;
                 scroll.y = FIT_TO_BOUNDARIES(scroll.y, 0.0, maxScroll.y);
-                aboutContainer.setScroll(scroll);
+                aboutContainer.SetScroll(scroll);
                 return;
             }
             if (activeViewID == 5 && ddPackSelect != null)
             {
-                ddPackSelect.update(delta);
+                ddPackSelect.Update(delta);
                 if (Global.XnaGame.IsKeyPressed(Keys.Left))
                 {
-                    onButtonPressed(21);
+                    OnButtonPressed(21);
                     return;
                 }
                 if (Global.XnaGame.IsKeyPressed(Keys.Right))
                 {
-                    onButtonPressed(20);
+                    OnButtonPressed(20);
                     return;
                 }
                 if ((Global.XnaGame.IsKeyPressed(Keys.Space) || Global.XnaGame.IsKeyPressed(Keys.Enter)) && !bScrolling)
                 {
-                    onButtonPressed(23 + currentPack);
+                    OnButtonPressed(23 + currentPack);
                     return;
                 }
             }
@@ -1547,19 +1548,19 @@ namespace CutTheRope.game
             {
                 if (activeViewID == 0 && ddMainMenu != null)
                 {
-                    ddMainMenu.update(delta);
+                    ddMainMenu.Update(delta);
                     return;
                 }
                 if (activeViewID == 1 && ddMainMenu != null)
                 {
-                    ddMainMenu.update(delta);
+                    ddMainMenu.Update(delta);
                 }
             }
         }
 
-        public override bool touchesBeganwithEvent(IList<TouchLocation> touches)
+        public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            bool flag = base.touchesBeganwithEvent(touches);
+            bool flag = base.TouchesBeganwithEvent(touches);
             if (activeViewID == 3 && aboutAutoScroll)
             {
                 aboutAutoScroll = false;
@@ -1567,77 +1568,77 @@ namespace CutTheRope.game
             return flag;
         }
 
-        public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public override void fullscreenToggled(bool isFullscreen)
+        public override void FullscreenToggled(bool isFullscreen)
         {
-            deleteView(5);
-            createPackSelect();
-            BaseElement childWithName = getView(0).getChild(0).getChildWithName("container");
+            DeleteView(5);
+            CreatePackSelect();
+            BaseElement childWithName = GetView(0).GetChild(0).GetChildWithName("container");
             if (childWithName != null)
             {
-                childWithName.x = -(float)canvas.xOffsetScaled;
+                childWithName.x = -(float)Canvas.xOffsetScaled;
             }
-            BaseElement childWithName2 = getView(5).getChild(0).getChildWithName("text");
+            BaseElement childWithName2 = GetView(5).GetChild(0).GetChildWithName("text");
             if (childWithName2 != null)
             {
-                childWithName2.x = -20f - canvas.xOffsetScaled;
+                childWithName2.x = -20f - Canvas.xOffsetScaled;
             }
             for (int i = 0; i < 10; i++)
             {
-                View view3 = getView(i);
+                View view3 = GetView(i);
                 if (view3 != null)
                 {
-                    BaseElement childWithName3 = view3.getChildWithName("backb");
+                    BaseElement childWithName3 = view3.GetChildWithName("backb");
                     if (childWithName3 != null)
                     {
-                        childWithName3.x = canvas.xOffsetScaled;
+                        childWithName3.x = Canvas.xOffsetScaled;
                     }
                 }
             }
-            BaseElement view4 = getView(6);
+            BaseElement view4 = GetView(6);
             if (view4 != null)
             {
-                view4.getChildWithName("backButton").x = canvas.xOffsetScaled;
-                view4.getChildWithName("starText").x = -(float)canvas.xOffsetScaled;
+                view4.GetChildWithName("backButton").x = Canvas.xOffsetScaled;
+                view4.GetChildWithName("starText").x = -(float)Canvas.xOffsetScaled;
             }
         }
 
-        public void selector_recreateOptions(NSObject param)
+        public void Selector_recreateOptions(NSObject param)
         {
-            recreateOptions();
+            RecreateOptions();
         }
 
-        public override bool backButtonPressed()
+        public override bool BackButtonPressed()
         {
             int num = activeViewID;
             if (num == 0)
             {
                 if (ep != null)
                 {
-                    onButtonPressed(40);
+                    OnButtonPressed(40);
                 }
                 else
                 {
-                    onButtonPressed(41);
+                    OnButtonPressed(41);
                 }
             }
             switch (num)
             {
                 case 1:
-                    onButtonPressed(36);
+                    OnButtonPressed(36);
                     break;
                 case 3:
                 case 4:
-                    onButtonPressed(10);
+                    OnButtonPressed(10);
                     break;
                 case 5:
-                    onButtonPressed(35);
+                    OnButtonPressed(35);
                     break;
                 case 6:
-                    onButtonPressed(12);
+                    OnButtonPressed(12);
                     break;
             }
             return true;
@@ -1779,7 +1780,7 @@ namespace CutTheRope.game
 
         private ScrollableContainer packContainer;
 
-        private readonly BaseElement[] boxes = new BaseElement[CTRPreferences.getPacksCount() + 1];
+        private readonly BaseElement[] boxes = new BaseElement[CTRPreferences.GetPacksCount() + 1];
 
         private bool showNextPackStatus;
 
@@ -1807,16 +1808,16 @@ namespace CutTheRope.game
 
         private Popup ep;
 
-        public class TouchBaseElement : BaseElement
+        public sealed class TouchBaseElement : BaseElement
         {
-            public override bool onTouchDownXY(float tx, float ty)
+            public override bool OnTouchDownXY(float tx, float ty)
             {
-                base.onTouchDownXY(tx, ty);
+                _ = base.OnTouchDownXY(tx, ty);
                 CTRRectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
-                CTRRectangle rectangle = rectInRectIntersection(MakeRectangle(0.0, 0.0, SCREEN_WIDTH, SCREEN_HEIGHT), r);
-                if (pointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2.0)
+                CTRRectangle rectangle = RectInRectIntersection(MakeRectangle(0.0, 0.0, SCREEN_WIDTH, SCREEN_HEIGHT), r);
+                if (PointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2.0)
                 {
-                    delegateValue.onButtonPressed(bid);
+                    delegateValue.OnButtonPressed(bid);
                     return true;
                 }
                 return false;
@@ -1826,48 +1827,48 @@ namespace CutTheRope.game
 
             public CTRRectangle bbc;
 
-            public ButtonDelegate delegateValue;
+            public IButtonDelegation delegateValue;
         }
 
-        public class MonsterSlot : Image
+        public sealed class MonsterSlot : Image
         {
             public static MonsterSlot MonsterSlot_create(CTRTexture2D t)
             {
-                return (MonsterSlot)new MonsterSlot().initWithTexture(t);
+                return (MonsterSlot)new MonsterSlot().InitWithTexture(t);
             }
 
             public static MonsterSlot MonsterSlot_createWithResID(int r)
             {
-                return MonsterSlot_create(Application.getTexture(r));
+                return MonsterSlot_create(Application.GetTexture(r));
             }
 
             public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
-                MonsterSlot monsterSlot = MonsterSlot_create(Application.getTexture(r));
-                monsterSlot.setDrawQuad(q);
+                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(r));
+                monsterSlot.SetDrawQuad(q);
                 return monsterSlot;
             }
 
-            public override void draw()
+            public override void Draw()
             {
-                preDraw();
+                PreDraw();
                 if (quadToDraw == -1)
                 {
-                    GLDrawer.drawImage(texture, drawX, drawY);
+                    GLDrawer.DrawImage(texture, drawX, drawY);
                 }
                 else
                 {
-                    drawQuad(quadToDraw);
+                    DrawQuad(quadToDraw);
                 }
-                float num = c.getScroll().x;
-                Vector preCutSize = Application.getTexture(52).preCutSize;
+                float num = c.GetScroll().x;
+                Vector preCutSize = Application.GetTexture(52).preCutSize;
                 if (num >= s && num < e)
                 {
                     num -= preCutSize.x + -20f;
                     float num2 = num - ((s + e) / 2f);
-                    OpenGL.setScissorRectangle(250.0 - (double)num2, 0.0, 200.0, SCREEN_HEIGHT);
-                    postDraw();
-                    OpenGL.setScissorRectangle(c.drawX, c.drawY, c.width, c.height);
+                    OpenGL.SetScissorRectangle(250.0 - (double)num2, 0.0, 200.0, SCREEN_HEIGHT);
+                    PostDraw();
+                    OpenGL.SetScissorRectangle(c.drawX, c.drawY, c.width, c.height);
                 }
             }
 

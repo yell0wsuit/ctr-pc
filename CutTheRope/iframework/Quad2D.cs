@@ -1,20 +1,8 @@
 namespace CutTheRope.iframework
 {
-    internal struct Quad2D
+    internal struct Quad2D(float x, float y, float w, float h)
     {
-        public Quad2D(float x, float y, float w, float h)
-        {
-            tlX = x;
-            tlY = y;
-            trX = x + w;
-            trY = y;
-            blX = x;
-            blY = y + h;
-            brX = x + w;
-            brY = y + h;
-        }
-
-        public float[] toFloatArray()
+        public readonly float[] ToFloatArray()
         {
             return [tlX, tlY, trX, trY, blX, blY, brX, brY];
         }
@@ -24,20 +12,20 @@ namespace CutTheRope.iframework
             return new Quad2D(x, y, w, h);
         }
 
-        public float tlX;
+        public float tlX = x;
 
-        public float tlY;
+        public float tlY = y;
 
-        public float trX;
+        public float trX = x + w;
 
-        public float trY;
+        public float trY = y;
 
-        public float blX;
+        public float blX = x;
 
-        public float blY;
+        public float blY = y + h;
 
-        public float brX;
+        public float brX = x + w;
 
-        public float brY;
+        public float brY = y + h;
     }
 }

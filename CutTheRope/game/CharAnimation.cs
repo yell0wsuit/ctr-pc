@@ -4,19 +4,19 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class CharAnimation : Animation
+    internal sealed class CharAnimation : Animation
     {
         public static CharAnimation CharAnimation_create(CTRTexture2D t)
         {
-            return (CharAnimation)new CharAnimation().initWithTexture(t);
+            return (CharAnimation)new CharAnimation().InitWithTexture(t);
         }
 
         public static CharAnimation CharAnimation_createWithResID(int r)
         {
-            return CharAnimation_create(Application.getTexture(r));
+            return CharAnimation_create(Application.GetTexture(r));
         }
 
-        public override bool handleAction(ActionData a)
+        public override bool HandleAction(ActionData a)
         {
             if (a.actionName == "ACTION_PLAY_TIMELINE")
             {
@@ -24,10 +24,10 @@ namespace CutTheRope.game
                 {
                     parent.color = RGBAColor.transparentRGBA;
                 }
-                playTimeline(a.actionSubParam);
+                PlayTimeline(a.actionSubParam);
                 return true;
             }
-            return base.handleAction(a);
+            return base.HandleAction(a);
         }
     }
 }

@@ -5,16 +5,16 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class Processing : RectangleElement, TimelineDelegate
+    internal sealed class Processing : RectangleElement, ITimelineDelegate
     {
-        private static NSObject createWithLoading()
+        private static NSObject CreateWithLoading()
         {
-            return new Processing().initWithLoading(true);
+            return new Processing().InitWithLoading(true);
         }
 
-        public virtual NSObject initWithLoading(bool loading)
+        public NSObject InitWithLoading(bool loading)
         {
-            if (init() != null)
+            if (Init() != null)
             {
                 width = (int)SCREEN_WIDTH_EXPANDED;
                 height = (int)SCREEN_HEIGHT_EXPANDED + 1;
@@ -24,66 +24,66 @@ namespace CutTheRope.game
                 if (loading)
                 {
                     Image image = Image.Image_createWithResIDQuad(57, 0);
-                    Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-                    timeline.addKeyFrame(KeyFrame.makeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-                    timeline.addKeyFrame(KeyFrame.makeRotation(360, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1f));
-                    timeline.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                    image.addTimeline(timeline);
-                    image.playTimeline(0);
-                    Text c = Text.createWithFontandString(3, Application.getString(655425));
-                    HBox hBox = new HBox().initWithOffsetAlignHeight(10f, 16, image.height);
+                    Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                    timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
+                    timeline.AddKeyFrame(KeyFrame.MakeRotation(360, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1f));
+                    timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                    _ = image.AddTimeline(timeline);
+                    image.PlayTimeline(0);
+                    Text c = Text.CreateWithFontandString(3, Application.GetString(655425));
+                    HBox hBox = new HBox().InitWithOffsetAlignHeight(10f, 16, image.height);
                     hBox.parentAnchor = hBox.anchor = 18;
-                    addChild(hBox);
-                    hBox.addChild(image);
-                    hBox.addChild(c);
+                    _ = AddChild(hBox);
+                    _ = hBox.AddChild(image);
+                    _ = hBox.AddChild(c);
                 }
-                Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
-                timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-                timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                addTimeline(timeline2);
-                timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
+                Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                _ = AddTimeline(timeline2);
+                timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline2.delegateTimelineDelegate = this;
-                timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-                timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                addTimeline(timeline2);
-                playTimeline(0);
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                _ = AddTimeline(timeline2);
+                PlayTimeline(0);
             }
             return this;
         }
 
-        public override bool onTouchDownXY(float tx, float ty)
+        public override bool OnTouchDownXY(float tx, float ty)
         {
-            base.onTouchDownXY(tx, ty);
+            _ = base.OnTouchDownXY(tx, ty);
             return true;
         }
 
-        public override bool onTouchUpXY(float tx, float ty)
+        public override bool OnTouchUpXY(float tx, float ty)
         {
-            base.onTouchUpXY(tx, ty);
+            _ = base.OnTouchUpXY(tx, ty);
             return true;
         }
 
-        public override bool onTouchMoveXY(float tx, float ty)
+        public override bool OnTouchMoveXY(float tx, float ty)
         {
-            base.onTouchMoveXY(tx, ty);
+            _ = base.OnTouchMoveXY(tx, ty);
             return true;
         }
 
-        public override void playTimeline(int t)
+        public override void PlayTimeline(int t)
         {
             if (t == 0)
             {
-                setEnabled(true);
+                SetEnabled(true);
             }
-            base.playTimeline(t);
+            base.PlayTimeline(t);
         }
 
-        public void timelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
-            setEnabled(false);
+            SetEnabled(false);
         }
 
-        public void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
     }

@@ -3,11 +3,11 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class HorizontallyTiledImage : Image
+    internal sealed class HorizontallyTiledImage : Image
     {
-        public override Image initWithTexture(CTRTexture2D t)
+        public override Image InitWithTexture(CTRTexture2D t)
         {
-            if (base.initWithTexture(t) != null)
+            if (base.InitWithTexture(t) != null)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -18,17 +18,17 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
+            PreDraw();
             float w = texture.quadRects[tiles[0]].w;
             float w2 = texture.quadRects[tiles[2]].w;
             float num = width - (w + w2);
             if (num >= 0f)
             {
-                GLDrawer.drawImageQuad(texture, tiles[0], drawX, drawY + offsets[0]);
-                GLDrawer.drawImageTiledCool(texture, tiles[1], drawX + w, drawY + offsets[1], num, texture.quadRects[tiles[1]].h);
-                GLDrawer.drawImageQuad(texture, tiles[2], drawX + w + num, drawY + offsets[2]);
+                GLDrawer.DrawImageQuad(texture, tiles[0], drawX, drawY + offsets[0]);
+                GLDrawer.DrawImageTiledCool(texture, tiles[1], drawX + w, drawY + offsets[1], num, texture.quadRects[tiles[1]].h);
+                GLDrawer.DrawImageQuad(texture, tiles[2], drawX + w + num, drawY + offsets[2]);
             }
             else
             {
@@ -37,13 +37,13 @@ namespace CutTheRope.iframework.visual
                 r.w = Math.Min(r.w, width / 2f);
                 r2.w = Math.Min(r2.w, width - r.w);
                 r2.x += texture.quadRects[tiles[2]].w - r2.w;
-                GLDrawer.drawImagePart(texture, r, drawX, drawY + offsets[0]);
-                GLDrawer.drawImagePart(texture, r2, drawX + r.w, drawY + offsets[2]);
+                GLDrawer.DrawImagePart(texture, r, drawX, drawY + offsets[0]);
+                GLDrawer.DrawImagePart(texture, r2, drawX + r.w, drawY + offsets[2]);
             }
-            postDraw();
+            PostDraw();
         }
 
-        public virtual void setTileHorizontallyLeftCenterRight(int l, int c, int r)
+        public void SetTileHorizontallyLeftCenterRight(int l, int c, int r)
         {
             tiles[0] = l;
             tiles[1] = c;
@@ -59,18 +59,18 @@ namespace CutTheRope.iframework.visual
 
         public static HorizontallyTiledImage HorizontallyTiledImage_create(CTRTexture2D t)
         {
-            return (HorizontallyTiledImage)new HorizontallyTiledImage().initWithTexture(t);
+            return (HorizontallyTiledImage)new HorizontallyTiledImage().InitWithTexture(t);
         }
 
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(int r)
         {
-            return HorizontallyTiledImage_create(Application.getTexture(r));
+            return HorizontallyTiledImage_create(Application.GetTexture(r));
         }
 
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResIDQuad(int r, int q)
         {
-            HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage_create(Application.getTexture(r));
-            horizontallyTiledImage.setDrawQuad(q);
+            HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage_create(Application.GetTexture(r));
+            horizontallyTiledImage.SetDrawQuad(q);
             return horizontallyTiledImage;
         }
 

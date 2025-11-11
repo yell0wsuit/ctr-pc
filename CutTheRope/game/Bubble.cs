@@ -4,40 +4,40 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class Bubble : GameObject
+    internal sealed class Bubble : GameObject
     {
         public static Bubble Bubble_create(CTRTexture2D t)
         {
-            return (Bubble)new Bubble().initWithTexture(t);
+            return (Bubble)new Bubble().InitWithTexture(t);
         }
 
         public static Bubble Bubble_createWithResID(int r)
         {
-            return Bubble_create(Application.getTexture(r));
+            return Bubble_create(Application.GetTexture(r));
         }
 
         public static Bubble Bubble_createWithResIDQuad(int r, int q)
         {
-            Bubble bubble = Bubble_create(Application.getTexture(r));
-            bubble.setDrawQuad(q);
+            Bubble bubble = Bubble_create(Application.GetTexture(r));
+            bubble.SetDrawQuad(q);
             return bubble;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            base.preDraw();
+            base.PreDraw();
             if (!withoutShadow)
             {
                 if (quadToDraw == -1)
                 {
-                    GLDrawer.drawImage(texture, drawX, drawY);
+                    GLDrawer.DrawImage(texture, drawX, drawY);
                 }
                 else
                 {
-                    drawQuad(quadToDraw);
+                    DrawQuad(quadToDraw);
                 }
             }
-            base.postDraw();
+            base.PostDraw();
         }
 
         public bool popped;

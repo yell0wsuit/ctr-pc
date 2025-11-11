@@ -3,25 +3,25 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Grabber : NSObject
+    internal sealed class Grabber : NSObject
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            base.init();
+            _ = base.Init();
             return this;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual CTRTexture2D grab()
+        public static CTRTexture2D Grab()
         {
-            return (CTRTexture2D)new CTRTexture2D().initFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
+            return (CTRTexture2D)new CTRTexture2D().InitFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
         }
 
-        public static void drawGrabbedImage(CTRTexture2D t, int x, int y)
+        public static void DrawGrabbedImage(CTRTexture2D t, int x, int y)
         {
             if (t != null)
             {
@@ -36,11 +36,11 @@ namespace CutTheRope.iframework.visual
                 array[9] = t._realWidth + x;
                 array[10] = t._realHeight + y;
                 float[] pointer2 = array;
-                OpenGL.glEnable(0);
-                OpenGL.glBindTexture(t.name());
-                OpenGL.glVertexPointer(3, 5, 0, pointer2);
-                OpenGL.glTexCoordPointer(2, 5, 0, pointer);
-                OpenGL.glDrawArrays(8, 0, 4);
+                OpenGL.GlEnable(0);
+                OpenGL.GlBindTexture(t.Name());
+                OpenGL.GlVertexPointer(3, 5, 0, pointer2);
+                OpenGL.GlTexCoordPointer(2, 5, 0, pointer);
+                OpenGL.GlDrawArrays(8, 0, 4);
             }
         }
     }

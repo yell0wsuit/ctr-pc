@@ -1,29 +1,27 @@
 using CutTheRope.iframework.helpers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CutTheRope.ios
 {
-    internal class NSTimer : NSObject
+    internal sealed class NSTimer : NSObject
     {
-        private static void Init()
+        private static new void Init()
         {
             Timers = [];
             dd = new DelayedDispatcher();
             is_init = true;
         }
 
-        public static void registerDelayedObjectCall(DelayedDispatcher.DispatchFunc f, NSObject p, double interval)
+        public static void RegisterDelayedObjectCall(DelayedDispatcher.DispatchFunc f, NSObject p, double interval)
         {
             if (!is_init)
             {
                 Init();
             }
-            dd.callObjectSelectorParamafterDelay(f, p, interval);
+            dd.CallObjectSelectorParamafterDelay(f, p, interval);
         }
 
-        public static int schedule(DelayedDispatcher.DispatchFunc f, NSObject p, float interval)
+        public static int Schedule(DelayedDispatcher.DispatchFunc f, NSObject p, float interval)
         {
             if (!is_init)
             {
@@ -37,16 +35,16 @@ namespace CutTheRope.ios
                 delay = interval
             };
             Timers.Add(entry);
-            return Timers.Count() - 1;
+            return Timers.Count - 1;
         }
 
-        public static void fireTimers(float delta)
+        public static void FireTimers(float delta)
         {
             if (!is_init)
             {
                 Init();
             }
-            dd.update(delta);
+            dd.Update(delta);
             for (int i = 0; i < Timers.Count; i++)
             {
                 Entry entry = Timers[i];
@@ -59,7 +57,7 @@ namespace CutTheRope.ios
             }
         }
 
-        public static void stopTimer(int Number)
+        public static void StopTimer(int Number)
         {
             Timers.RemoveAt(Number);
         }
@@ -70,7 +68,7 @@ namespace CutTheRope.ios
 
         private static bool is_init;
 
-        private class Entry
+        private sealed class Entry
         {
             public DelayedDispatcher.DispatchFunc f;
 

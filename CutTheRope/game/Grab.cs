@@ -8,57 +8,57 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class Grab : CTRGameObject
+    internal sealed class Grab : CTRGameObject
     {
-        private static void drawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
+        private static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
-            OpenGL.glColor4f(color.toXNA());
-            OpenGL.glLineWidth(3.0);
-            OpenGL.glDisableClientState(0);
-            OpenGL.glEnableClientState(13);
-            OpenGL.glColorPointer_setAdditive(s.vertexCount * 8);
-            OpenGL.glVertexPointer_setAdditive(2, 5, 0, s.vertexCount * 16);
+            OpenGL.GlColor4f(color.ToXNA());
+            OpenGL.GlLineWidth(3.0);
+            OpenGL.GlDisableClientState(0);
+            OpenGL.GlEnableClientState(13);
+            OpenGL.GlColorPointer_setAdditive(s.vertexCount * 8);
+            OpenGL.GlVertexPointer_setAdditive(2, 5, 0, s.vertexCount * 16);
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                GLDrawer.drawAntialiasedLine(s.vertices[i * 2], s.vertices[(i * 2) + 1], s.vertices[(i * 2) + 2], s.vertices[(i * 2) + 3], 3f, color);
+                GLDrawer.DrawAntialiasedLine(s.vertices[i * 2], s.vertices[(i * 2) + 1], s.vertices[(i * 2) + 2], s.vertices[(i * 2) + 3], 3f, color);
             }
-            OpenGL.glDrawArrays(8, 0, 8);
-            OpenGL.glEnableClientState(0);
-            OpenGL.glDisableClientState(13);
-            OpenGL.glLineWidth(1.0);
+            OpenGL.GlDrawArrays(8, 0, 8);
+            OpenGL.GlEnableClientState(0);
+            OpenGL.GlDisableClientState(13);
+            OpenGL.GlLineWidth(1.0);
         }
 
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 rope = null;
                 wheelOperating = -1;
-                CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-                baloon = cTRRootController.isSurvival();
+                CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+                baloon = cTRRootController.IsSurvival();
             }
             return this;
         }
 
-        public virtual float getRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
+        public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
-            Vector v3 = vectSub(v1, c);
-            return RADIANS_TO_DEGREES(vectAngleNormalized(vectSub(v2, c)) - vectAngleNormalized(v3));
+            Vector v3 = VectSub(v1, c);
+            return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(v3));
         }
 
-        public virtual void handleWheelTouch(Vector v)
+        public void HandleWheelTouch(Vector v)
         {
             lastWheelTouch = v;
         }
 
-        public virtual void handleWheelRotate(Vector v)
+        public void HandleWheelRotate(Vector v)
         {
             if (lastWheelTouch.x - v.x == 0f && lastWheelTouch.y - v.y == 0f)
             {
                 return;
             }
-            CTRSoundMgr._playSound(36);
-            float num = getRotateAngleForStartEndCenter(lastWheelTouch, v, vect(x, y));
+            CTRSoundMgr.PlaySound(36);
+            float num = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
             if ((double)num > 180.0)
             {
                 num -= 360f;
@@ -70,11 +70,11 @@ namespace CutTheRope.game
             wheelImage2.rotation += num;
             wheelImage3.rotation += num;
             wheelHighlight.rotation += num;
-            num = (num > 0f) ? MIN((double)MAX(1.0, (double)num), 4.5) : MAX((double)MIN(-1.0, (double)num), -4.5);
+            num = num > 0f ? MIN((double)MAX(1.0, (double)num), 4.5) : MAX((double)MIN(-1.0, (double)num), -4.5);
             float num2 = 0f;
             if (rope != null)
             {
-                num2 = rope.getLength();
+                num2 = rope.GetLength();
             }
             if (rope != null)
             {
@@ -82,37 +82,37 @@ namespace CutTheRope.game
                 {
                     if (num2 < 1650f)
                     {
-                        rope.roll(num);
+                        rope.Roll(num);
                     }
                 }
                 else if (num != 0f && rope.parts.Count > 3)
                 {
-                    rope.rollBack(0f - num);
+                    _ = rope.RollBack(0f - num);
                 }
                 wheelDirty = true;
             }
             lastWheelTouch = v;
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
+            base.Update(delta);
             if (launcher && rope != null)
             {
-                rope.bungeeAnchor.pos = vect(x, y);
+                rope.bungeeAnchor.pos = Vect(x, y);
                 rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
                 if (launcherIncreaseSpeed)
                 {
-                    if (Mover.moveVariableToTarget(ref launcherSpeed, 200.0, 30.0, (double)delta))
+                    if (Mover.MoveVariableToTarget(ref launcherSpeed, 200.0, 30.0, (double)delta))
                     {
                         launcherIncreaseSpeed = false;
                     }
                 }
-                else if (Mover.moveVariableToTarget(ref launcherSpeed, 130.0, 30.0, (double)delta))
+                else if (Mover.MoveVariableToTarget(ref launcherSpeed, 130.0, 30.0, (double)delta))
                 {
                     launcherIncreaseSpeed = true;
                 }
-                mover.setMoveSpeed(launcherSpeed);
+                mover.SetMoveSpeed(launcherSpeed);
             }
             if (hideRadius)
             {
@@ -127,18 +127,18 @@ namespace CutTheRope.game
             {
                 Vector vector2 = mover.path[mover.targetPoint];
                 Vector pos = mover.pos;
-                Vector vector = vectSub(vector2, pos);
+                Vector vector = VectSub(vector2, pos);
                 float t = 0f;
                 if (ABS(vector.x) > 15f)
                 {
                     float num = 10f;
-                    t = (vector.x > 0f) ? num : (0f - num);
+                    t = vector.x > 0f ? num : 0f - num;
                 }
-                Mover.moveVariableToTarget(ref bee.rotation, t, 60f, delta);
+                _ = Mover.MoveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
             if (wheel && wheelDirty)
             {
-                float num2 = (rope == null) ? 0f : (rope.getLength() * 0.7f);
+                float num2 = rope == null ? 0f : rope.GetLength() * 0.7f;
                 if (num2 == 0f)
                 {
                     wheelImage2.scaleX = wheelImage2.scaleY = 0f;
@@ -148,20 +148,20 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void updateSpider(float delta)
+        public void UpdateSpider(float delta)
         {
             if (hasSpider && shouldActivate)
             {
                 shouldActivate = false;
                 spiderActive = true;
-                CTRSoundMgr._playSound(33);
-                spider.playTimeline(0);
+                CTRSoundMgr.PlaySound(33);
+                spider.PlayTimeline(0);
             }
             if (!hasSpider || !spiderActive)
             {
                 return;
             }
-            if (spider.getCurrentTimelineIndex() != 0)
+            if (spider.GetCurrentTimelineIndex() != 0)
             {
                 spiderPos += delta * 117f;
             }
@@ -172,23 +172,23 @@ namespace CutTheRope.game
                 int i = 0;
                 while (i < rope.drawPtsCount)
                 {
-                    Vector vector = vect(rope.drawPts[i], rope.drawPts[i + 1]);
-                    Vector vector2 = vect(rope.drawPts[i + 2], rope.drawPts[i + 3]);
-                    float num2 = MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, vectDistance(vector, vector2));
+                    Vector vector = Vect(rope.drawPts[i], rope.drawPts[i + 1]);
+                    Vector vector2 = Vect(rope.drawPts[i + 2], rope.drawPts[i + 3]);
+                    float num2 = MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, VectDistance(vector, vector2));
                     if (spiderPos >= num && (spiderPos < num + num2 || i > rope.drawPtsCount - 3))
                     {
                         float num3 = spiderPos - num;
-                        Vector v = vectSub(vector2, vector);
-                        v = vectMult(v, num3 / num2);
+                        Vector v = VectSub(vector2, vector);
+                        v = VectMult(v, num3 / num2);
                         spider.x = vector.x + v.x;
                         spider.y = vector.y + v.y;
                         if (i > rope.drawPtsCount - 3)
                         {
                             flag = true;
                         }
-                        if (spider.getCurrentTimelineIndex() != 0)
+                        if (spider.GetCurrentTimelineIndex() != 0)
                         {
-                            spider.rotation = RADIANS_TO_DEGREES(vectAngleNormalized(v)) + 270f;
+                            spider.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(v)) + 270f;
                             break;
                         }
                         break;
@@ -206,74 +206,74 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void drawBack()
+        public void DrawBack()
         {
             if (moveLength > 0.0)
             {
-                moveBackground.draw();
+                moveBackground.Draw();
             }
             else
             {
-                back.draw();
+                back.Draw();
             }
-            OpenGL.glDisable(0);
+            OpenGL.GlDisable(0);
             if (radius != -1f || hideRadius)
             {
-                RGBAColor rGBAColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
-                drawGrabCircle(this, x, y, radius, vertexCount, rGBAColor);
+                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
+                DrawGrabCircle(this, x, y, radius, vertexCount, rgbaColor);
             }
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
         }
 
-        public void drawBungee()
+        public void DrawBungee()
         {
             Bungee bungee = rope;
-            bungee?.draw();
+            bungee?.Draw();
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            base.preDraw();
-            OpenGL.glEnable(0);
+            base.PreDraw();
+            OpenGL.GlEnable(0);
             Bungee bungee = rope;
             if (wheel)
             {
                 wheelHighlight.visible = wheelOperating != -1;
                 wheelImage3.visible = wheelOperating == -1;
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-                wheelImage.draw();
-                OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                wheelImage.Draw();
+                OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
-            OpenGL.glDisable(0);
-            bungee?.draw();
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
+            OpenGL.GlDisable(0);
+            bungee?.Draw();
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
             if (moveLength <= 0.0)
             {
-                front.draw();
+                front.Draw();
             }
             else if (moverDragging != -1)
             {
-                grabMoverHighlight.draw();
+                grabMoverHighlight.Draw();
             }
             else
             {
-                grabMover.draw();
+                grabMover.Draw();
             }
             if (wheel)
             {
-                wheelImage2.draw();
+                wheelImage2.Draw();
             }
-            base.postDraw();
+            base.PostDraw();
         }
 
-        public virtual void drawSpider()
+        public void DrawSpider()
         {
-            spider.draw();
+            spider.Draw();
         }
 
-        public virtual void setRope(Bungee r)
+        public void SetRope(Bungee r)
         {
             rope = r;
             radius = -1f;
@@ -283,47 +283,47 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void setLauncher()
+        public void SetLauncher()
         {
             launcher = true;
             launcherIncreaseSpeed = true;
             launcherSpeed = 130f;
-            Mover mover = new Mover().initWithPathCapacityMoveSpeedRotateSpeed(100, launcherSpeed, 0f);
-            mover.setPathFromStringandStart(NSS("RC30"), vect(x, y));
-            setMover(mover);
-            mover.start();
+            Mover mover = new Mover().InitWithPathCapacityMoveSpeedRotateSpeed(100, launcherSpeed, 0f);
+            mover.SetPathFromStringandStart(NSS("RC30"), Vect(x, y));
+            SetMover(mover);
+            mover.Start();
         }
 
-        public virtual void reCalcCircle()
+        public void ReCalcCircle()
         {
-            GLDrawer.calcCircle(x, y, radius, vertexCount, vertices);
+            GLDrawer.CalcCircle(x, y, radius, vertexCount, vertices);
         }
 
-        public virtual void setRadius(float r)
+        public void SetRadius(float r)
         {
             radius = r;
             if (radius == -1f)
             {
                 int r2 = RND_RANGE(76, 77);
                 back = Image_createWithResIDQuad(r2, 0);
-                back.doRestoreCutTransparency();
+                back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
                 front = Image_createWithResIDQuad(r2, 1);
                 front.anchor = front.parentAnchor = 18;
-                addChild(back);
-                addChild(front);
+                _ = AddChild(back);
+                _ = AddChild(front);
                 back.visible = false;
                 front.visible = false;
             }
             else
             {
                 back = Image_createWithResIDQuad(74, 0);
-                back.doRestoreCutTransparency();
+                back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
                 front = Image_createWithResIDQuad(74, 1);
                 front.anchor = front.parentAnchor = 18;
-                addChild(back);
-                addChild(front);
+                _ = AddChild(back);
+                _ = AddChild(front);
                 back.visible = false;
                 front.visible = false;
                 radiusAlpha = 1f;
@@ -335,29 +335,29 @@ namespace CutTheRope.game
                     vertexCount++;
                 }
                 vertices = new float[vertexCount * 2];
-                GLDrawer.calcCircle(x, y, radius, vertexCount, vertices);
+                GLDrawer.CalcCircle(x, y, radius, vertexCount, vertices);
             }
             if (wheel)
             {
                 wheelImage = Image_createWithResIDQuad(81, 0);
                 wheelImage.anchor = wheelImage.parentAnchor = 18;
-                addChild(wheelImage);
+                _ = AddChild(wheelImage);
                 wheelImage.visible = false;
                 wheelImage2 = Image_createWithResIDQuad(81, 1);
                 wheelImage2.passTransformationsToChilds = false;
                 wheelHighlight = Image_createWithResIDQuad(81, 2);
                 wheelHighlight.anchor = wheelHighlight.parentAnchor = 18;
-                wheelImage2.addChild(wheelHighlight);
+                _ = wheelImage2.AddChild(wheelHighlight);
                 wheelImage3 = Image_createWithResIDQuad(81, 3);
                 wheelImage3.anchor = wheelImage3.parentAnchor = wheelImage2.anchor = wheelImage2.parentAnchor = 18;
-                wheelImage2.addChild(wheelImage3);
-                addChild(wheelImage2);
+                _ = wheelImage2.AddChild(wheelImage3);
+                _ = AddChild(wheelImage2);
                 wheelImage2.visible = false;
                 wheelDirty = true;
             }
         }
 
-        public virtual void setMoveLengthVerticalOffset(float l, bool v, float o)
+        public void SetMoveLengthVerticalOffset(float l, bool v, float o)
         {
             moveLength = l;
             moveVertical = v;
@@ -365,19 +365,19 @@ namespace CutTheRope.game
             if (moveLength > 0.0)
             {
                 moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(82);
-                moveBackground.setTileHorizontallyLeftCenterRight(0, 2, 1);
+                moveBackground.SetTileHorizontallyLeftCenterRight(0, 2, 1);
                 moveBackground.width = (int)(l + 142f);
-                moveBackground.rotationCenterX = 0f - round(moveBackground.width / 2.0) + 74f;
+                moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2.0) + 74f;
                 moveBackground.x = -74f;
                 grabMoverHighlight = Image_createWithResIDQuad(82, 3);
                 grabMoverHighlight.visible = false;
                 grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
-                addChild(grabMoverHighlight);
+                _ = AddChild(grabMoverHighlight);
                 grabMover = Image_createWithResIDQuad(82, 4);
                 grabMover.visible = false;
                 grabMover.anchor = grabMover.parentAnchor = 18;
-                addChild(grabMover);
-                grabMover.addChild(moveBackground);
+                _ = AddChild(grabMover);
+                _ = grabMover.AddChild(moveBackground);
                 if (moveVertical)
                 {
                     moveBackground.rotation = 90f;
@@ -401,60 +401,60 @@ namespace CutTheRope.game
             moverDragging = -1;
         }
 
-        public virtual void setBee()
+        public void SetBee()
         {
             bee = Image_createWithResIDQuad(98, 1);
             bee.blendingMode = 1;
-            bee.doRestoreCutTransparency();
+            bee.DoRestoreCutTransparency();
             bee.parentAnchor = 18;
             Animation animation = Animation_createWithResID(98);
             animation.parentAnchor = animation.anchor = 9;
-            animation.doRestoreCutTransparency();
-            animation.addAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
-            animation.playTimeline(0);
-            animation.jumpTo(RND_RANGE(0, 2));
-            bee.addChild(animation);
-            Vector quadOffset = getQuadOffset(98, 0);
+            animation.DoRestoreCutTransparency();
+            _ = animation.AddAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
+            animation.PlayTimeline(0);
+            animation.JumpTo(RND_RANGE(0, 2));
+            _ = bee.AddChild(animation);
+            Vector quadOffset = GetQuadOffset(98, 0);
             bee.x = 0f - quadOffset.x;
             bee.y = 0f - quadOffset.y;
             bee.rotationCenterX = quadOffset.x - (bee.width / 2);
             bee.rotationCenterY = quadOffset.y - (bee.height / 2);
             bee.scaleX = bee.scaleY = 0.7692308f;
-            addChild(bee);
+            _ = AddChild(bee);
         }
 
-        public virtual void setSpider(bool s)
+        public void SetSpider(bool s)
         {
             hasSpider = s;
             shouldActivate = false;
             spiderActive = false;
             spider = Animation_createWithResID(64);
-            spider.doRestoreCutTransparency();
+            spider.DoRestoreCutTransparency();
             spider.anchor = 18;
             spider.x = x;
             spider.y = y;
             spider.visible = false;
-            spider.addAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 6);
-            spider.setDelayatIndexforAnimation(0.4f, 5, 0);
-            spider.addAnimationWithIDDelayLoopFirstLast(1, 0.1f, Timeline.LoopType.TIMELINE_REPLAY, 7, 10);
-            spider.switchToAnimationatEndOfAnimationDelay(1, 0, 0.05f);
-            addChild(spider);
+            spider.AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 6);
+            spider.SetDelayatIndexforAnimation(0.4f, 5, 0);
+            spider.AddAnimationWithIDDelayLoopFirstLast(1, 0.1f, Timeline.LoopType.TIMELINE_REPLAY, 7, 10);
+            spider.SwitchToAnimationatEndOfAnimationDelay(1, 0, 0.05f);
+            _ = AddChild(spider);
         }
 
-        public virtual void destroyRope()
+        public void DestroyRope()
         {
-            rope.release();
+            rope.Release();
             rope = null;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             if (vertices != null)
             {
-                free(vertices);
+                Free(vertices);
             }
-            destroyRope();
-            base.dealloc();
+            DestroyRope();
+            base.Dealloc();
         }
 
         public const float SPIDER_SPEED = 117f;

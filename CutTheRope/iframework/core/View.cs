@@ -7,9 +7,9 @@ namespace CutTheRope.iframework.core
 {
     internal class View : BaseElement
     {
-        public virtual NSObject initFullscreen()
+        public virtual NSObject InitFullscreen()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 width = (int)SCREEN_WIDTH;
                 height = (int)SCREEN_HEIGHT;
@@ -17,21 +17,21 @@ namespace CutTheRope.iframework.core
             return this;
         }
 
-        public override NSObject init()
+        public override NSObject Init()
         {
-            return initFullscreen();
+            return InitFullscreen();
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
-            OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            base.preDraw();
-            base.postDraw();
-            OpenGL.glDisable(0);
-            OpenGL.glDisable(1);
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(1);
+            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            base.PreDraw();
+            base.PostDraw();
+            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(1);
         }
     }
 }

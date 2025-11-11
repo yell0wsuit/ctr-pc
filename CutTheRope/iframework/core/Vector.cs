@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System.Globalization;
 
 namespace CutTheRope.iframework.core
 {
@@ -22,19 +23,19 @@ namespace CutTheRope.iframework.core
             y = yParam;
         }
 
-        public Vector2 toXNA()
+        public readonly Vector2 ToXNA()
         {
             return new Vector2(x, y);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Concat(new string[]
             {
                 "Vector(x=",
-                x.ToString(),
+                x.ToString(CultureInfo.InvariantCulture),
                 ",y=",
-                y.ToString(),
+                y.ToString(CultureInfo.InvariantCulture),
                 ")"
             });
         }

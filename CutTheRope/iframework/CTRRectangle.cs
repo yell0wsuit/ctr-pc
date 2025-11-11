@@ -18,7 +18,7 @@ namespace CutTheRope.iframework
             h = height;
         }
 
-        public bool isValid()
+        public readonly bool IsValid()
         {
             return x != 0f || y != 0f || w != 0f || h != 0f;
         }

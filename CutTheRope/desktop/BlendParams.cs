@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.desktop
 {
-    internal class BlendParams
+    internal sealed class BlendParams
     {
         public BlendParams()
         {
@@ -18,17 +18,17 @@ namespace CutTheRope.desktop
             enabled = true;
         }
 
-        public void enable()
+        public void Enable()
         {
             enabled = true;
         }
 
-        public void disable()
+        public void Disable()
         {
             enabled = false;
         }
 
-        public static void applyDefault()
+        public static void ApplyDefault()
         {
             if (states[0] == null)
             {
@@ -38,18 +38,18 @@ namespace CutTheRope.desktop
             Global.GraphicsDevice.BlendFactor = Color.White;
         }
 
-        public void apply()
+        public void Apply()
         {
             if (defaultBlending || !enabled)
             {
                 if (lastBlend != BlendType.Default)
                 {
                     lastBlend = BlendType.Default;
-                    applyDefault();
+                    ApplyDefault();
                     return;
                 }
             }
-            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
+            else if (sfactor == BlendingFactor.GLSRCALPHA && dfactor == BlendingFactor.GLONEMINUSSRCALPHA)
             {
                 if (lastBlend != BlendType.SourceAlpha_InverseSourceAlpha)
                 {
@@ -69,7 +69,7 @@ namespace CutTheRope.desktop
                     return;
                 }
             }
-            else if (sfactor == BlendingFactor.GL_ONE && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
+            else if (sfactor == BlendingFactor.GLONE && dfactor == BlendingFactor.GLONEMINUSSRCALPHA)
             {
                 if (lastBlend != BlendType.One_InverseSourceAlpha)
                 {
@@ -89,7 +89,7 @@ namespace CutTheRope.desktop
                     return;
                 }
             }
-            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE && lastBlend != BlendType.SourceAlpha_One)
+            else if (sfactor == BlendingFactor.GLSRCALPHA && dfactor == BlendingFactor.GLONE && lastBlend != BlendType.SourceAlpha_One)
             {
                 lastBlend = BlendType.SourceAlpha_One;
                 if (states[(int)lastBlend] == null)

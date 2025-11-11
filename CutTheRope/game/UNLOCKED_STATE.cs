@@ -1,10 +1,10 @@
 namespace CutTheRope.game
 {
-    public enum UNLOCKED_STATE
+    public enum UNLOCKEDSTATE
     {
-        UNLOCKED_STATE_LOCKED,
-        UNLOCKED_STATE_UNLOCKED,
-        UNLOCKED_STATE_JUST_UNLOCKED,
-        UNLOCKED_STATE_JUST_UNLOCKED_WITH_CHEAT
+        LOCKED,
+        UNLOCKED,
+        JUSTUNLOCKED,
+        JUSTUNLOCKEDWITHCHEAT
     }
 }

@@ -4,33 +4,33 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class Pump : GameObject
+    internal sealed class Pump : GameObject
     {
         public static Pump Pump_create(CTRTexture2D t)
         {
-            return (Pump)new Pump().initWithTexture(t);
+            return (Pump)new Pump().InitWithTexture(t);
         }
 
         public static Pump Pump_createWithResID(int r)
         {
-            return Pump_create(Application.getTexture(r));
+            return Pump_create(Application.GetTexture(r));
         }
 
         public static Pump Pump_createWithResIDQuad(int r, int q)
         {
-            Pump pump = Pump_create(Application.getTexture(r));
-            pump.setDrawQuad(q);
+            Pump pump = Pump_create(Application.GetTexture(r));
+            pump.SetDrawQuad(q);
             return pump;
         }
 
-        public virtual void updateRotation()
+        public void UpdateRotation()
         {
             t1.x = x - (bb.w / 2f);
             t2.x = x + (bb.w / 2f);
             t1.y = t2.y = y;
             angle = DEGREES_TO_RADIANS(rotation);
-            t1 = vectRotateAround(t1, angle, x, y);
-            t2 = vectRotateAround(t2, angle, x, y);
+            t1 = VectRotateAround(t1, angle, x, y);
+            t2 = VectRotateAround(t2, angle, x, y);
         }
 
         public double angle;

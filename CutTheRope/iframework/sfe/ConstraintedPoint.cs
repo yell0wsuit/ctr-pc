@@ -6,34 +6,34 @@ namespace CutTheRope.iframework.sfe
 {
     internal class ConstraintedPoint : MaterialPoint
     {
-        public override void dealloc()
+        public override void Dealloc()
         {
             constraints = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
-                prevPos = vect(2.1474836E+09f, 2.1474836E+09f);
-                pin = vect(-1f, -1f);
+                prevPos = Vect(2.1474836E+09f, 2.1474836E+09f);
+                pin = Vect(-1f, -1f);
                 constraints = [];
             }
             return this;
         }
 
-        public virtual void addConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
+        public virtual void AddConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
         {
             Constraint constraint = new();
-            constraint.init();
+            _ = constraint.Init();
             constraint.cp = c;
             constraint.restLength = r;
             constraint.type = t;
             constraints.Add(constraint);
         }
 
-        public virtual void removeConstraint(ConstraintedPoint o)
+        public virtual void RemoveConstraint(ConstraintedPoint o)
         {
             for (int i = 0; i < constraints.Count; i++)
             {
@@ -45,12 +45,12 @@ namespace CutTheRope.iframework.sfe
             }
         }
 
-        public virtual void removeConstraints()
+        public virtual void RemoveConstraints()
         {
             constraints = [];
         }
 
-        public virtual void changeConstraintFromTo(ConstraintedPoint o, ConstraintedPoint n)
+        public virtual void ChangeConstraintFromTo(ConstraintedPoint o, ConstraintedPoint n)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -64,7 +64,7 @@ namespace CutTheRope.iframework.sfe
             }
         }
 
-        public virtual void changeConstraintFromTowithRestLength(ConstraintedPoint o, ConstraintedPoint n, float l)
+        public virtual void ChangeConstraintFromTowithRestLength(ConstraintedPoint o, ConstraintedPoint n, float l)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -79,7 +79,7 @@ namespace CutTheRope.iframework.sfe
             }
         }
 
-        public virtual void changeRestLengthToFor(float l, ConstraintedPoint n)
+        public virtual void ChangeRestLengthToFor(float l, ConstraintedPoint n)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -93,7 +93,7 @@ namespace CutTheRope.iframework.sfe
             }
         }
 
-        public virtual bool hasConstraintTo(ConstraintedPoint p)
+        public virtual bool HasConstraintTo(ConstraintedPoint p)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -107,7 +107,7 @@ namespace CutTheRope.iframework.sfe
             return false;
         }
 
-        public virtual float restLengthFor(ConstraintedPoint n)
+        public virtual float RestLengthFor(ConstraintedPoint n)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -121,46 +121,46 @@ namespace CutTheRope.iframework.sfe
             return -1f;
         }
 
-        public override void resetAll()
+        public override void ResetAll()
         {
-            base.resetAll();
-            prevPos = vect(2.1474836E+09f, 2.1474836E+09f);
-            removeConstraints();
+            base.ResetAll();
+            prevPos = Vect(2.1474836E+09f, 2.1474836E+09f);
+            RemoveConstraints();
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            update(delta, 1f);
+            Update(delta, 1f);
         }
 
-        public virtual void update(float delta, float koeff)
+        public virtual void Update(float delta, float koeff)
         {
             totalForce = vectZero;
             if (!disableGravity)
             {
-                totalForce = !vectEqual(globalGravity, vectZero) ? vectAdd(totalForce, vectMult(globalGravity, weight)) : vectAdd(totalForce, gravity);
+                totalForce = !VectEqual(globalGravity, vectZero) ? VectAdd(totalForce, VectMult(globalGravity, weight)) : VectAdd(totalForce, gravity);
             }
             if (highestForceIndex != -1)
             {
                 for (int i = 0; i <= highestForceIndex; i++)
                 {
-                    totalForce = vectAdd(totalForce, forces[i]);
+                    totalForce = VectAdd(totalForce, forces[i]);
                 }
             }
-            totalForce = vectMult(totalForce, invWeight);
-            a = vectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
+            totalForce = VectMult(totalForce, invWeight);
+            a = VectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
             if (prevPos.x == 2.1474836E+09f)
             {
                 prevPos = pos;
             }
             posDelta.x = pos.x - prevPos.x + a.x;
             posDelta.y = pos.y - prevPos.y + a.y;
-            v = vectMult(posDelta, (float)(1.0 / (double)delta));
+            v = VectMult(posDelta, (float)(1.0 / (double)delta));
             prevPos = pos;
-            pos = vectAdd(pos, posDelta);
+            pos = VectAdd(pos, posDelta);
         }
 
-        public static void satisfyConstraints(ConstraintedPoint p)
+        public static void SatisfyConstraints(ConstraintedPoint p)
         {
             if (p.pin.x != -1f)
             {
@@ -168,43 +168,32 @@ namespace CutTheRope.iframework.sfe
                 return;
             }
             int count = p.constraints.Count;
-            Vector vector = vectZero;
-            Vector vector2 = vectZero;
-            int i = 0;
-            while (i < count)
+            for (int i = 0; i < count; i++)
             {
                 Constraint constraint = p.constraints[i];
+                Vector vector;
                 vector.x = constraint.cp.pos.x - p.pos.x;
                 vector.y = constraint.cp.pos.y - p.pos.y;
                 if (vector.x == 0f && vector.y == 0f)
                 {
-                    vector = vect(1f, 1f);
+                    vector = Vect(1f, 1f);
                 }
-                float num = vectLength(vector);
+                float num = VectLength(vector);
                 float restLength = constraint.restLength;
                 Constraint.CONSTRAINT type = constraint.type;
-                if (type != Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN)
+
+                bool shouldApplyConstraint = (type == Constraint.CONSTRAINT.DISTANCE)
+                    || (type == Constraint.CONSTRAINT.NOT_MORE_THAN && num > restLength)
+                    || (type == Constraint.CONSTRAINT.NOT_LESS_THAN && num < restLength);
+
+                if (!shouldApplyConstraint)
                 {
-                    if (type != Constraint.CONSTRAINT.CONSTRAINT_NOT_LESS_THAN)
-                    {
-                        goto IL_00F8;
-                    }
-                    if (num < restLength)
-                    {
-                        goto IL_00F8;
-                    }
+                    continue;
                 }
-                else if (num > restLength)
-                {
-                    goto IL_00F8;
-                }
-            IL_01D6:
-                i++;
-                continue;
-            IL_00F8:
-                vector2 = vector;
+
+                Vector vector2 = vector;
                 float num2 = constraint.cp.invWeight;
-                float num3 = (num > 1f) ? num : 1f;
+                float num3 = num > 1f ? num : 1f;
                 float num4 = (num - restLength) / (num3 * (p.invWeight + num2));
                 float num5 = p.invWeight * num4;
                 vector.x *= num5;
@@ -212,44 +201,42 @@ namespace CutTheRope.iframework.sfe
                 num5 = num2 * num4;
                 vector2.x *= num5;
                 vector2.y *= num5;
-                p.pos.x = p.pos.x + vector.x;
-                p.pos.y = p.pos.y + vector.y;
+                p.pos.x += vector.x;
+                p.pos.y += vector.y;
                 if (constraint.cp.pin.x == -1f)
                 {
-                    constraint.cp.pos = vectSub(constraint.cp.pos, vector2);
-                    goto IL_01D6;
+                    constraint.cp.pos = VectSub(constraint.cp.pos, vector2);
                 }
-                goto IL_01D6;
             }
         }
 
-        public static void qcpupdate(ConstraintedPoint p, float delta, float koeff)
+        public static void Qcpupdate(ConstraintedPoint p, float delta, float koeff)
         {
             p.totalForce = vectZero;
             if (!p.disableGravity)
             {
-                p.totalForce = !vectEqual(globalGravity, vectZero)
-                    ? vectAdd(p.totalForce, vectMult(globalGravity, p.weight))
-                    : vectAdd(p.totalForce, p.gravity);
+                p.totalForce = !VectEqual(globalGravity, vectZero)
+                    ? VectAdd(p.totalForce, VectMult(globalGravity, p.weight))
+                    : VectAdd(p.totalForce, p.gravity);
             }
             if (p.highestForceIndex != -1)
             {
                 for (int i = 0; i <= p.highestForceIndex; i++)
                 {
-                    p.totalForce = vectAdd(p.totalForce, p.forces[i]);
+                    p.totalForce = VectAdd(p.totalForce, p.forces[i]);
                 }
             }
-            p.totalForce = vectMult(p.totalForce, p.invWeight);
-            p.a = vectMult(p.totalForce, (float)((double)delta / 1.0 * 0.01600000075995922 * (double)koeff));
+            p.totalForce = VectMult(p.totalForce, p.invWeight);
+            p.a = VectMult(p.totalForce, (float)((double)delta / 1.0 * 0.01600000075995922 * (double)koeff));
             if (p.prevPos.x == 2.1474836E+09f)
             {
                 p.prevPos = p.pos;
             }
             p.posDelta.x = p.pos.x - p.prevPos.x + p.a.x;
             p.posDelta.y = p.pos.y - p.prevPos.y + p.a.y;
-            p.v = vectMult(p.posDelta, (float)(1.0 / (double)delta));
+            p.v = VectMult(p.posDelta, (float)(1.0 / (double)delta));
             p.prevPos = p.pos;
-            p.pos = vectAdd(p.pos, p.posDelta);
+            p.pos = VectAdd(p.pos, p.posDelta);
         }
 
         public Vector prevPos;

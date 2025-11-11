@@ -2,11 +2,11 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class FormattedString : NSObject
+    internal sealed class FormattedString : NSObject
     {
-        public virtual FormattedString initWithStringAndWidth(NSString str, float w)
+        public FormattedString InitWithStringAndWidth(NSString str, float w)
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 string_ = (NSString)NSRET(str);
                 width = w;
@@ -14,10 +14,10 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             string_ = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
         public NSString string_;

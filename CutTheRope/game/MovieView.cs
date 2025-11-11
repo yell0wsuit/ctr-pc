@@ -3,15 +3,15 @@ using CutTheRope.iframework.core;
 
 namespace CutTheRope.game
 {
-    internal class MovieView : MenuView
+    internal sealed class MovieView : MenuView
     {
-        public override void update(float t)
+        public override void Update(float t)
         {
-            Application.sharedMovieMgr().start();
-            Global.MouseCursor.Enable(Application.sharedMovieMgr().isPaused());
+            Application.SharedMovieMgr().Start();
+            Global.MouseCursor.Enable(Application.SharedMovieMgr().IsPaused());
         }
 
-        public override void draw()
+        public override void Draw()
         {
             Global.XnaGame.DrawMovie();
         }

@@ -2,7 +2,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class LevelsList : NSObject
+    internal sealed class LevelsList : NSObject
     {
         // Note: this type is marked as 'beforefieldinit'.
         static LevelsList()

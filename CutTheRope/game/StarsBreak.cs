@@ -3,11 +3,11 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class StarsBreak : RotateableMultiParticles
+    internal sealed class StarsBreak : RotateableMultiParticles
     {
-        public override Particles initWithTotalParticlesandImageGrid(int p, Image grid)
+        public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {
-            if (base.initWithTotalParticlesandImageGrid(p, grid) == null)
+            if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
             {
                 return null;
             }
@@ -53,21 +53,21 @@ namespace CutTheRope.game
             return this;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(drawer.image.texture.name());
-            OpenGL.glVertexPointer(3, 5, 0, toFloatArray(drawer.vertices));
-            OpenGL.glTexCoordPointer(2, 5, 0, toFloatArray(drawer.texCoordinates));
-            OpenGL.glEnableClientState(13);
-            OpenGL.glBindBuffer(2, colorsID);
-            OpenGL.glColorPointer(4, 5, 0, colors);
-            OpenGL.glDrawElements(7, particleIdx * 6, drawer.indices);
-            OpenGL.glBindBuffer(2, 0U);
-            OpenGL.glDisableClientState(13);
-            postDraw();
+            PreDraw();
+            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(drawer.image.texture.Name());
+            OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(drawer.vertices));
+            OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(drawer.texCoordinates));
+            OpenGL.GlEnableClientState(13);
+            OpenGL.GlBindBuffer(2, colorsID);
+            OpenGL.GlColorPointer(4, 5, 0, colors);
+            OpenGL.GlDrawElements(7, particleIdx * 6, drawer.indices);
+            OpenGL.GlBindBuffer(2, 0U);
+            OpenGL.GlDisableClientState(13);
+            PostDraw();
         }
     }
 }

@@ -7,11 +7,11 @@ namespace CutTheRope.iframework.helpers
 {
     internal class Mover : NSObject
     {
-        public virtual Mover initWithPathCapacityMoveSpeedRotateSpeed(int l, float m_, float r_)
+        public virtual Mover InitWithPathCapacityMoveSpeedRotateSpeed(int l, float m_, float r_)
         {
             int num = (int)m_;
             int num2 = (int)r_;
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 pathLen = 0;
                 pathCapacity = l;
@@ -21,7 +21,7 @@ namespace CutTheRope.iframework.helpers
                     path = new Vector[pathCapacity];
                     for (int i = 0; i < path.Length; i++)
                     {
-                        path[i] = default(Vector);
+                        path[i] = default;
                     }
                     moveSpeed = new float[pathCapacity];
                     for (int j = 0; j < moveSpeed.Length; j++)
@@ -34,7 +34,7 @@ namespace CutTheRope.iframework.helpers
             return this;
         }
 
-        public virtual void setMoveSpeed(float ms)
+        public virtual void SetMoveSpeed(float ms)
         {
             for (int i = 0; i < pathCapacity; i++)
             {
@@ -42,12 +42,12 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public virtual void setPathFromStringandStart(NSString p, Vector s)
+        public virtual void SetPathFromStringandStart(NSString p, Vector s)
         {
-            if (p.characterAtIndex(0) == 'R')
+            if (p.CharacterAtIndex(0) == 'R')
             {
-                bool flag = p.characterAtIndex(1) == 'C';
-                int num = p.substringFromIndex(2).intValue();
+                bool flag = p.CharacterAtIndex(1) == 'C';
+                int num = p.SubstringFromIndex(2).IntValue();
                 int num2 = num / 2;
                 float num3 = (float)(6.283185307179586 / num2);
                 if (!flag)
@@ -59,26 +59,26 @@ namespace CutTheRope.iframework.helpers
                 {
                     float x = s.x + (num * (float)Math.Cos((double)num4));
                     float y = s.y + (num * (float)Math.Sin((double)num4));
-                    addPathPoint(vect(x, y));
+                    AddPathPoint(Vect(x, y));
                     num4 += num3;
                 }
                 return;
             }
-            addPathPoint(s);
-            if (p.characterAtIndex(p.length() - 1) == ',')
+            AddPathPoint(s);
+            if (p.CharacterAtIndex(p.Length() - 1) == ',')
             {
-                p = p.substringToIndex(p.length() - 1);
+                p = p.SubstringToIndex(p.Length() - 1);
             }
-            List<NSString> list = p.componentsSeparatedByString(',');
+            List<NSString> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)
             {
                 NSString nSString2 = list[j];
                 NSString nSString3 = list[j + 1];
-                addPathPoint(vect(s.x + nSString2.floatValue(), s.y + nSString3.floatValue()));
+                AddPathPoint(Vect(s.x + nSString2.FloatValue(), s.y + nSString3.FloatValue()));
             }
         }
 
-        public virtual void addPathPoint(Vector v)
+        public virtual void AddPathPoint(Vector v)
         {
             Vector[] array = path;
             int num = pathLen;
@@ -86,55 +86,55 @@ namespace CutTheRope.iframework.helpers
             array[num] = v;
         }
 
-        public virtual void start()
+        public virtual void Start()
         {
             if (pathLen > 0)
             {
                 pos = path[0];
                 targetPoint = 1;
-                calculateOffset();
+                CalculateOffset();
             }
         }
 
-        public virtual void pause()
+        public virtual void Pause()
         {
             paused = true;
         }
 
-        public virtual void unpause()
+        public virtual void Unpause()
         {
             paused = false;
         }
 
-        public virtual void setRotateSpeed(float rs)
+        public virtual void SetRotateSpeed(float rs)
         {
             rotateSpeed = rs;
         }
 
-        public virtual void jumpToPoint(int p)
+        public virtual void JumpToPoint(int p)
         {
             targetPoint = p;
             pos = path[targetPoint];
-            calculateOffset();
+            CalculateOffset();
         }
 
-        public virtual void calculateOffset()
+        public virtual void CalculateOffset()
         {
             Vector v = path[targetPoint];
-            offset = vectMult(vectNormalize(vectSub(v, pos)), moveSpeed[targetPoint]);
+            offset = VectMult(VectNormalize(VectSub(v, pos)), moveSpeed[targetPoint]);
         }
 
-        public virtual void setMoveSpeedforPoint(float ms, int i)
+        public virtual void SetMoveSpeedforPoint(float ms, int i)
         {
             moveSpeed[i] = ms;
         }
 
-        public virtual void setMoveReverse(bool r)
+        public virtual void SetMoveReverse(bool r)
         {
             reverse = r;
         }
 
-        public virtual void update(float delta)
+        public virtual void Update(float delta)
         {
             if (paused)
             {
@@ -144,7 +144,7 @@ namespace CutTheRope.iframework.helpers
             {
                 Vector v = path[targetPoint];
                 bool flag = false;
-                if (!vectEqual(pos, v))
+                if (!VectEqual(pos, v))
                 {
                     float num = delta;
                     if (overrun != 0f)
@@ -152,11 +152,11 @@ namespace CutTheRope.iframework.helpers
                         num += overrun;
                         overrun = 0f;
                     }
-                    pos = vectAdd(pos, vectMult(offset, num));
-                    if (!sameSign(offset.x, v.x - pos.x) || !sameSign(offset.y, v.y - pos.y))
+                    pos = VectAdd(pos, VectMult(offset, num));
+                    if (!SameSign(offset.x, v.x - pos.x) || !SameSign(offset.y, v.y - pos.y))
                     {
-                        overrun = vectLength(vectSub(pos, v));
-                        float num2 = vectLength(offset);
+                        overrun = VectLength(VectSub(pos, v));
+                        float num2 = VectLength(offset);
                         overrun /= num2;
                         pos = v;
                         flag = true;
@@ -184,7 +184,7 @@ namespace CutTheRope.iframework.helpers
                             targetPoint = 0;
                         }
                     }
-                    calculateOffset();
+                    CalculateOffset();
                 }
             }
             if (rotateSpeed != 0f)
@@ -198,19 +198,19 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             path = null;
             moveSpeed = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public static bool moveVariableToTarget(ref float v, double t, double speed, double delta)
+        public static bool MoveVariableToTarget(ref float v, double t, double speed, double delta)
         {
-            return moveVariableToTarget(ref v, (float)t, (float)speed, (float)delta);
+            return MoveVariableToTarget(ref v, (float)t, (float)speed, (float)delta);
         }
 
-        public static bool moveVariableToTarget(ref float v, float t, float speed, float delta)
+        public static bool MoveVariableToTarget(ref float v, float t, float speed, float delta)
         {
             if (t != v)
             {

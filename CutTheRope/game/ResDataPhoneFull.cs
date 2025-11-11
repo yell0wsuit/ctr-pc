@@ -7,9 +7,7 @@ namespace CutTheRope.game
     {
         public static string GetXml(string resName)
         {
-            if (xmls_ == null)
-            {
-                xmls_ = new Dictionary<string, string>
+            xmls_ ??= new Dictionary<string, string>
                 {
                     { "zeptolab_no_link", "<info format='0' fileFormat='0' filter='1'/>" },
                     { "loaderbar_full", "<info format='0' fileFormat='0' filter='1'/>" },
@@ -119,13 +117,11 @@ namespace CutTheRope.game
                     { "menu_result_gr", "<info format='0' fileFormat='0' filter='1'><quads>0,0,227,227,</quads><offsets>816,350,</offsets><preCutWidth>2028</preCutWidth><preCutHeight>1597</preCutHeight></info>" },
                     { "menu_extra_buttons_en", "<info format='0' fileFormat='0' filter='1'><quads>0,0,291,49,</quads><offsets>143,106,</offsets><preCutWidth>679</preCutWidth><preCutHeight>206</preCutHeight></info>" }
                 };
-            }
-            string value;
-            xmls_.TryGetValue(resName, out value);
+            _ = xmls_.TryGetValue(resName, out string value);
             return value;
         }
 
-        public static bool isSound(int id)
+        public static bool IsSound(int id)
         {
             return id switch
             {
@@ -135,7 +131,7 @@ namespace CutTheRope.game
             };
         }
 
-        public static bool isFont(int id)
+        public static bool IsFont(int id)
         {
             return id is 3 or 4 or 68;
         }
@@ -1704,7 +1700,7 @@ namespace CutTheRope.game
 
         internal static int[] PACK_LOCALIZATION_MENU = [149, -1];
 
-        public static Language LANGUAGE = Language.LANG_EN;
+        public static Language LANGUAGE = Language.LANGEN;
 
         private static Dictionary<string, string> xmls_;
     }

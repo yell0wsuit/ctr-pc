@@ -6,22 +6,22 @@ namespace CutTheRope.game
 {
     internal class MenuView : View
     {
-        public override void update(float t)
+        public override void Update(float t)
         {
             Global.MouseCursor.Enable(true);
-            base.update(t);
+            base.Update(t);
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
-            OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            base.preDraw();
-            base.postDraw();
-            OpenGL.glDisable(0);
-            OpenGL.glDisable(1);
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(1);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            base.PreDraw();
+            base.PostDraw();
+            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(1);
         }
     }
 }
