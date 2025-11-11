@@ -64,7 +64,7 @@ namespace CutTheRope
 
         private void Game1_Exiting(object sender, EventArgs e)
         {
-            Preferences._savePreferences();
+            Preferences.RequestSave();
             Preferences.Update();
         }
 
@@ -92,9 +92,9 @@ namespace CutTheRope
             OpenGL.Init();
             Global.MouseCursor.Load(Content);
             Window.AllowUserResizing = UseWindowMode_TODO_ChangeFullScreenResolution || true;
-            Preferences._loadPreferences();
-            int num = Preferences._getIntForKey("PREFS_WINDOW_WIDTH");
-            bool isFullScreen = !UseWindowMode_TODO_ChangeFullScreenResolution && (num <= 0 || Preferences._getBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
+            Preferences.LoadPreferences();
+            int num = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
+            bool isFullScreen = !UseWindowMode_TODO_ChangeFullScreenResolution && (num <= 0 || Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
             Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, num, isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());

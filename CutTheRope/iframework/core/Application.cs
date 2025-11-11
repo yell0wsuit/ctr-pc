@@ -84,7 +84,7 @@ namespace CutTheRope.iframework.core
             prefs = CreatePreferences();
             if (ApplicationSettings.GetBool(7))
             {
-                string text = SharedPreferences().GetStringForKey("PREFS_LOCALE");
+                string text = Preferences.GetStringForKey("PREFS_LOCALE");
                 if (text == null || text.Length == 0)
                 {
                     text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";

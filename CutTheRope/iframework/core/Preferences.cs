@@ -2,234 +2,307 @@ using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 namespace CutTheRope.iframework.core
 {
     internal class Preferences : NSObject
     {
+        private static readonly Dictionary<string, object> PreferencesData = [];
+        private static bool _gameSaveRequested;
+        private const string SaveFileName = "ctr_preferences.json";
+        private const string LegacyBinaryFileName = "ctr_save.bin";
+        private const string MigratedBinaryFileName = "ctr_bin_candeletethis.bin";
+        private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
+        public static bool GameSaveRequested
+        {
+            get => _gameSaveRequested;
+            set => _gameSaveRequested = value;
+        }
+
         public override NSObject Init()
         {
             if (base.Init() == null)
-            {
                 return null;
-            }
-            _loadPreferences();
+
+            LoadPreferences();
             return this;
         }
 
-        public virtual void SetIntforKey(int v, string k, bool comit)
+        /// <summary>
+        /// Sets an integer preference and optionally saves to disk.
+        /// </summary>
+        public static void SetIntForKey(int value, string key, bool commit = false)
         {
-            _setIntforKey(v, k, comit);
+            PreferencesData[key] = value;
+            if (commit)
+                RequestSave();
         }
 
-        public virtual void SetBooleanforKey(bool v, string k, bool comit)
+        /// <summary>
+        /// Sets a boolean preference and optionally saves to disk.
+        /// </summary>
+        public static void SetBooleanForKey(bool value, string key, bool commit = false)
         {
-            _setBooleanforKey(v, k, comit);
+            SetIntForKey(value ? 1 : 0, key, commit);
         }
 
-        public virtual void SetStringforKey(string v, string k, bool comit)
+        /// <summary>
+        /// Sets a string preference and optionally saves to disk.
+        /// </summary>
+        public static void SetStringForKey(string value, string key, bool commit = false)
         {
-            _setStringforKey(v, k, comit);
+            PreferencesData[key] = value;
+            if (commit)
+                RequestSave();
         }
 
-        public virtual int GetIntForKey(string k)
+        /// <summary>
+        /// Gets an integer preference. Returns 0 if not found.
+        /// </summary>
+        public static int GetIntForKey(string key)
         {
-            return _getIntForKey(k);
-        }
-
-        public virtual float GetFloatForKey(string k)
-        {
-            return 0f;
-        }
-
-        public virtual bool GetBooleanForKey(string k)
-        {
-            return _getBooleanForKey(k);
-        }
-
-        public virtual string GetStringForKey(string k)
-        {
-            return _getStringForKey(k);
-        }
-
-        public static void _setIntforKey(int v, string key, bool comit)
-        {
-            if (data_.TryGetValue(key, out _))
+            if (PreferencesData.TryGetValue(key, out var value))
             {
-                data_[key] = v;
-            }
-            else
-            {
-                data_.Add(key, v);
-            }
-            if (comit)
-            {
-                _savePreferences();
-            }
-        }
-
-        private static void _setStringforKey(string v, string k, bool comit)
-        {
-            if (dataStrings_.TryGetValue(k, out _))
-            {
-                dataStrings_[k] = v;
-            }
-            else
-            {
-                dataStrings_.Add(k, v);
-            }
-            if (comit)
-            {
-                _savePreferences();
-            }
-        }
-
-        public static int _getIntForKey(string k)
-        {
-            return data_.TryGetValue(k, out int value) ? value : 0;
-        }
-
-        private static float _getFloatForKey(string k)
-        {
-            return 0f;
-        }
-
-        public static bool _getBooleanForKey(string k)
-        {
-            return _getIntForKey(k) != 0;
-        }
-
-        public static void _setBooleanforKey(bool v, string k, bool comit)
-        {
-            _setIntforKey(v ? 1 : 0, k, comit);
-        }
-
-        private static string _getStringForKey(string k)
-        {
-            return dataStrings_.TryGetValue(k, out string value) ? value : "";
-        }
-
-        public virtual void savePreferences()
-        {
-            _savePreferences();
-        }
-
-        public static void _savePreferences()
-        {
-            try
-            {
-                if (!GameSaveRequested)
+                return value switch
                 {
-                    GameSaveRequested = true;
-                }
+                    int intVal => intVal,
+                    long longVal => (int)longVal,
+                    JsonElement jsonElement => jsonElement.GetInt32(),
+                    _ => 0
+                };
             }
-            catch (Exception)
-            {
-            }
+            return 0;
         }
 
+        /// <summary>
+        /// Gets a boolean preference. Returns false if not found.
+        /// </summary>
+        public static bool GetBooleanForKey(string key)
+        {
+            return GetIntForKey(key) != 0;
+        }
+
+        /// <summary>
+        /// Gets a string preference. Returns empty string if not found.
+        /// </summary>
+        public static string GetStringForKey(string key)
+        {
+            if (PreferencesData.TryGetValue(key, out var value))
+            {
+                return value switch
+                {
+                    string strVal => strVal,
+                    JsonElement jsonElement => jsonElement.GetString() ?? "",
+                    _ => ""
+                };
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Requests the preferences to be saved on the next Update call.
+        /// </summary>
+        public static void RequestSave()
+        {
+            if (!GameSaveRequested)
+                GameSaveRequested = true;
+        }
+
+        /// <summary>
+        /// Saves pending preferences to disk if requested.
+        /// Called once per frame by the game loop.
+        /// </summary>
         public static void Update()
         {
+            if (!GameSaveRequested)
+                return;
+
             try
             {
-                if (GameSaveRequested)
-                {
-                    FileStream fileStream = File.Create("ctr_save.bin");
-                    _ = SaveToStream(fileStream);
-                    fileStream.Close();
-                    GameSaveRequested = false;
-                }
+                string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
+                File.WriteAllText(SaveFileName, json);
+                GameSaveRequested = false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LOG($"Error saving preferences: {ex}");
                 GameSaveRequested = false;
             }
         }
 
+        /// <summary>
+        /// Serializes all preferences to a JSON stream.
+        /// </summary>
         public static bool SaveToStream(Stream stream)
         {
-            bool flag = false;
-            bool flag2;
             try
             {
-                BinaryWriter binaryWriter = new(stream);
-                binaryWriter.Write(data_.Count);
-                foreach (KeyValuePair<string, int> item in data_)
-                {
-                    binaryWriter.Write(item.Key);
-                    binaryWriter.Write(item.Value);
-                }
-                binaryWriter.Write(dataStrings_.Count);
-                foreach (KeyValuePair<string, string> item2 in dataStrings_)
-                {
-                    binaryWriter.Write(item2.Key);
-                    binaryWriter.Write(item2.Value);
-                }
-                binaryWriter.Close();
-                flag = true;
-                flag2 = flag;
+                string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
+                using StreamWriter writer = new(stream);
+                writer.Write(json);
+                return true;
             }
             catch (Exception ex)
             {
-                LOG("Error: cannot save, " + ex.ToString());
-                flag2 = flag;
+                LOG($"Error: cannot save, {ex}");
+                return false;
             }
-            return flag2;
         }
 
+        /// <summary>
+        /// Deserializes all preferences from a JSON stream.
+        /// </summary>
         public static bool LoadFromStream(Stream stream)
         {
-            bool flag = false;
-            bool flag2;
             try
             {
-                BinaryReader binaryReader = new(stream);
-                int num = binaryReader.ReadInt32();
-                for (int i = 0; i < num; i++)
+                using StreamReader reader = new(stream);
+                string json = reader.ReadToEnd();
+                var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
+
+                if (data != null)
                 {
-                    string key = binaryReader.ReadString();
-                    int value = binaryReader.ReadInt32();
-                    data_.Add(key, value);
+                    PreferencesData.Clear();
+                    foreach (var kvp in data)
+                    {
+                        PreferencesData[kvp.Key] = kvp.Value;
+                    }
                 }
-                num = binaryReader.ReadInt32();
-                for (int j = 0; j < num; j++)
-                {
-                    string key2 = binaryReader.ReadString();
-                    string value2 = binaryReader.ReadString();
-                    dataStrings_.Add(key2, value2);
-                }
-                binaryReader.Close();
-                flag = true;
-                flag2 = flag;
+                return true;
             }
             catch (Exception ex)
             {
-                LOG("Error: cannot load, " + ex.ToString());
-                flag2 = flag;
+                LOG($"Error: cannot load, {ex}");
+                return false;
             }
-            return flag2;
         }
 
+        /// <summary>
+        /// Loads preferences from disk if the save file exists.
+        /// Supports migration from legacy binary format to JSON.
+        /// </summary>
+        public static void LoadPreferences()
+        {
+            PreferencesData.Clear();
+
+            // Try to load from JSON first (preferred format)
+            if (File.Exists(SaveFileName))
+            {
+                try
+                {
+                    string json = File.ReadAllText(SaveFileName);
+                    var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
+
+                    if (data != null)
+                    {
+                        foreach (var kvp in data)
+                        {
+                            PreferencesData[kvp.Key] = kvp.Value;
+                        }
+                    }
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    LOG($"Error loading JSON preferences: {ex}");
+                }
+            }
+
+            // Fall back to legacy binary format
+            if (File.Exists(LegacyBinaryFileName))
+            {
+                try
+                {
+                    using FileStream fileStream = File.OpenRead(LegacyBinaryFileName);
+                    if (LoadLegacyBinaryFormat(fileStream))
+                    {
+                        LOG("Successfully migrated preferences from binary to JSON format");
+
+                        // Save as JSON
+                        try
+                        {
+                            string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
+                            File.WriteAllText(SaveFileName, json);
+                        }
+                        catch (Exception ex)
+                        {
+                            LOG($"Error saving migrated preferences as JSON: {ex}");
+                        }
+
+                        // Rename old binary file
+                        try
+                        {
+                            if (File.Exists(MigratedBinaryFileName))
+                                File.Delete(MigratedBinaryFileName);
+                            File.Move(LegacyBinaryFileName, MigratedBinaryFileName);
+                            LOG($"Moved legacy binary to {MigratedBinaryFileName}");
+                        }
+                        catch (Exception ex)
+                        {
+                            LOG($"Error renaming legacy binary file: {ex}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LOG($"Error loading legacy binary preferences: {ex}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Loads preferences from legacy binary format.
+        /// </summary>
+        private static bool LoadLegacyBinaryFormat(Stream stream)
+        {
+            try
+            {
+                using BinaryReader reader = new(stream);
+
+                // Load integers
+                int intCount = reader.ReadInt32();
+                for (int i = 0; i < intCount; i++)
+                {
+                    string key = reader.ReadString();
+                    int value = reader.ReadInt32();
+                    PreferencesData[key] = value;
+                }
+
+                // Load strings
+                int stringCount = reader.ReadInt32();
+                for (int i = 0; i < stringCount; i++)
+                {
+                    string key = reader.ReadString();
+                    string value = reader.ReadString();
+                    PreferencesData[key] = value;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LOG($"Error: cannot load legacy binary format, {ex}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Instance method for compatibility. Loads preferences.
+        /// </summary>
         public virtual void loadPreferences()
         {
-            _loadPreferences();
+            LoadPreferences();
         }
 
-        internal static void _loadPreferences()
+        /// <summary>
+        /// Instance method for compatibility. Requests save.
+        /// </summary>
+        public virtual void SavePreferences()
         {
-            string file = "ctr_save.bin";
-            if (File.Exists(file))
-            {
-                FileStream fileStream = File.OpenRead(file);
-                _ = LoadFromStream(fileStream);
-                fileStream.Close();
-            }
+            RequestSave();
         }
 
-        private static readonly Dictionary<string, int> data_ = [];
-
-        private static readonly Dictionary<string, string> dataStrings_ = [];
-
-        public static bool GameSaveRequested;
     }
 }

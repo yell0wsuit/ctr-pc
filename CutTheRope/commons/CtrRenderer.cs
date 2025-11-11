@@ -176,7 +176,7 @@ namespace CutTheRope.commons
                 return;
             }
             Application.SharedSoundMgr().StopAllSounds();
-            Application.SharedPreferences().savePreferences();
+            Preferences.RequestSave();
             NSREL(gApp);
             gApp = null;
             gPaused = false;

@@ -13,7 +13,7 @@ namespace CutTheRope.commons
 
         public static void ApplicationWillTerminate(UIApplication application)
         {
-            SharedPreferences().savePreferences();
+            Preferences.RequestSave();
         }
 
         public void ApplicationDidReceiveMemoryWarning(UIApplication application)
@@ -28,7 +28,7 @@ namespace CutTheRope.commons
 
         public static void ApplicationWillResignActive(UIApplication application)
         {
-            SharedPreferences().savePreferences();
+            Preferences.RequestSave();
             if (root != null && !root.IsSuspended())
             {
                 root.Suspend();

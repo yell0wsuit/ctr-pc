@@ -100,7 +100,7 @@ namespace CutTheRope.game
                     fingerCuts[j] = (DynamicArray)new DynamicArray().Init();
                     fingerCuts[j].Retain();
                 }
-                clickToCut = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
+                clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
             }
             return this;
         }
@@ -1236,8 +1236,8 @@ namespace CutTheRope.game
                         noCandy = false;
                         noCandyL = true;
                         noCandyR = true;
-                        int num20 = Preferences._getIntForKey("PREFS_CANDIES_UNITED") + 1;
-                        Preferences._setIntforKey(num20, "PREFS_CANDIES_UNITED", false);
+                        int num20 = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
+                        Preferences.SetIntForKey(num20, "PREFS_CANDIES_UNITED", false);
                         if (num20 == 100)
                         {
                             CTRRootController.PostAchievementName("1432722351", ACHIEVEMENT_STRING("\"Romantic Soul\""));
@@ -1756,8 +1756,8 @@ namespace CutTheRope.game
                 }
                 if (restartState != 0)
                 {
-                    int num21 = Preferences._getIntForKey("PREFS_CANDIES_LOST") + 1;
-                    Preferences._setIntforKey(num21, "PREFS_CANDIES_LOST", false);
+                    int num21 = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;
+                    Preferences.SetIntForKey(num21, "PREFS_CANDIES_LOST", false);
                     if (num21 == 50)
                     {
                         CTRRootController.PostAchievementName("681497443", ACHIEVEMENT_STRING("\"Weight Loser\""));
@@ -2373,8 +2373,8 @@ namespace CutTheRope.game
 
         public void SpiderBusted(Grab g)
         {
-            int num = Preferences._getIntForKey("PREFS_SPIDERS_BUSTED") + 1;
-            Preferences._setIntforKey(num, "PREFS_SPIDERS_BUSTED", false);
+            int num = Preferences.GetIntForKey("PREFS_SPIDERS_BUSTED") + 1;
+            Preferences.SetIntForKey(num, "PREFS_SPIDERS_BUSTED", false);
             if (num == 40)
             {
                 CTRRootController.PostAchievementName("681486608", ACHIEVEMENT_STRING("\"Spider Busted\""));
@@ -2507,8 +2507,8 @@ namespace CutTheRope.game
             if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
             {
                 PopCandyBubble(s == starL);
-                int num = Preferences._getIntForKey("PREFS_BUBBLES_POPPED") + 1;
-                Preferences._setIntforKey(num, "PREFS_BUBBLES_POPPED", false);
+                int num = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
+                Preferences.SetIntForKey(num, "PREFS_BUBBLES_POPPED", false);
                 if (num == 50)
                 {
                     CTRRootController.PostAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
@@ -2978,8 +2978,8 @@ namespace CutTheRope.game
                         ropesCutAtOnce = num4;
                     }
                     ropeAtOnceTimer = 0.1f;
-                    int num5 = Preferences._getIntForKey("PREFS_ROPES_CUT") + 1;
-                    Preferences._setIntforKey(num5, "PREFS_ROPES_CUT", false);
+                    int num5 = Preferences.GetIntForKey("PREFS_ROPES_CUT") + 1;
+                    Preferences.SetIntForKey(num5, "PREFS_ROPES_CUT", false);
                     if (num5 == 100)
                     {
                         CTRRootController.PostAchievementName("681461850", ACHIEVEMENT_STRING("\"Rope Cutter\""));

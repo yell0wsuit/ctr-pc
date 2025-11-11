@@ -228,9 +228,9 @@ namespace CutTheRope.desktop
 
         public void Save()
         {
-            Preferences._setIntforKey(_windowRect.Width, "PREFS_WINDOW_WIDTH", false);
-            Preferences._setIntforKey(_windowRect.Height, "PREFS_WINDOW_HEIGHT", false);
-            Preferences._setBooleanforKey(IsFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
+            Preferences.SetIntForKey(_windowRect.Width, "PREFS_WINDOW_WIDTH", false);
+            Preferences.SetIntForKey(_windowRect.Height, "PREFS_WINDOW_HEIGHT", false);
+            Preferences.SetBooleanForKey(IsFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
         }
 
         private void WindowRectChanged(Rectangle newWindowRect)
