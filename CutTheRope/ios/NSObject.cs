@@ -18,24 +18,24 @@ namespace CutTheRope.ios
             return new NSString(s);
         }
 
-        public virtual NSObject init()
+        public virtual NSObject Init()
         {
             return this;
         }
 
-        public virtual void dealloc()
+        public virtual void Dealloc()
         {
         }
 
-        public virtual void release()
+        public virtual void Release()
         {
         }
 
-        public virtual void retain()
+        public virtual void Retain()
         {
         }
 
-        public static void free(object o)
+        public static void Free(object o)
         {
         }
     }

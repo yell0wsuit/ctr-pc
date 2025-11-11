@@ -10,127 +10,118 @@ namespace CutTheRope.iframework.core
 {
     internal class Application : NSObject
     {
-        public static CTRPreferences sharedPreferences()
+        public static CTRPreferences SharedPreferences()
         {
             return prefs;
         }
 
-        public static CTRResourceMgr sharedResourceMgr()
+        public static CTRResourceMgr SharedResourceMgr()
         {
             return resourceMgr;
         }
 
-        public static RootController sharedRootController()
+        public static RootController SharedRootController()
         {
-            if (root == null)
-            {
-                root = (CTRRootController)new CTRRootController().initWithParent(null);
-            }
+            root ??= (CTRRootController)new CTRRootController().InitWithParent(null);
             return root;
         }
 
-        public static ApplicationSettings sharedAppSettings()
+        public static ApplicationSettings SharedAppSettings()
         {
             return appSettings;
         }
 
-        public static GLCanvas sharedCanvas()
+        public static GLCanvas SharedCanvas()
         {
             return _canvas;
         }
 
-        public static SoundMgr sharedSoundMgr()
+        public static SoundMgr SharedSoundMgr()
         {
-            if (soundMgr == null)
-            {
-                soundMgr = new SoundMgr().init();
-            }
+            soundMgr ??= new SoundMgr().Init();
             return soundMgr;
         }
 
-        public static MovieMgr sharedMovieMgr()
+        public static MovieMgr SharedMovieMgr()
         {
-            if (movieMgr == null)
-            {
-                movieMgr = new MovieMgr();
-            }
+            movieMgr ??= new MovieMgr();
             return movieMgr;
         }
 
-        public virtual ApplicationSettings createAppSettings()
+        public virtual ApplicationSettings CreateAppSettings()
         {
-            return (ApplicationSettings)new ApplicationSettings().init();
+            return (ApplicationSettings)new ApplicationSettings().Init();
         }
 
-        public virtual GLCanvas createCanvas()
+        public virtual GLCanvas CreateCanvas()
         {
-            return (GLCanvas)new GLCanvas().initWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
+            return (GLCanvas)new GLCanvas().InitWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
         }
 
-        public virtual CTRResourceMgr createResourceMgr()
+        public virtual CTRResourceMgr CreateResourceMgr()
         {
-            return (CTRResourceMgr)new CTRResourceMgr().init();
+            return (CTRResourceMgr)new CTRResourceMgr().Init();
         }
 
-        public virtual SoundMgr createSoundMgr()
+        public virtual SoundMgr CreateSoundMgr()
         {
-            return new SoundMgr().init();
+            return new SoundMgr().Init();
         }
 
-        public virtual CTRPreferences createPreferences()
+        public virtual CTRPreferences CreatePreferences()
         {
-            return (CTRPreferences)new CTRPreferences().init();
+            return (CTRPreferences)new CTRPreferences().Init();
         }
 
-        public virtual RootController createRootController()
+        public virtual RootController CreateRootController()
         {
-            return (CTRRootController)new CTRRootController().initWithParent(null);
+            return (CTRRootController)new CTRRootController().InitWithParent(null);
         }
 
-        public virtual void applicationDidFinishLaunching(UIApplication application)
+        public virtual void ApplicationDidFinishLaunching(UIApplication application)
         {
-            appSettings = createAppSettings();
-            prefs = createPreferences();
-            if (appSettings.getBool(7))
+            appSettings = CreateAppSettings();
+            prefs = CreatePreferences();
+            if (ApplicationSettings.GetBool(7))
             {
-                string text = sharedPreferences().getStringForKey("PREFS_LOCALE");
+                string text = SharedPreferences().GetStringForKey("PREFS_LOCALE");
                 if (text == null || text.Length == 0)
                 {
-                    text = (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru") ? "ru" : ((CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de") ? "de" : ((!(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")) ? "en" : "fr"));
+                    text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";
                 }
-                appSettings.setString(8, NSS(text));
+                appSettings.SetString(8, NSS(text));
             }
-            updateOrientation();
+            UpdateOrientation();
             IS_IPAD = false;
             IS_RETINA = false;
-            root = createRootController();
-            soundMgr = createSoundMgr();
-            movieMgr = createMovieMgr();
+            root = CreateRootController();
+            soundMgr = CreateSoundMgr();
+            movieMgr = CreateMovieMgr();
             _canvas.touchDelegate = root;
-            root.activate();
+            root.Activate();
         }
 
-        public virtual MovieMgr createMovieMgr()
+        public virtual MovieMgr CreateMovieMgr()
         {
             return new MovieMgr();
         }
 
-        internal static FontGeneric getFont(int fontResID)
+        internal static FontGeneric GetFont(int fontResID)
         {
-            return (FontGeneric)sharedResourceMgr().loadResource(fontResID, ResourceMgr.ResourceType.FONT);
+            return (FontGeneric)SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
         }
 
-        internal static CTRTexture2D getTexture(int textureResID)
+        internal static CTRTexture2D GetTexture(int textureResID)
         {
-            return (CTRTexture2D)sharedResourceMgr().loadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            return (CTRTexture2D)SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
         }
 
-        internal static NSString getString(int strResID)
+        internal static NSString GetString(int strResID)
         {
-            return (NSString)sharedResourceMgr().loadResource(strResID, ResourceMgr.ResourceType.STRINGS);
+            return (NSString)SharedResourceMgr().LoadResource(strResID, ResourceMgr.ResourceType.STRINGS);
         }
 
-        public virtual void updateOrientation()
+        public virtual void UpdateOrientation()
         {
             PORTRAIT_SCREEN_WIDTH = 2560f;
             PORTRAIT_SCREEN_HEIGHT = 1440f;
@@ -140,13 +131,13 @@ namespace CutTheRope.iframework.core
 
         private static CTRPreferences prefs;
 
-        private static readonly CTRResourceMgr resourceMgr = (CTRResourceMgr)new CTRResourceMgr().init();
+        private static readonly CTRResourceMgr resourceMgr = (CTRResourceMgr)new CTRResourceMgr().Init();
 
         protected static RootController root;
 
         private static ApplicationSettings appSettings;
 
-        private static readonly GLCanvas _canvas = (GLCanvas)new GLCanvas().initWithFrame(default(Rectangle));
+        private static readonly GLCanvas _canvas = (GLCanvas)new GLCanvas().InitWithFrame(default(Rectangle));
 
         private static SoundMgr soundMgr;
 

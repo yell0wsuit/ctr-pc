@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class CTRResourceMgr : ResourceMgr
+    internal sealed class CTRResourceMgr : ResourceMgr
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            base.init();
+            _ = base.Init();
             return this;
         }
 
-        public static int handleLocalizedResource(int r)
+        public static int HandleLocalizedResource(int r)
         {
             if (r != 69)
             {
@@ -21,15 +21,15 @@ namespace CutTheRope.game
                 {
                     if (r == 149)
                     {
-                        if (LANGUAGE == Language.LANG_RU)
+                        if (LANGUAGE == Language.LANGRU)
                         {
                             return 139;
                         }
-                        if (LANGUAGE == Language.LANG_DE)
+                        if (LANGUAGE == Language.LANGDE)
                         {
                             return 138;
                         }
-                        if (LANGUAGE == Language.LANG_FR)
+                        if (LANGUAGE == Language.LANGFR)
                         {
                             return 137;
                         }
@@ -37,15 +37,15 @@ namespace CutTheRope.game
                 }
                 else
                 {
-                    if (LANGUAGE == Language.LANG_RU)
+                    if (LANGUAGE == Language.LANGRU)
                     {
                         return 142;
                     }
-                    if (LANGUAGE == Language.LANG_DE)
+                    if (LANGUAGE == Language.LANGDE)
                     {
                         return 144;
                     }
-                    if (LANGUAGE == Language.LANG_FR)
+                    if (LANGUAGE == Language.LANGFR)
                     {
                         return 143;
                     }
@@ -53,15 +53,15 @@ namespace CutTheRope.game
             }
             else
             {
-                if (LANGUAGE == Language.LANG_RU)
+                if (LANGUAGE == Language.LANGRU)
                 {
                     return 140;
                 }
-                if (LANGUAGE == Language.LANG_DE)
+                if (LANGUAGE == Language.LANGDE)
                 {
                     return 141;
                 }
-                if (LANGUAGE == Language.LANG_FR)
+                if (LANGUAGE == Language.LANGFR)
                 {
                     return 69;
                 }
@@ -71,9 +71,7 @@ namespace CutTheRope.game
 
         public static string XNA_ResName(int resId)
         {
-            if (resNames_ == null)
-            {
-                resNames_ = new Dictionary<int, string>
+            resNames_ ??= new Dictionary<int, string>
                 {
                     { 0, "zeptolab_no_link" },
                     { 1, "loaderbar_full" },
@@ -226,20 +224,18 @@ namespace CutTheRope.game
                     { 148, "game_music3" },
                     { 149, "menu_extra_buttons_en" }
                 };
-            }
-            string value;
-            resNames_.TryGetValue(handleLocalizedResource(resId), out value);
+            _ = resNames_.TryGetValue(HandleLocalizedResource(resId), out string value);
             return value;
         }
 
-        public override NSObject loadResource(int resID, ResourceType resType)
+        public override NSObject LoadResource(int resID, ResourceType resType)
         {
-            return base.loadResource(handleLocalizedResource(resID), resType);
+            return base.LoadResource(HandleLocalizedResource(resID), resType);
         }
 
-        public override void freeResource(int resID)
+        public override void FreeResource(int resID)
         {
-            base.freeResource(handleLocalizedResource(resID));
+            base.FreeResource(HandleLocalizedResource(resID));
         }
 
         private static Dictionary<int, string> resNames_;

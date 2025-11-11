@@ -4,26 +4,26 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class Bouncer : CTRGameObject
+    internal sealed class Bouncer : CTRGameObject
     {
         private static Bouncer Bouncer_create(CTRTexture2D t)
         {
-            return (Bouncer)new Bouncer().initWithTexture(t);
+            return (Bouncer)new Bouncer().InitWithTexture(t);
         }
 
         private static Bouncer Bouncer_createWithResID(int r)
         {
-            return Bouncer_create(Application.getTexture(r));
+            return Bouncer_create(Application.GetTexture(r));
         }
 
         private static Bouncer Bouncer_createWithResIDQuad(int r, int q)
         {
-            Bouncer bouncer = Bouncer_create(Application.getTexture(r));
-            bouncer.setDrawQuad(q);
+            Bouncer bouncer = Bouncer_create(Application.GetTexture(r));
+            bouncer.SetDrawQuad(q);
             return bouncer;
         }
 
-        public virtual NSObject initWithPosXYWidthAndAngle(float px, float py, int w, double an)
+        public NSObject InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
             int textureResID = -1;
             if (w != 1)
@@ -37,29 +37,29 @@ namespace CutTheRope.game
             {
                 textureResID = 86;
             }
-            if (initWithTexture(Application.getTexture(textureResID)) == null)
+            if (InitWithTexture(Application.GetTexture(textureResID)) == null)
             {
                 return null;
             }
             rotation = (float)an;
             x = px;
             y = py;
-            updateRotation();
-            int i = addAnimationDelayLoopFirstLast(0.04f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 4);
-            getTimeline(i).addKeyFrame(KeyFrame.makeSingleAction(this, "ACTION_SET_DRAWQUAD", 0, 0, 0.04f));
+            UpdateRotation();
+            int i = AddAnimationDelayLoopFirstLast(0.04f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 4);
+            GetTimeline(i).AddKeyFrame(KeyFrame.MakeSingleAction(this, "ACTION_SET_DRAWQUAD", 0, 0, 0.04f));
             return this;
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
+            base.Update(delta);
             if (mover != null)
             {
-                updateRotation();
+                UpdateRotation();
             }
         }
 
-        public virtual void updateRotation()
+        public void UpdateRotation()
         {
             t1.x = x - (width / 2);
             t2.x = x + (width / 2);
@@ -68,10 +68,10 @@ namespace CutTheRope.game
             b2.x = t2.x;
             b1.y = b2.y = (float)(y + 5.0);
             angle = DEGREES_TO_RADIANS(rotation);
-            t1 = vectRotateAround(t1, angle, x, y);
-            t2 = vectRotateAround(t2, angle, x, y);
-            b1 = vectRotateAround(b1, angle, x, y);
-            b2 = vectRotateAround(b2, angle, x, y);
+            t1 = VectRotateAround(t1, angle, x, y);
+            t2 = VectRotateAround(t2, angle, x, y);
+            b1 = VectRotateAround(b1, angle, x, y);
+            b2 = VectRotateAround(b2, angle, x, y);
         }
 
         private const float BOUNCER_HEIGHT = 10f;

@@ -18,6 +18,10 @@
     <Description>Cut The Rope</Description>
     <Copyright>Copyright © 2012</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
+
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.4.1" />
@@ -29,8 +33,9 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="content\**">
+    <None Include="..\content\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
 </Project>

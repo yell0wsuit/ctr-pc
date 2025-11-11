@@ -1,9 +1,9 @@
 namespace CutTheRope.iframework.visual
 {
-    internal interface TimelineDelegate
+    internal interface ITimelineDelegate
     {
-        void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i);
+        void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i);
 
-        void timelineFinished(Timeline t);
+        void TimelineFinished(Timeline t);
     }
 }

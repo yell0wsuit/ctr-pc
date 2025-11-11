@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace CutTheRope.desktop
@@ -9,7 +10,7 @@ namespace CutTheRope.desktop
     public class Branding
     {
         // (get) Token: 0x06000042 RID: 66 RVA: 0x000032D1 File Offset: 0x000014D1
-        public bool IsLoaded => _isLoaded;
+        public bool IsLoaded { get; private set; }
 
         // (get) Token: 0x06000043 RID: 67 RVA: 0x000032D9 File Offset: 0x000014D9
         public bool IsFinished => IsLoaded && _currentSplash >= _listBitmap.Count;
@@ -25,7 +26,7 @@ namespace CutTheRope.desktop
                 {
                     try
                     {
-                        FileStream fileStream = new("branding/splash" + num.ToString() + "." + item, FileMode.Open, FileAccess.Read);
+                        FileStream fileStream = new("branding/splash" + num.ToString(CultureInfo.InvariantCulture) + "." + item, FileMode.Open, FileAccess.Read);
                         texture2D = Texture2D.FromStream(Global.GraphicsDevice, fileStream);
                         fileStream.Close();
                         _listBitmap.Add(texture2D);
@@ -41,7 +42,7 @@ namespace CutTheRope.desktop
                 }
                 num++;
             }
-            _isLoaded = true;
+            IsLoaded = true;
         }
 
         public void Update(GameTime gameTime)
@@ -56,7 +57,7 @@ namespace CutTheRope.desktop
                 if (_currentSplashTime.TotalMilliseconds >= 3700.0)
                 {
                     _currentSplash++;
-                    _currentSplashTime = default(TimeSpan);
+                    _currentSplashTime = default;
                 }
             }
             catch (Exception)
@@ -74,7 +75,7 @@ namespace CutTheRope.desktop
                     {
                         _waitFirstDraw = false;
                         _currentSplash = 0;
-                        _currentSplashTime = default(TimeSpan);
+                        _currentSplashTime = default;
                     }
                     Texture2D texture2D = _listBitmap[_currentSplash];
                     Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
@@ -126,9 +127,6 @@ namespace CutTheRope.desktop
         private TimeSpan _currentSplashTime;
 
         private int _currentSplash;
-
-        private bool _isLoaded;
-
         private bool _waitFirstDraw = true;
     }
 }

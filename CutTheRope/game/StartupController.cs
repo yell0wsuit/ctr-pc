@@ -5,65 +5,65 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class StartupController : ViewController, ResourceMgrDelegate, MovieMgrDelegate
+    internal sealed class StartupController : ViewController, IResourceMgrDelegate, IMovieMgrDelegate
     {
-        public override NSObject initWithParent(ViewController p)
+        public override NSObject InitWithParent(ViewController p)
         {
-            if (base.initWithParent(p) != null)
+            if (base.InitWithParent(p) != null)
             {
-                View view = (View)new View().initFullscreen();
+                View view = (View)new View().InitFullscreen();
                 Image image = Image.Image_createWithResID(0);
                 image.parentAnchor = image.anchor = 18;
                 image.scaleX = image.scaleY = 1.25f;
-                view.addChild(image);
+                _ = view.AddChild(image);
                 bar = TiledImage.TiledImage_createWithResID(1);
                 bar.parentAnchor = bar.anchor = 9;
-                bar.setTile(-1);
+                bar.SetTile(-1);
                 bar.x = 738f;
                 bar.y = 1056f;
-                image.addChild(bar);
+                _ = image.AddChild(bar);
                 barTotalWidth = bar.width;
-                addViewwithID(view, 1);
-                view.release();
+                AddViewwithID(view, 1);
+                view.Release();
             }
             return this;
         }
 
-        public override void update(float t)
+        public override void Update(float t)
         {
-            base.update(t);
-            float num = Application.sharedResourceMgr().getPercentLoaded();
+            base.Update(t);
+            float num = Application.SharedResourceMgr().GetPercentLoaded();
             bar.width = (int)(barTotalWidth * num / 100f);
         }
 
-        public virtual void moviePlaybackFinished(NSString url)
+        public void MoviePlaybackFinished(NSString url)
         {
-            CTRResourceMgr ctrresourceMgr = Application.sharedResourceMgr();
+            CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
             ctrresourceMgr.resourcesDelegate = this;
-            ctrresourceMgr.initLoading();
-            ctrresourceMgr.loadPack(PACK_COMMON);
-            ctrresourceMgr.loadPack(PACK_COMMON_IMAGES);
-            ctrresourceMgr.loadPack(PACK_MENU);
-            ctrresourceMgr.loadPack(PACK_LOCALIZATION_MENU);
-            ctrresourceMgr.loadPack(PACK_MUSIC);
-            ctrresourceMgr.startLoading();
+            ctrresourceMgr.InitLoading();
+            ctrresourceMgr.LoadPack(PACK_COMMON);
+            ctrresourceMgr.LoadPack(PACK_COMMON_IMAGES);
+            ctrresourceMgr.LoadPack(PACK_MENU);
+            ctrresourceMgr.LoadPack(PACK_LOCALIZATION_MENU);
+            ctrresourceMgr.LoadPack(PACK_MUSIC);
+            ctrresourceMgr.StartLoading();
         }
 
-        public override void activate()
+        public override void Activate()
         {
-            base.activate();
-            showView(1);
-            moviePlaybackFinished(null);
+            base.Activate();
+            ShowView(1);
+            MoviePlaybackFinished(null);
         }
 
-        public virtual void resourceLoaded(int resName)
+        public void ResourceLoaded(int resName)
         {
         }
 
-        public virtual void allResourcesLoaded()
+        public void AllResourcesLoaded()
         {
-            Application.sharedRootController().setViewTransition(4);
-            deactivate();
+            Application.SharedRootController().SetViewTransition(4);
+            Deactivate();
         }
 
         private const int VIEW_CHILLINGO_MOVIE = 0;

@@ -8,97 +8,97 @@ namespace CutTheRope.iframework.visual
     internal class Image : BaseElement
     {
         // (get) Token: 0x060001E5 RID: 485 RVA: 0x00009A46 File Offset: 0x00007C46
-        public string _ResName => texture != null ? texture._resName : "ERROR: texture == null";
+        public string ResName => texture != null ? texture._resName : "ERROR: texture == null";
 
-        public static Vector getQuadSize(int textureID, int quad)
+        public static Vector GetQuadSize(int textureID, int quad)
         {
-            CTRTexture2D texture2D = Application.getTexture(textureID);
-            return vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
+            CTRTexture2D texture2D = Application.GetTexture(textureID);
+            return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
-        public static Vector getQuadOffset(int textureID, int quad)
+        public static Vector GetQuadOffset(int textureID, int quad)
         {
-            return Application.getTexture(textureID).quadOffsets[quad];
+            return Application.GetTexture(textureID).quadOffsets[quad];
         }
 
-        public static Vector getQuadCenter(int textureID, int quad)
+        public static Vector GetQuadCenter(int textureID, int quad)
         {
-            CTRTexture2D texture2D = Application.getTexture(textureID);
-            return vectAdd(texture2D.quadOffsets[quad], vect(ceil(texture2D.quadRects[quad].w / 2.0), ceil(texture2D.quadRects[quad].h / 2.0)));
+            CTRTexture2D texture2D = Application.GetTexture(textureID);
+            return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
         }
 
-        public static Vector getRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)
+        public static Vector GetRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)
         {
-            Vector quadOffset = getQuadOffset(textureID, quadToCountFrom);
-            return vectSub(getQuadOffset(textureID, quad), quadOffset);
+            Vector quadOffset = GetQuadOffset(textureID, quadToCountFrom);
+            return VectSub(GetQuadOffset(textureID, quad), quadOffset);
         }
 
-        public static void setElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
+        public static void SetElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
         {
-            Vector quadCenter = getQuadCenter(textureID, quad);
+            Vector quadCenter = GetQuadCenter(textureID, quad);
             e.x = quadCenter.x;
             e.y = quadCenter.y;
             e.anchor = 18;
         }
 
-        public static void setElementPositionWithQuadOffset(BaseElement e, int textureID, int quad)
+        public static void SetElementPositionWithQuadOffset(BaseElement e, int textureID, int quad)
         {
-            Vector quadOffset = getQuadOffset(textureID, quad);
+            Vector quadOffset = GetQuadOffset(textureID, quad);
             e.x = quadOffset.x;
             e.y = quadOffset.y;
         }
 
-        public static void setElementPositionWithRelativeQuadOffset(BaseElement e, int textureID, int quadToCountFrom, int quad)
+        public static void SetElementPositionWithRelativeQuadOffset(BaseElement e, int textureID, int quadToCountFrom, int quad)
         {
-            Vector relativeQuadOffset = getRelativeQuadOffset(textureID, quadToCountFrom, quad);
+            Vector relativeQuadOffset = GetRelativeQuadOffset(textureID, quadToCountFrom, quad);
             e.x = relativeQuadOffset.x;
             e.y = relativeQuadOffset.y;
         }
 
         public static Image Image_create(CTRTexture2D t)
         {
-            return new Image().initWithTexture(t);
+            return new Image().InitWithTexture(t);
         }
 
         public static Image Image_createWithResID(int r)
         {
-            return Image_create(Application.getTexture(r));
+            return Image_create(Application.GetTexture(r));
         }
 
         public static Image Image_createWithResIDQuad(int r, int q)
         {
-            Image image = Image_create(Application.getTexture(r));
-            image.setDrawQuad(q);
+            Image image = Image_create(Application.GetTexture(r));
+            image.SetDrawQuad(q);
             return image;
         }
 
-        public virtual Image initWithTexture(CTRTexture2D t)
+        public virtual Image InitWithTexture(CTRTexture2D t)
         {
-            if (init() != null)
+            if (Init() != null)
             {
                 texture = t;
-                NSRET(texture);
+                _ = NSRET(texture);
                 restoreCutTransparency = false;
                 if (texture.quadsCount > 0)
                 {
-                    setDrawQuad(0);
+                    SetDrawQuad(0);
                 }
                 else
                 {
-                    setDrawFullImage();
+                    SetDrawFullImage();
                 }
             }
             return this;
         }
 
-        public virtual void setDrawFullImage()
+        public virtual void SetDrawFullImage()
         {
             quadToDraw = -1;
             width = texture._realWidth;
             height = texture._realHeight;
         }
 
-        public virtual void setDrawQuad(int n)
+        public virtual void SetDrawQuad(int n)
         {
             quadToDraw = n;
             if (!restoreCutTransparency)
@@ -108,7 +108,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void doRestoreCutTransparency()
+        public virtual void DoRestoreCutTransparency()
         {
             if (texture.preCutSize.x != vectUndefined.x)
             {
@@ -118,21 +118,21 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
+            PreDraw();
             if (quadToDraw == -1)
             {
-                GLDrawer.drawImage(texture, drawX, drawY);
+                GLDrawer.DrawImage(texture, drawX, drawY);
             }
             else
             {
-                drawQuad(quadToDraw);
+                DrawQuad(quadToDraw);
             }
-            postDraw();
+            PostDraw();
         }
 
-        public virtual void drawQuad(int n)
+        public virtual void DrawQuad(int n)
         {
             float w = texture.quadRects[n].w;
             float h = texture.quadRects[n].h;
@@ -154,36 +154,36 @@ namespace CutTheRope.iframework.visual
                 num + w,
                 num2 + h
             ];
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(texture.name());
-            OpenGL.glVertexPointer(2, 5, 0, pointer);
-            OpenGL.glTexCoordPointer(2, 5, 0, texture.quads[n].toFloatArray());
-            OpenGL.glDrawArrays(8, 0, 4);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(texture.Name());
+            OpenGL.GlVertexPointer(2, 5, 0, pointer);
+            OpenGL.GlTexCoordPointer(2, 5, 0, texture.quads[n].ToFloatArray());
+            OpenGL.GlDrawArrays(8, 0, 4);
         }
 
-        public override bool handleAction(ActionData a)
+        public override bool HandleAction(ActionData a)
         {
-            if (base.handleAction(a))
+            if (base.HandleAction(a))
             {
                 return true;
             }
             if (a.actionName == "ACTION_SET_DRAWQUAD")
             {
-                setDrawQuad(a.actionParam);
+                SetDrawQuad(a.actionParam);
                 return true;
             }
             return false;
         }
 
-        public virtual BaseElement createFromXML(XMLNode xml)
+        public virtual BaseElement CreateFromXML(XMLNode xml)
         {
             throw new NotImplementedException();
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             NSREL(texture);
-            base.dealloc();
+            base.Dealloc();
         }
 
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";

@@ -1,6 +1,6 @@
 namespace CutTheRope.ios
 {
-    internal class UIApplication : NSObject
+    internal sealed class UIApplication : NSObject
     {
     }
 }

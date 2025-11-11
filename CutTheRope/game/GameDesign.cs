@@ -1,6 +1,6 @@
 namespace CutTheRope.game
 {
-    internal class GameDesign
+    internal sealed class GameDesign
     {
         public const int HUD_STARS_COUNT = 3;
 

@@ -1,18 +1,11 @@
 namespace CutTheRope.iframework
 {
-    internal struct PointSprite
+    internal struct PointSprite(float xx, float yy, float s)
     {
-        public PointSprite(float xx, float yy, float s)
-        {
-            x = xx;
-            y = yy;
-            size = s;
-        }
+        public float x = xx;
 
-        public float x;
+        public float y = yy;
 
-        public float y;
-
-        public float size;
+        public float size = s;
     }
 }

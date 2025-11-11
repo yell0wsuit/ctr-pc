@@ -4,21 +4,20 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.core
 {
-    internal class ApplicationSettings : NSObject
+    internal sealed class ApplicationSettings : NSObject
     {
-        public virtual int getInt(int s)
+        public int GetInt(int s)
         {
             return s == 5 ? fps : s != 6 ? throw new NotImplementedException() : (int)orientation;
         }
 
-        public virtual bool getBool(int s)
+        public static bool GetBool(int s)
         {
-            bool value = false;
-            DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out value);
+            _ = DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out bool value);
             return value;
         }
 
-        public virtual NSString getString(int s)
+        public NSString GetString(int s)
         {
             return s != 8
                 ? NSS("")
@@ -26,33 +25,33 @@ namespace CutTheRope.iframework.core
                 ? NSS(locale)
                 : LANGUAGE switch
                 {
-                    Language.LANG_EN => NSS("en"),
-                    Language.LANG_RU => NSS("ru"),
-                    Language.LANG_DE => NSS("de"),
-                    Language.LANG_FR => NSS("fr"),
-                    Language.LANG_ZH => NSS("zh"),
-                    Language.LANG_JA => NSS("ja"),
+                    Language.LANGEN => NSS("en"),
+                    Language.LANGRU => NSS("ru"),
+                    Language.LANGDE => NSS("de"),
+                    Language.LANGFR => NSS("fr"),
+                    Language.LANGZH => NSS("zh"),
+                    Language.LANGJA => NSS("ja"),
                     _ => NSS("en"),
                 };
         }
 
-        public virtual void setString(int sid, NSString str)
+        public void SetString(int sid, NSString str)
         {
             if (sid == 8)
             {
                 locale = str.ToString();
-                LANGUAGE = Language.LANG_EN;
+                LANGUAGE = Language.LANGEN;
                 if (locale == "ru")
                 {
-                    LANGUAGE = Language.LANG_RU;
+                    LANGUAGE = Language.LANGRU;
                 }
                 else if (locale == "de")
                 {
-                    LANGUAGE = Language.LANG_DE;
+                    LANGUAGE = Language.LANGDE;
                 }
                 if (locale == "fr")
                 {
-                    LANGUAGE = Language.LANG_FR;
+                    LANGUAGE = Language.LANGFR;
                 }
             }
         }
@@ -101,10 +100,10 @@ namespace CutTheRope.iframework.core
 
         public enum ORIENTATION
         {
-            ORIENTATION_PORTRAIT,
-            ORIENTATION_PORTRAIT_UPSIDE_DOWN,
-            ORIENTATION_LANDSCAPE_LEFT,
-            ORIENTATION_LANDSCAPE_RIGHT
+            PORTRAIT,
+            PORTRAIT_UPSIDE_DOWN,
+            LANDSCAPE_LEFT,
+            LANDSCAPE_RIGHT
         }
 
         public enum AppSettings

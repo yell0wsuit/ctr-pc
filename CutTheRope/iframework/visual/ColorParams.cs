@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class ColorParams
+    internal sealed class ColorParams
     {
         public ColorParams()
         {

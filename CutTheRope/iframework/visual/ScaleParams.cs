@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class ScaleParams
+    internal sealed class ScaleParams
     {
         public float scaleX;
 

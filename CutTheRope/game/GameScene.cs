@@ -8,333 +8,329 @@ using CutTheRope.ios;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 
 namespace CutTheRope.game
 {
-    internal class GameScene : BaseElement, TimelineDelegate, ButtonDelegate
+    internal sealed class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
-        private static void drawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
+        private static void DrawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
         {
-            Vector vector5 = vectNormalize(vectSub(end, start));
-            Vector v3 = vectRperp(vector5);
-            Vector v4 = vectPerp(vector5);
-            Vector vector = vectEqual(frs, vectUndefined) ? vectAdd(start, vectMult(v3, startSize)) : frs;
-            Vector vector2 = vectEqual(fls, vectUndefined) ? vectAdd(start, vectMult(v4, startSize)) : fls;
-            Vector vector3 = vectAdd(end, vectMult(v3, endSize));
-            Vector vector4 = vectAdd(end, vectMult(v4, endSize));
-            GLDrawer.drawSolidPolygonWOBorder([vector2.x, vector2.y, vector.x, vector.y, vector3.x, vector3.y, vector4.x, vector4.y], 4, c);
+            Vector vector5 = VectNormalize(VectSub(end, start));
+            Vector v3 = VectRperp(vector5);
+            Vector v4 = VectPerp(vector5);
+            Vector vector = VectEqual(frs, vectUndefined) ? VectAdd(start, VectMult(v3, startSize)) : frs;
+            Vector vector2 = VectEqual(fls, vectUndefined) ? VectAdd(start, VectMult(v4, startSize)) : fls;
+            Vector vector3 = VectAdd(end, VectMult(v3, endSize));
+            Vector vector4 = VectAdd(end, VectMult(v4, endSize));
+            GLDrawer.DrawSolidPolygonWOBorder([vector2.x, vector2.y, vector.x, vector.y, vector3.x, vector3.y, vector4.x, vector4.y], 4, c);
             le = vector4;
             re = vector3;
         }
 
-        private static float maxOf4(float v1, float v2, float v3, float v4)
+        private static float MaxOf4(float v1, float v2, float v3, float v4)
         {
-            if (v1 >= v2 && v1 >= v3 && v1 >= v4)
-            {
-                return v1;
-            }
-            return v2 >= v1 && v2 >= v3 && v2 >= v4 ? v2 : v3 >= v2 && v3 >= v1 && v3 >= v4 ? v3 : v4 >= v2 && v4 >= v3 && v4 >= v1 ? v4 : -1f;
+            return v1 >= v2 && v1 >= v3 && v1 >= v4
+                ? v1
+                : v2 >= v1 && v2 >= v3 && v2 >= v4 ? v2 : v3 >= v2 && v3 >= v1 && v3 >= v4 ? v3 : v4 >= v2 && v4 >= v3 && v4 >= v1 ? v4 : -1f;
         }
 
-        private static float minOf4(float v1, float v2, float v3, float v4)
+        private static float MinOf4(float v1, float v2, float v3, float v4)
         {
-            if (v1 <= v2 && v1 <= v3 && v1 <= v4)
-            {
-                return v1;
-            }
-            return v2 <= v1 && v2 <= v3 && v2 <= v4 ? v2 : v3 <= v2 && v3 <= v1 && v3 <= v4 ? v3 : v4 <= v2 && v4 <= v3 && v4 <= v1 ? v4 : -1f;
+            return v1 <= v2 && v1 <= v3 && v1 <= v4
+                ? v1
+                : v2 <= v1 && v2 <= v3 && v2 <= v4 ? v2 : v3 <= v2 && v3 <= v1 && v3 <= v4 ? v3 : v4 <= v2 && v4 <= v3 && v4 <= v1 ? v4 : -1f;
         }
 
-        public static ToggleButton createGravityButtonWithDelegate(ButtonDelegate d)
+        public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
             Image u = Image.Image_createWithResIDQuad(78, 56);
             Image d2 = Image.Image_createWithResIDQuad(78, 56);
             Image u2 = Image.Image_createWithResIDQuad(78, 57);
             Image d3 = Image.Image_createWithResIDQuad(78, 57);
-            ToggleButton toggleButton = new ToggleButton().initWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, 0);
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, 0);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
         }
 
-        public virtual bool pointOutOfScreen(ConstraintedPoint p)
+        public bool PointOutOfScreen(ConstraintedPoint p)
         {
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
         }
 
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
-                CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-                dd = (DelayedDispatcher)new DelayedDispatcher().init();
+                CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+                dd = (DelayedDispatcher)new DelayedDispatcher().Init();
                 initialCameraToStarDistance = -1f;
                 restartState = -1;
-                aniPool = (AnimationsPool)new AnimationsPool().init();
+                aniPool = (AnimationsPool)new AnimationsPool().Init();
                 aniPool.visible = false;
-                addChild(aniPool);
-                staticAniPool = (AnimationsPool)new AnimationsPool().init();
+                _ = AddChild(aniPool);
+                staticAniPool = (AnimationsPool)new AnimationsPool().Init();
                 staticAniPool.visible = false;
-                addChild(staticAniPool);
-                camera = new Camera2D().initWithSpeedandType(14f, CAMERA_TYPE.CAMERA_SPEED_DELAY);
-                int textureResID = 104 + (cTRRootController.getPack() * 2);
-                back = new TileMap().initWithRowsColumns(1, 1);
-                back.setRepeatHorizontally(TileMap.Repeat.REPEAT_NONE);
-                back.setRepeatVertically(TileMap.Repeat.REPEAT_ALL);
-                back.addTileQuadwithID(Application.getTexture(textureResID), 0, 0);
-                back.fillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
-                if (canvas.isFullscreen)
+                _ = AddChild(staticAniPool);
+                camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
+                int textureResID = 104 + (cTRRootController.GetPack() * 2);
+                back = new TileMap().InitWithRowsColumns(1, 1);
+                back.SetRepeatHorizontally(TileMap.Repeat.NONE);
+                back.SetRepeatVertically(TileMap.Repeat.ALL);
+                back.AddTileQuadwithID(Application.GetTexture(textureResID), 0, 0);
+                back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
+                if (Canvas.isFullscreen)
                 {
-                    back.scaleX = Global.ScreenSizeManager.ScreenWidth / (float)canvas.backingWidth;
+                    back.scaleX = Global.ScreenSizeManager.ScreenWidth / (float)Canvas.backingWidth;
                 }
                 back.scaleX *= 1.25f;
                 back.scaleY *= 1.25f;
                 for (int i = 0; i < 3; i++)
                 {
                     hudStar[i] = Animation.Animation_createWithResID(79);
-                    hudStar[i].doRestoreCutTransparency();
-                    hudStar[i].addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
-                    hudStar[i].setPauseAtIndexforAnimation(10, 0);
-                    hudStar[i].x = (hudStar[i].width * i) + canvas.xOffsetScaled;
+                    hudStar[i].DoRestoreCutTransparency();
+                    _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
+                    hudStar[i].SetPauseAtIndexforAnimation(10, 0);
+                    hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
                     hudStar[i].y = 0f;
-                    addChild(hudStar[i]);
+                    _ = AddChild(hudStar[i]);
                 }
                 for (int j = 0; j < 5; j++)
                 {
-                    fingerCuts[j] = (DynamicArray)new DynamicArray().init();
-                    fingerCuts[j].retain();
+                    fingerCuts[j] = (DynamicArray)new DynamicArray().Init();
+                    fingerCuts[j].Retain();
                 }
                 clickToCut = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
             }
             return this;
         }
 
-        public virtual void xmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
         {
-            ((CTRRootController)Application.sharedRootController()).setMap(rootNode);
+            ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
             if (animateRestartDim)
             {
-                animateLevelRestart();
+                AnimateLevelRestart();
                 return;
             }
-            restart();
+            Restart();
         }
 
-        public virtual void reload()
+        public void Reload()
         {
-            dd.cancelAllDispatches();
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (cTRRootController.isPicker())
+            dd.CancelAllDispatches();
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (cTRRootController.IsPicker())
             {
-                xmlLoaderFinishedWithfromwithSuccess(XMLNode.parseXML("mappicker://reload"), NSS("mappicker://reload"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://reload"), NSS("mappicker://reload"), true);
                 return;
             }
-            int pack = cTRRootController.getPack();
-            int level = cTRRootController.getLevel();
-            xmlLoaderFinishedWithfromwithSuccess(XMLNode.parseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
+            int pack = cTRRootController.GetPack();
+            int level = cTRRootController.GetLevel();
+            XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
         }
 
-        public virtual void loadNextMap()
+        public void LoadNextMap()
         {
-            dd.cancelAllDispatches();
+            dd.CancelAllDispatches();
             initialCameraToStarDistance = -1f;
             animateRestartDim = false;
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (cTRRootController.isPicker())
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (cTRRootController.IsPicker())
             {
-                xmlLoaderFinishedWithfromwithSuccess(XMLNode.parseXML("mappicker://next"), NSS("mappicker://next"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://next"), NSS("mappicker://next"), true);
                 return;
             }
-            int pack = cTRRootController.getPack();
-            int level = cTRRootController.getLevel();
-            if (level < CTRPreferences.getLevelsInPackCount() - 1)
+            int pack = cTRRootController.GetPack();
+            int level = cTRRootController.GetLevel();
+            if (level < CTRPreferences.GetLevelsInPackCount() - 1)
             {
-                cTRRootController.setLevel(++level);
-                cTRRootController.setMapName(LevelsList.LEVEL_NAMES[pack, level]);
-                xmlLoaderFinishedWithfromwithSuccess(XMLNode.parseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
+                cTRRootController.SetLevel(++level);
+                cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
+                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
             }
         }
 
-        public virtual void restart()
+        public void Restart()
         {
-            hide();
-            show();
+            Hide();
+            Show();
         }
 
-        public virtual void createEarthImageWithOffsetXY(float xs, float ys)
+        public void CreateEarthImageWithOffsetXY(float xs, float ys)
         {
             Image image = Image.Image_createWithResIDQuad(78, 58);
             image.anchor = 18;
-            Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline.addKeyFrame(KeyFrame.makeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-            image.addTimelinewithID(timeline, 1);
-            timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline.addKeyFrame(KeyFrame.makeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-            image.addTimelinewithID(timeline, 0);
-            Image.setElementPositionWithQuadOffset(image, 118, 1);
-            if (canvas.isFullscreen)
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            image.AddTimelinewithID(timeline, 1);
+            timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            image.AddTimelinewithID(timeline, 0);
+            Image.SetElementPositionWithQuadOffset(image, 118, 1);
+            if (Canvas.isFullscreen)
             {
-                int screenWidth = Global.ScreenSizeManager.ScreenWidth;
+                _ = Global.ScreenSizeManager.ScreenWidth;
             }
             image.scaleX = 0.8f;
             image.scaleY = 0.8f;
             image.x += xs;
             image.y += ys;
-            earthAnims.addObject(image);
+            _ = earthAnims.AddObject(image);
         }
 
-        public virtual bool shouldSkipTutorialElement(XMLNode c)
+        public static bool ShouldSkipTutorialElement(XMLNode c)
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (cTRRootController.getPack() == 0 && cTRRootController.getLevel() == 1)
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 1)
             {
                 return true;
             }
-            NSString @string = Application.sharedAppSettings().getString(8);
+            NSString @string = Application.SharedAppSettings().GetString(8);
             NSString nSString = c["locale"];
-            if (@string.isEqualToString("en") || @string.isEqualToString("ru") || @string.isEqualToString("de") || @string.isEqualToString("fr"))
+            if (@string.IsEqualToString("en") || @string.IsEqualToString("ru") || @string.IsEqualToString("de") || @string.IsEqualToString("fr"))
             {
-                if (!nSString.isEqualToString(@string))
+                if (!nSString.IsEqualToString(@string))
                 {
                     return true;
                 }
             }
-            else if (!nSString.isEqualToString("en"))
+            else if (!nSString.IsEqualToString("en"))
             {
                 return true;
             }
             return false;
         }
 
-        public virtual void showGreeting()
+        public void ShowGreeting()
         {
-            target.playAnimationtimeline(101, 10);
+            target.PlayAnimationtimeline(101, 10);
         }
 
-        public override void show()
+        public override void Show()
         {
             CTRSoundMgr.EnableLoopedSounds(true);
-            aniPool.removeAllChilds();
-            staticAniPool.removeAllChilds();
+            aniPool.RemoveAllChilds();
+            staticAniPool.RemoveAllChilds();
             gravityButton = null;
             gravityTouchDown = -1;
             twoParts = 2;
             partsDist = 0f;
             targetSock = null;
-            CTRSoundMgr._stopLoopedSounds();
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            XMLNode map = cTRRootController.getMap();
-            bungees = (DynamicArray)new DynamicArray().init();
-            razors = (DynamicArray)new DynamicArray().init();
-            spikes = (DynamicArray)new DynamicArray().init();
-            stars = (DynamicArray)new DynamicArray().init();
-            bubbles = (DynamicArray)new DynamicArray().init();
-            pumps = (DynamicArray)new DynamicArray().init();
-            socks = (DynamicArray)new DynamicArray().init();
-            tutorialImages = (DynamicArray)new DynamicArray().init();
-            tutorials = (DynamicArray)new DynamicArray().init();
-            bouncers = (DynamicArray)new DynamicArray().init();
-            rotatedCircles = (DynamicArray)new DynamicArray().init();
-            pollenDrawer = (PollenDrawer)new PollenDrawer().init();
-            star = (ConstraintedPoint)new ConstraintedPoint().init();
-            star.setWeight(1f);
-            starL = (ConstraintedPoint)new ConstraintedPoint().init();
-            starL.setWeight(1f);
-            starR = (ConstraintedPoint)new ConstraintedPoint().init();
-            starR.setWeight(1f);
+            CTRSoundMgr.StopLoopedSounds();
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            XMLNode map = cTRRootController.GetMap();
+            bungees = (DynamicArray)new DynamicArray().Init();
+            razors = (DynamicArray)new DynamicArray().Init();
+            spikes = (DynamicArray)new DynamicArray().Init();
+            stars = (DynamicArray)new DynamicArray().Init();
+            bubbles = (DynamicArray)new DynamicArray().Init();
+            pumps = (DynamicArray)new DynamicArray().Init();
+            socks = (DynamicArray)new DynamicArray().Init();
+            tutorialImages = (DynamicArray)new DynamicArray().Init();
+            tutorials = (DynamicArray)new DynamicArray().Init();
+            bouncers = (DynamicArray)new DynamicArray().Init();
+            rotatedCircles = (DynamicArray)new DynamicArray().Init();
+            pollenDrawer = (PollenDrawer)new PollenDrawer().Init();
+            star = (ConstraintedPoint)new ConstraintedPoint().Init();
+            star.SetWeight(1f);
+            starL = (ConstraintedPoint)new ConstraintedPoint().Init();
+            starL.SetWeight(1f);
+            starR = (ConstraintedPoint)new ConstraintedPoint().Init();
+            starR.SetWeight(1f);
             candy = GameObject.GameObject_createWithResIDQuad(63, 0);
-            candy.doRestoreCutTransparency();
-            candy.retain();
+            candy.DoRestoreCutTransparency();
+            candy.Retain();
             candy.anchor = 18;
             candy.bb = MakeRectangle(142f, 157f, 112f, 104f);
             candy.passTransformationsToChilds = false;
             candy.scaleX = candy.scaleY = 0.71f;
             candyMain = GameObject.GameObject_createWithResIDQuad(63, 1);
-            candyMain.doRestoreCutTransparency();
+            candyMain.DoRestoreCutTransparency();
             candyMain.anchor = candyMain.parentAnchor = 18;
-            candy.addChild(candyMain);
+            _ = candy.AddChild(candyMain);
             candyMain.scaleX = candyMain.scaleY = 0.71f;
             candyTop = GameObject.GameObject_createWithResIDQuad(63, 2);
-            candyTop.doRestoreCutTransparency();
+            candyTop.DoRestoreCutTransparency();
             candyTop.anchor = candyTop.parentAnchor = 18;
-            candy.addChild(candyTop);
+            _ = candy.AddChild(candyTop);
             candyTop.scaleX = candyTop.scaleY = 0.71f;
             candyBlink = Animation.Animation_createWithResID(63);
-            candyBlink.addAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 8, 17);
-            candyBlink.addAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 18, [18]);
-            Timeline timeline7 = candyBlink.getTimeline(1);
-            timeline7.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline7.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+            candyBlink.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 8, 17);
+            candyBlink.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 18, [18]);
+            Timeline timeline7 = candyBlink.GetTimeline(1);
+            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             candyBlink.visible = false;
             candyBlink.anchor = candyBlink.parentAnchor = 18;
             candyBlink.scaleX = candyBlink.scaleY = 0.71f;
-            candy.addChild(candyBlink);
+            _ = candy.AddChild(candyBlink);
             candyBubbleAnimation = Animation.Animation_createWithResID(72);
             candyBubbleAnimation.x = candy.x;
             candyBubbleAnimation.y = candy.y;
             candyBubbleAnimation.parentAnchor = candyBubbleAnimation.anchor = 18;
-            candyBubbleAnimation.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
-            candyBubbleAnimation.playTimeline(0);
-            candy.addChild(candyBubbleAnimation);
+            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+            candyBubbleAnimation.PlayTimeline(0);
+            _ = candy.AddChild(candyBubbleAnimation);
             candyBubbleAnimation.visible = false;
             float num = 3f;
             float num2 = 0f;
             float num3 = 0f;
             for (int i = 0; i < 3; i++)
             {
-                Timeline timeline2 = hudStar[i].getCurrentTimeline();
-                timeline2?.stopTimeline();
-                hudStar[i].setDrawQuad(0);
+                Timeline timeline2 = hudStar[i].GetCurrentTimeline();
+                timeline2?.StopTimeline();
+                hudStar[i].SetDrawQuad(0);
             }
             int num4 = 0;
             int num5 = 0;
-            List<XMLNode> list = map.childs();
+            List<XMLNode> list = map.Childs();
             foreach (XMLNode xmlnode in list)
             {
-                foreach (XMLNode item2 in xmlnode.childs())
+                foreach (XMLNode item2 in xmlnode.Childs())
                 {
                     if (item2.Name == "map")
                     {
-                        mapWidth = item2["width"].floatValue();
-                        mapHeight = item2["height"].floatValue();
+                        mapWidth = item2["width"].FloatValue();
+                        mapHeight = item2["height"].FloatValue();
                         num3 = (2560f - (mapWidth * num)) / 2f;
                         mapWidth *= num;
                         mapHeight *= num;
-                        if (cTRRootController.getPack() == 7)
+                        if (cTRRootController.GetPack() == 7)
                         {
-                            earthAnims = (DynamicArray)new DynamicArray().init();
+                            earthAnims = (DynamicArray)new DynamicArray().Init();
                             if (mapWidth > SCREEN_WIDTH)
                             {
-                                createEarthImageWithOffsetXY(back.width, 0f);
+                                CreateEarthImageWithOffsetXY(back.width, 0f);
                             }
                             if (mapHeight > SCREEN_HEIGHT)
                             {
-                                createEarthImageWithOffsetXY(0f, back.height);
+                                CreateEarthImageWithOffsetXY(0f, back.height);
                             }
-                            createEarthImageWithOffsetXY(0f, 0f);
+                            CreateEarthImageWithOffsetXY(0f, 0f);
                         }
                     }
                     else if (item2.Name == "gameDesign")
                     {
-                        num4 = item2["mapOffsetX"].intValue();
-                        num5 = item2["mapOffsetY"].intValue();
-                        special = item2["special"].intValue();
-                        ropePhysicsSpeed = item2["ropePhysicsSpeed"].floatValue();
-                        nightLevel = item2["nightLevel"].isEqualToString("true");
-                        twoParts = (!item2["twoParts"].isEqualToString("true")) ? 2 : 0;
+                        num4 = item2["mapOffsetX"].IntValue();
+                        num5 = item2["mapOffsetY"].IntValue();
+                        special = item2["special"].IntValue();
+                        ropePhysicsSpeed = item2["ropePhysicsSpeed"].FloatValue();
+                        nightLevel = item2["nightLevel"].IsEqualToString("true");
+                        twoParts = !item2["twoParts"].IsEqualToString("true") ? 2 : 0;
                         ropePhysicsSpeed *= 1.4f;
                     }
                     else if (item2.Name == "candyL")
                     {
-                        starL.pos.x = (item2["x"].intValue() * num) + num3 + num4;
-                        starL.pos.y = (item2["y"].intValue() * num) + num2 + num5;
+                        starL.pos.x = (item2["x"].IntValue() * num) + num3 + num4;
+                        starL.pos.y = (item2["y"].IntValue() * num) + num2 + num5;
                         candyL = GameObject.GameObject_createWithResIDQuad(63, 19);
                         candyL.scaleX = candyL.scaleY = 0.71f;
                         candyL.passTransformationsToChilds = false;
-                        candyL.doRestoreCutTransparency();
-                        candyL.retain();
+                        candyL.DoRestoreCutTransparency();
+                        candyL.Retain();
                         candyL.anchor = 18;
                         candyL.x = starL.pos.x;
                         candyL.y = starL.pos.y;
@@ -342,13 +338,13 @@ namespace CutTheRope.game
                     }
                     else if (item2.Name == "candyR")
                     {
-                        starR.pos.x = (item2["x"].intValue() * num) + num3 + num4;
-                        starR.pos.y = (item2["y"].intValue() * num) + num2 + num5;
+                        starR.pos.x = (item2["x"].IntValue() * num) + num3 + num4;
+                        starR.pos.y = (item2["y"].IntValue() * num) + num2 + num5;
                         candyR = GameObject.GameObject_createWithResIDQuad(63, 20);
                         candyR.scaleX = candyR.scaleY = 0.71f;
                         candyR.passTransformationsToChilds = false;
-                        candyR.doRestoreCutTransparency();
-                        candyR.retain();
+                        candyR.DoRestoreCutTransparency();
+                        candyR.Retain();
                         candyR.anchor = 18;
                         candyR.x = starR.pos.x;
                         candyR.y = starR.pos.y;
@@ -356,295 +352,295 @@ namespace CutTheRope.game
                     }
                     else if (item2.Name == "candy")
                     {
-                        star.pos.x = (item2["x"].intValue() * num) + num3 + num4;
-                        star.pos.y = (item2["y"].intValue() * num) + num2 + num5;
+                        star.pos.x = (item2["x"].IntValue() * num) + num3 + num4;
+                        star.pos.y = (item2["y"].IntValue() * num) + num2 + num5;
                     }
                 }
             }
             foreach (XMLNode xmlnode2 in list)
             {
-                foreach (XMLNode item3 in xmlnode2.childs())
+                foreach (XMLNode item3 in xmlnode2.Childs())
                 {
                     if (item3.Name == "gravitySwitch")
                     {
-                        gravityButton = createGravityButtonWithDelegate(this);
+                        gravityButton = CreateGravityButtonWithDelegate(this);
                         gravityButton.visible = false;
                         gravityButton.touchable = false;
-                        addChild(gravityButton);
-                        gravityButton.x = (item3["x"].intValue() * num) + num3 + num4;
-                        gravityButton.y = (item3["y"].intValue() * num) + num2 + num5;
+                        _ = AddChild(gravityButton);
+                        gravityButton.x = (item3["x"].IntValue() * num) + num3 + num4;
+                        gravityButton.y = (item3["y"].IntValue() * num) + num2 + num5;
                         gravityButton.anchor = 18;
                     }
                     else if (item3.Name == "star")
                     {
                         Star star = Star.Star_createWithResID(78);
-                        star.x = (item3["x"].intValue() * num) + num3 + num4;
-                        star.y = (item3["y"].intValue() * num) + num2 + num5;
-                        star.timeout = item3["timeout"].floatValue();
-                        star.createAnimations();
+                        star.x = (item3["x"].IntValue() * num) + num3 + num4;
+                        star.y = (item3["y"].IntValue() * num) + num2 + num5;
+                        star.timeout = item3["timeout"].FloatValue();
+                        star.CreateAnimations();
                         star.bb = MakeRectangle(70.0, 64.0, 82.0, 82.0);
-                        star.parseMover(item3);
-                        star.update(0f);
-                        stars.addObject(star);
+                        star.ParseMover(item3);
+                        star.Update(0f);
+                        _ = stars.AddObject(star);
                     }
                     else if (item3.Name == "tutorialText")
                     {
-                        if (!shouldSkipTutorialElement(item3))
+                        if (!ShouldSkipTutorialElement(item3))
                         {
-                            TutorialText tutorialText = (TutorialText)new TutorialText().initWithFont(Application.getFont(4));
+                            TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(4));
                             tutorialText.color = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.9);
-                            tutorialText.x = (item3["x"].intValue() * num) + num3 + num4;
-                            tutorialText.y = (item3["y"].intValue() * num) + num2 + num5;
-                            tutorialText.special = item3["special"].intValue();
-                            tutorialText.setAlignment(2);
+                            tutorialText.x = (item3["x"].IntValue() * num) + num3 + num4;
+                            tutorialText.y = (item3["y"].IntValue() * num) + num2 + num5;
+                            tutorialText.special = item3["special"].IntValue();
+                            tutorialText.SetAlignment(2);
                             NSString newString = item3["text"];
-                            tutorialText.setStringandWidth(newString, item3["width"].intValue() * num);
+                            tutorialText.SetStringandWidth(newString, item3["width"].IntValue() * num);
                             tutorialText.color = RGBAColor.transparentRGBA;
-                            float num6 = (tutorialText.special == 3) ? 12f : 0f;
-                            Timeline timeline3 = new Timeline().initWithMaxKeyFramesOnTrack(4);
-                            timeline3.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
-                            timeline3.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                            if (cTRRootController.getPack() == 0 && cTRRootController.getLevel() == 0)
+                            float num6 = tutorialText.special == 3 ? 12f : 0f;
+                            Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+                            timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
+                            timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                            if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 0)
                             {
-                                timeline3.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 10.0));
+                                timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 10.0));
                             }
                             else
                             {
-                                timeline3.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 5.0));
+                                timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 5.0));
                             }
-                            timeline3.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                            tutorialText.addTimelinewithID(timeline3, 0);
+                            timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                            tutorialText.AddTimelinewithID(timeline3, 0);
                             if (tutorialText.special is 0 or 3)
                             {
-                                tutorialText.playTimeline(0);
+                                tutorialText.PlayTimeline(0);
                             }
-                            tutorials.addObject(tutorialText);
+                            _ = tutorials.AddObject(tutorialText);
                         }
                     }
                     else if (item3.Name is "tutorial01" or "tutorial02" or "tutorial03" or "tutorial04" or "tutorial05" or "tutorial06" or "tutorial07" or "tutorial08" or "tutorial09" or "tutorial10" or "tutorial11")
                     {
-                        if (!shouldSkipTutorialElement(item3))
+                        if (!ShouldSkipTutorialElement(item3))
                         {
-                            int q = new NSString(item3.Name.Substring(8)).intValue() - 1;
+                            int q = new NSString(item3.Name[8..]).IntValue() - 1;
                             GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
                             gameObjectSpecial.color = RGBAColor.transparentRGBA;
-                            gameObjectSpecial.x = (item3["x"].intValue() * num) + num3 + num4;
-                            gameObjectSpecial.y = (item3["y"].intValue() * num) + num2 + num5;
-                            gameObjectSpecial.rotation = item3["angle"].intValue();
-                            gameObjectSpecial.special = item3["special"].intValue();
-                            gameObjectSpecial.parseMover(item3);
-                            float num7 = (gameObjectSpecial.special is 3 or 4) ? 12f : 0f;
-                            Timeline timeline4 = new Timeline().initWithMaxKeyFramesOnTrack(4);
-                            timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num7));
-                            timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                            if (cTRRootController.getPack() == 0 && cTRRootController.getLevel() == 0)
+                            gameObjectSpecial.x = (item3["x"].IntValue() * num) + num3 + num4;
+                            gameObjectSpecial.y = (item3["y"].IntValue() * num) + num2 + num5;
+                            gameObjectSpecial.rotation = item3["angle"].IntValue();
+                            gameObjectSpecial.special = item3["special"].IntValue();
+                            gameObjectSpecial.ParseMover(item3);
+                            float num7 = gameObjectSpecial.special is 3 or 4 ? 12f : 0f;
+                            Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+                            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num7));
+                            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                            if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 0)
                             {
-                                timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 10.0));
+                                timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 10.0));
                             }
                             else
                             {
-                                timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 5.2));
+                                timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 5.2));
                             }
-                            timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                            gameObjectSpecial.addTimelinewithID(timeline4, 0);
+                            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                            gameObjectSpecial.AddTimelinewithID(timeline4, 0);
                             if (gameObjectSpecial.special is 0 or 3)
                             {
-                                gameObjectSpecial.playTimeline(0);
+                                gameObjectSpecial.PlayTimeline(0);
                             }
                             if (gameObjectSpecial.special is 2 or 4)
                             {
-                                Timeline timeline5 = new Timeline().initWithMaxKeyFramesOnTrack(12);
+                                Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(12);
                                 for (int j = 0; j < 2; j++)
                                 {
-                                    timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, (j == 1) ? 0f : num7));
-                                    timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                                    timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                                    timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.1));
-                                    timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                                    timeline5.addKeyFrame(KeyFrame.makePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, (double)((j == 1) ? 0f : num7)));
-                                    timeline5.addKeyFrame(KeyFrame.makePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                                    timeline5.addKeyFrame(KeyFrame.makePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                                    timeline5.addKeyFrame(KeyFrame.makePos(gameObjectSpecial.x + 230.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
-                                    timeline5.addKeyFrame(KeyFrame.makePos(gameObjectSpecial.x + 440.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5));
-                                    timeline5.addKeyFrame(KeyFrame.makePos(gameObjectSpecial.x + 440.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.6));
+                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, j == 1 ? 0f : num7));
+                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.1));
+                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, (double)(j == 1 ? 0f : num7)));
+                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x + 230.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
+                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x + 440.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5));
+                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x + 440.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.6));
                                 }
-                                timeline5.setTimelineLoopType(Timeline.LoopType.TIMELINE_NO_LOOP);
-                                gameObjectSpecial.addTimelinewithID(timeline5, 1);
-                                gameObjectSpecial.playTimeline(1);
+                                timeline5.SetTimelineLoopType(Timeline.LoopType.TIMELINE_NO_LOOP);
+                                gameObjectSpecial.AddTimelinewithID(timeline5, 1);
+                                gameObjectSpecial.PlayTimeline(1);
                                 gameObjectSpecial.rotation = 10f;
                             }
-                            tutorialImages.addObject(gameObjectSpecial);
+                            _ = tutorialImages.AddObject(gameObjectSpecial);
                         }
                     }
                     else if (item3.Name == "bubble")
                     {
                         int q2 = RND_RANGE(1, 3);
                         Bubble bubble = Bubble.Bubble_createWithResIDQuad(75, q2);
-                        bubble.doRestoreCutTransparency();
+                        bubble.DoRestoreCutTransparency();
                         bubble.bb = MakeRectangle(48.0, 48.0, 152.0, 152.0);
-                        bubble.initial_x = bubble.x = (item3["x"].intValue() * num) + num3 + num4;
-                        bubble.initial_y = bubble.y = (item3["y"].intValue() * num) + num2 + num5;
+                        bubble.initial_x = bubble.x = (item3["x"].IntValue() * num) + num3 + num4;
+                        bubble.initial_y = bubble.y = (item3["y"].IntValue() * num) + num2 + num5;
                         bubble.initial_rotation = 0f;
                         bubble.initial_rotatedCircle = null;
                         bubble.anchor = 18;
                         bubble.popped = false;
                         Image image = Image.Image_createWithResIDQuad(75, 0);
-                        image.doRestoreCutTransparency();
+                        image.DoRestoreCutTransparency();
                         image.parentAnchor = image.anchor = 18;
-                        bubble.addChild(image);
-                        bubbles.addObject(bubble);
+                        _ = bubble.AddChild(image);
+                        _ = bubbles.AddObject(bubble);
                     }
                     else if (item3.Name == "pump")
                     {
                         Pump pump = Pump.Pump_createWithResID(83);
-                        pump.doRestoreCutTransparency();
-                        pump.addAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
+                        pump.DoRestoreCutTransparency();
+                        _ = pump.AddAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
                         pump.bb = MakeRectangle(300f, 300f, 175f, 175f);
-                        pump.initial_x = pump.x = (item3["x"].intValue() * num) + num3 + num4;
-                        pump.initial_y = pump.y = (item3["y"].intValue() * num) + num2 + num5;
+                        pump.initial_x = pump.x = (item3["x"].IntValue() * num) + num3 + num4;
+                        pump.initial_y = pump.y = (item3["y"].IntValue() * num) + num2 + num5;
                         pump.initial_rotation = 0f;
                         pump.initial_rotatedCircle = null;
-                        pump.rotation = item3["angle"].floatValue() + 90f;
-                        pump.updateRotation();
+                        pump.rotation = item3["angle"].FloatValue() + 90f;
+                        pump.UpdateRotation();
                         pump.anchor = 18;
-                        pumps.addObject(pump);
+                        _ = pumps.AddObject(pump);
                     }
                     else if (item3.Name == "sock")
                     {
                         Sock sock = Sock.Sock_createWithResID(85);
-                        sock.createAnimations();
+                        sock.CreateAnimations();
                         sock.scaleX = sock.scaleY = 0.7f;
-                        sock.doRestoreCutTransparency();
-                        sock.x = (item3["x"].intValue() * num) + num3 + num4;
-                        sock.y = (item3["y"].intValue() * num) + num2 + num5;
-                        sock.group = item3["group"].intValue();
+                        sock.DoRestoreCutTransparency();
+                        sock.x = (item3["x"].IntValue() * num) + num3 + num4;
+                        sock.y = (item3["y"].IntValue() * num) + num2 + num5;
+                        sock.group = item3["group"].IntValue();
                         sock.anchor = 10;
                         sock.rotationCenterY -= (sock.height / 2f) - 85f;
                         if (sock.group == 0)
                         {
-                            sock.setDrawQuad(0);
+                            sock.SetDrawQuad(0);
                         }
                         else
                         {
-                            sock.setDrawQuad(1);
+                            sock.SetDrawQuad(1);
                         }
                         sock.state = Sock.SOCK_IDLE;
-                        sock.parseMover(item3);
+                        sock.ParseMover(item3);
                         sock.rotation += 90f;
                         if (sock.mover != null)
                         {
                             sock.mover.angle_ += 90.0;
                             sock.mover.angle_initial = sock.mover.angle_;
-                            if (cTRRootController.getPack() == 3 && cTRRootController.getLevel() == 24)
+                            if (cTRRootController.GetPack() == 3 && cTRRootController.GetLevel() == 24)
                             {
                                 sock.mover.use_angle_initial = true;
                             }
                         }
-                        sock.updateRotation();
-                        socks.addObject(sock);
+                        sock.UpdateRotation();
+                        _ = socks.AddObject(sock);
                     }
                     else if (item3.Name is "spike1" or "spike2" or "spike3" or "spike4" or "electro")
                     {
-                        float px = (item3["x"].intValue() * num) + num3 + num4;
-                        float py = (item3["y"].intValue() * num) + num2 + num5;
-                        int w = item3["size"].intValue();
-                        double an = item3["angle"].intValue();
+                        float px = (item3["x"].IntValue() * num) + num3 + num4;
+                        float py = (item3["y"].IntValue() * num) + num2 + num5;
+                        int w = item3["size"].IntValue();
+                        double an = item3["angle"].IntValue();
                         NSString nSString2 = item3["toggled"];
                         int num8 = -1;
-                        if (nSString2.length() > 0)
+                        if (nSString2.Length() > 0)
                         {
-                            num8 = nSString2.isEqualToString("false") ? (-1) : nSString2.intValue();
+                            num8 = nSString2.IsEqualToString("false") ? -1 : nSString2.IntValue();
                         }
-                        Spikes spikes = (Spikes)new Spikes().initWithPosXYWidthAndAngleToggled(px, py, w, an, num8);
-                        spikes.parseMover(item3);
+                        Spikes spikes = (Spikes)new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, num8);
+                        spikes.ParseMover(item3);
                         if (num8 != 0)
                         {
-                            spikes.delegateRotateAllSpikesWithID = new Spikes.rotateAllSpikesWithID(rotateAllSpikesWithID);
+                            spikes.delegateRotateAllSpikesWithID = new Spikes.rotateAllSpikesWithID(RotateAllSpikesWithID);
                         }
                         if (item3.Name == "electro")
                         {
                             spikes.electro = true;
-                            spikes.initialDelay = item3["initialDelay"].floatValue();
-                            spikes.onTime = item3["onTime"].floatValue();
-                            spikes.offTime = item3["offTime"].floatValue();
+                            spikes.initialDelay = item3["initialDelay"].FloatValue();
+                            spikes.onTime = item3["onTime"].FloatValue();
+                            spikes.offTime = item3["offTime"].FloatValue();
                             spikes.electroTimer = 0f;
-                            spikes.turnElectroOff();
+                            spikes.TurnElectroOff();
                             spikes.electroTimer += spikes.initialDelay;
-                            spikes.updateRotation();
+                            spikes.UpdateRotation();
                         }
                         else
                         {
                             spikes.electro = false;
                         }
-                        this.spikes.addObject(spikes);
+                        _ = this.spikes.AddObject(spikes);
                     }
                     else if (item3.Name == "rotatedCircle")
                     {
-                        float num9 = (item3["x"].intValue() * num) + num3 + num4;
-                        float num10 = (item3["y"].intValue() * num) + num2 + num5;
-                        float num11 = item3["size"].intValue();
-                        float d = item3["handleAngle"].intValue();
-                        bool hasOneHandle = item3["oneHandle"].boolValue();
-                        RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().init();
+                        float num9 = (item3["x"].IntValue() * num) + num3 + num4;
+                        float num10 = (item3["y"].IntValue() * num) + num2 + num5;
+                        float num11 = item3["size"].IntValue();
+                        float d = item3["handleAngle"].IntValue();
+                        bool hasOneHandle = item3["oneHandle"].BoolValue();
+                        RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
                         rotatedCircle.anchor = 18;
                         rotatedCircle.x = num9;
                         rotatedCircle.y = num10;
                         rotatedCircle.rotation = d;
-                        rotatedCircle.inithanlde1 = rotatedCircle.handle1 = vect(rotatedCircle.x - (num11 * num), rotatedCircle.y);
-                        rotatedCircle.inithanlde2 = rotatedCircle.handle2 = vect(rotatedCircle.x + (num11 * num), rotatedCircle.y);
-                        rotatedCircle.handle1 = vectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = vectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.setSize(num11);
-                        rotatedCircle.setHasOneHandle(hasOneHandle);
-                        rotatedCircles.addObject(rotatedCircle);
+                        rotatedCircle.inithanlde1 = rotatedCircle.handle1 = Vect(rotatedCircle.x - (num11 * num), rotatedCircle.y);
+                        rotatedCircle.inithanlde2 = rotatedCircle.handle2 = Vect(rotatedCircle.x + (num11 * num), rotatedCircle.y);
+                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.SetSize(num11);
+                        rotatedCircle.SetHasOneHandle(hasOneHandle);
+                        _ = rotatedCircles.AddObject(rotatedCircle);
                     }
                     else if (item3.Name is "bouncer1" or "bouncer2")
                     {
-                        float px2 = (item3["x"].intValue() * num) + num3 + num4;
-                        float py2 = (item3["y"].intValue() * num) + num2 + num5;
-                        int w2 = item3["size"].intValue();
-                        double an2 = item3["angle"].intValue();
-                        Bouncer bouncer = (Bouncer)new Bouncer().initWithPosXYWidthAndAngle(px2, py2, w2, an2);
-                        bouncer.parseMover(item3);
-                        bouncers.addObject(bouncer);
+                        float px2 = (item3["x"].IntValue() * num) + num3 + num4;
+                        float py2 = (item3["y"].IntValue() * num) + num2 + num5;
+                        int w2 = item3["size"].IntValue();
+                        double an2 = item3["angle"].IntValue();
+                        Bouncer bouncer = (Bouncer)new Bouncer().InitWithPosXYWidthAndAngle(px2, py2, w2, an2);
+                        bouncer.ParseMover(item3);
+                        _ = bouncers.AddObject(bouncer);
                     }
                     else if (item3.Name == "grab")
                     {
-                        float hx = (item3["x"].intValue() * num) + num3 + num4;
-                        float hy = (item3["y"].intValue() * num) + num2 + num5;
-                        float len = item3["length"].intValue() * num;
-                        float num12 = item3["radius"].floatValue();
-                        bool wheel = item3["wheel"].isEqualToString("true");
-                        float k = item3["moveLength"].floatValue() * num;
-                        bool v = item3["moveVertical"].isEqualToString("true");
-                        float o = item3["moveOffset"].floatValue() * num;
-                        bool spider = item3["spider"].isEqualToString("true");
-                        bool flag = item3["part"].isEqualToString("L");
-                        bool flag2 = item3["hidePath"].isEqualToString("true");
-                        Grab grab = (Grab)new Grab().init();
+                        float hx = (item3["x"].IntValue() * num) + num3 + num4;
+                        float hy = (item3["y"].IntValue() * num) + num2 + num5;
+                        float len = item3["length"].IntValue() * num;
+                        float num12 = item3["radius"].FloatValue();
+                        bool wheel = item3["wheel"].IsEqualToString("true");
+                        float k = item3["moveLength"].FloatValue() * num;
+                        bool v = item3["moveVertical"].IsEqualToString("true");
+                        float o = item3["moveOffset"].FloatValue() * num;
+                        bool spider = item3["spider"].IsEqualToString("true");
+                        bool flag = item3["part"].IsEqualToString("L");
+                        bool flag2 = item3["hidePath"].IsEqualToString("true");
+                        Grab grab = (Grab)new Grab().Init();
                         grab.initial_x = grab.x = hx;
                         grab.initial_y = grab.y = hy;
                         grab.initial_rotation = 0f;
                         grab.wheel = wheel;
-                        grab.setSpider(spider);
-                        grab.parseMover(item3);
+                        grab.SetSpider(spider);
+                        grab.ParseMover(item3);
                         if (grab.mover != null)
                         {
-                            grab.setBee();
+                            grab.SetBee();
                             if (!flag2)
                             {
                                 int num13 = 3;
-                                bool flag3 = item3["path"].hasPrefix(NSS("R"));
+                                bool flag3 = item3["path"].HasPrefix(NSS("R"));
                                 for (int l = 0; l < grab.mover.pathLen - 1; l++)
                                 {
                                     if (!flag3 || l % num13 == 0)
                                     {
-                                        pollenDrawer.fillWithPolenFromPathIndexToPathIndexGrab(l, l + 1, grab);
+                                        pollenDrawer.FillWithPolenFromPathIndexToPathIndexGrab(l, l + 1, grab);
                                     }
                                 }
                                 if (grab.mover.pathLen > 2)
                                 {
-                                    pollenDrawer.fillWithPolenFromPathIndexToPathIndexGrab(0, grab.mover.pathLen - 1, grab);
+                                    pollenDrawer.FillWithPolenFromPathIndexToPathIndexGrab(0, grab.mover.pathLen - 1, grab);
                                 }
                             }
                         }
@@ -659,35 +655,35 @@ namespace CutTheRope.game
                             {
                                 constraintedPoint = flag ? starL : starR;
                             }
-                            Bungee bungee = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.x, constraintedPoint.pos.y, len);
+                            Bungee bungee = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.x, constraintedPoint.pos.y, len);
                             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
-                            grab.setRope(bungee);
+                            grab.SetRope(bungee);
                         }
-                        grab.setRadius(num12);
-                        grab.setMoveLengthVerticalOffset(k, v, o);
-                        bungees.addObject(grab);
+                        grab.SetRadius(num12);
+                        grab.SetMoveLengthVerticalOffset(k, v, o);
+                        _ = bungees.AddObject(grab);
                     }
                     else if (item3.Name == "target")
                     {
-                        int pack = ((CTRRootController)Application.sharedRootController()).getPack();
+                        int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
                         support = Image.Image_createWithResIDQuad(100, pack);
-                        support.retain();
-                        support.doRestoreCutTransparency();
+                        support.Retain();
+                        support.DoRestoreCutTransparency();
                         support.anchor = 18;
                         target = CharAnimations.CharAnimations_createWithResID(80);
-                        target.doRestoreCutTransparency();
+                        target.DoRestoreCutTransparency();
                         target.passColorToChilds = false;
                         NSString nSString3 = item3["x"];
-                        target.x = support.x = (nSString3.intValue() * num) + num3 + num4;
+                        target.x = support.x = (nSString3.IntValue() * num) + num3 + num4;
                         NSString nSString4 = item3["y"];
-                        target.y = support.y = (nSString4.intValue() * num) + num2 + num5;
-                        target.addImage(101);
-                        target.addImage(102);
+                        target.y = support.y = (nSString4.IntValue() * num) + num2 + num5;
+                        target.AddImage(101);
+                        target.AddImage(102);
                         target.bb = MakeRectangle(264.0, 350.0, 108.0, 2.0);
-                        target.addAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 18);
-                        target.addAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 43, 67);
+                        target.AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 18);
+                        target.AddAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 43, 67);
                         int num14 = 68;
-                        target.addAnimationWithIDDelayLoopCountSequence(2, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 32, num14,
+                        target.AddAnimationWithIDDelayLoopCountSequence(2, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 32, num14,
                         [
                             num14 + 1,
                             num14 + 2,
@@ -721,38 +717,38 @@ namespace CutTheRope.game
                             num14 + 14,
                             num14 + 15
                         ]);
-                        target.addAnimationWithIDDelayLoopFirstLast(7, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 27);
-                        target.addAnimationWithIDDelayLoopFirstLast(8, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 28, 31);
-                        target.addAnimationWithIDDelayLoopFirstLast(9, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 32, 40);
-                        target.addAnimationWithIDDelayLoopFirstLast(6, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 28, 31);
-                        target.addAnimationWithIDDelayLoopFirstLast(101, 10, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 47, 76);
-                        target.addAnimationWithIDDelayLoopFirstLast(101, 3, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 19);
-                        target.addAnimationWithIDDelayLoopFirstLast(101, 4, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 20, 46);
-                        target.addAnimationWithIDDelayLoopFirstLast(102, 5, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
-                        target.switchToAnimationatEndOfAnimationDelay(9, 6, 0.05f);
-                        target.switchToAnimationatEndOfAnimationDelay(101, 4, 80, 8, 0.05f);
-                        target.switchToAnimationatEndOfAnimationDelay(80, 0, 101, 10, 0.05f);
-                        target.switchToAnimationatEndOfAnimationDelay(80, 0, 80, 1, 0.05f);
-                        target.switchToAnimationatEndOfAnimationDelay(80, 0, 80, 2, 0.05f);
-                        target.switchToAnimationatEndOfAnimationDelay(80, 0, 101, 3, 0.05f);
-                        target.switchToAnimationatEndOfAnimationDelay(80, 0, 101, 4, 0.05f);
-                        target.retain();
-                        if (CTRRootController.isShowGreeting())
+                        target.AddAnimationWithIDDelayLoopFirstLast(7, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 27);
+                        target.AddAnimationWithIDDelayLoopFirstLast(8, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 28, 31);
+                        target.AddAnimationWithIDDelayLoopFirstLast(9, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 32, 40);
+                        target.AddAnimationWithIDDelayLoopFirstLast(6, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 28, 31);
+                        target.AddAnimationWithIDDelayLoopFirstLast(101, 10, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 47, 76);
+                        target.AddAnimationWithIDDelayLoopFirstLast(101, 3, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 19);
+                        target.AddAnimationWithIDDelayLoopFirstLast(101, 4, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 20, 46);
+                        target.AddAnimationWithIDDelayLoopFirstLast(102, 5, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
+                        target.SwitchToAnimationatEndOfAnimationDelay(9, 6, 0.05f);
+                        target.SwitchToAnimationatEndOfAnimationDelay(101, 4, 80, 8, 0.05f);
+                        target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 10, 0.05f);
+                        target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 80, 1, 0.05f);
+                        target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 80, 2, 0.05f);
+                        target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 3, 0.05f);
+                        target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 4, 0.05f);
+                        target.Retain();
+                        if (CTRRootController.IsShowGreeting())
                         {
-                            dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_showGreeting), null, 1.3f);
-                            CTRRootController.setShowGreeting(false);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
+                            CTRRootController.SetShowGreeting(false);
                         }
-                        target.playTimeline(0);
-                        target.getTimeline(0).delegateTimelineDelegate = this;
-                        target.setPauseAtIndexforAnimation(8, 7);
+                        target.PlayTimeline(0);
+                        target.GetTimeline(0).delegateTimelineDelegate = this;
+                        target.SetPauseAtIndexforAnimation(8, 7);
                         blink = Animation.Animation_createWithResID(80);
                         blink.parentAnchor = 9;
                         blink.visible = false;
-                        blink.addAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 41, [41, 42, 42, 42]);
-                        blink.setActionTargetParamSubParamAtIndexforAnimation("ACTION_SET_VISIBLE", blink, 0, 0, 2, 0);
+                        blink.AddAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 41, [41, 42, 42, 42]);
+                        blink.SetActionTargetParamSubParamAtIndexforAnimation("ACTION_SET_VISIBLE", blink, 0, 0, 2, 0);
                         blinkTimer = 3;
-                        blink.doRestoreCutTransparency();
-                        target.addChild(blink);
+                        blink.DoRestoreCutTransparency();
+                        _ = target.AddChild(blink);
                         idlesTimer = RND_RANGE(5, 20);
                     }
                 }
@@ -761,15 +757,15 @@ namespace CutTheRope.game
             {
                 candyBubbleAnimationL = Animation.Animation_createWithResID(72);
                 candyBubbleAnimationL.parentAnchor = candyBubbleAnimationL.anchor = 18;
-                candyBubbleAnimationL.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
-                candyBubbleAnimationL.playTimeline(0);
-                candyL.addChild(candyBubbleAnimationL);
+                _ = candyBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                candyBubbleAnimationL.PlayTimeline(0);
+                _ = candyL.AddChild(candyBubbleAnimationL);
                 candyBubbleAnimationL.visible = false;
                 candyBubbleAnimationR = Animation.Animation_createWithResID(72);
                 candyBubbleAnimationR.parentAnchor = candyBubbleAnimationR.anchor = 18;
-                candyBubbleAnimationR.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
-                candyBubbleAnimationR.playTimeline(0);
-                candyR.addChild(candyBubbleAnimationR);
+                _ = candyBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                candyBubbleAnimationR.PlayTimeline(0);
+                _ = candyR.AddChild(candyBubbleAnimationR);
                 candyBubbleAnimationR.visible = false;
             }
             foreach (object obj in rotatedCircles)
@@ -778,7 +774,7 @@ namespace CutTheRope.game
                 rotatedCircle2.operating = -1;
                 rotatedCircle2.circlesArray = rotatedCircles;
             }
-            startCamera();
+            StartCamera();
             tummyTeasers = 0;
             starsCollected = 0;
             candyBubble = null;
@@ -788,38 +784,38 @@ namespace CutTheRope.game
             noCandy = twoParts != 2;
             noCandyL = false;
             noCandyR = false;
-            blink.playTimeline(0);
+            blink.PlayTimeline(0);
             spiderTookCandy = false;
             time = 0f;
             score = 0;
             gravityNormal = true;
-            MaterialPoint.globalGravity = vect(0f, 784f);
+            MaterialPoint.globalGravity = Vect(0f, 784f);
             dimTime = 0f;
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
-            dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_doCandyBlink), null, 1.0);
-            Text text = Text.createWithFontandString(3, (cTRRootController.getPack() + 1).ToString() + " - " + (cTRRootController.getLevel() + 1).ToString());
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1.0);
+            Text text = Text.CreateWithFontandString(3, (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture));
             text.anchor = 33;
-            Text text2 = Text.createWithFontandString(3, Application.getString(655376));
+            Text text2 = Text.CreateWithFontandString(3, Application.GetString(655376));
             text2.anchor = 33;
             text2.parentAnchor = 9;
-            text.setName("levelLabel");
-            text.x = 15f + canvas.xOffsetScaled;
+            text.SetName("levelLabel");
+            text.x = 15f + Canvas.xOffsetScaled;
             text.y = SCREEN_HEIGHT + 15f;
             text2.y = 60f;
             text2.rotationCenterX -= text2.width / 2f;
             text2.scaleX = text2.scaleY = 0.7f;
-            text.addChild(text2);
-            Timeline timeline6 = new Timeline().initWithMaxKeyFramesOnTrack(5);
-            timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-            timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            text.addTimelinewithID(timeline6, 0);
-            text.playTimeline(0);
+            _ = text.AddChild(text2);
+            Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+            text.AddTimelinewithID(timeline6, 0);
+            text.PlayTimeline(0);
             timeline6.delegateTimelineDelegate = staticAniPool;
-            staticAniPool.addChild(text);
+            _ = staticAniPool.AddChild(text);
             for (int m = 0; m < 5; m++)
             {
                 dragging[m] = false;
@@ -827,22 +823,22 @@ namespace CutTheRope.game
             }
             if (clickToCut)
             {
-                resetBungeeHighlight();
+                ResetBungeeHighlight();
             }
             Global.MouseCursor.ReleaseButtons();
-            CTRRootController.logEvent("IG_SHOWN");
+            CTRRootController.LogEvent("IG_SHOWN");
         }
 
-        public virtual void startCamera()
+        public void StartCamera()
         {
             if (mapWidth > SCREEN_WIDTH || mapHeight > SCREEN_HEIGHT)
             {
                 ignoreTouches = true;
                 fastenCamera = false;
-                camera.type = CAMERA_TYPE.CAMERA_SPEED_PIXELS;
+                camera.type = CAMERATYPE.CAMERASPEEDPIXELS;
                 camera.speed = 20f;
                 cameraMoveMode = 0;
-                ConstraintedPoint constraintedPoint = (twoParts != 2) ? starL : star;
+                ConstraintedPoint constraintedPoint = twoParts != 2 ? starL : star;
                 float num;
                 float num2;
                 if (mapWidth > SCREEN_WIDTH)
@@ -872,22 +868,22 @@ namespace CutTheRope.game
                 float num3 = constraintedPoint.pos.y - (SCREEN_HEIGHT / 2f);
                 float num4 = FIT_TO_BOUNDARIES(num6, 0.0, (double)(mapWidth - SCREEN_WIDTH));
                 float num5 = FIT_TO_BOUNDARIES((double)num3, 0.0, (double)(mapHeight - SCREEN_HEIGHT));
-                camera.moveToXYImmediate(num, num2, true);
-                initialCameraToStarDistance = vectDistance(camera.pos, vect(num4, num5));
+                camera.MoveToXYImmediate(num, num2, true);
+                initialCameraToStarDistance = VectDistance(camera.pos, Vect(num4, num5));
                 return;
             }
             ignoreTouches = false;
-            camera.moveToXYImmediate(0f, 0f, true);
+            camera.MoveToXYImmediate(0f, 0f, true);
         }
 
-        public virtual void doCandyBlink()
+        public void DoCandyBlink()
         {
-            candyBlink.playTimeline(0);
+            candyBlink.PlayTimeline(0);
         }
 
-        public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
-            if (rotatedCircles.getObjectIndex(t.element) != -1 || i != 1)
+            if (rotatedCircles.GetObjectIndex(t.element) != -1 || i != 1)
             {
                 return;
             }
@@ -895,7 +891,7 @@ namespace CutTheRope.game
             if (blinkTimer == 0)
             {
                 blink.visible = true;
-                blink.playTimeline(0);
+                blink.PlayTimeline(0);
                 blinkTimer = 3;
             }
             idlesTimer--;
@@ -903,76 +899,80 @@ namespace CutTheRope.game
             {
                 if (RND_RANGE(0, 1) == 1)
                 {
-                    target.playTimeline(1);
+                    target.PlayTimeline(1);
                 }
                 else
                 {
-                    target.playTimeline(2);
+                    target.PlayTimeline(2);
                 }
                 idlesTimer = RND_RANGE(5, 20);
             }
         }
 
-        public virtual void timelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
-            if (rotatedCircles.getObjectIndex(t.element) != -1)
+            if (rotatedCircles.GetObjectIndex(t.element) != -1)
             {
                 ((RotatedCircle)t.element).removeOnNextUpdate = true;
             }
             foreach (object obj in tutorials)
             {
-                BaseElement baseElement = (BaseElement)obj;
             }
         }
 
-        public override void hide()
+        public override void Hide()
         {
             if (gravityButton != null)
             {
-                removeChild(gravityButton);
+                RemoveChild(gravityButton);
             }
-            pollenDrawer.release();
-            earthAnims?.release();
-            candy.release();
-            star.release();
-            candyL?.release();
-            candyR?.release();
-            starL.release();
-            starR.release();
-            razors.release();
-            spikes.release();
-            bungees.release();
-            stars.release();
-            bubbles.release();
-            pumps.release();
-            socks.release();
-            bouncers.release();
-            rotatedCircles.release();
-            target.release();
-            support.release();
-            tutorialImages.release();
-            tutorials.release();
+            pollenDrawer.Release();
+            earthAnims?.Release();
+            candy.Release();
+            star.Release();
+            candyL?.Release();
+            candyR?.Release();
+            starL.Release();
+            starR.Release();
+            razors.Release();
+            spikes.Release();
+            bungees.Release();
+            stars.Release();
+            bubbles.Release();
+            pumps.Release();
+            socks.Release();
+            bouncers.Release();
+            rotatedCircles.Release();
+            target.Release();
+            support.Release();
+            tutorialImages.Release();
+            tutorials.Release();
             candyL = null;
             candyR = null;
             starL = null;
             starR = null;
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
             delta = 0.016f;
-            base.update(delta);
-            dd.update(delta);
-            pollenDrawer.update(delta);
+            base.Update(delta);
+            dd.Update(delta);
+            pollenDrawer.Update(delta);
             for (int i = 0; i < 5; i++)
             {
-                for (int j = 0; j < fingerCuts[i].count(); j++)
+                for (int j = 0; j < fingerCuts[i].Count(); j++)
                 {
-                    FingerCut fingerCut = (FingerCut)fingerCuts[i].objectAtIndex(j);
-                    if (Mover.moveVariableToTarget(ref fingerCut.c.a, 0.0, 10.0, (double)delta))
+                    FingerCut fingerCut = (FingerCut)fingerCuts[i].ObjectAtIndex(j);
+                    float alpha = fingerCut.c.a;
+                    if (Mover.MoveVariableToTarget(ref alpha, 0.0f, 10.0f, (float)delta))
                     {
-                        fingerCuts[i].removeObject(fingerCut);
+                        fingerCuts[i].RemoveObject(fingerCut);
                         j--;
+                    }
+                    else
+                    {
+                        fingerCut.c.a = alpha;
                     }
                 }
             }
@@ -980,28 +980,28 @@ namespace CutTheRope.game
             {
                 foreach (object obj in earthAnims)
                 {
-                    ((Image)obj).update(delta);
+                    ((Image)obj).Update(delta);
                 }
             }
-            Mover.moveVariableToTarget(ref ropeAtOnceTimer, 0.0, 1.0, (double)delta);
-            ConstraintedPoint constraintedPoint4 = (twoParts != 2) ? starL : star;
+            _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0.0, 1.0, (double)delta);
+            ConstraintedPoint constraintedPoint4 = twoParts != 2 ? starL : star;
             float num = constraintedPoint4.pos.x - (SCREEN_WIDTH / 2f);
             double num19 = (double)(constraintedPoint4.pos.y - (SCREEN_HEIGHT / 2f));
             float num2 = FIT_TO_BOUNDARIES((double)num, 0.0, (double)(mapWidth - SCREEN_WIDTH));
             float num3 = FIT_TO_BOUNDARIES(num19, 0.0, (double)(mapHeight - SCREEN_HEIGHT));
-            camera.moveToXYImmediate(num2, num3, false);
-            if (!freezeCamera || camera.type != CAMERA_TYPE.CAMERA_SPEED_DELAY)
+            camera.MoveToXYImmediate(num2, num3, false);
+            if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
             {
-                camera.update(delta);
+                camera.Update(delta);
             }
-            if (camera.type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
+            if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
             {
                 float num4 = 100f;
                 float num5 = 800f;
                 float num6 = 400f;
                 float a = 1000f;
                 float a2 = 300f;
-                float num7 = vectDistance(camera.pos, vect(num2, num3));
+                float num7 = VectDistance(camera.pos, Vect(num2, num3));
                 if (num7 < num4)
                 {
                     ignoreTouches = false;
@@ -1025,7 +1025,7 @@ namespace CutTheRope.game
                 }
                 if ((double)Math.Abs(camera.pos.x - num2) < 1.0 && (double)Math.Abs(camera.pos.y - num3) < 1.0)
                 {
-                    camera.type = CAMERA_TYPE.CAMERA_SPEED_DELAY;
+                    camera.type = CAMERATYPE.CAMERASPEEDDELAY;
                     camera.speed = 14f;
                 }
             }
@@ -1033,28 +1033,28 @@ namespace CutTheRope.game
             {
                 time += delta;
             }
-            if (bungees.count() > 0)
+            if (bungees.Count() > 0)
             {
                 bool flag = false;
                 bool flag2 = false;
                 bool flag3 = false;
-                int num8 = bungees.count();
+                int num8 = bungees.Count();
                 int k = 0;
                 while (k < num8)
                 {
-                    Grab grab = (Grab)bungees.objectAtIndex(k);
-                    grab.update(delta);
+                    Grab grab = (Grab)bungees.ObjectAtIndex(k);
+                    grab.Update(delta);
                     Bungee rope = grab.rope;
                     if (grab.mover != null)
                     {
                         if (grab.rope != null)
                         {
-                            grab.rope.bungeeAnchor.pos = vect(grab.x, grab.y);
+                            grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
                             grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
                         }
                         if (grab.radius != -1f)
                         {
-                            grab.reCalcCircle();
+                            grab.ReCalcCircle();
                         }
                     }
                     if (rope == null)
@@ -1063,18 +1063,18 @@ namespace CutTheRope.game
                     }
                     if (rope.cut == -1 || rope.cutTime != 0.0)
                     {
-                        rope?.update(delta * ropePhysicsSpeed);
+                        rope?.Update(delta * ropePhysicsSpeed);
                         if (!grab.hasSpider)
                         {
                             goto IL_0478;
                         }
-                        if (camera.type != CAMERA_TYPE.CAMERA_SPEED_PIXELS || !ignoreTouches)
+                        if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                         {
-                            grab.updateSpider(delta);
+                            grab.UpdateSpider(delta);
                         }
                         if (grab.spiderPos == -1f)
                         {
-                            spiderWon(grab);
+                            SpiderWon(grab);
                             break;
                         }
                         goto IL_0478;
@@ -1087,41 +1087,41 @@ namespace CutTheRope.game
                     {
                         if (twoParts != 2)
                         {
-                            if (!noCandyL && vectDistance(vect(grab.x, grab.y), starL.pos) <= grab.radius + 42f)
+                            if (!noCandyL && VectDistance(Vect(grab.x, grab.y), starL.pos) <= grab.radius + 42f)
                             {
-                                Bungee bungee = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.x, starL.pos.y, grab.radius + 42f);
+                                Bungee bungee = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.x, starL.pos.y, grab.radius + 42f);
                                 bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                                 grab.hideRadius = true;
-                                grab.setRope(bungee);
-                                CTRSoundMgr._playSound(24);
+                                grab.SetRope(bungee);
+                                CTRSoundMgr.PlaySound(24);
                                 if (grab.mover != null)
                                 {
-                                    CTRSoundMgr._playSound(44);
+                                    CTRSoundMgr.PlaySound(44);
                                 }
                             }
-                            if (!noCandyR && grab.rope == null && vectDistance(vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
+                            if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
                             {
-                                Bungee bungee2 = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.x, starR.pos.y, grab.radius + 42f);
+                                Bungee bungee2 = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.x, starR.pos.y, grab.radius + 42f);
                                 bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
                                 grab.hideRadius = true;
-                                grab.setRope(bungee2);
-                                CTRSoundMgr._playSound(24);
+                                grab.SetRope(bungee2);
+                                CTRSoundMgr.PlaySound(24);
                                 if (grab.mover != null)
                                 {
-                                    CTRSoundMgr._playSound(44);
+                                    CTRSoundMgr.PlaySound(44);
                                 }
                             }
                         }
-                        else if (vectDistance(vect(grab.x, grab.y), star.pos) <= grab.radius + 42f)
+                        else if (VectDistance(Vect(grab.x, grab.y), star.pos) <= grab.radius + 42f)
                         {
-                            Bungee bungee3 = (Bungee)new Bungee().initWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.x, star.pos.y, grab.radius + 42f);
+                            Bungee bungee3 = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.x, star.pos.y, grab.radius + 42f);
                             bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
                             grab.hideRadius = true;
-                            grab.setRope(bungee3);
-                            CTRSoundMgr._playSound(24);
+                            grab.SetRope(bungee3);
+                            CTRSoundMgr.PlaySound(24);
                             if (grab.mover != null)
                             {
-                                CTRSoundMgr._playSound(44);
+                                CTRSoundMgr.PlaySound(44);
                             }
                         }
                     }
@@ -1130,8 +1130,8 @@ namespace CutTheRope.game
                         goto IL_08D4;
                     }
                     MaterialPoint bungeeAnchor = rope.bungeeAnchor;
-                    ConstraintedPoint constraintedPoint2 = rope.parts[rope.parts.Count - 1];
-                    Vector v = vectSub(bungeeAnchor.pos, constraintedPoint2.pos);
+                    ConstraintedPoint constraintedPoint2 = rope.parts[^1];
+                    Vector v = VectSub(bungeeAnchor.pos, constraintedPoint2.pos);
                     bool flag4 = false;
                     if (twoParts != 2)
                     {
@@ -1150,10 +1150,10 @@ namespace CutTheRope.game
                     }
                     if (rope.relaxed != 0 && rope.cut == -1 && flag4)
                     {
-                        float num9 = RADIANS_TO_DEGREES(vectAngleNormalized(v));
+                        float num9 = RADIANS_TO_DEGREES(VectAngleNormalized(v));
                         if (twoParts != 2)
                         {
-                            GameObject gameObject = (constraintedPoint2 == starL) ? candyL : candyR;
+                            GameObject gameObject = constraintedPoint2 == starL ? candyL : candyR;
                             if (!rope.chosenOne)
                             {
                                 rope.initialCandleAngle = gameObject.rotation - num9;
@@ -1207,31 +1207,31 @@ namespace CutTheRope.game
             }
             if (!noCandy)
             {
-                star.update(delta * ropePhysicsSpeed);
+                star.Update(delta * ropePhysicsSpeed);
                 candy.x = star.pos.x;
                 candy.y = star.pos.y;
-                candy.update(delta);
-                calculateTopLeft(candy);
+                candy.Update(delta);
+                CalculateTopLeft(candy);
             }
             if (twoParts != 2)
             {
-                candyL.update(delta);
-                starL.update(delta * ropePhysicsSpeed);
-                candyR.update(delta);
-                starR.update(delta * ropePhysicsSpeed);
+                candyL.Update(delta);
+                starL.Update(delta * ropePhysicsSpeed);
+                candyR.Update(delta);
+                starR.Update(delta * ropePhysicsSpeed);
                 if (twoParts == 1)
                 {
                     for (int l = 0; l < 30; l++)
                     {
-                        ConstraintedPoint.satisfyConstraints(starL);
-                        ConstraintedPoint.satisfyConstraints(starR);
+                        ConstraintedPoint.SatisfyConstraints(starL);
+                        ConstraintedPoint.SatisfyConstraints(starR);
                     }
                 }
                 if (partsDist > 0.0)
                 {
-                    if (Mover.moveVariableToTarget(ref partsDist, 0.0, 200.0, (double)delta))
+                    if (Mover.MoveVariableToTarget(ref partsDist, 0.0, 200.0, (double)delta))
                     {
-                        CTRSoundMgr._playSound(40);
+                        CTRSoundMgr.PlaySound(40);
                         twoParts = 2;
                         noCandy = false;
                         noCandyL = true;
@@ -1240,7 +1240,7 @@ namespace CutTheRope.game
                         Preferences._setIntforKey(num20, "PREFS_CANDIES_UNITED", false);
                         if (num20 == 100)
                         {
-                            CTRRootController.postAchievementName("1432722351", ACHIEVEMENT_STRING("\"Romantic Soul\""));
+                            CTRRootController.PostAchievementName("1432722351", ACHIEVEMENT_STRING("\"Romantic Soul\""));
                         }
                         if (candyBubbleL != null || candyBubbleR != null)
                         {
@@ -1254,85 +1254,85 @@ namespace CutTheRope.game
                         star.pos.y = starL.pos.y;
                         candy.x = star.pos.x;
                         candy.y = star.pos.y;
-                        calculateTopLeft(candy);
-                        Vector vector = vectSub(starL.pos, starL.prevPos);
-                        Vector vector2 = vectSub(starR.pos, starR.prevPos);
-                        Vector v2 = vect((vector.x + vector2.x) / 2f, (vector.y + vector2.y) / 2f);
-                        star.prevPos = vectSub(star.pos, v2);
-                        int num10 = bungees.count();
+                        CalculateTopLeft(candy);
+                        Vector vector = VectSub(starL.pos, starL.prevPos);
+                        Vector vector2 = VectSub(starR.pos, starR.prevPos);
+                        Vector v2 = Vect((vector.x + vector2.x) / 2f, (vector.y + vector2.y) / 2f);
+                        star.prevPos = VectSub(star.pos, v2);
+                        int num10 = bungees.Count();
                         for (int m = 0; m < num10; m++)
                         {
-                            Bungee rope2 = ((Grab)bungees.objectAtIndex(m)).rope;
+                            Bungee rope2 = ((Grab)bungees.ObjectAtIndex(m)).rope;
                             if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == starL || rope2.tail == starR))
                             {
-                                ConstraintedPoint constraintedPoint3 = rope2.parts[rope2.parts.Count - 2];
-                                int num11 = (int)rope2.tail.restLengthFor(constraintedPoint3);
-                                star.addConstraintwithRestLengthofType(constraintedPoint3, num11, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                                ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
+                                int num11 = (int)rope2.tail.RestLengthFor(constraintedPoint3);
+                                star.AddConstraintwithRestLengthofType(constraintedPoint3, num11, Constraint.CONSTRAINT.DISTANCE);
                                 rope2.tail = star;
-                                rope2.parts[rope2.parts.Count - 1] = star;
+                                rope2.parts[^1] = star;
                                 rope2.initialCandleAngle = 0f;
                                 rope2.chosenOne = false;
                             }
                         }
                         Animation animation = Animation.Animation_createWithResID(63);
-                        animation.doRestoreCutTransparency();
+                        animation.DoRestoreCutTransparency();
                         animation.x = candy.x;
                         animation.y = candy.y;
                         animation.anchor = 18;
-                        int n = animation.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 21, 25);
-                        animation.getTimeline(n).delegateTimelineDelegate = aniPool;
-                        animation.playTimeline(0);
-                        aniPool.addChild(animation);
+                        int n = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 21, 25);
+                        animation.GetTimeline(n).delegateTimelineDelegate = aniPool;
+                        animation.PlayTimeline(0);
+                        _ = aniPool.AddChild(animation);
                     }
                     else
                     {
-                        starL.changeRestLengthToFor(partsDist, starR);
-                        starR.changeRestLengthToFor(partsDist, starL);
+                        starL.ChangeRestLengthToFor(partsDist, starR);
+                        starR.ChangeRestLengthToFor(partsDist, starL);
                     }
                 }
-                if (!noCandyL && !noCandyR && GameObject.objectsIntersect(candyL, candyR) && twoParts == 0)
+                if (!noCandyL && !noCandyR && GameObject.ObjectsIntersect(candyL, candyR) && twoParts == 0)
                 {
                     twoParts = 1;
-                    partsDist = vectDistance(starL.pos, starR.pos);
-                    starL.addConstraintwithRestLengthofType(starR, partsDist, Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
-                    starR.addConstraintwithRestLengthofType(starL, partsDist, Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
+                    partsDist = VectDistance(starL.pos, starR.pos);
+                    starL.AddConstraintwithRestLengthofType(starR, partsDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    starR.AddConstraintwithRestLengthofType(starL, partsDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
                 }
             }
-            target.update(delta);
-            if (camera.type != CAMERA_TYPE.CAMERA_SPEED_PIXELS || !ignoreTouches)
+            target.Update(delta);
+            if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
             {
                 foreach (object obj2 in stars)
                 {
                     Star star = (Star)obj2;
-                    star.update(delta);
+                    star.Update(delta);
                     if (star.timeout > 0.0 && star.time == 0.0)
                     {
-                        star.getTimeline(1).delegateTimelineDelegate = aniPool;
-                        aniPool.addChild(star);
-                        stars.removeObject(star);
-                        star.timedAnim.playTimeline(1);
-                        star.playTimeline(1);
+                        star.GetTimeline(1).delegateTimelineDelegate = aniPool;
+                        _ = aniPool.AddChild(star);
+                        stars.RemoveObject(star);
+                        star.timedAnim.PlayTimeline(1);
+                        star.PlayTimeline(1);
                         break;
                     }
-                    if ((twoParts == 2) ? (GameObject.objectsIntersect(candy, star) && !noCandy) : ((GameObject.objectsIntersect(candyL, star) && !noCandyL) || (GameObject.objectsIntersect(candyR, star) && !noCandyR)))
+                    if (twoParts == 2 ? GameObject.ObjectsIntersect(candy, star) && !noCandy : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) || (GameObject.ObjectsIntersect(candyR, star) && !noCandyR))
                     {
-                        candyBlink.playTimeline(1);
+                        candyBlink.PlayTimeline(1);
                         starsCollected++;
-                        hudStar[starsCollected - 1].playTimeline(0);
+                        hudStar[starsCollected - 1].PlayTimeline(0);
                         Animation animation2 = Animation.Animation_createWithResID(71);
-                        animation2.doRestoreCutTransparency();
+                        animation2.DoRestoreCutTransparency();
                         animation2.x = star.x;
                         animation2.y = star.y;
                         animation2.anchor = 18;
-                        int n2 = animation2.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
-                        animation2.getTimeline(n2).delegateTimelineDelegate = aniPool;
-                        animation2.playTimeline(0);
-                        aniPool.addChild(animation2);
-                        stars.removeObject(star);
-                        CTRSoundMgr._playSound(25 + starsCollected - 1);
-                        if (target.getCurrentTimelineIndex() == 0)
+                        int n2 = animation2.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
+                        animation2.GetTimeline(n2).delegateTimelineDelegate = aniPool;
+                        animation2.PlayTimeline(0);
+                        _ = aniPool.AddChild(animation2);
+                        stars.RemoveObject(star);
+                        CTRSoundMgr.PlaySound(25 + starsCollected - 1);
+                        if (target.GetCurrentTimelineIndex() == 0)
                         {
-                            target.playAnimationtimeline(101, 3);
+                            target.PlayAnimationtimeline(101, 3);
                             break;
                         }
                         break;
@@ -1342,48 +1342,48 @@ namespace CutTheRope.game
             foreach (object obj3 in bubbles)
             {
                 Bubble bubble3 = (Bubble)obj3;
-                bubble3.update(delta);
+                bubble3.Update(delta);
                 float num12 = 85f;
                 if (twoParts != 2)
                 {
-                    if (!noCandyL && !bubble3.popped && pointInRect(candyL.x, candyL.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                    if (!noCandyL && !bubble3.popped && PointInRect(candyL.x, candyL.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
                     {
                         if (candyBubbleL != null)
                         {
-                            popBubbleAtXY(bubble3.x, bubble3.y);
+                            PopBubbleAtXY(bubble3.x, bubble3.y);
                         }
                         candyBubbleL = bubble3;
                         candyBubbleAnimationL.visible = true;
-                        CTRSoundMgr._playSound(13);
+                        CTRSoundMgr.PlaySound(13);
                         bubble3.popped = true;
-                        bubble3.removeChildWithID(0);
+                        bubble3.RemoveChildWithID(0);
                         break;
                     }
-                    if (!noCandyR && !bubble3.popped && pointInRect(candyR.x, candyR.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                    if (!noCandyR && !bubble3.popped && PointInRect(candyR.x, candyR.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
                     {
                         if (candyBubbleR != null)
                         {
-                            popBubbleAtXY(bubble3.x, bubble3.y);
+                            PopBubbleAtXY(bubble3.x, bubble3.y);
                         }
                         candyBubbleR = bubble3;
                         candyBubbleAnimationR.visible = true;
-                        CTRSoundMgr._playSound(13);
+                        CTRSoundMgr.PlaySound(13);
                         bubble3.popped = true;
-                        bubble3.removeChildWithID(0);
+                        bubble3.RemoveChildWithID(0);
                         break;
                     }
                 }
-                else if (!noCandy && !bubble3.popped && pointInRect(candy.x, candy.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                else if (!noCandy && !bubble3.popped && PointInRect(candy.x, candy.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
                 {
                     if (candyBubble != null)
                     {
-                        popBubbleAtXY(bubble3.x, bubble3.y);
+                        PopBubbleAtXY(bubble3.x, bubble3.y);
                     }
                     candyBubble = bubble3;
                     candyBubbleAnimation.visible = true;
-                    CTRSoundMgr._playSound(13);
+                    CTRSoundMgr.PlaySound(13);
                     bubble3.popped = true;
-                    bubble3.removeChildWithID(0);
+                    bubble3.RemoveChildWithID(0);
                     break;
                 }
                 if (!bubble3.withoutShadow)
@@ -1391,7 +1391,7 @@ namespace CutTheRope.game
                     foreach (object obj4 in rotatedCircles)
                     {
                         RotatedCircle rotatedCircle5 = (RotatedCircle)obj4;
-                        if (vectDistance(vect(bubble3.x, bubble3.y), vect(rotatedCircle5.x, rotatedCircle5.y)) < rotatedCircle5.sizeInPixels)
+                        if (VectDistance(Vect(bubble3.x, bubble3.y), Vect(rotatedCircle5.x, rotatedCircle5.y)) < rotatedCircle5.sizeInPixels)
                         {
                             bubble3.withoutShadow = true;
                         }
@@ -1400,19 +1400,19 @@ namespace CutTheRope.game
             }
             foreach (object obj5 in tutorials)
             {
-                ((Text)obj5).update(delta);
+                ((Text)obj5).Update(delta);
             }
             foreach (object obj6 in tutorialImages)
             {
-                ((GameObject)obj6).update(delta);
+                ((GameObject)obj6).Update(delta);
             }
             foreach (object obj7 in pumps)
             {
                 Pump pump = (Pump)obj7;
-                pump.update(delta);
-                if (Mover.moveVariableToTarget(ref pump.pumpTouchTimer, 0.0, 1.0, (double)delta))
+                pump.Update(delta);
+                if (Mover.MoveVariableToTarget(ref pump.pumpTouchTimer, 0.0, 1.0, (double)delta))
                 {
-                    operatePump(pump);
+                    OperatePump(pump);
                 }
             }
             RotatedCircle rotatedCircle6 = null;
@@ -1422,59 +1422,59 @@ namespace CutTheRope.game
                 foreach (object obj9 in bungees)
                 {
                     Grab bungee4 = (Grab)obj9;
-                    if (vectDistance(vect(bungee4.x, bungee4.y), vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5.0) * 3f))
+                    if (VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5.0) * 3f))
                     {
-                        if (rotatedCircle7.containedObjects.getObjectIndex(bungee4) == -1)
+                        if (rotatedCircle7.containedObjects.GetObjectIndex(bungee4) == -1)
                         {
-                            rotatedCircle7.containedObjects.addObject(bungee4);
+                            _ = rotatedCircle7.containedObjects.AddObject(bungee4);
                         }
                     }
-                    else if (rotatedCircle7.containedObjects.getObjectIndex(bungee4) != -1)
+                    else if (rotatedCircle7.containedObjects.GetObjectIndex(bungee4) != -1)
                     {
-                        rotatedCircle7.containedObjects.removeObject(bungee4);
+                        rotatedCircle7.containedObjects.RemoveObject(bungee4);
                     }
                 }
                 foreach (object obj10 in bubbles)
                 {
                     Bubble bubble4 = (Bubble)obj10;
-                    if (vectDistance(vect(bubble4.x, bubble4.y), vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10.0) * 3f))
+                    if (VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10.0) * 3f))
                     {
-                        if (rotatedCircle7.containedObjects.getObjectIndex(bubble4) == -1)
+                        if (rotatedCircle7.containedObjects.GetObjectIndex(bubble4) == -1)
                         {
-                            rotatedCircle7.containedObjects.addObject(bubble4);
+                            _ = rotatedCircle7.containedObjects.AddObject(bubble4);
                         }
                     }
-                    else if (rotatedCircle7.containedObjects.getObjectIndex(bubble4) != -1)
+                    else if (rotatedCircle7.containedObjects.GetObjectIndex(bubble4) != -1)
                     {
-                        rotatedCircle7.containedObjects.removeObject(bubble4);
+                        rotatedCircle7.containedObjects.RemoveObject(bubble4);
                     }
                 }
                 if (rotatedCircle7.removeOnNextUpdate)
                 {
                     rotatedCircle6 = rotatedCircle7;
                 }
-                rotatedCircle7.update(delta);
+                rotatedCircle7.Update(delta);
             }
             if (rotatedCircle6 != null)
             {
-                rotatedCircles.removeObject(rotatedCircle6);
+                rotatedCircles.RemoveObject(rotatedCircle6);
             }
             float num13 = RTPD(20.0);
             foreach (object obj11 in socks)
             {
                 Sock sock3 = (Sock)obj11;
-                sock3.update(delta);
-                if (Mover.moveVariableToTarget(ref sock3.idleTimeout, 0.0, 1.0, (double)delta))
+                sock3.Update(delta);
+                if (Mover.MoveVariableToTarget(ref sock3.idleTimeout, 0.0, 1.0, (double)delta))
                 {
                     sock3.state = Sock.SOCK_IDLE;
                 }
                 float num14 = sock3.rotation;
                 sock3.rotation = 0f;
-                sock3.updateRotation();
-                Vector ptr = vectRotate(star.posDelta, (double)DEGREES_TO_RADIANS(0f - num14));
+                sock3.UpdateRotation();
+                Vector ptr = VectRotate(star.posDelta, (double)DEGREES_TO_RADIANS(0f - num14));
                 sock3.rotation = num14;
-                sock3.updateRotation();
-                if (ptr.y >= 0.0 && (lineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f) || lineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f)))
+                sock3.UpdateRotation();
+                if (ptr.y >= 0.0 && (LineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f) || LineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f)))
                 {
                     if (sock3.state != Sock.SOCK_IDLE)
                     {
@@ -1487,14 +1487,14 @@ namespace CutTheRope.game
                         {
                             sock3.state = Sock.SOCK_RECEIVING;
                             sock4.state = Sock.SOCK_THROWING;
-                            releaseAllRopes(false);
-                            savedSockSpeed = 0.9f * vectLength(star.v);
+                            ReleaseAllRopes(false);
+                            savedSockSpeed = 0.9f * VectLength(star.v);
                             savedSockSpeed *= 1.4f;
                             targetSock = sock4;
-                            sock3.light.playTimeline(0);
+                            sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
-                            CTRSoundMgr._playSound(45);
-                            dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_teleport), null, 0.1);
+                            CTRSoundMgr.PlaySound(45);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1);
                             break;
                         }
                     }
@@ -1507,13 +1507,13 @@ namespace CutTheRope.game
             foreach (object obj13 in razors)
             {
                 Razor razor = (Razor)obj13;
-                razor.update(delta);
-                cutWithRazorOrLine1Line2Immediate(razor, vectZero, vectZero, false);
+                razor.Update(delta);
+                _ = CutWithRazorOrLine1Line2Immediate(razor, vectZero, vectZero, false);
             }
             foreach (object obj14 in spikes)
             {
                 Spikes spike = (Spikes)obj14;
-                spike.update(delta);
+                spike.Update(delta);
                 float num15 = 15f;
                 if (!spike.electro || (spike.electro && spike.electroOn))
                 {
@@ -1521,19 +1521,19 @@ namespace CutTheRope.game
                     bool flag6;
                     if (twoParts != 2)
                     {
-                        flag6 = (lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, starL.pos.x - num15, starL.pos.y - num15, num15 * 2f, num15 * 2f) || lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, starL.pos.x - num15, starL.pos.y - num15, num15 * 2f, num15 * 2f)) && !noCandyL;
+                        flag6 = (LineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, starL.pos.x - num15, starL.pos.y - num15, num15 * 2f, num15 * 2f) || LineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, starL.pos.x - num15, starL.pos.y - num15, num15 * 2f, num15 * 2f)) && !noCandyL;
                         if (flag6)
                         {
                             flag5 = true;
                         }
                         else
                         {
-                            flag6 = (lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, starR.pos.x - num15, starR.pos.y - num15, num15 * 2f, num15 * 2f) || lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, starR.pos.x - num15, starR.pos.y - num15, num15 * 2f, num15 * 2f)) && !noCandyR;
+                            flag6 = (LineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, starR.pos.x - num15, starR.pos.y - num15, num15 * 2f, num15 * 2f) || LineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, starR.pos.x - num15, starR.pos.y - num15, num15 * 2f, num15 * 2f)) && !noCandyR;
                         }
                     }
                     else
                     {
-                        flag6 = (lineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, star.pos.x - num15, star.pos.y - num15, num15 * 2f, num15 * 2f) || lineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, star.pos.x - num15, star.pos.y - num15, num15 * 2f, num15 * 2f)) && !noCandy;
+                        flag6 = (LineInRect(spike.t1.x, spike.t1.y, spike.t2.x, spike.t2.y, star.pos.x - num15, star.pos.y - num15, num15 * 2f, num15 * 2f) || LineInRect(spike.b1.x, spike.b1.y, spike.b2.x, spike.b2.y, star.pos.x - num15, star.pos.y - num15, num15 * 2f, num15 * 2f)) && !noCandy;
                     }
                     if (flag6)
                     {
@@ -1543,27 +1543,27 @@ namespace CutTheRope.game
                             {
                                 if (candyBubbleL != null)
                                 {
-                                    popCandyBubble(true);
+                                    PopCandyBubble(true);
                                 }
                             }
                             else if (candyBubbleR != null)
                             {
-                                popCandyBubble(false);
+                                PopCandyBubble(false);
                             }
                         }
                         else if (candyBubble != null)
                         {
-                            popCandyBubble(false);
+                            PopCandyBubble(false);
                         }
                         Image image2 = Image.Image_createWithResID(63);
-                        image2.doRestoreCutTransparency();
-                        CandyBreak candyBreak = (CandyBreak)new CandyBreak().initWithTotalParticlesandImageGrid(5, image2);
+                        image2.DoRestoreCutTransparency();
+                        CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)
                         {
                             candyBreak.gravity.y = -500f;
                             candyBreak.angle = 90f;
                         }
-                        candyBreak.particlesDelegate = new Particles.ParticlesFinished(aniPool.particlesFinished);
+                        candyBreak.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
                         if (twoParts != 2)
                         {
                             if (flag5)
@@ -1585,13 +1585,13 @@ namespace CutTheRope.game
                             candyBreak.y = candy.y;
                             noCandy = true;
                         }
-                        candyBreak.startSystem(5);
-                        aniPool.addChild(candyBreak);
-                        CTRSoundMgr._playSound(14);
-                        releaseAllRopes(flag5);
+                        candyBreak.StartSystem(5);
+                        _ = aniPool.AddChild(candyBreak);
+                        CTRSoundMgr.PlaySound(14);
+                        ReleaseAllRopes(flag5);
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
-                            dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_gameLost), null, 0.3);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3);
                         }
                         return;
                     }
@@ -1600,25 +1600,25 @@ namespace CutTheRope.game
             foreach (object obj15 in bouncers)
             {
                 Bouncer bouncer = (Bouncer)obj15;
-                bouncer.update(delta);
+                bouncer.Update(delta);
                 float num16 = 40f;
                 bool flag7 = false;
                 bool flag8;
                 if (twoParts != 2)
                 {
-                    flag8 = (lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, starL.pos.x - num16, starL.pos.y - num16, num16 * 2f, num16 * 2f) || lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, starL.pos.x - num16, starL.pos.y - num16, num16 * 2f, num16 * 2f)) && !noCandyL;
+                    flag8 = (LineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, starL.pos.x - num16, starL.pos.y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, starL.pos.x - num16, starL.pos.y - num16, num16 * 2f, num16 * 2f)) && !noCandyL;
                     if (flag8)
                     {
                         flag7 = true;
                     }
                     else
                     {
-                        flag8 = (lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, starR.pos.x - num16, starR.pos.y - num16, num16 * 2f, num16 * 2f) || lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, starR.pos.x - num16, starR.pos.y - num16, num16 * 2f, num16 * 2f)) && !noCandyR;
+                        flag8 = (LineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, starR.pos.x - num16, starR.pos.y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, starR.pos.x - num16, starR.pos.y - num16, num16 * 2f, num16 * 2f)) && !noCandyR;
                     }
                 }
                 else
                 {
-                    flag8 = (lineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, star.pos.x - num16, star.pos.y - num16, num16 * 2f, num16 * 2f) || lineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, star.pos.x - num16, star.pos.y - num16, num16 * 2f, num16 * 2f)) && !noCandy;
+                    flag8 = (LineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, star.pos.x - num16, star.pos.y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, star.pos.x - num16, star.pos.y - num16, num16 * 2f, num16 * 2f)) && !noCandy;
                 }
                 if (flag8)
                 {
@@ -1626,16 +1626,16 @@ namespace CutTheRope.game
                     {
                         if (flag7)
                         {
-                            handleBouncePtDelta(bouncer, starL, delta);
+                            HandleBouncePtDelta(bouncer, starL, delta);
                         }
                         else
                         {
-                            handleBouncePtDelta(bouncer, starR, delta);
+                            HandleBouncePtDelta(bouncer, starR, delta);
                         }
                     }
                     else
                     {
-                        handleBouncePtDelta(bouncer, star, delta);
+                        HandleBouncePtDelta(bouncer, star, delta);
                     }
                 }
                 else
@@ -1651,22 +1651,22 @@ namespace CutTheRope.game
                 {
                     if (gravityButton != null && !gravityNormal)
                     {
-                        starL.applyImpulseDelta(vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) - num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) - num17), delta);
                     }
                     else
                     {
-                        starL.applyImpulseDelta(vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) + num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) + num17), delta);
                     }
                 }
                 if (candyBubbleR != null)
                 {
                     if (gravityButton != null && !gravityNormal)
                     {
-                        starR.applyImpulseDelta(vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) - num17), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) - num17), delta);
                     }
                     else
                     {
-                        starR.applyImpulseDelta(vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) + num17), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) + num17), delta);
                     }
                 }
             }
@@ -1676,13 +1676,13 @@ namespace CutTheRope.game
                 {
                     if (gravityButton != null && !gravityNormal)
                     {
-                        starL.applyImpulseDelta(vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) - num17), delta);
-                        starR.applyImpulseDelta(vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) - num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) - num17), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) - num17), delta);
                     }
                     else
                     {
-                        starL.applyImpulseDelta(vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) + num17), delta);
-                        starR.applyImpulseDelta(vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) + num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.x) / num18, ((0f - starL.v.y) / num18) + num17), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.x) / num18, ((0f - starR.v.y) / num18) + num17), delta);
                     }
                 }
             }
@@ -1690,39 +1690,39 @@ namespace CutTheRope.game
             {
                 if (gravityButton != null && !gravityNormal)
                 {
-                    star.applyImpulseDelta(vect((0f - star.v.x) / num18, ((0f - star.v.y) / num18) - num17), delta);
+                    star.ApplyImpulseDelta(Vect((0f - star.v.x) / num18, ((0f - star.v.y) / num18) - num17), delta);
                 }
                 else
                 {
-                    star.applyImpulseDelta(vect((0f - star.v.x) / num18, ((0f - star.v.y) / num18) + num17), delta);
+                    star.ApplyImpulseDelta(Vect((0f - star.v.x) / num18, ((0f - star.v.y) / num18) + num17), delta);
                 }
             }
             if (!noCandy)
             {
                 if (!mouthOpen)
                 {
-                    if (vectDistance(star.pos, vect(target.x, target.y)) < 200f)
+                    if (VectDistance(star.pos, Vect(target.x, target.y)) < 200f)
                     {
                         mouthOpen = true;
-                        target.playTimeline(7);
-                        CTRSoundMgr._playSound(17);
+                        target.PlayTimeline(7);
+                        CTRSoundMgr.PlaySound(17);
                         mouthCloseTimer = 1f;
                     }
                 }
                 else if (mouthCloseTimer > 0.0)
                 {
-                    Mover.moveVariableToTarget(ref mouthCloseTimer, 0.0, 1.0, (double)delta);
+                    _ = Mover.MoveVariableToTarget(ref mouthCloseTimer, 0.0, 1.0, (double)delta);
                     if (mouthCloseTimer <= 0.0)
                     {
-                        if (vectDistance(star.pos, vect(target.x, target.y)) > 200f)
+                        if (VectDistance(star.pos, Vect(target.x, target.y)) > 200f)
                         {
                             mouthOpen = false;
-                            target.playTimeline(8);
-                            CTRSoundMgr._playSound(16);
+                            target.PlayTimeline(8);
+                            CTRSoundMgr.PlaySound(16);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {
-                                CTRRootController.postAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
+                                CTRRootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
                             }
                         }
                         else
@@ -1731,15 +1731,15 @@ namespace CutTheRope.game
                         }
                     }
                 }
-                if (restartState != 0 && GameObject.objectsIntersect(candy, target))
+                if (restartState != 0 && GameObject.ObjectsIntersect(candy, target))
                 {
-                    gameWon();
+                    GameWon();
                     return;
                 }
             }
-            bool flag9 = twoParts == 2 && pointOutOfScreen(star) && !noCandy;
-            bool flag10 = twoParts != 2 && pointOutOfScreen(starL) && !noCandyL;
-            bool flag11 = twoParts != 2 && pointOutOfScreen(starR) && !noCandyR;
+            bool flag9 = twoParts == 2 && PointOutOfScreen(star) && !noCandy;
+            bool flag10 = twoParts != 2 && PointOutOfScreen(starL) && !noCandyL;
+            bool flag11 = twoParts != 2 && PointOutOfScreen(starR) && !noCandyR;
             if (flag10 || flag11 || flag9)
             {
                 if (flag9)
@@ -1760,15 +1760,15 @@ namespace CutTheRope.game
                     Preferences._setIntforKey(num21, "PREFS_CANDIES_LOST", false);
                     if (num21 == 50)
                     {
-                        CTRRootController.postAchievementName("681497443", ACHIEVEMENT_STRING("\"Weight Loser\""));
+                        CTRRootController.PostAchievementName("681497443", ACHIEVEMENT_STRING("\"Weight Loser\""));
                     }
                     if (num21 == 200)
                     {
-                        CTRRootController.postAchievementName("1058341297", ACHIEVEMENT_STRING("\"Calorie Minimizer\""));
+                        CTRRootController.PostAchievementName("1058341297", ACHIEVEMENT_STRING("\"Calorie Minimizer\""));
                     }
                     if (twoParts == 2 || !noCandyL || !noCandyR)
                     {
-                        gameLost();
+                        GameLost();
                     }
                     return;
                 }
@@ -1781,7 +1781,7 @@ namespace CutTheRope.game
                     TutorialText tutorial2 = (TutorialText)obj16;
                     if (tutorial2.special == 1)
                     {
-                        tutorial2.playTimeline(0);
+                        tutorial2.PlayTimeline(0);
                     }
                 }
                 foreach (object obj17 in tutorialImages)
@@ -1789,16 +1789,16 @@ namespace CutTheRope.game
                     GameObjectSpecial tutorialImage2 = (GameObjectSpecial)obj17;
                     if (tutorialImage2.special == 1)
                     {
-                        tutorialImage2.playTimeline(0);
+                        tutorialImage2.PlayTimeline(0);
                     }
                 }
             }
             if (clickToCut && !ignoreTouches)
             {
-                resetBungeeHighlight();
+                ResetBungeeHighlight();
                 bool flag12 = false;
-                Vector p = vectAdd(slastTouch, camera.pos);
-                if (gravityButton != null && ((Button)gravityButton.getChild(gravityButton.on() ? 1 : 0)).isInTouchZoneXYforTouchDown(p.x, p.y, true))
+                Vector p = VectAdd(slastTouch, camera.pos);
+                if (gravityButton != null && ((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(p.x, p.y, true))
                 {
                     flag12 = true;
                 }
@@ -1807,17 +1807,17 @@ namespace CutTheRope.game
                     foreach (object obj18 in bubbles)
                     {
                         Bubble bubble5 = (Bubble)obj18;
-                        if (candyBubble != null && pointInRect(p.x, p.y, star.pos.x - 60f, star.pos.y - 60f, 120f, 120f))
+                        if (candyBubble != null && PointInRect(p.x, p.y, star.pos.x - 60f, star.pos.y - 60f, 120f, 120f))
                         {
                             flag12 = true;
                             break;
                         }
-                        if (candyBubbleL != null && pointInRect(p.x, p.y, starL.pos.x - 60f, starL.pos.y - 60f, 120f, 120f))
+                        if (candyBubbleL != null && PointInRect(p.x, p.y, starL.pos.x - 60f, starL.pos.y - 60f, 120f, 120f))
                         {
                             flag12 = true;
                             break;
                         }
-                        if (candyBubbleR != null && pointInRect(p.x, p.y, starR.pos.x - 60f, starR.pos.y - 60f, 120f, 120f))
+                        if (candyBubbleR != null && PointInRect(p.x, p.y, starR.pos.x - 60f, starR.pos.y - 60f, 120f, 120f))
                         {
                             flag12 = true;
                             break;
@@ -1827,7 +1827,7 @@ namespace CutTheRope.game
                 foreach (object obj19 in spikes)
                 {
                     Spikes spike2 = (Spikes)obj19;
-                    if (spike2.rotateButton != null && spike2.rotateButton.isInTouchZoneXYforTouchDown(p.x, p.y, true))
+                    if (spike2.rotateButton != null && spike2.rotateButton.IsInTouchZoneXYforTouchDown(p.x, p.y, true))
                     {
                         flag12 = true;
                     }
@@ -1835,7 +1835,7 @@ namespace CutTheRope.game
                 foreach (object obj20 in pumps)
                 {
                     Pump pump2 = (Pump)obj20;
-                    if (GameObject.pointInObject(p, pump2))
+                    if (GameObject.PointInObject(p, pump2))
                     {
                         flag12 = true;
                         break;
@@ -1844,12 +1844,12 @@ namespace CutTheRope.game
                 foreach (object obj21 in rotatedCircles)
                 {
                     RotatedCircle rotatedCircle8 = (RotatedCircle)obj21;
-                    if (rotatedCircle8.isLeftControllerActive() || rotatedCircle8.isRightControllerActive())
+                    if (rotatedCircle8.IsLeftControllerActive() || rotatedCircle8.IsRightControllerActive())
                     {
                         flag12 = true;
                         break;
                     }
-                    if (vectDistance(vect(p.x, p.y), vect(rotatedCircle8.handle1.x, rotatedCircle8.handle1.y)) <= 90f || vectDistance(vect(p.x, p.y), vect(rotatedCircle8.handle2.x, rotatedCircle8.handle2.y)) <= 90f)
+                    if (VectDistance(Vect(p.x, p.y), Vect(rotatedCircle8.handle1.x, rotatedCircle8.handle1.y)) <= 90f || VectDistance(Vect(p.x, p.y), Vect(rotatedCircle8.handle2.x, rotatedCircle8.handle2.y)) <= 90f)
                     {
                         flag12 = true;
                         break;
@@ -1858,12 +1858,12 @@ namespace CutTheRope.game
                 foreach (object obj22 in bungees)
                 {
                     Grab bungee5 = (Grab)obj22;
-                    if (bungee5.wheel && pointInRect(p.x, p.y, bungee5.x - 110f, bungee5.y - 110f, 220f, 220f))
+                    if (bungee5.wheel && PointInRect(p.x, p.y, bungee5.x - 110f, bungee5.y - 110f, 220f, 220f))
                     {
                         flag12 = true;
                         break;
                     }
-                    if (bungee5.moveLength > 0.0 && (pointInRect(p.x, p.y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
+                    if (bungee5.moveLength > 0.0 && (PointInRect(p.x, p.y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
                     {
                         flag12 = true;
                         break;
@@ -1871,22 +1871,22 @@ namespace CutTheRope.game
                 }
                 if (!flag12)
                 {
-                    Vector s = default(Vector);
+                    Vector s = default;
                     Grab grab2 = null;
-                    Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = getNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, slastTouch.x + camera.pos.x, slastTouch.y + camera.pos.y, ref grab2);
+                    Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, slastTouch.x + camera.pos.x, slastTouch.y + camera.pos.y, ref grab2);
                     if (nearestBungeeSegmentByBeziersPointsatXYgrab != null)
                     {
                         nearestBungeeSegmentByBeziersPointsatXYgrab.highlighted = true;
                     }
                 }
             }
-            if (Mover.moveVariableToTarget(ref dimTime, 0.0, 1.0, (double)delta))
+            if (Mover.MoveVariableToTarget(ref dimTime, 0.0, 1.0, (double)delta))
             {
                 if (restartState == 0)
                 {
                     restartState = 1;
-                    hide();
-                    show();
+                    Hide();
+                    Show();
                     dimTime = 0.15f;
                     return;
                 }
@@ -1894,44 +1894,44 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void teleport()
+        public void Teleport()
         {
             if (targetSock != null)
             {
-                targetSock.light.playTimeline(0);
+                targetSock.light.PlayTimeline(0);
                 targetSock.light.visible = true;
-                Vector v = vect(0f, -16f);
-                v = vectRotate(v, (double)DEGREES_TO_RADIANS(targetSock.rotation));
+                Vector v = Vect(0f, -16f);
+                v = VectRotate(v, (double)DEGREES_TO_RADIANS(targetSock.rotation));
                 star.pos.x = targetSock.x;
                 star.pos.y = targetSock.y;
-                star.pos = vectAdd(star.pos, v);
+                star.pos = VectAdd(star.pos, v);
                 star.prevPos.x = star.pos.x;
                 star.prevPos.y = star.pos.y;
-                star.v = vectMult(vectRotate(vect(0f, -1f), (double)DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
-                star.posDelta = vectDiv(star.v, 60f);
-                star.prevPos = vectSub(star.pos, star.posDelta);
+                star.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
+                star.posDelta = VectDiv(star.v, 60f);
+                star.prevPos = VectSub(star.pos, star.posDelta);
                 targetSock = null;
             }
         }
 
-        public virtual void animateLevelRestart()
+        public void AnimateLevelRestart()
         {
             restartState = 0;
             dimTime = 0.15f;
         }
 
-        public virtual void releaseAllRopes(bool left)
+        public void ReleaseAllRopes(bool left)
         {
-            int num = bungees.count();
+            int num = bungees.Count();
             for (int i = 0; i < num; i++)
             {
-                Grab grab = (Grab)bungees.objectAtIndex(i);
+                Grab grab = (Grab)bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
                 if (rope != null && (rope.tail == star || (rope.tail == starL && left) || (rope.tail == starR && !left)))
                 {
                     if (rope.cut == -1)
                     {
-                        rope.setCut(rope.parts.Count - 2);
+                        rope.SetCut(rope.parts.Count - 2);
                     }
                     else
                     {
@@ -1939,171 +1939,171 @@ namespace CutTheRope.game
                     }
                     if (grab.hasSpider && grab.spiderActive)
                     {
-                        spiderBusted(grab);
+                        SpiderBusted(grab);
                     }
                 }
             }
         }
 
-        public virtual void calculateScore()
+        public void CalculateScore()
         {
             timeBonus = (int)MAX(0f, 30f - time) * 100;
             timeBonus /= 10;
             timeBonus *= 10;
             starBonus = 1000 * starsCollected;
-            score = (int)ceil(timeBonus + starBonus);
+            score = (int)Ceil(timeBonus + starBonus);
         }
 
-        public virtual void gameWon()
+        public void GameWon()
         {
-            dd.cancelAllDispatches();
-            target.playTimeline(6);
-            CTRSoundMgr._playSound(15);
+            dd.CancelAllDispatches();
+            target.PlayTimeline(6);
+            CTRSoundMgr.PlaySound(15);
             if (candyBubble != null)
             {
-                popCandyBubble(false);
+                PopCandyBubble(false);
             }
             noCandy = true;
             candy.passTransformationsToChilds = true;
             candyMain.scaleX = candyMain.scaleY = 1f;
             candyTop.scaleX = candyTop.scaleY = 1f;
-            Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline.addKeyFrame(KeyFrame.makePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makePos(target.x, target.y + 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.addKeyFrame(KeyFrame.makeScale(0.71, 0.71, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            candy.addTimelinewithID(timeline, 0);
-            candy.playTimeline(0);
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakePos(target.x, target.y + 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.71, 0.71, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            candy.AddTimelinewithID(timeline, 0);
+            candy.PlayTimeline(0);
             timeline.delegateTimelineDelegate = aniPool;
-            aniPool.addChild(candy);
-            dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_gameWon), null, 2.0);
-            calculateScore();
-            releaseAllRopes(false);
+            _ = aniPool.AddChild(candy);
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2.0);
+            CalculateScore();
+            ReleaseAllRopes(false);
         }
 
-        public virtual void gameLost()
+        public void GameLost()
         {
-            dd.cancelAllDispatches();
-            target.playAnimationtimeline(102, 5);
-            CTRSoundMgr._playSound(18);
-            dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_animateLevelRestart), null, 1.0);
-            gameSceneDelegate.gameLost();
+            dd.CancelAllDispatches();
+            target.PlayAnimationtimeline(102, 5);
+            CTRSoundMgr.PlaySound(18);
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
+            gameSceneDelegate.GameLost();
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            OpenGL.glClear(0);
-            base.preDraw();
-            camera.applyCameraTransformation();
-            OpenGL.glEnable(0);
-            OpenGL.glDisable(1);
-            Vector pos = vectDiv(camera.pos, 1.25f);
-            back.updateWithCameraPos(pos);
-            float num = canvas.xOffsetScaled;
+            OpenGL.GlClear(0);
+            base.PreDraw();
+            camera.ApplyCameraTransformation();
+            OpenGL.GlEnable(0);
+            OpenGL.GlDisable(1);
+            Vector pos = VectDiv(camera.pos, 1.25f);
+            back.UpdateWithCameraPos(pos);
+            float num = Canvas.xOffsetScaled;
             float num2 = 0f;
-            OpenGL.glPushMatrix();
-            OpenGL.glTranslatef((double)num, (double)num2, 0.0);
-            OpenGL.glScalef(back.scaleX, back.scaleY, 1.0);
-            OpenGL.glTranslatef((double)(0f - num), (double)(0f - num2), 0.0);
-            OpenGL.glTranslatef(canvas.xOffsetScaled, 0.0, 0.0);
-            back.draw();
+            OpenGL.GlPushMatrix();
+            OpenGL.GlTranslatef((double)num, (double)num2, 0.0);
+            OpenGL.GlScalef(back.scaleX, back.scaleY, 1.0);
+            OpenGL.GlTranslatef((double)(0f - num), (double)(0f - num2), 0.0);
+            OpenGL.GlTranslatef(Canvas.xOffsetScaled, 0.0, 0.0);
+            back.Draw();
             if (mapHeight > SCREEN_HEIGHT)
             {
                 float num3 = RTD(2.0);
-                int pack = ((CTRRootController)Application.sharedRootController()).getPack();
-                CTRTexture2D texture = Application.getTexture(105 + (pack * 2));
+                int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
+                CTRTexture2D texture = Application.GetTexture(105 + (pack * 2));
                 int num4 = 0;
                 float num5 = texture.quadOffsets[num4].y;
                 CTRRectangle r = texture.quadRects[num4];
                 r.y += num3;
                 r.h -= num3 * 2f;
-                GLDrawer.drawImagePart(texture, r, 0.0, (double)(num5 + num3));
+                GLDrawer.DrawImagePart(texture, r, 0.0, (double)(num5 + num3));
             }
-            OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.GlEnable(1);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (earthAnims != null)
             {
                 foreach (object obj in earthAnims)
                 {
-                    ((Image)obj).draw();
+                    ((Image)obj).Draw();
                 }
             }
-            OpenGL.glTranslatef((double)-(double)canvas.xOffsetScaled, 0.0, 0.0);
-            OpenGL.glPopMatrix();
-            OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            pollenDrawer.draw();
-            gravityButton?.draw();
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            support.draw();
-            target.draw();
+            OpenGL.GlTranslatef((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
+            OpenGL.GlPopMatrix();
+            OpenGL.GlEnable(1);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            pollenDrawer.Draw();
+            gravityButton?.Draw();
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            support.Draw();
+            target.Draw();
             foreach (object obj2 in tutorials)
             {
-                ((Text)obj2).draw();
+                ((Text)obj2).Draw();
             }
             foreach (object obj3 in tutorialImages)
             {
-                ((GameObject)obj3).draw();
+                ((GameObject)obj3).Draw();
             }
             foreach (object obj4 in razors)
             {
-                ((Razor)obj4).draw();
+                ((Razor)obj4).Draw();
             }
             foreach (object obj5 in rotatedCircles)
             {
-                ((RotatedCircle)obj5).draw();
+                ((RotatedCircle)obj5).Draw();
             }
             foreach (object obj6 in bubbles)
             {
-                ((GameObject)obj6).draw();
+                ((GameObject)obj6).Draw();
             }
             foreach (object obj7 in pumps)
             {
-                ((GameObject)obj7).draw();
+                ((GameObject)obj7).Draw();
             }
             foreach (object obj8 in spikes)
             {
-                ((Spikes)obj8).draw();
+                ((Spikes)obj8).Draw();
             }
             foreach (object obj9 in bouncers)
             {
-                ((Bouncer)obj9).draw();
+                ((Bouncer)obj9).Draw();
             }
             foreach (object obj10 in socks)
             {
                 Sock sock = (Sock)obj10;
                 sock.y -= 85f;
-                sock.draw();
+                sock.Draw();
                 sock.y += 85f;
             }
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj11 in bungees)
             {
-                ((Grab)obj11).drawBack();
+                ((Grab)obj11).DrawBack();
             }
             foreach (object obj12 in bungees)
             {
-                ((Grab)obj12).draw();
+                ((Grab)obj12).Draw();
             }
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj13 in stars)
             {
-                ((GameObject)obj13).draw();
+                ((GameObject)obj13).Draw();
             }
             if (!noCandy && targetSock == null)
             {
                 candy.x = star.pos.x;
                 candy.y = star.pos.y;
-                candy.draw();
-                if (candyBlink.getCurrentTimeline() != null)
+                candy.Draw();
+                if (candyBlink.GetCurrentTimeline() != null)
                 {
-                    OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
-                    candyBlink.draw();
-                    OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                    OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                    candyBlink.Draw();
+                    OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 }
             }
             if (twoParts != 2)
@@ -2112,13 +2112,13 @@ namespace CutTheRope.game
                 {
                     candyL.x = starL.pos.x;
                     candyL.y = starL.pos.y;
-                    candyL.draw();
+                    candyL.Draw();
                 }
                 if (!noCandyR)
                 {
                     candyR.x = starR.pos.x;
                     candyR.y = starR.pos.y;
-                    candyR.draw();
+                    candyR.Draw();
                 }
             }
             foreach (object obj14 in bungees)
@@ -2126,31 +2126,30 @@ namespace CutTheRope.game
                 Grab bungee3 = (Grab)obj14;
                 if (bungee3.hasSpider)
                 {
-                    bungee3.drawSpider();
+                    bungee3.DrawSpider();
                 }
             }
-            aniPool.draw();
-            bool flag = nightLevel;
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            OpenGL.glDisable(0);
-            OpenGL.glColor4f(Color.White);
-            drawCuts();
-            OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            camera.cancelCameraTransformation();
-            staticAniPool.draw();
+            aniPool.Draw();
+            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGL.GlDisable(0);
+            OpenGL.GlColor4f(Color.White);
+            DrawCuts();
+            OpenGL.GlEnable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            camera.CancelCameraTransformation();
+            staticAniPool.Draw();
             if (nightLevel)
             {
-                OpenGL.glDisable(4);
+                OpenGL.GlDisable(4);
             }
-            base.postDraw();
+            base.PostDraw();
         }
 
-        public virtual void drawCuts()
+        public void DrawCuts()
         {
             for (int i = 0; i < 5; i++)
             {
-                int num = fingerCuts[i].count();
+                int num = fingerCuts[i].Count();
                 if (num > 0)
                 {
                     float num2 = RTD(6.0);
@@ -2161,7 +2160,7 @@ namespace CutTheRope.game
                     int num5 = 0;
                     while (j < num)
                     {
-                        FingerCut fingerCut = (FingerCut)fingerCuts[i].objectAtIndex(j);
+                        FingerCut fingerCut = (FingerCut)fingerCuts[i].ObjectAtIndex(j);
                         if (j == 0)
                         {
                             array[num5++] = fingerCut.start;
@@ -2170,9 +2169,9 @@ namespace CutTheRope.game
                         j++;
                     }
                     List<Vector> list = [];
-                    Vector vector = default(Vector);
+                    Vector vector = default;
                     bool flag = true;
-                    for (int k = 0; k < array.Count(); k++)
+                    for (int k = 0; k < array.Length; k++)
                     {
                         if (k == 0)
                         {
@@ -2187,8 +2186,8 @@ namespace CutTheRope.game
                     }
                     if (!flag)
                     {
-                        array = list.ToArray();
-                        num = array.Count() - 1;
+                        array = [.. list];
+                        num = array.Length - 1;
                         int num6 = num * 2;
                         float[] array2 = new float[num6 * 2];
                         float num7 = 1f / num6;
@@ -2200,8 +2199,8 @@ namespace CutTheRope.game
                             {
                                 num8 = 1f;
                             }
-                            Vector vector2 = GLDrawer.calcPathBezier(array, num + 1, num8);
-                            if (num9 > array2.Count() - 2)
+                            Vector vector2 = GLDrawer.CalcPathBezier(array, num + 1, num8);
+                            if (num9 > array2.Length - 2)
                             {
                                 break;
                             }
@@ -2218,118 +2217,118 @@ namespace CutTheRope.game
                         for (int l = 0; l < num6 - 1; l++)
                         {
                             float s = num3;
-                            float s2 = (l == num6 - 2) ? 1f : (num3 + num10);
-                            Vector vector3 = vect(array2[l * 2], array2[(l * 2) + 1]);
-                            Vector vector8 = vect(array2[(l + 1) * 2], array2[((l + 1) * 2) + 1]);
-                            Vector vector9 = vectNormalize(vectSub(vector8, vector3));
-                            Vector v4 = vectRperp(vector9);
-                            Vector v5 = vectPerp(vector9);
+                            float s2 = l == num6 - 2 ? 1f : num3 + num10;
+                            Vector vector3 = Vect(array2[l * 2], array2[(l * 2) + 1]);
+                            Vector vector8 = Vect(array2[(l + 1) * 2], array2[((l + 1) * 2) + 1]);
+                            Vector vector9 = VectNormalize(VectSub(vector8, vector3));
+                            Vector v4 = VectRperp(vector9);
+                            Vector v5 = VectPerp(vector9);
                             if (num4 == 0)
                             {
-                                Vector vector4 = vectAdd(vector3, vectMult(v4, s));
-                                Vector vector5 = vectAdd(vector3, vectMult(v5, s));
+                                Vector vector4 = VectAdd(vector3, VectMult(v4, s));
+                                Vector vector5 = VectAdd(vector3, VectMult(v5, s));
                                 array3[num4++] = vector5.x;
                                 array3[num4++] = vector5.y;
                                 array3[num4++] = vector4.x;
                                 array3[num4++] = vector4.y;
                             }
-                            Vector vector6 = vectAdd(vector8, vectMult(v4, s2));
-                            Vector vector7 = vectAdd(vector8, vectMult(v5, s2));
+                            Vector vector6 = VectAdd(vector8, VectMult(v4, s2));
+                            Vector vector7 = VectAdd(vector8, VectMult(v5, s2));
                             array3[num4++] = vector7.x;
                             array3[num4++] = vector7.y;
                             array3[num4++] = vector6.x;
                             array3[num4++] = vector6.y;
                             num3 += num10;
                         }
-                        OpenGL.glColor4f(Color.White);
-                        OpenGL.glVertexPointer(2, 5, 0, array3);
-                        OpenGL.glDrawArrays(8, 0, num4 / 2);
+                        OpenGL.GlColor4f(Color.White);
+                        OpenGL.GlVertexPointer(2, 5, 0, array3);
+                        OpenGL.GlDrawArrays(8, 0, num4 / 2);
                     }
                 }
             }
         }
 
-        public virtual void handlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
+        public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
             float num = 624f;
-            if (GameObject.rectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
+            if (GameObject.RectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
             {
-                Vector v = vect(c.x, c.y);
-                Vector vector = default(Vector);
+                Vector v = Vect(c.x, c.y);
+                Vector vector = default;
                 vector.x = p.x - (p.bb.w / 2f);
-                Vector vector2 = default(Vector);
+                Vector vector2 = default;
                 vector2.x = p.x + (p.bb.w / 2f);
                 vector.y = vector2.y = p.y;
                 if (p.angle != 0.0)
                 {
-                    v = vectRotateAround(v, 0.0 - p.angle, p.x, p.y);
+                    v = VectRotateAround(v, 0.0 - p.angle, p.x, p.y);
                 }
-                if (v.y < vector.y && rectInRect((float)(v.x - (c.bb.w / 2.0)), (float)(v.y - (c.bb.h / 2.0)), (float)(v.x + (c.bb.w / 2.0)), (float)(v.y + (c.bb.h / 2.0)), vector.x, vector.y - num, vector2.x, vector2.y))
+                if (v.y < vector.y && RectInRect((float)(v.x - (c.bb.w / 2.0)), (float)(v.y - (c.bb.h / 2.0)), (float)(v.x + (c.bb.w / 2.0)), (float)(v.y + (c.bb.h / 2.0)), vector.x, vector.y - num, vector2.x, vector2.y))
                 {
                     float num2 = num * 2f * (num - (vector.y - v.y)) / num;
-                    Vector v2 = vect(0f, 0f - num2);
-                    v2 = vectRotate(v2, p.angle);
-                    s.applyImpulseDelta(v2, 0.016f);
+                    Vector v2 = Vect(0f, 0f - num2);
+                    v2 = VectRotate(v2, p.angle);
+                    s.ApplyImpulseDelta(v2, 0.016f);
                 }
             }
         }
 
-        public virtual void handleBouncePtDelta(Bouncer b, ConstraintedPoint s, float delta)
+        public static void HandleBouncePtDelta(Bouncer b, ConstraintedPoint s, float delta)
         {
             if (!b.skip)
             {
                 b.skip = true;
-                Vector vector = vectSub(s.prevPos, s.pos);
-                int num = (vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y) ? 1 : (-1);
-                float s2 = MAX((double)(vectLength(vector) * 40f), 840.0) * num;
-                Vector impulse = vectMult(vectPerp(vectForAngle(b.angle)), s2);
-                s.pos = vectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
-                s.prevPos = vectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
+                Vector vector = VectSub(s.prevPos, s.pos);
+                int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y ? 1 : -1;
+                float s2 = MAX((double)(VectLength(vector) * 40f), 840.0) * num;
+                Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
+                s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
+                s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
                 s.prevPos.y = s.pos.y;
-                s.pos = vectRotateAround(s.pos, b.angle, b.x, b.y);
-                s.prevPos = vectRotateAround(s.prevPos, b.angle, b.x, b.y);
-                s.applyImpulseDelta(impulse, delta);
-                b.playTimeline(0);
-                CTRSoundMgr._playSound(41);
+                s.pos = VectRotateAround(s.pos, b.angle, b.x, b.y);
+                s.prevPos = VectRotateAround(s.prevPos, b.angle, b.x, b.y);
+                s.ApplyImpulseDelta(impulse, delta);
+                b.PlayTimeline(0);
+                CTRSoundMgr.PlaySound(41);
             }
         }
 
-        public virtual void operatePump(Pump p)
+        public void OperatePump(Pump p)
         {
-            p.playTimeline(0);
-            CTRSoundMgr._playSound(RND_RANGE(29, 32));
+            p.PlayTimeline(0);
+            CTRSoundMgr.PlaySound(RND_RANGE(29, 32));
             Image grid = Image.Image_createWithResID(83);
-            PumpDirt pumpDirt = new PumpDirt().initWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid);
-            pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.particlesFinished);
-            Vector v = vect(p.x + 80f, p.y);
-            v = vectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
+            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid);
+            pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
+            Vector v = Vect(p.x + 80f, p.y);
+            v = VectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
             pumpDirt.x = v.x;
             pumpDirt.y = v.y;
-            pumpDirt.startSystem(5);
-            aniPool.addChild(pumpDirt);
+            pumpDirt.StartSystem(5);
+            _ = aniPool.AddChild(pumpDirt);
             if (!noCandy)
             {
-                handlePumpFlowPtSkin(p, star, candy);
+                HandlePumpFlowPtSkin(p, star, candy);
             }
             if (twoParts != 2)
             {
                 if (!noCandyL)
                 {
-                    handlePumpFlowPtSkin(p, starL, candyL);
+                    HandlePumpFlowPtSkin(p, starL, candyL);
                 }
                 if (!noCandyR)
                 {
-                    handlePumpFlowPtSkin(p, starR, candyR);
+                    HandlePumpFlowPtSkin(p, starR, candyR);
                 }
             }
         }
 
-        public virtual int cutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
+        public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int num = 0;
-            for (int i = 0; i < bungees.count(); i++)
+            for (int i = 0; i < bungees.Count(); i++)
             {
-                Grab grab = (Grab)bungees.objectAtIndex(i);
+                Grab grab = (Grab)bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
                 if (rope != null && rope.cut == -1)
                 {
@@ -2340,29 +2339,29 @@ namespace CutTheRope.game
                         bool flag = false;
                         if (r == null)
                         {
-                            flag = (!grab.wheel || !lineInRect(v1.x, v1.y, v2.x, v2.y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && lineInLine(v1.x, v1.y, v2.x, v2.y, constraintedPoint.pos.x, constraintedPoint.pos.y, constraintedPoint2.pos.x, constraintedPoint2.pos.y);
+                            flag = (!grab.wheel || !LineInRect(v1.x, v1.y, v2.x, v2.y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && LineInLine(v1.x, v1.y, v2.x, v2.y, constraintedPoint.pos.x, constraintedPoint.pos.y, constraintedPoint2.pos.x, constraintedPoint2.pos.y);
                         }
                         else if (constraintedPoint.prevPos.x != 2.1474836E+09f)
                         {
-                            float num2 = minOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
-                            float y1t = minOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
-                            float x1r = maxOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
-                            float y1b = maxOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
-                            flag = rectInRect(num2, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
+                            float num2 = MinOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
+                            float y1t = MinOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
+                            float x1r = MaxOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
+                            float y1b = MaxOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
+                            flag = RectInRect(num2, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
                         }
                         if (flag)
                         {
                             num++;
                             if (grab.hasSpider && grab.spiderActive)
                             {
-                                spiderBusted(grab);
+                                SpiderBusted(grab);
                             }
-                            CTRSoundMgr._playSound(20 + rope.relaxed);
-                            rope.setCut(j);
+                            CTRSoundMgr.PlaySound(20 + rope.relaxed);
+                            rope.SetCut(j);
                             if (im)
                             {
                                 rope.cutTime = 0f;
-                                rope.removePart(j);
+                                rope.RemovePart(j);
                             }
                             return num;
                         }
@@ -2372,64 +2371,64 @@ namespace CutTheRope.game
             return num;
         }
 
-        public virtual void spiderBusted(Grab g)
+        public void SpiderBusted(Grab g)
         {
             int num = Preferences._getIntForKey("PREFS_SPIDERS_BUSTED") + 1;
             Preferences._setIntforKey(num, "PREFS_SPIDERS_BUSTED", false);
             if (num == 40)
             {
-                CTRRootController.postAchievementName("681486608", ACHIEVEMENT_STRING("\"Spider Busted\""));
+                CTRRootController.PostAchievementName("681486608", ACHIEVEMENT_STRING("\"Spider Busted\""));
             }
             if (num == 200)
             {
-                CTRRootController.postAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
+                CTRRootController.PostAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
             }
-            CTRSoundMgr._playSound(34);
+            CTRSoundMgr.PlaySound(34);
             g.hasSpider = false;
             Image image = Image.Image_createWithResIDQuad(64, 11);
-            image.doRestoreCutTransparency();
-            Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
+            image.DoRestoreCutTransparency();
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.addKeyFrame(KeyFrame.makePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos(g.spider.x, g.spider.y + 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.addKeyFrame(KeyFrame.makePos(g.spider.x, (double)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y + 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
             }
             else
             {
-                timeline.addKeyFrame(KeyFrame.makePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos(g.spider.x, g.spider.y - 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.addKeyFrame(KeyFrame.makePos(g.spider.x, (double)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y - 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
             }
-            timeline.addKeyFrame(KeyFrame.makeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.addKeyFrame(KeyFrame.makeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-            image.addTimelinewithID(timeline, 0);
-            image.playTimeline(0);
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+            image.AddTimelinewithID(timeline, 0);
+            image.PlayTimeline(0);
             image.x = g.spider.x;
             image.y = g.spider.y;
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
-            aniPool.addChild(image);
+            _ = aniPool.AddChild(image);
         }
 
-        public virtual void spiderWon(Grab sg)
+        public void SpiderWon(Grab sg)
         {
-            CTRSoundMgr._playSound(35);
-            int num = bungees.count();
+            CTRSoundMgr.PlaySound(35);
+            int num = bungees.Count();
             for (int i = 0; i < num; i++)
             {
-                Grab grab = (Grab)bungees.objectAtIndex(i);
+                Grab grab = (Grab)bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
                 if (rope != null && rope.tail == star)
                 {
                     if (rope.cut == -1)
                     {
-                        rope.setCut(rope.parts.Count - 2);
+                        rope.SetCut(rope.parts.Count - 2);
                         rope.forceWhite = false;
                     }
                     if (grab.hasSpider && grab.spiderActive && sg != grab)
                     {
-                        spiderBusted(grab);
+                        SpiderBusted(grab);
                     }
                 }
             }
@@ -2437,97 +2436,97 @@ namespace CutTheRope.game
             spiderTookCandy = true;
             noCandy = true;
             Image image = Image.Image_createWithResIDQuad(64, 12);
-            image.doRestoreCutTransparency();
+            image.DoRestoreCutTransparency();
             candy.anchor = candy.parentAnchor = 18;
             candy.x = 0f;
             candy.y = -5f;
-            image.addChild(candy);
-            Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
+            _ = image.AddChild(candy);
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.addKeyFrame(KeyFrame.makePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos(sg.spider.x, sg.spider.y + 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.addKeyFrame(KeyFrame.makePos(sg.spider.x, (double)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y + 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
             }
             else
             {
-                timeline.addKeyFrame(KeyFrame.makePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.addKeyFrame(KeyFrame.makePos(sg.spider.x, sg.spider.y - 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.addKeyFrame(KeyFrame.makePos(sg.spider.x, (double)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
             }
-            image.addTimelinewithID(timeline, 0);
-            image.playTimeline(0);
+            image.AddTimelinewithID(timeline, 0);
+            image.PlayTimeline(0);
             image.x = sg.spider.x;
             image.y = sg.spider.y - 10f;
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
-            aniPool.addChild(image);
+            _ = aniPool.AddChild(image);
             if (restartState != 0)
             {
-                dd.callObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(selector_gameLost), null, 2.0);
+                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2.0);
             }
         }
 
-        public virtual void popCandyBubble(bool left)
+        public void PopCandyBubble(bool left)
         {
             if (twoParts == 2)
             {
                 candyBubble = null;
                 candyBubbleAnimation.visible = false;
-                popBubbleAtXY(candy.x, candy.y);
+                PopBubbleAtXY(candy.x, candy.y);
                 return;
             }
             if (left)
             {
                 candyBubbleL = null;
                 candyBubbleAnimationL.visible = false;
-                popBubbleAtXY(candyL.x, candyL.y);
+                PopBubbleAtXY(candyL.x, candyL.y);
                 return;
             }
             candyBubbleR = null;
             candyBubbleAnimationR.visible = false;
-            popBubbleAtXY(candyR.x, candyR.y);
+            PopBubbleAtXY(candyR.x, candyR.y);
         }
 
-        public virtual void popBubbleAtXY(float bx, float by)
+        public void PopBubbleAtXY(float bx, float by)
         {
-            CTRSoundMgr._playSound(12);
+            CTRSoundMgr.PlaySound(12);
             Animation animation = Animation.Animation_createWithResID(73);
-            animation.doRestoreCutTransparency();
+            animation.DoRestoreCutTransparency();
             animation.x = bx;
             animation.y = by;
             animation.anchor = 18;
-            int i = animation.addAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 11);
-            animation.getTimeline(i).delegateTimelineDelegate = aniPool;
-            animation.playTimeline(0);
-            aniPool.addChild(animation);
+            int i = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 11);
+            animation.GetTimeline(i).delegateTimelineDelegate = aniPool;
+            animation.PlayTimeline(0);
+            _ = aniPool.AddChild(animation);
         }
 
-        public virtual bool handleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
+        public bool HandleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
         {
-            if (pointInRect(tx + camera.pos.x, ty + camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
+            if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
             {
-                popCandyBubble(s == starL);
+                PopCandyBubble(s == starL);
                 int num = Preferences._getIntForKey("PREFS_BUBBLES_POPPED") + 1;
                 Preferences._setIntforKey(num, "PREFS_BUBBLES_POPPED", false);
                 if (num == 50)
                 {
-                    CTRRootController.postAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
+                    CTRRootController.PostAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
                 }
                 if (num == 300)
                 {
-                    CTRRootController.postAchievementName("1058345234", ACHIEVEMENT_STRING("\"Bubble Master\""));
+                    CTRRootController.PostAchievementName("1058345234", ACHIEVEMENT_STRING("\"Bubble Master\""));
                 }
                 return true;
             }
             return false;
         }
 
-        public virtual void resetBungeeHighlight()
+        public void ResetBungeeHighlight()
         {
-            for (int i = 0; i < bungees.count(); i++)
+            for (int i = 0; i < bungees.Count(); i++)
             {
-                Bungee rope = ((Grab)bungees.objectAtIndex(i)).rope;
+                Bungee rope = ((Grab)bungees.ObjectAtIndex(i)).rope;
                 if (rope != null && rope.cut == -1)
                 {
                     rope.highlighted = false;
@@ -2535,22 +2534,22 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual Bungee getNearestBungeeSegmentByBeziersPointsatXYgrab(ref Vector s, float tx, float ty, ref Grab grab)
+        public Bungee GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref Vector s, float tx, float ty, ref Grab grab)
         {
             float num = 60f;
             Bungee result = null;
             float num2 = num;
-            Vector v = vect(tx, ty);
-            for (int i = 0; i < bungees.count(); i++)
+            Vector v = Vect(tx, ty);
+            for (int i = 0; i < bungees.Count(); i++)
             {
-                Grab grab2 = (Grab)bungees.objectAtIndex(i);
+                Grab grab2 = (Grab)bungees.ObjectAtIndex(i);
                 Bungee rope = grab2.rope;
                 if (rope != null)
                 {
                     for (int j = 0; j < rope.drawPtsCount; j += 2)
                     {
-                        Vector vector = vect(rope.drawPts[j], rope.drawPts[j + 1]);
-                        float num3 = vectDistance(vector, v);
+                        Vector vector = Vect(rope.drawPts[j], rope.drawPts[j + 1]);
+                        float num3 = VectDistance(vector, v);
                         if (num3 < num && num3 < num2)
                         {
                             num2 = num3;
@@ -2564,7 +2563,7 @@ namespace CutTheRope.game
             return result;
         }
 
-        public virtual Bungee getNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
+        public static Bungee GetNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
         {
             float num4 = 2.1474836E+09f;
             Bungee result = null;
@@ -2578,8 +2577,8 @@ namespace CutTheRope.game
             for (int i = 0; i < rope.parts.Count - 1; i++)
             {
                 ConstraintedPoint constraintedPoint = rope.parts[i];
-                float num3 = vectDistance(constraintedPoint.pos, v);
-                if (num3 < num2 && (!g.wheel || !pointInRect(constraintedPoint.pos.x, constraintedPoint.pos.y, g.x - 110f, g.y - 110f, 220f, 220f)))
+                float num3 = VectDistance(constraintedPoint.pos, v);
+                if (num3 < num2 && (!g.wheel || !PointInRect(constraintedPoint.pos.x, constraintedPoint.pos.y, g.x - 110f, g.y - 110f, 220f, 220f)))
                 {
                     num2 = num3;
                     result = rope;
@@ -2589,11 +2588,11 @@ namespace CutTheRope.game
             return result;
         }
 
-        public virtual bool touchDownXYIndex(float tx, float ty, int ti)
+        public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
             {
-                if (camera.type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
+                if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
                 {
                     fastenCamera = true;
                 }
@@ -2603,22 +2602,22 @@ namespace CutTheRope.game
             {
                 return true;
             }
-            if (gravityButton != null && ((Button)gravityButton.getChild(gravityButton.on() ? 1 : 0)).isInTouchZoneXYforTouchDown(tx + camera.pos.x, ty + camera.pos.y, true))
+            if (gravityButton != null && ((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.x, ty + camera.pos.y, true))
             {
                 gravityTouchDown = ti;
             }
-            Vector vector = vect(tx, ty);
-            if (candyBubble != null && handleBubbleTouchXY(star, tx, ty))
+            Vector vector = Vect(tx, ty);
+            if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
             {
                 return true;
             }
             if (twoParts != 2)
             {
-                if (candyBubbleL != null && handleBubbleTouchXY(starL, tx, ty))
+                if (candyBubbleL != null && HandleBubbleTouchXY(starL, tx, ty))
                 {
                     return true;
                 }
-                if (candyBubbleR != null && handleBubbleTouchXY(starR, tx, ty))
+                if (candyBubbleR != null && HandleBubbleTouchXY(starR, tx, ty))
                 {
                     return true;
                 }
@@ -2631,17 +2630,17 @@ namespace CutTheRope.game
             foreach (object obj in spikes)
             {
                 Spikes spike = (Spikes)obj;
-                if (spike.rotateButton != null && spike.touchIndex == -1 && spike.rotateButton.onTouchDownXY(tx + camera.pos.x, ty + camera.pos.y))
+                if (spike.rotateButton != null && spike.touchIndex == -1 && spike.rotateButton.OnTouchDownXY(tx + camera.pos.x, ty + camera.pos.y))
                 {
                     spike.touchIndex = ti;
                     return true;
                 }
             }
-            int num = pumps.count();
+            int num = pumps.Count();
             for (int i = 0; i < num; i++)
             {
-                Pump pump = (Pump)pumps.objectAtIndex(i);
-                if (GameObject.pointInObject(vect(tx + camera.pos.x, ty + camera.pos.y), pump))
+                Pump pump = (Pump)pumps.ObjectAtIndex(i);
+                if (GameObject.PointInObject(Vect(tx + camera.pos.x, ty + camera.pos.y), pump))
                 {
                     pump.pumpTouchTimer = 0.05f;
                     pump.pumpTouch = ti;
@@ -2654,16 +2653,16 @@ namespace CutTheRope.game
             foreach (object obj2 in rotatedCircles)
             {
                 RotatedCircle rotatedCircle2 = (RotatedCircle)obj2;
-                float num2 = vectDistance(vect(tx + camera.pos.x, ty + camera.pos.y), rotatedCircle2.handle1);
-                float num3 = vectDistance(vect(tx + camera.pos.x, ty + camera.pos.y), rotatedCircle2.handle2);
-                if ((num2 < 90f && !rotatedCircle2.hasOneHandle()) || num3 < 90f)
+                float num2 = VectDistance(Vect(tx + camera.pos.x, ty + camera.pos.y), rotatedCircle2.handle1);
+                float num3 = VectDistance(Vect(tx + camera.pos.x, ty + camera.pos.y), rotatedCircle2.handle2);
+                if ((num2 < 90f && !rotatedCircle2.HasOneHandle()) || num3 < 90f)
                 {
                     foreach (object obj3 in rotatedCircles)
                     {
                         RotatedCircle rotatedCircle3 = (RotatedCircle)obj3;
-                        if (rotatedCircles.getObjectIndex(rotatedCircle3) > rotatedCircles.getObjectIndex(rotatedCircle2))
+                        if (rotatedCircles.GetObjectIndex(rotatedCircle3) > rotatedCircles.GetObjectIndex(rotatedCircle2))
                         {
-                            float num4 = vectDistance(vect(rotatedCircle3.x, rotatedCircle3.y), vect(rotatedCircle2.x, rotatedCircle2.y));
+                            float num4 = VectDistance(Vect(rotatedCircle3.x, rotatedCircle3.y), Vect(rotatedCircle2.x, rotatedCircle2.y));
                             if (num4 + rotatedCircle3.sizeInPixels <= rotatedCircle2.sizeInPixels)
                             {
                                 flag = true;
@@ -2674,47 +2673,47 @@ namespace CutTheRope.game
                             }
                         }
                     }
-                    rotatedCircle2.lastTouch = vect(tx + camera.pos.x, ty + camera.pos.y);
+                    rotatedCircle2.lastTouch = Vect(tx + camera.pos.x, ty + camera.pos.y);
                     rotatedCircle2.operating = ti;
                     if (num2 < 90f)
                     {
-                        rotatedCircle2.setIsLeftControllerActive(true);
+                        rotatedCircle2.SetIsLeftControllerActive(true);
                     }
                     if (num3 < 90f)
                     {
-                        rotatedCircle2.setIsRightControllerActive(true);
+                        rotatedCircle2.SetIsRightControllerActive(true);
                     }
                     rotatedCircle = rotatedCircle2;
                     break;
                 }
             }
-            if (rotatedCircles.getObjectIndex(rotatedCircle) != rotatedCircles.count() - 1 && flag2 && !flag)
+            if (rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count() - 1 && flag2 && !flag)
             {
-                Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-                timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(1);
-                timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(1);
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
                 timeline2.delegateTimelineDelegate = this;
-                RotatedCircle rotatedCircle4 = (RotatedCircle)rotatedCircle.copy();
-                rotatedCircle4.addTimeline(timeline2);
-                rotatedCircle4.playTimeline(0);
-                rotatedCircle.addTimeline(timeline);
-                rotatedCircle.playTimeline(0);
-                rotatedCircle.retain();
-                rotatedCircles.setObjectAt(rotatedCircle4, rotatedCircles.getObjectIndex(rotatedCircle));
-                rotatedCircles.addObject(rotatedCircle);
-                rotatedCircle.release();
+                RotatedCircle rotatedCircle4 = (RotatedCircle)rotatedCircle.Copy();
+                _ = rotatedCircle4.AddTimeline(timeline2);
+                rotatedCircle4.PlayTimeline(0);
+                _ = rotatedCircle.AddTimeline(timeline);
+                rotatedCircle.PlayTimeline(0);
+                rotatedCircle.Retain();
+                rotatedCircles.SetObjectAt(rotatedCircle4, rotatedCircles.GetObjectIndex(rotatedCircle));
+                _ = rotatedCircles.AddObject(rotatedCircle);
+                rotatedCircle.Release();
             }
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.wheel && pointInRect(tx + camera.pos.x, ty + camera.pos.y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
+                if (bungee.wheel && PointInRect(tx + camera.pos.x, ty + camera.pos.y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
                 {
-                    bungee.handleWheelTouch(vect(tx + camera.pos.x, ty + camera.pos.y));
+                    bungee.HandleWheelTouch(Vect(tx + camera.pos.x, ty + camera.pos.y));
                     bungee.wheelOperating = ti;
                 }
-                if (bungee.moveLength > 0.0 && pointInRect(tx + camera.pos.x, ty + camera.pos.y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
+                if (bungee.moveLength > 0.0 && PointInRect(tx + camera.pos.x, ty + camera.pos.y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
                     bungee.moverDragging = ti;
                     return true;
@@ -2722,18 +2721,18 @@ namespace CutTheRope.game
             }
             if (clickToCut && !ignoreTouches)
             {
-                Vector s = default(Vector);
+                Vector s = default;
                 Grab grab2 = null;
-                Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = getNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, tx + camera.pos.x, ty + camera.pos.y, ref grab2);
-                if (nearestBungeeSegmentByBeziersPointsatXYgrab != null && nearestBungeeSegmentByBeziersPointsatXYgrab.highlighted && getNearestBungeeSegmentByConstraintsforGrab(ref s, grab2) != null)
+                Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, tx + camera.pos.x, ty + camera.pos.y, ref grab2);
+                if (nearestBungeeSegmentByBeziersPointsatXYgrab != null && nearestBungeeSegmentByBeziersPointsatXYgrab.highlighted && GetNearestBungeeSegmentByConstraintsforGrab(ref s, grab2) != null)
                 {
-                    cutWithRazorOrLine1Line2Immediate(null, s, s, false);
+                    _ = CutWithRazorOrLine1Line2Immediate(null, s, s, false);
                 }
             }
             return true;
         }
 
-        public virtual bool touchUpXYIndex(float tx, float ty, int ti)
+        public bool TouchUpXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
             {
@@ -2746,10 +2745,10 @@ namespace CutTheRope.game
             }
             if (gravityButton != null && gravityTouchDown == ti)
             {
-                if (((Button)gravityButton.getChild(gravityButton.on() ? 1 : 0)).isInTouchZoneXYforTouchDown(tx + camera.pos.x, ty + camera.pos.y, true))
+                if (((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.x, ty + camera.pos.y, true))
                 {
-                    gravityButton.toggle();
-                    onButtonPressed(0);
+                    gravityButton.Toggle();
+                    OnButtonPressed(0);
                 }
                 gravityTouchDown = -1;
             }
@@ -2759,7 +2758,7 @@ namespace CutTheRope.game
                 if (spike.rotateButton != null && spike.touchIndex == ti)
                 {
                     spike.touchIndex = -1;
-                    if (spike.rotateButton.onTouchUpXY(tx + camera.pos.x, ty + camera.pos.y))
+                    if (spike.rotateButton.OnTouchUpXY(tx + camera.pos.x, ty + camera.pos.y))
                     {
                         return true;
                     }
@@ -2772,8 +2771,8 @@ namespace CutTheRope.game
                 {
                     rotatedCircle.operating = -1;
                     rotatedCircle.soundPlaying = -1;
-                    rotatedCircle.setIsLeftControllerActive(false);
-                    rotatedCircle.setIsRightControllerActive(false);
+                    rotatedCircle.SetIsLeftControllerActive(false);
+                    rotatedCircle.SetIsRightControllerActive(false);
                 }
             }
             foreach (object obj3 in bungees)
@@ -2791,13 +2790,13 @@ namespace CutTheRope.game
             return true;
         }
 
-        public virtual bool touchMoveXYIndex(float tx, float ty, int ti)
+        public bool TouchMoveXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
             {
                 return true;
             }
-            Vector vector = vect(tx, ty);
+            Vector vector = Vect(tx, ty);
             if (ti >= 5)
             {
                 return true;
@@ -2805,42 +2804,42 @@ namespace CutTheRope.game
             foreach (object obj in pumps)
             {
                 Pump pump3 = (Pump)obj;
-                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0.0 && (double)vectDistance(startPos[ti], vector) > 10.0)
+                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0.0 && (double)VectDistance(startPos[ti], vector) > 10.0)
                 {
                     pump3.pumpTouchTimer = 0f;
                 }
             }
             if (rotatedCircles != null)
             {
-                for (int i = 0; i < rotatedCircles.count(); i++)
+                for (int i = 0; i < rotatedCircles.Count(); i++)
                 {
                     RotatedCircle rotatedCircle = (RotatedCircle)rotatedCircles[i];
                     if (rotatedCircle != null && rotatedCircle.operating == ti)
                     {
-                        Vector v = vect(rotatedCircle.x, rotatedCircle.y);
-                        Vector vector2 = vect(tx + camera.pos.x, ty + camera.pos.y);
-                        Vector v2 = vectSub(rotatedCircle.lastTouch, v);
-                        float num = vectAngleNormalized(vectSub(vector2, v)) - vectAngleNormalized(v2);
+                        Vector v = Vect(rotatedCircle.x, rotatedCircle.y);
+                        Vector vector2 = Vect(tx + camera.pos.x, ty + camera.pos.y);
+                        Vector v2 = VectSub(rotatedCircle.lastTouch, v);
+                        float num = VectAngleNormalized(VectSub(vector2, v)) - VectAngleNormalized(v2);
                         float initial_rotation = DEGREES_TO_RADIANS(rotatedCircle.rotation);
                         rotatedCircle.rotation += RADIANS_TO_DEGREES(num);
                         float a = DEGREES_TO_RADIANS(rotatedCircle.rotation);
                         a = FBOUND_PI(a);
-                        rotatedCircle.handle1 = vectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = vectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        int num2 = (num > 0f) ? 46 : 47;
+                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
+                        int num2 = num > 0f ? 46 : 47;
                         if ((double)Math.Abs(num) < 0.07)
                         {
                             num2 = -1;
                         }
                         if (rotatedCircle.soundPlaying != num2 && num2 != -1)
                         {
-                            CTRSoundMgr._playSound(num2);
+                            CTRSoundMgr.PlaySound(num2);
                             rotatedCircle.soundPlaying = num2;
                         }
-                        for (int j = 0; j < bungees.count(); j++)
+                        for (int j = 0; j < bungees.Count(); j++)
                         {
                             Grab grab = (Grab)bungees[j];
-                            if (vectDistance(vect(grab.x, grab.y), vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
+                            if (VectDistance(Vect(grab.x, grab.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (grab.initial_rotatedCircle != rotatedCircle)
                                 {
@@ -2851,24 +2850,24 @@ namespace CutTheRope.game
                                 }
                                 float a2 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - grab.initial_rotation;
                                 a2 = FBOUND_PI(a2);
-                                Vector vector3 = vectRotateAround(vect(grab.initial_x, grab.initial_y), (double)a2, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), (double)a2, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = vector3.x;
                                 grab.y = vector3.y;
                                 if (grab.rope != null)
                                 {
-                                    grab.rope.bungeeAnchor.pos = vect(grab.x, grab.y);
+                                    grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
                                     grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
                                 }
                                 if (grab.radius != -1f)
                                 {
-                                    grab.reCalcCircle();
+                                    grab.ReCalcCircle();
                                 }
                             }
                         }
-                        for (int k = 0; k < pumps.count(); k++)
+                        for (int k = 0; k < pumps.Count(); k++)
                         {
                             Pump pump4 = (Pump)pumps[k];
-                            if (vectDistance(vect(pump4.x, pump4.y), vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
+                            if (VectDistance(Vect(pump4.x, pump4.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (pump4.initial_rotatedCircle != rotatedCircle)
                                 {
@@ -2879,17 +2878,17 @@ namespace CutTheRope.game
                                 }
                                 float a3 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - pump4.initial_rotation;
                                 a3 = FBOUND_PI(a3);
-                                Vector vector4 = vectRotateAround(vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector4 = VectRotateAround(Vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
                                 pump4.x = vector4.x;
                                 pump4.y = vector4.y;
                                 pump4.rotation += RADIANS_TO_DEGREES(num);
-                                pump4.updateRotation();
+                                pump4.UpdateRotation();
                             }
                         }
-                        for (int l = 0; l < bubbles.count(); l++)
+                        for (int l = 0; l < bubbles.Count(); l++)
                         {
                             Bubble bubble = (Bubble)bubbles[l];
-                            if (vectDistance(vect(bubble.x, bubble.y), vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != candyBubble && bubble != candyBubbleR && bubble != candyBubbleL)
+                            if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != candyBubble && bubble != candyBubbleR && bubble != candyBubbleL)
                             {
                                 if (bubble.initial_rotatedCircle != rotatedCircle)
                                 {
@@ -2900,14 +2899,14 @@ namespace CutTheRope.game
                                 }
                                 float a4 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - bubble.initial_rotation;
                                 a4 = FBOUND_PI(a4);
-                                Vector vector5 = vectRotateAround(vect(bubble.initial_x, bubble.initial_y), (double)a4, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector5 = VectRotateAround(Vect(bubble.initial_x, bubble.initial_y), (double)a4, rotatedCircle.x, rotatedCircle.y);
                                 bubble.x = vector5.x;
                                 bubble.y = vector5.y;
                             }
                         }
-                        if (pointInRect(target.x, target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
+                        if (PointInRect(target.x, target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
                         {
-                            Vector vector6 = vectRotateAround(vect(target.x, target.y), (double)num, rotatedCircle.x, rotatedCircle.y);
+                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), (double)num, rotatedCircle.x, rotatedCircle.y);
                             target.x = vector6.x;
                             target.y = vector6.y;
                         }
@@ -2916,15 +2915,15 @@ namespace CutTheRope.game
                     }
                 }
             }
-            int num3 = bungees.count();
+            int num3 = bungees.Count();
             for (int m = 0; m < num3; m++)
             {
-                Grab grab2 = (Grab)bungees.objectAtIndex(m);
+                Grab grab2 = (Grab)bungees.ObjectAtIndex(m);
                 if (grab2 != null)
                 {
                     if (grab2.wheel && grab2.wheelOperating == ti)
                     {
-                        grab2.handleWheelRotate(vect(tx + camera.pos.x, ty + camera.pos.y));
+                        grab2.HandleWheelRotate(Vect(tx + camera.pos.x, ty + camera.pos.y));
                         return true;
                     }
                     if (grab2.moveLength > 0.0 && grab2.moverDragging == ti)
@@ -2939,12 +2938,12 @@ namespace CutTheRope.game
                         }
                         if (grab2.rope != null)
                         {
-                            grab2.rope.bungeeAnchor.pos = vect(grab2.x, grab2.y);
+                            grab2.rope.bungeeAnchor.pos = Vect(grab2.x, grab2.y);
                             grab2.rope.bungeeAnchor.pin = grab2.rope.bungeeAnchor.pos;
                         }
                         if (grab2.radius != -1f)
                         {
-                            grab2.reCalcCircle();
+                            grab2.ReCalcCircle();
                         }
                         return true;
                     }
@@ -2952,20 +2951,20 @@ namespace CutTheRope.game
             }
             if (dragging[ti])
             {
-                Vector start = vectAdd(startPos[ti], camera.pos);
-                Vector end = vectAdd(vect(tx, ty), camera.pos);
-                FingerCut fingerCut = (FingerCut)new FingerCut().init();
+                Vector start = VectAdd(startPos[ti], camera.pos);
+                Vector end = VectAdd(Vect(tx, ty), camera.pos);
+                FingerCut fingerCut = (FingerCut)new FingerCut().Init();
                 fingerCut.start = start;
                 fingerCut.end = end;
                 fingerCut.startSize = 5f;
                 fingerCut.endSize = 5f;
                 fingerCut.c = RGBAColor.whiteRGBA;
-                fingerCuts[ti].addObject(fingerCut);
+                _ = fingerCuts[ti].AddObject(fingerCut);
                 int num4 = 0;
                 foreach (object obj2 in fingerCuts[ti])
                 {
                     FingerCut item = (FingerCut)obj2;
-                    num4 += cutWithRazorOrLine1Line2Immediate(null, item.start, item.end, false);
+                    num4 += CutWithRazorOrLine1Line2Immediate(null, item.start, item.end, false);
                 }
                 if (num4 > 0)
                 {
@@ -2983,23 +2982,23 @@ namespace CutTheRope.game
                     Preferences._setIntforKey(num5, "PREFS_ROPES_CUT", false);
                     if (num5 == 100)
                     {
-                        CTRRootController.postAchievementName("681461850", ACHIEVEMENT_STRING("\"Rope Cutter\""));
+                        CTRRootController.PostAchievementName("681461850", ACHIEVEMENT_STRING("\"Rope Cutter\""));
                     }
                     if (ropesCutAtOnce is >= 3 and < 5)
                     {
-                        CTRRootController.postAchievementName("681464917", ACHIEVEMENT_STRING("\"Quick Finger\""));
+                        CTRRootController.PostAchievementName("681464917", ACHIEVEMENT_STRING("\"Quick Finger\""));
                     }
                     if (ropesCutAtOnce >= 5)
                     {
-                        CTRRootController.postAchievementName("681508316", ACHIEVEMENT_STRING("\"Master Finger\""));
+                        CTRRootController.PostAchievementName("681508316", ACHIEVEMENT_STRING("\"Master Finger\""));
                     }
                     if (num5 == 800)
                     {
-                        CTRRootController.postAchievementName("681457931", ACHIEVEMENT_STRING("\"Rope Cutter Maniac\""));
+                        CTRRootController.PostAchievementName("681457931", ACHIEVEMENT_STRING("\"Rope Cutter Maniac\""));
                     }
                     if (num5 == 2000)
                     {
-                        CTRRootController.postAchievementName("1058248892", ACHIEVEMENT_STRING("\"Ultimate Rope Cutter\""));
+                        CTRRootController.PostAchievementName("1058248892", ACHIEVEMENT_STRING("\"Ultimate Rope Cutter\""));
                     }
                 }
                 prevStartPos[ti] = startPos[ti];
@@ -3008,29 +3007,29 @@ namespace CutTheRope.game
             return true;
         }
 
-        public virtual bool touchDraggedXYIndex(float tx, float ty, int index)
+        public bool TouchDraggedXYIndex(float tx, float ty, int index)
         {
             if (index > 5)
             {
                 return false;
             }
-            slastTouch = vect(tx, ty);
+            slastTouch = Vect(tx, ty);
             return true;
         }
 
-        public virtual void onButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (MaterialPoint.globalGravity.y == 784.0)
             {
                 MaterialPoint.globalGravity.y = -784f;
                 gravityNormal = false;
-                CTRSoundMgr._playSound(39);
+                CTRSoundMgr.PlaySound(39);
             }
             else
             {
                 MaterialPoint.globalGravity.y = 784f;
                 gravityNormal = true;
-                CTRSoundMgr._playSound(38);
+                CTRSoundMgr.PlaySound(38);
             }
             if (earthAnims == null)
             {
@@ -3041,93 +3040,93 @@ namespace CutTheRope.game
                 Image earthAnim = (Image)obj;
                 if (gravityNormal)
                 {
-                    earthAnim.playTimeline(0);
+                    earthAnim.PlayTimeline(0);
                 }
                 else
                 {
-                    earthAnim.playTimeline(1);
+                    earthAnim.PlayTimeline(1);
                 }
             }
         }
 
-        public virtual void rotateAllSpikesWithID(int sid)
+        public void RotateAllSpikesWithID(int sid)
         {
             foreach (object obj in spikes)
             {
                 Spikes spike = (Spikes)obj;
-                if (spike.getToggled() == sid)
+                if (spike.GetToggled() == sid)
                 {
-                    spike.rotateSpikes();
+                    spike.RotateSpikes();
                 }
             }
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             for (int i = 0; i < 5; i++)
             {
-                fingerCuts[i].release();
+                fingerCuts[i].Release();
             }
-            dd.release();
-            camera.release();
-            back.release();
-            base.dealloc();
+            dd.Release();
+            camera.Release();
+            back.Release();
+            base.Dealloc();
         }
 
-        public virtual void fullscreenToggled(bool isFullscreen)
+        public void FullscreenToggled(bool isFullscreen)
         {
-            BaseElement childWithName = staticAniPool.getChildWithName("levelLabel");
+            BaseElement childWithName = staticAniPool.GetChildWithName("levelLabel");
             if (childWithName != null)
             {
-                childWithName.x = 15f + canvas.xOffsetScaled;
+                childWithName.x = 15f + Canvas.xOffsetScaled;
             }
             for (int i = 0; i < 3; i++)
             {
-                hudStar[i].x = (hudStar[i].width * i) + canvas.xOffsetScaled;
+                hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
             }
             if (isFullscreen)
             {
                 float num = Global.ScreenSizeManager.ScreenWidth;
-                back.scaleX = num / canvas.backingWidth * 1.25f;
+                back.scaleX = num / Canvas.backingWidth * 1.25f;
                 return;
             }
             back.scaleX = 1.25f;
         }
 
-        private void selector_gameLost(NSObject param)
+        private void Selector_gameLost(NSObject param)
         {
-            gameLost();
+            GameLost();
         }
 
-        private void selector_gameWon(NSObject param)
+        private void Selector_gameWon(NSObject param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
-            gameSceneDelegate?.gameWon();
+            gameSceneDelegate?.GameWon();
         }
 
-        private void selector_animateLevelRestart(NSObject param)
+        private void Selector_animateLevelRestart(NSObject param)
         {
-            animateLevelRestart();
+            AnimateLevelRestart();
         }
 
-        private void selector_showGreeting(NSObject param)
+        private void Selector_showGreeting(NSObject param)
         {
-            showGreeting();
+            ShowGreeting();
         }
 
-        private void selector_doCandyBlink(NSObject param)
+        private void Selector_doCandyBlink(NSObject param)
         {
-            doCandyBlink();
+            DoCandyBlink();
         }
 
-        private void selector_teleport(NSObject param)
+        private void Selector_teleport(NSObject param)
         {
-            teleport();
+            Teleport();
         }
 
         public static float FBOUND_PI(float a)
         {
-            return (float)(((double)a > 3.141592653589793) ? ((double)a - 6.283185307179586) : (((double)a < -3.141592653589793) ? ((double)a + 6.283185307179586) : ((double)a)));
+            return (float)((double)a > 3.141592653589793 ? (double)a - 6.283185307179586 : (double)a < -3.141592653589793 ? (double)a + 6.283185307179586 : (double)a);
         }
 
         public const int MAX_TOUCHES = 5;
@@ -3224,7 +3223,7 @@ namespace CutTheRope.game
 
         private DelayedDispatcher dd;
 
-        public GameSceneDelegate gameSceneDelegate;
+        public IGameSceneDelegate gameSceneDelegate;
 
         private AnimationsPool aniPool;
 
@@ -3240,9 +3239,9 @@ namespace CutTheRope.game
 
         private GameObject candy;
 
-        private Image candyMain;
+        private GameObject candyMain;
 
-        private Image candyTop;
+        private GameObject candyTop;
 
         private Animation candyBlink;
 
@@ -3388,7 +3387,7 @@ namespace CutTheRope.game
 
         public DynamicArray[] fingerCuts = new DynamicArray[5];
 
-        private class FingerCut : NSObject
+        private sealed class FingerCut : NSObject
         {
             public Vector start;
 
@@ -3401,7 +3400,7 @@ namespace CutTheRope.game
             public RGBAColor c;
         }
 
-        private class SCandy : ConstraintedPoint
+        private sealed class SCandy : ConstraintedPoint
         {
             public bool good;
 
@@ -3412,24 +3411,24 @@ namespace CutTheRope.game
             public float lastAngleChange;
         }
 
-        private class TutorialText : Text
+        private sealed class TutorialText : Text
         {
             public int special;
         }
 
-        private class GameObjectSpecial : CTRGameObject
+        private sealed class GameObjectSpecial : CTRGameObject
         {
             private static GameObjectSpecial GameObjectSpecial_create(CTRTexture2D t)
             {
                 GameObjectSpecial gameObjectSpecial = new();
-                gameObjectSpecial.initWithTexture(t);
+                _ = gameObjectSpecial.InitWithTexture(t);
                 return gameObjectSpecial;
             }
 
             public static GameObjectSpecial GameObjectSpecial_createWithResIDQuad(int r, int q)
             {
-                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.getTexture(r));
-                gameObjectSpecial.setDrawQuad(q);
+                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.GetTexture(r));
+                gameObjectSpecial.SetDrawQuad(q);
                 return gameObjectSpecial;
             }
 

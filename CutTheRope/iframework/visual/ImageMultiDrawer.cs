@@ -4,11 +4,11 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class ImageMultiDrawer : BaseElement
+    internal sealed class ImageMultiDrawer : BaseElement
     {
-        public virtual ImageMultiDrawer initWithImageandCapacity(Image i, int n)
+        public ImageMultiDrawer InitWithImageandCapacity(Image i, int n)
         {
-            if (init() == null)
+            if (Init() == null)
             {
                 return null;
             }
@@ -18,25 +18,25 @@ namespace CutTheRope.iframework.visual
             texCoordinates = new Quad2D[totalQuads];
             vertices = new Quad3D[totalQuads];
             indices = new short[totalQuads * 6];
-            initIndices();
+            InitIndices();
             return this;
         }
 
-        private void freeWithCheck()
+        private void FreeWithCheck()
         {
             texCoordinates = null;
             vertices = null;
             indices = null;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
-            freeWithCheck();
+            FreeWithCheck();
             image = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        private void initIndices()
+        private void InitIndices()
         {
             for (int i = 0; i < totalQuads; i++)
             {
@@ -49,41 +49,41 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public void setTextureQuadatVertexQuadatIndex(Quad2D qt, Quad3D qv, int n)
+        public void SetTextureQuadatVertexQuadatIndex(Quad2D qt, Quad3D qv, int n)
         {
             if (n >= totalQuads)
             {
-                resizeCapacity(n + 1);
+                ResizeCapacity(n + 1);
             }
             texCoordinates[n] = qt;
             vertices[n] = qv;
         }
 
-        public void mapTextureQuadAtXYatIndex(int q, float dx, float dy, int n)
+        public void MapTextureQuadAtXYatIndex(int q, float dx, float dy, int n)
         {
             if (n >= totalQuads)
             {
-                resizeCapacity(n + 1);
+                ResizeCapacity(n + 1);
             }
             texCoordinates[n] = image.texture.quads[q];
             vertices[n] = Quad3D.MakeQuad3D((double)(dx + image.texture.quadOffsets[q].x), (double)(dy + image.texture.quadOffsets[q].y), 0.0, image.texture.quadRects[q].w, image.texture.quadRects[q].h);
         }
 
-        private void drawNumberOfQuads(int n)
+        private void DrawNumberOfQuads(int n)
         {
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(image.texture.name());
-            OpenGL.glVertexPointer(3, 5, 0, toFloatArray(vertices));
-            OpenGL.glTexCoordPointer(2, 5, 0, toFloatArray(texCoordinates));
-            OpenGL.glDrawElements(7, n * 6, indices);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(image.texture.Name());
+            OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(vertices));
+            OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(texCoordinates));
+            OpenGL.GlDrawElements(7, n * 6, indices);
         }
 
-        private void drawNumberOfQuadsStartingFrom(int n, int s)
+        private void DrawNumberOfQuadsStartingFrom(int n, int s)
         {
             throw new NotImplementedException();
         }
 
-        public void optimize(VertexPositionNormalTexture[] v)
+        public void Optimize(VertexPositionNormalTexture[] v)
         {
             if (v != null && verticesOptimized == null)
             {
@@ -91,35 +91,35 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public void drawAllQuads()
+        public void DrawAllQuads()
         {
             if (verticesOptimized == null)
             {
-                drawNumberOfQuads(totalQuads);
+                DrawNumberOfQuads(totalQuads);
                 return;
             }
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(image.texture.name());
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(image.texture.Name());
             OpenGL.Optimized_DrawTriangleList(verticesOptimized, indices);
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
-            OpenGL.glTranslatef(drawX, drawY, 0f);
+            PreDraw();
+            OpenGL.GlTranslatef(drawX, drawY, 0f);
             if (numberOfQuadsToDraw == -1)
             {
-                drawAllQuads();
+                DrawAllQuads();
             }
             else if (numberOfQuadsToDraw > 0)
             {
-                drawNumberOfQuads(numberOfQuadsToDraw);
+                DrawNumberOfQuads(numberOfQuadsToDraw);
             }
-            OpenGL.glTranslatef(0f - drawX, 0f - drawY, 0f);
-            postDraw();
+            OpenGL.GlTranslatef(0f - drawX, 0f - drawY, 0f);
+            PostDraw();
         }
 
-        private void resizeCapacity(int n)
+        private void ResizeCapacity(int n)
         {
             if (n != totalQuads)
             {
@@ -129,9 +129,9 @@ namespace CutTheRope.iframework.visual
                 indices = new short[totalQuads * 6];
                 if (texCoordinates == null || vertices == null || indices == null)
                 {
-                    freeWithCheck();
+                    FreeWithCheck();
                 }
-                initIndices();
+                InitIndices();
             }
         }
 

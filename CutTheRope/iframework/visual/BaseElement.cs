@@ -21,7 +21,7 @@ namespace CutTheRope.iframework.visual
             return (parentAnchor & f) != 0;
         }
 
-        public static void calculateTopLeft(BaseElement e)
+        public static void CalculateTopLeft(BaseElement e)
         {
             float num = e.HasParent ? e.parent.drawX : 0f;
             float num2 = e.HasParent ? e.parent.drawY : 0f;
@@ -84,24 +84,24 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        protected static void restoreTransformations(BaseElement t)
+        protected static void RestoreTransformations(BaseElement t)
         {
             if (t.pushM || t.rotation != 0.0 || t.scaleX != 1.0 || t.scaleY != 1.0 || t.translateX != 0.0 || t.translateY != 0.0)
             {
-                OpenGL.glPopMatrix();
+                OpenGL.GlPopMatrix();
                 t.pushM = false;
             }
         }
 
-        private static void restoreColor(BaseElement t)
+        private static void RestoreColor(BaseElement t)
         {
             if (!RGBAColor.RGBAEqual(t.color, RGBAColor.solidOpaqueRGBA))
             {
-                OpenGL.glColor4f(RGBAColor.solidOpaqueRGBA_Xna);
+                OpenGL.GlColor4f(RGBAColor.solidOpaqueRGBAXna);
             }
         }
 
-        public override NSObject init()
+        public override NSObject Init()
         {
             visible = true;
             touchable = true;
@@ -135,52 +135,52 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void preDraw()
+        public virtual void PreDraw()
         {
-            calculateTopLeft(this);
+            CalculateTopLeft(this);
             bool flag = scaleX != 1.0 || scaleY != 1.0;
             bool flag2 = rotation != 0.0;
             bool flag3 = translateX != 0.0 || translateY != 0.0;
             if (flag || flag2 || flag3)
             {
-                OpenGL.glPushMatrix();
+                OpenGL.GlPushMatrix();
                 pushM = true;
                 if (flag || flag2)
                 {
                     float num = drawX + (width >> 1) + rotationCenterX;
                     float num2 = drawY + (height >> 1) + rotationCenterY;
-                    OpenGL.glTranslatef(num, num2, 0f);
+                    OpenGL.GlTranslatef(num, num2, 0f);
                     if (flag2)
                     {
-                        OpenGL.glRotatef(rotation, 0f, 0f, 1f);
+                        OpenGL.GlRotatef(rotation, 0f, 0f, 1f);
                     }
                     if (flag)
                     {
-                        OpenGL.glScalef(scaleX, scaleY, 1f);
+                        OpenGL.GlScalef(scaleX, scaleY, 1f);
                     }
-                    OpenGL.glTranslatef(0f - num, 0f - num2, 0f);
+                    OpenGL.GlTranslatef(0f - num, 0f - num2, 0f);
                 }
                 if (flag3)
                 {
-                    OpenGL.glTranslatef(translateX, translateY, 0f);
+                    OpenGL.GlTranslatef(translateX, translateY, 0f);
                 }
             }
             if (!RGBAColor.RGBAEqual(color, RGBAColor.solidOpaqueRGBA))
             {
-                OpenGL.glColor4f(color.toWhiteAlphaXNA());
+                OpenGL.GlColor4f(color.ToWhiteAlphaXNA());
             }
             if (blendingMode != -1)
             {
                 switch (blendingMode)
                 {
                     case 0:
-                        OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                        OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         return;
                     case 1:
-                        OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                        OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         return;
                     case 2:
-                        OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
+                        OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                         break;
                     default:
                         return;
@@ -188,32 +188,31 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void draw()
+        public virtual void Draw()
         {
-            preDraw();
-            postDraw();
+            PreDraw();
+            PostDraw();
         }
 
-        public virtual void postDraw()
+        public virtual void PostDraw()
         {
             if (!passTransformationsToChilds)
             {
-                restoreTransformations(this);
+                RestoreTransformations(this);
             }
             if (!passColorToChilds)
             {
-                restoreColor(this);
+                RestoreColor(this);
             }
             int num = 0;
             int num2 = 0;
             while (num < childs.Count)
             {
-                BaseElement value;
-                if (childs.TryGetValue(num2, out value))
+                if (childs.TryGetValue(num2, out BaseElement value))
                 {
                     if (value != null && value.visible)
                     {
-                        value.draw();
+                        value.Draw();
                     }
                     num++;
                 }
@@ -221,26 +220,25 @@ namespace CutTheRope.iframework.visual
             }
             if (passTransformationsToChilds)
             {
-                restoreTransformations(this);
+                RestoreTransformations(this);
             }
             if (passColorToChilds)
             {
-                restoreColor(this);
+                RestoreColor(this);
             }
         }
 
-        public virtual void update(float delta)
+        public virtual void Update(float delta)
         {
             int num = 0;
             int num2 = 0;
             while (num < childs.Count)
             {
-                BaseElement value;
-                if (childs.TryGetValue(num2, out value))
+                if (childs.TryGetValue(num2, out BaseElement value))
                 {
                     if (value != null && value.updateable)
                     {
-                        value.update(delta);
+                        value.Update(delta);
                     }
                     num++;
                 }
@@ -248,27 +246,27 @@ namespace CutTheRope.iframework.visual
             }
             if (currentTimeline != null)
             {
-                Timeline.updateTimeline(currentTimeline, delta);
+                Timeline.UpdateTimeline(currentTimeline, delta);
             }
         }
 
-        public BaseElement getChildWithName(NSString n)
+        public BaseElement GetChildWithName(NSString n)
         {
-            return getChildWithName(n.ToString());
+            return GetChildWithName(n.ToString());
         }
 
-        public BaseElement getChildWithName(string n)
+        public BaseElement GetChildWithName(string n)
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null)
                 {
-                    if (value.name != null && value.name.isEqualToString(n))
+                    if (value.name != null && value.name.IsEqualToString(n))
                     {
                         return value;
                     }
-                    BaseElement childWithName = value.getChildWithName(n);
+                    BaseElement childWithName = value.GetChildWithName(n);
                     if (childWithName != null)
                     {
                         return childWithName;
@@ -278,9 +276,9 @@ namespace CutTheRope.iframework.visual
             return null;
         }
 
-        public void setSizeToChildsBounds()
+        public void SetSizeToChildsBounds()
         {
-            calculateTopLeft(this);
+            CalculateTopLeft(this);
             float num = drawX;
             float num2 = drawY;
             float num3 = drawX + width;
@@ -290,7 +288,7 @@ namespace CutTheRope.iframework.visual
                 BaseElement value = child.Value;
                 if (value != null)
                 {
-                    calculateTopLeft(value);
+                    CalculateTopLeft(value);
                     if (value.drawX < num)
                     {
                         num = value.drawX;
@@ -313,7 +311,7 @@ namespace CutTheRope.iframework.visual
             height = (int)(num4 - num2);
         }
 
-        public virtual bool handleAction(ActionData a)
+        public virtual bool HandleAction(ActionData a)
         {
             if (a.actionName == "ACTION_SET_VISIBLE")
             {
@@ -329,15 +327,15 @@ namespace CutTheRope.iframework.visual
             }
             else if (a.actionName == "ACTION_PLAY_TIMELINE")
             {
-                playTimeline(a.actionSubParam);
+                PlayTimeline(a.actionSubParam);
             }
             else if (a.actionName == "ACTION_PAUSE_TIMELINE")
             {
-                pauseCurrentTimeline();
+                PauseCurrentTimeline();
             }
             else if (a.actionName == "ACTION_STOP_TIMELINE")
             {
-                stopCurrentTimeline();
+                StopCurrentTimeline();
             }
             else
             {
@@ -345,60 +343,58 @@ namespace CutTheRope.iframework.visual
                 {
                     return false;
                 }
-                getCurrentTimeline().jumpToTrackKeyFrame(a.actionParam, a.actionSubParam);
+                GetCurrentTimeline().JumpToTrackKeyFrame(a.actionParam, a.actionSubParam);
             }
             return true;
         }
 
-        private BaseElement createFromXML(XMLNode xml)
+        private static BaseElement CreateFromXML(XMLNode xml)
         {
             return new BaseElement();
         }
 
-        private int parseAlignmentString(NSString s)
+        private static int ParseAlignmentString(NSString s)
         {
             int num = 0;
-            if (s.rangeOfString("LEFT").length != 0U)
+            if (s.RangeOfString("LEFT").length != 0U)
             {
                 num = 1;
             }
-            else if (s.rangeOfString("HCENTER").length != 0U || s.isEqualToString("CENTER"))
+            else if (s.RangeOfString("HCENTER").length != 0U || s.IsEqualToString("CENTER"))
             {
                 num = 2;
             }
-            else if (s.rangeOfString("RIGHT").length != 0U)
+            else if (s.RangeOfString("RIGHT").length != 0U)
             {
                 num = 4;
             }
-            if (s.rangeOfString("TOP").length != 0U)
+            if (s.RangeOfString("TOP").length != 0U)
             {
                 num |= 8;
             }
-            else if (s.rangeOfString("VCENTER").length != 0U || s.isEqualToString("CENTER"))
+            else if (s.RangeOfString("VCENTER").length != 0U || s.IsEqualToString("CENTER"))
             {
                 num |= 16;
             }
-            else if (s.rangeOfString("BOTTOM").length != 0U)
+            else if (s.RangeOfString("BOTTOM").length != 0U)
             {
                 num |= 32;
             }
             return num;
         }
 
-        public virtual int addChild(BaseElement c)
+        public virtual int AddChild(BaseElement c)
         {
-            return addChildwithID(c, -1);
+            return AddChildwithID(c, -1);
         }
 
-        public virtual int addChildwithID(BaseElement c, int i)
+        public virtual int AddChildwithID(BaseElement c, int i)
         {
             c.parent = this;
-            BaseElement value2;
             if (i == -1)
             {
                 i = 0;
-                BaseElement value;
-                while (childs.TryGetValue(i, out value))
+                while (childs.TryGetValue(i, out BaseElement value))
                 {
                     if (value == null)
                     {
@@ -409,11 +405,11 @@ namespace CutTheRope.iframework.visual
                 }
                 childs.Add(i, c);
             }
-            else if (childs.TryGetValue(i, out value2))
+            else if (childs.TryGetValue(i, out BaseElement value2))
             {
                 if (value2 != c)
                 {
-                    value2.dealloc();
+                    value2.Dealloc();
                 }
                 childs[i] = c;
             }
@@ -424,44 +420,42 @@ namespace CutTheRope.iframework.visual
             return i;
         }
 
-        public virtual void removeChildWithID(int i)
+        public virtual void RemoveChildWithID(int i)
         {
-            BaseElement value = null;
-            if (childs.TryGetValue(i, out value))
+            if (childs.TryGetValue(i, out BaseElement value))
             {
                 if (value != null)
                 {
                     value.parent = null;
                 }
-                childs.Remove(i);
+                _ = childs.Remove(i);
             }
         }
 
-        public void removeAllChilds()
+        public void RemoveAllChilds()
         {
             childs.Clear();
         }
 
-        public virtual void removeChild(BaseElement c)
+        public virtual void RemoveChild(BaseElement c)
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 if (c.Equals(child.Value))
                 {
-                    childs.Remove(child.Key);
+                    _ = childs.Remove(child.Key);
                     break;
                 }
             }
         }
 
-        public virtual BaseElement getChild(int i)
+        public virtual BaseElement GetChild(int i)
         {
-            BaseElement value = null;
-            childs.TryGetValue(i, out value);
+            _ = childs.TryGetValue(i, out BaseElement value);
             return value;
         }
 
-        public virtual int getChildId(BaseElement c)
+        public virtual int GetChildId(BaseElement c)
         {
             int result = -1;
             foreach (KeyValuePair<int, BaseElement> child in childs)
@@ -474,90 +468,88 @@ namespace CutTheRope.iframework.visual
             return result;
         }
 
-        public virtual int childsCount()
+        public virtual int ChildsCount()
         {
             return childs.Count;
         }
 
-        public virtual Dictionary<int, BaseElement> getChilds()
+        public virtual Dictionary<int, BaseElement> GetChilds()
         {
             return childs;
         }
 
-        public virtual int addTimeline(Timeline t)
+        public virtual int AddTimeline(Timeline t)
         {
             int count = timelines.Count;
-            addTimelinewithID(t, count);
+            AddTimelinewithID(t, count);
             return count;
         }
 
-        public virtual void addTimelinewithID(Timeline t, int i)
+        public virtual void AddTimelinewithID(Timeline t, int i)
         {
             t.element = this;
             timelines[i] = t;
         }
 
-        public virtual void removeTimeline(int i)
+        public virtual void RemoveTimeline(int i)
         {
             if (currentTimelineIndex == i)
             {
-                stopCurrentTimeline();
+                StopCurrentTimeline();
             }
-            timelines.Remove(i);
+            _ = timelines.Remove(i);
         }
 
-        public virtual void playTimeline(int t)
+        public virtual void PlayTimeline(int t)
         {
-            Timeline value = null;
-            timelines.TryGetValue(t, out value);
+            _ = timelines.TryGetValue(t, out Timeline value);
             if (value != null)
             {
                 if (currentTimeline != null && currentTimeline.state != Timeline.TimelineState.TIMELINE_STOPPED)
                 {
-                    currentTimeline.stopTimeline();
+                    currentTimeline.StopTimeline();
                 }
                 currentTimelineIndex = t;
                 currentTimeline = value;
-                currentTimeline.playTimeline();
+                currentTimeline.PlayTimeline();
             }
         }
 
-        public virtual void pauseCurrentTimeline()
+        public virtual void PauseCurrentTimeline()
         {
-            currentTimeline.pauseTimeline();
+            currentTimeline.PauseTimeline();
         }
 
-        public virtual void stopCurrentTimeline()
+        public virtual void StopCurrentTimeline()
         {
-            currentTimeline.stopTimeline();
+            currentTimeline.StopTimeline();
             currentTimeline = null;
             currentTimelineIndex = -1;
         }
 
-        public virtual Timeline getCurrentTimeline()
+        public virtual Timeline GetCurrentTimeline()
         {
             return currentTimeline;
         }
 
-        public int getCurrentTimelineIndex()
+        public int GetCurrentTimelineIndex()
         {
             return currentTimelineIndex;
         }
 
-        public virtual Timeline getTimeline(int n)
+        public virtual Timeline GetTimeline(int n)
         {
-            Timeline value = null;
-            timelines.TryGetValue(n, out value);
+            _ = timelines.TryGetValue(n, out Timeline value);
             return value;
         }
 
-        public virtual bool onTouchDownXY(float tx, float ty)
+        public virtual bool OnTouchDownXY(float tx, float ty)
         {
             bool flag = false;
             foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
-                if (value != null && value.touchable && value.onTouchDownXY(tx, ty) && !flag)
+                if (value != null && value.touchable && value.OnTouchDownXY(tx, ty) && !flag)
                 {
                     flag = true;
                     if (!passTouchEventsToAllChilds)
@@ -569,13 +561,13 @@ namespace CutTheRope.iframework.visual
             return flag;
         }
 
-        public virtual bool onTouchUpXY(float tx, float ty)
+        public virtual bool OnTouchUpXY(float tx, float ty)
         {
             bool flag = false;
             foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
-                if (value != null && value.touchable && value.onTouchUpXY(tx, ty) && !flag)
+                if (value != null && value.touchable && value.OnTouchUpXY(tx, ty) && !flag)
                 {
                     flag = true;
                     if (!passTouchEventsToAllChilds)
@@ -587,13 +579,13 @@ namespace CutTheRope.iframework.visual
             return flag;
         }
 
-        public virtual bool onTouchMoveXY(float tx, float ty)
+        public virtual bool OnTouchMoveXY(float tx, float ty)
         {
             bool flag = false;
             foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
-                if (value != null && value.touchable && value.onTouchMoveXY(tx, ty) && !flag)
+                if (value != null && value.touchable && value.OnTouchMoveXY(tx, ty) && !flag)
                 {
                     flag = true;
                     if (!passTouchEventsToAllChilds)
@@ -605,62 +597,62 @@ namespace CutTheRope.iframework.visual
             return flag;
         }
 
-        public void setEnabled(bool e)
+        public void SetEnabled(bool e)
         {
             visible = e;
             touchable = e;
             updateable = e;
         }
 
-        public bool isEnabled()
+        public bool IsEnabled()
         {
             return visible && touchable && updateable;
         }
 
-        public void setName(string n)
+        public void SetName(string n)
         {
             NSREL(name);
             name = new NSString(n);
         }
 
-        public void setName(NSString n)
+        public void SetName(NSString n)
         {
             NSREL(name);
             name = n;
         }
 
-        public virtual void show()
+        public virtual void Show()
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null && value.visible)
                 {
-                    value.show();
+                    value.Show();
                 }
             }
         }
 
-        public virtual void hide()
+        public virtual void Hide()
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null && value.visible)
                 {
-                    value.hide();
+                    value.Hide();
                 }
             }
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             childs.Clear();
             childs = null;
             timelines.Clear();
             timelines = null;
             NSREL(name);
-            base.dealloc();
+            base.Dealloc();
         }
 
         public const string ACTION_SET_VISIBLE = "ACTION_SET_VISIBLE";

@@ -1,4 +1,4 @@
-using CutTheRope.ctr_commons;
+using CutTheRope.commons;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -7,16 +7,16 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.core
 {
-    internal class ViewController : NSObject, TouchDelegate
+    internal class ViewController : NSObject, ITouchDelegate
     {
         public ViewController()
         {
             views = [];
         }
 
-        public virtual NSObject initWithParent(ViewController p)
+        public virtual NSObject InitWithParent(ViewController p)
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 controllerState = ControllerState.CONTROLLER_DEACTIVE;
                 views = [];
@@ -29,159 +29,156 @@ namespace CutTheRope.iframework.core
             return this;
         }
 
-        public virtual void activate()
+        public virtual void Activate()
         {
             controllerState = ControllerState.CONTROLLER_ACTIVE;
-            Application.sharedRootController().onControllerActivated(this);
+            Application.SharedRootController().OnControllerActivated(this);
         }
 
-        public virtual void deactivate()
+        public virtual void Deactivate()
         {
-            Application.sharedRootController().onControllerDeactivationRequest(this);
+            Application.SharedRootController().OnControllerDeactivationRequest(this);
         }
 
-        public virtual void deactivateImmediately()
+        public virtual void DeactivateImmediately()
         {
             controllerState = ControllerState.CONTROLLER_DEACTIVE;
             if (activeViewID != -1)
             {
-                hideActiveView();
+                HideActiveView();
             }
-            Application.sharedRootController().onControllerDeactivated(this);
-            parent.onChildDeactivated(parent.activeChildID);
+            Application.SharedRootController().OnControllerDeactivated(this);
+            parent.OnChildDeactivated(parent.activeChildID);
         }
 
-        public virtual void pause()
+        public virtual void Pause()
         {
             controllerState = ControllerState.CONTROLLER_PAUSED;
-            Application.sharedRootController().onControllerPaused(this);
+            Application.SharedRootController().OnControllerPaused(this);
             if (activeViewID != -1)
             {
                 pausedViewID = activeViewID;
-                hideActiveView();
+                HideActiveView();
             }
         }
 
-        public virtual void unpause()
+        public virtual void Unpause()
         {
             controllerState = ControllerState.CONTROLLER_ACTIVE;
             if (activeChildID != -1)
             {
                 activeChildID = -1;
             }
-            Application.sharedRootController().onControllerUnpaused(this);
+            Application.SharedRootController().OnControllerUnpaused(this);
             if (pausedViewID != -1)
             {
-                showView(pausedViewID);
+                ShowView(pausedViewID);
             }
         }
 
-        public virtual void update(float delta)
+        public virtual void Update(float delta)
         {
             if (activeViewID != -1)
             {
-                activeView().update(delta);
+                ActiveView().Update(delta);
             }
         }
 
-        public virtual void addViewwithID(View v, int n)
+        public virtual void AddViewwithID(View v, int n)
         {
-            View value;
-            views.TryGetValue(n, out value);
+            _ = views.TryGetValue(n, out _);
             views[n] = v;
         }
 
-        public virtual void deleteView(int n)
+        public virtual void DeleteView(int n)
         {
             views[n] = null;
         }
 
-        public virtual void hideActiveView()
+        public virtual void HideActiveView()
         {
             View view = views[activeViewID];
-            Application.sharedRootController().onControllerViewHide(view);
+            Application.SharedRootController().OnControllerViewHide(view);
             if (view != null)
             {
-                view.onTouchUpXY(-10000f, -10000f);
-                view.hide();
+                _ = view.OnTouchUpXY(-10000f, -10000f);
+                view.Hide();
             }
             activeViewID = -1;
         }
 
-        public virtual void showView(int n)
+        public virtual void ShowView(int n)
         {
             if (activeViewID != -1)
             {
-                hideActiveView();
+                HideActiveView();
             }
             activeViewID = n;
             View view = views[n];
-            Application.sharedRootController().onControllerViewShow(view);
-            view.show();
+            Application.SharedRootController().OnControllerViewShow(view);
+            view.Show();
         }
 
-        public virtual View activeView()
+        public virtual View ActiveView()
         {
             return views[activeViewID];
         }
 
-        public virtual View getView(int n)
+        public virtual View GetView(int n)
         {
-            View value = null;
-            views.TryGetValue(n, out value);
+            _ = views.TryGetValue(n, out View value);
             return value;
         }
 
-        public virtual void addChildwithID(ViewController c, int n)
+        public virtual void AddChildwithID(ViewController c, int n)
         {
             ViewController viewController = null;
-            viewController?.dealloc();
+            viewController?.Dealloc();
             childs[n] = c;
         }
 
-        public virtual void deleteChild(int n)
+        public virtual void DeleteChild(int n)
         {
-            ViewController value = null;
-            if (childs.TryGetValue(n, out value))
+            if (childs.TryGetValue(n, out ViewController value))
             {
-                value.dealloc();
+                value.Dealloc();
                 childs[n] = null;
             }
         }
 
-        public virtual void deactivateActiveChild()
+        public virtual void DeactivateActiveChild()
         {
-            childs[activeChildID].deactivate();
+            childs[activeChildID].Deactivate();
             activeChildID = -1;
         }
 
-        public virtual void activateChild(int n)
+        public virtual void ActivateChild(int n)
         {
             if (activeChildID != -1)
             {
-                deactivateActiveChild();
+                DeactivateActiveChild();
             }
-            pause();
+            Pause();
             activeChildID = n;
-            childs[n].activate();
+            childs[n].Activate();
         }
 
-        public virtual void onChildDeactivated(int n)
+        public virtual void OnChildDeactivated(int n)
         {
-            unpause();
+            Unpause();
         }
 
-        public virtual ViewController activeChild()
+        public virtual ViewController ActiveChild()
         {
             return childs[activeChildID];
         }
 
-        public virtual ViewController getChild(int n)
+        public virtual ViewController GetChild(int n)
         {
             return childs[n];
         }
 
-        private bool checkNoChildsActive()
+        private bool CheckNoChildsActive()
         {
             foreach (KeyValuePair<int, ViewController> child in childs)
             {
@@ -194,18 +191,18 @@ namespace CutTheRope.iframework.core
             return true;
         }
 
-        public Vector convertTouchForLandscape(Vector t)
+        public Vector ConvertTouchForLandscape(Vector t)
         {
             throw new NotImplementedException();
         }
 
-        public virtual bool touchesBeganwithEvent(IList<TouchLocation> touches)
+        public virtual bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             if (activeViewID == -1)
             {
                 return false;
             }
-            View view = activeView();
+            View view = ActiveView();
             int num = -1;
             for (int i = 0; i < touches.Count; i++)
             {
@@ -217,38 +214,37 @@ namespace CutTheRope.iframework.core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Pressed)
                 {
-                    return view.onTouchDownXY(CtrRenderer.transformX(touchLocation.Position.X), CtrRenderer.transformY(touchLocation.Position.Y));
+                    return view.OnTouchDownXY(CtrRenderer.TransformX(touchLocation.Position.X), CtrRenderer.TransformY(touchLocation.Position.Y));
                 }
             }
             return false;
         }
 
-        public void deactivateAllButtons()
+        public void DeactivateAllButtons()
         {
             if (activeViewID != -1)
             {
                 View view = views[activeViewID];
                 if (view != null)
                 {
-                    view.onTouchUpXY(-1f, -1f);
+                    _ = view.OnTouchUpXY(-1f, -1f);
                     return;
                 }
             }
             else if (childs != null)
             {
-                ViewController value;
-                childs.TryGetValue(activeChildID, out value);
-                value?.deactivateAllButtons();
+                _ = childs.TryGetValue(activeChildID, out ViewController value);
+                value?.DeactivateAllButtons();
             }
         }
 
-        public virtual bool touchesEndedwithEvent(IList<TouchLocation> touches)
+        public virtual bool TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
             if (activeViewID == -1)
             {
                 return false;
             }
-            View view = activeView();
+            View view = ActiveView();
             int num = -1;
             for (int i = 0; i < touches.Count; i++)
             {
@@ -260,19 +256,19 @@ namespace CutTheRope.iframework.core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Released)
                 {
-                    return view.onTouchUpXY(CtrRenderer.transformX(touchLocation.Position.X), CtrRenderer.transformY(touchLocation.Position.Y));
+                    return view.OnTouchUpXY(CtrRenderer.TransformX(touchLocation.Position.X), CtrRenderer.TransformY(touchLocation.Position.Y));
                 }
             }
             return false;
         }
 
-        public virtual bool touchesMovedwithEvent(IList<TouchLocation> touches)
+        public virtual bool TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
             if (activeViewID == -1)
             {
                 return false;
             }
-            View view = activeView();
+            View view = ActiveView();
             int num = -1;
             for (int i = 0; i < touches.Count; i++)
             {
@@ -284,46 +280,46 @@ namespace CutTheRope.iframework.core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Moved)
                 {
-                    return view.onTouchMoveXY(CtrRenderer.transformX(touchLocation.Position.X), CtrRenderer.transformY(touchLocation.Position.Y));
+                    return view.OnTouchMoveXY(CtrRenderer.TransformX(touchLocation.Position.X), CtrRenderer.TransformY(touchLocation.Position.Y));
                 }
             }
             return false;
         }
 
-        public virtual bool touchesCancelledwithEvent(IList<TouchLocation> touches)
+        public virtual bool TouchesCancelledwithEvent(IList<TouchLocation> touches)
         {
             foreach (TouchLocation touch in touches)
             {
-                TouchLocationState state = touch.State;
+                _ = touch.State;
             }
             return false;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             views.Clear();
             views = null;
             childs.Clear();
             childs = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual bool backButtonPressed()
+        public virtual bool BackButtonPressed()
         {
             return false;
         }
 
-        public virtual bool menuButtonPressed()
+        public virtual bool MenuButtonPressed()
         {
             return false;
         }
 
-        public virtual bool mouseMoved(float x, float y)
+        public virtual bool MouseMoved(float x, float y)
         {
             return false;
         }
 
-        public virtual void fullscreenToggled(bool isFullscreen)
+        public virtual void FullscreenToggled(bool isFullscreen)
         {
         }
 

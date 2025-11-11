@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class ActionData
+    internal sealed class ActionData
     {
         public string actionName;
 

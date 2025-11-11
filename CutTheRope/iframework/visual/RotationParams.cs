@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class RotationParams
+    internal sealed class RotationParams
     {
         public float angle;
     }

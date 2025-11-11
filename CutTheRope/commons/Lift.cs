@@ -1,25 +1,25 @@
 using CutTheRope.iframework.visual;
 using System;
 
-namespace CutTheRope.ctr_commons
+namespace CutTheRope.commons
 {
-    internal class Lift : Button
+    internal sealed class Lift : Button
     {
-        public override bool onTouchDownXY(float tx, float ty)
+        public override bool OnTouchDownXY(float tx, float ty)
         {
             startX = tx - x;
             startY = ty - y;
-            return base.onTouchDownXY(tx, ty);
+            return base.OnTouchDownXY(tx, ty);
         }
 
-        public override bool onTouchUpXY(float tx, float ty)
+        public override bool OnTouchUpXY(float tx, float ty)
         {
             startX = 0f;
             startY = 0f;
-            return base.onTouchUpXY(tx, ty);
+            return base.OnTouchUpXY(tx, ty);
         }
 
-        public override bool onTouchMoveXY(float tx, float ty)
+        public override bool OnTouchMoveXY(float tx, float ty)
         {
             if (state == BUTTON_STATE.BUTTON_DOWN)
             {
@@ -31,10 +31,7 @@ namespace CutTheRope.ctr_commons
                     if (num != xPercent)
                     {
                         xPercent = num;
-                        if (liftDelegate != null)
-                        {
-                            liftDelegate(xPercent, yPercent);
-                        }
+                        liftDelegate?.Invoke(xPercent, yPercent);
                     }
                 }
                 if (maxY != 0f)
@@ -43,21 +40,18 @@ namespace CutTheRope.ctr_commons
                     if (num2 != yPercent)
                     {
                         yPercent = num2;
-                        if (liftDelegate != null)
-                        {
-                            liftDelegate(xPercent, yPercent);
-                        }
+                        liftDelegate?.Invoke(xPercent, yPercent);
                     }
                 }
                 return true;
             }
-            return base.onTouchMoveXY(tx, ty);
+            return base.OnTouchMoveXY(tx, ty);
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             liftDelegate = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
         public float startX;

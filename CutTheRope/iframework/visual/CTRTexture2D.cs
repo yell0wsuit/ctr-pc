@@ -1,4 +1,4 @@
-using CutTheRope.ctr_commons;
+using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class CTRTexture2D : NSObject
+    internal sealed class CTRTexture2D : NSObject
     {
-        public static void drawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
+        public static void DrawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
         {
             float num = t._invWidth * rect.x;
             float num2 = t._invHeight * rect.y;
@@ -25,24 +25,24 @@ namespace CutTheRope.iframework.visual
             array[9] = rect.w + point.x;
             array[10] = rect.h + point.y;
             float[] pointer2 = array;
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(t.name());
-            OpenGL.glVertexPointer(3, 5, 0, pointer2);
-            OpenGL.glTexCoordPointer(2, 5, 0, pointer);
-            OpenGL.glDrawArrays(8, 0, 4);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(t.Name());
+            OpenGL.GlVertexPointer(3, 5, 0, pointer2);
+            OpenGL.GlTexCoordPointer(2, 5, 0, pointer);
+            OpenGL.GlDrawArrays(8, 0, 4);
         }
 
-        public CTRTexture2D name()
+        public CTRTexture2D Name()
         {
             return this;
         }
 
-        public bool isWvga()
+        public bool IsWvga()
         {
             return _isWvga;
         }
 
-        public virtual void setQuadsCapacity(int n)
+        public void SetQuadsCapacity(int n)
         {
             quadsCount = n;
             quads = new Quad2D[quadsCount];
@@ -50,26 +50,26 @@ namespace CutTheRope.iframework.visual
             quadOffsets = new Vector[quadsCount];
         }
 
-        public virtual void setQuadAt(CTRRectangle rect, int n)
+        public void SetQuadAt(CTRRectangle rect, int n)
         {
-            quads[n] = GLDrawer.getTextureCoordinates(this, rect);
+            quads[n] = GLDrawer.GetTextureCoordinates(this, rect);
             quadRects[n] = rect;
             quadOffsets[n] = vectZero;
         }
 
-        public virtual void setWvga()
+        public void SetWvga()
         {
             _isWvga = true;
         }
 
-        public virtual void setScale(float scaleX, float scaleY)
+        public void SetScale(float scaleX, float scaleY)
         {
             _scaleX = scaleX;
             _scaleY = scaleY;
-            calculateForQuickDrawing();
+            CalculateForQuickDrawing();
         }
 
-        public static void drawQuadAtPoint(CTRTexture2D t, int q, Vector point)
+        public static void DrawQuadAtPoint(CTRTexture2D t, int q, Vector point)
         {
             Quad2D quad2D = t.quads[q];
             float[] array = new float[12];
@@ -82,14 +82,14 @@ namespace CutTheRope.iframework.visual
             array[9] = t.quadRects[q].w + point.x;
             array[10] = t.quadRects[q].h + point.y;
             float[] pointer = array;
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(t.name());
-            OpenGL.glVertexPointer(3, 5, 0, pointer);
-            OpenGL.glTexCoordPointer(2, 5, 0, quad2D.toFloatArray());
-            OpenGL.glDrawArrays(8, 0, 4);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(t.Name());
+            OpenGL.GlVertexPointer(3, 5, 0, pointer);
+            OpenGL.GlTexCoordPointer(2, 5, 0, quad2D.ToFloatArray());
+            OpenGL.GlDrawArrays(8, 0, 4);
         }
 
-        public static void drawAtPoint(CTRTexture2D t, Vector point)
+        public static void DrawAtPoint(CTRTexture2D t, Vector point)
         {
             float[] pointer = [0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT];
             float[] array = new float[12];
@@ -102,14 +102,14 @@ namespace CutTheRope.iframework.visual
             array[9] = t._realWidth + point.x;
             array[10] = t._realHeight + point.y;
             float[] pointer2 = array;
-            OpenGL.glEnable(0);
-            OpenGL.glBindTexture(t.name());
-            OpenGL.glVertexPointer(3, 5, 0, pointer2);
-            OpenGL.glTexCoordPointer(2, 5, 0, pointer);
-            OpenGL.glDrawArrays(8, 0, 4);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBindTexture(t.Name());
+            OpenGL.GlVertexPointer(3, 5, 0, pointer2);
+            OpenGL.GlTexCoordPointer(2, 5, 0, pointer);
+            OpenGL.GlDrawArrays(8, 0, 4);
         }
 
-        public virtual void calculateForQuickDrawing()
+        public void CalculateForQuickDrawing()
         {
             if (_isWvga)
             {
@@ -125,15 +125,15 @@ namespace CutTheRope.iframework.visual
             _invHeight = 1f / _height;
         }
 
-        public static void setAntiAliasTexParameters()
+        public static void SetAntiAliasTexParameters()
         {
         }
 
-        public static void setAliasTexParameters()
+        public static void SetAliasTexParameters()
         {
         }
 
-        public virtual void reg()
+        public void Reg()
         {
             prev = tail;
             if (prev != null)
@@ -147,7 +147,7 @@ namespace CutTheRope.iframework.visual
             tail = this;
         }
 
-        public virtual void unreg()
+        public void Unreg()
         {
             if (prev != null)
             {
@@ -168,38 +168,38 @@ namespace CutTheRope.iframework.visual
             next = prev = null;
         }
 
-        public virtual CTRTexture2D initWithPath(string path, bool assets)
+        public CTRTexture2D InitWithPath(string path, bool assets)
         {
-            if (base.init() == null)
+            if (base.Init() == null)
             {
                 return null;
             }
             _resName = path;
             _name = 65536U;
             _localTexParams = _texParams;
-            reg();
-            xnaTexture_ = Images.get(path);
+            Reg();
+            xnaTexture_ = Images.Get(path);
             if (xnaTexture_ == null)
             {
                 return null;
             }
-            imageLoaded(xnaTexture_.Width, xnaTexture_.Height);
+            ImageLoaded(xnaTexture_.Width, xnaTexture_.Height);
             quadsCount = 0;
-            calculateForQuickDrawing();
-            resume();
+            CalculateForQuickDrawing();
+            Resume();
             return this;
         }
 
-        private static int calcRealSize(int size)
+        private static int CalcRealSize(int size)
         {
             return size;
         }
 
-        private void imageLoaded(int w, int h)
+        private void ImageLoaded(int w, int h)
         {
             _lowypoint = h;
-            int num = calcRealSize(w);
-            int num2 = calcRealSize(h);
+            int num = CalcRealSize(w);
+            int num2 = CalcRealSize(h);
             _size = new Vector(num, num2);
             _width = (uint)num;
             _height = (uint)num2;
@@ -209,68 +209,67 @@ namespace CutTheRope.iframework.visual
             _hasPremultipliedAlpha = true;
         }
 
-        private void resume()
+        private static void Resume()
         {
         }
 
-        public static void setDefaultAlphaPixelFormat(Texture2DPixelFormat format)
+        public static void SetDefaultAlphaPixelFormat(Texture2DPixelFormat format)
         {
             _defaultAlphaPixelFormat = format;
         }
 
-        public void optimizeMemory()
-        {
-            int lowypoint = _lowypoint;
-        }
-
-        public virtual void suspend()
+        public static void OptimizeMemory()
         {
         }
 
-        public static void suspendAll()
+        public static void Suspend()
+        {
+        }
+
+        public static void SuspendAll()
         {
             for (CTRTexture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
             {
-                texture2D.suspend();
+                Suspend();
             }
         }
 
-        public static void resumeAll()
+        public static void ResumeAll()
         {
             for (CTRTexture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
             {
-                texture2D.resume();
+                Resume();
             }
         }
 
-        public virtual NSObject initFromPixels(int x, int y, int w, int h)
+        public NSObject InitFromPixels(int x, int y, int w, int h)
         {
-            if (base.init() == null)
+            if (base.Init() == null)
             {
                 return null;
             }
             _name = 65536U;
             _lowypoint = -1;
             _localTexParams = _defaultTexParams;
-            reg();
-            int num = calcRealSize(w);
-            int num2 = calcRealSize(h);
-            float transitionTime = Application.sharedRootController().transitionTime;
-            Application.sharedRootController().transitionTime = -1f;
+            Reg();
+            int num = CalcRealSize(w);
+            int num2 = CalcRealSize(h);
+            float transitionTime = Application.SharedRootController().transitionTime;
+            Application.SharedRootController().transitionTime = -1f;
             RenderTarget2D renderTarget;
             if (Global.ScreenSizeManager.IsFullScreen)
             {
-                CtrRenderer.onDrawFrame();
+                CtrRenderer.OnDrawFrame();
                 renderTarget = OpenGL.DetachRenderTarget();
             }
             else
             {
                 renderTarget = new RenderTarget2D(Global.GraphicsDevice, Global.GraphicsDevice.PresentationParameters.BackBufferWidth, Global.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
                 Global.GraphicsDevice.SetRenderTarget(renderTarget);
-                CtrRenderer.onDrawFrame();
+                CtrRenderer.OnDrawFrame();
             }
             Global.GraphicsDevice.SetRenderTarget(null);
-            Application.sharedRootController().transitionTime = transitionTime;
+            Application.SharedRootController().transitionTime = transitionTime;
             xnaTexture_ = renderTarget;
             _format = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
             _size = new Vector(num, num2);
@@ -280,16 +279,16 @@ namespace CutTheRope.iframework.visual
             _maxT = h / (float)num2;
             _hasPremultipliedAlpha = true;
             quadsCount = 0;
-            calculateForQuickDrawing();
-            resume();
+            CalculateForQuickDrawing();
+            Resume();
             return this;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             if (xnaTexture_ != null)
             {
-                Images.free(_resName);
+                Images.Free(_resName);
                 xnaTexture_ = null;
             }
         }
@@ -375,7 +374,7 @@ namespace CutTheRope.iframework.visual
             kTexture2DPixelFormat_PVRTC4
         }
 
-        private struct TexParams
+        private readonly struct TexParams
         {
             private readonly uint minFilter;
 

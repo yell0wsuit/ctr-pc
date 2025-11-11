@@ -2,34 +2,34 @@ using CutTheRope.iframework.core;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class TiledImage : Image
+    internal sealed class TiledImage : Image
     {
-        public virtual void setTile(int t)
+        public void SetTile(int t)
         {
             q = t;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
-            GLDrawer.drawImageTiled(texture, q, drawX, drawY, width, height);
-            postDraw();
+            PreDraw();
+            GLDrawer.DrawImageTiled(texture, q, drawX, drawY, width, height);
+            PostDraw();
         }
 
         private static TiledImage TiledImage_create(CTRTexture2D t)
         {
-            return (TiledImage)new TiledImage().initWithTexture(t);
+            return (TiledImage)new TiledImage().InitWithTexture(t);
         }
 
         public static TiledImage TiledImage_createWithResID(int r)
         {
-            return TiledImage_create(Application.getTexture(r));
+            return TiledImage_create(Application.GetTexture(r));
         }
 
         private static TiledImage TiledImage_createWithResIDQuad(int r, int q)
         {
             TiledImage tiledImage = TiledImage_createWithResID(r);
-            tiledImage.setDrawQuad(q);
+            tiledImage.SetDrawQuad(q);
             return tiledImage;
         }
 

@@ -11,11 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace CutTheRope.ctr_commons
+namespace CutTheRope.commons
 {
-    internal class CtrRenderer : NSObject
+    internal sealed class CtrRenderer : NSObject
     {
-        public static void onSurfaceCreated()
+        public static void OnSurfaceCreated()
         {
             if (state == 0)
             {
@@ -23,12 +23,12 @@ namespace CutTheRope.ctr_commons
             }
         }
 
-        public static void onSurfaceChanged(int width, int height)
+        public static void OnSurfaceChanged(int width, int height)
         {
             Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
         }
 
-        public static void onPause()
+        public static void OnPause()
         {
             if (state is 2 or 5)
             {
@@ -37,26 +37,26 @@ namespace CutTheRope.ctr_commons
             }
         }
 
-        public static void onPlaybackFinished()
+        public static void OnPlaybackFinished()
         {
         }
 
-        public static void onPlaybackStarted()
+        public static void OnPlaybackStarted()
         {
             state = 5;
         }
 
-        public static void onResume()
+        public static void OnResume()
         {
             if (state == 3)
             {
                 state = 4;
-                onResumeTimeStamp = DateTimeJavaHelper.currentTimeMillis();
+                onResumeTimeStamp = DateTimeJavaHelper.CurrentTimeMillis();
                 DRAW_NOTHING = false;
             }
         }
 
-        public static void onDestroy()
+        public static void OnDestroy()
         {
             if (state != 1)
             {
@@ -65,12 +65,12 @@ namespace CutTheRope.ctr_commons
             }
         }
 
-        public static void update(float gameTime)
+        public static void Update(float gameTime)
         {
             Java_com_zeptolab_ctr_CtrRenderer_nativeTick(16f);
         }
 
-        public static void onDrawFrame()
+        public static void OnDrawFrame()
         {
             bool flag = false;
             if (!DRAW_NOTHING && state != 0)
@@ -83,7 +83,7 @@ namespace CutTheRope.ctr_commons
                 {
                     if (state == 4)
                     {
-                        if (DateTimeJavaHelper.currentTimeMillis() - onResumeTimeStamp >= 500L)
+                        if (DateTimeJavaHelper.CurrentTimeMillis() - onResumeTimeStamp >= 500L)
                         {
                             Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
                             Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
@@ -145,8 +145,8 @@ namespace CutTheRope.ctr_commons
             {
                 try
                 {
-                    OpenGL.glClearColor(Color.Black);
-                    OpenGL.glClear(0);
+                    OpenGL.GlClearColor(Color.Black);
+                    OpenGL.GlClear(0);
                 }
                 catch (Exception)
                 {
@@ -158,25 +158,25 @@ namespace CutTheRope.ctr_commons
         {
             if (gApp != null)
             {
-                _LOG("Application already created");
+                LOG("Application already created");
                 return;
             }
             LANGUAGE = language;
-            fmInit();
+            FmInit();
             gApp = new CTRApp();
-            gApp.init();
-            gApp.applicationDidFinishLaunching(null);
+            _ = gApp.Init();
+            gApp.ApplicationDidFinishLaunching(null);
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDestroy()
         {
             if (gApp == null)
             {
-                _LOG("Application already destroyed");
+                LOG("Application already destroyed");
                 return;
             }
-            Application.sharedSoundMgr().stopAllSounds();
-            Application.sharedPreferences().savePreferences();
+            Application.SharedSoundMgr().StopAllSounds();
+            Application.SharedPreferences().savePreferences();
             NSREL(gApp);
             gApp = null;
             gPaused = false;
@@ -186,11 +186,11 @@ namespace CutTheRope.ctr_commons
         {
             if (!gPaused)
             {
-                CTRSoundMgr._pause();
-                Application.sharedMovieMgr().pause();
+                CTRSoundMgr.Pause();
+                Application.SharedMovieMgr().Pause();
                 gPaused = true;
-                gApp?.applicationWillResignActive(null);
-                CTRTexture2D.suspendAll();
+                CTRApp.ApplicationWillResignActive(null);
+                CTRTexture2D.SuspendAll();
             }
         }
 
@@ -198,12 +198,12 @@ namespace CutTheRope.ctr_commons
         {
             if (gPaused)
             {
-                CTRSoundMgr._unpause();
-                Application.sharedMovieMgr().resume();
-                CTRTexture2D.suspendAll();
-                CTRTexture2D.resumeAll();
+                CTRSoundMgr.Unpause();
+                Application.SharedMovieMgr().Resume();
+                CTRTexture2D.SuspendAll();
+                CTRTexture2D.ResumeAll();
                 gPaused = false;
-                gApp?.applicationDidBecomeActive(null);
+                CTRApp.ApplicationDidBecomeActive(null);
             }
         }
 
@@ -245,20 +245,20 @@ namespace CutTheRope.ctr_commons
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeRender()
         {
-            OpenGL.glClearColor(Color.Black);
-            OpenGL.glClear(0);
+            OpenGL.GlClearColor(Color.Black);
+            OpenGL.GlClear(0);
             if (gApp != null)
             {
-                Application.sharedRootController().performDraw();
+                Application.SharedRootController().PerformDraw();
             }
         }
 
-        public static float transformX(float x)
+        public static float TransformX(float x)
         {
             return Global.ScreenSizeManager.TransformViewToGameX(x);
         }
 
-        public static float transformY(float y)
+        public static float TransformY(float y)
         {
             return Global.ScreenSizeManager.TransformViewToGameY(y);
         }
@@ -267,28 +267,28 @@ namespace CutTheRope.ctr_commons
         {
             if (touches.Count > 0)
             {
-                Application.sharedCanvas().touchesEndedwithEvent(touches);
-                Application.sharedCanvas().touchesBeganwithEvent(touches);
-                Application.sharedCanvas().touchesMovedwithEvent(touches);
+                Application.SharedCanvas().TouchesEndedwithEvent(touches);
+                Application.SharedCanvas().TouchesBeganwithEvent(touches);
+                Application.SharedCanvas().TouchesMovedwithEvent(touches);
             }
         }
 
         public static bool Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed()
         {
-            GLCanvas gLCanvas = Application.sharedCanvas();
-            return gLCanvas != null && gLCanvas.backButtonPressed();
+            GLCanvas gLCanvas = Application.SharedCanvas();
+            return gLCanvas != null && gLCanvas.BackButtonPressed();
         }
 
         public static bool Java_com_zeptolab_ctr_CtrRenderer_nativeMenuPressed()
         {
-            GLCanvas gLCanvas = Application.sharedCanvas();
-            return gLCanvas != null && gLCanvas.menuButtonPressed();
+            GLCanvas gLCanvas = Application.SharedCanvas();
+            return gLCanvas != null && gLCanvas.MenuButtonPressed();
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(int fps)
         {
-            GLCanvas gLCanvas = Application.sharedCanvas();
-            gLCanvas?.drawFPS(fps);
+            GLCanvas gLCanvas = Application.SharedCanvas();
+            gLCanvas?.DrawFPS(fps);
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeTick(float delta)
@@ -296,8 +296,8 @@ namespace CutTheRope.ctr_commons
             if (gApp != null && !gPaused)
             {
                 float delta2 = delta / 1000f;
-                NSTimer.fireTimers(delta2);
-                Application.sharedRootController().performTick(delta2);
+                NSTimer.FireTimers(delta2);
+                Application.SharedRootController().PerformTick(delta2);
             }
         }
 
@@ -319,26 +319,26 @@ namespace CutTheRope.ctr_commons
 
         private const long NANOS_IN_MILLI = 1000000L;
 
-        private static int state = 0;
+        private static int state;
 
-        private static long onResumeTimeStamp = 0L;
+        private static long onResumeTimeStamp;
 
-        private static long playedTicks = 0L;
+        private static long playedTicks;
 
-        private static long prevTick = 0L;
+        private static long prevTick;
 
         private static readonly long DELTA_NANOS = 18181818L;
 
         private static readonly long DELTA_NANOS_THRES = (long)(DELTA_NANOS * 0.35);
 
-        private static bool DRAW_NOTHING = false;
+        private static bool DRAW_NOTHING;
 
         private static CTRApp gApp;
 
-        private static bool gPaused = false;
+        private static bool gPaused;
 
         private static readonly long[] fpsDeltas = new long[10];
 
-        private static int fpsDeltasPos = 0;
+        private static int fpsDeltasPos;
     }
 }

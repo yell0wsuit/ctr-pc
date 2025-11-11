@@ -2,7 +2,7 @@ using CutTheRope.iframework.helpers;
 
 namespace CutTheRope.game
 {
-    internal class Razor : GameObject
+    internal sealed class Razor : GameObject
     {
     }
 }

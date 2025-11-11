@@ -6,7 +6,7 @@ namespace CutTheRope.iframework.visual
 {
     internal class Particles : BaseElement
     {
-        public static Vector rotatePreCalc(Vector v, float cosA, float sinA, float cx, float cy)
+        public static Vector RotatePreCalc(Vector v, float cosA, float sinA, float cx, float cy)
         {
             Vector result = v;
             result.x -= cx;
@@ -18,30 +18,30 @@ namespace CutTheRope.iframework.visual
             return result;
         }
 
-        public virtual void updateParticle(ref Particle p, float delta)
+        public virtual void UpdateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
             {
                 Vector vector = vectZero;
                 if (p.pos.x != 0f || p.pos.y != 0f)
                 {
-                    vector = vectNormalize(p.pos);
+                    vector = VectNormalize(p.pos);
                 }
                 Vector v = vector;
-                vector = vectMult(vector, p.radialAccel);
+                vector = VectMult(vector, p.radialAccel);
                 float num = v.x;
                 v.x = 0f - v.y;
                 v.y = num;
-                v = vectMult(v, p.tangentialAccel);
-                Vector v2 = vectAdd(vectAdd(vector, v), gravity);
-                v2 = vectMult(v2, delta);
-                p.dir = vectAdd(p.dir, v2);
-                v2 = vectMult(p.dir, delta);
-                p.pos = vectAdd(p.pos, v2);
-                p.color.r = p.color.r + (p.deltaColor.r * delta);
-                p.color.g = p.color.g + (p.deltaColor.g * delta);
-                p.color.b = p.color.b + (p.deltaColor.b * delta);
-                p.color.a = p.color.a + (p.deltaColor.a * delta);
+                v = VectMult(v, p.tangentialAccel);
+                Vector v2 = VectAdd(VectAdd(vector, v), gravity);
+                v2 = VectMult(v2, delta);
+                p.dir = VectAdd(p.dir, v2);
+                v2 = VectMult(p.dir, delta);
+                p.pos = VectAdd(p.pos, v2);
+                p.color.r += p.deltaColor.r * delta;
+                p.color.g += p.deltaColor.g * delta;
+                p.color.b += p.deltaColor.b * delta;
+                p.color.a += p.deltaColor.a * delta;
                 p.life -= delta;
                 vertices[particleIdx].x = p.pos.x;
                 vertices[particleIdx].y = p.pos.y;
@@ -57,9 +57,9 @@ namespace CutTheRope.iframework.visual
             particleCount--;
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
+            base.Update(delta);
             if (particlesDelegate != null && particleCount == 0 && !active)
             {
                 particlesDelegate(this);
@@ -75,47 +75,47 @@ namespace CutTheRope.iframework.visual
                 emitCounter += delta;
                 while (particleCount < totalParticles && emitCounter > num)
                 {
-                    addParticle();
+                    _ = AddParticle();
                     emitCounter -= num;
                 }
                 elapsed += delta;
                 if (duration != -1f && duration < elapsed)
                 {
-                    stopSystem();
+                    StopSystem();
                 }
             }
             particleIdx = 0;
             while (particleIdx < particleCount)
             {
-                updateParticle(ref particles[particleIdx], delta);
+                UpdateParticle(ref particles[particleIdx], delta);
             }
-            OpenGL.glBindBuffer(2, verticesID);
-            OpenGL.glBufferData(2, vertices, 3);
-            OpenGL.glBindBuffer(2, colorsID);
-            OpenGL.glBufferData(2, colors, 3);
-            OpenGL.glBindBuffer(2, 0U);
+            OpenGL.GlBindBuffer(2, verticesID);
+            OpenGL.GlBufferData(2, vertices, 3);
+            OpenGL.GlBindBuffer(2, colorsID);
+            OpenGL.GlBufferData(2, colors, 3);
+            OpenGL.GlBindBuffer(2, 0U);
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             particles = null;
             vertices = null;
             colors = null;
-            OpenGL.glDeleteBuffers(1, ref verticesID);
-            OpenGL.glDeleteBuffers(1, ref colorsID);
+            OpenGL.GlDeleteBuffers(1, ref verticesID);
+            OpenGL.GlDeleteBuffers(1, ref colorsID);
             texture = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
-            postDraw();
+            PreDraw();
+            PostDraw();
         }
 
-        public virtual Particles initWithTotalParticles(int numberOfParticles)
+        public virtual Particles InitWithTotalParticles(int numberOfParticles)
         {
-            if (init() == null)
+            if (Init() == null)
             {
                 return null;
             }
@@ -134,83 +134,83 @@ namespace CutTheRope.iframework.visual
             }
             active = false;
             blendAdditive = false;
-            OpenGL.glGenBuffers(1, ref verticesID);
-            OpenGL.glGenBuffers(1, ref colorsID);
+            OpenGL.GlGenBuffers(1, ref verticesID);
+            OpenGL.GlGenBuffers(1, ref colorsID);
             return this;
         }
 
-        public virtual bool addParticle()
+        public virtual bool AddParticle()
         {
-            if (isFull())
+            if (IsFull())
             {
                 return false;
             }
-            initParticle(ref particles[particleCount]);
+            InitParticle(ref particles[particleCount]);
             particleCount++;
             return true;
         }
 
-        public virtual void initParticle(ref Particle particle)
+        public virtual void InitParticle(ref Particle particle)
         {
             particle.pos.x = x + (posVar.x * RND_MINUS1_1);
             particle.pos.y = y + (posVar.y * RND_MINUS1_1);
             particle.startPos = particle.pos;
             float num = DEGREES_TO_RADIANS(angle + (angleVar * RND_MINUS1_1));
-            Vector v = default(Vector);
-            v.y = sinf(num);
-            v.x = cosf(num);
+            Vector v = default;
+            v.y = Sinf(num);
+            v.x = Cosf(num);
             float s = speed + (speedVar * RND_MINUS1_1);
-            particle.dir = vectMult(v, s);
+            particle.dir = VectMult(v, s);
             particle.radialAccel = radialAccel + (radialAccelVar * RND_MINUS1_1);
             particle.tangentialAccel = tangentialAccel + (tangentialAccelVar * RND_MINUS1_1);
             particle.life = life + (lifeVar * RND_MINUS1_1);
-            RGBAColor rGBAColor = default(RGBAColor);
-            rGBAColor.r = startColor.r + (startColorVar.r * RND_MINUS1_1);
-            rGBAColor.g = startColor.g + (startColorVar.g * RND_MINUS1_1);
-            rGBAColor.b = startColor.b + (startColorVar.b * RND_MINUS1_1);
-            rGBAColor.a = startColor.a + (startColorVar.a * RND_MINUS1_1);
-            RGBAColor rGBAColor2 = default(RGBAColor);
-            rGBAColor2.r = endColor.r + (endColorVar.r * RND_MINUS1_1);
-            rGBAColor2.g = endColor.g + (endColorVar.g * RND_MINUS1_1);
-            rGBAColor2.b = endColor.b + (endColorVar.b * RND_MINUS1_1);
-            rGBAColor2.a = endColor.a + (endColorVar.a * RND_MINUS1_1);
-            particle.color = rGBAColor;
-            particle.deltaColor.r = (rGBAColor2.r - rGBAColor.r) / particle.life;
-            particle.deltaColor.g = (rGBAColor2.g - rGBAColor.g) / particle.life;
-            particle.deltaColor.b = (rGBAColor2.b - rGBAColor.b) / particle.life;
-            particle.deltaColor.a = (rGBAColor2.a - rGBAColor.a) / particle.life;
+            RGBAColor rgbaColor = default;
+            rgbaColor.r = startColor.r + (startColorVar.r * RND_MINUS1_1);
+            rgbaColor.g = startColor.g + (startColorVar.g * RND_MINUS1_1);
+            rgbaColor.b = startColor.b + (startColorVar.b * RND_MINUS1_1);
+            rgbaColor.a = startColor.a + (startColorVar.a * RND_MINUS1_1);
+            RGBAColor rgbaColor2 = default;
+            rgbaColor2.r = endColor.r + (endColorVar.r * RND_MINUS1_1);
+            rgbaColor2.g = endColor.g + (endColorVar.g * RND_MINUS1_1);
+            rgbaColor2.b = endColor.b + (endColorVar.b * RND_MINUS1_1);
+            rgbaColor2.a = endColor.a + (endColorVar.a * RND_MINUS1_1);
+            particle.color = rgbaColor;
+            particle.deltaColor.r = (rgbaColor2.r - rgbaColor.r) / particle.life;
+            particle.deltaColor.g = (rgbaColor2.g - rgbaColor.g) / particle.life;
+            particle.deltaColor.b = (rgbaColor2.b - rgbaColor.b) / particle.life;
+            particle.deltaColor.a = (rgbaColor2.a - rgbaColor.a) / particle.life;
             particle.size = size + (sizeVar * RND_MINUS1_1);
         }
 
-        public virtual void startSystem(int initialParticles)
+        public virtual void StartSystem(int initialParticles)
         {
             particleCount = 0;
             while (particleCount < initialParticles)
             {
-                addParticle();
+                _ = AddParticle();
             }
             active = true;
         }
 
-        public virtual void stopSystem()
+        public virtual void StopSystem()
         {
             active = false;
             elapsed = duration;
             emitCounter = 0f;
         }
 
-        public virtual void resetSystem()
+        public virtual void ResetSystem()
         {
             elapsed = 0f;
             emitCounter = 0f;
         }
 
-        public virtual bool isFull()
+        public virtual bool IsFull()
         {
             return particleCount == totalParticles;
         }
 
-        public virtual void setBlendAdditive(bool b)
+        public virtual void SetBlendAdditive(bool b)
         {
             blendAdditive = b;
         }

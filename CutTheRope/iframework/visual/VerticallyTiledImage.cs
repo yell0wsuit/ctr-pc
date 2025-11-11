@@ -2,11 +2,11 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class VerticallyTiledImage : Image
+    internal sealed class VerticallyTiledImage : Image
     {
-        public override Image initWithTexture(CTRTexture2D t)
+        public override Image InitWithTexture(CTRTexture2D t)
         {
-            if (base.initWithTexture(t) != null)
+            if (base.InitWithTexture(t) != null)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -17,17 +17,17 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            preDraw();
+            PreDraw();
             float h = texture.quadRects[tiles[0]].h;
             float h2 = texture.quadRects[tiles[2]].h;
             float num = height - (h + h2);
             if (num >= 0f)
             {
-                GLDrawer.drawImageQuad(texture, tiles[0], drawX + offsets[0], drawY);
-                GLDrawer.drawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, width, num);
-                GLDrawer.drawImageQuad(texture, tiles[2], drawX + offsets[2], drawY + h + num);
+                GLDrawer.DrawImageQuad(texture, tiles[0], drawX + offsets[0], drawY);
+                GLDrawer.DrawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, width, num);
+                GLDrawer.DrawImageQuad(texture, tiles[2], drawX + offsets[2], drawY + h + num);
             }
             else
             {
@@ -36,13 +36,13 @@ namespace CutTheRope.iframework.visual
                 r.h = Math.Min(r.h, height / 2f);
                 r2.h = Math.Min(r2.h, height - r.h);
                 r2.y += texture.quadRects[tiles[2]].h - r2.h;
-                GLDrawer.drawImagePart(texture, r, drawX + offsets[0], drawY);
-                GLDrawer.drawImagePart(texture, r2, drawX + offsets[2], drawY + r.h);
+                GLDrawer.DrawImagePart(texture, r, drawX + offsets[0], drawY);
+                GLDrawer.DrawImagePart(texture, r2, drawX + offsets[2], drawY + r.h);
             }
-            postDraw();
+            PostDraw();
         }
 
-        public virtual void setTileVerticallyTopCenterBottom(int t, int c, int b)
+        public void SetTileVerticallyTopCenterBottom(int t, int c, int b)
         {
             tiles[0] = t;
             tiles[1] = c;

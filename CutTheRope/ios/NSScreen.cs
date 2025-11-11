@@ -1,6 +1,6 @@
 namespace CutTheRope.ios
 {
-    internal class NSScreen
+    internal sealed class NSScreen
     {
     }
 }

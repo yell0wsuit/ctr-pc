@@ -1,4 +1,4 @@
-using CutTheRope.ctr_commons;
+using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
@@ -9,141 +9,141 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class GameController : ViewController, ButtonDelegate, GameSceneDelegate
+    internal sealed class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
     {
-        public override void update(float t)
+        public override void Update(float t)
         {
             if (!isGamePaused && Global.XnaGame.IsKeyPressed(Keys.F5))
             {
-                onButtonPressed(1);
+                OnButtonPressed(1);
             }
-            base.update(t);
+            base.Update(t);
         }
 
-        public override NSObject initWithParent(ViewController p)
+        public override NSObject InitWithParent(ViewController p)
         {
-            if (base.initWithParent(p) != null)
+            if (base.InitWithParent(p) != null)
             {
-                createGameView();
+                CreateGameView();
             }
             return this;
         }
 
-        public override void activate()
+        public override void Activate()
         {
-            postFlurryLevelEvent("LEVEL_STARTED");
-            Application.sharedRootController().setViewTransition(-1);
-            base.activate();
-            CTRSoundMgr._stopMusic();
-            CTRSoundMgr._playRandomMusic(146, 148);
-            initGameView();
-            showView(0);
+            PostFlurryLevelEvent("LEVEL_STARTED");
+            Application.SharedRootController().SetViewTransition(-1);
+            base.Activate();
+            CTRSoundMgr.StopMusic();
+            CTRSoundMgr.PlayRandomMusic(146, 148);
+            InitGameView();
+            ShowView(0);
         }
 
-        public virtual void createGameView()
+        public void CreateGameView()
         {
             for (int i = 0; i < 5; i++)
             {
                 touchAddressMap[i] = 0;
             }
-            GameView gameView = (GameView)new GameView().initFullscreen();
-            GameScene gameScene = (GameScene)new GameScene().init();
+            GameView gameView = (GameView)new GameView().InitFullscreen();
+            GameScene gameScene = (GameScene)new GameScene().Init();
             gameScene.gameSceneDelegate = this;
-            gameView.addChildwithID(gameScene, 0);
-            Button button = MenuController.createButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
-            button.x = -(float)canvas.xOffsetScaled;
-            gameView.addChildwithID(button, 1);
-            Button button2 = MenuController.createButtonWithImageQuad1Quad2IDDelegate(62, 0, 1, 1, this);
-            button2.x = -(float)canvas.xOffsetScaled;
-            gameView.addChildwithID(button2, 2);
+            _ = gameView.AddChildwithID(gameScene, 0);
+            Button button = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
+            button.x = -(float)Canvas.xOffsetScaled;
+            _ = gameView.AddChildwithID(button, 1);
+            Button button2 = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(62, 0, 1, 1, this);
+            button2.x = -(float)Canvas.xOffsetScaled;
+            _ = gameView.AddChildwithID(button2, 2);
             Image image = Image.Image_createWithResIDQuad(66, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = -(float)image.height / 2;
             image.passTransformationsToChilds = false;
-            mapNameLabel = new Text().initWithFont(Application.getFont(4));
-            mapNameLabel.setName("mapNameLabel");
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            CTRPreferences.getScoreForPackLevel(cTRRootController.getPack(), cTRRootController.getLevel());
+            mapNameLabel = new Text().InitWithFont(Application.GetFont(4));
+            mapNameLabel.SetName("mapNameLabel");
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
-            mapNameLabel.x = RTD(-10.0) - canvas.xOffsetScaled + 256f;
+            mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
             mapNameLabel.y = RTD(-5.0);
-            image.addChild(mapNameLabel);
-            VBox vBox = new VBox().initWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
-            Button c = MenuController.createButtonWithTextIDDelegate(Application.getString(655397), 0, this);
-            vBox.addChild(c);
-            Button c2 = MenuController.createButtonWithTextIDDelegate(Application.getString(655398), 2, this);
-            vBox.addChild(c2);
-            Button c3 = MenuController.createButtonWithTextIDDelegate(Application.getString(655399), 3, this);
-            vBox.addChild(c3);
-            Button c4 = MenuController.createButtonWithTextIDDelegate(Application.getString(655400), 4, this);
-            vBox.addChild(c4);
+            _ = image.AddChild(mapNameLabel);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
+            Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655397), 0, this);
+            _ = vBox.AddChild(c);
+            Button c2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655398), 2, this);
+            _ = vBox.AddChild(c2);
+            Button c3 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655399), 3, this);
+            _ = vBox.AddChild(c3);
+            Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655400), 4, this);
+            _ = vBox.AddChild(c4);
             vBox.anchor = vBox.parentAnchor = 10;
-            Vector offset = vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
-            ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, vectZero);
-            ToggleButton toggleButton2 = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(2, this, 11, offset);
-            HBox hBox = new HBox().initWithOffsetAlignHeight(-10f, 16, toggleButton.height);
-            hBox.addChild(toggleButton2);
-            hBox.addChild(toggleButton);
-            vBox.addChild(hBox);
+            Vector offset = VectSub(Image.GetQuadCenter(8, 0), Image.GetQuadOffset(8, 12));
+            ToggleButton toggleButton = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, vectZero);
+            ToggleButton toggleButton2 = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, 11, offset);
+            HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
+            _ = hBox.AddChild(toggleButton2);
+            _ = hBox.AddChild(toggleButton);
+            _ = vBox.AddChild(hBox);
             vBox.y = (SCREEN_HEIGHT - vBox.height) / 2f;
             bool flag3 = Preferences._getBooleanForKey("SOUND_ON");
             bool flag2 = Preferences._getBooleanForKey("MUSIC_ON");
             if (!flag3)
             {
-                toggleButton2.toggle();
+                toggleButton2.Toggle();
             }
             if (!flag2)
             {
-                toggleButton.toggle();
+                toggleButton.Toggle();
             }
-            image.addChild(vBox);
-            gameView.addChildwithID(image, 3);
-            addViewwithID(gameView, 0);
-            BoxOpenClose boxOpenClose = (BoxOpenClose)new BoxOpenClose().initWithButtonDelegate(this);
-            boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(boxClosed);
-            gameView.addChildwithID(boxOpenClose, 4);
+            _ = image.AddChild(vBox);
+            _ = gameView.AddChildwithID(image, 3);
+            AddViewwithID(gameView, 0);
+            BoxOpenClose boxOpenClose = (BoxOpenClose)new BoxOpenClose().InitWithButtonDelegate(this);
+            boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
+            _ = gameView.AddChildwithID(boxOpenClose, 4);
         }
 
-        public virtual void initGameView()
+        public void InitGameView()
         {
-            setPaused(false);
-            levelFirstStart();
+            SetPaused(false);
+            LevelFirstStart();
         }
 
-        public virtual void levelFirstStart()
+        public void LevelFirstStart()
         {
-            View view = getView(0);
-            ((BoxOpenClose)view.getChild(4)).levelFirstStart();
+            View view = GetView(0);
+            ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
             isGamePaused = false;
-            view.getChild(0).touchable = true;
-            view.getChild(1).touchable = true;
-            view.getChild(2).touchable = true;
+            view.GetChild(0).touchable = true;
+            view.GetChild(1).touchable = true;
+            view.GetChild(2).touchable = true;
         }
 
-        public virtual void levelStart()
+        public void LevelStart()
         {
-            View view = getView(0);
-            ((BoxOpenClose)view.getChild(4)).levelStart();
+            View view = GetView(0);
+            ((BoxOpenClose)view.GetChild(4)).LevelStart();
             isGamePaused = false;
-            view.getChild(0).touchable = true;
-            view.getChild(1).touchable = true;
-            view.getChild(2).touchable = true;
-            view.getChild(4).touchable = false;
+            view.GetChild(0).touchable = true;
+            view.GetChild(1).touchable = true;
+            view.GetChild(2).touchable = true;
+            view.GetChild(4).touchable = false;
         }
 
-        public virtual void levelQuit()
+        public void LevelQuit()
         {
-            View view = getView(0);
-            ((BoxOpenClose)view.getChild(4)).levelQuit();
-            view.getChild(0).touchable = false;
+            View view = GetView(0);
+            ((BoxOpenClose)view.GetChild(4)).LevelQuit();
+            view.GetChild(0).touchable = false;
         }
 
-        public static void checkForBoxPerfect(int pack)
+        public static void CheckForBoxPerfect(int pack)
         {
-            if (CTRPreferences.isPackPerfect(pack))
+            if (CTRPreferences.IsPackPerfect(pack))
             {
-                CTRRootController.postAchievementName((new NSString[]
+                CTRRootController.PostAchievementName((new NSString[]
                 {
                     NSS("1058364368"),
                     NSS("1058328727"),
@@ -160,16 +160,16 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void boxClosed()
+        public void BoxClosed()
         {
-            CTRPreferences cTRPreferences = Application.sharedPreferences();
-            CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-            int pack = ctrrootController.getPack();
-            ctrrootController.getLevel();
+            CTRPreferences cTRPreferences = Application.SharedPreferences();
+            CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+            int pack = ctrrootController.GetPack();
+            _ = ctrrootController.GetLevel();
             bool flag = true;
-            for (int num = CTRPreferences.getLevelsInPackCount() - 1; num >= 0; num--)
+            for (int num = CTRPreferences.GetLevelsInPackCount() - 1; num >= 0; num--)
             {
-                if (CTRPreferences.getScoreForPackLevel(pack, num) <= 0)
+                if (CTRPreferences.GetScoreForPackLevel(pack, num) <= 0)
                 {
                     flag = false;
                     break;
@@ -177,7 +177,7 @@ namespace CutTheRope.game
             }
             if (flag)
             {
-                CTRRootController.postAchievementName((new NSString[]
+                CTRRootController.PostAchievementName((new NSString[]
                 {
                     NSS("681486798"),
                     NSS("681462993"),
@@ -192,71 +192,71 @@ namespace CutTheRope.game
                     NSS("com.zeptolab.ctr.djboxcompleted")
                 })[pack]);
             }
-            checkForBoxPerfect(pack);
-            int totalStars = CTRPreferences.getTotalStars();
+            CheckForBoxPerfect(pack);
+            int totalStars = CTRPreferences.GetTotalStars();
             if (totalStars is >= 50 and < 150)
             {
-                CTRRootController.postAchievementName("677900534", ACHIEVEMENT_STRING("\"Bronze Scissors\""));
+                CTRRootController.PostAchievementName("677900534", ACHIEVEMENT_STRING("\"Bronze Scissors\""));
             }
             else if (totalStars is >= 150 and < 300)
             {
-                CTRRootController.postAchievementName("681508185", ACHIEVEMENT_STRING("\"Silver Scissors\""));
+                CTRRootController.PostAchievementName("681508185", ACHIEVEMENT_STRING("\"Silver Scissors\""));
             }
             else if (totalStars >= 300)
             {
-                CTRRootController.postAchievementName("681473653", ACHIEVEMENT_STRING("\"Golden Scissors\""));
+                CTRRootController.PostAchievementName("681473653", ACHIEVEMENT_STRING("\"Golden Scissors\""));
             }
             Preferences._savePreferences();
             int num2 = 0;
-            for (int i = 0; i < CTRPreferences.getLevelsInPackCount(); i++)
+            for (int i = 0; i < CTRPreferences.GetLevelsInPackCount(); i++)
             {
-                num2 += CTRPreferences.getScoreForPackLevel(pack, i);
+                num2 += CTRPreferences.GetScoreForPackLevel(pack, i);
             }
-            if (!CTRRootController.isHacked())
+            if (!CTRRootController.IsHacked())
             {
-                cTRPreferences.setScoreHash();
+                cTRPreferences.SetScoreHash();
                 Preferences._savePreferences();
             }
             boxCloseHandled = true;
         }
 
-        public virtual void levelWon()
+        public void LevelWon()
         {
             boxCloseHandled = false;
-            CTRPreferences ctrpreferences = Application.sharedPreferences();
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (!ctrpreferences.isScoreHashValid())
+            _ = Application.SharedPreferences();
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (!CTRPreferences.IsScoreHashValid())
             {
-                CTRRootController.setHacked();
+                CTRRootController.SetHacked();
             }
-            CTRSoundMgr._playSound(37);
-            View view = getView(0);
-            view.getChild(4).touchable = true;
-            GameScene gameScene = (GameScene)view.getChild(0);
-            BoxOpenClose boxOpenClose = (BoxOpenClose)view.getChild(4);
-            Image image = (Image)boxOpenClose.result.getChildWithName("star1");
-            Image image2 = (Image)boxOpenClose.result.getChildWithName("star2");
-            Image image3 = (Image)boxOpenClose.result.getChildWithName("star3");
-            image.setDrawQuad((gameScene.starsCollected > 0) ? 13 : 14);
-            image2.setDrawQuad((gameScene.starsCollected > 1) ? 13 : 14);
-            image3.setDrawQuad((gameScene.starsCollected > 2) ? 13 : 14);
-            ((Text)boxOpenClose.result.getChildWithName("passText")).setString(Application.getString(655372 + gameScene.starsCollected));
+            CTRSoundMgr.PlaySound(37);
+            View view = GetView(0);
+            view.GetChild(4).touchable = true;
+            GameScene gameScene = (GameScene)view.GetChild(0);
+            BoxOpenClose boxOpenClose = (BoxOpenClose)view.GetChild(4);
+            Image image = (Image)boxOpenClose.result.GetChildWithName("star1");
+            Image image2 = (Image)boxOpenClose.result.GetChildWithName("star2");
+            Image image3 = (Image)boxOpenClose.result.GetChildWithName("star3");
+            image.SetDrawQuad(gameScene.starsCollected > 0 ? 13 : 14);
+            image2.SetDrawQuad(gameScene.starsCollected > 1 ? 13 : 14);
+            image3.SetDrawQuad(gameScene.starsCollected > 2 ? 13 : 14);
+            ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(655372 + gameScene.starsCollected));
             boxOpenClose.time = gameScene.time;
             boxOpenClose.starBonus = gameScene.starBonus;
             boxOpenClose.timeBonus = gameScene.timeBonus;
             boxOpenClose.score = gameScene.score;
             isGamePaused = true;
             gameScene.touchable = false;
-            view.getChild(2).touchable = false;
-            view.getChild(1).touchable = false;
-            int pack = cTRRootController.getPack();
-            int level = cTRRootController.getLevel();
-            int scoreForPackLevel = CTRPreferences.getScoreForPackLevel(pack, level);
-            int starsForPackLevel = CTRPreferences.getStarsForPackLevel(pack, level);
+            view.GetChild(2).touchable = false;
+            view.GetChild(1).touchable = false;
+            int pack = cTRRootController.GetPack();
+            int level = cTRRootController.GetLevel();
+            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(pack, level);
+            int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(pack, level);
             boxOpenClose.shouldShowImprovedResult = false;
             if (gameScene.score > scoreForPackLevel)
             {
-                CTRPreferences.setScoreForPackLevel(gameScene.score, pack, level);
+                CTRPreferences.SetScoreForPackLevel(gameScene.score, pack, level);
                 if (scoreForPackLevel > 0)
                 {
                     boxOpenClose.shouldShowImprovedResult = true;
@@ -264,112 +264,112 @@ namespace CutTheRope.game
             }
             if (gameScene.starsCollected > starsForPackLevel)
             {
-                CTRPreferences.setStarsForPackLevel(gameScene.starsCollected, pack, level);
+                CTRPreferences.SetStarsForPackLevel(gameScene.starsCollected, pack, level);
                 if (starsForPackLevel > 0)
                 {
                     boxOpenClose.shouldShowImprovedResult = true;
                 }
             }
             boxOpenClose.shouldShowConfetti = gameScene.starsCollected == 3;
-            boxOpenClose.levelWon();
-            unlockNextLevel();
+            boxOpenClose.LevelWon();
+            UnlockNextLevel();
         }
 
-        public virtual void levelLost()
+        public void LevelLost()
         {
-            ((BoxOpenClose)getView(0).getChild(4)).levelLost();
+            ((BoxOpenClose)GetView(0).GetChild(4)).LevelLost();
         }
 
-        public virtual void gameWon()
+        public void GameWon()
         {
-            postFlurryLevelEvent(NSS("LEVEL_WON"));
-            levelWon();
+            PostFlurryLevelEvent(NSS("LEVEL_WON"));
+            LevelWon();
         }
 
-        public virtual void gameLost()
+        public void GameLost()
         {
-            postFlurryLevelEvent(NSS("LEVEL_LOST"));
+            PostFlurryLevelEvent(NSS("LEVEL_LOST"));
         }
 
-        public virtual bool lastLevelInPack()
+        public bool LastLevelInPack()
         {
-            if (((CTRRootController)Application.sharedRootController()).getLevel() == CTRPreferences.getLevelsInPackCount() - 1)
+            if (((CTRRootController)Application.SharedRootController()).GetLevel() == CTRPreferences.GetLevelsInPackCount() - 1)
             {
                 exitCode = 2;
-                CTRSoundMgr._stopAll();
+                CTRSoundMgr.StopAll();
                 return true;
             }
             return false;
         }
 
-        public virtual void unlockNextLevel()
+        public static void UnlockNextLevel()
         {
-            CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-            int pack = ctrrootController.getPack();
-            int level = ctrrootController.getLevel();
-            if (level < CTRPreferences.getLevelsInPackCount() - 1 && CTRPreferences.getUnlockedForPackLevel(pack, level + 1) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
+            CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+            int pack = ctrrootController.GetPack();
+            int level = ctrrootController.GetLevel();
+            if (level < CTRPreferences.GetLevelsInPackCount() - 1 && CTRPreferences.GetUnlockedForPackLevel(pack, level + 1) == UNLOCKEDSTATE.LOCKED)
             {
-                CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_UNLOCKED, pack, level + 1);
+                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, pack, level + 1);
             }
         }
 
-        public virtual void onButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            CTRSoundMgr._playSound(9);
-            View view = getView(0);
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            CTRSoundMgr.PlaySound(9);
+            View view = GetView(0);
             switch (n)
             {
                 case 0:
-                    ((GameScene)view.getChild(0)).dimTime = tmpDimTime;
+                    ((GameScene)view.GetChild(0)).dimTime = tmpDimTime;
                     tmpDimTime = 0;
-                    setPaused(false);
-                    CTRRootController.logEvent("IM_CONTINUE_PRESSED");
+                    SetPaused(false);
+                    CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
                 case 1:
                     break;
                 case 2:
-                    postFlurryLevelEvent("LEVEL_SKIPPED");
-                    if (lastLevelInPack() && !cTRRootController.isPicker())
+                    PostFlurryLevelEvent("LEVEL_SKIPPED");
+                    if (LastLevelInPack() && !cTRRootController.IsPicker())
                     {
-                        levelQuit();
+                        LevelQuit();
                         return;
                     }
-                    unlockNextLevel();
-                    setPaused(false);
-                    ((GameScene)view.getChild(0)).loadNextMap();
-                    CTRRootController.logEvent("IM_SKIP_PRESSED");
+                    UnlockNextLevel();
+                    SetPaused(false);
+                    ((GameScene)view.GetChild(0)).LoadNextMap();
+                    CTRRootController.LogEvent("IM_SKIP_PRESSED");
                     return;
                 case 3:
                     exitCode = 1;
-                    CTRSoundMgr._stopAll();
-                    levelQuit();
-                    CTRRootController.logEvent("IM_LEVEL_SELECT_PRESSED");
+                    CTRSoundMgr.StopAll();
+                    LevelQuit();
+                    CTRRootController.LogEvent("IM_LEVEL_SELECT_PRESSED");
                     return;
                 case 4:
                     exitCode = 0;
-                    CTRSoundMgr._stopAll();
-                    levelQuit();
-                    CTRRootController.logEvent("IM_MAIN_MENU");
+                    CTRSoundMgr.StopAll();
+                    LevelQuit();
+                    CTRRootController.LogEvent("IM_MAIN_MENU");
                     return;
                 case 5:
                     exitCode = 1;
-                    CTRSoundMgr._stopAll();
+                    CTRSoundMgr.StopAll();
                     if (!boxCloseHandled)
                     {
-                        boxClosed();
+                        BoxClosed();
                     }
-                    CTRRootController.logEvent("LC_MENU_PRESSED");
-                    deactivate();
+                    CTRRootController.LogEvent("LC_MENU_PRESSED");
+                    Deactivate();
                     return;
                 case 6:
                     {
-                        GameScene gameScene4 = (GameScene)view.getChild(0);
+                        GameScene gameScene4 = (GameScene)view.GetChild(0);
                         tmpDimTime = (int)gameScene4.dimTime;
                         gameScene4.dimTime = 0f;
-                        setPaused(true);
-                        CTRRootController.logEvent("IG_MENU_PRESSED");
-                        CTRRootController.logEvent("IM_SHOWN");
+                        SetPaused(true);
+                        CTRRootController.LogEvent("IG_MENU_PRESSED");
+                        CTRRootController.LogEvent("IM_SHOWN");
                         return;
                     }
                 case 7:
@@ -377,16 +377,16 @@ namespace CutTheRope.game
                 case 8:
                     if (!boxCloseHandled)
                     {
-                        boxClosed();
+                        BoxClosed();
                     }
                     break;
                 case 9:
-                    CTRSoundMgr._stopLoopedSounds();
+                    CTRSoundMgr.StopLoopedSounds();
                     if (!boxCloseHandled)
                     {
-                        boxClosed();
+                        BoxClosed();
                     }
-                    CTRRootController.logEvent("LC_NEXT_PRESSED");
+                    CTRRootController.LogEvent("LC_NEXT_PRESSED");
                     goto IL_013D;
                 case 10:
                     {
@@ -394,12 +394,12 @@ namespace CutTheRope.game
                         Preferences._setBooleanforKey(!flag, "MUSIC_ON", true);
                         if (flag)
                         {
-                            CTRRootController.logEvent("IM_MUSIC_OFF_PRESSED");
-                            CTRSoundMgr._stopMusic();
+                            CTRRootController.LogEvent("IM_MUSIC_OFF_PRESSED");
+                            CTRSoundMgr.StopMusic();
                             return;
                         }
-                        CTRRootController.logEvent("IM_MUSIC_ON_PRESSED");
-                        CTRSoundMgr._playRandomMusic(146, 148);
+                        CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
+                        CTRSoundMgr.PlayRandomMusic(146, 148);
                         return;
                     }
                 case 11:
@@ -408,70 +408,69 @@ namespace CutTheRope.game
                         Preferences._setBooleanforKey(!flag2, "SOUND_ON", true);
                         if (flag2)
                         {
-                            CTRRootController.logEvent("IM_SOUND_OFF_PRESSED");
+                            CTRRootController.LogEvent("IM_SOUND_OFF_PRESSED");
                             return;
                         }
-                        CTRRootController.logEvent("IM_SOUND_ON_PRESSED");
+                        CTRRootController.LogEvent("IM_SOUND_ON_PRESSED");
                         return;
                     }
                 default:
                     return;
             }
-            GameScene gameScene5 = (GameScene)view.getChild(0);
-            if (!gameScene5.isEnabled())
+            GameScene gameScene5 = (GameScene)view.GetChild(0);
+            if (!gameScene5.IsEnabled())
             {
-                levelStart();
+                LevelStart();
             }
             gameScene5.animateRestartDim = n == 1;
-            gameScene5.reload();
-            setPaused(false);
-            CTRRootController.logEvent((n != 8) ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
+            gameScene5.Reload();
+            SetPaused(false);
+            CTRRootController.LogEvent(n != 8 ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
             return;
         IL_013D:
-            if (lastLevelInPack() && !cTRRootController.isPicker())
+            if (LastLevelInPack() && !cTRRootController.IsPicker())
             {
-                deactivate();
+                Deactivate();
                 return;
             }
-    ((GameScene)view.getChild(0)).loadNextMap();
-            levelStart();
+    ((GameScene)view.GetChild(0)).LoadNextMap();
+            LevelStart();
         }
 
-        public virtual void setPaused(bool p)
+        public void SetPaused(bool p)
         {
             if (!p)
             {
-                deactivateAllButtons();
+                DeactivateAllButtons();
             }
             isGamePaused = p;
-            View view = getView(0);
-            view.getChild(3).setEnabled(p);
-            view.getChild(1).setEnabled(!p);
-            view.getChild(2).setEnabled(!p);
-            view.getChild(0).touchable = !p;
-            view.getChild(0).updateable = !p;
+            View view = GetView(0);
+            view.GetChild(3).SetEnabled(p);
+            view.GetChild(1).SetEnabled(!p);
+            view.GetChild(2).SetEnabled(!p);
+            view.GetChild(0).touchable = !p;
+            view.GetChild(0).updateable = !p;
             if (!isGamePaused)
             {
-                CTRSoundMgr._unpause();
+                CTRSoundMgr.Unpause();
                 return;
             }
-            CTRSoundMgr._pause();
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (cTRRootController.isPicker())
+            CTRSoundMgr.Pause();
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (cTRRootController.IsPicker())
             {
-                mapNameLabel.setString(NSS(""));
+                mapNameLabel.SetString(NSS(""));
                 return;
             }
-            int scoreForPackLevel = CTRPreferences.getScoreForPackLevel(cTRRootController.getPack(), cTRRootController.getLevel());
-            mapNameLabel.setString(NSS(Application.getString(655380) + ": " + scoreForPackLevel));
+            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
+            mapNameLabel.SetString(NSS(Application.GetString(655380) + ": " + scoreForPackLevel));
         }
 
-        public override bool touchesBeganwithEvent(IList<TouchLocation> touches)
+        public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            View view = getView(0);
-            GameView gameView = (GameView)view;
-            GameScene gameScene = (GameScene)view.getChild(0);
-            if (base.touchesBeganwithEvent(touches))
+            View view = GetView(0);
+            GameScene gameScene = (GameScene)view.GetChild(0);
+            if (base.TouchesBeganwithEvent(touches))
             {
                 return true;
             }
@@ -495,17 +494,17 @@ namespace CutTheRope.game
                     }
                     if (num != -1)
                     {
-                        gameScene.touchDownXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
+                        _ = gameScene.TouchDownXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), num);
                     }
                 }
             }
             return true;
         }
 
-        public override bool touchesEndedwithEvent(IList<TouchLocation> touches)
+        public override bool TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            GameScene gameScene = (GameScene)getView(0).getChild(0);
-            if (base.touchesEndedwithEvent(touches))
+            GameScene gameScene = (GameScene)GetView(0).GetChild(0);
+            if (base.TouchesEndedwithEvent(touches))
             {
                 return true;
             }
@@ -529,21 +528,21 @@ namespace CutTheRope.game
                     }
                     if (num != -1)
                     {
-                        gameScene.touchUpXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
+                        _ = gameScene.TouchUpXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), num);
                     }
                     else
                     {
-                        releaseAllTouches(gameScene);
+                        ReleaseAllTouches(gameScene);
                     }
                 }
             }
             return true;
         }
 
-        public override bool touchesMovedwithEvent(IList<TouchLocation> touches)
+        public override bool TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            GameScene gameScene = (GameScene)getView(0).getChild(0);
-            if (base.touchesMovedwithEvent(touches))
+            GameScene gameScene = (GameScene)GetView(0).GetChild(0);
+            if (base.TouchesMovedwithEvent(touches))
             {
                 return true;
             }
@@ -566,106 +565,105 @@ namespace CutTheRope.game
                     }
                     if (num != -1)
                     {
-                        gameScene.touchMoveXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
+                        _ = gameScene.TouchMoveXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), num);
                     }
                 }
             }
             return true;
         }
 
-        private static void postFlurryLevelEvent(string s)
+        private static void PostFlurryLevelEvent(string s)
         {
         }
 
-        private static void postFlurryLevelEvent(NSString s)
+        private static void PostFlurryLevelEvent(NSString s)
         {
         }
 
-        public override bool backButtonPressed()
+        public override bool BackButtonPressed()
         {
-            View view = getView(0);
-            if (view.getChild(1).touchable)
+            View view = GetView(0);
+            if (view.GetChild(1).touchable)
             {
-                onButtonPressed(6);
+                OnButtonPressed(6);
             }
-            else if (view.getChild(3).isEnabled())
+            else if (view.GetChild(3).IsEnabled())
             {
-                onButtonPressed(0);
+                OnButtonPressed(0);
             }
-            else if (view.getChild(4).touchable)
+            else if (view.GetChild(4).touchable)
             {
-                onButtonPressed(5);
+                OnButtonPressed(5);
             }
             return true;
         }
 
-        public override bool menuButtonPressed()
+        public override bool MenuButtonPressed()
         {
-            View view = getView(0);
-            if (view.getChild(1).touchable)
+            View view = GetView(0);
+            if (view.GetChild(1).touchable)
             {
-                onButtonPressed(6);
+                OnButtonPressed(6);
             }
-            else if (view.getChild(3).isEnabled())
+            else if (view.GetChild(3).IsEnabled())
             {
-                onButtonPressed(0);
+                OnButtonPressed(0);
             }
             return true;
         }
 
-        public virtual void onNextLevel()
+        public void OnNextLevel()
         {
-            CTRPreferences.gameViewChanged(NSS("game"));
-            CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            View view = getView(0);
-            GameView gameView = (GameView)view;
-            if (lastLevelInPack() && !cTRRootController.isPicker())
+            CTRPreferences.GameViewChanged(NSS("game"));
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            View view = GetView(0);
+            if (LastLevelInPack() && !cTRRootController.IsPicker())
             {
-                deactivate();
+                Deactivate();
                 return;
             }
-    ((GameScene)view.getChild(0)).loadNextMap();
-            levelStart();
+    ((GameScene)view.GetChild(0)).LoadNextMap();
+            LevelStart();
         }
 
-        public virtual void releaseAllTouches(GameScene gs)
+        public void ReleaseAllTouches(GameScene gs)
         {
             for (int i = 0; i < 5; i++)
             {
                 touchAddressMap[i] = 0;
-                gs.touchUpXYIndex(-500f, -500f, i);
+                _ = gs.TouchUpXYIndex(-500f, -500f, i);
             }
         }
 
-        public virtual void setAdSkipper(object skipper)
+        public void SetAdSkipper(object skipper)
         {
-            GameView gameView = (GameView)getView(0);
+            _ = (GameView)GetView(0);
         }
 
-        public override bool mouseMoved(float x, float y)
+        public override bool MouseMoved(float x, float y)
         {
-            View view = getView(0);
+            View view = GetView(0);
             if (view == null)
             {
                 return false;
             }
-            GameScene gameScene = (GameScene)view.getChild(0);
+            GameScene gameScene = (GameScene)view.GetChild(0);
             if (gameScene == null || !gameScene.touchable)
             {
                 return false;
             }
-            gameScene.touchDraggedXYIndex(x, y, 0);
+            _ = gameScene.TouchDraggedXYIndex(x, y, 0);
             return true;
         }
 
-        public override void fullscreenToggled(bool isFullscreen)
+        public override void FullscreenToggled(bool isFullscreen)
         {
-            View view = getView(0);
-            view.getChild(2).x = -(float)canvas.xOffsetScaled;
-            view.getChild(1).x = -(float)canvas.xOffsetScaled;
-            mapNameLabel.x = RTD(-10.0) - canvas.xOffsetScaled + 256f;
-            GameScene gameScene = (GameScene)view.getChild(0);
-            gameScene?.fullscreenToggled(isFullscreen);
+            View view = GetView(0);
+            view.GetChild(2).x = -(float)Canvas.xOffsetScaled;
+            view.GetChild(1).x = -(float)Canvas.xOffsetScaled;
+            mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
+            GameScene gameScene = (GameScene)view.GetChild(0);
+            gameScene?.FullscreenToggled(isFullscreen);
         }
 
         private const int BUTTON_PAUSE_RESUME = 0;

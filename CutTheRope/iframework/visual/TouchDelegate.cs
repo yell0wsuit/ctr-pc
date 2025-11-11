@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal interface TouchDelegate
+    internal interface ITouchDelegate
     {
-        bool touchesBeganwithEvent(IList<TouchLocation> touches);
+        bool TouchesBeganwithEvent(IList<TouchLocation> touches);
 
-        bool touchesEndedwithEvent(IList<TouchLocation> touches);
+        bool TouchesEndedwithEvent(IList<TouchLocation> touches);
 
-        bool touchesMovedwithEvent(IList<TouchLocation> touches);
+        bool TouchesMovedwithEvent(IList<TouchLocation> touches);
 
-        bool touchesCancelledwithEvent(IList<TouchLocation> touches);
+        bool TouchesCancelledwithEvent(IList<TouchLocation> touches);
 
-        bool backButtonPressed();
+        bool BackButtonPressed();
 
-        bool menuButtonPressed();
+        bool MenuButtonPressed();
     }
 }

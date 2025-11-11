@@ -5,29 +5,28 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using System;
-using System.Linq;
 
 namespace CutTheRope.game
 {
-    internal class PollenDrawer : BaseElement
+    internal sealed class PollenDrawer : BaseElement
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 Image image = Image.Image_createWithResID(99);
                 qw = image.width * 1.5f;
                 qh = image.height * 1.5f;
                 totalCapacity = 200;
-                drawer = new ImageMultiDrawer().initWithImageandCapacity(image, totalCapacity);
+                drawer = new ImageMultiDrawer().InitWithImageandCapacity(image, totalCapacity);
                 pollens = new Pollen[totalCapacity];
                 colors = new RGBAColor[4 * totalCapacity];
-                OpenGL.glGenBuffers(1, ref colorsID);
+                OpenGL.GlGenBuffers(1, ref colorsID);
             }
             return this;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             if (pollens != null)
             {
@@ -36,23 +35,23 @@ namespace CutTheRope.game
             if (colors != null)
             {
                 colors = null;
-                OpenGL.glDeleteBuffers(1, ref colorsID);
+                OpenGL.GlDeleteBuffers(1, ref colorsID);
             }
             if (vertices != null)
             {
                 vertices = null;
-                OpenGL.glDeleteBuffers(1, ref verticesID);
+                OpenGL.GlDeleteBuffers(1, ref verticesID);
             }
             drawer = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual void addPollenAtparentIndex(Vector v, int pi)
+        public void AddPollenAtparentIndex(Vector v, int pi)
         {
             float num = 1f;
             float num2 = 1f;
             float[] array = [0.3f, 0.3f, 0.5f, 0.5f, 0.6f];
-            int num3 = array.Count();
+            int num3 = array.Length;
             float num4 = array[RND_RANGE(0, num3 - 1)];
             float num5 = num4;
             if (RND(1) == 1)
@@ -69,7 +68,7 @@ namespace CutTheRope.game
             int num7 = (int)qh;
             num6 *= (int)num;
             num7 *= (int)num2;
-            Pollen pollen = default(Pollen);
+            Pollen pollen = default;
             pollen.parentIndex = pi;
             pollen.x = v.x;
             pollen.y = v.y;
@@ -87,7 +86,7 @@ namespace CutTheRope.game
             pollen.alpha = (0.7f * rND_0_) + 0.3f;
             Quad2D qt = drawer.image.texture.quads[0];
             Quad3D qv = Quad3D.MakeQuad3D((double)(v.x - (num6 / 2)), (double)(v.y - (num7 / 2)), 0.0, num6, num7);
-            drawer.setTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
+            drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
             if (pollenCount >= totalCapacity)
             {
                 totalCapacity = pollenCount;
@@ -102,40 +101,40 @@ namespace CutTheRope.game
             pollenCount++;
         }
 
-        public virtual void fillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
+        public void FillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
         {
             int num = 44;
             Vector vector = g.mover.path[p1];
-            Vector vector2 = vectSub(g.mover.path[p2], vector);
-            int num2 = (int)(vectLength(vector2) / num);
-            Vector v3 = vectNormalize(vector2);
+            Vector vector2 = VectSub(g.mover.path[p2], vector);
+            int num2 = (int)(VectLength(vector2) / num);
+            Vector v3 = VectNormalize(vector2);
             for (int i = 0; i <= num2; i++)
             {
-                Vector v4 = vectAdd(vector, vectMult(v3, i * num));
+                Vector v4 = VectAdd(vector, VectMult(v3, i * num));
                 v4.x += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
                 v4.y += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
-                addPollenAtparentIndex(v4, p1);
+                AddPollenAtparentIndex(v4, p1);
             }
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
-            drawer.update(delta);
+            base.Update(delta);
+            drawer.Update(delta);
             for (int i = 0; i < pollenCount; i++)
             {
-                if (Mover.moveVariableToTarget(ref pollens[i].scaleX, pollens[i].endScaleX, 1f, delta))
+                if (Mover.MoveVariableToTarget(ref pollens[i].scaleX, pollens[i].endScaleX, 1f, delta))
                 {
                     (pollens[i].endScaleX, pollens[i].startScaleX) = (pollens[i].startScaleX, pollens[i].endScaleX);
                 }
-                if (Mover.moveVariableToTarget(ref pollens[i].scaleY, pollens[i].endScaleY, 1f, delta))
+                if (Mover.MoveVariableToTarget(ref pollens[i].scaleY, pollens[i].endScaleY, 1f, delta))
                 {
                     (pollens[i].endScaleY, pollens[i].startScaleY) = (pollens[i].startScaleY, pollens[i].endScaleY);
                 }
                 float num = qw * pollens[i].scaleX;
                 float num2 = qh * pollens[i].scaleY;
                 drawer.vertices[i] = Quad3D.MakeQuad3D((double)(pollens[i].x - (num / 2f)), (double)(pollens[i].y - (num2 / 2f)), 0.0, (double)num, (double)num2);
-                if (Mover.moveVariableToTarget(ref pollens[i].alpha, pollens[i].endAlpha, 1f, delta))
+                if (Mover.MoveVariableToTarget(ref pollens[i].alpha, pollens[i].endAlpha, 1f, delta))
                 {
                     (pollens[i].endAlpha, pollens[i].startAlpha) = (pollens[i].startAlpha, pollens[i].endAlpha);
                 }
@@ -145,30 +144,30 @@ namespace CutTheRope.game
                     colors[(i * 4) + j] = RGBAColor.MakeRGBA(alpha, alpha, alpha, alpha);
                 }
             }
-            OpenGL.glBindBuffer(2, colorsID);
-            OpenGL.glBufferData(2, colors, 3);
-            OpenGL.glBindBuffer(2, 0U);
+            OpenGL.GlBindBuffer(2, colorsID);
+            OpenGL.GlBufferData(2, colors, 3);
+            OpenGL.GlBindBuffer(2, 0U);
         }
 
-        public override void draw()
+        public override void Draw()
         {
             if (pollenCount >= 2)
             {
-                preDraw();
-                OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
-                OpenGL.glEnable(0);
-                OpenGL.glBindTexture(drawer.image.texture.name());
-                OpenGL.glVertexPointer(3, 5, 0, toFloatArray(drawer.vertices));
-                OpenGL.glTexCoordPointer(2, 5, 0, toFloatArray(drawer.texCoordinates));
-                OpenGL.glEnableClientState(13);
-                OpenGL.glBindBuffer(2, colorsID);
-                OpenGL.glBufferData(2, colors, 3);
-                OpenGL.glColorPointer(4, 5, 0, colors);
-                OpenGL.glDrawElements(7, (pollenCount - 1) * 6, drawer.indices);
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-                OpenGL.glBindBuffer(2, 0U);
-                OpenGL.glDisableClientState(13);
-                postDraw();
+                PreDraw();
+                OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                OpenGL.GlEnable(0);
+                OpenGL.GlBindTexture(drawer.image.texture.Name());
+                OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(drawer.vertices));
+                OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(drawer.texCoordinates));
+                OpenGL.GlEnableClientState(13);
+                OpenGL.GlBindBuffer(2, colorsID);
+                OpenGL.GlBufferData(2, colors, 3);
+                OpenGL.GlColorPointer(4, 5, 0, colors);
+                OpenGL.GlDrawElements(7, (pollenCount - 1) * 6, drawer.indices);
+                OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                OpenGL.GlBindBuffer(2, 0U);
+                OpenGL.GlDisableClientState(13);
+                PostDraw();
             }
         }
 

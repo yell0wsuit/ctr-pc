@@ -2,16 +2,16 @@ namespace CutTheRope.desktop
 {
     public enum BlendingFactor
     {
-        GL_ZERO,
-        GL_ONE,
-        GL_SRC_COLOR = 768,
-        GL_ONE_MINUS_SRC_COLOR,
-        GL_SRC_ALPHA,
-        GL_ONE_MINUS_SRC_ALPHA,
-        GL_DST_ALPHA,
-        GL_ONE_MINUS_DST_ALPHA,
-        GL_DST_COLOR,
-        GL_ONE_MINUS_DST_COLOR,
-        GL_SRC_ALPHA_SATURATE
+        GLZERO,
+        GLONE,
+        GLSRCCOLOR = 768,
+        GLONEMINUSSRCCOLOR,
+        GLSRCALPHA,
+        GLONEMINUSSRCALPHA,
+        GLDSTALPHA,
+        GLONEMINUSDSTALPHA,
+        GLDSTCOLOR,
+        GLONEMINUSDSTCOLOR,
+        GLSRCALPHASATURATE
     }
 }

@@ -1,4 +1,4 @@
-using CutTheRope.ctr_commons;
+using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -98,8 +98,8 @@ namespace CutTheRope
             Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, num, isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
-            CtrRenderer.onSurfaceCreated();
-            CtrRenderer.onSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
+            CtrRenderer.OnSurfaceCreated();
+            CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
             branding = new Branding();
             branding.LoadSplashScreens();
         }
@@ -108,34 +108,33 @@ namespace CutTheRope
         {
         }
 
-        private Language GetSystemLanguage()
+        private static Language GetSystemLanguage()
         {
-            Language result = Language.LANG_EN;
+            Language result = Language.LANGEN;
             if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru")
             {
-                result = Language.LANG_RU;
+                result = Language.LANGRU;
             }
             if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de")
             {
-                result = Language.LANG_DE;
+                result = Language.LANGDE;
             }
             if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")
             {
-                result = Language.LANG_FR;
+                result = Language.LANGFR;
             }
             return result;
         }
 
-        public bool IsKeyPressed(Microsoft.Xna.Framework.Input.Keys key)
+        public bool IsKeyPressed(Keys key)
         {
-            bool value = false;
-            keyState.TryGetValue(key, out value);
+            _ = keyState.TryGetValue(key, out bool value);
             bool flag = keyboardStateXna.IsKeyDown(key);
             keyState[key] = flag;
             return flag && value != flag;
         }
 
-        public bool IsKeyDown(Microsoft.Xna.Framework.Input.Keys key)
+        public bool IsKeyDown(Keys key)
         {
             return keyboardStateXna.IsKeyDown(key);
         }
@@ -143,8 +142,8 @@ namespace CutTheRope
         protected override void Update(GameTime gameTime)
         {
             KeyboardState keyboardState = Keyboard.GetState();
-            bool flag = keyboardState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftAlt) || keyboardState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightAlt);
-            bool enterPressed = keyboardState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter);
+            bool flag = keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt);
+            bool enterPressed = keyboardState.IsKeyDown(Keys.Enter);
             if (flag && enterPressed)
             {
                 if (!_altEnterPressed)
@@ -167,7 +166,7 @@ namespace CutTheRope
             }
             IsFixedTimeStep = (frameRate > 0 && frameRate < 50) || true;
             keyboardStateXna = Keyboard.GetState();
-            if ((IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.F11) || ((IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftAlt) || IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightAlt)) && IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))) && !UseWindowMode_TODO_ChangeFullScreenResolution)
+            if ((IsKeyPressed(Keys.F11) || ((IsKeyDown(Keys.LeftAlt) || IsKeyDown(Keys.RightAlt)) && IsKeyPressed(Keys.Enter))) && !UseWindowMode_TODO_ChangeFullScreenResolution)
             {
                 Global.ScreenSizeManager.ToggleFullScreen();
                 Thread.Sleep(500);
@@ -186,24 +185,24 @@ namespace CutTheRope
                 }
                 return;
             }
-            if (IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+            if (IsKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
-                iframework.core.Application.sharedMovieMgr().stop();
-                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
+                Application.SharedMovieMgr().Stop();
+                _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
             }
             _currentMouseState = Mouse.GetState();
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
             MouseState mouseState = desktop.MouseCursor.GetMouseState();
-            iframework.core.Application.sharedRootController().mouseMoved(CtrRenderer.transformX(mouseState.X), CtrRenderer.transformY(mouseState.Y));
-            CtrRenderer.update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            _ = Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(mouseState.X), CtrRenderer.TransformY(mouseState.Y));
+            CtrRenderer.Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
             base.Update(gameTime);
         }
 
         public void DrawMovie()
         {
             _DrawMovie = true;
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
-            Texture2D texture = iframework.core.Application.sharedMovieMgr().getTexture();
+            GraphicsDevice.Clear(Color.Black);
+            Texture2D texture = Application.SharedMovieMgr().GetTexture();
             if (texture == null)
             {
                 return;
@@ -215,25 +214,25 @@ namespace CutTheRope
             else
             {
                 MouseState mouseState = Global.XnaGame.GetMouseState();
-                if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && Global.ScreenSizeManager.CurrentSize.Contains(mouseState.X, mouseState.Y))
+                if (mouseState.LeftButton == ButtonState.Pressed && Global.ScreenSizeManager.CurrentSize.Contains(mouseState.X, mouseState.Y))
                 {
-                    iframework.core.Application.sharedMovieMgr().stop();
+                    Application.SharedMovieMgr().Stop();
                 }
             }
             Global.GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+            GraphicsDevice.Clear(Color.Black);
             Global.ScreenSizeManager.FullScreenCropWidth = false;
             Global.ScreenSizeManager.ApplyViewportToDevice();
-            Microsoft.Xna.Framework.Rectangle destinationRectangle = new(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            Rectangle destinationRectangle = new(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-            Global.SpriteBatch.Draw(texture, destinationRectangle, Microsoft.Xna.Framework.Color.White);
+            Global.SpriteBatch.Draw(texture, destinationRectangle, Color.White);
             Global.SpriteBatch.End();
         }
 
         protected override void Draw(GameTime gameTime)
         {
             frameCounter++;
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+            GraphicsDevice.Clear(Color.Black);
             if (branding != null)
             {
                 if (branding.IsLoaded)
@@ -246,12 +245,12 @@ namespace CutTheRope
             Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
-            CtrRenderer.onDrawFrame();
+            CtrRenderer.OnDrawFrame();
             Global.MouseCursor.Draw();
             Global.GraphicsDevice.SetRenderTarget(null);
             if (bFirstFrame)
             {
-                GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+                GraphicsDevice.Clear(Color.Black);
             }
             else if (!_DrawMovie)
             {
@@ -269,7 +268,7 @@ namespace CutTheRope
 
         private bool UseWindowMode_TODO_ChangeFullScreenResolution = true;
 
-        private readonly Dictionary<Microsoft.Xna.Framework.Input.Keys, bool> keyState = [];
+        private readonly Dictionary<Keys, bool> keyState = [];
 
         private KeyboardState keyboardStateXna;
 

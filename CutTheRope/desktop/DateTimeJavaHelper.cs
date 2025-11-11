@@ -4,7 +4,7 @@ namespace CutTheRope.desktop
 {
     public static class DateTimeJavaHelper
     {
-        public static long currentTimeMillis()
+        public static long CurrentTimeMillis()
         {
             return (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
         }

@@ -8,13 +8,13 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class RotatedCircle : BaseElement
+    internal sealed class RotatedCircle : BaseElement
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
-                containedObjects = (DynamicArray)new DynamicArray().init();
+                containedObjects = (DynamicArray)new DynamicArray().Init();
                 soundPlaying = -1;
                 vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
                 vinilStickerL.anchor = 20;
@@ -49,71 +49,71 @@ namespace CutTheRope.game
                 vinil = Image.Image_createWithResIDQuad(103, 0);
                 vinil.anchor = 18;
                 passColorToChilds = false;
-                addChild(vinilStickerL);
-                addChild(vinilStickerR);
-                addChild(vinilActiveControllerL);
-                addChild(vinilActiveControllerR);
-                addChild(vinilControllerL);
-                addChild(vinilControllerR);
+                _ = AddChild(vinilStickerL);
+                _ = AddChild(vinilStickerR);
+                _ = AddChild(vinilActiveControllerL);
+                _ = AddChild(vinilActiveControllerR);
+                _ = AddChild(vinilControllerL);
+                _ = AddChild(vinilControllerR);
             }
             return this;
         }
 
-        public virtual void setSize(float value)
+        public void SetSize(float value)
         {
             size = value;
             float num = size / 167f;
             vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = num;
             vinilHighlightR.scaleX = 0f - num;
             vinil.scaleX = vinil.scaleY = num;
-            float num2 = (num >= 0.4f) ? num : 0.4f;
+            float num2 = num >= 0.4f ? num : 0.4f;
             vinilStickerL.scaleX = vinilStickerL.scaleY = vinilStickerR.scaleY = num2;
             vinilStickerR.scaleX = 0f - num2;
-            float num3 = (num >= 0.75f) ? num : 0.75f;
+            float num3 = num >= 0.75f ? num : 0.75f;
             vinilControllerL.scaleX = vinilControllerL.scaleY = vinilControllerR.scaleX = vinilControllerR.scaleY = num3;
             vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = num3;
             vinilCenter.scaleX = 1f - ((1f - vinilStickerL.scaleX) * 0.5f);
             vinilCenter.scaleY = vinilCenter.scaleX;
             sizeInPixels = vinilHighlightL.width * vinilHighlightL.scaleX;
-            updateChildPositions();
+            UpdateChildPositions();
         }
 
-        public virtual bool hasOneHandle()
+        public bool HasOneHandle()
         {
             return !vinilControllerL.visible;
         }
 
-        public virtual void setHasOneHandle(bool value)
+        public void SetHasOneHandle(bool value)
         {
             vinilControllerL.visible = !value;
         }
 
-        public virtual bool isLeftControllerActive()
+        public bool IsLeftControllerActive()
         {
             return vinilActiveControllerL.visible;
         }
 
-        public virtual void setIsLeftControllerActive(bool value)
+        public void SetIsLeftControllerActive(bool value)
         {
             vinilActiveControllerL.visible = value;
         }
 
-        public virtual bool isRightControllerActive()
+        public bool IsRightControllerActive()
         {
             return vinilActiveControllerR.visible;
         }
 
-        public virtual void setIsRightControllerActive(bool value)
+        public void SetIsRightControllerActive(bool value)
         {
             vinilActiveControllerR.visible = value;
         }
 
-        public virtual bool containsSameObjectWithAnotherCircle()
+        public bool ContainsSameObjectWithAnotherCircle()
         {
             foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
-                if (item != this && containsSameObjectWithCircle(item))
+                if (item != this && ContainsSameObjectWithCircle(item))
                 {
                     return true;
                 }
@@ -121,47 +121,47 @@ namespace CutTheRope.game
             return false;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            if (isRightControllerActive() || isLeftControllerActive())
+            if (IsRightControllerActive() || IsLeftControllerActive())
             {
-                OpenGL.glDisable(0);
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.GlDisable(0);
+                OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 if (color.a != 1.0)
                 {
                     whiteRGBA.a = color.a;
                 }
-                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
-                OpenGL.glColor4f(Color.White);
-                OpenGL.glEnable(0);
+                GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
+                OpenGL.GlColor4f(Color.White);
+                OpenGL.GlEnable(0);
             }
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
             vinilControllerL.color = color;
             vinilControllerR.color = color;
             vinil.color = color;
-            vinil.draw();
-            OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            vinil.Draw();
+            OpenGL.GlDisable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
-                if (item != this && item.containsSameObjectWithAnotherCircle() && circlesArray.getObjectIndex(item) < circlesArray.getObjectIndex(this))
+                if (item != this && item.ContainsSameObjectWithAnotherCircle() && circlesArray.GetObjectIndex(item) < circlesArray.GetObjectIndex(this))
                 {
-                    GLDrawer.drawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
+                    GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
-            vinilHighlightL.draw();
-            vinilHighlightR.draw();
-            base.draw();
-            vinilCenter.draw();
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
+            vinilHighlightL.Draw();
+            vinilHighlightR.Draw();
+            base.Draw();
+            vinilCenter.Draw();
         }
 
-        public virtual void updateChildPositions()
+        public void UpdateChildPositions()
         {
             vinil.x = vinilCenter.x = x;
             vinil.y = vinilCenter.y = y;
@@ -180,7 +180,7 @@ namespace CutTheRope.game
             vinilActiveControllerR.y = vinilControllerR.y;
         }
 
-        public virtual bool containsSameObjectWithCircle(RotatedCircle anotherCircle)
+        public bool ContainsSameObjectWithCircle(RotatedCircle anotherCircle)
         {
             if (x == anotherCircle.x && y == anotherCircle.y && size == anotherCircle.size)
             {
@@ -189,7 +189,7 @@ namespace CutTheRope.game
             foreach (object obj in containedObjects)
             {
                 GameObject containedObject = (GameObject)obj;
-                if (anotherCircle.containedObjects.getObjectIndex(containedObject) != -1)
+                if (anotherCircle.containedObjects.GetObjectIndex(containedObject) != -1)
                 {
                     return true;
                 }
@@ -197,34 +197,34 @@ namespace CutTheRope.game
             return false;
         }
 
-        public virtual NSObject copy()
+        public NSObject Copy()
         {
-            RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().init();
+            RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
             rotatedCircle.x = x;
             rotatedCircle.y = y;
             rotatedCircle.rotation = rotation;
             rotatedCircle.circlesArray = circlesArray;
             rotatedCircle.containedObjects = containedObjects;
             rotatedCircle.operating = -1;
-            rotatedCircle.handle1 = vect(rotatedCircle.x - RTPD((double)(size * 3f)), rotatedCircle.y);
-            rotatedCircle.handle2 = vect(rotatedCircle.x + RTPD((double)(size * 3f)), rotatedCircle.y);
-            rotatedCircle.handle1 = vectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.handle2 = vectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.setSize(size);
-            rotatedCircle.setHasOneHandle(hasOneHandle_);
+            rotatedCircle.handle1 = Vect(rotatedCircle.x - RTPD((double)(size * 3f)), rotatedCircle.y);
+            rotatedCircle.handle2 = Vect(rotatedCircle.x + RTPD((double)(size * 3f)), rotatedCircle.y);
+            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.SetSize(size);
+            rotatedCircle.SetHasOneHandle(hasOneHandle_);
             rotatedCircle.vinilControllerL.visible = false;
             rotatedCircle.vinilControllerR.visible = false;
             return rotatedCircle;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
-            vinilCenter.release();
-            vinilHighlightL.release();
-            vinilHighlightR.release();
-            vinil.release();
-            containedObjects.release();
-            base.dealloc();
+            vinilCenter.Release();
+            vinilHighlightL.Release();
+            vinilHighlightR.Release();
+            vinil.Release();
+            containedObjects.Release();
+            base.Dealloc();
         }
 
         public const int PM = 3;

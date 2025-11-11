@@ -7,9 +7,9 @@ using System;
 
 namespace CutTheRope.game
 {
-    internal class Spikes : CTRGameObject, TimelineDelegate, ButtonDelegate
+    internal sealed class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
     {
-        public virtual NSObject initWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
+        public NSObject InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
         {
             int textureResID = -1;
             if (t != -1)
@@ -37,48 +37,48 @@ namespace CutTheRope.game
                         break;
                 }
             }
-            if (initWithTexture(Application.getTexture(textureResID)) == null)
+            if (InitWithTexture(Application.GetTexture(textureResID)) == null)
             {
                 return null;
             }
             if (t > 0)
             {
-                doRestoreCutTransparency();
+                DoRestoreCutTransparency();
                 int num = (t - 1) * 2;
                 int q = 1 + ((t - 1) * 2);
                 Image image = Image_createWithResIDQuad(97, num);
                 Image image2 = Image_createWithResIDQuad(97, q);
-                image.doRestoreCutTransparency();
-                image2.doRestoreCutTransparency();
-                rotateButton = new Button().initWithUpElementDownElementandID(image, image2, 0);
+                image.DoRestoreCutTransparency();
+                image2.DoRestoreCutTransparency();
+                rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, 0);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
-                addChild(rotateButton);
-                Vector quadOffset = getQuadOffset(97, num);
-                Vector quadSize = getQuadSize(97, num);
-                Vector vector = vectSub(vect(image.texture.preCutSize.x, image.texture.preCutSize.y), vectAdd(quadSize, quadOffset));
-                rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + (quadSize.x / 2f), 0f - vector.x + (quadSize.x / 2f), 0f - quadOffset.y + (quadSize.y / 2f), 0f - vector.y + (quadSize.y / 2f));
+                _ = AddChild(rotateButton);
+                Vector quadOffset = GetQuadOffset(97, num);
+                Vector quadSize = GetQuadSize(97, num);
+                Vector vector = VectSub(Vect(image.texture.preCutSize.x, image.texture.preCutSize.y), VectAdd(quadSize, quadOffset));
+                rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + (quadSize.x / 2f), 0f - vector.x + (quadSize.x / 2f), 0f - quadOffset.y + (quadSize.y / 2f), 0f - vector.y + (quadSize.y / 2f));
             }
             passColorToChilds = false;
             spikesNormal = false;
             origRotation = rotation = (float)an;
             x = px;
             y = py;
-            setToggled(t);
-            updateRotation();
+            SetToggled(t);
+            UpdateRotation();
             if (w == 5)
             {
-                addAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 0);
-                addAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 4);
-                doRestoreCutTransparency();
+                AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 0);
+                AddAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 4);
+                DoRestoreCutTransparency();
             }
             touchIndex = -1;
             return this;
         }
 
-        public virtual void updateRotation()
+        public void UpdateRotation()
         {
-            float num = (!electro) ? texture.quadRects[quadToDraw].w : (width - RTPD(400.0));
+            float num = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
             num /= 2f;
             t1.x = x - num;
             t2.x = x + num;
@@ -87,16 +87,16 @@ namespace CutTheRope.game
             b2.x = t2.x;
             b1.y = b2.y = y + 5f;
             angle = DEGREES_TO_RADIANS(rotation);
-            t1 = vectRotateAround(t1, angle, x, y);
-            t2 = vectRotateAround(t2, angle, x, y);
-            b1 = vectRotateAround(b1, angle, x, y);
-            b2 = vectRotateAround(b2, angle, x, y);
+            t1 = VectRotateAround(t1, angle, x, y);
+            t2 = VectRotateAround(t2, angle, x, y);
+            b1 = VectRotateAround(b1, angle, x, y);
+            b2 = VectRotateAround(b2, angle, x, y);
         }
 
-        public virtual void turnElectroOff()
+        public void TurnElectroOff()
         {
             electroOn = false;
-            playTimeline(0);
+            PlayTimeline(0);
             electroTimer = offTime;
             if (sndElectric != null)
             {
@@ -105,46 +105,46 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void turnElectroOn()
+        public void TurnElectroOn()
         {
             electroOn = true;
-            playTimeline(1);
+            PlayTimeline(1);
             electroTimer = onTime;
-            sndElectric = CTRSoundMgr._playSoundLooped(28);
+            sndElectric = CTRSoundMgr.PlaySoundLooped(28);
         }
 
-        public virtual void rotateSpikes()
+        public void RotateSpikes()
         {
             spikesNormal = !spikesNormal;
-            removeTimeline(2);
+            RemoveTimeline(2);
             float num = spikesNormal ? 90 : 0;
             float num2 = origRotation + num;
-            Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-            timeline.addKeyFrame(KeyFrame.makeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-            timeline.addKeyFrame(KeyFrame.makeRotation((int)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(num2 - rotation) / 90f * 0.3f));
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(num2 - rotation) / 90f * 0.3f));
             timeline.delegateTimelineDelegate = this;
-            addTimelinewithID(timeline, 2);
-            playTimeline(2);
+            AddTimelinewithID(timeline, 2);
+            PlayTimeline(2);
             updateRotationFlag = true;
             rotateButton.scaleX = 0f - rotateButton.scaleX;
         }
 
-        public virtual void setToggled(int t)
+        public void SetToggled(int t)
         {
             toggled = t;
         }
 
-        public virtual int getToggled()
+        public int GetToggled()
         {
             return toggled;
         }
 
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
+            base.Update(delta);
             if (mover != null || updateRotationFlag)
             {
-                updateRotation();
+                UpdateRotation();
             }
             if (!electro)
             {
@@ -152,47 +152,47 @@ namespace CutTheRope.game
             }
             if (electroOn)
             {
-                Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
+                _ = Mover.MoveVariableToTarget(ref electroTimer, 0f, 1f, delta);
                 if (electroTimer == 0.0)
                 {
-                    turnElectroOff();
+                    TurnElectroOff();
                     return;
                 }
             }
             else
             {
-                Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
+                _ = Mover.MoveVariableToTarget(ref electroTimer, 0f, 1f, delta);
                 if (electroTimer == 0.0)
                 {
-                    turnElectroOn();
+                    TurnElectroOn();
                 }
             }
         }
 
-        public virtual void timelineReachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public static void TimelineReachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public virtual void timelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
             updateRotationFlag = false;
         }
 
-        public virtual void onButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n == 0)
             {
                 delegateRotateAllSpikesWithID(toggled);
                 if (spikesNormal)
                 {
-                    CTRSoundMgr._playSound(42);
+                    CTRSoundMgr.PlaySound(42);
                     return;
                 }
-                CTRSoundMgr._playSound(43);
+                CTRSoundMgr.PlaySound(43);
             }
         }
 
-        public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
@@ -238,14 +238,14 @@ namespace CutTheRope.game
 
         private enum SPIKES_ANIM
         {
-            SPIKES_ANIM_ELECTRODES_BASE,
-            SPIKES_ANIM_ELECTRODES_ELECTRIC,
-            SPIKES_ANIM_ROTATION_ADJUSTED
+            ELECTRODES_BASE,
+            ELECTRODES_ELECTRIC,
+            ROTATION_ADJUSTED
         }
 
         private enum SPIKES_ROTATION
         {
-            SPIKES_ROTATION_BUTTON
+            BUTTON
         }
 
         // (Invoke) Token: 0x06000689 RID: 1673

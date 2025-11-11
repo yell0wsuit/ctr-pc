@@ -1,102 +1,103 @@
-using CutTheRope.ctr_commons;
+using CutTheRope.commons;
 using CutTheRope.iframework.core;
+using CutTheRope.iframework.platform;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class CTRRootController : RootController
+    internal sealed class CTRRootController : RootController
     {
-        public static void logEvent(NSString s)
+        public static void LogEvent(NSString s)
         {
-            logEvent(s.ToString());
+            LogEvent(s.ToString());
         }
 
-        public static void logEvent(string s)
+        public static void LogEvent(string s)
         {
         }
 
-        public virtual void setMap(XMLNode map)
+        public void SetMap(XMLNode map)
         {
             loadedMap = map;
         }
 
-        public virtual XMLNode getMap()
+        public XMLNode GetMap()
         {
             return loadedMap;
         }
 
-        public virtual NSString getMapName()
+        public NSString GetMapName()
         {
             return mapName;
         }
 
-        public virtual void setMapName(NSString map)
+        public void SetMapName(NSString map)
         {
             NSREL(mapName);
             mapName = map;
         }
 
-        public virtual void setMapsList(Dictionary<string, XMLNode> l)
+        public static void SetMapsList(Dictionary<string, XMLNode> l)
         {
         }
 
-        public virtual int getPack()
+        public int GetPack()
         {
             return pack;
         }
 
-        public override NSObject initWithParent(ViewController p)
+        public override NSObject InitWithParent(ViewController p)
         {
-            if (base.initWithParent(p) != null)
+            if (base.InitWithParent(p) != null)
             {
                 hacked = false;
                 loadedMap = null;
-                CTRResourceMgr ctrresourceMgr = Application.sharedResourceMgr();
-                ctrresourceMgr.initLoading();
-                ctrresourceMgr.loadPack(PACK_STARTUP);
-                ctrresourceMgr.loadImmediately();
-                StartupController startupController = (StartupController)new StartupController().initWithParent(this);
-                addChildwithID(startupController, 0);
+                CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
+                ctrresourceMgr.InitLoading();
+                ctrresourceMgr.LoadPack(PACK_STARTUP);
+                ctrresourceMgr.LoadImmediately();
+                StartupController startupController = (StartupController)new StartupController().InitWithParent(this);
+                AddChildwithID(startupController, 0);
                 NSREL(startupController);
                 viewTransition = -1;
             }
             return this;
         }
 
-        public override void activate()
+        public override void Activate()
         {
-            CTRPreferences.isFirstLaunch();
-            base.activate();
-            activateChild(0);
-            Application.sharedCanvas().beforeRender();
-            activeChild().activeView().draw();
-            Application.sharedCanvas().afterRender();
+            _ = CTRPreferences.IsFirstLaunch();
+            base.Activate();
+            ActivateChild(0);
+            Application.SharedCanvas().BeforeRender();
+            ActiveChild().ActiveView().Draw();
+            GLCanvas.AfterRender();
         }
 
-        public virtual void deleteMenu()
+        public void DeleteMenu()
         {
-            ResourceMgr resourceMgr = Application.sharedResourceMgr();
-            deleteChild(1);
-            resourceMgr.freePack(PACK_MENU);
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            DeleteChild(1);
+            resourceMgr.FreePack(PACK_MENU);
             GC.Collect();
         }
 
-        public virtual void disableGameCenter()
+        public static void DisableGameCenter()
         {
         }
 
-        public virtual void enableGameCenter()
+        public static void EnableGameCenter()
         {
         }
 
-        public override void suspend()
+        public override void Suspend()
         {
             suspended = true;
         }
 
-        public override void resume()
+        public override void Resume()
         {
             if (!inCrystal)
             {
@@ -104,42 +105,42 @@ namespace CutTheRope.game
             }
         }
 
-        public override void onChildDeactivated(int n)
+        public override void OnChildDeactivated(int n)
         {
-            base.onChildDeactivated(n);
-            ResourceMgr resourceMgr = Application.sharedResourceMgr();
+            base.OnChildDeactivated(n);
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             switch (n)
             {
                 case 0:
                     {
-                        setViewTransition(4);
-                        LoadingController c2 = (LoadingController)new LoadingController().initWithParent(this);
-                        addChildwithID(c2, 2);
-                        MenuController menuController2 = (MenuController)new MenuController().initWithParent(this);
-                        addChildwithID(menuController2, 1);
-                        deleteChild(0);
-                        resourceMgr.freePack(PACK_STARTUP);
+                        SetViewTransition(4);
+                        LoadingController c2 = (LoadingController)new LoadingController().InitWithParent(this);
+                        AddChildwithID(c2, 2);
+                        MenuController menuController2 = (MenuController)new MenuController().InitWithParent(this);
+                        AddChildwithID(menuController2, 1);
+                        DeleteChild(0);
+                        resourceMgr.FreePack(PACK_STARTUP);
                         menuController2.viewToShow = 0;
                         if (Preferences._getBooleanForKey("PREFS_GAME_CENTER_ENABLED"))
                         {
-                            enableGameCenter();
+                            EnableGameCenter();
                         }
                         else
                         {
-                            disableGameCenter();
+                            DisableGameCenter();
                         }
                         if (Preferences._getBooleanForKey("IAP_BANNERS"))
                         {
-                            AndroidAPI.disableBanners();
+                            AndroidAPI.DisableBanners();
                         }
-                        _LOG("activate child menu");
-                        activateChild(1);
+                        LOG("activate child menu");
+                        ActivateChild(1);
                         return;
                     }
                 case 1:
                     {
-                        deleteMenu();
-                        resourceMgr.resourcesDelegate = (LoadingController)getChild(2);
+                        DeleteMenu();
+                        resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                         int[] array = null;
                         switch (pack)
                         {
@@ -177,49 +178,49 @@ namespace CutTheRope.game
                                 array = PACK_GAME_11;
                                 break;
                         }
-                        resourceMgr.initLoading();
-                        resourceMgr.loadPack(PACK_GAME);
-                        resourceMgr.loadPack(PACK_GAME_NORMAL);
-                        resourceMgr.loadPack(array);
-                        resourceMgr.startLoading();
-                        ((LoadingController)getChild(2)).nextController = 0;
-                        activateChild(2);
+                        resourceMgr.InitLoading();
+                        resourceMgr.LoadPack(PACK_GAME);
+                        resourceMgr.LoadPack(PACK_GAME_NORMAL);
+                        resourceMgr.LoadPack(array);
+                        resourceMgr.StartLoading();
+                        ((LoadingController)GetChild(2)).nextController = 0;
+                        ActivateChild(2);
                         return;
                     }
                 case 2:
                     {
-                        int nextController = ((LoadingController)getChild(2)).nextController;
+                        int nextController = ((LoadingController)GetChild(2)).nextController;
                         if (nextController == 0)
                         {
-                            setShowGreeting(true);
-                            GameController c3 = (GameController)new GameController().initWithParent(this);
-                            addChildwithID(c3, 3);
-                            activateChild(3);
+                            SetShowGreeting(true);
+                            GameController c3 = (GameController)new GameController().InitWithParent(this);
+                            AddChildwithID(c3, 3);
+                            ActivateChild(3);
                             return;
                         }
                         if (nextController - 1 > 3)
                         {
                             return;
                         }
-                        MenuController menuController3 = (MenuController)new MenuController().initWithParent(this);
-                        addChildwithID(menuController3, 1);
-                        resourceMgr.freePack(PACK_GAME_COVER_01);
-                        resourceMgr.freePack(PACK_GAME_COVER_02);
-                        if (!CTRPreferences.isLiteVersion())
+                        MenuController menuController3 = (MenuController)new MenuController().InitWithParent(this);
+                        AddChildwithID(menuController3, 1);
+                        resourceMgr.FreePack(PACK_GAME_COVER_01);
+                        resourceMgr.FreePack(PACK_GAME_COVER_02);
+                        if (!CTRPreferences.IsLiteVersion())
                         {
-                            resourceMgr.freePack(PACK_GAME_COVER_03);
-                            resourceMgr.freePack(PACK_GAME_COVER_04);
-                            resourceMgr.freePack(PACK_GAME_COVER_05);
-                            resourceMgr.freePack(PACK_GAME_COVER_06);
-                            resourceMgr.freePack(PACK_GAME_COVER_07);
-                            resourceMgr.freePack(PACK_GAME_COVER_08);
-                            resourceMgr.freePack(PACK_GAME_COVER_09);
-                            resourceMgr.freePack(PACK_GAME_COVER_10);
-                            resourceMgr.freePack(PACK_GAME_COVER_11);
+                            resourceMgr.FreePack(PACK_GAME_COVER_03);
+                            resourceMgr.FreePack(PACK_GAME_COVER_04);
+                            resourceMgr.FreePack(PACK_GAME_COVER_05);
+                            resourceMgr.FreePack(PACK_GAME_COVER_06);
+                            resourceMgr.FreePack(PACK_GAME_COVER_07);
+                            resourceMgr.FreePack(PACK_GAME_COVER_08);
+                            resourceMgr.FreePack(PACK_GAME_COVER_09);
+                            resourceMgr.FreePack(PACK_GAME_COVER_10);
+                            resourceMgr.FreePack(PACK_GAME_COVER_11);
                         }
                         if (IS_WVGA)
                         {
-                            setViewTransition(4);
+                            SetViewTransition(4);
                         }
                         if (nextController == 1)
                         {
@@ -231,48 +232,48 @@ namespace CutTheRope.game
                         }
                         if (nextController == 3)
                         {
-                            menuController3.viewToShow = (pack < CTRPreferences.getPacksCount() - 1) ? 5 : 7;
+                            menuController3.viewToShow = pack < CTRPreferences.GetPacksCount() - 1 ? 5 : 7;
                         }
-                        activateChild(1);
+                        ActivateChild(1);
                         if (nextController == 3)
                         {
-                            menuController3.showNextPack();
+                            menuController3.ShowNextPack();
                         }
                         GC.Collect();
                         return;
                     }
                 case 3:
                     {
-                        SaveMgr.backup();
-                        GameController gameController = (GameController)getChild(3);
+                        SaveMgr.Backup();
+                        GameController gameController = (GameController)GetChild(3);
                         int exitCode = gameController.exitCode;
-                        GameScene gameScene = (GameScene)gameController.getView(0).getChild(0);
+                        _ = (GameScene)gameController.GetView(0).GetChild(0);
                         if (exitCode <= 2)
                         {
-                            deleteChild(3);
-                            resourceMgr.freePack(PACK_GAME);
-                            resourceMgr.freePack(PACK_GAME_NORMAL);
-                            resourceMgr.freePack(PACK_GAME_01);
-                            resourceMgr.freePack(PACK_GAME_02);
-                            if (!CTRPreferences.isLiteVersion())
+                            DeleteChild(3);
+                            resourceMgr.FreePack(PACK_GAME);
+                            resourceMgr.FreePack(PACK_GAME_NORMAL);
+                            resourceMgr.FreePack(PACK_GAME_01);
+                            resourceMgr.FreePack(PACK_GAME_02);
+                            if (!CTRPreferences.IsLiteVersion())
                             {
-                                resourceMgr.freePack(PACK_GAME_03);
-                                resourceMgr.freePack(PACK_GAME_04);
-                                resourceMgr.freePack(PACK_GAME_05);
-                                resourceMgr.freePack(PACK_GAME_06);
-                                resourceMgr.freePack(PACK_GAME_07);
-                                resourceMgr.freePack(PACK_GAME_08);
-                                resourceMgr.freePack(PACK_GAME_09);
-                                resourceMgr.freePack(PACK_GAME_10);
-                                resourceMgr.freePack(PACK_GAME_11);
+                                resourceMgr.FreePack(PACK_GAME_03);
+                                resourceMgr.FreePack(PACK_GAME_04);
+                                resourceMgr.FreePack(PACK_GAME_05);
+                                resourceMgr.FreePack(PACK_GAME_06);
+                                resourceMgr.FreePack(PACK_GAME_07);
+                                resourceMgr.FreePack(PACK_GAME_08);
+                                resourceMgr.FreePack(PACK_GAME_09);
+                                resourceMgr.FreePack(PACK_GAME_10);
+                                resourceMgr.FreePack(PACK_GAME_11);
                             }
-                            resourceMgr.resourcesDelegate = (LoadingController)getChild(2);
-                            resourceMgr.initLoading();
-                            resourceMgr.loadPack(PACK_MENU);
-                            resourceMgr.startLoading();
-                            LoadingController loadingController = (LoadingController)getChild(2);
+                            resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
+                            resourceMgr.InitLoading();
+                            resourceMgr.LoadPack(PACK_MENU);
+                            resourceMgr.StartLoading();
+                            LoadingController loadingController = (LoadingController)GetChild(2);
                             loadingController.nextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
-                            activateChild(2);
+                            ActivateChild(2);
                             GC.Collect();
                         }
                         return;
@@ -282,95 +283,95 @@ namespace CutTheRope.game
             }
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             loadedMap = null;
             mapName = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public static void checkMapIsValid(NSObject data)
+        public static void CheckMapIsValid(NSObject data)
         {
         }
 
-        public static bool isHacked()
+        public static bool IsHacked()
         {
             return false;
         }
 
-        public static void setHacked()
+        public static void SetHacked()
         {
-            ((CTRRootController)Application.sharedRootController()).hacked = true;
+            ((CTRRootController)Application.SharedRootController()).hacked = true;
         }
 
-        public static void setInCrystal(bool b)
+        public static void SetInCrystal(bool b)
         {
-            ((CTRRootController)Application.sharedRootController()).inCrystal = b;
+            ((CTRRootController)Application.SharedRootController()).inCrystal = b;
         }
 
-        public static void openFullVersionPage()
+        public static void OpenFullVersionPage()
         {
         }
 
-        public virtual void setPack(int p)
+        public void SetPack(int p)
         {
             pack = p;
         }
 
-        public virtual void setLevel(int l)
+        public void SetLevel(int l)
         {
             level = l;
         }
 
-        public virtual int getLevel()
+        public int GetLevel()
         {
             return level;
         }
 
-        public virtual void setPicker(bool p)
+        public void SetPicker(bool p)
         {
             picker = p;
         }
 
-        public virtual bool isPicker()
+        public bool IsPicker()
         {
             return picker;
         }
 
-        public virtual void setSurvival(bool s)
+        public void SetSurvival(bool s)
         {
             survival = s;
         }
 
-        public virtual bool isSurvival()
+        public bool IsSurvival()
         {
             return survival;
         }
 
-        public static bool isShowGreeting()
+        public static bool IsShowGreeting()
         {
-            return ((CTRRootController)Application.sharedRootController()).showGreeting;
+            return ((CTRRootController)Application.SharedRootController()).showGreeting;
         }
 
-        public static void setShowGreeting(bool s)
+        public static void SetShowGreeting(bool s)
         {
-            ((CTRRootController)Application.sharedRootController()).showGreeting = s;
+            ((CTRRootController)Application.SharedRootController()).showGreeting = s;
         }
 
-        public static void postAchievementName(string name, string s)
+        public static void PostAchievementName(string name, string s)
         {
         }
 
-        public static void postAchievementName(NSString name)
+        public static void PostAchievementName(NSString name)
         {
-            Scorer.postAchievementName(name);
+            Scorer.PostAchievementName(name);
         }
 
-        internal void recreateLoadingController()
+        internal void RecreateLoadingController()
         {
-            deleteChild(2);
-            LoadingController c = (LoadingController)new LoadingController().initWithParent(this);
-            addChildwithID(c, 2);
+            DeleteChild(2);
+            LoadingController c = (LoadingController)new LoadingController().InitWithParent(this);
+            AddChildwithID(c, 2);
         }
 
         public const int NEXT_GAME = 0;

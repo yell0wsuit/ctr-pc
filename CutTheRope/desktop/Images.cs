@@ -5,12 +5,11 @@ using System.Collections.Generic;
 
 namespace CutTheRope.desktop
 {
-    internal class Images
+    internal sealed class Images
     {
-        private static ContentManager getContentManager(string imgName)
+        private static ContentManager GetContentManager(string imgName)
         {
-            ContentManager value = null;
-            _contentManagers.TryGetValue(imgName, out value);
+            _ = _contentManagers.TryGetValue(imgName, out ContentManager value);
             if (value == null)
             {
                 value = new ContentManager(Global.XnaGame.Services, "content");
@@ -19,9 +18,9 @@ namespace CutTheRope.desktop
             return value;
         }
 
-        public static Texture2D get(string imgName)
+        public static Texture2D Get(string imgName)
         {
-            ContentManager contentManager = getContentManager(imgName);
+            ContentManager contentManager = GetContentManager(imgName);
             Texture2D result = null;
             Texture2D texture2D;
             try
@@ -36,9 +35,9 @@ namespace CutTheRope.desktop
             return texture2D;
         }
 
-        public static void free(string imgName)
+        public static void Free(string imgName)
         {
-            getContentManager(imgName).Unload();
+            GetContentManager(imgName).Unload();
         }
 
         private static readonly Dictionary<string, ContentManager> _contentManagers = [];

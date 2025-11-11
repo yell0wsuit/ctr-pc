@@ -3,18 +3,18 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Font : FontGeneric
+    internal sealed class Font : FontGeneric
     {
-        public virtual Font initWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
+        public Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
-                _isWvga = charmapfile.isWvga();
-                charmap = new Image().initWithTexture(charmapfile);
+                _isWvga = charmapfile.IsWvga();
+                charmap = new Image().InitWithTexture(charmapfile);
                 quadsCount = charmapfile.quadsCount;
                 height = charmapfile.quadRects[0].h;
-                chars = strParam.copy();
-                sortedChars = chars.getCharacters();
+                chars = strParam.Copy();
+                sortedChars = chars.GetCharacters();
                 Array.Sort(sortedChars);
                 charOffset = 0f;
                 lineOffset = 0f;
@@ -22,15 +22,15 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             chars = null;
             sortedChars = null;
             charmap = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public override void setCharOffsetLineOffsetSpaceWidth(float co, float lo, float sw)
+        public override void SetCharOffsetLineOffsetSpaceWidth(float co, float lo, float sw)
         {
             charOffset = co;
             lineOffset = lo;
@@ -43,43 +43,43 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override float fontHeight()
+        public override float FontHeight()
         {
             return height;
         }
 
-        public override bool canDraw(char c)
+        public override bool CanDraw(char c)
         {
             return c == ' ' || Array.BinarySearch(sortedChars, c) >= 0;
         }
 
-        public override float getCharWidth(char c)
+        public override float GetCharWidth(char c)
         {
-            return c == ' ' ? spaceWidth : c == '*' ? 0f : charmap.texture.quadRects[getCharQuad(c)].w;
+            return c == ' ' ? spaceWidth : c == '*' ? 0f : charmap.texture.quadRects[GetCharQuad(c)].w;
         }
 
-        public override int getCharmapIndex(char c)
+        public override int GetCharmapIndex(char c)
         {
             return 0;
         }
 
-        public override int getCharQuad(char c)
+        public override int GetCharQuad(char c)
         {
             int num = chars.IndexOf(c);
             return num >= 0 ? num : -1;
         }
 
-        public override float getCharOffset(char[] s, int c, int len)
+        public override float GetCharOffset(char[] s, int c, int len)
         {
             return c == len - 1 ? 0f : charOffset;
         }
 
-        public override int totalCharmaps()
+        public override int TotalCharmaps()
         {
             return 1;
         }
 
-        public override Image getCharmap(int i)
+        public override Image GetCharmap(int i)
         {
             return charmap;
         }

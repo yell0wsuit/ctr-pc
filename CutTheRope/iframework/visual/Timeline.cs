@@ -3,15 +3,15 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Timeline : NSObject
+    internal sealed class Timeline : NSObject
     {
-        public virtual void stopTimeline()
+        public void StopTimeline()
         {
             state = TimelineState.TIMELINE_STOPPED;
-            deactivateTracks();
+            DeactivateTracks();
         }
 
-        public virtual void deactivateTracks()
+        public void DeactivateTracks()
         {
             for (int i = 0; i < tracks.Length; i++)
             {
@@ -22,16 +22,16 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public void jumpToTrackKeyFrame(int t, int k)
+        public void JumpToTrackKeyFrame(int t, int k)
         {
             if (state == TimelineState.TIMELINE_STOPPED)
             {
                 state = TimelineState.TIMELINE_PAUSED;
             }
-            time = tracks[t].getFrameTime(k);
+            time = tracks[t].GetFrameTime(k);
         }
 
-        public virtual void playTimeline()
+        public void PlayTimeline()
         {
             if (state != TimelineState.TIMELINE_PAUSED)
             {
@@ -42,7 +42,7 @@ namespace CutTheRope.iframework.visual
                 {
                     if (tracks[i] != null)
                     {
-                        tracks[i].updateRange();
+                        tracks[i].UpdateRange();
                         if (tracks[i].endTime > length)
                         {
                             length = tracks[i].endTime;
@@ -51,15 +51,15 @@ namespace CutTheRope.iframework.visual
                 }
             }
             state = TimelineState.TIMELINE_PLAYING;
-            updateTimeline(this, 0f);
+            UpdateTimeline(this, 0f);
         }
 
-        public virtual void pauseTimeline()
+        public void PauseTimeline()
         {
             state = TimelineState.TIMELINE_PAUSED;
         }
 
-        public static void updateTimeline(Timeline thiss, float delta)
+        public static void UpdateTimeline(Timeline thiss, float delta)
         {
             if (thiss.state != TimelineState.TIMELINE_PLAYING)
             {
@@ -79,11 +79,11 @@ namespace CutTheRope.iframework.visual
                 {
                     if (thiss.tracks[i].type == Track.TrackType.TRACK_ACTION)
                     {
-                        Track.updateActionTrack(thiss.tracks[i], delta);
+                        Track.UpdateActionTrack(thiss.tracks[i], delta);
                     }
                     else
                     {
-                        Track.updateTrack(thiss.tracks[i], delta);
+                        Track.UpdateTrack(thiss.tracks[i], delta);
                     }
                 }
             }
@@ -92,10 +92,10 @@ namespace CutTheRope.iframework.visual
                 case LoopType.TIMELINE_NO_LOOP:
                     if (thiss.time >= thiss.length - 1E-06f)
                     {
-                        thiss.stopTimeline();
+                        thiss.StopTimeline();
                         if (thiss != null && thiss.delegateTimelineDelegate != null)
                         {
-                            thiss.delegateTimelineDelegate.timelineFinished(thiss);
+                            thiss.delegateTimelineDelegate.TimelineFinished(thiss);
                         }
                     }
                     break;
@@ -107,8 +107,8 @@ namespace CutTheRope.iframework.visual
                             thiss.loopsLimit--;
                             if (thiss.loopsLimit == 0)
                             {
-                                thiss.stopTimeline();
-                                thiss.delegateTimelineDelegate?.timelineFinished(thiss);
+                                thiss.StopTimeline();
+                                thiss.delegateTimelineDelegate?.TimelineFinished(thiss);
                             }
                         }
                         thiss.time = Math.Min(thiss.time - thiss.length, thiss.length);
@@ -132,8 +132,8 @@ namespace CutTheRope.iframework.visual
                                 thiss.loopsLimit--;
                                 if (thiss.loopsLimit == 0)
                                 {
-                                    thiss.stopTimeline();
-                                    thiss.delegateTimelineDelegate?.timelineFinished(thiss);
+                                    thiss.StopTimeline();
+                                    thiss.delegateTimelineDelegate?.TimelineFinished(thiss);
                                 }
                             }
                             thiss.time = Math.Min(0f - thiss.time, thiss.length);
@@ -147,9 +147,9 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual Timeline initWithMaxKeyFramesOnTrack(int m)
+        public Timeline InitWithMaxKeyFramesOnTrack(int m)
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 maxKeyFrames = m;
                 time = 0f;
@@ -161,34 +161,34 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void addKeyFrame(KeyFrame k)
+        public void AddKeyFrame(KeyFrame k)
         {
-            int i = (tracks[(int)k.trackType] != null) ? tracks[(int)k.trackType].keyFramesCount : 0;
-            setKeyFrameAt(k, i);
+            int i = tracks[(int)k.trackType] != null ? tracks[(int)k.trackType].keyFramesCount : 0;
+            SetKeyFrameAt(k, i);
         }
 
-        public virtual void setKeyFrameAt(KeyFrame k, int i)
+        public void SetKeyFrameAt(KeyFrame k, int i)
         {
             if (tracks[(int)k.trackType] == null)
             {
-                tracks[(int)k.trackType] = new Track().initWithTimelineTypeandMaxKeyFrames(this, k.trackType, maxKeyFrames);
+                tracks[(int)k.trackType] = new Track().InitWithTimelineTypeandMaxKeyFrames(this, k.trackType, maxKeyFrames);
             }
-            tracks[(int)k.trackType].setKeyFrameAt(k, i);
+            tracks[(int)k.trackType].SetKeyFrameAt(k, i);
         }
 
-        public virtual void setTimelineLoopType(LoopType l)
+        public void SetTimelineLoopType(LoopType l)
         {
             timelineLoopType = l;
         }
 
-        public virtual Track getTrack(Track.TrackType tt)
+        public Track GetTrack(Track.TrackType tt)
         {
             return tracks[(int)tt];
         }
 
         private const int TRACKS_COUNT = 5;
 
-        public TimelineDelegate delegateTimelineDelegate;
+        public ITimelineDelegate delegateTimelineDelegate;
 
         public BaseElement element;
 

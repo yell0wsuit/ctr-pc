@@ -2,7 +2,7 @@ using CutTheRope.ios;
 using System;
 using System.Collections;
 
-internal class DynamicArrayEnumerator : IEnumerator
+internal sealed class DynamicArrayEnumerator(NSObject[] list, int highestIndex) : IEnumerator
 {
     // (get) Token: 0x06000018 RID: 24 RVA: 0x00002436 File Offset: 0x00000636
     object IEnumerator.Current => Current;
@@ -25,12 +25,6 @@ internal class DynamicArrayEnumerator : IEnumerator
         }
     }
 
-    public DynamicArrayEnumerator(NSObject[] list, int highestIndex)
-    {
-        _map = list;
-        _highestIndex = highestIndex;
-    }
-
     public bool MoveNext()
     {
         position++;
@@ -42,9 +36,9 @@ internal class DynamicArrayEnumerator : IEnumerator
         position = -1;
     }
 
-    public NSObject[] _map;
+    public NSObject[] _map = list;
 
-    private readonly int _highestIndex;
+    private readonly int _highestIndex = highestIndex;
 
     private int position = -1;
 }

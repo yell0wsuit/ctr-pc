@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class KeyFrameValue
+    internal sealed class KeyFrameValue
     {
         public KeyFrameValue()
         {

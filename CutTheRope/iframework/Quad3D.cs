@@ -45,16 +45,13 @@ namespace CutTheRope.iframework
             };
         }
 
-        public float[] toFloatArray()
+        public float[] ToFloatArray()
         {
-            if (_array == null)
-            {
-                _array =
+            _array ??=
                 [
                     blX, blY, blZ, brX, brY, brZ, tlX, tlY, tlZ, trX,
                     trY, trZ
                 ];
-            }
             return _array;
         }
 

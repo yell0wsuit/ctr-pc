@@ -2,8 +2,8 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.media
 {
-    internal interface MovieMgrDelegate
+    internal interface IMovieMgrDelegate
     {
-        void moviePlaybackFinished(NSString url);
+        void MoviePlaybackFinished(NSString url);
     }
 }

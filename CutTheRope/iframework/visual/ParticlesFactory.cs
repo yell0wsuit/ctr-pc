@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class ParticlesFactory
+    internal sealed class ParticlesFactory
     {
     }
 }
