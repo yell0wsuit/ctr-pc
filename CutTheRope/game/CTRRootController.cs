@@ -121,7 +121,7 @@ namespace CutTheRope.game
                         DeleteChild(0);
                         resourceMgr.FreePack(PACK_STARTUP);
                         menuController2.viewToShow = 0;
-                        if (Preferences._getBooleanForKey("PREFS_GAME_CENTER_ENABLED"))
+                        if (Preferences.GetBooleanForKey("PREFS_GAME_CENTER_ENABLED"))
                         {
                             EnableGameCenter();
                         }
@@ -129,7 +129,7 @@ namespace CutTheRope.game
                         {
                             DisableGameCenter();
                         }
-                        if (Preferences._getBooleanForKey("IAP_BANNERS"))
+                        if (Preferences.GetBooleanForKey("IAP_BANNERS"))
                         {
                             AndroidAPI.DisableBanners();
                         }

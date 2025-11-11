@@ -87,8 +87,8 @@ namespace CutTheRope.game
             _ = hBox.AddChild(toggleButton);
             _ = vBox.AddChild(hBox);
             vBox.y = (SCREEN_HEIGHT - vBox.height) / 2f;
-            bool flag3 = Preferences._getBooleanForKey("SOUND_ON");
-            bool flag2 = Preferences._getBooleanForKey("MUSIC_ON");
+            bool flag3 = Preferences.GetBooleanForKey("SOUND_ON");
+            bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
             if (!flag3)
             {
                 toggleButton2.Toggle();
@@ -206,7 +206,7 @@ namespace CutTheRope.game
             {
                 CTRRootController.PostAchievementName("681473653", ACHIEVEMENT_STRING("\"Golden Scissors\""));
             }
-            Preferences._savePreferences();
+            Preferences.RequestSave();
             int num2 = 0;
             for (int i = 0; i < CTRPreferences.GetLevelsInPackCount(); i++)
             {
@@ -214,8 +214,8 @@ namespace CutTheRope.game
             }
             if (!CTRRootController.IsHacked())
             {
-                cTRPreferences.SetScoreHash();
-                Preferences._savePreferences();
+                CTRPreferences.SetScoreHash();
+                Preferences.RequestSave();
             }
             boxCloseHandled = true;
         }
@@ -390,8 +390,8 @@ namespace CutTheRope.game
                     goto IL_013D;
                 case 10:
                     {
-                        bool flag = Preferences._getBooleanForKey("MUSIC_ON");
-                        Preferences._setBooleanforKey(!flag, "MUSIC_ON", true);
+                        bool flag = Preferences.GetBooleanForKey("MUSIC_ON");
+                        Preferences.SetBooleanForKey(!flag, "MUSIC_ON", true);
                         if (flag)
                         {
                             CTRRootController.LogEvent("IM_MUSIC_OFF_PRESSED");
@@ -404,8 +404,8 @@ namespace CutTheRope.game
                     }
                 case 11:
                     {
-                        bool flag2 = Preferences._getBooleanForKey("SOUND_ON");
-                        Preferences._setBooleanforKey(!flag2, "SOUND_ON", true);
+                        bool flag2 = Preferences.GetBooleanForKey("SOUND_ON");
+                        Preferences.SetBooleanForKey(!flag2, "SOUND_ON", true);
                         if (flag2)
                         {
                             CTRRootController.LogEvent("IM_SOUND_OFF_PRESSED");

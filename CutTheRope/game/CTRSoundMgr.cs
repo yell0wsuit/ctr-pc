@@ -8,7 +8,7 @@ namespace CutTheRope.game
     {
         public static new void PlaySound(int s)
         {
-            if (Preferences._getBooleanForKey("SOUND_ON"))
+            if (Preferences.GetBooleanForKey("SOUND_ON"))
             {
                 Application.SharedSoundMgr().PlaySound(s);
             }
@@ -25,7 +25,7 @@ namespace CutTheRope.game
 
         public static new SoundEffectInstance PlaySoundLooped(int s)
         {
-            return s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
+            return s_EnableLoopedSounds && Preferences.GetBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
         }
 
         public static void PlayRandomMusic(int minId, int maxId)
@@ -42,7 +42,7 @@ namespace CutTheRope.game
 
         public static new void PlayMusic(int f)
         {
-            if (Preferences._getBooleanForKey("MUSIC_ON"))
+            if (Preferences.GetBooleanForKey("MUSIC_ON"))
             {
                 Application.SharedSoundMgr().PlayMusic(f);
             }

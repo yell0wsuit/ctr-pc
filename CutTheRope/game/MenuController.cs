@@ -415,9 +415,9 @@ namespace CutTheRope.game
             _ = baseElement.AddChild(vBox);
             hBox.y = (vBox.height / 2) + 10;
             vBox.y = -(float)hBox.height / 2;
-            bool flag4 = Preferences._getBooleanForKey("SOUND_ON");
-            bool flag2 = Preferences._getBooleanForKey("MUSIC_ON");
-            bool flag3 = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
+            bool flag4 = Preferences.GetBooleanForKey("SOUND_ON");
+            bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
+            bool flag3 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
             if (!flag4)
             {
                 toggleButton2.Toggle();
@@ -1117,7 +1117,7 @@ namespace CutTheRope.game
             packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
             CTRSoundMgr.StopMusic();
             Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-            Application.SharedMovieMgr().PlayURL(NSS("outro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
+            Application.SharedMovieMgr().PlayURL(NSS("outro"), !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
         }
 
         public override void OnChildDeactivated(int n)
@@ -1221,7 +1221,7 @@ namespace CutTheRope.game
                 ShowView(7);
                 CTRSoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
+                Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                 return;
             }
             ActivateChild(0);
@@ -1263,7 +1263,7 @@ namespace CutTheRope.game
                             ShowView(7);
                             CTRSoundMgr.StopMusic();
                             Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                            Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences._getBooleanForKey("MUSIC_ON") && !Preferences._getBooleanForKey("SOUND_ON"));
+                            Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                             return;
                         }
                         MoviePlaybackFinished(null);
@@ -1298,12 +1298,12 @@ namespace CutTheRope.game
                     CTRRootController.OpenFullVersionPage();
                     return;
                 case 5:
-                    Preferences._setBooleanforKey(!Preferences._getBooleanForKey("SOUND_ON"), "SOUND_ON", true);
+                    Preferences.SetBooleanForKey(!Preferences.GetBooleanForKey("SOUND_ON"), "SOUND_ON", true);
                     return;
                 case 6:
                     {
-                        bool flag6 = Preferences._getBooleanForKey("MUSIC_ON");
-                        Preferences._setBooleanforKey(!flag6, "MUSIC_ON", true);
+                        bool flag6 = Preferences.GetBooleanForKey("MUSIC_ON");
+                        Preferences.SetBooleanForKey(!flag6, "MUSIC_ON", true);
                         if (flag6)
                         {
                             CTRSoundMgr.StopMusic();
@@ -1329,8 +1329,8 @@ namespace CutTheRope.game
                     return;
                 case 11:
                     {
-                        bool flag7 = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
-                        Preferences._setBooleanforKey(!flag7, "PREFS_CLICK_TO_CUT", true);
+                        bool flag7 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
+                        Preferences.SetBooleanForKey(!flag7, "PREFS_CLICK_TO_CUT", true);
                         _ = NSS(flag7 ? "off" : "on");
                         return;
                     }
@@ -1341,8 +1341,8 @@ namespace CutTheRope.game
                 case 13:
                     {
                         CTRPreferences ctrpreferences = Application.SharedPreferences();
-                        ctrpreferences.ResetToDefaults();
-                        ctrpreferences.savePreferences();
+                        CTRPreferences.ResetToDefaults();
+                        Preferences.RequestSave();
                         DeleteView(5);
                         CreatePackSelect();
                         ShowView(1);
@@ -1398,7 +1398,7 @@ namespace CutTheRope.game
                             {
                                 NSString nSString = array3[(j + 1) % num];
                                 Application.SharedAppSettings().SetString(8, nSString);
-                                Application.SharedPreferences().SetStringforKey(nSString.ToString(), "PREFS_LOCALE", true);
+                                Preferences.SetStringForKey(nSString.ToString(), "PREFS_LOCALE", true);
                                 flag4 = true;
                                 break;
                             }
@@ -1406,7 +1406,7 @@ namespace CutTheRope.game
                         if (!flag4)
                         {
                             Application.SharedAppSettings().SetString(8, array3[1]);
-                            Application.SharedPreferences().SetStringforKey(array3[1].ToString(), "PREFS_LOCALE", true);
+                            Preferences.SetStringForKey(array3[1].ToString(), "PREFS_LOCALE", true);
                         }
                         CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
                         ctrresourceMgr2.FreePack(PACK_LOCALIZATION_MENU);
