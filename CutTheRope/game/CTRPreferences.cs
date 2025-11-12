@@ -290,8 +290,8 @@ namespace CutTheRope.game
 
         public static void SetScoreHash()
         {
-            NSString mD5Str = GetMD5Str(NSS(GetTotalScore().ToString(CultureInfo.InvariantCulture)));
-            SetStringForKey(mD5Str.ToString(), "PREFS_SCORE_HASH", true);
+            NSString sha256Str = GetSHA256Str(NSS(GetTotalScore().ToString(CultureInfo.InvariantCulture)));
+            SetStringForKey(sha256Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 
         internal static bool IsFirstLaunch()

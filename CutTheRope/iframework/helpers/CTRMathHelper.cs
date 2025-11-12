@@ -2,6 +2,8 @@ using CutTheRope.game;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
 using System;
+using System.Globalization;
+using System.Security.Cryptography;
 
 namespace CutTheRope.iframework.helpers
 {
@@ -492,12 +494,12 @@ namespace CutTheRope.iframework.helpers
             return RND_RANGE(S * 1000, F * 1000) / 1000f;
         }
 
-        public static NSString GetMD5Str(NSString input)
+        public static NSString GetSHA256Str(NSString input)
         {
-            return GetMD5(input.GetCharacters());
+            return GetSHA256(input.GetCharacters());
         }
 
-        public static NSString GetMD5(char[] data)
+        public static NSString GetSHA256(char[] data)
         {
             byte[] array = new byte[data.Length * 2];
             for (int i = 0; i < data.Length; i++)
@@ -505,23 +507,8 @@ namespace CutTheRope.iframework.helpers
                 array[i * 2] = (byte)((data[i] & '\uff00') >> 8);
                 array[(i * 2) + 1] = (byte)(data[i] & 'ÿ');
             }
-            Md5.Md5_context ctx = new();
-            Md5.Md5_starts(ref ctx);
-            Md5.Md5_update(ref ctx, array, (uint)array.Length);
-            byte[] array2 = new byte[16];
-            Md5.Md5_finish(ref ctx, array2);
-            char[] array3 = new char[33];
-            int num = 0;
-            for (int j = 0; j < 16; j++)
-            {
-                int num2 = array2[j];
-                int num3 = (num2 >> 4) & 15;
-                array3[num++] = (char)(num3 < 10 ? 48 + num3 : 97 + num3 - 10);
-                num3 = num2 & 15;
-                array3[num++] = (char)(num3 < 10 ? 48 + num3 : 97 + num3 - 10);
-            }
-            array3[num++] = '\0';
-            return new NSString(new string(array3));
+            byte[] hash = SHA256.HashData(array);
+            return new NSString(Convert.ToHexString(hash).ToLower(CultureInfo.InvariantCulture));
         }
 
         private const int fmSinCosSize = 1024;
