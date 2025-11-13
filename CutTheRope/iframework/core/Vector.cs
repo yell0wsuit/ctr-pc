@@ -1,5 +1,6 @@
-using Microsoft.Xna.Framework;
 using System.Globalization;
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.iframework.core
 {

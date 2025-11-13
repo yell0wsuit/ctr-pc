@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+
 using CutTheRope.desktop;
 using CutTheRope.game;
 using CutTheRope.iframework;
@@ -5,11 +9,9 @@ using CutTheRope.iframework.core;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace CutTheRope.commons
 {
@@ -300,24 +302,6 @@ namespace CutTheRope.commons
                 Application.SharedRootController().PerformTick(delta2);
             }
         }
-
-        private const int UNKNOWN = 0;
-
-        private const int UNINITIALIZED = 1;
-
-        private const int RUNNING = 2;
-
-        private const int PAUSED = 3;
-
-        private const int NEED_RESUME = 4;
-
-        private const int NEED_PAUSE = 5;
-
-        private const long TICK_DELTA = 16L;
-
-        private const long NANOS_IN_SECOND = 1000000000L;
-
-        private const long NANOS_IN_MILLI = 1000000L;
 
         private static int state;
 

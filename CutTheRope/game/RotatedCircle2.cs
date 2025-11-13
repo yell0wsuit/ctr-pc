@@ -1,12 +1,14 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
@@ -268,26 +270,6 @@ namespace CutTheRope.game
             }
             return false;
         }
-
-        private const float CONTROLLER_MIN_SCALE = 0.75f;
-
-        private const float STICKER_MIN_SCALE = 0.4f;
-
-        private const float CENTER_SCALE_FACTOR = 0.5f;
-
-        private const float HUNDRED_PERCENT_SCALE_SIZE = 160f;
-
-        private const int CIRCLE_VERTEX_COUNT = 50;
-
-        private const float INNER_CIRCLE_WIDTH = 15f;
-
-        private const float OUTER_CIRCLE_WIDTH = 7f;
-
-        private const float ACTIVE_CIRCLE_WIDTH = 2f;
-
-        private const float CONTROLLER_RATIO_PARAM = 0.58f;
-
-        private const float CIRCLE_CONTROLLER_OFFS = 10f;
 
         private RGBAColor CIRCLE_COLOR1 = RGBAColor.MakeRGBA(0.306, 0.298, 0.454, 1.0);
 

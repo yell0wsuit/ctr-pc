@@ -25,7 +25,7 @@ namespace CutTheRope.game
 
         public override void Draw()
         {
-            base.PreDraw();
+            PreDraw();
             if (!withoutShadow)
             {
                 if (quadToDraw == -1)
@@ -37,7 +37,7 @@ namespace CutTheRope.game
                     DrawQuad(quadToDraw);
                 }
             }
-            base.PostDraw();
+            PostDraw();
         }
 
         public bool popped;

@@ -1,11 +1,13 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.iframework.core
 {
@@ -86,11 +88,6 @@ namespace CutTheRope.iframework.core
             viewTransition = transition;
         }
 
-        private void SetViewTransitionDelay(float delay)
-        {
-            transitionDelay = delay;
-        }
-
         private void DrawViewTransition()
         {
             OpenGL.GlColor4f(Color.White);
@@ -158,10 +155,6 @@ namespace CutTheRope.iframework.core
         public override void Activate()
         {
             base.Activate();
-        }
-
-        private static void RunLoop()
-        {
         }
 
         public virtual void OnControllerActivated(ViewController c)

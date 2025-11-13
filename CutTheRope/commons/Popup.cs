@@ -3,6 +3,7 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.commons
@@ -88,8 +89,8 @@ namespace CutTheRope.commons
             GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
             OpenGL.GlEnable(0);
             OpenGL.GlColor4f(Color.White);
-            base.PreDraw();
-            base.PostDraw();
+            PreDraw();
+            PostDraw();
             OpenGL.GlDisable(1);
         }
 

@@ -1,30 +1,28 @@
-using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+
+using CutTheRope.ios;
 
 namespace CutTheRope.iframework.core
 {
     internal class Preferences : NSObject
     {
         private static readonly Dictionary<string, object> PreferencesData = [];
-        private static bool _gameSaveRequested;
         private const string SaveFileName = "ctr_preferences.json";
         private const string LegacyBinaryFileName = "ctr_save.bin";
         private const string MigratedBinaryFileName = "ctr_bin_candeletethis.bin";
         private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
-        public static bool GameSaveRequested
-        {
-            get => _gameSaveRequested;
-            set => _gameSaveRequested = value;
-        }
+        public static bool GameSaveRequested { get; set; }
 
         public override NSObject Init()
         {
             if (base.Init() == null)
+            {
                 return null;
+            }
 
             LoadPreferences();
             return this;
@@ -37,7 +35,9 @@ namespace CutTheRope.iframework.core
         {
             PreferencesData[key] = value;
             if (commit)
+            {
                 RequestSave();
+            }
         }
 
         /// <summary>
@@ -55,7 +55,9 @@ namespace CutTheRope.iframework.core
         {
             PreferencesData[key] = value;
             if (commit)
+            {
                 RequestSave();
+            }
         }
 
         /// <summary>
@@ -63,17 +65,15 @@ namespace CutTheRope.iframework.core
         /// </summary>
         public static int GetIntForKey(string key)
         {
-            if (PreferencesData.TryGetValue(key, out var value))
-            {
-                return value switch
+            return PreferencesData.TryGetValue(key, out object value)
+                ? value switch
                 {
                     int intVal => intVal,
                     long longVal => (int)longVal,
                     JsonElement jsonElement => jsonElement.GetInt32(),
                     _ => 0
-                };
-            }
-            return 0;
+                }
+                : 0;
         }
 
         /// <summary>
@@ -89,16 +89,14 @@ namespace CutTheRope.iframework.core
         /// </summary>
         public static string GetStringForKey(string key)
         {
-            if (PreferencesData.TryGetValue(key, out var value))
-            {
-                return value switch
+            return PreferencesData.TryGetValue(key, out object value)
+                ? value switch
                 {
                     string strVal => strVal,
                     JsonElement jsonElement => jsonElement.GetString() ?? "",
                     _ => ""
-                };
-            }
-            return "";
+                }
+                : "";
         }
 
         /// <summary>
@@ -107,7 +105,9 @@ namespace CutTheRope.iframework.core
         public static void RequestSave()
         {
             if (!GameSaveRequested)
+            {
                 GameSaveRequested = true;
+            }
         }
 
         /// <summary>
@@ -117,7 +117,9 @@ namespace CutTheRope.iframework.core
         public static void Update()
         {
             if (!GameSaveRequested)
+            {
                 return;
+            }
 
             try
             {
@@ -160,12 +162,12 @@ namespace CutTheRope.iframework.core
             {
                 using StreamReader reader = new(stream);
                 string json = reader.ReadToEnd();
-                var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
+                Dictionary<string, object> data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
 
                 if (data != null)
                 {
                     PreferencesData.Clear();
-                    foreach (var kvp in data)
+                    foreach (KeyValuePair<string, object> kvp in data)
                     {
                         PreferencesData[kvp.Key] = kvp.Value;
                     }
@@ -193,11 +195,11 @@ namespace CutTheRope.iframework.core
                 try
                 {
                     string json = File.ReadAllText(SaveFileName);
-                    var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
+                    Dictionary<string, object> data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
 
                     if (data != null)
                     {
-                        foreach (var kvp in data)
+                        foreach (KeyValuePair<string, object> kvp in data)
                         {
                             PreferencesData[kvp.Key] = kvp.Value;
                         }
@@ -235,7 +237,10 @@ namespace CutTheRope.iframework.core
                         try
                         {
                             if (File.Exists(MigratedBinaryFileName))
+                            {
                                 File.Delete(MigratedBinaryFileName);
+                            }
+
                             File.Move(LegacyBinaryFileName, MigratedBinaryFileName);
                             LOG($"Moved legacy binary to {MigratedBinaryFileName}");
                         }

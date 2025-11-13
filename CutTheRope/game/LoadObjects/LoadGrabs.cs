@@ -1,9 +1,4 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
-using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 
 namespace CutTheRope.game
@@ -14,35 +9,37 @@ namespace CutTheRope.game
     /// </summary>
     internal sealed partial class GameScene
     {
-        private void LoadGrab(XMLNode item, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        /// <summary>
+        /// Loads a grab/rope object from XML node data
+        /// Handles spider and bee variants, path-based movement, and rope physics
+        /// </summary>
+        private void LoadGrab(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            if (item.Name != "grab") return;
-
-            float hx = (item["x"].IntValue() * scale) + offsetX + mapOffsetX;
-            float hy = (item["y"].IntValue() * scale) + offsetY + mapOffsetY;
-            float len = item["length"].IntValue() * scale;
-            float num12 = item["radius"].FloatValue();
-            bool wheel = item["wheel"].IsEqualToString("true");
-            float k = item["moveLength"].FloatValue() * scale;
-            bool v = item["moveVertical"].IsEqualToString("true");
-            float o = item["moveOffset"].FloatValue() * scale;
-            bool spider = item["spider"].IsEqualToString("true");
-            bool flag = item["part"].IsEqualToString("L");
-            bool flag2 = item["hidePath"].IsEqualToString("true");
+            float hx = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
+            float hy = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
+            float len = xmlNode["length"].IntValue() * scale;
+            float num12 = xmlNode["radius"].FloatValue();
+            bool wheel = xmlNode["wheel"].IsEqualToString("true");
+            float k = xmlNode["moveLength"].FloatValue() * scale;
+            bool v = xmlNode["moveVertical"].IsEqualToString("true");
+            float o = xmlNode["moveOffset"].FloatValue() * scale;
+            bool spider = xmlNode["spider"].IsEqualToString("true");
+            bool flag = xmlNode["part"].IsEqualToString("L");
+            bool flag2 = xmlNode["hidePath"].IsEqualToString("true");
             Grab grab = (Grab)new Grab().Init();
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
             grab.wheel = wheel;
             grab.SetSpider(spider);
-            grab.ParseMover(item);
+            grab.ParseMover(xmlNode);
             if (grab.mover != null)
             {
                 grab.SetBee();
                 if (!flag2)
                 {
                     int num13 = 3;
-                    bool flag3 = item["path"].HasPrefix(NSS("R"));
+                    bool flag3 = xmlNode["path"].HasPrefix(NSS("R"));
                     for (int l = 0; l < grab.mover.pathLen - 1; l++)
                     {
                         if (!flag3 || l % num13 == 0)

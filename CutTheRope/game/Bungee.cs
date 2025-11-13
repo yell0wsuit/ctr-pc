@@ -5,6 +5,7 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
@@ -507,22 +508,7 @@ namespace CutTheRope.game
             base.Dealloc();
         }
 
-        private const float ROLLBACK_K = 0.5f;
-
-        private const int BUNGEE_BEZIER_POINTS = 4;
-
         public const int BUNGEE_RELAXION_TIMES = 30;
-
-        private const float MAX_BUNGEE_SEGMENTS = 20f;
-
-        private const float DEFAULT_PART_WEIGHT = 0.02f;
-
-        private const float STRENGTHENED_PART_WEIGHT = 0.5f;
-
-        private const float CUT_DISSAPPEAR_TIMEOUT = 2f;
-
-        private const float WHITE_TIMEOUT = 0.05f;
-
         public bool highlighted;
 
         public static float BUNGEE_REST_LEN = 105f;

@@ -1,9 +1,10 @@
-using CutTheRope.game;
-using CutTheRope.iframework.core;
-using CutTheRope.ios;
 using System;
 using System.Globalization;
 using System.Security.Cryptography;
+
+using CutTheRope.game;
+using CutTheRope.iframework.core;
+using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
@@ -310,11 +311,6 @@ namespace CutTheRope.iframework.helpers
             return (v1.x * v2.x) + (v1.y * v2.y);
         }
 
-        private static float VectCross(Vector v1, Vector v2)
-        {
-            return (v1.x * v2.y) - (v1.y * v2.x);
-        }
-
         public static Vector VectPerp(Vector v)
         {
             return new Vector(0f - v.y, v.x);
@@ -323,21 +319,6 @@ namespace CutTheRope.iframework.helpers
         public static Vector VectRperp(Vector v)
         {
             return new Vector(v.y, 0f - v.x);
-        }
-
-        private static Vector VectProject(Vector v1, Vector v2)
-        {
-            return VectMult(v2, VectDot(v1, v2) / VectDot(v2, v2));
-        }
-
-        private static Vector VectRotateByVector(Vector v1, Vector v2)
-        {
-            return new Vector((v1.x * v2.x) - (v1.y * v2.y), (v1.x * v2.y) + (v1.y * v2.x));
-        }
-
-        private static Vector VectUnrotateByVector(Vector v1, Vector v2)
-        {
-            return new Vector((v1.x * v2.x) + (v1.y * v2.y), (v1.y * v2.x) - (v1.x * v2.y));
         }
 
         public static float VectAngle(Vector v)
@@ -370,11 +351,6 @@ namespace CutTheRope.iframework.helpers
             return new Vector(FmCos(a), FmSin(a));
         }
 
-        private static float VectToAngle(Vector v)
-        {
-            return (float)Math.Atan2(v.x, v.y);
-        }
-
         public static float VectDistance(Vector v1, Vector v2)
         {
             return VectLength(VectSub(v1, v2));
@@ -398,11 +374,6 @@ namespace CutTheRope.iframework.helpers
             v2.x += cx;
             v2.y += cy;
             return v2;
-        }
-
-        private static Vector VectSidePerp(Vector v1, Vector v2)
-        {
-            return VectNormalize(VectRperp(VectSub(v2, v1)));
         }
 
         private static int Vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
@@ -511,18 +482,7 @@ namespace CutTheRope.iframework.helpers
             return new NSString(Convert.ToHexString(hash).ToLower(CultureInfo.InvariantCulture));
         }
 
-        private const int fmSinCosSize = 1024;
-
         public const double M_PI = 3.141592653589793;
-
-        private const int COHEN_LEFT = 1;
-
-        private const int COHEN_RIGHT = 2;
-
-        private const int COHEN_BOT = 4;
-
-        private const int COHEN_TOP = 8;
-
         private static readonly Random random_ = new();
 
         private static readonly long ARC4RANDOM_MAX = 4294967296L;

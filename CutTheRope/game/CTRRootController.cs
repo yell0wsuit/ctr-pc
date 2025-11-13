@@ -1,9 +1,10 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRope.commons;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.platform;
 using CutTheRope.ios;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
@@ -176,6 +177,8 @@ namespace CutTheRope.game
                                 break;
                             case 10:
                                 array = PACK_GAME_11;
+                                break;
+                            default:
                                 break;
                         }
                         resourceMgr.InitLoading();

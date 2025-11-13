@@ -1,5 +1,6 @@
-using CutTheRope.ios;
 using System;
+
+using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
@@ -7,7 +8,7 @@ namespace CutTheRope.iframework.visual
     {
         public Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
         {
-            if (base.Init() != null)
+            if (Init() != null)
             {
                 _isWvga = charmapfile.IsWvga();
                 charmap = new Image().InitWithTexture(charmapfile);

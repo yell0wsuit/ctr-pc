@@ -1,9 +1,11 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRope.commons;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework.Input.Touch;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.iframework.core
 {
@@ -176,19 +178,6 @@ namespace CutTheRope.iframework.core
         public virtual ViewController GetChild(int n)
         {
             return childs[n];
-        }
-
-        private bool CheckNoChildsActive()
-        {
-            foreach (KeyValuePair<int, ViewController> child in childs)
-            {
-                ViewController value = child.Value;
-                if (value != null && value.controllerState != ControllerState.CONTROLLER_DEACTIVE)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         public Vector ConvertTouchForLandscape(Vector t)

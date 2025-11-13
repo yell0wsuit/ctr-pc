@@ -1,10 +1,12 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.iframework.helpers
 {
@@ -187,32 +189,6 @@ namespace CutTheRope.iframework.helpers
             float num3 = o2.drawX + o2.bb.x;
             float num4 = o2.drawY + o2.bb.y;
             return RectInRect(num, num2, num + o1.bb.w, num2 + o1.bb.h, num3, num4, num3 + o2.bb.w, num4 + o2.bb.h);
-        }
-
-        private static bool ObjectsIntersectRotated(GameObject o1, GameObject o2)
-        {
-            Vector vector = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
-            Vector tr = Vect(o1.drawX + o1.rbb.trX, o1.drawY + o1.rbb.trY);
-            Vector br = Vect(o1.drawX + o1.rbb.brX, o1.drawY + o1.rbb.brY);
-            Vector bl = Vect(o1.drawX + o1.rbb.blX, o1.drawY + o1.rbb.blY);
-            Vector tl2 = Vect(o2.drawX + o2.rbb.tlX, o2.drawY + o2.rbb.tlY);
-            Vector tr2 = Vect(o2.drawX + o2.rbb.trX, o2.drawY + o2.rbb.trY);
-            Vector br2 = Vect(o2.drawX + o2.rbb.brX, o2.drawY + o2.rbb.brY);
-            Vector bl2 = Vect(o2.drawX + o2.rbb.blX, o2.drawY + o2.rbb.blY);
-            return ObbInOBB(vector, tr, br, bl, tl2, tr2, br2, bl2);
-        }
-
-        private static bool ObjectsIntersectRotatedWithUnrotated(GameObject o1, GameObject o2)
-        {
-            Vector vector = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
-            Vector tr = Vect(o1.drawX + o1.rbb.trX, o1.drawY + o1.rbb.trY);
-            Vector br = Vect(o1.drawX + o1.rbb.brX, o1.drawY + o1.rbb.brY);
-            Vector bl = Vect(o1.drawX + o1.rbb.blX, o1.drawY + o1.rbb.blY);
-            Vector tl2 = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y);
-            Vector tr2 = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y);
-            Vector br2 = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y + o2.bb.h);
-            Vector bl2 = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y + o2.bb.h);
-            return ObbInOBB(vector, tr, br, bl, tl2, tr2, br2, bl2);
         }
 
         public static bool PointInObject(Vector p, GameObject o)

@@ -1,5 +1,6 @@
-using CutTheRope.ios;
 using System;
+
+using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
@@ -149,7 +150,7 @@ namespace CutTheRope.iframework.visual
 
         public Timeline InitWithMaxKeyFramesOnTrack(int m)
         {
-            if (base.Init() != null)
+            if (Init() != null)
             {
                 maxKeyFrames = m;
                 time = 0f;
@@ -185,8 +186,6 @@ namespace CutTheRope.iframework.visual
         {
             return tracks[(int)tt];
         }
-
-        private const int TRACKS_COUNT = 5;
 
         public ITimelineDelegate delegateTimelineDelegate;
 

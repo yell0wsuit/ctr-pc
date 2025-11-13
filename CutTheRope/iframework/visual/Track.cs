@@ -1,5 +1,6 @@
-using CutTheRope.ios;
 using System.Collections.Generic;
+
+using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
@@ -93,6 +94,12 @@ namespace CutTheRope.iframework.visual
                     currentStepPerSecond.value.color.rgba.b = (dst.value.color.rgba.b - src.value.color.rgba.b) / keyFrameTimeLeft;
                     currentStepPerSecond.value.color.rgba.a = (dst.value.color.rgba.a - src.value.color.rgba.a) / keyFrameTimeLeft;
                     break;
+                case TrackType.TRACK_ACTION:
+                    break;
+                case TrackType.TRACKS_COUNT:
+                    break;
+                default:
+                    break;
             }
             if (dst.transitionType is KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN or KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT)
             {
@@ -176,6 +183,13 @@ namespace CutTheRope.iframework.visual
                             }
                             break;
                         }
+
+                    case TrackType.TRACK_ACTION:
+                        break;
+                    case TrackType.TRACKS_COUNT:
+                        break;
+                    default:
+                        break;
                 }
             }
             if (overrun > 0f)
@@ -237,6 +251,9 @@ namespace CutTheRope.iframework.visual
                         }
                         return;
                     }
+
+                case TrackType.TRACKS_COUNT:
+                    break;
                 default:
                     return;
             }
@@ -261,6 +278,8 @@ namespace CutTheRope.iframework.visual
                     kf.value.color.rgba = t.element.color;
                     break;
                 case TrackType.TRACK_ACTION:
+                    break;
+                case TrackType.TRACKS_COUNT:
                     break;
                 default:
                     return;
@@ -426,6 +445,13 @@ namespace CutTheRope.iframework.visual
                             element4.color.a += (keyFrame.value.color.rgba.a + (num16 / 2f)) * delta;
                             break;
                         }
+
+                    case TrackType.TRACK_ACTION:
+                        break;
+                    case TrackType.TRACKS_COUNT:
+                        break;
+                    default:
+                        break;
                 }
             }
             else if (thiss.keyFrames[thiss.nextKeyFrame].transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR)
@@ -455,6 +481,13 @@ namespace CutTheRope.iframework.visual
                             element8.color.a += thiss.currentStepPerSecond.value.color.rgba.a * delta;
                             break;
                         }
+
+                    case TrackType.TRACK_ACTION:
+                        break;
+                    case TrackType.TRACKS_COUNT:
+                        break;
+                    default:
+                        break;
                 }
             }
             if (thiss.keyFrameTimeLeft <= 1E-06f)

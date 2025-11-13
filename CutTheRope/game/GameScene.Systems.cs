@@ -1,14 +1,7 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace CutTheRope.game
 {
@@ -217,7 +210,7 @@ namespace CutTheRope.game
                 }
             }
             sg.hasSpider = false;
-            spiderTookCandy = true;
+            // spiderTookCandy = true;
             noCandy = true;
             Image image = Image.Image_createWithResIDQuad(64, 12);
             image.DoRestoreCutTransparency();

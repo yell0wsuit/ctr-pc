@@ -1,10 +1,12 @@
+using System.Collections.Generic;
+using System.Globalization;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace CutTheRope.iframework.platform
 {
@@ -189,19 +191,9 @@ namespace CutTheRope.iframework.platform
         private int origHeight;
 
         public ITouchDelegate touchDelegate;
-
-        private NSPoint startPos;
-
         private Font fpsFont;
 
         private Text fpsText;
-
-        private readonly bool mouseDown;
-
-        private NSSize cursorOrigSize;
-
-        private NSSize cursorActiveOrigSize;
-
         private NSRect _bounds;
 
         public bool isFullscreen;

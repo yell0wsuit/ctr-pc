@@ -1,14 +1,12 @@
+using System.Collections.Generic;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace CutTheRope.game
 {
@@ -17,7 +15,7 @@ namespace CutTheRope.game
         public override void Draw()
         {
             OpenGL.GlClear(0);
-            base.PreDraw();
+            PreDraw();
             camera.ApplyCameraTransformation();
             OpenGL.GlEnable(0);
             OpenGL.GlDisable(1);
@@ -164,7 +162,7 @@ namespace CutTheRope.game
             {
                 OpenGL.GlDisable(4);
             }
-            base.PostDraw();
+            PostDraw();
         }
 
         public void DrawCuts()

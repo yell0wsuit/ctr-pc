@@ -1,9 +1,10 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.desktop
 {
@@ -113,14 +114,6 @@ namespace CutTheRope.desktop
             {
             }
         }
-
-        private const int SPLASH_TIME_MSEC = 3000;
-
-        private const int SPLASH_FADE_IN_TIME_MSEC = 200;
-
-        private const int SPLASH_FADE_OUT_TIME_MSEC = 500;
-
-        private const int SPLASH_TIME_FULL_MSEC = 3700;
 
         private readonly List<Texture2D> _listBitmap = [];
 

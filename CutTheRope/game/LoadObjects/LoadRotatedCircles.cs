@@ -1,9 +1,3 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.sfe;
-using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 
 namespace CutTheRope.game
@@ -14,15 +8,16 @@ namespace CutTheRope.game
     /// </summary>
     internal sealed partial class GameScene
     {
-        private void LoadRotatedCircle(XMLNode item, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        /// <summary>
+        /// Loads a rotated circle object from XML node data
+        /// </summary>
+        private void LoadRotatedCircle(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            if (item.Name != "rotatedCircle") return;
-
-            float num9 = (item["x"].IntValue() * scale) + offsetX + mapOffsetX;
-            float num10 = (item["y"].IntValue() * scale) + offsetY + mapOffsetY;
-            float num11 = item["size"].IntValue();
-            float d = item["handleAngle"].IntValue();
-            bool hasOneHandle = item["oneHandle"].BoolValue();
+            float num9 = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
+            float num10 = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
+            float num11 = xmlNode["size"].IntValue();
+            float d = xmlNode["handleAngle"].IntValue();
+            bool hasOneHandle = xmlNode["oneHandle"].BoolValue();
             RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
             rotatedCircle.anchor = 18;
             rotatedCircle.x = num9;

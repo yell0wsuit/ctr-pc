@@ -1,5 +1,6 @@
 using CutTheRope.desktop;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.iframework.visual
@@ -18,12 +19,12 @@ namespace CutTheRope.iframework.visual
 
         public override void Draw()
         {
-            base.PreDraw();
+            PreDraw();
             OpenGL.GlDisable(0);
             _ = MIN(width, height);
             OpenGL.GlEnable(0);
             OpenGL.GlColor4f(Color.White);
-            base.PostDraw();
+            PostDraw();
         }
 
         public bool solid;

@@ -1,10 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
 using CutTheRope.game;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace CutTheRope.iframework.core
 {
@@ -57,6 +58,12 @@ namespace CutTheRope.iframework.core
                 case ResourceType.STRINGS:
                     value = LoadStringsInfo(resID);
                     value = NSS(value.ToString().Replace('\u00a0', ' '));
+                    break;
+                case ResourceType.BINARY:
+                    break;
+                case ResourceType.ELEMENT:
+                    break;
+                default:
                     break;
             }
             if (value != null)

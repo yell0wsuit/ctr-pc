@@ -6,23 +6,6 @@ namespace CutTheRope.game
 {
     internal sealed class Bouncer : CTRGameObject
     {
-        private static Bouncer Bouncer_create(CTRTexture2D t)
-        {
-            return (Bouncer)new Bouncer().InitWithTexture(t);
-        }
-
-        private static Bouncer Bouncer_createWithResID(int r)
-        {
-            return Bouncer_create(Application.GetTexture(r));
-        }
-
-        private static Bouncer Bouncer_createWithResIDQuad(int r, int q)
-        {
-            Bouncer bouncer = Bouncer_create(Application.GetTexture(r));
-            bouncer.SetDrawQuad(q);
-            return bouncer;
-        }
-
         public NSObject InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
             int textureResID = -1;
@@ -73,8 +56,6 @@ namespace CutTheRope.game
             b1 = VectRotateAround(b1, angle, x, y);
             b2 = VectRotateAround(b2, angle, x, y);
         }
-
-        private const float BOUNCER_HEIGHT = 10f;
 
         public float angle;
 

@@ -1,8 +1,9 @@
+using System;
+using System.Globalization;
+
 using CutTheRope.commons;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
-using System;
-using System.Globalization;
 
 namespace CutTheRope.game
 {

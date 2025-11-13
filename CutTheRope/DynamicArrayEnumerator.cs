@@ -1,6 +1,7 @@
-using CutTheRope.ios;
 using System;
 using System.Collections;
+
+using CutTheRope.ios;
 
 internal sealed class DynamicArrayEnumerator(NSObject[] list, int highestIndex) : IEnumerator
 {

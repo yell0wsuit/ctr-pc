@@ -1,10 +1,12 @@
+using System.Globalization;
+
 using CutTheRope.game;
 using CutTheRope.iframework.media;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
-using System.Globalization;
 
 namespace CutTheRope.iframework.core
 {

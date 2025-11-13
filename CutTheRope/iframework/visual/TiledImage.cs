@@ -26,13 +26,6 @@ namespace CutTheRope.iframework.visual
             return TiledImage_create(Application.GetTexture(r));
         }
 
-        private static TiledImage TiledImage_createWithResIDQuad(int r, int q)
-        {
-            TiledImage tiledImage = TiledImage_createWithResID(r);
-            tiledImage.SetDrawQuad(q);
-            return tiledImage;
-        }
-
         private int q;
     }
 }

@@ -5,29 +5,11 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace CutTheRope.game
 {
     internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
-        private static void DrawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
-        {
-            Vector vector5 = VectNormalize(VectSub(end, start));
-            Vector v3 = VectRperp(vector5);
-            Vector v4 = VectPerp(vector5);
-            Vector vector = VectEqual(frs, vectUndefined) ? VectAdd(start, VectMult(v3, startSize)) : frs;
-            Vector vector2 = VectEqual(fls, vectUndefined) ? VectAdd(start, VectMult(v4, startSize)) : fls;
-            Vector vector3 = VectAdd(end, VectMult(v3, endSize));
-            Vector vector4 = VectAdd(end, VectMult(v4, endSize));
-            GLDrawer.DrawSolidPolygonWOBorder([vector2.x, vector2.y, vector.x, vector.y, vector3.x, vector3.y, vector4.x, vector4.y], 4, c);
-            le = vector4;
-            re = vector3;
-        }
-
         private static float MaxOf4(float v1, float v2, float v3, float v4)
         {
             return v1 >= v2 && v1 >= v3 && v1 >= v4
@@ -47,7 +29,7 @@ namespace CutTheRope.game
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString _, bool _1)
         {
             ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
             if (animateRestartDim)
@@ -256,29 +238,6 @@ namespace CutTheRope.game
         public const int EARTH_NORMAL_ANIM = 0;
 
         public const int EARTH_UPSIDEDOWN_ANIM = 1;
-
-        private const int CHAR_ANIMATION_IDLE = 0;
-
-        private const int CHAR_ANIMATION_IDLE2 = 1;
-
-        private const int CHAR_ANIMATION_IDLE3 = 2;
-
-        private const int CHAR_ANIMATION_EXCITED = 3;
-
-        private const int CHAR_ANIMATION_PUZZLED = 4;
-
-        private const int CHAR_ANIMATION_FAIL = 5;
-
-        private const int CHAR_ANIMATION_WIN = 6;
-
-        private const int CHAR_ANIMATION_MOUTH_OPEN = 7;
-
-        private const int CHAR_ANIMATION_MOUTH_CLOSE = 8;
-
-        private const int CHAR_ANIMATION_CHEW = 9;
-
-        private const int CHAR_ANIMATION_GREETING = 10;
-
         private DelayedDispatcher dd;
 
         public IGameSceneDelegate gameSceneDelegate;
@@ -381,7 +340,7 @@ namespace CutTheRope.game
 
         private float lastCandyRotateDeltaR;
 
-        private bool spiderTookCandy;
+        // private bool spiderTookCandy;
 
         private int special;
 
