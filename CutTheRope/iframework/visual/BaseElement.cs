@@ -1,8 +1,9 @@
-using CutTheRope.desktop;
-using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using CutTheRope.desktop;
+using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
@@ -346,41 +347,6 @@ namespace CutTheRope.iframework.visual
                 GetCurrentTimeline().JumpToTrackKeyFrame(a.actionParam, a.actionSubParam);
             }
             return true;
-        }
-
-        private static BaseElement CreateFromXML(XMLNode xml)
-        {
-            return new BaseElement();
-        }
-
-        private static int ParseAlignmentString(NSString s)
-        {
-            int num = 0;
-            if (s.RangeOfString("LEFT").length != 0U)
-            {
-                num = 1;
-            }
-            else if (s.RangeOfString("HCENTER").length != 0U || s.IsEqualToString("CENTER"))
-            {
-                num = 2;
-            }
-            else if (s.RangeOfString("RIGHT").length != 0U)
-            {
-                num = 4;
-            }
-            if (s.RangeOfString("TOP").length != 0U)
-            {
-                num |= 8;
-            }
-            else if (s.RangeOfString("VCENTER").length != 0U || s.IsEqualToString("CENTER"))
-            {
-                num |= 16;
-            }
-            else if (s.RangeOfString("BOTTOM").length != 0U)
-            {
-                num |= 32;
-            }
-            return num;
         }
 
         public virtual int AddChild(BaseElement c)

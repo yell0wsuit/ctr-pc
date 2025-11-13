@@ -12,7 +12,7 @@ namespace CutTheRope.commons
 
         public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
-            if (base.InitWithTexture(Application.GetTexture(resID)) != null)
+            if (InitWithTexture(Application.GetTexture(resID)) != null)
             {
                 SetDrawQuad(bq);
                 Image up = Image_createWithResIDQuad(resID, lq);

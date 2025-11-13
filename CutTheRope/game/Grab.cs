@@ -4,6 +4,7 @@ using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
@@ -234,7 +235,7 @@ namespace CutTheRope.game
 
         public override void Draw()
         {
-            base.PreDraw();
+            PreDraw();
             OpenGL.GlEnable(0);
             Bungee bungee = rope;
             if (wheel)
@@ -265,7 +266,7 @@ namespace CutTheRope.game
             {
                 wheelImage2.Draw();
             }
-            base.PostDraw();
+            PostDraw();
         }
 
         public void DrawSpider()

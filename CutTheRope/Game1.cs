@@ -1,15 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
+
 using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.media;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
 
 namespace CutTheRope
 {

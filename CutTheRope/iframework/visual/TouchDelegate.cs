@@ -1,5 +1,6 @@
-using Microsoft.Xna.Framework.Input.Touch;
 using System.Collections.Generic;
+
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.iframework.visual
 {

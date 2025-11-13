@@ -1,5 +1,6 @@
-using CutTheRope.iframework.visual;
 using System;
+
+using CutTheRope.iframework.visual;
 
 namespace CutTheRope.commons
 {

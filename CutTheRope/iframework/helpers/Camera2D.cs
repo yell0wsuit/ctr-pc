@@ -8,7 +8,7 @@ namespace CutTheRope.iframework.helpers
     {
         public Camera2D InitWithSpeedandType(float s, CAMERATYPE t)
         {
-            if (base.Init() != null)
+            if (Init() != null)
             {
                 speed = s;
                 type = t;

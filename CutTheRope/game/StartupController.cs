@@ -66,10 +66,6 @@ namespace CutTheRope.game
             Deactivate();
         }
 
-        private const int VIEW_CHILLINGO_MOVIE = 0;
-
-        private const int VIEW_ZEPTOLAB = 1;
-
         private float barTotalWidth;
 
         private TiledImage bar;

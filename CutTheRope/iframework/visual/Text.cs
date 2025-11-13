@@ -1,7 +1,8 @@
+using System.Collections.Generic;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
-using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
@@ -277,11 +278,6 @@ namespace CutTheRope.iframework.visual
                 FormattedString item = new FormattedString().InitWithStringAndWidth(str, w);
                 formattedStrings.Add(item);
             }
-        }
-
-        private static BaseElement CreateFromXML(XMLNode xml)
-        {
-            return null;
         }
 
         public override void Dealloc()

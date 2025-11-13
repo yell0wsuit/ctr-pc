@@ -1,9 +1,11 @@
+using System;
+
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework.Audio;
-using System;
 
 namespace CutTheRope.game
 {
@@ -34,6 +36,8 @@ namespace CutTheRope.game
                         break;
                     case 5:
                         textureResID = 92;
+                        break;
+                    default:
                         break;
                 }
             }
@@ -98,11 +102,8 @@ namespace CutTheRope.game
             electroOn = false;
             PlayTimeline(0);
             electroTimer = offTime;
-            if (sndElectric != null)
-            {
-                sndElectric.Stop();
-                sndElectric = null;
-            }
+            sndElectric?.Stop();
+            sndElectric = null;
         }
 
         public void TurnElectroOn()
@@ -195,8 +196,6 @@ namespace CutTheRope.game
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
-
-        private const float SPIKES_HEIGHT = 10f;
 
         private int toggled;
 

@@ -7,11 +7,6 @@ namespace CutTheRope.game
 {
     internal sealed class Processing : RectangleElement, ITimelineDelegate
     {
-        private static NSObject CreateWithLoading()
-        {
-            return new Processing().InitWithLoading(true);
-        }
-
         public NSObject InitWithLoading(bool loading)
         {
             if (Init() != null)

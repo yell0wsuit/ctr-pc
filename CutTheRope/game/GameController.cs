@@ -1,11 +1,13 @@
+using System.Collections.Generic;
+
 using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
-using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
@@ -666,30 +668,10 @@ namespace CutTheRope.game
             gameScene?.FullscreenToggled(isFullscreen);
         }
 
-        private const int BUTTON_PAUSE_RESUME = 0;
-
-        private const int BUTTON_PAUSE_RESTART = 1;
-
-        private const int BUTTON_PAUSE_SKIP = 2;
-
-        private const int BUTTON_PAUSE_LEVEL_SELECT = 3;
-
-        private const int BUTTON_PAUSE_EXIT = 4;
-
         public const int BUTTON_WIN_EXIT = 5;
-
-        private const int BUTTON_PAUSE = 6;
-
-        private const int BUTTON_NEXT_LEVEL = 7;
-
         public const int BUTTON_WIN_RESTART = 8;
 
         public const int BUTTON_WIN_NEXT_LEVEL = 9;
-
-        private const int BUTTON_MUSIC_TOGGLE = 10;
-
-        private const int BUTTON_SOUND_TOGGLE = 11;
-
         public const int EXIT_CODE_FROM_PAUSE_MENU = 0;
 
         public const int EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT = 1;

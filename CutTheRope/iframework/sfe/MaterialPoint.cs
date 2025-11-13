@@ -112,13 +112,7 @@ namespace CutTheRope.iframework.sfe
         }
 
         protected const double TIME_SCALE = 1.0;
-
-        private const double PIXEL_TO_SI_METERS_K = 80.0;
-
         public const double GCONST = 784.0;
-
-        private const int MAX_FORCES = 10;
-
         public static Vector globalGravity;
 
         public Vector pos;

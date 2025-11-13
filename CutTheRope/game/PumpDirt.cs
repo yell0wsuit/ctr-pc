@@ -9,7 +9,7 @@ namespace CutTheRope.game
     {
         public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
-            if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
+            if (InitWithTotalParticlesandImageGrid(p, grid) == null)
             {
                 return null;
             }

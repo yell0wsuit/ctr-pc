@@ -1,9 +1,11 @@
-using CutTheRope.iframework;
-using CutTheRope.iframework.visual;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+
+using CutTheRope.iframework;
+using CutTheRope.iframework.visual;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.desktop
 {
@@ -312,16 +314,6 @@ namespace CutTheRope.desktop
                 array[i] = new VertexPositionColor(position, s_Color);
             }
             s_GLVertexPointer = null;
-            return array;
-        }
-
-        private static short[] InitializeTriangleStripIndices(int count)
-        {
-            short[] array = new short[count];
-            for (int i = 0; i < count; i++)
-            {
-                array[i] = (short)i;
-            }
             return array;
         }
 

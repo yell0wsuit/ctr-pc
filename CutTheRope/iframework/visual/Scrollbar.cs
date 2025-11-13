@@ -1,7 +1,9 @@
+using System;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
+
 using Microsoft.Xna.Framework;
-using System;
 
 namespace CutTheRope.iframework.visual
 {
@@ -15,7 +17,7 @@ namespace CutTheRope.iframework.visual
 
         public override void Draw()
         {
-            base.PreDraw();
+            PreDraw();
             if (VectEqual(sp, vectUndefined) && delegateProvider != null)
             {
                 delegateProvider(ref sp, ref mp, ref sc);
@@ -57,7 +59,7 @@ namespace CutTheRope.iframework.visual
             }
             OpenGL.GlEnable(0);
             OpenGL.GlColor4f(Color.White);
-            base.PostDraw();
+            PostDraw();
         }
 
         public Scrollbar InitWithWidthHeightVertical(float w, float h, bool v)

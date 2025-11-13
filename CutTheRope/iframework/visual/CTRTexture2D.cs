@@ -2,6 +2,7 @@ using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.iframework.visual
@@ -170,7 +171,7 @@ namespace CutTheRope.iframework.visual
 
         public CTRTexture2D InitWithPath(string path, bool assets)
         {
-            if (base.Init() == null)
+            if (Init() == null)
             {
                 return null;
             }
@@ -244,7 +245,7 @@ namespace CutTheRope.iframework.visual
 
         public NSObject InitFromPixels(int x, int y, int w, int h)
         {
-            if (base.Init() == null)
+            if (Init() == null)
             {
                 return null;
             }
@@ -292,8 +293,6 @@ namespace CutTheRope.iframework.visual
                 xnaTexture_ = null;
             }
         }
-
-        private const int UNDEFINED_TEXTURE = 65536;
 
         public Texture2D xnaTexture_;
 
@@ -346,11 +345,6 @@ namespace CutTheRope.iframework.visual
         private static readonly TexParams _defaultTexParams;
 
         private static readonly TexParams _texParams;
-
-        private static readonly TexParams _texParamsCopy;
-
-        private readonly bool PixelCorrectionDone;
-
         private static CTRTexture2D root;
 
         private static CTRTexture2D tail;
@@ -376,13 +370,6 @@ namespace CutTheRope.iframework.visual
 
         private readonly struct TexParams
         {
-            private readonly uint minFilter;
-
-            private readonly uint magFilter;
-
-            private readonly uint wrapS;
-
-            private readonly uint wrapT;
         }
     }
 }

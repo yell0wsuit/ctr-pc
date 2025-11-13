@@ -1,8 +1,9 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
@@ -56,7 +57,7 @@ namespace CutTheRope.iframework.visual
             float num2 = container.y;
             container.x = (float)Math.Round(container.x);
             container.y = (float)Math.Round(container.y);
-            base.PreDraw();
+            PreDraw();
             OpenGL.GlEnable(4);
             OpenGL.SetScissorRectangle(drawX, drawY, width, height);
             PostDraw();
@@ -237,7 +238,7 @@ namespace CutTheRope.iframework.visual
                 passTouches = false;
             }
             touchState = TOUCH_STATE.DOWN;
-            movingByInertion = false;
+            // movingByInertion = false;
             movingToSpoint = false;
             targetSpoint = -1;
             dragStart = Vect(tx, ty);
@@ -334,7 +335,7 @@ namespace CutTheRope.iframework.visual
             {
                 float num = inertiaTimeoutLeft / inertiaTimeout;
                 move = VectMult(staticMove, (float)((double)num * 50.0));
-                movingByInertion = true;
+                // movingByInertion = true;
             }
             if (spointsNum > 0)
             {
@@ -375,9 +376,9 @@ namespace CutTheRope.iframework.visual
                 spointsCapacity = -1;
                 targetSpoint = -1;
                 lastTargetSpoint = -1;
-                deaccelerationSpeed = 3f;
+                // deaccelerationSpeed = 3f;
                 inertiaTimeout = 0.1f;
-                scrollToPointDuration = 0.35f;
+                // scrollToPointDuration = 0.35f;
                 canSkipScrollPoints = false;
                 shouldBounceHorizontally = false;
                 shouldBounceVertically = false;
@@ -491,7 +492,7 @@ namespace CutTheRope.iframework.visual
         public void MoveToScrollPointmoveMultiplier(int sp, float m)
         {
             movingToSpoint = true;
-            movingByInertion = false;
+            // movingByInertion = false;
             spointMoveMultiplier = m;
             targetSpoint = sp;
             lastTargetSpoint = targetSpoint;
@@ -499,7 +500,7 @@ namespace CutTheRope.iframework.visual
 
         public void CalculateNearsetScrollPointInDirection(Vector d)
         {
-            spointMoveDirection = d;
+            // spointMoveDirection = d;
             int num = -1;
             float num2 = 9999999f;
             float num3 = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(d)));
@@ -524,7 +525,7 @@ namespace CutTheRope.iframework.visual
             targetSpoint = num;
             if (!canSkipScrollPoints && targetSpoint != lastTargetSpoint)
             {
-                movingByInertion = false;
+                //movingByInertion = false;
             }
             if (lastTargetSpoint != targetSpoint && targetSpoint != -1 && delegateScrollableContainerProtocol != null)
             {
@@ -572,28 +573,6 @@ namespace CutTheRope.iframework.visual
             CalculateNearsetScrollPointInDirection(d);
         }
 
-        private const double DEFAULT_BOUNCE_MOVEMENT_DIVIDE = 2.0;
-
-        private const double DEFAULT_BOUNCE_DURATION = 0.1;
-
-        private const double DEFAULT_DEACCELERATION = 3.0;
-
-        private const double DEFAULT_INERTIAL_TIMEOUT = 0.1;
-
-        private const double DEFAULT_SCROLL_TO_POINT_DURATION = 0.35;
-
-        private const double MIN_SCROLL_POINTS_MOVE = 50.0;
-
-        private const double CALC_NEAREST_DEFAULT_TIMEOUT = 0.02;
-
-        private const double DEFAULT_MAX_TOUCH_MOVE_LENGTH = 40.0;
-
-        private const double DEFAULT_TOUCH_PASS_TIMEOUT = 0.5;
-
-        private const double AUTO_RELEASE_TOUCH_TIMEOUT = 0.2;
-
-        private const double MOVE_APPROXIMATION = 0.2;
-
         public IScrollableContainerProtocol delegateScrollableContainerProtocol;
 
         private static readonly Vector impossibleTouch = new(-1000f, -1000f);
@@ -606,7 +585,7 @@ namespace CutTheRope.iframework.visual
 
         private Vector move;
 
-        private bool movingByInertion;
+        // private bool movingByInertion;
 
         private float inertiaTimeoutLeft;
 
@@ -624,7 +603,7 @@ namespace CutTheRope.iframework.visual
 
         private int spointsCapacity;
 
-        private Vector spointMoveDirection;
+        // private Vector spointMoveDirection;
 
         private Vector targetPoint;
 
@@ -642,11 +621,11 @@ namespace CutTheRope.iframework.visual
 
         private float fixedDelta;
 
-        private float deaccelerationSpeed;
+        // private float deaccelerationSpeed;
 
         private float inertiaTimeout;
 
-        private float scrollToPointDuration;
+        // private float scrollToPointDuration;
 
         private bool canSkipScrollPoints;
 

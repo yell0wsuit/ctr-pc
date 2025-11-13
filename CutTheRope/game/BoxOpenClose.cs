@@ -1,10 +1,11 @@
+using System;
+using System.Globalization;
+
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using System;
-using System.Globalization;
 
 namespace CutTheRope.game
 {
@@ -592,8 +593,6 @@ namespace CutTheRope.game
         {
             ((BoxOpenClose)obj).PostBoxClosed();
         }
-
-        private const float aminationTime = 0.5f;
 
         public const int BOX_ANIM_LEVEL_FIRST_START = 0;
 

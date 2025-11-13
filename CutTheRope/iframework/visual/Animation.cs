@@ -1,5 +1,6 @@
-using CutTheRope.iframework.core;
 using System.Collections.Generic;
+
+using CutTheRope.iframework.core;
 
 namespace CutTheRope.iframework.visual
 {

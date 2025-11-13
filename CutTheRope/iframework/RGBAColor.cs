@@ -1,5 +1,6 @@
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.iframework
 {
@@ -59,14 +60,6 @@ namespace CutTheRope.iframework
             g = G;
             b = B;
             a = A;
-        }
-
-        private void Init(float _r, float _g, float _b, float _a)
-        {
-            r = _r;
-            g = _g;
-            b = _b;
-            a = _a;
         }
 
         public readonly float[] ToFloatArray()

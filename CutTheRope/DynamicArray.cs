@@ -1,6 +1,7 @@
-using CutTheRope.ios;
 using System;
 using System.Collections;
+
+using CutTheRope.ios;
 
 internal sealed class DynamicArray : NSObject, IEnumerable
 {
@@ -71,11 +72,9 @@ internal sealed class DynamicArray : NSObject, IEnumerable
         {
             SetNewSize(k + 1);
         }
-        if (map[k] != null)
-        {
-            map[k].Release();
-            map[k] = null;
-        }
+
+        map[k]?.Release();
+        map[k] = null;
         if (highestIndex < k)
         {
             highestIndex = k;
@@ -193,11 +192,8 @@ internal sealed class DynamicArray : NSObject, IEnumerable
     {
         for (int i = 0; i <= highestIndex; i++)
         {
-            if (map[i] != null)
-            {
-                map[i].Release();
-                map[i] = null;
-            }
+            map[i]?.Release();
+            map[i] = null;
         }
         Free(map);
         map = null;

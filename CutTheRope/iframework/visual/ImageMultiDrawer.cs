@@ -1,6 +1,6 @@
 using CutTheRope.desktop;
+
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace CutTheRope.iframework.visual
 {
@@ -76,11 +76,6 @@ namespace CutTheRope.iframework.visual
             OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(vertices));
             OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(texCoordinates));
             OpenGL.GlDrawElements(7, n * 6, indices);
-        }
-
-        private void DrawNumberOfQuadsStartingFrom(int n, int s)
-        {
-            throw new NotImplementedException();
         }
 
         public void Optimize(VertexPositionNormalTexture[] v)

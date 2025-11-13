@@ -1,7 +1,9 @@
+using System;
+
 using CutTheRope.iframework.core;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace CutTheRope.desktop
 {

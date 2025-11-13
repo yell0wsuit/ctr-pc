@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
+
 using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework;
@@ -6,12 +11,9 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.media;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Reflection;
 
 namespace CutTheRope.game
 {
@@ -1196,6 +1198,8 @@ namespace CutTheRope.game
                 case 10:
                     array = PACK_GAME_COVER_11;
                     break;
+                default:
+                    break;
             }
             cTRResourceMgr.InitLoading();
             cTRResourceMgr.LoadPack(array);
@@ -1640,11 +1644,11 @@ namespace CutTheRope.game
                 case 6:
                     OnButtonPressed(12);
                     break;
+                default:
+                    break;
             }
             return true;
         }
-
-        private const int CHILD_PICKER = 0;
 
         public const int VIEW_MAIN_MENU = 0;
 
@@ -1665,117 +1669,10 @@ namespace CutTheRope.game
         public const int VIEW_LEADERBOARDS = 8;
 
         public const int VIEW_ACHIEVEMENTS = 9;
-
-        private const int MM_VIEWS_COUNT = 10;
-
-        private const int BUTTON_PLAY = 0;
-
-        private const int BUTTON_OPTIONS = 1;
-
-        private const int BUTTON_EXTRAS = 2;
-
-        private const int BUTTON_SURVIVAL = 3;
-
-        private const int BUTTON_BUYGAME = 4;
-
-        private const int BUTTON_SOUND_ONOFF = 5;
-
-        private const int BUTTON_MUSIC_ONOFF = 6;
-
-        private const int BUTTON_ABOUT = 7;
-
-        private const int BUTTON_RESET = 8;
-
-        private const int BUTTON_HELP = 9;
-
-        private const int BUTTON_BACK_TO_OPTIONS = 10;
-
-        private const int BUTTON_SWAP_CONTROL = 11;
-
-        private const int BUTTON_BACK_TO_PACK_SELECT = 12;
-
-        private const int BUTTON_RESET_YES = 13;
-
-        private const int BUTTON_RESET_NO = 14;
-
-        private const int BUTTON_CANT_UNLOCK_OK = 15;
-
-        private const int BUTTON_TWITTER = 16;
-
-        private const int BUTTON_FACEBOOK = 17;
-
-        private const int BUTTON_LEADERBOARDS = 18;
-
-        private const int BUTTON_ACHIEVEMENTS = 19;
-
-        private const int BUTTON_NEXT_PACK = 20;
-
-        private const int BUTTON_PREVIOUS_PACK = 21;
-
-        private const int BUTTON_LOCALIZATION = 22;
-
-        private const int BUTTON_PACK1 = 23;
-
-        private const int BUTTON_PACK2 = 24;
-
-        private const int BUTTON_PACK3 = 25;
-
-        private const int BUTTON_PACK4 = 26;
-
-        private const int BUTTON_PACK5 = 27;
-
-        private const int BUTTON_PACK6 = 28;
-
-        private const int BUTTON_PACK7 = 29;
-
-        private const int BUTTON_PACK8 = 30;
-
-        private const int BUTTON_PACK9 = 31;
-
-        private const int BUTTON_PACK10 = 32;
-
-        private const int BUTTON_PACK11 = 33;
-
-        private const int BUTTON_SOON = 34;
-
-        private const int BUTTON_PACK_SELECTION_BACK = 35;
-
-        private const int BUTTON_OPTIONS_BACK = 36;
-
-        private const int BUTTON_LEADERBOARDS_BACK = 37;
-
-        private const int BUTTON_ACHIEVEMENTS_BACK = 38;
-
-        private const int BUTTON_EXIT_YES = 39;
-
-        private const int BUTTON_POPUP_HIDE = 40;
-
-        private const int BUTTON_QIUT = 41;
-
         public const int BUTTON_LEVEL_1 = 1000;
-
-        private const string TWITTER_LINK = "http://twitter.com/zeptolab";
-
-        private const string FACEBOOK_LINK = "http://www.facebook.com/cuttherope";
-
-        private const float BOX_OFFSET = -20f;
-
-        private const float BOX_X_SHIFT = 0f;
-
-        private const float BOX_Y_SHIFT = 0f;
-
-        private const float BOX_TOUCH_X_SHIFT = 235f;
-
-        private const float BOX_TOUCH_WIDTH_SHIFT = 70f;
-
-        private const float BOX_WIDTH_INCREASE = 1000f;
-
         public DelayedDispatcher ddMainMenu;
 
         public DelayedDispatcher ddPackSelect;
-
-        private readonly ScrollableContainer helpContainer;
-
         private ScrollableContainer aboutContainer;
 
         private ScrollableContainer packContainer;

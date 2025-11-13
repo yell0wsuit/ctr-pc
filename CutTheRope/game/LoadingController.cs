@@ -1,7 +1,8 @@
+using System;
+
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
-using System;
 
 namespace CutTheRope.game
 {
@@ -39,7 +40,7 @@ namespace CutTheRope.game
             GC.Collect();
             AndroidAPI.HideBanner();
             Application.SharedRootController().SetViewTransition(4);
-            base.Deactivate();
+            Deactivate();
         }
 
         public int nextController;

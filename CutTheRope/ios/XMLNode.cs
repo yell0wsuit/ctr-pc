@@ -1,11 +1,13 @@
-using CutTheRope.game;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+
+using CutTheRope.game;
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.ios
 {

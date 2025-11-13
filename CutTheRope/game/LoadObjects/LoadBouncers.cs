@@ -1,9 +1,3 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.sfe;
-using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 
 namespace CutTheRope.game
@@ -14,16 +8,17 @@ namespace CutTheRope.game
     /// </summary>
     internal sealed partial class GameScene
     {
-        private void LoadBouncer(XMLNode item, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        /// <summary>
+        /// Loads a bouncer object from XML node data
+        /// </summary>
+        private void LoadBouncer(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            if (!item.Name.Contains("bouncer")) return;
-
-            float px2 = (item["x"].IntValue() * scale) + offsetX + mapOffsetX;
-            float py2 = (item["y"].IntValue() * scale) + offsetY + mapOffsetY;
-            int w2 = item["size"].IntValue();
-            double an2 = item["angle"].IntValue();
+            float px2 = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
+            float py2 = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
+            int w2 = xmlNode["size"].IntValue();
+            double an2 = xmlNode["angle"].IntValue();
             Bouncer bouncer = (Bouncer)new Bouncer().InitWithPosXYWidthAndAngle(px2, py2, w2, an2);
-            bouncer.ParseMover(item);
+            bouncer.ParseMover(xmlNode);
             _ = bouncers.AddObject(bouncer);
         }
     }
