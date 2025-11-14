@@ -97,9 +97,9 @@ namespace CutTheRope.game
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int num = 0;
-            for (int i = 0; i < bungees.Count(); i++)
+            for (int i = 0; i < bungees.Count; i++)
             {
-                Grab grab = (Grab)bungees.ObjectAtIndex(i);
+                Grab grab = bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
                 if (rope != null && rope.cut == -1)
                 {
@@ -191,10 +191,10 @@ namespace CutTheRope.game
         public void SpiderWon(Grab sg)
         {
             CTRSoundMgr.PlaySound(35);
-            int num = bungees.Count();
+            int num = bungees.Count;
             for (int i = 0; i < num; i++)
             {
-                Grab grab = (Grab)bungees.ObjectAtIndex(i);
+                Grab grab = bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
                 if (rope != null && rope.tail == star)
                 {
@@ -253,9 +253,9 @@ namespace CutTheRope.game
             Bungee result = null;
             float num2 = num;
             Vector v = Vect(tx, ty);
-            for (int i = 0; i < bungees.Count(); i++)
+            for (int i = 0; i < bungees.Count; i++)
             {
-                Grab grab2 = (Grab)bungees.ObjectAtIndex(i);
+                Grab grab2 = bungees.ObjectAtIndex(i);
                 Bungee rope = grab2.rope;
                 if (rope != null)
                 {

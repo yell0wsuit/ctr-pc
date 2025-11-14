@@ -17,9 +17,9 @@ namespace CutTheRope.game
             pollenDrawer.Update(delta);
             for (int i = 0; i < 5; i++)
             {
-                for (int j = 0; j < fingerCuts[i].Count(); j++)
+                for (int j = 0; j < fingerCuts[i].Count; j++)
                 {
-                    FingerCut fingerCut = (FingerCut)fingerCuts[i].ObjectAtIndex(j);
+                    FingerCut fingerCut = fingerCuts[i].ObjectAtIndex(j);
                     float alpha = fingerCut.c.a;
                     if (Mover.MoveVariableToTarget(ref alpha, 0.0f, 10.0f, (float)delta))
                     {
@@ -89,16 +89,16 @@ namespace CutTheRope.game
             {
                 time += delta;
             }
-            if (bungees.Count() > 0)
+            if (bungees.Count > 0)
             {
                 bool flag = false;
                 bool flag2 = false;
                 bool flag3 = false;
-                int num8 = bungees.Count();
+                int num8 = bungees.Count;
                 int k = 0;
                 while (k < num8)
                 {
-                    Grab grab = (Grab)bungees.ObjectAtIndex(k);
+                    Grab grab = bungees.ObjectAtIndex(k);
                     grab.Update(delta);
                     Bungee rope = grab.rope;
                     if (grab.mover != null)
@@ -315,10 +315,10 @@ namespace CutTheRope.game
                         Vector vector2 = VectSub(starR.pos, starR.prevPos);
                         Vector v2 = Vect((vector.x + vector2.x) / 2f, (vector.y + vector2.y) / 2f);
                         star.prevPos = VectSub(star.pos, v2);
-                        int num10 = bungees.Count();
+                        int num10 = bungees.Count;
                         for (int m = 0; m < num10; m++)
                         {
-                            Bungee rope2 = ((Grab)bungees.ObjectAtIndex(m)).rope;
+                            Bungee rope2 = bungees.ObjectAtIndex(m).rope;
                             if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == starL || rope2.tail == starR))
                             {
                                 ConstraintedPoint constraintedPoint3 = rope2.parts[^2];

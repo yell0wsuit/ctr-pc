@@ -15,7 +15,7 @@ namespace CutTheRope.game
         {
             if (base.Init() != null)
             {
-                containedObjects = (DynamicArray)new DynamicArray().Init();
+                containedObjects = new DynamicArray<GameObject>();
                 soundPlaying = -1;
                 vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
                 vinilStickerL.anchor = 20;
@@ -224,7 +224,6 @@ namespace CutTheRope.game
             vinilHighlightL.Release();
             vinilHighlightR.Release();
             vinil.Release();
-            containedObjects.Release();
             base.Dealloc();
         }
 
@@ -258,9 +257,9 @@ namespace CutTheRope.game
 
         public Vector inithanlde2;
 
-        public DynamicArray circlesArray;
+        public DynamicArray<RotatedCircle> circlesArray;
 
-        public DynamicArray containedObjects;
+        public DynamicArray<GameObject> containedObjects;
 
         public bool removeOnNextUpdate;
 

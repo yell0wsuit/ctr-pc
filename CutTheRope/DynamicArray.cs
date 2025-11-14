@@ -1,162 +1,152 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
-using CutTheRope.ios;
-
-internal sealed class DynamicArray : NSObject, IEnumerable
+internal sealed class DynamicArray<T> : IEnumerable<T>
 {
-    public NSObject this[int key] => map[key];
+    public T this[int key] => _map[key];
 
-    public IEnumerator GetEnumerator()
+    public IEnumerator<T> GetEnumerator()
     {
-        return new DynamicArrayEnumerator(map, highestIndex);
+        return new DynamicArrayEnumerator(_map, _highestIndex);
     }
 
-    public override NSObject Init()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-        _ = InitWithCapacityandOverReallocValue(10, 10);
+        return GetEnumerator();
+    }
+
+    public DynamicArray()
+    {
+        _ = InitWithCapacityAndOverRealloc(10, 10);
+    }
+
+    public DynamicArray<T> InitWithCapacity(int capacity)
+    {
+        Capacity = capacity;
+        _highestIndex = -1;
+        _overRealloc = 0;
+        _mutationsCount = 0;
+        _map = new T[Capacity];
         return this;
     }
 
-    public NSObject InitWithCapacity(int c)
+    public DynamicArray<T> InitWithCapacityAndOverRealloc(int capacity, int over)
     {
-        if (base.Init() != null)
-        {
-            size = c;
-            highestIndex = -1;
-            overRealloc = 0;
-            mutationsCount = 0UL;
-            map = new NSObject[size];
-        }
+        _ = InitWithCapacity(capacity);
+        _overRealloc = over;
         return this;
     }
 
-    public NSObject InitWithCapacityandOverReallocValue(int c, int v)
+    public int Count => _highestIndex + 1;
+
+    public int Capacity { get; private set; }
+
+    private void SetNewSize(int minRequired)
     {
-        if (InitWithCapacity(c) != null)
+        int newSize = minRequired + _overRealloc;
+        T[] arr = new T[newSize];
+        Array.Copy(_map, arr, Math.Min(_map.Length, arr.Length));
+        _map = arr;
+        Capacity = newSize;
+    }
+
+    public int AddObject(T obj)
+    {
+        int index = _highestIndex + 1;
+        SetObjectAt(obj, index);
+        return index;
+    }
+
+    public void SetObjectAt(T obj, int index)
+    {
+        if (index >= Capacity)
         {
-            overRealloc = v;
-        }
-        return this;
-    }
-
-    public int Count()
-    {
-        return highestIndex + 1;
-    }
-
-    public int Capacity()
-    {
-        return size;
-    }
-
-    public void SetNewSize(int k)
-    {
-        int num = k + overRealloc;
-        NSObject[] array = new NSObject[num];
-        Array.Copy(map, array, Math.Min(map.Length, array.Length));
-        map = array;
-        size = num;
-    }
-
-    public int AddObject(NSObject obj)
-    {
-        int num = highestIndex + 1;
-        SetObjectAt(obj, num);
-        return num;
-    }
-
-    public void SetObjectAt(NSObject obj, int k)
-    {
-        if (k >= size)
-        {
-            SetNewSize(k + 1);
+            SetNewSize(index + 1);
         }
 
-        map[k]?.Release();
-        map[k] = null;
-        if (highestIndex < k)
+        _map[index] = obj;
+
+        if (index > _highestIndex)
         {
-            highestIndex = k;
+            _highestIndex = index;
         }
-        map[k] = obj;
-        map[k].Retain();
-        mutationsCount += 1UL;
+
+        _mutationsCount++;
     }
 
-    public NSObject FirstObject()
+    public T FirstObject()
     {
         return ObjectAtIndex(0);
     }
 
-    public NSObject LastObject()
+    public T LastObject()
     {
-        return highestIndex == -1 ? null : ObjectAtIndex(highestIndex);
+        return _highestIndex == -1 ? default : ObjectAtIndex(_highestIndex);
     }
 
-    public NSObject ObjectAtIndex(int k)
+    public T ObjectAtIndex(int index)
     {
-        return map[k];
+        return _map[index];
     }
 
     public void UnsetAll()
     {
-        for (int i = 0; i <= highestIndex; i++)
+        for (int i = 0; i <= _highestIndex; i++)
         {
-            if (map[i] != null)
-            {
-                UnsetObjectAtIndex(i);
-            }
+            _map[i] = default;
         }
+
+        _mutationsCount++;
     }
 
     public void UnsetObjectAtIndex(int k)
     {
-        map[k].Release();
-        map[k] = null;
-        mutationsCount += 1UL;
+        _map[k] = default;
+        _mutationsCount++;
     }
 
-    public void InsertObjectatIndex(NSObject obj, int k)
+    public void InsertObjectAtIndex(T obj, int k)
     {
-        if (k >= size || highestIndex + 1 >= size)
+        if (k >= Capacity || _highestIndex + 1 >= Capacity)
         {
-            SetNewSize(size + 1);
+            SetNewSize(Capacity + 1);
         }
-        highestIndex++;
-        for (int num = highestIndex; num > k; num--)
+
+        _highestIndex++;
+
+        for (int i = _highestIndex; i > k; i--)
         {
-            map[num] = map[num - 1];
+            _map[i] = _map[i - 1];
         }
-        map[k] = obj;
-        map[k].Retain();
-        mutationsCount += 1UL;
+
+        _map[k] = obj;
+        _mutationsCount++;
     }
 
-    public void RemoveObjectAtIndex(int k)
+    public void RemoveObjectAtIndex(int index)
     {
-        NSObject nSObject = map[k];
-        nSObject?.Release();
-        for (int i = k; i < highestIndex; i++)
+        for (int i = index; i < _highestIndex; i++)
         {
-            map[i] = map[i + 1];
+            _map[i] = _map[i + 1];
         }
-        map[highestIndex] = null;
-        highestIndex--;
-        mutationsCount += 1UL;
+
+        _map[_highestIndex] = default;
+        _highestIndex--;
+        _mutationsCount++;
     }
 
     public void RemoveAllObjects()
     {
         UnsetAll();
-        highestIndex = -1;
+        _highestIndex = -1;
     }
 
-    public void RemoveObject(NSObject obj)
+    public void RemoveObject(T obj)
     {
-        for (int i = 0; i <= highestIndex; i++)
+        for (int i = 0; i <= _highestIndex; i++)
         {
-            if (map[i] == obj)
+            if (EqualityComparer<T>.Default.Equals(_map[i], obj))
             {
                 RemoveObjectAtIndex(i);
                 return;
@@ -166,21 +156,21 @@ internal sealed class DynamicArray : NSObject, IEnumerable
 
     public int GetFirstEmptyIndex()
     {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < Capacity; i++)
         {
-            if (map[i] == null)
+            if (EqualityComparer<T>.Default.Equals(_map[i], default))
             {
                 return i;
             }
         }
-        return size;
+        return Capacity;
     }
 
-    public int GetObjectIndex(NSObject obj)
+    public int GetObjectIndex(T obj)
     {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i <= _highestIndex; i++)
         {
-            if (map[i] == obj)
+            if (EqualityComparer<T>.Default.Equals(_map[i], obj))
             {
                 return i;
             }
@@ -188,27 +178,38 @@ internal sealed class DynamicArray : NSObject, IEnumerable
         return -1;
     }
 
-    public override void Dealloc()
+    // --- Fields -----------------------------------------------------
+
+    private T[] _map;
+    private int _highestIndex;
+    private int _overRealloc;
+    private ulong _mutationsCount;
+
+    // --- Enumerator --------------------------------------------------
+
+    private sealed class DynamicArrayEnumerator(T[] map, int highestIndex) : IEnumerator<T>
     {
-        for (int i = 0; i <= highestIndex; i++)
+        private readonly T[] _map = map;
+        private readonly int _maxIndex = highestIndex;
+        private int _position = -1;
+
+        public T Current => _position < 0 || _position > _maxIndex ? throw new InvalidOperationException() : _map[_position];
+
+        object IEnumerator.Current => Current;
+
+        public bool MoveNext()
         {
-            map[i]?.Release();
-            map[i] = null;
+            _position++;
+            return _position <= _maxIndex;
         }
-        Free(map);
-        map = null;
-        base.Dealloc();
+
+        public void Reset()
+        {
+            _position = -1;
+        }
+
+        public void Dispose()
+        {
+        }
     }
-
-    public const int DEFAULT_CAPACITY = 10;
-
-    public NSObject[] map;
-
-    public int size;
-
-    public int highestIndex;
-
-    public int overRealloc;
-
-    public ulong mutationsCount;
 }

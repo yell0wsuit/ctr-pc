@@ -36,7 +36,7 @@ namespace CutTheRope.game
 
         public void ReleaseAllRopes(bool left)
         {
-            int num = bungees.Count();
+            int num = bungees.Count;
             for (int i = 0; i < num; i++)
             {
                 Grab grab = (Grab)bungees.ObjectAtIndex(i);
@@ -143,9 +143,9 @@ namespace CutTheRope.game
 
         public void ResetBungeeHighlight()
         {
-            for (int i = 0; i < bungees.Count(); i++)
+            for (int i = 0; i < bungees.Count; i++)
             {
-                Bungee rope = ((Grab)bungees.ObjectAtIndex(i)).rope;
+                Bungee rope = bungees.ObjectAtIndex(i).rope;
                 if (rope != null && rope.cut == -1)
                 {
                     rope.highlighted = false;

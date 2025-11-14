@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
+using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 
 namespace CutTheRope.game
@@ -40,7 +41,7 @@ namespace CutTheRope.game
 
                         if (cTRRootController.GetPack() == 7)
                         {
-                            earthAnims = (DynamicArray)new DynamicArray().Init();
+                            earthAnims = new DynamicArray<Image>();
                             if (mapWidth > SCREEN_WIDTH)
                             {
                                 CreateEarthImageWithOffsetXY(back.width, 0f);

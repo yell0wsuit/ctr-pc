@@ -9,14 +9,9 @@ namespace CutTheRope.iframework.visual
             value = new KeyFrameValue();
         }
 
-        public static KeyFrame MakeAction(DynamicArray actions, float time)
+        public static KeyFrame MakeAction(DynamicArray<CTRAction> actions, float time)
         {
-            List<CTRAction> list = [];
-            foreach (object obj in actions)
-            {
-                CTRAction action = (CTRAction)obj;
-                list.Add(action);
-            }
+            List<CTRAction> list = [.. actions];
             return MakeAction(list, time);
         }
 
