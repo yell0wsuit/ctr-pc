@@ -169,7 +169,7 @@ namespace CutTheRope.game
         {
             for (int i = 0; i < 5; i++)
             {
-                int num = fingerCuts[i].Count();
+                int num = fingerCuts[i].Count;
                 if (num > 0)
                 {
                     float num2 = RTD(6.0);
@@ -180,7 +180,7 @@ namespace CutTheRope.game
                     int num5 = 0;
                     while (j < num)
                     {
-                        FingerCut fingerCut = (FingerCut)fingerCuts[i].ObjectAtIndex(j);
+                        FingerCut fingerCut = fingerCuts[i].ObjectAtIndex(j);
                         if (j == 0)
                         {
                             array[num5++] = fingerCut.start;

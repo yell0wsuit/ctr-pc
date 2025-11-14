@@ -75,26 +75,14 @@ namespace CutTheRope.game
                 RemoveChild(gravityButton);
             }
             pollenDrawer.Release();
-            earthAnims?.Release();
             candy.Release();
             star.Release();
             candyL?.Release();
             candyR?.Release();
             starL.Release();
             starR.Release();
-            razors.Release();
-            spikes.Release();
-            bungees.Release();
-            stars.Release();
-            bubbles.Release();
-            pumps.Release();
-            socks.Release();
-            bouncers.Release();
-            rotatedCircles.Release();
             target.Release();
             support.Release();
-            tutorialImages.Release();
-            tutorials.Release();
             candyL = null;
             candyR = null;
             starL = null;
@@ -105,7 +93,6 @@ namespace CutTheRope.game
         {
             for (int i = 0; i < 5; i++)
             {
-                fingerCuts[i].Release();
             }
             dd.Release();
             camera.Release();
@@ -270,27 +257,27 @@ namespace CutTheRope.game
 
         private ConstraintedPoint star;
 
-        private DynamicArray bungees;
+        private DynamicArray<Grab> bungees;
 
-        private DynamicArray razors;
+        private DynamicArray<Razor> razors;
 
-        private DynamicArray spikes;
+        private DynamicArray<Spikes> spikes;
 
-        private DynamicArray stars;
+        private DynamicArray<Star> stars;
 
-        private DynamicArray bubbles;
+        private DynamicArray<Bubble> bubbles;
 
-        private DynamicArray pumps;
+        private DynamicArray<Pump> pumps;
 
-        private DynamicArray socks;
+        private DynamicArray<Sock> socks;
 
-        private DynamicArray bouncers;
+        private DynamicArray<Bouncer> bouncers;
 
-        private DynamicArray rotatedCircles;
+        private DynamicArray<RotatedCircle> rotatedCircles;
 
-        private DynamicArray tutorialImages;
+        private DynamicArray<CTRGameObject> tutorialImages;
 
-        private DynamicArray tutorials;
+        private DynamicArray<Text> tutorials;
 
         private GameObject candyL;
 
@@ -396,15 +383,15 @@ namespace CutTheRope.game
 
         public float partsDist;
 
-        public DynamicArray earthAnims;
+        public DynamicArray<Image> earthAnims;
 
         public int tummyTeasers;
 
         public Vector slastTouch;
 
-        public DynamicArray[] fingerCuts = new DynamicArray[5];
+        public DynamicArray<FingerCut>[] fingerCuts = new DynamicArray<FingerCut>[5];
 
-        private sealed class FingerCut : NSObject
+        public sealed class FingerCut : NSObject
         {
             public Vector start;
 

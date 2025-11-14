@@ -28,17 +28,18 @@ namespace CutTheRope.game
             CTRSoundMgr.StopLoopedSounds();
 
             // Initialize object collections
-            bungees = (DynamicArray)new DynamicArray().Init();
-            razors = (DynamicArray)new DynamicArray().Init();
-            spikes = (DynamicArray)new DynamicArray().Init();
-            stars = (DynamicArray)new DynamicArray().Init();
-            bubbles = (DynamicArray)new DynamicArray().Init();
-            pumps = (DynamicArray)new DynamicArray().Init();
-            socks = (DynamicArray)new DynamicArray().Init();
-            tutorialImages = (DynamicArray)new DynamicArray().Init();
-            tutorials = (DynamicArray)new DynamicArray().Init();
-            bouncers = (DynamicArray)new DynamicArray().Init();
-            rotatedCircles = (DynamicArray)new DynamicArray().Init();
+            bungees = new DynamicArray<Grab>();
+            razors = new DynamicArray<Razor>();
+            spikes = new DynamicArray<Spikes>();
+            stars = new DynamicArray<Star>();
+            bubbles = new DynamicArray<Bubble>();
+            pumps = new DynamicArray<Pump>();
+            socks = new DynamicArray<Sock>();
+            tutorialImages = new DynamicArray<CTRGameObject>();
+            tutorials = new DynamicArray<Text>();
+            bouncers = new DynamicArray<Bouncer>();
+            rotatedCircles = new DynamicArray<RotatedCircle>();
+            earthAnims = null;
             pollenDrawer = (PollenDrawer)new PollenDrawer().Init();
         }
 

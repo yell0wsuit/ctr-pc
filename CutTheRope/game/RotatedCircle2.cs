@@ -69,9 +69,9 @@ namespace CutTheRope.game
 
         public bool ContainsSameObjectWithAnotherCircle()
         {
-            for (int i = 0; i < circlesArray.Count(); i++)
+            for (int i = 0; i < circlesArray.Count; i++)
             {
-                RotatedCircle2 rotatedCircle = (RotatedCircle2)circlesArray[i];
+                RotatedCircle2 rotatedCircle = circlesArray[i];
                 if (rotatedCircle != this && ContainsSameObjectWithCircle(rotatedCircle))
                 {
                     return true;
@@ -84,7 +84,6 @@ namespace CutTheRope.game
         {
             if (base.Init() != null)
             {
-                circlesArray = null;
                 containedObjects = [];
                 soundPlaying = -1;
                 vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
@@ -178,9 +177,9 @@ namespace CutTheRope.game
                 whiteRGBA.a = 1f - color.a;
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
             }
-            for (int i = 0; i < circlesArray.Count(); i++)
+            for (int i = 0; i < circlesArray.Count; i++)
             {
-                RotatedCircle2 rotatedCircle = (RotatedCircle2)circlesArray[i];
+                RotatedCircle2 rotatedCircle = circlesArray[i];
                 if (rotatedCircle != this && rotatedCircle.ContainsSameObjectWithAnotherCircle() && circlesArray.GetObjectIndex(rotatedCircle) < circlesArray.GetObjectIndex(this))
                 {
                     GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, rotatedCircle.x, rotatedCircle.y, rotatedCircle.sizeInPixels, 51, 7f * rotatedCircle.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
@@ -301,7 +300,7 @@ namespace CutTheRope.game
 
         public Vector inithanlde2;
 
-        public DynamicArray circlesArray;
+        public DynamicArray<RotatedCircle2> circlesArray;
 
         public List<BaseElement> containedObjects;
 

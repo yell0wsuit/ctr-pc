@@ -79,10 +79,10 @@ namespace CutTheRope.game
                     return true;
                 }
             }
-            int num = pumps.Count();
+            int num = pumps.Count;
             for (int i = 0; i < num; i++)
             {
-                Pump pump = (Pump)pumps.ObjectAtIndex(i);
+                Pump pump = pumps.ObjectAtIndex(i);
                 if (GameObject.PointInObject(Vect(tx + camera.pos.x, ty + camera.pos.y), pump))
                 {
                     pump.pumpTouchTimer = 0.05f;
@@ -130,7 +130,7 @@ namespace CutTheRope.game
                     break;
                 }
             }
-            if (rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count() - 1 && flag2 && !flag)
+            if (rotatedCircle != null && rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count - 1 && flag2 && !flag)
             {
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
@@ -256,9 +256,9 @@ namespace CutTheRope.game
             }
             if (rotatedCircles != null)
             {
-                for (int i = 0; i < rotatedCircles.Count(); i++)
+                for (int i = 0; i < rotatedCircles.Count; i++)
                 {
-                    RotatedCircle rotatedCircle = (RotatedCircle)rotatedCircles[i];
+                    RotatedCircle rotatedCircle = rotatedCircles[i];
                     if (rotatedCircle != null && rotatedCircle.operating == ti)
                     {
                         Vector v = Vect(rotatedCircle.x, rotatedCircle.y);
@@ -281,9 +281,9 @@ namespace CutTheRope.game
                             CTRSoundMgr.PlaySound(num2);
                             rotatedCircle.soundPlaying = num2;
                         }
-                        for (int j = 0; j < bungees.Count(); j++)
+                        for (int j = 0; j < bungees.Count; j++)
                         {
-                            Grab grab = (Grab)bungees[j];
+                            Grab grab = bungees[j];
                             if (VectDistance(Vect(grab.x, grab.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (grab.initial_rotatedCircle != rotatedCircle)
@@ -309,9 +309,9 @@ namespace CutTheRope.game
                                 }
                             }
                         }
-                        for (int k = 0; k < pumps.Count(); k++)
+                        for (int k = 0; k < pumps.Count; k++)
                         {
-                            Pump pump4 = (Pump)pumps[k];
+                            Pump pump4 = pumps[k];
                             if (VectDistance(Vect(pump4.x, pump4.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (pump4.initial_rotatedCircle != rotatedCircle)
@@ -330,9 +330,9 @@ namespace CutTheRope.game
                                 pump4.UpdateRotation();
                             }
                         }
-                        for (int l = 0; l < bubbles.Count(); l++)
+                        for (int l = 0; l < bubbles.Count; l++)
                         {
-                            Bubble bubble = (Bubble)bubbles[l];
+                            Bubble bubble = bubbles[l];
                             if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != candyBubble && bubble != candyBubbleR && bubble != candyBubbleL)
                             {
                                 if (bubble.initial_rotatedCircle != rotatedCircle)
@@ -360,10 +360,10 @@ namespace CutTheRope.game
                     }
                 }
             }
-            int num3 = bungees.Count();
+            int num3 = bungees.Count;
             for (int m = 0; m < num3; m++)
             {
-                Grab grab2 = (Grab)bungees.ObjectAtIndex(m);
+                Grab grab2 = bungees.ObjectAtIndex(m);
                 if (grab2 != null)
                 {
                     if (grab2.wheel && grab2.wheelOperating == ti)

@@ -21,7 +21,7 @@ namespace CutTheRope.game
 
         public void AddImage(int resId)
         {
-            animations ??= (DynamicArray)new DynamicArray().Init();
+            animations ??= new DynamicArray<Animation>();
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resId);
             charAnimation.parentAnchor = charAnimation.anchor = 9;
             charAnimation.DoRestoreCutTransparency();
@@ -45,7 +45,7 @@ namespace CutTheRope.game
 
         public Animation GetAnimation(int resID)
         {
-            return resID == 80 ? this : (Animation)animations.ObjectAtIndex(resID - 101);
+            return resID == 80 ? this : animations.ObjectAtIndex(resID - 101);
         }
 
         public void SwitchToAnimationatEndOfAnimationDelay(int i2, int a2, int i1, int a1, float d)
@@ -53,7 +53,7 @@ namespace CutTheRope.game
             Animation animation = GetAnimation(i1);
             Animation animation2 = GetAnimation(i2);
             Timeline timeline = animation.GetTimeline(a1);
-            DynamicArray dynamicArray = (DynamicArray)new DynamicArray().Init();
+            DynamicArray<CTRAction> dynamicArray = new();
             _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_PLAY_TIMELINE", i1 == 80 ? 1 : 0, a2));
             if (animation != animation2)
             {
@@ -73,9 +73,9 @@ namespace CutTheRope.game
             {
                 StopCurrentTimeline();
             }
-            foreach (object obj in animations)
+            foreach (Animation anim in animations)
             {
-                ((Animation)obj).SetEnabled(false);
+                anim.SetEnabled(false);
             }
             Animation animation = GetAnimation(resID);
             animation.SetEnabled(true);
@@ -93,6 +93,6 @@ namespace CutTheRope.game
             base.PlayTimeline(t);
         }
 
-        public DynamicArray animations;
+        private DynamicArray<Animation> animations;
     }
 }
