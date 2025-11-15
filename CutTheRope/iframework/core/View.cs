@@ -1,6 +1,5 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -8,19 +7,10 @@ namespace CutTheRope.iframework.core
 {
     internal class View : BaseElement
     {
-        public virtual NSObject InitFullscreen()
+        public View()
         {
-            if (base.Init() != null)
-            {
-                width = (int)SCREEN_WIDTH;
-                height = (int)SCREEN_HEIGHT;
-            }
-            return this;
-        }
-
-        public override NSObject Init()
-        {
-            return InitFullscreen();
+            width = (int)SCREEN_WIDTH;
+            height = (int)SCREEN_HEIGHT;
         }
 
         public override void Draw()

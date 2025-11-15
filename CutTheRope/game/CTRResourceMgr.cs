@@ -2,18 +2,11 @@ using System.Collections.Generic;
 
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class CTRResourceMgr : ResourceMgr
     {
-        public override NSObject Init()
-        {
-            _ = base.Init();
-            return this;
-        }
-
         public static int HandleLocalizedResource(int r)
         {
             if (r != 69)
@@ -229,7 +222,7 @@ namespace CutTheRope.game
             return value;
         }
 
-        public override NSObject LoadResource(int resID, ResourceType resType)
+        public override object LoadResource(int resID, ResourceType resType)
         {
             return base.LoadResource(HandleLocalizedResource(resID), resType);
         }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRope.game;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -10,14 +9,13 @@ using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.iframework.media
 {
-    internal class SoundMgr : NSObject
+    internal class SoundMgr : FrameworkTypes
     {
-        public new SoundMgr Init()
+        public SoundMgr()
         {
             LoadedSounds = [];
             activeSounds = [];
             activeLoopedSounds = [];
-            return this;
         }
 
         public static void SetContentManager(ContentManager contentManager)
@@ -205,10 +203,10 @@ namespace CutTheRope.iframework.media
 
         private static ContentManager _contentManager;
 
-        private Dictionary<int, SoundEffect> LoadedSounds;
+        private readonly Dictionary<int, SoundEffect> LoadedSounds;
 
         private List<SoundEffectInstance> activeSounds;
 
-        private List<SoundEffectInstance> activeLoopedSounds;
+        private readonly List<SoundEffectInstance> activeLoopedSounds;
     }
 }

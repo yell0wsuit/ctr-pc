@@ -1,10 +1,12 @@
+using System.Xml.Linq;
+
 using CutTheRope.desktop;
+using CutTheRope.Helpers;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -29,7 +31,7 @@ namespace CutTheRope.game
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString _, bool _1)
+        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string _, bool _1)
         {
             ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
             if (animateRestartDim)
@@ -40,15 +42,15 @@ namespace CutTheRope.game
             Restart();
         }
 
-        public static bool ShouldSkipTutorialElement(XMLNode c)
+        public static bool ShouldSkipTutorialElement(XElement c)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 1)
             {
                 return true;
             }
-            NSString @string = Application.SharedAppSettings().GetString(8);
-            NSString nSString = c["locale"];
+            string @string = Application.SharedAppSettings().GetString(8);
+            string nSString = c.AttributeAsNSString("locale");
             if (@string.IsEqualToString("en") || @string.IsEqualToString("ru") || @string.IsEqualToString("de") || @string.IsEqualToString("fr"))
             {
                 if (!nSString.IsEqualToString(@string))
@@ -74,30 +76,24 @@ namespace CutTheRope.game
             {
                 RemoveChild(gravityButton);
             }
-            pollenDrawer.Release();
-            candy.Release();
-            star.Release();
-            candyL?.Release();
-            candyR?.Release();
-            starL.Release();
-            starR.Release();
-            target.Release();
-            support.Release();
             candyL = null;
             candyR = null;
             starL = null;
             starR = null;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            for (int i = 0; i < 5; i++)
+            if (disposing)
             {
+                dd?.Dispose();
+                dd = null;
+                camera?.Dispose();
+                camera = null;
+                back?.Dispose();
+                back = null;
             }
-            dd.Release();
-            camera.Release();
-            back.Release();
-            base.Dealloc();
+            base.Dispose(disposing);
         }
 
         public void FullscreenToggled(bool isFullscreen)
@@ -120,33 +116,33 @@ namespace CutTheRope.game
             back.scaleX = 1.25f;
         }
 
-        private void Selector_gameLost(NSObject param)
+        private void Selector_gameLost(FrameworkTypes param)
         {
             GameLost();
         }
 
-        private void Selector_gameWon(NSObject param)
+        private void Selector_gameWon(FrameworkTypes param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
             gameSceneDelegate?.GameWon();
         }
 
-        private void Selector_animateLevelRestart(NSObject param)
+        private void Selector_animateLevelRestart(FrameworkTypes param)
         {
             AnimateLevelRestart();
         }
 
-        private void Selector_showGreeting(NSObject param)
+        private void Selector_showGreeting(FrameworkTypes param)
         {
             ShowGreeting();
         }
 
-        private void Selector_doCandyBlink(NSObject param)
+        private void Selector_doCandyBlink(FrameworkTypes param)
         {
             DoCandyBlink();
         }
 
-        private void Selector_teleport(NSObject param)
+        private void Selector_teleport(FrameworkTypes param)
         {
             Teleport();
         }
@@ -229,9 +225,9 @@ namespace CutTheRope.game
 
         public IGameSceneDelegate gameSceneDelegate;
 
-        private AnimationsPool aniPool;
+        private readonly AnimationsPool aniPool;
 
-        private AnimationsPool staticAniPool;
+        private readonly AnimationsPool staticAniPool;
 
         private PollenDrawer pollenDrawer;
 
@@ -341,7 +337,7 @@ namespace CutTheRope.game
 
         private float ropeAtOnceTimer;
 
-        private bool clickToCut;
+        private readonly bool clickToCut;
 
         public int starsCollected;
 
@@ -391,7 +387,7 @@ namespace CutTheRope.game
 
         public DynamicArray<FingerCut>[] fingerCuts = new DynamicArray<FingerCut>[5];
 
-        public sealed class FingerCut : NSObject
+        public sealed class FingerCut : FrameworkTypes
         {
             public Vector start;
 

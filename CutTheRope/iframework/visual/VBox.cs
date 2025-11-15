@@ -30,13 +30,10 @@ namespace CutTheRope.iframework.visual
 
         public VBox InitWithOffsetAlignWidth(float of, int a, float w)
         {
-            if (Init() != null)
-            {
-                offset = of;
-                align = a;
-                nextElementY = 0f;
-                width = (int)w;
-            }
+            offset = of;
+            align = a;
+            nextElementY = 0f;
+            width = (int)w;
             return this;
         }
 

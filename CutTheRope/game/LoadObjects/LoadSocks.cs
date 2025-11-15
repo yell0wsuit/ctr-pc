@@ -1,5 +1,7 @@
+using System.Xml.Linq;
+
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -12,16 +14,16 @@ namespace CutTheRope.game
         /// <summary>
         /// Loads a sock object from XML node data
         /// </summary>
-        private void LoadSock(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadSock(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             Sock sock = Sock.Sock_createWithResID(85);
             sock.CreateAnimations();
             sock.scaleX = sock.scaleY = 0.7f;
             sock.DoRestoreCutTransparency();
-            sock.x = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
-            sock.y = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
-            sock.group = xmlNode["group"].IntValue();
+            sock.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+            sock.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+            sock.group = xmlNode.AttributeAsNSString("group").IntValue();
             sock.anchor = 10;
             sock.rotationCenterY -= (sock.height / 2f) - 85f;
             if (sock.group == 0)

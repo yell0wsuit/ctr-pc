@@ -64,17 +64,14 @@ namespace CutTheRope.iframework.visual
 
         public Scrollbar InitWithWidthHeightVertical(float w, float h, bool v)
         {
-            if (Init() != null)
-            {
-                width = (int)w;
-                height = (int)h;
-                vertical = v;
-                sp = vectUndefined;
-                mp = vectUndefined;
-                sc = vectUndefined;
-                backColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.5f);
-                scrollerColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0.5f);
-            }
+            width = (int)w;
+            height = (int)h;
+            vertical = v;
+            sp = vectUndefined;
+            mp = vectUndefined;
+            sc = vectUndefined;
+            backColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.5f);
+            scrollerColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0.5f);
             return this;
         }
 

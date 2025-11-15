@@ -1,7 +1,10 @@
+using System;
+using System.Xml.Linq;
+
+using CutTheRope.Helpers;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -14,19 +17,19 @@ namespace CutTheRope.game
         /// <summary>
         /// Loads a tutorial text element from XML node data
         /// </summary>
-        private void LoadTutorialText(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadTutorialText(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             if (!ShouldSkipTutorialElement(xmlNode))
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
                 TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(4));
                 tutorialText.color = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.9);
-                tutorialText.x = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
-                tutorialText.y = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
-                tutorialText.special = xmlNode["special"].IntValue();
+                tutorialText.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                tutorialText.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                tutorialText.special = xmlNode.AttributeAsNSString("special").IntValue();
                 tutorialText.SetAlignment(2);
-                NSString newString = xmlNode["text"];
-                tutorialText.SetStringandWidth(newString, (int)(xmlNode["width"].IntValue() * scale));
+                string newString = xmlNode.AttributeAsNSString("text");
+                tutorialText.SetStringandWidth(newString, (int)(xmlNode.AttributeAsNSString("width").IntValue() * scale));
                 tutorialText.color = RGBAColor.transparentRGBA;
                 float num6 = tutorialText.special == 3 ? 12f : 0f;
                 Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
@@ -53,18 +56,18 @@ namespace CutTheRope.game
         /// <summary>
         /// Loads a tutorial image element from XML node data
         /// </summary>
-        private void LoadTutorialImage(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadTutorialImage(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             if (!ShouldSkipTutorialElement(xmlNode))
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                int q = new NSString(xmlNode.Name[8..]).IntValue() - 1;
+                int q = new string(xmlNode.Name.LocalName.AsSpan()[8..]).IntValue() - 1;
                 GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
                 gameObjectSpecial.color = RGBAColor.transparentRGBA;
-                gameObjectSpecial.x = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
-                gameObjectSpecial.y = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
-                gameObjectSpecial.rotation = xmlNode["angle"].IntValue();
-                gameObjectSpecial.special = xmlNode["special"].IntValue();
+                gameObjectSpecial.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                gameObjectSpecial.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                gameObjectSpecial.rotation = xmlNode.AttributeAsNSString("angle").IntValue();
+                gameObjectSpecial.special = xmlNode.AttributeAsNSString("special").IntValue();
                 gameObjectSpecial.ParseMover(xmlNode);
                 float num7 = gameObjectSpecial.special is 3 or 4 ? 12f : 0f;
                 Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(4);

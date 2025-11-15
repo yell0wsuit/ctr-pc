@@ -4,11 +4,6 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class AnimationsPool : BaseElement, ITimelineDelegate
     {
-        public AnimationsPool()
-        {
-            _ = Init();
-        }
-
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
@@ -45,11 +40,14 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            removeList.Clear();
-            removeList = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                removeList?.Clear();
+                removeList = null;
+            }
+            base.Dispose(disposing);
         }
 
         private List<BaseElement> removeList = [];

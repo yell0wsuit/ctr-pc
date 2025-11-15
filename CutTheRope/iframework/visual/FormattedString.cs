@@ -1,26 +1,24 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class FormattedString : NSObject
+    internal sealed class FormattedString : FrameworkTypes
     {
-        public FormattedString InitWithStringAndWidth(NSString str, float w)
+        public FormattedString InitWithStringAndWidth(string str, float w)
         {
-            if (Init() != null)
-            {
-                string_ = (NSString)NSRET(str);
-                width = w;
-            }
+            string_ = str;
+            width = w;
             return this;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            string_ = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                string_ = null;
+            }
+            base.Dispose(disposing);
         }
 
-        public NSString string_;
+        public string string_;
 
         public float width;
     }

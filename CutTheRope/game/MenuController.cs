@@ -5,12 +5,12 @@ using System.Reflection;
 
 using CutTheRope.commons;
 using CutTheRope.desktop;
+using CutTheRope.Helpers;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.media;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -19,7 +19,7 @@ namespace CutTheRope.game
 {
     internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
-        public static Button CreateButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegation d)
+        public static Button CreateButtonWithTextIDDelegate(string str, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
@@ -38,7 +38,7 @@ namespace CutTheRope.game
             return button;
         }
 
-        public static Button CreateShortButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegation d)
+        public static Button CreateShortButtonWithTextIDDelegate(string str, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(61, 1);
             Image image2 = Image.Image_createWithResIDQuad(61, 0);
@@ -57,7 +57,7 @@ namespace CutTheRope.game
             return button;
         }
 
-        public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(NSString str1, NSString str2, int bid, IButtonDelegation d)
+        public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
@@ -133,9 +133,11 @@ namespace CutTheRope.game
 
         public static BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s)
         {
-            BaseElement baseElement = (BaseElement)new BaseElement().Init();
-            baseElement.width = (int)SCREEN_WIDTH;
-            baseElement.height = (int)SCREEN_HEIGHT;
+            BaseElement baseElement = new()
+            {
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT
+            };
             Image image = Image.Image_createWithResIDQuad(48, 0);
             image.anchor = image.parentAnchor = 34;
             image.scaleX = image.scaleY = 1.25f;
@@ -211,7 +213,7 @@ namespace CutTheRope.game
 
         public static Button CreateLanguageButtonWithIDDelegate(int bid, IButtonDelegation d)
         {
-            NSString @string = Application.SharedAppSettings().GetString(8);
+            string @string = Application.SharedAppSettings().GetString(8);
             int q = 7;
             if (@string.IsEqualToString("ru"))
             {
@@ -225,7 +227,7 @@ namespace CutTheRope.game
             {
                 q = 6;
             }
-            NSString string2 = Application.GetString(655370);
+            string string2 = Application.GetString(655370);
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
             FontGeneric font = Application.GetFont(3);
@@ -253,7 +255,7 @@ namespace CutTheRope.game
 
         public static BaseElement CreateElementWithResIdquad(int resId, int quad)
         {
-            return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : (BaseElement)new BaseElement().Init();
+            return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : new BaseElement();
         }
 
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
@@ -274,7 +276,7 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, NSString str, int bId, IButtonDelegation delegateValue)
+        public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(8, q);
             Text text = Text.CreateWithFontandString(4, str);
@@ -325,7 +327,7 @@ namespace CutTheRope.game
 
         public void CreateMainMenu()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(true);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 34;
@@ -340,7 +342,7 @@ namespace CutTheRope.game
             bool flag = Application.GetString(655507).Length() > 0;
             if (flag)
             {
-                BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
+                BaseElement baseElement2 = new();
                 baseElement2.SetName("container");
                 baseElement2.parentAnchor = baseElement2.anchor = 18;
                 baseElement2.width = baseElement.width;
@@ -379,7 +381,7 @@ namespace CutTheRope.game
 
         public void CreateOptions()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
             _ = menuView.AddChild(baseElement);
             BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString(655423), -1, null);
@@ -442,7 +444,7 @@ namespace CutTheRope.game
 
         public void CreateReset()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             Text text = new Text().InitWithFont(Application.GetFont(3));
             text.SetAlignment(2);
@@ -468,18 +470,20 @@ namespace CutTheRope.game
 
         public void CreateMovieView()
         {
-            MovieView movieView = (MovieView)new MovieView().InitFullscreen();
-            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
-            rectangleElement.width = (int)SCREEN_WIDTH;
-            rectangleElement.height = (int)SCREEN_HEIGHT;
-            rectangleElement.color = RGBAColor.blackRGBA;
+            MovieView movieView = new();
+            RectangleElement rectangleElement = new()
+            {
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT,
+                color = RGBAColor.blackRGBA
+            };
             _ = movieView.AddChild(rectangleElement);
             AddViewwithID(movieView, 7);
         }
 
         public void CreateAbout()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             string text = Application.GetString(655416).ToString();
             string[] separator = ["%@"];
@@ -501,21 +505,23 @@ namespace CutTheRope.game
             float num = 1300f;
             float h = 1100f;
             VBox vBox = new VBox().InitWithOffsetAlignWidth(0f, 2, num);
-            BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
-            baseElement2.width = (int)num;
-            baseElement2.height = 100;
+            BaseElement baseElement2 = new()
+            {
+                width = (int)num,
+                height = 100
+            };
             _ = vBox.AddChild(baseElement2);
             Image c = Image.Image_createWithResIDQuad(50, 1);
             _ = vBox.AddChild(c);
             Text text2 = new Text().InitWithFont(Application.GetFont(4));
             text2.SetAlignment(2);
-            text2.SetStringandWidth(NSS(text), (int)num);
+            text2.SetStringandWidth(text, (int)num);
             aboutContainer = new ScrollableContainer().InitWithWidthHeightContainer(num, h, vBox);
             aboutContainer.anchor = aboutContainer.parentAnchor = 18;
             _ = vBox.AddChild(text2);
             Image c2 = Image.Image_createWithResIDQuad(50, 2);
             _ = vBox.AddChild(c2);
-            NSString @string = Application.GetString(655417);
+            string @string = Application.GetString(655417);
             Text text3 = new Text().InitWithFont(Application.GetFont(4));
             text3.SetAlignment(2);
             text3.SetStringandWidth(@string, num);
@@ -529,7 +535,7 @@ namespace CutTheRope.game
             AddViewwithID(menuView, 3);
         }
 
-        public static HBox CreateTextWithStar(NSString t)
+        public static HBox CreateTextWithStar(string t)
         {
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
             Text text = new Text().InitWithFont(Application.GetFont(3));
@@ -557,9 +563,11 @@ namespace CutTheRope.game
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
-            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
-            touchBaseElement.delegateValue = this;
-            BaseElement baseElement = (BaseElement)new BaseElement().Init();
+            TouchBaseElement touchBaseElement = new()
+            {
+                delegateValue = this
+            };
+            BaseElement baseElement = new();
             baseElement.SetName("boxContainer");
             baseElement.anchor = baseElement.parentAnchor = 12;
             _ = touchBaseElement.AddChild(baseElement);
@@ -575,7 +583,7 @@ namespace CutTheRope.game
                 r = 53;
                 q = n - 6;
             }
-            NSString nsstring;
+            string nsstring;
             if (n == CTRPreferences.GetPacksCount())
             {
                 nsstring = Application.GetString(655415);
@@ -584,10 +592,10 @@ namespace CutTheRope.game
             {
                 string text3 = (n + 1).ToString(CultureInfo.InvariantCulture);
                 string text4 = ". ";
-                NSString @string = Application.GetString(655404 + n);
-                nsstring = NSS(text3 + text4 + (@string?.ToString()));
+                string @string = Application.GetString(655404 + n);
+                nsstring = text3 + text4 + (@string?.ToString());
             }
-            NSString nSString = nsstring;
+            string nSString = nsstring;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
             touchBaseElement.bid = 23 + n;
@@ -602,12 +610,12 @@ namespace CutTheRope.game
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
-                HBox hBox = CreateTextWithStar(NSS(num.ToString(CultureInfo.InvariantCulture)));
+                HBox hBox = CreateTextWithStar(num.ToString(CultureInfo.InvariantCulture));
                 hBox.anchor = hBox.parentAnchor = 18;
                 hBox.y = 110f;
                 _ = image2.AddChild(hBox);
                 Text text = new Text().InitWithFont(Application.GetFont(4));
-                NSString newString = NSS(Application.GetString(655390).ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture)));
+                string newString = Application.GetString(655390).ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture));
                 text.SetAlignment(2);
                 text.anchor = 10;
                 text.parentAnchor = 34;
@@ -687,11 +695,11 @@ namespace CutTheRope.game
 
         public void CreatePackSelect()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             string text = Application.GetString(655388).ToString();
             text = text.Replace("%d", "");
-            HBox hBox = CreateTextWithStar(NSS(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture)));
+            HBox hBox = CreateTextWithStar(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
             hBox.x = -30f - Canvas.xOffsetScaled;
             hBox.y = 40f;
             hBox.SetName("text");
@@ -716,9 +724,11 @@ namespace CutTheRope.game
             hBox.anchor = hBox.parentAnchor = 12;
             _ = baseElement.AddChild(hBox);
             CTRTexture2D texture = Application.GetTexture(52);
-            BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
-            baseElement2.width = (int)texture.preCutSize.x;
-            baseElement2.height = (int)texture.preCutSize.y;
+            BaseElement baseElement2 = new()
+            {
+                width = (int)texture.preCutSize.x,
+                height = (int)texture.preCutSize.y
+            };
             _ = hBox2.AddChild(baseElement2);
             float num3 = 0f + GetPackOffset();
             for (int i = 0; i < CTRPreferences.GetPacksCount() + 1; i++)
@@ -788,7 +798,7 @@ namespace CutTheRope.game
         public void ShowCantUnlockPopup()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            Popup popup = (Popup)new Popup().Init();
+            Popup popup = new();
             popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.DoRestoreCutTransparency();
@@ -817,7 +827,7 @@ namespace CutTheRope.game
             text3.y += 50f;
             _ = popup.AddChild(text3);
             int totalStars = CTRPreferences.GetTotalStars();
-            HBox hBox = CreateTextWithStar(NSS((CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars).ToString(CultureInfo.InvariantCulture)));
+            HBox hBox = CreateTextWithStar((CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars).ToString(CultureInfo.InvariantCulture));
             hBox.anchor = 18;
             Image.SetElementPositionWithQuadOffset(hBox, 49, 5);
             hBox.y -= num;
@@ -832,7 +842,7 @@ namespace CutTheRope.game
 
         public void ShowGameFinishedPopup()
         {
-            Popup popup = (Popup)new Popup().Init();
+            Popup popup = new();
             popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.DoRestoreCutTransparency();
@@ -859,9 +869,9 @@ namespace CutTheRope.game
             _ = ActiveView().AddChild(popup);
         }
 
-        public void ShowYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
+        public void ShowYesNoPopup(string str, int buttonYesId, int buttonNoId)
         {
-            Popup popup = (Popup)new Popup().Init();
+            Popup popup = new();
             popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.DoRestoreCutTransparency();
@@ -936,9 +946,11 @@ namespace CutTheRope.game
         {
             bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
-            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
-            touchBaseElement.bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0);
-            touchBaseElement.delegateValue = this;
+            TouchBaseElement touchBaseElement = new()
+            {
+                bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0),
+                delegateValue = this
+            };
             Image image;
             if (flag)
             {
@@ -952,7 +964,7 @@ namespace CutTheRope.game
                 image = Image.Image_createWithResIDQuad(51, 0);
                 image.DoRestoreCutTransparency();
                 Text text = new Text().InitWithFont(Application.GetFont(3));
-                NSString @string = NSS((l + 1).ToString(CultureInfo.InvariantCulture));
+                string @string = (l + 1).ToString(CultureInfo.InvariantCulture);
                 text.SetString(@string);
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
@@ -971,7 +983,7 @@ namespace CutTheRope.game
         public void CreateLevelSelect()
         {
             float num = 0.3f;
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             int num4 = 126 + pack;
             Image image = Image.Image_createWithResIDQuad(num4, 0);
             Image image2 = Image.Image_createWithResIDQuad(num4, 0);
@@ -1012,7 +1024,7 @@ namespace CutTheRope.game
             _ = image5.AddTimeline(timeline3);
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
-            HBox hBox = CreateTextWithStar(NSS(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount() * 3).ToString(CultureInfo.InvariantCulture)));
+            HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount() * 3).ToString(CultureInfo.InvariantCulture));
             hBox.x = -20f;
             hBox.y = 20f;
             float of = 55f;
@@ -1057,35 +1069,41 @@ namespace CutTheRope.game
             AddViewwithID(menuView, 6);
         }
 
-        public override NSObject InitWithParent(ViewController p)
+        public MenuController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
-            {
-                ddMainMenu = (DelayedDispatcher)new DelayedDispatcher().Init();
-                ddPackSelect = (DelayedDispatcher)new DelayedDispatcher().Init();
-                CreateMainMenu();
-                CreateOptions();
-                CreateReset();
-                CreateAbout();
-                CreateMovieView();
-                CreatePackSelect();
-                CreateLeaderboards();
-                CreateAchievements();
-                MapPickerController c = (MapPickerController)new MapPickerController().InitWithParent(this);
-                AddChildwithID(c, 0);
-            }
-            return this;
+            ddMainMenu = new DelayedDispatcher();
+            ddPackSelect = new DelayedDispatcher();
+            CreateMainMenu();
+            CreateOptions();
+            CreateReset();
+            CreateAbout();
+            CreateMovieView();
+            CreatePackSelect();
+            CreateLeaderboards();
+            CreateAchievements();
+            MapPickerController c = new(this);
+            AddChildwithID(c, 0);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            ddMainMenu.CancelAllDispatches();
-            ddMainMenu.Dealloc();
-            ddMainMenu = null;
-            ddPackSelect.CancelAllDispatches();
-            ddPackSelect.Dealloc();
-            ddPackSelect = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                if (ddMainMenu != null)
+                {
+                    ddMainMenu.CancelAllDispatches();
+                    ddMainMenu.Dispose();
+                    ddMainMenu = null;
+                }
+                if (ddPackSelect != null)
+                {
+                    ddPackSelect.CancelAllDispatches();
+                    ddPackSelect.Dispose();
+                    ddPackSelect = null;
+                }
+            }
+            base.Dispose(disposing);
         }
 
         public override void Activate()
@@ -1119,7 +1137,7 @@ namespace CutTheRope.game
             packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
             CTRSoundMgr.StopMusic();
             Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-            Application.SharedMovieMgr().PlayURL(NSS("outro"), !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+            Application.SharedMovieMgr().PlayURL("outro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
         }
 
         public override void OnChildDeactivated(int n)
@@ -1129,7 +1147,7 @@ namespace CutTheRope.game
             Deactivate();
         }
 
-        public void MoviePlaybackFinished(NSString url)
+        public void MoviePlaybackFinished(string url)
         {
             if (replayingIntroMovie)
             {
@@ -1225,7 +1243,7 @@ namespace CutTheRope.game
                 ShowView(7);
                 CTRSoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+                Application.SharedMovieMgr().PlayURL("intro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                 return;
             }
             ActivateChild(0);
@@ -1267,7 +1285,7 @@ namespace CutTheRope.game
                             ShowView(7);
                             CTRSoundMgr.StopMusic();
                             Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                            Application.SharedMovieMgr().PlayURL(NSS("intro"), !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+                            Application.SharedMovieMgr().PlayURL("intro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                             return;
                         }
                         MoviePlaybackFinished(null);
@@ -1335,7 +1353,6 @@ namespace CutTheRope.game
                     {
                         bool flag7 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
                         Preferences.SetBooleanForKey(!flag7, "PREFS_CLICK_TO_CUT", true);
-                        _ = NSS(flag7 ? "off" : "on");
                         return;
                     }
                 case 12:
@@ -1386,13 +1403,13 @@ namespace CutTheRope.game
                     }
                 case 22:
                     {
-                        NSString @string = Application.SharedAppSettings().GetString(8);
-                        NSString[] array3 =
+                        string @string = Application.SharedAppSettings().GetString(8);
+                        string[] array3 =
                         [
-                    NSS("en"),
-                    NSS("ru"),
-                    NSS("de"),
-                    NSS("fr")
+                    "en",
+                    "ru",
+                    "de",
+                    "fr"
                         ];
                         int num = array3.Length;
                         bool flag4 = false;
@@ -1400,7 +1417,7 @@ namespace CutTheRope.game
                         {
                             if (@string.IsEqualToString(array3[j]))
                             {
-                                NSString nSString = array3[(j + 1) % num];
+                                string nSString = array3[(j + 1) % num];
                                 Application.SharedAppSettings().SetString(8, nSString);
                                 Preferences.SetStringForKey(nSString.ToString(), "PREFS_LOCALE", true);
                                 flag4 = true;
@@ -1464,18 +1481,18 @@ namespace CutTheRope.game
                 case 37:
                 case 38:
                     {
-                        NSString[] array4 =
+                        string[] array4 =
                         [
-                    NSS("BS"),
-                    NSS("OP"),
-                    NSS("LB"),
-                    NSS("AC")
+                    "BS",
+                    "OP",
+                    "LB",
+                    "AC"
                         ];
-                        NSString[] array5 = new NSString[4];
-                        array5[0] = NSS("BS_BACK_PRESSED");
-                        array5[1] = NSS("OP_BACK_PRESSED");
-                        NSString nsstring = array4[n - 35];
-                        NSString nsstring2 = array5[n - 35];
+                        string[] array5 = new string[4];
+                        array5[0] = "BS_BACK_PRESSED";
+                        array5[1] = "OP_BACK_PRESSED";
+                        string nsstring = array4[n - 35];
+                        string nsstring2 = array5[n - 35];
                         ShowView(0);
                         return;
                     }
@@ -1610,7 +1627,7 @@ namespace CutTheRope.game
             }
         }
 
-        public void Selector_recreateOptions(NSObject param)
+        public void Selector_recreateOptions(FrameworkTypes param)
         {
             RecreateOptions();
         }

@@ -1,10 +1,8 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.helpers
 {
-    internal sealed class DispatchClass : NSObject
+    internal sealed class DispatchClass : FrameworkTypes
     {
-        public DispatchClass InitWithObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc callThisFunc, NSObject p, float d)
+        public DispatchClass InitWithObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc callThisFunc, FrameworkTypes p, float d)
         {
             callThis = callThisFunc;
             param = p;
@@ -21,6 +19,6 @@ namespace CutTheRope.iframework.helpers
 
         public DelayedDispatcher.DispatchFunc callThis;
 
-        public NSObject param;
+        public FrameworkTypes param;
     }
 }

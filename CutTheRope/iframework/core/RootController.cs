@@ -4,31 +4,14 @@ using System.Collections.Generic;
 using CutTheRope.desktop;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.iframework.core
 {
-    internal class RootController : ViewController
+    internal class RootController(ViewController parent) : ViewController(parent)
     {
-        public override NSObject InitWithParent(ViewController p)
-        {
-            if (base.InitWithParent(p) != null)
-            {
-                viewTransition = -1;
-                transitionTime = -1f;
-                previousView = null;
-                transitionDelay = 0.4f;
-                screenGrabber = (Grabber)new Grabber().Init();
-                prevScreenImage = null;
-                nextScreenImage = null;
-                deactivateCurrentController = false;
-            }
-            return this;
-        }
-
         public void PerformTick(float delta)
         {
             lastTime += delta;
@@ -67,10 +50,8 @@ namespace CutTheRope.iframework.core
                 if (lastTime > transitionTime)
                 {
                     transitionTime = -1f;
-                    NSREL(prevScreenImage);
                     prevScreenImage?.xnaTexture_.Dispose();
                     prevScreenImage = null;
-                    NSREL(nextScreenImage);
                     nextScreenImage?.xnaTexture_.Dispose();
                     nextScreenImage = null;
                 }
@@ -192,10 +173,8 @@ namespace CutTheRope.iframework.core
                 transitionTime = lastTime + transitionDelay;
                 ApplyLandscape();
                 currentController.ActiveView().Draw();
-                NSREL(nextScreenImage);
                 nextScreenImage?.xnaTexture_.Dispose();
                 nextScreenImage = Grabber.Grab();
-                _ = NSRET(nextScreenImage);
                 OpenGL.GlLoadIdentity();
             }
         }
@@ -210,10 +189,8 @@ namespace CutTheRope.iframework.core
                 OpenGL.GlClear(0);
                 ApplyLandscape();
                 previousView.Draw();
-                NSREL(prevScreenImage);
                 prevScreenImage?.xnaTexture_.Dispose();
                 prevScreenImage = Grabber.Grab();
-                _ = NSRET(prevScreenImage);
                 OpenGL.GlLoadIdentity();
             }
         }
@@ -307,11 +284,11 @@ namespace CutTheRope.iframework.core
 
         public const float TRANSITION_DEFAULT_DELAY = 0.4f;
 
-        public int viewTransition;
+        public int viewTransition = -1;
 
-        public float transitionTime;
+        public float transitionTime = -1f;
 
-        private float transitionDelay;
+        private readonly float transitionDelay = 0.4f;
 
         private View previousView;
 
@@ -319,7 +296,7 @@ namespace CutTheRope.iframework.core
 
         private CTRTexture2D nextScreenImage;
 
-        private Grabber screenGrabber;
+        private readonly Grabber screenGrabber = new();
 
         private bool deactivateCurrentController;
 

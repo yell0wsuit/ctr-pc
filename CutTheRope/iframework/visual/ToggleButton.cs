@@ -13,20 +13,17 @@ namespace CutTheRope.iframework.visual
 
         public ToggleButton InitWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, int bid)
         {
-            if (Init() != null)
-            {
-                buttonID = bid;
-                b1 = new Button().InitWithUpElementDownElementandID(u1, d1, 0);
-                b2 = new Button().InitWithUpElementDownElementandID(u2, d2, 1);
-                b1.parentAnchor = b2.parentAnchor = 9;
-                width = b1.width;
-                height = b1.height;
-                _ = AddChildwithID(b1, 0);
-                _ = AddChildwithID(b2, 1);
-                b2.SetEnabled(false);
-                b1.delegateButtonDelegate = this;
-                b2.delegateButtonDelegate = this;
-            }
+            buttonID = bid;
+            b1 = new Button().InitWithUpElementDownElementandID(u1, d1, 0);
+            b2 = new Button().InitWithUpElementDownElementandID(u2, d2, 1);
+            b1.parentAnchor = b2.parentAnchor = 9;
+            width = b1.width;
+            height = b1.height;
+            _ = AddChildwithID(b1, 0);
+            _ = AddChildwithID(b2, 1);
+            b2.SetEnabled(false);
+            b1.delegateButtonDelegate = this;
+            b2.delegateButtonDelegate = this;
             return this;
         }
 

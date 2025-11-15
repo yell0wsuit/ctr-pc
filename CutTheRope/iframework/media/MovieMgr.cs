@@ -1,14 +1,13 @@
 using CutTheRope.desktop;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.iframework.media
 {
-    internal sealed class MovieMgr : NSObject, System.IDisposable
+    internal sealed class MovieMgr : FrameworkTypes, System.IDisposable
     {
-        public void PlayURL(NSString moviePath, bool mute)
+        public void PlayURL(string moviePath, bool mute)
         {
             url = moviePath;
             video = Global.ScreenSizeManager.CurrentSize.Width <= 1024
@@ -85,7 +84,7 @@ namespace CutTheRope.iframework.media
 
         private VideoPlayer player;
 
-        public NSString url;
+        public string url;
 
         public IMovieMgrDelegate delegateMovieMgrDelegate;
 
@@ -95,7 +94,7 @@ namespace CutTheRope.iframework.media
 
         private bool paused;
 
-        public void Dispose()
+        public new void Dispose()
         {
             throw new System.NotImplementedException();
         }

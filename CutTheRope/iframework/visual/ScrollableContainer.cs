@@ -359,59 +359,61 @@ namespace CutTheRope.iframework.visual
             return true;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            spoints = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                spoints = null;
+            }
+            base.Dispose(disposing);
         }
 
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
-            if (Init() != null)
-            {
-                float num = Application.SharedAppSettings().GetInt(5);
-                fixedDelta = (float)(1.0 / (double)num);
-                spoints = null;
-                spointsNum = -1;
-                spointsCapacity = -1;
-                targetSpoint = -1;
-                lastTargetSpoint = -1;
-                // deaccelerationSpeed = 3f;
-                inertiaTimeout = 0.1f;
-                // scrollToPointDuration = 0.35f;
-                canSkipScrollPoints = false;
-                shouldBounceHorizontally = false;
-                shouldBounceVertically = false;
-                touchMoveIgnoreLength = 0f;
-                maxTouchMoveLength = 40f;
-                touchPassTimeout = 0.5f;
-                minAutoScrollToSpointLength = -1f;
-                resetScrollOnShow = true;
-                untouchChildsOnMove = false;
-                dontHandleTouchDownsHandledByChilds = false;
-                dontHandleTouchMovesHandledByChilds = false;
-                dontHandleTouchUpsHandledByChilds = false;
-                touchTimer = 0f;
-                passTouches = false;
-                touchReleaseTimer = 0f;
-                move = vectZero;
-                container = c;
-                width = (int)w;
-                height = (int)h;
-                container.parentAnchor = 9;
-                container.parent = this;
-                childs[0] = container;
-                dragStart = impossibleTouch;
-                touchState = TOUCH_STATE.UP;
-            }
+            float num = Application.SharedAppSettings().GetInt(5);
+            fixedDelta = (float)(1.0 / (double)num);
+            spoints = null;
+            spointsNum = -1;
+            spointsCapacity = -1;
+            targetSpoint = -1;
+            lastTargetSpoint = -1;
+            // deaccelerationSpeed = 3f;
+            inertiaTimeout = 0.1f;
+            // scrollToPointDuration = 0.35f;
+            canSkipScrollPoints = false;
+            shouldBounceHorizontally = false;
+            shouldBounceVertically = false;
+            touchMoveIgnoreLength = 0f;
+            maxTouchMoveLength = 40f;
+            touchPassTimeout = 0.5f;
+            minAutoScrollToSpointLength = -1f;
+            resetScrollOnShow = true;
+            untouchChildsOnMove = false;
+            dontHandleTouchDownsHandledByChilds = false;
+            dontHandleTouchMovesHandledByChilds = false;
+            dontHandleTouchUpsHandledByChilds = false;
+            touchTimer = 0f;
+            passTouches = false;
+            touchReleaseTimer = 0f;
+            move = vectZero;
+            container = c;
+            width = (int)w;
+            height = (int)h;
+            container.parentAnchor = 9;
+            container.parent = this;
+            childs[0] = container;
+            dragStart = impossibleTouch;
+            touchState = TOUCH_STATE.UP;
             return this;
         }
 
         public ScrollableContainer InitWithWidthHeightContainerWidthHeight(float w, float h, float cw, float ch)
         {
-            container = (BaseElement)new BaseElement().Init();
-            container.width = (int)cw;
-            container.height = (int)ch;
+            container = new BaseElement
+            {
+                width = (int)cw,
+                height = (int)ch
+            };
             _ = InitWithWidthHeightContainer(w, h, container);
             return this;
         }

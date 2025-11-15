@@ -2,7 +2,6 @@ using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -10,11 +9,6 @@ namespace CutTheRope.game
 {
     internal sealed class GameView : View
     {
-        public override NSObject InitFullscreen()
-        {
-            return base.InitFullscreen() == null ? null : (NSObject)this;
-        }
-
         public override void Show()
         {
             base.Show();

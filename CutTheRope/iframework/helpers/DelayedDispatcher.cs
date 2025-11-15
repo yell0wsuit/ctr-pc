@@ -1,30 +1,31 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.helpers
 {
-    internal sealed class DelayedDispatcher : NSObject
+    internal sealed class DelayedDispatcher : FrameworkTypes
     {
         public DelayedDispatcher()
         {
             dispatchers = [];
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            dispatchers.Clear();
-            dispatchers = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                dispatchers?.Clear();
+                dispatchers = null;
+            }
+            base.Dispose(disposing);
         }
 
-        public void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, double d)
+        public void CallObjectSelectorParamafterDelay(DispatchFunc s, FrameworkTypes p, double d)
         {
             CallObjectSelectorParamafterDelay(s, p, (float)d);
         }
 
-        public void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, float d)
+        public void CallObjectSelectorParamafterDelay(DispatchFunc s, FrameworkTypes p, float d)
         {
             DispatchClass item = new DispatchClass().InitWithObjectSelectorParamafterDelay(s, p, d);
             dispatchers.Add(item);
@@ -52,7 +53,7 @@ namespace CutTheRope.iframework.helpers
             dispatchers.Clear();
         }
 
-        public void CancelDispatchWithObjectSelectorParam(DispatchFunc s, NSObject p)
+        public void CancelDispatchWithObjectSelectorParam(DispatchFunc s, FrameworkTypes p)
         {
             throw new NotImplementedException();
         }
@@ -60,6 +61,6 @@ namespace CutTheRope.iframework.helpers
         private List<DispatchClass> dispatchers;
 
         // (Invoke) Token: 0x06000670 RID: 1648
-        public delegate void DispatchFunc(NSObject param);
+        public delegate void DispatchFunc(FrameworkTypes param);
     }
 }

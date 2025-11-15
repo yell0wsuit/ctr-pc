@@ -6,12 +6,26 @@ using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.platform;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework
 {
-    internal class FrameworkTypes : CTRMathHelper
+    internal class FrameworkTypes : CTRMathHelper, IDisposable
     {
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~FrameworkTypes()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
         // (get) Token: 0x06000108 RID: 264 RVA: 0x00005BCC File Offset: 0x00003DCC
         public static GLCanvas Canvas => Application.SharedCanvas();
 
@@ -206,18 +220,13 @@ namespace CutTheRope.iframework
 
         public sealed class FlurryAPI
         {
-            public static void LogEvent(NSString s)
+            public static void LogEvent(string s)
             {
             }
         }
 
         public sealed class AndroidAPI
         {
-            public static void OpenUrl(NSString url)
-            {
-                OpenUrl(url.ToString());
-            }
-
             public static void OpenUrl(string url)
             {
                 try

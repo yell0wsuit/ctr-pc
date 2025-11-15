@@ -1,5 +1,4 @@
 using CutTheRope.desktop;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -7,13 +6,9 @@ namespace CutTheRope.iframework.visual
 {
     internal class RectangleElement : BaseElement
     {
-        public override NSObject Init()
+        public RectangleElement()
         {
-            if (base.Init() != null)
-            {
-                solid = true;
-            }
-            return this;
+            solid = true;
         }
 
         public override void Draw()

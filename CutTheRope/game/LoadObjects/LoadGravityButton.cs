@@ -1,4 +1,6 @@
-using CutTheRope.ios;
+using System.Xml.Linq;
+
+using CutTheRope.Helpers;
 
 namespace CutTheRope.game
 {
@@ -12,14 +14,14 @@ namespace CutTheRope.game
         /// Loads the gravity switch button from XML node data
         /// Creates and positions the gravity toggle button
         /// </summary>
-        private void LoadGravityButton(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadGravityButton(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             gravityButton = CreateGravityButtonWithDelegate(this);
             gravityButton.visible = false;
             gravityButton.touchable = false;
             _ = AddChild(gravityButton);
-            gravityButton.x = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
-            gravityButton.y = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
+            gravityButton.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+            gravityButton.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
             gravityButton.anchor = 18;
         }
     }

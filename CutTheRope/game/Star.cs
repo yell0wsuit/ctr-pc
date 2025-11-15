@@ -2,7 +2,6 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -25,13 +24,9 @@ namespace CutTheRope.game
             return star;
         }
 
-        public override NSObject Init()
+        public Star()
         {
-            if (base.Init() != null)
-            {
-                timedAnim = null;
-            }
-            return this;
+            timedAnim = null;
         }
 
         public override void Update(float delta)

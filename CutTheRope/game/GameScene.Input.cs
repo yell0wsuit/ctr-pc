@@ -30,7 +30,6 @@ namespace CutTheRope.game
             return false;
         }
 
-
         public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
@@ -138,15 +137,13 @@ namespace CutTheRope.game
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(1);
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
                 timeline2.delegateTimelineDelegate = this;
-                RotatedCircle rotatedCircle4 = (RotatedCircle)rotatedCircle.Copy();
+                RotatedCircle rotatedCircle4 = rotatedCircle.Copy();
                 _ = rotatedCircle4.AddTimeline(timeline2);
                 rotatedCircle4.PlayTimeline(0);
                 _ = rotatedCircle.AddTimeline(timeline);
                 rotatedCircle.PlayTimeline(0);
-                rotatedCircle.Retain();
                 rotatedCircles.SetObjectAt(rotatedCircle4, rotatedCircles.GetObjectIndex(rotatedCircle));
                 _ = rotatedCircles.AddObject(rotatedCircle);
-                rotatedCircle.Release();
             }
             foreach (object obj4 in bungees)
             {
@@ -398,12 +395,14 @@ namespace CutTheRope.game
             {
                 Vector start = VectAdd(startPos[ti], camera.pos);
                 Vector end = VectAdd(Vect(tx, ty), camera.pos);
-                FingerCut fingerCut = (FingerCut)new FingerCut().Init();
-                fingerCut.start = start;
-                fingerCut.end = end;
-                fingerCut.startSize = 5f;
-                fingerCut.endSize = 5f;
-                fingerCut.c = RGBAColor.whiteRGBA;
+                FingerCut fingerCut = new()
+                {
+                    start = start,
+                    end = end,
+                    startSize = 5f,
+                    endSize = 5f,
+                    c = RGBAColor.whiteRGBA
+                };
                 _ = fingerCuts[ti].AddObject(fingerCut);
                 int num4 = 0;
                 foreach (object obj2 in fingerCuts[ti])

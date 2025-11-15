@@ -40,7 +40,7 @@ namespace CutTheRope.game
             bouncers = new DynamicArray<Bouncer>();
             rotatedCircles = new DynamicArray<RotatedCircle>();
             earthAnims = null;
-            pollenDrawer = (PollenDrawer)new PollenDrawer().Init();
+            pollenDrawer = new PollenDrawer();
         }
 
         /// <summary>
@@ -50,17 +50,16 @@ namespace CutTheRope.game
         private void InitializeCandyObjects()
         {
             // Initialize constraint points for ropes
-            star = (ConstraintedPoint)new ConstraintedPoint().Init();
+            star = new ConstraintedPoint();
             star.SetWeight(1f);
-            starL = (ConstraintedPoint)new ConstraintedPoint().Init();
+            starL = new ConstraintedPoint();
             starL.SetWeight(1f);
-            starR = (ConstraintedPoint)new ConstraintedPoint().Init();
+            starR = new ConstraintedPoint();
             starR.SetWeight(1f);
 
             // Initialize main candy
             candy = GameObject.GameObject_createWithResIDQuad(63, 0);
             candy.DoRestoreCutTransparency();
-            candy.Retain();
             candy.anchor = 18;
             candy.bb = MakeRectangle(142f, 157f, 112f, 104f);
             candy.passTransformationsToChilds = false;

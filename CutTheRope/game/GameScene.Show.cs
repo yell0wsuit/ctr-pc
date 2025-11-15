@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Xml.Linq;
 
 using CutTheRope.desktop;
 using CutTheRope.iframework;
@@ -6,7 +7,6 @@ using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -20,7 +20,7 @@ namespace CutTheRope.game
             InitializeHUDStars();
 
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            XMLNode map = cTRRootController.GetMap();
+            XElement map = cTRRootController.GetMap();
 
             float num = 3f;
             float num2 = 0f;

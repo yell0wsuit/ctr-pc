@@ -1,5 +1,4 @@
 using CutTheRope.desktop;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -7,14 +6,10 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class CircleElement : BaseElement
     {
-        public override NSObject Init()
+        public CircleElement()
         {
-            if (base.Init() != null)
-            {
-                vertextCount = 32;
-                solid = true;
-            }
-            return this;
+            vertextCount = 32;
+            solid = true;
         }
 
         public override void Draw()

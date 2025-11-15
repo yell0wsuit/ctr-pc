@@ -1,51 +1,53 @@
 using System.Collections.Generic;
+using System.Xml.Linq;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class MapPickerController : ViewController, IButtonDelegation
     {
-        public override NSObject InitWithParent(ViewController p)
+        public MapPickerController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
+            selectedMap = null;
+            maplist = null;
+            CreatePickerView();
+            View view = new();
+            RectangleElement rectangleElement = new()
             {
-                selectedMap = null;
-                maplist = null;
-                CreatePickerView();
-                View view = (View)new View().InitFullscreen();
-                RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
-                rectangleElement.color = RGBAColor.whiteRGBA;
-                rectangleElement.width = (int)SCREEN_WIDTH;
-                rectangleElement.height = (int)SCREEN_HEIGHT;
-                _ = view.AddChild(rectangleElement);
-                FontGeneric font = Application.GetFont(4);
-                Text text = new Text().InitWithFont(font);
-                text.SetString(NSS("Loading..."));
-                text.anchor = text.parentAnchor = 18;
-                _ = view.AddChild(text);
-                AddViewwithID(view, 1);
-                SetNormalMode();
-            }
-            return this;
+                color = RGBAColor.whiteRGBA,
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT
+            };
+            _ = view.AddChild(rectangleElement);
+            FontGeneric font = Application.GetFont(4);
+            Text text = new Text().InitWithFont(font);
+            text.SetString("Loading...");
+            text.anchor = text.parentAnchor = 18;
+            _ = view.AddChild(text);
+            AddViewwithID(view, 1);
+            SetNormalMode();
         }
 
         public void CreatePickerView()
         {
-            View view = (View)new View().InitFullscreen();
-            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
-            rectangleElement.color = RGBAColor.whiteRGBA;
-            rectangleElement.width = (int)SCREEN_WIDTH;
-            rectangleElement.height = (int)SCREEN_HEIGHT;
+            View view = new();
+            RectangleElement rectangleElement = new()
+            {
+                color = RGBAColor.whiteRGBA,
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT
+            };
             _ = view.AddChild(rectangleElement);
             FontGeneric font = Application.GetFont(4);
             Text text = new Text().InitWithFont(font);
-            text.SetString(NSS("START"));
+            text.SetString("START");
             Text text2 = new Text().InitWithFont(font);
-            text2.SetString(NSS("START"));
+            text2.SetString("START");
             text2.scaleX = text2.scaleY = 1.2f;
             Button button = new Button().InitWithUpElementDownElementandID(text, text2, 0);
             button.anchor = button.parentAnchor = 34;
@@ -60,10 +62,10 @@ namespace CutTheRope.game
             if (autoLoad)
             {
                 string text = "maps/";
-                NSString nsstring = selectedMap;
-                NSString nSString = NSS(text + (nsstring?.ToString()));
-                XMLNode xMLNode = XMLNode.ParseXML(nSString.ToString());
-                XmlLoaderFinishedWithfromwithSuccess(xMLNode, nSString, xMLNode != null);
+                string nsstring = selectedMap;
+                string nSString = text + (nsstring?.ToString());
+                XElement mapElement = XElementExtensions.LoadContentXml(nSString.ToString());
+                XmlLoaderFinishedWithfromwithSuccess(mapElement, nSString, mapElement != null);
                 return;
             }
             ShowView(0);
@@ -79,7 +81,7 @@ namespace CutTheRope.game
             base.Deactivate();
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string url, bool success)
         {
             if (rootNode != null)
             {
@@ -97,12 +99,11 @@ namespace CutTheRope.game
             ((CTRRootController)Application.SharedRootController()).SetPicker(true);
         }
 
-        public void SetAutoLoadMap(NSString map)
+        public void SetAutoLoadMap(string map)
         {
             autoLoad = true;
             ((CTRRootController)Application.SharedRootController()).SetPicker(false);
-            NSREL(selectedMap);
-            selectedMap = (NSString)NSRET(map);
+            selectedMap = map;
         }
 
         public void OnButtonPressed(int n)
@@ -113,15 +114,9 @@ namespace CutTheRope.game
             }
         }
 
-        public override void Dealloc()
-        {
-            NSREL(selectedMap);
-            base.Dealloc();
-        }
+        private string selectedMap;
 
-        private NSString selectedMap;
-
-        private Dictionary<string, XMLNode> maplist;
+        private readonly Dictionary<string, XElement> maplist;
 
         private bool autoLoad;
     }

@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.core
 {
-    internal sealed class ApplicationSettings : NSObject
+    internal sealed class ApplicationSettings : FrameworkTypes
     {
         public int GetInt(int s)
         {
@@ -18,25 +16,23 @@ namespace CutTheRope.iframework.core
             return value;
         }
 
-        public NSString GetString(int s)
+        public string GetString(int s)
         {
             return s != 8
-                ? NSS("")
-                : locale != null
-                ? NSS(locale)
-                : LANGUAGE switch
+                ? ""
+                : locale ?? LANGUAGE switch
                 {
-                    Language.LANGEN => NSS("en"),
-                    Language.LANGRU => NSS("ru"),
-                    Language.LANGDE => NSS("de"),
-                    Language.LANGFR => NSS("fr"),
-                    Language.LANGZH => NSS("zh"),
-                    Language.LANGJA => NSS("ja"),
-                    _ => NSS("en"),
+                    Language.LANGEN => "en",
+                    Language.LANGRU => "ru",
+                    Language.LANGDE => "de",
+                    Language.LANGFR => "fr",
+                    Language.LANGZH => "zh",
+                    Language.LANGJA => "ja",
+                    _ => "en",
                 };
         }
 
-        public void SetString(int sid, NSString str)
+        public void SetString(int sid, string str)
         {
             if (sid == 8)
             {

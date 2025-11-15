@@ -1,20 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.sfe
 {
-    internal class ConstraintSystem : NSObject
+    internal class ConstraintSystem : FrameworkTypes
     {
-        public override NSObject Init()
+        public ConstraintSystem()
         {
-            if (base.Init() != null)
-            {
-                relaxationTimes = 1;
-                parts = [];
-            }
-            return this;
+            relaxationTimes = 1;
+            parts = [];
         }
 
         public virtual void AddPart(ConstraintedPoint cp)
@@ -50,10 +44,20 @@ namespace CutTheRope.iframework.sfe
             throw new NotImplementedException();
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            parts = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                if (parts != null)
+                {
+                    foreach (ConstraintedPoint part in parts)
+                    {
+                        part?.Dispose();
+                    }
+                    parts = null;
+                }
+            }
+            base.Dispose(disposing);
         }
 
         public List<ConstraintedPoint> parts;

@@ -4,7 +4,6 @@ using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -201,40 +200,37 @@ namespace CutTheRope.game
             }
         }
 
-        public NSObject InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
+        public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
         {
-            if (Init() != null)
+            relaxationTimes = 30;
+            lineWidth = 10f;
+            cut = -1;
+            bungeeMode = 0;
+            highlighted = false;
+            bungeeAnchor = h ?? new ConstraintedPoint();
+            if (t != null)
             {
-                relaxationTimes = 30;
-                lineWidth = 10f;
-                cut = -1;
-                bungeeMode = 0;
-                highlighted = false;
-                bungeeAnchor = h ?? (ConstraintedPoint)new ConstraintedPoint().Init();
-                if (t != null)
-                {
-                    tail = t;
-                }
-                else
-                {
-                    tail = (ConstraintedPoint)new ConstraintedPoint().Init();
-                    tail.SetWeight(1f);
-                }
-                bungeeAnchor.SetWeight(0.02f);
-                bungeeAnchor.pos = Vect(hx, hy);
-                tail.pos = Vect(tx, ty);
-                AddPart(bungeeAnchor);
-                AddPart(tail);
-                tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
-                Vector v = VectSub(tail.pos, bungeeAnchor.pos);
-                int num = (int)((len / BUNGEE_REST_LEN) + 2f);
-                v = VectDiv(v, num);
-                RollplacingWithOffset(len, v);
-                forceWhite = false;
-                initialCandleAngle = -1f;
-                chosenOne = false;
-                hideTailParts = false;
+                tail = t;
             }
+            else
+            {
+                tail = new ConstraintedPoint();
+                tail.SetWeight(1f);
+            }
+            bungeeAnchor.SetWeight(0.02f);
+            bungeeAnchor.pos = Vect(hx, hy);
+            tail.pos = Vect(tx, ty);
+            AddPart(bungeeAnchor);
+            AddPart(tail);
+            tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
+            Vector v = VectSub(tail.pos, bungeeAnchor.pos);
+            int num = (int)((len / BUNGEE_REST_LEN) + 2f);
+            v = VectDiv(v, num);
+            RollplacingWithOffset(len, v);
+            forceWhite = false;
+            initialCandleAngle = -1f;
+            chosenOne = false;
+            hideTailParts = false;
             return this;
         }
 
@@ -269,7 +265,7 @@ namespace CutTheRope.game
                 if (rollLen >= BUNGEE_REST_LEN)
                 {
                     ConstraintedPoint constraintedPoint = parts[^2];
-                    ConstraintedPoint constraintedPoint2 = (ConstraintedPoint)new ConstraintedPoint().Init();
+                    ConstraintedPoint constraintedPoint2 = new();
                     constraintedPoint2.SetWeight(0.02f);
                     constraintedPoint2.pos = VectAdd(constraintedPoint.pos, off);
                     AddPartAt(constraintedPoint2, parts.Count - 1);
@@ -357,7 +353,7 @@ namespace CutTheRope.game
                     if (constraint.cp == constraintedPoint)
                     {
                         _ = constraintedPoint2.constraints.Remove(constraint);
-                        ConstraintedPoint constraintedPoint3 = (ConstraintedPoint)new ConstraintedPoint().Init();
+                        ConstraintedPoint constraintedPoint3 = new();
                         constraintedPoint3.SetWeight(1E-05f);
                         constraintedPoint3.pos = constraintedPoint2.pos;
                         constraintedPoint3.prevPos = constraintedPoint2.prevPos;
@@ -503,9 +499,17 @@ namespace CutTheRope.game
             OpenGL.GlLineWidth(1.0);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            base.Dealloc();
+            if (disposing)
+            {
+                bungeeAnchor?.Dispose();
+                bungeeAnchor = null;
+                tail?.Dispose();
+                tail = null;
+                drawPts = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const int BUNGEE_RELAXION_TIMES = 30;

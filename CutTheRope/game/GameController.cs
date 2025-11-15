@@ -4,7 +4,6 @@ using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -22,13 +21,10 @@ namespace CutTheRope.game
             base.Update(t);
         }
 
-        public override NSObject InitWithParent(ViewController p)
+        public GameController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
-            {
-                CreateGameView();
-            }
-            return this;
+            CreateGameView();
         }
 
         public override void Activate()
@@ -48,9 +44,11 @@ namespace CutTheRope.game
             {
                 touchAddressMap[i] = 0;
             }
-            GameView gameView = (GameView)new GameView().InitFullscreen();
-            GameScene gameScene = (GameScene)new GameScene().Init();
-            gameScene.gameSceneDelegate = this;
+            GameView gameView = new();
+            GameScene gameScene = new()
+            {
+                gameSceneDelegate = this
+            };
             _ = gameView.AddChildwithID(gameScene, 0);
             Button button = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
             button.x = -(float)Canvas.xOffsetScaled;
@@ -102,7 +100,7 @@ namespace CutTheRope.game
             _ = image.AddChild(vBox);
             _ = gameView.AddChildwithID(image, 3);
             AddViewwithID(gameView, 0);
-            BoxOpenClose boxOpenClose = (BoxOpenClose)new BoxOpenClose().InitWithButtonDelegate(this);
+            BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
             boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
             _ = gameView.AddChildwithID(boxOpenClose, 4);
         }
@@ -145,20 +143,7 @@ namespace CutTheRope.game
         {
             if (CTRPreferences.IsPackPerfect(pack))
             {
-                CTRRootController.PostAchievementName((new NSString[]
-                {
-                    NSS("1058364368"),
-                    NSS("1058328727"),
-                    NSS("1058324751"),
-                    NSS("1515793567"),
-                    NSS("1432760157"),
-                    NSS("1058327768"),
-                    NSS("1058407145"),
-                    NSS("1991641832"),
-                    NSS("1335599628"),
-                    NSS("99928734496"),
-                    NSS("com.zeptolab.ctr.djboxperfect")
-                })[pack]);
+                CTRRootController.PostAchievementName(name[pack]);
             }
         }
 
@@ -179,20 +164,7 @@ namespace CutTheRope.game
             }
             if (flag)
             {
-                CTRRootController.PostAchievementName((new NSString[]
-                {
-                    NSS("681486798"),
-                    NSS("681462993"),
-                    NSS("681520253"),
-                    NSS("1515813296"),
-                    NSS("1432721430"),
-                    NSS("681512374"),
-                    NSS("1058310903"),
-                    NSS("1991474812"),
-                    NSS("1321820679"),
-                    NSS("23523272771"),
-                    NSS("com.zeptolab.ctr.djboxcompleted")
-                })[pack]);
+                CTRRootController.PostAchievementName(nameArray[pack]);
             }
             CheckForBoxPerfect(pack);
             int totalStars = CTRPreferences.GetTotalStars();
@@ -284,13 +256,13 @@ namespace CutTheRope.game
 
         public void GameWon()
         {
-            PostFlurryLevelEvent(NSS("LEVEL_WON"));
+            PostFlurryLevelEvent("LEVEL_WON");
             LevelWon();
         }
 
         public void GameLost()
         {
-            PostFlurryLevelEvent(NSS("LEVEL_LOST"));
+            PostFlurryLevelEvent("LEVEL_LOST");
         }
 
         public bool LastLevelInPack()
@@ -461,11 +433,11 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                mapNameLabel.SetString(NSS(""));
+                mapNameLabel.SetString("");
                 return;
             }
             int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
-            mapNameLabel.SetString(NSS(Application.GetString(655380) + ": " + scoreForPackLevel));
+            mapNameLabel.SetString(Application.GetString(655380) + ": " + scoreForPackLevel);
         }
 
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
@@ -578,10 +550,6 @@ namespace CutTheRope.game
         {
         }
 
-        private static void PostFlurryLevelEvent(NSString s)
-        {
-        }
-
         public override bool BackButtonPressed()
         {
             View view = GetView(0);
@@ -616,7 +584,7 @@ namespace CutTheRope.game
 
         public void OnNextLevel()
         {
-            CTRPreferences.GameViewChanged(NSS("game"));
+            CTRPreferences.GameViewChanged("game");
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             View view = GetView(0);
             if (LastLevelInPack() && !cTRRootController.IsPicker())
@@ -689,5 +657,33 @@ namespace CutTheRope.game
         private int tmpDimTime;
 
         private bool boxCloseHandled;
+        internal static readonly string[] name =
+                [
+                    "1058364368",
+                    "1058328727",
+                    "1058324751",
+                    "1515793567",
+                    "1432760157",
+                    "1058327768",
+                    "1058407145",
+                    "1991641832",
+                    "1335599628",
+                    "99928734496",
+                    "com.zeptolab.ctr.djboxperfect"
+                ];
+        internal static readonly string[] nameArray =
+                [
+                    "681486798",
+                    "681462993",
+                    "681520253",
+                    "1515813296",
+                    "1432721430",
+                    "681512374",
+                    "1058310903",
+                    "1991474812",
+                    "1321820679",
+                    "23523272771",
+                    "com.zeptolab.ctr.djboxcompleted"
+                ];
     }
 }

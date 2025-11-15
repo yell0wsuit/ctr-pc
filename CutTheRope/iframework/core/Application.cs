@@ -4,13 +4,12 @@ using CutTheRope.game;
 using CutTheRope.iframework.media;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.iframework.core
 {
-    internal class Application : NSObject
+    internal class Application : FrameworkTypes
     {
         public static CTRPreferences SharedPreferences()
         {
@@ -24,7 +23,7 @@ namespace CutTheRope.iframework.core
 
         public static RootController SharedRootController()
         {
-            root ??= (CTRRootController)new CTRRootController().InitWithParent(null);
+            root ??= new CTRRootController(null);
             return root;
         }
 
@@ -40,7 +39,7 @@ namespace CutTheRope.iframework.core
 
         public static SoundMgr SharedSoundMgr()
         {
-            soundMgr ??= new SoundMgr().Init();
+            soundMgr ??= new SoundMgr();
             return soundMgr;
         }
 
@@ -52,35 +51,35 @@ namespace CutTheRope.iframework.core
 
         public virtual ApplicationSettings CreateAppSettings()
         {
-            return (ApplicationSettings)new ApplicationSettings().Init();
+            return new ApplicationSettings();
         }
 
         public virtual GLCanvas CreateCanvas()
         {
-            return (GLCanvas)new GLCanvas().InitWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
+            return new GLCanvas().InitWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
         }
 
         public virtual CTRResourceMgr CreateResourceMgr()
         {
-            return (CTRResourceMgr)new CTRResourceMgr().Init();
+            return new CTRResourceMgr();
         }
 
         public virtual SoundMgr CreateSoundMgr()
         {
-            return new SoundMgr().Init();
+            return new SoundMgr();
         }
 
         public virtual CTRPreferences CreatePreferences()
         {
-            return (CTRPreferences)new CTRPreferences().Init();
+            return new CTRPreferences();
         }
 
         public virtual RootController CreateRootController()
         {
-            return (CTRRootController)new CTRRootController().InitWithParent(null);
+            return new CTRRootController(null);
         }
 
-        public virtual void ApplicationDidFinishLaunching(UIApplication application)
+        public virtual void ApplicationDidFinishLaunching()
         {
             appSettings = CreateAppSettings();
             prefs = CreatePreferences();
@@ -91,7 +90,7 @@ namespace CutTheRope.iframework.core
                 {
                     text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";
                 }
-                appSettings.SetString(8, NSS(text));
+                appSettings.SetString(8, text);
             }
             UpdateOrientation();
             IS_IPAD = false;
@@ -110,17 +109,20 @@ namespace CutTheRope.iframework.core
 
         internal static FontGeneric GetFont(int fontResID)
         {
-            return (FontGeneric)SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
+            object resource = SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
+            return resource as FontGeneric;
         }
 
         internal static CTRTexture2D GetTexture(int textureResID)
         {
-            return (CTRTexture2D)SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            return resource as CTRTexture2D;
         }
 
-        internal static NSString GetString(int strResID)
+        internal static string GetString(int strResID)
         {
-            return (NSString)SharedResourceMgr().LoadResource(strResID, ResourceMgr.ResourceType.STRINGS);
+            object resource = SharedResourceMgr().LoadResource(strResID, ResourceMgr.ResourceType.STRINGS);
+            return (resource as string) ?? string.Empty;
         }
 
         public virtual void UpdateOrientation()
@@ -133,13 +135,13 @@ namespace CutTheRope.iframework.core
 
         private static CTRPreferences prefs;
 
-        private static readonly CTRResourceMgr resourceMgr = (CTRResourceMgr)new CTRResourceMgr().Init();
+        private static readonly CTRResourceMgr resourceMgr = new();
 
         protected static RootController root;
 
         private static ApplicationSettings appSettings;
 
-        private static readonly GLCanvas _canvas = (GLCanvas)new GLCanvas().InitWithFrame(default(Rectangle));
+        private static readonly GLCanvas _canvas = new GLCanvas().InitWithFrame(default);
 
         private static SoundMgr soundMgr;
 

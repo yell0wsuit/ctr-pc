@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal sealed class CTRMover : Mover
+    internal sealed class CTRMover(int l, float m_, float r_) : Mover(l, m_, r_)
     {
-        public override void SetPathFromStringandStart(NSString p, Vector s)
+        public override void SetPathFromStringandStart(string p, Vector s)
         {
             if (p.CharacterAtIndex(0) == 'R')
             {
@@ -36,11 +36,11 @@ namespace CutTheRope.game
             {
                 p = p.SubstringToIndex(p.Length() - 1);
             }
-            List<NSString> list = p.ComponentsSeparatedByString(',');
+            List<string> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)
             {
-                NSString nSString2 = list[j];
-                NSString nSString3 = list[j + 1];
+                string nSString2 = list[j];
+                string nSString3 = list[j + 1];
                 AddPathPoint(Vect(s.x + (nSString2.FloatValue() * 3f), s.y + (nSString3.FloatValue() * 3f)));
             }
         }

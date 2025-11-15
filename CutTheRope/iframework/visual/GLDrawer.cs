@@ -1,10 +1,9 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class GLDrawer : NSObject
+    internal sealed class GLDrawer : FrameworkTypes
     {
         public static void DrawImage(CTRTexture2D image, float x, float y)
         {

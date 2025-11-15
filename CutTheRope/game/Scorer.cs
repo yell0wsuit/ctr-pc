@@ -1,5 +1,3 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.game
 {
     internal sealed class Scorer
@@ -8,7 +6,7 @@ namespace CutTheRope.game
         {
         }
 
-        public static void PostAchievementName(NSString name)
+        public static void PostAchievementName(string name)
         {
         }
 

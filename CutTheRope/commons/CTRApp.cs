@@ -1,33 +1,32 @@
 using System;
 
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.commons
 {
     internal sealed class CTRApp : Application
     {
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
+            base.Dispose(disposing);
         }
 
-        public static void ApplicationWillTerminate(UIApplication application)
+        public static void ApplicationWillTerminate()
         {
             Preferences.RequestSave();
         }
 
-        public void ApplicationDidReceiveMemoryWarning(UIApplication application)
+        public void ApplicationDidReceiveMemoryWarning()
         {
             throw new NotImplementedException();
         }
 
-        public void ChallengeStartedWithGameConfig(NSString gameConfig)
+        public void ChallengeStartedWithGameConfig(string gameConfig)
         {
             throw new NotImplementedException();
         }
 
-        public static void ApplicationWillResignActive(UIApplication application)
+        public static void ApplicationWillResignActive()
         {
             Preferences.RequestSave();
             if (root != null && !root.IsSuspended())
@@ -36,7 +35,7 @@ namespace CutTheRope.commons
             }
         }
 
-        public static void ApplicationDidBecomeActive(UIApplication application)
+        public static void ApplicationDidBecomeActive()
         {
             if (root != null && root.IsSuspended())
             {

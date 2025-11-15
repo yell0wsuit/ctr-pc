@@ -49,10 +49,13 @@ namespace CutTheRope.commons
             return base.OnTouchMoveXY(tx, ty);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            liftDelegate = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                liftDelegate = null;
+            }
+            base.Dispose(disposing);
         }
 
         public float startX;

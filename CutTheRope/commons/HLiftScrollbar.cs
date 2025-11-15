@@ -92,14 +92,17 @@ namespace CutTheRope.commons
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            spoints = null;
-            spointsLimits = null;
-            limitPoints = null;
-            container = null;
-            delegateLiftScrollbarDelegate = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                spoints = null;
+                spointsLimits = null;
+                limitPoints = null;
+                container = null;
+                delegateLiftScrollbarDelegate = null;
+            }
+            base.Dispose(disposing);
         }
 
         public override bool OnTouchDownXY(float tx, float ty)
