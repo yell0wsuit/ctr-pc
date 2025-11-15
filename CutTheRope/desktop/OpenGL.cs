@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.iframework;
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CutTheRope.desktop
+namespace CutTheRope.Desktop
 {
     internal sealed class OpenGL
     {

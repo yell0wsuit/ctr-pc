@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 
-using CutTheRope.game;
+using CutTheRope.GameMain;
 
 using Microsoft.Xna.Framework;
 

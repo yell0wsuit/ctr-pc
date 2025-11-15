@@ -1,4 +1,4 @@
-namespace CutTheRope.commons
+namespace CutTheRope.Commons
 {
     internal interface ILiftScrollbarDelegate
     {

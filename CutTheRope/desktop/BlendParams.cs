@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CutTheRope.desktop
+namespace CutTheRope.Desktop
 {
     internal sealed class BlendParams
     {

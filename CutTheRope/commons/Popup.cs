@@ -1,11 +1,11 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.commons
+namespace CutTheRope.Commons
 {
     internal sealed class Popup : BaseElement, ITimelineDelegate
     {

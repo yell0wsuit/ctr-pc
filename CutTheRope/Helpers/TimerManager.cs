@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-using CutTheRope.iframework;
-using CutTheRope.iframework.helpers;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Helpers;
 
 namespace CutTheRope.Helpers
 {

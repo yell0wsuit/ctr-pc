@@ -1,8 +1,8 @@
 using System;
 
-using CutTheRope.iframework.core;
+using CutTheRope.Framework.Core;
 
-namespace CutTheRope.commons
+namespace CutTheRope.Commons
 {
     internal sealed class CTRApp : Application
     {

@@ -1,4 +1,4 @@
-namespace CutTheRope.desktop
+namespace CutTheRope.Desktop
 {
     public enum BlendingFactor
     {
