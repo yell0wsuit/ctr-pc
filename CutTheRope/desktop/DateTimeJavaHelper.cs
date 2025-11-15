@@ -1,6 +1,6 @@
 using System;
 
-namespace CutTheRope.desktop
+namespace CutTheRope.Desktop
 {
     public static class DateTimeJavaHelper
     {

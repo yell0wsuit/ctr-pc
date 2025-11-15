@@ -1,8 +1,8 @@
 using System;
 
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.commons
+namespace CutTheRope.Commons
 {
     internal sealed class Lift : Button
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
-using CutTheRope.iframework;
-using CutTheRope.iframework.platform;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Platform;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.desktop
+namespace CutTheRope.Desktop
 {
     internal sealed class MouseCursor
     {

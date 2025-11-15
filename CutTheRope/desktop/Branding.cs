@@ -6,7 +6,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CutTheRope.desktop
+namespace CutTheRope.Desktop
 {
     public class Branding
     {

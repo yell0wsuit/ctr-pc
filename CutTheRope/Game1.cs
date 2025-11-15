@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 
-using CutTheRope.commons;
-using CutTheRope.desktop;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.media;
+using CutTheRope.Commons;
+using CutTheRope.Desktop;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Media;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -194,7 +194,7 @@ namespace CutTheRope
             }
             _currentMouseState = Mouse.GetState();
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
-            MouseState mouseState = desktop.MouseCursor.GetMouseState();
+            MouseState mouseState = Desktop.MouseCursor.GetMouseState();
             _ = Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(mouseState.X), CtrRenderer.TransformY(mouseState.Y));
             CtrRenderer.Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
             base.Update(gameTime);

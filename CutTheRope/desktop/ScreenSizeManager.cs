@@ -1,11 +1,11 @@
 using System;
 
-using CutTheRope.iframework.core;
+using CutTheRope.Framework.Core;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CutTheRope.desktop
+namespace CutTheRope.Desktop
 {
     internal sealed class ScreenSizeManager(int gameWidth, int gameHeight)
     {

@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using CutTheRope.desktop;
-using CutTheRope.game;
+using CutTheRope.Desktop;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Platform;
+using CutTheRope.Framework.Visual;
+using CutTheRope.GameMain;
 using CutTheRope.Helpers;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.platform;
-using CutTheRope.iframework.visual;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.commons
+namespace CutTheRope.Commons
 {
     internal sealed class CtrRenderer : FrameworkTypes
     {
