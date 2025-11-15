@@ -57,3 +57,5 @@ nunit-*.xml
 obj/*
 
 .claude/*
+
+.DS_Store
