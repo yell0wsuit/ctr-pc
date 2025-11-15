@@ -1,38 +1,34 @@
 using System;
 using System.Collections.Generic;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class Mover : NSObject
+    internal class Mover : FrameworkTypes
     {
-        public virtual Mover InitWithPathCapacityMoveSpeedRotateSpeed(int l, float m_, float r_)
+        public Mover(int l, float m_, float r_)
         {
             int num = (int)m_;
             int num2 = (int)r_;
-            if (base.Init() != null)
+            pathLen = 0;
+            pathCapacity = l;
+            rotateSpeed = num2;
+            if (pathCapacity > 0)
             {
-                pathLen = 0;
-                pathCapacity = l;
-                rotateSpeed = num2;
-                if (pathCapacity > 0)
+                path = new Vector[pathCapacity];
+                for (int i = 0; i < path.Length; i++)
                 {
-                    path = new Vector[pathCapacity];
-                    for (int i = 0; i < path.Length; i++)
-                    {
-                        path[i] = default;
-                    }
-                    moveSpeed = new float[pathCapacity];
-                    for (int j = 0; j < moveSpeed.Length; j++)
-                    {
-                        moveSpeed[j] = num;
-                    }
+                    path[i] = default;
                 }
-                paused = false;
+                moveSpeed = new float[pathCapacity];
+                for (int j = 0; j < moveSpeed.Length; j++)
+                {
+                    moveSpeed[j] = num;
+                }
             }
-            return this;
+            paused = false;
         }
 
         public virtual void SetMoveSpeed(float ms)
@@ -43,7 +39,7 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public virtual void SetPathFromStringandStart(NSString p, Vector s)
+        public virtual void SetPathFromStringandStart(string p, Vector s)
         {
             if (p.CharacterAtIndex(0) == 'R')
             {
@@ -70,11 +66,11 @@ namespace CutTheRope.iframework.helpers
             {
                 p = p.SubstringToIndex(p.Length() - 1);
             }
-            List<NSString> list = p.ComponentsSeparatedByString(',');
+            List<string> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)
             {
-                NSString nSString2 = list[j];
-                NSString nSString3 = list[j + 1];
+                string nSString2 = list[j];
+                string nSString3 = list[j + 1];
                 AddPathPoint(Vect(s.x + nSString2.FloatValue(), s.y + nSString3.FloatValue()));
             }
         }
@@ -199,11 +195,14 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            path = null;
-            moveSpeed = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                path = null;
+                moveSpeed = null;
+            }
+            base.Dispose(disposing);
         }
 
         public static bool MoveVariableToTarget(ref float v, double t, double speed, double delta)
@@ -247,7 +246,7 @@ namespace CutTheRope.iframework.helpers
 
         public int pathLen;
 
-        private int pathCapacity;
+        private readonly int pathCapacity;
 
         public Vector pos;
 

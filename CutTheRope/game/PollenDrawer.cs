@@ -5,46 +5,44 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class PollenDrawer : BaseElement
     {
-        public override NSObject Init()
+        public PollenDrawer()
         {
-            if (base.Init() != null)
-            {
-                Image image = Image.Image_createWithResID(99);
-                qw = image.width * 1.5f;
-                qh = image.height * 1.5f;
-                totalCapacity = 200;
-                drawer = new ImageMultiDrawer().InitWithImageandCapacity(image, totalCapacity);
-                pollens = new Pollen[totalCapacity];
-                colors = new RGBAColor[4 * totalCapacity];
-                OpenGL.GlGenBuffers(1, ref colorsID);
-            }
-            return this;
+            Image image = Image.Image_createWithResID(99);
+            qw = image.width * 1.5f;
+            qh = image.height * 1.5f;
+            totalCapacity = 200;
+            drawer = new ImageMultiDrawer().InitWithImageandCapacity(image, totalCapacity);
+            pollens = new Pollen[totalCapacity];
+            colors = new RGBAColor[4 * totalCapacity];
+            OpenGL.GlGenBuffers(1, ref colorsID);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            if (pollens != null)
+            if (disposing)
             {
                 pollens = null;
-            }
-            if (colors != null)
-            {
+                if (colorsID != 0)
+                {
+                    OpenGL.GlDeleteBuffers(1, ref colorsID);
+                    colorsID = 0;
+                }
                 colors = null;
-                OpenGL.GlDeleteBuffers(1, ref colorsID);
-            }
-            if (vertices != null)
-            {
+                if (verticesID != 0)
+                {
+                    OpenGL.GlDeleteBuffers(1, ref verticesID);
+                    verticesID = 0;
+                }
                 vertices = null;
-                OpenGL.GlDeleteBuffers(1, ref verticesID);
+                drawer?.Dispose();
+                drawer = null;
             }
-            drawer = null;
-            base.Dealloc();
+            base.Dispose(disposing);
         }
 
         public void AddPollenAtparentIndex(Vector v, int pi)
@@ -180,9 +178,9 @@ namespace CutTheRope.game
 
         private Pollen[] pollens;
 
-        private float qw;
+        private readonly float qw;
 
-        private float qh;
+        private readonly float qh;
 
         private RGBAColor[] colors;
 

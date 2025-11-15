@@ -1,8 +1,6 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class TileEntry : NSObject
+    internal sealed class TileEntry : FrameworkTypes
     {
         public int drawerIndex;
 

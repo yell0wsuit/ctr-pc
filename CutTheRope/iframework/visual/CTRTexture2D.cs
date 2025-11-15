@@ -1,13 +1,12 @@
 using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class CTRTexture2D : NSObject
+    internal sealed class CTRTexture2D : FrameworkTypes
     {
         public static void DrawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
         {
@@ -171,10 +170,6 @@ namespace CutTheRope.iframework.visual
 
         public CTRTexture2D InitWithPath(string path, bool assets)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
             _resName = path;
             _name = 65536U;
             _localTexParams = _texParams;
@@ -243,12 +238,8 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public NSObject InitFromPixels(int x, int y, int w, int h)
+        public CTRTexture2D InitFromPixels(int x, int y, int w, int h)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
             _name = 65536U;
             _lowypoint = -1;
             _localTexParams = _defaultTexParams;
@@ -285,13 +276,17 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            if (xnaTexture_ != null)
+            if (disposing)
             {
-                Images.Free(_resName);
-                xnaTexture_ = null;
+                if (xnaTexture_ != null)
+                {
+                    Images.Free(_resName);
+                    xnaTexture_ = null;
+                }
             }
+            base.Dispose(disposing);
         }
 
         public Texture2D xnaTexture_;

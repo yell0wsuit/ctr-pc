@@ -39,7 +39,7 @@ namespace CutTheRope.game
             int num = bungees.Count;
             for (int i = 0; i < num; i++)
             {
-                Grab grab = (Grab)bungees.ObjectAtIndex(i);
+                Grab grab = bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
                 if (rope != null && (rope.tail == star || (rope.tail == starL && left) || (rope.tail == starR && !left)))
                 {

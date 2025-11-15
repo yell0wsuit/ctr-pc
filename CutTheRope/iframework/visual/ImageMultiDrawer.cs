@@ -8,11 +8,7 @@ namespace CutTheRope.iframework.visual
     {
         public ImageMultiDrawer InitWithImageandCapacity(Image i, int n)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
-            image = (Image)NSRET(i);
+            image = i;
             numberOfQuadsToDraw = -1;
             totalQuads = n;
             texCoordinates = new Quad2D[totalQuads];
@@ -29,11 +25,15 @@ namespace CutTheRope.iframework.visual
             indices = null;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            FreeWithCheck();
-            image = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                FreeWithCheck();
+                image = null;
+                verticesOptimized = null;
+            }
+            base.Dispose(disposing);
         }
 
         private void InitIndices()

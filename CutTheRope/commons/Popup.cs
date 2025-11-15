@@ -2,7 +2,6 @@ using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -10,25 +9,21 @@ namespace CutTheRope.commons
 {
     internal sealed class Popup : BaseElement, ITimelineDelegate
     {
-        public override NSObject Init()
+        public Popup()
         {
-            if (base.Init() != null)
-            {
-                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-                timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeScale(1.1, 1.1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-                timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                _ = AddTimeline(timeline);
-                timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-                width = (int)SCREEN_WIDTH;
-                height = (int)SCREEN_HEIGHT;
-                _ = AddTimeline(timeline);
-                timeline.delegateTimelineDelegate = this;
-            }
-            return this;
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.1, 1.1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+            _ = AddTimeline(timeline);
+            timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            width = (int)SCREEN_WIDTH;
+            height = (int)SCREEN_HEIGHT;
+            _ = AddTimeline(timeline);
+            timeline.delegateTimelineDelegate = this;
         }
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)

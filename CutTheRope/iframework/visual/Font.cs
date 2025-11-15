@@ -1,34 +1,35 @@
 using System;
 
-using CutTheRope.ios;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.iframework.visual
 {
     internal sealed class Font : FontGeneric
     {
-        public Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
+        public Font InitWithVariableSizeCharscharMapFileKerning(string strParam, CTRTexture2D charmapfile, object k)
         {
-            if (Init() != null)
-            {
-                _isWvga = charmapfile.IsWvga();
-                charmap = new Image().InitWithTexture(charmapfile);
-                quadsCount = charmapfile.quadsCount;
-                height = charmapfile.quadRects[0].h;
-                chars = strParam.Copy();
-                sortedChars = chars.GetCharacters();
-                Array.Sort(sortedChars);
-                charOffset = 0f;
-                lineOffset = 0f;
-            }
+            _isWvga = charmapfile.IsWvga();
+            charmap = new Image().InitWithTexture(charmapfile);
+            quadsCount = charmapfile.quadsCount;
+            height = charmapfile.quadRects[0].h;
+            chars = strParam.Copy();
+            sortedChars = chars.GetCharacters();
+            Array.Sort(sortedChars);
+            charOffset = 0f;
+            lineOffset = 0f;
             return this;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            chars = null;
-            sortedChars = null;
-            charmap = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                chars = null;
+                sortedChars = null;
+                charmap?.Dispose();
+                charmap = null;
+            }
+            base.Dispose(disposing);
         }
 
         public override void SetCharOffsetLineOffsetSpaceWidth(float co, float lo, float sw)
@@ -85,7 +86,7 @@ namespace CutTheRope.iframework.visual
             return charmap;
         }
 
-        private NSString chars;
+        private string chars;
 
         private char[] sortedChars;
 

@@ -30,13 +30,10 @@ namespace CutTheRope.iframework.visual
 
         public HBox InitWithOffsetAlignHeight(float of, int a, float h)
         {
-            if (Init() != null)
-            {
-                offset = of;
-                align = a;
-                nextElementX = 0f;
-                height = (int)h;
-            }
+            offset = of;
+            align = a;
+            nextElementX = 0f;
+            height = (int)h;
             return this;
         }
 

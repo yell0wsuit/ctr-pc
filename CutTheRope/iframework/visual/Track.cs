@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class Track : NSObject
+    internal sealed class Track : FrameworkTypes
     {
         public Track()
         {

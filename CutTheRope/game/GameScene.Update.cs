@@ -145,7 +145,7 @@ namespace CutTheRope.game
                         {
                             if (!noCandyL && VectDistance(Vect(grab.x, grab.y), starL.pos) <= grab.radius + 42f)
                             {
-                                Bungee bungee = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.x, starL.pos.y, grab.radius + 42f);
+                                Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.x, starL.pos.y, grab.radius + 42f);
                                 bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee);
@@ -157,7 +157,7 @@ namespace CutTheRope.game
                             }
                             if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
                             {
-                                Bungee bungee2 = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.x, starR.pos.y, grab.radius + 42f);
+                                Bungee bungee2 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.x, starR.pos.y, grab.radius + 42f);
                                 bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee2);
@@ -170,7 +170,7 @@ namespace CutTheRope.game
                         }
                         else if (VectDistance(Vect(grab.x, grab.y), star.pos) <= grab.radius + 42f)
                         {
-                            Bungee bungee3 = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.x, star.pos.y, grab.radius + 42f);
+                            Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.x, star.pos.y, grab.radius + 42f);
                             bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
                             grab.hideRadius = true;
                             grab.SetRope(bungee3);

@@ -31,11 +31,21 @@ namespace CutTheRope.game
             charAnimation.SetEnabled(false);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            animations.RemoveAllObjects();
-            animations = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                if (animations != null)
+                {
+                    foreach (Animation animation in animations)
+                    {
+                        animation?.Dispose();
+                    }
+                    animations.RemoveAllObjects();
+                    animations = null;
+                }
+            }
+            base.Dispose(disposing);
         }
 
         public void AddAnimationWithIDDelayLoopFirstLast(int a, int aid, float d, Timeline.LoopType l, int s, int e)

@@ -1,19 +1,14 @@
 using System.Collections.Generic;
 
 using CutTheRope.desktop;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
     internal class Text : BaseElement
     {
         public static Text CreateWithFontandString(int i, string str)
-        {
-            return CreateWithFontandString(i, NSS(str));
-        }
-
-        public static Text CreateWithFontandString(int i, NSString str)
         {
             Text text = new Text().InitWithFont(Application.GetFont(i));
             text.SetString(str);
@@ -22,40 +17,32 @@ namespace CutTheRope.iframework.visual
 
         public virtual Text InitWithFont(FontGeneric i)
         {
-            if (Init() != null)
-            {
-                font = (FontGeneric)NSRET(i);
-                formattedStrings = [];
-                width = -1;
-                height = -1;
-                align = 1;
-                multiDrawers = [];
-                wrapLongWords = false;
-                maxHeight = -1f;
-            }
+            font = i;
+            formattedStrings = [];
+            width = -1;
+            height = -1;
+            align = 1;
+            multiDrawers = [];
+            wrapLongWords = false;
+            maxHeight = -1f;
             font.NotifyTextCreated(this);
             return this;
         }
 
         public virtual void SetString(string newString)
         {
-            SetString(NSS(newString));
-        }
-
-        public virtual void SetString(NSString newString)
-        {
             SetStringandWidth(newString, -1f);
         }
 
-        public virtual void SetStringandWidth(NSString newString, double w)
+        public virtual void SetStringandWidth(string newString, double w)
         {
             SetStringandWidth(newString, (float)w);
         }
 
-        public virtual void SetStringandWidth(NSString newString, float w)
+        public virtual void SetStringandWidth(string newString, float w)
         {
             string_ = newString;
-            string_ ??= new NSString("");
+            string_ ??= new string("");
             font.NotifyTextChanged(this);
             if (w == -1f)
             {
@@ -101,7 +88,7 @@ namespace CutTheRope.iframework.visual
             float num4 = 0f;
             int num5 = (int)font.FontHeight();
             int num6 = 0;
-            char[] characters2 = NSS("..").GetCharacters();
+            char[] characters2 = "..".GetCharacters();
             int num7 = (int)font.GetCharOffset(characters2, 0, 2);
             int num8 = (int)(maxHeight == -1f ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (num5 + font.GetLineOffset())));
             bool flag = num8 != formattedStrings.Count;
@@ -173,7 +160,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual NSString GetString()
+        public virtual string GetString()
         {
             return string_;
         }
@@ -266,34 +253,35 @@ namespace CutTheRope.iframework.visual
             }
             int num9 = num2 >> 1;
             formattedStrings.Clear();
-            NSRange range = default;
             for (int i = 0; i < num9; i++)
             {
                 int num10 = array[i << 1];
                 int num11 = array[(i << 1) + 1];
-                range.location = (uint)num10;
-                range.length = (uint)(num11 - num10);
-                NSString str = string_.SubstringWithRange(range);
+                int length = num11 - num10;
+                string str = string_.Substring(num10, length);
                 float w = font.StringWidth(str);
                 FormattedString item = new FormattedString().InitWithStringAndWidth(str, w);
                 formattedStrings.Add(item);
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            font.NotifyTextDeleted(this);
-            string_ = null;
-            font = null;
-            formattedStrings = null;
-            multiDrawers.Clear();
-            multiDrawers = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                font?.NotifyTextDeleted(this);
+                string_ = null;
+                font = null;
+                formattedStrings = null;
+                multiDrawers?.Clear();
+                multiDrawers = null;
+            }
+            base.Dispose(disposing);
         }
 
         public int align;
 
-        public NSString string_;
+        public string string_;
 
         public int stringLength;
 

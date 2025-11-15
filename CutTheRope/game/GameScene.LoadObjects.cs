@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-
-using CutTheRope.ios;
+using System.Xml.Linq;
 
 namespace CutTheRope.game
 {
@@ -14,14 +13,14 @@ namespace CutTheRope.game
         /// Loads all game objects from XML map data using a dispatch switch
         /// Iterates through XML nodes and calls appropriate Load* method for each object type
         /// </summary>
-        private void LoadObjectsFromMap(XMLNode map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadObjectsFromMap(XElement map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            List<XMLNode> list = map.Childs();
-            foreach (XMLNode xmlnode2 in list)
+            List<XElement> list = [.. map.Elements()];
+            foreach (XElement xmlnode2 in list)
             {
-                foreach (XMLNode item3 in xmlnode2.Childs())
+                foreach (XElement item3 in xmlnode2.Elements())
                 {
-                    switch (item3.Name)
+                    switch (item3.Name.LocalName)
                     {
                         case "gravitySwitch":
                             LoadGravityButton(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);

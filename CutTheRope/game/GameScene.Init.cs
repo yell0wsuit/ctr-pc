@@ -1,8 +1,8 @@
 using CutTheRope.desktop;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -19,50 +19,50 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        public override NSObject Init()
+        public GameScene()
         {
-            if (base.Init() != null)
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            dd = new DelayedDispatcher();
+            initialCameraToStarDistance = -1f;
+            restartState = -1;
+            aniPool = new AnimationsPool
             {
-                CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                dd = (DelayedDispatcher)new DelayedDispatcher().Init();
-                initialCameraToStarDistance = -1f;
-                restartState = -1;
-                aniPool = (AnimationsPool)new AnimationsPool().Init();
-                aniPool.visible = false;
-                _ = AddChild(aniPool);
-                staticAniPool = (AnimationsPool)new AnimationsPool().Init();
-                staticAniPool.visible = false;
-                _ = AddChild(staticAniPool);
-                camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
-                int textureResID = 104 + (cTRRootController.GetPack() * 2);
-                back = new TileMap().InitWithRowsColumns(1, 1);
-                back.SetRepeatHorizontally(TileMap.Repeat.NONE);
-                back.SetRepeatVertically(TileMap.Repeat.ALL);
-                back.AddTileQuadwithID(Application.GetTexture(textureResID), 0, 0);
-                back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
-                if (Canvas.isFullscreen)
-                {
-                    back.scaleX = Global.ScreenSizeManager.ScreenWidth / (float)Canvas.backingWidth;
-                }
-                back.scaleX *= 1.25f;
-                back.scaleY *= 1.25f;
-                for (int i = 0; i < 3; i++)
-                {
-                    hudStar[i] = Animation.Animation_createWithResID(79);
-                    hudStar[i].DoRestoreCutTransparency();
-                    _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
-                    hudStar[i].SetPauseAtIndexforAnimation(10, 0);
-                    hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
-                    hudStar[i].y = 0f;
-                    _ = AddChild(hudStar[i]);
-                }
-                for (int j = 0; j < 5; j++)
-                {
-                    fingerCuts[j] = new DynamicArray<FingerCut>();
-                }
-                clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
+                visible = false
+            };
+            _ = AddChild(aniPool);
+            staticAniPool = new AnimationsPool
+            {
+                visible = false
+            };
+            _ = AddChild(staticAniPool);
+            camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
+            int textureResID = 104 + (cTRRootController.GetPack() * 2);
+            back = new TileMap().InitWithRowsColumns(1, 1);
+            back.SetRepeatHorizontally(TileMap.Repeat.NONE);
+            back.SetRepeatVertically(TileMap.Repeat.ALL);
+            back.AddTileQuadwithID(Application.GetTexture(textureResID), 0, 0);
+            back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
+            if (Canvas.isFullscreen)
+            {
+                back.scaleX = Global.ScreenSizeManager.ScreenWidth / (float)Canvas.backingWidth;
             }
-            return this;
+            back.scaleX *= 1.25f;
+            back.scaleY *= 1.25f;
+            for (int i = 0; i < 3; i++)
+            {
+                hudStar[i] = Animation.Animation_createWithResID(79);
+                hudStar[i].DoRestoreCutTransparency();
+                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
+                hudStar[i].SetPauseAtIndexforAnimation(10, 0);
+                hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
+                hudStar[i].y = 0f;
+                _ = AddChild(hudStar[i]);
+            }
+            for (int j = 0; j < 5; j++)
+            {
+                fingerCuts[j] = new DynamicArray<FingerCut>();
+            }
+            clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
         }
 
         public void Reload()
@@ -71,12 +71,12 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://reload"), NSS("mappicker://reload"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://reload"), "mappicker://reload", true);
                 return;
             }
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
-            XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
+            XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), "maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString(), true);
         }
 
         public void LoadNextMap()
@@ -87,7 +87,7 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://next"), NSS("mappicker://next"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://next"), "mappicker://next", true);
                 return;
             }
             int pack = cTRRootController.GetPack();
@@ -96,7 +96,7 @@ namespace CutTheRope.game
             {
                 cTRRootController.SetLevel(++level);
                 cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), "maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString(), true);
             }
         }
 

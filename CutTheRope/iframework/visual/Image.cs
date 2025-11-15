@@ -1,8 +1,8 @@
 using System;
+using System.Xml.Linq;
 
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
@@ -75,19 +75,15 @@ namespace CutTheRope.iframework.visual
 
         public virtual Image InitWithTexture(CTRTexture2D t)
         {
-            if (Init() != null)
+            texture = t;
+            restoreCutTransparency = false;
+            if (texture.quadsCount > 0)
             {
-                texture = t;
-                _ = NSRET(texture);
-                restoreCutTransparency = false;
-                if (texture.quadsCount > 0)
-                {
-                    SetDrawQuad(0);
-                }
-                else
-                {
-                    SetDrawFullImage();
-                }
+                SetDrawQuad(0);
+            }
+            else
+            {
+                SetDrawFullImage();
             }
             return this;
         }
@@ -176,15 +172,18 @@ namespace CutTheRope.iframework.visual
             return false;
         }
 
-        public virtual BaseElement CreateFromXML(XMLNode xml)
+        public virtual BaseElement CreateFromXML(XElement xml)
         {
             throw new NotImplementedException();
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            NSREL(texture);
-            base.Dealloc();
+            if (disposing)
+            {
+                texture = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";

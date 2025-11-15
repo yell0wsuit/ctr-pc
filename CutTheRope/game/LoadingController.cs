@@ -2,25 +2,21 @@ using System;
 
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class LoadingController : ViewController, IResourceMgrDelegate
     {
-        public override NSObject InitWithParent(ViewController p)
+        public LoadingController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
-            {
-                LoadingView loadingView = (LoadingView)new LoadingView().InitFullscreen();
-                AddViewwithID(loadingView, 0);
-                Text text = new Text().InitWithFont(Application.GetFont(3));
-                text.SetAlignment(2);
-                text.SetStringandWidth(Application.GetString(655387), 300f);
-                text.anchor = text.parentAnchor = 18;
-                _ = loadingView.AddChild(text);
-            }
-            return this;
+            LoadingView loadingView = new();
+            AddViewwithID(loadingView, 0);
+            Text text = new Text().InitWithFont(Application.GetFont(3));
+            text.SetAlignment(2);
+            text.SetStringandWidth(Application.GetString(655387), 300f);
+            text.anchor = text.parentAnchor = 18;
+            _ = loadingView.AddChild(text);
         }
 
         public override void Activate()

@@ -1,19 +1,14 @@
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.sfe
 {
-    internal class MaterialPoint : NSObject
+    internal class MaterialPoint : FrameworkTypes
     {
-        public override NSObject Init()
+        public MaterialPoint()
         {
-            if (base.Init() != null)
-            {
-                forces = new Vector[10];
-                SetWeight(1f);
-                ResetAll();
-            }
-            return this;
+            forces = new Vector[10];
+            SetWeight(1f);
+            ResetAll();
         }
 
         public virtual void SetWeight(float w)
@@ -23,10 +18,13 @@ namespace CutTheRope.iframework.sfe
             gravity = Vect(0f, 784f * weight);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            forces = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                forces = null;
+            }
+            base.Dispose(disposing);
         }
 
         public virtual void ResetForces()

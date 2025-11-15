@@ -3,65 +3,60 @@ using System.Globalization;
 
 using CutTheRope.commons;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class CTRPreferences : Preferences
     {
-        public override NSObject Init()
+        public CTRPreferences()
         {
-            if (base.Init() != null)
+            if (!GetBooleanForKey("PREFS_EXIST"))
             {
-                if (!GetBooleanForKey("PREFS_EXIST"))
+                SetBooleanForKey(true, "PREFS_EXIST", true);
+                SetIntForKey(0, "PREFS_GAME_STARTS", true);
+                SetIntForKey(0, "PREFS_LEVELS_WON", true);
+                ResetToDefaults();
+                ResetMusicSound();
+                firstLaunch = true;
+                playLevelScroll = false;
+            }
+            else
+            {
+                if (GetIntForKey("PREFS_VERSION") < 1)
                 {
-                    SetBooleanForKey(true, "PREFS_EXIST", true);
-                    SetIntForKey(0, "PREFS_GAME_STARTS", true);
-                    SetIntForKey(0, "PREFS_LEVELS_WON", true);
-                    ResetToDefaults();
-                    ResetMusicSound();
-                    firstLaunch = true;
-                    playLevelScroll = false;
-                }
-                else
-                {
-                    if (GetIntForKey("PREFS_VERSION") < 1)
+                    _ = GetTotalScore();
+                    int i = 0;
+                    int packsCount = GetPacksCount();
+                    while (i < packsCount)
                     {
-                        _ = GetTotalScore();
-                        int i = 0;
-                        int packsCount = GetPacksCount();
-                        while (i < packsCount)
+                        int num = 0;
+                        int j = 0;
+                        int levelsInPackCount = GetLevelsInPackCount();
+                        while (j < levelsInPackCount)
                         {
-                            int num = 0;
-                            int j = 0;
-                            int levelsInPackCount = GetLevelsInPackCount();
-                            while (j < levelsInPackCount)
+                            int intForKey2 = GetIntForKey(GetPackLevelKey("SCORE_", i, j));
+                            if (intForKey2 > 5999)
                             {
-                                int intForKey2 = GetIntForKey(GetPackLevelKey("SCORE_", i, j));
-                                if (intForKey2 > 5999)
-                                {
-                                    num = 150000;
-                                    break;
-                                }
-                                num += intForKey2;
-                                j++;
-                            }
-                            if (num > 149999)
-                            {
-                                ResetToDefaults();
-                                ResetMusicSound();
+                                num = 150000;
                                 break;
                             }
-                            i++;
+                            num += intForKey2;
+                            j++;
                         }
-                        SetScoreHash();
+                        if (num > 149999)
+                        {
+                            ResetToDefaults();
+                            ResetMusicSound();
+                            break;
+                        }
+                        i++;
                     }
-                    firstLaunch = false;
-                    playLevelScroll = false;
+                    SetScoreHash();
                 }
-                SetIntForKey(2, "PREFS_VERSION", true);
+                firstLaunch = false;
+                playLevelScroll = false;
             }
-            return this;
+            SetIntForKey(2, "PREFS_VERSION", true);
         }
 
         private static void ResetMusicSound()
@@ -181,7 +176,7 @@ namespace CutTheRope.game
             return Math.Min(Math.Max(0, val), GetPacksCount() + 1);
         }
 
-        public static void GameViewChanged(NSString NameOfView)
+        public static void GameViewChanged(string NameOfView)
         {
         }
 
@@ -291,7 +286,7 @@ namespace CutTheRope.game
 
         public static void SetScoreHash()
         {
-            NSString sha256Str = GetSHA256Str(NSS(GetTotalScore().ToString(CultureInfo.InvariantCulture)));
+            string sha256Str = GetSHA256Str(GetTotalScore().ToString(CultureInfo.InvariantCulture));
             SetStringForKey(sha256Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 
@@ -486,7 +481,7 @@ namespace CutTheRope.game
 
         public RemoteDataManager remoteDataManager = new();
 
-        private bool firstLaunch;
+        private readonly bool firstLaunch;
 
         private bool playLevelScroll;
 

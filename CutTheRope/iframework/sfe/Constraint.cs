@@ -1,8 +1,6 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.sfe
 {
-    internal sealed class Constraint : NSObject
+    internal sealed class Constraint : FrameworkTypes
     {
         public ConstraintedPoint cp;
 

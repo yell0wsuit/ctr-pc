@@ -3,7 +3,6 @@ using System;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Audio;
 
@@ -11,7 +10,7 @@ namespace CutTheRope.game
 {
     internal sealed class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
     {
-        public NSObject InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
+        public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
         {
             int textureResID = -1;
             if (t != -1)

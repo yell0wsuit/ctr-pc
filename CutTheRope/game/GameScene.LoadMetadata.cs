@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+using System.Xml.Linq;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -17,24 +17,23 @@ namespace CutTheRope.game
         /// Loads all level metadata from XML in a single pass
         /// Extracts map dimensions, game design settings, and candy positions
         /// </summary>
-        private void LoadAllLevelMetadata(XMLNode mapNode, float scale, float offsetY, out float offsetX, out int mapOffsetX, out int mapOffsetY)
+        private void LoadAllLevelMetadata(XElement mapNode, float scale, float offsetY, out float offsetX, out int mapOffsetX, out int mapOffsetY)
         {
             offsetX = 0f;
             mapOffsetX = 0;
             mapOffsetY = 0;
 
-            List<XMLNode> list = mapNode.Childs();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
 
             // Single pass through XML metadata nodes
-            foreach (XMLNode xmlnode in list)
+            foreach (XElement xmlnode in mapNode.Elements())
             {
-                foreach (XMLNode item2 in xmlnode.Childs())
+                foreach (XElement item2 in xmlnode.Elements())
                 {
-                    if (item2.Name == "map")
+                    if (item2.Name.LocalName == "map")
                     {
-                        mapWidth = item2["width"].FloatValue();
-                        mapHeight = item2["height"].FloatValue();
+                        mapWidth = item2.AttributeAsNSString("width").FloatValue();
+                        mapHeight = item2.AttributeAsNSString("height").FloatValue();
                         offsetX = (2560f - (mapWidth * scale)) / 2f;
                         mapWidth *= scale;
                         mapHeight *= scale;
@@ -53,48 +52,46 @@ namespace CutTheRope.game
                             CreateEarthImageWithOffsetXY(0f, 0f);
                         }
                     }
-                    else if (item2.Name == "gameDesign")
+                    else if (item2.Name.LocalName == "gameDesign")
                     {
-                        mapOffsetX = item2["mapOffsetX"].IntValue();
-                        mapOffsetY = item2["mapOffsetY"].IntValue();
-                        special = item2["special"].IntValue();
-                        ropePhysicsSpeed = item2["ropePhysicsSpeed"].FloatValue();
-                        nightLevel = item2["nightLevel"].IsEqualToString("true");
-                        twoParts = !item2["twoParts"].IsEqualToString("true") ? 2 : 0;
+                        mapOffsetX = item2.AttributeAsNSString("mapOffsetX").IntValue();
+                        mapOffsetY = item2.AttributeAsNSString("mapOffsetY").IntValue();
+                        special = item2.AttributeAsNSString("special").IntValue();
+                        ropePhysicsSpeed = item2.AttributeAsNSString("ropePhysicsSpeed").FloatValue();
+                        nightLevel = item2.AttributeAsNSString("nightLevel").IsEqualToString("true");
+                        twoParts = !item2.AttributeAsNSString("twoParts").IsEqualToString("true") ? 2 : 0;
                         ropePhysicsSpeed *= 1.4f;
                     }
-                    else if (item2.Name == "candyL")
+                    else if (item2.Name.LocalName == "candyL")
                     {
-                        starL.pos.x = (item2["x"].IntValue() * scale) + offsetX + mapOffsetX;
-                        starL.pos.y = (item2["y"].IntValue() * scale) + offsetY + mapOffsetY;
+                        starL.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                        starL.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                         candyL = GameObject.GameObject_createWithResIDQuad(63, 19);
                         candyL.scaleX = candyL.scaleY = 0.71f;
                         candyL.passTransformationsToChilds = false;
                         candyL.DoRestoreCutTransparency();
-                        candyL.Retain();
                         candyL.anchor = 18;
                         candyL.x = starL.pos.x;
                         candyL.y = starL.pos.y;
                         candyL.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
                     }
-                    else if (item2.Name == "candyR")
+                    else if (item2.Name.LocalName == "candyR")
                     {
-                        starR.pos.x = (item2["x"].IntValue() * scale) + offsetX + mapOffsetX;
-                        starR.pos.y = (item2["y"].IntValue() * scale) + offsetY + mapOffsetY;
+                        starR.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                        starR.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                         candyR = GameObject.GameObject_createWithResIDQuad(63, 20);
                         candyR.scaleX = candyR.scaleY = 0.71f;
                         candyR.passTransformationsToChilds = false;
                         candyR.DoRestoreCutTransparency();
-                        candyR.Retain();
                         candyR.anchor = 18;
                         candyR.x = starR.pos.x;
                         candyR.y = starR.pos.y;
                         candyR.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
                     }
-                    else if (item2.Name == "candy")
+                    else if (item2.Name.LocalName == "candy")
                     {
-                        star.pos.x = (item2["x"].IntValue() * scale) + offsetX + mapOffsetX;
-                        star.pos.y = (item2["y"].IntValue() * scale) + offsetY + mapOffsetY;
+                        star.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                        star.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                     }
                 }
             }

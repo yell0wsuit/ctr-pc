@@ -3,7 +3,6 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -11,53 +10,49 @@ namespace CutTheRope.game
 {
     internal sealed class RotatedCircle : BaseElement
     {
-        public override NSObject Init()
+        public RotatedCircle()
         {
-            if (base.Init() != null)
-            {
-                containedObjects = new DynamicArray<GameObject>();
-                soundPlaying = -1;
-                vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
-                vinilStickerL.anchor = 20;
-                vinilStickerL.parentAnchor = 18;
-                vinilStickerL.rotationCenterX = vinilStickerL.width / 2f;
-                vinilStickerR = Image.Image_createWithResIDQuad(103, 2);
-                vinilStickerR.scaleX = -1f;
-                vinilStickerR.anchor = 20;
-                vinilStickerR.parentAnchor = 18;
-                vinilStickerR.rotationCenterX = vinilStickerR.width / 2f;
-                vinilCenter = Image.Image_createWithResIDQuad(103, 3);
-                vinilCenter.anchor = 18;
-                vinilHighlightL = Image.Image_createWithResIDQuad(103, 1);
-                vinilHighlightL.anchor = 12;
-                vinilHighlightR = Image.Image_createWithResIDQuad(103, 1);
-                vinilHighlightR.scaleX = -1f;
-                vinilHighlightR.anchor = 9;
-                vinilControllerL = Image.Image_createWithResIDQuad(103, 5);
-                vinilControllerL.anchor = 18;
-                vinilControllerL.rotation = 90f;
-                vinilControllerR = Image.Image_createWithResIDQuad(103, 5);
-                vinilControllerR.anchor = 18;
-                vinilControllerR.rotation = -90f;
-                vinilActiveControllerL = Image.Image_createWithResIDQuad(103, 4);
-                vinilActiveControllerL.anchor = vinilControllerL.anchor;
-                vinilActiveControllerL.rotation = vinilControllerL.rotation;
-                vinilActiveControllerL.visible = false;
-                vinilActiveControllerR = Image.Image_createWithResIDQuad(103, 4);
-                vinilActiveControllerR.anchor = vinilControllerR.anchor;
-                vinilActiveControllerR.rotation = vinilControllerR.rotation;
-                vinilActiveControllerR.visible = false;
-                vinil = Image.Image_createWithResIDQuad(103, 0);
-                vinil.anchor = 18;
-                passColorToChilds = false;
-                _ = AddChild(vinilStickerL);
-                _ = AddChild(vinilStickerR);
-                _ = AddChild(vinilActiveControllerL);
-                _ = AddChild(vinilActiveControllerR);
-                _ = AddChild(vinilControllerL);
-                _ = AddChild(vinilControllerR);
-            }
-            return this;
+            containedObjects = new DynamicArray<GameObject>();
+            soundPlaying = -1;
+            vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
+            vinilStickerL.anchor = 20;
+            vinilStickerL.parentAnchor = 18;
+            vinilStickerL.rotationCenterX = vinilStickerL.width / 2f;
+            vinilStickerR = Image.Image_createWithResIDQuad(103, 2);
+            vinilStickerR.scaleX = -1f;
+            vinilStickerR.anchor = 20;
+            vinilStickerR.parentAnchor = 18;
+            vinilStickerR.rotationCenterX = vinilStickerR.width / 2f;
+            vinilCenter = Image.Image_createWithResIDQuad(103, 3);
+            vinilCenter.anchor = 18;
+            vinilHighlightL = Image.Image_createWithResIDQuad(103, 1);
+            vinilHighlightL.anchor = 12;
+            vinilHighlightR = Image.Image_createWithResIDQuad(103, 1);
+            vinilHighlightR.scaleX = -1f;
+            vinilHighlightR.anchor = 9;
+            vinilControllerL = Image.Image_createWithResIDQuad(103, 5);
+            vinilControllerL.anchor = 18;
+            vinilControllerL.rotation = 90f;
+            vinilControllerR = Image.Image_createWithResIDQuad(103, 5);
+            vinilControllerR.anchor = 18;
+            vinilControllerR.rotation = -90f;
+            vinilActiveControllerL = Image.Image_createWithResIDQuad(103, 4);
+            vinilActiveControllerL.anchor = vinilControllerL.anchor;
+            vinilActiveControllerL.rotation = vinilControllerL.rotation;
+            vinilActiveControllerL.visible = false;
+            vinilActiveControllerR = Image.Image_createWithResIDQuad(103, 4);
+            vinilActiveControllerR.anchor = vinilControllerR.anchor;
+            vinilActiveControllerR.rotation = vinilControllerR.rotation;
+            vinilActiveControllerR.visible = false;
+            vinil = Image.Image_createWithResIDQuad(103, 0);
+            vinil.anchor = 18;
+            passColorToChilds = false;
+            _ = AddChild(vinilStickerL);
+            _ = AddChild(vinilStickerR);
+            _ = AddChild(vinilActiveControllerL);
+            _ = AddChild(vinilActiveControllerR);
+            _ = AddChild(vinilControllerL);
+            _ = AddChild(vinilControllerR);
         }
 
         public void SetSize(float value)
@@ -198,15 +193,17 @@ namespace CutTheRope.game
             return false;
         }
 
-        public NSObject Copy()
+        public RotatedCircle Copy()
         {
-            RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
-            rotatedCircle.x = x;
-            rotatedCircle.y = y;
-            rotatedCircle.rotation = rotation;
-            rotatedCircle.circlesArray = circlesArray;
-            rotatedCircle.containedObjects = containedObjects;
-            rotatedCircle.operating = -1;
+            RotatedCircle rotatedCircle = new()
+            {
+                x = x,
+                y = y,
+                rotation = rotation,
+                circlesArray = circlesArray,
+                containedObjects = containedObjects,
+                operating = -1
+            };
             rotatedCircle.handle1 = Vect(rotatedCircle.x - RTPD((double)(size * 3f)), rotatedCircle.y);
             rotatedCircle.handle2 = Vect(rotatedCircle.x + RTPD((double)(size * 3f)), rotatedCircle.y);
             rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
@@ -218,13 +215,32 @@ namespace CutTheRope.game
             return rotatedCircle;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            vinilCenter.Release();
-            vinilHighlightL.Release();
-            vinilHighlightR.Release();
-            vinil.Release();
-            base.Dealloc();
+            if (disposing)
+            {
+                vinilCenter?.Dispose();
+                vinilCenter = null;
+                vinilHighlightL?.Dispose();
+                vinilHighlightL = null;
+                vinilHighlightR?.Dispose();
+                vinilHighlightR = null;
+                vinil?.Dispose();
+                vinil = null;
+                vinilControllerL?.Dispose();
+                vinilControllerL = null;
+                vinilControllerR?.Dispose();
+                vinilControllerR = null;
+                vinilActiveControllerL?.Dispose();
+                vinilActiveControllerL = null;
+                vinilActiveControllerR?.Dispose();
+                vinilActiveControllerR = null;
+                vinilStickerL?.Dispose();
+                vinilStickerL = null;
+                vinilStickerR?.Dispose();
+                vinilStickerR = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const int PM = 3;

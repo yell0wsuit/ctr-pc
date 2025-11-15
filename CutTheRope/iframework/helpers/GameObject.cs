@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 using CutTheRope.desktop;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -75,25 +76,29 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            NSREL(mover);
-            base.Dealloc();
+            if (disposing)
+            {
+                mover?.Dispose();
+                mover = null;
+            }
+            base.Dispose(disposing);
         }
 
-        public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XMLNode xml)
+        public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XElement xml)
         {
             if (base.InitWithTexture(Application.GetTexture(t)) != null)
             {
-                float num = xml["x"].IntValue();
-                float num2 = xml["y"].IntValue();
+                float num = xml.AttributeAsNSString("x").IntValue();
+                float num2 = xml.AttributeAsNSString("y").IntValue();
                 x = tx + num;
                 y = ty + num2;
                 type = t;
-                NSString nSString = xml["bb"];
-                if (nSString != null)
+                string nSString = xml.AttributeAsNSString("bb");
+                if (nSString.Length() != 0)
                 {
-                    List<NSString> list = nSString.ComponentsSeparatedByString(',');
+                    List<string> list = nSString.ComponentsSeparatedByString(',');
                     bb = new CTRRectangle(list[0].IntValue(), list[1].IntValue(), list[2].IntValue(), list[3].IntValue());
                 }
                 else
@@ -106,10 +111,10 @@ namespace CutTheRope.iframework.helpers
             return this;
         }
 
-        public virtual void ParseMover(XMLNode xml)
+        public virtual void ParseMover(XElement xml)
         {
-            rotation = xml["angle"].FloatValue();
-            NSString nSString = xml["path"];
+            rotation = xml.AttributeAsNSString("angle").FloatValue();
+            string nSString = xml.AttributeAsNSString("path");
             if (nSString != null && nSString.Length() != 0)
             {
                 int i = 100;
@@ -117,10 +122,12 @@ namespace CutTheRope.iframework.helpers
                 {
                     i = (nSString.SubstringFromIndex(2).IntValue() / 2) + 1;
                 }
-                float m_ = xml["moveSpeed"].FloatValue();
-                float r_ = xml["rotateSpeed"].FloatValue();
-                Mover mover = new Mover().InitWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
-                mover.angle_ = rotation;
+                float m_ = xml.AttributeAsNSString("moveSpeed").FloatValue();
+                float r_ = xml.AttributeAsNSString("rotateSpeed").FloatValue();
+                Mover mover = new(i, m_, r_)
+                {
+                    angle_ = rotation
+                };
                 mover.angle_initial = mover.angle_;
                 mover.SetPathFromStringandStart(nSString, Vect(x, y));
                 SetMover(mover);

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using CutTheRope.desktop;
-using CutTheRope.ios;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class BaseElement : NSObject
+    internal class BaseElement : FrameworkTypes
     {
         // (get) Token: 0x0600015F RID: 351 RVA: 0x0000733B File Offset: 0x0000553B
         public bool HasParent => parent != null;
@@ -102,7 +102,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override NSObject Init()
+        public BaseElement()
         {
             visible = true;
             touchable = true;
@@ -133,7 +133,6 @@ namespace CutTheRope.iframework.visual
             passColorToChilds = true;
             passTouchEventsToAllChilds = false;
             blendingMode = -1;
-            return this;
         }
 
         public virtual void PreDraw()
@@ -249,11 +248,6 @@ namespace CutTheRope.iframework.visual
             {
                 Timeline.UpdateTimeline(currentTimeline, delta);
             }
-        }
-
-        public BaseElement GetChildWithName(NSString n)
-        {
-            return GetChildWithName(n.ToString());
         }
 
         public BaseElement GetChildWithName(string n)
@@ -375,7 +369,7 @@ namespace CutTheRope.iframework.visual
             {
                 if (value2 != c)
                 {
-                    value2.Dealloc();
+                    value2?.Dispose();
                 }
                 childs[i] = c;
             }
@@ -577,13 +571,6 @@ namespace CutTheRope.iframework.visual
 
         public void SetName(string n)
         {
-            NSREL(name);
-            name = new NSString(n);
-        }
-
-        public void SetName(NSString n)
-        {
-            NSREL(name);
             name = n;
         }
 
@@ -611,14 +598,16 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            childs.Clear();
-            childs = null;
-            timelines.Clear();
-            timelines = null;
-            NSREL(name);
-            base.Dealloc();
+            if (disposing)
+            {
+                childs?.Clear();
+                childs = null;
+                timelines?.Clear();
+                timelines = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const string ACTION_SET_VISIBLE = "ACTION_SET_VISIBLE";
@@ -643,7 +632,7 @@ namespace CutTheRope.iframework.visual
 
         public bool updateable;
 
-        private NSString name;
+        private string name;
 
         public float x;
 
@@ -669,9 +658,9 @@ namespace CutTheRope.iframework.visual
 
         public RGBAColor color;
 
-        private float translateX;
+        private readonly float translateX;
 
-        private float translateY;
+        private readonly float translateY;
 
         public sbyte anchor;
 
@@ -681,7 +670,7 @@ namespace CutTheRope.iframework.visual
 
         public bool passColorToChilds;
 
-        private bool passTouchEventsToAllChilds;
+        private readonly bool passTouchEventsToAllChilds;
 
         public int blendingMode;
 

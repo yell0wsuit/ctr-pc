@@ -1,8 +1,6 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class CTRAction : NSObject
+    internal sealed class CTRAction : FrameworkTypes
     {
         public CTRAction()
         {
@@ -11,8 +9,10 @@ namespace CutTheRope.iframework.visual
 
         public static CTRAction CreateAction(BaseElement target, string action, int p, int sp)
         {
-            CTRAction action2 = (CTRAction)new CTRAction().Init();
-            action2.actionTarget = target;
+            CTRAction action2 = new()
+            {
+                actionTarget = target
+            };
             action2.data.actionName = action;
             action2.data.actionParam = p;
             action2.data.actionSubParam = sp;

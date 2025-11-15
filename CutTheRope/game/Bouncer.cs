@@ -1,12 +1,11 @@
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class Bouncer : CTRGameObject
     {
-        public NSObject InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
+        public Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
             int textureResID = -1;
             if (w != 1)

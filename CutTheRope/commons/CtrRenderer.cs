@@ -4,18 +4,18 @@ using System.Diagnostics;
 
 using CutTheRope.desktop;
 using CutTheRope.game;
+using CutTheRope.Helpers;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.commons
 {
-    internal sealed class CtrRenderer : NSObject
+    internal sealed class CtrRenderer : FrameworkTypes
     {
         public static void OnSurfaceCreated()
         {
@@ -166,8 +166,7 @@ namespace CutTheRope.commons
             LANGUAGE = language;
             FmInit();
             gApp = new CTRApp();
-            _ = gApp.Init();
-            gApp.ApplicationDidFinishLaunching(null);
+            gApp.ApplicationDidFinishLaunching();
         }
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDestroy()
@@ -179,7 +178,6 @@ namespace CutTheRope.commons
             }
             Application.SharedSoundMgr().StopAllSounds();
             Preferences.RequestSave();
-            NSREL(gApp);
             gApp = null;
             gPaused = false;
         }
@@ -191,7 +189,7 @@ namespace CutTheRope.commons
                 CTRSoundMgr.Pause();
                 Application.SharedMovieMgr().Pause();
                 gPaused = true;
-                CTRApp.ApplicationWillResignActive(null);
+                CTRApp.ApplicationWillResignActive();
                 CTRTexture2D.SuspendAll();
             }
         }
@@ -205,7 +203,7 @@ namespace CutTheRope.commons
                 CTRTexture2D.SuspendAll();
                 CTRTexture2D.ResumeAll();
                 gPaused = false;
-                CTRApp.ApplicationDidBecomeActive(null);
+                CTRApp.ApplicationDidBecomeActive();
             }
         }
 
@@ -298,7 +296,7 @@ namespace CutTheRope.commons
             if (gApp != null && !gPaused)
             {
                 float delta2 = delta / 1000f;
-                NSTimer.FireTimers(delta2);
+                TimerManager.Update(delta2);
                 Application.SharedRootController().PerformTick(delta2);
             }
         }

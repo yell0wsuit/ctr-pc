@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Security.Cryptography;
 
 using CutTheRope.game;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
@@ -465,12 +465,12 @@ namespace CutTheRope.iframework.helpers
             return RND_RANGE(S * 1000, F * 1000) / 1000f;
         }
 
-        public static NSString GetSHA256Str(NSString input)
+        public static string GetSHA256Str(string input)
         {
             return GetSHA256(input.GetCharacters());
         }
 
-        public static NSString GetSHA256(char[] data)
+        public static string GetSHA256(char[] data)
         {
             byte[] array = new byte[data.Length * 2];
             for (int i = 0; i < data.Length; i++)
@@ -479,7 +479,7 @@ namespace CutTheRope.iframework.helpers
                 array[(i * 2) + 1] = (byte)(data[i] & 'ÿ');
             }
             byte[] hash = SHA256.HashData(array);
-            return new NSString(Convert.ToHexString(hash).ToLower(CultureInfo.InvariantCulture));
+            return new string(Convert.ToHexString(hash).ToLower(CultureInfo.InvariantCulture));
         }
 
         public const double M_PI = 3.141592653589793;

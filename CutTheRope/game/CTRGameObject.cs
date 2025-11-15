@@ -1,19 +1,21 @@
+using System.Xml.Linq;
+
+using CutTheRope.Helpers;
 using CutTheRope.iframework.helpers;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal class CTRGameObject : GameObject
     {
-        public override void ParseMover(XMLNode xml)
+        public override void ParseMover(XElement xml)
         {
             rotation = 0f;
-            NSString nSString = xml["angle"];
-            if (nSString != null)
+            string nSString = xml.AttributeAsNSString("angle");
+            if (nSString.Length() != 0)
             {
                 rotation = nSString.FloatValue();
             }
-            NSString nSString2 = xml["path"];
+            string nSString2 = xml.AttributeAsNSString("path");
             if (nSString2 != null && nSString2.Length() != 0)
             {
                 int i = 100;
@@ -21,10 +23,12 @@ namespace CutTheRope.game
                 {
                     i = ((int)((int)RTD(nSString2.SubstringFromIndex(2).IntValue()) * 3.3f) / 2) + 1;
                 }
-                float m_ = xml["moveSpeed"].FloatValue() * 3.3f;
-                float r_ = xml["rotateSpeed"].FloatValue();
-                CTRMover cTRMover = (CTRMover)new CTRMover().InitWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
-                cTRMover.angle_ = rotation;
+                float m_ = xml.AttributeAsNSString("moveSpeed").FloatValue() * 3.3f;
+                float r_ = xml.AttributeAsNSString("rotateSpeed").FloatValue();
+                CTRMover cTRMover = new(i, m_, r_)
+                {
+                    angle_ = rotation
+                };
                 cTRMover.angle_initial = cTRMover.angle_;
                 cTRMover.SetPathFromStringandStart(nSString2, Vect(x, y));
                 SetMover(cTRMover);

@@ -97,15 +97,26 @@ namespace CutTheRope.iframework.visual
             OpenGL.GlBindBuffer(2, 0U);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            particles = null;
-            vertices = null;
-            colors = null;
-            OpenGL.GlDeleteBuffers(1, ref verticesID);
-            OpenGL.GlDeleteBuffers(1, ref colorsID);
-            texture = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                particles = null;
+                vertices = null;
+                colors = null;
+                if (verticesID != 0)
+                {
+                    OpenGL.GlDeleteBuffers(1, ref verticesID);
+                    verticesID = 0;
+                }
+                if (colorsID != 0)
+                {
+                    OpenGL.GlDeleteBuffers(1, ref colorsID);
+                    colorsID = 0;
+                }
+                texture = null;
+            }
+            base.Dispose(disposing);
         }
 
         public override void Draw()
@@ -116,10 +127,6 @@ namespace CutTheRope.iframework.visual
 
         public virtual Particles InitWithTotalParticles(int numberOfParticles)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
             width = (int)SCREEN_WIDTH;
             height = (int)SCREEN_HEIGHT;
             totalParticles = numberOfParticles;

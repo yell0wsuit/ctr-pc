@@ -1,11 +1,11 @@
 using System;
 using System.Globalization;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -87,7 +87,7 @@ namespace CutTheRope.game
                             int num = (int)Math.Floor((double)(Round(time) / 60f));
                             int num2 = (int)(Round(time) - (num * 60f));
                             ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString(655377));
-                            ((Text)result.GetChildWithName("dataValue")).SetString(NSS(num.ToString(CultureInfo.InvariantCulture) + ":" + num2.ToString("D2", CultureInfo.InvariantCulture)));
+                            ((Text)result.GetChildWithName("dataValue")).SetString(num.ToString(CultureInfo.InvariantCulture) + ":" + num2.ToString("D2", CultureInfo.InvariantCulture));
                             return;
                         }
                         break;
@@ -111,7 +111,7 @@ namespace CutTheRope.game
                         cscore = (int)(starBonus + ((1f - raDelay) * timeBonus));
                         int num3 = (int)Math.Floor((double)Round(ctime) / 60.0);
                         int num4 = (int)((double)Round(ctime) - (num3 * 60.0));
-                        ((Text)result.GetChildWithName("dataValue")).SetString(NSS(num3.ToString(CultureInfo.InvariantCulture) + ":" + num4.ToString("D2", CultureInfo.InvariantCulture)));
+                        ((Text)result.GetChildWithName("dataValue")).SetString(num3.ToString(CultureInfo.InvariantCulture) + ":" + num4.ToString("D2", CultureInfo.InvariantCulture));
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         if (flag)
                         {
@@ -159,92 +159,89 @@ namespace CutTheRope.game
             }
         }
 
-        public NSObject InitWithButtonDelegate(IButtonDelegation b)
+        public BoxOpenClose InitWithButtonDelegate(IButtonDelegation b)
         {
-            if (Init() != null)
-            {
-                result = (BaseElement)new BaseElement().Init();
-                _ = AddChildwithID(result, 1);
-                anchor = parentAnchor = 18;
-                result.anchor = result.parentAnchor = 18;
-                result.SetEnabled(false);
-                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-                result.AddTimelinewithID(timeline, 0);
-                timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-                result.AddTimelinewithID(timeline, 1);
-                Image image = Image.Image_createWithResIDQuad(67, 14);
-                image.anchor = 18;
-                image.SetName("star1");
-                Image.SetElementPositionWithQuadOffset(image, 67, 0);
-                _ = result.AddChild(image);
-                Image image2 = Image.Image_createWithResIDQuad(67, 14);
-                image2.anchor = 18;
-                image2.SetName("star2");
-                Image.SetElementPositionWithQuadOffset(image2, 67, 1);
-                _ = result.AddChild(image2);
-                Image image3 = Image.Image_createWithResIDQuad(67, 14);
-                image3.anchor = 18;
-                image3.SetName("star3");
-                Image.SetElementPositionWithQuadOffset(image3, 67, 2);
-                _ = result.AddChild(image3);
-                Text text = new Text().InitWithFont(Application.GetFont(3));
-                text.SetString(Application.GetString(655372));
-                Image.SetElementPositionWithQuadOffset(text, 67, 3);
-                text.anchor = 18;
-                text.SetName("passText");
-                _ = result.AddChild(text);
-                Image image4 = Image.Image_createWithResIDQuad(67, 15);
-                image4.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(image4, 67, 4);
-                _ = result.AddChild(image4);
-                stamp = Image.Image_createWithResIDQuad(70, 0);
-                Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(7);
-                timeline2.AddKeyFrame(KeyFrame.MakeScale(3.0, 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-                _ = stamp.AddTimeline(timeline2);
-                stamp.anchor = 18;
-                stamp.SetEnabled(false);
-                Image.SetElementPositionWithQuadOffset(stamp, 67, 12);
-                _ = result.AddChild(stamp);
-                Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655384), 8, b);
-                button.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(button, 67, 11);
-                _ = result.AddChild(button);
-                Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655385), 9, b);
-                button2.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(button2, 67, 10);
-                _ = result.AddChild(button2);
-                Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655386), 5, b);
-                button3.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(button3, 67, 9);
-                _ = result.AddChild(button3);
-                Text text2 = new Text().InitWithFont(Application.GetFont(4));
-                text2.SetName("dataTitle");
-                text2.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(text2, 67, 5);
-                _ = result.AddChild(text2);
-                Text text3 = new Text().InitWithFont(Application.GetFont(4));
-                text3.SetName("dataValue");
-                text3.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(text3, 67, 6);
-                _ = result.AddChild(text3);
-                Text text4 = new Text().InitWithFont(Application.GetFont(68));
-                text4.SetName("scoreValue");
-                text4.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(text4, 67, 8);
-                _ = result.AddChild(text4);
-                confettiAnims = (BaseElement)new BaseElement().Init();
-                _ = result.AddChild(confettiAnims);
-                openCloseAnims = null;
-                boxAnim = -1;
-                delegateboxClosed = null;
-            }
+            result = new BaseElement();
+            _ = AddChildwithID(result, 1);
+            anchor = parentAnchor = 18;
+            result.anchor = result.parentAnchor = 18;
+            result.SetEnabled(false);
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+            result.AddTimelinewithID(timeline, 0);
+            timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+            result.AddTimelinewithID(timeline, 1);
+            Image image = Image.Image_createWithResIDQuad(67, 14);
+            image.anchor = 18;
+            image.SetName("star1");
+            Image.SetElementPositionWithQuadOffset(image, 67, 0);
+            _ = result.AddChild(image);
+            Image image2 = Image.Image_createWithResIDQuad(67, 14);
+            image2.anchor = 18;
+            image2.SetName("star2");
+            Image.SetElementPositionWithQuadOffset(image2, 67, 1);
+            _ = result.AddChild(image2);
+            Image image3 = Image.Image_createWithResIDQuad(67, 14);
+            image3.anchor = 18;
+            image3.SetName("star3");
+            Image.SetElementPositionWithQuadOffset(image3, 67, 2);
+            _ = result.AddChild(image3);
+            Text text = new Text().InitWithFont(Application.GetFont(3));
+            text.SetString(Application.GetString(655372));
+            Image.SetElementPositionWithQuadOffset(text, 67, 3);
+            text.anchor = 18;
+            text.SetName("passText");
+            _ = result.AddChild(text);
+            Image image4 = Image.Image_createWithResIDQuad(67, 15);
+            image4.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(image4, 67, 4);
+            _ = result.AddChild(image4);
+            stamp = Image.Image_createWithResIDQuad(70, 0);
+            Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(7);
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(3.0, 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
+            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            _ = stamp.AddTimeline(timeline2);
+            stamp.anchor = 18;
+            stamp.SetEnabled(false);
+            Image.SetElementPositionWithQuadOffset(stamp, 67, 12);
+            _ = result.AddChild(stamp);
+            Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655384), 8, b);
+            button.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(button, 67, 11);
+            _ = result.AddChild(button);
+            Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655385), 9, b);
+            button2.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(button2, 67, 10);
+            _ = result.AddChild(button2);
+            Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655386), 5, b);
+            button3.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(button3, 67, 9);
+            _ = result.AddChild(button3);
+            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            text2.SetName("dataTitle");
+            text2.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(text2, 67, 5);
+            _ = result.AddChild(text2);
+            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            text3.SetName("dataValue");
+            text3.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(text3, 67, 6);
+            _ = result.AddChild(text3);
+            Text text4 = new Text().InitWithFont(Application.GetFont(68));
+            text4.SetName("scoreValue");
+            text4.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(text4, 67, 8);
+            _ = result.AddChild(text4);
+            confettiAnims = new BaseElement();
+            _ = result.AddChild(confettiAnims);
+            openCloseAnims = null;
+            boxAnim = -1;
+            delegateboxClosed = null;
             return this;
         }
 
@@ -531,7 +528,7 @@ namespace CutTheRope.game
                 case 1:
                     {
                         DelayedDispatcher.DispatchFunc dispatchFunc = new(Selector_removeOpenCloseAnims);
-                        NSTimer.RegisterDelayedObjectCall(dispatchFunc, this, 0.001);
+                        TimerManager.RegisterDelayedObjectCall(dispatchFunc, this, 0.001);
                         if (result.IsEnabled())
                         {
                             confettiAnims.RemoveAllChilds();
@@ -543,7 +540,7 @@ namespace CutTheRope.game
                 case 2:
                     {
                         DelayedDispatcher.DispatchFunc dispatchFunc2 = new(Selector_postBoxClosed);
-                        NSTimer.RegisterDelayedObjectCall(dispatchFunc2, this, 0.001);
+                        TimerManager.RegisterDelayedObjectCall(dispatchFunc2, this, 0.001);
                         break;
                     }
                 case 3:
@@ -580,16 +577,16 @@ namespace CutTheRope.game
 
         public void CreateOpenCloseAnims()
         {
-            openCloseAnims = (BaseElement)new BaseElement().Init();
+            openCloseAnims = new BaseElement();
             _ = AddChildwithID(openCloseAnims, 0);
         }
 
-        private static void Selector_removeOpenCloseAnims(NSObject obj)
+        private static void Selector_removeOpenCloseAnims(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).RemoveOpenCloseAnims();
         }
 
-        private static void Selector_postBoxClosed(NSObject obj)
+        private static void Selector_postBoxClosed(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).PostBoxClosed();
         }
