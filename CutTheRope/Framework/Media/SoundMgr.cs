@@ -41,7 +41,7 @@ namespace CutTheRope.Framework.Media
             SoundEffect soundEffect;
             try
             {
-                value = _contentManager.Load<SoundEffect>("sounds/" + CTRResourceMgr.XNA_ResName(resId));
+                value = _contentManager.Load<SoundEffect>("sounds/sfx/" + CTRResourceMgr.XNA_ResName(resId));
                 LoadedSounds.Add(resId, value);
                 soundEffect = value;
             }

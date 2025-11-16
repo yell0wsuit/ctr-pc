@@ -29,14 +29,19 @@ namespace CutTheRope.GameMain
             return s_EnableLoopedSounds && Preferences.GetBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
         }
 
-        public static void PlayRandomMusic(int minId, int maxId)
+        public static void PlayRandomMusic(params int[] musicIds)
         {
+            if (musicIds == null || musicIds.Length == 0)
+            {
+                return;
+            }
+
             int num;
             do
             {
-                num = RND_RANGE(minId, maxId);
+                num = musicIds[RND_RANGE(0, musicIds.Length - 1)];
             }
-            while (num == prevMusic);
+            while (num == prevMusic && musicIds.Length > 1);
             prevMusic = num;
             PlayMusic(num);
         }
