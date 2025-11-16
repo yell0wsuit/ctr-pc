@@ -219,6 +219,7 @@ namespace CutTheRope.GameMain
                     { 146, "game_music" },
                     { 147, "game_music2" },
                     { 148, "game_music3" },
+                    { 150, "game_music4" },
                     { 149, "menu_extra_buttons_en" }
                 };
             _ = resNames_.TryGetValue(HandleLocalizedResource(resId), out string value);
