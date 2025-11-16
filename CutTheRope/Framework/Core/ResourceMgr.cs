@@ -9,6 +9,8 @@ using CutTheRope.Framework.Visual;
 using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
+using Microsoft.Xna.Framework;
+
 namespace CutTheRope.Framework.Core
 {
     internal class ResourceMgr : FrameworkTypes
@@ -48,7 +50,7 @@ namespace CutTheRope.Framework.Core
             switch (resType)
             {
                 case ResourceType.IMAGE:
-                    value = LoadTextureImageInfo(path, null, flag, scaleX, scaleY);
+                    value = LoadTextureImageInfo(resID, path, null, flag, scaleX, scaleY);
                     break;
                 case ResourceType.FONT:
                     value = LoadVariableFontInfo(path, resID, flag);
@@ -134,17 +136,48 @@ namespace CutTheRope.Framework.Core
             return font;
         }
 
-        public virtual CTRTexture2D LoadTextureImageInfo(string path, XElement i, bool isWvga, float scaleX, float scaleY)
+        public virtual CTRTexture2D LoadTextureImageInfo(int resId, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
-            i ??= XElementExtensions.LoadContentXml(path);
-            if (i == null)
+            TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resId);
+            bool preferTexturePacker = atlasConfig?.Format == TextureAtlasFormat.TexturePackerJson;
+
+            XElement xmlInfo = i;
+            if (!preferTexturePacker)
+            {
+                xmlInfo ??= XElementExtensions.LoadContentXml(path);
+            }
+
+            ParsedTexturePackerAtlas parsedAtlas = null;
+            if (preferTexturePacker || xmlInfo == null)
+            {
+                parsedAtlas = TryLoadTexturePackerAtlas(atlasConfig, path);
+                if (parsedAtlas == null && preferTexturePacker && xmlInfo == null)
+                {
+                    xmlInfo = XElementExtensions.LoadContentXml(path);
+                }
+            }
+
+            if (xmlInfo == null && parsedAtlas == null)
             {
                 return null;
             }
-            bool flag = (i.AttributeAsNSString("filter").IntValue() & 1) == 1;
-            int defaultAlphaPixelFormat = i.AttributeAsNSString("format").IntValue();
+
+            bool useAntialias;
+            CTRTexture2D.Texture2DPixelFormat pixelFormat;
+            if (parsedAtlas == null && xmlInfo != null)
+            {
+                useAntialias = (xmlInfo.AttributeAsNSString("filter").IntValue() & 1) == 1;
+                int formatValue = xmlInfo.AttributeAsNSString("format").IntValue();
+                pixelFormat = (CTRTexture2D.Texture2DPixelFormat)formatValue;
+            }
+            else
+            {
+                useAntialias = atlasConfig?.UseAntialias ?? true;
+                pixelFormat = atlasConfig?.PixelFormat ?? CTRTexture2D.kTexture2DPixelFormat_Default;
+            }
+
             string text = FullPathFromRelativePath(path);
-            if (flag)
+            if (useAntialias)
             {
                 CTRTexture2D.SetAntiAliasTexParameters();
             }
@@ -152,7 +185,8 @@ namespace CutTheRope.Framework.Core
             {
                 CTRTexture2D.SetAliasTexParameters();
             }
-            CTRTexture2D.SetDefaultAlphaPixelFormat((CTRTexture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
+
+            CTRTexture2D.SetDefaultAlphaPixelFormat(pixelFormat);
             CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(text, true)
                 ?? throw new FileNotFoundException("texture not found: " + text, text);
             CTRTexture2D.SetDefaultAlphaPixelFormat(CTRTexture2D.kTexture2DPixelFormat_Default);
@@ -161,8 +195,132 @@ namespace CutTheRope.Framework.Core
                 texture2D.SetWvga();
             }
             texture2D.SetScale(scaleX, scaleY);
-            SetTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
+
+            if (parsedAtlas != null)
+            {
+                ApplyTexturePackerInfo(texture2D, parsedAtlas, isWvga, scaleX, scaleY);
+            }
+            else
+            {
+                SetTextureInfo(texture2D, xmlInfo, isWvga, scaleX, scaleY);
+            }
+
             return texture2D;
+        }
+
+        protected virtual TextureAtlasConfig GetTextureAtlasConfig(int resId)
+        {
+            return null;
+        }
+
+        private static ParsedTexturePackerAtlas TryLoadTexturePackerAtlas(TextureAtlasConfig config, string textureName)
+        {
+            string atlasPath = ResolveAtlasPath(config, textureName);
+            if (string.IsNullOrEmpty(atlasPath))
+            {
+                return null;
+            }
+
+            string json = LoadContentText(atlasPath);
+            if (string.IsNullOrEmpty(json))
+            {
+                return null;
+            }
+
+            TexturePackerParserOptions options = null;
+            if ((config?.FrameOrder?.Length ?? 0) > 0 || (config?.CenterOffsets ?? false))
+            {
+                options = new TexturePackerParserOptions
+                {
+                    FrameOrder = config?.FrameOrder,
+                    NormalizeOffsetsToCenter = config?.CenterOffsets ?? false
+                };
+            }
+
+            try
+            {
+                return TexturePackerAtlasParser.Parse(json, options);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to parse TexturePacker atlas \"{atlasPath}\": {ex.Message}");
+            }
+
+            return null;
+        }
+
+        private static string ResolveAtlasPath(TextureAtlasConfig config, string textureName)
+        {
+            string atlasPath = config?.AtlasPath;
+            if (string.IsNullOrWhiteSpace(atlasPath))
+            {
+                atlasPath = textureName;
+            }
+
+            if (!Path.HasExtension(atlasPath))
+            {
+                atlasPath += ".json";
+            }
+
+            return atlasPath;
+        }
+
+        private static string LoadContentText(string relativePath)
+        {
+            try
+            {
+                using Stream stream = TitleContainer.OpenStream($"content/{ContentFolder}{relativePath}");
+                using StreamReader reader = new(stream);
+                return reader.ReadToEnd();
+            }
+            catch (Exception)
+            {
+            }
+
+            return null;
+        }
+
+        private static void ApplyTexturePackerInfo(CTRTexture2D texture, ParsedTexturePackerAtlas atlas, bool isWvga, float scaleX, float scaleY)
+        {
+            texture.preCutSize = vectUndefined;
+            if (atlas == null || atlas.Rects.Count == 0)
+            {
+                return;
+            }
+
+            float[] quadData = new float[atlas.Rects.Count * 4];
+            for (int i = 0; i < atlas.Rects.Count; i++)
+            {
+                CTRRectangle rect = atlas.Rects[i];
+                int index = i * 4;
+                quadData[index] = rect.x;
+                quadData[index + 1] = rect.y;
+                quadData[index + 2] = rect.w;
+                quadData[index + 3] = rect.h;
+            }
+            SetQuadsInfo(texture, quadData, quadData.Length, scaleX, scaleY);
+
+            if (atlas.Offsets.Count == atlas.Rects.Count && atlas.HasNonZeroOffset)
+            {
+                float[] offsetData = new float[atlas.Offsets.Count * 2];
+                for (int j = 0; j < atlas.Offsets.Count; j++)
+                {
+                    int offsetIndex = j * 2;
+                    offsetData[offsetIndex] = atlas.Offsets[j].x;
+                    offsetData[offsetIndex + 1] = atlas.Offsets[j].y;
+                }
+                SetOffsetsInfo(texture, offsetData, offsetData.Length, scaleX, scaleY);
+            }
+
+            if (atlas.PreCutWidth > 0f && atlas.PreCutHeight > 0f)
+            {
+                texture.preCutSize = Vect(atlas.PreCutWidth, atlas.PreCutHeight);
+                if (isWvga)
+                {
+                    texture.preCutSize.x /= 1.5f;
+                    texture.preCutSize.y /= 1.5f;
+                }
+            }
         }
 
         public virtual void SetTextureInfo(CTRTexture2D t, XElement i, bool isWvga, float scaleX, float scaleY)
