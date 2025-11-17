@@ -409,11 +409,8 @@ namespace CutTheRope.Desktop
                 {
                     return basicEffect;
                 }
-                if (s_Texture_OptimizeLastUsed != s_Texture)
-                {
-                    basicEffect.Texture = s_Texture.xnaTexture_;
-                    s_Texture_OptimizeLastUsed = s_Texture;
-                }
+                basicEffect.Texture = s_Texture.xnaTexture_;
+                s_Texture_OptimizeLastUsed = s_Texture;
                 basicEffect.DiffuseColor = s_Color.ToVector3();
                 Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
                 Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
