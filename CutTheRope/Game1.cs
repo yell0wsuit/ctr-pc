@@ -13,6 +13,7 @@ using CutTheRope.Framework.Media;
 using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -42,7 +43,7 @@ namespace CutTheRope
             TargetElapsedTime = TimeSpan.FromTicks(166666L);
             IsFixedTimeStep = false;
             InactiveSleepTime = TimeSpan.FromTicks(500000L);
-            IsMouseVisible = false;
+            UseNativeMouse = true;
             Activated += Game1_Activated;
             Deactivated += Game1_Deactivated;
             Exiting += Game1_Exiting;
@@ -303,6 +304,8 @@ namespace CutTheRope
         private bool _altEnterPressed;
 
         private MouseState _currentMouseState;
+
+        public bool UseNativeMouse = false;
 
         private bool UseWindowMode_TODO_ChangeFullScreenResolution = true;
 
