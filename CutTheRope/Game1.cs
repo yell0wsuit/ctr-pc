@@ -12,6 +12,7 @@ using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Media;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -39,7 +40,7 @@ namespace CutTheRope
             TargetElapsedTime = TimeSpan.FromTicks(166666L);
             IsFixedTimeStep = false;
             InactiveSleepTime = TimeSpan.FromTicks(500000L);
-            IsMouseVisible = false;
+            IsMouseVisible = true;
             Activated += Game1_Activated;
             Deactivated += Game1_Deactivated;
             Exiting += Game1_Exiting;
