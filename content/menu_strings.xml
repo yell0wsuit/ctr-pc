@@ -330,7 +330,7 @@ ta progression ?</fr>
     <ru>DJ</ru>
     <fr>DJ</fr>
     <de>DJ-Kiste</de>
-  </string> 
+  </string>
   <string name="BOX_SOON_LABEL">
     <en>New levels coming soon!</en>
     <ru>Новые уровни на подходе!</ru>
@@ -348,7 +348,7 @@ Nataliya Omelyanchuk
 
 Music and Sounds:
 Alexander Falinski
-</en>
+    </en>
     <ru>Cut the Rope версия %@
 2012 ZeptoLab.
 
@@ -359,7 +359,7 @@ Alexander Falinski
 
 Музыка и звуки:
 Александр Фалинский
-</ru>
+    </ru>
     <fr>Cut the Rope ver. %@
 Copyright 2012 ZeptoLab.
 
@@ -370,7 +370,7 @@ Nataliya Omelyanchuk
 
 Musique et bruitages :
 Alexander Falinski
-</fr>
+    </fr>
     <de>Cut the Rope Version: %@
 Copyright 2012 von ZeptoLab.
 
@@ -381,7 +381,7 @@ Nataliya Omelyanchuk
 
 Musik und Sound:
 Alexander Falinski
-</de>
+    </de>
   </string>
   <string name="ABOUT_SPECIAL_THANKS">
     <en>Quality assurance:
@@ -475,500 +475,500 @@ Assistance juridique : Hughes Media Law Group</fr>
     <fr>Changer de nom :</fr>
     <de>Ändere deinen Namen:</de>
   </string>
-<string name="PROCESSING">
+  <string name="PROCESSING">
     <en>Processing...</en>
     <ru>Обработка...</ru>
     <fr>Traitement en cours...</fr>
     <de>Wird bearbeitet ...</de>
   </string>
   <string name="AC_BRONZE_SCISSORS">
-  <en>Bronze Scissors</en>
-  <ru>Бронзовые ножницы</ru>
-  <de>Bronzeschere</de>
-  <fr>Ciseaux de bronze</fr>
-</string>
-<string name="AC_SILVER_SCISSORS">
-  <en>Silver Scissors</en>
-  <ru>Серебряные ножницы</ru>
-  <de>Silberschere</de>
-  <fr>Ciseaux d'argent</fr>
-</string>
-<string name="AC_GOLDEN_SCISSORS">
-  <en>Golden Scissors</en>
-  <ru>Золотые ножницы</ru>
-  <de>Goldschere</de>
-  <fr>Ciseaux d'or</fr>
-</string>
-<string name="AC_ROPE_CUTTER">
-  <en>Rope Cutter</en>
-  <ru>Веревкорез</ru>
-  <de>Seilschneider</de>
-  <fr>Coupeur de cordes</fr>
-</string>
-<string name="AC_ROPE_CUTTER_MANIAC">
-  <en>Rope Cutter Maniac</en>
-  <ru>Маньяк-веревкорез</ru>
-  <de>Extremseilschneider</de>
-  <fr>Coupeur compulsif</fr>
-</string>
-<string name="AC_ULTIMATE_ROPE_CUTTER">
-  <en>Ultimate Rope Cutter</en>
-  <ru>Идеальный веревкорез</ru>
-  <de>Megaseilschneider</de>
-  <fr>Ultime coupeur</fr>
-</string>
-<string name="AC_BUBBLE_POPPER">
-  <en>Bubble Popper</en>
-  <ru>Пузыревзрыватель</ru>
-  <de>Blasenplatzer</de>
-  <fr>Éclateur de bulles</fr>
-</string>
-<string name="AC_BUBBLE_MASTER">
-  <en>Bubble Master</en>
-  <ru>Повелитель пузырей</ru>
-  <de>Blasenmeister</de>
-  <fr>Maître des bulles</fr>
-</string>
-<string name="AC_SPIDER_BUSTER">
-  <en>Spider Buster</en>
-  <ru>Охотник за пауками</ru>
-  <de>Spinnenbezwinger</de>
-  <fr>Anti-araignées</fr>
-</string>
-<string name="AC_SPIDER_TAMER">
-  <en>Spider Tamer</en>
-  <ru>Укротитель пауков</ru>
-  <de>Spinnendompteur</de>
-  <fr>Dompteur d'araignées</fr>
-</string>
-<string name="AC_WEIGHT_LOSER">
-  <en>Weight Loser</en>
-  <ru>Сбрасывающий вес</ru>
-  <de>Auf Diät</de>
-  <fr>Régime sans bonbons</fr>
-</string>
-<string name="AC_CALORIE_MINIMIZER">
-  <en>Calorie Minimizer</en>
-  <ru>Минимизатор калорий</ru>
-  <de>Total schlank</de>
-  <fr>Réducteur de calories</fr>
-</string>
-<string name="AC_QUICK_FINGER">
-  <en>Quick Finger</en>
-  <ru>Быстрый палец</ru>
-  <de>Schnelle Finger</de>
-  <fr>Doigts agiles</fr>
-</string>
-<string name="AC_MASTER_FINGER">
-  <en>Master Finger</en>
-  <ru>Палец мастера</ru>
-  <de>Meisterfinger</de>
-  <fr>Doigts divins</fr>
-</string>
-<string name="AC_TUMMY_TEASER">
-  <en>Tummy Teaser</en>
-  <ru>Дразнилка для пуза</ru>
-  <de>Hungrigmacher</de>
-  <fr>Taquineur d'estomac</fr>
-</string>
-<string name="AC_ROMANTIC_SOUL">
-  <en>Romantic Soul</en>
-  <ru>Душа романтика</ru>
-  <de>Romantiker</de>
-  <fr>Âme romantique</fr>
-</string>
-<string name="AC_MAGICIAN">
-  <en>Magician</en>
-  <ru>Волшебник</ru>
-  <de>Magier</de>
-  <fr>Magicien</fr>
-</string>
+    <en>Bronze Scissors</en>
+    <ru>Бронзовые ножницы</ru>
+    <de>Bronzeschere</de>
+    <fr>Ciseaux de bronze</fr>
+  </string>
+  <string name="AC_SILVER_SCISSORS">
+    <en>Silver Scissors</en>
+    <ru>Серебряные ножницы</ru>
+    <de>Silberschere</de>
+    <fr>Ciseaux d'argent</fr>
+  </string>
+  <string name="AC_GOLDEN_SCISSORS">
+    <en>Golden Scissors</en>
+    <ru>Золотые ножницы</ru>
+    <de>Goldschere</de>
+    <fr>Ciseaux d'or</fr>
+  </string>
+  <string name="AC_ROPE_CUTTER">
+    <en>Rope Cutter</en>
+    <ru>Веревкорез</ru>
+    <de>Seilschneider</de>
+    <fr>Coupeur de cordes</fr>
+  </string>
+  <string name="AC_ROPE_CUTTER_MANIAC">
+    <en>Rope Cutter Maniac</en>
+    <ru>Маньяк-веревкорез</ru>
+    <de>Extremseilschneider</de>
+    <fr>Coupeur compulsif</fr>
+  </string>
+  <string name="AC_ULTIMATE_ROPE_CUTTER">
+    <en>Ultimate Rope Cutter</en>
+    <ru>Идеальный веревкорез</ru>
+    <de>Megaseilschneider</de>
+    <fr>Ultime coupeur</fr>
+  </string>
+  <string name="AC_BUBBLE_POPPER">
+    <en>Bubble Popper</en>
+    <ru>Пузыревзрыватель</ru>
+    <de>Blasenplatzer</de>
+    <fr>Éclateur de bulles</fr>
+  </string>
+  <string name="AC_BUBBLE_MASTER">
+    <en>Bubble Master</en>
+    <ru>Повелитель пузырей</ru>
+    <de>Blasenmeister</de>
+    <fr>Maître des bulles</fr>
+  </string>
+  <string name="AC_SPIDER_BUSTER">
+    <en>Spider Buster</en>
+    <ru>Охотник за пауками</ru>
+    <de>Spinnenbezwinger</de>
+    <fr>Anti-araignées</fr>
+  </string>
+  <string name="AC_SPIDER_TAMER">
+    <en>Spider Tamer</en>
+    <ru>Укротитель пауков</ru>
+    <de>Spinnendompteur</de>
+    <fr>Dompteur d'araignées</fr>
+  </string>
+  <string name="AC_WEIGHT_LOSER">
+    <en>Weight Loser</en>
+    <ru>Сбрасывающий вес</ru>
+    <de>Auf Diät</de>
+    <fr>Régime sans bonbons</fr>
+  </string>
+  <string name="AC_CALORIE_MINIMIZER">
+    <en>Calorie Minimizer</en>
+    <ru>Минимизатор калорий</ru>
+    <de>Total schlank</de>
+    <fr>Réducteur de calories</fr>
+  </string>
+  <string name="AC_QUICK_FINGER">
+    <en>Quick Finger</en>
+    <ru>Быстрый палец</ru>
+    <de>Schnelle Finger</de>
+    <fr>Doigts agiles</fr>
+  </string>
+  <string name="AC_MASTER_FINGER">
+    <en>Master Finger</en>
+    <ru>Палец мастера</ru>
+    <de>Meisterfinger</de>
+    <fr>Doigts divins</fr>
+  </string>
+  <string name="AC_TUMMY_TEASER">
+    <en>Tummy Teaser</en>
+    <ru>Дразнилка для пуза</ru>
+    <de>Hungrigmacher</de>
+    <fr>Taquineur d'estomac</fr>
+  </string>
+  <string name="AC_ROMANTIC_SOUL">
+    <en>Romantic Soul</en>
+    <ru>Душа романтика</ru>
+    <de>Romantiker</de>
+    <fr>Âme romantique</fr>
+  </string>
+  <string name="AC_MAGICIAN">
+    <en>Magician</en>
+    <ru>Волшебник</ru>
+    <de>Magier</de>
+    <fr>Magicien</fr>
+  </string>
 
-<string name="AC_BRONZE_SCISSORS_DESCR">
-  <en>Collect 50 stars</en>
-  <ru>Соберите 50 звезд</ru>
-  <de>Sammle 50 Sterne</de>
-  <fr>Récupère 50 étoiles</fr>
-</string>
-<string name="AC_SILVER_SCISSORS_DESCR">
-  <en>Collect 150 stars</en>
-  <ru>Соберите 150 звезд</ru>
-  <de>Sammle 150 Sterne</de>
-  <fr>Récupère 150 étoiles</fr>
-</string>
-<string name="AC_GOLDEN_SCISSORS_DESCR">
-  <en>Collect 300 stars</en>
-  <ru>Соберите 300 звезд</ru>
-  <de>Sammle 300 Sterne</de>
-  <fr>Récupère 300 étoiles</fr>
-</string>
-<string name="AC_ROPE_CUTTER_DESCR">
-  <en>Cut 100 ropes</en>
-  <ru>Перережьте 100 веревок</ru>
-  <de>Schneide 100 Seile</de>
-  <fr>Coupe 100 cordes</fr>
-</string>
-<string name="AC_ROPE_CUTTER_MANIAC_DESCR">
-  <en>Cut 800 ropes</en>
-  <ru>Перережьте 800 веревок</ru>
-  <de>Schneide 800 Seile</de>
-  <fr>Coupe 800 cordes</fr>
-</string>
-<string name="AC_ULTIMATE_ROPE_CUTTER_DESCR">
-  <en>Cut 2000 ropes</en>
-  <ru>Перережьте 2000 веревок</ru>
-  <de>Schneide 2000 Seile</de>
-  <fr>Coupe 2000 cordes</fr>
-</string>
-<string name="AC_BUBBLE_POPPER_DESCR">
-  <en>Pop 50 bubbles</en>
-  <ru>Лопните 50 пузырей</ru>
-  <de>Lasse 50 Blasen platzen</de>
-  <fr>Éclate 50 bulles</fr>
-</string>
-<string name="AC_BUBBLE_MASTER_DESCR">
-  <en>Pop 300 bubbles</en>
-  <ru>Лопните 300 пузырей</ru>
-  <de>Lasse 300 Blasen platzen</de>
-  <fr>Éclate 300 bulles</fr>
-</string>
-<string name="AC_SPIDER_BUSTER_DESCR">
-  <en>Outsmart 40 spiders</en>
-  <ru>Перехитрите 40 пауков</ru>
-  <de>Überliste 40 Spinnen</de>
-  <fr>Stoppe 40 araignées</fr>
-</string>
-<string name="AC_SPIDER_TAMER_DESCR">
-  <en>Outsmart 200 spiders</en>
-  <ru>Перехитрите 200 пауков</ru>
-  <de>Überliste 200 Spinnen</de>
-  <fr>Stoppe 200 araignées</fr>
-</string>
-<string name="AC_WEIGHT_LOSER_DESCR">
-  <en>Lose candy 50 times</en>
-  <ru>Потеряйте леденец 50 раз</ru>
-  <de>Verlier 50 Bonbons</de>
-  <fr>Laisse échapper le bonbon 50 fois</fr>
-</string>
-<string name="AC_CALORIE_MINIMIZER_DESCR">
-  <en>Lose candy 200 times</en>
-  <ru>Потеряйте леденец 200 раз</ru>
-  <de>Verlier 200 Bonbons</de>
-  <fr>Laisse échapper le bonbon 200 fois</fr>
-</string>
-<string name="AC_QUICK_FINGER_DESCR">
-  <en>Cut 3 ropes at once</en>
-  <ru>Одновременно перережьте 3 веревки</ru>
-  <de>Schneide 3 Seile gleichzeitig</de>
-  <fr>Coupe 3 cordes d'un seul coup</fr>
-</string>
-<string name="AC_MASTER_FINGER_DESCR">
-  <en>Cut 5 ropes at once</en>
-  <ru>Одновременно перережьте 5 веревок</ru>
-  <de>Schneide 5 Seile gleichzeitig</de>
-  <fr>Coupe 5 cordes d'un seul coup</fr>
-</string>
-<string name="AC_TUMMY_TEASER_DESCR">
-  <en>Have Om Nom open his mouth 10 times in a row</en>
-  <ru>Заставьте Ам Няма открыть рот 10 раз подряд</ru>
-  <de>Sorge dafür, dass Om Nom seinen Mund 10 Mal nacheinander öffnet</de>
-  <fr>Fais ouvrir sa bouche à Om Nom 10 fois d'affilée</fr>
-</string>
-<string name="AC_ROMANTIC_SOUL_DESCR">
-  <en>Reunite 100 candies</en>
-  <ru>Соберите 100 леденцов</ru>
-  <de>Bringe 100 Bonbons zusammen</de>
-  <fr>Associe 100 bonbons</fr>
-</string>
-<string name="AC_MAGICIAN_DESCR">
-  <en>Drop candy into magic hats 200 times</en>
-  <ru>Бросьте леденец в волшебные шляпы 200 раз</ru>
-  <de>Lasse 200 Bonbons in Zauberhüte fallen</de>
-  <fr>Fais tomber le bonbon dans le chapeau magique 200 fois</fr>
-</string>
-<string name="AC_CARDBOARD_BOX_COMPLETED">
-  <en>Cardboard Box Completed</en>
-  <ru>Картонная коробка завершена</ru>
-  <de>Pappkiste abgeschlossen</de>
-  <fr>Boîte Carton terminée</fr>
-</string>
-<string name="AC_FABRIC_BOX_COMPLETED">
-  <en>Fabric Box Completed</en>
-  <ru>Тканевая коробка завершена</ru>
-  <de>Stoffkiste abgeschlossen</de>
-  <fr>Boîte Tissu terminée</fr>
-</string>
-<string name="AC_FOIL_BOX_COMPLETED">
-  <en>Foil Box Completed</en>
-  <ru>Коробка из фольги завершена</ru>
-  <de>Folienkiste abgeschlossen</de>
-  <fr>Boîte Papier terminée</fr>
-</string>
-<string name="AC_MAGIC_BOX_COMPLETED">
-  <en>Magic Box Completed</en>
-  <ru>Волшебная коробка завершена</ru>
-  <de>Magiekiste abgeschlossen</de>
-  <fr>Boîte Magique terminée</fr>
-</string>
-<string name="AC_VALENTINE_BOX_COMPLETED">
-  <en>Valentine Box Completed</en>
-  <ru>Коробка Валентинка завершена</ru>
-  <de>Valentinskiste abgeschlossen</de>
-  <fr>Boîte Valentin terminée</fr>
-</string>
-<string name="AC_TOY_BOX_COMPLETED">
-  <en>Toy Box Completed</en>
-  <ru>Игрушечная коробка завершена</ru>
-  <de>Spielzeugkiste abgeschlossen</de>
-  <fr>Boîte Jouets terminée</fr>
-</string>
-<string name="AC_GIFT_BOX_COMPLETED">
-  <en>Gift Box Completed</en>
-  <ru>Подарочная коробка завершена</ru>
-  <de>Geschenkkiste abgeschlossen</de>
-  <fr>Boîte Cadeau terminée</fr>
-</string>
-<string name="AC_COSMIC_BOX_COMPLETED">
-  <en>Cosmic Box Completed</en>
-  <ru>Космическая коробка завершена</ru>
-  <de>Kosmoskiste abgeschlossen</de>
-  <fr>Boîte Cosmique terminée</fr>
-</string>
-<string name="AC_TOOLBOX_COMPLETED">
-  <en>Toolbox Completed</en>
-  <ru>Коробка Инструменты завершена</ru>
-  <de>Werkzeugkiste abgeschlossen</de>
-  <fr>Boîte Outils terminée</fr>
-</string>
-<string name="AC_BUZZ_BOX_COMPLETED">
-  <en>Buzz Box Completed</en>
-  <ru>Медовая коробка завершена</ru>
-  <de>Summkiste abgeschlossen</de>
-  <fr>Boîte Abeille terminée</fr>
-</string>
-<string name="AC_DJ_BOX_COMPLETED">
-  <en>DJ Box Completed</en>
-  <ru>Коробка DJ завершена</ru>
-  <de>DJ-Kiste abgeschlossen</de>
-  <fr>Boîte DJ terminée</fr>
-</string>
-<string name="AC_CARDBOARD_BOX_PERFECT">
-  <en>Cardboard Box Perfect</en>
-  <ru>Картонная коробка - идеально!</ru>
-  <de>Pappkiste Perfekt</de>
-  <fr>Boîte Carton à 100%</fr>
-</string>
-<string name="AC_FABRIC_BOX_PERFECT">
-  <en>Fabric Box Perfect</en>
-  <ru>Тканевая коробка - идеально!</ru>
-  <de>Stoffkiste Perfekt</de>
-  <fr>Boîte Tissu à 100%</fr>
-</string>
-<string name="AC_FOIL_BOX_PERFECT">
-  <en>Foil Box Perfect</en>
-  <ru>Коробка из фольги - идеально!</ru>
-  <de>Folienkiste Perfekt</de>
-  <fr>Boîte Papier à 100%</fr>
-</string>
-<string name="AC_MAGIC_BOX_PERFECT">
-  <en>Magic Box Perfect</en>
-  <ru>Волшебная коробка - идеально!</ru>
-  <de>Magiekiste Perfekt</de>
-  <fr>Boîte Magique à 100%</fr>
-</string>
-<string name="AC_VALENTINE_BOX_PERFECT">
-  <en>Valentine Box Perfect</en>
-  <ru>Коробка Валентинка - идеально!</ru>
-  <de>Valentinskiste Perfekt</de>
-  <fr>Boîte Valentin à 100%</fr>
-</string>
-<string name="AC_TOY_BOX_PERFECT">
-  <en>Toy Box Perfect</en>
-  <ru>Игрушечная коробка - идеально!</ru>
-  <de>Spielzeugkiste Perfekt</de>
-  <fr>Boîte Jouets à 100%</fr>
-</string>
-<string name="AC_GIFT_BOX_PERFECT">
-  <en>Gift Box Perfect</en>
-  <ru>Подарочная коробка - идеально!</ru>
-  <de>Geschenkkiste Perfekt</de>
-  <fr>Boîte Cadeau à 100%</fr>
-</string>
-<string name="AC_COSMIC_BOX_PERFECT">
-  <en>Cosmic Box Perfect</en>
-  <ru>Космическая коробка - идеально!</ru>
-  <de>Kosmoskiste Perfekt</de>
-  <fr>Boîte Cosmique à 100%</fr>
-</string>
-<string name="AC_TOOLBOX_PERFECT">
-  <en>Toolbox Perfect</en>
-  <ru>Коробка с инструментами - идеально!</ru>
-  <de>Werkzeugkiste Perfekt</de>
-  <fr>Boîte Outils à 100%</fr>
-</string>
-<string name="AC_BUZZ_BOX_PERFECT">
-  <en>Buzz Box Perfect</en>
-  <ru>Медовая коробка - идеально!</ru>
-  <de>Summkiste Perfekt</de>
-  <fr>Boîte Abeille à 100%</fr>
-</string>
-<string name="AC_DJ_BOX_PERFECT">
-  <en>DJ Box Perfect</en>
-  <ru>Коробка DJ - идеально!</ru>
-  <de>DJ-Kiste Perfekt</de>
-  <fr>Boîte DJ à 100%</fr>
-</string>
-<string name="AC_CARDBOARD_BOX_DESCR">
-  <en>Complete the Cardboard Box</en>
-  <ru>Завершите Картонную коробку</ru>
-  <de>Schließe Pappkiste ab</de>
-  <fr>Terminer la boîte Carton</fr>
-</string>
-<string name="AC_FABRIC_BOX_DESCR">
-  <en>Complete the Fabric Box</en>
-  <ru>Завершите Тканевую коробку</ru>
-  <de>Schließe Stoffkiste ab</de>
-  <fr>Terminer la boîte Tissu</fr>
-</string>
-<string name="AC_FOIL_BOX_DESCR">
-  <en>Complete the Foil Box</en>
-  <ru>Завершите Коробку Из фольги</ru>
-  <de>Schließe Folienkiste ab</de>
-  <fr>Terminer la boîte Papier</fr>
-</string>
-<string name="AC_MAGIC_BOX_DESCR">
-  <en>Complete the Magic Box</en>
-  <ru>Завершите Волшебную коробку</ru>
-  <de>Schließe Magiekiste ab</de>
-  <fr>Terminer la boîte Magique</fr>
-</string>
-<string name="AC_VALENTINE_BOX_DESCR">
-  <en>Complete the Valentine Box</en>
-  <ru>Завершите коробку Валентинка</ru>
-  <de>Schließe Valentinskiste ab</de>
-  <fr>Terminer la boîte Valentin</fr>
-</string>
-<string name="AC_TOY_BOX_DESCR">
-  <en>Complete the Toy Box</en>
-  <ru>Завершите Игрушечную коробку</ru>
-  <de>Schließe Spielzeugkiste ab</de>
-  <fr>Terminer la boîte Jouets</fr>
-</string>
-<string name="AC_GIFT_BOX_DESCR">
-  <en>Complete the Gift Box</en>
-  <ru>Завершите Подарочную коробку</ru>
-  <de>Schließe Geschenkkiste ab</de>
-  <fr>Terminer la boîte Cadeau</fr>
-</string>
-<string name="AC_COSMIC_BOX_DESCR">
-  <en>Complete the Cosmic Box</en>
-  <ru>Завершите Космическую коробку</ru>
-  <de>Schließe Kosmoskiste ab</de>
-  <fr>Terminer la boîte Cosmique</fr>
-</string>
-<string name="AC_TOOLBOX_DESCR">
-  <en>Complete the Toolbox</en>
-  <ru>Завершите коробку Инструменты</ru>
-  <de>Schließe Werkzeugkiste ab</de>
-  <fr>Terminer la boîte Outils</fr>
-</string>
-<string name="AC_BUZZ_BOX_DESCR">
-  <en>Complete the Buzz Box</en>
-  <ru>Завершите Медовую коробку</ru>
-  <de>Schließe Summkiste ab</de>
-  <fr>Terminer la boîte Abeille</fr>
-</string>
-<string name="AC_DJ_BOX_DESCR">
-  <en>Complete the DJ Box</en>
-  <ru>Завершите DJ коробку</ru>
-  <de>Schließe DJ-Kiste ab</de>
-  <fr>Terminer la boîte DJ</fr>
-</string>
-<string name="AC_CARDBOARD_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Cardboard Box</en>
-  <ru>Получите по три звезды на всех уровнях Картонной коробки</ru>
-  <de>Erhalte in allen Levels von Pappkiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Carton</fr>
-</string>
-<string name="AC_FABRIC_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Fabric Box</en>
-  <ru>Получите по три звезды на всех уровнях Тканевой коробки</ru>
-  <de>Erhalte in allen Levels von Stoffkiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Tissu</fr>
-</string>
-<string name="AC_FOIL_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Foil Box</en>
-  <ru>Получите по три звезды на всех уровнях коробки Из фольги</ru>
-  <de>Erhalte in allen Levels von Folienkiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Papier</fr>
-</string>
-<string name="AC_MAGIC_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Magic Box</en>
-  <ru>Получите по три звезды на всех уровнях Волшебной коробки</ru>
-  <de>Erhalte in allen Levels von Magiekiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Magique</fr>
-</string>
-<string name="AC_VALENTINE_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Valentine Box</en>
-  <ru>Получите по три звезды на всех уровнях коробки Валентинка</ru>
-  <de>Erhalte in allen Levels von   drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Valentin</fr>
-</string>
-<string name="AC_TOY_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Toy Box</en>
-  <ru>Получите по три звезды на всех уровнях Игрушечной коробки</ru>
-  <de>Erhalte in allen Levels von Spielzeugkiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Jouets</fr>
-</string>
-<string name="AC_GIFT_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Gift Box</en>
-  <ru>Получите по три звезды на всех уровнях Подарочной коробки</ru>
-  <de>Erhalte in allen Levels von Geschenkkiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Cadeau</fr>
-</string>
-<string name="AC_COSMIC_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Cosmic Box</en>
-  <ru>Получите по три звезды на всех уровнях Космической коробки</ru>
-  <de>Erhalte in allen Levels von Kosmoskiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Cosmique</fr>
-</string>
-<string name="AC_TOOLBOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Toolbox</en>
-  <ru>Получите по три звезды на всех уровнях коробки Инструменты</ru>
-  <de>Erhalte in allen Levels von Werkzeugkiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Outils</fr>
-</string>
-<string name="AC_BUZZ_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of Buzz Box</en>
-  <ru>Получите по три звезды на всех уровнях Медовой коробки</ru>
-  <de>Erhalte in allen Levels von Summkiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Abeille</fr>
-</string>
-<string name="AC_DJ_BOX_PERFECT_DESCR">
-  <en>Get three stars in all levels of DJ Box</en>
-  <ru>Получите по три звезды на всех уровнях DJ коробки</ru>
-  <de>Erhalte in allen Levels von DJ-Kiste drei Sterne</de>
-  <fr>Récupérer les trois étoiles dans chaque niveau de la boîte DJ</fr>
-</string>
-<string name="ACHIEVEMENT_UNLOCKED">
-  <en>Achievement unlocked!</en>
-  <ru>Новое достижение!</ru>
-  <de>Erfolg freigeschaltet!</de>
-  <fr>Succès débloqué !</fr>
-</string>
-<string name="QUIT">
-  <en>Are you sure you want to quit?</en>
-  <ru>Вы действительно хотите выйти из игры?</ru>
-  <fr>Veux-tu vraiment quitter ?</fr>
-  <de>Bist du sicher, dass du beenden willst?</de>
-</string>
-<string name="QUIT_BUTTON">
-  <en>Quit</en>
-  <ru>Выход</ru>
-  <fr>Quitter</fr>
-  <de>Beenden</de>
-</string>
-<string name="FACEBOOK_BUTTON">
-  <en></en>
-</string>
+  <string name="AC_BRONZE_SCISSORS_DESCR">
+    <en>Collect 50 stars</en>
+    <ru>Соберите 50 звезд</ru>
+    <de>Sammle 50 Sterne</de>
+    <fr>Récupère 50 étoiles</fr>
+  </string>
+  <string name="AC_SILVER_SCISSORS_DESCR">
+    <en>Collect 150 stars</en>
+    <ru>Соберите 150 звезд</ru>
+    <de>Sammle 150 Sterne</de>
+    <fr>Récupère 150 étoiles</fr>
+  </string>
+  <string name="AC_GOLDEN_SCISSORS_DESCR">
+    <en>Collect 300 stars</en>
+    <ru>Соберите 300 звезд</ru>
+    <de>Sammle 300 Sterne</de>
+    <fr>Récupère 300 étoiles</fr>
+  </string>
+  <string name="AC_ROPE_CUTTER_DESCR">
+    <en>Cut 100 ropes</en>
+    <ru>Перережьте 100 веревок</ru>
+    <de>Schneide 100 Seile</de>
+    <fr>Coupe 100 cordes</fr>
+  </string>
+  <string name="AC_ROPE_CUTTER_MANIAC_DESCR">
+    <en>Cut 800 ropes</en>
+    <ru>Перережьте 800 веревок</ru>
+    <de>Schneide 800 Seile</de>
+    <fr>Coupe 800 cordes</fr>
+  </string>
+  <string name="AC_ULTIMATE_ROPE_CUTTER_DESCR">
+    <en>Cut 2000 ropes</en>
+    <ru>Перережьте 2000 веревок</ru>
+    <de>Schneide 2000 Seile</de>
+    <fr>Coupe 2000 cordes</fr>
+  </string>
+  <string name="AC_BUBBLE_POPPER_DESCR">
+    <en>Pop 50 bubbles</en>
+    <ru>Лопните 50 пузырей</ru>
+    <de>Lasse 50 Blasen platzen</de>
+    <fr>Éclate 50 bulles</fr>
+  </string>
+  <string name="AC_BUBBLE_MASTER_DESCR">
+    <en>Pop 300 bubbles</en>
+    <ru>Лопните 300 пузырей</ru>
+    <de>Lasse 300 Blasen platzen</de>
+    <fr>Éclate 300 bulles</fr>
+  </string>
+  <string name="AC_SPIDER_BUSTER_DESCR">
+    <en>Outsmart 40 spiders</en>
+    <ru>Перехитрите 40 пауков</ru>
+    <de>Überliste 40 Spinnen</de>
+    <fr>Stoppe 40 araignées</fr>
+  </string>
+  <string name="AC_SPIDER_TAMER_DESCR">
+    <en>Outsmart 200 spiders</en>
+    <ru>Перехитрите 200 пауков</ru>
+    <de>Überliste 200 Spinnen</de>
+    <fr>Stoppe 200 araignées</fr>
+  </string>
+  <string name="AC_WEIGHT_LOSER_DESCR">
+    <en>Lose candy 50 times</en>
+    <ru>Потеряйте леденец 50 раз</ru>
+    <de>Verlier 50 Bonbons</de>
+    <fr>Laisse échapper le bonbon 50 fois</fr>
+  </string>
+  <string name="AC_CALORIE_MINIMIZER_DESCR">
+    <en>Lose candy 200 times</en>
+    <ru>Потеряйте леденец 200 раз</ru>
+    <de>Verlier 200 Bonbons</de>
+    <fr>Laisse échapper le bonbon 200 fois</fr>
+  </string>
+  <string name="AC_QUICK_FINGER_DESCR">
+    <en>Cut 3 ropes at once</en>
+    <ru>Одновременно перережьте 3 веревки</ru>
+    <de>Schneide 3 Seile gleichzeitig</de>
+    <fr>Coupe 3 cordes d'un seul coup</fr>
+  </string>
+  <string name="AC_MASTER_FINGER_DESCR">
+    <en>Cut 5 ropes at once</en>
+    <ru>Одновременно перережьте 5 веревок</ru>
+    <de>Schneide 5 Seile gleichzeitig</de>
+    <fr>Coupe 5 cordes d'un seul coup</fr>
+  </string>
+  <string name="AC_TUMMY_TEASER_DESCR">
+    <en>Have Om Nom open his mouth 10 times in a row</en>
+    <ru>Заставьте Ам Няма открыть рот 10 раз подряд</ru>
+    <de>Sorge dafür, dass Om Nom seinen Mund 10 Mal nacheinander öffnet</de>
+    <fr>Fais ouvrir sa bouche à Om Nom 10 fois d'affilée</fr>
+  </string>
+  <string name="AC_ROMANTIC_SOUL_DESCR">
+    <en>Reunite 100 candies</en>
+    <ru>Соберите 100 леденцов</ru>
+    <de>Bringe 100 Bonbons zusammen</de>
+    <fr>Associe 100 bonbons</fr>
+  </string>
+  <string name="AC_MAGICIAN_DESCR">
+    <en>Drop candy into magic hats 200 times</en>
+    <ru>Бросьте леденец в волшебные шляпы 200 раз</ru>
+    <de>Lasse 200 Bonbons in Zauberhüte fallen</de>
+    <fr>Fais tomber le bonbon dans le chapeau magique 200 fois</fr>
+  </string>
+  <string name="AC_CARDBOARD_BOX_COMPLETED">
+    <en>Cardboard Box Completed</en>
+    <ru>Картонная коробка завершена</ru>
+    <de>Pappkiste abgeschlossen</de>
+    <fr>Boîte Carton terminée</fr>
+  </string>
+  <string name="AC_FABRIC_BOX_COMPLETED">
+    <en>Fabric Box Completed</en>
+    <ru>Тканевая коробка завершена</ru>
+    <de>Stoffkiste abgeschlossen</de>
+    <fr>Boîte Tissu terminée</fr>
+  </string>
+  <string name="AC_FOIL_BOX_COMPLETED">
+    <en>Foil Box Completed</en>
+    <ru>Коробка из фольги завершена</ru>
+    <de>Folienkiste abgeschlossen</de>
+    <fr>Boîte Papier terminée</fr>
+  </string>
+  <string name="AC_MAGIC_BOX_COMPLETED">
+    <en>Magic Box Completed</en>
+    <ru>Волшебная коробка завершена</ru>
+    <de>Magiekiste abgeschlossen</de>
+    <fr>Boîte Magique terminée</fr>
+  </string>
+  <string name="AC_VALENTINE_BOX_COMPLETED">
+    <en>Valentine Box Completed</en>
+    <ru>Коробка Валентинка завершена</ru>
+    <de>Valentinskiste abgeschlossen</de>
+    <fr>Boîte Valentin terminée</fr>
+  </string>
+  <string name="AC_TOY_BOX_COMPLETED">
+    <en>Toy Box Completed</en>
+    <ru>Игрушечная коробка завершена</ru>
+    <de>Spielzeugkiste abgeschlossen</de>
+    <fr>Boîte Jouets terminée</fr>
+  </string>
+  <string name="AC_GIFT_BOX_COMPLETED">
+    <en>Gift Box Completed</en>
+    <ru>Подарочная коробка завершена</ru>
+    <de>Geschenkkiste abgeschlossen</de>
+    <fr>Boîte Cadeau terminée</fr>
+  </string>
+  <string name="AC_COSMIC_BOX_COMPLETED">
+    <en>Cosmic Box Completed</en>
+    <ru>Космическая коробка завершена</ru>
+    <de>Kosmoskiste abgeschlossen</de>
+    <fr>Boîte Cosmique terminée</fr>
+  </string>
+  <string name="AC_TOOLBOX_COMPLETED">
+    <en>Toolbox Completed</en>
+    <ru>Коробка Инструменты завершена</ru>
+    <de>Werkzeugkiste abgeschlossen</de>
+    <fr>Boîte Outils terminée</fr>
+  </string>
+  <string name="AC_BUZZ_BOX_COMPLETED">
+    <en>Buzz Box Completed</en>
+    <ru>Медовая коробка завершена</ru>
+    <de>Summkiste abgeschlossen</de>
+    <fr>Boîte Abeille terminée</fr>
+  </string>
+  <string name="AC_DJ_BOX_COMPLETED">
+    <en>DJ Box Completed</en>
+    <ru>Коробка DJ завершена</ru>
+    <de>DJ-Kiste abgeschlossen</de>
+    <fr>Boîte DJ terminée</fr>
+  </string>
+  <string name="AC_CARDBOARD_BOX_PERFECT">
+    <en>Cardboard Box Perfect</en>
+    <ru>Картонная коробка - идеально!</ru>
+    <de>Pappkiste Perfekt</de>
+    <fr>Boîte Carton à 100%</fr>
+  </string>
+  <string name="AC_FABRIC_BOX_PERFECT">
+    <en>Fabric Box Perfect</en>
+    <ru>Тканевая коробка - идеально!</ru>
+    <de>Stoffkiste Perfekt</de>
+    <fr>Boîte Tissu à 100%</fr>
+  </string>
+  <string name="AC_FOIL_BOX_PERFECT">
+    <en>Foil Box Perfect</en>
+    <ru>Коробка из фольги - идеально!</ru>
+    <de>Folienkiste Perfekt</de>
+    <fr>Boîte Papier à 100%</fr>
+  </string>
+  <string name="AC_MAGIC_BOX_PERFECT">
+    <en>Magic Box Perfect</en>
+    <ru>Волшебная коробка - идеально!</ru>
+    <de>Magiekiste Perfekt</de>
+    <fr>Boîte Magique à 100%</fr>
+  </string>
+  <string name="AC_VALENTINE_BOX_PERFECT">
+    <en>Valentine Box Perfect</en>
+    <ru>Коробка Валентинка - идеально!</ru>
+    <de>Valentinskiste Perfekt</de>
+    <fr>Boîte Valentin à 100%</fr>
+  </string>
+  <string name="AC_TOY_BOX_PERFECT">
+    <en>Toy Box Perfect</en>
+    <ru>Игрушечная коробка - идеально!</ru>
+    <de>Spielzeugkiste Perfekt</de>
+    <fr>Boîte Jouets à 100%</fr>
+  </string>
+  <string name="AC_GIFT_BOX_PERFECT">
+    <en>Gift Box Perfect</en>
+    <ru>Подарочная коробка - идеально!</ru>
+    <de>Geschenkkiste Perfekt</de>
+    <fr>Boîte Cadeau à 100%</fr>
+  </string>
+  <string name="AC_COSMIC_BOX_PERFECT">
+    <en>Cosmic Box Perfect</en>
+    <ru>Космическая коробка - идеально!</ru>
+    <de>Kosmoskiste Perfekt</de>
+    <fr>Boîte Cosmique à 100%</fr>
+  </string>
+  <string name="AC_TOOLBOX_PERFECT">
+    <en>Toolbox Perfect</en>
+    <ru>Коробка с инструментами - идеально!</ru>
+    <de>Werkzeugkiste Perfekt</de>
+    <fr>Boîte Outils à 100%</fr>
+  </string>
+  <string name="AC_BUZZ_BOX_PERFECT">
+    <en>Buzz Box Perfect</en>
+    <ru>Медовая коробка - идеально!</ru>
+    <de>Summkiste Perfekt</de>
+    <fr>Boîte Abeille à 100%</fr>
+  </string>
+  <string name="AC_DJ_BOX_PERFECT">
+    <en>DJ Box Perfect</en>
+    <ru>Коробка DJ - идеально!</ru>
+    <de>DJ-Kiste Perfekt</de>
+    <fr>Boîte DJ à 100%</fr>
+  </string>
+  <string name="AC_CARDBOARD_BOX_DESCR">
+    <en>Complete the Cardboard Box</en>
+    <ru>Завершите Картонную коробку</ru>
+    <de>Schließe Pappkiste ab</de>
+    <fr>Terminer la boîte Carton</fr>
+  </string>
+  <string name="AC_FABRIC_BOX_DESCR">
+    <en>Complete the Fabric Box</en>
+    <ru>Завершите Тканевую коробку</ru>
+    <de>Schließe Stoffkiste ab</de>
+    <fr>Terminer la boîte Tissu</fr>
+  </string>
+  <string name="AC_FOIL_BOX_DESCR">
+    <en>Complete the Foil Box</en>
+    <ru>Завершите Коробку Из фольги</ru>
+    <de>Schließe Folienkiste ab</de>
+    <fr>Terminer la boîte Papier</fr>
+  </string>
+  <string name="AC_MAGIC_BOX_DESCR">
+    <en>Complete the Magic Box</en>
+    <ru>Завершите Волшебную коробку</ru>
+    <de>Schließe Magiekiste ab</de>
+    <fr>Terminer la boîte Magique</fr>
+  </string>
+  <string name="AC_VALENTINE_BOX_DESCR">
+    <en>Complete the Valentine Box</en>
+    <ru>Завершите коробку Валентинка</ru>
+    <de>Schließe Valentinskiste ab</de>
+    <fr>Terminer la boîte Valentin</fr>
+  </string>
+  <string name="AC_TOY_BOX_DESCR">
+    <en>Complete the Toy Box</en>
+    <ru>Завершите Игрушечную коробку</ru>
+    <de>Schließe Spielzeugkiste ab</de>
+    <fr>Terminer la boîte Jouets</fr>
+  </string>
+  <string name="AC_GIFT_BOX_DESCR">
+    <en>Complete the Gift Box</en>
+    <ru>Завершите Подарочную коробку</ru>
+    <de>Schließe Geschenkkiste ab</de>
+    <fr>Terminer la boîte Cadeau</fr>
+  </string>
+  <string name="AC_COSMIC_BOX_DESCR">
+    <en>Complete the Cosmic Box</en>
+    <ru>Завершите Космическую коробку</ru>
+    <de>Schließe Kosmoskiste ab</de>
+    <fr>Terminer la boîte Cosmique</fr>
+  </string>
+  <string name="AC_TOOLBOX_DESCR">
+    <en>Complete the Toolbox</en>
+    <ru>Завершите коробку Инструменты</ru>
+    <de>Schließe Werkzeugkiste ab</de>
+    <fr>Terminer la boîte Outils</fr>
+  </string>
+  <string name="AC_BUZZ_BOX_DESCR">
+    <en>Complete the Buzz Box</en>
+    <ru>Завершите Медовую коробку</ru>
+    <de>Schließe Summkiste ab</de>
+    <fr>Terminer la boîte Abeille</fr>
+  </string>
+  <string name="AC_DJ_BOX_DESCR">
+    <en>Complete the DJ Box</en>
+    <ru>Завершите DJ коробку</ru>
+    <de>Schließe DJ-Kiste ab</de>
+    <fr>Terminer la boîte DJ</fr>
+  </string>
+  <string name="AC_CARDBOARD_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Cardboard Box</en>
+    <ru>Получите по три звезды на всех уровнях Картонной коробки</ru>
+    <de>Erhalte in allen Levels von Pappkiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Carton</fr>
+  </string>
+  <string name="AC_FABRIC_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Fabric Box</en>
+    <ru>Получите по три звезды на всех уровнях Тканевой коробки</ru>
+    <de>Erhalte in allen Levels von Stoffkiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Tissu</fr>
+  </string>
+  <string name="AC_FOIL_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Foil Box</en>
+    <ru>Получите по три звезды на всех уровнях коробки Из фольги</ru>
+    <de>Erhalte in allen Levels von Folienkiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Papier</fr>
+  </string>
+  <string name="AC_MAGIC_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Magic Box</en>
+    <ru>Получите по три звезды на всех уровнях Волшебной коробки</ru>
+    <de>Erhalte in allen Levels von Magiekiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Magique</fr>
+  </string>
+  <string name="AC_VALENTINE_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Valentine Box</en>
+    <ru>Получите по три звезды на всех уровнях коробки Валентинка</ru>
+    <de>Erhalte in allen Levels von   drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Valentin</fr>
+  </string>
+  <string name="AC_TOY_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Toy Box</en>
+    <ru>Получите по три звезды на всех уровнях Игрушечной коробки</ru>
+    <de>Erhalte in allen Levels von Spielzeugkiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Jouets</fr>
+  </string>
+  <string name="AC_GIFT_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Gift Box</en>
+    <ru>Получите по три звезды на всех уровнях Подарочной коробки</ru>
+    <de>Erhalte in allen Levels von Geschenkkiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Cadeau</fr>
+  </string>
+  <string name="AC_COSMIC_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Cosmic Box</en>
+    <ru>Получите по три звезды на всех уровнях Космической коробки</ru>
+    <de>Erhalte in allen Levels von Kosmoskiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Cosmique</fr>
+  </string>
+  <string name="AC_TOOLBOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Toolbox</en>
+    <ru>Получите по три звезды на всех уровнях коробки Инструменты</ru>
+    <de>Erhalte in allen Levels von Werkzeugkiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Outils</fr>
+  </string>
+  <string name="AC_BUZZ_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of Buzz Box</en>
+    <ru>Получите по три звезды на всех уровнях Медовой коробки</ru>
+    <de>Erhalte in allen Levels von Summkiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte Abeille</fr>
+  </string>
+  <string name="AC_DJ_BOX_PERFECT_DESCR">
+    <en>Get three stars in all levels of DJ Box</en>
+    <ru>Получите по три звезды на всех уровнях DJ коробки</ru>
+    <de>Erhalte in allen Levels von DJ-Kiste drei Sterne</de>
+    <fr>Récupérer les trois étoiles dans chaque niveau de la boîte DJ</fr>
+  </string>
+  <string name="ACHIEVEMENT_UNLOCKED">
+    <en>Achievement unlocked!</en>
+    <ru>Новое достижение!</ru>
+    <de>Erfolg freigeschaltet!</de>
+    <fr>Succès débloqué !</fr>
+  </string>
+  <string name="QUIT">
+    <en>Are you sure you want to quit?</en>
+    <ru>Вы действительно хотите выйти из игры?</ru>
+    <fr>Veux-tu vraiment quitter ?</fr>
+    <de>Bist du sicher, dass du beenden willst?</de>
+  </string>
+  <string name="QUIT_BUTTON">
+    <en>Quit</en>
+    <ru>Выход</ru>
+    <fr>Quitter</fr>
+    <de>Beenden</de>
+  </string>
+  <string name="FACEBOOK_BUTTON">
+    <en></en>
+  </string>
 </strings>
