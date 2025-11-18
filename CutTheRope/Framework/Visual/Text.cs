@@ -111,32 +111,43 @@ namespace CutTheRope.Framework.Visual
                         {
                             int charmapIndex = font.GetCharmapIndex(characters3[l]);
                             int charQuad = font.GetCharQuad(characters3[l]);
-                            ImageMultiDrawer imageMultiDrawer3 = multiDrawers[charmapIndex];
-                            int num12 = charQuad;
-                            float num13 = num10;
-                            float num14 = num4;
-                            int[] array3 = array2;
-                            int num15 = charmapIndex;
-                            int num16 = array3[num15];
-                            array3[num15] = num16 + 1;
-                            imageMultiDrawer3.MapTextureQuadAtXYatIndex(num12, num13, num14, num16);
-                            num6++;
+
+                            // Skip rendering if character is not in the font
+                            if (charQuad >= 0)
+                            {
+                                ImageMultiDrawer imageMultiDrawer3 = multiDrawers[charmapIndex];
+                                int num12 = charQuad;
+                                float num13 = num10;
+                                float num14 = num4;
+                                int[] array3 = array2;
+                                int num15 = charmapIndex;
+                                int num16 = array3[num15];
+                                array3[num15] = num16 + 1;
+                                imageMultiDrawer3.MapTextureQuadAtXYatIndex(num12, num13, num14, num16);
+                                num6++;
+                            }
+
                             num10 += font.GetCharWidth(characters3[l]) + font.GetCharOffset(characters3, l, num9);
                         }
                         if (flag && k == num8 - 1)
                         {
                             int charmapIndex2 = font.GetCharmapIndex('.');
                             int charQuad2 = font.GetCharQuad('.');
-                            ImageMultiDrawer imageMultiDrawer2 = multiDrawers[charmapIndex2];
-                            int num11 = (int)font.GetCharWidth('.');
-                            if (l == num9 - 1 || (l == num9 - 2 && num10 + (3 * (num11 + num7)) + font.GetCharWidth(' ') > wrapWidth))
+
+                            // Only render ellipsis if '.' character is available
+                            if (charQuad2 >= 0)
                             {
-                                imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
-                                num10 += num11 + num7;
-                                imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
-                                num10 += num11 + num7;
-                                imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
-                                break;
+                                ImageMultiDrawer imageMultiDrawer2 = multiDrawers[charmapIndex2];
+                                int num11 = (int)font.GetCharWidth('.');
+                                if (l == num9 - 1 || (l == num9 - 2 && num10 + (3 * (num11 + num7)) + font.GetCharWidth(' ') > wrapWidth))
+                                {
+                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
+                                    num10 += num11 + num7;
+                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
+                                    num10 += num11 + num7;
+                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
+                                    break;
+                                }
                             }
                         }
                     }
