@@ -1685,7 +1685,7 @@ namespace CutTheRope.GameMain
 
         internal static int[] PACK_LOCALIZATION = [137, 138, 139, 140, 141, 142, 143, 144, -1];
 
-        internal static int[] PACK_MUSIC = [145, 146, 147, 148, -1];
+        internal static int[] PACK_MUSIC = [145, 146, 147, 148, 150, -1];
 
         internal static int[] PACK_LOCALIZATION_MENU = [149, -1];
 
