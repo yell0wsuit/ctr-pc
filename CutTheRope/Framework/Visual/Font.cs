@@ -57,7 +57,23 @@ namespace CutTheRope.Framework.Visual
 
         public override float GetCharWidth(char c)
         {
-            return c == ' ' ? spaceWidth : c == '*' ? 0f : charmap.texture.quadRects[GetCharQuad(c)].w;
+            if (c == ' ')
+            {
+                return spaceWidth;
+            }
+
+            if (c == '*')
+            {
+                return 0f;
+            }
+
+            int quadIndex = GetCharQuad(c);
+            if (quadIndex < 0)
+            {
+                return 0f; // Character not found in font, return 0 width
+            }
+
+            return charmap.texture.quadRects[quadIndex].w;
         }
 
         public override int GetCharmapIndex(char c)

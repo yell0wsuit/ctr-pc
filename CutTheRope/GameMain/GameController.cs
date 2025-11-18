@@ -70,13 +70,13 @@ namespace CutTheRope.GameMain
             mapNameLabel.y = RTD(-5.0);
             _ = image.AddChild(mapNameLabel);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
-            Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655397), 0, this);
+            Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_CONTINUE), 0, this);
             _ = vBox.AddChild(c);
-            Button c2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655398), 2, this);
+            Button c2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_SKIP_LEVEL), 2, this);
             _ = vBox.AddChild(c2);
-            Button c3 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655399), 3, this);
+            Button c3 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_LEVEL_SELECT), 3, this);
             _ = vBox.AddChild(c3);
-            Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(655400), 4, this);
+            Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_MAIN_MENU), 4, this);
             _ = vBox.AddChild(c4);
             vBox.anchor = vBox.parentAnchor = 10;
             Vector offset = VectSub(Image.GetQuadCenter(8, 0), Image.GetQuadOffset(8, 12));
@@ -214,7 +214,7 @@ namespace CutTheRope.GameMain
             image.SetDrawQuad(gameScene.starsCollected > 0 ? 13 : 14);
             image2.SetDrawQuad(gameScene.starsCollected > 1 ? 13 : 14);
             image3.SetDrawQuad(gameScene.starsCollected > 2 ? 13 : 14);
-            ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(655372 + gameScene.starsCollected));
+            ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(STR_MENU_LEVEL_CLEARED1 + gameScene.starsCollected));
             boxOpenClose.time = gameScene.time;
             boxOpenClose.starBonus = gameScene.starBonus;
             boxOpenClose.timeBonus = gameScene.timeBonus;
@@ -437,7 +437,7 @@ namespace CutTheRope.GameMain
                 return;
             }
             int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
-            mapNameLabel.SetString(Application.GetString(655380) + ": " + scoreForPackLevel);
+            mapNameLabel.SetString(Application.GetString(STR_MENU_BEST_SCORE) + ": " + scoreForPackLevel);
         }
 
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)

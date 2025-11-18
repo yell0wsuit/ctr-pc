@@ -29,7 +29,7 @@ namespace CutTheRope.GameMain
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         Text text27 = (Text)result.GetChildWithName("dataTitle");
                         Image.SetElementPositionWithQuadOffset(text27, 67, 5);
-                        text27.SetString(Application.GetString(655378));
+                        text27.SetString(Application.GetString(STR_MENU_STAR_BONUS));
                         ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString(CultureInfo.InvariantCulture));
                         raState = 1;
                         raDelay = 1f;
@@ -86,7 +86,7 @@ namespace CutTheRope.GameMain
                             raDelay = 0.2f;
                             int num = (int)Math.Floor((double)(Round(time) / 60f));
                             int num2 = (int)(Round(time) - (num * 60f));
-                            ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString(655377));
+                            ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString(STR_MENU_TIME));
                             ((Text)result.GetChildWithName("dataValue")).SetString(num.ToString(CultureInfo.InvariantCulture) + ":" + num2.ToString("D2", CultureInfo.InvariantCulture));
                             return;
                         }
@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
                             raDelay = 0.2f;
                             Text text30 = (Text)result.GetChildWithName("dataTitle");
                             Image.SetElementPositionWithQuadOffset(text30, 67, 7);
-                            text30.SetString(Application.GetString(655379));
+                            text30.SetString(Application.GetString(STR_MENU_FINAL_SCORE));
                             ((Text)result.GetChildWithName("dataValue")).SetString("");
                             return;
                         }
@@ -190,7 +190,7 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithQuadOffset(image3, 67, 2);
             _ = result.AddChild(image3);
             Text text = new Text().InitWithFont(Application.GetFont(3));
-            text.SetString(Application.GetString(655372));
+            text.SetString(Application.GetString(STR_MENU_LEVEL_CLEARED1));
             Image.SetElementPositionWithQuadOffset(text, 67, 3);
             text.anchor = 18;
             text.SetName("passText");
@@ -210,15 +210,15 @@ namespace CutTheRope.GameMain
             stamp.SetEnabled(false);
             Image.SetElementPositionWithQuadOffset(stamp, 67, 12);
             _ = result.AddChild(stamp);
-            Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655384), 8, b);
+            Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(STR_MENU_REPLAY), 8, b);
             button.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button, 67, 11);
             _ = result.AddChild(button);
-            Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655385), 9, b);
+            Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(STR_MENU_NEXT), 9, b);
             button2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button2, 67, 10);
             _ = result.AddChild(button2);
-            Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(655386), 5, b);
+            Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(STR_MENU_MENU), 5, b);
             button3.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button3, 67, 9);
             _ = result.AddChild(button3);

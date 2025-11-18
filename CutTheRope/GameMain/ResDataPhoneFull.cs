@@ -14,6 +14,7 @@ namespace CutTheRope.GameMain
     internal class ResDataPhoneFull
     {
         private const string ResourceDataFileName = "res_data_phone_full.xml";
+        private const string MenuStringsFileName = "menu_strings.xml";
 
         public static string GetXml(string resName)
         {
@@ -22,32 +23,53 @@ namespace CutTheRope.GameMain
                 return null;
             }
 
-            EnsureXmlsLoaded();
+            LoadResourceXml();
 
-            _ = xmls_.TryGetValue(resName, out string value);
+            _ = allResources_.TryGetValue(resName, out string value);
             return value;
         }
 
-        private static void EnsureXmlsLoaded()
+        private static void LoadResourceXml()
         {
-            if (xmls_ != null)
+            if (allResources_ != null)
             {
                 return;
             }
 
-            lock (xmlsLock_)
+            lock (resourcesLock_)
             {
-                xmls_ ??= LoadXmlDefinitions();
+                allResources_ ??= LoadAllResources();
             }
         }
 
-        private static Dictionary<string, string> LoadXmlDefinitions()
+        private static Dictionary<string, string> LoadAllResources()
+        {
+            Dictionary<string, string> result = [];
+
+            // Load game assets (res_data_phone_full.xml)
+            Dictionary<string, string> resourceData = LoadXmlFile(ResourceDataFileName, "resource");
+            foreach (KeyValuePair<string, string> kvp in resourceData)
+            {
+                result[kvp.Key] = kvp.Value;
+            }
+
+            // Load menu strings (menu_strings.xml)
+            Dictionary<string, string> menuData = LoadXmlFile(MenuStringsFileName, "string");
+            foreach (KeyValuePair<string, string> kvp in menuData)
+            {
+                result[kvp.Key] = kvp.Value;
+            }
+
+            return result;
+        }
+
+        private static Dictionary<string, string> LoadXmlFile(string fileName, string elementName)
         {
             Dictionary<string, string> result = [];
 
             try
             {
-                using Stream stream = OpenResourceDataStream();
+                using Stream stream = OpenStream(fileName);
                 if (stream == null)
                 {
                     return result;
@@ -60,21 +82,21 @@ namespace CutTheRope.GameMain
                     return result;
                 }
 
-                foreach (XElement resourceNode in root.Elements("resource"))
+                foreach (XElement element in root.Elements(elementName))
                 {
-                    string name = resourceNode.Attribute("name")?.Value;
+                    string name = element.Attribute("name")?.Value;
                     if (string.IsNullOrEmpty(name))
                     {
                         continue;
                     }
 
-                    XElement[] dataNodes = [.. resourceNode.Elements()];
-                    if (dataNodes.Length == 0)
+                    XElement[] childNodes = [.. element.Elements()];
+                    if (childNodes.Length == 0)
                     {
                         continue;
                     }
 
-                    string xml = string.Concat(dataNodes.Select(node => node.ToString(SaveOptions.DisableFormatting)));
+                    string xml = string.Concat(childNodes.Select(node => node.ToString(SaveOptions.DisableFormatting)));
                     if (!string.IsNullOrEmpty(xml))
                     {
                         result[name] = xml;
@@ -88,11 +110,11 @@ namespace CutTheRope.GameMain
             return result;
         }
 
-        private static Stream OpenResourceDataStream()
+        private static Stream OpenStream(string fileName)
         {
             string[] candidates = string.IsNullOrEmpty(ContentFolder)
-                ? [ResourceDataFileName]
-                : [$"{ContentFolder}{ResourceDataFileName}", ResourceDataFileName];
+                ? [fileName]
+                : [$"{ContentFolder}{fileName}", fileName];
 
             foreach (string candidate in candidates)
             {
@@ -575,19 +597,19 @@ namespace CutTheRope.GameMain
 
         internal const int IMG_MENU_OPTIONS__short_button_left = 12;
 
-        internal const int STR_MENU_ABOUT_SPECIAL_THANKS = 655417;
+        internal const string STR_MENU_ABOUT_SPECIAL_THANKS = "ABOUT_SPECIAL_THANKS";
 
-        internal const int STR_MENU_ABOUT_TEXT = 655416;
+        internal const string STR_MENU_ABOUT_TEXT = "ABOUT_TEXT";
 
-        internal const int STR_MENU_ACHIEVEMENT_GAINED = 655396;
+        internal const string STR_MENU_ACHIEVEMENT_GAINED = "ACHIEVEMENT_GAINED";
 
         internal const int STR_MENU_ACHIEVEMENT_UNLOCKED = 655504;
 
-        internal const int STR_MENU_QUIT = 655505;
+        internal const string STR_MENU_QUIT = "QUIT";
 
-        internal const int STR_MENU_QUIT_BUTTON = 655506;
+        internal const string STR_MENU_QUIT_BUTTON = "QUIT_BUTTON";
 
-        internal const int STR_MENU_FACEBOOK_BUTTON = 655507;
+        internal const string STR_MENU_FACEBOOK_BUTTON = "FACEBOOK_BUTTON";
 
         internal const int STR_MENU_AC_BRONZE_SCISSORS = 655426;
 
@@ -745,63 +767,63 @@ namespace CutTheRope.GameMain
 
         internal const int STR_MENU_AC_WEIGHT_LOSER_DESCR = 655453;
 
-        internal const int STR_MENU_BEST_SCORE = 655380;
+        internal const string STR_MENU_BEST_SCORE = "BEST_SCORE";
 
-        internal const int STR_MENU_BOX10_LABEL = 655413;
+        internal const string STR_MENU_BOX10_LABEL = "BOX10_LABEL";
 
-        internal const int STR_MENU_BOX11_LABEL = 655414;
+        internal const string STR_MENU_BOX11_LABEL = "BOX11_LABEL";
 
-        internal const int STR_MENU_BOX1_LABEL = 655404;
+        internal const string STR_MENU_BOX1_LABEL = "BOX1_LABEL";
 
-        internal const int STR_MENU_BOX2_LABEL = 655405;
+        internal const string STR_MENU_BOX2_LABEL = "BOX2_LABEL";
 
-        internal const int STR_MENU_BOX3_LABEL = 655406;
+        internal const string STR_MENU_BOX3_LABEL = "BOX3_LABEL";
 
-        internal const int STR_MENU_BOX4_LABEL = 655407;
+        internal const string STR_MENU_BOX4_LABEL = "BOX4_LABEL";
 
-        internal const int STR_MENU_BOX5_LABEL = 655408;
+        internal const string STR_MENU_BOX5_LABEL = "BOX5_LABEL";
 
-        internal const int STR_MENU_BOX6_LABEL = 655409;
+        internal const string STR_MENU_BOX6_LABEL = "BOX6_LABEL";
 
-        internal const int STR_MENU_BOX7_LABEL = 655410;
+        internal const string STR_MENU_BOX7_LABEL = "BOX7_LABEL";
 
-        internal const int STR_MENU_BOX8_LABEL = 655411;
+        internal const string STR_MENU_BOX8_LABEL = "BOX8_LABEL";
 
-        internal const int STR_MENU_BOX9_LABEL = 655412;
+        internal const string STR_MENU_BOX9_LABEL = "BOX9_LABEL";
 
-        internal const int STR_MENU_BOX_SOON_LABEL = 655415;
+        internal const string STR_MENU_BOX_SOON_LABEL = "BOX_SOON_LABEL";
 
         internal const int STR_MENU_CANCEL = 655403;
 
-        internal const int STR_MENU_CANT_UNLOCK_TEXT1 = 655391;
+        internal const string STR_MENU_CANT_UNLOCK_TEXT1 = "CANT_UNLOCK_TEXT1";
 
-        internal const int STR_MENU_CANT_UNLOCK_TEXT2 = 655392;
+        internal const string STR_MENU_CANT_UNLOCK_TEXT2 = "CANT_UNLOCK_TEXT2";
 
-        internal const int STR_MENU_CANT_UNLOCK_TEXT3 = 655393;
+        internal const string STR_MENU_CANT_UNLOCK_TEXT3 = "CANT_UNLOCK_TEXT3";
 
         internal const int STR_MENU_CHANGE_TITLE = 655424;
 
-        internal const int STR_MENU_CLICK_TO_CUT = 655422;
+        internal const string STR_MENU_CLICK_TO_CUT = "CLICK_TO_CUT";
 
-        internal const int STR_MENU_CONTINUE = 655397;
+        internal const string STR_MENU_CONTINUE = "CONTINUE";
 
-        internal const int STR_MENU_CREDITS = 655365;
+        internal const string STR_MENU_CREDITS = "CREDITS";
 
         internal const int STR_MENU_CRYSTAL = 655366;
 
-        internal const int STR_MENU_DRAG_TO_CUT = 655423;
+        internal const string STR_MENU_DRAG_TO_CUT = "DRAG_TO_CUT";
 
         internal const int STR_MENU_EXTRAS = 655362;
 
-        internal const int STR_MENU_FINAL_SCORE = 655379;
+        internal const string STR_MENU_FINAL_SCORE = "FINAL_SCORE";
 
         internal const int STR_MENU_FULL_VERSION = 655363;
 
-        internal const int STR_MENU_GAME_FINISHED_TEXT = 655394;
+        internal const string STR_MENU_GAME_FINISHED_TEXT = "GAME_FINISHED_TEXT";
 
-        internal const int STR_MENU_GAME_FINISHED_TEXT2 = 655395;
+        internal const string STR_MENU_GAME_FINISHED_TEXT2 = "GAME_FINISHED_TEXT2";
 
-        internal const int STR_MENU_LANGUAGE = 655370;
+        internal const string STR_MENU_LANGUAGE = "LANGUAGE";
 
         internal const int STR_MENU_LEADERBOARD_EDIT = 655420;
 
@@ -811,9 +833,9 @@ namespace CutTheRope.GameMain
 
         internal const int STR_MENU_LEADERBOARD_SCORE = 655419;
 
-        internal const int STR_MENU_LEVEL = 655376;
+        internal const string STR_MENU_LEVEL = "LEVEL";
 
-        internal const int STR_MENU_LEVEL_CLEARED1 = 655372;
+        internal const string STR_MENU_LEVEL_CLEARED1 = "LEVEL_CLEARED1";
 
         internal const int STR_MENU_LEVEL_CLEARED2 = 655373;
 
@@ -821,55 +843,55 @@ namespace CutTheRope.GameMain
 
         internal const int STR_MENU_LEVEL_CLEARED4 = 655375;
 
-        internal const int STR_MENU_LEVEL_SELECT = 655399;
+        internal const string STR_MENU_LEVEL_SELECT = "LEVEL_SELECT";
 
-        internal const int STR_MENU_LOADING = 655387;
+        internal const string STR_MENU_LOADING = "LOADING";
 
-        internal const int STR_MENU_MAIN_MENU = 655400;
+        internal const string STR_MENU_MAIN_MENU = "MAIN_MENU";
 
-        internal const int STR_MENU_MENU = 655386;
+        internal const string STR_MENU_MENU = "MENU";
 
         internal const int STR_MENU_MUSIC_OFF = 655367;
 
-        internal const int STR_MENU_NEXT = 655385;
+        internal const string STR_MENU_NEXT = "NEXT";
 
-        internal const int STR_MENU_NO = 655383;
+        internal const string STR_MENU_NO = "NO";
 
-        internal const int STR_MENU_OK = 655389;
+        internal const string STR_MENU_OK = "OK";
 
-        internal const int STR_MENU_OPTIONS = 655361;
+        internal const string STR_MENU_OPTIONS = "OPTIONS";
 
-        internal const int STR_MENU_PLAY = 655360;
+        internal const string STR_MENU_PLAY = "PLAY";
 
-        internal const int STR_MENU_PROCESSING = 655425;
+        internal const string STR_MENU_PROCESSING = "PROCESSING";
 
         internal const int STR_MENU_RATEME_TEXT = 655402;
 
         internal const int STR_MENU_RATEME_TITLE = 655401;
 
-        internal const int STR_MENU_REPLAY = 655384;
+        internal const string STR_MENU_REPLAY = "REPLAY";
 
-        internal const int STR_MENU_RESET = 655364;
+        internal const string STR_MENU_RESET = "RESET";
 
-        internal const int STR_MENU_RESET_TEXT = 655371;
+        internal const string STR_MENU_RESET_TEXT = "RESET_TEXT";
 
         internal const int STR_MENU_SCORE = 655381;
 
-        internal const int STR_MENU_SKIP_LEVEL = 655398;
+        internal const string STR_MENU_SKIP_LEVEL = "SKIP_LEVEL";
 
         internal const int STR_MENU_SOUNDS_OFF = 655369;
 
         internal const int STR_MENU_SOUNDS_ON = 655368;
 
-        internal const int STR_MENU_STAR_BONUS = 655378;
+        internal const string STR_MENU_STAR_BONUS = "STAR_BONUS";
 
-        internal const int STR_MENU_TIME = 655377;
+        internal const string STR_MENU_TIME = "TIME";
 
-        internal const int STR_MENU_TOTAL_STARS = 655388;
+        internal const string STR_MENU_TOTAL_STARS = "TOTAL_STARS";
 
-        internal const int STR_MENU_UNLOCK_HINT = 655390;
+        internal const string STR_MENU_UNLOCK_HINT = "UNLOCK_HINT";
 
-        internal const int STR_MENU_YES = 655382;
+        internal const string STR_MENU_YES = "YES";
 
         internal const int IMG_MENU_BGR_bgr_default = 0;
 
@@ -1691,8 +1713,8 @@ namespace CutTheRope.GameMain
 
         public static Language LANGUAGE = Language.LANGEN;
 
-        private static readonly Lock xmlsLock_ = new();
+        private static readonly Lock resourcesLock_ = new();
 
-        private static Dictionary<string, string> xmls_;
+        private static Dictionary<string, string> allResources_;
     }
 }
