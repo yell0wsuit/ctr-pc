@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 
 using CutTheRope.Framework;
@@ -27,8 +28,12 @@ namespace CutTheRope.Desktop
         {
             _cursorTexture = cm.Load<Texture2D>("cursor64");
             _cursorActiveTexture = cm.Load<Texture2D>("cursor_active64");
-            _cursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor48"), 0, 0);
-            _cursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor_active48"), 0, 0);
+            _cursor32 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor32"), 0, 0);
+            _cursor48 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor48"), 0, 0);
+            _cursor64 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor64"), 0, 0);
+            _cursorActive32 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor_active32"), 0, 0);
+            _cursorActive48 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor_active48"), 0, 0);
+            _cursorActive64 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor_active64"), 0, 0);
             _cursorBlank = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(new(Global.GraphicsDevice, 32, 32), 0, 0);
         }
 
@@ -36,12 +41,27 @@ namespace CutTheRope.Desktop
         {
             if (_enabled && _mouseStateOriginal.X >= 0 && _mouseStateOriginal.Y >= 0)
             {
-                if (_cursor == null || _cursorActive == null)
+                if (_cursorTexture == null || _cursorActiveTexture == null)
                 {
                     return;
                 }
                 if (Global.XnaGame.IsMouseVisible)
                 {
+                    Microsoft.Xna.Framework.Input.MouseCursor _cursor = _cursor64;
+                    Microsoft.Xna.Framework.Input.MouseCursor _cursorActive = _cursorActive64;
+                    switch (Global.ScreenSizeManager.ScaledViewRect.Width)
+                    {
+                        case <= 1600:
+                            _cursor = _cursor32;
+                            _cursorActive = _cursorActive32;
+                            break;
+                        case > 1600 and < 2240:
+                            _cursor = _cursor48;
+                            _cursorActive = _cursorActive48;
+                            break;
+                        default:
+                            break;
+                    }
                     Mouse.SetCursor(_mouseStateTranformed.LeftButton == ButtonState.Pressed ? _cursorActive : _cursor);
                 }
                 else
@@ -120,9 +140,17 @@ namespace CutTheRope.Desktop
 
         private Texture2D _cursorActiveTexture;
 
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursor;
+        private Microsoft.Xna.Framework.Input.MouseCursor _cursor32;
 
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursorActive;
+        private Microsoft.Xna.Framework.Input.MouseCursor _cursor48;
+
+        private Microsoft.Xna.Framework.Input.MouseCursor _cursor64;
+
+        private Microsoft.Xna.Framework.Input.MouseCursor _cursorActive32;
+
+        private Microsoft.Xna.Framework.Input.MouseCursor _cursorActive48;
+
+        private Microsoft.Xna.Framework.Input.MouseCursor _cursorActive64;
 
         private Microsoft.Xna.Framework.Input.MouseCursor _cursorBlank;
 
