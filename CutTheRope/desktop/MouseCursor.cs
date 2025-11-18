@@ -55,7 +55,7 @@ namespace CutTheRope.Desktop
                             _cursor = _cursor32;
                             _cursorActive = _cursorActive32;
                             break;
-                        case > 1600 and < 2240:
+                        case > 1600 and <= 2240:
                             _cursor = _cursor48;
                             _cursorActive = _cursorActive48;
                             break;
