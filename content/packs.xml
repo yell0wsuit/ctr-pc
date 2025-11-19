@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<packs>
+  <pack index="0" unlockStars="0" resources="104,105" coverResources="126" levelCount="25" />
+  <pack index="1" unlockStars="30" resources="106,107" coverResources="127" levelCount="25" />
+  <pack index="2" unlockStars="80" resources="108,109" coverResources="128" levelCount="25" />
+  <pack index="3" unlockStars="170" resources="110,111" coverResources="129" levelCount="25" />
+  <pack index="4" unlockStars="240" resources="112,113" coverResources="130" levelCount="25" />
+  <pack index="5" unlockStars="300" resources="114,115" coverResources="131" levelCount="25" />
+  <pack index="6" unlockStars="350" resources="116,117" coverResources="132" levelCount="25" />
+  <pack index="7" unlockStars="400" resources="118,119" coverResources="133" levelCount="25" />
+  <pack index="8" unlockStars="450" resources="120,121" coverResources="134" levelCount="25" />
+  <pack index="9" unlockStars="500" resources="122,123" coverResources="135" levelCount="25" />
+  <pack index="10" unlockStars="550" resources="124,125" coverResources="136" levelCount="25" />
+</packs>

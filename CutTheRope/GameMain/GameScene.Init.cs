@@ -92,7 +92,7 @@ namespace CutTheRope.GameMain
             }
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
-            if (level < CTRPreferences.GetLevelsInPackCount() - 1)
+            if (level < CTRPreferences.GetLevelsInPackCount(pack) - 1)
             {
                 cTRRootController.SetLevel(++level);
                 cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
