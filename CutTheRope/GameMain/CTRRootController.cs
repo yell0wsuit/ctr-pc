@@ -133,45 +133,7 @@ namespace CutTheRope.GameMain
                     {
                         DeleteMenu();
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
-                        int[] array = null;
-                        switch (pack)
-                        {
-                            case 0:
-                                array = PACK_GAME_01;
-                                break;
-                            case 1:
-                                array = PACK_GAME_02;
-                                break;
-                            case 2:
-                                array = PACK_GAME_03;
-                                break;
-                            case 3:
-                                array = PACK_GAME_04;
-                                break;
-                            case 4:
-                                array = PACK_GAME_05;
-                                break;
-                            case 5:
-                                array = PACK_GAME_06;
-                                break;
-                            case 6:
-                                array = PACK_GAME_07;
-                                break;
-                            case 7:
-                                array = PACK_GAME_08;
-                                break;
-                            case 8:
-                                array = PACK_GAME_09;
-                                break;
-                            case 9:
-                                array = PACK_GAME_10;
-                                break;
-                            case 10:
-                                array = PACK_GAME_11;
-                                break;
-                            default:
-                                break;
-                        }
+                        int[] array = PackConfig.GetPackResources(pack);
                         resourceMgr.InitLoading();
                         resourceMgr.LoadPack(PACK_GAME);
                         resourceMgr.LoadPack(PACK_GAME_NORMAL);
@@ -198,19 +160,10 @@ namespace CutTheRope.GameMain
                         }
                         MenuController menuController3 = new(this);
                         AddChildwithID(menuController3, 1);
-                        resourceMgr.FreePack(PACK_GAME_COVER_01);
-                        resourceMgr.FreePack(PACK_GAME_COVER_02);
-                        if (!CTRPreferences.IsLiteVersion())
+                        int packCount = CTRPreferences.GetPacksCount();
+                        for (int i = 0; i < packCount; i++)
                         {
-                            resourceMgr.FreePack(PACK_GAME_COVER_03);
-                            resourceMgr.FreePack(PACK_GAME_COVER_04);
-                            resourceMgr.FreePack(PACK_GAME_COVER_05);
-                            resourceMgr.FreePack(PACK_GAME_COVER_06);
-                            resourceMgr.FreePack(PACK_GAME_COVER_07);
-                            resourceMgr.FreePack(PACK_GAME_COVER_08);
-                            resourceMgr.FreePack(PACK_GAME_COVER_09);
-                            resourceMgr.FreePack(PACK_GAME_COVER_10);
-                            resourceMgr.FreePack(PACK_GAME_COVER_11);
+                            resourceMgr.FreePack(PackConfig.GetCoverResources(i));
                         }
                         if (IS_WVGA)
                         {
@@ -247,19 +200,10 @@ namespace CutTheRope.GameMain
                             DeleteChild(3);
                             resourceMgr.FreePack(PACK_GAME);
                             resourceMgr.FreePack(PACK_GAME_NORMAL);
-                            resourceMgr.FreePack(PACK_GAME_01);
-                            resourceMgr.FreePack(PACK_GAME_02);
-                            if (!CTRPreferences.IsLiteVersion())
+                            int packCount = CTRPreferences.GetPacksCount();
+                            for (int i = 0; i < packCount; i++)
                             {
-                                resourceMgr.FreePack(PACK_GAME_03);
-                                resourceMgr.FreePack(PACK_GAME_04);
-                                resourceMgr.FreePack(PACK_GAME_05);
-                                resourceMgr.FreePack(PACK_GAME_06);
-                                resourceMgr.FreePack(PACK_GAME_07);
-                                resourceMgr.FreePack(PACK_GAME_08);
-                                resourceMgr.FreePack(PACK_GAME_09);
-                                resourceMgr.FreePack(PACK_GAME_10);
-                                resourceMgr.FreePack(PACK_GAME_11);
+                                resourceMgr.FreePack(PackConfig.GetPackResources(i));
                             }
                             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                             resourceMgr.InitLoading();

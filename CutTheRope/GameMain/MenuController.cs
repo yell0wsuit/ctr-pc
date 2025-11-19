@@ -1039,7 +1039,7 @@ namespace CutTheRope.GameMain
             _ = image5.AddTimeline(timeline3);
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
-            HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount() * 3).ToString(CultureInfo.InvariantCulture));
+            HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
             hBox.x = -20f;
             hBox.y = 20f;
             float of = 55f;
@@ -1049,12 +1049,13 @@ namespace CutTheRope.GameMain
             vBox.SetName("levelsBox");
             vBox.x = 0f;
             vBox.y = 110f;
-            int num2 = 5;
+            int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
+            int columnsPerRow = 5;
             int num3 = 0;
-            for (int i = 0; i < num2; i++)
+            for (int i = 0; i < levelsInPack; i += columnsPerRow)
             {
                 HBox hBox2 = new HBox().InitWithOffsetAlignHeight(of2, 16, h);
-                for (int j = 0; j < num2; j++)
+                for (int j = 0; j < columnsPerRow && num3 < levelsInPack; j++)
                 {
                     _ = hBox2.AddChild(CreateButtonForLevelPack(num3++, pack));
                 }
@@ -1196,44 +1197,7 @@ namespace CutTheRope.GameMain
         {
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
             int[] array = null;
-            switch (pack)
-            {
-                case 0:
-                    array = PACK_GAME_COVER_01;
-                    break;
-                case 1:
-                    array = PACK_GAME_COVER_02;
-                    break;
-                case 2:
-                    array = PACK_GAME_COVER_03;
-                    break;
-                case 3:
-                    array = PACK_GAME_COVER_04;
-                    break;
-                case 4:
-                    array = PACK_GAME_COVER_05;
-                    break;
-                case 5:
-                    array = PACK_GAME_COVER_06;
-                    break;
-                case 6:
-                    array = PACK_GAME_COVER_07;
-                    break;
-                case 7:
-                    array = PACK_GAME_COVER_08;
-                    break;
-                case 8:
-                    array = PACK_GAME_COVER_09;
-                    break;
-                case 9:
-                    array = PACK_GAME_COVER_10;
-                    break;
-                case 10:
-                    array = PACK_GAME_COVER_11;
-                    break;
-                default:
-                    break;
-            }
+            array = PackConfig.GetCoverResources(pack);
             cTRResourceMgr.InitLoading();
             cTRResourceMgr.LoadPack(array);
             cTRResourceMgr.LoadImmediately();
@@ -1324,7 +1288,7 @@ namespace CutTheRope.GameMain
                         CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
                         CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
                         ctrresourceMgr.InitLoading();
-                        ctrresourceMgr.LoadPack(PACK_GAME_COVER_01);
+                        ctrresourceMgr.LoadPack(PackConfig.GetCoverResources(pack));
                         ctrresourceMgr.LoadImmediately();
                         ctrrootController.SetSurvival(true);
                         ctrrootController.SetPack(pack);

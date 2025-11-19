@@ -20,7 +20,8 @@ namespace CutTheRope.GameMain
         private void LoadTarget(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
-            support = Image.Image_createWithResIDQuad(100, pack);
+            int supportResID = PackConfig.GetSupportResources(pack);
+            support = Image.Image_createWithResIDQuad(supportResID, pack);
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 

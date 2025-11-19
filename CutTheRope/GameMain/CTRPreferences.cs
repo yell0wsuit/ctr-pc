@@ -31,7 +31,7 @@ namespace CutTheRope.GameMain
                     {
                         int num = 0;
                         int j = 0;
-                        int levelsInPackCount = GetLevelsInPackCount();
+                        int levelsInPackCount = GetLevelsInPackCount(i);
                         while (j < levelsInPackCount)
                         {
                             int intForKey2 = GetIntForKey(GetPackLevelKey("SCORE_", i, j));
@@ -98,12 +98,19 @@ namespace CutTheRope.GameMain
 
         public static int GetPacksCount()
         {
-            return !IsLiteVersion() ? 11 : 2;
+            int packs = PackConfig.GetPackCount();
+            return IsLiteVersion() ? Math.Min(packs, SharewareFreePacks()) : packs;
+        }
+
+        public static int GetLevelsInPackCount(int pack)
+        {
+            int levels = PackConfig.GetLevelCount(pack);
+            return IsLiteVersion() ? Math.Min(levels, SharewareFreeLevels()) : levels;
         }
 
         public static int GetLevelsInPackCount()
         {
-            return !IsLiteVersion() ? 25 : 9;
+            return PackConfig.MaxLevelsPerPack;
         }
 
         public static int GetTotalStars()
@@ -114,7 +121,7 @@ namespace CutTheRope.GameMain
             while (i < packsCount)
             {
                 int j = 0;
-                int levelsInPackCount = GetLevelsInPackCount();
+                int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
                     num += GetStarsForPackLevel(i, j);
@@ -127,7 +134,9 @@ namespace CutTheRope.GameMain
 
         public static int PackUnlockStars(int n)
         {
-            return !IsLiteVersion() ? PACK_UNLOCK_STARS[n] : PACK_UNLOCK_STARS_LITE[n];
+            return !IsLiteVersion()
+                ? PackConfig.GetUnlockStars(n)
+                : n < PACK_UNLOCK_STARS_LITE.Length ? PACK_UNLOCK_STARS_LITE[n] : PACK_UNLOCK_STARS_LITE[^1];
         }
 
         private static string GetPackLevelKey(string prefs, int p, int l)
@@ -158,7 +167,7 @@ namespace CutTheRope.GameMain
         public static bool IsPackPerfect(int p)
         {
             int i = 0;
-            int levelsInPackCount = GetLevelsInPackCount();
+            int levelsInPackCount = GetLevelsInPackCount(p);
             while (i < levelsInPackCount)
             {
                 if (GetStarsForPackLevel(p, i) < 3)
@@ -199,7 +208,7 @@ namespace CutTheRope.GameMain
         {
             int num = 0;
             int i = 0;
-            int levelsInPackCount = GetLevelsInPackCount();
+            int levelsInPackCount = GetLevelsInPackCount(p);
             while (i < levelsInPackCount)
             {
                 num += GetStarsForPackLevel(p, i);
@@ -225,7 +234,7 @@ namespace CutTheRope.GameMain
             while (i < packsCount)
             {
                 int j = 0;
-                int levelsInPackCount = GetLevelsInPackCount();
+                int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
                     int v = (i == 0 || (IsShareware() && i < SharewareFreePacks())) && j == 0 ? 1 : 0;
@@ -276,7 +285,7 @@ namespace CutTheRope.GameMain
             int num = 0;
             for (int i = 0; i < GetPacksCount(); i++)
             {
-                for (int j = 0; j < GetLevelsInPackCount(); j++)
+                for (int j = 0; j < GetLevelsInPackCount(i); j++)
                 {
                     num += GetIntForKey(GetPackLevelKey("SCORE_", i, j));
                 }
@@ -302,7 +311,7 @@ namespace CutTheRope.GameMain
             while (i < packsCount)
             {
                 int j = 0;
-                int levelsInPackCount = GetLevelsInPackCount();
+                int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
                     SetIntForKey(1, GetPackLevelKey("UNLOCKED_", i, j), false);

@@ -154,7 +154,7 @@ namespace CutTheRope.GameMain
             int pack = ctrrootController.GetPack();
             _ = ctrrootController.GetLevel();
             bool flag = true;
-            for (int num = CTRPreferences.GetLevelsInPackCount() - 1; num >= 0; num--)
+            for (int num = CTRPreferences.GetLevelsInPackCount(pack) - 1; num >= 0; num--)
             {
                 if (CTRPreferences.GetScoreForPackLevel(pack, num) <= 0)
                 {
@@ -182,7 +182,7 @@ namespace CutTheRope.GameMain
             }
             Preferences.RequestSave();
             int num2 = 0;
-            for (int i = 0; i < CTRPreferences.GetLevelsInPackCount(); i++)
+            for (int i = 0; i < CTRPreferences.GetLevelsInPackCount(pack); i++)
             {
                 num2 += CTRPreferences.GetScoreForPackLevel(pack, i);
             }
@@ -267,7 +267,8 @@ namespace CutTheRope.GameMain
 
         public bool LastLevelInPack()
         {
-            if (((CTRRootController)Application.SharedRootController()).GetLevel() == CTRPreferences.GetLevelsInPackCount() - 1)
+            CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+            if (ctrrootController.GetLevel() == CTRPreferences.GetLevelsInPackCount(ctrrootController.GetPack()) - 1)
             {
                 exitCode = 2;
                 CTRSoundMgr.StopAll();
@@ -281,7 +282,7 @@ namespace CutTheRope.GameMain
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
             int pack = ctrrootController.GetPack();
             int level = ctrrootController.GetLevel();
-            if (level < CTRPreferences.GetLevelsInPackCount() - 1 && CTRPreferences.GetUnlockedForPackLevel(pack, level + 1) == UNLOCKEDSTATE.LOCKED)
+            if (level < CTRPreferences.GetLevelsInPackCount(pack) - 1 && CTRPreferences.GetUnlockedForPackLevel(pack, level + 1) == UNLOCKEDSTATE.LOCKED)
             {
                 CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, pack, level + 1);
             }
