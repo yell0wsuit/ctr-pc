@@ -486,6 +486,10 @@ namespace CutTheRope.GameMain
 
         public const string acDJPerfect = "com.zeptolab.ctr.djboxperfect";
 
+        public const string acSpookyBox = "com.zeptolab.ctr.spookyboxcompleted";
+
+        public const string acSpookyPerfect = "com.zeptolab.ctr.spookyboxperfect";
+
         public RemoteDataManager remoteDataManager = new();
 
         private readonly bool firstLaunch;

@@ -141,7 +141,7 @@ namespace CutTheRope.GameMain
 
         public static void CheckForBoxPerfect(int pack)
         {
-            if (CTRPreferences.IsPackPerfect(pack))
+            if (CTRPreferences.IsPackPerfect(pack) && pack < name.Length)
             {
                 CTRRootController.PostAchievementName(name[pack]);
             }
@@ -162,7 +162,7 @@ namespace CutTheRope.GameMain
                     break;
                 }
             }
-            if (flag)
+            if (flag && pack < nameArray.Length)
             {
                 CTRRootController.PostAchievementName(nameArray[pack]);
             }
@@ -677,7 +677,8 @@ namespace CutTheRope.GameMain
                     "1991641832",
                     "1335599628",
                     "99928734496",
-                    "com.zeptolab.ctr.djboxperfect"
+                    "com.zeptolab.ctr.djboxperfect",
+                    "com.zeptolab.ctr.spookyboxperfect"
                 ];
         internal static readonly string[] nameArray =
                 [
@@ -691,7 +692,8 @@ namespace CutTheRope.GameMain
                     "1991474812",
                     "1321820679",
                     "23523272771",
-                    "com.zeptolab.ctr.djboxcompleted"
+                    "com.zeptolab.ctr.djboxcompleted",
+                    "com.zeptolab.ctr.spookyboxcompleted"
                 ];
     }
 }
