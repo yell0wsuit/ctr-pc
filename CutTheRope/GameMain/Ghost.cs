@@ -45,19 +45,7 @@ namespace CutTheRope.GameMain
             disappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, GHOST_MORPHING_DISAPPEAR_TIME));
             ghostImage.AddTimelinewithID(disappearTimeline, 11);
 
-            ghostImageBody = Image.Image_createWithResIDQuad(180, 0);
-            ghostImageBody.x = position.x;
-            ghostImageBody.y = position.y;
-            ghostImageBody.anchor = 18;
-            _ = ghostImage.AddChild(ghostImageBody);
-
             float random = RND_0_1;
-            Timeline bodyFloat = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            bodyFloat.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            bodyFloat.AddKeyFrame(KeyFrame.MakePos(x, y - 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random));
-            bodyFloat.delegateTimelineDelegate = this;
-            ghostImageBody.AddTimelinewithID(bodyFloat, 13);
-            ghostImageBody.PlayTimeline(13);
 
             ghostImageFace = Image.Image_createWithResIDQuad(180, 1);
             ghostImageFace.x = position.x;
@@ -71,6 +59,19 @@ namespace CutTheRope.GameMain
             faceFloat.delegateTimelineDelegate = this;
             ghostImageFace.AddTimelinewithID(faceFloat, 13);
             ghostImageFace.PlayTimeline(13);
+
+            ghostImageBody = Image.Image_createWithResIDQuad(180, 0);
+            ghostImageBody.x = position.x;
+            ghostImageBody.y = position.y;
+            ghostImageBody.anchor = 18;
+            _ = ghostImage.AddChild(ghostImageBody);
+
+            Timeline bodyFloat = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            bodyFloat.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            bodyFloat.AddKeyFrame(KeyFrame.MakePos(x, y - 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random));
+            bodyFloat.delegateTimelineDelegate = this;
+            ghostImageBody.AddTimelinewithID(bodyFloat, 13);
+            ghostImageBody.PlayTimeline(13);
 
             bubble = null;
             grab = null;
