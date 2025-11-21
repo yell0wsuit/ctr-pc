@@ -134,9 +134,7 @@ namespace CutTheRope.GameMain
 
         public static int PackUnlockStars(int n)
         {
-            return !IsLiteVersion()
-                ? PackConfig.GetUnlockStars(n)
-                : n < PACK_UNLOCK_STARS_LITE.Length ? PACK_UNLOCK_STARS_LITE[n] : PACK_UNLOCK_STARS_LITE[^1];
+            return PackConfig.GetUnlockStars(n);
         }
 
         private static string GetPackLevelKey(string prefs, int p, int l)
@@ -493,17 +491,5 @@ namespace CutTheRope.GameMain
         private readonly bool firstLaunch;
 
         private bool playLevelScroll;
-
-        private static readonly int[] PACK_UNLOCK_STARS_LITE =
-[
-    0, 20, 80, 170, 240, 300, 350, 400, 450, 500,
-            550
-];
-
-        private static readonly int[] PACK_UNLOCK_STARS =
-[
-    0, 30, 80, 170, 240, 300, 350, 400, 450, 500,
-            550
-];
     }
 }

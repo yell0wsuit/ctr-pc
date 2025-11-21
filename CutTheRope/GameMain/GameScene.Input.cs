@@ -145,6 +145,17 @@ namespace CutTheRope.GameMain
                 rotatedCircles.SetObjectAt(rotatedCircle4, rotatedCircles.GetObjectIndex(rotatedCircle));
                 _ = rotatedCircles.AddObject(rotatedCircle);
             }
+            if (ghosts != null)
+            {
+                foreach (object objGhost in ghosts)
+                {
+                    Ghost ghost = (Ghost)objGhost;
+                    if (ghost != null && ghost.OnTouchDownXY(tx + camera.pos.x, ty + camera.pos.y))
+                    {
+                        return true;
+                    }
+                }
+            }
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;

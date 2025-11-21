@@ -300,8 +300,70 @@ namespace CutTheRope.GameMain
                         }
                         if (candyBubbleL != null || candyBubbleR != null)
                         {
-                            candyBubble = candyBubbleL ?? candyBubbleR;
-                            candyBubbleAnimation.visible = true;
+                            bool leftHasGhost = candyBubbleL != null && DisableGhostCycleForBubble(candyBubbleL);
+                            bool rightHasGhost = candyBubbleR != null && DisableGhostCycleForBubble(candyBubbleR);
+                            if (candyBubbleL != null && candyBubbleR != null && leftHasGhost && rightHasGhost)
+                            {
+                                candyBubble = candyBubbleL;
+                                shouldRestoreSecondGhost = true;
+                                candyBubbleAnimation.visible = false;
+                                if (isCandyInGhostBubbleAnimationLoaded)
+                                {
+                                    candyGhostBubbleAnimation.visible = true;
+                                }
+                            }
+                            else if (candyBubbleL != null && leftHasGhost)
+                            {
+                                candyBubble = candyBubbleL;
+                                shouldRestoreSecondGhost = false;
+                                candyBubbleAnimation.visible = false;
+                                if (isCandyInGhostBubbleAnimationLoaded)
+                                {
+                                    candyGhostBubbleAnimation.visible = true;
+                                }
+                            }
+                            else if (candyBubbleR != null && rightHasGhost)
+                            {
+                                candyBubble = candyBubbleR;
+                                shouldRestoreSecondGhost = false;
+                                candyBubbleAnimation.visible = false;
+                                if (isCandyInGhostBubbleAnimationLoaded)
+                                {
+                                    candyGhostBubbleAnimation.visible = true;
+                                }
+                            }
+                            else
+                            {
+                                candyBubble = candyBubbleL ?? candyBubbleR;
+                                shouldRestoreSecondGhost = false;
+                                candyBubbleAnimation.visible = true;
+                                if (isCandyInGhostBubbleAnimationLoaded)
+                                {
+                                    candyGhostBubbleAnimation.visible = false;
+                                }
+                                EnableGhostCycleForBubble(candyBubbleL);
+                                EnableGhostCycleForBubble(candyBubbleR);
+                            }
+                            candyBubbleAnimationL.visible = false;
+                            candyBubbleAnimationR.visible = false;
+                            if (isCandyInGhostBubbleAnimationLeftLoaded)
+                            {
+                                candyGhostBubbleAnimationL.visible = false;
+                            }
+                            if (isCandyInGhostBubbleAnimationRightLoaded)
+                            {
+                                candyGhostBubbleAnimationR.visible = false;
+                            }
+                        }
+                        else
+                        {
+                            candyBubble = null;
+                            shouldRestoreSecondGhost = false;
+                            candyBubbleAnimation.visible = false;
+                            if (isCandyInGhostBubbleAnimationLoaded)
+                            {
+                                candyGhostBubbleAnimation.visible = false;
+                            }
                         }
                         lastCandyRotateDelta = 0f;
                         lastCandyRotateDeltaL = 0f;
@@ -407,9 +469,26 @@ namespace CutTheRope.GameMain
                         if (candyBubbleL != null)
                         {
                             PopBubbleAtXY(bubble3.x, bubble3.y);
+                            EnableGhostCycleForBubble(candyBubbleL);
                         }
                         candyBubbleL = bubble3;
-                        candyBubbleAnimationL.visible = true;
+                        bool leftHasGhost = DisableGhostCycleForBubble(bubble3);
+                        if (leftHasGhost)
+                        {
+                            if (isCandyInGhostBubbleAnimationLeftLoaded)
+                            {
+                                candyGhostBubbleAnimationL.visible = true;
+                            }
+                            candyBubbleAnimationL.visible = false;
+                        }
+                        else
+                        {
+                            candyBubbleAnimationL.visible = true;
+                            if (isCandyInGhostBubbleAnimationLeftLoaded)
+                            {
+                                candyGhostBubbleAnimationL.visible = false;
+                            }
+                        }
                         CTRSoundMgr.PlaySound(13);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
@@ -420,9 +499,26 @@ namespace CutTheRope.GameMain
                         if (candyBubbleR != null)
                         {
                             PopBubbleAtXY(bubble3.x, bubble3.y);
+                            EnableGhostCycleForBubble(candyBubbleR);
+                        }
+                        bool rightHasGhost = DisableGhostCycleForBubble(bubble3);
+                        if (rightHasGhost)
+                        {
+                            if (isCandyInGhostBubbleAnimationRightLoaded)
+                            {
+                                candyGhostBubbleAnimationR.visible = true;
+                            }
+                            candyBubbleAnimationR.visible = false;
+                        }
+                        else
+                        {
+                            candyBubbleAnimationR.visible = true;
+                            if (isCandyInGhostBubbleAnimationRightLoaded)
+                            {
+                                candyGhostBubbleAnimationR.visible = false;
+                            }
                         }
                         candyBubbleR = bubble3;
-                        candyBubbleAnimationR.visible = true;
                         CTRSoundMgr.PlaySound(13);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
@@ -434,9 +530,32 @@ namespace CutTheRope.GameMain
                     if (candyBubble != null)
                     {
                         PopBubbleAtXY(bubble3.x, bubble3.y);
+                        EnableGhostCycleForBubble(candyBubble);
+                        if (shouldRestoreSecondGhost)
+                        {
+                            EnableGhostCycleForBubble(candyBubbleR);
+                            candyBubbleR = null;
+                            shouldRestoreSecondGhost = false;
+                        }
                     }
                     candyBubble = bubble3;
-                    candyBubbleAnimation.visible = true;
+                    bool hasGhost = DisableGhostCycleForBubble(bubble3);
+                    if (hasGhost)
+                    {
+                        candyBubbleAnimation.visible = false;
+                        if (isCandyInGhostBubbleAnimationLoaded)
+                        {
+                            candyGhostBubbleAnimation.visible = true;
+                        }
+                    }
+                    else
+                    {
+                        candyBubbleAnimation.visible = true;
+                        if (isCandyInGhostBubbleAnimationLoaded)
+                        {
+                            candyGhostBubbleAnimation.visible = false;
+                        }
+                    }
                     CTRSoundMgr.PlaySound(13);
                     bubble3.popped = true;
                     bubble3.RemoveChildWithID(0);
@@ -452,6 +571,14 @@ namespace CutTheRope.GameMain
                             bubble3.withoutShadow = true;
                         }
                     }
+                }
+            }
+            if (ghosts != null)
+            {
+                foreach (object objGhost in ghosts)
+                {
+                    Ghost ghost = (Ghost)objGhost;
+                    ghost?.Update(delta);
                 }
             }
             foreach (object obj5 in tutorials)
@@ -648,6 +775,17 @@ namespace CutTheRope.GameMain
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3);
+                        }
+                        if (ghosts != null)
+                        {
+                            foreach (object objGhost in ghosts)
+                            {
+                                Ghost ghost = (Ghost)objGhost;
+                                if (ghost != null)
+                                {
+                                    ghost.candyBreak = true;
+                                }
+                            }
                         }
                         return;
                     }

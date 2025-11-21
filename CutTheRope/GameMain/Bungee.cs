@@ -208,14 +208,17 @@ namespace CutTheRope.GameMain
             bungeeMode = 0;
             highlighted = false;
             bungeeAnchor = h ?? new ConstraintedPoint();
+            ownsAnchor = h == null;
             if (t != null)
             {
                 tail = t;
+                ownsTail = false;
             }
             else
             {
                 tail = new ConstraintedPoint();
                 tail.SetWeight(1f);
+                ownsTail = true;
             }
             bungeeAnchor.SetWeight(0.02f);
             bungeeAnchor.pos = Vect(hx, hy);
@@ -503,9 +506,19 @@ namespace CutTheRope.GameMain
         {
             if (disposing)
             {
-                bungeeAnchor?.Dispose();
+                if (parts != null)
+                {
+                    foreach (ConstraintedPoint part in parts)
+                    {
+                        bool ownsPart = (part == bungeeAnchor && ownsAnchor) || (part == tail && ownsTail) || (part != bungeeAnchor && part != tail);
+                        if (ownsPart)
+                        {
+                            part?.Dispose();
+                        }
+                    }
+                    parts = null;
+                }
                 bungeeAnchor = null;
-                tail?.Dispose();
                 tail = null;
                 drawPts = null;
             }
@@ -542,6 +555,10 @@ namespace CutTheRope.GameMain
         public float lineWidth;
 
         public bool hideTailParts;
+
+        private bool ownsAnchor;
+
+        private bool ownsTail;
 
         private static readonly RGBAColor[] ccolors =
 [

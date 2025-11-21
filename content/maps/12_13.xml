@@ -1,0 +1,23 @@
+<map>
+<layer name="settings">
+<map width="640" height="480" gridSize="32" />
+<gameDesign special="1" twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<target x="83" y="388" />
+<candy x="80" y="154" />
+<grab x="25" y="50" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<grab x="135" y="50" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<ghost x="190" y="260" bouncer="true" bubble="false" grab="true" radius="40" angle="0" />
+<ghost x="290" y="260" bouncer="true" bubble="false" grab="true" radius="40" angle="0" />
+<ghost x="390" y="260" bouncer="true" bubble="false" grab="true" radius="40" angle="0" />
+<grab x="490" y="260" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="50" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<pump x="490" y="420" angle="220" />
+<pump x="390" y="420" angle="220" />
+<pump x="290" y="420" angle="220" />
+<star x="235" y="150" timeout="-1" />
+<star x="435" y="150" timeout="-1" />
+<star x="335" y="150" timeout="-1" />
+<hiddenElement x="576" y="64" radius="30" />
+</layer>
+</map>

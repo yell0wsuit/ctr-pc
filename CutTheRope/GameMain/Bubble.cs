@@ -4,7 +4,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Bubble : GameObject
+    internal class Bubble : GameObject
     {
         public static Bubble Bubble_create(CTRTexture2D t)
         {

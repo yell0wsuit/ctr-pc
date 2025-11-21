@@ -397,6 +397,10 @@ namespace CutTheRope.GameMain
 
         public const int IMG_BGR_11_P2 = 125;
 
+        public const int IMG_BGR_12_P1 = 153;
+
+        public const int IMG_BGR_12_P2 = 154;
+
         public const int IMG_BGR_COVER_01 = 126;
 
         public const int IMG_BGR_COVER_02 = 127;
@@ -418,6 +422,8 @@ namespace CutTheRope.GameMain
         public const int IMG_BGR_COVER_10 = 135;
 
         public const int IMG_BGR_COVER_11 = 136;
+
+        public const int IMG_BGR_COVER_12 = 152;
 
         public const int IMG_MENU_EXTRA_BUTTONS_FR = 137;
 
@@ -447,7 +453,7 @@ namespace CutTheRope.GameMain
 
         public const int IMG_MENU_EXTRA_BUTTONS_EN = 149;
 
-        public const int RESOURCES_COUNT = 151;
+        public const int RESOURCES_COUNT = 150;
 
         public const int SOUND_FIRST = 9;
 
@@ -773,6 +779,8 @@ namespace CutTheRope.GameMain
 
         internal const string STR_MENU_BOX11_LABEL = "BOX11_LABEL";
 
+        internal const string STR_MENU_BOX12_LABEL = "BOX12_LABEL";
+
         internal const string STR_MENU_BOX1_LABEL = "BOX1_LABEL";
 
         internal const string STR_MENU_BOX2_LABEL = "BOX2_LABEL";
@@ -967,7 +975,9 @@ namespace CutTheRope.GameMain
 
         internal const int IMG_MENU_PACK_SELECTION2_box_11 = 4;
 
-        internal const int IMG_MENU_PACK_SELECTION2_box_soon = 5;
+        internal const int IMG_MENU_PACK_SELECTION2_box_12 = 5;
+
+        internal const int IMG_MENU_PACK_SELECTION2_box_soon = 6;
 
         internal const int IMG_MENU_EXTRA_BUTTONS_back_idle = 0;
 
@@ -1485,6 +1495,8 @@ namespace CutTheRope.GameMain
 
         internal const int IMG_CHAR_SUPPORTS_support_11 = 10;
 
+        internal const int IMG_CHAR_SUPPORTS_support_12 = 10;
+
         internal const int IMG_CHAR_ANIMATIONS2_excited_start = 0;
 
         internal const int IMG_CHAR_ANIMATIONS2_excited_end = 19;
@@ -1561,6 +1573,10 @@ namespace CutTheRope.GameMain
 
         internal const int IMG_BGR_11_P2_vert_transition = 0;
 
+        internal const int IMG_BGR_12_P1_bgr = 0;
+
+        internal const int IMG_BGR_12_P2_vert_transition = 0;
+
         internal const int IMG_BGR_COVER_01_bgr = 0;
 
         internal const int IMG_BGR_COVER_01_side = 1;
@@ -1604,6 +1620,10 @@ namespace CutTheRope.GameMain
         internal const int IMG_BGR_COVER_11_top = 0;
 
         internal const int IMG_BGR_COVER_11_side = 1;
+
+        internal const int IMG_BGR_COVER_12_top = 0;
+
+        internal const int IMG_BGR_COVER_12_side = 1;
 
         internal const int IMG_MENU_EXTRA_BUTTONS_FR_follow_us = 0;
 
@@ -1683,6 +1703,8 @@ namespace CutTheRope.GameMain
 
         internal static int[] PACK_GAME_11 = [124, 125, -1];
 
+        internal static int[] PACK_GAME_12 = [153, 154, -1];
+
         internal static int[] PACK_GAME_COVER_01 = [126, -1];
 
         internal static int[] PACK_GAME_COVER_02 = [127, -1];
@@ -1704,6 +1726,8 @@ namespace CutTheRope.GameMain
         internal static int[] PACK_GAME_COVER_10 = [135, -1];
 
         internal static int[] PACK_GAME_COVER_11 = [136, -1];
+
+        internal static int[] PACK_GAME_COVER_12 = [152, -1];
 
         internal static int[] PACK_LOCALIZATION = [137, 138, 139, 140, 141, 142, 143, 144, -1];
 

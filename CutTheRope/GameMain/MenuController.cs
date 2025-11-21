@@ -605,6 +605,7 @@ namespace CutTheRope.GameMain
                     8 => STR_MENU_BOX9_LABEL,
                     9 => STR_MENU_BOX10_LABEL,
                     10 => STR_MENU_BOX11_LABEL,
+                    11 => STR_MENU_BOX12_LABEL,
                     _ => STR_MENU_BOX1_LABEL,
                 };
                 string @string = Application.GetString(boxLabelId);
@@ -613,7 +614,10 @@ namespace CutTheRope.GameMain
             string nSString = nsstring;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
-            touchBaseElement.bid = 23 + n;
+            if (n != CTRPreferences.GetPacksCount())
+            {
+                touchBaseElement.bid = 23 + n;
+            }
             Image image = Image.Image_createWithResIDQuad(r, q);
             image.DoRestoreCutTransparency();
             image.anchor = image.parentAnchor = 9;
@@ -999,7 +1003,8 @@ namespace CutTheRope.GameMain
         {
             float num = 0.3f;
             MenuView menuView = new();
-            int num4 = 126 + pack;
+            int[] coverResources = PackConfig.GetCoverResources(pack);
+            int num4 = coverResources.Length > 0 ? coverResources[0] : 126 + pack;
             Image image = Image.Image_createWithResIDQuad(num4, 0);
             Image image2 = Image.Image_createWithResIDQuad(num4, 0);
             Vector quadSize = Image.GetQuadSize(num4, 0);
@@ -1447,7 +1452,7 @@ namespace CutTheRope.GameMain
                         }
                         CTRPreferences.SetLastPack(pack);
                         bool flag5 = CTRPreferences.GetUnlockedForPackLevel(n - 23, 0) == UNLOCKEDSTATE.LOCKED && n - 23 != CTRPreferences.GetPacksCount();
-                        if (n != 34 && !flag5)
+                        if (n - 23 != CTRPreferences.GetPacksCount() && !flag5)
                         {
                             PreLevelSelect();
                             ShowView(6);

@@ -1,0 +1,30 @@
+<map>
+<layer name="settings">
+<map width="320" height="480" gridSize="32" />
+<gameDesign special="1" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<bouncer2 x="25" y="321" angle="90" size="2" path="170,0" moveSpeed="30" />
+<bouncer2 x="124" y="322" angle="270" size="2" path="170,0" moveSpeed="30" />
+<star x="82" y="320" timeout="-1" />
+<star x="263" y="169" timeout="-1" />
+<ghost x="190" y="248" bouncer="true" bubble="true" grab="false" radius="100" angle="0" />
+<ghost x="122" y="248" bouncer="true" bubble="true" grab="false" radius="100" angle="0" />
+<ghost x="120" y="395" bouncer="true" bubble="true" grab="false" radius="100" angle="0" />
+<bouncer1 x="50" y="248" angle="0" size="1" />
+<bouncer1 x="272" y="249" angle="0" size="1" />
+<bouncer1 x="50" y="395" angle="0" size="1" />
+<bouncer1 x="272" y="395" angle="0" size="1" />
+<candy x="76" y="181" />
+<target x="207" y="81" />
+<star x="259" y="316" timeout="-1" />
+<bouncer1 x="50" y="107" angle="0" size="1" />
+<bouncer2 x="123" y="175" angle="270" size="2" path="170,0" moveSpeed="30" />
+<bouncer2 x="27" y="174" angle="90" size="2" path="170,0" moveSpeed="30" />
+<bouncer1 x="123" y="107" angle="0" size="1" />
+<bubble x="76" y="179" />
+<ghost x="193" y="395" bouncer="true" bubble="true" grab="false" radius="100" angle="0" />
+<bouncer1 x="281" y="107" angle="0" size="1" />
+<hiddenElement x="48" y="434" radius="30" />
+</layer>
+</map>

@@ -94,7 +94,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        private static void RestoreColor(BaseElement t)
+        protected static void RestoreColor(BaseElement t)
         {
             if (!RGBAColor.RGBAEqual(t.color, RGBAColor.solidOpaqueRGBA))
             {

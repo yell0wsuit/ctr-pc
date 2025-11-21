@@ -1,0 +1,19 @@
+<map>
+<layer name="settings">
+<map width="320" height="480" gridSize="32" />
+<gameDesign special="1" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<candy x="140" y="273" />
+<target x="258" y="418" />
+<grab x="145" y="173" length="60" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<grab x="145" y="372" length="60" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<grab x="143" y="271" length="63" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" path="RW100" hidePath="false" moveSpeed="70" />
+<grab x="247" y="130" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="60" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<ghost x="61" y="433" bouncer="false" bubble="true" grab="true" radius="60" angle="0" />
+<star x="298" y="83" timeout="-1" />
+<star x="201" y="83" timeout="-1" />
+<star x="52" y="130" timeout="-1" />
+<hiddenElement x="117" y="82" radius="30" />
+</layer>
+</map>
