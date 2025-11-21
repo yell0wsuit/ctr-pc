@@ -837,11 +837,11 @@ namespace CutTheRope.GameMain
 
         internal const string STR_MENU_LEVEL_CLEARED1 = "LEVEL_CLEARED1";
 
-        internal const int STR_MENU_LEVEL_CLEARED2 = 655373;
+        internal const string STR_MENU_LEVEL_CLEARED2 = "LEVEL_CLEARED2";
 
-        internal const int STR_MENU_LEVEL_CLEARED3 = 655374;
+        internal const string STR_MENU_LEVEL_CLEARED3 = "LEVEL_CLEARED3";
 
-        internal const int STR_MENU_LEVEL_CLEARED4 = 655375;
+        internal const string STR_MENU_LEVEL_CLEARED4 = "LEVEL_CLEARED4";
 
         internal const string STR_MENU_LEVEL_SELECT = "LEVEL_SELECT";
 

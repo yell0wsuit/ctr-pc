@@ -1236,7 +1236,7 @@ namespace CutTheRope.GameMain
 
         public void OnButtonPressed(int n)
         {
-            if (n is not (-1) and not 34)
+            if (n is not (-1))
             {
                 CTRSoundMgr.PlaySound(9);
             }
