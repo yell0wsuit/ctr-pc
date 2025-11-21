@@ -162,6 +162,14 @@ namespace CutTheRope.Framework.Sfe
 
         public static void SatisfyConstraints(ConstraintedPoint p)
         {
+            if (p == null)
+            {
+                return;
+            }
+            if (p.constraints == null)
+            {
+                return;
+            }
             if (p.pin.x != -1f)
             {
                 p.pos = p.pin;

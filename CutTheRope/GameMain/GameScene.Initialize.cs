@@ -39,8 +39,13 @@ namespace CutTheRope.GameMain
             tutorials = new DynamicArray<Text>();
             bouncers = new DynamicArray<Bouncer>();
             rotatedCircles = new DynamicArray<RotatedCircle>();
+            ghosts = new DynamicArray<Ghost>();
             earthAnims = null;
             pollenDrawer = new PollenDrawer();
+            isCandyInGhostBubbleAnimationLoaded = false;
+            isCandyInGhostBubbleAnimationLeftLoaded = false;
+            isCandyInGhostBubbleAnimationRightLoaded = false;
+            shouldRestoreSecondGhost = false;
         }
 
         /// <summary>
@@ -113,6 +118,43 @@ namespace CutTheRope.GameMain
                 Timeline timeline2 = hudStar[i].GetCurrentTimeline();
                 timeline2?.StopTimeline();
                 hudStar[i].SetDrawQuad(0);
+            }
+        }
+
+        private void EnsureCandyGhostBubbleAnimations()
+        {
+            if (!isCandyInGhostBubbleAnimationLoaded && candy != null)
+            {
+                candyGhostBubbleAnimation = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(72);
+                candyGhostBubbleAnimation.parentAnchor = candyGhostBubbleAnimation.anchor = 18;
+                _ = candy.AddChild(candyGhostBubbleAnimation);
+                candyGhostBubbleAnimation.visible = false;
+                candyGhostBubbleAnimation.AddSupportingCloudsTimelines();
+                candyGhostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                candyGhostBubbleAnimation.PlayTimeline(0);
+                isCandyInGhostBubbleAnimationLoaded = true;
+            }
+            if (!isCandyInGhostBubbleAnimationLeftLoaded && candyL != null)
+            {
+                candyGhostBubbleAnimationL = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(72);
+                candyGhostBubbleAnimationL.parentAnchor = candyGhostBubbleAnimationL.anchor = 18;
+                _ = candyL.AddChild(candyGhostBubbleAnimationL);
+                candyGhostBubbleAnimationL.visible = false;
+                candyGhostBubbleAnimationL.AddSupportingCloudsTimelines();
+                candyGhostBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                candyGhostBubbleAnimationL.PlayTimeline(0);
+                isCandyInGhostBubbleAnimationLeftLoaded = true;
+            }
+            if (!isCandyInGhostBubbleAnimationRightLoaded && candyR != null)
+            {
+                candyGhostBubbleAnimationR = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(72);
+                candyGhostBubbleAnimationR.parentAnchor = candyGhostBubbleAnimationR.anchor = 18;
+                _ = candyR.AddChild(candyGhostBubbleAnimationR);
+                candyGhostBubbleAnimationR.visible = false;
+                candyGhostBubbleAnimationR.AddSupportingCloudsTimelines();
+                candyGhostBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                candyGhostBubbleAnimationR.PlayTimeline(0);
+                isCandyInGhostBubbleAnimationRightLoaded = true;
             }
         }
     }

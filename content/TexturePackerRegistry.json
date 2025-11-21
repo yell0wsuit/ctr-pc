@@ -1,3 +1,31 @@
 {
-    "textures": [{}]
+    "textures": [
+        {
+            "resourceId": 53,
+            "atlasPath": "menu_pack_selection2.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceId": 100,
+            "atlasPath": "char_supports.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceId": 180,
+            "atlasPath": "obj_ghost.json",
+            "useAntialias": true,
+            "frameOrder": [
+                "00_body",
+                "01_face.png",
+                "bubbles_0000",
+                "bubbles_0001",
+                "bubbles_0002",
+                "bubbles_0003",
+                "bubbles_0004"
+            ],
+            "centerOffsets": false
+        }
+    ]
 }

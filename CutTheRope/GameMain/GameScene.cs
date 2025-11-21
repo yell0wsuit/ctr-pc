@@ -251,6 +251,12 @@ namespace CutTheRope.GameMain
 
         private Animation candyBubbleAnimationR;
 
+        private CandyInGhostBubbleAnimation candyGhostBubbleAnimation;
+
+        private CandyInGhostBubbleAnimation candyGhostBubbleAnimationL;
+
+        private CandyInGhostBubbleAnimation candyGhostBubbleAnimationR;
+
         private ConstraintedPoint star;
 
         private DynamicArray<Grab> bungees;
@@ -274,6 +280,8 @@ namespace CutTheRope.GameMain
         private DynamicArray<CTRGameObject> tutorialImages;
 
         private DynamicArray<Text> tutorials;
+
+        private DynamicArray<Ghost> ghosts;
 
         private GameObject candyL;
 
@@ -328,6 +336,14 @@ namespace CutTheRope.GameMain
         private int special;
 
         private bool fastenCamera;
+
+        private bool isCandyInGhostBubbleAnimationLoaded;
+
+        private bool isCandyInGhostBubbleAnimationLeftLoaded;
+
+        private bool isCandyInGhostBubbleAnimationRightLoaded;
+
+        private bool shouldRestoreSecondGhost;
 
         private float savedSockSpeed;
 

@@ -11,4 +11,5 @@
   <pack index="8" unlockStars="450" resources="120,121" coverResources="134" levelCount="25" />
   <pack index="9" unlockStars="500" resources="122,123" coverResources="135" levelCount="25" />
   <pack index="10" unlockStars="550" resources="124,125" coverResources="136" levelCount="25" />
+  <pack index="11" unlockStars="600" resources="153,154" coverResources="152" levelCount="25" />
 </packs>

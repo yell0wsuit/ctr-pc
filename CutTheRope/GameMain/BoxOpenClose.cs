@@ -361,7 +361,8 @@ namespace CutTheRope.GameMain
         {
             CreateOpenCloseAnims();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            int num9 = 126 + cTRRootController.GetPack();
+            int[] coverResources = PackConfig.GetCoverResources(cTRRootController.GetPack());
+            int num9 = coverResources.Length > 0 ? coverResources[0] : 126 + cTRRootController.GetPack();
             Image image = Image.Image_createWithResIDQuad(67, 16);
             image.rotationCenterX = ((float)-(float)image.width / 2f) + 1f;
             image.rotationCenterY = ((float)-(float)image.height / 2f) + 1f;

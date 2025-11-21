@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Grab : CTRGameObject
+    internal class Grab : CTRGameObject
     {
-        private static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
+        protected static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
             OpenGL.GlColor4f(color.ToXNA());
             OpenGL.GlLineWidth(3.0);
@@ -202,7 +202,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public void DrawBack()
+        public virtual void DrawBack()
         {
             if (moveLength > 0.0)
             {

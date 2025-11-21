@@ -16,7 +16,8 @@ namespace CutTheRope.GameMain
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            int num7 = 126 + cTRRootController.GetPack();
+            int[] coverResources = PackConfig.GetCoverResources(cTRRootController.GetPack());
+            int num7 = coverResources.Length > 0 ? coverResources[0] : 126 + cTRRootController.GetPack();
             float num2 = Application.SharedResourceMgr().GetPercentLoaded();
             CTRTexture2D texture = Application.GetTexture(num7);
             OpenGL.GlColor4f(s_Color1);

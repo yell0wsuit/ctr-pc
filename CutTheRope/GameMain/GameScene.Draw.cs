@@ -33,7 +33,9 @@ namespace CutTheRope.GameMain
             {
                 float num3 = RTD(2.0);
                 int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
-                CTRTexture2D texture = Application.GetTexture(105 + (pack * 2));
+                int[] packResources = PackConfig.GetPackResources(pack);
+                int textureResID = packResources.Length > 1 ? packResources[1] : 105 + (pack * 2);
+                CTRTexture2D texture = Application.GetTexture(textureResID);
                 int num4 = 0;
                 float num5 = texture.quadOffsets[num4].y;
                 CTRRectangle r = texture.quadRects[num4];
@@ -100,6 +102,17 @@ namespace CutTheRope.GameMain
                 sock.Draw();
                 sock.y += 85f;
             }
+
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            if (ghosts != null)
+            {
+                foreach (object objGhost in ghosts)
+                {
+                    Ghost ghost = (Ghost)objGhost;
+                    ghost?.Draw();
+                }
+            }
+
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj11 in bungees)
             {

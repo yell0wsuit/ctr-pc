@@ -1,0 +1,23 @@
+<map>
+<layer name="settings">
+<map width="320" height="480" gridSize="32" />
+<gameDesign special="1" twoParts="true" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<candyL x="50" y="245" />
+<candyR x="262" y="356" />
+<bubble x="48" y="240" />
+<target x="41" y="125" />
+<ghost x="160" y="415" bouncer="true" bubble="true" grab="false" radius="100" angle="0" />
+<star x="110" y="110" timeout="-1" />
+<star x="164" y="276" timeout="-1" />
+<star x="265" y="165" timeout="-1" />
+<grab x="260" y="230" length="80" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="R" hidePath="false" />
+<grab x="48" y="351" length="80" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<ghost x="46" y="419" bouncer="true" bubble="false" grab="true" radius="40" angle="45" />
+<ghost x="275" y="101" bouncer="true" bubble="false" grab="true" radius="40" angle="-135" />
+<spike3 x="21" y="190" angle="0" size="3" toggled="false" />
+<ghost x="169" y="177" bouncer="true" bubble="false" grab="true" radius="40" angle="-30" />
+<hiddenElement x="111" y="48" radius="30" />
+</layer>
+</map>

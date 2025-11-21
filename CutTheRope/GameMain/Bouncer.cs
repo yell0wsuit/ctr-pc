@@ -3,9 +3,9 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Bouncer : CTRGameObject
+    internal class Bouncer : CTRGameObject
     {
-        public Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
+        public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
             int textureResID = -1;
             if (w != 1)

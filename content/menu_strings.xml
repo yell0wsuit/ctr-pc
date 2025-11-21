@@ -331,6 +331,19 @@ ta progression ?</fr>
     <fr>DJ</fr>
     <de>DJ-Kiste</de>
   </string>
+  <string name="BOX12_LABEL">
+    <en>Spooky Box</en>
+    <ru>С призраками</ru>
+    <fr>Fantôme</fr>
+    <de>Spukbox</de>
+    <ko>유령 상자</ko>
+    <zh>幽灵盒</zh>
+    <ja>オバケの箱</ja>
+    <es>Espectro</es>
+    <it>Spettrale</it>
+    <nl>Spookachtig</nl>
+    <br>Fantasma</br>
+  </string>
   <string name="BOX_SOON_LABEL">
     <en>New levels coming soon!</en>
     <ru>Новые уровни на подходе!</ru>

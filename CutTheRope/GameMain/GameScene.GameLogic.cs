@@ -110,20 +110,75 @@ namespace CutTheRope.GameMain
         {
             if (twoParts == 2)
             {
+                if (ghosts != null)
+                {
+                    foreach (Ghost ghost in ghosts)
+                    {
+                        if (ghost != null)
+                        {
+                            if (ghost.bubble == candyBubble)
+                            {
+                                ghost.cyclingEnabled = true;
+                                ghost.ResetToState(1);
+                            }
+                            if (shouldRestoreSecondGhost && ghost.bubble == candyBubbleR)
+                            {
+                                ghost.cyclingEnabled = true;
+                                ghost.ResetToState(1);
+                                candyBubbleR = null;
+                                shouldRestoreSecondGhost = false;
+                            }
+                        }
+                    }
+                }
                 candyBubble = null;
                 candyBubbleAnimation.visible = false;
+                if (isCandyInGhostBubbleAnimationLoaded)
+                {
+                    candyGhostBubbleAnimation.visible = false;
+                }
                 PopBubbleAtXY(candy.x, candy.y);
                 return;
             }
             if (left)
             {
+                if (ghosts != null)
+                {
+                    foreach (Ghost ghost2 in ghosts)
+                    {
+                        if (ghost2 != null && ghost2.bubble == candyBubbleL)
+                        {
+                            ghost2.cyclingEnabled = true;
+                            ghost2.ResetToState(1);
+                        }
+                    }
+                }
                 candyBubbleL = null;
                 candyBubbleAnimationL.visible = false;
+                if (isCandyInGhostBubbleAnimationLeftLoaded)
+                {
+                    candyGhostBubbleAnimationL.visible = false;
+                }
                 PopBubbleAtXY(candyL.x, candyL.y);
                 return;
             }
+            if (ghosts != null)
+            {
+                foreach (Ghost ghost3 in ghosts)
+                {
+                    if (ghost3 != null && ghost3.bubble == candyBubbleR)
+                    {
+                        ghost3.cyclingEnabled = true;
+                        ghost3.ResetToState(1);
+                    }
+                }
+            }
             candyBubbleR = null;
             candyBubbleAnimationR.visible = false;
+            if (isCandyInGhostBubbleAnimationRightLoaded)
+            {
+                candyGhostBubbleAnimationR.visible = false;
+            }
             PopBubbleAtXY(candyR.x, candyR.y);
         }
 
@@ -195,6 +250,42 @@ namespace CutTheRope.GameMain
                     spike.RotateSpikes();
                 }
             }
+        }
+
+        private void EnableGhostCycleForBubble(GameObject bubbleObj)
+        {
+            if (bubbleObj is not Bubble bubble || ghosts == null)
+            {
+                return;
+            }
+            foreach (object obj in ghosts)
+            {
+                Ghost ghost = (Ghost)obj;
+                if (ghost != null && ghost.bubble == bubble)
+                {
+                    ghost.cyclingEnabled = true;
+                    ghost.ResetToState(1);
+                }
+            }
+        }
+
+        private bool DisableGhostCycleForBubble(GameObject bubbleObj)
+        {
+            if (bubbleObj is not Bubble bubble || ghosts == null)
+            {
+                return false;
+            }
+            bool affected = false;
+            foreach (object obj in ghosts)
+            {
+                Ghost ghost = (Ghost)obj;
+                if (ghost != null && ghost.bubble == bubble)
+                {
+                    ghost.cyclingEnabled = false;
+                    affected = true;
+                }
+            }
+            return affected;
         }
     }
 }

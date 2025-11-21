@@ -36,7 +36,8 @@ namespace CutTheRope.GameMain
             };
             _ = AddChild(staticAniPool);
             camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
-            int textureResID = 104 + (cTRRootController.GetPack() * 2);
+            int[] packResources = PackConfig.GetPackResources(cTRRootController.GetPack());
+            int textureResID = packResources.Length > 0 ? packResources[0] : 104 + (cTRRootController.GetPack() * 2);
             back = new TileMap().InitWithRowsColumns(1, 1);
             back.SetRepeatHorizontally(TileMap.Repeat.NONE);
             back.SetRepeatVertically(TileMap.Repeat.ALL);

@@ -1,0 +1,18 @@
+<map>
+<layer name="settings">
+<map width="320" height="480" gridSize="32" />
+<gameDesign special="1" twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<target x="160" y="40" />
+<candy x="160" y="352" />
+<ghost x="162" y="275" bouncer="true" bubble="true" grab="false" radius="50" angle="0" />
+<star x="290" y="215" path="-120,0" moveSpeed="40" timeout="-1" />
+<star x="160" y="470" path=" 0,-180" moveSpeed="20" timeout="-1" />
+<star x="30" y="215" path="120,0" moveSpeed="40" timeout="-1" />
+<bouncer2 x="160" y="382" angle="0" size="2" />
+<spike3 x="-20" y="315" angle="0" size="3" path="360,0" moveSpeed="40" toggled="false" />
+<spike3 x="340" y="330" angle="0" size="3" path="-360,0" moveSpeed="40" toggled="false" />
+<hiddenElement x="257" y="417" radius="30" />
+</layer>
+</map>
