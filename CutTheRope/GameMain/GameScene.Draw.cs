@@ -108,6 +108,10 @@ namespace CutTheRope.GameMain
                 sock.Draw();
                 sock.y += 85f;
             }
+            foreach (SteamTube steamTube in tubes)
+            {
+                steamTube?.DrawBack();
+            }
 
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (ghosts != null)
@@ -159,6 +163,10 @@ namespace CutTheRope.GameMain
                     candyR.y = starR.pos.y;
                     candyR.Draw();
                 }
+            }
+            foreach (SteamTube steamTube2 in tubes)
+            {
+                steamTube2?.DrawFront();
             }
             foreach (object obj14 in bungees)
             {
