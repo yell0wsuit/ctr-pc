@@ -17,12 +17,12 @@ The project is currently led by [yell0wsuit](https://github.com/yell0wsuit).
 
 ## Download
 
-We will publish a stable version on GitHub Releases soon.
+A stable release will be available on GitHub Releases soon. Stay tuned!
 
 ## Features
 
-- New Spooky Box, ported from the Windows Phone version. More boxes coming soon (until Lantern Box pack).
-- Dynamic level UI count (currenly only less than 25 levels are supported)
+- New **Spooky Box**, ported from the Windows Phone version. More boxes coming soon (up to Lantern Box).
+- **Dynamic level UI**, supports variable numbers of levels. Currently the code only support less than 25 levels.
 - Support loading custom sprites and animations from [TexturePacker](https://www.codeandweb.com/texturepacker) in JSON array format. This allows easier modding and adding new assets.
 
 ## Goals
@@ -30,10 +30,10 @@ We will publish a stable version on GitHub Releases soon.
 ### Short-term goals
 
 - [ ] **Add more boxes**, up to Lantern Box pack.
-  - Latter box packs beyond Lantern will not be ported and/or considered.
+  - Later packs are **not** planned.
 - [ ] **Cross-platform support**: Switch to cross-platform building.
-  - This might be on hold because MonoGame's DesktopGL (OpenGL), a cross-platform renderer, is going to be deprecated in favor of DesktopVK (Vulkan).
-- [ ] **Video player**: Implement video to play cutscene for intro and outro. LibVLCSharp is a candidate.
+  - This might be on hold due to MonoGame DesktopGL → DesktopVK (Vulkan) transition.
+- [ ] **Video player**: Implement video player for intro and outro cutscenes, likely via LibVLCSharp.
 
 ### Long-term goals
 
@@ -66,9 +66,9 @@ To test the game during the development process, follow these steps:
 3. Run the following commands:
 
    ```bash
-   # Compile to binary build to run the program
+   # Build the executable
    dotnet build
 
-   # Code formatting to make it compilant to .NET code standards
+   # Format code according to .NET standards
    dotnet format
    ```
