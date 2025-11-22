@@ -271,11 +271,6 @@ namespace CutTheRope.GameMain
         }
 
         private float heightScale = 1f;
-
-        private const int STEAM_TUBE_TOUCH_RADIUS = 30;
-
-        private const double PUFF_LIFETIME = 0.6;
-
         public int steamState;
 
         private DelayedDispatcher dd;

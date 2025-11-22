@@ -90,18 +90,9 @@ namespace CutTheRope.GameMain
                     if (tube.rotation == 0f)
                     {
                         float num7 = tube.x - vector3.x;
-                        if (ABS(num7) > num3 / 4f)
-                        {
-                            num6 = (0f - vector4.x) / num + (0.25f * num7);
-                        }
-                        else if (ABS(vector4.x) < 1f)
-                        {
-                            num6 = 0f - vector4.x;
-                        }
-                        else
-                        {
-                            num6 = (0f - vector4.x) / num;
-                        }
+                        num6 = ABS(num7) > num3 / 4f
+                            ? ((0f - vector4.x) / num) + (0.25f * num7)
+                            : ABS(vector4.x) < 1f ? 0f - vector4.x : (0f - vector4.x) / num;
                     }
                     float num8 = -32f / star.weight * MathF.Sqrt(tubeScale);
                     if (tube.rotation != 0f)
@@ -116,7 +107,7 @@ namespace CutTheRope.GameMain
                             num8 /= 4f;
                         }
                     }
-                    Vector vector5 = Vect(num6, (0f - vector4.y) / num + num8);
+                    Vector vector5 = Vect(num6, ((0f - vector4.y) / num) + num8);
                     float num9 = tube.y - vector3.y;
                     if (num9 > currentHeightModulated + num5)
                     {
@@ -143,18 +134,9 @@ namespace CutTheRope.GameMain
                     if (tube.rotation == 0f)
                     {
                         float num11 = tube.x - vector6.x;
-                        if (ABS(num11) > num3 / 4f)
-                        {
-                            num10 = (0f - vector7.x) / num + (0.25f * num11);
-                        }
-                        else if (ABS(vector7.x) < 1f)
-                        {
-                            num10 = 0f - vector7.x;
-                        }
-                        else
-                        {
-                            num10 = (0f - vector7.x) / num;
-                        }
+                        num10 = ABS(num11) > num3 / 4f
+                            ? ((0f - vector7.x) / num) + (0.25f * num11)
+                            : ABS(vector7.x) < 1f ? 0f - vector7.x : (0f - vector7.x) / num;
                     }
                     float num12 = -32f / starL.weight * MathF.Sqrt(tubeScale);
                     if (tube.rotation != 0f)
@@ -169,7 +151,7 @@ namespace CutTheRope.GameMain
                             num12 /= 4f;
                         }
                     }
-                    Vector vector8 = Vect(num10, (0f - vector7.y) / num + num12);
+                    Vector vector8 = Vect(num10, ((0f - vector7.y) / num) + num12);
                     float num13 = tube.y - vector6.y;
                     if (num13 > currentHeightModulated + num5)
                     {
@@ -192,18 +174,9 @@ namespace CutTheRope.GameMain
                     if (tube.rotation == 0f)
                     {
                         float num15 = tube.x - vector6.x;
-                        if (ABS(num15) > num3 / 4f)
-                        {
-                            num14 = (0f - vector7.x) / num + (0.25f * num15);
-                        }
-                        else if (ABS(vector7.x) < 1f)
-                        {
-                            num14 = 0f - vector7.x;
-                        }
-                        else
-                        {
-                            num14 = (0f - vector7.x) / num;
-                        }
+                        num14 = ABS(num15) > num3 / 4f
+                            ? ((0f - vector7.x) / num) + (0.25f * num15)
+                            : ABS(vector7.x) < 1f ? 0f - vector7.x : (0f - vector7.x) / num;
                     }
                     float num16 = -32f / starR.weight * MathF.Sqrt(tubeScale);
                     if (tube.rotation != 0f)
@@ -218,7 +191,7 @@ namespace CutTheRope.GameMain
                             num16 /= 4f;
                         }
                     }
-                    Vector vector9 = Vect(num14, (0f - vector7.y) / num + num16);
+                    Vector vector9 = Vect(num14, ((0f - vector7.y) / num) + num16);
                     float num17 = tube.y - vector6.y;
                     if (num17 > currentHeightModulated + num5)
                     {
