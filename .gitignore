@@ -61,3 +61,4 @@ obj/*
 .DS_Store
 
 buildtools/*
+content/sounds/*.xnb

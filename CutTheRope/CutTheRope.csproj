@@ -43,7 +43,6 @@
     <None Remove="..\content\bin\**\*.*" />
     <None Remove="..\content\obj\**\*.*" />
     <None Remove ="..\content\**\*.png" />
-    <None Remove ="..\content\sounds\*.xnb" />
     <None Remove ="..\content\sounds\sfx\*.wav" />
   </ItemGroup>
   <ItemGroup>
