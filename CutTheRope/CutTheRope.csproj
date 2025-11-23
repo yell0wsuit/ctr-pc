@@ -43,6 +43,7 @@
     <None Remove="..\content\bin\**\*.*" />
     <None Remove="..\content\obj\**\*.*" />
     <None Remove ="..\content\**\*.png" />
+    <None Remove ="..\content\sounds\*.xnb" />
     <None Remove ="..\content\sounds\sfx\*.wav" />
   </ItemGroup>
   <ItemGroup>
@@ -51,5 +52,16 @@
   <Target Name="RestoreDotnetTools" BeforeTargets="CollectPackageReferences">
     <Message Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)" Importance="High" />
     <Exec Command="dotnet tool restore" />
+  </Target>
+  <Target Name="MyPreBuildTarget" BeforeTargets="Build">
+    <Exec Command="cd ..
+      cd buildtools
+      XNBVerter ../content/sounds/game_music.wav -output_type song
+      XNBVerter ../content/sounds/game_music2.wav -output_type song
+      XNBVerter ../content/sounds/game_music3.wav -output_type song
+      XNBVerter ../content/sounds/game_music4.wav -output_type song
+      XNBVerter ../content/sounds/game_music5.wav -output_type song
+      XNBVerter ../content/sounds/menu_music.wav -output_type song
+    " />
   </Target>
 </Project>
