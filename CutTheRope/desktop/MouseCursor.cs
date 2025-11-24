@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,15 +27,9 @@ namespace CutTheRope.Desktop
 
         public void Load(ContentManager cm)
         {
-            _cursorTexture = cm.Load<Texture2D>("cursor64");
-            _cursorActiveTexture = cm.Load<Texture2D>("cursor_active64");
-            _cursor32 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor32"), 0, 0);
-            _cursor48 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor48"), 0, 0);
-            _cursor64 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor64"), 0, 0);
-            _cursorActive32 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor_active32"), 0, 0);
-            _cursorActive48 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor_active48"), 0, 0);
-            _cursorActive64 = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(cm.Load<Texture2D>("cursor_active64"), 0, 0);
-            _cursorBlank = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(new(Global.GraphicsDevice, 32, 32), 0, 0);
+            _cursorTexture = cm.Load<Texture2D>("cursor");
+            _cursorActiveTexture = cm.Load<Texture2D>("cursor_active");
+            _cursorTextureArray = [_cursorTexture, _cursorActiveTexture];
         }
 
         public void Draw()
@@ -45,42 +40,51 @@ namespace CutTheRope.Desktop
                 {
                     return;
                 }
+                if (Global.XnaGame.UseNativeMouse)
+                {
+                    Global.XnaGame.IsMouseVisible = true;
+                }
+                Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
+                float gameWidth = FrameworkTypes.SCREEN_WIDTH / scaledViewRect.Width;
+                float gameHeight = FrameworkTypes.SCREEN_HEIGHT / scaledViewRect.Height;
+                if (scaledViewRect != previousScaledViewRect)
+                {
+                    _cursorArray.Clear();
+                    for (int i = 0; i < _cursorTextureArray.Count; i++)
+                    {
+                        Texture2D mouseTexture = _cursorTextureArray[i];
+                        RenderTarget2D renderTarget = new RenderTarget2D(Global.GraphicsDevice, 64, 64, false, SurfaceFormat.Color, DepthFormat.None);
+                        Global.GraphicsDevice.SetRenderTarget(renderTarget);
+                        Global.GraphicsDevice.Clear(Color.Transparent);
+                        SpriteBatch mouseSpriteBatch = new SpriteBatch(Global.GraphicsDevice);
+                        mouseSpriteBatch.Begin();
+                        mouseSpriteBatch.Draw(mouseTexture, new Rectangle(0, 0, (int)((double)(mouseTexture.Width / gameWidth) * 1), (int)((double)(mouseTexture.Height / gameHeight) * 1)), Color.White); // Make the max size 64x64.
+                        mouseSpriteBatch.End();
+                        Global.GraphicsDevice.SetRenderTarget(null);
+                        Texture2D newTexture = new Texture2D(Global.GraphicsDevice, 64, 64);
+                        Color[] data = new Color[64 * 64];
+                        renderTarget.GetData(data);
+                        newTexture.SetData(data);
+                        renderTarget.Dispose();
+                        _cursorArray.Add(Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(newTexture, 0, 0));
+                    }
+                }
                 if (Global.XnaGame.IsMouseVisible)
                 {
-                    Microsoft.Xna.Framework.Input.MouseCursor _cursor = _cursor64;
-                    Microsoft.Xna.Framework.Input.MouseCursor _cursorActive = _cursorActive64;
-                    switch (Global.ScreenSizeManager.ScaledViewRect.Width)
-                    {
-                        case <= 1600:
-                            _cursor = _cursor32;
-                            _cursorActive = _cursorActive32;
-                            break;
-                        case > 1600 and <= 2240:
-                            _cursor = _cursor48;
-                            _cursorActive = _cursorActive48;
-                            break;
-                        default:
-                            break;
-                    }
-                    Mouse.SetCursor(_mouseStateTranformed.LeftButton == ButtonState.Pressed ? _cursorActive : _cursor);
+                    Mouse.SetCursor(_mouseStateTranformed.LeftButton == ButtonState.Pressed ? _cursorArray[1] : _cursorArray[0]);
                 }
                 else
                 {
-                    Texture2D texture2D = _mouseStateTranformed.LeftButton == ButtonState.Pressed ? _cursorActiveTexture : _cursorTexture;
-                    Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-                    float num = FrameworkTypes.SCREEN_WIDTH / scaledViewRect.Width;
-                    float num2 = FrameworkTypes.SCREEN_HEIGHT / scaledViewRect.Height;
+                    Texture2D mouseTexture = _mouseStateTranformed.LeftButton == ButtonState.Pressed ? _cursorTextureArray[1] : _cursorTextureArray[0];
                     Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                    Global.SpriteBatch.Draw(texture2D, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)(texture2D.Width / num) * 1), (int)((double)(texture2D.Height / num2) * 1)), Color.White);
+                    Global.SpriteBatch.Draw(mouseTexture, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)(mouseTexture.Width / gameWidth) * 1), (int)((double)(mouseTexture.Height / gameHeight) * 1)), Color.White);
                     Global.SpriteBatch.End();
                 }
+                previousScaledViewRect = scaledViewRect;
             }
             else
             {
-                if (Global.XnaGame.IsMouseVisible)
-                {
-                    Mouse.SetCursor(_cursorBlank);
-                }
+                Global.XnaGame.IsMouseVisible = false;
             }
         }
 
@@ -140,19 +144,9 @@ namespace CutTheRope.Desktop
 
         private Texture2D _cursorActiveTexture;
 
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursor32;
+        private List<Microsoft.Xna.Framework.Input.MouseCursor> _cursorArray = new List<Microsoft.Xna.Framework.Input.MouseCursor>();
 
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursor48;
-
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursor64;
-
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursorActive32;
-
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursorActive48;
-
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursorActive64;
-
-        private Microsoft.Xna.Framework.Input.MouseCursor _cursorBlank;
+        private List<Texture2D> _cursorTextureArray;
 
         private MouseState _mouseStateTranformed;
 
@@ -161,5 +155,7 @@ namespace CutTheRope.Desktop
         private int _touchID;
 
         private bool _enabled;
+
+        private Rectangle previousScaledViewRect;
     }
 }
