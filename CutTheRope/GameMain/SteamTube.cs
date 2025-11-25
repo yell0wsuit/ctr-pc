@@ -35,7 +35,7 @@ namespace CutTheRope.GameMain
             _ = AddChild(tube);
             valve = Image.Image_createWithResIDQuad(184, 1);
             valve.x = position.x;
-            valve.y = position.y + 27f;
+            valve.y = position.y + 87f;
             valve.anchor = 18;
             _ = AddChild(valve);
             _ = AddChild(steamBack);
@@ -102,7 +102,7 @@ namespace CutTheRope.GameMain
 
         public override bool OnTouchDownXY(float tx, float ty)
         {
-            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f), DEGREES_TO_RADIANS(rotation)));
+            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 87f), DEGREES_TO_RADIANS(rotation)));
             float num = VectLength(VectSub(Vect(tx, ty), vector));
             if (num < 30f)
             {
