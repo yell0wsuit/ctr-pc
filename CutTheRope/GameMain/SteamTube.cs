@@ -100,7 +100,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
-        public bool OnTouchDownXY(float tx, float ty)
+        public override bool OnTouchDownXY(float tx, float ty)
         {
             Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f), DEGREES_TO_RADIANS(rotation)));
             float num = VectLength(VectSub(Vect(tx, ty), vector));
