@@ -9,7 +9,7 @@ namespace CutTheRope.GameMain
         {
             base.InitParticle(ref particle);
             angle += 360f / totalParticles;
-            int num = RND_RANGE(2, 4);
+            int num = RND_RANGE(4, 6);
             Quad2D quad = imageGrid.texture.quads[num];
             Quad3D quad3D = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             drawer.SetTextureQuadatVertexQuadatIndex(quad, quad3D, particleCount);
