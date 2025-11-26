@@ -59,6 +59,3 @@ obj/*
 .claude/*
 
 .DS_Store
-
-buildtools/*
-content/sounds/*.xnb
