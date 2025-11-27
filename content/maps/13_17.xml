@@ -1,0 +1,22 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign twoParts="true" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<target x="157" y="64" />
+<candyL x="109" y="367" />
+<candyR x="225" y="363" />
+<steamTube x="104" y="421" angle="0" />
+<steamTube x="216" y="420" angle="0" />
+<star x="161" y="388" timeout="-1" />
+<star x="32" y="385" timeout="-1" />
+<star x="285" y="383" timeout="-1" />
+<pump x="38" y="268" angle="0" />
+<pump x="286" y="263" angle="180" />
+<grab x="96" y="116" length="270" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="R" hidePath="false" />
+<grab x="227" y="114" length="270" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<bubble x="160" y="388" />
+<hiddenElement x="287" y="115" radius="30" />
+</layer>
+</map>

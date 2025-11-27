@@ -1,0 +1,24 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<target x="256" y="133" />
+<candy x="116" y="163" />
+<spike3 x="87" y="74" angle="0" size="3" path="0,150,150,150,150,0,0,0," moveSpeed="20" toggled="false" />
+<spike3 x="16" y="144" angle="90" size="3" path="0,150,150,150,150,0,0,0," moveSpeed="20" toggled="false" />
+<spike3 x="153" y="143" angle="90" size="3" path="0,150,150,150,150,0,0,0," moveSpeed="20" toggled="false" />
+<steamTube x="114" y="420" angle="0" />
+<spike1 x="47" y="215" angle="0" size="1" path="0,150,150,150,150,0,0,0," moveSpeed="20" toggled="false" />
+<star x="112" y="296" timeout="-1" />
+<star x="184" y="240" timeout="-1" />
+<star x="256" y="189" timeout="-1" />
+<steamTube x="42" y="313" angle=" 90" />
+<grab x="116" y="52" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+<bouncer1 x="117" y="213" angle="0" size="1" path="0,150,150,150,150,0,0,0," moveSpeed="20" />
+<steamTube x="238" y="420" angle="0" />
+<steamTube x="178" y="421" angle="0" />
+<hiddenElement x="45" y="191" radius="30" />
+</layer>
+</map>

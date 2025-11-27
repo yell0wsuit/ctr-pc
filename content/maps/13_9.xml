@@ -1,0 +1,21 @@
+<map>
+<layer name="settings">
+<map width="640" height="480" gridSize="32" />
+<gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<target x="555" y="222" />
+<candy x="75" y="311" />
+<grab x="206" y="185" length="125" wheel="false" gun="false" kickable="false" kicked="false" radius="130" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="true" helicopter="false" part="L" hidePath="false" />
+<steamTube x="74" y="401" angle="0" />
+<grab x="76" y="40" length="350" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="true" helicopter="false" part="L" hidePath="false" />
+<steamTube x="347" y="408" angle="0" />
+<steamTube x="553" y="405" angle="0" />
+<grab x="438" y="218" length="95" wheel="false" gun="false" kickable="false" kicked="false" radius="90" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="true" helicopter="false" part="L" hidePath="false" />
+<star x="77" y="210" timeout="-1" />
+<star x="345" y="242" timeout="-1" />
+<star x="553" y="266" timeout="-1" />
+<hidden03 x="567" y="85" drawing="17" />
+<hiddenElement x="345" y="68" radius="30" />
+</layer>
+</map>

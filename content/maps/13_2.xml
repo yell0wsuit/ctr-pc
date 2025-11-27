@@ -1,0 +1,18 @@
+<map>
+<layer name="settings">
+<map gridSize="32" width="320" height="480" />
+<gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+</layer>
+<layer name="Objects">
+<target x="259" y="62" />
+<candy x="160" y="342" />
+<steamTube x="161" y="401" angle="0" />
+<bubble x="159" y="226" />
+<star x="224" y="159" path="-150,0" moveSpeed="60" timeout="-1" />
+<star x="85" y="286" path="150,0" moveSpeed="60" timeout="-1" />
+<steamTube x="160" y="86" angle=" 180" />
+<steamTube x="55" y="231" angle=" 90" />
+<star x="161" y="229" timeout="-1" />
+<hiddenElement x="273" y="432" radius="30" />
+</layer>
+</map>
