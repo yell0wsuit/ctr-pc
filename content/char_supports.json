@@ -101,8 +101,8 @@
             "frame": { "x": 1016, "y": 656, "w": 332, "h": 232 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 94, "y": 225, "w": 332, "h": 232 },
-            "sourceSize": { "w": 512, "h": 512 }
+            "spriteSourceSize": { "x": 158, "y": 289, "w": 332, "h": 232 },
+            "sourceSize": { "w": 640, "h": 640 }
         }
     ],
     "meta": {
@@ -112,6 +112,6 @@
         "format": "RGBA8888",
         "size": { "w": 1823, "h": 909 },
         "scale": "1",
-        "smartupdate": "$TexturePacker:SmartUpdate:da2c4ed49d6a41613de524c96ff66c9d:f78ca73236070f68ade3c925c0507244:6e6f5b8b9c178eeab957853f6eb54e4b$"
+        "smartupdate": "$TexturePacker:SmartUpdate:d6395248f2b3fbb58a7534d2848f5eb1:ed94721bc89eca4e7a40cb1fc857d97c:6e6f5b8b9c178eeab957853f6eb54e4b$"
     }
 }
