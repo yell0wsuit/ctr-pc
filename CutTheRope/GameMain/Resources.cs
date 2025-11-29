@@ -372,7 +372,7 @@ namespace CutTheRope.GameMain
             public const string TeleportXmas = "teleport_xmas";
             public const string SteamStart = "steam_start";
             public const string SteamStart2 = "steam_start2";
-            public const string SteamEnd = "stem_end";
+            public const string SteamEnd = "steam_end";
         }
 
         /// <summary>
