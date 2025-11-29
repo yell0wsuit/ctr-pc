@@ -344,6 +344,19 @@ ta progression ?</fr>
     <nl>Spookachtig</nl>
     <br>Fantasma</br>
   </string>
+  <string name="BOX13_LABEL">
+    <en>Steam Box</en>
+    <ru>Паровая</ru>
+    <fr>Boîte à vapeur</fr>
+    <de>Dampfbox</de>
+    <ko>증기 상자</ko>
+    <zh>蒸汽盒</zh>
+    <ja>スチームの箱</ja>
+    <es>Caja de vapor</es>
+    <it>Vapore</it>
+    <nl>Stoomkast</nl>
+    <br>Vaporeira</br>
+  </string>
   <string name="BOX_SOON_LABEL">
     <en>New levels coming soon!</en>
     <ru>Новые уровни на подходе!</ru>

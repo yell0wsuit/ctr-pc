@@ -28,12 +28,12 @@ namespace CutTheRope.GameMain
             anchor = 18;
             steamBack = new BaseElement();
             steamFront = new BaseElement();
-            tube = Image.Image_createWithResIDQuad(184, 0);
+            tube = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 0);
             tube.x = position.x;
             tube.y = position.y;
             tube.anchor = 10;
             _ = AddChild(tube);
-            valve = Image.Image_createWithResIDQuad(184, 1);
+            valve = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 1);
             valve.x = position.x;
             valve.y = position.y + 87f;
             valve.anchor = 18;
@@ -112,17 +112,17 @@ namespace CutTheRope.GameMain
                     case 0:
                         steamState++;
                         num2 = 0;
-                        CTRSoundMgr.PlaySound(186);
+                        CTRSoundMgr.PlaySound(Resources.Snd.SteamStart2);
                         break;
                     case 1:
                         steamState++;
                         num2 = 0;
-                        CTRSoundMgr.PlaySound(185);
+                        CTRSoundMgr.PlaySound(Resources.Snd.SteamStart);
                         break;
                     case 2:
                         steamState = 0;
                         num2 = 1;
-                        CTRSoundMgr.PlaySound(187);
+                        CTRSoundMgr.PlaySound(Resources.Snd.SteamEnd);
                         break;
                     default:
                         break;
@@ -239,7 +239,7 @@ namespace CutTheRope.GameMain
                     {
                         num7 *= -steamState;
                     }
-                    Animation animation = Animation.Animation_createWithResID(184);
+                    Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjPipe);
                     animation.DoRestoreCutTransparency();
                     _ = animation.AddAnimationDelayLoopFirstLast(num5, Timeline.LoopType.TIMELINE_REPLAY, num2, num3);
                     animation.anchor = animation.parentAnchor = 18;

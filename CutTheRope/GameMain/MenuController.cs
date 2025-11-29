@@ -759,6 +759,7 @@ namespace CutTheRope.GameMain
                     9 => STR_MENU_BOX10_LABEL,
                     10 => STR_MENU_BOX11_LABEL,
                     11 => STR_MENU_BOX12_LABEL,
+                    12 => STR_MENU_BOX13_LABEL,
                     _ => STR_MENU_BOX1_LABEL,
                 };
                 string @string = Application.GetString(boxLabelId);

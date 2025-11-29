@@ -257,6 +257,9 @@ namespace CutTheRope.GameMain
             public const string MenuBgrXmas = "menu_xmas_pc";
             public const string MenuBgrXmasSecondary = "menu_xmas_secondary_pc";
             public const string MenuLogoXmasHat = "xmas_hat_logo";
+            public const string Bgr13Cover = "bgr_13_cover";
+            public const string Bgr13P1 = "bgr_13_p1";
+            public const string ObjPipe = "obj_pipe";
         }
 
         /// <summary>
@@ -366,6 +369,9 @@ namespace CutTheRope.GameMain
             public const string MenuMusicXmas = "menu_music_xmas";
             public const string GameMusicXmas = "game_music_xmas";
             public const string TeleportXmas = "teleport_xmas";
+            public const string SteamStart = "steam_start";
+            public const string SteamStart2 = "steam_start2";
+            public const string SteamEnd = "stem_end";
         }
 
         /// <summary>
