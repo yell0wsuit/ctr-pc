@@ -2,7 +2,7 @@ namespace CutTheRope.Framework.Visual
 {
     internal sealed class ToggleButton : BaseElement, IButtonDelegation
     {
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(ButtonId n)
         {
             if (n <= 1)
             {
@@ -11,7 +11,7 @@ namespace CutTheRope.Framework.Visual
             delegateButtonDelegate?.OnButtonPressed(buttonID);
         }
 
-        public ToggleButton InitWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, int bid)
+        public ToggleButton InitWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, ButtonId bid)
         {
             buttonID = bid;
             b1 = new Button().InitWithUpElementDownElementandID(u1, d1, 0);
@@ -51,7 +51,7 @@ namespace CutTheRope.Framework.Visual
 
         public IButtonDelegation delegateButtonDelegate;
 
-        private int buttonID;
+        private ButtonId buttonID;
 
         private Button b1;
 

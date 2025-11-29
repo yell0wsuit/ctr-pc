@@ -7,19 +7,14 @@ namespace CutTheRope.GameMain
     {
         public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
-            int textureResID = -1;
-            if (w != 1)
+            string textureResourceName = w switch
             {
-                if (w == 2)
-                {
-                    textureResID = 87;
-                }
-            }
-            else
-            {
-                textureResID = 86;
-            }
-            if (InitWithTexture(Application.GetTexture(textureResID)) == null)
+                SmallBouncerWidth => Resources.Img.ObjBouncer01,
+                LargeBouncerWidth => Resources.Img.ObjBouncer02,
+                _ => null
+            };
+
+            if (textureResourceName == null || InitWithTexture(Application.GetTexture(textureResourceName)) == null)
             {
                 return null;
             }
@@ -67,5 +62,9 @@ namespace CutTheRope.GameMain
         public Vector b2;
 
         public bool skip;
+
+        private const int SmallBouncerWidth = 1;
+
+        private const int LargeBouncerWidth = 2;
     }
 }

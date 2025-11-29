@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
@@ -9,7 +11,12 @@ namespace CutTheRope.GameMain
     {
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
-            return CharAnimations_create(Application.GetTexture(r));
+            return CharAnimations_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+        }
+
+        public static CharAnimations CharAnimations_createWithResID(string resourceName)
+        {
+            return CharAnimations_create(Application.GetTexture(resourceName));
         }
 
         private static CharAnimations CharAnimations_create(CTRTexture2D t)
@@ -19,16 +26,26 @@ namespace CutTheRope.GameMain
             return charAnimations;
         }
 
-        public void AddImage(int resId)
+        public void AddImage(string resourceName)
         {
             animations ??= new DynamicArray<Animation>();
-            CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resId);
+            animationNameToIndex ??= [];
+
+            CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resourceName);
             charAnimation.parentAnchor = charAnimation.anchor = 9;
             charAnimation.DoRestoreCutTransparency();
-            int i = resId - 101;
-            animations.SetObjectAt(charAnimation, i);
+
+            int index = nextAnimationIndex++;
+            animations.SetObjectAt(charAnimation, index);
+            animationNameToIndex[resourceName] = index;
             _ = AddChild(charAnimation);
             charAnimation.SetEnabled(false);
+        }
+
+        public void AddImage(int resId)
+        {
+            string resourceName = ResourceNameTranslator.TranslateLegacyId(resId);
+            AddImage(resourceName);
         }
 
         protected override void Dispose(bool disposing)
@@ -44,6 +61,8 @@ namespace CutTheRope.GameMain
                     animations.RemoveAllObjects();
                     animations = null;
                 }
+                animationNameToIndex?.Clear();
+                animationNameToIndex = null;
             }
             base.Dispose(disposing);
         }
@@ -104,5 +123,7 @@ namespace CutTheRope.GameMain
         }
 
         private DynamicArray<Animation> animations;
+        private Dictionary<string, int> animationNameToIndex;
+        private int nextAnimationIndex;
     }
 }

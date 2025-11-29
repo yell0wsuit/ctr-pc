@@ -14,37 +14,37 @@ namespace CutTheRope.GameMain
         {
             containedObjects = new DynamicArray<GameObject>();
             soundPlaying = -1;
-            vinilStickerL = Image.Image_createWithResIDQuad(103, 2);
+            vinilStickerL = Image.Image_createWithResIDQuad(VinylTexture, 2);
             vinilStickerL.anchor = 20;
             vinilStickerL.parentAnchor = 18;
             vinilStickerL.rotationCenterX = vinilStickerL.width / 2f;
-            vinilStickerR = Image.Image_createWithResIDQuad(103, 2);
+            vinilStickerR = Image.Image_createWithResIDQuad(VinylTexture, 2);
             vinilStickerR.scaleX = -1f;
             vinilStickerR.anchor = 20;
             vinilStickerR.parentAnchor = 18;
             vinilStickerR.rotationCenterX = vinilStickerR.width / 2f;
-            vinilCenter = Image.Image_createWithResIDQuad(103, 3);
+            vinilCenter = Image.Image_createWithResIDQuad(VinylTexture, 3);
             vinilCenter.anchor = 18;
-            vinilHighlightL = Image.Image_createWithResIDQuad(103, 1);
+            vinilHighlightL = Image.Image_createWithResIDQuad(VinylTexture, 1);
             vinilHighlightL.anchor = 12;
-            vinilHighlightR = Image.Image_createWithResIDQuad(103, 1);
+            vinilHighlightR = Image.Image_createWithResIDQuad(VinylTexture, 1);
             vinilHighlightR.scaleX = -1f;
             vinilHighlightR.anchor = 9;
-            vinilControllerL = Image.Image_createWithResIDQuad(103, 5);
+            vinilControllerL = Image.Image_createWithResIDQuad(VinylTexture, 5);
             vinilControllerL.anchor = 18;
             vinilControllerL.rotation = 90f;
-            vinilControllerR = Image.Image_createWithResIDQuad(103, 5);
+            vinilControllerR = Image.Image_createWithResIDQuad(VinylTexture, 5);
             vinilControllerR.anchor = 18;
             vinilControllerR.rotation = -90f;
-            vinilActiveControllerL = Image.Image_createWithResIDQuad(103, 4);
+            vinilActiveControllerL = Image.Image_createWithResIDQuad(VinylTexture, 4);
             vinilActiveControllerL.anchor = vinilControllerL.anchor;
             vinilActiveControllerL.rotation = vinilControllerL.rotation;
             vinilActiveControllerL.visible = false;
-            vinilActiveControllerR = Image.Image_createWithResIDQuad(103, 4);
+            vinilActiveControllerR = Image.Image_createWithResIDQuad(VinylTexture, 4);
             vinilActiveControllerR.anchor = vinilControllerR.anchor;
             vinilActiveControllerR.rotation = vinilControllerR.rotation;
             vinilActiveControllerR.visible = false;
-            vinil = Image.Image_createWithResIDQuad(103, 0);
+            vinil = Image.Image_createWithResIDQuad(VinylTexture, 0);
             vinil.anchor = 18;
             passColorToChilds = false;
             _ = AddChild(vinilStickerL);
@@ -298,6 +298,8 @@ namespace CutTheRope.GameMain
         private Image vinilCenter;
 
         private Image vinil;
+
+        private const string VinylTexture = Resources.Img.ObjVinil;
 
         private readonly bool hasOneHandle_;
 

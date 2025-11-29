@@ -1,5 +1,6 @@
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
+using CutTheRope.GameMain;
 
 namespace CutTheRope.Commons
 {
@@ -12,7 +13,8 @@ namespace CutTheRope.Commons
 
         public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
-            if (InitWithTexture(Application.GetTexture(resID)) != null)
+            string resourceName = ResourceNameTranslator.TranslateLegacyId(resID);
+            if (InitWithTexture(Application.GetTexture(resourceName)) != null)
             {
                 SetDrawQuad(bq);
                 Image up = Image_createWithResIDQuad(resID, lq);

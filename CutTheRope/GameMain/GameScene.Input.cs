@@ -279,14 +279,14 @@ namespace CutTheRope.GameMain
                         a = FBOUND_PI(a);
                         rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        int num2 = num > 0f ? 46 : 47;
+                        int num2 = num > 0f ? 1 : 2;
                         if ((double)Math.Abs(num) < 0.07)
                         {
                             num2 = -1;
                         }
                         if (rotatedCircle.soundPlaying != num2 && num2 != -1)
                         {
-                            CTRSoundMgr.PlaySound(num2);
+                            CTRSoundMgr.PlaySound(num2 == 1 ? Resources.Snd.ScratchOut : Resources.Snd.ScratchIn);
                             rotatedCircle.soundPlaying = num2;
                         }
                         for (int j = 0; j < bungees.Count; j++)

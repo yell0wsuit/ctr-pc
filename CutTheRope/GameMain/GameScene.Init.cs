@@ -1,3 +1,6 @@
+using System.IO;
+using System.Linq;
+
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
@@ -10,11 +13,11 @@ namespace CutTheRope.GameMain
     {
         public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
-            Image u = Image.Image_createWithResIDQuad(78, 56);
-            Image d2 = Image.Image_createWithResIDQuad(78, 56);
-            Image u2 = Image.Image_createWithResIDQuad(78, 57);
-            Image d3 = Image.Image_createWithResIDQuad(78, 57);
-            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, 0);
+            Image u = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 56);
+            Image d2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 56);
+            Image u2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
+            Image d3 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, GameSceneButtonId.GravityToggle);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
         }
@@ -36,12 +39,16 @@ namespace CutTheRope.GameMain
             };
             _ = AddChild(staticAniPool);
             camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
-            int[] packResources = PackConfig.GetPackResources(cTRRootController.GetPack());
-            int textureResID = packResources.Length > 0 ? packResources[0] : 104 + (cTRRootController.GetPack() * 2);
+            string[] packResources = PackConfig.GetPackResourceNames(cTRRootController.GetPack());
+            string textureResourceName = packResources.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+            if (string.IsNullOrWhiteSpace(textureResourceName))
+            {
+                throw new InvalidDataException($"packs.xml is missing resourceNames for pack {cTRRootController.GetPack()}.");
+            }
             back = new TileMap().InitWithRowsColumns(1, 1);
             back.SetRepeatHorizontally(TileMap.Repeat.NONE);
             back.SetRepeatVertically(TileMap.Repeat.ALL);
-            back.AddTileQuadwithID(Application.GetTexture(textureResID), 0, 0);
+            back.AddTileQuadwithID(Application.GetTexture(textureResourceName), 0, 0);
             back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
             if (Canvas.isFullscreen)
             {
@@ -51,7 +58,7 @@ namespace CutTheRope.GameMain
             back.scaleY *= 1.25f;
             for (int i = 0; i < 3; i++)
             {
-                hudStar[i] = Animation.Animation_createWithResID(79);
+                hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudStar);
                 hudStar[i].DoRestoreCutTransparency();
                 _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
@@ -109,7 +116,7 @@ namespace CutTheRope.GameMain
 
         public void CreateEarthImageWithOffsetXY(float xs, float ys)
         {
-            Image image = Image.Image_createWithResIDQuad(78, 58);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 58);
             image.anchor = 18;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
@@ -119,7 +126,7 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             image.AddTimelinewithID(timeline, 0);
-            Image.SetElementPositionWithQuadOffset(image, 118, 1);
+            Image.SetElementPositionWithQuadOffset(image, Resources.Img.Bgr08P1, 1);
             if (Canvas.isFullscreen)
             {
                 _ = Global.ScreenSizeManager.ScreenWidth;

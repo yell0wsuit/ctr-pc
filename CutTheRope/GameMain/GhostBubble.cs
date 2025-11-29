@@ -12,12 +12,19 @@ namespace CutTheRope.GameMain
 
         public static GhostBubble CreateWithResID(int resId)
         {
-            return Create(Application.GetTexture(resId));
+            return Create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(resId)));
+        }
+
+        public static GhostBubble CreateWithResIDQuad(string resourceName, int quad)
+        {
+            GhostBubble bubble = Create(Application.GetTexture(resourceName));
+            bubble?.SetDrawQuad(quad);
+            return bubble;
         }
 
         public static GhostBubble CreateWithResIDQuad(int resId, int quad)
         {
-            GhostBubble bubble = Create(Application.GetTexture(resId));
+            GhostBubble bubble = Create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(resId)));
             bubble?.SetDrawQuad(quad);
             return bubble;
         }
@@ -25,7 +32,7 @@ namespace CutTheRope.GameMain
         public void AddSupportingCloudsTimelines()
         {
             // first right cloud
-            backCloud = Image_createWithResIDQuad(180, 6);
+            backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
             backCloud.x = x + 85f;
             backCloud.y = y + 25f;
             backCloud.anchor = 18;
@@ -45,7 +52,7 @@ namespace CutTheRope.GameMain
             backCloud.AddTimelinewithID(timeline, 0);
             backCloud.PlayTimeline(0);
 
-            backCloud2 = Image_createWithResIDQuad(180, 5);
+            backCloud2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
             backCloud2.x = x + 65f;
             backCloud2.y = y + 55f;
             backCloud2.anchor = 18;
@@ -66,7 +73,7 @@ namespace CutTheRope.GameMain
             backCloud2.PlayTimeline(0);
 
             // first left small cloud
-            backCloud3 = Image_createWithResIDQuad(180, 5);
+            backCloud3 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
             backCloud3.x = x - 90f;
             backCloud3.y = y + 15f;
             backCloud3.anchor = 18;
@@ -87,7 +94,7 @@ namespace CutTheRope.GameMain
             backCloud3.PlayTimeline(0);
 
             // second left small cloud
-            Image image = Image_createWithResIDQuad(180, 6);
+            Image image = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
             image.x = x - 75f;
             image.y = y + 45f;
             image.anchor = 18;
@@ -109,7 +116,7 @@ namespace CutTheRope.GameMain
             image.PlayTimeline(0);
 
             // big cloud
-            Image image2 = Image_createWithResIDQuad(180, 2);
+            Image image2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 2);
             image2.x = x - 20f;
             image2.y = y + 75f;
             image2.anchor = 18;

@@ -149,10 +149,10 @@ namespace CutTheRope.GameMain
                                 bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee);
-                                CTRSoundMgr.PlaySound(24);
+                                CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                                 if (grab.mover != null)
                                 {
-                                    CTRSoundMgr.PlaySound(44);
+                                    CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
                                 }
                             }
                             if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
@@ -161,10 +161,10 @@ namespace CutTheRope.GameMain
                                 bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee2);
-                                CTRSoundMgr.PlaySound(24);
+                                CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                                 if (grab.mover != null)
                                 {
-                                    CTRSoundMgr.PlaySound(44);
+                                    CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
                                 }
                             }
                         }
@@ -174,10 +174,10 @@ namespace CutTheRope.GameMain
                             bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
                             grab.hideRadius = true;
                             grab.SetRope(bungee3);
-                            CTRSoundMgr.PlaySound(24);
+                            CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                             if (grab.mover != null)
                             {
-                                CTRSoundMgr.PlaySound(44);
+                                CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
                             }
                         }
                     }
@@ -287,7 +287,7 @@ namespace CutTheRope.GameMain
                 {
                     if (Mover.MoveVariableToTarget(ref partsDist, 0.0, 200.0, (double)delta))
                     {
-                        CTRSoundMgr.PlaySound(40);
+                        CTRSoundMgr.PlaySound(Resources.Snd.CandyLink);
                         twoParts = 2;
                         noCandy = false;
                         noCandyL = true;
@@ -392,7 +392,7 @@ namespace CutTheRope.GameMain
                                 rope2.chosenOne = false;
                             }
                         }
-                        Animation animation = Animation.Animation_createWithResID(63);
+                        Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjCandy01);
                         animation.DoRestoreCutTransparency();
                         animation.x = candy.x;
                         animation.y = candy.y;
@@ -437,7 +437,7 @@ namespace CutTheRope.GameMain
                         candyBlink.PlayTimeline(1);
                         starsCollected++;
                         hudStar[starsCollected - 1].PlayTimeline(0);
-                        Animation animation2 = Animation.Animation_createWithResID(71);
+                        Animation animation2 = Animation.Animation_createWithResID(Resources.Img.ObjStarDisappear);
                         animation2.DoRestoreCutTransparency();
                         animation2.x = star.x;
                         animation2.y = star.y;
@@ -447,7 +447,13 @@ namespace CutTheRope.GameMain
                         animation2.PlayTimeline(0);
                         _ = aniPool.AddChild(animation2);
                         stars.RemoveObject(star);
-                        CTRSoundMgr.PlaySound(25 + starsCollected - 1);
+                        CTRSoundMgr.PlaySound(starsCollected switch
+                        {
+                            1 => Resources.Snd.Star1,
+                            2 => Resources.Snd.Star2,
+                            3 => Resources.Snd.Star3,
+                            _ => Resources.Snd.Star1
+                        });
                         if (target.GetCurrentTimelineIndex() == 0)
                         {
                             target.PlayAnimationtimeline(101, 3);
@@ -489,7 +495,7 @@ namespace CutTheRope.GameMain
                                 candyGhostBubbleAnimationL.visible = false;
                             }
                         }
-                        CTRSoundMgr.PlaySound(13);
+                        CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
                         break;
@@ -519,7 +525,7 @@ namespace CutTheRope.GameMain
                             }
                         }
                         candyBubbleR = bubble3;
-                        CTRSoundMgr.PlaySound(13);
+                        CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
                         break;
@@ -556,7 +562,7 @@ namespace CutTheRope.GameMain
                             candyGhostBubbleAnimation.visible = false;
                         }
                     }
-                    CTRSoundMgr.PlaySound(13);
+                    CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                     bubble3.popped = true;
                     bubble3.RemoveChildWithID(0);
                     break;
@@ -676,7 +682,7 @@ namespace CutTheRope.GameMain
                             targetSock = sock4;
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
-                            CTRSoundMgr.PlaySound(45);
+                            CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1);
                             break;
                         }
@@ -738,7 +744,7 @@ namespace CutTheRope.GameMain
                         {
                             PopCandyBubble(false);
                         }
-                        Image image2 = Image.Image_createWithResID(63);
+                        Image image2 = Image.Image_createWithResID(Resources.Img.ObjCandy01);
                         image2.DoRestoreCutTransparency();
                         CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)
@@ -770,7 +776,7 @@ namespace CutTheRope.GameMain
                         }
                         candyBreak.StartSystem(5);
                         _ = aniPool.AddChild(candyBreak);
-                        CTRSoundMgr.PlaySound(14);
+                        CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
                         ReleaseAllRopes(flag5);
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
@@ -899,7 +905,7 @@ namespace CutTheRope.GameMain
                     {
                         mouthOpen = true;
                         target.PlayTimeline(7);
-                        CTRSoundMgr.PlaySound(17);
+                        CTRSoundMgr.PlaySound(Resources.Snd.MonsterOpen);
                         mouthCloseTimer = 1f;
                     }
                 }
@@ -912,7 +918,7 @@ namespace CutTheRope.GameMain
                         {
                             mouthOpen = false;
                             target.PlayTimeline(8);
-                            CTRSoundMgr.PlaySound(16);
+                            CTRSoundMgr.PlaySound(Resources.Snd.MonsterClose);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {

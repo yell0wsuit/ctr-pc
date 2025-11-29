@@ -1,19 +1,19 @@
 {
     "textures": [
         {
-            "resourceId": 53,
+            "resourceName": "menu_pack_selection2",
             "atlasPath": "menu_pack_selection2.json",
             "useAntialias": true,
             "centerOffsets": false
         },
         {
-            "resourceId": 100,
+            "resourceName": "char_supports",
             "atlasPath": "char_supports.json",
             "useAntialias": true,
             "centerOffsets": false
         },
         {
-            "resourceId": 180,
+            "resourceName": "obj_ghost",
             "atlasPath": "obj_ghost.json",
             "useAntialias": true,
             "frameOrder": [

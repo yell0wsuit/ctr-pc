@@ -130,335 +130,6 @@ namespace CutTheRope.GameMain
             return null;
         }
 
-        public static bool IsSound(int id)
-        {
-            return id switch
-            {
-                9 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 40 or 41 or 42 or 43 or 44 or 45 or 46 or 47 => true,
-                10 => false,
-                _ => id is >= 145 and <= 148,
-            };
-        }
-
-        public static bool IsFont(int id)
-        {
-            return id is 3 or 4 or 68;
-        }
-
-        public const int IMG_DEFAULT = 0;
-
-        public const int IMG_LOADERBAR_FULL = 1;
-
-        public const int IMG_MENU_BUTTON_DEFAULT = 2;
-
-        public const int FNT_BIG_FONT = 3;
-
-        public const int FNT_SMALL_FONT = 4;
-
-        public const int IMG_MENU_LOADING = 5;
-
-        public const int IMG_MENU_NOTIFICATION = 6;
-
-        public const int IMG_MENU_ACHIEVEMENT = 7;
-
-        public const int IMG_MENU_OPTIONS = 8;
-
-        public const int SND_TAP = 9;
-
-        public const int STR_MENU = 10;
-
-        public const int SND_BUTTON = 11;
-
-        public const int SND_BUBBLE_BREAK = 12;
-
-        public const int SND_BUBBLE = 13;
-
-        public const int SND_CANDY_BREAK = 14;
-
-        public const int SND_MONSTER_CHEWING = 15;
-
-        public const int SND_MONSTER_CLOSE = 16;
-
-        public const int SND_MONSTER_OPEN = 17;
-
-        public const int SND_MONSTER_SAD = 18;
-
-        public const int SND_RING = 19;
-
-        public const int SND_ROPE_BLEAK_1 = 20;
-
-        public const int SND_ROPE_BLEAK_2 = 21;
-
-        public const int SND_ROPE_BLEAK_3 = 22;
-
-        public const int SND_ROPE_BLEAK_4 = 23;
-
-        public const int SND_ROPE_GET = 24;
-
-        public const int SND_STAR_1 = 25;
-
-        public const int SND_STAR_2 = 26;
-
-        public const int SND_STAR_3 = 27;
-
-        public const int SND_ELECTRIC = 28;
-
-        public const int SND_PUMP_1 = 29;
-
-        public const int SND_PUMP_2 = 30;
-
-        public const int SND_PUMP_3 = 31;
-
-        public const int SND_PUMP_4 = 32;
-
-        public const int SND_SPIDER_ACTIVATE = 33;
-
-        public const int SND_SPIDER_FALL = 34;
-
-        public const int SND_SPIDER_WIN = 35;
-
-        public const int SND_WHEEL = 36;
-
-        public const int SND_WIN = 37;
-
-        public const int SND_GRAVITY_OFF = 38;
-
-        public const int SND_GRAVITY_ON = 39;
-
-        public const int SND_CANDY_LINK = 40;
-
-        public const int SND_BOUNCER = 41;
-
-        public const int SND_SPIKE_ROTATE_IN = 42;
-
-        public const int SND_SPIKE_ROTATE_OUT = 43;
-
-        public const int SND_BUZZ = 44;
-
-        public const int SND_TELEPORT = 45;
-
-        public const int SND_SCRATCH_IN = 46;
-
-        public const int SND_SCRATCH_OUT = 47;
-
-        public const int IMG_MENU_BGR = 48;
-
-        public const int IMG_MENU_POPUP = 49;
-
-        public const int IMG_MENU_LOGO = 50;
-
-        public const int IMG_MENU_LEVEL_SELECTION = 51;
-
-        public const int IMG_MENU_PACK_SELECTION = 52;
-
-        public const int IMG_MENU_PACK_SELECTION2 = 53;
-
-        public const int IMG_MENU_EXTRA_BUTTONS = 54;
-
-        public const int IMG_MENU_SCROLLBAR = 55;
-
-        public const int IMG_MENU_LEADERBOARD = 56;
-
-        public const int IMG_MENU_PROCESSING = 57;
-
-        public const int IMG_MENU_SCROLLBAR_CHANGENAME = 58;
-
-        public const int IMG_MENU_BUTTON_ACHIV_CUP = 59;
-
-        public const int IMG_MENU_BGR_SHADOW = 60;
-
-        public const int IMG_MENU_BUTTON_SHORT = 61;
-
-        public const int IMG_HUD_BUTTONS = 62;
-
-        public const int IMG_OBJ_CANDY_01 = 63;
-
-        public const int IMG_OBJ_SPIDER = 64;
-
-        public const int IMG_CONFETTI_PARTICLES = 65;
-
-        public const int IMG_MENU_PAUSE = 66;
-
-        public const int IMG_MENU_RESULT = 67;
-
-        public const int FNT_FONT_NUMBERS_BIG = 68;
-
-        public const int IMG_HUD_BUTTONS_EN = 69;
-
-        public const int IMG_MENU_RESULT_EN = 70;
-
-        public const int IMG_OBJ_STAR_DISAPPEAR = 71;
-
-        public const int IMG_OBJ_BUBBLE_FLIGHT = 72;
-
-        public const int IMG_OBJ_BUBBLE_POP = 73;
-
-        public const int IMG_OBJ_HOOK_AUTO = 74;
-
-        public const int IMG_OBJ_BUBBLE_ATTACHED = 75;
-
-        public const int IMG_OBJ_HOOK_01 = 76;
-
-        public const int IMG_OBJ_HOOK_02 = 77;
-
-        public const int IMG_OBJ_STAR_IDLE = 78;
-
-        public const int IMG_HUD_STAR = 79;
-
-        public const int IMG_CHAR_ANIMATIONS = 80;
-
-        public const int IMG_OBJ_HOOK_REGULATED = 81;
-
-        public const int IMG_OBJ_HOOK_MOVABLE = 82;
-
-        public const int IMG_OBJ_PUMP = 83;
-
-        public const int IMG_TUTORIAL_SIGNS = 84;
-
-        public const int IMG_OBJ_SOCKS = 85;
-
-        public const int IMG_OBJ_BOUNCER_01 = 86;
-
-        public const int IMG_OBJ_BOUNCER_02 = 87;
-
-        public const int IMG_OBJ_SPIKES_01 = 88;
-
-        public const int IMG_OBJ_SPIKES_02 = 89;
-
-        public const int IMG_OBJ_SPIKES_03 = 90;
-
-        public const int IMG_OBJ_SPIKES_04 = 91;
-
-        public const int IMG_OBJ_ELECTRODES = 92;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_01 = 93;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_02 = 94;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_03 = 95;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_04 = 96;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_BUTTON = 97;
-
-        public const int IMG_OBJ_BEE_HD = 98;
-
-        public const int IMG_OBJ_POLLEN_HD = 99;
-
-        public const int IMG_CHAR_SUPPORTS = 100;
-
-        public const int IMG_CHAR_ANIMATIONS2 = 101;
-
-        public const int IMG_CHAR_ANIMATIONS3 = 102;
-
-        public const int IMG_OBJ_VINIL = 103;
-
-        public const int IMG_BGR_01_P1 = 104;
-
-        public const int IMG_BGR_01_P2 = 105;
-
-        public const int IMG_BGR_02_P1 = 106;
-
-        public const int IMG_BGR_02_P2 = 107;
-
-        public const int IMG_BGR_03_P1 = 108;
-
-        public const int IMG_BGR_03_P2 = 109;
-
-        public const int IMG_BGR_04_P1 = 110;
-
-        public const int IMG_BGR_04_P2 = 111;
-
-        public const int IMG_BGR_05_P1 = 112;
-
-        public const int IMG_BGR_05_P2 = 113;
-
-        public const int IMG_BGR_06_P1 = 114;
-
-        public const int IMG_BGR_06_P2 = 115;
-
-        public const int IMG_BGR_07_P1 = 116;
-
-        public const int IMG_BGR_07_P2 = 117;
-
-        public const int IMG_BGR_08_P1 = 118;
-
-        public const int IMG_BGR_08_P2 = 119;
-
-        public const int IMG_BGR_09_P1 = 120;
-
-        public const int IMG_BGR_09_P2 = 121;
-
-        public const int IMG_BGR_10_P1 = 122;
-
-        public const int IMG_BGR_10_P2 = 123;
-
-        public const int IMG_BGR_11_P1 = 124;
-
-        public const int IMG_BGR_11_P2 = 125;
-
-        public const int IMG_BGR_12_P1 = 153;
-
-        public const int IMG_BGR_12_P2 = 154;
-
-        public const int IMG_BGR_COVER_01 = 126;
-
-        public const int IMG_BGR_COVER_02 = 127;
-
-        public const int IMG_BGR_COVER_03 = 128;
-
-        public const int IMG_BGR_COVER_04 = 129;
-
-        public const int IMG_BGR_COVER_05 = 130;
-
-        public const int IMG_BGR_COVER_06 = 131;
-
-        public const int IMG_BGR_COVER_07 = 132;
-
-        public const int IMG_BGR_COVER_08 = 133;
-
-        public const int IMG_BGR_COVER_09 = 134;
-
-        public const int IMG_BGR_COVER_10 = 135;
-
-        public const int IMG_BGR_COVER_11 = 136;
-
-        public const int IMG_BGR_COVER_12 = 152;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_FR = 137;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_GR = 138;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_RU = 139;
-
-        public const int IMG_HUD_BUTTONS_RU = 140;
-
-        public const int IMG_HUD_BUTTONS_GR = 141;
-
-        public const int IMG_MENU_RESULT_RU = 142;
-
-        public const int IMG_MENU_RESULT_FR = 143;
-
-        public const int IMG_MENU_RESULT_GR = 144;
-
-        public const int SND_MENU_MUSIC = 145;
-
-        public const int SND_GAME_MUSIC = 146;
-
-        public const int SND_GAME_MUSIC2 = 147;
-
-        public const int SND_GAME_MUSIC3 = 148;
-
-        public const int SND_GAME_MUSIC4 = 150;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_EN = 149;
-
-        public const int RESOURCES_COUNT = 150;
-
-        public const int SOUND_FIRST = 9;
-
-        public const int SOUND_LAST = 47;
-
         internal const int IMG_MENU_BUTTON_DEFAULT_default_idle = 0;
 
         internal const int IMG_MENU_BUTTON_DEFAULT_default_pressed = 1;
@@ -1740,5 +1411,93 @@ namespace CutTheRope.GameMain
         private static readonly Lock resourcesLock_ = new();
 
         private static Dictionary<string, string> allResources_;
+
+        // String-based resource ID system with auto-assignment
+        private static readonly Lock resourceIdLock_ = new();
+        private static Dictionary<string, int> stringToIntMap_;
+        private static Dictionary<int, string> intToStringMap_;
+        private static int nextAutoId_;  // Auto-assign sequential IDs
+
+        /// <summary>
+        /// Gets the integer ID for a resource name. If the resource name doesn't have an ID yet,
+        /// one will be automatically assigned.
+        /// </summary>
+        public static int GetResourceId(string resourceName)
+        {
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                return -1;
+            }
+
+            EnsureResourceIdMapsLoaded();
+
+            lock (resourceIdLock_)
+            {
+                if (stringToIntMap_.TryGetValue(resourceName, out int existingId))
+                {
+                    return existingId;
+                }
+
+                // Auto-assign a new ID for this resource
+                int newId = nextAutoId_++;
+                stringToIntMap_[resourceName] = newId;
+                intToStringMap_[newId] = resourceName;
+                return newId;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to get the integer ID for a resource name without auto-registering new entries.
+        /// </summary>
+        public static bool TryGetResourceId(string resourceName, out int resourceId)
+        {
+            resourceId = -1;
+
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                return false;
+            }
+
+            EnsureResourceIdMapsLoaded();
+
+            lock (resourceIdLock_)
+            {
+                return stringToIntMap_.TryGetValue(resourceName, out resourceId);
+            }
+        }
+
+        /// <summary>
+        /// Gets the resource name for an integer ID. Returns null if not found.
+        /// </summary>
+        public static string GetResourceName(int resourceId)
+        {
+            EnsureResourceIdMapsLoaded();
+
+            lock (resourceIdLock_)
+            {
+                _ = intToStringMap_.TryGetValue(resourceId, out string name);
+                return name;
+            }
+        }
+
+        private static void EnsureResourceIdMapsLoaded()
+        {
+            if (stringToIntMap_ != null)
+            {
+                return;
+            }
+
+            lock (resourceIdLock_)
+            {
+                if (stringToIntMap_ != null)
+                {
+                    return;
+                }
+
+                // Initialize empty maps - IDs will be auto-assigned on first use
+                stringToIntMap_ = [];
+                intToStringMap_ = [];
+            }
+        }
     }
 }

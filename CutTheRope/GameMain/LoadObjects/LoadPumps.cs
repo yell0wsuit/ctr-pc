@@ -15,7 +15,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadPump(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            Pump pump = Pump.Pump_createWithResID(83);
+            Pump pump = Pump.Pump_createWithResID(Resources.Img.ObjPump);
             pump.DoRestoreCutTransparency();
             _ = pump.AddAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
             pump.bb = MakeRectangle(300f, 300f, 175f, 175f);

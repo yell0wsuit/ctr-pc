@@ -1,3 +1,5 @@
+using System.Linq;
+
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Media;
 
@@ -15,6 +17,18 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Plays a sound effect identified by its resource name.
+        /// </summary>
+        /// <param name="soundResourceName">Sound resource name.</param>
+        public static void PlaySound(string soundResourceName)
+        {
+            if (Preferences.GetBooleanForKey("SOUND_ON"))
+            {
+                Application.SharedSoundMgr().PlaySound(soundResourceName);
+            }
+        }
+
         public static void EnableLoopedSounds(bool bEnable)
         {
             s_EnableLoopedSounds = bEnable;
@@ -27,6 +41,62 @@ namespace CutTheRope.GameMain
         public static new SoundEffectInstance PlaySoundLooped(int s)
         {
             return s_EnableLoopedSounds && Preferences.GetBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
+        }
+
+        /// <summary>
+        /// Plays a looped sound effect identified by its resource name.
+        /// </summary>
+        /// <param name="soundResourceName">Sound resource name.</param>
+        public static SoundEffectInstance PlaySoundLooped(string soundResourceName)
+        {
+            return !s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON")
+                ? null
+                : Application.SharedSoundMgr().PlaySoundLooped(GetResourceId(soundResourceName));
+        }
+
+        /// <summary>
+        /// Plays a random sound from the provided list of sound resource names.
+        /// </summary>
+        public static void PlayRandomSound(params string[] soundNames)
+        {
+            if (soundNames == null || soundNames.Length == 0)
+            {
+                return;
+            }
+
+            string soundName = soundNames[RND_RANGE(0, soundNames.Length - 1)];
+            PlaySound(soundName);
+        }
+
+        /// <summary>
+        /// Plays background music identified by its resource name.
+        /// </summary>
+        /// <param name="musicResourceName">Music resource name.</param>
+        public static void PlayMusic(string musicResourceName)
+        {
+            if (Preferences.GetBooleanForKey("MUSIC_ON") && !string.IsNullOrWhiteSpace(musicResourceName))
+            {
+                int musicId = ResourceNameTranslator.ToResourceId(musicResourceName);
+                Application.SharedSoundMgr().PlayMusic(musicId);
+            }
+        }
+
+        /// <summary>
+        /// Plays a random music track from the supplied resource names.
+        /// </summary>
+        /// <param name="musicNames">Candidate music resource names.</param>
+        public static void PlayRandomMusic(params string[] musicNames)
+        {
+            if (musicNames == null)
+            {
+                return;
+            }
+
+            int[] musicIds = [.. musicNames
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Select(ResourceNameTranslator.ToResourceId)];
+
+            PlayRandomMusic(musicIds);
         }
 
         public static void PlayRandomMusic(params int[] musicIds)

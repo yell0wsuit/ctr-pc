@@ -19,11 +19,11 @@ namespace CutTheRope.GameMain
 {
     internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
-        public static Button CreateButtonWithTextIDDelegate(string str, int bid, IButtonDelegation d)
+        public static Button CreateButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(2, 0);
-            Image image2 = Image.Image_createWithResIDQuad(2, 1);
-            FontGeneric font = Application.GetFont(3);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
+            FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
             Text text2 = new Text().InitWithFont(font);
@@ -38,11 +38,11 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static Button CreateShortButtonWithTextIDDelegate(string str, int bid, IButtonDelegation d)
+        public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(61, 1);
-            Image image2 = Image.Image_createWithResIDQuad(61, 0);
-            FontGeneric font = Application.GetFont(3);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonShort, 1);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonShort, 0);
+            FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
             Text text2 = new Text().InitWithFont(font);
@@ -57,13 +57,13 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, int bid, IButtonDelegation d)
+        public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, ButtonId bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(2, 0);
-            Image image2 = Image.Image_createWithResIDQuad(2, 1);
-            Image image3 = Image.Image_createWithResIDQuad(2, 0);
-            Image image4 = Image.Image_createWithResIDQuad(2, 1);
-            FontGeneric font = Application.GetFont(3);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
+            FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(str1);
             Text text2 = new Text().InitWithFont(font);
@@ -86,16 +86,16 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
-        public static Button CreateBackButtonWithDelegateID(IButtonDelegation d, int bid)
+        public static Button CreateBackButtonWithDelegateID(IButtonDelegation d, ButtonId bid)
         {
-            Button button = CreateButtonWithImageQuad1Quad2IDDelegate(54, 0, 1, bid, d);
+            Button button = CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 0, 1, bid, d);
             button.anchor = button.parentAnchor = 33;
             return button;
         }
 
-        public static Button CreateButtonWithImageIDDelegate(int resID, int bid, IButtonDelegation d)
+        public static Button CreateButtonWithImageIDDelegate(string resourceName, ButtonId bid, IButtonDelegation d)
         {
-            CTRTexture2D texture = Application.GetTexture(resID);
+            CTRTexture2D texture = Application.GetTexture(resourceName);
             Image up = Image.Image_create(texture);
             Image image = Image.Image_create(texture);
             image.scaleX = 1.2f;
@@ -106,11 +106,11 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static Button CreateButton2WithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegation d)
+        public static Button CreateButton2WithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, ButtonId bid, IButtonDelegation d)
         {
-            Image up = Image.Image_createWithResIDQuad(res, q1);
-            Image image = Image.Image_createWithResIDQuad(res, q2);
-            Vector relativeQuadOffset = Image.GetRelativeQuadOffset(res, q2, q1);
+            Image up = Image.Image_createWithResIDQuad(resourceName, q1);
+            Image image = Image.Image_createWithResIDQuad(resourceName, q2);
+            Vector relativeQuadOffset = Image.GetRelativeQuadOffset(resourceName, q2, q1);
             image.x -= relativeQuadOffset.x;
             image.y -= relativeQuadOffset.y;
             Button button = new Button().InitWithUpElementDownElementandID(up, image, bid);
@@ -118,15 +118,15 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static Button CreateButtonWithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegation d)
+        public static Button CreateButtonWithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, int bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(res, q1);
-            Image image2 = Image.Image_createWithResIDQuad(res, q2);
+            Image image = Image.Image_createWithResIDQuad(resourceName, q1);
+            Image image2 = Image.Image_createWithResIDQuad(resourceName, q2);
             image.DoRestoreCutTransparency();
             image2.DoRestoreCutTransparency();
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
             button.delegateButtonDelegate = d;
-            CTRTexture2D texture = Application.GetTexture(res);
+            CTRTexture2D texture = Application.GetTexture(resourceName);
             button.ForceTouchRect(MakeRectangle(texture.quadOffsets[q1].x, texture.quadOffsets[q1].y, texture.quadRects[q1].w, texture.quadRects[q1].h));
             return button;
         }
@@ -138,7 +138,7 @@ namespace CutTheRope.GameMain
                 width = (int)SCREEN_WIDTH,
                 height = (int)SCREEN_HEIGHT
             };
-            Image image = Image.Image_createWithResIDQuad(48, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuBgr, 0);
             image.anchor = image.parentAnchor = 34;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = image.height / 2;
@@ -146,13 +146,13 @@ namespace CutTheRope.GameMain
             _ = baseElement.AddChild(image);
             if (l)
             {
-                Image image2 = Image.Image_createWithResIDQuad(48, 1);
+                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuBgr, 1);
                 image2.anchor = image2.parentAnchor = 34;
                 image2.scaleX = image2.scaleY = 1.25f;
                 image2.passTransformationsToChilds = false;
                 image2.rotationCenterY = image2.height / 2;
                 _ = image.AddChild(image2);
-                Image image3 = Image.Image_createWithResIDQuad(50, 0);
+                Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 0);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
@@ -160,7 +160,7 @@ namespace CutTheRope.GameMain
             }
             if (s)
             {
-                Image image4 = Image.Image_createWithResIDQuad(60, 0);
+                Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
                 image4.anchor = image4.parentAnchor = 18;
                 image4.scaleX = image4.scaleY = 2f;
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -182,9 +182,9 @@ namespace CutTheRope.GameMain
         public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, Vector offset)
         {
             int num = p ? 1 : 0;
-            Image image = Image.Image_createWithResIDQuad(8, num);
-            Image image2 = Image.Image_createWithResIDQuad(8, q);
-            Image.SetElementPositionWithRelativeQuadOffset(image2, 8, num, q);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, num);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
+            Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuOptions, num, q);
             image2.parentAnchor = image2.anchor = 9;
             image2.x += offset.x;
             image2.y += offset.y;
@@ -192,15 +192,15 @@ namespace CutTheRope.GameMain
             if (b)
             {
                 image2.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
-                Image image3 = Image.Image_createWithResIDQuad(8, 4);
+                Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 4);
                 image3.parentAnchor = image3.anchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(image3, 8, num, 4);
+                Image.SetElementPositionWithRelativeQuadOffset(image3, Resources.Img.MenuOptions, num, 4);
                 _ = image.AddChild(image3);
             }
             return image;
         }
 
-        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, int bid, Vector offset)
+        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid, Vector offset)
         {
             Image u = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false, offset);
             Image d = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true, offset);
@@ -211,7 +211,7 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
-        public static Button CreateLanguageButtonWithIDDelegate(int bid, IButtonDelegation d)
+        public static Button CreateLanguageButtonWithIDDelegate(ButtonId bid, IButtonDelegation d)
         {
             string @string = Application.SharedAppSettings().GetString(8);
             int q = 7;
@@ -228,9 +228,9 @@ namespace CutTheRope.GameMain
                 q = 6;
             }
             string string2 = Application.GetString(STR_MENU_LANGUAGE);
-            Image image = Image.Image_createWithResIDQuad(2, 0);
-            Image image2 = Image.Image_createWithResIDQuad(2, 1);
-            FontGeneric font = Application.GetFont(3);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
+            FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(string2);
             Text text2 = new Text().InitWithFont(font);
@@ -239,8 +239,8 @@ namespace CutTheRope.GameMain
             text2.anchor = text2.parentAnchor = 18;
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
-            Image image3 = Image.Image_createWithResIDQuad(54, q);
-            Image image4 = Image.Image_createWithResIDQuad(54, q);
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuExtraButtons, q);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuExtraButtons, q);
             image4.parentAnchor = image3.parentAnchor = 20;
             image4.anchor = image3.anchor = 20;
             _ = text.AddChild(image3);
@@ -256,6 +256,25 @@ namespace CutTheRope.GameMain
         public static BaseElement CreateElementWithResIdquad(int resId, int quad)
         {
             return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : new BaseElement();
+        }
+
+        public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(string resourceName, int quad, int quad2, int bId, IButtonDelegation delegateValue)
+        {
+            int res = ResourceNameTranslator.ToResourceId(resourceName);
+            BaseElement baseElement = CreateElementWithResIdquad(res, quad);
+            BaseElement baseElement2 = CreateElementWithResIdquad(res, quad);
+            BaseElement baseElement3 = CreateElementWithResIdquad(res, quad2);
+            BaseElement baseElement4 = CreateElementWithResIdquad(res, quad2);
+            int width = MAX(baseElement.width, baseElement3.width);
+            int height = MAX(baseElement.height, baseElement3.height);
+            baseElement.width = baseElement2.width = width;
+            baseElement.height = baseElement2.height = height;
+            baseElement3.width = baseElement4.width = width;
+            baseElement3.height = baseElement4.height = height;
+            baseElement2.scaleX = baseElement2.scaleY = baseElement4.scaleX = baseElement4.scaleY = 1.2f;
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(baseElement, baseElement2, baseElement3, baseElement4, bId);
+            toggleButton.delegateButtonDelegate = delegateValue;
+            return toggleButton;
         }
 
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
@@ -278,28 +297,28 @@ namespace CutTheRope.GameMain
 
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
-            Image image = Image.Image_createWithResIDQuad(8, q);
-            Text text = Text.CreateWithFontandString(4, str);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
+            Text text = Text.CreateWithFontandString(Resources.Fnt.SmallFont, str);
             text.parentAnchor = 9;
             text.anchor = 18;
             text.scaleX = text.scaleY = 0.75f;
             _ = image.AddChild(text);
-            Image.SetElementPositionWithRelativeQuadOffset(text, 8, q, tq);
+            Image.SetElementPositionWithRelativeQuadOffset(text, Resources.Img.MenuOptions, q, tq);
             if (bId != -1)
             {
-                ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(8, -1, 8, bId, delegateValue);
+                ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(Resources.Img.MenuOptions, -1, 8, bId, delegateValue);
                 toggleButton.SetName("button");
                 toggleButton.parentAnchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(toggleButton, 8, q, 8);
+                Image.SetElementPositionWithRelativeQuadOffset(toggleButton, Resources.Img.MenuOptions, q, 8);
                 _ = image.AddChild(toggleButton);
                 int num = (image.width / 2) - (toggleButton.width / 2);
                 toggleButton.SetTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85, 0.0);
             }
             else
             {
-                Image image2 = Image.Image_createWithResIDQuad(8, 7);
+                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 7);
                 image2.parentAnchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(image2, 8, q, 7);
+                Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuOptions, q, 7);
                 _ = image.AddChild(image2);
             }
             return image;
@@ -307,8 +326,8 @@ namespace CutTheRope.GameMain
 
         public static Image CreateBlankScoresButtonWithIconpressed(int quad, bool pressed)
         {
-            Image image3 = Image.Image_createWithResIDQuad(59, pressed ? 1 : 0);
-            Image image2 = Image.Image_createWithResIDQuad(59, quad);
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonAchivCup, pressed ? 1 : 0);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonAchivCup, quad);
             _ = image3.AddChild(image2);
             image2.parentAnchor = 9;
             Image.SetElementPositionWithRelativeQuadOffset(image2, 59, 0, quad);
@@ -332,11 +351,11 @@ namespace CutTheRope.GameMain
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
-            Button c = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_PLAY), 0, this);
+            Button c = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_PLAY), MenuButtonId.Play, this);
             _ = vBox.AddChild(c);
-            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OPTIONS), 1, this);
+            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OPTIONS), MenuButtonId.Options, this);
             _ = vBox.AddChild(c2);
-            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_QUIT_BUTTON), 41, this);
+            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_QUIT_BUTTON), MenuButtonId.ShowQuitPopup, this);
             _ = vBox.AddChild(c3);
             _ = baseElement.AddChild(vBox);
             bool flag = Application.GetString(STR_MENU_FACEBOOK_BUTTON).Length() > 0;
@@ -349,28 +368,28 @@ namespace CutTheRope.GameMain
                 baseElement2.height = baseElement.height;
                 baseElement2.x -= Canvas.xOffsetScaled;
                 _ = baseElement.AddChild(baseElement2);
-                CTRTexture2D texture = Application.GetTexture(54);
-                Button button = CreateButton2WithImageQuad1Quad2IDDelegate(54, 3, 3, 16, this);
+                CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuExtraButtons);
+                Button button = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 3, 3, MenuButtonId.OpenTwitter, this);
                 button.anchor = 9;
                 button.parentAnchor = 36;
-                Image.SetElementPositionWithQuadOffset(button, 54, 3);
+                Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuExtraButtons, 3);
                 button.x -= texture.preCutSize.x;
                 button.y -= texture.preCutSize.y;
                 _ = baseElement2.AddChild(button);
-                Button button2 = CreateButton2WithImageQuad1Quad2IDDelegate(54, 2, 2, 17, this);
+                Button button2 = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 2, 2, MenuButtonId.OpenFacebook, this);
                 button2.anchor = 9;
                 button2.parentAnchor = 36;
-                Image.SetElementPositionWithQuadOffset(button2, 54, 2);
+                Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuExtraButtons, 2);
                 button2.x -= texture.preCutSize.x;
                 button2.y -= texture.preCutSize.y;
                 if (flag)
                 {
                     _ = baseElement2.AddChild(button2);
                 }
-                Image image = Image.Image_createWithResIDQuad(149, 0);
+                Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuExtraButtonsEn, 0);
                 image.anchor = 9;
                 image.parentAnchor = 36;
-                Image.SetElementPositionWithQuadOffset(image, 149, 0);
+                Image.SetElementPositionWithQuadOffset(image, Resources.Img.MenuExtraButtonsEn, 0);
                 image.x -= texture.preCutSize.x;
                 image.y -= texture.preCutSize.y;
                 _ = baseElement2.AddChild(image);
@@ -385,13 +404,13 @@ namespace CutTheRope.GameMain
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
             _ = menuView.AddChild(baseElement);
             BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString(STR_MENU_DRAG_TO_CUT), -1, null);
-            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.GetString(STR_MENU_CLICK_TO_CUT), 11, this);
+            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.GetString(STR_MENU_CLICK_TO_CUT), MenuButtonId.ToggleClickToCut, this);
             HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80.0), 16, MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(baseElement2);
             _ = hBox.AddChild(baseElement3);
             _ = menuView.AddChild(hBox);
-            Image image = Image.Image_createWithResIDQuad(60, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -403,18 +422,18 @@ namespace CutTheRope.GameMain
             _ = menuView.AddChild(image);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 18;
-            Vector offset = VectSub(Image.GetQuadCenter(8, 0), Image.GetQuadOffset(8, 12));
-            ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, 6, vectZero);
-            ToggleButton toggleButton2 = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, 5, offset);
+            Vector offset = VectSub(Image.GetQuadCenter(Resources.Img.MenuOptions, 0), Image.GetQuadOffset(Resources.Img.MenuOptions, 12));
+            ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic, vectZero);
+            ToggleButton toggleButton2 = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, MenuButtonId.ToggleSound, offset);
             HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
             _ = hBox2.AddChild(toggleButton2);
             _ = hBox2.AddChild(toggleButton);
             _ = vBox.AddChild(hBox2);
-            Button c = CreateLanguageButtonWithIDDelegate(22, this);
+            Button c = CreateLanguageButtonWithIDDelegate(MenuButtonId.Language, this);
             _ = vBox.AddChild(c);
-            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_RESET), 8, this);
+            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_RESET), MenuButtonId.ShowReset, this);
             _ = vBox.AddChild(c2);
-            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_CREDITS), 7, this);
+            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_CREDITS), MenuButtonId.ShowCredits, this);
             _ = vBox.AddChild(c3);
             _ = baseElement.AddChild(vBox);
             hBox.y = (vBox.height / 2) + 10;
@@ -435,7 +454,7 @@ namespace CutTheRope.GameMain
             {
                 toggleButton3.Toggle();
             }
-            Button button = CreateBackButtonWithDelegateID(this, 36);
+            Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromOptions);
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
@@ -446,22 +465,22 @@ namespace CutTheRope.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
             text.SetStringandWidth(Application.GetString(STR_MENU_RESET_TEXT), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
             text.anchor = text.parentAnchor = 18;
             _ = baseElement.AddChild(text);
             text.y = -200f;
-            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_YES), 13, this);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_YES), MenuButtonId.ConfirmResetYes, this);
             button.anchor = button.parentAnchor = 34;
             button.y = -540f;
-            Button button2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_NO), 14, this);
+            Button button2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_NO), MenuButtonId.ConfirmResetNo, this);
             button2.anchor = button2.parentAnchor = 34;
             button2.y = -320f;
             _ = baseElement.AddChild(button);
             _ = baseElement.AddChild(button2);
             _ = menuView.AddChild(baseElement);
-            Button button3 = CreateBackButtonWithDelegateID(this, 10);
+            Button button3 = CreateBackButtonWithDelegateID(this, MenuButtonId.BackToOptions);
             button3.SetName("backb");
             button3.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button3);
@@ -511,24 +530,24 @@ namespace CutTheRope.GameMain
                 height = 100
             };
             _ = vBox.AddChild(baseElement2);
-            Image c = Image.Image_createWithResIDQuad(50, 1);
+            Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 1);
             _ = vBox.AddChild(c);
-            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text2.SetAlignment(2);
             text2.SetStringandWidth(text, (int)num);
             aboutContainer = new ScrollableContainer().InitWithWidthHeightContainer(num, h, vBox);
             aboutContainer.anchor = aboutContainer.parentAnchor = 18;
             _ = vBox.AddChild(text2);
-            Image c2 = Image.Image_createWithResIDQuad(50, 2);
+            Image c2 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 2);
             _ = vBox.AddChild(c2);
             string @string = Application.GetString(STR_MENU_ABOUT_SPECIAL_THANKS);
-            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text3.SetAlignment(2);
             text3.SetStringandWidth(@string, num);
             _ = vBox.AddChild(text3);
             _ = baseElement.AddChild(aboutContainer);
             _ = menuView.AddChild(baseElement);
-            Button button = CreateBackButtonWithDelegateID(this, 10);
+            Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackToOptions);
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
@@ -538,20 +557,20 @@ namespace CutTheRope.GameMain
         public static HBox CreateTextWithStar(string t)
         {
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(t);
             text.scaleX = text.scaleY = 0.7f;
             text.rotationCenterX = -(float)text.width / 2;
             text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
-            Image c = Image.Image_createWithResIDQuad(52, 3);
+            Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 3);
             _ = hbox.AddChild(c);
             return hbox;
         }
 
         public static float GetBoxWidth()
         {
-            return Image.GetQuadSize(52, 4).x + (Image.GetQuadOffset(52, 4).x * 2f);
+            return Image.GetQuadSize(Resources.Img.MenuPackSelection, 4).x + (Image.GetQuadOffset(Resources.Img.MenuPackSelection, 4).x * 2f);
         }
 
         public static float GetPackOffset()
@@ -576,11 +595,11 @@ namespace CutTheRope.GameMain
             {
                 CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
-            int r = 52;
+            string resourceName = Resources.Img.MenuPackSelection;
             int q = 4 + n;
             if (n > 6)
             {
-                r = 53;
+                resourceName = Resources.Img.MenuPackSelection2;
                 q = n - 6;
             }
             string nsstring;
@@ -614,18 +633,15 @@ namespace CutTheRope.GameMain
             string nSString = nsstring;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
-            if (n != CTRPreferences.GetPacksCount())
-            {
-                touchBaseElement.bid = 23 + n;
-            }
-            Image image = Image.Image_createWithResIDQuad(r, q);
+            touchBaseElement.bid = n != CTRPreferences.GetPacksCount() ? new MenuButtonId(MenuButtonId.PackSelectBase + n) : new MenuButtonId(-1);
+            Image image = Image.Image_createWithResIDQuad(resourceName, q);
             image.DoRestoreCutTransparency();
             image.anchor = image.parentAnchor = 9;
             if (flag)
             {
                 _ = baseElement.AddChild(image);
                 int num = CTRPreferences.PackUnlockStars(n);
-                Image image2 = Image.Image_createWithResIDQuad(52, 2);
+                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 2);
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
@@ -633,7 +649,7 @@ namespace CutTheRope.GameMain
                 hBox.anchor = hBox.parentAnchor = 18;
                 hBox.y = 110f;
                 _ = image2.AddChild(hBox);
-                Text text = new Text().InitWithFont(Application.GetFont(4));
+                Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
                 string newString = Application.GetString(STR_MENU_UNLOCK_HINT).ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture));
                 text.SetAlignment(2);
                 text.anchor = 10;
@@ -650,14 +666,14 @@ namespace CutTheRope.GameMain
                 {
                     int q2 = 0;
                     int q3 = 1;
-                    MonsterSlot monsterSlot = MonsterSlot.MonsterSlot_createWithResIDQuad(52, q2);
+                    MonsterSlot monsterSlot = MonsterSlot.MonsterSlot_createWithResIDQuad(Resources.Img.MenuPackSelection, q2);
                     monsterSlot.c = c;
                     monsterSlot.DoRestoreCutTransparency();
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
                     _ = baseElement.AddChild(monsterSlot);
-                    Image image3 = Image.Image_createWithResIDQuad(52, q3);
+                    Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, q3);
                     image3.DoRestoreCutTransparency();
                     image3.anchor = 17;
                     monsterSlot.s = (image.width * (n - 1)) + (-20f * n) + packContainer.x + 50f;
@@ -670,7 +686,7 @@ namespace CutTheRope.GameMain
                 _ = baseElement.AddChild(image);
                 if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
                 {
-                    Image image4 = Image.Image_createWithResIDQuad(52, 2);
+                    Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 2);
                     image4.SetName("lockHideMe");
                     image4.DoRestoreCutTransparency();
                     image4.anchor = image4.parentAnchor = 9;
@@ -683,7 +699,7 @@ namespace CutTheRope.GameMain
                     _ = image4.AddTimeline(timeline);
                 }
             }
-            Text text2 = new Text().InitWithFont(Application.GetFont(3));
+            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.anchor = text2.parentAnchor = 10;
             text2.scaleX = text2.scaleY = 0.75f;
             if (LANGUAGE is Language.LANGDE or Language.LANGEN)
@@ -742,7 +758,7 @@ namespace CutTheRope.GameMain
             packContainer.x = (SCREEN_WIDTH / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
             _ = baseElement.AddChild(hBox);
-            CTRTexture2D texture = Application.GetTexture(52);
+            CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackSelection);
             BaseElement baseElement2 = new()
             {
                 width = (int)texture.preCutSize.x,
@@ -762,42 +778,42 @@ namespace CutTheRope.GameMain
                 num3 += touchBaseElement.width + -20f;
             }
             hBox2.width += 1000;
-            Image image = Image.Image_createWithResIDQuad(52, 11);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 11);
             image.anchor = 17;
             image.y += SCREEN_HEIGHT / 2f;
             image.x = packContainer.x - 2f;
             _ = baseElement.AddChild(image);
-            Image image2 = Image.Image_createWithResIDQuad(52, 11);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 11);
             image2.anchor = 20;
             image2.y += SCREEN_HEIGHT / 2f;
             image2.x = packContainer.x + packContainer.width + 2f;
             _ = baseElement.AddChild(image2);
             image2.scaleX = image2.scaleY = -1f;
             _ = baseElement.AddChild(packContainer);
-            Image image3 = Image.Image_createWithResIDQuad(52, 12);
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 12);
             image3.anchor = 20;
             image3.y += SCREEN_HEIGHT / 2f;
             image3.x = packContainer.x + 3f;
             _ = baseElement.AddChild(image3);
-            Image image4 = Image.Image_createWithResIDQuad(52, 12);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 12);
             image4.anchor = 17;
             image4.y += SCREEN_HEIGHT / 2f;
             image4.x = packContainer.x + packContainer.width - 3f;
             image4.scaleX = image4.scaleY = -1f;
             _ = baseElement.AddChild(image4);
-            prevb = CreateButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 21, this);
+            prevb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackSelection, 13, 14, MenuButtonId.PreviousPack, this);
             prevb.parentAnchor = 17;
             prevb.anchor = 20;
             prevb.x = packContainer.x - 40f;
             _ = baseElement.AddChild(prevb);
-            nextb = CreateButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 20, this);
+            nextb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackSelection, 13, 14, MenuButtonId.NextPack, this);
             nextb.anchor = nextb.parentAnchor = 17;
             nextb.x = packContainer.x + packContainer.width + 40f;
             nextb.scaleX = -1f;
             _ = baseElement.AddChild(nextb);
             _ = menuView.AddChild(baseElement);
             AddViewwithID(menuView, 5);
-            Button button = CreateBackButtonWithDelegateID(this, 35);
+            Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromPackSelect);
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
@@ -819,41 +835,41 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             Popup popup = new();
             popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(49, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPopup, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
             int num = 20;
             image.scaleX = 1.3f;
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
             text.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT1));
             text.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text, 49, 1);
+            Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 1);
             text.y -= num;
             _ = popup.AddChild(text);
-            Text text2 = new Text().InitWithFont(Application.GetFont(3));
+            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.SetAlignment(2);
             text2.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT2));
             text2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text2, 49, 2);
+            Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 2);
             _ = popup.AddChild(text2);
             text2.y -= num;
-            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text3.SetAlignment(2);
             text3.SetStringandWidth(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT3), 600f);
             text3.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text3, 49, 3);
+            Image.SetElementPositionWithQuadOffset(text3, Resources.Img.MenuPopup, 3);
             text3.y += 50f;
             _ = popup.AddChild(text3);
             int totalStars = CTRPreferences.GetTotalStars();
             HBox hBox = CreateTextWithStar((CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars).ToString(CultureInfo.InvariantCulture));
             hBox.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(hBox, 49, 5);
+            Image.SetElementPositionWithQuadOffset(hBox, Resources.Img.MenuPopup, 5);
             hBox.y -= num;
             _ = popup.AddChild(hBox);
-            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), 15, this);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), MenuButtonId.PopupOk, this);
             button.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button, 49, 4);
+            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             _ = popup.AddChild(button);
             popup.ShowPopup();
             _ = ActiveView().AddChild(popup);
@@ -863,53 +879,53 @@ namespace CutTheRope.GameMain
         {
             Popup popup = new();
             popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(49, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPopup, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
             text.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT), 600.0);
             text.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text, 49, 2);
+            Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
             text.y -= 170f;
             _ = image.AddChild(text);
-            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text2.SetAlignment(2);
             text2.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT2), 700.0);
             text2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text2, 49, 3);
+            Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 3);
             text2.y += 30f;
             _ = image.AddChild(text2);
-            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), 15, this);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), MenuButtonId.PopupOk, this);
             button.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button, 49, 4);
+            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             _ = image.AddChild(button);
             popup.ShowPopup();
             _ = ActiveView().AddChild(popup);
         }
 
-        public void ShowYesNoPopup(string str, int buttonYesId, int buttonNoId)
+        public void ShowYesNoPopup(string str, MenuButtonId buttonYesId, MenuButtonId buttonNoId)
         {
             Popup popup = new();
             popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(49, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPopup, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
             text.SetStringandWidth(str, 680.0);
             text.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text, 49, 2);
+            Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
             text.y -= 120f;
             _ = image.AddChild(text);
             Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_YES), buttonYesId, this);
             button.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button, 49, 4);
+            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             button.y -= button.height;
             _ = image.AddChild(button);
             Button button2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_NO), buttonNoId, this);
             button2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button2, 49, 4);
+            Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuPopup, 4);
             _ = image.AddChild(button2);
             popup.ShowPopup();
             ep = popup;
@@ -973,22 +989,22 @@ namespace CutTheRope.GameMain
             Image image;
             if (flag)
             {
-                touchBaseElement.bid = -1;
-                image = Image.Image_createWithResIDQuad(51, 1);
+                touchBaseElement.bid = new MenuButtonId(-1);
+                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelSelection, 1);
                 image.DoRestoreCutTransparency();
             }
             else
             {
-                touchBaseElement.bid = 1000 + l;
-                image = Image.Image_createWithResIDQuad(51, 0);
+                touchBaseElement.bid = new MenuButtonId(1000 + l);
+                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelSelection, 0);
                 image.DoRestoreCutTransparency();
-                Text text = new Text().InitWithFont(Application.GetFont(3));
+                Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
                 string @string = (l + 1).ToString(CultureInfo.InvariantCulture);
                 text.SetString(@string);
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
                 _ = image.AddChild(text);
-                Image image2 = Image.Image_createWithResIDQuad(51, 2 + starsForPackLevel);
+                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelSelection, 2 + starsForPackLevel);
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
@@ -1003,11 +1019,10 @@ namespace CutTheRope.GameMain
         {
             float num = 0.3f;
             MenuView menuView = new();
-            int[] coverResources = PackConfig.GetCoverResources(pack);
-            int num4 = coverResources.Length > 0 ? coverResources[0] : 126 + pack;
-            Image image = Image.Image_createWithResIDQuad(num4, 0);
-            Image image2 = Image.Image_createWithResIDQuad(num4, 0);
-            Vector quadSize = Image.GetQuadSize(num4, 0);
+            string coverResourceName = PackConfig.GetCoverResourceNameOrDefault(pack);
+            Image image = Image.Image_createWithResIDQuad(coverResourceName, 0);
+            Image image2 = Image.Image_createWithResIDQuad(coverResourceName, 0);
+            Vector quadSize = Image.GetQuadSize(coverResourceName, 0);
             float x = (SCREEN_WIDTH / 2f) - quadSize.x;
             image.x = x;
             image2.x = SCREEN_WIDTH / 2f;
@@ -1020,15 +1035,15 @@ namespace CutTheRope.GameMain
             image.SetName("levelsBack");
             _ = image.AddChild(image2);
             _ = menuView.AddChild(image);
-            Image image3 = Image.Image_createWithResIDQuad(5, 0);
-            Image image4 = Image.Image_createWithResIDQuad(5, 1);
-            image3.x = Image.GetQuadOffset(5, 0).x;
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 0);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 1);
+            image3.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).x;
             image3.y = 80f;
-            image4.x = Image.GetQuadOffset(5, 1).x;
+            image4.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).x;
             image4.y = 80f;
             _ = menuView.AddChild(image3);
             _ = menuView.AddChild(image4);
-            Image image5 = Image.Image_createWithResIDQuad(60, 0);
+            Image image5 = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
             image5.SetName("shadow");
             image5.anchor = image5.parentAnchor = 18;
             image5.scaleX = image5.scaleY = 2f;
@@ -1079,7 +1094,7 @@ namespace CutTheRope.GameMain
             _ = hBox.AddTimeline(timeline5);
             _ = menuView.AddChild(hBox);
             _ = menuView.AddChild(vBox);
-            Button button = CreateBackButtonWithDelegateID(this, 12);
+            Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.PackSelect);
             button.SetName("backButton");
             Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
@@ -1140,7 +1155,7 @@ namespace CutTheRope.GameMain
             }
             ShowView(viewToShow);
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayMusic(145);
+            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
         }
 
         public void ShowNextPack()
@@ -1178,7 +1193,7 @@ namespace CutTheRope.GameMain
             }
             if (url != null)
             {
-                CTRSoundMgr.PlayMusic(145);
+                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
             }
             if (CTRPreferences.ShouldPlayLevelScroll())
             {
@@ -1201,8 +1216,7 @@ namespace CutTheRope.GameMain
         public void PreLevelSelect()
         {
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
-            int[] array = null;
-            array = PackConfig.GetCoverResources(pack);
+            string[] array = PackConfig.GetCoverResourceNames(pack);
             cTRResourceMgr.InitLoading();
             cTRResourceMgr.LoadPack(array);
             cTRResourceMgr.LoadImmediately();
@@ -1239,15 +1253,16 @@ namespace CutTheRope.GameMain
             CreateOptions();
         }
 
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(MenuButtonId n)
         {
-            if (n is not (-1))
+            if (n.Value != -1)
             {
-                CTRSoundMgr.PlaySound(9);
+                CTRSoundMgr.PlaySound(Resources.Snd.Tap);
             }
-            if (n >= 1000)
+
+            if (n.Value >= MenuButtonId.LevelButtonBase.Value)
             {
-                level = n - 1000;
+                level = n.Value - MenuButtonId.LevelButtonBase.Value;
                 ActiveView().GetChildWithName("levelsBox").PlayTimeline(0);
                 ActiveView().GetChildWithName("shadow").PlayTimeline(0);
                 ActiveView().GetChildWithName("levelsBack").PlayTimeline(0);
@@ -1255,9 +1270,10 @@ namespace CutTheRope.GameMain
                 ActiveView().GetChildWithName("backButton").PlayTimeline(0);
                 return;
             }
+
             switch (n)
             {
-                case 0:
+                case var id when id == MenuButtonId.Play:
                     {
                         for (int i = 0; i < CTRPreferences.GetPacksCount(); i++)
                         {
@@ -1275,17 +1291,17 @@ namespace CutTheRope.GameMain
                         MoviePlaybackFinished(null);
                         return;
                     }
-                case 1:
+                case var id when id == MenuButtonId.Options:
                     ShowView(1);
                     return;
-                case 2:
+                case var id when id == MenuButtonId.PlayPack0:
                     ((CTRRootController)Application.SharedRootController()).SetPack(0);
                     PreLevelSelect();
                     Application.SharedRootController().SetViewTransition(-1);
                     ((MapPickerController)GetChild(0)).SetNormalMode();
                     ActivateChild(0);
                     return;
-                case 3:
+                case var id when id == MenuButtonId.SurvivalMode:
                     {
                         CTRSoundMgr.StopMusic();
                         pack = 0;
@@ -1293,20 +1309,20 @@ namespace CutTheRope.GameMain
                         CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
                         CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
                         ctrresourceMgr.InitLoading();
-                        ctrresourceMgr.LoadPack(PackConfig.GetCoverResources(pack));
+                        ctrresourceMgr.LoadPack(PackConfig.GetCoverResourceNames(pack));
                         ctrresourceMgr.LoadImmediately();
                         ctrrootController.SetSurvival(true);
                         ctrrootController.SetPack(pack);
                         Deactivate();
                         return;
                     }
-                case 4:
+                case var id when id == MenuButtonId.OpenFullVersion:
                     CTRRootController.OpenFullVersionPage();
                     return;
-                case 5:
+                case var id when id == MenuButtonId.ToggleSound:
                     Preferences.SetBooleanForKey(!Preferences.GetBooleanForKey("SOUND_ON"), "SOUND_ON", true);
                     return;
-                case 6:
+                case var id when id == MenuButtonId.ToggleMusic:
                     {
                         bool flag6 = Preferences.GetBooleanForKey("MUSIC_ON");
                         Preferences.SetBooleanForKey(!flag6, "MUSIC_ON", true);
@@ -1315,35 +1331,33 @@ namespace CutTheRope.GameMain
                             CTRSoundMgr.StopMusic();
                             return;
                         }
-                        CTRSoundMgr.PlayMusic(145);
+                        CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
                         return;
                     }
-                case 7:
+                case var id when id == MenuButtonId.ShowCredits:
                     aboutContainer.SetScroll(Vect(0f, 0f));
                     aboutAutoScroll = true;
                     ShowView(3);
                     return;
-                case 8:
+                case var id when id == MenuButtonId.ShowReset:
                     ShowView(4);
                     return;
-                case 9:
-                case 18:
-                case 19:
+                case var id when id == MenuButtonId.Leaderboards || id == MenuButtonId.LeaderboardsAchievementsUnused || id == MenuButtonId.MoreGamesUnused:
                     break;
-                case 10:
+                case var id when id == MenuButtonId.BackToOptions:
                     ShowView(1);
                     return;
-                case 11:
+                case var id when id == MenuButtonId.ToggleClickToCut:
                     {
                         bool flag7 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
                         Preferences.SetBooleanForKey(!flag7, "PREFS_CLICK_TO_CUT", true);
                         return;
                     }
-                case 12:
+                case var id when id == MenuButtonId.PackSelect:
                     ShowView(5);
                     packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8);
                     return;
-                case 13:
+                case var id when id == MenuButtonId.ConfirmResetYes:
                     {
                         CTRPreferences ctrpreferences = Application.SharedPreferences();
                         CTRPreferences.ResetToDefaults();
@@ -1353,19 +1367,19 @@ namespace CutTheRope.GameMain
                         ShowView(1);
                         return;
                     }
-                case 14:
+                case var id when id == MenuButtonId.ConfirmResetNo:
                     ShowView(1);
                     return;
-                case 15:
+                case var id when id == MenuButtonId.PopupOk:
                     ((Popup)ActiveView().GetChildWithName("popup")).HidePopup();
                     return;
-                case 16:
+                case var id when id == MenuButtonId.OpenTwitter:
                     AndroidAPI.OpenUrl("http://twitter.com/zeptolab");
                     return;
-                case 17:
+                case var id when id == MenuButtonId.OpenFacebook:
                     AndroidAPI.OpenUrl("http://www.facebook.com/cuttherope");
                     return;
-                case 20:
+                case var id when id == MenuButtonId.NextPack:
                     {
                         int num2 = currentPack;
                         int num3 = scrollPacksLeft + 1;
@@ -1375,7 +1389,7 @@ namespace CutTheRope.GameMain
                         bScrolling = true;
                         return;
                     }
-                case 21:
+                case var id when id == MenuButtonId.PreviousPack:
                     {
                         int num4 = currentPack;
                         int num3 = scrollPacksRight + 1;
@@ -1385,7 +1399,7 @@ namespace CutTheRope.GameMain
                         bScrolling = true;
                         break;
                     }
-                case 22:
+                case var id when id == MenuButtonId.Language:
                     {
                         string @string = Application.SharedAppSettings().GetString(8);
                         string[] array3 =
@@ -1414,10 +1428,10 @@ namespace CutTheRope.GameMain
                             Preferences.SetStringForKey(array3[1].ToString(), "PREFS_LOCALE", true);
                         }
                         CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
-                        ctrresourceMgr2.FreePack(PACK_LOCALIZATION_MENU);
+                        ctrresourceMgr2.FreePack(PackLocalizationMenu);
                         ctrresourceMgr2.ClearCachedResources();
                         ctrresourceMgr2.InitLoading();
-                        ctrresourceMgr2.LoadPack(PACK_LOCALIZATION_MENU);
+                        ctrresourceMgr2.LoadPack(PackLocalizationMenu);
                         ctrresourceMgr2.LoadImmediately();
                         DeleteView(5);
                         CreatePackSelect();
@@ -1432,38 +1446,7 @@ namespace CutTheRope.GameMain
                         ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
                         return;
                     }
-                case 23:
-                case 24:
-                case 25:
-                case 26:
-                case 27:
-                case 28:
-                case 29:
-                case 30:
-                case 31:
-                case 32:
-                case 33:
-                case 34:
-                    {
-                        if (pack != n - 23)
-                        {
-                            packContainer.MoveToScrollPointmoveMultiplier(n - 23, 0.8);
-                            return;
-                        }
-                        CTRPreferences.SetLastPack(pack);
-                        bool flag5 = CTRPreferences.GetUnlockedForPackLevel(n - 23, 0) == UNLOCKEDSTATE.LOCKED && n - 23 != CTRPreferences.GetPacksCount();
-                        if (n - 23 != CTRPreferences.GetPacksCount() && !flag5)
-                        {
-                            PreLevelSelect();
-                            ShowView(6);
-                            return;
-                        }
-                        break;
-                    }
-                case 35:
-                case 36:
-                case 37:
-                case 38:
+                case var id when id == MenuButtonId.BackFromPackSelect || id == MenuButtonId.BackFromOptions || id == MenuButtonId.BackFromLeaderboards || id == MenuButtonId.BackFromAchievements:
                     {
                         string[] array4 =
                         [
@@ -1475,15 +1458,15 @@ namespace CutTheRope.GameMain
                         string[] array5 = new string[4];
                         array5[0] = "BS_BACK_PRESSED";
                         array5[1] = "OP_BACK_PRESSED";
-                        string nsstring = array4[n - 35];
-                        string nsstring2 = array5[n - 35];
+                        string nsstring = array4[n.Value - MenuButtonId.BackFromPackSelect.Value];
+                        string nsstring2 = array5[n.Value - MenuButtonId.BackFromPackSelect.Value];
                         ShowView(0);
                         return;
                     }
-                case 39:
+                case var id when id == MenuButtonId.QuitGame:
                     Global.XnaGame.Exit();
                     return;
-                case 40:
+                case var id when id == MenuButtonId.ClosePopup:
                     if (ep != null)
                     {
                         ep.HidePopup();
@@ -1491,12 +1474,35 @@ namespace CutTheRope.GameMain
                         return;
                     }
                     break;
-                case 41:
-                    ShowYesNoPopup(Application.GetString(STR_MENU_QUIT), 39, 40);
+                case var id when id == MenuButtonId.ShowQuitPopup:
+                    ShowYesNoPopup(Application.GetString(STR_MENU_QUIT), MenuButtonId.QuitGame, MenuButtonId.ClosePopup);
                     return;
                 default:
+                    // Handle pack selection buttons dynamically
+                    if (n.Value >= MenuButtonId.PackSelectBase.Value && n.Value < MenuButtonId.PackSelectBase.Value + CTRPreferences.GetPacksCount() + 1)
+                    {
+                        int targetPack = n.Value - MenuButtonId.PackSelectBase.Value;
+                        if (pack != targetPack)
+                        {
+                            packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8);
+                            return;
+                        }
+                        CTRPreferences.SetLastPack(pack);
+                        bool flag5 = CTRPreferences.GetUnlockedForPackLevel(targetPack, 0) == UNLOCKEDSTATE.LOCKED && targetPack != CTRPreferences.GetPacksCount();
+                        if (targetPack != CTRPreferences.GetPacksCount() && !flag5)
+                        {
+                            PreLevelSelect();
+                            ShowView(6);
+                            return;
+                        }
+                    }
                     return;
             }
+        }
+
+        void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
+        {
+            OnButtonPressed(MenuButtonId.FromButtonId(buttonId));
         }
 
         private int FixScrollPoint(int moveToPack)
@@ -1535,17 +1541,17 @@ namespace CutTheRope.GameMain
                 ddPackSelect.Update(delta);
                 if (Global.XnaGame.IsKeyPressed(Keys.Left))
                 {
-                    OnButtonPressed(21);
+                    OnButtonPressed(MenuButtonId.PreviousPack);
                     return;
                 }
                 if (Global.XnaGame.IsKeyPressed(Keys.Right))
                 {
-                    OnButtonPressed(20);
+                    OnButtonPressed(MenuButtonId.NextPack);
                     return;
                 }
                 if ((Global.XnaGame.IsKeyPressed(Keys.Space) || Global.XnaGame.IsKeyPressed(Keys.Enter)) && !bScrolling)
                 {
-                    OnButtonPressed(23 + currentPack);
+                    OnButtonPressed(new MenuButtonId(MenuButtonId.PackSelectBase + currentPack));
                     return;
                 }
             }
@@ -1623,27 +1629,27 @@ namespace CutTheRope.GameMain
             {
                 if (ep != null)
                 {
-                    OnButtonPressed(40);
+                    OnButtonPressed(MenuButtonId.ClosePopup);
                 }
                 else
                 {
-                    OnButtonPressed(41);
+                    OnButtonPressed(MenuButtonId.ShowQuitPopup);
                 }
             }
             switch (num)
             {
                 case 1:
-                    OnButtonPressed(36);
+                    OnButtonPressed(MenuButtonId.BackFromOptions);
                     break;
                 case 3:
                 case 4:
-                    OnButtonPressed(10);
+                    OnButtonPressed(MenuButtonId.BackToOptions);
                     break;
                 case 5:
-                    OnButtonPressed(35);
+                    OnButtonPressed(MenuButtonId.BackFromPackSelect);
                     break;
                 case 6:
-                    OnButtonPressed(12);
+                    OnButtonPressed(MenuButtonId.PackSelect);
                     break;
                 default:
                     break;
@@ -1670,7 +1676,6 @@ namespace CutTheRope.GameMain
         public const int VIEW_LEADERBOARDS = 8;
 
         public const int VIEW_ACHIEVEMENTS = 9;
-        public const int BUTTON_LEVEL_1 = 1000;
         public DelayedDispatcher ddMainMenu;
 
         public DelayedDispatcher ddPackSelect;
@@ -1706,6 +1711,8 @@ namespace CutTheRope.GameMain
 
         private Popup ep;
 
+        private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
+
         public sealed class TouchBaseElement : BaseElement
         {
             public override bool OnTouchDownXY(float tx, float ty)
@@ -1721,7 +1728,7 @@ namespace CutTheRope.GameMain
                 return false;
             }
 
-            public int bid;
+            public MenuButtonId bid;
 
             public CTRRectangle bbc;
 
@@ -1737,12 +1744,24 @@ namespace CutTheRope.GameMain
 
             public static MonsterSlot MonsterSlot_createWithResID(int r)
             {
-                return MonsterSlot_create(Application.GetTexture(r));
+                return MonsterSlot_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+            }
+
+            public static MonsterSlot MonsterSlot_createWithResID(string resourceName)
+            {
+                return MonsterSlot_create(Application.GetTexture(resourceName));
             }
 
             public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
-                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(r));
+                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+                monsterSlot.SetDrawQuad(q);
+                return monsterSlot;
+            }
+
+            public static MonsterSlot MonsterSlot_createWithResIDQuad(string resourceName, int q)
+            {
+                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(resourceName));
                 monsterSlot.SetDrawQuad(q);
                 return monsterSlot;
             }
@@ -1759,7 +1778,7 @@ namespace CutTheRope.GameMain
                     DrawQuad(quadToDraw);
                 }
                 float num = c.GetScroll().x;
-                Vector preCutSize = Application.GetTexture(52).preCutSize;
+                Vector preCutSize = Application.GetTexture(Resources.Img.MenuPackSelection).preCutSize;
                 if (num >= s && num < e)
                 {
                     num -= preCutSize.x + -20f;

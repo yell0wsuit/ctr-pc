@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
@@ -33,9 +35,13 @@ namespace CutTheRope.GameMain
             {
                 float num3 = RTD(2.0);
                 int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
-                int[] packResources = PackConfig.GetPackResources(pack);
-                int textureResID = packResources.Length > 1 ? packResources[1] : 105 + (pack * 2);
-                CTRTexture2D texture = Application.GetTexture(textureResID);
+                string[] packResources = PackConfig.GetPackResourceNames(pack);
+                string textureResourceName = packResources.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+                if (string.IsNullOrWhiteSpace(textureResourceName))
+                {
+                    throw new InvalidDataException($"packs.xml is missing secondary resourceNames for pack {pack}.");
+                }
+                CTRTexture2D texture = Application.GetTexture(textureResourceName);
                 int num4 = 0;
                 float num5 = texture.quadOffsets[num4].y;
                 CTRRectangle r = texture.quadRects[num4];

@@ -16,12 +16,11 @@ namespace CutTheRope.GameMain
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            int[] coverResources = PackConfig.GetCoverResources(cTRRootController.GetPack());
-            int num7 = coverResources.Length > 0 ? coverResources[0] : 126 + cTRRootController.GetPack();
+            string coverResourceName = PackConfig.GetCoverResourceNameOrDefault(cTRRootController.GetPack());
             float num2 = Application.SharedResourceMgr().GetPercentLoaded();
-            CTRTexture2D texture = Application.GetTexture(num7);
+            CTRTexture2D texture = Application.GetTexture(coverResourceName);
             OpenGL.GlColor4f(s_Color1);
-            Vector quadSize = Image.GetQuadSize(num7, 0);
+            Vector quadSize = Image.GetQuadSize(coverResourceName, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.x;
             GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
             OpenGL.GlPushMatrix();
@@ -31,16 +30,16 @@ namespace CutTheRope.GameMain
             OpenGL.GlTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
             GLDrawer.DrawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
             OpenGL.GlPopMatrix();
-            CTRTexture2D texture2 = Application.GetTexture(5);
+            CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);
             if (!game)
             {
                 OpenGL.GlEnable(4);
                 OpenGL.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
             }
             OpenGL.GlColor4f(Color.White);
-            num3 = Image.GetQuadOffset(5, 0).x;
+            num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).x;
             GLDrawer.DrawImageQuad(texture2, 0, (double)num3, 80.0);
-            num3 = Image.GetQuadOffset(5, 1).x;
+            num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).x;
             GLDrawer.DrawImageQuad(texture2, 1, (double)num3, 80.0);
             if (!game)
             {
@@ -48,7 +47,7 @@ namespace CutTheRope.GameMain
             }
             if (game)
             {
-                Vector quadOffset = Image.GetQuadOffset(5, 3);
+                Vector quadOffset = Image.GetQuadOffset(Resources.Img.MenuLoading, 3);
                 float num5 = (float)(1250.0 * (double)num2 / 100.0);
                 GLDrawer.DrawImageQuad(texture2, 3, quadOffset.x, 700f - num5);
             }
