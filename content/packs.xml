@@ -1,15 +1,15 @@
 <?xml version="1.0" ?>
 <packs>
-  <pack index="0" unlockStars="0" resources="104,105" coverResources="126" levelCount="25" />
-  <pack index="1" unlockStars="30" resources="106,107" coverResources="127" levelCount="25" />
-  <pack index="2" unlockStars="80" resources="108,109" coverResources="128" levelCount="25" />
-  <pack index="3" unlockStars="170" resources="110,111" coverResources="129" levelCount="25" />
-  <pack index="4" unlockStars="240" resources="112,113" coverResources="130" levelCount="25" />
-  <pack index="5" unlockStars="300" resources="114,115" coverResources="131" levelCount="25" />
-  <pack index="6" unlockStars="350" resources="116,117" coverResources="132" levelCount="25" />
-  <pack index="7" unlockStars="400" resources="118,119" coverResources="133" levelCount="25" />
-  <pack index="8" unlockStars="450" resources="120,121" coverResources="134" levelCount="25" />
-  <pack index="9" unlockStars="500" resources="122,123" coverResources="135" levelCount="25" />
-  <pack index="10" unlockStars="550" resources="124,125" coverResources="136" levelCount="25" />
-  <pack index="11" unlockStars="600" resources="153,154" coverResources="152" levelCount="25" />
+  <pack index="0" unlockStars="0" resourceNames="bgr_01_p1,bgr_01_p2" coverResourceNames="bgr_01_cover" levelCount="25" />
+  <pack index="1" unlockStars="30" resourceNames="bgr_02_p1,bgr_02_p2" coverResourceNames="bgr_02_cover" levelCount="25" />
+  <pack index="2" unlockStars="80" resourceNames="bgr_03_p1,bgr_03_p2" coverResourceNames="bgr_03_cover" levelCount="25" />
+  <pack index="3" unlockStars="170" resourceNames="bgr_04_p1,bgr_04_p2" coverResourceNames="bgr_04_cover" levelCount="25" />
+  <pack index="4" unlockStars="240" resourceNames="bgr_05_p1,bgr_05_p2" coverResourceNames="bgr_05_cover" levelCount="25" />
+  <pack index="5" unlockStars="300" resourceNames="bgr_06_p1,bgr_06_p2" coverResourceNames="bgr_06_cover" levelCount="25" />
+  <pack index="6" unlockStars="350" resourceNames="bgr_07_p1,bgr_07_p2" coverResourceNames="bgr_07_cover" levelCount="25" />
+  <pack index="7" unlockStars="400" resourceNames="bgr_08_p1,bgr_08_p2" coverResourceNames="bgr_08_cover" levelCount="25" earthBg="true" />
+  <pack index="8" unlockStars="450" resourceNames="bgr_09_p1,bgr_09_p2" coverResourceNames="bgr_09_cover" levelCount="25" />
+  <pack index="9" unlockStars="500" resourceNames="bgr_10_p1,bgr_10_p2" coverResourceNames="bgr_10_cover" levelCount="25" />
+  <pack index="10" unlockStars="550" resourceNames="bgr_11_p1,bgr_11_p2" coverResourceNames="bgr_11_cover" levelCount="25" />
+  <pack index="11" unlockStars="600" resourceNames="bgr_12_p1,bgr_12_p2" coverResourceNames="bgr_12_cover" levelCount="25" />
 </packs>

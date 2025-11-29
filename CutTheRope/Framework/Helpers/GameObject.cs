@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
+using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
@@ -15,7 +16,7 @@ namespace CutTheRope.Framework.Helpers
     {
         public static GameObject GameObject_createWithResID(int r)
         {
-            return GameObject_create(Application.GetTexture(r));
+            return GameObject_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         private static GameObject GameObject_create(CTRTexture2D t)
@@ -27,7 +28,14 @@ namespace CutTheRope.Framework.Helpers
 
         public static GameObject GameObject_createWithResIDQuad(int r, int q)
         {
-            GameObject gameObject = GameObject_create(Application.GetTexture(r));
+            GameObject gameObject = GameObject_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+            gameObject.SetDrawQuad(q);
+            return gameObject;
+        }
+
+        public static GameObject GameObject_createWithResIDQuad(string resourceName, int q)
+        {
+            GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));
             gameObject.SetDrawQuad(q);
             return gameObject;
         }
@@ -88,7 +96,7 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XElement xml)
         {
-            if (base.InitWithTexture(Application.GetTexture(t)) != null)
+            if (base.InitWithTexture(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(t))) != null)
             {
                 float num = xml.AttributeAsNSString("x").IntValue();
                 float num2 = xml.AttributeAsNSString("y").IntValue();

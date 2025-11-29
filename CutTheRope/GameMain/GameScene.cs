@@ -443,7 +443,14 @@ namespace CutTheRope.GameMain
 
             public static GameObjectSpecial GameObjectSpecial_createWithResIDQuad(int r, int q)
             {
-                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.GetTexture(r));
+                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+                gameObjectSpecial.SetDrawQuad(q);
+                return gameObjectSpecial;
+            }
+
+            public static GameObjectSpecial GameObjectSpecial_createWithResIDQuad(string resourceName, int q)
+            {
+                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.GetTexture(resourceName));
                 gameObjectSpecial.SetDrawQuad(q);
                 return gameObjectSpecial;
             }

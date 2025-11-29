@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
+using CutTheRope.GameMain;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -13,18 +14,50 @@ namespace CutTheRope.Framework.Visual
 
         public static Vector GetQuadSize(int textureID, int quad)
         {
-            CTRTexture2D texture2D = Application.GetTexture(textureID);
+            CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
+            return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
+        }
+
+        /// <summary>
+        /// Gets the quad size for the specified texture name.
+        /// </summary>
+        /// <param name="textureResourceName">Texture resource name.</param>
+        /// <param name="quad">Index of the quad.</param>
+        public static Vector GetQuadSize(string textureResourceName, int quad)
+        {
+            CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
             return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
         public static Vector GetQuadOffset(int textureID, int quad)
         {
-            return Application.GetTexture(textureID).quadOffsets[quad];
+            return Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID)).quadOffsets[quad];
+        }
+
+        /// <summary>
+        /// Gets the quad offset for the specified texture name.
+        /// </summary>
+        /// <param name="textureResourceName">Texture resource name.</param>
+        /// <param name="quad">Index of the quad.</param>
+        public static Vector GetQuadOffset(string textureResourceName, int quad)
+        {
+            return Application.GetTexture(textureResourceName).quadOffsets[quad];
         }
 
         public static Vector GetQuadCenter(int textureID, int quad)
         {
-            CTRTexture2D texture2D = Application.GetTexture(textureID);
+            CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
+            return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
+        }
+
+        /// <summary>
+        /// Gets the quad center for the specified texture name.
+        /// </summary>
+        /// <param name="textureResourceName">Texture resource name.</param>
+        /// <param name="quad">Index of the quad.</param>
+        public static Vector GetQuadCenter(string textureResourceName, int quad)
+        {
+            CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
             return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
         }
 
@@ -34,9 +67,35 @@ namespace CutTheRope.Framework.Visual
             return VectSub(GetQuadOffset(textureID, quad), quadOffset);
         }
 
+        /// <summary>
+        /// Gets the quad offset relative to another quad for the specified texture name.
+        /// </summary>
+        /// <param name="textureResourceName">Texture resource name.</param>
+        /// <param name="quadToCountFrom">Base quad index.</param>
+        /// <param name="quad">Target quad index.</param>
+        public static Vector GetRelativeQuadOffset(string textureResourceName, int quadToCountFrom, int quad)
+        {
+            Vector quadOffset = GetQuadOffset(textureResourceName, quadToCountFrom);
+            return VectSub(GetQuadOffset(textureResourceName, quad), quadOffset);
+        }
+
         public static void SetElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
         {
             Vector quadCenter = GetQuadCenter(textureID, quad);
+            e.x = quadCenter.x;
+            e.y = quadCenter.y;
+            e.anchor = 18;
+        }
+
+        /// <summary>
+        /// Positions an element using the center of the specified quad and texture name.
+        /// </summary>
+        /// <param name="e">Element to position.</param>
+        /// <param name="textureResourceName">Texture resource name.</param>
+        /// <param name="quad">Target quad.</param>
+        public static void SetElementPositionWithQuadCenter(BaseElement e, string textureResourceName, int quad)
+        {
+            Vector quadCenter = GetQuadCenter(textureResourceName, quad);
             e.x = quadCenter.x;
             e.y = quadCenter.y;
             e.anchor = 18;
@@ -49,9 +108,36 @@ namespace CutTheRope.Framework.Visual
             e.y = quadOffset.y;
         }
 
+        /// <summary>
+        /// Positions an element using the offset of the specified quad and texture name.
+        /// </summary>
+        /// <param name="e">Element to position.</param>
+        /// <param name="textureResourceName">Texture resource name.</param>
+        /// <param name="quad">Target quad.</param>
+        public static void SetElementPositionWithQuadOffset(BaseElement e, string textureResourceName, int quad)
+        {
+            Vector quadOffset = GetQuadOffset(textureResourceName, quad);
+            e.x = quadOffset.x;
+            e.y = quadOffset.y;
+        }
+
         public static void SetElementPositionWithRelativeQuadOffset(BaseElement e, int textureID, int quadToCountFrom, int quad)
         {
             Vector relativeQuadOffset = GetRelativeQuadOffset(textureID, quadToCountFrom, quad);
+            e.x = relativeQuadOffset.x;
+            e.y = relativeQuadOffset.y;
+        }
+
+        /// <summary>
+        /// Positions an element using the relative offset of the specified quad and texture name.
+        /// </summary>
+        /// <param name="e">Element to position.</param>
+        /// <param name="textureResourceName">Texture resource name.</param>
+        /// <param name="quadToCountFrom">Base quad index.</param>
+        /// <param name="quad">Target quad index.</param>
+        public static void SetElementPositionWithRelativeQuadOffset(BaseElement e, string textureResourceName, int quadToCountFrom, int quad)
+        {
+            Vector relativeQuadOffset = GetRelativeQuadOffset(textureResourceName, quadToCountFrom, quad);
             e.x = relativeQuadOffset.x;
             e.y = relativeQuadOffset.y;
         }
@@ -61,14 +147,35 @@ namespace CutTheRope.Framework.Visual
             return new Image().InitWithTexture(t);
         }
 
+        /// <summary>
+        /// Creates an image from the specified texture resource name.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        public static Image Image_createWithResID(string resourceName)
+        {
+            return Image_create(Application.GetTexture(resourceName));
+        }
+
         public static Image Image_createWithResID(int r)
         {
-            return Image_create(Application.GetTexture(r));
+            return Image_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         public static Image Image_createWithResIDQuad(int r, int q)
         {
-            Image image = Image_create(Application.GetTexture(r));
+            Image image = Image_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+            image.SetDrawQuad(q);
+            return image;
+        }
+
+        /// <summary>
+        /// Creates an image from the specified texture resource name and sets the draw quad.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <param name="q">Quad index to draw.</param>
+        public static Image Image_createWithResIDQuad(string resourceName, int q)
+        {
+            Image image = Image_create(Application.GetTexture(resourceName));
             image.SetDrawQuad(q);
             return image;
         }
@@ -76,6 +183,10 @@ namespace CutTheRope.Framework.Visual
         public virtual Image InitWithTexture(CTRTexture2D t)
         {
             texture = t;
+            if (texture == null)
+            {
+                throw new InvalidOperationException("Failed to initialize Image: texture is null. The texture resource may not exist or failed to load.");
+            }
             restoreCutTransparency = false;
             if (texture.quadsCount > 0)
             {

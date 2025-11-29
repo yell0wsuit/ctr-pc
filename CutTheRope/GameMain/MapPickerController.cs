@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
                 height = (int)SCREEN_HEIGHT
             };
             _ = view.AddChild(rectangleElement);
-            FontGeneric font = Application.GetFont(4);
+            FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
             Text text = new Text().InitWithFont(font);
             text.SetString("Loading...");
             text.anchor = text.parentAnchor = 18;
@@ -43,13 +43,13 @@ namespace CutTheRope.GameMain
                 height = (int)SCREEN_HEIGHT
             };
             _ = view.AddChild(rectangleElement);
-            FontGeneric font = Application.GetFont(4);
+            FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
             Text text = new Text().InitWithFont(font);
             text.SetString("START");
             Text text2 = new Text().InitWithFont(font);
             text2.SetString("START");
             text2.scaleX = text2.scaleY = 1.2f;
-            Button button = new Button().InitWithUpElementDownElementandID(text, text2, 0);
+            Button button = new Button().InitWithUpElementDownElementandID(text, text2, MapPickerControllerButtonId.Start);
             button.anchor = button.parentAnchor = 34;
             button.delegateButtonDelegate = this;
             _ = view.AddChild(button);
@@ -106,12 +106,17 @@ namespace CutTheRope.GameMain
             selectedMap = map;
         }
 
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(MapPickerControllerButtonId n)
         {
-            if (n == 0)
+            if (n == MapPickerControllerButtonId.Start)
             {
                 LoadList();
             }
+        }
+
+        void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
+        {
+            OnButtonPressed(MapPickerControllerButtonId.FromButtonId(buttonId));
         }
 
         private string selectedMap;

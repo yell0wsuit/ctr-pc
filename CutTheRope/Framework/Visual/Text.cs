@@ -8,9 +8,9 @@ namespace CutTheRope.Framework.Visual
 {
     internal class Text : BaseElement
     {
-        public static Text CreateWithFontandString(int i, string str)
+        public static Text CreateWithFontandString(string fontResourceName, string str)
         {
-            Text text = new Text().InitWithFont(Application.GetFont(i));
+            Text text = new Text().InitWithFont(Application.GetFont(fontResourceName));
             text.SetString(str);
             return text;
         }

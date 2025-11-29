@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
 
         public override GhostMorphingParticles InitWithTotalParticles(int numberOfParticles)
         {
-            if (InitWithTotalParticlesandImageGrid(numberOfParticles, Image.Image_createWithResID(180)) != null)
+            if (InitWithTotalParticlesandImageGrid(numberOfParticles, Image.Image_createWithResID(Resources.Img.ObjGhost)) != null)
             {
                 size = 0.8f;
                 sizeVar = 0.4f;

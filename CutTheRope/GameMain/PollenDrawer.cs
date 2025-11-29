@@ -12,7 +12,7 @@ namespace CutTheRope.GameMain
     {
         public PollenDrawer()
         {
-            Image image = Image.Image_createWithResID(99);
+            Image image = Image.Image_createWithResID(Resources.Img.ObjPollenHd);
             qw = image.width * 1.5f;
             qh = image.height * 1.5f;
             totalCapacity = 200;

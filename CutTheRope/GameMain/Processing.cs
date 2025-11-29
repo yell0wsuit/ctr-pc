@@ -15,14 +15,14 @@ namespace CutTheRope.GameMain
             blendingMode = 0;
             if (loading)
             {
-                Image image = Image.Image_createWithResIDQuad(57, 0);
+                Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuProcessingHd, 0);
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(360, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1f));
                 timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                 _ = image.AddTimeline(timeline);
                 image.PlayTimeline(0);
-                Text c = Text.CreateWithFontandString(3, Application.GetString(STR_MENU_PROCESSING));
+                Text c = Text.CreateWithFontandString(Resources.Fnt.BigFont, Application.GetString(STR_MENU_PROCESSING));
                 HBox hBox = new HBox().InitWithOffsetAlignHeight(10f, 16, image.height);
                 hBox.parentAnchor = hBox.anchor = 18;
                 _ = AddChild(hBox);

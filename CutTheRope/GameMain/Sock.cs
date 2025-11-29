@@ -12,19 +12,29 @@ namespace CutTheRope.GameMain
 
         public static Sock Sock_createWithResID(int r)
         {
-            return Sock_create(Application.GetTexture(r));
+            return Sock_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
-        public static Sock Sock_createWithResIDQuad(int r, int q)
+        public static Sock Sock_createWithResID(string resourceName)
         {
-            Sock sock = Sock_create(Application.GetTexture(r));
+            return Sock_create(Application.GetTexture(resourceName));
+        }
+
+        /// <summary>
+        /// Creates a sock using a texture resource name and quad index.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <param name="q">Quad index.</param>
+        public static Sock Sock_createWithResIDQuad(string resourceName, int q)
+        {
+            Sock sock = Sock_create(Application.GetTexture(resourceName));
             sock.SetDrawQuad(q);
             return sock;
         }
 
         public void CreateAnimations()
         {
-            light = Animation_createWithResID(85);
+            light = Animation_createWithResID(Resources.Img.ObjHat);
             light.anchor = 34;
             light.parentAnchor = 10;
             light.y = 270f;

@@ -13,7 +13,7 @@ namespace CutTheRope.GameMain
         {
             x = px;
             y = py;
-            Image image = Image_createWithResIDQuad(180, 5);
+            Image image = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
             image.x = x - 60f;
             image.y = y + 2f;
             image.anchor = 18;
@@ -34,7 +34,7 @@ namespace CutTheRope.GameMain
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
 
-            Image image2 = Image_createWithResIDQuad(180, 4);
+            Image image2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
             image2.x = x + 58f;
             image2.y = y + 18f;
             image2.anchor = 18;
@@ -55,7 +55,7 @@ namespace CutTheRope.GameMain
             image2.AddTimelinewithID(timeline2, 0);
             image2.PlayTimeline(0);
 
-            Image image3 = Image_createWithResIDQuad(180, 2);
+            Image image3 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 2);
             image3.x = x - 15f;
             image3.y = y + 45f;
             image3.anchor = 18;

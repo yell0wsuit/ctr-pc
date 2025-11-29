@@ -14,12 +14,17 @@ namespace CutTheRope.GameMain
 
         public static Star Star_createWithResID(int r)
         {
-            return Star_create(Application.GetTexture(r));
+            return Star_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+        }
+
+        public static Star Star_createWithResID(string resourceName)
+        {
+            return Star_create(Application.GetTexture(resourceName));
         }
 
         public static Star Star_createWithResIDQuad(int r, int q)
         {
-            Star star = Star_create(Application.GetTexture(r));
+            Star star = Star_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
             star.SetDrawQuad(q);
             return star;
         }
@@ -48,7 +53,7 @@ namespace CutTheRope.GameMain
         {
             if (timeout > 0.0)
             {
-                timedAnim = Animation_createWithResID(78);
+                timedAnim = Animation_createWithResID(Resources.Img.ObjStarIdle);
                 timedAnim.anchor = timedAnim.parentAnchor = 18;
                 float d = timeout / 37f;
                 timedAnim.AddAnimationWithIDDelayLoopFirstLast(0, d, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 55);
@@ -78,7 +83,7 @@ namespace CutTheRope.GameMain
             AddTimelinewithID(timeline3, 0);
             PlayTimeline(0);
             Timeline.UpdateTimeline(timeline3, (float)(RND_RANGE(0, 20) / 10.0));
-            Animation animation = Animation_createWithResID(78);
+            Animation animation = Animation_createWithResID(Resources.Img.ObjStarIdle);
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.PlayTimeline(0);

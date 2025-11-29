@@ -12,53 +12,26 @@ namespace CutTheRope.GameMain
     {
         public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
         {
-            int textureResID = -1;
-            if (t != -1)
-            {
-                textureResID = 93 + w - 1;
-            }
-            else
-            {
-                switch (w)
-                {
-                    case 1:
-                        textureResID = 88;
-                        break;
-                    case 2:
-                        textureResID = 89;
-                        break;
-                    case 3:
-                        textureResID = 90;
-                        break;
-                    case 4:
-                        textureResID = 91;
-                        break;
-                    case 5:
-                        textureResID = 92;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            if (InitWithTexture(Application.GetTexture(textureResID)) == null)
+            string textureResourceName = GetSpikeTexture(w, t != -1);
+            if (textureResourceName == null || InitWithTexture(Application.GetTexture(textureResourceName)) == null)
             {
                 return null;
             }
             if (t > 0)
             {
                 DoRestoreCutTransparency();
-                int num = (t - 1) * 2;
-                int q = 1 + ((t - 1) * 2);
-                Image image = Image_createWithResIDQuad(97, num);
-                Image image2 = Image_createWithResIDQuad(97, q);
+                int num = (t - 1) * ButtonFramesPerToggle;
+                int q = ButtonPressedQuadOffset + ((t - 1) * ButtonFramesPerToggle);
+                Image image = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, num);
+                Image image2 = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, q);
                 image.DoRestoreCutTransparency();
                 image2.DoRestoreCutTransparency();
-                rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, 0);
+                rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, SpikesButtonId.Rotate);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
                 _ = AddChild(rotateButton);
-                Vector quadOffset = GetQuadOffset(97, num);
-                Vector quadSize = GetQuadSize(97, num);
+                Vector quadOffset = GetQuadOffset(Resources.Img.ObjRotatableSpikesButton, num);
+                Vector quadSize = GetQuadSize(Resources.Img.ObjRotatableSpikesButton, num);
                 Vector vector = VectSub(Vect(image.texture.preCutSize.x, image.texture.preCutSize.y), VectAdd(quadSize, quadOffset));
                 rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + (quadSize.x / 2f), 0f - vector.x + (quadSize.x / 2f), 0f - quadOffset.y + (quadSize.y / 2f), 0f - vector.y + (quadSize.y / 2f));
             }
@@ -69,7 +42,7 @@ namespace CutTheRope.GameMain
             y = py;
             SetToggled(t);
             UpdateRotation();
-            if (w == 5)
+            if (w == ElectrodesWidthIndex)
             {
                 AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 0);
                 AddAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 4);
@@ -110,7 +83,7 @@ namespace CutTheRope.GameMain
             electroOn = true;
             PlayTimeline(1);
             electroTimer = onTime;
-            sndElectric = CTRSoundMgr.PlaySoundLooped(28);
+            sndElectric = CTRSoundMgr.PlaySoundLooped(Resources.Snd.Electric);
         }
 
         public void RotateSpikes()
@@ -178,18 +151,23 @@ namespace CutTheRope.GameMain
             updateRotationFlag = false;
         }
 
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(SpikesButtonId n)
         {
-            if (n == 0)
+            if (n == SpikesButtonId.Rotate)
             {
                 delegateRotateAllSpikesWithID(toggled);
                 if (spikesNormal)
                 {
-                    CTRSoundMgr.PlaySound(42);
+                    CTRSoundMgr.PlaySound(Resources.Snd.SpikeRotateIn);
                     return;
                 }
-                CTRSoundMgr.PlaySound(43);
+                CTRSoundMgr.PlaySound(Resources.Snd.SpikeRotateOut);
             }
+        }
+
+        void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
+        {
+            OnButtonPressed(SpikesButtonId.FromButtonId(buttonId));
         }
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
@@ -233,6 +211,42 @@ namespace CutTheRope.GameMain
         public rotateAllSpikesWithID delegateRotateAllSpikesWithID;
 
         private SoundEffectInstance sndElectric;
+
+        private static readonly string[] SpikeTextures =
+        [
+            Resources.Img.ObjSpikes01,
+            Resources.Img.ObjSpikes02,
+            Resources.Img.ObjSpikes03,
+            Resources.Img.ObjSpikes04,
+            Resources.Img.ObjElectrodes
+        ];
+
+        private static readonly string[] RotatableSpikeTextures =
+        [
+            Resources.Img.ObjRotatableSpikes01,
+            Resources.Img.ObjRotatableSpikes02,
+            Resources.Img.ObjRotatableSpikes03,
+            Resources.Img.ObjRotatableSpikes04
+        ];
+
+
+        private const int ElectrodesWidthIndex = 5;
+
+        private const int ButtonFramesPerToggle = 2;
+
+        private const int ButtonPressedQuadOffset = 1;
+
+        private static string GetSpikeTexture(int width, bool rotatable)
+        {
+            int index = width - 1;
+            return index < 0
+                ? null
+                : rotatable
+                ? index < RotatableSpikeTextures.Length ? RotatableSpikeTextures[index] : null
+                : width == ElectrodesWidthIndex
+                ? SpikeTextures.Length > 4 ? SpikeTextures[4] : null
+                : index < SpikeTextures.Length ? SpikeTextures[index] : null;
+        }
 
         private enum SPIKES_ANIM
         {

@@ -37,30 +37,26 @@ You can also visit <https://free-tex-packer.com/app/> for packing sprites online
 
 **File naming is critical:** The JSON and XNB must share the same base name (e.g., `obj_candy_02.json` and `obj_candy_02.xnb`)
 
-### 2. Add Resource ID + Name Mapping
+### 2. Add Resource Name Constant
 
-In `CutTheRope/GameMain/CTRResourceMgr.cs`, find the `XNA_ResName()` method and add your texture to the dictionary:
+For image/texture, add a new constant to `Resources.Img` class in `Resources.cs`.
+For sound or music, add a new constant to `Resources.Snd` class in `Resources.cs`.
 
 ```csharp
-public static string XNA_ResName(int resId)
+public static class Resources
 {
-    resNames_ ??= new Dictionary<int, string>
+    public static class Img
     {
-        // ... existing entries ...
-        { 149, "menu_extra_buttons_en" },
-
-        // ADD YOUR NEW ENTRY HERE:
-        { 150, "my_new_texture" },  // New resource ID and name WITHOUT extension
-    };
-    _ = resNames_.TryGetValue(HandleLocalizedResource(resId), out string value);
-    return value;
+        // ... existing constants ...
+        public const string MyNewTexture = "my_new_texture";
+    }
 }
 ```
 
 > [!WARNING]
 >
-> - Use the next available ID (start from 150 if 149 is the last)
-> - The name must match your JSON and XNB filenames (`my_new_texture.json` + `my_new_texture.xnb`)
+> - The string constant value must match your JSON and XNB filenames (`my_new_texture.json` + `my_new_texture.xnb`)
+> - Use the constant `Resources.Img.MyNewTexture` throughout your code instead of hardcoded strings or numeric IDs
 
 ### 3. Register in `TexturePackerRegistry.json`
 
@@ -70,16 +66,14 @@ Edit `content/TexturePackerRegistry.json` and add your texture to the `textures`
 {
   "textures": [
     {
-      "resourceId": 63,
-      "name": "obj_candy_01",
+      "resourceName": "obj_candy_01",
       "atlasPath": "obj_candy_01.json",
       "useAntialias": true,
       "frameOrder": null,
       "centerOffsets": false
     },
     {
-      "resourceId": 150,
-      "name": "my_new_texture",
+      "resourceName": "my_new_texture",
       "atlasPath": "my_new_texture.json",
       "useAntialias": true,
       "frameOrder": null,
@@ -99,7 +93,7 @@ Each texture entry in `TexturePackerRegistry.json` supports the following proper
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `resourceId` | `int` | Unique resource ID (must match `XNA_ResName()` entry) |
+| `resourceName` | `string` | Unique resource name (must match the constant value in `Resources.Img`) |
 | `atlasPath` | `string` | Relative path to JSON file (e.g., `"obj_spider.json"`) |
 | `useAntialias` | `bool` | Enable antialiasing (default: `true`) |
 | `frameOrder` | `string[]` or `null` | Optional: Reorder frames by name (leave `null` for TexturePacker order) |
@@ -107,14 +101,14 @@ Each texture entry in `TexturePackerRegistry.json` supports the following proper
 
 ## How it works
 
-1. **Resource Load Request** → Game requests texture by resource ID
+1. **Resource Load Request** → Game requests texture using `Resources.Img.*` constant
 2. **Config Lookup** → `GetTextureAtlasConfig()` checks if resource should use TexturePacker
 3. **JSON Parse** → If configured, parser loads JSON and extracts frame rectangles
 4. **XNB Load** → Texture loads from matching `.xnb` file (derived from JSON filename)
 5. **Frame Application** → Sprite frame coordinates applied to texture quads
 6. **Rendering** → Game renders individual frames with correct coordinates
 
-No XML quad definitions needed!
+No XML quad definitions or hardcoded numeric IDs needed!
 
 ## Troubleshooting
 

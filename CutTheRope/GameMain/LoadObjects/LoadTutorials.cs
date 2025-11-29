@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
             if (!ShouldSkipTutorialElement(xmlNode))
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(4));
+                TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
                 tutorialText.color = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.9);
                 tutorialText.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                 tutorialText.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
@@ -62,7 +62,7 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
                 int q = new string(xmlNode.Name.LocalName.AsSpan()[8..]).IntValue() - 1;
-                GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
+                GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(Resources.Img.TutorialSigns, q);
                 gameObjectSpecial.color = RGBAColor.transparentRGBA;
                 gameObjectSpecial.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                 gameObjectSpecial.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;

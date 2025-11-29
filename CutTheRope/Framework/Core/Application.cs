@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Xml.Linq;
 
@@ -108,16 +109,41 @@ namespace CutTheRope.Framework.Core
             return new MovieMgr();
         }
 
-        internal static FontGeneric GetFont(int fontResID)
+        /// <summary>
+        /// Gets a font by its resource name.
+        /// </summary>
+        internal static FontGeneric GetFont(string fontResourceName)
         {
-            object resource = SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
+            object resource = SharedResourceMgr().LoadResource(fontResourceName, ResourceMgr.ResourceType.FONT);
             return resource as FontGeneric;
         }
 
-        internal static CTRTexture2D GetTexture(int textureResID)
+        /// <summary>
+        /// Gets a texture by its resource name.
+        /// </summary>
+        internal static CTRTexture2D GetTexture(string textureResourceName)
         {
-            object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
-            return resource as CTRTexture2D;
+            if (string.IsNullOrEmpty(textureResourceName))
+            {
+                throw new ArgumentException("Texture resource name cannot be null or empty.", nameof(textureResourceName));
+            }
+
+            object resource = SharedResourceMgr().LoadResource(textureResourceName, ResourceMgr.ResourceType.IMAGE);
+
+            if (resource is CTRTexture2D texture)
+            {
+                return texture;
+            }
+
+            string localizedName = CTRResourceMgr.HandleLocalizedResource(textureResourceName);
+            string resolvedName = string.Equals(textureResourceName, localizedName, StringComparison.Ordinal)
+                ? textureResourceName
+                : string.IsNullOrEmpty(localizedName)
+                    ? textureResourceName
+                    : $"{textureResourceName} (localized: {localizedName})";
+
+            throw new InvalidOperationException(
+                $"Texture '{resolvedName}' could not be loaded. Ensure the resource name is correct and the asset is registered in TexturePackerRegistry.json.");
         }
 
         internal static string GetString(string xmlElementName)

@@ -47,7 +47,7 @@ namespace CutTheRope.GameMain
 
             float random = RND_0_1;
 
-            ghostImageFace = Image.Image_createWithResIDQuad(180, 1);
+            ghostImageFace = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 1);
             ghostImageFace.x = position.x;
             ghostImageFace.y = position.y;
             ghostImageFace.anchor = 18;
@@ -60,7 +60,7 @@ namespace CutTheRope.GameMain
             ghostImageFace.AddTimelinewithID(faceFloat, 13);
             ghostImageFace.PlayTimeline(13);
 
-            ghostImageBody = Image.Image_createWithResIDQuad(180, 0);
+            ghostImageBody = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 0);
             ghostImageBody.x = position.x;
             ghostImageBody.y = position.y;
             ghostImageBody.anchor = 18;
@@ -201,14 +201,14 @@ namespace CutTheRope.GameMain
                     break;
                 case 2:
                     {
-                        GhostBubble ghostBubble = GhostBubble.CreateWithResIDQuad(75, RND_RANGE(1, 3));
+                        GhostBubble ghostBubble = GhostBubble.CreateWithResIDQuad(Resources.Img.ObjBubbleAttached, RND_RANGE(1, 3));
                         ghostBubble.DoRestoreCutTransparency();
                         ghostBubble.bb = MakeRectangle(0.0, 0.0, 57.0, 57.0);
                         ghostBubble.x = x;
                         ghostBubble.y = y;
                         ghostBubble.anchor = 18;
                         ghostBubble.popped = false;
-                        Image image = Image.Image_createWithResIDQuad(75, 0);
+                        Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjBubbleAttached, 0);
                         image.DoRestoreCutTransparency();
                         image.parentAnchor = image.anchor = 18;
                         _ = ghostBubble.AddChild(image);
@@ -265,7 +265,7 @@ namespace CutTheRope.GameMain
             }
 
             morphingBubbles.StartSystem(GHOST_MORPHING_BUBBLES_COUNT);
-            CTRSoundMgr.PlaySound(151);
+            CTRSoundMgr.PlaySound(Resources.Snd.GhostPuff);
         }
 
         public void ResetToNextState()

@@ -5,14 +5,24 @@ namespace CutTheRope.Framework.Visual
 {
     internal class Button : BaseElement
     {
-        public static Button CreateWithTextureUpDownID(CTRTexture2D up, CTRTexture2D down, int bID)
+        /// <summary>
+        /// Creates a button using separate up/down textures and assigns the provided identifier.
+        /// </summary>
+        /// <param name="up">Texture for the unpressed state.</param>
+        /// <param name="down">Texture for the pressed state.</param>
+        /// <param name="bID">Typed button identifier.</param>
+        public static Button CreateWithTextureUpDownID(CTRTexture2D up, CTRTexture2D down, ButtonId bID)
         {
             Image up2 = Image.Image_create(up);
             Image down2 = Image.Image_create(down);
             return new Button().InitWithUpElementDownElementandID(up2, down2, bID);
         }
 
-        public virtual Button InitWithID(int n)
+        /// <summary>
+        /// Initializes the button with its identifier.
+        /// </summary>
+        /// <param name="n">Typed button identifier.</param>
+        public virtual Button InitWithID(ButtonId n)
         {
             buttonID = n;
             state = BUTTON_STATE.BUTTON_UP;
@@ -24,7 +34,13 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
-        public virtual Button InitWithUpElementDownElementandID(BaseElement up, BaseElement down, int n)
+        /// <summary>
+        /// Initializes the button with separate elements for up/down states and an identifier.
+        /// </summary>
+        /// <param name="up">Element to render while the button is up.</param>
+        /// <param name="down">Element to render while the button is pressed.</param>
+        /// <param name="n">Typed button identifier.</param>
+        public virtual Button InitWithUpElementDownElementandID(BaseElement up, BaseElement down, ButtonId n)
         {
             if (InitWithID(n) != null)
             {
@@ -131,7 +147,10 @@ namespace CutTheRope.Framework.Visual
 
         public const float TOUCH_MOVE_AND_UP_ZONE_INCREASE = 15f;
 
-        public int buttonID;
+        /// <summary>
+        /// Identifier forwarded to the delegate upon activation.
+        /// </summary>
+        public ButtonId buttonID;
 
         public BUTTON_STATE state;
 

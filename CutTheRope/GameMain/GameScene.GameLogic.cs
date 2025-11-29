@@ -72,7 +72,7 @@ namespace CutTheRope.GameMain
         {
             dd.CancelAllDispatches();
             target.PlayTimeline(6);
-            CTRSoundMgr.PlaySound(15);
+            CTRSoundMgr.PlaySound(Resources.Snd.MonsterChewing);
             if (candyBubble != null)
             {
                 PopCandyBubble(false);
@@ -101,7 +101,7 @@ namespace CutTheRope.GameMain
         {
             dd.CancelAllDispatches();
             target.PlayAnimationtimeline(102, 5);
-            CTRSoundMgr.PlaySound(18);
+            CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
             gameSceneDelegate.GameLost();
         }
@@ -184,8 +184,8 @@ namespace CutTheRope.GameMain
 
         public void PopBubbleAtXY(float bx, float by)
         {
-            CTRSoundMgr.PlaySound(12);
-            Animation animation = Animation.Animation_createWithResID(73);
+            CTRSoundMgr.PlaySound(Resources.Snd.BubbleBreak);
+            Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjBubblePop);
             animation.DoRestoreCutTransparency();
             animation.x = bx;
             animation.y = by;
@@ -208,19 +208,19 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(GameSceneButtonId n)
         {
             if (MaterialPoint.globalGravity.y == 784.0)
             {
                 MaterialPoint.globalGravity.y = -784f;
                 gravityNormal = false;
-                CTRSoundMgr.PlaySound(39);
+                CTRSoundMgr.PlaySound(Resources.Snd.GravityOn);
             }
             else
             {
                 MaterialPoint.globalGravity.y = 784f;
                 gravityNormal = true;
-                CTRSoundMgr.PlaySound(38);
+                CTRSoundMgr.PlaySound(Resources.Snd.GravityOff);
             }
             if (earthAnims == null)
             {
@@ -238,6 +238,11 @@ namespace CutTheRope.GameMain
                     earthAnim.PlayTimeline(1);
                 }
             }
+        }
+
+        void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
+        {
+            OnButtonPressed(GameSceneButtonId.FromButtonId(buttonId));
         }
 
         public void RotateAllSpikesWithID(int sid)

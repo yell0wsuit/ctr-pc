@@ -7,7 +7,12 @@ namespace CutTheRope.GameMain
     {
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(int resId)
         {
-            return CIGBAnimation_create(Application.GetTexture(resId));
+            return CIGBAnimation_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(resId)));
+        }
+
+        public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(string resourceName)
+        {
+            return CIGBAnimation_create(Application.GetTexture(resourceName));
         }
 
         public static CandyInGhostBubbleAnimation CIGBAnimation_create(CTRTexture2D texture)
@@ -24,7 +29,7 @@ namespace CutTheRope.GameMain
 
         public void AddSupportingCloudsTimelines()
         {
-            backCloud = Image_createWithResIDQuad(180, 6);
+            backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
             backCloud.x = x + 85f;
             backCloud.y = y + 25f;
             backCloud.anchor = backCloud.parentAnchor = 18;
@@ -44,7 +49,7 @@ namespace CutTheRope.GameMain
             backCloud.AddTimelinewithID(timeline, 0);
             backCloud.PlayTimeline(0);
 
-            backCloud2 = Image_createWithResIDQuad(180, 5);
+            backCloud2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
             backCloud2.x = x + 65f;
             backCloud2.y = y + 55f;
             backCloud2.anchor = backCloud2.parentAnchor = 18;
@@ -64,7 +69,7 @@ namespace CutTheRope.GameMain
             backCloud2.AddTimelinewithID(timeline2, 0);
             backCloud2.PlayTimeline(0);
 
-            backCloud3 = Image_createWithResIDQuad(180, 5);
+            backCloud3 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
             backCloud3.x = x - 90f;
             backCloud3.y = y + 15f;
             backCloud3.anchor = backCloud3.parentAnchor = 18;
@@ -84,7 +89,7 @@ namespace CutTheRope.GameMain
             backCloud3.AddTimelinewithID(timeline3, 0);
             backCloud3.PlayTimeline(0);
 
-            Image image = Image_createWithResIDQuad(180, 6);
+            Image image = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
             image.x = x - 75f;
             image.y = y + 45f;
             image.anchor = image.parentAnchor = 18;
@@ -105,7 +110,7 @@ namespace CutTheRope.GameMain
             image.AddTimelinewithID(timeline4, 0);
             image.PlayTimeline(0);
 
-            Image image2 = Image_createWithResIDQuad(180, 2);
+            Image image2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 2);
             image2.x = x - 20f;
             image2.y = y + 75f;
             image2.anchor = image2.parentAnchor = 18;
