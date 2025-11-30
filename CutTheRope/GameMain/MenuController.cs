@@ -633,7 +633,7 @@ namespace CutTheRope.GameMain
             string nSString = nsstring;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
-            touchBaseElement.bid = n != CTRPreferences.GetPacksCount() ? new MenuButtonId(MenuButtonId.PackSelectBase + n) : new MenuButtonId(-1);
+            touchBaseElement.bid = n != CTRPreferences.GetPacksCount() ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
             Image image = Image.Image_createWithResIDQuad(resourceName, q);
             image.DoRestoreCutTransparency();
             image.anchor = image.parentAnchor = 9;
@@ -995,7 +995,7 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                touchBaseElement.bid = new MenuButtonId(1000 + l);
+                touchBaseElement.bid = MenuButtonId.ForLevel(l);
                 image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelSelection, 0);
                 image.DoRestoreCutTransparency();
                 Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
@@ -1260,9 +1260,9 @@ namespace CutTheRope.GameMain
                 CTRSoundMgr.PlaySound(Resources.Snd.Tap);
             }
 
-            if (n.Value >= MenuButtonId.LevelButtonBase.Value)
+            if (n.IsLevelButton())
             {
-                level = n.Value - MenuButtonId.LevelButtonBase.Value;
+                level = n.GetLevelIndex();
                 ActiveView().GetChildWithName("levelsBox").PlayTimeline(0);
                 ActiveView().GetChildWithName("shadow").PlayTimeline(0);
                 ActiveView().GetChildWithName("levelsBack").PlayTimeline(0);
@@ -1479,9 +1479,9 @@ namespace CutTheRope.GameMain
                     return;
                 default:
                     // Handle pack selection buttons dynamically
-                    if (n.Value >= MenuButtonId.PackSelectBase.Value && n.Value < MenuButtonId.PackSelectBase.Value + CTRPreferences.GetPacksCount() + 1)
+                    if (n.IsPackButton())
                     {
-                        int targetPack = n.Value - MenuButtonId.PackSelectBase.Value;
+                        int targetPack = n.GetPackIndex();
                         if (pack != targetPack)
                         {
                             packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8);
@@ -1551,7 +1551,7 @@ namespace CutTheRope.GameMain
                 }
                 if ((Global.XnaGame.IsKeyPressed(Keys.Space) || Global.XnaGame.IsKeyPressed(Keys.Enter)) && !bScrolling)
                 {
-                    OnButtonPressed(new MenuButtonId(MenuButtonId.PackSelectBase + currentPack));
+                    OnButtonPressed(MenuButtonId.ForPack(currentPack));
                     return;
                 }
             }
