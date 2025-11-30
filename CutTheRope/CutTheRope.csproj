@@ -24,6 +24,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.4.1" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4.1" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
@@ -37,4 +38,18 @@
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="..\content\content.mgcb" />
+    <None Remove="..\content\bin\**\*.*" />
+    <None Remove="..\content\obj\**\*.*" />
+    <None Remove ="..\content\**\*.png" />
+    <None Remove ="..\content\sounds\sfx\*.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="..\content\content.mgcb" />
+  </ItemGroup>
+  <Target Name="RestoreDotnetTools" BeforeTargets="CollectPackageReferences">
+    <Message Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)" Importance="High" />
+    <Exec Command="dotnet tool restore" />
+  </Target>
 </Project>
