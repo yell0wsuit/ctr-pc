@@ -445,6 +445,30 @@
 /processorParam:TextureFormat=Color
 /build:bgr_12_p2.png
 
+#begin bgr_13_cover.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:bgr_13_cover.png
+
+#begin bgr_13_p1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:bgr_13_p1.png
+
 #begin big_font.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1417,6 +1441,18 @@
 /processorParam:TextureFormat=Color
 /build:obj_ghost.png
 
+#begin obj_pipe.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:obj_pipe.png
+
 #begin small_font.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1669,11 +1705,11 @@
 /processorParam:Quality=Best
 /build:sounds/sfx/steam_end.wav;sounds/sfx/steam_end
 
-#begin sounds/sfx/steam_start_2.wav
+#begin sounds/sfx/steam_start2.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sounds/sfx/steam_start_2.wav;sounds/sfx/steam_start_2
+/build:sounds/sfx/steam_start2.wav;sounds/sfx/steam_start2
 
 #begin sounds/sfx/steam_start.wav
 /importer:WavImporter
