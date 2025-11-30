@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using CutTheRope.Framework.Visual;
 
@@ -102,7 +104,7 @@ namespace CutTheRope.GameMain
         public bool IsLevelButton()
         {
             string name = GetName(this);
-            return name?.StartsWith("Level_") ?? false;
+            return name?.StartsWith("Level_", StringComparison.Ordinal) ?? false;
         }
 
         /// <summary>
@@ -111,7 +113,7 @@ namespace CutTheRope.GameMain
         public bool IsPackButton()
         {
             string name = GetName(this);
-            return name?.StartsWith("Pack_") ?? false;
+            return name?.StartsWith("Pack_", StringComparison.Ordinal) ?? false;
         }
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace CutTheRope.GameMain
         public int GetLevelIndex()
         {
             string name = GetName(this);
-            return name?.StartsWith("Level_") ?? false ? int.Parse(name[6..]) : -1;
+            return name?.StartsWith("Level_", StringComparison.Ordinal) ?? false ? int.Parse(name[6..], CultureInfo.InvariantCulture) : -1;
         }
 
         /// <summary>
@@ -129,7 +131,7 @@ namespace CutTheRope.GameMain
         public int GetPackIndex()
         {
             string name = GetName(this);
-            return name?.StartsWith("Pack_") ?? false ? int.Parse(name[5..]) : -1;
+            return name?.StartsWith("Pack_", StringComparison.Ordinal) ?? false ? int.Parse(name[5..], CultureInfo.InvariantCulture) : -1;
         }
 
         /// <summary>
