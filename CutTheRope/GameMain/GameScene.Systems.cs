@@ -62,6 +62,12 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Applies steam tube forces and interacts with candy pieces inside the flow area.
+        /// PC vs WP7 differences:
+        /// - num3 (tube width): 10f * tubeScale (WP7: 10f unscaled)
+        /// - num4 (vertical offset): 1f * tubeScale (WP7: 1f unscaled)
+        /// - num5 (collision radius): 17.5f * tubeScale (WP7: 17.5f unscaled)
+        /// - Gravity force: -32f/weight * sqrt(tubeScale) (WP7: no sqrt scaling)
+        /// - Damping factor (num): Always 5f (same in both)
         /// </summary>
         public void OperateSteamTube(SteamTube tube)
         {
@@ -94,6 +100,8 @@ namespace CutTheRope.GameMain
                             ? ((0f - vector4.x) / num) + (0.25f * num7)
                             : ABS(vector4.x) < 1f ? 0f - vector4.x : (0f - vector4.x) / num;
                     }
+                    // Gravity compensation force. sqrt(tubeScale) accounts for increased flow area.
+                    // WP7: -32f / star.weight (no sqrt scaling)
                     float num8 = -32f / star.weight * MathF.Sqrt(tubeScale);
                     if (tube.rotation != 0f)
                     {
@@ -138,6 +146,7 @@ namespace CutTheRope.GameMain
                             ? ((0f - vector7.x) / num) + (0.25f * num11)
                             : ABS(vector7.x) < 1f ? 0f - vector7.x : (0f - vector7.x) / num;
                     }
+                    // Gravity compensation force (left candy piece)
                     float num12 = -32f / starL.weight * MathF.Sqrt(tubeScale);
                     if (tube.rotation != 0f)
                     {
@@ -178,6 +187,7 @@ namespace CutTheRope.GameMain
                             ? ((0f - vector7.x) / num) + (0.25f * num15)
                             : ABS(vector7.x) < 1f ? 0f - vector7.x : (0f - vector7.x) / num;
                     }
+                    // Gravity compensation force (right candy piece)
                     float num16 = -32f / starR.weight * MathF.Sqrt(tubeScale);
                     if (tube.rotation != 0f)
                     {
