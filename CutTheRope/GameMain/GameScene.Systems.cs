@@ -66,12 +66,12 @@ namespace CutTheRope.GameMain
         public void OperateSteamTube(SteamTube tube)
         {
             float tubeScale = tube.GetHeightScale();
-            float num = 5f;
+            float num = 5f;  // Damping factor (velocity reduction)
             float num2 = DEGREES_TO_RADIANS(tube.rotation);
-            float num3 = 10f;
+            float num3 = 10f * tubeScale;  // Tube width for horizontal centering
             float currentHeightModulated = tube.GetCurrentHeightModulated();
-            float num4 = 1f;
-            float num5 = 17.5f * tubeScale;
+            float num4 = 1f * tubeScale;  // Vertical offset for collision box
+            float num5 = 17.5f * tubeScale;  // Candy collision radius (STAR_RADIUS scaled)
             Vector vector = Vect(tube.x - (num3 / 2f), tube.y - currentHeightModulated - num4);
             Vector vector2 = Vect(tube.x + (num3 / 2f), tube.y - num5);
             if (twoParts == 2)
