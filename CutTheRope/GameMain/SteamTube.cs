@@ -19,6 +19,15 @@ namespace CutTheRope.GameMain
             phase = 0f;
         }
 
+        /// <summary>
+        /// Initializes steam tube with position, rotation angle, and height scale.
+        /// </summary>
+        /// <param name="heightScale">
+        /// Scale factor for steam tube dimensions. Typically 3.0 for PC (vs 1.0 on WP7).
+        /// Scales: tube width (10f), valve position (27f), touch offset (28f), collision radius (17.5f),
+        /// base heights (32.9f/94f/141f), and vertical offset (1f).
+        /// Does NOT scale: sine wave modulation amplitude (always 1f).
+        /// </param>
         public SteamTube InitWithPositionAngle(Vector position, float angle, float heightScale = 1f)
         {
             x = position.x;
@@ -68,6 +77,10 @@ namespace CutTheRope.GameMain
             RestoreTransformations(this);
         }
 
+        /// <summary>
+        /// Gets current steam height with sine wave modulation for pulsing effect.
+        /// PC vs WP7: Modulation amplitude is constant 1f (NOT scaled by heightScale).
+        /// </summary>
         public float GetCurrentHeightModulated()
         {
             float currentHeight = GetCurrentHeight();
@@ -147,6 +160,11 @@ namespace CutTheRope.GameMain
             element.parent.RemoveChild(element);
         }
 
+        /// <summary>
+        /// Gets base steam height for current valve state (0=low, 1=medium, 2=high).
+        /// PC vs WP7: Returns base heights (32.9f/94f/141f) scaled by heightScale.
+        /// WP7 equivalent returns unscaled values.
+        /// </summary>
         private float GetCurrentHeight()
         {
             float baseHeight = steamState switch
