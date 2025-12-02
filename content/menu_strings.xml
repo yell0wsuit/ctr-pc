@@ -248,10 +248,10 @@ ta progression ?</fr>
     <de>Hauptmenü</de>
   </string>
   <string name="RATEME_TITLE">
-    <en>Enjoying Cut the Rope?</en>
-    <ru>Нравится Cut the Rope?</ru>
-    <fr>Tu aimes Cut the Rope ?</fr>
-    <de>Hat dir "Cut the Rope" gefallen?</de>
+    <en>Enjoying Cut the Rope: DX?</en>
+    <ru>Нравится Cut the Rope: DX?</ru>
+    <fr>Tu aimes Cut the Rope: DX ?</fr>
+    <de>Hat dir "Cut the Rope: DX" gefallen?</de>
   </string>
   <string name="RATEME_TEXT">
     <en>If so, please rate this game on the App Store with 5 stars so we can keep the free updates coming.</en>
@@ -351,10 +351,13 @@ ta progression ?</fr>
     <de>Bald gibt es neue Levels!</de>
   </string>
   <string name="ABOUT_TEXT">
-    <en>Cut the Rope ver. %@
-Copyright 2012 by ZeptoLab.
+    <en>Cut the Rope: DX ver. %@
 
-A game developed and published by ZeptoLab.
+A fan-made enhancement of the PC version of Cut the Rope.
+
+https://github.com/yell0wsuit/cuttherope-dx
+
+Originally developed and published by ZeptoLab. Copyright 2012 by ZeptoLab.
 
 Additional Design:
 Nataliya Omelyanchuk
@@ -362,7 +365,7 @@ Nataliya Omelyanchuk
 Music and Sounds:
 Alexander Falinski
     </en>
-    <ru>Cut the Rope версия %@
+    <ru>Cut the Rope: DX версия %@
 2012 ZeptoLab.
 
 Игра разработана и издается ZeptoLab.
@@ -373,7 +376,7 @@ Alexander Falinski
 Музыка и звуки:
 Александр Фалинский
     </ru>
-    <fr>Cut the Rope ver. %@
+    <fr>Cut the Rope: DX ver. %@
 Copyright 2012 ZeptoLab.
 
 Jeu développé et édité par ZeptoLab.
@@ -384,7 +387,7 @@ Nataliya Omelyanchuk
 Musique et bruitages :
 Alexander Falinski
     </fr>
-    <de>Cut the Rope Version: %@
+    <de>Cut the Rope: DX Version: %@
 Copyright 2012 von ZeptoLab.
 
 Das Spiel wurde von ZeptoLab entwickelt und veröffentlicht.
