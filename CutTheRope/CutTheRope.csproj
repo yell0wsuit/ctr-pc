@@ -4,17 +4,17 @@
     <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>CutTheRope</RootNamespace>
-    <AssemblyName>CutTheRope</AssemblyName>
+    <AssemblyName>CutTheRope-DX</AssemblyName>
     <TargetFramework>net9.0-windows</TargetFramework>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
-    <AssemblyVersion>1.0.0.33</AssemblyVersion>
-    <FileVersion>1.0.0.33</FileVersion>
-    <InformationalVersion>1.0.0.33</InformationalVersion>
+    <AssemblyVersion>2.1.6.0</AssemblyVersion>
+    <FileVersion>2.1.6.0</FileVersion>
+    <InformationalVersion>2.1.6.0</InformationalVersion>
     <Company>ZeptoLab</Company>
-    <Product>Cut The Rope</Product>
-    <Description>Cut The Rope</Description>
+    <Product>Cut The Rope: DX</Product>
+    <Description>Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope.</Description>
     <Copyright>Copyright © 2012</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
