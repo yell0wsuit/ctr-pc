@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Threading;
 
 using CutTheRope.Commons;
@@ -83,6 +85,9 @@ namespace CutTheRope
 
         protected override void Initialize()
         {
+            string version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
+                .FileVersion ?? "Unknown";
+            Window.Title = $"Cut The Rope: DX v{version}";
             base.Initialize();
         }
 
