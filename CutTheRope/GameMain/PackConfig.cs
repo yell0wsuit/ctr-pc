@@ -203,9 +203,9 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private static void RequireResourceNames(IReadOnlyList<string> resourceNames, string context)
+        private static void RequireResourceNames(string[] resourceNames, string context)
         {
-            if (resourceNames.Count == 0 || string.IsNullOrWhiteSpace(resourceNames[0]))
+            if (resourceNames.Length == 0 || string.IsNullOrWhiteSpace(resourceNames[0]))
             {
                 throw new InvalidDataException($"packs.xml is missing required {context}.");
             }
