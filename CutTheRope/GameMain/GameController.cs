@@ -99,10 +99,17 @@ namespace CutTheRope.GameMain
             }
             _ = image.AddChild(vBox);
             _ = gameView.AddChildwithID(image, 3);
-            AddViewwithID(gameView, 0);
             BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
             boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
             _ = gameView.AddChildwithID(boxOpenClose, 4);
+            SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
+            if (overlay != null)
+            {
+                overlay.anchor = overlay.parentAnchor = 9;
+                overlay.Start();
+                _ = gameView.AddChildwithID(overlay, 5);
+            }
+            AddViewwithID(gameView, 0);
         }
 
         public void InitGameView()

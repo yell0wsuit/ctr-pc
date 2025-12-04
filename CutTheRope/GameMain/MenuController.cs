@@ -295,6 +295,17 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        private static void AttachSnowfallOverlay(View menuView)
+        {
+            SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
+            if (overlay != null)
+            {
+                overlay.anchor = overlay.parentAnchor = 9;
+                overlay.Start();
+                _ = menuView.AddChild(overlay);
+            }
+        }
+
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
@@ -395,6 +406,7 @@ namespace CutTheRope.GameMain
                 _ = baseElement2.AddChild(image);
             }
             _ = menuView.AddChild(baseElement);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 0);
         }
 
@@ -458,6 +470,7 @@ namespace CutTheRope.GameMain
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 1);
         }
 
@@ -484,6 +497,7 @@ namespace CutTheRope.GameMain
             button3.SetName("backb");
             button3.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button3);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 4);
         }
 
@@ -497,6 +511,7 @@ namespace CutTheRope.GameMain
                 color = RGBAColor.blackRGBA
             };
             _ = movieView.AddChild(rectangleElement);
+            AttachSnowfallOverlay(movieView);
             AddViewwithID(movieView, 7);
         }
 
@@ -551,6 +566,7 @@ namespace CutTheRope.GameMain
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 3);
         }
 
@@ -863,11 +879,12 @@ namespace CutTheRope.GameMain
             nextb.scaleX = -1f;
             _ = baseElement.AddChild(nextb);
             _ = menuView.AddChild(baseElement);
-            AddViewwithID(menuView, 5);
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromPackSelect);
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
+            AddViewwithID(menuView, 5);
             int lastPack = CTRPreferences.GetLastPack();
             packContainer.PlaceToScrollPoint(lastPack);
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
@@ -1066,6 +1083,7 @@ namespace CutTheRope.GameMain
             _ = button.AddTimeline(timeline6);
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 6);
         }
 

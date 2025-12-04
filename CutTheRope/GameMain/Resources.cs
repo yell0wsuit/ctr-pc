@@ -100,7 +100,7 @@ namespace CutTheRope.GameMain
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
-                Img.ObjGhost, Img.XmasLights
+                Img.ObjGhost, Img.XmasLights, Img.Snowflakes
             ];
         }
 
@@ -248,6 +248,7 @@ namespace CutTheRope.GameMain
             public const string Bgr12P2 = "bgr_12_p2";
             public const string ObjGhost = "obj_ghost";
             public const string XmasLights = "christmas_lights";
+            public const string Snowflakes = "snowflakes";
         }
 
         /// <summary>
