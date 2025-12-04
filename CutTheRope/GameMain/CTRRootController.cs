@@ -424,6 +424,7 @@ namespace CutTheRope.GameMain
             Resources.Img.CharAnimations3,
             Resources.Img.ObjVinil,
             Resources.Img.ObjGhost,
+            Resources.Img.XmasLights,
             null
         ];
     }

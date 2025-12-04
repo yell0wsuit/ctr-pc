@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
@@ -102,7 +104,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private static void DrawBungee(Bungee b, Vector[] pts, int count, int points)
+        private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)
         {
             float num = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
             RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.475 * (double)num, 0.305 * (double)num, 0.185 * (double)num, (double)num);
@@ -198,6 +200,9 @@ namespace CutTheRope.GameMain
                 }
                 num7 += num6;
             }
+
+            b.drawPtsCount = num9;
+            b.DrawChristmasLights(num9 / 2, num, segmentStartIndex);
         }
 
         public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
@@ -454,7 +459,7 @@ namespace CutTheRope.GameMain
                     array[i] = constraintedPoint.pos;
                 }
                 OpenGL.GlLineWidth(lineWidth);
-                DrawBungee(this, array, count, 4);
+                DrawBungee(this, array, count, 4, 0);
                 OpenGL.GlLineWidth(1.0);
                 return;
             }
@@ -462,6 +467,7 @@ namespace CutTheRope.GameMain
             Vector[] array3 = new Vector[count];
             bool flag = false;
             int num = 0;
+            int cutIndex = 0;
             for (int j = 0; j < count; j++)
             {
                 ConstraintedPoint constraintedPoint2 = parts[j];
@@ -477,6 +483,7 @@ namespace CutTheRope.GameMain
                 if (constraintedPoint2.pin.x == -1f && !flag2)
                 {
                     flag = true;
+                    cutIndex = j;
                     array2[j] = constraintedPoint2.pos;
                 }
                 if (!flag)
@@ -493,13 +500,94 @@ namespace CutTheRope.GameMain
             int num2 = count - num;
             if (num2 > 0)
             {
-                DrawBungee(this, array2, num2, 4);
+                DrawBungee(this, array2, num2, 4, 0);
             }
             if (num > 0 && !hideTailParts)
             {
-                DrawBungee(this, array3, num, 4);
+                DrawBungee(this, array3, num, 4, cutIndex);
             }
             OpenGL.GlLineWidth(1.0);
+        }
+
+        private void DrawChristmasLights(int pointCount, float alpha, int segmentStartIndex)
+        {
+            if (!SpecialEvents.IsXmas || pointCount < 2 || drawPts == null || alpha <= 0f)
+            {
+                return;
+            }
+
+            CTRTexture2D texture;
+            try
+            {
+                texture = Application.GetTexture(Resources.Img.XmasLights);
+            }
+            catch
+            {
+                return;
+            }
+
+            CTRRectangle[] rects = texture.quadRects;
+            int rectCount = texture.quadsCount > 0 ? texture.quadsCount : rects?.Length ?? 0;
+            if (rectCount == 0)
+            {
+                return;
+            }
+
+            float lightSpacing = BUNGEE_REST_LEN * 1.5f;
+            float[] distances = new float[pointCount];
+            float totalDistance = 0f;
+
+            for (int i = 1; i < pointCount; i++)
+            {
+                int index = i * 2;
+                int previousIndex = index - 2;
+                float dx = drawPts[index] - drawPts[previousIndex];
+                float dy = drawPts[index + 1] - drawPts[previousIndex + 1];
+                totalDistance += MathF.Sqrt((dx * dx) + (dy * dy));
+                distances[i] = totalDistance;
+            }
+
+            RGBAColor color = RGBAColor.whiteRGBA;
+            if (alpha < 1f)
+            {
+                color.a = alpha;
+            }
+            OpenGL.GlColor4f(color.ToXNA());
+
+            lightRandomSeed ??= christmasRandom.Next(0, 1000);
+            float segmentOffset = segmentStartIndex * BUNGEE_REST_LEN;
+            float currentDistance = lightSpacing / 2f;
+
+            while (currentDistance < totalDistance)
+            {
+                for (int i = 1; i < pointCount; i++)
+                {
+                    float segmentEnd = distances[i];
+                    float segmentStart = distances[i - 1];
+                    if (currentDistance > segmentEnd)
+                    {
+                        continue;
+                    }
+
+                    float segmentDelta = Math.Max(segmentEnd - segmentStart, 0.0001f);
+                    float t = (currentDistance - segmentStart) / segmentDelta;
+                    int index = i * 2;
+                    int previousIndex = index - 2;
+                    float x = drawPts[previousIndex] + ((drawPts[index] - drawPts[previousIndex]) * t);
+                    float y = drawPts[previousIndex + 1] + ((drawPts[index + 1] - drawPts[previousIndex + 1]) * t);
+
+                    int distanceIndex = (int)MathF.Round((currentDistance + segmentOffset) / lightSpacing);
+                    int rectIndex = (lightRandomSeed.Value + distanceIndex) % rectCount;
+                    CTRRectangle rect = rects[rectIndex];
+
+                    GLDrawer.DrawImagePart(texture, rect, x - (rect.w / 2f), y - (rect.h / 2f));
+                    break;
+                }
+
+                currentDistance += lightSpacing;
+            }
+
+            OpenGL.GlColor4f(RGBAColor.whiteRGBA.ToXNA());
         }
 
         protected override void Dispose(bool disposing)
@@ -555,6 +643,10 @@ namespace CutTheRope.GameMain
         public float lineWidth;
 
         public bool hideTailParts;
+
+        private static readonly Random christmasRandom = new();
+
+        private int? lightRandomSeed;
 
         private bool ownsAnchor;
 
