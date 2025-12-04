@@ -509,13 +509,23 @@ namespace CutTheRope.GameMain
             OpenGL.GlLineWidth(1.0);
         }
 
+        /// <summary>
+        /// Draws Christmas lights along the rope during the Christmas event.
+        /// Lights are positioned at regular intervals along the rope's bezier curve,
+        /// with colors that remain consistent even when the rope is cut.
+        /// </summary>
+        /// <param name="pointCount">Number of points in the bezier curve (drawPts array length / 2)</param>
+        /// <param name="alpha">Alpha transparency value for fading effects (0.0 to 1.0)</param>
+        /// <param name="segmentStartIndex">Starting segment index for cut rope pieces, used to maintain color consistency</param>
         private void DrawChristmasLights(int pointCount, float alpha, int segmentStartIndex)
         {
+            // Early exit if Christmas mode is disabled, not enough points, or fully transparent
             if (!SpecialEvents.IsXmas || pointCount < 2 || drawPts == null || alpha <= 0f)
             {
                 return;
             }
 
+            // Load the Christmas lights texture atlas
             CTRTexture2D texture;
             try
             {
@@ -526,6 +536,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
+            // Get the sprite frames from the texture atlas
             CTRRectangle[] rects = texture.quadRects;
             int rectCount = texture.quadsCount > 0 ? texture.quadsCount : rects?.Length ?? 0;
             if (rectCount == 0)
@@ -533,12 +544,17 @@ namespace CutTheRope.GameMain
                 return;
             }
 
+            // Calculate spacing between lights (1.5x the base rope segment length)
             float lightSpacing = BUNGEE_REST_LEN * 1.5f;
+
+            // Calculate cumulative distances along the rope's bezier curve
+            // This allows us to position lights at equal intervals along the curved rope
             float[] distances = new float[pointCount];
             float totalDistance = 0f;
 
             for (int i = 1; i < pointCount; i++)
             {
+                // drawPts is a flat array: [x0, y0, x1, y1, x2, y2, ...]
                 int index = i * 2;
                 int previousIndex = index - 2;
                 float dx = drawPts[index] - drawPts[previousIndex];
@@ -547,6 +563,7 @@ namespace CutTheRope.GameMain
                 distances[i] = totalDistance;
             }
 
+            // Set the drawing color with alpha for fade effects
             RGBAColor color = RGBAColor.whiteRGBA;
             if (alpha < 1f)
             {
@@ -554,39 +571,59 @@ namespace CutTheRope.GameMain
             }
             OpenGL.GlColor4f(color.ToXNA());
 
+            // Initialize random seed for consistent light color selection across frames
+            // This seed remains the same for the lifetime of the rope
             lightRandomSeed ??= christmasRandom.Next(0, 1000);
+
+            // Calculate offset based on segment position to maintain consistent colors after cutting
+            // This ensures that when a rope is cut, the remaining pieces show the same light colors
+            // at the same absolute positions along the original rope
             float segmentOffset = segmentStartIndex * BUNGEE_REST_LEN;
+
+            // Start placing lights at half the spacing interval (centered distribution)
             float currentDistance = lightSpacing / 2f;
 
+            // Draw lights at regular intervals along the rope
             while (currentDistance < totalDistance)
             {
+                // Find which curve segment this light position falls on
                 for (int i = 1; i < pointCount; i++)
                 {
                     float segmentEnd = distances[i];
                     float segmentStart = distances[i - 1];
+
+                    // Skip segments that end before the current light position
                     if (currentDistance > segmentEnd)
                     {
                         continue;
                     }
 
+                    // Interpolate position within the segment using linear interpolation
                     float segmentDelta = Math.Max(segmentEnd - segmentStart, 0.0001f);
                     float t = (currentDistance - segmentStart) / segmentDelta;
+
+                    // Calculate the actual x,y position along the bezier curve
                     int index = i * 2;
                     int previousIndex = index - 2;
                     float x = drawPts[previousIndex] + ((drawPts[index] - drawPts[previousIndex]) * t);
                     float y = drawPts[previousIndex + 1] + ((drawPts[index + 1] - drawPts[previousIndex + 1]) * t);
 
+                    // Select light color based on absolute distance (including segment offset)
+                    // This ensures consistent colors even after the rope is cut
                     int distanceIndex = (int)MathF.Round((currentDistance + segmentOffset) / lightSpacing);
                     int rectIndex = (lightRandomSeed.Value + distanceIndex) % rectCount;
                     CTRRectangle rect = rects[rectIndex];
 
+                    // Draw the light sprite centered on the calculated position
                     GLDrawer.DrawImagePart(texture, rect, x - (rect.w / 2f), y - (rect.h / 2f));
                     break;
                 }
 
+                // Move to the next light position
                 currentDistance += lightSpacing;
             }
 
+            // Reset drawing color to default
             OpenGL.GlColor4f(RGBAColor.whiteRGBA.ToXNA());
         }
 
@@ -636,16 +673,31 @@ namespace CutTheRope.GameMain
 
         public float cutTime;
 
+        /// <summary>
+        /// Flat array of bezier curve points in the format [x0, y0, x1, y1, x2, y2, ...].
+        /// Used for rendering the rope and positioning Christmas lights.
+        /// </summary>
         public float[] drawPts = new float[200];
 
+        /// <summary>
+        /// Number of valid coordinates in the drawPts array (actual length is drawPtsCount * 2).
+        /// </summary>
         public int drawPtsCount;
 
         public float lineWidth;
 
         public bool hideTailParts;
 
+        /// <summary>
+        /// Random number generator for Christmas light color selection.
+        /// Shared across all Bungee instances to ensure variety.
+        /// </summary>
         private static readonly Random christmasRandom = new();
 
+        /// <summary>
+        /// Per-rope random seed used to select light colors deterministically.
+        /// Ensures lights maintain consistent colors across frames and after cutting.
+        /// </summary>
         private int? lightRandomSeed;
 
         private bool ownsAnchor;
