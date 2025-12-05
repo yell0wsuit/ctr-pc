@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Desktop;
 
 using Microsoft.Xna.Framework.Graphics;
@@ -67,6 +69,7 @@ namespace CutTheRope.Framework.Media
             if (waitForStart && player != null && player.State == MediaState.Stopped)
             {
                 waitForStart = false;
+                player.Play(video);
             }
         }
 
