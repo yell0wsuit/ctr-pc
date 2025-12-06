@@ -133,7 +133,7 @@ namespace CutTheRope.GameMain
                     {
                         DeleteMenu();
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
-                        string[] packResourceNames = PackConfig.GetPackResourceNames(pack);
+                        string[] packResourceNames = PackConfig.GetBoxBackgrounds(pack);
                         resourceMgr.InitLoading();
                         resourceMgr.LoadPack(PackGame);
                         resourceMgr.LoadPack(PackGameNormal);
@@ -163,7 +163,7 @@ namespace CutTheRope.GameMain
                         int packCount = CTRPreferences.GetPacksCount();
                         for (int i = 0; i < packCount; i++)
                         {
-                            resourceMgr.FreePack(PackConfig.GetCoverResourceNames(i));
+                            resourceMgr.FreePack(PackConfig.GetBoxCovers(i));
                         }
                         if (IS_WVGA)
                         {
@@ -203,7 +203,7 @@ namespace CutTheRope.GameMain
                             int packCount = CTRPreferences.GetPacksCount();
                             for (int i = 0; i < packCount; i++)
                             {
-                                resourceMgr.FreePack(PackConfig.GetPackResourceNames(i));
+                                resourceMgr.FreePack(PackConfig.GetBoxBackgrounds(i));
                             }
                             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                             resourceMgr.InitLoading();
