@@ -49,6 +49,10 @@ namespace CutTheRope.Desktop
                 float gameHeight = FrameworkTypes.SCREEN_HEIGHT / scaledViewRect.Height;
                 if (scaledViewRect != previousScaledViewRect)
                 {
+                    for (int i = 0; i < _cursorArray.Count; i++)
+                    {
+                        _cursorArray[i].Dispose();
+                    }
                     _cursorArray.Clear();
                     for (int i = 0; i < _cursorTextureArray.Count; i++)
                     {
@@ -56,10 +60,14 @@ namespace CutTheRope.Desktop
                         RenderTarget2D renderTarget = new RenderTarget2D(Global.GraphicsDevice, 64, 64, false, SurfaceFormat.Color, DepthFormat.None);
                         Global.GraphicsDevice.SetRenderTarget(renderTarget);
                         Global.GraphicsDevice.Clear(Color.Transparent);
-                        SpriteBatch mouseSpriteBatch = new SpriteBatch(Global.GraphicsDevice);
-                        mouseSpriteBatch.Begin();
-                        mouseSpriteBatch.Draw(mouseTexture, new Rectangle(0, 0, (int)((double)(mouseTexture.Width / gameWidth) * 1), (int)((double)(mouseTexture.Height / gameHeight) * 1)), Color.White); // Make the max size 64x64.
-                        mouseSpriteBatch.End();
+                        int mouseTextureWidth = (int)((mouseTexture.Width / gameWidth) * 1);
+                        int mouseTextureWidthMax = (int)(64 * 1);
+                        int mouseTextureHeight = (int)((mouseTexture.Height / gameHeight) * 1);
+                        int mouseTextureHeightMax = (int)(64 * 1);
+                        int drawWidth = mouseTextureWidth < mouseTextureWidthMax ? mouseTextureWidth : mouseTextureWidthMax;
+                        int drawHeight = mouseTextureHeight < mouseTextureHeightMax ? mouseTextureHeight : mouseTextureHeightMax; Global.SpriteBatch.Begin();
+                        Global.SpriteBatch.Draw(mouseTexture, new Rectangle(0, 0, drawWidth, drawHeight), Color.White);
+                        Global.SpriteBatch.End();
                         Global.GraphicsDevice.SetRenderTarget(null);
                         Texture2D newTexture = new Texture2D(Global.GraphicsDevice, 64, 64);
                         Color[] data = new Color[64 * 64];
@@ -77,7 +85,7 @@ namespace CutTheRope.Desktop
                 {
                     Texture2D mouseTexture = _mouseStateTranformed.LeftButton == ButtonState.Pressed ? _cursorTextureArray[1] : _cursorTextureArray[0];
                     Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                    Global.SpriteBatch.Draw(mouseTexture, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)(mouseTexture.Width / gameWidth) * 1), (int)((double)(mouseTexture.Height / gameHeight) * 1)), Color.White);
+                    Global.SpriteBatch.Draw(mouseTexture, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((mouseTexture.Width / gameWidth) * 1), (int)((mouseTexture.Height / gameHeight) * 1)), Color.White);
                     Global.SpriteBatch.End();
                 }
                 previousScaledViewRect = scaledViewRect;
