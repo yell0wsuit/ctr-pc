@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 using CutTheRope.Framework.Core;
 
@@ -60,12 +61,12 @@ namespace CutTheRope.Desktop
 
         public int TransformWindowToViewX(int x)
         {
-            return x - _scaledViewRect.X;
+            return (x - _scaledViewRect.X) * (CurrentSize.Width / Global.GraphicsDeviceManager.PreferredBackBufferWidth);
         }
 
         public int TransformWindowToViewY(int y)
         {
-            return y - _scaledViewRect.Y;
+            return (y - _scaledViewRect.Y) * (CurrentSize.Height / Global.GraphicsDeviceManager.PreferredBackBufferHeight);
         }
 
         public float TransformViewToGameX(float x)

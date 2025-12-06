@@ -65,16 +65,18 @@ namespace CutTheRope.Desktop
                         int mouseTextureHeight = (int)((mouseTexture.Height / gameHeight) * 1);
                         int mouseTextureHeightMax = (int)(64 * 1);
                         int drawWidth = mouseTextureWidth < mouseTextureWidthMax ? mouseTextureWidth : mouseTextureWidthMax;
-                        int drawHeight = mouseTextureHeight < mouseTextureHeightMax ? mouseTextureHeight : mouseTextureHeightMax; Global.SpriteBatch.Begin();
+                        int drawHeight = mouseTextureHeight < mouseTextureHeightMax ? mouseTextureHeight : mouseTextureHeightMax;
+                        Global.SpriteBatch.Begin();
                         Global.SpriteBatch.Draw(mouseTexture, new Rectangle(0, 0, drawWidth, drawHeight), Color.White);
                         Global.SpriteBatch.End();
                         Global.GraphicsDevice.SetRenderTarget(null);
-                        Texture2D newTexture = new Texture2D(Global.GraphicsDevice, 64, 64);
-                        Color[] data = new Color[64 * 64];
-                        renderTarget.GetData(data);
-                        newTexture.SetData(data);
-                        renderTarget.Dispose();
+                        Texture2D newTexture = renderTarget;//new Texture2D(Global.GraphicsDevice, 64, 64);
+                        //Color[] data = new Color[64 * 64];
+                        //renderTarget.GetData(data);
+                        //newTexture.SetData(data);
                         _cursorArray.Add(Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(newTexture, 0, 0));
+                        renderTarget.Dispose();
+                        //newTexture.Dispose();
                     }
                 }
                 if (Global.XnaGame.IsMouseVisible)
@@ -152,7 +154,7 @@ namespace CutTheRope.Desktop
 
         private Texture2D _cursorActiveTexture;
 
-        private List<Microsoft.Xna.Framework.Input.MouseCursor> _cursorArray = new List<Microsoft.Xna.Framework.Input.MouseCursor>();
+        private List<Microsoft.Xna.Framework.Input.MouseCursor> _cursorArray = [];
 
         private List<Texture2D> _cursorTextureArray;
 
