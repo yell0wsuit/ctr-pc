@@ -35,6 +35,8 @@ namespace CutTheRope
                 Global.GraphicsDeviceManager.GraphicsProfile = GraphicsProfile.Reach;
                 Global.GraphicsDeviceManager.ApplyChanges();
             }
+            // Use borderless fullscreen instead of hardware mode switch to prevent display resolution changes
+            Global.GraphicsDeviceManager.HardwareModeSwitch = false;
             Global.GraphicsDeviceManager.PreparingDeviceSettings += GraphicsDeviceManager_PreparingDeviceSettings;
             TargetElapsedTime = TimeSpan.FromTicks(166666L);
             IsFixedTimeStep = false;
@@ -61,6 +63,19 @@ namespace CutTheRope
 
         private void Window_ClientSizeChanged(object sender, EventArgs e)
         {
+            // Ignore size changes when in fullscreen mode
+            if (Global.ScreenSizeManager != null && Global.ScreenSizeManager.IsFullScreen)
+            {
+                return;
+            }
+
+            // Ignore size changes when window is minimized
+            const int MinimizedThreshold = 90;
+            if (Window.ClientBounds.Width < MinimizedThreshold && Window.ClientBounds.Height < MinimizedThreshold)
+            {
+                return;
+            }
+
             Window.ClientSizeChanged -= Window_ClientSizeChanged;
             Global.ScreenSizeManager.FixWindowSize(Window.ClientBounds);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
