@@ -1019,10 +1019,10 @@ namespace CutTheRope.GameMain
         {
             float num = 0.3f;
             MenuView menuView = new();
-            string coverResourceName = PackConfig.GetCoverResourceNameOrDefault(pack);
-            Image image = Image.Image_createWithResIDQuad(coverResourceName, 0);
-            Image image2 = Image.Image_createWithResIDQuad(coverResourceName, 0);
-            Vector quadSize = Image.GetQuadSize(coverResourceName, 0);
+            string boxCover = PackConfig.GetBoxCoverOrDefault(pack);
+            Image image = Image.Image_createWithResIDQuad(boxCover, 0);
+            Image image2 = Image.Image_createWithResIDQuad(boxCover, 0);
+            Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float x = (SCREEN_WIDTH / 2f) - quadSize.x;
             image.x = x;
             image2.x = SCREEN_WIDTH / 2f;
@@ -1216,7 +1216,7 @@ namespace CutTheRope.GameMain
         public void PreLevelSelect()
         {
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
-            string[] array = PackConfig.GetCoverResourceNames(pack);
+            string[] array = PackConfig.GetBoxCovers(pack);
             cTRResourceMgr.InitLoading();
             cTRResourceMgr.LoadPack(array);
             cTRResourceMgr.LoadImmediately();
@@ -1309,7 +1309,7 @@ namespace CutTheRope.GameMain
                         CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
                         CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
                         ctrresourceMgr.InitLoading();
-                        ctrresourceMgr.LoadPack(PackConfig.GetCoverResourceNames(pack));
+                        ctrresourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
                         ctrresourceMgr.LoadImmediately();
                         ctrrootController.SetSurvival(true);
                         ctrrootController.SetPack(pack);

@@ -15,22 +15,22 @@ namespace CutTheRope.GameMain
     internal sealed class PackDefinition(
         int unlockStars,
         int levelCount,
-        string[] packResourceNames,
+        string[] boxBackgrounds,
         string supportResourceName,
-        string[] coverResourceNames,
+        string[] boxCovers,
         bool earthBg)
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
 
         /// <summary>String resource names for pack assets.</summary>
-        public string[] PackResourceNames { get; } = packResourceNames;
+        public string[] BoxBackgrounds { get; } = boxBackgrounds;
 
         /// <summary>String resource name for the support asset.</summary>
         public string SupportResourceName { get; } = supportResourceName;
 
         /// <summary>String resource names for cover assets.</summary>
-        public string[] CoverResourceNames { get; } = coverResourceNames;
+        public string[] BoxCovers { get; } = boxCovers;
 
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
@@ -68,26 +68,26 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].LevelCount : 0;
         }
 
-        public static string[] GetPackResourceNames(int pack)
+        public static string[] GetBoxBackgrounds(int pack)
         {
-            return pack >= 0 && pack < packs.Count ? packs[pack].PackResourceNames : EmptyResourceNames;
+            return pack >= 0 && pack < packs.Count ? packs[pack].BoxBackgrounds : EmptyResourceNames;
         }
 
-        public static string[] GetCoverResourceNames(int pack)
+        public static string[] GetBoxCovers(int pack)
         {
-            return pack >= 0 && pack < packs.Count ? packs[pack].CoverResourceNames : EmptyResourceNames;
+            return pack >= 0 && pack < packs.Count ? packs[pack].BoxCovers : EmptyResourceNames;
         }
 
         /// <summary>
         /// Returns the first available cover resource name for a pack.
         /// </summary>
         /// <param name="pack">Target pack index.</param>
-        public static string GetCoverResourceNameOrDefault(int pack)
+        public static string GetBoxCoverOrDefault(int pack)
         {
-            string coverResourceName = GetCoverResourceNames(pack).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+            string coverResourceName = GetBoxCovers(pack).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
 
             return string.IsNullOrWhiteSpace(coverResourceName)
-                ? throw new InvalidDataException($"packs.xml is missing coverResourceNames for pack {pack}.")
+                ? throw new InvalidDataException($"packs.xml is missing boxCover for pack {pack}.")
                 : coverResourceName;
         }
 
@@ -121,26 +121,26 @@ namespace CutTheRope.GameMain
                 int unlockStars = ParseIntAttribute(packElement, "unlockStars");
                 int levelCount = ParseLevelCount(packElement);
 
-                string[] packResourceNames = ParseResourceNames(packElement, "resourceNames");
-                RequireResourceNames(packResourceNames, "resourceNames");
-                ValidateResourceNames(packResourceNames, "resourceNames");
+                string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
+                RequireResourceNames(boxBackgrounds, "boxBackground");
+                ValidateResourceNames(boxBackgrounds, "boxBackground");
 
                 string supportResourceName = ParseResourceName(packElement, "supportResourceName");
                 supportResourceName ??= Resources.Img.CharSupports;
                 ValidateResourceName(supportResourceName, "supportResourceName");
 
-                string[] coverResourceNames = ParseResourceNames(packElement, "coverResourceNames");
-                RequireResourceNames(coverResourceNames, "coverResourceNames");
-                ValidateResourceNames(coverResourceNames, "coverResourceNames");
+                string[] boxCovers = ParseResourceNames(packElement, "boxCover");
+                RequireResourceNames(boxCovers, "boxCover");
+                ValidateResourceNames(boxCovers, "boxCover");
 
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
                 results.Add(new PackDefinition(
                     unlockStars,
                     levelCount,
-                    packResourceNames,
+                    boxBackgrounds,
                     supportResourceName,
-                    coverResourceNames,
+                    boxCovers,
                     earthBg));
             }
 

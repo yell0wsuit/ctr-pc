@@ -39,16 +39,16 @@ namespace CutTheRope.GameMain
             };
             _ = AddChild(staticAniPool);
             camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
-            string[] packResources = PackConfig.GetPackResourceNames(cTRRootController.GetPack());
-            string textureResourceName = packResources.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
-            if (string.IsNullOrWhiteSpace(textureResourceName))
+            string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(cTRRootController.GetPack());
+            string boxBackground = boxBackgrounds.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+            if (string.IsNullOrWhiteSpace(boxBackground))
             {
-                throw new InvalidDataException($"packs.xml is missing resourceNames for pack {cTRRootController.GetPack()}.");
+                throw new InvalidDataException($"packs.xml is missing boxBackground for pack {cTRRootController.GetPack()}.");
             }
             back = new TileMap().InitWithRowsColumns(1, 1);
             back.SetRepeatHorizontally(TileMap.Repeat.NONE);
             back.SetRepeatVertically(TileMap.Repeat.ALL);
-            back.AddTileQuadwithID(Application.GetTexture(textureResourceName), 0, 0);
+            back.AddTileQuadwithID(Application.GetTexture(boxBackground), 0, 0);
             back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
             if (Canvas.isFullscreen)
             {
