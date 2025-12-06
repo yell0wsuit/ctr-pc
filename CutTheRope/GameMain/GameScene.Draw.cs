@@ -35,11 +35,11 @@ namespace CutTheRope.GameMain
             {
                 float num3 = RTD(2.0);
                 int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
-                string[] packResources = PackConfig.GetPackResourceNames(pack);
-                string textureResourceName = packResources.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+                string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(pack);
+                string textureResourceName = boxBackgrounds.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
                 if (string.IsNullOrWhiteSpace(textureResourceName))
                 {
-                    throw new InvalidDataException($"packs.xml is missing secondary resourceNames for pack {pack}.");
+                    throw new InvalidDataException($"packs.xml is missing secondary boxBackground for pack {pack}.");
                 }
                 CTRTexture2D texture = Application.GetTexture(textureResourceName);
                 int num4 = 0;

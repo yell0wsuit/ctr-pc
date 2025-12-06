@@ -361,7 +361,7 @@ namespace CutTheRope.GameMain
         {
             CreateOpenCloseAnims();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            string coverResourceName = PackConfig.GetCoverResourceNameOrDefault(cTRRootController.GetPack());
+            string boxCover = PackConfig.GetBoxCoverOrDefault(cTRRootController.GetPack());
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuResult, 16);
             image.rotationCenterX = ((float)-(float)image.width / 2f) + 1f;
             image.rotationCenterY = ((float)-(float)image.height / 2f) + 1f;
@@ -381,10 +381,10 @@ namespace CutTheRope.GameMain
             image.PlayTimeline(0);
             timeline.delegateTimelineDelegate = this;
             _ = openCloseAnims.AddChild(image);
-            Vector quadSize = Image.GetQuadSize(coverResourceName, 0);
+            Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float num2 = (SCREEN_WIDTH / 2f) - quadSize.x;
-            Image image2 = Image.Image_createWithResIDQuad(coverResourceName, 0);
-            Image image3 = Image.Image_createWithResIDQuad(coverResourceName, 0);
+            Image image2 = Image.Image_createWithResIDQuad(boxCover, 0);
+            Image image3 = Image.Image_createWithResIDQuad(boxCover, 0);
             image2.x = num2;
             image2.rotationCenterX = (float)-(float)image2.width / 2f;
             image3.rotationCenterX = image2.rotationCenterX;
@@ -467,8 +467,8 @@ namespace CutTheRope.GameMain
             }
             image5.AddTimelinewithID(timeline, 0);
             image5.PlayTimeline(0);
-            Image image6 = Image.Image_createWithResIDQuad(coverResourceName, 1);
-            Image image7 = Image.Image_createWithResIDQuad(coverResourceName, 1);
+            Image image6 = Image.Image_createWithResIDQuad(boxCover, 1);
+            Image image7 = Image.Image_createWithResIDQuad(boxCover, 1);
             image6.rotationCenterX = (float)-(float)image6.width / 2f;
             image7.rotationCenterX = image6.rotationCenterX;
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);

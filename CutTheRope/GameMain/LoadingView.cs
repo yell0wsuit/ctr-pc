@@ -16,11 +16,11 @@ namespace CutTheRope.GameMain
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            string coverResourceName = PackConfig.GetCoverResourceNameOrDefault(cTRRootController.GetPack());
+            string boxCover = PackConfig.GetBoxCoverOrDefault(cTRRootController.GetPack());
             float num2 = Application.SharedResourceMgr().GetPercentLoaded();
-            CTRTexture2D texture = Application.GetTexture(coverResourceName);
+            CTRTexture2D texture = Application.GetTexture(boxCover);
             OpenGL.GlColor4f(s_Color1);
-            Vector quadSize = Image.GetQuadSize(coverResourceName, 0);
+            Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.x;
             GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
             OpenGL.GlPushMatrix();
