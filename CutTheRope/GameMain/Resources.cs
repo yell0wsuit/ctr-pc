@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 
@@ -272,21 +273,21 @@ namespace CutTheRope.GameMain
                         FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
                         Color = Color.White,
-                        Effects = Framework.Visual.FontEffectSettings.CreateStrokeAndShadow(2, 2, 3)
+                        Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3)
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
                         FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 64f,
                         Color = Color.Black,
-                        Effects = Framework.Visual.FontEffectSettings.None
+                        Effects = FontEffectSettings.None
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
                         FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
                         Color = Color.Black,
-                        Effects = Framework.Visual.FontEffectSettings.None
+                        Effects = FontEffectSettings.None
                     },
                     _ => throw new ArgumentException($"Unknown font: {fontName}", nameof(fontName))
                 };
@@ -360,7 +361,7 @@ namespace CutTheRope.GameMain
     {
         public string FontFile { get; set; }
         public float Size { get; set; }
-        public Microsoft.Xna.Framework.Color Color { get; set; }
-        public Framework.Visual.FontEffectSettings Effects { get; set; }
+        public Color Color { get; set; }
+        public FontEffectSettings Effects { get; set; }
     }
 }
