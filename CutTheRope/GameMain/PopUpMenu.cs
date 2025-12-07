@@ -29,11 +29,13 @@ namespace CutTheRope.GameMain
             text.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 1);
             text.y -= num;
+            // Initialize text as transparent for fade-in effect
             text.color = RGBAColor.transparentRGBA;
             _ = popup.AddChild(text);
+            // Create fade-in timeline: wait 0.2s (for popup animation), then fade in over 0.2s
             Timeline timelineText = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timelineText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            timelineText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timelineText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             text.AddTimelinewithID(timelineText, 0);
             text.PlayTimeline(0);
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
@@ -43,10 +45,12 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 2);
             _ = popup.AddChild(text2);
             text2.y -= num;
+            // Initialize text as transparent for fade-in effect
             text2.color = RGBAColor.transparentRGBA;
+            // Create fade-in timeline
             Timeline timelineText2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timelineText2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            timelineText2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timelineText2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             text2.AddTimelinewithID(timelineText2, 0);
             text2.PlayTimeline(0);
             Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
@@ -55,11 +59,13 @@ namespace CutTheRope.GameMain
             text3.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text3, Resources.Img.MenuPopup, 3);
             text3.y += 50f;
+            // Initialize text as transparent for fade-in effect
             text3.color = RGBAColor.transparentRGBA;
             _ = popup.AddChild(text3);
+            // Create fade-in timeline
             Timeline timelineText3 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timelineText3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            timelineText3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timelineText3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             text3.AddTimelinewithID(timelineText3, 0);
             text3.PlayTimeline(0);
             int totalStars = CTRPreferences.GetTotalStars();
@@ -89,11 +95,13 @@ namespace CutTheRope.GameMain
             text.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
             text.y -= 170f;
+            // Initialize text as transparent for fade-in effect
             text.color = RGBAColor.transparentRGBA;
             _ = image.AddChild(text);
+            // Create fade-in timeline: wait 0.2s (for popup animation), then fade in over 0.2s
             Timeline timelineGameFinishedText = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timelineGameFinishedText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            timelineGameFinishedText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timelineGameFinishedText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             text.AddTimelinewithID(timelineGameFinishedText, 0);
             text.PlayTimeline(0);
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
@@ -102,11 +110,13 @@ namespace CutTheRope.GameMain
             text2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 3);
             text2.y += 30f;
+            // Initialize text as transparent for fade-in effect
             text2.color = RGBAColor.transparentRGBA;
             _ = image.AddChild(text2);
+            // Create fade-in timeline
             Timeline timelineGameFinishedText2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timelineGameFinishedText2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            timelineGameFinishedText2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timelineGameFinishedText2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             text2.AddTimelinewithID(timelineGameFinishedText2, 0);
             text2.PlayTimeline(0);
             Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), MenuButtonId.PopupOk, menuController);
@@ -130,11 +140,13 @@ namespace CutTheRope.GameMain
             text.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
             text.y -= 120f;
+            // Initialize text as transparent for fade-in effect
             text.color = RGBAColor.transparentRGBA;
             _ = image.AddChild(text);
+            // Create fade-in timeline: wait 0.2s (for popup animation), then fade in over 0.2s
             Timeline timelineYesNoText = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timelineYesNoText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            timelineYesNoText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timelineYesNoText.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             text.AddTimelinewithID(timelineYesNoText, 0);
             text.PlayTimeline(0);
             Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_YES), buttonYesId, menuController);
