@@ -270,21 +270,21 @@ namespace CutTheRope.GameMain
                 {
                     Fnt.BigFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? "segoeprb.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
                         Color = Color.White,
                         Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3)
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? "segoeprb.ttf" : "gooddog_new-webfont.ttf",
                         Size = 64f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? "segoeprb.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None
