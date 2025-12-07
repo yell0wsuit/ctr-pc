@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+
+using CutTheRope.Framework;
 
 namespace CutTheRope.GameMain
 {
@@ -244,13 +247,48 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Bitmap font resource names.
+        /// Font resource names (now using FontStashSharp).
         /// </summary>
         internal static class Fnt
         {
             public const string BigFont = "big_font";
             public const string SmallFont = "small_font";
             public const string FontNumbersBig = "font_numbers_big";
+        }
+
+        /// <summary>
+        /// Font configuration for FontStashSharp fonts.
+        /// </summary>
+        internal static class FontConfig
+        {
+            public static FontConfiguration GetConfiguration(string fontName, int language)
+            {
+                return fontName switch
+                {
+                    Fnt.BigFont => new FontConfiguration
+                    {
+                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBold.ttf" : "gooddog_new-webfont.ttf",
+                        Size = 100f,
+                        Color = Microsoft.Xna.Framework.Color.White,
+                        Effects = Framework.Visual.FontEffectSettings.CreateStrokeAndShadow(1, 2, 4)
+                    },
+                    Fnt.SmallFont => new FontConfiguration
+                    {
+                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBold.ttf" : "gooddog_new-webfont.ttf",
+                        Size = 64f,
+                        Color = Microsoft.Xna.Framework.Color.Black,
+                        Effects = Framework.Visual.FontEffectSettings.None
+                    },
+                    Fnt.FontNumbersBig => new FontConfiguration
+                    {
+                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBold.ttf" : "gooddog_new-webfont.ttf",
+                        Size = 100f,
+                        Color = Microsoft.Xna.Framework.Color.Black,
+                        Effects = Framework.Visual.FontEffectSettings.None
+                    },
+                    _ => throw new ArgumentException($"Unknown font: {fontName}", nameof(fontName))
+                };
+            }
         }
 
         /// <summary>
@@ -311,5 +349,16 @@ namespace CutTheRope.GameMain
         {
             public const string MenuStrings = "menu_strings";
         }
+    }
+
+    /// <summary>
+    /// Configuration for a font including size, color, and effects.
+    /// </summary>
+    internal class FontConfiguration
+    {
+        public string FontFile { get; set; }
+        public float Size { get; set; }
+        public Microsoft.Xna.Framework.Color Color { get; set; }
+        public Framework.Visual.FontEffectSettings Effects { get; set; }
     }
 }

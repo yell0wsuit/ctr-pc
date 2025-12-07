@@ -23,6 +23,7 @@
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.2" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.4.1" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4.1" />
   </ItemGroup>
@@ -42,8 +43,8 @@
     <None Remove="..\content\content.mgcb" />
     <None Remove="..\content\bin\**\*.*" />
     <None Remove="..\content\obj\**\*.*" />
-    <None Remove ="..\content\**\*.png" />
-    <None Remove ="..\content\sounds\sfx\*.wav" />
+    <None Remove="..\content\**\*.png" />
+    <None Remove="..\content\sounds\sfx\*.wav" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="..\content\content.mgcb" />

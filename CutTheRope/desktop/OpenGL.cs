@@ -600,6 +600,14 @@ namespace CutTheRope.Desktop
             s_LineWidth = width;
         }
 
+        /// <summary>
+        /// Gets the SpriteBatch instance for rendering text and sprites.
+        /// </summary>
+        public static SpriteBatch GetSpriteBatch()
+        {
+            return Global.SpriteBatch;
+        }
+
         public static void SetScissorRectangle(double x, double y, double w, double h)
         {
             SetScissorRectangle((float)x, (float)y, (float)w, (float)h);

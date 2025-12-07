@@ -4,6 +4,11 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
 
+using FontStashSharp;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.Framework.Visual
 {
     internal class Text : BaseElement
@@ -56,7 +61,12 @@ namespace CutTheRope.Framework.Visual
             if (string_ != null)
             {
                 FormatText();
-                UpdateDrawerValues();
+
+                // Only update drawer values for sprite fonts, not FontStashSharp fonts
+                if (font is not FontStashFont)
+                {
+                    UpdateDrawerValues();
+                }
                 return;
             }
             stringLength = 0;
@@ -184,8 +194,15 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             PreDraw();
-            if (stringLength > 0)
+
+            // Check if this is a FontStashSharp font
+            if (font is FontStashFont fontStashFont && !string.IsNullOrEmpty(string_))
             {
+                DrawFontStashText(fontStashFont);
+            }
+            else if (stringLength > 0)
+            {
+                // Legacy sprite font rendering
                 OpenGL.GlTranslatef(drawX, drawY, 0f);
                 int i = 0;
                 int count = multiDrawers.Count;
@@ -201,7 +218,168 @@ namespace CutTheRope.Framework.Visual
                 }
                 OpenGL.GlTranslatef(0f - drawX, 0f - drawY, 0f);
             }
+
             PostDraw();
+        }
+
+        private void DrawFontStashText(FontStashFont fontStashFont)
+        {
+            SpriteBatch spriteBatch = OpenGL.GetSpriteBatch();
+            if (spriteBatch == null)
+            {
+                System.Diagnostics.Debug.WriteLine("FontStash: SpriteBatch is null");
+                return;
+            }
+
+            DynamicSpriteFont internalFont = fontStashFont.GetInternalFont();
+            if (internalFont == null)
+            {
+                System.Diagnostics.Debug.WriteLine("FontStash: Internal font is null");
+                return;
+            }
+
+            if (formattedStrings == null || formattedStrings.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"FontStash: No formatted strings for text: {string_}");
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"FontStash: Drawing text '{string_}' at ({drawX}, {drawY}) with {formattedStrings.Count} lines");
+
+            FontEffectSettings effects = fontStashFont.GetEffectSettings();
+            Color textColor = fontStashFont.GetColor();
+
+            // Apply element color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
+            static byte ScaleByte(byte channel, float factor)
+            {
+                float scaled = channel * factor; // factor already 0-1, so no /255
+                if (scaled < 0f)
+                {
+                    scaled = 0f;
+                }
+                if (scaled > 255f)
+                {
+                    scaled = 255f;
+                }
+                return (byte)scaled;
+            }
+
+            Color finalColor = new(
+                ScaleByte(textColor.R, color.r),
+                ScaleByte(textColor.G, color.g),
+                ScaleByte(textColor.B, color.b),
+                ScaleByte(textColor.A, color.a)
+            );
+
+            float yPos = drawY;
+            int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
+
+            // Calculate scale from virtual coordinates to physical viewport
+            GraphicsDevice graphicsDevice = Global.GraphicsDevice;
+            Viewport viewport = graphicsDevice.Viewport;
+
+            float scaleX = viewport.Width / SCREEN_WIDTH;
+            float scaleY = viewport.Height / SCREEN_HEIGHT;
+
+            // Create transformation matrix to convert from virtual game coordinates to physical screen coordinates
+            Matrix transformMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
+
+            // Begin SpriteBatch for text rendering with proper scaling
+            spriteBatch.Begin(
+                SpriteSortMode.Immediate,
+                BlendState.AlphaBlend,
+                SamplerState.LinearClamp,
+                null,
+                null,
+                null,
+                transformMatrix
+            );
+
+            // Render each formatted line
+            foreach (FormattedString formattedString in formattedStrings)
+            {
+                if (maxHeight != -1f && yPos >= drawY + maxHeight)
+                {
+                    break;
+                }
+
+                float xPos = drawX;
+
+                // Calculate alignment offset
+                if (align == 2) // Center
+                {
+                    xPos += (wrapWidth - formattedString.width) / 2f;
+                }
+                else if (align == 3) // Right
+                {
+                    xPos += wrapWidth - formattedString.width;
+                }
+
+                Vector2 position = new(xPos, yPos);
+
+                // Draw shadow if enabled
+                if (effects?.HasShadow == true)
+                {
+                    Vector2 shadowPos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
+                    Color shadowColor = new(
+                        ScaleByte(effects.ShadowColor.R, color.r),
+                        ScaleByte(effects.ShadowColor.G, color.g),
+                        ScaleByte(effects.ShadowColor.B, color.b),
+                        ScaleByte(effects.ShadowColor.A, color.a)
+                    );
+
+                    // Use FontStashSharp's DrawText extension method
+                    _ = internalFont.DrawText(
+                        spriteBatch,
+                        formattedString.string_,
+                        shadowPos,
+                        shadowColor
+                    );
+                }
+
+                // Draw stroke if enabled
+                if (effects?.HasStroke == true)
+                {
+                    Color strokeColor = new(
+                        ScaleByte(effects.StrokeColor.R, color.r),
+                        ScaleByte(effects.StrokeColor.G, color.g),
+                        ScaleByte(effects.StrokeColor.B, color.b),
+                        ScaleByte(effects.StrokeColor.A, color.a)
+                    );
+                    int strokeAmount = effects.StrokeAmount;
+
+                    for (int x = -strokeAmount; x <= strokeAmount; x++)
+                    {
+                        for (int y = -strokeAmount; y <= strokeAmount; y++)
+                        {
+                            if (x != 0 || y != 0)
+                            {
+                                Vector2 strokePos = position + new Vector2(x, y);
+                                // Use FontStashSharp's DrawText extension method
+                                _ = internalFont.DrawText(
+                                    spriteBatch,
+                                    formattedString.string_,
+                                    strokePos,
+                                    strokeColor
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // Draw main text using FontStashSharp's DrawText extension method
+                _ = internalFont.DrawText(
+                    spriteBatch,
+                    formattedString.string_,
+                    position,
+                    finalColor
+                );
+
+                yPos += lineHeight;
+            }
+
+            // End SpriteBatch
+            spriteBatch.End();
         }
 
         public virtual void FormatText()

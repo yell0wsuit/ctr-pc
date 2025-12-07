@@ -182,6 +182,31 @@ namespace CutTheRope.Framework.Core
 
         public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
         {
+            // Get font configuration based on the resource name
+            string resourceName = ResourceNameTranslator.TranslateLegacyId(resID);
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                // Fallback to old sprite font loading if no resource name found
+                return LoadSpriteFontInfo(path, resID, isWvga);
+            }
+
+            // Load FontStashSharp font using the new system
+            FontConfiguration config = Resources.FontConfig.GetConfiguration(resourceName, (int)LANGUAGE);
+            FontStashFont fontStashFont = FontManager.LoadFont(
+                config.FontFile,
+                config.Size,
+                config.Color,
+                config.Effects
+            );
+
+            return fontStashFont;
+        }
+
+        /// <summary>
+        /// Legacy sprite font loading (kept for backward compatibility).
+        /// </summary>
+        private FontGeneric LoadSpriteFontInfo(string path, int resID, bool isWvga)
+        {
             XElement xmlnode = XElementExtensions.LoadContentXml(path);
             int num = xmlnode.AttributeAsNSString("charoff").IntValue();
             int num2 = xmlnode.AttributeAsNSString("lineoff").IntValue();
