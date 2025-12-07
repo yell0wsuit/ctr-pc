@@ -148,29 +148,32 @@ namespace CutTheRope.GameMain
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
-            if (t.element is not RotatedCircle rotatedCircle || rotatedCircles.GetObjectIndex(rotatedCircle) != -1 || i != 1)
+            if (t.element is RotatedCircle rotatedCircle && rotatedCircles.GetObjectIndex(rotatedCircle) != -1)
             {
                 return;
             }
-            blinkTimer--;
-            if (blinkTimer == 0)
+            if (i == 1)
             {
-                blink.visible = true;
-                blink.PlayTimeline(0);
-                blinkTimer = 3;
-            }
-            idlesTimer--;
-            if (idlesTimer == 0)
-            {
-                if (RND_RANGE(0, 1) == 1)
+                blinkTimer--;
+                if (blinkTimer == 0)
                 {
-                    target.PlayTimeline(1);
+                    blink.visible = true;
+                    blink.PlayTimeline(0);
+                    blinkTimer = 3;
                 }
-                else
+                idlesTimer--;
+                if (idlesTimer == 0)
                 {
-                    target.PlayTimeline(2);
+                    if (RND_RANGE(0, 1) == 1)
+                    {
+                        target.PlayTimeline(1);
+                    }
+                    else
+                    {
+                        target.PlayTimeline(2);
+                    }
+                    idlesTimer = RND_RANGE(5, 20);
                 }
-                idlesTimer = RND_RANGE(5, 20);
             }
         }
 

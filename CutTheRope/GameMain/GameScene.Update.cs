@@ -456,7 +456,7 @@ namespace CutTheRope.GameMain
                         });
                         if (target.GetCurrentTimelineIndex() == 0)
                         {
-                            target.PlayAnimationtimeline(101, 3);
+                            target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 3);
                             break;
                         }
                         break;
