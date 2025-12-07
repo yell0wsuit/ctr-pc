@@ -296,7 +296,13 @@ namespace CutTheRope.Framework.Visual
                 ScaleByte(textColor.A, color.a)
             );
 
-            float yPos = drawY;
+            // Adjust Y position to account for font metrics for better visual centering
+            // FontStashSharp renders with Y at the top of text bounds, which can make
+            // vertically-centered text appear too low. We offset upward by a fraction
+            // of the line height to improve visual balance.
+            const float VERTICAL_ALIGNMENT_ADJUST = 0.1f;
+            float baselineOffset = internalFont.LineHeight * VERTICAL_ALIGNMENT_ADJUST;
+            float yPos = drawY - baselineOffset;
             int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
 
             // Calculate scale from virtual coordinates to physical viewport
