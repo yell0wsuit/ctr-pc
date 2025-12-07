@@ -267,21 +267,21 @@ namespace CutTheRope.GameMain
                 {
                     Fnt.BigFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBold.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
                         Color = Microsoft.Xna.Framework.Color.White,
                         Effects = Framework.Visual.FontEffectSettings.CreateStrokeAndShadow(1, 2, 4)
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBold.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 64f,
                         Color = Microsoft.Xna.Framework.Color.Black,
                         Effects = Framework.Visual.FontEffectSettings.None
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBold.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
                         Color = Microsoft.Xna.Framework.Color.Black,
                         Effects = Framework.Visual.FontEffectSettings.None
