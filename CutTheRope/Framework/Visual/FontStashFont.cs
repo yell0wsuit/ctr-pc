@@ -141,7 +141,7 @@ namespace CutTheRope.Framework.Visual
     /// <summary>
     /// Configuration for font effects (stroke, shadow).
     /// </summary>
-    internal class FontEffectSettings
+    internal sealed class FontEffectSettings
     {
         public bool HasStroke { get; set; }
         public int StrokeAmount { get; set; } = 1;

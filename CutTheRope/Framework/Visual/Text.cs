@@ -297,7 +297,7 @@ namespace CutTheRope.Framework.Visual
                 // Prevent tiny per-pass alphas from quantizing to zero (visible as stroke/shadow popping in late)
                 float minVisibleAlpha = targetAlpha / sampleCount;
                 const float alphaByteStep = 1f / 255f;
-                if (perSample > 0f && perSample < alphaByteStep)
+                if (perSample is > 0f and < alphaByteStep)
                 {
                     perSample = MathHelper.Clamp(Math.Max(minVisibleAlpha, alphaByteStep), 0f, 1f);
                 }

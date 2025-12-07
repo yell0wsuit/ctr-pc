@@ -357,7 +357,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Configuration for a font including size, color, and effects.
     /// </summary>
-    internal class FontConfiguration
+    internal sealed class FontConfiguration
     {
         public string FontFile { get; set; }
         public float Size { get; set; }
