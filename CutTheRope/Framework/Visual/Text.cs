@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
@@ -253,24 +254,24 @@ namespace CutTheRope.Framework.Visual
             SpriteBatch spriteBatch = OpenGL.GetSpriteBatch();
             if (spriteBatch == null)
             {
-                System.Diagnostics.Debug.WriteLine("FontStash: SpriteBatch is null");
+                Debug.WriteLine("FontStash: SpriteBatch is null");
                 return;
             }
 
             DynamicSpriteFont internalFont = fontStashFont.GetInternalFont();
             if (internalFont == null)
             {
-                System.Diagnostics.Debug.WriteLine("FontStash: Internal font is null");
+                Debug.WriteLine("FontStash: Internal font is null");
                 return;
             }
 
             if (formattedStrings == null || formattedStrings.Count == 0)
             {
-                System.Diagnostics.Debug.WriteLine($"FontStash: No formatted strings for text: {string_}");
+                Debug.WriteLine($"FontStash: No formatted strings for text: {string_}");
                 return;
             }
 
-            //System.Diagnostics.Debug.WriteLine($"FontStash: Drawing text '{string_}' at ({drawX}, {drawY}) with {formattedStrings.Count} lines");
+            //Debug.WriteLine($"FontStash: Drawing text '{string_}' at ({drawX}, {drawY}) with {formattedStrings.Count} lines");
 
             FontEffectSettings effects = fontStashFont.GetEffectSettings();
             Color textColor = fontStashFont.GetColor();
@@ -293,6 +294,13 @@ namespace CutTheRope.Framework.Visual
 
                 // Normalize per-sample alpha so stacking multiple draws keeps overall opacity consistent
                 float perSample = 1f - MathF.Pow(1f - targetAlpha, 1f / sampleCount);
+                // Prevent tiny per-pass alphas from quantizing to zero (visible as stroke/shadow popping in late)
+                float minVisibleAlpha = targetAlpha / sampleCount;
+                const float alphaByteStep = 1f / 255f;
+                if (perSample > 0f && perSample < alphaByteStep)
+                {
+                    perSample = MathHelper.Clamp(Math.Max(minVisibleAlpha, alphaByteStep), 0f, 1f);
+                }
                 return MathHelper.Clamp(perSample, 0f, 1f);
             }
 
