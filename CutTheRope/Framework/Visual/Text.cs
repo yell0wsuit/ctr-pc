@@ -67,6 +67,25 @@ namespace CutTheRope.Framework.Visual
                 {
                     UpdateDrawerValues();
                 }
+                else
+                {
+                    // Keep width/height in sync for anchoring and layout when using FontStashSharp
+                    if (formattedStrings.Count <= 1)
+                    {
+                        height = (int)font.FontHeight();
+                        width = (int)wrapWidth;
+                    }
+                    else
+                    {
+                        height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset());
+                        width = (int)wrapWidth;
+                    }
+
+                    if (maxHeight != -1f)
+                    {
+                        height = (int)MIN(height, maxHeight);
+                    }
+                }
                 return;
             }
             stringLength = 0;
