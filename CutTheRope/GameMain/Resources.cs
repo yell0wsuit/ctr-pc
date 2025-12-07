@@ -284,7 +284,7 @@ namespace CutTheRope.GameMain
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "segoeprb.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = "gooddog_new-webfont.ttf",
                         Size = 100f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None
