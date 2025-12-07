@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRope.Desktop;
@@ -273,6 +274,27 @@ namespace CutTheRope.Framework.Visual
 
             FontEffectSettings effects = fontStashFont.GetEffectSettings();
             Color textColor = fontStashFont.GetColor();
+            static float CalculatePerPassAlpha(float targetAlpha, int sampleCount)
+            {
+                if (sampleCount <= 1)
+                {
+                    return MathHelper.Clamp(targetAlpha, 0f, 1f);
+                }
+
+                targetAlpha = MathHelper.Clamp(targetAlpha, 0f, 1f);
+                if (targetAlpha <= 0f)
+                {
+                    return 0f;
+                }
+                if (targetAlpha >= 1f)
+                {
+                    return 1f;
+                }
+
+                // Normalize per-sample alpha so stacking multiple draws keeps overall opacity consistent
+                float perSample = 1f - MathF.Pow(1f - targetAlpha, 1f / sampleCount);
+                return MathHelper.Clamp(perSample, 0f, 1f);
+            }
 
             // Apply element color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
             static byte ScaleByte(byte channel, float factor)
@@ -346,15 +368,17 @@ namespace CutTheRope.Framework.Visual
                 if (effects?.HasShadow == true)
                 {
                     Vector2 shadowBasePos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
+                    int shadowStrokeAmount = effects.HasStroke ? effects.StrokeAmount : 1;
+                    int shadowSamples = ((shadowStrokeAmount * 2) + 1) * ((shadowStrokeAmount * 2) + 1);
+                    float shadowAlpha = CalculatePerPassAlpha(effects.ShadowColor.A / 255f * color.a, shadowSamples);
                     Color shadowColor = new(
-                        ScaleByte(effects.ShadowColor.R, color.r),
-                        ScaleByte(effects.ShadowColor.G, color.g),
-                        ScaleByte(effects.ShadowColor.B, color.b),
-                        ScaleByte(effects.ShadowColor.A, color.a)
+                        effects.ShadowColor.R,
+                        effects.ShadowColor.G,
+                        effects.ShadowColor.B,
+                        (byte)MathHelper.Clamp(shadowAlpha * 255f, 0f, 255f)
                     );
 
                     // Render shadow with stroke outline for better backdrop effect
-                    int shadowStrokeAmount = effects.HasStroke ? effects.StrokeAmount : 1;
                     for (int x = -shadowStrokeAmount; x <= shadowStrokeAmount; x++)
                     {
                         for (int y = -shadowStrokeAmount; y <= shadowStrokeAmount; y++)
@@ -373,11 +397,14 @@ namespace CutTheRope.Framework.Visual
                 // Draw stroke if enabled
                 if (effects?.HasStroke == true)
                 {
+                    int strokeSamples = (((effects.StrokeAmount * 2) + 1) * ((effects.StrokeAmount * 2) + 1)) - 1;
+                    strokeSamples = Math.Max(strokeSamples, 1);
+                    float strokeAlpha = CalculatePerPassAlpha(effects.StrokeColor.A / 255f * color.a, strokeSamples);
                     Color strokeColor = new(
-                        ScaleByte(effects.StrokeColor.R, color.r),
-                        ScaleByte(effects.StrokeColor.G, color.g),
-                        ScaleByte(effects.StrokeColor.B, color.b),
-                        ScaleByte(effects.StrokeColor.A, color.a)
+                        effects.StrokeColor.R,
+                        effects.StrokeColor.G,
+                        effects.StrokeColor.B,
+                        (byte)MathHelper.Clamp(strokeAlpha * 255f, 0f, 255f)
                     );
                     int strokeAmount = effects.StrokeAmount;
 
