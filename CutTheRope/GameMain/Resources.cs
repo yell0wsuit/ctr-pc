@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework;
 
+using Microsoft.Xna.Framework;
+
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -269,21 +271,21 @@ namespace CutTheRope.GameMain
                     {
                         FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
-                        Color = Microsoft.Xna.Framework.Color.White,
-                        Effects = Framework.Visual.FontEffectSettings.CreateStrokeAndShadow(1, 2, 4)
+                        Color = Color.White,
+                        Effects = Framework.Visual.FontEffectSettings.CreateStrokeAndShadow(2, 2, 3)
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
                         FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 64f,
-                        Color = Microsoft.Xna.Framework.Color.Black,
+                        Color = Color.Black,
                         Effects = Framework.Visual.FontEffectSettings.None
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
                         FontFile = language == (int)Language.LANGRU ? "SourceSans3-SemiBoldItalic.ttf" : "gooddog_new-webfont.ttf",
                         Size = 100f,
-                        Color = Microsoft.Xna.Framework.Color.Black,
+                        Color = Color.Black,
                         Effects = Framework.Visual.FontEffectSettings.None
                     },
                     _ => throw new ArgumentException($"Unknown font: {fontName}", nameof(fontName))

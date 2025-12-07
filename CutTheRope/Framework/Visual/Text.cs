@@ -342,10 +342,10 @@ namespace CutTheRope.Framework.Visual
 
                 Vector2 position = new(xPos, yPos);
 
-                // Draw shadow if enabled
+                // Draw shadow if enabled (with stroke for better backdrop effect)
                 if (effects?.HasShadow == true)
                 {
-                    Vector2 shadowPos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
+                    Vector2 shadowBasePos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
                     Color shadowColor = new(
                         ScaleByte(effects.ShadowColor.R, color.r),
                         ScaleByte(effects.ShadowColor.G, color.g),
@@ -353,13 +353,21 @@ namespace CutTheRope.Framework.Visual
                         ScaleByte(effects.ShadowColor.A, color.a)
                     );
 
-                    // Use FontStashSharp's DrawText extension method
-                    _ = internalFont.DrawText(
-                        spriteBatch,
-                        formattedString.string_,
-                        shadowPos,
-                        shadowColor
-                    );
+                    // Render shadow with stroke outline for better backdrop effect
+                    int shadowStrokeAmount = effects.HasStroke ? effects.StrokeAmount : 1;
+                    for (int x = -shadowStrokeAmount; x <= shadowStrokeAmount; x++)
+                    {
+                        for (int y = -shadowStrokeAmount; y <= shadowStrokeAmount; y++)
+                        {
+                            Vector2 shadowPos = shadowBasePos + new Vector2(x, y);
+                            _ = internalFont.DrawText(
+                                spriteBatch,
+                                formattedString.string_,
+                                shadowPos,
+                                shadowColor
+                            );
+                        }
+                    }
                 }
 
                 // Draw stroke if enabled
