@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
@@ -46,7 +48,41 @@ namespace CutTheRope.Commons
         public void HidePopup()
         {
             isShow = false;
+            FadeOutTextChildren();
             PlayTimeline(1);
+        }
+
+        private void FadeOutTextChildren()
+        {
+            // Recursively find and fade out all text elements
+            FadeOutTextInElement(this);
+        }
+
+        private static void FadeOutTextInElement(BaseElement element)
+        {
+            if (element == null)
+            {
+                return;
+            }
+
+            // Check if this element is a Text element
+            if (element is Text textElement)
+            {
+                // Create fade out timeline
+                Timeline fadeOutTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                fadeOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                fadeOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                textElement.AddTimelinewithID(fadeOutTimeline, 1);
+                textElement.PlayTimeline(1);
+            }
+
+            // Recursively process all children
+            Dictionary<int, BaseElement> children = element.GetChilds();
+            for (int i = 0; i < children.Count; i++)
+            {
+                BaseElement child = children[i];
+                FadeOutTextInElement(child);
+            }
         }
 
         public override bool OnTouchDownXY(float tx, float ty)
