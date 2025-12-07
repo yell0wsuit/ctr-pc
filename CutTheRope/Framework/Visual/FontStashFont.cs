@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using CutTheRope.Helpers;
+
 using FontStashSharp;
+
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Visual
         private FontEffectSettings effectSettings;
 
         // Cache for rendered character textures
-        private readonly Dictionary<char, Image> charImageCache = new();
+        private readonly Dictionary<char, Image> charImageCache = [];
 
         public FontStashFont InitWithFont(DynamicSpriteFont dynamicFont, float size, Color color, FontEffectSettings effects)
         {
@@ -60,7 +60,7 @@ namespace CutTheRope.Framework.Visual
             if (disposing)
             {
                 // Clear cached images
-                foreach (var cachedImage in charImageCache.Values)
+                foreach (Image cachedImage in charImageCache.Values)
                 {
                     cachedImage?.Dispose();
                 }
@@ -91,17 +91,7 @@ namespace CutTheRope.Framework.Visual
 
         public override float GetCharWidth(char c)
         {
-            if (c == ' ')
-            {
-                return spaceWidth;
-            }
-
-            if (c == '*')
-            {
-                return 0f;
-            }
-
-            return MeasureCharWidth(c);
+            return c == ' ' ? spaceWidth : c == '*' ? 0f : MeasureCharWidth(c);
         }
 
         private float MeasureCharWidth(char c)
@@ -162,7 +152,7 @@ namespace CutTheRope.Framework.Visual
         public int ShadowOffsetY { get; set; }
         public Color ShadowColor { get; set; } = Color.Black;
 
-        public static FontEffectSettings None => new FontEffectSettings();
+        public static FontEffectSettings None => new();
 
         public static FontEffectSettings CreateStroke(int amount = 1, Color? color = null)
         {

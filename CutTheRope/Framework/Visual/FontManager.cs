@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using FontStashSharp;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,8 +14,8 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal static class FontManager
     {
-        private static readonly Dictionary<string, FontSystem> fontSystems = new();
-        private static readonly Dictionary<string, FontStashFont> fontCache = new();
+        private static readonly Dictionary<string, FontSystem> fontSystems = [];
+        private static readonly Dictionary<string, FontStashFont> fontCache = [];
         private static GraphicsDevice graphicsDevice;
 
         public static void Initialize(GraphicsDevice device)
@@ -58,32 +60,22 @@ namespace CutTheRope.Framework.Visual
 
         private static FontSystem LoadFontSystem(string fontPath)
         {
-            string fullPath;
+            string fullPath = File.Exists($"content/fonts/{fontPath}")
+                ? $"content/fonts/{fontPath}"
+                : File.Exists(fontPath) ? fontPath : throw new FileNotFoundException($"Font file not found: {fontPath}");
 
             // Try content directory first
-            if (File.Exists($"content/fonts/{fontPath}"))
-            {
-                fullPath = $"content/fonts/{fontPath}";
-            }
-            else if (File.Exists(fontPath))
-            {
-                fullPath = fontPath;
-            }
-            else
-            {
-                throw new FileNotFoundException($"Font file not found: {fontPath}");
-            }
 
             byte[] fontData = File.ReadAllBytes(fullPath);
 
-            FontSystemSettings settings = new FontSystemSettings
+            FontSystemSettings settings = new()
             {
                 FontResolutionFactor = 2, // Higher quality rendering
                 KernelWidth = 2,
                 KernelHeight = 2
             };
 
-            FontSystem fontSystem = new FontSystem(settings);
+            FontSystem fontSystem = new(settings);
             fontSystem.AddFont(fontData);
 
             return fontSystem;
@@ -97,13 +89,13 @@ namespace CutTheRope.Framework.Visual
             }
 
             int hash = 17;
-            hash = hash * 31 + (effects.HasStroke ? 1 : 0);
-            hash = hash * 31 + effects.StrokeAmount;
-            hash = hash * 31 + (int)effects.StrokeColor.PackedValue;
-            hash = hash * 31 + (effects.HasShadow ? 1 : 0);
-            hash = hash * 31 + effects.ShadowOffsetX;
-            hash = hash * 31 + effects.ShadowOffsetY;
-            hash = hash * 31 + (int)effects.ShadowColor.PackedValue;
+            hash = (hash * 31) + (effects.HasStroke ? 1 : 0);
+            hash = (hash * 31) + effects.StrokeAmount;
+            hash = (hash * 31) + (int)effects.StrokeColor.PackedValue;
+            hash = (hash * 31) + (effects.HasShadow ? 1 : 0);
+            hash = (hash * 31) + effects.ShadowOffsetX;
+            hash = (hash * 31) + effects.ShadowOffsetY;
+            hash = (hash * 31) + (int)effects.ShadowColor.PackedValue;
             return hash;
         }
 
@@ -112,7 +104,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         public static void ClearCache()
         {
-            foreach (var font in fontCache.Values)
+            foreach (FontStashFont font in fontCache.Values)
             {
                 font?.Dispose();
             }
