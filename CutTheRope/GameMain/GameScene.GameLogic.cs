@@ -100,7 +100,7 @@ namespace CutTheRope.GameMain
         public void GameLost()
         {
             dd.CancelAllDispatches();
-            target.PlayAnimationtimeline(102, 5);
+            target.PlayAnimationtimeline(Resources.Img.CharAnimations3, 5);
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
             gameSceneDelegate.GameLost();

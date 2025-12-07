@@ -83,19 +83,19 @@ namespace CutTheRope.GameMain
             target.AddAnimationWithIDDelayLoopFirstLast(8, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 28, 31);
             target.AddAnimationWithIDDelayLoopFirstLast(9, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 32, 40);
             target.AddAnimationWithIDDelayLoopFirstLast(6, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 28, 31);
-            target.AddAnimationWithIDDelayLoopFirstLast(101, 10, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 47, 76);
-            target.AddAnimationWithIDDelayLoopFirstLast(101, 3, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 19);
-            target.AddAnimationWithIDDelayLoopFirstLast(101, 4, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 20, 46);
-            target.AddAnimationWithIDDelayLoopFirstLast(102, 5, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
+            target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations2, 10, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 47, 76);
+            target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations2, 3, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 19);
+            target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations2, 4, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 20, 46);
+            target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations3, 5, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
 
             // Setup animation transitions
             target.SwitchToAnimationatEndOfAnimationDelay(9, 6, 0.05f);
-            target.SwitchToAnimationatEndOfAnimationDelay(101, 4, 80, 8, 0.05f);
-            target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 10, 0.05f);
-            target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 80, 1, 0.05f);
-            target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 80, 2, 0.05f);
-            target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 3, 0.05f);
-            target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 4, 0.05f);
+            target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations2, 4, Resources.Img.CharAnimations, 8, 0.05f);
+            target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations2, 10, 0.05f);
+            target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations, 1, 0.05f);
+            target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations, 2, 0.05f);
+            target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations2, 3, 0.05f);
+            target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations2, 4, 0.05f);
 
             // Show greeting if needed
             if (CTRRootController.IsShowGreeting())

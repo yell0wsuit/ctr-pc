@@ -67,7 +67,7 @@ namespace CutTheRope.GameMain
 
         public void ShowGreeting()
         {
-            target.PlayAnimationtimeline(101, 10);
+            target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 10);
         }
 
         public override void Hide()
