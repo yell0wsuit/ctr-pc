@@ -13,6 +13,12 @@ namespace CutTheRope.Framework.Visual
 {
     internal class Text : BaseElement
     {
+        private static readonly RasterizerState ScissorRasterizerState = new()
+        {
+            CullMode = CullMode.None,
+            ScissorTestEnable = true
+        };
+
         public static Text CreateWithFontandString(string fontResourceName, string str)
         {
             Text text = new Text().InitWithFont(Application.GetFont(fontResourceName));
@@ -263,7 +269,7 @@ namespace CutTheRope.Framework.Visual
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine($"FontStash: Drawing text '{string_}' at ({drawX}, {drawY}) with {formattedStrings.Count} lines");
+            //System.Diagnostics.Debug.WriteLine($"FontStash: Drawing text '{string_}' at ({drawX}, {drawY}) with {formattedStrings.Count} lines");
 
             FontEffectSettings effects = fontStashFont.GetEffectSettings();
             Color textColor = fontStashFont.GetColor();
@@ -309,7 +315,7 @@ namespace CutTheRope.Framework.Visual
                 BlendState.AlphaBlend,
                 SamplerState.LinearClamp,
                 null,
-                null,
+                ScissorRasterizerState,
                 null,
                 transformMatrix
             );
