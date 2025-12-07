@@ -89,7 +89,7 @@ namespace CutTheRope.Commons
                 // Create fade-out timeline: opaque → transparent over 0.2s
                 Timeline fadeOutTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 fadeOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                fadeOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                fadeOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
                 textElement.AddTimelinewithID(fadeOutTimeline, 1);
                 textElement.PlayTimeline(1);
             }
