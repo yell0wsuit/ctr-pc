@@ -264,27 +264,30 @@ namespace CutTheRope.GameMain
         /// </summary>
         internal static class FontConfig
         {
+            private const string StandardFont = "gooddog_new-webfont.ttf";
+            private const string ExtendedFont = "segoeprb.ttf";
+
             public static FontConfiguration GetConfiguration(string fontName, int language)
             {
                 return fontName switch
                 {
                     Fnt.BigFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "segoeprb.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
                         Size = 100f,
                         Color = Color.White,
                         Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3)
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? "segoeprb.ttf" : "gooddog_new-webfont.ttf",
+                        FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
                         Size = 64f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
-                        FontFile = "gooddog_new-webfont.ttf",
+                        FontFile = StandardFont,
                         Size = 100f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None
