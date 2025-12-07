@@ -559,9 +559,8 @@ namespace CutTheRope.GameMain
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(t);
-            text.scaleX = text.scaleY = 0.7f;
+            text.scaleX = text.scaleY = 0.5f;
             text.rotationCenterX = -(float)text.width / 2;
-            text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
             Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 3);
             _ = hbox.AddChild(c);
@@ -705,8 +704,8 @@ namespace CutTheRope.GameMain
                 text.SetAlignment(2);
                 text.anchor = 10;
                 text.parentAnchor = 34;
-                text.SetStringandWidth(newString, 700f);
-                text.y = -70f;
+                text.SetStringandWidth(newString, 600f);
+                text.y = -60f;
                 text.scaleX = text.scaleY = 0.7f;
                 text.rotationCenterY = -(float)text.height / 2;
                 _ = touchBaseElement.AddChild(text);
@@ -752,10 +751,10 @@ namespace CutTheRope.GameMain
             }
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.anchor = text2.parentAnchor = 10;
-            text2.scaleX = text2.scaleY = 0.75f;
+            text2.scaleX = text2.scaleY = 0.45f;
             if (LANGUAGE is Language.LANGDE or Language.LANGEN)
             {
-                text2.scaleX = 0.7f;
+                text2.scaleX = 0.45f;
             }
             text2.SetAlignment(2);
             if (n != CTRPreferences.GetPacksCount())
@@ -766,7 +765,7 @@ namespace CutTheRope.GameMain
             {
                 text2.SetStringandWidth(nSString, 656.0);
             }
-            text2.y = 120f;
+            text2.y = 140f;
             _ = image.AddChild(text2);
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
