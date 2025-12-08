@@ -7,6 +7,8 @@ using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
 
+using Microsoft.Xna.Framework;
+
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -103,12 +105,13 @@ namespace CutTheRope.GameMain
             try
             {
                 string registryPath = ContentPaths.GetTexturePackerRegistryPath();
-                if (!File.Exists(registryPath))
+                string json = TryReadContentText(registryPath);
+                if (string.IsNullOrEmpty(json))
                 {
+                    Console.WriteLine($"TexturePackerRegistry not found at \"{registryPath}\". TexturePacker atlases will fall back to legacy XML data.");
                     return result; // Return empty dict if no registry file
                 }
 
-                string json = File.ReadAllText(registryPath);
                 using JsonDocument doc = JsonDocument.Parse(json);
 
                 if (!doc.RootElement.TryGetProperty("textures", out JsonElement texturesElement) ||
@@ -179,6 +182,21 @@ namespace CutTheRope.GameMain
             }
 
             return result.Count > 0 ? [.. result] : null;
+        }
+
+        private static string TryReadContentText(string relativePath)
+        {
+            try
+            {
+                using Stream stream = TitleContainer.OpenStream(relativePath);
+                using StreamReader reader = new(stream);
+                return reader.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to open \"{relativePath}\": {ex.Message}");
+                return null;
+            }
         }
 
     }

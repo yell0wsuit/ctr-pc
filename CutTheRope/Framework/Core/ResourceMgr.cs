@@ -286,6 +286,7 @@ namespace CutTheRope.Framework.Core
             string json = LoadContentText(atlasPath);
             if (string.IsNullOrEmpty(json))
             {
+                Console.WriteLine($"TexturePacker atlas \"{atlasPath}\" could not be loaded (missing file or empty content).");
                 return null;
             }
 
