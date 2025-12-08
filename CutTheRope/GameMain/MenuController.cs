@@ -622,32 +622,36 @@ namespace CutTheRope.GameMain
             string resourceName;
             int q;
 
-            // Check if this is the "coming soon" box (always the last box)
-            if (n == CTRPreferences.GetPacksCount())
+            // Determine resource and quad based on pack index
+            switch (n)
             {
-                // Use the last quad from MenuPackSelection2 for "coming soon"
-                resourceName = Resources.Img.MenuPackSelection2;
-                q = PackSelection2QuadMap[^1];
-            }
-            else if (n <= 6)
-            {
-                resourceName = Resources.Img.MenuPackSelection;
-                q = n >= 0 && n < PackSelection1QuadMap.Length ? PackSelection1QuadMap[n] : 4; // fallback to pack 1
-            }
-            else
-            {
-                int index = n - 7;
-                if (index >= 0 && index < PackSelection2QuadMap.Length - 1) // -1 to exclude "coming soon" quad
-                {
+                case var _ when n == CTRPreferences.GetPacksCount():
+                    // "Coming soon" box - always use the last quad from MenuPackSelection2
                     resourceName = Resources.Img.MenuPackSelection2;
-                    q = PackSelection2QuadMap[index];
-                }
-                else
-                {
-                    // fallback to pack 1 from MenuPackSelection
+                    q = PackSelection2QuadMap[^1];
+                    break;
+
+                case <= 6:
+                    // Packs 0-6 use MenuPackSelection
                     resourceName = Resources.Img.MenuPackSelection;
-                    q = 4;
-                }
+                    q = n >= 0 && n < PackSelection1QuadMap.Length ? PackSelection1QuadMap[n] : 4; // fallback to pack 1
+                    break;
+
+                default:
+                    // Packs 7+ use MenuPackSelection2
+                    int index = n - 7;
+                    if (index >= 0 && index < PackSelection2QuadMap.Length - 1) // -1 to exclude "coming soon" quad
+                    {
+                        resourceName = Resources.Img.MenuPackSelection2;
+                        q = PackSelection2QuadMap[index];
+                    }
+                    else
+                    {
+                        // fallback to pack 1 from MenuPackSelection
+                        resourceName = Resources.Img.MenuPackSelection;
+                        q = 4;
+                    }
+                    break;
             }
             string nsstring;
             if (n == CTRPreferences.GetPacksCount())
