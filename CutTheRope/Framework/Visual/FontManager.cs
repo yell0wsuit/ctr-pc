@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using CutTheRope.Helpers;
+
 using FontStashSharp;
 
 using Microsoft.Xna.Framework;
@@ -60,11 +62,10 @@ namespace CutTheRope.Framework.Visual
 
         private static FontSystem LoadFontSystem(string fontPath)
         {
-            string fullPath = File.Exists($"content/fonts/{fontPath}")
-                ? $"content/fonts/{fontPath}"
+            string contentFontPath = ContentPaths.GetFontPath(fontPath);
+            string fullPath = File.Exists(contentFontPath)
+                ? contentFontPath
                 : File.Exists(fontPath) ? fontPath : throw new FileNotFoundException($"Font file not found: {fontPath}");
-
-            // Try content directory first
 
             byte[] fontData = File.ReadAllBytes(fullPath);
 
