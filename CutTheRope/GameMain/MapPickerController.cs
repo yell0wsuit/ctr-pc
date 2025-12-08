@@ -104,7 +104,7 @@ namespace CutTheRope.GameMain
             selectedMap = map;
         }
 
-        public void OnButtonPressed(MapPickerControllerButtonId n)
+        public static void OnButtonPressed(MapPickerControllerButtonId n)
         {
             if (n == MapPickerControllerButtonId.Start)
             {

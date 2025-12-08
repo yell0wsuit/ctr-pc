@@ -580,6 +580,30 @@ namespace CutTheRope.GameMain
             return boxWidth * 3f > num - 200f ? boxWidth / 2f : 0f;
         }
 
+        // Explicit mapping from pack index to quad index
+        // MenuPackSelection quads 4-10 are packs 1-7 (Cardboard, Fabric, Foil, Valentine, Cosmic, Toy, Gift)
+        private static readonly int[] PackSelection1QuadMap =
+        [
+            4,  // pack 1
+            5,  // pack 2
+            6,  // pack 3
+            7,  // pack 4
+            8,  // pack 5
+            9,  // pack 6
+            10, // pack 7
+        ];
+
+        // MenuPackSelection2 quads 0-5 are packs 8-12
+        private static readonly int[] PackSelection2QuadMap =
+        [
+            0, // pack 8
+            1, // pack 9
+            2, // pack 10
+            3, // pack 11
+            4, // pack 12
+            5, // coming soon box
+        ];
+
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
             TouchBaseElement touchBaseElement = new()
@@ -595,12 +619,39 @@ namespace CutTheRope.GameMain
             {
                 CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
-            string resourceName = Resources.Img.MenuPackSelection;
-            int q = 4 + n;
-            if (n > 6)
+            string resourceName;
+            int q;
+
+            // Determine resource and quad based on pack index
+            switch (n)
             {
-                resourceName = Resources.Img.MenuPackSelection2;
-                q = n - 6;
+                case var _ when n == CTRPreferences.GetPacksCount():
+                    // "Coming soon" box - always use the last quad from MenuPackSelection2
+                    resourceName = Resources.Img.MenuPackSelection2;
+                    q = PackSelection2QuadMap[^1];
+                    break;
+
+                case <= 6:
+                    // Packs 0-6 use MenuPackSelection
+                    resourceName = Resources.Img.MenuPackSelection;
+                    q = n >= 0 && n < PackSelection1QuadMap.Length ? PackSelection1QuadMap[n] : 4; // fallback to pack 1
+                    break;
+
+                default:
+                    // Packs 7+ use MenuPackSelection2
+                    int index = n - 7;
+                    if (index >= 0 && index < PackSelection2QuadMap.Length - 1) // -1 to exclude "coming soon" quad
+                    {
+                        resourceName = Resources.Img.MenuPackSelection2;
+                        q = PackSelection2QuadMap[index];
+                    }
+                    else
+                    {
+                        // fallback to pack 1 from MenuPackSelection
+                        resourceName = Resources.Img.MenuPackSelection;
+                        q = 4;
+                    }
+                    break;
             }
             string nsstring;
             if (n == CTRPreferences.GetPacksCount())
