@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRope.GameMain;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -46,7 +47,8 @@ namespace CutTheRope.Framework.Media
             SoundEffect soundEffect;
             try
             {
-                value = _contentManager.Load<SoundEffect>("sounds/sfx/" + CTRResourceMgr.XNA_ResName(resourceName));
+                string soundPath = ContentPaths.GetSoundEffectPath(CTRResourceMgr.XNA_ResName(resourceName));
+                value = _contentManager.Load<SoundEffect>(soundPath);
                 LoadedSounds.Add(localizedResId, value);
                 soundEffect = value;
             }
@@ -111,7 +113,8 @@ namespace CutTheRope.Framework.Media
             }
 
             StopMusic();
-            Song song = _contentManager.Load<Song>("sounds/" + CTRResourceMgr.XNA_ResName(resourceName));
+            string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(resourceName));
+            Song song = _contentManager.Load<Song>(musicPath);
             MediaPlayer.IsRepeating = true;
             try
             {

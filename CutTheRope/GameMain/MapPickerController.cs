@@ -61,11 +61,9 @@ namespace CutTheRope.GameMain
             base.Activate();
             if (autoLoad)
             {
-                string text = "maps/";
-                string nsstring = selectedMap;
-                string nSString = text + (nsstring?.ToString());
-                XElement mapElement = XElementExtensions.LoadContentXml(nSString.ToString());
-                XmlLoaderFinishedWithfromwithSuccess(mapElement, nSString, mapElement != null);
+                string mapPath = $"{ContentPaths.MapsDirectory}/{selectedMap}";
+                XElement mapElement = XElementExtensions.LoadContentXml(mapPath);
+                XmlLoaderFinishedWithfromwithSuccess(mapElement, mapPath, mapElement != null);
                 return;
             }
             ShowView(0);
