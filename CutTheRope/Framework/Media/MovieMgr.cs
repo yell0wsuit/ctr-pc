@@ -1,5 +1,3 @@
-using System;
-
 using CutTheRope.Desktop;
 
 using Microsoft.Xna.Framework.Graphics;
@@ -12,9 +10,22 @@ namespace CutTheRope.Framework.Media
         public void PlayURL(string moviePath, bool mute)
         {
             url = moviePath;
-            video = Global.ScreenSizeManager.CurrentSize.Width <= 1024
-                ? Global.XnaGame.Content.Load<Video>("video/" + (moviePath?.ToString()))
-                : Global.XnaGame.Content.Load<Video>("video_hd/" + (moviePath?.ToString()));
+
+            string videoPath = Global.ScreenSizeManager.CurrentSize.Width <= 1024
+                ? "video/" + moviePath
+                : "video_hd/" + moviePath;
+
+            // Unload the video from ContentManager's cache before reloading
+            // Without this, ContentManager returns a disposed Video instance when playing
+            // the same video multiple times, causing InvalidOperationException in VideoPlayer.Play()
+            try
+            {
+                Global.XnaGame.Content.UnloadAsset(videoPath);
+            }
+            catch { }
+
+            video = Global.XnaGame.Content.Load<Video>(videoPath);
+
             player = new VideoPlayer
             {
                 IsLooped = false,
@@ -43,7 +54,10 @@ namespace CutTheRope.Framework.Media
             if (!paused)
             {
                 paused = true;
-                player?.Pause();
+                if (player != null)
+                {
+                    player.Volume = 0;
+                }
             }
         }
 
@@ -57,9 +71,9 @@ namespace CutTheRope.Framework.Media
             if (paused)
             {
                 paused = false;
-                if (player != null && player.State == MediaState.Paused)
+                if (player != null)
                 {
-                    player.Resume();
+                    player.Volume = 1;
                 }
             }
         }
