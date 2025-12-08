@@ -14,8 +14,8 @@
         <star x="285" y="383" timeout="-1" />
         <pump x="38" y="268" angle="0" />
         <pump x="286" y="263" angle="180" />
-        <grab x="96" y="116" length="270" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="R" hidePath="false" />
-        <grab x="227" y="114" length="270" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="96" y="116" length="250" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="R" hidePath="false" />
+        <grab x="227" y="114" length="250" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
         <bubble x="160" y="388" />
         <hiddenElement x="287" y="115" radius="30" />
     </layer>

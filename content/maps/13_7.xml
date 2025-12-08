@@ -10,9 +10,9 @@
         <grab x="269" y="38" length="60" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
         <target x="184" y="419" />
         <steamTube x="186" y="337" angle="0" />
-        <bubble x="88" y="316" />
+        <bubble x="108" y="316" />
         <star x="184" y="105" timeout="-1" />
-        <star x="88" y="317" timeout="-1" />
+        <star x="108" y="317" timeout="-1" />
         <star x="267" y="218" timeout="-1" />
         <hiddenElement x="88" y="105" radius="30" />
     </layer>
