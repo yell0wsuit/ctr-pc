@@ -56,7 +56,7 @@ namespace CutTheRope.Framework.Media
                 paused = true;
                 if (player != null)
                 {
-                    player.Volume = 0;
+                    player.IsMuted = true;
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace CutTheRope.Framework.Media
                 paused = false;
                 if (player != null)
                 {
-                    player.Volume = 1;
+                    player.IsMuted = false;
                 }
             }
         }
