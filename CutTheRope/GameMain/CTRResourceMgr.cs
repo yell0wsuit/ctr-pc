@@ -5,6 +5,7 @@ using System.Text.Json;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -101,7 +102,7 @@ namespace CutTheRope.GameMain
 
             try
             {
-                string registryPath = "content/TexturePackerRegistry.json";
+                string registryPath = ContentPaths.GetTexturePackerRegistryPath();
                 if (!File.Exists(registryPath))
                 {
                     return result; // Return empty dict if no registry file

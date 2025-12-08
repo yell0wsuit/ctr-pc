@@ -1,4 +1,5 @@
 using CutTheRope.Desktop;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -11,9 +12,7 @@ namespace CutTheRope.Framework.Media
         {
             url = moviePath;
 
-            string videoPath = Global.ScreenSizeManager.CurrentSize.Width <= 1024
-                ? "video/" + moviePath
-                : "video_hd/" + moviePath;
+            string videoPath = ContentPaths.GetVideoPath(moviePath, Global.ScreenSizeManager.CurrentSize.Width);
 
             // Unload the video from ContentManager's cache before reloading
             // Without this, ContentManager returns a disposed Video instance when playing

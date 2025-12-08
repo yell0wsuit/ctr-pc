@@ -331,7 +331,8 @@ namespace CutTheRope.Framework.Core
         {
             try
             {
-                using Stream stream = TitleContainer.OpenStream($"content/{ContentFolder}{relativePath}");
+                string contentPath = ContentPaths.GetContentPath(relativePath);
+                using Stream stream = TitleContainer.OpenStream(contentPath);
                 using StreamReader reader = new(stream);
                 return reader.ReadToEnd();
             }
@@ -433,7 +434,7 @@ namespace CutTheRope.Framework.Core
 
         private static string FullPathFromRelativePath(string relPath)
         {
-            return ContentFolder + relPath;
+            return ContentPaths.GetRelativePathWithContentFolder(relPath);
         }
 
         private static void SetQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)

@@ -10,6 +10,7 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Media;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,7 +24,7 @@ namespace CutTheRope
         public Game1()
         {
             Global.XnaGame = this;
-            Content.RootDirectory = "content";
+            Content.RootDirectory = ContentPaths.RootDirectory;
             Global.GraphicsDeviceManager = new GraphicsDeviceManager(this);
             try
             {
