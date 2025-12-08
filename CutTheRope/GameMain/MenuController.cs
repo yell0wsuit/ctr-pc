@@ -684,7 +684,8 @@ namespace CutTheRope.GameMain
             2, // pack 10
             3, // pack 11
             4, // pack 12
-            5, // coming soon box
+            5, // pack 13
+            6, // coming soon box
         ];
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
