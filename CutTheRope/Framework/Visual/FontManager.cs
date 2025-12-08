@@ -63,11 +63,31 @@ namespace CutTheRope.Framework.Visual
         private static FontSystem LoadFontSystem(string fontPath)
         {
             string contentFontPath = ContentPaths.GetFontPath(fontPath);
-            string fullPath = File.Exists(contentFontPath)
-                ? contentFontPath
-                : File.Exists(fontPath) ? fontPath : throw new FileNotFoundException($"Font file not found: {fontPath}");
 
-            byte[] fontData = File.ReadAllBytes(fullPath);
+            byte[] fontData;
+            try
+            {
+                // Try loading from content directory using TitleContainer
+                using Stream stream = TitleContainer.OpenStream(contentFontPath);
+                using MemoryStream ms = new();
+                stream.CopyTo(ms);
+                fontData = ms.ToArray();
+            }
+            catch
+            {
+                // Fallback to direct file access if TitleContainer fails
+                try
+                {
+                    using Stream stream = TitleContainer.OpenStream(fontPath);
+                    using MemoryStream ms = new();
+                    stream.CopyTo(ms);
+                    fontData = ms.ToArray();
+                }
+                catch
+                {
+                    throw new FileNotFoundException($"Font file not found: {fontPath}");
+                }
+            }
 
             FontSystemSettings settings = new()
             {
