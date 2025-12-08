@@ -6,6 +6,7 @@ using System.Threading;
 using System.Xml.Linq;
 
 using CutTheRope.Framework;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 
@@ -13,8 +14,8 @@ namespace CutTheRope.GameMain
 {
     internal class ResDataPhoneFull
     {
-        private const string ResourceDataFileName = "res_data_phone_full.xml";
-        private const string MenuStringsFileName = "menu_strings.xml";
+        private const string ResourceDataFileName = ContentPaths.ResourceDataFile;
+        private const string MenuStringsFileName = ContentPaths.MenuStringsFile;
 
         public static string GetXml(string resName)
         {
@@ -120,7 +121,8 @@ namespace CutTheRope.GameMain
             {
                 try
                 {
-                    return TitleContainer.OpenStream($"content/{candidate}");
+                    string contentPath = $"{ContentPaths.RootDirectory}/{candidate}";
+                    return TitleContainer.OpenStream(contentPath);
                 }
                 catch (Exception)
                 {

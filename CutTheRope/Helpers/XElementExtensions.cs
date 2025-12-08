@@ -21,7 +21,8 @@ namespace CutTheRope.Helpers
 
             try
             {
-                using Stream stream = TitleContainer.OpenStream($"content/{ResDataPhoneFull.ContentFolder}{fileName}");
+                string contentPath = ContentPaths.GetContentPath(fileName);
+                using Stream stream = TitleContainer.OpenStream(contentPath);
                 document = XDocument.Load(stream);
             }
             catch (Exception)
