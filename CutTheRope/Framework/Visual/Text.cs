@@ -333,11 +333,19 @@ namespace CutTheRope.Framework.Visual
             GraphicsDevice graphicsDevice = Global.GraphicsDevice;
             Viewport viewport = graphicsDevice.Viewport;
 
-            float scaleX = viewport.Width / SCREEN_WIDTH;
-            float scaleY = viewport.Height / SCREEN_HEIGHT;
+            float viewportScaleX = viewport.Width / SCREEN_WIDTH;
+            float viewportScaleY = viewport.Height / SCREEN_HEIGHT;
 
-            // Create transformation matrix to convert from virtual game coordinates to physical screen coordinates
-            Matrix transformMatrix = Matrix.CreateScale(scaleX, scaleY, 1f);
+            // Create transformation matrix that applies element scale around its center point
+            // then converts from virtual game coordinates to physical screen coordinates
+            float centerX = drawX + (width / 2f);
+            float centerY = drawY + (height / 2f);
+
+            Matrix transformMatrix =
+                Matrix.CreateTranslation(-centerX, -centerY, 0f) *           // Translate to origin
+                Matrix.CreateScale(this.scaleX, this.scaleY, 1f) *           // Apply element scale
+                Matrix.CreateTranslation(centerX, centerY, 0f) *             // Translate back
+                Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);      // Apply viewport scale
 
             // Begin SpriteBatch for text rendering with proper scaling
             spriteBatch.Begin(

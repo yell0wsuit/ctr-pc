@@ -569,8 +569,9 @@ namespace CutTheRope.GameMain
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(t);
-            text.scaleX = text.scaleY = 0.5f;
+            text.scaleX = text.scaleY = 0.7f;
             text.rotationCenterX = -(float)text.width / 2;
+            text.width = (int)(text.width * 0.85f);
             _ = hbox.AddChild(text);
             Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 3);
             _ = hbox.AddChild(c);
@@ -761,10 +762,10 @@ namespace CutTheRope.GameMain
             }
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.anchor = text2.parentAnchor = 10;
-            text2.scaleX = text2.scaleY = 0.45f;
+            text2.scaleX = text2.scaleY = 0.75f;
             if (LANGUAGE is Language.LANGDE or Language.LANGEN)
             {
-                text2.scaleX = 0.45f;
+                text2.scaleX = 0.7f;
             }
             text2.SetAlignment(2);
             if (n != CTRPreferences.GetPacksCount())
