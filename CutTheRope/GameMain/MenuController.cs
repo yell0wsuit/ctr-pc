@@ -621,15 +621,33 @@ namespace CutTheRope.GameMain
             }
             string resourceName;
             int q;
-            if (n <= 6)
+
+            // Check if this is the "coming soon" box (always the last box)
+            if (n == CTRPreferences.GetPacksCount())
+            {
+                // Use the last quad from MenuPackSelection2 for "coming soon"
+                resourceName = Resources.Img.MenuPackSelection2;
+                q = PackSelection2QuadMap[^1];
+            }
+            else if (n <= 6)
             {
                 resourceName = Resources.Img.MenuPackSelection;
-                q = PackSelection1QuadMap[n];
+                q = n >= 0 && n < PackSelection1QuadMap.Length ? PackSelection1QuadMap[n] : 4; // fallback to pack 1
             }
             else
             {
-                resourceName = Resources.Img.MenuPackSelection2;
-                q = PackSelection2QuadMap[n - 7];
+                int index = n - 7;
+                if (index >= 0 && index < PackSelection2QuadMap.Length - 1) // -1 to exclude "coming soon" quad
+                {
+                    resourceName = Resources.Img.MenuPackSelection2;
+                    q = PackSelection2QuadMap[index];
+                }
+                else
+                {
+                    // fallback to pack 1 from MenuPackSelection
+                    resourceName = Resources.Img.MenuPackSelection;
+                    q = 4;
+                }
             }
             string nsstring;
             if (n == CTRPreferences.GetPacksCount())
