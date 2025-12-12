@@ -2,43 +2,43 @@
     "frames": [
         {
             "filename": "frame_0000.png",
-            "frame": { "x": 1, "y": 60, "w": 57, "h": 55 },
+            "frame": { "x": 63, "y": 1, "w": 59, "h": 58 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 14, "y": 15, "w": 57, "h": 55 },
-            "sourceSize": { "w": 86, "h": 84 }
+            "spriteSourceSize": { "x": 14, "y": 15, "w": 59, "h": 58 },
+            "sourceSize": { "w": 89, "h": 87 }
         },
         {
             "filename": "frame_0001.png",
-            "frame": { "x": 1, "y": 231, "w": 55, "h": 54 },
+            "frame": { "x": 244, "y": 1, "w": 56, "h": 57 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 16, "y": 16, "w": 55, "h": 54 },
-            "sourceSize": { "w": 86, "h": 84 }
+            "spriteSourceSize": { "x": 17, "y": 16, "w": 56, "h": 57 },
+            "sourceSize": { "w": 89, "h": 87 }
         },
         {
             "filename": "frame_0002.png",
-            "frame": { "x": 1, "y": 1, "w": 58, "h": 57 },
+            "frame": { "x": 1, "y": 1, "w": 60, "h": 59 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 14, "y": 13, "w": 58, "h": 57 },
-            "sourceSize": { "w": 86, "h": 84 }
+            "spriteSourceSize": { "x": 15, "y": 13, "w": 60, "h": 59 },
+            "sourceSize": { "w": 89, "h": 87 }
         },
         {
             "filename": "frame_0003.png",
-            "frame": { "x": 1, "y": 117, "w": 56, "h": 55 },
+            "frame": { "x": 124, "y": 1, "w": 58, "h": 57 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 16, "y": 14, "w": 56, "h": 55 },
-            "sourceSize": { "w": 86, "h": 84 }
+            "spriteSourceSize": { "x": 17, "y": 14, "w": 58, "h": 57 },
+            "sourceSize": { "w": 89, "h": 87 }
         },
         {
             "filename": "frame_0004.png",
-            "frame": { "x": 1, "y": 174, "w": 56, "h": 55 },
+            "frame": { "x": 184, "y": 1, "w": 58, "h": 57 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 16, "y": 15, "w": 56, "h": 55 },
-            "sourceSize": { "w": 86, "h": 84 }
+            "spriteSourceSize": { "x": 17, "y": 15, "w": 58, "h": 57 },
+            "sourceSize": { "w": 89, "h": 87 }
         }
     ],
     "meta": {
@@ -46,8 +46,8 @@
         "version": "1.0",
         "image": "christmas_lights.png",
         "format": "RGBA8888",
-        "size": { "w": 60, "h": 286 },
-        "scale": "0.75",
-        "smartupdate": "$TexturePacker:SmartUpdate:6d69e291ffc1a5cf84690b8924763066:0bac4101ea27edd62e7e4e0206b3f655:d424e4238376df5cc800c7b4164d1b4b$"
+        "size": { "w": 301, "h": 61 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:ea6c87c908c6f411737ee2abffd45b15:0bac4101ea27edd62e7e4e0206b3f655:d424e4238376df5cc800c7b4164d1b4b$"
     }
 }
