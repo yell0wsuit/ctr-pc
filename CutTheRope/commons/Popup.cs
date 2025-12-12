@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
@@ -59,48 +57,7 @@ namespace CutTheRope.Commons
         public void HidePopup()
         {
             isShow = false;
-            FadeOutTextChildren(); // Fade out all text elements before popup closes
-            PlayTimeline(1); // Play hide animation
-        }
-
-        /// <summary>
-        /// Initiates fade-out animation for all text elements within the popup.
-        /// </summary>
-        private void FadeOutTextChildren()
-        {
-            // Recursively find and fade out all text elements
-            FadeOutTextInElement(this);
-        }
-
-        /// <summary>
-        /// Recursively fades out text elements within the given element and its children.
-        /// </summary>
-        /// <param name="element">The element to search for text elements.</param>
-        private static void FadeOutTextInElement(BaseElement element)
-        {
-            if (element == null)
-            {
-                return;
-            }
-
-            // Check if this element is a Text element and fade it out
-            if (element is Text textElement)
-            {
-                // Create fade-out timeline: opaque → transparent over 0.2s
-                Timeline fadeOutTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                fadeOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                fadeOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-                textElement.AddTimelinewithID(fadeOutTimeline, 1);
-                textElement.PlayTimeline(1);
-            }
-
-            // Recursively process all children to find nested text elements
-            Dictionary<int, BaseElement> children = element.GetChilds();
-            for (int i = 0; i < children.Count; i++)
-            {
-                BaseElement child = children[i];
-                FadeOutTextInElement(child);
-            }
+            PlayTimeline(1);
         }
 
         public override bool OnTouchDownXY(float tx, float ty)
