@@ -40,7 +40,13 @@ namespace CutTheRope.Framework.Visual
 
             if (fontCache.TryGetValue(cacheKey, out FontStashFont cachedFont))
             {
-                return cachedFont;
+                // Recreate the font if the cached instance was disposed by FreePack/FreeResource
+                if (cachedFont.GetInternalFont() != null)
+                {
+                    return cachedFont;
+                }
+
+                fontCache.Remove(cacheKey);
             }
 
             // Get or create FontSystem for this font file
