@@ -1138,7 +1138,14 @@ namespace CutTheRope.GameMain
             }
             ShowView(viewToShow);
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+            if (SpecialEvents.IsXmas)
+            {
+                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+            }
+            else
+            {
+                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+            }
         }
 
         public void ShowNextPack()
@@ -1176,7 +1183,14 @@ namespace CutTheRope.GameMain
             }
             if (url != null)
             {
-                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                if (SpecialEvents.IsXmas)
+                {
+                    CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+                }
+                else
+                {
+                    CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                }
             }
             if (CTRPreferences.ShouldPlayLevelScroll())
             {
@@ -1314,7 +1328,14 @@ namespace CutTheRope.GameMain
                             CTRSoundMgr.StopMusic();
                             return;
                         }
-                        CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                        if (SpecialEvents.IsXmas)
+                        {
+                            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+                        }
+                        else
+                        {
+                            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                        }
                         return;
                     }
                 case var id when id == MenuButtonId.ShowCredits:

@@ -33,7 +33,19 @@ namespace CutTheRope.GameMain
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayRandomMusic(Resources.Snd.GameMusic, Resources.Snd.GameMusic2, Resources.Snd.GameMusic3, Resources.Snd.GameMusic4);
+            if (SpecialEvents.IsXmas)
+            {
+                CTRSoundMgr.PlayMusic(Resources.Snd.GameMusicXmas);
+            }
+            else
+            {
+                CTRSoundMgr.PlayRandomMusic(
+                    Resources.Snd.GameMusic,
+                    Resources.Snd.GameMusic2,
+                    Resources.Snd.GameMusic3,
+                    Resources.Snd.GameMusic4
+                );
+            }
             InitGameView();
             ShowView(0);
         }
@@ -388,7 +400,19 @@ namespace CutTheRope.GameMain
                             return;
                         }
                         CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        CTRSoundMgr.PlayRandomMusic(Resources.Snd.GameMusic, Resources.Snd.GameMusic2, Resources.Snd.GameMusic3, Resources.Snd.GameMusic4);
+                        if (SpecialEvents.IsXmas)
+                        {
+                            CTRSoundMgr.PlayMusic(Resources.Snd.GameMusicXmas);
+                        }
+                        else
+                        {
+                            CTRSoundMgr.PlayRandomMusic(
+                                Resources.Snd.GameMusic,
+                                Resources.Snd.GameMusic2,
+                                Resources.Snd.GameMusic3,
+                                Resources.Snd.GameMusic4
+                            );
+                        }
                         return;
                     }
                 case var id when id == GameControllerButtonId.ToggleSound:
@@ -422,7 +446,7 @@ namespace CutTheRope.GameMain
                 Deactivate();
                 return;
             }
-    ((GameScene)view.GetChild(0)).LoadNextMap();
+            ((GameScene)view.GetChild(0)).LoadNextMap();
             LevelStart();
         }
 
@@ -612,7 +636,7 @@ namespace CutTheRope.GameMain
                 Deactivate();
                 return;
             }
-    ((GameScene)view.GetChild(0)).LoadNextMap();
+            ((GameScene)view.GetChild(0)).LoadNextMap();
             LevelStart();
         }
 

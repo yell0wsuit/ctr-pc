@@ -121,7 +121,8 @@ namespace CutTheRope.GameMain
                 Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
                 Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
-                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.XmasBell
+                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.XmasBell,
+                Snd.MenuMusicXmas, Snd.GameMusicXmas
             ];
         }
 
@@ -358,6 +359,8 @@ namespace CutTheRope.GameMain
             public const string GameMusic4 = "game_music4";
             public const string GhostPuff = "ghost_puff";
             public const string XmasBell = "xmas_bell";
+            public const string MenuMusicXmas = "menu_music_xmas";
+            public const string GameMusicXmas = "game_music_xmas";
         }
 
         /// <summary>

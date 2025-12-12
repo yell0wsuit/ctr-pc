@@ -172,6 +172,8 @@ namespace CutTheRope.GameMain
             Resources.Snd.GameMusic2,
             Resources.Snd.GameMusic3,
             Resources.Snd.GameMusic4,
+            Resources.Snd.MenuMusicXmas,
+            Resources.Snd.GameMusicXmas,
             null,
         ];
     }
