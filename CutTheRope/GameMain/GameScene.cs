@@ -70,6 +70,7 @@ namespace CutTheRope.GameMain
             if (SpecialEvents.IsXmas)
             {
                 target.PlayAnimationtimeline(Resources.Img.CharGreetingXmas, 11);
+                CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
             }
             else
             {
