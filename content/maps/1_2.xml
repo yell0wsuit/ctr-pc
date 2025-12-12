@@ -19,24 +19,24 @@
         <tutorial01 x="276" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="329" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
         <tutorial11 x="205" y="135" locale="en" moveSpeed="100" rotateSpeed="100" special="2" />
-        <tutorialText x="-15" y="78" locale="en" text="Using the trackpad slide two fingers across to cut the rope" width="190" />
+        <tutorialText x="-15" y="98" locale="en" text="Using the trackpad slide two fingers across to cut the rope" width="190" />
     </layer>
 <layer name="Ru_Track">
-        <tutorialText x="-35" y="70" locale="ru" text="Перерезайте веревку движением двух пальцев, используя трекпад" width="200" />
+        <tutorialText x="-35" y="90" locale="ru" text="Перерезайте веревку движением двух пальцев, используя трекпад" width="200" />
         <tutorial01 x="223" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="276" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="329" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial11 x="205" y="135" locale="ru" moveSpeed="100" rotateSpeed="100" special="2" />
     </layer>
 <layer name="De_Track">
-        <tutorialText x="-15" y="78" locale="de" text="Ziehe zwei Finger über dasTrackpad, um das Seil zu zerschneiden" width="200" />
+        <tutorialText x="-15" y="98" locale="de" text="Ziehe zwei Finger über dasTrackpad, um das Seil zu zerschneiden" width="200" />
         <tutorial01 x="223" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="276" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="329" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial11 x="205" y="135" locale="de" moveSpeed="100" rotateSpeed="100" special="2" />
     </layer>
 <layer name="Fr_Track">
-        <tutorialText x="-14" y="78" locale="fr" text="Sur le trackpad, glisse deux doigts sur une corde pour la couper" width="200" />
+        <tutorialText x="-14" y="98" locale="fr" text="Sur le trackpad, glisse deux doigts sur une corde pour la couper" width="200" />
         <tutorial01 x="223" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="276" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="329" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />

@@ -18,18 +18,18 @@
     </layer>
 <layer name="En">
         <tutorial09 x="155" y="261" locale="en" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="57" y="271" locale="en" text="The bee carries candy along this path" width="200" />
+        <tutorialText x="57" y="291" locale="en" text="The bee carries candy along this path" width="200" />
     </layer>
 <layer name="Ru">
         <tutorial09 x="98" y="289" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="127" y="247" locale="ru" text="Пчела носит леденец по траектории" width="100" />
+        <tutorialText x="127" y="267" locale="ru" text="Пчела носит леденец по траектории" width="100" />
     </layer>
 <layer name="De">
-        <tutorialText x="56" y="262" locale="de" text="Die Biene trägt das Bonbon diesen Pfad entlang" width="200" />
+        <tutorialText x="56" y="282" locale="de" text="Die Biene trägt das Bonbon diesen Pfad entlang" width="200" />
         <tutorial09 x="155" y="252" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="Fr">
-        <tutorialText x="55" y="268" locale="fr" text="L'abeille transporte le bonbon le long de ce chemin" width="200" />
+        <tutorialText x="55" y="288" locale="fr" text="L'abeille transporte le bonbon le long de ce chemin" width="200" />
         <tutorial09 x="155" y="252" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
 </map>
