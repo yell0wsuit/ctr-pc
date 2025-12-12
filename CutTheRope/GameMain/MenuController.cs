@@ -571,7 +571,7 @@ namespace CutTheRope.GameMain
             text.SetString(t);
             text.scaleX = text.scaleY = 0.7f;
             text.rotationCenterX = -(float)text.width / 2;
-            text.width = (int)(text.width * 0.85f);
+            text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
             Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 3);
             _ = hbox.AddChild(c);
