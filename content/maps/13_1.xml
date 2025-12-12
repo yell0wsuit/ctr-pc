@@ -15,23 +15,23 @@
         <hiddenElement x="277" y="145" radius="30" />
     </layer>
     <layer name="En">
-        <tutorialText x="252" y="273" locale="en" text="Tap the valve to switch between 3 pressure modes" width="130" />
-        <tutorial04 x="217" y="425" locale="en" angle="-10" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="182" y="273" locale="en" text="Tap the valve to switch between 3 pressure modes" width="130" />
+        <tutorial04 x="217" y="410" locale="en" angle="-10" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Ru">
         <tutorialText x="161" y="256" locale="ru" text="Коснитесь вентеля, чтобы переключиться между 3 режимами давления." width="150" />
         <tutorial04 x="214" y="418" locale="ru" angle="-10" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="De">
-        <tutorialText x="235" y="278" locale="de" text="Tippe das Ventil an, um zwischen 3 Druckmodi zu wechseln." width="150" />
+        <tutorialText x="163" y="262" locale="de" text="Tippe das Ventil an, um zwischen den drei Druck-Modi zu wechseln." width="150" />
         <tutorial04 x="215" y="410" locale="de" angle="-10" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Fr">
         <tutorial04 x="216" y="411" locale="fr" angle="-10" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="260" y="280" locale="fr" text="Touche la valve pour choisir la pression parmi les 3 disponibles." width="150" />
+        <tutorialText x="168" y="267" locale="fr" text="Touchez la valve pour alterner entre les 3 modes de pression." width="150" />
     </layer>
     <layer name="It">
-        <tutorialText x="250" y="275" locale="it" text="Tocca la valvola per cambiare tra 3 modalità di pressione" width="150" />
+        <tutorialText x="160" y="261" locale="it" text="Tocca la valvola per spostarti tra le 3 modalità di pressione." width="150" />
         <tutorial04 x="217" y="410" locale="it" angle="-10" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="NL">
@@ -39,7 +39,7 @@
         <tutorialText x="165" y="273" locale="nl" text="Tik op het ventiel om tussen 3 drukstanden te schakelen." width="150" />
     </layer>
     <layer name="Es">
-        <tutorialText x="220" y="282" locale="es" text="Toca la válvula para cambiar entre 3 modos de presión." width="150" />
+        <tutorialText x="169" y="282" locale="es" text="Toca la válvula para cambiar entre 3 modos de presión." width="150" />
         <tutorial04 x="216" y="410" locale="es" angle="-10" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Pt">
