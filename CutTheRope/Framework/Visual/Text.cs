@@ -275,6 +275,7 @@ namespace CutTheRope.Framework.Visual
 
             FontEffectSettings effects = fontStashFont.GetEffectSettings();
             Color textColor = fontStashFont.GetColor();
+            Color parentColor = OpenGL.GetCurrentColor();
             static float CalculatePerPassAlpha(float targetAlpha, int sampleCount)
             {
                 if (sampleCount <= 1)
@@ -304,7 +305,7 @@ namespace CutTheRope.Framework.Visual
                 return MathHelper.Clamp(perSample, 0f, 1f);
             }
 
-            // Apply element color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
+            // Apply element and inherited color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
             static byte ScaleByte(byte channel, float factor)
             {
                 float scaled = channel * factor; // factor already 0-1, so no /255
@@ -319,11 +320,16 @@ namespace CutTheRope.Framework.Visual
                 return (byte)scaled;
             }
 
+            static float Combine(float elementChannel, byte inheritedChannel)
+            {
+                return MathHelper.Clamp(elementChannel * (inheritedChannel / 255f), 0f, 1f);
+            }
+
             Color finalColor = new(
-                ScaleByte(textColor.R, color.r),
-                ScaleByte(textColor.G, color.g),
-                ScaleByte(textColor.B, color.b),
-                ScaleByte(textColor.A, color.a)
+                ScaleByte(textColor.R, Combine(color.r, parentColor.R)),
+                ScaleByte(textColor.G, Combine(color.g, parentColor.G)),
+                ScaleByte(textColor.B, Combine(color.b, parentColor.B)),
+                ScaleByte(textColor.A, Combine(color.a, parentColor.A))
             );
 
             float yPos = drawY;
@@ -336,16 +342,10 @@ namespace CutTheRope.Framework.Visual
             float viewportScaleX = viewport.Width / SCREEN_WIDTH;
             float viewportScaleY = viewport.Height / SCREEN_HEIGHT;
 
-            // Create transformation matrix that applies element scale around its center point
-            // then converts from virtual game coordinates to physical screen coordinates
-            float centerX = drawX + (width / 2f);
-            float centerY = drawY + (height / 2f);
-
+            // Respect the current OpenGL emulation transform (including parent timelines/animations)
             Matrix transformMatrix =
-                Matrix.CreateTranslation(-centerX, -centerY, 0f) *           // Translate to origin
-                Matrix.CreateScale(this.scaleX, this.scaleY, 1f) *           // Apply element scale
-                Matrix.CreateTranslation(centerX, centerY, 0f) *             // Translate back
-                Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);      // Apply viewport scale
+                OpenGL.GetModelViewMatrix() *
+                Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);
 
             // Begin SpriteBatch for text rendering with proper scaling
             spriteBatch.Begin(
