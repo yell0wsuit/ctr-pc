@@ -318,6 +318,19 @@ namespace CutTheRope.Framework.Visual
                 return MathHelper.Clamp(elementChannel * (inheritedChannel / 255f), 0f, 1f);
             }
 
+            static Color MakePremultipliedColor(Color baseColor, float redScale, float greenScale, float blueScale, float alphaScale)
+            {
+                byte finalAlpha = (byte)MathHelper.Clamp(baseColor.A / 255f * alphaScale * 255f, 0f, 255f);
+
+                // Use FromNonPremultiplied so SpriteBatch receives premultiplied channels that honor the alpha timeline
+                return Color.FromNonPremultiplied(
+                    ScaleByte(baseColor.R, redScale),
+                    ScaleByte(baseColor.G, greenScale),
+                    ScaleByte(baseColor.B, blueScale),
+                    finalAlpha
+                );
+            }
+
             float inheritedRed = Combine(color.r, parentColor.R);
             float inheritedGreen = Combine(color.g, parentColor.G);
             float inheritedBlue = Combine(color.b, parentColor.B);
@@ -325,11 +338,12 @@ namespace CutTheRope.Framework.Visual
 
             // Premultiply channels for correct blending
             float effectiveAlpha = MathHelper.Clamp(textColor.A / 255f * inheritedAlpha, 0f, 1f);
-            Color finalColor = new(
-                ScaleByte(textColor.R, inheritedRed * effectiveAlpha),
-                ScaleByte(textColor.G, inheritedGreen * effectiveAlpha),
-                ScaleByte(textColor.B, inheritedBlue * effectiveAlpha),
-                (byte)MathHelper.Clamp(effectiveAlpha * 255f, 0f, 255f)
+            Color finalColor = MakePremultipliedColor(
+                textColor,
+                MathHelper.Clamp(inheritedRed, 0f, 1f),
+                MathHelper.Clamp(inheritedGreen, 0f, 1f),
+                MathHelper.Clamp(inheritedBlue, 0f, 1f),
+                effectiveAlpha
             );
 
             float yPos = drawY;
@@ -388,12 +402,12 @@ namespace CutTheRope.Framework.Visual
                     int shadowSamples = ((shadowStrokeAmount * 2) + 1) * ((shadowStrokeAmount * 2) + 1);
                     float shadowTargetAlpha = effects.ShadowColor.A / 255f * inheritedAlpha;
                     float shadowAlpha = CalculatePerPassAlpha(shadowTargetAlpha, shadowSamples);
-                    float shadowPremult = shadowAlpha;
-                    Color shadowColor = new(
-                        ScaleByte(effects.ShadowColor.R, inheritedRed * shadowPremult),
-                        ScaleByte(effects.ShadowColor.G, inheritedGreen * shadowPremult),
-                        ScaleByte(effects.ShadowColor.B, inheritedBlue * shadowPremult),
-                        (byte)MathHelper.Clamp(shadowAlpha * 255f, 0f, 255f)
+                    Color shadowColor = MakePremultipliedColor(
+                        effects.ShadowColor,
+                        MathHelper.Clamp(inheritedRed, 0f, 1f),
+                        MathHelper.Clamp(inheritedGreen, 0f, 1f),
+                        MathHelper.Clamp(inheritedBlue, 0f, 1f),
+                        shadowAlpha
                     );
 
                     // Render shadow with stroke outline for better backdrop effect
@@ -419,12 +433,12 @@ namespace CutTheRope.Framework.Visual
                     strokeSamples = Math.Max(strokeSamples, 1);
                     float strokeTargetAlpha = effects.StrokeColor.A / 255f * inheritedAlpha;
                     float strokeAlpha = CalculatePerPassAlpha(strokeTargetAlpha, strokeSamples);
-                    float strokePremult = strokeAlpha;
-                    Color strokeColor = new(
-                        ScaleByte(effects.StrokeColor.R, inheritedRed * strokePremult),
-                        ScaleByte(effects.StrokeColor.G, inheritedGreen * strokePremult),
-                        ScaleByte(effects.StrokeColor.B, inheritedBlue * strokePremult),
-                        (byte)MathHelper.Clamp(strokeAlpha * 255f, 0f, 255f)
+                    Color strokeColor = MakePremultipliedColor(
+                        effects.StrokeColor,
+                        MathHelper.Clamp(inheritedRed, 0f, 1f),
+                        MathHelper.Clamp(inheritedGreen, 0f, 1f),
+                        MathHelper.Clamp(inheritedBlue, 0f, 1f),
+                        strokeAlpha
                     );
                     int strokeAmount = effects.StrokeAmount;
 
