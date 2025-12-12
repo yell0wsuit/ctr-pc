@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Globalization;
 
 using CutTheRope.Commons;
@@ -13,36 +12,6 @@ namespace CutTheRope.GameMain
     internal sealed class PopUpMenu(MenuController controller)
     {
         private readonly MenuController menuController = controller;
-
-        /// <summary>
-        /// Applies fade-in animation to all text elements within a button.
-        /// Only animates the currently visible (up) state to avoid retriggering on button press.
-        /// </summary>
-        /// <param name="button">The button whose text should fade in.</param>
-        private static void ApplyFadeInToButton(Button button)
-        {
-            // Only apply fade-in to the up state (child 0), not the down state (child 1)
-            // This prevents the animation from retriggering when the button is pressed
-            BaseElement upState = button.GetChild(0);
-            if (upState is Image upImage)
-            {
-                Dictionary<int, BaseElement> imageChildren = upImage.GetChilds();
-                foreach (KeyValuePair<int, BaseElement> imageChild in imageChildren)
-                {
-                    if (imageChild.Value is Text text)
-                    {
-                        // Initialize text as transparent
-                        text.color = RGBAColor.transparentRGBA;
-                        // Create fade-in timeline: wait 0.2s, then fade in over 0.2s
-                        Timeline fadeInTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                        fadeInTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                        fadeInTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                        text.AddTimelinewithID(fadeInTimeline, 0);
-                        text.PlayTimeline(0);
-                    }
-                }
-            }
-        }
 
         public void ShowCantUnlockPopup()
         {
@@ -109,8 +78,6 @@ namespace CutTheRope.GameMain
             button.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             _ = popup.AddChild(button);
-            // Apply fade-in effect to button text
-            ApplyFadeInToButton(button);
             popup.ShowPopup();
             _ = menuController.ActiveView().AddChild(popup);
         }
@@ -156,8 +123,6 @@ namespace CutTheRope.GameMain
             button.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             _ = image.AddChild(button);
-            // Apply fade-in effect to button text
-            ApplyFadeInToButton(button);
             popup.ShowPopup();
             _ = menuController.ActiveView().AddChild(popup);
         }
@@ -189,14 +154,10 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             button.y -= button.height;
             _ = image.AddChild(button);
-            // Apply fade-in effect to button text
-            ApplyFadeInToButton(button);
             Button button2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_NO), buttonNoId, menuController);
             button2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuPopup, 4);
             _ = image.AddChild(button2);
-            // Apply fade-in effect to button text
-            ApplyFadeInToButton(button2);
             popup.ShowPopup();
             _ = menuController.ActiveView().AddChild(popup);
             return popup;
