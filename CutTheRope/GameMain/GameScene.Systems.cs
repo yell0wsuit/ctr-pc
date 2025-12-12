@@ -127,7 +127,14 @@ namespace CutTheRope.GameMain
                             {
                                 SpiderBusted(grab);
                             }
-                            CTRSoundMgr.PlaySound(rope.relaxed != 0 ? Resources.Snd.RopeBleak2 : Resources.Snd.RopeBleak1);
+                            string ropeSound = rope.relaxed switch
+                            {
+                                0 => Resources.Snd.RopeBleak1,
+                                1 => Resources.Snd.RopeBleak2,
+                                2 => Resources.Snd.RopeBleak3,
+                                _ => Resources.Snd.RopeBleak4
+                            };
+                            CTRSoundMgr.PlaySound(ropeSound);
                             rope.SetCut(j);
                             if (im)
                             {
