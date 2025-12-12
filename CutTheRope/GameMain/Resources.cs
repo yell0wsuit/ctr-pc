@@ -281,7 +281,7 @@ namespace CutTheRope.GameMain
                     Fnt.SmallFont => new FontConfiguration
                     {
                         FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
-                        Size = 64f,
+                        Size = 72f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None
                     },
