@@ -67,7 +67,14 @@ namespace CutTheRope.GameMain
 
         public void ShowGreeting()
         {
-            target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 10);
+            if (SpecialEvents.IsXmas)
+            {
+                target.PlayAnimationtimeline(Resources.Img.CharGreetingXmas, 11);
+            }
+            else
+            {
+                target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 10);
+            }
         }
 
         public override void Hide()
