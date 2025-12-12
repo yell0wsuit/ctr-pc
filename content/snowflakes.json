@@ -2,35 +2,35 @@
     "frames": [
         {
             "filename": "frame_0000.png",
-            "frame": { "x": 1, "y": 198, "w": 148, "h": 161 },
-            "rotated": true,
+            "frame": { "x": 1, "y": 1, "w": 154, "h": 168 },
+            "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 60, "y": 51, "w": 148, "h": 161 },
-            "sourceSize": { "w": 264, "h": 264 }
+            "spriteSourceSize": { "x": 63, "y": 53, "w": 154, "h": 168 },
+            "sourceSize": { "w": 275, "h": 275 }
         },
         {
             "filename": "frame_0001.png",
-            "frame": { "x": 1, "y": 91, "w": 105, "h": 116 },
-            "rotated": true,
+            "frame": { "x": 157, "y": 1, "w": 109, "h": 121 },
+            "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 85, "y": 73, "w": 105, "h": 116 },
-            "sourceSize": { "w": 264, "h": 264 }
+            "spriteSourceSize": { "x": 89, "y": 76, "w": 109, "h": 121 },
+            "sourceSize": { "w": 275, "h": 275 }
         },
         {
             "filename": "frame_0002.png",
-            "frame": { "x": 62, "y": 1, "w": 88, "h": 94 },
-            "rotated": true,
+            "frame": { "x": 268, "y": 1, "w": 91, "h": 99 },
+            "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 91, "y": 84, "w": 88, "h": 94 },
-            "sourceSize": { "w": 264, "h": 264 }
+            "spriteSourceSize": { "x": 95, "y": 87, "w": 91, "h": 99 },
+            "sourceSize": { "w": 275, "h": 275 }
         },
         {
             "filename": "frame_0003.png",
-            "frame": { "x": 1, "y": 1, "w": 55, "h": 59 },
-            "rotated": true,
+            "frame": { "x": 268, "y": 102, "w": 57, "h": 62 },
+            "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 108, "y": 102, "w": 55, "h": 59 },
-            "sourceSize": { "w": 264, "h": 264 }
+            "spriteSourceSize": { "x": 113, "y": 106, "w": 57, "h": 62 },
+            "sourceSize": { "w": 275, "h": 275 }
         }
     ],
     "meta": {
@@ -38,8 +38,8 @@
         "version": "1.0",
         "image": "snowflakes.png",
         "format": "RGBA8888",
-        "size": { "w": 163, "h": 347 },
-        "scale": "0.75",
-        "smartupdate": "$TexturePacker:SmartUpdate:12ae24890f81e742a1b25da0a200b53b:2bce22160d159069e1df0877f66a8901:9acf1e29b5b43acd04a33a2b7d9c45f7$"
+        "size": { "w": 360, "h": 170 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:7d894cfd81e46398d106e4b53c5ef8cb:2bce22160d159069e1df0877f66a8901:1d02fb9e2da191ef1ac0f5e1ccb11e3a$"
     }
 }
