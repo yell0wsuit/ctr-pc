@@ -287,7 +287,7 @@ namespace CutTheRope.GameMain
                         Color = Color.Black,
                         Effects = FontEffectSettings.None,
                         LineSpacing = 5f,
-                        TopSpacing = 20f
+                        TopSpacing = 25f
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
