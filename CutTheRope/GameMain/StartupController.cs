@@ -131,6 +131,7 @@ namespace CutTheRope.GameMain
             Resources.Snd.ScratchOut,
             Resources.Snd.GhostPuff,
             Resources.Snd.XmasBell,
+            Resources.Snd.TeleportXmas,
             null,
         ];
 

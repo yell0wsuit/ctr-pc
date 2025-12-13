@@ -253,6 +253,7 @@ namespace CutTheRope.GameMain
             public const string Snowflakes = "snowflakes";
             public const string CharGreetingXmas = "char_greeting_xmas";
             public const string CharIdleXmas = "char_idle_xmas";
+            public const string ObjSock = "obj_sock_xmas";
         }
 
         /// <summary>
@@ -361,6 +362,7 @@ namespace CutTheRope.GameMain
             public const string XmasBell = "xmas_bell";
             public const string MenuMusicXmas = "menu_music_xmas";
             public const string GameMusicXmas = "game_music_xmas";
+            public const string TeleportXmas = "teleport_xmas";
         }
 
         /// <summary>
