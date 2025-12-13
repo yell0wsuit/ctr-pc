@@ -586,12 +586,11 @@ namespace CutTheRope.Framework.Core
                 DelayedDispatcher.DispatchFunc dispatchFunc = new(Rmgr_internalUpdate);
                 Timer = TimerManager.Schedule(dispatchFunc, this, 0.022222223f);
             }
-            bUseFake = loadQueue.Count < 100;
         }
 
         private int GetLoadCount()
         {
-            return !bUseFake ? loadCount : 100;
+            return loadCount;
         }
 
         public void Update()
@@ -710,8 +709,6 @@ namespace CutTheRope.Framework.Core
         private readonly List<int> loadQueue = [];
 
         private int Timer;
-
-        private bool bUseFake;
 
         public enum ResourceType
         {
