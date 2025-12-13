@@ -20,7 +20,7 @@ namespace CutTheRope.Framework.Visual
         // Cache for rendered character textures
         private readonly Dictionary<char, Image> charImageCache = [];
 
-        public FontStashFont InitWithFont(DynamicSpriteFont dynamicFont, float size, Color color, FontEffectSettings effects)
+        public FontStashFont InitWithFont(DynamicSpriteFont dynamicFont, float size, Color color, FontEffectSettings effects, float lineSpacing = 0f, float topSpacing = 0f)
         {
             font = dynamicFont ?? throw new ArgumentNullException(nameof(dynamicFont));
             fontSize = size;
@@ -29,8 +29,9 @@ namespace CutTheRope.Framework.Visual
 
             // Set default values
             charOffset = 0f;
-            lineOffset = 0f;
+            lineOffset = lineSpacing;
             spaceWidth = MeasureCharWidth(' ');
+            this.topSpacing = topSpacing;
 
             return this;
         }

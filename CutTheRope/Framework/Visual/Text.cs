@@ -80,12 +80,12 @@ namespace CutTheRope.Framework.Visual
                     // Keep width/height in sync for anchoring and layout when using FontStashSharp
                     if (formattedStrings.Count <= 1)
                     {
-                        height = (int)font.FontHeight();
+                        height = (int)(font.FontHeight() + font.GetTopSpacing());
                         width = (int)wrapWidth;
                     }
                     else
                     {
-                        height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset());
+                        height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset() + font.GetTopSpacing());
                         width = (int)wrapWidth;
                     }
 
@@ -194,12 +194,12 @@ namespace CutTheRope.Framework.Visual
             stringLength = num6;
             if (formattedStrings.Count <= 1)
             {
-                height = (int)font.FontHeight();
+                height = (int)(font.FontHeight() + font.GetTopSpacing());
                 width = (int)wrapWidth;
             }
             else
             {
-                height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset());
+                height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset() + font.GetTopSpacing());
                 width = (int)wrapWidth;
             }
             if (maxHeight != -1f)
@@ -346,7 +346,7 @@ namespace CutTheRope.Framework.Visual
                 effectiveAlpha
             );
 
-            float yPos = drawY;
+            float yPos = drawY + font.GetTopSpacing();
             int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
 
             // Calculate scale from virtual coordinates to physical viewport

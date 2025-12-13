@@ -28,7 +28,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Loads a FontStashSharp font from a TTF file.
         /// </summary>
-        public static FontStashFont LoadFont(string fontPath, float fontSize, Color color, FontEffectSettings effects)
+        public static FontStashFont LoadFont(string fontPath, float fontSize, Color color, FontEffectSettings effects, float lineSpacing = 0f, float topSpacing = 0f)
         {
             if (graphicsDevice == null)
             {
@@ -36,7 +36,7 @@ namespace CutTheRope.Framework.Visual
             }
 
             // Create a cache key based on all parameters
-            string cacheKey = $"{fontPath}_{fontSize}_{color.PackedValue}_{GetEffectHash(effects)}";
+            string cacheKey = $"{fontPath}_{fontSize}_{color.PackedValue}_{GetEffectHash(effects)}_{lineSpacing}_{topSpacing}";
 
             if (fontCache.TryGetValue(cacheKey, out FontStashFont cachedFont))
             {
@@ -60,7 +60,7 @@ namespace CutTheRope.Framework.Visual
             DynamicSpriteFont dynamicFont = fontSystem.GetFont(fontSize);
 
             // Create and cache the font wrapper
-            FontStashFont font = new FontStashFont().InitWithFont(dynamicFont, fontSize, color, effects);
+            FontStashFont font = new FontStashFont().InitWithFont(dynamicFont, fontSize, color, effects, lineSpacing, topSpacing);
             fontCache[cacheKey] = font;
 
             return font;

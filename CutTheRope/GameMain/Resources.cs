@@ -276,21 +276,27 @@ namespace CutTheRope.GameMain
                         FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
                         Size = 100f,
                         Color = Color.White,
-                        Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3)
+                        Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3),
+                        LineSpacing = 5f,
+                        TopSpacing = 0f
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
                         FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
                         Size = 72f,
                         Color = Color.Black,
-                        Effects = FontEffectSettings.None
+                        Effects = FontEffectSettings.None,
+                        LineSpacing = 5f,
+                        TopSpacing = 20f
                     },
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
                         FontFile = StandardFont,
                         Size = 100f,
                         Color = Color.Black,
-                        Effects = FontEffectSettings.None
+                        Effects = FontEffectSettings.None,
+                        LineSpacing = 5f,
+                        TopSpacing = 5f
                     },
                     _ => throw new ArgumentException($"Unknown font: {fontName}", nameof(fontName))
                 };
@@ -366,5 +372,7 @@ namespace CutTheRope.GameMain
         public float Size { get; set; }
         public Color Color { get; set; }
         public FontEffectSettings Effects { get; set; }
+        public float LineSpacing { get; set; } = 0f;
+        public float TopSpacing { get; set; } = 0f;
     }
 }

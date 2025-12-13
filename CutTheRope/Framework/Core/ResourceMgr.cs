@@ -209,7 +209,9 @@ namespace CutTheRope.Framework.Core
                 config.FontFile,
                 config.Size,
                 config.Color,
-                config.Effects
+                config.Effects,
+                config.LineSpacing,
+                config.TopSpacing
             );
 
             return fontStashFont;
