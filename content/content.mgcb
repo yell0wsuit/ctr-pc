@@ -1129,6 +1129,18 @@
 /processorParam:TextureFormat=Color
 /build:obj_hat.png
 
+#begin obj_sock_xmas.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:obj_sock_xmas.png
+
 #begin obj_hook_01.png
 /importer:TextureImporter
 /processor:TextureProcessor
