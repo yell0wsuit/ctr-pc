@@ -40,6 +40,14 @@ namespace CutTheRope.GameMain
             }
 
             bar.width = (int)(barTotalWidth * currentPercent / 100f);
+
+            // Wait for animation to complete before transitioning
+            if (resourcesLoaded && currentPercent >= 99.5f)
+            {
+                Application.SharedRootController().SetViewTransition(4);
+                Deactivate();
+                resourcesLoaded = false; // Reset for next time
+            }
         }
 
         public void MoviePlaybackFinished(string url)
@@ -58,6 +66,7 @@ namespace CutTheRope.GameMain
         public override void Activate()
         {
             base.Activate();
+            resourcesLoaded = false; // Reset flag when activating
             ShowView(1);
             MoviePlaybackFinished(null);
         }
@@ -68,8 +77,8 @@ namespace CutTheRope.GameMain
 
         public void AllResourcesLoaded()
         {
-            Application.SharedRootController().SetViewTransition(4);
-            Deactivate();
+            // Just set flag - Update() will handle transition after animation completes
+            resourcesLoaded = true;
         }
 
         private readonly float barTotalWidth;
@@ -77,6 +86,7 @@ namespace CutTheRope.GameMain
         private readonly TiledImage bar;
 
         private float currentPercent;
+        private bool resourcesLoaded;
 
         private static readonly string[] PackCommon =
         [
