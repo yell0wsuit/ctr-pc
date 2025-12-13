@@ -19,10 +19,29 @@ namespace CutTheRope.GameMain
             _ = loadingView.AddChild(text);
         }
 
+        public override void Update(float t)
+        {
+            base.Update(t);
+
+            // Wait for animation to complete before transitioning
+            if (resourcesLoaded)
+            {
+                LoadingView loadingView = (LoadingView)GetView(0);
+                if (loadingView.IsAnimationComplete())
+                {
+                    GC.Collect();
+                    Application.SharedRootController().SetViewTransition(4);
+                    Deactivate();
+                    resourcesLoaded = false; // Reset for next time
+                }
+            }
+        }
+
         public override void Activate()
         {
             AndroidAPI.ShowBanner();
             base.Activate();
+            resourcesLoaded = false; // Reset flag when activating
             ((LoadingView)GetView(0)).game = nextController == 0;
             ShowView(0);
         }
@@ -33,13 +52,12 @@ namespace CutTheRope.GameMain
 
         public void AllResourcesLoaded()
         {
-            GC.Collect();
-            AndroidAPI.HideBanner();
-            Application.SharedRootController().SetViewTransition(4);
-            Deactivate();
+            // Just set flag - Update() will handle transition after animation completes
+            resourcesLoaded = true;
         }
 
         public int nextController;
+        private bool resourcesLoaded;
 
         private enum ViewID
         {

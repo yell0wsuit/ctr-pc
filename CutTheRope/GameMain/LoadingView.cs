@@ -13,7 +13,13 @@ namespace CutTheRope.GameMain
             // Reset animation state when loading screen is shown
             initialized = false;
             currentPercent = 0f;
+            animationComplete = false;
             base.Show();
+        }
+
+        public bool IsAnimationComplete()
+        {
+            return animationComplete;
         }
 
         public override void Draw()
@@ -44,6 +50,13 @@ namespace CutTheRope.GameMain
                     currentPercent = targetPercent; // Snap when close enough
                 }
             }
+
+            // Mark animation as complete when we've reached 100%
+            if (currentPercent >= 99.5f && !animationComplete)
+            {
+                animationComplete = true;
+            }
+
             float num2 = currentPercent;
             CTRTexture2D texture = Application.GetTexture(boxCover);
             OpenGL.GlColor4f(s_Color1);
@@ -93,6 +106,7 @@ namespace CutTheRope.GameMain
 
         private float currentPercent;
         private bool initialized;
+        private bool animationComplete;
 
         private static Color s_Color1 = new(0.85f, 0.85f, 0.85f, 1f);
     }
