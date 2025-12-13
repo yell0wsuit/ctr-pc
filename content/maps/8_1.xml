@@ -14,20 +14,20 @@
         <gravitySwitch x="150" y="392" />
         <spike4 x="273" y="323" angle="0" size="4" />
         <spike4 x="273" y="46" angle="0" size="4" />
-        <tutorialText x="215" y="351" locale="en" text="Toggle the gravity with this button" width="140" />
+        <tutorialText x="215" y="331" locale="en" text="Toggle the gravity with this button" width="140" />
         <tutorial04 x="222" y="429" locale="en" angle="35" moveSpeed="100" rotateSpeed="100" />
         <star x="302" y="273" timeout="-1" />
     </layer>
 <layer name="Ru">
         <tutorial04 x="219" y="417" locale="ru" angle="40" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="229" y="348" locale="ru" text="Переключайте гравитацию с помощью этой кнопки" width="140" />
+        <tutorialText x="229" y="328" locale="ru" text="Переключайте гравитацию с помощью этой кнопки" width="140" />
     </layer>
 <layer name="Fr">
-        <tutorialText x="190" y="358" locale="fr" text="Active et désactive la gravité avec ce bouton" width="200" />
+        <tutorialText x="190" y="338" locale="fr" text="Active et désactive la gravité avec ce bouton" width="200" />
         <tutorial04 x="211" y="407" locale="fr" angle="35" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="De">
         <tutorial04 x="207" y="425" locale="de" angle="55" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="208" y="362" locale="de" text="Hier kannst Du die Schwerkraft ein oder aus schalten" width="140" />
+        <tutorialText x="208" y="342" locale="de" text="Hier kannst Du die Schwerkraft ein oder aus schalten" width="140" />
     </layer>
 </map>

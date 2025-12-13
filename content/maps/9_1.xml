@@ -16,18 +16,18 @@
     </layer>
 <layer name="ru">
         <tutorial04 x="126" y="401" locale="ru" angle="90" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="146" y="412" locale="ru" text="Чтобы повернуть пилу, нажмите кнопку" width="150" />
+        <tutorialText x="146" y="392" locale="ru" text="Чтобы повернуть пилу, нажмите кнопку" width="150" />
     </layer>
 <layer name="en">
-        <tutorialText x="143" y="413" locale="en" text="Turn the blades with this button" width="150" />
+        <tutorialText x="143" y="393" locale="en" text="Turn the blades with this button" width="150" />
         <tutorial04 x="126" y="401" locale="en" angle="90" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="de">
-        <tutorialText x="150" y="409" locale="de" text="Drehe die Sägeblätter mit diesem Schaltfeld" width="180" />
+        <tutorialText x="150" y="389" locale="de" text="Drehe die Sägeblätter mit diesem Schaltfeld" width="180" />
         <tutorial04 x="126" y="403" locale="de" angle="90" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="fr">
-        <tutorialText x="146" y="411" locale="fr" text="Faites tourner les lames avec ce bouton" width="150" />
+        <tutorialText x="146" y="391" locale="fr" text="Faites tourner les lames avec ce bouton" width="150" />
         <tutorial04 x="128" y="407" locale="fr" angle="90" moveSpeed="100" rotateSpeed="100" />
     </layer>
 </map>

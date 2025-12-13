@@ -14,19 +14,19 @@
         <bubble x="222" y="348" />
         <pump x="225" y="442" angle="-90" />
         <grab x="304" y="66" length="100" wheel="false" gun="false" radius="70" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
-        <tutorialText x="176" y="235" locale="en" text="Some stars require fast actions to be collected" width="250" />
+        <tutorialText x="176" y="215" locale="en" text="Some stars require fast actions to be collected" width="250" />
         <tutorial09 x="167" y="252" locale="en" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="Ru">
         <tutorial09 x="65" y="259" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="80" y="233" locale="ru" text="Некоторые звезды пропадают, если вы не достаточно быстры" width="200" />
+        <tutorialText x="80" y="213" locale="ru" text="Некоторые звезды пропадают, если вы не достаточно быстры" width="200" />
     </layer>
 <layer name="Fr">
-        <tutorialText x="46" y="233" locale="fr" text="Il est nécessaire d'agir rapidement pour collecter certaines étoiles" width="240" />
+        <tutorialText x="46" y="213" locale="fr" text="Il est nécessaire d'agir rapidement pour collecter certaines étoiles" width="240" />
         <tutorial09 x="40" y="256" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="De">
-        <tutorialText x="60" y="227" locale="de" text="Bei einigen Sternchen musst Du beim Einsammeln schnell sein" width="250" />
+        <tutorialText x="60" y="207" locale="de" text="Bei einigen Sternchen musst Du beim Einsammeln schnell sein" width="250" />
         <tutorial09 x="43" y="251" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
 </map>

@@ -5,7 +5,7 @@
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
     </layer>
 <layer name="Objects">
-        <tutorialText x="78" y="52" locale="en" text="Candy maintains its speed when teleporting" width="200" />
+        <tutorialText x="78" y="32" locale="en" text="Candy maintains its speed when teleporting" width="200" />
         <tutorial09 x="59" y="70" locale="en" moveSpeed="100" rotateSpeed="100" />
         <target x="253" y="177" />
         <sock x="241" y="373" group="0" angle="-180" />
@@ -19,15 +19,15 @@
         <star x="130" y="158" path="RC20" moveSpeed="80" timeout="-1" />
     </layer>
 <layer name="Fr">
-        <tutorialText x="78" y="43" locale="fr" text="La vitesse du bonbon reste identique lorsqu'il est téléporté" width="200" />
+        <tutorialText x="78" y="23" locale="fr" text="La vitesse du bonbon reste identique lorsqu'il est téléporté" width="200" />
         <tutorial09 x="50" y="73" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="De">
-        <tutorialText x="69" y="48" locale="de" text="Beim Teleportieren behält der Bonbon seine Geschwindigkeit bei" width="200" />
+        <tutorialText x="69" y="28" locale="de" text="Beim Teleportieren behält der Bonbon seine Geschwindigkeit bei" width="200" />
         <tutorial09 x="54" y="72" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
 <layer name="Ru">
-        <tutorialText x="62" y="51" locale="ru" text="Конфета сохраняет свою скорость при телепортации" width="240" />
+        <tutorialText x="62" y="31" locale="ru" text="Конфета сохраняет свою скорость при телепортации" width="240" />
         <tutorial09 x="43" y="69" locale="ru" moveSpeed="100" rotateSpeed="100" />
     </layer>
 </map>
