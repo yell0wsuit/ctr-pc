@@ -278,7 +278,7 @@ namespace CutTheRope.GameMain
                         Color = Color.White,
                         Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3),
                         LineSpacing = 5f,
-                        TopSpacing = 0f
+                        TopSpacing = -10f
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
