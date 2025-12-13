@@ -30,8 +30,11 @@ namespace CutTheRope.GameMain
             text2.SetString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            text.y = -8f;
-            text2.y = -8f;
+            if (!Preferences.GetBooleanForKey("PREFS_PREFER_OLD_FONT_SYSTEM"))
+            {
+                text.y = -8f;
+                text2.y = -8f;
+            }
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
@@ -51,8 +54,11 @@ namespace CutTheRope.GameMain
             text2.SetString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            text.y = -8f;
-            text2.y = -8f;
+            if (!Preferences.GetBooleanForKey("PREFS_PREFER_OLD_FONT_SYSTEM"))
+            {
+                text.y = -8f;
+                text2.y = -8f;
+            }
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
@@ -80,10 +86,13 @@ namespace CutTheRope.GameMain
             text2.anchor = text2.parentAnchor = 18;
             text3.anchor = text3.parentAnchor = 18;
             text4.anchor = text4.parentAnchor = 18;
-            text.y = -8f;
-            text2.y = -8f;
-            text3.y = -8f;
-            text4.y = -8f;
+            if (!Preferences.GetBooleanForKey("PREFS_PREFER_OLD_FONT_SYSTEM"))
+            {
+                text.y = -8f;
+                text2.y = -8f;
+                text3.y = -8f;
+                text4.y = -8f;
+            }
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             _ = image3.AddChild(text3);
@@ -245,8 +254,11 @@ namespace CutTheRope.GameMain
             text2.SetString(string2);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            text.y = -8f;
-            text2.y = -8f;
+            if (!Preferences.GetBooleanForKey("PREFS_PREFER_OLD_FONT_SYSTEM"))
+            {
+                text.y = -8f;
+                text2.y = -8f;
+            }
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuExtraButtons, q);
