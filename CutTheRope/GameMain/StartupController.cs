@@ -27,8 +27,19 @@ namespace CutTheRope.GameMain
         public override void Update(float t)
         {
             base.Update(t);
-            float num = Application.SharedResourceMgr().GetPercentLoaded();
-            bar.width = (int)(barTotalWidth * num / 100f);
+            float targetPercent = Application.SharedResourceMgr().GetPercentLoaded();
+
+            // Smooth interpolation for loading bar
+            if (currentPercent < targetPercent)
+            {
+                currentPercent += (targetPercent - currentPercent) * 0.16f; // Fast smooth lerp
+                if (targetPercent - currentPercent < 0.5f)
+                {
+                    currentPercent = targetPercent; // Snap when close enough
+                }
+            }
+
+            bar.width = (int)(barTotalWidth * currentPercent / 100f);
         }
 
         public void MoviePlaybackFinished(string url)
@@ -64,6 +75,8 @@ namespace CutTheRope.GameMain
         private readonly float barTotalWidth;
 
         private readonly TiledImage bar;
+
+        private float currentPercent;
 
         private static readonly string[] PackCommon =
         [
