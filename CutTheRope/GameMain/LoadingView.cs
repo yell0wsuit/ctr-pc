@@ -8,6 +8,14 @@ namespace CutTheRope.GameMain
 {
     internal sealed class LoadingView : View
     {
+        public override void Show()
+        {
+            // Reset animation state when loading screen is shown
+            initialized = false;
+            currentPercent = 0f;
+            base.Show();
+        }
+
         public override void Draw()
         {
             Global.MouseCursor.Enable(false);
@@ -17,7 +25,26 @@ namespace CutTheRope.GameMain
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(cTRRootController.GetPack());
-            float num2 = Application.SharedResourceMgr().GetPercentLoaded();
+
+            // Smooth interpolation for loading percentage
+            float targetPercent = Application.SharedResourceMgr().GetPercentLoaded();
+
+            // Initialize on first draw
+            if (!initialized)
+            {
+                currentPercent = targetPercent;
+                initialized = true;
+            }
+
+            if (currentPercent < targetPercent)
+            {
+                currentPercent += (targetPercent - currentPercent) * 0.16f; // Smooth lerp
+                if (targetPercent - currentPercent < 0.5f)
+                {
+                    currentPercent = targetPercent; // Snap when close enough
+                }
+            }
+            float num2 = currentPercent;
             CTRTexture2D texture = Application.GetTexture(boxCover);
             OpenGL.GlColor4f(s_Color1);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
@@ -63,6 +90,9 @@ namespace CutTheRope.GameMain
         }
 
         public bool game;
+
+        private float currentPercent;
+        private bool initialized;
 
         private static Color s_Color1 = new(0.85f, 0.85f, 0.85f, 1f);
     }
