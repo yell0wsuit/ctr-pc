@@ -166,7 +166,7 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        private static void ApplyCenteredOffsets(ParsedTexturePackerAtlas atlas, IReadOnlyList<(float w, float h)> rectSizes)
+        private static void ApplyCenteredOffsets(ParsedTexturePackerAtlas atlas, List<(float w, float h)> rectSizes)
         {
             if (atlas.Rects.Count == 0 || rectSizes.Count != atlas.Rects.Count)
             {
