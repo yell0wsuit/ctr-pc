@@ -265,7 +265,7 @@ namespace CutTheRope.GameMain
         internal static class FontConfig
         {
             private const string StandardFont = "gooddog_new-webfont.ttf";
-            private const string ExtendedFont = "SourceSans3-SemiBoldItalic.ttf";
+            private const string ExtendedFont = "PlaypenSans-SemiBold.ttf";
 
             public static FontConfiguration GetConfiguration(string fontName, int language)
             {
