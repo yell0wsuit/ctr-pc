@@ -46,6 +46,12 @@ namespace CutTheRope.GameMain
             ShowView(0);
         }
 
+        public override void DeactivateImmediately()
+        {
+            resourcesLoaded = false; // Clear state
+            base.DeactivateImmediately();
+        }
+
         public void ResourceLoaded(int res)
         {
         }
@@ -54,6 +60,16 @@ namespace CutTheRope.GameMain
         {
             // Just set flag - Update() will handle transition after animation completes
             resourcesLoaded = true;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                resourcesLoaded = false;
+                nextController = 0;
+            }
+            base.Dispose(disposing);
         }
 
         public int nextController;
