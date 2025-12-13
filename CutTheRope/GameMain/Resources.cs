@@ -372,7 +372,7 @@ namespace CutTheRope.GameMain
         public float Size { get; set; }
         public Color Color { get; set; }
         public FontEffectSettings Effects { get; set; }
-        public float LineSpacing { get; set; } = 0f;
-        public float TopSpacing { get; set; } = 0f;
+        public float LineSpacing { get; set; }
+        public float TopSpacing { get; set; }
     }
 }
