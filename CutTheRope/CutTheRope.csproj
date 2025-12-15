@@ -9,9 +9,9 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
-    <AssemblyVersion>2.1.19.0</AssemblyVersion>
-    <FileVersion>2.1.19.0</FileVersion>
-    <InformationalVersion>2.1.19.0</InformationalVersion>
+    <AssemblyVersion>2.1.20.0</AssemblyVersion>
+    <FileVersion>2.1.20.0</FileVersion>
+    <InformationalVersion>2.1.20.0</InformationalVersion>
     <Company>ZeptoLab</Company>
     <Product>Cut The Rope: DX</Product>
     <Description>Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope.</Description>
