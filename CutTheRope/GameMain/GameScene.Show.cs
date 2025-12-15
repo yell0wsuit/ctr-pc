@@ -80,15 +80,6 @@ namespace CutTheRope.GameMain
             text.AddTimelinewithID(timeline6, 0);
             text.PlayTimeline(0);
             timeline6.delegateTimelineDelegate = staticAniPool;
-            Timeline timelineLevelLabel = new Timeline().InitWithMaxKeyFramesOnTrack(5);
-            timelineLevelLabel.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timelineLevelLabel.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            timelineLevelLabel.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            timelineLevelLabel.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-            timelineLevelLabel.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            text2.AddTimelinewithID(timelineLevelLabel, 0);
-            text2.PlayTimeline(0);
-            timelineLevelLabel.delegateTimelineDelegate = staticAniPool;
             _ = staticAniPool.AddChild(text);
             for (int m = 0; m < 5; m++)
             {
