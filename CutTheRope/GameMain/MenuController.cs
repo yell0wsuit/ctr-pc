@@ -138,7 +138,23 @@ namespace CutTheRope.GameMain
                 width = (int)SCREEN_WIDTH,
                 height = (int)SCREEN_HEIGHT
             };
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuBgr, 0);
+
+            // Select secondary background based on special events
+            string backgroundResource;
+            int backgroundQuad;
+            switch (true)
+            {
+                case var _ when SpecialEvents.IsXmas:
+                    backgroundResource = Resources.Img.MenuBgrXmasSecondary;
+                    backgroundQuad = 0;
+                    break;
+                default:
+                    backgroundResource = Resources.Img.MenuBgr;
+                    backgroundQuad = 0;
+                    break;
+            }
+
+            Image image = Image.Image_createWithResIDQuad(backgroundResource, backgroundQuad);
             image.anchor = image.parentAnchor = 34;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = image.height / 2;
@@ -146,7 +162,22 @@ namespace CutTheRope.GameMain
             _ = baseElement.AddChild(image);
             if (l)
             {
-                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuBgr, 1);
+                // Select main background based on special events
+                string backgroundSecondaryResource;
+                int backgroundSecondaryQuad;
+                switch (true)
+                {
+                    case var _ when SpecialEvents.IsXmas:
+                        backgroundSecondaryResource = Resources.Img.MenuBgrXmas;
+                        backgroundSecondaryQuad = 0;
+                        break;
+                    default:
+                        backgroundSecondaryResource = Resources.Img.MenuBgr;
+                        backgroundSecondaryQuad = 1;
+                        break;
+                }
+
+                Image image2 = Image.Image_createWithResIDQuad(backgroundSecondaryResource, backgroundSecondaryQuad);
                 image2.anchor = image2.parentAnchor = 34;
                 image2.scaleX = image2.scaleY = 1.25f;
                 image2.passTransformationsToChilds = false;

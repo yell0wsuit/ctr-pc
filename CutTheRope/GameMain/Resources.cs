@@ -101,7 +101,7 @@ namespace CutTheRope.GameMain
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
                 Img.ObjGhost, Img.XmasLights, Img.Snowflakes, Img.CharGreetingXmas,
-                Img.CharIdleXmas
+                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary
             ];
         }
 
@@ -254,6 +254,8 @@ namespace CutTheRope.GameMain
             public const string CharGreetingXmas = "char_greeting_xmas";
             public const string CharIdleXmas = "char_idle_xmas";
             public const string ObjSock = "obj_sock_xmas";
+            public const string MenuBgrXmas = "menu_xmas_pc";
+            public const string MenuBgrXmasSecondary = "menu_xmas_secondary_pc";
         }
 
         /// <summary>

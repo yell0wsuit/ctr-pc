@@ -372,6 +372,8 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuScrollbarChangename,
             Resources.Img.MenuButtonAchivCup,
             Resources.Img.MenuBgrShadow,
+            Resources.Img.MenuBgrXmas,
+            Resources.Img.MenuBgrXmasSecondary,
             null
         ];
 
