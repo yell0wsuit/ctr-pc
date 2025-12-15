@@ -112,6 +112,10 @@ namespace CutTheRope
             Global.GraphicsDevice = GraphicsDevice;
             Global.SpriteBatch = new SpriteBatch(GraphicsDevice);
             SoundMgr.SetContentManager(Content);
+
+            // Initialize FontManager for FontStashSharp fonts
+            Framework.Visual.FontManager.Initialize(GraphicsDevice);
+
             OpenGL.Init();
             Global.MouseCursor.Load(Content);
             Window.AllowUserResizing = UseWindowMode_TODO_ChangeFullScreenResolution || true;

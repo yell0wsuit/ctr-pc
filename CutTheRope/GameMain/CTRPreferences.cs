@@ -356,6 +356,8 @@ namespace CutTheRope.GameMain
 
         public const string PREFS_LOCALE = "PREFS_LOCALE";
 
+        public const string PREFS_PREFER_OLD_FONT_SYSTEM = "PREFS_PREFER_OLD_FONT_SYSTEM";
+
         public const string PREFS_IS_EXIST = "PREFS_EXIST";
 
         public const string PREFS_SOUND_ON = "SOUND_ON";

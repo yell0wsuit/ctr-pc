@@ -7,16 +7,21 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.Commons
 {
+    /// <summary>
+    /// Represents a modal popup dialog with animated show/hide effects and text fade animations.
+    /// </summary>
     internal sealed class Popup : BaseElement, ITimelineDelegate
     {
         public Popup()
         {
+            // Timeline 0: Show animation - bounce effect (scale 0 → 1.1 → 0.9 → 1.0)
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.1, 1.1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             _ = AddTimeline(timeline);
+            // Timeline 1: Hide animation - shrink to zero (scale 1.0 → 0.0)
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
@@ -36,13 +41,19 @@ namespace CutTheRope.Commons
             view?.RemoveChild(this);
         }
 
+        /// <summary>
+        /// Shows the popup with a bounce animation. Text elements will fade in after the popup appears.
+        /// </summary>
         public void ShowPopup()
         {
             Application.SharedRootController().DeactivateAllButtons();
             isShow = true;
-            PlayTimeline(0);
+            PlayTimeline(0); // Play show animation
         }
 
+        /// <summary>
+        /// Hides the popup. Text elements fade out first, then the popup shrinks away.
+        /// </summary>
         public void HidePopup()
         {
             isShow = false;

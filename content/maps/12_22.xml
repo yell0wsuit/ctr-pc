@@ -1,29 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
 <map>
-<layer name="settings">
-<map width="320" height="480" gridSize="32" />
-<gameDesign special="1" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
-</layer>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign special="1" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+    </layer>
 <layer name="Objects">
-<candy x="108" y="281" />
-<target x="41" y="80" />
-<grab x="43" y="174" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
-<grab x="174" y="173" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
-<star x="175" y="80" timeout="-1" />
-<star x="110" y="226" timeout="-1" />
-<ghost x="108" y="361" bouncer="true" bubble="false" grab="true" radius="100" angle="0" />
-<ghost x="206" y="281" bouncer="true" bubble="false" grab="true" radius="100" angle="0" />
-<bubble x="210" y="422" />
-<star x="106" y="424" timeout="-1" />
-<spike4 x="295" y="388" angle="90" size="4" toggled="false" />
-<spike4 x="295" y="211" angle="90" size="4" toggled="false" />
-<spike4 x="295" y="41" angle="90" size="4" toggled="false" />
-<bouncer1 x="113" y="29" angle="180" size="1" />
-<bouncer1 x="187" y="29" angle="180" size="1" />
-<bouncer1 x="259" y="29" angle="180" size="1" />
-<bouncer1 x="96" y="80" angle="270" size="1" path="150,0" moveSpeed="30" />
-<bouncer1 x="37" y="29" angle="180" size="1" />
-<spike4 x="29" y="470" angle="0" size="4" toggled="false" />
-<spike4 x="207" y="470" angle="0" size="4" toggled="false" />
-<hiddenElement x="32" y="426" radius="30" />
-</layer>
+        <candy x="108" y="281" />
+        <target x="41" y="80" />
+        <grab x="43" y="174" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="174" y="173" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <star x="175" y="80" timeout="-1" />
+        <star x="110" y="226" timeout="-1" />
+        <ghost x="108" y="361" bouncer="true" bubble="false" grab="true" radius="100" angle="0" />
+        <ghost x="206" y="281" bouncer="true" bubble="false" grab="true" radius="100" angle="0" />
+        <bubble x="210" y="422" />
+        <star x="106" y="424" timeout="-1" />
+        <spike4 x="295" y="388" angle="90" size="4" toggled="false" />
+        <spike4 x="295" y="211" angle="90" size="4" toggled="false" />
+        <spike4 x="295" y="41" angle="90" size="4" toggled="false" />
+        <bouncer1 x="113" y="29" angle="180" size="1" />
+        <bouncer1 x="187" y="29" angle="180" size="1" />
+        <bouncer1 x="259" y="29" angle="180" size="1" />
+        <bouncer1 x="96" y="80" angle="270" size="1" path="150,0" moveSpeed="30" />
+        <bouncer1 x="37" y="29" angle="180" size="1" />
+        <spike4 x="29" y="470" angle="0" size="4" toggled="false" />
+        <spike4 x="207" y="470" angle="0" size="4" toggled="false" />
+        <hiddenElement x="32" y="426" radius="30" />
+    </layer>
 </map>

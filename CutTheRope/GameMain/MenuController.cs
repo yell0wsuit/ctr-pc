@@ -705,8 +705,8 @@ namespace CutTheRope.GameMain
                 text.SetAlignment(2);
                 text.anchor = 10;
                 text.parentAnchor = 34;
-                text.SetStringandWidth(newString, 700f);
-                text.y = -70f;
+                text.SetStringandWidth(newString, 600f);
+                text.y = -60f;
                 text.scaleX = text.scaleY = 0.7f;
                 text.rotationCenterY = -(float)text.height / 2;
                 _ = touchBaseElement.AddChild(text);
@@ -766,7 +766,7 @@ namespace CutTheRope.GameMain
             {
                 text2.SetStringandWidth(nSString, 656.0);
             }
-            text2.y = 120f;
+            text2.y = 140f;
             _ = image.AddChild(text2);
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
@@ -883,104 +883,17 @@ namespace CutTheRope.GameMain
 
         public void ShowCantUnlockPopup()
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            Popup popup = new();
-            popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPopup, 0);
-            image.DoRestoreCutTransparency();
-            _ = popup.AddChild(image);
-            int num = 20;
-            image.scaleX = 1.3f;
-            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
-            text.SetAlignment(2);
-            text.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT1));
-            text.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 1);
-            text.y -= num;
-            _ = popup.AddChild(text);
-            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
-            text2.SetAlignment(2);
-            text2.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT2));
-            text2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 2);
-            _ = popup.AddChild(text2);
-            text2.y -= num;
-            Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-            text3.SetAlignment(2);
-            text3.SetStringandWidth(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT3), 600f);
-            text3.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text3, Resources.Img.MenuPopup, 3);
-            text3.y += 50f;
-            _ = popup.AddChild(text3);
-            int totalStars = CTRPreferences.GetTotalStars();
-            HBox hBox = CreateTextWithStar((CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars).ToString(CultureInfo.InvariantCulture));
-            hBox.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(hBox, Resources.Img.MenuPopup, 5);
-            hBox.y -= num;
-            _ = popup.AddChild(hBox);
-            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), MenuButtonId.PopupOk, this);
-            button.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
-            _ = popup.AddChild(button);
-            popup.ShowPopup();
-            _ = ActiveView().AddChild(popup);
+            popUpMenu.ShowCantUnlockPopup();
         }
 
         public void ShowGameFinishedPopup()
         {
-            Popup popup = new();
-            popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPopup, 0);
-            image.DoRestoreCutTransparency();
-            _ = popup.AddChild(image);
-            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
-            text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT), 600.0);
-            text.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
-            text.y -= 170f;
-            _ = image.AddChild(text);
-            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-            text2.SetAlignment(2);
-            text2.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT2), 700.0);
-            text2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 3);
-            text2.y += 30f;
-            _ = image.AddChild(text2);
-            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), MenuButtonId.PopupOk, this);
-            button.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
-            _ = image.AddChild(button);
-            popup.ShowPopup();
-            _ = ActiveView().AddChild(popup);
+            popUpMenu.ShowGameFinishedPopup();
         }
 
         public void ShowYesNoPopup(string str, MenuButtonId buttonYesId, MenuButtonId buttonNoId)
         {
-            Popup popup = new();
-            popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPopup, 0);
-            image.DoRestoreCutTransparency();
-            _ = popup.AddChild(image);
-            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
-            text.SetAlignment(2);
-            text.SetStringandWidth(str, 680.0);
-            text.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
-            text.y -= 120f;
-            _ = image.AddChild(text);
-            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_YES), buttonYesId, this);
-            button.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
-            button.y -= button.height;
-            _ = image.AddChild(button);
-            Button button2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_NO), buttonNoId, this);
-            button2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuPopup, 4);
-            _ = image.AddChild(button2);
-            popup.ShowPopup();
-            ep = popup;
-            _ = ActiveView().AddChild(popup);
+            ep = popUpMenu.ShowYesNoPopup(str, buttonYesId, buttonNoId);
         }
 
         public void ScrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
@@ -1161,6 +1074,7 @@ namespace CutTheRope.GameMain
         {
             ddMainMenu = new DelayedDispatcher();
             ddPackSelect = new DelayedDispatcher();
+            popUpMenu = new PopUpMenu(this);
             CreateMainMenu();
             CreateOptions();
             CreateReset();
@@ -1730,6 +1644,8 @@ namespace CutTheRope.GameMain
         public DelayedDispatcher ddMainMenu;
 
         public DelayedDispatcher ddPackSelect;
+
+        private readonly PopUpMenu popUpMenu;
         private ScrollableContainer aboutContainer;
 
         private ScrollableContainer packContainer;

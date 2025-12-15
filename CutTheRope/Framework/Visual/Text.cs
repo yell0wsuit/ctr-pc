@@ -1,13 +1,26 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
 
+using FontStashSharp;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.Framework.Visual
 {
     internal class Text : BaseElement
     {
+        private static readonly RasterizerState ScissorRasterizerState = new()
+        {
+            CullMode = CullMode.None,
+            ScissorTestEnable = true
+        };
+
         public static Text CreateWithFontandString(string fontResourceName, string str)
         {
             Text text = new Text().InitWithFont(Application.GetFont(fontResourceName));
@@ -56,7 +69,31 @@ namespace CutTheRope.Framework.Visual
             if (string_ != null)
             {
                 FormatText();
-                UpdateDrawerValues();
+
+                // Only update drawer values for sprite fonts, not FontStashSharp fonts
+                if (font is not FontStashFont)
+                {
+                    UpdateDrawerValues();
+                }
+                else
+                {
+                    // Keep width/height in sync for anchoring and layout when using FontStashSharp
+                    if (formattedStrings.Count <= 1)
+                    {
+                        height = (int)(font.FontHeight() + font.GetTopSpacing());
+                        width = (int)wrapWidth;
+                    }
+                    else
+                    {
+                        height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset() + font.GetTopSpacing());
+                        width = (int)wrapWidth;
+                    }
+
+                    if (maxHeight != -1f)
+                    {
+                        height = (int)MIN(height, maxHeight);
+                    }
+                }
                 return;
             }
             stringLength = 0;
@@ -157,12 +194,12 @@ namespace CutTheRope.Framework.Visual
             stringLength = num6;
             if (formattedStrings.Count <= 1)
             {
-                height = (int)font.FontHeight();
+                height = (int)(font.FontHeight() + font.GetTopSpacing());
                 width = (int)wrapWidth;
             }
             else
             {
-                height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset());
+                height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset() + font.GetTopSpacing());
                 width = (int)wrapWidth;
             }
             if (maxHeight != -1f)
@@ -183,9 +220,19 @@ namespace CutTheRope.Framework.Visual
 
         public override void Draw()
         {
+            // Capture inherited color before we apply this element's own modulation in PreDraw
+            Color inheritedColor = OpenGL.GetCurrentColor();
+
             PreDraw();
-            if (stringLength > 0)
+
+            // Check if this is a FontStashSharp font
+            if (font is FontStashFont fontStashFont && !string.IsNullOrEmpty(string_))
             {
+                DrawFontStashText(fontStashFont, inheritedColor);
+            }
+            else if (stringLength > 0)
+            {
+                // Legacy sprite font rendering
                 OpenGL.GlTranslatef(drawX, drawY, 0f);
                 int i = 0;
                 int count = multiDrawers.Count;
@@ -201,7 +248,231 @@ namespace CutTheRope.Framework.Visual
                 }
                 OpenGL.GlTranslatef(0f - drawX, 0f - drawY, 0f);
             }
+
             PostDraw();
+        }
+
+        private void DrawFontStashText(FontStashFont fontStashFont, Color parentColor)
+        {
+            SpriteBatch spriteBatch = OpenGL.GetSpriteBatch();
+            if (spriteBatch == null)
+            {
+                Debug.WriteLine("FontStash: SpriteBatch is null");
+                return;
+            }
+
+            DynamicSpriteFont internalFont = fontStashFont.GetInternalFont();
+            if (internalFont == null)
+            {
+                Debug.WriteLine("FontStash: Internal font is null");
+                return;
+            }
+
+            if (formattedStrings == null || formattedStrings.Count == 0)
+            {
+                Debug.WriteLine($"FontStash: No formatted strings for text: {string_}");
+                return;
+            }
+
+            //Debug.WriteLine($"FontStash: Drawing text '{string_}' at ({drawX}, {drawY}) with {formattedStrings.Count} lines");
+
+            FontEffectSettings effects = fontStashFont.GetEffectSettings();
+            Color textColor = fontStashFont.GetColor();
+            static float CalculatePerPassAlpha(float targetAlpha, int sampleCount)
+            {
+                if (sampleCount <= 1)
+                {
+                    return MathHelper.Clamp(targetAlpha, 0f, 1f);
+                }
+
+                targetAlpha = MathHelper.Clamp(targetAlpha, 0f, 1f);
+                if (targetAlpha <= 0f)
+                {
+                    return 0f;
+                }
+                if (targetAlpha >= 1f)
+                {
+                    return 1f;
+                }
+
+                // Normalize per-sample alpha so stacking multiple draws keeps overall opacity consistent
+                float perSample = 1f - MathF.Pow(1f - targetAlpha, 1f / sampleCount);
+                return MathHelper.Clamp(perSample, 0f, 1f);
+            }
+
+            // Apply element and inherited color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
+            static byte ScaleByte(byte channel, float factor)
+            {
+                float scaled = channel * factor; // factor already 0-1, so no /255
+                if (scaled < 0f)
+                {
+                    scaled = 0f;
+                }
+                if (scaled > 255f)
+                {
+                    scaled = 255f;
+                }
+                return (byte)scaled;
+            }
+
+            static Color MakePremultipliedColor(Color baseColor, float redScale, float greenScale, float blueScale, float alphaScale)
+            {
+                byte finalAlpha = (byte)MathHelper.Clamp(baseColor.A / 255f * alphaScale * 255f, 0f, 255f);
+
+                // Use FromNonPremultiplied so SpriteBatch receives premultiplied channels that honor the alpha timeline
+                return Color.FromNonPremultiplied(
+                    ScaleByte(baseColor.R, redScale),
+                    ScaleByte(baseColor.G, greenScale),
+                    ScaleByte(baseColor.B, blueScale),
+                    finalAlpha
+                );
+            }
+
+            // BaseElement color only modulates alpha (GL path uses ToWhiteAlphaXNA),
+            // so keep RGB intact and apply timeline alpha once
+            float inheritedRed = MathHelper.Clamp(parentColor.R / 255f, 0f, 1f);
+            float inheritedGreen = MathHelper.Clamp(parentColor.G / 255f, 0f, 1f);
+            float inheritedBlue = MathHelper.Clamp(parentColor.B / 255f, 0f, 1f);
+            float inheritedAlpha = MathHelper.Clamp(color.a * (parentColor.A / 255f), 0f, 1f);
+
+            // Premultiply channels for correct blending
+            float effectiveAlpha = MathHelper.Clamp(textColor.A / 255f * inheritedAlpha, 0f, 1f);
+            Color finalColor = MakePremultipliedColor(
+                textColor,
+                MathHelper.Clamp(inheritedRed, 0f, 1f),
+                MathHelper.Clamp(inheritedGreen, 0f, 1f),
+                MathHelper.Clamp(inheritedBlue, 0f, 1f),
+                effectiveAlpha
+            );
+
+            float yPos = drawY + font.GetTopSpacing();
+            int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
+
+            // Calculate scale from virtual coordinates to physical viewport
+            GraphicsDevice graphicsDevice = Global.GraphicsDevice;
+            Viewport viewport = graphicsDevice.Viewport;
+
+            float viewportScaleX = viewport.Width / SCREEN_WIDTH;
+            float viewportScaleY = viewport.Height / SCREEN_HEIGHT;
+
+            // Respect the current OpenGL emulation transform (including parent timelines/animations)
+            Matrix transformMatrix =
+                OpenGL.GetModelViewMatrix() *
+                Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);
+
+            // Begin SpriteBatch for text rendering with proper scaling
+            spriteBatch.Begin(
+                SpriteSortMode.Immediate,
+                BlendState.AlphaBlend,
+                SamplerState.LinearClamp,
+                null,
+                ScissorRasterizerState,
+                null,
+                transformMatrix
+            );
+
+            // Render each formatted line
+            foreach (FormattedString formattedString in formattedStrings)
+            {
+                if (maxHeight != -1f && yPos >= drawY + maxHeight)
+                {
+                    break;
+                }
+
+                float xPos = drawX;
+
+                // Calculate alignment offset
+                if (align == 2) // Center
+                {
+                    xPos += (wrapWidth - formattedString.width) / 2f;
+                }
+                else if (align == 3) // Right
+                {
+                    xPos += wrapWidth - formattedString.width;
+                }
+
+                Vector2 position = new(xPos, yPos);
+
+                // Draw shadow if enabled (with stroke for better backdrop effect)
+                if (effects?.HasShadow == true)
+                {
+                    Vector2 shadowBasePos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
+                    int shadowStrokeAmount = effects.HasStroke ? effects.StrokeAmount : 1;
+                    int shadowSamples = ((shadowStrokeAmount * 2) + 1) * ((shadowStrokeAmount * 2) + 1);
+                    float shadowTargetAlpha = effects.ShadowColor.A / 255f * inheritedAlpha;
+                    float shadowAlpha = CalculatePerPassAlpha(shadowTargetAlpha, shadowSamples);
+                    Color shadowColor = MakePremultipliedColor(
+                        effects.ShadowColor,
+                        MathHelper.Clamp(inheritedRed, 0f, 1f),
+                        MathHelper.Clamp(inheritedGreen, 0f, 1f),
+                        MathHelper.Clamp(inheritedBlue, 0f, 1f),
+                        shadowAlpha
+                    );
+
+                    // Render shadow with stroke outline for better backdrop effect
+                    for (int x = -shadowStrokeAmount; x <= shadowStrokeAmount; x++)
+                    {
+                        for (int y = -shadowStrokeAmount; y <= shadowStrokeAmount; y++)
+                        {
+                            Vector2 shadowPos = shadowBasePos + new Vector2(x, y);
+                            _ = internalFont.DrawText(
+                                spriteBatch,
+                                formattedString.string_,
+                                shadowPos,
+                                shadowColor
+                            );
+                        }
+                    }
+                }
+
+                // Draw stroke if enabled
+                if (effects?.HasStroke == true)
+                {
+                    int strokeSamples = (((effects.StrokeAmount * 2) + 1) * ((effects.StrokeAmount * 2) + 1)) - 1;
+                    strokeSamples = Math.Max(strokeSamples, 1);
+                    float strokeTargetAlpha = effects.StrokeColor.A / 255f * inheritedAlpha;
+                    float strokeAlpha = CalculatePerPassAlpha(strokeTargetAlpha, strokeSamples);
+                    Color strokeColor = MakePremultipliedColor(
+                        effects.StrokeColor,
+                        MathHelper.Clamp(inheritedRed, 0f, 1f),
+                        MathHelper.Clamp(inheritedGreen, 0f, 1f),
+                        MathHelper.Clamp(inheritedBlue, 0f, 1f),
+                        strokeAlpha
+                    );
+                    int strokeAmount = effects.StrokeAmount;
+
+                    for (int x = -strokeAmount; x <= strokeAmount; x++)
+                    {
+                        for (int y = -strokeAmount; y <= strokeAmount; y++)
+                        {
+                            if (x != 0 || y != 0)
+                            {
+                                Vector2 strokePos = position + new Vector2(x, y);
+                                // Use FontStashSharp's DrawText extension method
+                                _ = internalFont.DrawText(
+                                    spriteBatch,
+                                    formattedString.string_,
+                                    strokePos,
+                                    strokeColor
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // Draw main text using FontStashSharp's DrawText extension method
+                _ = internalFont.DrawText(
+                    spriteBatch,
+                    formattedString.string_,
+                    position,
+                    finalColor
+                );
+
+                yPos += lineHeight;
+            }
+
+            // End SpriteBatch
+            spriteBatch.End();
         }
 
         public virtual void FormatText()

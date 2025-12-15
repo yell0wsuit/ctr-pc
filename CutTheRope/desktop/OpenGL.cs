@@ -511,6 +511,22 @@ namespace CutTheRope.Desktop
             return s_LastVertices_PositionNormalTexture;
         }
 
+        /// <summary>
+        /// Returns the current model-view matrix that is being applied to drawable elements.
+        /// </summary>
+        public static Matrix GetModelViewMatrix()
+        {
+            return s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Returns the current OpenGL emulation color state.
+        /// </summary>
+        public static Color GetCurrentColor()
+        {
+            return s_Color;
+        }
+
         public static void Optimized_DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
             BasicEffect effect = GetEffect(true, false);
@@ -598,6 +614,14 @@ namespace CutTheRope.Desktop
         public static void GlLineWidth(double width)
         {
             s_LineWidth = width;
+        }
+
+        /// <summary>
+        /// Gets the SpriteBatch instance for rendering text and sprites.
+        /// </summary>
+        public static SpriteBatch GetSpriteBatch()
+        {
+            return Global.SpriteBatch;
         }
 
         public static void SetScissorRectangle(double x, double y, double w, double h)

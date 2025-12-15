@@ -40,6 +40,11 @@ namespace CutTheRope.Helpers
         public const string SoundsSfxDirectory = "sfx";
 
         /// <summary>
+        /// The subdirectory for font files.
+        /// </summary>
+        public const string FontsDirectory = "fonts";
+
+        /// <summary>
         /// The classic XML resource data filename.
         /// </summary>
         public const string ResourceDataFile = "res_data_phone_full.xml";
@@ -174,6 +179,16 @@ namespace CutTheRope.Helpers
         public static string GetMusicPath(string fileName)
         {
             return $"{SoundsDirectory}/{fileName}";
+        }
+
+        /// <summary>
+        /// Gets the full path to a font file.
+        /// </summary>
+        /// <param name="fileName">The font filename</param>
+        /// <returns>The full path to the font file (e.g., "content/fonts/fontname.ttf")</returns>
+        public static string GetFontPath(string fileName)
+        {
+            return $"{RootDirectory}/{FontsDirectory}/{fileName}";
         }
     }
 }

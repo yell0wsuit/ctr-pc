@@ -37,6 +37,11 @@ namespace CutTheRope.Framework.Visual
             return lineOffset;
         }
 
+        public virtual float GetTopSpacing()
+        {
+            return topSpacing;
+        }
+
         public virtual void NotifyTextCreated(Text st)
         {
         }
@@ -58,5 +63,7 @@ namespace CutTheRope.Framework.Visual
         protected float lineOffset;
 
         protected float spaceWidth;
+
+        protected float topSpacing;
     }
 }
