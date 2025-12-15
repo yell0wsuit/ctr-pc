@@ -315,11 +315,6 @@ namespace CutTheRope.Framework.Visual
                 return (byte)scaled;
             }
 
-            static float Combine(float elementChannel, byte inheritedChannel)
-            {
-                return MathHelper.Clamp(elementChannel * (inheritedChannel / 255f), 0f, 1f);
-            }
-
             static Color MakePremultipliedColor(Color baseColor, float redScale, float greenScale, float blueScale, float alphaScale)
             {
                 byte finalAlpha = (byte)MathHelper.Clamp(baseColor.A / 255f * alphaScale * 255f, 0f, 255f);
@@ -333,10 +328,12 @@ namespace CutTheRope.Framework.Visual
                 );
             }
 
-            float inheritedRed = Combine(color.r, parentColor.R);
-            float inheritedGreen = Combine(color.g, parentColor.G);
-            float inheritedBlue = Combine(color.b, parentColor.B);
-            float inheritedAlpha = Combine(color.a, parentColor.A);
+            // BaseElement color only modulates alpha (GL path uses ToWhiteAlphaXNA),
+            // so keep RGB intact and apply timeline alpha once
+            float inheritedRed = MathHelper.Clamp(parentColor.R / 255f, 0f, 1f);
+            float inheritedGreen = MathHelper.Clamp(parentColor.G / 255f, 0f, 1f);
+            float inheritedBlue = MathHelper.Clamp(parentColor.B / 255f, 0f, 1f);
+            float inheritedAlpha = MathHelper.Clamp(color.a * (parentColor.A / 255f), 0f, 1f);
 
             // Premultiply channels for correct blending
             float effectiveAlpha = MathHelper.Clamp(textColor.A / 255f * inheritedAlpha, 0f, 1f);
