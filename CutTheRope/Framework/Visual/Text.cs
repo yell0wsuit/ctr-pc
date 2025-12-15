@@ -220,12 +220,15 @@ namespace CutTheRope.Framework.Visual
 
         public override void Draw()
         {
+            // Capture inherited color before we apply this element's own modulation in PreDraw
+            Color inheritedColor = OpenGL.GetCurrentColor();
+
             PreDraw();
 
             // Check if this is a FontStashSharp font
             if (font is FontStashFont fontStashFont && !string.IsNullOrEmpty(string_))
             {
-                DrawFontStashText(fontStashFont);
+                DrawFontStashText(fontStashFont, inheritedColor);
             }
             else if (stringLength > 0)
             {
@@ -249,7 +252,7 @@ namespace CutTheRope.Framework.Visual
             PostDraw();
         }
 
-        private void DrawFontStashText(FontStashFont fontStashFont)
+        private void DrawFontStashText(FontStashFont fontStashFont, Color parentColor)
         {
             SpriteBatch spriteBatch = OpenGL.GetSpriteBatch();
             if (spriteBatch == null)
@@ -275,7 +278,6 @@ namespace CutTheRope.Framework.Visual
 
             FontEffectSettings effects = fontStashFont.GetEffectSettings();
             Color textColor = fontStashFont.GetColor();
-            Color parentColor = OpenGL.GetCurrentColor();
             static float CalculatePerPassAlpha(float targetAlpha, int sampleCount)
             {
                 if (sampleCount <= 1)
