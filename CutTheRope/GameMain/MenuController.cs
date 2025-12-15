@@ -187,6 +187,23 @@ namespace CutTheRope.GameMain
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
+
+                // Add event-specific decorations to logo
+                switch (true)
+                {
+                    case var _ when SpecialEvents.IsXmas:
+                        // Hat foreground layer (on top of the text logo)
+                        Image hatForeground = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoXmasHat, 1);
+                        hatForeground.anchor = 9;  // Top-left of the hat sprite
+                        hatForeground.parentAnchor = 9;  // Relative to top-left of logo
+                        hatForeground.x = 30f;  // Adjust horizontal position (positive = right)
+                        hatForeground.y = -80f;  // Adjust vertical position (positive = down)
+                        _ = image3.AddChild(hatForeground);
+                        break;
+                    default:
+                        break;
+                }
+
                 _ = baseElement.AddChild(image3);
             }
             if (s)

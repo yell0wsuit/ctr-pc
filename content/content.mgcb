@@ -1429,6 +1429,18 @@
 /processorParam:TextureFormat=Color
 /build:small_font.png
 
+#begin xmas_hat_logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:xmas_hat_logo.png
+
 #begin sounds/sfx/bouncer.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

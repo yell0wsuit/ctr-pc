@@ -74,6 +74,12 @@
             "atlasPath": "obj_sock_xmas.json",
             "useAntialias": true,
             "centerOffsets": false
+        },
+        {
+            "resourceName": "xmas_hat_logo",
+            "atlasPath": "xmas_hat_logo.json",
+            "useAntialias": true,
+            "centerOffsets": false
         }
     ]
 }
