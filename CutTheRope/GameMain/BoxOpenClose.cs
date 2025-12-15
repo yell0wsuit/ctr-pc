@@ -50,6 +50,7 @@ namespace CutTheRope.GameMain
                         Text text21 = (Text)result.GetChildWithName("dataValue");
                         text21.SetEnabled(true);
                         Text text22 = (Text)result.GetChildWithName("scoreValue");
+                        text22.SetEnabled(true);
                         text28.color.a = text21.color.a = text22.color.a = 1f - (raDelay / 0.2f);
                         if (flag)
                         {

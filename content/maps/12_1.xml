@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
 <map>
     <layer name="settings">
         <map gridSize="32" width="320" height="480" />
@@ -18,47 +19,47 @@
         <grab x="202" y="225" length="55" wheel="false" gun="false" kickable="false" kicked="false" radius="55" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
     </layer>
     <layer name="ru">
-        <tutorialText x="20" y="270" locale="ru" text="Призрак имеет несколько форм. Нажимайте, чтобы переключать их." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="ru" text="Призрак имеет несколько форм. Нажимайте, чтобы переключать их." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="ru" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="es">
-        <tutorialText x="20" y="270" locale="es" text="El fantasma tiene diversas formas.  Toca para cambiarlas." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="es" text="El fantasma tiene diversas formas.  Toca para cambiarlas." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="es" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="en">
-        <tutorialText x="20" y="270" locale="en" text="Ghost has several forms. Tap to switch them." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="en" text="Ghost has several forms. Tap to switch them." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="en" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="br">
-        <tutorialText x="20" y="270" locale="br" text="O Fantasma tem várias formas. Toque para trocá-las." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="br" text="O Fantasma tem várias formas. Toque para trocá-las." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="br" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="ja">
-        <tutorialText x="20" y="270" locale="ja" text="オバケには*いくつかの形態が*あります。*タップすると*これを変えることが*できます。" width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="ja" text="オバケには*いくつかの形態が*あります。*タップすると*これを変えることが*できます。" width="200" height="60" />
         <tutorial04 x="222" y="340" locale="ja" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="de">
-        <tutorialText x="20" y="270" locale="de" text="Der Geist hat verschiedene Formen. Tippe ihn an, um sie zu wechseln." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="de" text="Der Geist hat verschiedene Formen. Tippe ihn an, um sie zu wechseln." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="de" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="it">
-        <tutorialText x="20" y="270" locale="it" text="Il fantasma ha diverse forme. Tocca per passare da una all'altra." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="it" text="Il fantasma ha diverse forme. Tocca per passare da una all'altra." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="it" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="zh">
-        <tutorialText x="20" y="270" locale="zh" text="幽灵*有多种*形态。*触按*可以*切换*形态。" width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="zh" text="幽灵*有多种*形态。*触按*可以*切换*形态。" width="200" height="60" />
         <tutorial04 x="222" y="340" locale="zh" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="fr">
-        <tutorialText x="20" y="270" locale="fr" text="Le fantôme a plusieurs formes. Touche pour les changer." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="fr" text="Le fantôme a plusieurs formes. Touche pour les changer." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="fr" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="ko">
-        <tutorialText x="20" y="270" locale="ko" text="유령은 여러 모양으로 나타납니다. 유령을 터치하여 모양을 바꾸세요." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="ko" text="유령은 여러 모양으로 나타납니다. 유령을 터치하여 모양을 바꾸세요." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="ko" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="nl">
-        <tutorialText x="20" y="270" locale="nl" text="Het spookje heeft allerlei vormen. Tik om van vorm te wisselen." width="200" height="60"/>
+        <tutorialText x="20" y="270" locale="nl" text="Het spookje heeft allerlei vormen. Tik om van vorm te wisselen." width="200" height="60" />
         <tutorial04 x="222" y="340" locale="nl" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
 </map>
