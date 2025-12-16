@@ -34,6 +34,7 @@ namespace CutTheRope.GameMain
             stars = new DynamicArray<Star>();
             bubbles = new DynamicArray<Bubble>();
             pumps = new DynamicArray<Pump>();
+            tubes = new DynamicArray<SteamTube>();
             socks = new DynamicArray<Sock>();
             tutorialImages = new DynamicArray<CTRGameObject>();
             tutorials = new DynamicArray<Text>();

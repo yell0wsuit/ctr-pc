@@ -430,6 +430,7 @@ namespace CutTheRope.GameMain
             Resources.Img.CharGreetingXmas,
             Resources.Img.CharIdleXmas,
             Resources.Img.ObjSock,
+            Resources.Img.ObjPipe,
             null
         ];
     }

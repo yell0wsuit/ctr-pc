@@ -132,6 +132,9 @@ namespace CutTheRope.GameMain
             Resources.Snd.GhostPuff,
             Resources.Snd.XmasBell,
             Resources.Snd.TeleportXmas,
+            Resources.Snd.SteamStart,
+            Resources.Snd.SteamStart2,
+            Resources.Snd.SteamEnd,
             null,
         ];
 
