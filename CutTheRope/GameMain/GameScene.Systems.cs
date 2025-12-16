@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Sfe;
@@ -55,6 +57,159 @@ namespace CutTheRope.GameMain
                 s.ApplyImpulseDelta(impulse, delta);
                 b.PlayTimeline(0);
                 CTRSoundMgr.PlaySound(Resources.Snd.Bouncer);
+            }
+        }
+
+        /// <summary>
+        /// Applies steam tube forces and interacts with candy pieces inside the flow area.
+        /// PC vs WP7 differences:
+        /// - num3 (tube width): 10f * tubeScale (WP7: 10f unscaled)
+        /// - num4 (vertical offset): 1f * tubeScale (WP7: 1f unscaled)
+        /// - num5 (collision radius): 17.5f * tubeScale (WP7: 17.5f unscaled)
+        /// - Gravity force: -32f/weight * sqrt(tubeScale) (WP7: no sqrt scaling)
+        /// - Damping factor (num): Always 5f (same in both)
+        /// </summary>
+        public void OperateSteamTube(SteamTube tube)
+        {
+            float tubeScale = tube.GetHeightScale();
+            float num = 5f;  // Damping factor (velocity reduction)
+            float num2 = DEGREES_TO_RADIANS(tube.rotation);
+            float num3 = 10f * tubeScale;  // Tube width for horizontal centering
+            float currentHeightModulated = tube.GetCurrentHeightModulated();
+            float num4 = 1f * tubeScale;  // Vertical offset for collision box
+            float num5 = 17.5f * tubeScale;  // Candy collision radius (STAR_RADIUS scaled)
+            Vector vector = Vect(tube.x - (num3 / 2f), tube.y - currentHeightModulated - num4);
+            Vector vector2 = Vect(tube.x + (num3 / 2f), tube.y - num5);
+            if (twoParts == 2)
+            {
+                Vector vector3 = Vect(star.pos.x, star.pos.y);
+                Vector vector4 = Vect(star.v.x, star.v.y);
+                vector3 = VectRotateAround(vector3, 0.0 - num2, tube.x, tube.y);
+                vector4 = VectRotate(vector4, 0.0 - num2);
+                if (RectInRect(vector3.x - num5, vector3.y - (num5 / 2f), vector3.x + num5, vector3.y + num5, vector.x, vector.y, vector2.x, vector2.y))
+                {
+                    foreach (Bouncer bouncer in bouncers)
+                    {
+                        bouncer.skip = false;
+                    }
+                    float num6 = 0f;
+                    if (tube.rotation == 0f)
+                    {
+                        float num7 = tube.x - vector3.x;
+                        num6 = ABS(num7) > num3 / 4f
+                            ? ((0f - vector4.x) / num) + (0.25f * num7)
+                            : ABS(vector4.x) < 1f ? 0f - vector4.x : (0f - vector4.x) / num;
+                    }
+                    // Gravity compensation force. sqrt(tubeScale) accounts for increased flow area.
+                    // WP7: -32f / star.weight (no sqrt scaling)
+                    float num8 = -32f / star.weight * MathF.Sqrt(tubeScale);
+                    if (tube.rotation != 0f)
+                    {
+                        num *= 15f;
+                        if (tube.rotation == 180f)
+                        {
+                            num8 /= 2f;
+                        }
+                        else
+                        {
+                            num8 /= 4f;
+                        }
+                    }
+                    Vector vector5 = Vect(num6, ((0f - vector4.y) / num) + num8);
+                    float num9 = tube.y - vector3.y;
+                    if (num9 > currentHeightModulated + num5)
+                    {
+                        vector5 = VectMult(vector5, Math.Exp((double)(-2f * (num9 - (currentHeightModulated + num5)))));
+                    }
+                    vector5 = VectRotate(vector5, num2);
+                    star.ApplyImpulseDelta(vector5, 0.016f);
+                    return;
+                }
+            }
+            else
+            {
+                Vector vector6 = Vect(starL.pos.x, starL.pos.y);
+                Vector vector7 = Vect(starL.v.x, starL.v.y);
+                vector6 = VectRotateAround(vector6, 0.0 - num2, tube.x, tube.y);
+                vector7 = VectRotate(vector7, 0.0 - num2);
+                if (RectInRect(vector6.x - num5, vector6.y - (num5 / 2f), vector6.x + num5, vector6.y + num5, vector.x, vector.y, vector2.x, vector2.y))
+                {
+                    foreach (Bouncer bouncer2 in bouncers)
+                    {
+                        bouncer2.skip = false;
+                    }
+                    float num10 = 0f;
+                    if (tube.rotation == 0f)
+                    {
+                        float num11 = tube.x - vector6.x;
+                        num10 = ABS(num11) > num3 / 4f
+                            ? ((0f - vector7.x) / num) + (0.25f * num11)
+                            : ABS(vector7.x) < 1f ? 0f - vector7.x : (0f - vector7.x) / num;
+                    }
+                    // Gravity compensation force (left candy piece)
+                    float num12 = -32f / starL.weight * MathF.Sqrt(tubeScale);
+                    if (tube.rotation != 0f)
+                    {
+                        num *= 15f;
+                        if (tube.rotation == 180f)
+                        {
+                            num12 /= 2f;
+                        }
+                        else
+                        {
+                            num12 /= 4f;
+                        }
+                    }
+                    Vector vector8 = Vect(num10, ((0f - vector7.y) / num) + num12);
+                    float num13 = tube.y - vector6.y;
+                    if (num13 > currentHeightModulated + num5)
+                    {
+                        vector8 = VectMult(vector8, Math.Exp((double)(-2f * (num13 - (currentHeightModulated + num5)))));
+                    }
+                    vector8 = VectRotate(vector8, num2);
+                    starL.ApplyImpulseDelta(vector8, 0.016f);
+                }
+                vector6 = Vect(starR.pos.x, starR.pos.y);
+                vector7 = Vect(starR.v.x, starR.v.y);
+                vector6 = VectRotateAround(vector6, 0.0 - num2, tube.x, tube.y);
+                vector7 = VectRotate(vector7, 0.0 - num2);
+                if (RectInRect(vector6.x - num5, vector6.y - (num5 / 2f), vector6.x + num5, vector6.y + num5, vector.x, vector.y, vector2.x, vector2.y))
+                {
+                    foreach (Bouncer bouncer3 in bouncers)
+                    {
+                        bouncer3.skip = false;
+                    }
+                    float num14 = 0f;
+                    if (tube.rotation == 0f)
+                    {
+                        float num15 = tube.x - vector6.x;
+                        num14 = ABS(num15) > num3 / 4f
+                            ? ((0f - vector7.x) / num) + (0.25f * num15)
+                            : ABS(vector7.x) < 1f ? 0f - vector7.x : (0f - vector7.x) / num;
+                    }
+                    // Gravity compensation force (right candy piece)
+                    float num16 = -32f / starR.weight * MathF.Sqrt(tubeScale);
+                    if (tube.rotation != 0f)
+                    {
+                        num *= 15f;
+                        if (tube.rotation == 180f)
+                        {
+                            num16 /= 2f;
+                        }
+                        else
+                        {
+                            num16 /= 4f;
+                        }
+                    }
+                    Vector vector9 = Vect(num14, ((0f - vector7.y) / num) + num16);
+                    float num17 = tube.y - vector6.y;
+                    if (num17 > currentHeightModulated + num5)
+                    {
+                        vector9 = VectMult(vector9, Math.Exp((double)(-2f * (num17 - (currentHeightModulated + num5)))));
+                    }
+                    vector9 = VectRotate(vector9, num2);
+                    starR.ApplyImpulseDelta(vector9, 0.016f);
+                }
             }
         }
 

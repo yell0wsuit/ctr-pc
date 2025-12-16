@@ -684,7 +684,8 @@ namespace CutTheRope.GameMain
             2, // pack 10
             3, // pack 11
             4, // pack 12
-            5, // coming soon box
+            5, // pack 13
+            6, // coming soon box
         ];
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
@@ -759,6 +760,7 @@ namespace CutTheRope.GameMain
                     9 => STR_MENU_BOX10_LABEL,
                     10 => STR_MENU_BOX11_LABEL,
                     11 => STR_MENU_BOX12_LABEL,
+                    12 => STR_MENU_BOX13_LABEL,
                     _ => STR_MENU_BOX1_LABEL,
                 };
                 string @string = Application.GetString(boxLabelId);

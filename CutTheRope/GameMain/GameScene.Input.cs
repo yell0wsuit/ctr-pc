@@ -89,6 +89,13 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
+            foreach (SteamTube steamTube in tubes)
+            {
+                if (steamTube != null && steamTube.OnTouchDownXY(tx + camera.pos.x, ty + camera.pos.y))
+                {
+                    return true;
+                }
+            }
             RotatedCircle rotatedCircle = null;
             bool flag = false;
             bool flag2 = false;

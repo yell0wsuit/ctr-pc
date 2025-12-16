@@ -1,0 +1,61 @@
+<map>
+    <layer name="settings">
+        <map gridSize="32" width="320" height="480" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <target x="69" y="340" />
+        <candy x="156" y="130" />
+        <steamTube x="155" y="415" angle="0" />
+        <steamTube x="257" y="250" angle=" 270" />
+        <star x="155" y="250" timeout="-1" />
+        <star x="155" y="329" timeout="-1" />
+        <star x="89" y="259" timeout="-1" />
+        <grab x="155" y="35" length="80" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <hiddenElement x="277" y="145" radius="30" />
+    </layer>
+    <layer name="En">
+        <tutorialText x="182" y="273" locale="en" text="Tap the valve to switch between 3 pressure modes" width="130" />
+        <tutorial04 x="217" y="410" locale="en" angle="-10" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="Ru">
+        <tutorialText x="161" y="256" locale="ru" text="Коснитесь вентеля, чтобы переключиться между 3 режимами давления." width="150" />
+        <tutorial04 x="214" y="418" locale="ru" angle="-10" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="De">
+        <tutorialText x="163" y="262" locale="de" text="Tippe das Ventil an, um zwischen den drei Druck-Modi zu wechseln." width="150" />
+        <tutorial04 x="215" y="410" locale="de" angle="-10" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="Fr">
+        <tutorial04 x="216" y="411" locale="fr" angle="-10" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="168" y="267" locale="fr" text="Touchez la valve pour alterner entre les 3 modes de pression." width="150" />
+    </layer>
+    <layer name="It">
+        <tutorialText x="160" y="261" locale="it" text="Tocca la valvola per spostarti tra le 3 modalità di pressione." width="150" />
+        <tutorial04 x="217" y="410" locale="it" angle="-10" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="NL">
+        <tutorial04 x="216" y="410" locale="nl" angle="-10" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="165" y="273" locale="nl" text="Tik op het ventiel om tussen 3 drukstanden te schakelen." width="150" />
+    </layer>
+    <layer name="Es">
+        <tutorialText x="169" y="282" locale="es" text="Toca la válvula para cambiar entre 3 modos de presión." width="150" />
+        <tutorial04 x="216" y="410" locale="es" angle="-10" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="Pt">
+        <tutorial04 x="216" y="409" locale="br" angle="-10" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="163" y="275" locale="br" text="Toque na válvula para escolher entre 3 níveis de pressão." width="150" />
+    </layer>
+    <layer name="Zh">
+        <tutorial04 x="217" y="409" locale="zh" angle="-10" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="172" y="306" locale="zh" text="拍拍阀门*可以转换3种压力模式。" width="130" />
+    </layer>
+    <layer name="Ko">
+        <tutorialText x="182" y="279" locale="ko" text="밸브를 눌러 3가지 압력 모드 중 하나로 설정하세요." width="130" />
+        <tutorial04 x="216" y="410" locale="ko" angle="-10" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="Ja">
+        <tutorial04 x="216" y="409" locale="ja" angle="-10" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="177" y="258" locale="ja" text="3つの*圧力*モードを*切り*替えるには*バルブを*タップ*して*ください。" width="130" />
+    </layer>
+</map>

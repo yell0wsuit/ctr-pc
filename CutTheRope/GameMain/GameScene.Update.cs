@@ -604,6 +604,17 @@ namespace CutTheRope.GameMain
                     OperatePump(pump);
                 }
             }
+            foreach (SteamTube steamTube in tubes)
+            {
+                if (steamTube != null)
+                {
+                    steamTube.Update(delta);
+                    if (steamTube.steamState != 3)
+                    {
+                        OperateSteamTube(steamTube);
+                    }
+                }
+            }
             RotatedCircle rotatedCircle6 = null;
             foreach (object obj8 in rotatedCircles)
             {

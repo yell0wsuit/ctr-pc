@@ -73,6 +73,9 @@ namespace CutTheRope.GameMain
                         case "target":
                             LoadTarget(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
+                        case "steamTube":
+                            LoadSteamTube(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
                         case "ghost":
                             LoadGhost(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
