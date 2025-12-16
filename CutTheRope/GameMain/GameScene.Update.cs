@@ -682,7 +682,16 @@ namespace CutTheRope.GameMain
                             targetSock = sock4;
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
-                            CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
+
+                            if (SpecialEvents.IsXmas)
+                            {
+                                CTRSoundMgr.PlaySound(Resources.Snd.TeleportXmas);
+                            }
+                            else
+                            {
+                                CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
+                            }
+
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1);
                             break;
                         }

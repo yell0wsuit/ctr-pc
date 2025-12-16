@@ -33,7 +33,19 @@ namespace CutTheRope.GameMain
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayRandomMusic(Resources.Snd.GameMusic, Resources.Snd.GameMusic2, Resources.Snd.GameMusic3, Resources.Snd.GameMusic4);
+            if (SpecialEvents.IsXmas)
+            {
+                CTRSoundMgr.PlayMusic(Resources.Snd.GameMusicXmas);
+            }
+            else
+            {
+                CTRSoundMgr.PlayRandomMusic(
+                    Resources.Snd.GameMusic,
+                    Resources.Snd.GameMusic2,
+                    Resources.Snd.GameMusic3,
+                    Resources.Snd.GameMusic4
+                );
+            }
             InitGameView();
             ShowView(0);
         }
@@ -99,10 +111,17 @@ namespace CutTheRope.GameMain
             }
             _ = image.AddChild(vBox);
             _ = gameView.AddChildwithID(image, 3);
-            AddViewwithID(gameView, 0);
             BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
             boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
             _ = gameView.AddChildwithID(boxOpenClose, 4);
+            SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
+            if (overlay != null)
+            {
+                overlay.anchor = overlay.parentAnchor = 9;
+                overlay.Start();
+                _ = gameView.AddChildwithID(overlay, 5);
+            }
+            AddViewwithID(gameView, 0);
         }
 
         public void InitGameView()
@@ -381,7 +400,19 @@ namespace CutTheRope.GameMain
                             return;
                         }
                         CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        CTRSoundMgr.PlayRandomMusic(Resources.Snd.GameMusic, Resources.Snd.GameMusic2, Resources.Snd.GameMusic3, Resources.Snd.GameMusic4);
+                        if (SpecialEvents.IsXmas)
+                        {
+                            CTRSoundMgr.PlayMusic(Resources.Snd.GameMusicXmas);
+                        }
+                        else
+                        {
+                            CTRSoundMgr.PlayRandomMusic(
+                                Resources.Snd.GameMusic,
+                                Resources.Snd.GameMusic2,
+                                Resources.Snd.GameMusic3,
+                                Resources.Snd.GameMusic4
+                            );
+                        }
                         return;
                     }
                 case var id when id == GameControllerButtonId.ToggleSound:
@@ -415,7 +446,7 @@ namespace CutTheRope.GameMain
                 Deactivate();
                 return;
             }
-    ((GameScene)view.GetChild(0)).LoadNextMap();
+            ((GameScene)view.GetChild(0)).LoadNextMap();
             LevelStart();
         }
 
@@ -605,7 +636,7 @@ namespace CutTheRope.GameMain
                 Deactivate();
                 return;
             }
-    ((GameScene)view.GetChild(0)).LoadNextMap();
+            ((GameScene)view.GetChild(0)).LoadNextMap();
             LevelStart();
         }
 

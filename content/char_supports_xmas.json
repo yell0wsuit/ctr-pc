@@ -1,0 +1,29 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 386, "w": 368, "h": 333 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 132, "y": 190, "w": 368, "h": 333 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 1, "y": 1, "w": 404, "h": 383 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 118, "y": 183, "w": 404, "h": 383 },
+            "sourceSize": { "w": 640, "h": 640 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "char_supports_xmas.png",
+        "format": "RGBA8888",
+        "size": { "w": 406, "h": 720 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:1e2fdaa71ec5661390e664481e1e95fd:a40c260290277428eca02adb3ec3dffe:6665b543fa963ce3fc958e5d8e34dff3$"
+    }
+}
