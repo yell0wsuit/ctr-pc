@@ -192,7 +192,7 @@ namespace CutTheRope.Framework.Core
             if (preferOldFontSystem && isLanguageSupported)
             {
                 // Use old sprite-based font system
-                return LoadSpriteFontInfo(path, resID, isWvga);
+                return LoadSpriteFontInfo(path, resID);
             }
 
             // Get font configuration based on the resource name
@@ -200,7 +200,7 @@ namespace CutTheRope.Framework.Core
             if (string.IsNullOrEmpty(resourceName))
             {
                 // Fallback to old sprite font loading if no resource name found
-                return LoadSpriteFontInfo(path, resID, isWvga);
+                return LoadSpriteFontInfo(path, resID);
             }
 
             // Load FontStashSharp font using the new system
@@ -220,7 +220,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Legacy sprite font loading (kept for backward compatibility).
         /// </summary>
-        private FontGeneric LoadSpriteFontInfo(string path, int resID, bool isWvga)
+        private Font LoadSpriteFontInfo(string path, int resID)
         {
             XElement xmlnode = XElementExtensions.LoadContentXml(path);
             int num = xmlnode.AttributeAsNSString("charoff").IntValue();
