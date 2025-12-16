@@ -1,0 +1,29 @@
+{
+    "frames": [
+        {
+            "filename": "menu_christmas_1280_1920-0.png",
+            "frame": { "x": 1, "y": 274, "w": 275, "h": 175 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 275, "h": 175 },
+            "sourceSize": { "w": 275, "h": 175 }
+        },
+        {
+            "filename": "menu_christmas_1280_1920-1.png",
+            "frame": { "x": 1, "y": 1, "w": 373, "h": 271 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 373, "h": 271 },
+            "sourceSize": { "w": 373, "h": 271 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "xmas_hat_logo.png",
+        "format": "RGBA8888",
+        "size": { "w": 375, "h": 450 },
+        "scale": "0.75",
+        "smartupdate": "$TexturePacker:SmartUpdate:9e6261c43b02b67d8ee9059a70ab57fb:d45f0ab47e4c4b008eaa7e4781e91091:c11c03895efa392ea919090d72852963$"
+    }
+}

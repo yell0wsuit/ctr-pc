@@ -1,0 +1,53 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 530, "w": 275, "h": 343 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 84, "y": 47, "w": 275, "h": 343 },
+            "sourceSize": { "w": 431, "h": 431 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 1, "y": 875, "w": 275, "h": 343 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 84, "y": 46, "w": 275, "h": 343 },
+            "sourceSize": { "w": 431, "h": 431 }
+        },
+        {
+            "filename": "frame_0002.png",
+            "frame": { "x": 1, "y": 281, "w": 277, "h": 247 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 65, "y": 78, "w": 277, "h": 247 },
+            "sourceSize": { "w": 431, "h": 431 }
+        },
+        {
+            "filename": "frame_0003.png",
+            "frame": { "x": 1, "y": 1, "w": 292, "h": 278 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 58, "y": 57, "w": 292, "h": 278 },
+            "sourceSize": { "w": 431, "h": 431 }
+        },
+        {
+            "filename": "frame_0004.png",
+            "frame": { "x": 1, "y": 1220, "w": 261, "h": 220 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 72, "y": 98, "w": 261, "h": 220 },
+            "sourceSize": { "w": 431, "h": 431 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_sock_xmas.png",
+        "format": "RGBA8888",
+        "size": { "w": 294, "h": 1441 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:b69f375fbd97c372cb2411e588fbfc15:81b9c285b8528acadb1822ba8026510e:a39209080796b98895b82eda0f086242$"
+    }
+}

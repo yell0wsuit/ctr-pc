@@ -372,6 +372,8 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuScrollbarChangename,
             Resources.Img.MenuButtonAchivCup,
             Resources.Img.MenuBgrShadow,
+            Resources.Img.MenuBgrXmas,
+            Resources.Img.MenuBgrXmasSecondary,
             null
         ];
 
@@ -424,6 +426,10 @@ namespace CutTheRope.GameMain
             Resources.Img.CharAnimations3,
             Resources.Img.ObjVinil,
             Resources.Img.ObjGhost,
+            Resources.Img.XmasLights,
+            Resources.Img.CharGreetingXmas,
+            Resources.Img.CharIdleXmas,
+            Resources.Img.ObjSock,
             null
         ];
     }

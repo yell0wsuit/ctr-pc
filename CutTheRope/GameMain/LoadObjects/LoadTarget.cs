@@ -36,6 +36,11 @@ namespace CutTheRope.GameMain
 
             target.AddImage(Resources.Img.CharAnimations2);
             target.AddImage(Resources.Img.CharAnimations3);
+            if (SpecialEvents.IsXmas)
+            {
+                target.AddImage(Resources.Img.CharGreetingXmas);
+                target.AddImage(Resources.Img.CharIdleXmas);
+            }
             target.bb = MakeRectangle(264.0, 350.0, 108.0, 2.0);
 
             // Setup main animation
@@ -79,6 +84,19 @@ namespace CutTheRope.GameMain
                 num14 + 15
             ]);
 
+            if (SpecialEvents.IsXmas)
+            {
+                target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharGreetingXmas, 11, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP,
+                    0,
+                    33);
+                target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharIdleXmas, 12, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP,
+                    0,
+                    30);
+                target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharIdleXmas, 13, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP,
+                    31,
+                    61);
+            }
+
             target.AddAnimationWithIDDelayLoopFirstLast(7, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 27);
             target.AddAnimationWithIDDelayLoopFirstLast(8, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 28, 31);
             target.AddAnimationWithIDDelayLoopFirstLast(9, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 32, 40);
@@ -96,6 +114,13 @@ namespace CutTheRope.GameMain
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations, 2, 0.05f);
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations2, 3, 0.05f);
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharAnimations2, 4, 0.05f);
+
+            if (SpecialEvents.IsXmas)
+            {
+                target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharGreetingXmas, 11, 0.05f);
+                target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharIdleXmas, 12, 0.05f);
+                target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharIdleXmas, 13, 0.05f);
+            }
 
             // Show greeting if needed
             if (CTRRootController.IsShowGreeting())

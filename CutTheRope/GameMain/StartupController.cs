@@ -130,6 +130,8 @@ namespace CutTheRope.GameMain
             Resources.Snd.ScratchIn,
             Resources.Snd.ScratchOut,
             Resources.Snd.GhostPuff,
+            Resources.Snd.XmasBell,
+            Resources.Snd.TeleportXmas,
             null,
         ];
 
@@ -160,6 +162,8 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuScrollbarChangename,
             Resources.Img.MenuButtonAchivCup,
             Resources.Img.MenuBgrShadow,
+            Resources.Img.MenuBgrXmas,
+            Resources.Img.MenuBgrXmasSecondary,
             null
         ];
 
@@ -171,6 +175,8 @@ namespace CutTheRope.GameMain
             Resources.Snd.GameMusic2,
             Resources.Snd.GameMusic3,
             Resources.Snd.GameMusic4,
+            Resources.Snd.MenuMusicXmas,
+            Resources.Snd.GameMusicXmas,
             null,
         ];
     }

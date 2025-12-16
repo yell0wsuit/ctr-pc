@@ -11,13 +11,16 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed partial class GameScene
     {
+        private Sock XmasSock;
+
         /// <summary>
         /// Loads a sock object from XML node data
         /// </summary>
         private void LoadSock(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            Sock sock = Sock.Sock_createWithResID(Resources.Img.ObjHat);
+            XmasSock = SpecialEvents.IsXmas ? Sock.Sock_createWithResID(Resources.Img.ObjSock) : Sock.Sock_createWithResID(Resources.Img.ObjHat);
+            Sock sock = XmasSock;
             sock.CreateAnimations();
             sock.scaleX = sock.scaleY = 0.7f;
             sock.DoRestoreCutTransparency();

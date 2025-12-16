@@ -138,7 +138,23 @@ namespace CutTheRope.GameMain
                 width = (int)SCREEN_WIDTH,
                 height = (int)SCREEN_HEIGHT
             };
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuBgr, 0);
+
+            // Select secondary background based on special events
+            string backgroundResource;
+            int backgroundQuad;
+            switch (true)
+            {
+                case var _ when SpecialEvents.IsXmas:
+                    backgroundResource = Resources.Img.MenuBgrXmasSecondary;
+                    backgroundQuad = 0;
+                    break;
+                default:
+                    backgroundResource = Resources.Img.MenuBgr;
+                    backgroundQuad = 0;
+                    break;
+            }
+
+            Image image = Image.Image_createWithResIDQuad(backgroundResource, backgroundQuad);
             image.anchor = image.parentAnchor = 34;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = image.height / 2;
@@ -146,16 +162,67 @@ namespace CutTheRope.GameMain
             _ = baseElement.AddChild(image);
             if (l)
             {
-                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuBgr, 1);
+                // Select main background based on special events
+                string backgroundSecondaryResource;
+                int backgroundSecondaryQuad;
+                switch (true)
+                {
+                    case var _ when SpecialEvents.IsXmas:
+                        backgroundSecondaryResource = Resources.Img.MenuBgrXmas;
+                        backgroundSecondaryQuad = 0;
+                        break;
+                    default:
+                        backgroundSecondaryResource = Resources.Img.MenuBgr;
+                        backgroundSecondaryQuad = 1;
+                        break;
+                }
+
+                Image image2 = Image.Image_createWithResIDQuad(backgroundSecondaryResource, backgroundSecondaryQuad);
                 image2.anchor = image2.parentAnchor = 34;
                 image2.scaleX = image2.scaleY = 1.25f;
                 image2.passTransformationsToChilds = false;
                 image2.rotationCenterY = image2.height / 2;
                 _ = image.AddChild(image2);
+
+                // Add event-specific decorations to logo -- layer bottom
+                switch (true)
+                {
+                    case var _ when SpecialEvents.IsXmas:
+                        // Hat background layer (behind the logo) - add to baseElement before logo
+                        Image hatBackground = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoXmasHat, 0);
+                        hatBackground.anchor = 9;  // Top-left of the hat sprite
+                        hatBackground.parentAnchor = 9;  // Relative to top-left of base (no positioning limits)
+                        hatBackground.x = 965f;  // Adjust horizontal position (positive = right)
+                        hatBackground.y = 71f;  // Adjust vertical position (positive = down)
+                        _ = baseElement.AddChild(hatBackground);
+                        break;
+                    default:
+                        break;
+                }
+
+                // Main logo
                 Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 0);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
+                _ = baseElement.AddChild(image3);
+
+                // Add event-specific decorations to logo -- layer top
+                switch (true)
+                {
+                    case var _ when SpecialEvents.IsXmas:
+                        // Hat foreground layer (on top of the text logo)
+                        Image hatForeground = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoXmasHat, 1);
+                        hatForeground.anchor = 9;  // Top-left of the hat sprite
+                        hatForeground.parentAnchor = 9;  // Relative to top-left of logo
+                        hatForeground.x = 30f;  // Adjust horizontal position (positive = right)
+                        hatForeground.y = -80f;  // Adjust vertical position (positive = down)
+                        _ = image3.AddChild(hatForeground);
+                        break;
+                    default:
+                        break;
+                }
+
                 _ = baseElement.AddChild(image3);
             }
             if (s)
@@ -295,6 +362,17 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        private static void AttachSnowfallOverlay(View menuView)
+        {
+            SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
+            if (overlay != null)
+            {
+                overlay.anchor = overlay.parentAnchor = 9;
+                overlay.Start();
+                _ = menuView.AddChild(overlay);
+            }
+        }
+
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
@@ -395,6 +473,7 @@ namespace CutTheRope.GameMain
                 _ = baseElement2.AddChild(image);
             }
             _ = menuView.AddChild(baseElement);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 0);
         }
 
@@ -458,6 +537,7 @@ namespace CutTheRope.GameMain
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 1);
         }
 
@@ -484,6 +564,7 @@ namespace CutTheRope.GameMain
             button3.SetName("backb");
             button3.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button3);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 4);
         }
 
@@ -497,6 +578,7 @@ namespace CutTheRope.GameMain
                 color = RGBAColor.blackRGBA
             };
             _ = movieView.AddChild(rectangleElement);
+            AttachSnowfallOverlay(movieView);
             AddViewwithID(movieView, 7);
         }
 
@@ -551,6 +633,7 @@ namespace CutTheRope.GameMain
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 3);
         }
 
@@ -863,11 +946,12 @@ namespace CutTheRope.GameMain
             nextb.scaleX = -1f;
             _ = baseElement.AddChild(nextb);
             _ = menuView.AddChild(baseElement);
-            AddViewwithID(menuView, 5);
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromPackSelect);
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
+            AddViewwithID(menuView, 5);
             int lastPack = CTRPreferences.GetLastPack();
             packContainer.PlaceToScrollPoint(lastPack);
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
@@ -1066,6 +1150,7 @@ namespace CutTheRope.GameMain
             _ = button.AddTimeline(timeline6);
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
+            AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 6);
         }
 
@@ -1120,7 +1205,14 @@ namespace CutTheRope.GameMain
             }
             ShowView(viewToShow);
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+            if (SpecialEvents.IsXmas)
+            {
+                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+            }
+            else
+            {
+                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+            }
         }
 
         public void ShowNextPack()
@@ -1158,7 +1250,14 @@ namespace CutTheRope.GameMain
             }
             if (url != null)
             {
-                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                if (SpecialEvents.IsXmas)
+                {
+                    CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+                }
+                else
+                {
+                    CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                }
             }
             if (CTRPreferences.ShouldPlayLevelScroll())
             {
@@ -1296,7 +1395,14 @@ namespace CutTheRope.GameMain
                             CTRSoundMgr.StopMusic();
                             return;
                         }
-                        CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                        if (SpecialEvents.IsXmas)
+                        {
+                            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+                        }
+                        else
+                        {
+                            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                        }
                         return;
                     }
                 case var id when id == MenuButtonId.ShowCredits:

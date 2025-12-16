@@ -34,7 +34,8 @@ namespace CutTheRope.GameMain
 
         public void CreateAnimations()
         {
-            light = Animation_createWithResID(Resources.Img.ObjHat);
+            XmasSock = SpecialEvents.IsXmas ? Resources.Img.ObjSock : Resources.Img.ObjHat;
+            light = Animation_createWithResID(XmasSock);
             light.anchor = 34;
             light.parentAnchor = 10;
             light.y = 270f;
@@ -105,7 +106,7 @@ namespace CutTheRope.GameMain
         public Vector b2;
 
         public float idleTimeout;
-
+        private string XmasSock;
         public Animation light;
     }
 }

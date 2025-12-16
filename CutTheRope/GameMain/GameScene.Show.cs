@@ -164,13 +164,29 @@ namespace CutTheRope.GameMain
                 idlesTimer--;
                 if (idlesTimer == 0)
                 {
-                    if (RND_RANGE(0, 1) == 1)
+                    if (SpecialEvents.IsXmas)
                     {
-                        target.PlayTimeline(1);
+                        // Play Christmas idle animations
+                        if (RND_RANGE(0, 1) == 1)
+                        {
+                            target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, 12);
+                        }
+                        else
+                        {
+                            target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, 13);
+                        }
                     }
                     else
                     {
-                        target.PlayTimeline(2);
+                        // Play vanilla idle animations
+                        if (RND_RANGE(0, 1) == 1)
+                        {
+                            target.PlayTimeline(1);
+                        }
+                        else
+                        {
+                            target.PlayTimeline(2);
+                        }
                     }
                     idlesTimer = RND_RANGE(5, 20);
                 }

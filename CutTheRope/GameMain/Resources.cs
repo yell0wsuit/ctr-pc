@@ -100,7 +100,8 @@ namespace CutTheRope.GameMain
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
-                Img.ObjGhost
+                Img.ObjGhost, Img.XmasLights, Img.Snowflakes, Img.CharGreetingXmas,
+                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary, Img.MenuLogoXmasHat
             ];
         }
 
@@ -120,7 +121,8 @@ namespace CutTheRope.GameMain
                 Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
                 Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
-                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff
+                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.XmasBell,
+                Snd.MenuMusicXmas, Snd.GameMusicXmas
             ];
         }
 
@@ -247,6 +249,14 @@ namespace CutTheRope.GameMain
             public const string Bgr12P1 = "bgr_12_p1";
             public const string Bgr12P2 = "bgr_12_p2";
             public const string ObjGhost = "obj_ghost";
+            public const string XmasLights = "christmas_lights";
+            public const string Snowflakes = "snowflakes";
+            public const string CharGreetingXmas = "char_greeting_xmas";
+            public const string CharIdleXmas = "char_idle_xmas";
+            public const string ObjSock = "obj_sock_xmas";
+            public const string MenuBgrXmas = "menu_xmas_pc";
+            public const string MenuBgrXmasSecondary = "menu_xmas_secondary_pc";
+            public const string MenuLogoXmasHat = "xmas_hat_logo";
         }
 
         /// <summary>
@@ -352,6 +362,10 @@ namespace CutTheRope.GameMain
             public const string GameMusic3 = "game_music3";
             public const string GameMusic4 = "game_music4";
             public const string GhostPuff = "ghost_puff";
+            public const string XmasBell = "xmas_bell";
+            public const string MenuMusicXmas = "menu_music_xmas";
+            public const string GameMusicXmas = "game_music_xmas";
+            public const string TeleportXmas = "teleport_xmas";
         }
 
         /// <summary>
