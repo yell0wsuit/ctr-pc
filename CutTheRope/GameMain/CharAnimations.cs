@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
 
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resourceName);
             // Use the same anchor as the base animation (18) for proper centering
-            charAnimation.parentAnchor = charAnimation.anchor = this.anchor;
+            charAnimation.parentAnchor = charAnimation.anchor = anchor;
             charAnimation.DoRestoreCutTransparency();
 
             int index = nextAnimationIndex++;
