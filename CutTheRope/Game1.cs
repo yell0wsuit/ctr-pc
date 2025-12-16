@@ -304,7 +304,7 @@ namespace CutTheRope
 
         private MouseState _currentMouseState;
 
-        public bool UseNativeMouse = false;
+        public bool UseNativeMouse;
 
         private bool UseWindowMode_TODO_ChangeFullScreenResolution = true;
 
