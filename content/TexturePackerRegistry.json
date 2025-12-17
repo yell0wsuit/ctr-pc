@@ -80,6 +80,24 @@
             "atlasPath": "xmas_hat_logo.json",
             "useAntialias": true,
             "centerOffsets": false
+        },
+        {
+            "resourceName": "skin_selection",
+            "atlasPath": "skin_selection.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "candy_selection_fx",
+            "atlasPath": "candy_selection_fx.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "menu_logo_new",
+            "atlasPath": "menu_logo_new.json",
+            "useAntialias": true,
+            "centerOffsets": false
         }
     ]
 }
