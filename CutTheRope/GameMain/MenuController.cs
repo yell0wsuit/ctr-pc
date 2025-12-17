@@ -215,6 +215,38 @@ namespace CutTheRope.GameMain
                 candyImage.y = 510f;  // Offset down from top of logo
                 _ = image3.AddChild(candyImage);
 
+                // Glow effect - pulsing animation (shrink/expand rapidly, pause, repeat)
+                Image glowImage = Image.Image_createWithResIDQuad(Resources.Img.CandySelectionFx, 0);
+                glowImage.anchor = 18;  // Center
+                glowImage.parentAnchor = 18;  // Center on candy
+                Timeline glowTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(6);
+                // Rapid pulse: normal -> shrink -> expand -> shrink -> normal, then pause
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 1.15, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));  // Pause
+                glowTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = glowImage.AddTimeline(glowTimeline);
+                glowImage.PlayTimeline(0);
+                _ = candyImage.AddChild(glowImage);
+
+                // Pointing hand indicator
+                Image handImage = Image.Image_createWithResIDQuad(Resources.Img.CandySelectionFx, 1);
+                handImage.anchor = 36;  // Bottom-right of hand sprite
+                handImage.parentAnchor = 36;  // Bottom-right of candy
+                // Hand pointing animation - horizontal jabbing/pointing motion
+                // Keep y constant for horizontal movement only
+                Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 60, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 60, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6));  // Move LEFT (toward candy)
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 60, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6));
+                handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = handImage.AddTimeline(handTimeline);
+                handImage.PlayTimeline(0);
+                _ = candyImage.AddChild(handImage);
+
                 // Add event-specific decorations to logo -- layer top
                 switch (true)
                 {

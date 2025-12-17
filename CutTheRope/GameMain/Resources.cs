@@ -73,7 +73,7 @@ namespace CutTheRope.GameMain
                 Img.ZeptolabNoLink, Img.LoaderbarFull, Img.MenuButtonDefault,
                 Img.MenuLoading, Img.MenuNotification, Img.MenuAchievement,
                 Img.MenuOptions, Img.MenuBgr, Img.MenuPopup, Img.MenuLogo,
-                Img.MenuLogoNew, Img.MenuLevelSelection, Img.MenuPackSelection, Img.MenuPackSelection2,
+                Img.MenuLogoNew, Img.CandySelectionFx, Img.MenuLevelSelection, Img.MenuPackSelection, Img.MenuPackSelection2,
                 Img.MenuExtraButtons, Img.MenuScrollbar, Img.MenuLeaderboard,
                 Img.MenuProcessingHd, Img.MenuScrollbarChangename, Img.MenuButtonAchivCup,
                 Img.MenuBgrShadow, Img.MenuButtonShort, Img.HudButtons, Img.ObjCandy01,
@@ -153,6 +153,7 @@ namespace CutTheRope.GameMain
             public const string MenuPopup = "menu_popup";
             public const string MenuLogo = "menu_logo";
             public const string MenuLogoNew = "menu_logo_new";
+            public const string CandySelectionFx = "candy_selection_fx";
             public const string MenuLevelSelection = "menu_level_selection";
             public const string MenuPackSelection = "menu_pack_selection";
             public const string MenuPackSelection2 = "menu_pack_selection2";
