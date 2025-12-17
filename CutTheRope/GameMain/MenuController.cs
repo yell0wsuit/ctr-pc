@@ -201,11 +201,19 @@ namespace CutTheRope.GameMain
                 }
 
                 // Main logo
-                Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 0);
+                Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 52);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
                 _ = baseElement.AddChild(image3);
+
+                // Candy on rope (positioned under the logo)
+                Image candyImage = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 0);  // default candy skin
+                candyImage.anchor = 10;  // Top-center of candy sprite
+                candyImage.parentAnchor = 10;  // Top-center of logo
+                candyImage.x = 147f;  // Offset right from center
+                candyImage.y = 510f;  // Offset down from top of logo
+                _ = image3.AddChild(candyImage);
 
                 // Add event-specific decorations to logo -- layer top
                 switch (true)
