@@ -899,4 +899,12 @@
       <preCutHeight>206</preCutHeight>
     </info>
   </resource>
+  <resource name="skin_bg">
+    <info format="0" fileFormat="0" filter="1">
+      <quads>0,0,2048,1152,</quads>
+      <offsets>0,0,</offsets>
+      <preCutWidth>2048</preCutWidth>
+      <preCutHeight>1152</preCutHeight>
+    </info>
+  </resource>
 </resources>
