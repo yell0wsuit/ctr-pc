@@ -322,6 +322,25 @@ namespace CutTheRope.Framework.Core
             return false;
         }
 
+        /// <summary>
+        /// Handles mouse wheel scrolling input for the controller.
+        /// </summary>
+        /// <param name="scrollDelta">
+        /// The mouse wheel scroll delta. Positive values indicate scrolling up (away from user),
+        /// negative values indicate scrolling down (toward user).
+        /// </param>
+        /// <remarks>
+        /// Override this method in derived controllers to handle mouse wheel input for scrollable views.
+        /// The default implementation returns false (no handling).
+        /// </remarks>
+        /// <returns>
+        /// True if the scroll input was handled by this controller or its active view, false otherwise.
+        /// </returns>
+        public virtual bool HandleMouseWheel(int scrollDelta)
+        {
+            return false;
+        }
+
         public virtual void FullscreenToggled(bool isFullscreen)
         {
         }

@@ -183,7 +183,7 @@ namespace CutTheRope.Framework.Visual
             {
                 _ = VectEqual(targetPoint, vectZero);
                 _ = Vect(container.x, container.y);
-                Vector v = VectMult(VectNeg(move), 2f);
+                Vector v = VectMult(VectNeg(move), 7f); // Decelerate faster after scrolling
                 move = VectAdd(move, VectMult(v, delta));
                 Vector off = VectMult(move, delta);
                 if ((double)Math.Abs(off.x) < 0.2)
@@ -573,6 +573,53 @@ namespace CutTheRope.Framework.Visual
             movingToSpoint = true;
             targetSpoint = lastTargetSpoint = -1;
             CalculateNearsetScrollPointInDirection(d);
+        }
+
+        /// <remarks>
+        /// This method provides smooth momentum-based scrolling with quick deceleration.
+        /// <para>The scrolling behavior:</para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>Adds velocity to the existing momentum (allows smooth acceleration).</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Velocity is automatically decelerated by the Update loop.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Scroll speed multiplier is <c>4f</c>.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>No scrolling occurs if content height fits within the container.</description>
+        ///   </item>
+        /// </list>
+        ///
+        /// <para>Implementation notes:</para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>The momentum system reuses existing drag/touch physics.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Deceleration factor (<c>7f</c>) balances smoothness and quick stopping.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Higher multiplier increases speed; higher deceleration stops faster.</description>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        public void HandleMouseWheel(int scrollDelta)
+        {
+            if (container.height <= height)
+            {
+                return; // No scrolling needed if content fits
+            }
+
+            // Convert scroll wheel delta to scroll velocity for smooth scrolling
+            // Positive scrollDelta = scroll up (content moves down), negative = scroll down (content moves up)
+            float scrollVelocity = scrollDelta * 4f;
+
+            // Add to existing momentum for smooth, accumulating scrolling
+            // The Update() method handles deceleration automatically
+            move = VectAdd(move, Vect(0f, scrollVelocity));
         }
 
         public IScrollableContainerProtocol delegateScrollableContainerProtocol;
