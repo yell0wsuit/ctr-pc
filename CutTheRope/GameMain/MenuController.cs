@@ -1618,6 +1618,9 @@ namespace CutTheRope.GameMain
                     return;
                 case var id when id == MenuButtonId.BackFromCandySelect:
                     // Return to main menu from candy selection
+                    // Recreate the main menu to reflect the new candy selection
+                    DeleteView(0);
+                    CreateMainMenu();
                     ShowView(0);
                     return;
                 default:
