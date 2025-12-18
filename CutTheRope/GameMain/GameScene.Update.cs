@@ -392,12 +392,11 @@ namespace CutTheRope.GameMain
                                 rope2.chosenOne = false;
                             }
                         }
-                        Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjCandy01);
-                        animation.DoRestoreCutTransparency();
+                        Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
                         animation.x = candy.x;
                         animation.y = candy.y;
                         animation.anchor = 18;
-                        int n = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 21, 25);
+                        int n = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 11, 15);
                         animation.GetTimeline(n).delegateTimelineDelegate = aniPool;
                         animation.PlayTimeline(0);
                         _ = aniPool.AddChild(animation);
@@ -764,7 +763,7 @@ namespace CutTheRope.GameMain
                         {
                             PopCandyBubble(false);
                         }
-                        Image image2 = Image.Image_createWithResID(Resources.Img.ObjCandy01);
+                        Image image2 = Image.Image_createWithResID(Resources.Img.ObjCandy01New);
                         image2.DoRestoreCutTransparency();
                         CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)

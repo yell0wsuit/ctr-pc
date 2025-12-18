@@ -98,6 +98,24 @@
             "atlasPath": "menu_logo_new.json",
             "useAntialias": true,
             "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_fx",
+            "atlasPath": "candies/obj_candy_fx.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_01_new",
+            "atlasPath": "candies/obj_candy_01_new.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_02",
+            "atlasPath": "candies/obj_candy_02.json",
+            "useAntialias": true,
+            "centerOffsets": false
         }
     ]
 }

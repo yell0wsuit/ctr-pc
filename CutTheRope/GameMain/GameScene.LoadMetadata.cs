@@ -66,7 +66,7 @@ namespace CutTheRope.GameMain
                     {
                         starL.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                         starL.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                        candyL = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01, 19);
+                        candyL = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01New, 8);
                         candyL.scaleX = candyL.scaleY = 0.71f;
                         candyL.passTransformationsToChilds = false;
                         candyL.DoRestoreCutTransparency();
@@ -79,7 +79,7 @@ namespace CutTheRope.GameMain
                     {
                         starR.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                         starR.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                        candyR = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01, 20);
+                        candyR = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01New, 9);
                         candyR.scaleX = candyR.scaleY = 0.71f;
                         candyR.passTransformationsToChilds = false;
                         candyR.DoRestoreCutTransparency();

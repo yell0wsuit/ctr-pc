@@ -76,8 +76,8 @@ namespace CutTheRope.GameMain
                 Img.MenuLogoNew, Img.CandySelectionFx, Img.SkinSelection, Img.MenuLevelSelection, Img.MenuPackSelection, Img.MenuPackSelection2,
                 Img.MenuExtraButtons, Img.MenuScrollbar, Img.MenuLeaderboard,
                 Img.MenuProcessingHd, Img.MenuScrollbarChangename, Img.MenuButtonAchivCup,
-                Img.MenuBgrShadow, Img.MenuButtonShort, Img.HudButtons, Img.ObjCandy01,
-                Img.ObjSpider, Img.ConfettiParticles, Img.MenuPause, Img.MenuResult,
+                Img.MenuBgrShadow, Img.MenuButtonShort, Img.HudButtons, Img.ObjCandy01New,
+                Img.ObjCandyFx, Img.ObjSpider, Img.ConfettiParticles, Img.MenuPause, Img.MenuResult,
                 Img.HudButtonsEn, Img.MenuResultEn, Img.ObjStarDisappear,
                 Img.ObjBubbleFlight, Img.ObjBubblePop, Img.ObjHookAuto,
                 Img.ObjBubbleAttached, Img.ObjHook01, Img.ObjHook02, Img.ObjStarIdle,
@@ -265,6 +265,9 @@ namespace CutTheRope.GameMain
             public const string Bgr13Cover = "bgr_13_cover";
             public const string Bgr13P1 = "bgr_13_p1";
             public const string ObjPipe = "obj_pipe";
+            public const string ObjCandyFx = "candies/obj_candy_fx";
+            public const string ObjCandy01New = "candies/obj_candy_01_new";
+            public const string ObjCandy02 = "candies/obj_candy_02";
         }
 
         /// <summary>
