@@ -690,7 +690,7 @@ namespace CutTheRope.GameMain
 
         public void CreateCandySelection()
         {
-            MenuView menuView = CandySelectionView.CreateCandySelection(this, out _);
+            MenuView menuView = CandySelectionView.CreateCandySelection(this, out candyContainer);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, VIEW_CANDY_SELECT);
         }
@@ -1743,6 +1743,13 @@ namespace CutTheRope.GameMain
         /// </remarks>
         public override bool HandleMouseWheel(int scrollDelta)
         {
+            // Handle scroll wheel for candy selection view
+            if (activeViewID == VIEW_CANDY_SELECT && candyContainer != null)
+            {
+                candyContainer.HandleMouseWheel(scrollDelta);
+                return true;
+            }
+
             // Handle scroll wheel for about/credits view (activeViewID == 3)
             if (activeViewID == 3 && aboutContainer != null)
             {
@@ -1870,6 +1877,8 @@ namespace CutTheRope.GameMain
 
         private readonly PopUpMenu popUpMenu;
         private ScrollableContainer aboutContainer;
+
+        private ScrollableContainer candyContainer;
 
         private ScrollableContainer packContainer;
 
