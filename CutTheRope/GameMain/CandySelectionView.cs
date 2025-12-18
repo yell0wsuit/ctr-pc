@@ -28,7 +28,7 @@ namespace CutTheRope.GameMain
             bgImage.scaleX = bgImage.scaleY = bgScale;
             _ = background.AddChild(bgImage);
 
-            // "Candy" button on top middle with button_idle
+            // Candy button on top middle with button_idle
             Image candyBtnUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
             Image candyBtnDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
 
@@ -52,22 +52,41 @@ namespace CutTheRope.GameMain
             _ = background.AddChild(candyButton);
 
             // Create scrollable content area with candy slots
-            float containerWidth = 1300f;
-            float containerHeight = 900f;
-
-            // Create VBox to hold rows of candies
-            VBox candyGrid = new VBox().InitWithOffsetAlignWidth(30f, 18, containerWidth);
-
-            // Constants for candy slot layout
             const int CANDIES_PER_ROW = 4;
-            const int TOTAL_CANDIES = 33;
-            float slotWidth = 271f;  // button_available_idle width
-            float slotSpacing = 40f;
+            const int TOTAL_CANDIES = 51;
+
+            // Sprite sheet dimensions
+            float spriteSheetSlotWidth = 271f;
+            float spriteSheetSlotHeight = 336f;
+            float spriteSheetScale = 3f; // bigger => smaller rendering
+
+            // Actual rendered dimensions after sprite sheet scale
+            float baseSlotWidth = spriteSheetSlotWidth * spriteSheetScale;
+            float baseSlotHeight = spriteSheetSlotHeight * spriteSheetScale;
+            float baseSpacing = 20f;
+
+            // Calculate scale to fit 4 columns on screen
+            float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f; // Leave margin
+            float totalBaseWidth = (baseSlotWidth * CANDIES_PER_ROW) + (baseSpacing * (CANDIES_PER_ROW - 1));
+            float slotScale = containerWidth / totalBaseWidth;
+
+            float slotHeight = baseSlotHeight * slotScale;
+            float columnSpacing = baseSpacing;
+            float rowSpacing = 10f;
+
+            // Reduce row height to account for padding in button sprites
+            float rowHeight = slotHeight * 0.4f; // 40% of full height to remove spacious vertical padding
+
+            // Container height
+            float containerHeight = FrameworkTypes.SCREEN_HEIGHT - 200f; // Leave space for header and borders
+
+            // Create VBox to hold rows of candies (align 2 = top center)
+            VBox candyGrid = new VBox().InitWithOffsetAlignWidth(rowSpacing, 2, containerWidth);
 
             // Create rows of candy slots
             for (int row = 0; row < ((TOTAL_CANDIES + CANDIES_PER_ROW - 1) / CANDIES_PER_ROW); row++)
             {
-                HBox rowBox = new HBox().InitWithOffsetAlignHeight(slotSpacing, 18, slotWidth + 80f);
+                HBox rowBox = new HBox().InitWithOffsetAlignHeight(columnSpacing, 16, rowHeight);
 
                 for (int col = 0; col < CANDIES_PER_ROW; col++)
                 {
@@ -81,7 +100,11 @@ namespace CutTheRope.GameMain
                     Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 0);
                     Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 1);
 
-                    // Add candy image on top of slot background (candy01-candy33 are quads 6-38)
+                    // Scale the button backgrounds to fit the grid
+                    slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
+                    slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
+
+                    // Add candy image on top of slot background (candy01-candy51 are quads 6-56 in JSON)
                     int candyQuadIndex = 6 + candyIndex;
                     Image candyImage = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, candyQuadIndex);
                     candyImage.anchor = candyImage.parentAnchor = 18;
@@ -107,18 +130,6 @@ namespace CutTheRope.GameMain
             candyContainer.y = 100f;
 
             _ = background.AddChild(candyContainer);
-
-            // Add cut_top border (quad 59)
-            Image cutTop = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 59);
-            cutTop.anchor = cutTop.parentAnchor = 10;
-            cutTop.y = candyContainer.y - (containerHeight / 2f);
-            _ = background.AddChild(cutTop);
-
-            // Add cut_bottom border (quad 60)
-            Image cutBottom = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 60);
-            cutBottom.anchor = cutBottom.parentAnchor = 26;
-            cutBottom.y = candyContainer.y + (containerHeight / 2f);
-            _ = background.AddChild(cutBottom);
 
             _ = menuView.AddChild(background);
 
