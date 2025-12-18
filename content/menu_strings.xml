@@ -1000,4 +1000,10 @@ Assistance juridique : Hughes Media Law Group</fr>
   <string name="FACEBOOK_BUTTON">
     <en></en>
   </string>
+  <string name="CANDY">
+    <en>Candy</en>
+    <ru>Леденец</ru>
+    <fr>Bonbon</fr>
+    <de>Bonbon</de>
+  </string>
 </strings>

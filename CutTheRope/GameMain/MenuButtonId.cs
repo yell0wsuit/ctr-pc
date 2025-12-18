@@ -44,6 +44,9 @@ namespace CutTheRope.GameMain
         public static readonly MenuButtonId ClosePopup;
         public static readonly MenuButtonId ShowQuitPopup;
         public static readonly MenuButtonId LevelButtonBase;
+        public static readonly MenuButtonId CandySelect;
+        public static readonly MenuButtonId BackFromCandySelect;
+        public static readonly MenuButtonId CandySlotBase;
 
         static MenuButtonId()
         {
@@ -80,6 +83,9 @@ namespace CutTheRope.GameMain
             ClosePopup = FromName(nameof(ClosePopup));
             ShowQuitPopup = FromName(nameof(ShowQuitPopup));
             LevelButtonBase = FromName(nameof(LevelButtonBase));
+            CandySelect = FromName(nameof(CandySelect));
+            BackFromCandySelect = FromName(nameof(BackFromCandySelect));
+            CandySlotBase = FromName(nameof(CandySlotBase));
         }
 
         /// <summary>
@@ -132,6 +138,32 @@ namespace CutTheRope.GameMain
         {
             string name = GetName(this);
             return name?.StartsWith("Pack_", StringComparison.Ordinal) ?? false ? int.Parse(name[5..], CultureInfo.InvariantCulture) : -1;
+        }
+
+        /// <summary>
+        /// Creates a dynamic candy slot button ID by combining the base with a candy index.
+        /// </summary>
+        public static MenuButtonId ForCandySlot(int candyIndex)
+        {
+            return FromName($"CandySlot_{candyIndex}");
+        }
+
+        /// <summary>
+        /// Checks if this button ID represents a candy slot button.
+        /// </summary>
+        public bool IsCandySlotButton()
+        {
+            string name = GetName(this);
+            return name?.StartsWith("CandySlot_", StringComparison.Ordinal) ?? false;
+        }
+
+        /// <summary>
+        /// Gets the candy index from a candy slot button ID.
+        /// </summary>
+        public int GetCandyIndex()
+        {
+            string name = GetName(this);
+            return name?.StartsWith("CandySlot_", StringComparison.Ordinal) ?? false ? int.Parse(name[10..], CultureInfo.InvariantCulture) : -1;
         }
 
         /// <summary>

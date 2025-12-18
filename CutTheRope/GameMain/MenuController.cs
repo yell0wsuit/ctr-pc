@@ -131,7 +131,7 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s)
+        public BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s)
         {
             BaseElement baseElement = new()
             {
@@ -208,12 +208,17 @@ namespace CutTheRope.GameMain
                 _ = baseElement.AddChild(image3);
 
                 // Candy on rope (positioned under the logo)
-                Image candyImage = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 0);  // default candy skin
-                candyImage.anchor = 10;  // Top-center of candy sprite
-                candyImage.parentAnchor = 10;  // Top-center of logo
-                candyImage.x = 147f;  // Offset right from center
-                candyImage.y = 510f;  // Offset down from top of logo
-                _ = image3.AddChild(candyImage);
+                Image candyUp = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 0);  // default candy skin
+                Image candyDown = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 0);
+                candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
+                Button candyButton = new Button().InitWithUpElementDownElementandID(candyUp, candyDown, MenuButtonId.CandySelect);
+                candyButton.SetName("logoCandyButton");
+                candyButton.delegateButtonDelegate = this;
+                candyButton.anchor = candyButton.parentAnchor = 10;  // Top-center of logo
+                candyButton.x = 147f;  // Offset right from center
+                candyButton.y = 510f;  // Offset down from top of logo
+                candyButton.SetTouchIncreaseLeftRightTopBottom(40f, 40f, 40f, 40f);
+                _ = image3.AddChild(candyButton);
 
                 // Check if tutorial has been completed
                 bool showCandyTutorial = !Preferences.GetBooleanForKey("PREFS_CANDY_SELECT_TUTORIAL");
@@ -235,7 +240,7 @@ namespace CutTheRope.GameMain
                     glowTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     _ = glowImage.AddTimeline(glowTimeline);
                     glowImage.PlayTimeline(0);
-                    _ = candyImage.AddChild(glowImage);
+                    _ = candyButton.AddChild(glowImage);
 
                     // Pointing hand indicator
                     Image handImage = Image.Image_createWithResIDQuad(Resources.Img.CandySelectionFx, 1);
@@ -250,7 +255,7 @@ namespace CutTheRope.GameMain
                     handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     _ = handImage.AddTimeline(handTimeline);
                     handImage.PlayTimeline(0);
-                    _ = candyImage.AddChild(handImage);
+                    _ = candyButton.AddChild(handImage);
                 }
 
                 // Add event-specific decorations to logo -- layer top
@@ -287,7 +292,7 @@ namespace CutTheRope.GameMain
             return baseElement;
         }
 
-        public static BaseElement CreateBackgroundWithLogo(bool l)
+        public BaseElement CreateBackgroundWithLogo(bool l)
         {
             return CreateBackgroundWithLogowithShadow(l, true);
         }
@@ -681,6 +686,13 @@ namespace CutTheRope.GameMain
             _ = menuView.AddChild(button);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 3);
+        }
+
+        public void CreateCandySelection()
+        {
+            MenuView menuView = CandySelectionView.CreateCandySelection(this, out _);
+            AttachSnowfallOverlay(menuView);
+            AddViewwithID(menuView, VIEW_CANDY_SELECT);
         }
 
         public static HBox CreateTextWithStar(string t)
@@ -1212,6 +1224,7 @@ namespace CutTheRope.GameMain
             CreateOptions();
             CreateReset();
             CreateAbout();
+            CreateCandySelection();
             CreateMovieView();
             CreatePackSelect();
             CreateLeaderboards();
@@ -1596,7 +1609,22 @@ namespace CutTheRope.GameMain
                 case var id when id == MenuButtonId.ShowQuitPopup:
                     ShowYesNoPopup(Application.GetString(STR_MENU_QUIT), MenuButtonId.QuitGame, MenuButtonId.ClosePopup);
                     return;
+                case var id when id == MenuButtonId.CandySelect:
+                    // Open candy selection view
+                    Preferences.SetBooleanForKey(true, "PREFS_CANDY_SELECT_TUTORIAL", true);
+                    ShowView(VIEW_CANDY_SELECT);
+                    return;
+                case var id when id == MenuButtonId.BackFromCandySelect:
+                    // Return to main menu from candy selection
+                    ShowView(0);
+                    return;
                 default:
+                    // Handle candy slot selection buttons
+                    if (n.IsCandySlotButton())
+                    {
+                        int selectedCandyIndex = n.GetCandyIndex();
+                        return;
+                    }
                     // Handle pack selection buttons dynamically
                     if (n.IsPackButton())
                     {
@@ -1834,6 +1862,8 @@ namespace CutTheRope.GameMain
         public const int VIEW_LEADERBOARDS = 8;
 
         public const int VIEW_ACHIEVEMENTS = 9;
+
+        public const int VIEW_CANDY_SELECT = 10;
         public DelayedDispatcher ddMainMenu;
 
         public DelayedDispatcher ddPackSelect;
