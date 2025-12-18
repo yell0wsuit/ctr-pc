@@ -147,10 +147,12 @@ namespace CutTheRope.GameMain
                     int candyQuadIndex = 6 + candyIndex;
                     Image candyImage = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, candyQuadIndex);
                     candyImage.anchor = candyImage.parentAnchor = 18;
+                    candyImage.y = -20f; // Move up to avoid covering checkmark on button_equipped
                     _ = slotBgUp.AddChild(candyImage);
 
                     Image candyImage2 = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, candyQuadIndex);
                     candyImage2.anchor = candyImage2.parentAnchor = 18;
+                    candyImage2.y = -20f; // Move up to avoid covering checkmark on button_equipped
                     _ = slotBgDown.AddChild(candyImage2);
 
                     Button slotButton = new Button().InitWithUpElementDownElementandID(
