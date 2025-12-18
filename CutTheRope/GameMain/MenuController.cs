@@ -1642,6 +1642,19 @@ namespace CutTheRope.GameMain
             }
         }
 
+        public override bool HandleMouseWheel(int scrollDelta)
+        {
+            // Handle scroll wheel for about/credits view
+            if (activeViewID == 3 && aboutContainer != null)
+            {
+                aboutAutoScroll = false; // Stop auto-scroll when user manually scrolls
+                aboutContainer.HandleMouseWheel(scrollDelta);
+                return true;
+            }
+
+            return base.HandleMouseWheel(scrollDelta);
+        }
+
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             bool flag = base.TouchesBeganwithEvent(touches);

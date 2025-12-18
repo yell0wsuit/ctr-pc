@@ -217,7 +217,16 @@ namespace CutTheRope
                 Application.SharedMovieMgr().Stop();
                 _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
             }
-            _currentMouseState = Mouse.GetState();
+            MouseState newMouseState = Mouse.GetState();
+
+            // Handle mouse wheel scrolling
+            if (_currentMouseState.ScrollWheelValue != newMouseState.ScrollWheelValue)
+            {
+                int scrollDelta = newMouseState.ScrollWheelValue - _currentMouseState.ScrollWheelValue;
+                Application.SharedRootController().HandleMouseWheel(scrollDelta);
+            }
+
+            _currentMouseState = newMouseState;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
             MouseState mouseState = Desktop.MouseCursor.GetMouseState();
             _ = Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(mouseState.X), CtrRenderer.TransformY(mouseState.Y));

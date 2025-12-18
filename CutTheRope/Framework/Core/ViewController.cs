@@ -322,6 +322,11 @@ namespace CutTheRope.Framework.Core
             return false;
         }
 
+        public virtual bool HandleMouseWheel(int scrollDelta)
+        {
+            return false;
+        }
+
         public virtual void FullscreenToggled(bool isFullscreen)
         {
         }

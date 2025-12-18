@@ -183,7 +183,7 @@ namespace CutTheRope.Framework.Visual
             {
                 _ = VectEqual(targetPoint, vectZero);
                 _ = Vect(container.x, container.y);
-                Vector v = VectMult(VectNeg(move), 2f);
+                Vector v = VectMult(VectNeg(move), 7f); // Decelerate faster after scrolling
                 move = VectAdd(move, VectMult(v, delta));
                 Vector off = VectMult(move, delta);
                 if ((double)Math.Abs(off.x) < 0.2)
@@ -573,6 +573,21 @@ namespace CutTheRope.Framework.Visual
             movingToSpoint = true;
             targetSpoint = lastTargetSpoint = -1;
             CalculateNearsetScrollPointInDirection(d);
+        }
+
+        public void HandleMouseWheel(int scrollDelta)
+        {
+            if (container.height <= height)
+            {
+                return; // No scrolling needed if content fits
+            }
+
+            // Convert scroll wheel delta to scroll velocity for smooth scrolling
+            // Positive scrollDelta = scroll up (content moves down), negative = scroll down (content moves up)
+            float scrollVelocity = scrollDelta * 4f;
+
+            // Set momentum for smooth scrolling instead of instant movement
+            move = VectAdd(move, Vect(0f, scrollVelocity));
         }
 
         public IScrollableContainerProtocol delegateScrollableContainerProtocol;
