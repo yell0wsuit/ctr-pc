@@ -1855,6 +1855,9 @@ namespace CutTheRope.GameMain
                 case 6:
                     OnButtonPressed(MenuButtonId.PackSelect);
                     break;
+                case VIEW_CANDY_SELECT:
+                    OnButtonPressed(MenuButtonId.BackFromCandySelect);
+                    break;
                 default:
                     break;
             }
