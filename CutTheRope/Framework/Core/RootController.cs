@@ -232,11 +232,7 @@ namespace CutTheRope.Framework.Core
         /// </remarks>
         public virtual bool HandleMouseWheel(int scrollDelta)
         {
-            if (currentController == null || suspended || transitionTime != -1f)
-            {
-                return false;
-            }
-            return currentController.HandleMouseWheel(scrollDelta);
+            return currentController != null && !suspended && transitionTime == -1f && currentController.HandleMouseWheel(scrollDelta);
         }
 
         public override bool BackButtonPressed()
