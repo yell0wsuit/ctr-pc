@@ -763,7 +763,10 @@ namespace CutTheRope.GameMain
                         {
                             PopCandyBubble(false);
                         }
-                        Image image2 = Image.Image_createWithResID(Resources.Img.ObjCandy01New);
+
+                        int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                        string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+                        Image image2 = Image.Image_createWithResID(candyResource);
                         image2.DoRestoreCutTransparency();
                         CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)
