@@ -1666,15 +1666,6 @@ namespace CutTheRope.GameMain
         ///      <description>Call <c>container.HandleMouseWheel(scrollDelta)</c> and return <c>true</c>.</description>
         ///  </item>
         /// </list>
-        ///
-        /// Example for candy selection:
-        /// <code>
-        ///   if (activeViewID == VIEW_CANDY_SELECT &amp;&amp; candyContainer != null)
-        ///   {
-        ///       candyContainer.HandleMouseWheel(scrollDelta);
-        ///       return true;
-        ///   }
-        /// </code>
         /// </remarks>
         public override bool HandleMouseWheel(int scrollDelta)
         {
