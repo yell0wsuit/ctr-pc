@@ -78,7 +78,7 @@ namespace CutTheRope.GameMain
             float rowHeight = slotHeight * 0.4f; // 40% of full height to remove spacious vertical padding
 
             // Container height
-            float containerHeight = FrameworkTypes.SCREEN_HEIGHT - 200f; // Leave space for header and borders
+            float containerHeight = 1100f; // Borrowed from credits view height
 
             // Create VBox to hold rows of candies (align 2 = top center)
             VBox candyGrid = new VBox().InitWithOffsetAlignWidth(rowSpacing, 2, containerWidth);
@@ -124,10 +124,10 @@ namespace CutTheRope.GameMain
                 _ = candyGrid.AddChild(rowBox);
             }
 
-            // Create scrollable container with culling
+            // Create scrollable container with culling (top and bottom)
             candyContainer = new ScrollableContainer().InitWithWidthHeightContainer(containerWidth, containerHeight, candyGrid);
             candyContainer.anchor = candyContainer.parentAnchor = 18;
-            candyContainer.y = 100f;
+            candyContainer.y = 50f;
 
             _ = background.AddChild(candyContainer);
 
