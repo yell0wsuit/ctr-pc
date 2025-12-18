@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
@@ -8,11 +9,42 @@ namespace CutTheRope.GameMain
 {
     internal static class CandySelectionView
     {
+        // Store candy slot button data for quick updates
+        private static readonly List<CandyButtonData> candyButtons = [];
+
+        private class CandyButtonData
+        {
+            public int CandyIndex { get; set; }
+            public Image UpImage { get; set; }
+            public Image DownImage { get; set; }
+        }
+
+        /// <summary>
+        /// Updates all candy slot buttons to reflect the newly selected candy skin.
+        /// This updates the button backgrounds without recreating the entire view.
+        /// </summary>
+        public static void UpdateCandySlotButtons(int newSelectedCandyIndex)
+        {
+            // Update all stored button backgrounds
+            foreach (CandyButtonData buttonData in candyButtons)
+            {
+                bool isEquipped = buttonData.CandyIndex == newSelectedCandyIndex;
+                int bgUpQuad = isEquipped ? 2 : 0;   // button_equipped_idle : button_available_idle
+                int bgDownQuad = isEquipped ? 3 : 1; // button_equipped_pressed : button_available_pressed
+
+                buttonData.UpImage.SetDrawQuad(bgUpQuad);
+                buttonData.DownImage.SetDrawQuad(bgDownQuad);
+            }
+        }
+
         public static MenuView CreateCandySelection(
             IButtonDelegation buttonDelegate,
             out ScrollableContainer candyContainer)
         {
             MenuView menuView = new();
+
+            // Get current selected candy skin (0-50 for candy01-candy51)
+            int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
 
             BaseElement background = new()
             {
@@ -80,6 +112,9 @@ namespace CutTheRope.GameMain
             // Container height
             float containerHeight = 1100f; // Borrowed from credits view height
 
+            // Clear previous button data
+            candyButtons.Clear();
+
             // Create VBox to hold rows of candies (align 2 = top center)
             VBox candyGrid = new VBox().InitWithOffsetAlignWidth(rowSpacing, 2, containerWidth);
 
@@ -96,9 +131,13 @@ namespace CutTheRope.GameMain
                         break;
                     }
 
-                    // Create candy slot button (button_available_idle/pressed as background)
-                    Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 0);
-                    Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 1);
+                    // Create candy slot button using equipped state if this is the selected candy
+                    bool isEquipped = candyIndex == selectedCandySkin;
+                    int bgUpQuad = isEquipped ? 2 : 0;   // button_equipped_idle : button_available_idle
+                    int bgDownQuad = isEquipped ? 3 : 1; // button_equipped_pressed : button_available_pressed
+
+                    Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
+                    Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
 
                     // Scale the button backgrounds to fit the grid
                     slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
@@ -117,6 +156,14 @@ namespace CutTheRope.GameMain
                     Button slotButton = new Button().InitWithUpElementDownElementandID(
                         slotBgUp, slotBgDown, MenuButtonId.ForCandySlot(candyIndex));
                     slotButton.delegateButtonDelegate = buttonDelegate;
+
+                    // Store button data for later updates
+                    candyButtons.Add(new CandyButtonData
+                    {
+                        CandyIndex = candyIndex,
+                        UpImage = slotBgUp,
+                        DownImage = slotBgDown
+                    });
 
                     _ = rowBox.AddChild(slotButton);
                 }

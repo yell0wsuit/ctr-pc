@@ -63,8 +63,12 @@ namespace CutTheRope.GameMain
             starR = new ConstraintedPoint();
             starR.SetWeight(1f);
 
+            // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
+            int selectedCandySkin = Framework.Core.Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+            string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+
             // Initialize main candy
-            candy = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01New, 0);
+            candy = GameObject.GameObject_createWithResIDQuad(candyResource, 0);
             candy.DoRestoreCutTransparency();
             candy.anchor = 18;
             candy.bb = MakeRectangle(142f, 157f, 112f, 104f);
@@ -72,14 +76,14 @@ namespace CutTheRope.GameMain
             candy.scaleX = candy.scaleY = 0.71f;
 
             // Add candy main visual component
-            candyMain = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01New, 1);
+            candyMain = GameObject.GameObject_createWithResIDQuad(candyResource, 1);
             candyMain.DoRestoreCutTransparency();
             candyMain.anchor = candyMain.parentAnchor = 18;
             _ = candy.AddChild(candyMain);
             candyMain.scaleX = candyMain.scaleY = 0.71f;
 
             // Add candy top visual component
-            candyTop = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01New, 2);
+            candyTop = GameObject.GameObject_createWithResIDQuad(candyResource, 2);
             candyTop.DoRestoreCutTransparency();
             candyTop.anchor = candyTop.parentAnchor = 18;
             _ = candy.AddChild(candyTop);

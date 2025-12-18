@@ -208,8 +208,10 @@ namespace CutTheRope.GameMain
                 _ = baseElement.AddChild(image3);
 
                 // Candy on rope (positioned under the logo)
-                Image candyUp = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 0);  // default candy skin
-                Image candyDown = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 0);
+                // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
+                int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                Image candyUp = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, selectedCandySkin);
+                Image candyDown = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, selectedCandySkin);
                 candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
                 Button candyButton = new Button().InitWithUpElementDownElementandID(candyUp, candyDown, MenuButtonId.CandySelect);
                 candyButton.SetName("logoCandyButton");
@@ -1623,6 +1625,12 @@ namespace CutTheRope.GameMain
                     if (n.IsCandySlotButton())
                     {
                         int selectedCandyIndex = n.GetCandyIndex();
+
+                        // Save the selected candy skin to preferences
+                        Preferences.SetIntForKey(selectedCandyIndex, CTRPreferences.PREFS_SELECTED_CANDY, true);
+
+                        // Update candy slot buttons to show new equipped state
+                        CandySelectionView.UpdateCandySlotButtons(selectedCandyIndex);
                         return;
                     }
                     // Handle pack selection buttons dynamically
