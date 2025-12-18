@@ -381,6 +381,7 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuButtonShort,
             Resources.Img.HudButtons,
             Resources.Img.ObjCandy01New,
+            Resources.Img.ObjCandy02,
             Resources.Img.ObjCandyFx,
             Resources.Img.ObjSpider,
             Resources.Img.ConfettiParticles,

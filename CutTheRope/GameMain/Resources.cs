@@ -101,7 +101,8 @@ namespace CutTheRope.GameMain
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
                 Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights, Img.Snowflakes, Img.CharGreetingXmas,
-                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary, Img.MenuLogoXmasHat
+                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary, Img.MenuLogoXmasHat,
+                Img.ObjCandy02,
             ];
         }
 
