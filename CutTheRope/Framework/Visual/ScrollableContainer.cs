@@ -575,6 +575,37 @@ namespace CutTheRope.Framework.Visual
             CalculateNearsetScrollPointInDirection(d);
         }
 
+        /// <remarks>
+        /// This method provides smooth momentum-based scrolling with quick deceleration.
+        /// <para>The scrolling behavior:</para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>Adds velocity to the existing momentum (allows smooth acceleration).</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Velocity is automatically decelerated by the Update loop.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Scroll speed multiplier is <c>4f</c>.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>No scrolling occurs if content height fits within the container.</description>
+        ///   </item>
+        /// </list>
+        ///
+        /// <para>Implementation notes:</para>
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description>The momentum system reuses existing drag/touch physics.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Deceleration factor (<c>7f</c>) balances smoothness and quick stopping.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description>Higher multiplier increases speed; higher deceleration stops faster.</description>
+        ///   </item>
+        /// </list>
+        /// </remarks>
         public void HandleMouseWheel(int scrollDelta)
         {
             if (container.height <= height)
@@ -586,7 +617,8 @@ namespace CutTheRope.Framework.Visual
             // Positive scrollDelta = scroll up (content moves down), negative = scroll down (content moves up)
             float scrollVelocity = scrollDelta * 4f;
 
-            // Set momentum for smooth scrolling instead of instant movement
+            // Add to existing momentum for smooth, accumulating scrolling
+            // The Update() method handles deceleration automatically
             move = VectAdd(move, Vect(0f, scrollVelocity));
         }
 

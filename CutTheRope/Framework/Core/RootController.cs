@@ -215,6 +215,21 @@ namespace CutTheRope.Framework.Core
             return currentController.MouseMoved(x, y);
         }
 
+        /// <summary>
+        /// Handles mouse wheel scrolling by forwarding it to the current active controller.
+        /// </summary>
+        /// <param name="scrollDelta">
+        /// The mouse wheel scroll delta from the input system.
+        /// </param>
+        /// <returns>
+        /// True if the scroll was handled by the active controller, false if ignored
+        /// (due to no controller, suspended state, or active transition).
+        /// </returns>
+        /// <remarks>
+        /// This method acts as a router, forwarding scroll events from the game loop
+        /// to the currently active controller. Events are blocked during transitions
+        /// or when the application is suspended.
+        /// </remarks>
         public virtual bool HandleMouseWheel(int scrollDelta)
         {
             if (currentController == null || suspended || transitionTime != -1f)

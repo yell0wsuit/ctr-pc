@@ -220,10 +220,12 @@ namespace CutTheRope
             MouseState newMouseState = Mouse.GetState();
 
             // Handle mouse wheel scrolling
+            // Detects changes in scroll wheel position and forwards delta to root controller
+            // ScrollWheelValue accumulates over time, so we calculate the delta between frames
             if (_currentMouseState.ScrollWheelValue != newMouseState.ScrollWheelValue)
             {
                 int scrollDelta = newMouseState.ScrollWheelValue - _currentMouseState.ScrollWheelValue;
-                Application.SharedRootController().HandleMouseWheel(scrollDelta);
+                _ = Application.SharedRootController().HandleMouseWheel(scrollDelta);
             }
 
             _currentMouseState = newMouseState;

@@ -1642,16 +1642,51 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Handles mouse wheel scrolling for menu views with scrollable content.
+        /// </summary>
+        /// <param name="scrollDelta">The mouse wheel scroll delta from the input system.</param>
+        /// <returns>True if the scroll was handled by this controller, false otherwise.</returns>
+        /// <remarks>
+        /// Currently handles scrolling for:
+        /// <list type="bullet">
+        /// <item>
+        ///      <description>About/Credits view (activeViewID == 3): Forwards to aboutContainer and disables auto-scroll</description>
+        /// </item>
+        /// </list>
+        /// To add scrolling support for additional views:
+        /// <list type="bullet">
+        ///  <item>
+        ///      <description>Store a reference to the view's ScrollableContainer field.</description>
+        ///  </item>
+        ///  <item>
+        ///       <description>Add a new <c>if</c> block checking <c>activeViewID</c>.</description>
+        ///   </item>
+        ///   <item>
+        ///      <description>Call <c>container.HandleMouseWheel(scrollDelta)</c> and return <c>true</c>.</description>
+        ///  </item>
+        /// </list>
+        ///
+        /// Example for candy selection:
+        /// <code>
+        ///   if (activeViewID == VIEW_CANDY_SELECT &amp;&amp; candyContainer != null)
+        ///   {
+        ///       candyContainer.HandleMouseWheel(scrollDelta);
+        ///       return true;
+        ///   }
+        /// </code>
+        /// </remarks>
         public override bool HandleMouseWheel(int scrollDelta)
         {
-            // Handle scroll wheel for about/credits view
+            // Handle scroll wheel for about/credits view (activeViewID == 3)
             if (activeViewID == 3 && aboutContainer != null)
             {
-                aboutAutoScroll = false; // Stop auto-scroll when user manually scrolls
+                aboutAutoScroll = false; // Disable auto-scroll when user manually scrolls
                 aboutContainer.HandleMouseWheel(scrollDelta);
                 return true;
             }
 
+            // Not handled by this controller, allow base class to handle
             return base.HandleMouseWheel(scrollDelta);
         }
 
