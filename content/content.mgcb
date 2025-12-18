@@ -1141,18 +1141,6 @@
 /processorParam:TextureFormat=Color
 /build:obj_bubble_pop.png
 
-#begin obj_candy_01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:obj_candy_01.png
-
 #begin obj_electrodes.png
 /importer:TextureImporter
 /processor:TextureProcessor

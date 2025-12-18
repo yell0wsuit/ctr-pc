@@ -168,7 +168,6 @@ namespace CutTheRope.GameMain
             public const string MenuBgrShadow = "menu_bgr_shadow";
             public const string MenuButtonShort = "menu_button_short";
             public const string HudButtons = "hud_buttons";
-            public const string ObjCandy01 = "obj_candy_01";
             public const string ObjSpider = "obj_spider";
             public const string ConfettiParticles = "confetti_particles";
             public const string MenuPause = "menu_pause";
