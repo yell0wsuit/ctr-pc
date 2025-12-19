@@ -20,7 +20,7 @@ namespace CutTheRope.GameMain
         private static Button candyTabButton;
         private static Button ropeTabButton;
 
-        private class SlotButtonData
+        private sealed class SlotButtonData
         {
             public int CandyIndex { get; set; }
             public Image UpImage { get; set; }

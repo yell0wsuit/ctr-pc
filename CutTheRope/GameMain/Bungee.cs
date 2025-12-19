@@ -109,7 +109,7 @@ namespace CutTheRope.GameMain
             float num = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
 
             // Get selected rope colors from preferences
-            int selectedRopeIndex = Framework.Core.Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
+            int selectedRopeIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
             RopeColorHelper.RopeColors ropeColors = RopeColorHelper.GetRopeColors(selectedRopeIndex);
 
             // Apply alpha multiplier to base colors
