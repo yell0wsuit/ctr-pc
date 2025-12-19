@@ -223,7 +223,7 @@ namespace CutTheRope.GameMain
                 _ = image3.AddChild(candyButton);
 
                 // Check if tutorial has been completed
-                bool showCandyTutorial = !Preferences.GetBooleanForKey("PREFS_CANDY_SELECT_TUTORIAL");
+                bool showCandyTutorial = !Preferences.GetBooleanForKey("PREFS_CANDY_WAS_CHANGED");
 
                 if (showCandyTutorial)
                 {
@@ -1613,7 +1613,7 @@ namespace CutTheRope.GameMain
                     return;
                 case var id when id == MenuButtonId.CandySelect:
                     // Open candy selection view
-                    Preferences.SetBooleanForKey(true, "PREFS_CANDY_SELECT_TUTORIAL", true);
+                    Preferences.SetBooleanForKey(true, "PREFS_CANDY_WAS_CHANGED", true);
                     ShowView(VIEW_CANDY_SELECT);
                     return;
                 case var id when id == MenuButtonId.BackFromCandySelect:
