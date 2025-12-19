@@ -45,8 +45,10 @@ namespace CutTheRope.GameMain
         public static readonly MenuButtonId ShowQuitPopup;
         public static readonly MenuButtonId LevelButtonBase;
         public static readonly MenuButtonId CandySelect;
+        public static readonly MenuButtonId RopeSelect;
         public static readonly MenuButtonId BackFromCandySelect;
         public static readonly MenuButtonId CandySlotBase;
+        public static readonly MenuButtonId RopeSlotBase;
 
         static MenuButtonId()
         {
@@ -84,8 +86,10 @@ namespace CutTheRope.GameMain
             ShowQuitPopup = FromName(nameof(ShowQuitPopup));
             LevelButtonBase = FromName(nameof(LevelButtonBase));
             CandySelect = FromName(nameof(CandySelect));
+            RopeSelect = FromName(nameof(RopeSelect));
             BackFromCandySelect = FromName(nameof(BackFromCandySelect));
             CandySlotBase = FromName(nameof(CandySlotBase));
+            RopeSlotBase = FromName(nameof(RopeSlotBase));
         }
 
         /// <summary>
@@ -164,6 +168,32 @@ namespace CutTheRope.GameMain
         {
             string name = GetName(this);
             return name?.StartsWith("CandySlot_", StringComparison.Ordinal) ?? false ? int.Parse(name[10..], CultureInfo.InvariantCulture) : -1;
+        }
+
+        /// <summary>
+        /// Creates a dynamic rope slot button ID by combining the base with a rope index.
+        /// </summary>
+        public static MenuButtonId ForRopeSlot(int ropeIndex)
+        {
+            return FromName($"RopeSlot_{ropeIndex}");
+        }
+
+        /// <summary>
+        /// Checks if this button ID represents a rope slot button.
+        /// </summary>
+        public bool IsRopeSlotButton()
+        {
+            string name = GetName(this);
+            return name?.StartsWith("RopeSlot_", StringComparison.Ordinal) ?? false;
+        }
+
+        /// <summary>
+        /// Gets the rope index from a rope slot button ID.
+        /// </summary>
+        public int GetRopeIndex()
+        {
+            string name = GetName(this);
+            return name?.StartsWith("RopeSlot_", StringComparison.Ordinal) ?? false ? int.Parse(name[9..], CultureInfo.InvariantCulture) : -1;
         }
 
         /// <summary>

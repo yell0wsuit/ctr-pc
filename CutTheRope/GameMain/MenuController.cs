@@ -1612,9 +1612,22 @@ namespace CutTheRope.GameMain
                     ShowYesNoPopup(Application.GetString(STR_MENU_QUIT), MenuButtonId.QuitGame, MenuButtonId.ClosePopup);
                     return;
                 case var id when id == MenuButtonId.CandySelect:
-                    // Open candy selection view
-                    Preferences.SetBooleanForKey(true, "PREFS_CANDY_WAS_CHANGED", true);
-                    ShowView(VIEW_CANDY_SELECT);
+                    // Switch to candy selection mode or open candy selection view
+                    if (activeViewID == VIEW_CANDY_SELECT)
+                    {
+                        // Already in candy select view, switch to candy mode
+                        CandySelectionView.SwitchToMode(false);
+                    }
+                    else
+                    {
+                        // Open candy selection view
+                        Preferences.SetBooleanForKey(true, "PREFS_CANDY_WAS_CHANGED", true);
+                        ShowView(VIEW_CANDY_SELECT);
+                    }
+                    return;
+                case var id when id == MenuButtonId.RopeSelect:
+                    // Switch to rope selection mode
+                    CandySelectionView.SwitchToMode(true);
                     return;
                 case var id when id == MenuButtonId.BackFromCandySelect:
                     // Return to main menu from candy selection
@@ -1634,6 +1647,19 @@ namespace CutTheRope.GameMain
 
                         // Update candy slot buttons to show new equipped state
                         CandySelectionView.UpdateCandySlotButtons(selectedCandyIndex);
+                        return;
+                    }
+
+                    // Handle rope slot selection buttons
+                    if (n.IsRopeSlotButton())
+                    {
+                        int selectedRopeIndex = n.GetRopeIndex();
+
+                        // Save the selected rope skin to preferences
+                        Preferences.SetIntForKey(selectedRopeIndex, CTRPreferences.PREFS_SELECTED_ROPE, true);
+
+                        // Update rope slot buttons to show new equipped state (reuse candy logic)
+                        CandySelectionView.UpdateCandySlotButtons(selectedRopeIndex);
                         return;
                     }
                     // Handle pack selection buttons dynamically
