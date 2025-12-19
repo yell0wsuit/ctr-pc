@@ -66,7 +66,9 @@ namespace CutTheRope.GameMain
                     {
                         starL.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                         starL.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                        candyL = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01, 19);
+                        int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                        string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+                        candyL = GameObject.GameObject_createWithResIDQuad(candyResource, 8);
                         candyL.scaleX = candyL.scaleY = 0.71f;
                         candyL.passTransformationsToChilds = false;
                         candyL.DoRestoreCutTransparency();
@@ -79,7 +81,9 @@ namespace CutTheRope.GameMain
                     {
                         starR.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                         starR.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                        candyR = GameObject.GameObject_createWithResIDQuad(Resources.Img.ObjCandy01, 20);
+                        int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                        string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+                        candyR = GameObject.GameObject_createWithResIDQuad(candyResource, 9);
                         candyR.scaleX = candyR.scaleY = 0.71f;
                         candyR.passTransformationsToChilds = false;
                         candyR.DoRestoreCutTransparency();

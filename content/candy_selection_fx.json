@@ -1,0 +1,29 @@
+{
+    "frames": [
+        {
+            "filename": "candy_select_fx_demo_1280_1920-0.png",
+            "frame": { "x": 1, "y": 1, "w": 302, "h": 300 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 302, "h": 300 },
+            "sourceSize": { "w": 302, "h": 300 }
+        },
+        {
+            "filename": "candy_select_fx_demo_1280_1920-1.png",
+            "frame": { "x": 1, "y": 303, "w": 238, "h": 229 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 238, "h": 229 },
+            "sourceSize": { "w": 238, "h": 229 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "candy_selection_fx.png",
+        "format": "RGBA8888",
+        "size": { "w": 304, "h": 533 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:5c7e84d8708c1ffe5c0bbbf7d5710c95:3cca3e967779f60c23cf351c8b9c45ad:62c54f09b41539df3f003413d93c1161$"
+    }
+}

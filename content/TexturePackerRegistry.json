@@ -80,6 +80,336 @@
             "atlasPath": "xmas_hat_logo.json",
             "useAntialias": true,
             "centerOffsets": false
+        },
+        {
+            "resourceName": "skin_selection",
+            "atlasPath": "skin_selection.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "candy_selection_fx",
+            "atlasPath": "candy_selection_fx.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "menu_logo_new",
+            "atlasPath": "menu_logo_new.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_fx",
+            "atlasPath": "candies/obj_candy_fx.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_01_new",
+            "atlasPath": "candies/obj_candy_01_new.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_02",
+            "atlasPath": "candies/obj_candy_02.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_03",
+            "atlasPath": "candies/obj_candy_03.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_04",
+            "atlasPath": "candies/obj_candy_04.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_05",
+            "atlasPath": "candies/obj_candy_05.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_06",
+            "atlasPath": "candies/obj_candy_06.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_07",
+            "atlasPath": "candies/obj_candy_07.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_08",
+            "atlasPath": "candies/obj_candy_08.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_09",
+            "atlasPath": "candies/obj_candy_09.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_10",
+            "atlasPath": "candies/obj_candy_10.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_11",
+            "atlasPath": "candies/obj_candy_11.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_12",
+            "atlasPath": "candies/obj_candy_12.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_13",
+            "atlasPath": "candies/obj_candy_13.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_14",
+            "atlasPath": "candies/obj_candy_14.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_15",
+            "atlasPath": "candies/obj_candy_15.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_16",
+            "atlasPath": "candies/obj_candy_16.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_17",
+            "atlasPath": "candies/obj_candy_17.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_18",
+            "atlasPath": "candies/obj_candy_18.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_19",
+            "atlasPath": "candies/obj_candy_19.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_20",
+            "atlasPath": "candies/obj_candy_20.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_21",
+            "atlasPath": "candies/obj_candy_21.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_22",
+            "atlasPath": "candies/obj_candy_22.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_23",
+            "atlasPath": "candies/obj_candy_23.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_24",
+            "atlasPath": "candies/obj_candy_24.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_25",
+            "atlasPath": "candies/obj_candy_25.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_26",
+            "atlasPath": "candies/obj_candy_26.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_27",
+            "atlasPath": "candies/obj_candy_27.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_28",
+            "atlasPath": "candies/obj_candy_28.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_29",
+            "atlasPath": "candies/obj_candy_29.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_30",
+            "atlasPath": "candies/obj_candy_30.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_31",
+            "atlasPath": "candies/obj_candy_31.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_32",
+            "atlasPath": "candies/obj_candy_32.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_33",
+            "atlasPath": "candies/obj_candy_33.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_34",
+            "atlasPath": "candies/obj_candy_34.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_35",
+            "atlasPath": "candies/obj_candy_35.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_36",
+            "atlasPath": "candies/obj_candy_36.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_37",
+            "atlasPath": "candies/obj_candy_37.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_38",
+            "atlasPath": "candies/obj_candy_38.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_39",
+            "atlasPath": "candies/obj_candy_39.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_40",
+            "atlasPath": "candies/obj_candy_40.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_41",
+            "atlasPath": "candies/obj_candy_41.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_42",
+            "atlasPath": "candies/obj_candy_42.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_43",
+            "atlasPath": "candies/obj_candy_43.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_44",
+            "atlasPath": "candies/obj_candy_44.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_45",
+            "atlasPath": "candies/obj_candy_45.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_46",
+            "atlasPath": "candies/obj_candy_46.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_47",
+            "atlasPath": "candies/obj_candy_47.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_48",
+            "atlasPath": "candies/obj_candy_48.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_49",
+            "atlasPath": "candies/obj_candy_49.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_50",
+            "atlasPath": "candies/obj_candy_50.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_51",
+            "atlasPath": "candies/obj_candy_51.json",
+            "useAntialias": true,
+            "centerOffsets": false
         }
     ]
 }
