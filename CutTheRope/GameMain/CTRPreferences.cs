@@ -250,6 +250,7 @@ namespace CutTheRope.GameMain
             SetIntForKey(0, "PREFS_CANDIES_UNITED", true);
             SetIntForKey(0, "PREFS_SOCKS_USED", true);
             SetIntForKey(0, "PREFS_SELECTED_CANDY", true);
+            SetIntForKey(0, "PREFS_SELECTED_ROPE", true);
             SetBooleanForKey(false, "PREFS_CANDY_WAS_CHANGED", true);
             SetBooleanForKey(true, "PREFS_GAME_CENTER_ENABLED", true);
             SetIntForKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
@@ -393,6 +394,8 @@ namespace CutTheRope.GameMain
         public const string PREFS_CANDY_WAS_CHANGED = "PREFS_CANDY_WAS_CHANGED";
 
         public const string PREFS_SELECTED_CANDY = "PREFS_SELECTED_CANDY";
+
+        public const string PREFS_SELECTED_ROPE = "PREFS_SELECTED_ROPE";
 
         public const string PREFS_GAME_CENTER_ENABLED = "PREFS_GAME_CENTER_ENABLED";
 

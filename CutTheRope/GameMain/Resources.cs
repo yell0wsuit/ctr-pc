@@ -73,11 +73,12 @@ namespace CutTheRope.GameMain
                 Img.ZeptolabNoLink, Img.LoaderbarFull, Img.MenuButtonDefault,
                 Img.MenuLoading, Img.MenuNotification, Img.MenuAchievement,
                 Img.MenuOptions, Img.MenuBgr, Img.MenuPopup, Img.MenuLogo,
-                Img.MenuLevelSelection, Img.MenuPackSelection, Img.MenuPackSelection2,
+                Img.MenuLogoNew, Img.CandySelectionFx, Img.SkinSelection, Img.MenuLevelSelection,
+                Img.MenuPackSelection, Img.MenuPackSelection2,
                 Img.MenuExtraButtons, Img.MenuScrollbar, Img.MenuLeaderboard,
                 Img.MenuProcessingHd, Img.MenuScrollbarChangename, Img.MenuButtonAchivCup,
-                Img.MenuBgrShadow, Img.MenuButtonShort, Img.HudButtons, Img.ObjCandy01,
-                Img.ObjSpider, Img.ConfettiParticles, Img.MenuPause, Img.MenuResult,
+                Img.MenuBgrShadow, Img.MenuButtonShort, Img.HudButtons, Img.ObjCandy01New,
+                Img.ObjCandyFx, Img.ObjSpider, Img.ConfettiParticles, Img.MenuPause, Img.MenuResult,
                 Img.HudButtonsEn, Img.MenuResultEn, Img.ObjStarDisappear,
                 Img.ObjBubbleFlight, Img.ObjBubblePop, Img.ObjHookAuto,
                 Img.ObjBubbleAttached, Img.ObjHook01, Img.ObjHook02, Img.ObjStarIdle,
@@ -100,8 +101,19 @@ namespace CutTheRope.GameMain
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
-                Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights, Img.Snowflakes, Img.CharGreetingXmas,
-                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary, Img.MenuLogoXmasHat
+                Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
+                Img.Snowflakes, Img.CharGreetingXmas,
+                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary, Img.MenuLogoXmasHat,
+                Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
+                Img.ObjCandy07, Img.ObjCandy08, Img.ObjCandy09, Img.ObjCandy10, Img.ObjCandy11,
+                Img.ObjCandy12, Img.ObjCandy13, Img.ObjCandy14, Img.ObjCandy15, Img.ObjCandy16,
+                Img.ObjCandy17, Img.ObjCandy18, Img.ObjCandy19, Img.ObjCandy20, Img.ObjCandy21,
+                Img.ObjCandy22, Img.ObjCandy23, Img.ObjCandy24, Img.ObjCandy25, Img.ObjCandy26,
+                Img.ObjCandy27, Img.ObjCandy28, Img.ObjCandy29, Img.ObjCandy30, Img.ObjCandy31,
+                Img.ObjCandy32, Img.ObjCandy33, Img.ObjCandy34, Img.ObjCandy35, Img.ObjCandy36,
+                Img.ObjCandy37, Img.ObjCandy38, Img.ObjCandy39, Img.ObjCandy40, Img.ObjCandy41,
+                Img.ObjCandy42, Img.ObjCandy43, Img.ObjCandy44, Img.ObjCandy45, Img.ObjCandy46,
+                Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51
             ];
         }
 
@@ -152,6 +164,10 @@ namespace CutTheRope.GameMain
             public const string MenuBgr = "menu_bgr";
             public const string MenuPopup = "menu_popup";
             public const string MenuLogo = "menu_logo";
+            public const string MenuLogoNew = "menu_logo_new";
+            public const string CandySelectionFx = "candy_selection_fx";
+            public const string SkinSelection = "skin_selection";
+            public const string SkinBackground = "skin_bg";
             public const string MenuLevelSelection = "menu_level_selection";
             public const string MenuPackSelection = "menu_pack_selection";
             public const string MenuPackSelection2 = "menu_pack_selection2";
@@ -164,7 +180,6 @@ namespace CutTheRope.GameMain
             public const string MenuBgrShadow = "menu_bgr_shadow";
             public const string MenuButtonShort = "menu_button_short";
             public const string HudButtons = "hud_buttons";
-            public const string ObjCandy01 = "obj_candy_01";
             public const string ObjSpider = "obj_spider";
             public const string ConfettiParticles = "confetti_particles";
             public const string MenuPause = "menu_pause";
@@ -261,6 +276,60 @@ namespace CutTheRope.GameMain
             public const string Bgr13Cover = "bgr_13_cover";
             public const string Bgr13P1 = "bgr_13_p1";
             public const string ObjPipe = "obj_pipe";
+
+            // Candies
+            public const string ObjCandyFx = "candies/obj_candy_fx";
+            public const string ObjCandy01New = "candies/obj_candy_01_new";
+            public const string ObjCandy02 = "candies/obj_candy_02";
+            public const string ObjCandy03 = "candies/obj_candy_03";
+            public const string ObjCandy04 = "candies/obj_candy_04";
+            public const string ObjCandy05 = "candies/obj_candy_05";
+            public const string ObjCandy06 = "candies/obj_candy_06";
+            public const string ObjCandy07 = "candies/obj_candy_07";
+            public const string ObjCandy08 = "candies/obj_candy_08";
+            public const string ObjCandy09 = "candies/obj_candy_09";
+            public const string ObjCandy10 = "candies/obj_candy_10";
+            public const string ObjCandy11 = "candies/obj_candy_11";
+            public const string ObjCandy12 = "candies/obj_candy_12";
+            public const string ObjCandy13 = "candies/obj_candy_13";
+            public const string ObjCandy14 = "candies/obj_candy_14";
+            public const string ObjCandy15 = "candies/obj_candy_15";
+            public const string ObjCandy16 = "candies/obj_candy_16";
+            public const string ObjCandy17 = "candies/obj_candy_17";
+            public const string ObjCandy18 = "candies/obj_candy_18";
+            public const string ObjCandy19 = "candies/obj_candy_19";
+            public const string ObjCandy20 = "candies/obj_candy_20";
+            public const string ObjCandy21 = "candies/obj_candy_21";
+            public const string ObjCandy22 = "candies/obj_candy_22";
+            public const string ObjCandy23 = "candies/obj_candy_23";
+            public const string ObjCandy24 = "candies/obj_candy_24";
+            public const string ObjCandy25 = "candies/obj_candy_25";
+            public const string ObjCandy26 = "candies/obj_candy_26";
+            public const string ObjCandy27 = "candies/obj_candy_27";
+            public const string ObjCandy28 = "candies/obj_candy_28";
+            public const string ObjCandy29 = "candies/obj_candy_29";
+            public const string ObjCandy30 = "candies/obj_candy_30";
+            public const string ObjCandy31 = "candies/obj_candy_31";
+            public const string ObjCandy32 = "candies/obj_candy_32";
+            public const string ObjCandy33 = "candies/obj_candy_33";
+            public const string ObjCandy34 = "candies/obj_candy_34";
+            public const string ObjCandy35 = "candies/obj_candy_35";
+            public const string ObjCandy36 = "candies/obj_candy_36";
+            public const string ObjCandy37 = "candies/obj_candy_37";
+            public const string ObjCandy38 = "candies/obj_candy_38";
+            public const string ObjCandy39 = "candies/obj_candy_39";
+            public const string ObjCandy40 = "candies/obj_candy_40";
+            public const string ObjCandy41 = "candies/obj_candy_41";
+            public const string ObjCandy42 = "candies/obj_candy_42";
+            public const string ObjCandy43 = "candies/obj_candy_43";
+            public const string ObjCandy44 = "candies/obj_candy_44";
+            public const string ObjCandy45 = "candies/obj_candy_45";
+            public const string ObjCandy46 = "candies/obj_candy_46";
+            public const string ObjCandy47 = "candies/obj_candy_47";
+            public const string ObjCandy48 = "candies/obj_candy_48";
+            public const string ObjCandy49 = "candies/obj_candy_49";
+            public const string ObjCandy50 = "candies/obj_candy_50";
+            public const string ObjCandy51 = "candies/obj_candy_51";
         }
 
         /// <summary>

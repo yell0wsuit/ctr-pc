@@ -107,10 +107,34 @@ namespace CutTheRope.GameMain
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)
         {
             float num = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
-            RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.475 * (double)num, 0.305 * (double)num, 0.185 * (double)num, (double)num);
-            RGBAColor rgbaColor2 = RGBAColor.MakeRGBA(0.6755555555555556 * (double)num, 0.44 * (double)num, 0.27555555555555555 * (double)num, (double)num);
-            RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(0.19 * (double)num, 0.122 * (double)num, 0.074 * (double)num, (double)num);
-            RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(0.304 * (double)num, 0.198 * (double)num, 0.124 * (double)num, (double)num);
+
+            // Get selected rope colors from preferences
+            int selectedRopeIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
+            RopeColorHelper.RopeColors ropeColors = RopeColorHelper.GetRopeColors(selectedRopeIndex);
+
+            // Apply alpha multiplier to base colors
+            RGBAColor rgbaColor = RGBAColor.MakeRGBA(
+                ropeColors.Color1.r * num,
+                ropeColors.Color1.g * num,
+                ropeColors.Color1.b * num,
+                (double)num);
+            RGBAColor rgbaColor2 = RGBAColor.MakeRGBA(
+                ropeColors.Color2.r * num,
+                ropeColors.Color2.g * num,
+                ropeColors.Color2.b * num,
+                (double)num);
+
+            // Create darker variants for shading (40% of base color)
+            RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
+                ropeColors.Color1.r * 0.4 * num,
+                ropeColors.Color1.g * 0.4 * num,
+                ropeColors.Color1.b * 0.4 * num,
+                (double)num);
+            RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
+                ropeColors.Color2.r * 0.45 * num,
+                ropeColors.Color2.g * 0.45 * num,
+                ropeColors.Color2.b * 0.45 * num,
+                (double)num);
             if (b.highlighted)
             {
                 float num2 = 3f;

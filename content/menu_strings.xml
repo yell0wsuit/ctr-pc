@@ -1000,4 +1000,32 @@ Assistance juridique : Hughes Media Law Group</fr>
   <string name="FACEBOOK_BUTTON">
     <en></en>
   </string>
+  <string name="CANDIES_BTN">
+    <en>Candies</en>
+    <ru>Леденцы</ru>
+    <fr>Bonbons</fr>
+    <de>Bonbons</de>
+    <ko>사탕</ko>
+    <zh>糖果</zh>
+    <ja>キャンディー</ja>
+    <es>Caramelos</es>
+    <it>Caramelle</it>
+    <nl>Snoep</nl>
+    <br>Doces</br>
+    <zh_tw>糖果</zh_tw>
+  </string>
+  <string name="ROPE_SKINS_BTN">
+    <en>Ropes</en>
+    <ru>Верёвки</ru>
+    <fr>Cordes</fr>
+    <de>Seile</de>
+    <ko>로프</ko>
+    <zh>绳子</zh>
+    <ja>ロープ</ja>
+    <es>Cuerdas</es>
+    <it>Corde</it>
+    <nl>Touwen</nl>
+    <br>Cordas</br>
+    <zh_tw>繩索</zh_tw>
+  </string>
 </strings>
