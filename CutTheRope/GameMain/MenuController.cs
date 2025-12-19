@@ -228,6 +228,7 @@ namespace CutTheRope.GameMain
                 if (showCandyTutorial)
                 {
                     // Glow effect - pulsing animation (shrink/expand rapidly, pause, repeat)
+                    /*
                     Image glowImage = Image.Image_createWithResIDQuad(Resources.Img.CandySelectionFx, 0);
                     glowImage.x = -25f;
                     glowImage.y = -25f;
@@ -243,6 +244,7 @@ namespace CutTheRope.GameMain
                     _ = glowImage.AddTimeline(glowTimeline);
                     glowImage.PlayTimeline(0);
                     _ = candyButton.AddChild(glowImage);
+                    */
 
                     // Pointing hand indicator
                     Image handImage = Image.Image_createWithResIDQuad(Resources.Img.CandySelectionFx, 1);
