@@ -1575,6 +1575,8 @@ namespace CutTheRope.GameMain
                         CreateReset();
                         DeleteView(3);
                         CreateAbout();
+                        DeleteView(VIEW_CANDY_SELECT);
+                        CreateCandySelection();
                         CreateLeaderboards();
                         ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01);
                         ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
