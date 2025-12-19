@@ -98,6 +98,46 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Creates a slot button with background and item image.
+        /// </summary>
+        private static Button CreateSlotButton(int itemIndex, int selectedIndex, int itemQuadIndex, float slotScale, MenuButtonId buttonId)
+        {
+            bool isEquipped = itemIndex == selectedIndex;
+            int bgUpQuad = isEquipped ? 2 : 0;
+            int bgDownQuad = isEquipped ? 3 : 1;
+
+            Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
+            Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
+
+            slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
+            slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
+
+            // Add item image to both up and down states
+            Image itemImage = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, itemQuadIndex);
+            itemImage.anchor = itemImage.parentAnchor = 18;
+            itemImage.y = -20f;
+            _ = slotBgUp.AddChild(itemImage);
+
+            Image itemImage2 = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, itemQuadIndex);
+            itemImage2.anchor = itemImage2.parentAnchor = 18;
+            itemImage2.y = -20f;
+            _ = slotBgDown.AddChild(itemImage2);
+
+            Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
+            slotButton.delegateButtonDelegate = currentButtonDelegate;
+
+            // Store button data for later updates
+            slotButtons.Add(new SlotButtonData
+            {
+                CandyIndex = itemIndex,
+                UpImage = slotBgUp,
+                DownImage = slotBgDown
+            });
+
+            return slotButton;
+        }
+
+        /// <summary>
         /// Rebuilds the grid based on the current mode (candy or rope).
         /// </summary>
         private static void RebuildGrid()
@@ -141,125 +181,47 @@ namespace CutTheRope.GameMain
 
             VBox itemGrid = new VBox().InitWithOffsetAlignWidth(rowSpacing, 2, containerWidth);
 
-            switch (isRopeMode)
+            // Get mode-specific configuration
+            int totalItems;
+            int selectedIndex;
+            int baseQuadIndex;
+            Func<int, MenuButtonId> getButtonId;
+
+            if (isRopeMode)
             {
-                case true:
+                totalItems = RopeColorHelper.TotalRopeColors;
+                selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
+                baseQuadIndex = 59; // rope01-rope09 are quads 59-67
+                getButtonId = MenuButtonId.ForRopeSlot;
+            }
+            else
+            {
+                const int TOTAL_CANDIES = 51;
+                totalItems = TOTAL_CANDIES;
+                selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                baseQuadIndex = 6; // candy01-candy51 are quads 6-56
+                getButtonId = MenuButtonId.ForCandySlot;
+            }
+
+            // Build grid rows
+            for (int row = 0; row < ((totalItems + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW); row++)
+            {
+                HBox rowBox = new HBox().InitWithOffsetAlignHeight(columnSpacing, 16, rowHeight);
+
+                for (int col = 0; col < ITEMS_PER_ROW; col++)
+                {
+                    int itemIndex = (row * ITEMS_PER_ROW) + col;
+                    if (itemIndex >= totalItems)
                     {
-                        // Build rope selection grid
-                        int totalRopes = RopeColorHelper.TotalRopeColors;
-                        int selectedRope = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
-
-                        for (int row = 0; row < ((totalRopes + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW); row++)
-                        {
-                            HBox rowBox = new HBox().InitWithOffsetAlignHeight(columnSpacing, 16, rowHeight);
-
-                            for (int col = 0; col < ITEMS_PER_ROW; col++)
-                            {
-                                int ropeIndex = (row * ITEMS_PER_ROW) + col;
-                                if (ropeIndex >= totalRopes)
-                                {
-                                    break;
-                                }
-
-                                bool isEquipped = ropeIndex == selectedRope;
-                                int bgUpQuad = isEquipped ? 2 : 0;
-                                int bgDownQuad = isEquipped ? 3 : 1;
-
-                                Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
-                                Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
-
-                                slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
-                                slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
-
-                                // Add rope sprite (rope01-rope09 are quads 59-67 in JSON)
-                                int ropeQuadIndex = 59 + ropeIndex;
-                                Image ropeImage = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, ropeQuadIndex);
-                                ropeImage.anchor = ropeImage.parentAnchor = 18;
-                                ropeImage.y = -20f;
-                                _ = slotBgUp.AddChild(ropeImage);
-
-                                Image ropeImage2 = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, ropeQuadIndex);
-                                ropeImage2.anchor = ropeImage2.parentAnchor = 18;
-                                ropeImage2.y = -20f;
-                                _ = slotBgDown.AddChild(ropeImage2);
-
-                                Button slotButton = new Button().InitWithUpElementDownElementandID(
-                                    slotBgUp, slotBgDown, MenuButtonId.ForRopeSlot(ropeIndex));
-                                slotButton.delegateButtonDelegate = currentButtonDelegate;
-
-                                // Store button data for later updates
-                                slotButtons.Add(new SlotButtonData
-                                {
-                                    CandyIndex = ropeIndex,
-                                    UpImage = slotBgUp,
-                                    DownImage = slotBgDown
-                                });
-
-                                _ = rowBox.AddChild(slotButton);
-                            }
-
-                            _ = itemGrid.AddChild(rowBox);
-                        }
                         break;
                     }
-                case false:
-                    {
-                        // Build candy selection grid
-                        const int TOTAL_CANDIES = 51;
-                        int selectedCandy = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
 
-                        for (int row = 0; row < ((TOTAL_CANDIES + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW); row++)
-                        {
-                            HBox rowBox = new HBox().InitWithOffsetAlignHeight(columnSpacing, 16, rowHeight);
+                    int itemQuadIndex = baseQuadIndex + itemIndex;
+                    Button slotButton = CreateSlotButton(itemIndex, selectedIndex, itemQuadIndex, slotScale, getButtonId(itemIndex));
+                    _ = rowBox.AddChild(slotButton);
+                }
 
-                            for (int col = 0; col < ITEMS_PER_ROW; col++)
-                            {
-                                int candyIndex = (row * ITEMS_PER_ROW) + col;
-                                if (candyIndex >= TOTAL_CANDIES)
-                                {
-                                    break;
-                                }
-
-                                bool isEquipped = candyIndex == selectedCandy;
-                                int bgUpQuad = isEquipped ? 2 : 0;
-                                int bgDownQuad = isEquipped ? 3 : 1;
-
-                                Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
-                                Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
-
-                                slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
-                                slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
-
-                                // Add candy image (candy01-candy51 are quads 6-56)
-                                int candyQuadIndex = 6 + candyIndex;
-                                Image candyImage = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, candyQuadIndex);
-                                candyImage.anchor = candyImage.parentAnchor = 18;
-                                candyImage.y = -20f;
-                                _ = slotBgUp.AddChild(candyImage);
-
-                                Image candyImage2 = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, candyQuadIndex);
-                                candyImage2.anchor = candyImage2.parentAnchor = 18;
-                                candyImage2.y = -20f;
-                                _ = slotBgDown.AddChild(candyImage2);
-
-                                Button slotButton = new Button().InitWithUpElementDownElementandID(
-                                    slotBgUp, slotBgDown, MenuButtonId.ForCandySlot(candyIndex));
-                                slotButton.delegateButtonDelegate = currentButtonDelegate;
-
-                                slotButtons.Add(new SlotButtonData
-                                {
-                                    CandyIndex = candyIndex,
-                                    UpImage = slotBgUp,
-                                    DownImage = slotBgDown
-                                });
-
-                                _ = rowBox.AddChild(slotButton);
-                            }
-
-                            _ = itemGrid.AddChild(rowBox);
-                        }
-                        break;
-                    }
+                _ = itemGrid.AddChild(rowBox);
             }
 
             if (gridContainer != null)
