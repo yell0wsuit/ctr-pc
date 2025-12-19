@@ -67,12 +67,12 @@ namespace CutTheRope.GameMain
             // Add "Candy" text to the button images
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text buttonText = new Text().InitWithFont(font);
-            buttonText.SetString(Application.GetString("CANDY"));
+            buttonText.SetString(Application.GetString("CANDIES_BTN"));
             buttonText.anchor = buttonText.parentAnchor = 18;
             _ = candyBtnUp.AddChild(buttonText);
 
             Text buttonText2 = new Text().InitWithFont(font);
-            buttonText2.SetString(Application.GetString("CANDY"));
+            buttonText2.SetString(Application.GetString("CANDIES_BTN"));
             buttonText2.anchor = buttonText2.parentAnchor = 18;
             _ = candyBtnDown.AddChild(buttonText2);
 
