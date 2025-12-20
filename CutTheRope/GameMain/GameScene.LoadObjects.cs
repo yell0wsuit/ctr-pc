@@ -79,6 +79,9 @@ namespace CutTheRope.GameMain
                         case "ghost":
                             LoadGhost(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
+                        case "lantern":
+                            LoadLantern(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
                         default:
                             break;
                     }

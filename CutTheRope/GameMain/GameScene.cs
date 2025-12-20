@@ -88,6 +88,8 @@ namespace CutTheRope.GameMain
             candyR = null;
             starL = null;
             starR = null;
+            Lantern.RemoveAllLanterns();
+            isCandyInLantern = false;
         }
 
         protected override void Dispose(bool disposing)
@@ -153,6 +155,16 @@ namespace CutTheRope.GameMain
         private void Selector_teleport(FrameworkTypes param)
         {
             Teleport();
+        }
+
+        private void Selector_revealCandyFromLantern(FrameworkTypes param)
+        {
+            isCandyInLantern = false;
+            candy.color = RGBAColor.solidOpaqueRGBA;
+            candy.passTransformationsToChilds = false;
+            candy.scaleX = candy.scaleY = 0.71f;
+            candyMain.scaleX = candyMain.scaleY = 0.71f;
+            candyTop.scaleX = candyTop.scaleY = 0.71f;
         }
 
         public static float FBOUND_PI(float a)
@@ -396,6 +408,8 @@ namespace CutTheRope.GameMain
         public ToggleButton gravityButton;
 
         public int gravityTouchDown;
+
+        private bool isCandyInLantern;
 
         public int twoParts;
 
