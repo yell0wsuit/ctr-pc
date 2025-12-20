@@ -1,0 +1,24 @@
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <target x="122" y="426" />
+        <lantern x="206" y="63" candyCaptured="true" />
+        <spike4 x="166" y="131" angle="0" size="4" toggled="1" />
+        <spike4 x="75" y="206" angle="90" size="4" toggled="2" />
+        <spike4 x="167" y="296" angle="0" size="4" toggled="2" />
+        <star x="129" y="163" timeout="-1" />
+        <lantern x="126" y="253" candyCaptured="true" />
+        <star x="211" y="160" timeout="-1" />
+        <lantern x="125" y="62" candyCaptured="true" />
+        <lantern x="212" y="253" candyCaptured="true" />
+        <spike4 x="253" y="206" angle="90" size="4" toggled="2" />
+        <spike4 x="75" y="376" angle="90" size="4" toggled="1" />
+        <spike4 x="253" y="377" angle="90" size="4" toggled="1" />
+        <star x="212" y="432" timeout="-1" />
+        <bubble x="211" y="428" />
+        <hiddenElement x="50" y="62" radius="30" />
+    </layer>
+</map>

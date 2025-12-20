@@ -13,4 +13,5 @@
   <pack index="10" unlockStars="550" boxBackground="bgr_11_p1,bgr_11_p2" boxCover="bgr_11_cover" levelCount="25" />
   <pack index="11" unlockStars="600" boxBackground="bgr_12_p1,bgr_12_p2" boxCover="bgr_12_cover" levelCount="25" />
   <pack index="12" unlockStars="650" boxBackground="bgr_13_p1,bgr_13_p1" boxCover="bgr_13_cover" levelCount="25" />
+  <pack index="13" unlockStars="700" boxBackground="bgr_14_p1,bgr_14_p1" boxCover="bgr_14_cover" levelCount="25" />
 </packs>

@@ -357,6 +357,20 @@ ta progression ?</fr>
     <nl>Stoomkast</nl>
     <br>Vaporeira</br>
   </string>
+  <string name="BOX14_LABEL">
+    <en>Lantern Box</en>
+    <ru>коробке с фонариками</ru>
+    <fr>boîte lampion</fr>
+    <de>Laternenkiste</de>
+    <ko>랜턴 상자</ko>
+    <zh>灯笼盒</zh>
+    <ja>ちょうちんの箱</ja>
+    <es>caja de linternas</es>
+    <it>scatola delle lanterne</it>
+    <nl>Lampionnendoos</nl>
+    <br>Caixa de Lanternas</br>
+    <zh_tw>燈籠盒</zh_tw>
+  </string>
   <string name="BOX_SOON_LABEL">
     <en>New levels coming soon!</en>
     <ru>Новые уровни на подходе!</ru>

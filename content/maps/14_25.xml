@@ -1,0 +1,21 @@
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <target x="275" y="438" />
+        <sock x="223" y="134" group="0" angle="90" path="0,0" moveSpeed="90" rotateSpeed="90" />
+        <sock x="38" y="354" group="0" angle="270" path="180,0" moveSpeed="50" />
+        <lantern x="78" y="127" candyCaptured="true" />
+        <lantern x="128" y="183" candyCaptured="true" />
+        <lantern x="185" y="231" candyCaptured="true" />
+        <lantern x="239" y="289" candyCaptured="true" />
+        <star x="70" y="221" timeout="-1" />
+        <star x="124" y="261" timeout="-1" />
+        <star x="179" y="301" timeout="-1" />
+        <lantern x="291" y="343" candyCaptured="true" />
+        <lantern x="29" y="77" candyCaptured="true" />
+        <hiddenElement x="258" y="66" radius="30" />
+    </layer>
+</map>
