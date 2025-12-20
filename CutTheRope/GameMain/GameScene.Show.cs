@@ -46,7 +46,6 @@ namespace CutTheRope.GameMain
             candyBubbleL = null;
             candyBubbleR = null;
             mouthOpen = false;
-            isCandyInLantern = false;
             noCandy = twoParts != 2;
             noCandyL = false;
             noCandyR = false;
