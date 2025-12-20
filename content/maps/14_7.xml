@@ -14,7 +14,7 @@
         <lantern x="127" y="78" candyCaptured="true" />
         <lantern x="282" y="371" candyCaptured="true" />
         <grab x="175" y="210" length="90" wheel="false" gun="false" kickable="false" kicked="false" radius="90" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
-        <grab x="175" y="210" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="130" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="175" y="210" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="132" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
         <grab x="175" y="210" length="30" wheel="false" gun="false" kickable="false" kicked="false" radius="40" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
         <hiddenElement x="281" y="64" radius="30" />
     </layer>
