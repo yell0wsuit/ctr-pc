@@ -277,7 +277,7 @@ namespace CutTheRope.GameMain
         public const float LanternCandyRevealTime = 0.1f;
         public const int LanternStateInactive = 0;
         public const int LanternStateActive = 1;
-        private const float LanternTouchRadius = 35f;
+        private const float LanternTouchRadius = 85f;
         private const float LanternInactiveDelay = 0.4f;
 
         private enum LanternActivation
