@@ -723,6 +723,14 @@
       <preCutHeight>2304</preCutHeight>
     </info>
   </resource>
+  <resource name="bgr_14_p1">
+    <info format="0" fileFormat="0" filter="1">
+      <quads>0,0,2048,1153,</quads>
+      <offsets>0,-1,</offsets>
+      <preCutWidth>2048</preCutWidth>
+      <preCutHeight>2304</preCutHeight>
+    </info>
+  </resource>
   <resource name="bgr_01_cover">
     <info format="0" fileFormat="1" filter="1">
       <quads>0,0,1293,1440,1293,0,72,1440,</quads>
@@ -820,6 +828,14 @@
     </info>
   </resource>
   <resource name="bgr_13_cover">
+    <info format="0" fileFormat="0" filter="1">
+      <quads>0,0,1292,1440,1292,0,63,1440,</quads>
+      <offsets>0,0,1284,0,</offsets>
+      <preCutWidth>2560</preCutWidth>
+      <preCutHeight>1440</preCutHeight>
+    </info>
+  </resource>
+  <resource name="bgr_14_cover">
     <info format="0" fileFormat="0" filter="1">
       <quads>0,0,1292,1440,1292,0,63,1440,</quads>
       <offsets>0,0,1284,0,</offsets>
