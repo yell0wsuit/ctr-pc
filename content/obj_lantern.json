@@ -1,0 +1,61 @@
+{
+    "frames": [
+        {
+            "filename": "fire.png",
+            "frame": { "x": 1, "y": 214, "w": 188, "h": 287 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 188, "h": 287 },
+            "sourceSize": { "w": 188, "h": 287 }
+        },
+        {
+            "filename": "lantern_end.png",
+            "frame": { "x": 1, "y": 503, "w": 185, "h": 252 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 185, "h": 252 },
+            "sourceSize": { "w": 185, "h": 252 }
+        },
+        {
+            "filename": "lantern_start.png",
+            "frame": { "x": 1, "y": 1, "w": 211, "h": 211 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 211, "h": 211 },
+            "sourceSize": { "w": 211, "h": 211 }
+        },
+        {
+            "filename": "particle_1.png",
+            "frame": { "x": 1, "y": 757, "w": 101, "h": 101 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 101, "h": 101 },
+            "sourceSize": { "w": 101, "h": 101 }
+        },
+        {
+            "filename": "particle_2.png",
+            "frame": { "x": 104, "y": 757, "w": 100, "h": 100 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "particle_3.png",
+            "frame": { "x": 104, "y": 859, "w": 98, "h": 100 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 98, "h": 100 },
+            "sourceSize": { "w": 98, "h": 100 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_lantern.png",
+        "format": "RGBA8888",
+        "size": { "w": 213, "h": 960 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:7ff6aec1de6cf0431c8e7c52ff2f5ef3:f2b5518f25e19cc760956443c1c511a8:4766f08558828601707089c9ecd510c8$"
+    }
+}
