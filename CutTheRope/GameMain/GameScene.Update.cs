@@ -620,7 +620,7 @@ namespace CutTheRope.GameMain
             foreach (Lantern lantern in lanterns)
             {
                 lantern.Update(delta);
-                if (!noCandy && !isCandyInLantern && lantern.lanternState == Lantern.LanternStateInactive && VectDistance(star.pos, Vect(lantern.x, lantern.y)) < 32f)
+                if (!noCandy && !isCandyInLantern && lantern.lanternState == Lantern.LanternStateInactive && VectDistance(star.pos, Vect(lantern.x, lantern.y)) < 82f)
                 {
                     isCandyInLantern = true;
                     candy.passTransformationsToChilds = true;
