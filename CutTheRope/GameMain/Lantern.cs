@@ -29,7 +29,7 @@ namespace CutTheRope.GameMain
             fire = Image_createWithResIDQuad(Resources.Img.ObjLantern, FireQuad);
             fire.anchor = fire.parentAnchor = 18;
             fire.color = RGBAColor.transparentRGBA;
-            //fire.DoRestoreCutTransparency();
+            fire.DoRestoreCutTransparency();
             _ = AddChild(fire);
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -42,7 +42,7 @@ namespace CutTheRope.GameMain
 
             idleForm = Image_createWithResIDQuad(Resources.Img.ObjLantern, LanternStartQuad);
             idleForm.anchor = idleForm.parentAnchor = 18;
-            //idleForm.DoRestoreCutTransparency();
+            idleForm.DoRestoreCutTransparency();
             _ = AddChild(idleForm);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
@@ -59,7 +59,7 @@ namespace CutTheRope.GameMain
             activeForm.anchor = activeForm.parentAnchor = 18;
             activeForm.color = RGBAColor.transparentRGBA;
             activeForm.y = 1f;
-            //activeForm.DoRestoreCutTransparency();
+            activeForm.DoRestoreCutTransparency();
             _ = AddChild(activeForm);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
@@ -89,7 +89,7 @@ namespace CutTheRope.GameMain
             innerCandy.anchor = innerCandy.parentAnchor = 18;
             innerCandy.color = RGBAColor.transparentRGBA;
             innerCandy.y = -4f;
-            //innerCandy.DoRestoreCutTransparency();
+            innerCandy.DoRestoreCutTransparency();
             _ = AddChild(innerCandy);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);

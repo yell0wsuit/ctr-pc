@@ -1,61 +1,77 @@
 {
     "frames": [
         {
-            "filename": "fire.png",
-            "frame": { "x": 1, "y": 214, "w": 188, "h": 287 },
+            "filename": "fire",
+            "frame": { "x": 0, "y": 0, "w": 187, "h": 284 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 188, "h": 287 },
-            "sourceSize": { "w": 188, "h": 287 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 183, "y": 54, "w": 187, "h": 284 },
+            "sourceSize": { "w": 556, "h": 452 }
         },
         {
-            "filename": "lantern_end.png",
-            "frame": { "x": 1, "y": 503, "w": 185, "h": 252 },
+            "filename": "lantern_end",
+            "frame": { "x": 188, "y": 0, "w": 184, "h": 249 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 185, "h": 252 },
-            "sourceSize": { "w": 185, "h": 252 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 187, "y": 93, "w": 184, "h": 249 },
+            "sourceSize": { "w": 556, "h": 452 }
         },
         {
-            "filename": "lantern_start.png",
-            "frame": { "x": 1, "y": 1, "w": 211, "h": 211 },
+            "filename": "lantern_start",
+            "frame": { "x": 213, "y": 250, "w": 209, "h": 209 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 211, "h": 211 },
-            "sourceSize": { "w": 211, "h": 211 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 169, "y": 132, "w": 209, "h": 209 },
+            "sourceSize": { "w": 556, "h": 452 }
         },
         {
-            "filename": "particle_1.png",
-            "frame": { "x": 1, "y": 757, "w": 101, "h": 101 },
+            "filename": "particle_1",
+            "frame": { "x": 108, "y": 285, "w": 102, "h": 102 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 101, "h": 101 },
-            "sourceSize": { "w": 101, "h": 101 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 226, "y": 164, "w": 102, "h": 102 },
+            "sourceSize": { "w": 556, "h": 452 }
         },
         {
-            "filename": "particle_2.png",
-            "frame": { "x": 104, "y": 757, "w": 100, "h": 100 },
+            "filename": "particle_2",
+            "frame": { "x": 373, "y": 0, "w": 100, "h": 100 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
-            "sourceSize": { "w": 100, "h": 100 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 230, "y": 164, "w": 100, "h": 100 },
+            "sourceSize": { "w": 556, "h": 452 }
         },
         {
-            "filename": "particle_3.png",
-            "frame": { "x": 104, "y": 859, "w": 98, "h": 100 },
+            "filename": "particle_3",
+            "frame": { "x": 373, "y": 101, "w": 98, "h": 100 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 98, "h": 100 },
-            "sourceSize": { "w": 98, "h": 100 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 230, "y": 165, "w": 98, "h": 100 },
+            "sourceSize": { "w": 556, "h": 452 }
+        },
+        {
+            "filename": "particle_4",
+            "frame": { "x": 0, "y": 285, "w": 107, "h": 109 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 225, "y": 165, "w": 107, "h": 109 },
+            "sourceSize": { "w": 556, "h": 452 }
+        },
+        {
+            "filename": "particle_5",
+            "frame": { "x": 108, "y": 388, "w": 104, "h": 99 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 227, "y": 167, "w": 104, "h": 99 },
+            "sourceSize": { "w": 556, "h": 452 }
         }
     ],
     "meta": {
         "app": "https://www.codeandweb.com/texturepacker",
         "version": "1.0",
-        "image": "obj_lantern.png",
+        "image": "sheet-2x.png",
         "format": "RGBA8888",
-        "size": { "w": 213, "h": 960 },
-        "scale": "0.78",
-        "smartupdate": "$TexturePacker:SmartUpdate:7ff6aec1de6cf0431c8e7c52ff2f5ef3:f2b5518f25e19cc760956443c1c511a8:4766f08558828601707089c9ecd510c8$"
+        "size": { "w": 473, "h": 487 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:7b98c1242ef143468b61de6669ff00ea:c85d51c704ec6a57e720415b2f80c4cc:1cbd29238421f6664e303bb7b9164bbd$"
     }
 }
