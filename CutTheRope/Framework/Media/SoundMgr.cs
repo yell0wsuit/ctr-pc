@@ -82,7 +82,7 @@ namespace CutTheRope.Framework.Media
             activeSounds = list;
         }
 
-        public virtual void PlaySound(int sid)
+        public void PlaySound(int sid)
         {
             ClearStopped();
             activeSounds.Add(Play(sid, false));
@@ -91,13 +91,13 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Plays a sound by its resource name (auto-assigns ID if needed).
         /// </summary>
-        public virtual void PlaySound(string soundResourceName)
+        public void PlaySound(string soundResourceName)
         {
             int soundResID = GetResourceId(soundResourceName);
             PlaySound(soundResID);
         }
 
-        public virtual SoundEffectInstance PlaySoundLooped(int sid)
+        public SoundEffectInstance PlaySoundLooped(int sid)
         {
             ClearStopped();
             SoundEffectInstance soundEffectInstance = Play(sid, true);
@@ -105,7 +105,7 @@ namespace CutTheRope.Framework.Media
             return soundEffectInstance;
         }
 
-        public virtual void PlayMusic(int resId)
+        public static void PlayMusic(int resId)
         {
             if (!TryResolveResource(resId, out string resourceName, out _))
             {
@@ -125,18 +125,18 @@ namespace CutTheRope.Framework.Media
             }
         }
 
-        public virtual void StopLoopedSounds()
+        public void StopLoopedSounds()
         {
             StopList(activeLoopedSounds);
             activeLoopedSounds.Clear();
         }
 
-        public virtual void StopAllSounds()
+        public void StopAllSounds()
         {
             StopLoopedSounds();
         }
 
-        public virtual void StopMusic()
+        public static void StopMusic()
         {
             try
             {
@@ -147,15 +147,15 @@ namespace CutTheRope.Framework.Media
             }
         }
 
-        public virtual void Suspend()
+        public static void Suspend()
         {
         }
 
-        public virtual void Resume()
+        public static void Resume()
         {
         }
 
-        public virtual void Pause()
+        public void Pause()
         {
             try
             {
@@ -170,7 +170,7 @@ namespace CutTheRope.Framework.Media
             }
         }
 
-        public virtual void Unpause()
+        public void Unpause()
         {
             try
             {

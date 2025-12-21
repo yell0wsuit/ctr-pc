@@ -77,7 +77,7 @@ namespace CutTheRope.GameMain
             if (Preferences.GetBooleanForKey("MUSIC_ON") && !string.IsNullOrWhiteSpace(musicResourceName))
             {
                 int musicId = ResourceNameTranslator.ToResourceId(musicResourceName);
-                Application.SharedSoundMgr().PlayMusic(musicId);
+                SoundMgr.PlayMusic(musicId);
             }
         }
 
@@ -120,7 +120,7 @@ namespace CutTheRope.GameMain
         {
             if (Preferences.GetBooleanForKey("MUSIC_ON"))
             {
-                Application.SharedSoundMgr().PlayMusic(f);
+                SoundMgr.PlayMusic(f);
             }
         }
 
@@ -142,7 +142,7 @@ namespace CutTheRope.GameMain
 
         public static void StopMusic()
         {
-            Application.SharedSoundMgr().StopMusic();
+            SoundMgr.StopMusic();
         }
 
         public static void Pause()
