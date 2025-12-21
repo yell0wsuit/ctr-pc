@@ -103,6 +103,7 @@ namespace CutTheRope.GameMain
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
                 Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
                 Img.Snowflakes, Img.CharGreetingXmas,
+                Img.Bgr14Cover, Img.Bgr14P1, Img.ObjLantern,
                 Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary, Img.MenuLogoXmasHat,
                 Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
                 Img.ObjCandy07, Img.ObjCandy08, Img.ObjCandy09, Img.ObjCandy10, Img.ObjCandy11,
@@ -135,7 +136,8 @@ namespace CutTheRope.GameMain
                 Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
                 Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.XmasBell,
                 Snd.MenuMusicXmas, Snd.GameMusicXmas, Snd.SteamStart,
-                Snd.SteamStart2, Snd.SteamEnd
+                Snd.SteamStart2, Snd.SteamEnd, Snd.LanternTeleportIn,
+                Snd.LanternTeleportOut
             ];
         }
 
@@ -276,6 +278,9 @@ namespace CutTheRope.GameMain
             public const string Bgr13Cover = "bgr_13_cover";
             public const string Bgr13P1 = "bgr_13_p1";
             public const string ObjPipe = "obj_pipe";
+            public const string Bgr14Cover = "bgr_14_cover";
+            public const string Bgr14P1 = "bgr_14_p1";
+            public const string ObjLantern = "obj_lantern";
 
             // Candies
             public const string ObjCandyFx = "candies/obj_candy_fx";
@@ -442,6 +447,8 @@ namespace CutTheRope.GameMain
             public const string SteamStart = "steam_start";
             public const string SteamStart2 = "steam_start2";
             public const string SteamEnd = "steam_end";
+            public const string LanternTeleportIn = "lantern_teleport_in";
+            public const string LanternTeleportOut = "lantern_teleport_out";
         }
 
         /// <summary>

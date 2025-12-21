@@ -96,6 +96,14 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
+            foreach (Lantern lantern in Lantern.GetAllLanterns())
+            {
+                if (lantern != null && lantern.OnTouchDown(tx + camera.pos.x, ty + camera.pos.y))
+                {
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_revealCandyFromLantern), null, Lantern.LanternCandyRevealTime);
+                    return true;
+                }
+            }
             RotatedCircle rotatedCircle = null;
             bool flag = false;
             bool flag2 = false;

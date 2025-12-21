@@ -2,7 +2,7 @@
     "frames": [
         {
             "filename": "frame_0001.png",
-            "frame": { "x": 1530, "y": 534, "w": 502, "h": 555 },
+            "frame": { "x": 1, "y": 551, "w": 502, "h": 555 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 79, "y": 64, "w": 502, "h": 555 },
@@ -26,7 +26,7 @@
         },
         {
             "filename": "frame_0004.png",
-            "frame": { "x": 1, "y": 551, "w": 517, "h": 547 },
+            "frame": { "x": 505, "y": 551, "w": 517, "h": 547 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 74, "y": 63, "w": 517, "h": 547 },
@@ -34,7 +34,7 @@
         },
         {
             "filename": "frame_0005.png",
-            "frame": { "x": 1025, "y": 551, "w": 503, "h": 539 },
+            "frame": { "x": 507, "y": 1100, "w": 503, "h": 539 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 78, "y": 67, "w": 503, "h": 539 },
@@ -42,15 +42,23 @@
         },
         {
             "filename": "frame_0006.png",
-            "frame": { "x": 520, "y": 551, "w": 503, "h": 540 },
+            "frame": { "x": 1024, "y": 551, "w": 503, "h": 540 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 78, "y": 67, "w": 503, "h": 540 },
             "sourceSize": { "w": 660, "h": 660 }
         },
         {
+            "filename": "frame_0007.png",
+            "frame": { "x": 1012, "y": 1100, "w": 503, "h": 539 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 78, "y": 60, "w": 503, "h": 539 },
+            "sourceSize": { "w": 660, "h": 660 }
+        },
+        {
             "filename": "frame_00012.png",
-            "frame": { "x": 1170, "y": 1, "w": 504, "h": 531 },
+            "frame": { "x": 1, "y": 1108, "w": 504, "h": 531 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 77, "y": 63, "w": 504, "h": 531 },
@@ -62,8 +70,8 @@
         "version": "1.0",
         "image": "menu_pack_selection2.png",
         "format": "RGBA8888",
-        "size": { "w": 2033, "h": 1099 },
+        "size": { "w": 1528, "h": 1640 },
         "scale": "1",
-        "smartupdate": "$TexturePacker:SmartUpdate:bdb9af39da8ad1e7f523f3d92de51294:5e6017500bf44bfa0ed4565f158969a2:f479aae8d12c877a502940d0c90f2640$"
+        "smartupdate": "$TexturePacker:SmartUpdate:ba81ef84b5e28207f7e9aea68f1360eb:1dcf054074176bc2c426c88c87f49cd7:f479aae8d12c877a502940d0c90f2640$"
     }
 }

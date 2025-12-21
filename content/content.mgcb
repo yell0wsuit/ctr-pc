@@ -469,6 +469,30 @@
 /processorParam:TextureFormat=Color
 /build:bgr_13_p1.png
 
+#begin bgr_14_cover.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:bgr_14_cover.png
+
+#begin bgr_14_p1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:bgr_14_p1.png
+
 #begin big_font.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1440,6 +1464,19 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:obj_pipe.png
+
+#begin obj_lantern.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:obj_lantern.png
+
 
 #begin small_font.png
 /importer:TextureImporter
