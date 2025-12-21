@@ -1,0 +1,63 @@
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign special="3" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <target x="53" y="402" />
+        <lantern x="50" y="170" candyCaptured="false" />
+        <lantern x="275" y="407" candyCaptured="false" />
+        <grab x="271" y="170" length="60" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <candy x="270" y="258" />
+        <star x="274" y="349" timeout="-1" />
+        <star x="160" y="349" timeout="-1" />
+        <star x="55" y="347" timeout="-1" />
+        <hiddenElement x="160" y="37" radius="30" />
+        <lantern x="160" y="170" candyCaptured="false" />
+        <lantern x="158" y="404" candyCaptured="false" />
+    </layer>
+    <layer name="En">
+        <tutorialText x="50" y="250" locale="en" text="Put candy into a lantern and it pops into all the others" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="en" text="Tap any lantern to get the candy to drop down" width="200" height="60" special="3" />
+    </layer>
+    <layer name="Ru">
+        <tutorialText x="50" y="250" locale="ru" text="Положите леденец в фонарь, и он появится во всех остальных фонарях" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="ru" text="Коснитесь любого фонаря, чтобы леденец выпал" width="200" height="60" special="3" />
+    </layer>
+    <layer name="nl">
+        <tutorialText x="50" y="250" locale="nl" text="Stop een snoepje in een lampion en het verspringt naar alle andere lampionnen" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="nl" text="Raak de lampion aan waaruit je het snoepje wilt laten vallen" width="200" height="60" special="3" />
+    </layer>
+    <layer name="es">
+        <tutorialText x="50" y="250" locale="es" text="Pon un caramelo en una linterna y aparecerá en las demás" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="es" text="Toca cualquier linterna para hacer caer el caramelo" width="200" height="60" special="3" />
+    </layer>
+    <layer name="br">
+        <tutorialText x="50" y="250" locale="br" text="Ponha um doce numa lanterna e ele surgirá em todas as outras" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="br" text="Toque em qualquer lanterna para soltar o doce" width="200" height="60" special="3" />
+    </layer>
+    <layer name="ja">
+        <tutorialText x="50" y="250" locale="ja" text="ちょうちんに*キャンディを*入れると*他のちょうちんに*弾けだします。" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="ja" text="キャンディを*落とすには*ちょうちんを*タップします。" width="200" height="60" special="3" />
+    </layer>
+    <layer name="de">
+        <tutorialText x="50" y="250" locale="de" text="Gib den Bonbon in eine Laterne und er erscheint in allen anderen Laternen" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="de" text="Tippe eine Laterne an, damit der Bonbon herausfällt" width="200" height="60" special="3" />
+    </layer>
+    <layer name="it">
+        <tutorialText x="50" y="250" locale="it" text="Inserisci il bonbon in una lanterna e spunterà in tutte le altre" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="it" text="Tocca una lanterna qualsiasi per far cadere il bonbon" width="200" height="60" special="3" />
+    </layer>
+    <layer name="zh">
+        <tutorialText x="50" y="250" locale="zh" text="把糖果放入其中一个灯笼，*其他灯笼都会蹦进糖果哦" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="zh" text="轻触任一灯笼，*丢出糖果" width="200" height="60" special="3" />
+    </layer>
+    <layer name="fr">
+        <tutorialText x="50" y="250" locale="fr" text="Mets le bonbon dans un lampion, il apparaîtra dans les autres." width="190" height="60" />
+        <tutorialText x="60" y="50" locale="fr" text="Touche un lampion pour faire tomber le bonbon." width="200" height="60" special="3" />
+    </layer>
+    <layer name="ko">
+        <tutorialText x="50" y="250" locale="ko" text="사탕을 등에 넣으면 *모든 등에서 사탕이* 나타납니다." width="190" height="60" />
+        <tutorialText x="60" y="50" locale="ko" text="등을 살짝 눌러서 *사탕을 떨어뜨리세요." width="200" height="60" special="3" />
+    </layer>
+</map>

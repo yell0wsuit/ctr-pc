@@ -1,0 +1,19 @@
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <lantern x="41" y="103" candyCaptured="true" />
+        <lantern x="164" y="101" candyCaptured="true" />
+        <lantern x="286" y="102" candyCaptured="true" />
+        <steamTube x="167" y="280" angle="0" />
+        <target x="41" y="362" />
+        <star x="166" y="192" timeout="-1" />
+        <star x="42" y="194" timeout="-1" />
+        <star x="285" y="189" timeout="-1" />
+        <bouncer1 x="33" y="249" angle="19" size="1" />
+        <bouncer1 x="295" y="249" angle="-19" size="1" />
+        <hiddenElement x="286" y="385" radius="30" />
+    </layer>
+</map>

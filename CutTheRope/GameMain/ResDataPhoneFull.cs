@@ -456,6 +456,8 @@ namespace CutTheRope.GameMain
 
         internal const string STR_MENU_BOX13_LABEL = "BOX13_LABEL";
 
+        internal const string STR_MENU_BOX14_LABEL = "BOX14_LABEL";
+
         internal const string STR_MENU_BOX1_LABEL = "BOX1_LABEL";
 
         internal const string STR_MENU_BOX2_LABEL = "BOX2_LABEL";

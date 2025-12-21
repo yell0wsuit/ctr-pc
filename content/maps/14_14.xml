@@ -1,0 +1,20 @@
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <target x="180" y="200" />
+        <candy x="173" y="408" />
+        <pump x="77" y="412" angle="0" />
+        <grab x="176" y="285" length="90" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="275" y="151" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="40" invisible="false" moveLength="230" moveVertical="false" moveOffset="230" spider="false" helicopter="false" part="L" hidePath="false" />
+        <bubble x="73" y="290" />
+        <star x="275" y="210" timeout="-1" />
+        <star x="185" y="78" timeout="-1" />
+        <star x="74" y="292" timeout="-1" />
+        <lantern x="275" y="298" candyCaptured="false" />
+        <lantern x="70" y="71" candyCaptured="false" />
+        <hiddenElement x="175" y="288" radius="30" />
+    </layer>
+</map>

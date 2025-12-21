@@ -113,6 +113,11 @@ namespace CutTheRope.GameMain
                 steamTube?.DrawBack();
             }
 
+            foreach (Lantern lantern in Lantern.GetAllLanterns())
+            {
+                lantern.Draw();
+            }
+
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (ghosts != null)
             {
@@ -139,10 +144,13 @@ namespace CutTheRope.GameMain
             }
             if (!noCandy && targetSock == null)
             {
-                candy.x = star.pos.x;
-                candy.y = star.pos.y;
+                if (!isCandyInLantern)
+                {
+                    candy.x = star.pos.x;
+                    candy.y = star.pos.y;
+                }
                 candy.Draw();
-                if (candyBlink.GetCurrentTimeline() != null)
+                if (candyBlink.GetCurrentTimeline() != null && !isCandyInLantern)
                 {
                     OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     candyBlink.Draw();

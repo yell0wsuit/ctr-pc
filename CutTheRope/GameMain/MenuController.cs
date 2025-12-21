@@ -736,7 +736,7 @@ namespace CutTheRope.GameMain
             10, // pack 7
         ];
 
-        // MenuPackSelection2 quads 0-5 are packs 8-12
+        // MenuPackSelection2 quads 0-6 are packs 8-14
         private static readonly int[] PackSelection2QuadMap =
         [
             0, // pack 8
@@ -745,7 +745,8 @@ namespace CutTheRope.GameMain
             3, // pack 11
             4, // pack 12
             5, // pack 13
-            6, // coming soon box
+            6, // pack 14
+            7, // coming soon box
         ];
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
@@ -821,6 +822,7 @@ namespace CutTheRope.GameMain
                     10 => STR_MENU_BOX11_LABEL,
                     11 => STR_MENU_BOX12_LABEL,
                     12 => STR_MENU_BOX13_LABEL,
+                    13 => STR_MENU_BOX14_LABEL,
                     _ => STR_MENU_BOX1_LABEL,
                 };
                 string @string = Application.GetString(boxLabelId);

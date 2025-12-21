@@ -28,6 +28,12 @@
             "centerOffsets": false
         },
         {
+            "resourceName": "obj_lantern",
+            "atlasPath": "obj_lantern.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
             "resourceName": "christmas_lights",
             "atlasPath": "christmas_lights.json",
             "useAntialias": true,

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Sfe;
@@ -614,6 +616,70 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+            List<Lantern> lanterns = Lantern.GetAllLanterns();
+            foreach (Lantern lantern in lanterns)
+            {
+                lantern.Update(delta);
+                if (!noCandy && !isCandyInLantern && lantern.lanternState == Lantern.LanternStateInactive && VectDistance(star.pos, Vect(lantern.x, lantern.y)) < 82f)
+                {
+                    isCandyInLantern = true;
+                    candy.passTransformationsToChilds = true;
+                    candyMain.scaleX = candyMain.scaleY = 1f;
+                    candyTop.scaleX = candyTop.scaleY = 1f;
+                    Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                    timeline.AddKeyFrame(KeyFrame.MakePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                    timeline.AddKeyFrame(KeyFrame.MakePos(lantern.x, lantern.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(0.71, 0.71, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(0.3, 0.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                    candy.RemoveTimeline(0);
+                    candy.AddTimelinewithID(timeline, 0);
+                    candy.PlayTimeline(0);
+                    ReleaseAllRopes(false);
+                    if (candyBubble != null)
+                    {
+                        PopCandyBubble(false);
+                    }
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), star, 0.05);
+
+                    // Handle special tutorial for lantern
+                    if (special == 3)
+                    {
+                        special = 0;
+                        foreach (object obj16 in tutorials)
+                        {
+                            TutorialText tutorialText = (TutorialText)obj16;
+                            if (tutorialText.special == 3)
+                            {
+                                tutorialText.PlayTimeline(0);
+                            }
+                            else
+                            {
+                                Timeline currentTimeline = tutorialText.GetCurrentTimeline();
+                                currentTimeline?.JumpToTrackKeyFrame(3, 2);
+                                tutorialText.color = RGBAColor.transparentRGBA;
+                                currentTimeline?.StopTimeline();
+                            }
+                        }
+                        foreach (object obj17 in tutorialImages)
+                        {
+                            GameObjectSpecial tutorialImage = (GameObjectSpecial)obj17;
+                            if (tutorialImage.special == 3)
+                            {
+                                tutorialImage.PlayTimeline(0);
+                            }
+                            else
+                            {
+                                Timeline currentTimeline2 = tutorialImage.GetCurrentTimeline();
+                                currentTimeline2?.JumpToTrackKeyFrame(3, 2);
+                                tutorialImage.color = RGBAColor.transparentRGBA;
+                                currentTimeline2?.StopTimeline();
+                            }
+                        }
+                    }
+                }
+            }
             RotatedCircle rotatedCircle6 = null;
             foreach (object obj8 in rotatedCircles)
             {
@@ -722,6 +788,10 @@ namespace CutTheRope.GameMain
             {
                 Spikes spike = (Spikes)obj14;
                 spike.Update(delta);
+                if (isCandyInLantern)
+                {
+                    continue;
+                }
                 float num15 = 15f;
                 if (!spike.electro || (spike.electro && spike.electroOn))
                 {
@@ -923,7 +993,7 @@ namespace CutTheRope.GameMain
             {
                 if (!mouthOpen)
                 {
-                    if (VectDistance(star.pos, Vect(target.x, target.y)) < 200f)
+                    if (!isCandyInLantern && VectDistance(star.pos, Vect(target.x, target.y)) < 200f)
                     {
                         mouthOpen = true;
                         target.PlayTimeline(7);
@@ -936,7 +1006,7 @@ namespace CutTheRope.GameMain
                     _ = Mover.MoveVariableToTarget(ref mouthCloseTimer, 0.0, 1.0, (double)delta);
                     if (mouthCloseTimer <= 0.0)
                     {
-                        if (VectDistance(star.pos, Vect(target.x, target.y)) > 200f)
+                        if (isCandyInLantern || VectDistance(star.pos, Vect(target.x, target.y)) > 200f)
                         {
                             mouthOpen = false;
                             target.PlayTimeline(8);
