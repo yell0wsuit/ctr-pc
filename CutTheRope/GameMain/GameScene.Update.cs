@@ -642,6 +642,42 @@ namespace CutTheRope.GameMain
                         PopCandyBubble(false);
                     }
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), star, 0.05);
+
+                    // Handle special tutorial for lantern
+                    if (special == 3)
+                    {
+                        special = 0;
+                        foreach (object obj16 in tutorials)
+                        {
+                            TutorialText tutorialText = (TutorialText)obj16;
+                            if (tutorialText.special == 3)
+                            {
+                                tutorialText.PlayTimeline(0);
+                            }
+                            else
+                            {
+                                Timeline currentTimeline = tutorialText.GetCurrentTimeline();
+                                currentTimeline?.JumpToTrackKeyFrame(3, 2);
+                                tutorialText.color = RGBAColor.transparentRGBA;
+                                currentTimeline?.StopTimeline();
+                            }
+                        }
+                        foreach (object obj17 in tutorialImages)
+                        {
+                            GameObjectSpecial tutorialImage = (GameObjectSpecial)obj17;
+                            if (tutorialImage.special == 3)
+                            {
+                                tutorialImage.PlayTimeline(0);
+                            }
+                            else
+                            {
+                                Timeline currentTimeline2 = tutorialImage.GetCurrentTimeline();
+                                currentTimeline2?.JumpToTrackKeyFrame(3, 2);
+                                tutorialImage.color = RGBAColor.transparentRGBA;
+                                currentTimeline2?.StopTimeline();
+                            }
+                        }
+                    }
                 }
             }
             RotatedCircle rotatedCircle6 = null;

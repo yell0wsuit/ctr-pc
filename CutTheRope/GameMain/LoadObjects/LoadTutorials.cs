@@ -31,9 +31,8 @@ namespace CutTheRope.GameMain
                 string newString = xmlNode.AttributeAsNSString("text");
                 tutorialText.SetStringandWidth(newString, (int)(xmlNode.AttributeAsNSString("width").IntValue() * scale));
                 tutorialText.color = RGBAColor.transparentRGBA;
-                float num6 = tutorialText.special == 3 ? 12f : 0f;
                 Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-                timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
+                timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
                 timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
                 if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 0)
                 {
@@ -45,7 +44,7 @@ namespace CutTheRope.GameMain
                 }
                 timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 tutorialText.AddTimelinewithID(timeline3, 0);
-                if (tutorialText.special is 0 or 3)
+                if (tutorialText.special == 0)
                 {
                     tutorialText.PlayTimeline(0);
                 }
@@ -69,9 +68,8 @@ namespace CutTheRope.GameMain
                 gameObjectSpecial.rotation = xmlNode.AttributeAsNSString("angle").IntValue();
                 gameObjectSpecial.special = xmlNode.AttributeAsNSString("special").IntValue();
                 gameObjectSpecial.ParseMover(xmlNode);
-                float num7 = gameObjectSpecial.special is 3 or 4 ? 12f : 0f;
                 Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-                timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num7));
+                timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
                 timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
                 if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 0)
                 {
@@ -83,7 +81,7 @@ namespace CutTheRope.GameMain
                 }
                 timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 gameObjectSpecial.AddTimelinewithID(timeline4, 0);
-                if (gameObjectSpecial.special is 0 or 3)
+                if (gameObjectSpecial.special == 0)
                 {
                     gameObjectSpecial.PlayTimeline(0);
                 }
@@ -92,12 +90,12 @@ namespace CutTheRope.GameMain
                     Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(12);
                     for (int j = 0; j < 2; j++)
                     {
-                        timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, j == 1 ? 0f : num7));
+                        timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
                         timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                         timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
                         timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.1));
                         timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                        timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, (double)(j == 1 ? 0f : num7)));
+                        timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
                         timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                         timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
                         timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x + 230.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
