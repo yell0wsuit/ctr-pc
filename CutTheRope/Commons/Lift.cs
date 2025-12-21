@@ -25,22 +25,13 @@ namespace CutTheRope.Commons
             if (state == BUTTON_STATE.BUTTON_DOWN)
             {
                 x = Math.Max(Math.Min(tx - startX, maxX), minX);
-                y = Math.Max(Math.Min(ty - startY, maxY), minY);
+                y = Math.Max(Math.Min(ty - startY, 0f), 0f);
                 if (maxX != 0f)
                 {
                     float num = (x - minX) / (maxX - minX);
                     if (num != xPercent)
                     {
                         xPercent = num;
-                        liftDelegate?.Invoke(xPercent, yPercent);
-                    }
-                }
-                if (maxY != 0f)
-                {
-                    float num2 = (y - minY) / (maxY - minY);
-                    if (num2 != yPercent)
-                    {
-                        yPercent = num2;
                         liftDelegate?.Invoke(xPercent, yPercent);
                     }
                 }
@@ -67,10 +58,6 @@ namespace CutTheRope.Commons
         public float minX;
 
         public float maxX;
-
-        public float minY;
-
-        public float maxY;
 
         public float xPercent;
 

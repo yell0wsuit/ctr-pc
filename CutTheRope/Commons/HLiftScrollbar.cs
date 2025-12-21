@@ -140,7 +140,7 @@ namespace CutTheRope.Commons
                 num2 = scroll.y / maxScroll.y;
             }
             lift.x = ((lift.maxX - lift.minX) * num) + lift.minX;
-            lift.y = ((lift.maxY - lift.minY) * num2) + lift.minY;
+            lift.y = 0f;
         }
 
         public void CalcScrollPoints()
@@ -167,8 +167,7 @@ namespace CutTheRope.Commons
                     num2 = vector.y / maxScroll.y;
                 }
                 float num3 = ((lift.maxX - lift.minX) * num) + lift.minX;
-                float num4 = ((lift.maxY - lift.minY) * num2) + lift.minY;
-                spoints[i] = Vect(num3, num4);
+                spoints[i] = Vect(num3, 0f);
             }
             for (int j = 0; j < spointsNum; j++)
             {
