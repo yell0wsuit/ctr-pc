@@ -85,7 +85,7 @@ namespace CutTheRope.GameMain
                 {
                     gameObjectSpecial.PlayTimeline(0);
                 }
-                if (gameObjectSpecial.special is 2 or 4)
+                if (gameObjectSpecial.special is 2)
                 {
                     Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(12);
                     for (int j = 0; j < 2; j++)
