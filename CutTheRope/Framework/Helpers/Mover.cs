@@ -139,49 +139,52 @@ namespace CutTheRope.Framework.Helpers
             }
             if (pathLen > 0)
             {
-                Vector v = path[targetPoint];
-                bool flag = false;
-                if (!VectEqual(pos, v))
+                float timeRemaining = delta;
+                if (overrun != 0f)
                 {
-                    float num = delta;
-                    if (overrun != 0f)
+                    timeRemaining += overrun;
+                    overrun = 0f;
+                }
+                int noProgressSteps = 0;
+                int maxNoProgressSteps = pathLen + 1;
+                while (timeRemaining > 0f)
+                {
+                    Vector v = path[targetPoint];
+                    Vector toTarget = VectSub(v, pos);
+                    float distance = VectLength(toTarget);
+                    if (distance <= 0f)
                     {
-                        num += overrun;
-                        overrun = 0f;
+                        AdvanceTarget();
+                        CalculateOffset();
+                        noProgressSteps++;
+                        if (noProgressSteps > maxNoProgressSteps)
+                        {
+                            break;
+                        }
+                        continue;
                     }
-                    pos = VectAdd(pos, VectMult(offset, num));
-                    if (!SameSign(offset.x, v.x - pos.x) || !SameSign(offset.y, v.y - pos.y))
+                    noProgressSteps = 0;
+                    float speed = moveSpeed[targetPoint];
+                    if (speed <= 0f)
                     {
-                        overrun = VectLength(VectSub(pos, v));
-                        float num2 = VectLength(offset);
-                        overrun /= num2;
+                        break;
+                    }
+                    float timeToTarget = distance / speed;
+                    if (timeToTarget <= timeRemaining)
+                    {
                         pos = v;
-                        flag = true;
+                        timeRemaining -= timeToTarget;
+                        AdvanceTarget();
+                        CalculateOffset();
+                        continue;
                     }
+                    Vector dir = VectMult(toTarget, 1f / distance);
+                    pos = VectAdd(pos, VectMult(dir, speed * timeRemaining));
+                    timeRemaining = 0f;
                 }
-                else
+                if (timeRemaining > 0f)
                 {
-                    flag = true;
-                }
-                if (flag)
-                {
-                    if (reverse)
-                    {
-                        targetPoint--;
-                        if (targetPoint < 0)
-                        {
-                            targetPoint = pathLen - 1;
-                        }
-                    }
-                    else
-                    {
-                        targetPoint++;
-                        if (targetPoint >= pathLen)
-                        {
-                            targetPoint = 0;
-                        }
-                    }
-                    CalculateOffset();
+                    overrun = timeRemaining;
                 }
             }
             if (rotateSpeed != 0f)
@@ -192,6 +195,24 @@ namespace CutTheRope.Framework.Helpers
                     return;
                 }
                 angle_ += rotateSpeed * delta;
+            }
+        }
+
+        private void AdvanceTarget()
+        {
+            if (reverse)
+            {
+                targetPoint--;
+                if (targetPoint < 0)
+                {
+                    targetPoint = pathLen - 1;
+                }
+                return;
+            }
+            targetPoint++;
+            if (targetPoint >= pathLen)
+            {
+                targetPoint = 0;
             }
         }
 
