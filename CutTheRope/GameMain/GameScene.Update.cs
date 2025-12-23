@@ -13,7 +13,6 @@ namespace CutTheRope.GameMain
     {
         public override void Update(float delta)
         {
-            delta = 0.016f;
             base.Update(delta);
             dd.Update(delta);
             pollenDrawer.Update(delta);
@@ -602,7 +601,7 @@ namespace CutTheRope.GameMain
                 pump.Update(delta);
                 if (Mover.MoveVariableToTarget(ref pump.pumpTouchTimer, 0.0, 1.0, (double)delta))
                 {
-                    OperatePump(pump);
+                    OperatePump(pump, delta);
                 }
             }
             foreach (SteamTube steamTube in tubes)
@@ -612,7 +611,7 @@ namespace CutTheRope.GameMain
                     steamTube.Update(delta);
                     if (steamTube.steamState != 3)
                     {
-                        OperateSteamTube(steamTube);
+                        OperateSteamTube(steamTube, delta);
                     }
                 }
             }
