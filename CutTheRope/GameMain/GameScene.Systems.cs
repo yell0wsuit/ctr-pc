@@ -12,7 +12,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Handles pump physics interaction with a constrained point and game object
         /// </summary>
-        public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c, float delta)
+        public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
             float num = 624f;
             if (GameObject.RectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
@@ -32,7 +32,7 @@ namespace CutTheRope.GameMain
                     float num2 = num * 2f * (num - (vector.y - v.y)) / num;
                     Vector v2 = Vect(0f, 0f - num2);
                     v2 = VectRotate(v2, p.angle);
-                    s.ApplyImpulseDelta(v2, delta);
+                    s.ApplyImpulseDelta(v2, 0.016f);
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace CutTheRope.GameMain
         /// - Gravity force: -32f/weight * sqrt(tubeScale) (WP7: no sqrt scaling)
         /// - Damping factor (num): Always 5f (same in both)
         /// </summary>
-        public void OperateSteamTube(SteamTube tube, float delta)
+        public void OperateSteamTube(SteamTube tube)
         {
             float tubeScale = tube.GetHeightScale();
             float num = 5f;  // Damping factor (velocity reduction)
@@ -122,7 +122,7 @@ namespace CutTheRope.GameMain
                         vector5 = VectMult(vector5, Math.Exp((double)(-2f * (num9 - (currentHeightModulated + num5)))));
                     }
                     vector5 = VectRotate(vector5, num2);
-                    star.ApplyImpulseDelta(vector5, delta);
+                    star.ApplyImpulseDelta(vector5, 0.016f);
                     return;
                 }
             }
@@ -167,7 +167,7 @@ namespace CutTheRope.GameMain
                         vector8 = VectMult(vector8, Math.Exp((double)(-2f * (num13 - (currentHeightModulated + num5)))));
                     }
                     vector8 = VectRotate(vector8, num2);
-                    starL.ApplyImpulseDelta(vector8, delta);
+                    starL.ApplyImpulseDelta(vector8, 0.016f);
                 }
                 vector6 = Vect(starR.pos.x, starR.pos.y);
                 vector7 = Vect(starR.v.x, starR.v.y);
@@ -208,7 +208,7 @@ namespace CutTheRope.GameMain
                         vector9 = VectMult(vector9, Math.Exp((double)(-2f * (num17 - (currentHeightModulated + num5)))));
                     }
                     vector9 = VectRotate(vector9, num2);
-                    starR.ApplyImpulseDelta(vector9, delta);
+                    starR.ApplyImpulseDelta(vector9, 0.016f);
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Operates a pump - creates particles and applies force
         /// </summary>
-        public void OperatePump(Pump p, float delta)
+        public void OperatePump(Pump p)
         {
             p.PlayTimeline(0);
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
@@ -231,17 +231,17 @@ namespace CutTheRope.GameMain
             _ = aniPool.AddChild(pumpDirt);
             if (!noCandy)
             {
-                HandlePumpFlowPtSkin(p, star, candy, delta);
+                HandlePumpFlowPtSkin(p, star, candy);
             }
             if (twoParts != 2)
             {
                 if (!noCandyL)
                 {
-                    HandlePumpFlowPtSkin(p, starL, candyL, delta);
+                    HandlePumpFlowPtSkin(p, starL, candyL);
                 }
                 if (!noCandyR)
                 {
-                    HandlePumpFlowPtSkin(p, starR, candyR, delta);
+                    HandlePumpFlowPtSkin(p, starR, candyR);
                 }
             }
         }
