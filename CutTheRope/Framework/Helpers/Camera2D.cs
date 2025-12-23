@@ -37,7 +37,7 @@ namespace CutTheRope.Framework.Helpers
             if (!VectEqual(pos, target))
             {
                 pos = VectAdd(pos, VectMult(offset, delta));
-                pos = Vect(Round(pos.x), Round(pos.y));
+                // pos = Vect(Round(pos.x), Round(pos.y));
                 if (!SameSign(offset.x, target.x - pos.x) || !SameSign(offset.y, target.y - pos.y))
                 {
                     pos = target;

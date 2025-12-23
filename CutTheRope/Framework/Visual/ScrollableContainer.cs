@@ -53,17 +53,11 @@ namespace CutTheRope.Framework.Visual
 
         public override void Draw()
         {
-            float num = container.x;
-            float num2 = container.y;
-            container.x = (float)Math.Round(container.x);
-            container.y = (float)Math.Round(container.y);
             PreDraw();
             OpenGL.GlEnable(4);
             OpenGL.SetScissorRectangle(drawX, drawY, width, height);
             PostDraw();
             OpenGL.GlDisable(4);
-            container.x = num;
-            container.y = num2;
         }
 
         public override void PostDraw()
@@ -108,7 +102,6 @@ namespace CutTheRope.Framework.Visual
         public override void Update(float delta)
         {
             base.Update(delta);
-            delta = fixedDelta;
             targetPoint = vectZero;
             if (touchTimer > 0.0)
             {
