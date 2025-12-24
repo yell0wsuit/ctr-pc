@@ -201,7 +201,7 @@ namespace CutTheRope.GameMain
                 }
 
                 // Main logo
-                Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 53);
+                Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 52);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
