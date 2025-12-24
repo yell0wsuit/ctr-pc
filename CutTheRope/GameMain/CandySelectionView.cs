@@ -191,15 +191,15 @@ namespace CutTheRope.GameMain
             {
                 totalItems = RopeColorHelper.TotalRopeColors;
                 selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
-                baseQuadIndex = 59; // rope01-rope09 are quads 59-67
+                baseQuadIndex = 60; // rope01-rope09 are quads 60-68
                 getButtonId = MenuButtonId.ForRopeSlot;
             }
             else
             {
-                const int TOTAL_CANDIES = 51;
+                const int TOTAL_CANDIES = 52;
                 totalItems = TOTAL_CANDIES;
                 selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
-                baseQuadIndex = 6; // candy01-candy51 are quads 6-56
+                baseQuadIndex = 6; // candy01-candy52 are quads 6-57
                 getButtonId = MenuButtonId.ForCandySlot;
             }
 
