@@ -335,6 +335,7 @@ namespace CutTheRope.GameMain
             public const string ObjCandy49 = "candies/obj_candy_49";
             public const string ObjCandy50 = "candies/obj_candy_50";
             public const string ObjCandy51 = "candies/obj_candy_51";
+            public const string ObjCandy52 = "candies/obj_candy_52";
         }
 
         /// <summary>

@@ -416,6 +416,12 @@
             "atlasPath": "candies/obj_candy_51.json",
             "useAntialias": true,
             "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_candy_52",
+            "atlasPath": "candies/obj_candy_52.json",
+            "useAntialias": true,
+            "centerOffsets": false
         }
     ]
 }
