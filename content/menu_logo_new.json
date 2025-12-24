@@ -1,39 +1,39 @@
 {"frames": [
 
 {
-	"filename": "candy_01.png",
-	"frame": {"x":443,"y":2651,"w":249,"h":258},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":22,"y":15,"w":249,"h":258},
-	"sourceSize": {"w":281,"h":281}
-},
-{
-	"filename": "candy_02.png",
-	"frame": {"x":1,"y":3186,"w":281,"h":281},
+	"filename": "candy_01.png.png",
+	"frame": {"x":736,"y":2912,"w":281,"h":281},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":281,"h":281},
 	"sourceSize": {"w":281,"h":281}
 },
 {
-	"filename": "candy_03.png",
-	"frame": {"x":284,"y":3186,"w":281,"h":281},
+	"filename": "candy_02.png.png",
+	"frame": {"x":1,"y":3195,"w":281,"h":281},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":281,"h":281},
 	"sourceSize": {"w":281,"h":281}
 },
 {
-	"filename": "candy_04.png",
-	"frame": {"x":1,"y":2911,"w":223,"h":259},
+	"filename": "candy_03.png.png",
+	"frame": {"x":284,"y":3195,"w":281,"h":281},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":281,"h":281},
+	"sourceSize": {"w":281,"h":281}
+},
+{
+	"filename": "candy_04.png.png",
+	"frame": {"x":677,"y":2651,"w":223,"h":259},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":223,"h":259},
 	"sourceSize": {"w":223,"h":259}
 },
 {
-	"filename": "candy_05.png",
+	"filename": "candy_05.png.png",
 	"frame": {"x":1,"y":226,"w":251,"h":225},
 	"rotated": false,
 	"trimmed": false,
@@ -41,7 +41,7 @@
 	"sourceSize": {"w":251,"h":225}
 },
 {
-	"filename": "candy_06.png",
+	"filename": "candy_06.png.png",
 	"frame": {"x":232,"y":927,"w":236,"h":238},
 	"rotated": false,
 	"trimmed": false,
@@ -49,7 +49,7 @@
 	"sourceSize": {"w":236,"h":238}
 },
 {
-	"filename": "candy_07.png",
+	"filename": "candy_07.png.png",
 	"frame": {"x":737,"y":2146,"w":239,"h":249},
 	"rotated": false,
 	"trimmed": false,
@@ -57,7 +57,7 @@
 	"sourceSize": {"w":239,"h":249}
 },
 {
-	"filename": "candy_08.png",
+	"filename": "candy_08.png.png",
 	"frame": {"x":1,"y":453,"w":228,"h":229},
 	"rotated": false,
 	"trimmed": false,
@@ -65,7 +65,7 @@
 	"sourceSize": {"w":228,"h":229}
 },
 {
-	"filename": "candy_09.png",
+	"filename": "candy_09.png.png",
 	"frame": {"x":1,"y":1653,"w":229,"h":243},
 	"rotated": false,
 	"trimmed": false,
@@ -73,7 +73,7 @@
 	"sourceSize": {"w":229,"h":243}
 },
 {
-	"filename": "candy_10.png",
+	"filename": "candy_10.png.png",
 	"frame": {"x":470,"y":927,"w":235,"h":238},
 	"rotated": false,
 	"trimmed": false,
@@ -81,15 +81,15 @@
 	"sourceSize": {"w":235,"h":238}
 },
 {
-	"filename": "candy_11.png",
-	"frame": {"x":714,"y":2911,"w":245,"h":273},
+	"filename": "candy_11.png.png",
+	"frame": {"x":489,"y":2912,"w":245,"h":273},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":245,"h":273},
 	"sourceSize": {"w":245,"h":273}
 },
 {
-	"filename": "candy_12.png",
+	"filename": "candy_12.png.png",
 	"frame": {"x":231,"y":453,"w":233,"h":229},
 	"rotated": false,
 	"trimmed": false,
@@ -97,7 +97,7 @@
 	"sourceSize": {"w":233,"h":229}
 },
 {
-	"filename": "candy_13.png",
+	"filename": "candy_13.png.png",
 	"frame": {"x":671,"y":1167,"w":221,"h":240},
 	"rotated": false,
 	"trimmed": false,
@@ -105,7 +105,7 @@
 	"sourceSize": {"w":221,"h":240}
 },
 {
-	"filename": "candy_14.png",
+	"filename": "candy_14.png.png",
 	"frame": {"x":709,"y":1653,"w":244,"h":244},
 	"rotated": false,
 	"trimmed": false,
@@ -113,7 +113,7 @@
 	"sourceSize": {"w":244,"h":244}
 },
 {
-	"filename": "candy_15.png",
+	"filename": "candy_15.png.png",
 	"frame": {"x":543,"y":1,"w":224,"h":223},
 	"rotated": false,
 	"trimmed": false,
@@ -121,7 +121,7 @@
 	"sourceSize": {"w":224,"h":223}
 },
 {
-	"filename": "candy_16.png",
+	"filename": "candy_16.png.png",
 	"frame": {"x":468,"y":689,"w":237,"h":236},
 	"rotated": false,
 	"trimmed": false,
@@ -129,7 +129,7 @@
 	"sourceSize": {"w":237,"h":236}
 },
 {
-	"filename": "candy_17.png",
+	"filename": "candy_17.png.png",
 	"frame": {"x":252,"y":2397,"w":222,"h":251},
 	"rotated": false,
 	"trimmed": false,
@@ -137,7 +137,7 @@
 	"sourceSize": {"w":222,"h":251}
 },
 {
-	"filename": "candy_18.png",
+	"filename": "candy_18.png.png",
 	"frame": {"x":225,"y":1409,"w":221,"h":241},
 	"rotated": false,
 	"trimmed": false,
@@ -145,7 +145,7 @@
 	"sourceSize": {"w":221,"h":241}
 },
 {
-	"filename": "candy_19.png",
+	"filename": "candy_19.png.png",
 	"frame": {"x":254,"y":226,"w":219,"h":225},
 	"rotated": false,
 	"trimmed": false,
@@ -153,7 +153,7 @@
 	"sourceSize": {"w":219,"h":225}
 },
 {
-	"filename": "candy_20.png",
+	"filename": "candy_20.png.png",
 	"frame": {"x":490,"y":1899,"w":252,"h":245},
 	"rotated": false,
 	"trimmed": false,
@@ -161,7 +161,7 @@
 	"sourceSize": {"w":252,"h":245}
 },
 {
-	"filename": "candy_21.png",
+	"filename": "candy_21.png.png",
 	"frame": {"x":1,"y":2146,"w":240,"h":246},
 	"rotated": false,
 	"trimmed": false,
@@ -169,7 +169,7 @@
 	"sourceSize": {"w":240,"h":246}
 },
 {
-	"filename": "candy_22.png",
+	"filename": "candy_22.png.png",
 	"frame": {"x":1,"y":1899,"w":243,"h":244},
 	"rotated": false,
 	"trimmed": false,
@@ -177,15 +177,15 @@
 	"sourceSize": {"w":243,"h":244}
 },
 {
-	"filename": "candy_23.png",
-	"frame": {"x":226,"y":2911,"w":253,"h":259},
+	"filename": "candy_23.png.png",
+	"frame": {"x":1,"y":2912,"w":253,"h":259},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":253,"h":259},
 	"sourceSize": {"w":253,"h":259}
 },
 {
-	"filename": "candy_24.png",
+	"filename": "candy_24.png.png",
 	"frame": {"x":466,"y":453,"w":242,"h":229},
 	"rotated": false,
 	"trimmed": false,
@@ -193,7 +193,7 @@
 	"sourceSize": {"w":242,"h":229}
 },
 {
-	"filename": "candy_25.png",
+	"filename": "candy_25.png.png",
 	"frame": {"x":744,"y":1899,"w":271,"h":245},
 	"rotated": false,
 	"trimmed": false,
@@ -201,15 +201,15 @@
 	"sourceSize": {"w":271,"h":245}
 },
 {
-	"filename": "candy_26.png",
-	"frame": {"x":481,"y":2911,"w":231,"h":264},
+	"filename": "candy_26.png.png",
+	"frame": {"x":256,"y":2912,"w":231,"h":264},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":231,"h":264},
 	"sourceSize": {"w":231,"h":264}
 },
 {
-	"filename": "candy_27.png",
+	"filename": "candy_27.png.png",
 	"frame": {"x":246,"y":1899,"w":242,"h":244},
 	"rotated": false,
 	"trimmed": false,
@@ -217,7 +217,7 @@
 	"sourceSize": {"w":242,"h":244}
 },
 {
-	"filename": "candy_28.png",
+	"filename": "candy_28.png.png",
 	"frame": {"x":710,"y":453,"w":207,"h":234},
 	"rotated": false,
 	"trimmed": false,
@@ -225,7 +225,7 @@
 	"sourceSize": {"w":207,"h":234}
 },
 {
-	"filename": "candy_29.png",
+	"filename": "candy_29.png.png",
 	"frame": {"x":708,"y":2397,"w":256,"h":252},
 	"rotated": false,
 	"trimmed": false,
@@ -233,7 +233,7 @@
 	"sourceSize": {"w":256,"h":252}
 },
 {
-	"filename": "candy_30.png",
+	"filename": "candy_30.png.png",
 	"frame": {"x":1,"y":2397,"w":249,"h":250},
 	"rotated": false,
 	"trimmed": false,
@@ -241,7 +241,7 @@
 	"sourceSize": {"w":249,"h":250}
 },
 {
-	"filename": "candy_31.png",
+	"filename": "candy_31.png.png",
 	"frame": {"x":1,"y":1409,"w":222,"h":240},
 	"rotated": false,
 	"trimmed": false,
@@ -249,7 +249,7 @@
 	"sourceSize": {"w":222,"h":240}
 },
 {
-	"filename": "candy_32.png",
+	"filename": "candy_32.png.png",
 	"frame": {"x":1,"y":2651,"w":222,"h":253},
 	"rotated": false,
 	"trimmed": false,
@@ -257,7 +257,7 @@
 	"sourceSize": {"w":222,"h":253}
 },
 {
-	"filename": "candy_33.png",
+	"filename": "candy_33.png.png",
 	"frame": {"x":475,"y":226,"w":238,"h":225},
 	"rotated": false,
 	"trimmed": false,
@@ -265,7 +265,7 @@
 	"sourceSize": {"w":238,"h":225}
 },
 {
-	"filename": "candy_34.png",
+	"filename": "candy_34.png.png",
 	"frame": {"x":476,"y":2397,"w":230,"h":251},
 	"rotated": false,
 	"trimmed": false,
@@ -273,7 +273,7 @@
 	"sourceSize": {"w":230,"h":251}
 },
 {
-	"filename": "candy_35.png",
+	"filename": "candy_35.png.png",
 	"frame": {"x":238,"y":689,"w":228,"h":235},
 	"rotated": false,
 	"trimmed": false,
@@ -281,7 +281,7 @@
 	"sourceSize": {"w":228,"h":235}
 },
 {
-	"filename": "candy_36.png",
+	"filename": "candy_36.png.png",
 	"frame": {"x":1,"y":689,"w":235,"h":234},
 	"rotated": false,
 	"trimmed": false,
@@ -289,7 +289,7 @@
 	"sourceSize": {"w":235,"h":234}
 },
 {
-	"filename": "candy_37.png",
+	"filename": "candy_37.png.png",
 	"frame": {"x":243,"y":2146,"w":252,"h":246},
 	"rotated": false,
 	"trimmed": false,
@@ -297,7 +297,7 @@
 	"sourceSize": {"w":252,"h":246}
 },
 {
-	"filename": "candy_38.png",
+	"filename": "candy_38.png.png",
 	"frame": {"x":448,"y":1409,"w":250,"h":242},
 	"rotated": false,
 	"trimmed": false,
@@ -305,7 +305,7 @@
 	"sourceSize": {"w":250,"h":242}
 },
 {
-	"filename": "candy_39.png",
+	"filename": "candy_39.png.png",
 	"frame": {"x":1,"y":1167,"w":244,"h":239},
 	"rotated": false,
 	"trimmed": false,
@@ -313,7 +313,7 @@
 	"sourceSize": {"w":244,"h":239}
 },
 {
-	"filename": "candy_40.png",
+	"filename": "candy_40.png.png",
 	"frame": {"x":247,"y":1167,"w":215,"h":239},
 	"rotated": false,
 	"trimmed": false,
@@ -321,7 +321,7 @@
 	"sourceSize": {"w":215,"h":239}
 },
 {
-	"filename": "candy_41.png",
+	"filename": "candy_41.png.png",
 	"frame": {"x":225,"y":2651,"w":216,"h":253},
 	"rotated": false,
 	"trimmed": false,
@@ -329,7 +329,7 @@
 	"sourceSize": {"w":216,"h":253}
 },
 {
-	"filename": "candy_42.png",
+	"filename": "candy_42.png.png",
 	"frame": {"x":707,"y":689,"w":233,"h":236},
 	"rotated": false,
 	"trimmed": false,
@@ -337,7 +337,7 @@
 	"sourceSize": {"w":233,"h":236}
 },
 {
-	"filename": "candy_43.png",
+	"filename": "candy_43.png.png",
 	"frame": {"x":232,"y":1653,"w":248,"h":243},
 	"rotated": false,
 	"trimmed": false,
@@ -345,7 +345,7 @@
 	"sourceSize": {"w":248,"h":243}
 },
 {
-	"filename": "candy_44.png",
+	"filename": "candy_44.png.png",
 	"frame": {"x":707,"y":927,"w":193,"h":238},
 	"rotated": false,
 	"trimmed": false,
@@ -353,7 +353,7 @@
 	"sourceSize": {"w":193,"h":238}
 },
 {
-	"filename": "candy_45.png",
+	"filename": "candy_45.png.png",
 	"frame": {"x":700,"y":1409,"w":229,"h":242},
 	"rotated": false,
 	"trimmed": false,
@@ -361,7 +361,7 @@
 	"sourceSize": {"w":229,"h":242}
 },
 {
-	"filename": "candy_46.png",
+	"filename": "candy_46.png.png",
 	"frame": {"x":310,"y":1,"w":231,"h":222},
 	"rotated": false,
 	"trimmed": false,
@@ -369,7 +369,7 @@
 	"sourceSize": {"w":231,"h":222}
 },
 {
-	"filename": "candy_47.png",
+	"filename": "candy_47.png.png",
 	"frame": {"x":464,"y":1167,"w":205,"h":239},
 	"rotated": false,
 	"trimmed": false,
@@ -377,15 +377,15 @@
 	"sourceSize": {"w":205,"h":239}
 },
 {
-	"filename": "candy_48.png",
-	"frame": {"x":694,"y":2651,"w":232,"h":258},
+	"filename": "candy_48.png.png",
+	"frame": {"x":443,"y":2651,"w":232,"h":258},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":232,"h":258},
 	"sourceSize": {"w":232,"h":258}
 },
 {
-	"filename": "candy_49.png",
+	"filename": "candy_49.png.png",
 	"frame": {"x":715,"y":226,"w":216,"h":225},
 	"rotated": false,
 	"trimmed": false,
@@ -393,7 +393,7 @@
 	"sourceSize": {"w":216,"h":225}
 },
 {
-	"filename": "candy_50.png",
+	"filename": "candy_50.png.png",
 	"frame": {"x":482,"y":1653,"w":225,"h":243},
 	"rotated": false,
 	"trimmed": false,
@@ -401,7 +401,7 @@
 	"sourceSize": {"w":225,"h":243}
 },
 {
-	"filename": "candy_51.png",
+	"filename": "candy_51.png.png",
 	"frame": {"x":1,"y":927,"w":229,"h":236},
 	"rotated": false,
 	"trimmed": false,
@@ -409,7 +409,7 @@
 	"sourceSize": {"w":229,"h":236}
 },
 {
-	"filename": "candy_52.png",
+	"filename": "candy_52.png.png",
 	"frame": {"x":497,"y":2146,"w":238,"h":246},
 	"rotated": false,
 	"trimmed": true,
@@ -417,7 +417,7 @@
 	"sourceSize": {"w":281,"h":281}
 },
 {
-	"filename": "strategicmusic_logo.png",
+	"filename": "strategicmusic_logo.png.png",
 	"frame": {"x":1,"y":1,"w":307,"h":137},
 	"rotated": false,
 	"trimmed": true,
@@ -425,16 +425,16 @@
 	"sourceSize": {"w":1076,"h":983}
 },
 {
-	"filename": "logo.png",
-	"frame": {"x":1,"y":3504,"w":870,"h":558},
+	"filename": "logo.png.png",
+	"frame": {"x":1,"y":3513,"w":870,"h":558},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":870,"h":558},
 	"sourceSize": {"w":870,"h":624}
 },
 {
-	"filename": "zeptolab_logo.png",
-	"frame": {"x":567,"y":3186,"w":281,"h":316},
+	"filename": "zeptolab_logo.png.png",
+	"frame": {"x":567,"y":3195,"w":281,"h":316},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":281,"h":316},
@@ -445,8 +445,8 @@
 	"version": "1.0",
 	"image": "menu_logo_new.png",
 	"format": "RGBA8888",
-	"size": {"w":1016,"h":4063},
+	"size": {"w":1018,"h":4072},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:63d14e95c6bb3c4e75e8da783cf080a7:59b770912ba7637ebb4b872b85b4ca71:7eeb4f4478df129137498c91647836b5$"
+	"smartupdate": "$TexturePacker:SmartUpdate:114ffdf265be60194581686dbd39d30b:67a328aa272ce3a07c521defddf89d9f:7eeb4f4478df129137498c91647836b5$"
 }
 }
