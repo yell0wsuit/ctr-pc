@@ -115,134 +115,140 @@ namespace CutTheRope.GameMain
                             grab.ReCalcCircle();
                         }
                     }
-                    if (rope == null)
+
+                    bool shouldProcessGrabRadius = true;
+
+                    if (rope != null)
                     {
-                        goto IL_0478;
-                    }
-                    if (rope.cut == -1 || rope.cutTime != 0.0)
-                    {
-                        rope?.Update(delta * ropePhysicsSpeed);
-                        if (!grab.hasSpider)
+                        if (rope.cut == -1 || rope.cutTime != 0.0)
                         {
-                            goto IL_0478;
-                        }
-                        if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
-                        {
-                            grab.UpdateSpider(delta);
-                        }
-                        if (grab.spiderPos == -1f)
-                        {
-                            SpiderWon(grab);
-                            break;
-                        }
-                        goto IL_0478;
-                    }
-                IL_08D4:
-                    k++;
-                    continue;
-                IL_0478:
-                    if (grab.radius != -1f && grab.rope == null)
-                    {
-                        if (twoParts != 2)
-                        {
-                            if (!noCandyL && VectDistance(Vect(grab.x, grab.y), starL.pos) <= grab.radius + 42f)
+                            rope?.Update(delta * ropePhysicsSpeed);
+                            if (grab.hasSpider)
                             {
-                                Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.x, starL.pos.y, grab.radius + 42f);
-                                bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
-                                grab.hideRadius = true;
-                                grab.SetRope(bungee);
-                                CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
-                                if (grab.mover != null)
+                                if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                                 {
-                                    CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                    grab.UpdateSpider(delta);
+                                }
+                                if (grab.spiderPos == -1f)
+                                {
+                                    SpiderWon(grab);
+                                    break;
                                 }
                             }
-                            if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
-                            {
-                                Bungee bungee2 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.x, starR.pos.y, grab.radius + 42f);
-                                bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
-                                grab.hideRadius = true;
-                                grab.SetRope(bungee2);
-                                CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
-                                if (grab.mover != null)
-                                {
-                                    CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
-                                }
-                            }
-                        }
-                        else if (VectDistance(Vect(grab.x, grab.y), star.pos) <= grab.radius + 42f)
-                        {
-                            Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.x, star.pos.y, grab.radius + 42f);
-                            bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
-                            grab.hideRadius = true;
-                            grab.SetRope(bungee3);
-                            CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
-                            if (grab.mover != null)
-                            {
-                                CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
-                            }
-                        }
-                    }
-                    if (rope == null)
-                    {
-                        goto IL_08D4;
-                    }
-                    MaterialPoint bungeeAnchor = rope.bungeeAnchor;
-                    ConstraintedPoint constraintedPoint2 = rope.parts[^1];
-                    Vector v = VectSub(bungeeAnchor.pos, constraintedPoint2.pos);
-                    bool flag4 = false;
-                    if (twoParts != 2)
-                    {
-                        if (constraintedPoint2 == starL && !noCandyL && !flag2)
-                        {
-                            flag4 = true;
-                        }
-                        if (constraintedPoint2 == starR && !noCandyR && !flag3)
-                        {
-                            flag4 = true;
-                        }
-                    }
-                    else if (!noCandy && !flag)
-                    {
-                        flag4 = true;
-                    }
-                    if (rope.relaxed != 0 && rope.cut == -1 && flag4)
-                    {
-                        float num9 = RADIANS_TO_DEGREES(VectAngleNormalized(v));
-                        if (twoParts != 2)
-                        {
-                            GameObject gameObject = constraintedPoint2 == starL ? candyL : candyR;
-                            if (!rope.chosenOne)
-                            {
-                                rope.initialCandleAngle = gameObject.rotation - num9;
-                            }
-                            if (constraintedPoint2 == starL)
-                            {
-                                lastCandyRotateDeltaL = num9 + rope.initialCandleAngle - gameObject.rotation;
-                                flag2 = true;
-                            }
-                            else
-                            {
-                                lastCandyRotateDeltaR = num9 + rope.initialCandleAngle - gameObject.rotation;
-                                flag3 = true;
-                            }
-                            gameObject.rotation = num9 + rope.initialCandleAngle;
                         }
                         else
                         {
-                            if (!rope.chosenOne)
-                            {
-                                rope.initialCandleAngle = candyMain.rotation - num9;
-                            }
-                            lastCandyRotateDelta = num9 + rope.initialCandleAngle - candyMain.rotation;
-                            candyMain.rotation = num9 + rope.initialCandleAngle;
-                            flag = true;
+                            shouldProcessGrabRadius = false;
                         }
-                        rope.chosenOne = true;
-                        goto IL_08D4;
                     }
-                    rope.chosenOne = false;
-                    goto IL_08D4;
+
+                    if (shouldProcessGrabRadius)
+                    {
+                        if (grab.radius != -1f && grab.rope == null)
+                        {
+                            if (twoParts != 2)
+                            {
+                                if (!noCandyL && VectDistance(Vect(grab.x, grab.y), starL.pos) <= grab.radius + 42f)
+                                {
+                                    Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.x, starL.pos.y, grab.radius + 42f);
+                                    bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                                    grab.hideRadius = true;
+                                    grab.SetRope(bungee);
+                                    CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+                                    if (grab.mover != null)
+                                    {
+                                        CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                    }
+                                }
+                                if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
+                                {
+                                    Bungee bungee2 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.x, starR.pos.y, grab.radius + 42f);
+                                    bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
+                                    grab.hideRadius = true;
+                                    grab.SetRope(bungee2);
+                                    CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+                                    if (grab.mover != null)
+                                    {
+                                        CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                    }
+                                }
+                            }
+                            else if (VectDistance(Vect(grab.x, grab.y), star.pos) <= grab.radius + 42f)
+                            {
+                                Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.x, star.pos.y, grab.radius + 42f);
+                                bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
+                                grab.hideRadius = true;
+                                grab.SetRope(bungee3);
+                                CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+                                if (grab.mover != null)
+                                {
+                                    CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                }
+                            }
+                        }
+                        if (rope != null)
+                        {
+                            MaterialPoint bungeeAnchor = rope.bungeeAnchor;
+                            ConstraintedPoint constraintedPoint2 = rope.parts[^1];
+                            Vector v = VectSub(bungeeAnchor.pos, constraintedPoint2.pos);
+                            bool flag4 = false;
+                            if (twoParts != 2)
+                            {
+                                if (constraintedPoint2 == starL && !noCandyL && !flag2)
+                                {
+                                    flag4 = true;
+                                }
+                                if (constraintedPoint2 == starR && !noCandyR && !flag3)
+                                {
+                                    flag4 = true;
+                                }
+                            }
+                            else if (!noCandy && !flag)
+                            {
+                                flag4 = true;
+                            }
+                            if (rope.relaxed != 0 && rope.cut == -1 && flag4)
+                            {
+                                float num9 = RADIANS_TO_DEGREES(VectAngleNormalized(v));
+                                if (twoParts != 2)
+                                {
+                                    GameObject gameObject = constraintedPoint2 == starL ? candyL : candyR;
+                                    if (!rope.chosenOne)
+                                    {
+                                        rope.initialCandleAngle = gameObject.rotation - num9;
+                                    }
+                                    if (constraintedPoint2 == starL)
+                                    {
+                                        lastCandyRotateDeltaL = num9 + rope.initialCandleAngle - gameObject.rotation;
+                                        flag2 = true;
+                                    }
+                                    else
+                                    {
+                                        lastCandyRotateDeltaR = num9 + rope.initialCandleAngle - gameObject.rotation;
+                                        flag3 = true;
+                                    }
+                                    gameObject.rotation = num9 + rope.initialCandleAngle;
+                                }
+                                else
+                                {
+                                    if (!rope.chosenOne)
+                                    {
+                                        rope.initialCandleAngle = candyMain.rotation - num9;
+                                    }
+                                    lastCandyRotateDelta = num9 + rope.initialCandleAngle - candyMain.rotation;
+                                    candyMain.rotation = num9 + rope.initialCandleAngle;
+                                    flag = true;
+                                }
+                                rope.chosenOne = true;
+                            }
+                            else
+                            {
+                                rope.chosenOne = false;
+                            }
+                        }
+                    }
+
+                    k++;
                 }
                 if (twoParts != 2)
                 {
