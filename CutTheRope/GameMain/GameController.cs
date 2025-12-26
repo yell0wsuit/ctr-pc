@@ -374,7 +374,14 @@ namespace CutTheRope.GameMain
                         return;
                     }
                 case var id when id == GameControllerButtonId.WinContinue:
-                    goto IL_013D;
+                    if (LastLevelInPack() && !cTRRootController.IsPicker())
+                    {
+                        Deactivate();
+                        return;
+                    }
+                    ((GameScene)view.GetChild(0)).LoadNextMap();
+                    LevelStart();
+                    return;
                 case var id when id == GameControllerButtonId.ExitFromLose:
                     if (!boxCloseHandled)
                     {
@@ -388,7 +395,14 @@ namespace CutTheRope.GameMain
                         BoxClosed();
                     }
                     CTRRootController.LogEvent("LC_NEXT_PRESSED");
-                    goto IL_013D;
+                    if (LastLevelInPack() && !cTRRootController.IsPicker())
+                    {
+                        Deactivate();
+                        return;
+                    }
+                    ((GameScene)view.GetChild(0)).LoadNextMap();
+                    LevelStart();
+                    return;
                 case var id when id == GameControllerButtonId.ToggleMusic:
                     {
                         bool flag = Preferences.GetBooleanForKey("MUSIC_ON");
@@ -439,15 +453,6 @@ namespace CutTheRope.GameMain
             gameScene5.Reload();
             SetPaused(false);
             CTRRootController.LogEvent(n != GameControllerButtonId.ExitFromLose ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
-            return;
-        IL_013D:
-            if (LastLevelInPack() && !cTRRootController.IsPicker())
-            {
-                Deactivate();
-                return;
-            }
-            ((GameScene)view.GetChild(0)).LoadNextMap();
-            LevelStart();
         }
 
         void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
