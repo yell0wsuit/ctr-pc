@@ -136,6 +136,7 @@ namespace CutTheRope.GameMain
             ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
             isGamePaused = false;
             view.GetChild(0).touchable = true;
+            view.GetChild(0).updateable = true;
             view.GetChild(1).touchable = true;
             view.GetChild(2).touchable = true;
         }
@@ -146,6 +147,7 @@ namespace CutTheRope.GameMain
             ((BoxOpenClose)view.GetChild(4)).LevelStart();
             isGamePaused = false;
             view.GetChild(0).touchable = true;
+            view.GetChild(0).updateable = true;
             view.GetChild(1).touchable = true;
             view.GetChild(2).touchable = true;
             view.GetChild(4).touchable = false;
@@ -247,6 +249,7 @@ namespace CutTheRope.GameMain
             boxOpenClose.score = gameScene.score;
             isGamePaused = true;
             gameScene.touchable = false;
+            gameScene.updateable = false;
             view.GetChild(2).touchable = false;
             view.GetChild(1).touchable = false;
             int pack = cTRRootController.GetPack();
@@ -381,6 +384,7 @@ namespace CutTheRope.GameMain
                     }
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
+                    SetPaused(false);
                     return;
                 case var id when id == GameControllerButtonId.ExitFromLose:
                     if (!boxCloseHandled)
@@ -402,6 +406,7 @@ namespace CutTheRope.GameMain
                     }
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
+                    SetPaused(false);
                     return;
                 case var id when id == GameControllerButtonId.ToggleMusic:
                     {
@@ -643,6 +648,7 @@ namespace CutTheRope.GameMain
             }
             ((GameScene)view.GetChild(0)).LoadNextMap();
             LevelStart();
+            SetPaused(false);
         }
 
         public void ReleaseAllTouches(GameScene gs)
