@@ -278,7 +278,14 @@ namespace CutTheRope.GameMain
             {
                 // Freeze the game scene a bit after the door closing animation finishes
                 TimerManager.RegisterDelayedObjectCall(
-                    (_) => gameScene.updateable = false,
+                    (_) =>
+                    {
+                        // Only freeze if still in result screen (not when replaying/moving to next level)
+                        if (isGamePaused)
+                        {
+                            gameScene.updateable = false;
+                        }
+                    },
                     gameScene,
                     0.5);
             };
