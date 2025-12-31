@@ -4,6 +4,7 @@ using CutTheRope.Commons;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -249,7 +250,6 @@ namespace CutTheRope.GameMain
             boxOpenClose.score = gameScene.score;
             isGamePaused = true;
             gameScene.touchable = false;
-            gameScene.updateable = false;
             view.GetChild(2).touchable = false;
             view.GetChild(1).touchable = false;
             int pack = cTRRootController.GetPack();
@@ -274,6 +274,14 @@ namespace CutTheRope.GameMain
                 }
             }
             boxOpenClose.shouldShowConfetti = gameScene.starsCollected == 3;
+            boxOpenClose.delegateboxClosed = () =>
+            {
+                // Freeze the game scene a bit after the door closing animation finishes
+                TimerManager.RegisterDelayedObjectCall(
+                    (_) => gameScene.updateable = false,
+                    gameScene,
+                    0.5);
+            };
             boxOpenClose.LevelWon();
             UnlockNextLevel();
         }
