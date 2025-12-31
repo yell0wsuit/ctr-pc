@@ -4,6 +4,7 @@ using CutTheRope.Commons;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -136,6 +137,7 @@ namespace CutTheRope.GameMain
             ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
             isGamePaused = false;
             view.GetChild(0).touchable = true;
+            view.GetChild(0).updateable = true;
             view.GetChild(1).touchable = true;
             view.GetChild(2).touchable = true;
         }
@@ -146,6 +148,7 @@ namespace CutTheRope.GameMain
             ((BoxOpenClose)view.GetChild(4)).LevelStart();
             isGamePaused = false;
             view.GetChild(0).touchable = true;
+            view.GetChild(0).updateable = true;
             view.GetChild(1).touchable = true;
             view.GetChild(2).touchable = true;
             view.GetChild(4).touchable = false;
@@ -271,6 +274,14 @@ namespace CutTheRope.GameMain
                 }
             }
             boxOpenClose.shouldShowConfetti = gameScene.starsCollected == 3;
+            boxOpenClose.delegateboxClosed = () =>
+            {
+                // Freeze the game scene a bit after the door closing animation finishes
+                TimerManager.RegisterDelayedObjectCall(
+                    (_) => gameScene.updateable = false,
+                    gameScene,
+                    0.5);
+            };
             boxOpenClose.LevelWon();
             UnlockNextLevel();
         }
@@ -381,6 +392,7 @@ namespace CutTheRope.GameMain
                     }
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
+                    SetPaused(false);
                     return;
                 case var id when id == GameControllerButtonId.ExitFromLose:
                     if (!boxCloseHandled)
@@ -402,6 +414,7 @@ namespace CutTheRope.GameMain
                     }
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
+                    SetPaused(false);
                     return;
                 case var id when id == GameControllerButtonId.ToggleMusic:
                     {
@@ -643,6 +656,7 @@ namespace CutTheRope.GameMain
             }
             ((GameScene)view.GetChild(0)).LoadNextMap();
             LevelStart();
+            SetPaused(false);
         }
 
         public void ReleaseAllTouches(GameScene gs)
