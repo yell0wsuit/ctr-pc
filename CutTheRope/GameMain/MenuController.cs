@@ -145,7 +145,7 @@ namespace CutTheRope.GameMain
             switch (true)
             {
                 case var _ when SpecialEvents.IsXmas:
-                    backgroundResource = Resources.Img.MenuBgrXmasSecondary;
+                    backgroundResource = Resources.Img.MenuBgrXmas;
                     backgroundQuad = 0;
                     break;
                 default:
@@ -169,7 +169,7 @@ namespace CutTheRope.GameMain
                 {
                     case var _ when SpecialEvents.IsXmas:
                         backgroundSecondaryResource = Resources.Img.MenuBgrXmas;
-                        backgroundSecondaryQuad = 0;
+                        backgroundSecondaryQuad = 1;
                         break;
                     default:
                         backgroundSecondaryResource = Resources.Img.MenuBgr;
