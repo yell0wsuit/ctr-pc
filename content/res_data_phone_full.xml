@@ -68,14 +68,14 @@
       <preCutHeight>1152</preCutHeight>
     </info>
   </resource>
-    <resource name="menu_bgr_xmas">
-        <info format="0" fileFormat="0" filter="1">
-            <quads>0,0,2048,1152,0,1152,2048,736,</quads>
-            <offsets>0,0,0,416,</offsets>
-            <preCutWidth>2048</preCutWidth>
-            <preCutHeight>1152</preCutHeight>
-        </info>
-    </resource>
+  <resource name="menu_bgr_xmas">
+    <info format="0" fileFormat="0" filter="1">
+      <quads>0,0,2048,1152,0,1152,2048,736,</quads>
+      <offsets>0,0,0,416,</offsets>
+      <preCutWidth>2048</preCutWidth>
+      <preCutHeight>1152</preCutHeight>
+    </info>
+  </resource>
   <resource name="menu_popup">
     <info format="0" fileFormat="0" filter="1">
       <quads>0,0,792,792,792,0,7,8,799,0,7,8,806,0,7,7,813,0,7,7,820,0,7,8,</quads>
