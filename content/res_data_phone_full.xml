@@ -699,14 +699,6 @@
       <preCutHeight>2304</preCutHeight>
     </info>
   </resource>
-  <resource name="bgr_12_p2">
-    <info format="0" fileFormat="0" filter="1">
-      <quads>0,0,2048,980,</quads>
-      <offsets>0,802,</offsets>
-      <preCutWidth>2048</preCutWidth>
-      <preCutHeight>2304</preCutHeight>
-    </info>
-  </resource>
   <resource name="bgr_13_p1">
     <info format="0" fileFormat="0" filter="1">
       <quads>0,0,2048,1153,</quads>

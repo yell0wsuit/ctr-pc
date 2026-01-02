@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" nightLevel="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <bubble x="53" y="214" />
         <bubble x="126" y="215" />
         <bubble x="197" y="215" />

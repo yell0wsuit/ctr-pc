@@ -4,7 +4,7 @@
         <map width="320" height="480" gridSize="32" />
         <gameDesign special="1" twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="140" y="166" />
         <pump x="60" y="371" angle="270" />
         <ghost x="289" y="318" bouncer="true" bubble="false" grab="true" radius="70" angle="-30" />

@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign special="1" ropePhysicsSpeed="1.0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <target x="162" y="430" />
         <grab x="101" y="271" length="100" wheel="false" radius="45" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" />
         <grab x="36" y="148" length="100" wheel="false" radius="45" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" />

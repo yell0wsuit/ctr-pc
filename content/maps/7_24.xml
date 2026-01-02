@@ -4,7 +4,7 @@
         <map width="320" height="480" gridSize="32" />
         <gameDesign ropePhysicsSpeed="1.0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="211" y="290" />
         <grab x="211" y="207" length="65" wheel="false" radius="-1" moveLength="100" moveVertical="false" moveOffset="100" spider="false" />
         <grab x="119" y="439" length="100" wheel="false" radius="30" moveLength="100" moveVertical="true" moveOffset="100" spider="false" />

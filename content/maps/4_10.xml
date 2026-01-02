@@ -4,7 +4,7 @@
         <map gridSize="32" width="640" height="960" />
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="335" y="761" />
         <grab x="338" y="843" length="50" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
         <sock x="244" y="633" group="0" angle="90" path="200,0" moveSpeed="55" />

@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="77" y="313" />
         <target x="123" y="432" />
         <star x="148" y="139" timeout="-1" />
@@ -17,15 +17,15 @@
         <tutorialText x="20" y="98" locale="en" text="Stretched ropes get red" width="100" />
         <tutorial09 x="67" y="85" locale="en" moveSpeed="100" rotateSpeed="100" />
     </layer>
-<layer name="Ru">
+    <layer name="Ru">
         <tutorial09 x="68" y="64" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="21" y="77" locale="ru" text="Натянутые веревки становятся красными" width="100" />
     </layer>
-<layer name="Fr">
+    <layer name="Fr">
         <tutorial09 x="67" y="61" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="20" y="74" locale="fr" text="Les cordes étirées deviennent rouges" width="100" />
     </layer>
-<layer name="De">
+    <layer name="De">
         <tutorialText x="57" y="33" locale="de" text="Gespannte Seile werden rot" width="140" />
         <tutorial09 x="39" y="68" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>

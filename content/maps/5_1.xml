@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1" special="1" twoParts="true" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candyL x="101" y="170" />
         <candyR x="232" y="171" />
         <grab x="164" y="146" length="150" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="R" />
@@ -18,15 +18,15 @@
         <star x="139" y="328" timeout="-1" />
         <star x="163" y="369" timeout="-1" />
     </layer>
-<layer name="Ru">
+    <layer name="Ru">
         <tutorialText x="79" y="219" locale="ru" text="Соедините половинки леденца, прежде чем скормить его АмНяму" width="200" />
         <tutorial09 x="55" y="267" locale="ru" moveSpeed="100" rotateSpeed="100" />
     </layer>
-<layer name="Fr">
+    <layer name="Fr">
         <tutorialText x="78" y="213" locale="fr" text="Associe deux morceaux de bonbon avant de le donner à Om Nom pour qu'il le mange" width="200" />
         <tutorial09 x="55" y="267" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
-<layer name="De">
+    <layer name="De">
         <tutorialText x="56" y="219" locale="de" text="Bring zwei Bonbons zusammen, bevor Du sie an Om Nom verfütterst" width="200" />
         <tutorial09 x="39" y="268" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
