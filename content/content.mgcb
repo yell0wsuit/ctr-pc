@@ -1789,30 +1789,6 @@
 /processorParam:TextureFormat=Color
 /build:menu_scrollbar.png
 
-#begin menu_xmas_pc.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:menu_xmas_pc.png
-
-#begin menu_xmas_secondary_pc.jpeg
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:menu_xmas_secondary_pc.jpeg
-
 #begin obj_bee_hd.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2581,3 +2557,14 @@
 /processorParam:TextureFormat=Color
 /build:zeptolab.png
 
+#begin menu_bgr_xmas.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:menu_bgr_xmas.png

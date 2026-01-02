@@ -68,18 +68,10 @@
       <preCutHeight>1152</preCutHeight>
     </info>
   </resource>
-  <resource name="menu_xmas_pc">
+  <resource name="menu_bgr_xmas">
     <info format="0" fileFormat="0" filter="1">
-      <quads>0,0,2048,1152,</quads>
-      <offsets>0,0,</offsets>
-      <preCutWidth>2048</preCutWidth>
-      <preCutHeight>1152</preCutHeight>
-    </info>
-  </resource>
-  <resource name="menu_xmas_secondary_pc">
-    <info format="0" fileFormat="0" filter="1">
-      <quads>0,0,2048,1152,</quads>
-      <offsets>0,0,</offsets>
+      <quads>0,0,2048,1152,0,1152,2048,736,</quads>
+      <offsets>0,0,0,416,</offsets>
       <preCutWidth>2048</preCutWidth>
       <preCutHeight>1152</preCutHeight>
     </info>
