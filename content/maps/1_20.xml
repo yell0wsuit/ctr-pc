@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="162" y="101" />
         <target x="162" y="426" />
         <star x="161" y="216" timeout="0" />
@@ -25,7 +25,7 @@
         <tutorial07 x="19" y="95" locale="en" moveSpeed="100" rotateSpeed="100" />
         <tutorial07 x="304" y="96" locale="en" angle="180" moveSpeed="100" rotateSpeed="100" />
     </layer>
-<layer name="Ru">
+    <layer name="Ru">
         <tutorial01 x="54" y="110" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="107" y="110" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="160" y="110" locale="ru" moveSpeed="100" rotateSpeed="100" />
@@ -33,7 +33,7 @@
         <tutorial01 x="264" y="109" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="10" y="50" locale="ru" text="Вы можете перерезать несколько веревок одновременно" width="300" />
     </layer>
-<layer name="Fr">
+    <layer name="Fr">
         <tutorial01 x="56" y="106" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="108" y="106" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="161" y="106" locale="fr" moveSpeed="100" rotateSpeed="100" />
@@ -43,7 +43,7 @@
         <tutorial07 x="304" y="106" locale="fr" angle="180" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="37" y="46" locale="fr" text="Tu peux couper plusieurs cordes à la fois" width="250" />
     </layer>
-<layer name="De">
+    <layer name="De">
         <tutorial01 x="56" y="106" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="108" y="106" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="161" y="106" locale="de" moveSpeed="100" rotateSpeed="100" />

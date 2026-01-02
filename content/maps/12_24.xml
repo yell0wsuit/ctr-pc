@@ -4,7 +4,7 @@
         <map width="320" height="480" gridSize="32" />
         <gameDesign special="1" twoParts="true" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candyL x="50" y="245" />
         <candyR x="262" y="356" />
         <bubble x="48" y="240" />

@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign special="1" twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <bubble x="48" y="292" />
         <rotatedCircle x="129" y="257" size="120" handleAngle="125" oneHandle="false" />
         <sock x="46" y="419" group="0" angle="270" />

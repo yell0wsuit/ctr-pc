@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="158" y="147" />
         <grab x="159" y="45" length="90" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
         <target x="161" y="427" />
@@ -21,7 +21,7 @@
         <tutorial01 x="265" y="119" locale="en" moveSpeed="100" rotateSpeed="100" />
         <tutorial10 x="93" y="149" locale="en" moveSpeed="100" rotateSpeed="100" special="2" />
     </layer>
-<layer name="Ru">
+    <layer name="Ru">
         <tutorial10 x="93" y="156" locale="ru" moveSpeed="100" rotateSpeed="100" special="2" />
         <tutorial01 x="109" y="126" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="57" y="126" locale="ru" moveSpeed="100" rotateSpeed="100" />
@@ -32,7 +32,7 @@
         <tutorial04 x="231" y="421" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="196" y="314" locale="ru" text="Доставьте леденец Ам Няму" width="80" />
     </layer>
-<layer name="Fr">
+    <layer name="Fr">
         <tutorial10 x="92" y="149" locale="fr" moveSpeed="100" rotateSpeed="100" special="2" />
         <tutorial01 x="109" y="124" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="57" y="124" locale="fr" moveSpeed="100" rotateSpeed="100" />
@@ -43,7 +43,7 @@
         <tutorial04 x="231" y="415" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="196" y="311" locale="fr" text="Donne un bonbon à Om Nom" width="100" />
     </layer>
-<layer name="De">
+    <layer name="De">
         <tutorial10 x="93" y="156" locale="de" moveSpeed="100" rotateSpeed="100" special="2" />
         <tutorial01 x="109" y="129" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="57" y="129" locale="de" moveSpeed="100" rotateSpeed="100" />

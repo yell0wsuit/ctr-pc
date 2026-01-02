@@ -4,7 +4,7 @@
         <map width="320" height="480" gridSize="32" />
         <gameDesign special="1" twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <sock x="242" y="337" group="0" angle="180" />
         <sock x="240" y="241" group="0" angle="180" />
         <ghost x="128" y="342" bouncer="true" bubble="true" grab="false" radius="100" angle="90" />
