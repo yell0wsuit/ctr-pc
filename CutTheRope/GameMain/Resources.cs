@@ -104,7 +104,7 @@ namespace CutTheRope.GameMain
                 Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
                 Img.Snowflakes, Img.CharGreetingXmas,
                 Img.Bgr14Cover, Img.Bgr14P1, Img.ObjLantern,
-                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuBgrXmasSecondary, Img.MenuLogoXmasHat,
+                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuLogoXmasHat,
                 Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
                 Img.ObjCandy07, Img.ObjCandy08, Img.ObjCandy09, Img.ObjCandy10, Img.ObjCandy11,
                 Img.ObjCandy12, Img.ObjCandy13, Img.ObjCandy14, Img.ObjCandy15, Img.ObjCandy16,
@@ -272,8 +272,7 @@ namespace CutTheRope.GameMain
             public const string CharGreetingXmas = "char_greeting_xmas";
             public const string CharIdleXmas = "char_idle_xmas";
             public const string ObjSock = "obj_sock_xmas";
-            public const string MenuBgrXmas = "menu_xmas_pc";
-            public const string MenuBgrXmasSecondary = "menu_xmas_secondary_pc";
+            public const string MenuBgrXmas = "menu_bgr_xmas";
             public const string MenuLogoXmasHat = "xmas_hat_logo";
             public const string Bgr13Cover = "bgr_13_cover";
             public const string Bgr13P1 = "bgr_13_p1";
