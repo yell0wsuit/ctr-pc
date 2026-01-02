@@ -4,7 +4,7 @@
         <map gridSize="32" width="640" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="352" y="318" />
         <target x="70" y="222" />
         <star x="210" y="44" path="0,100" moveSpeed="40" timeout="-1" />

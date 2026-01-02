@@ -4,7 +4,7 @@
         <map gridSize="32" width="640" height="480" />
         <gameDesign ropePhysicsSpeed="1" special="1" twoParts="false" mapOffsetX="-70" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="566" y="103" />
         <grab x="571" y="195" length="60" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
         <bouncer2 x="346" y="413" angle="0" size="2" />

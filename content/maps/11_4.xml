@@ -4,7 +4,7 @@
         <map gridSize="32" width="640" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <target x="151" y="221" />
         <rotatedCircle x="308" y="297" size="50" handleAngle="180" oneHandle="true" />
         <rotatedCircle x="460" y="220" size="50" handleAngle="0" oneHandle="true" />

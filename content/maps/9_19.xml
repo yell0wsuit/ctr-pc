@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <star x="161" y="110" timeout="-1" />
         <star x="256" y="174" timeout="-1" />
         <target x="163" y="378" />

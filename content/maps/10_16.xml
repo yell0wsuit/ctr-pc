@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" />
     </layer>
-<layer name="Layer 1">
+    <layer name="Layer 1">
         <sock x="118" y="48" group="0" angle="90" />
         <sock x="125" y="429" group="0" angle="-90" />
         <target x="275" y="189" />
