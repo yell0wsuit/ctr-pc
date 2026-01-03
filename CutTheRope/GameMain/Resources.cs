@@ -133,9 +133,7 @@ namespace CutTheRope.GameMain
                 Snd.SpiderFall, Snd.SpiderWin, Snd.Wheel, Snd.Win, Snd.GravityOff,
                 Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
-                Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
-                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.XmasBell,
-                Snd.MenuMusicXmas, Snd.GameMusicXmas, Snd.SteamStart,
+                Snd.ScratchOut, Snd.GhostPuff, Snd.XmasBell, Snd.SteamStart,
                 Snd.SteamStart2, Snd.SteamEnd, Snd.LanternTeleportIn,
                 Snd.LanternTeleportOut
             ];
@@ -392,7 +390,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Sound effect and music resource names.
+        /// Sound effect resource names.
         /// </summary>
         internal static class Snd
         {
@@ -434,21 +432,33 @@ namespace CutTheRope.GameMain
             public const string Teleport = "teleport";
             public const string ScratchIn = "scratch_in";
             public const string ScratchOut = "scratch_out";
-            public const string MenuMusic = "menu_music";
-            public const string GameMusic = "game_music";
-            public const string GameMusic2 = "game_music2";
-            public const string GameMusic3 = "game_music3";
-            public const string GameMusic4 = "game_music4";
             public const string GhostPuff = "ghost_puff";
             public const string XmasBell = "xmas_bell";
-            public const string MenuMusicXmas = "menu_music_xmas";
-            public const string GameMusicXmas = "game_music_xmas";
             public const string TeleportXmas = "teleport_xmas";
             public const string SteamStart = "steam_start";
             public const string SteamStart2 = "steam_start2";
             public const string SteamEnd = "steam_end";
             public const string LanternTeleportIn = "lantern_teleport_in";
             public const string LanternTeleportOut = "lantern_teleport_out";
+        }
+
+        /// <summary>
+        /// Music resource names.
+        /// </summary>
+        internal static class Music
+        {
+#if MONOGAME_WINDOWSDX
+    private const string Suffix = "_windows";
+#else
+    private const string Suffix = "";
+#endif
+            public const string MenuMusic = "menu_music" + Suffix;
+            public const string GameMusic = "game_music" + Suffix;
+            public const string GameMusic2 = "game_music2" + Suffix;
+            public const string GameMusic3 = "game_music3" + Suffix;
+            public const string GameMusic4 = "game_music4" + Suffix;
+            public const string MenuMusicXmas = "menu_music_xmas" + Suffix;
+            public const string GameMusicXmas = "game_music_xmas" + Suffix;
         }
 
         /// <summary>
