@@ -172,13 +172,13 @@ namespace CutTheRope.GameMain
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn, null];
         private static readonly string[] PackMusic =
         [
-            Resources.Snd.MenuMusic,
-            Resources.Snd.GameMusic,
-            Resources.Snd.GameMusic2,
-            Resources.Snd.GameMusic3,
-            Resources.Snd.GameMusic4,
-            Resources.Snd.MenuMusicXmas,
-            Resources.Snd.GameMusicXmas,
+            Resources.Music.MenuMusic,
+            Resources.Music.GameMusic,
+            Resources.Music.GameMusic2,
+            Resources.Music.GameMusic3,
+            Resources.Music.GameMusic4,
+            Resources.Music.MenuMusicXmas,
+            Resources.Music.GameMusicXmas,
             null,
         ];
     }
