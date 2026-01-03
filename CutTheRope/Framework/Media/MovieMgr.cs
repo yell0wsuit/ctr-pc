@@ -12,6 +12,10 @@ namespace CutTheRope.Framework.Media
         {
             url = moviePath;
 
+#if MONOGAME_DESKTOPGL
+            // Video playback not supported on DesktopGL - skip immediately
+            delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
+#else
             string videoPath = ContentPaths.GetVideoPath(moviePath, Global.ScreenSizeManager.CurrentSize.Width);
 
             // Unload the video from ContentManager's cache before reloading
@@ -31,6 +35,7 @@ namespace CutTheRope.Framework.Media
                 IsMuted = mute
             };
             waitForStart = true;
+#endif
         }
 
         public Texture2D GetTexture()
