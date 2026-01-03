@@ -335,6 +335,18 @@ namespace CutTheRope.Framework.Visual
             ], 4, border, fill);
         }
 
+        /// <summary>
+        /// Draws a solid filled rectangle without a border.
+        /// </summary>
+        /// <param name="x">X coordinate of the top-left corner.</param>
+        /// <param name="y">Y coordinate of the top-left corner.</param>
+        /// <param name="w">Width of the rectangle.</param>
+        /// <param name="h">Height of the rectangle.</param>
+        /// <param name="fill">Fill color of the rectangle.</param>
+        /// <remarks>
+        /// This method temporarily disables texture client state to draw using vertex colors,
+        /// and resets the color to white afterwards to prevent color bleeding to subsequent draws.
+        /// </remarks>
         public static void DrawSolidRectWOBorder(float x, float y, float w, float h, RGBAColor fill)
         {
             float[] pointer =
@@ -348,9 +360,14 @@ namespace CutTheRope.Framework.Visual
                 x + w,
                 y + h
             ];
+            // Disable texture coordinates to use colored (non-textured) rendering
+            OpenGL.GlDisableClientState(0);
             OpenGL.GlColor4f(fill.ToXNA());
             OpenGL.GlVertexPointer(2, 5, 0, pointer);
             OpenGL.GlDrawArrays(8, 0, 4);
+            // Reset color to white to prevent color bleeding to subsequent textured draws
+            OpenGL.GlColor4f(RGBAColor.solidOpaqueRGBA.ToXNA());
+            OpenGL.GlEnableClientState(0);
         }
 
         public static void DrawPolygon(float[] vertices, int vertexCount, RGBAColor color)
