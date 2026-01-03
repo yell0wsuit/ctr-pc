@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <candy x="132" y="192" />
         <bubble x="134" y="189" />
         <grab x="139" y="328" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />

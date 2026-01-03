@@ -4,7 +4,7 @@
         <map gridSize="32" width="640" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" mapOffsetX="-48" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <pump x="70" y="398" angle="0" />
         <pump x="157" y="98" angle="0" />
         <pump x="324" y="398" angle="0" />

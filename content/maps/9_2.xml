@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1.0" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <target x="160" y="52" />
         <candy x="163" y="367" />
         <star x="159" y="262" timeout="-1" />
@@ -15,19 +15,19 @@
         <spike3 x="105" y="122" angle="90" size="3" toggled="1" />
         <spike3 x="201" y="320" angle="0" size="3" toggled="1" />
     </layer>
-<layer name="ru">
+    <layer name="ru">
         <tutorialText x="166" y="155" locale="ru" text="Эти пилы поворачиваются вместе" width="150" />
         <tutorial09 x="238" y="138" locale="ru" moveSpeed="100" rotateSpeed="100" />
     </layer>
-<layer name="en">
+    <layer name="en">
         <tutorialText x="166" y="161" locale="en" text="These blades rotate together" width="150" />
         <tutorial09 x="239" y="147" locale="en" moveSpeed="100" rotateSpeed="100" />
     </layer>
-<layer name="de">
+    <layer name="de">
         <tutorialText x="125" y="189" locale="de" text="Diese Sägeblätter drehen sich gemeinsam" width="200" />
         <tutorial09 x="215" y="177" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
-<layer name="fr">
+    <layer name="fr">
         <tutorialText x="172" y="162" locale="fr" text="Ces lames tournent ensemble" width="140" />
         <tutorial09 x="236" y="150" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>

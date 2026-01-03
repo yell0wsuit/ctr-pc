@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign ropePhysicsSpeed="1" special="1" twoParts="false" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <target x="40" y="337" />
         <candy x="220" y="340" />
         <bouncer1 x="135" y="404" angle="0" size="1" />

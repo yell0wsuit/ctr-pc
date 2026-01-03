@@ -4,7 +4,7 @@
         <map gridSize="32" width="320" height="480" />
         <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
     </layer>
-<layer name="Objects">
+    <layer name="Objects">
         <target x="162" y="431" />
         <rotatedCircle x="161" y="214" size="120" handleAngle="25" oneHandle="false" />
         <candy x="160" y="210" />
@@ -17,7 +17,7 @@
         <star x="266" y="115" path="-144,0," moveSpeed="20" timeout="7" />
         <star x="360" y="281" path="-235,1," moveSpeed="20" timeout="10" />
     </layer>
-<layer name="Layer 2">
+    <layer name="Layer 2">
         <bubble x="254" y="217" />
     </layer>
 </map>
