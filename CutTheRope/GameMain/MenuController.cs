@@ -1272,11 +1272,11 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.StopMusic();
             if (SpecialEvents.IsXmas)
             {
-                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+                CTRSoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
             }
             else
             {
-                CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
             }
         }
 
@@ -1317,11 +1317,11 @@ namespace CutTheRope.GameMain
             {
                 if (SpecialEvents.IsXmas)
                 {
-                    CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+                    CTRSoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
                 }
                 else
                 {
-                    CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                    CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
                 }
             }
             if (CTRPreferences.ShouldPlayLevelScroll())
@@ -1462,11 +1462,11 @@ namespace CutTheRope.GameMain
                         }
                         if (SpecialEvents.IsXmas)
                         {
-                            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusicXmas);
+                            CTRSoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
                         }
                         else
                         {
-                            CTRSoundMgr.PlayMusic(Resources.Snd.MenuMusic);
+                            CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
                         }
                         return;
                     }
