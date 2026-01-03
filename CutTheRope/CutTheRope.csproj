@@ -1,31 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- This checks if the project is being built for Windows
+  or being tested in Visual Studio on Windows. If it is, it
+  switches the build and how it functions to WindowsDX. -->
+  <Choose>
+    <When Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);MONOGAME_WINDOWSDX</DefineConstants>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::IsOSPlatform('Windows')) And '$(RuntimeIdentifier)' == ''">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);MONOGAME_WINDOWSDX</DefineConstants>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
   <PropertyGroup>
     <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
-    <OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
-    <OutputType Condition="'$(Configuration)' == 'Release'">WinExe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>CutTheRope</RootNamespace>
     <AssemblyName>CutTheRope-DX</AssemblyName>
-
-    <!--
-      Multi-targeting setup:
-        - Without -r flag: Builds BOTH net9.0-windows (WindowsDX) AND net9.0 (DesktopGL)
-        - With -r win-x64: Builds ONLY net9.0-windows (WindowsDX)
-        - With -r linux-x64 or -r osx-x64: Builds ONLY net9.0 (DesktopGL)
-      
-      Note: TargetFrameworks (plural) is the input list you define.
-            TargetFramework (singular with `$()`) is the runtime value during each build pass.
-            MSBuild builds the project once for each framework in the list.
-    -->
-
-    <TargetFrameworks>net9.0-windows;net9.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('win'))">
-      net9.0-windows</TargetFrameworks>
-    <TargetFrameworks Condition="'$(RuntimeIdentifier)' != '' AND ($(RuntimeIdentifier.StartsWith('linux')) OR $(RuntimeIdentifier.StartsWith('osx')))">
-      net9.0</TargetFrameworks>
-
+    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework Condition="$(DefineConstants.Contains('MONOGAME_WINDOWSDX'))">net9.0-windows</TargetFramework>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <ApplicationManifest Condition="'$(TargetFramework)' == 'net9.0-windows'">app.manifest</ApplicationManifest>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
     <AssemblyVersion>2.4.7.0</AssemblyVersion>
     <FileVersion>2.4.7.0</FileVersion>
@@ -40,62 +43,24 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
-  
   <ItemGroup>
-    <PackageReference
-      Include="FontStashSharp.MonoGame"
-      Version="1.5.2"
-      />
-    <PackageReference
-      Include="MonoGame.Content.Builder.Task"
-      Version="3.8.4.1"
-      />
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.2" />
+    <PackageReference Condition="$(DefineConstants.Contains('MONOGAME_WINDOWSDX'))" Include="MonoGame.Framework.WindowsDX" Version="3.8.4.1" />
+    <PackageReference Condition="$(DefineConstants.Contains('MONOGAME_DESKTOPGL'))" Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4.1" />
   </ItemGroup>
-
-  <!-- When building net9.0-windows, use WindowsDX backend -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <PackageReference
-      Include="MonoGame.Framework.WindowsDX"
-      Version="3.8.4.1"
-      />
-  </ItemGroup>
-
-  <!-- When building net9.0, use DesktopGL backend (cross-platform) -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <PackageReference
-      Include="MonoGame.Framework.DesktopGL"
-      Version="3.8.4.1"
-      />
-  </ItemGroup>
-
-  <!-- Compiler constants for WindowsDX builds. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <DefineConstants>$(DefineConstants);MONOGAME_WINDOWSDX</DefineConstants>
-  </PropertyGroup>
-
-  <!-- Compiler constants for DesktopGL builds. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
   </ItemGroup>
-
-  <!-- Copy content files, but exclude sounds directory (we'll handle it separately). -->
   <ItemGroup>
-    <None
-      Include="..\content\**"
-      Exclude="..\content\sounds\**"
-      >
+    <None Include="..\content\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <None Remove="..\content\content.mgcb" />
     <None Remove="..\content\bin\**\*.*" />
@@ -103,46 +68,53 @@
     <None Remove="..\content\**\*.png" />
     <None Remove="..\content\sounds\sfx\*.wav" />
   </ItemGroup>
-
-  <!-- Windows DirectX build, include *_windows.xnb and *_windows.wav pairs. -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <None Include="..\content\sounds\*_windows.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-    <None Include="..\content\sounds\*_windows.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-  </ItemGroup>
-
-  <!-- OpenGL build (Linux/macOS), include *.xnb and *.ogg pairs (excluding *_windows.*). -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <None
-      Include="..\content\sounds\*.xnb"
-      Exclude="..\content\sounds\*_windows.xnb"
-      >
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-    <None Include="..\content\sounds\*.ogg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-  </ItemGroup>
-
+  <Choose>
+    <When Condition="$(DefineConstants.Contains('MONOGAME_WINDOWSDX'))">
+      <ItemGroup>
+        <Compile Remove="..\content\sounds\game_music.ogg" />
+        <Compile Remove="..\content\sounds\game_music.xnb" />
+        <Compile Remove="..\content\sounds\game_music2.ogg" />
+        <Compile Remove="..\content\sounds\game_music2.xnb" />
+        <Compile Remove="..\content\sounds\game_music3.ogg" />
+        <Compile Remove="..\content\sounds\game_music3.xnb" />
+        <Compile Remove="..\content\sounds\game_music4.ogg" />
+        <Compile Remove="..\content\sounds\game_music4.xnb" />
+        <Compile Remove="..\content\sounds\game_music5.ogg" />
+        <Compile Remove="..\content\sounds\game_music5.xnb" />
+        <Compile Remove="..\content\sounds\game_music_xmas.ogg" />
+        <Compile Remove="..\content\sounds\game_music_xmas.xnb" />
+        <Compile Remove="..\content\sounds\menu_music.ogg" />
+        <Compile Remove="..\content\sounds\menu_music.xnb" />
+        <Compile Remove="..\content\sounds\menu_music_xmas.ogg" />
+        <Compile Remove="..\content\sounds\menu_music_xmas.xnb" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Compile Remove="..\content\sounds\game_music_windows.wav" />
+        <Compile Remove="..\content\sounds\game_music_windows.xnb" />
+        <Compile Remove="..\content\sounds\game_music2_windows.wav" />
+        <Compile Remove="..\content\sounds\game_music2_windows.xnb" />
+        <Compile Remove="..\content\sounds\game_music3_windows.wav" />
+        <Compile Remove="..\content\sounds\game_music3_windows.xnb" />
+        <Compile Remove="..\content\sounds\game_music4_windows.wav" />
+        <Compile Remove="..\content\sounds\game_music4_windows.xnb" />
+        <Compile Remove="..\content\sounds\game_music5_windows.wav" />
+        <Compile Remove="..\content\sounds\game_music5_windows.xnb" />
+        <Compile Remove="..\content\sounds\game_music_xmas_windows.wav" />
+        <Compile Remove="..\content\sounds\game_music_xmas_windows.xnb" />
+        <Compile Remove="..\content\sounds\menu_music_windows.wav" />
+        <Compile Remove="..\content\sounds\menu_music_windows.xnb" />
+        <Compile Remove="..\content\sounds\menu_music_xmas_windows.wav" />
+        <Compile Remove="..\content\sounds\menu_music_xmas_windows.xnb" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
     <MonoGameContentReference Include="..\content\content.mgcb" />
   </ItemGroup>
-
-  <Target
-    Name="RestoreDotnetTools"
-    BeforeTargets="CollectPackageReferences"
-    >
-    <Message
-      Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)"
-      Importance="High"
-      />
+  <Target Name="RestoreDotnetTools" BeforeTargets="CollectPackageReferences">
+    <Message Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)" Importance="High" />
     <Exec Command="dotnet tool restore" />
   </Target>
 </Project>
