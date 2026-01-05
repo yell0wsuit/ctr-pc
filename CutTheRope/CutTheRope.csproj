@@ -18,7 +18,8 @@
             MSBuild builds the project once for each framework in the list.
     -->
 
-    <TargetFrameworks>net9.0-windows;net9.0</TargetFrameworks>
+    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">net9.0-windows;net9.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('win'))">
       net9.0-windows</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' != '' AND ($(RuntimeIdentifier.StartsWith('linux')) OR $(RuntimeIdentifier.StartsWith('osx')))">
