@@ -30,7 +30,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest Condition="'$(TargetFramework)' == 'net9.0-windows'">app.manifest</ApplicationManifest>
     <ApplicationIcon Condition="'$(TargetFramework)' == 'net9.0-windows'">
-      CutTheRope.ico
+      CutTheRopeIcon.ico
     </ApplicationIcon>
     <AssemblyVersion>2.4.5.0</AssemblyVersion>
     <FileVersion>2.4.5.0</FileVersion>
@@ -141,7 +141,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <EmbeddedResource Include="CutTheRope.ico" />
+    <EmbeddedResource Include="CutTheRopeIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>
