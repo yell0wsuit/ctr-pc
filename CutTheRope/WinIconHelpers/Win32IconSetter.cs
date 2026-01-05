@@ -49,8 +49,8 @@ internal static partial class Win32IconSetter
     /// <returns>
     /// The result of the message processing, which depends on the message sent.
     /// </returns>
-    [LibraryImport("user32.dll", EntryPoint = "SendMessageW")]
-    private static partial IntPtr SendMessage(
+    [LibraryImport("user32.dll")]
+    private static partial IntPtr SendMessageW(
         IntPtr hWnd,
         int msg,
         IntPtr wParam,
@@ -72,10 +72,8 @@ internal static partial class Win32IconSetter
     /// <returns>
     /// A handle to the loaded image, or <see cref="IntPtr.Zero"/> on failure.
     /// </returns>
-    [LibraryImport("user32.dll",
-        EntryPoint = "LoadImageW",
-        StringMarshalling = StringMarshalling.Utf16)]
-    private static partial IntPtr LoadImage(
+    [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16)]
+    private static partial IntPtr LoadImageW(
         IntPtr hInst,
         string name,
         uint type,
@@ -102,17 +100,17 @@ internal static partial class Win32IconSetter
             return;
         }
 
-        IntPtr small = LoadImage(IntPtr.Zero, icoPath, IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
-        IntPtr big = LoadImage(IntPtr.Zero, icoPath, IMAGE_ICON, 256, 256, LR_LOADFROMFILE);
+        IntPtr small = LoadImageW(IntPtr.Zero, icoPath, IMAGE_ICON, 32, 32, LR_LOADFROMFILE);
+        IntPtr big = LoadImageW(IntPtr.Zero, icoPath, IMAGE_ICON, 256, 256, LR_LOADFROMFILE);
 
         if (small != IntPtr.Zero)
         {
-            _ = SendMessage(hwnd, WM_SETICON, ICON_SMALL, small);
+            _ = SendMessageW(hwnd, WM_SETICON, ICON_SMALL, small);
         }
 
         if (big != IntPtr.Zero)
         {
-            _ = SendMessage(hwnd, WM_SETICON, ICON_BIG, big);
+            _ = SendMessageW(hwnd, WM_SETICON, ICON_BIG, big);
         }
     }
 }
