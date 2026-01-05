@@ -1,36 +1,58 @@
 #!/bin/sh
 set -e
 
+# =========================
+# App metadata
+# =========================
 APP_NAME="CutTheRope"
 EXEC_NAME="CutTheRope-DX"
 BUNDLE_ID="page.yell0wsuit.cuttherope.dx"
+ICON_NAME="CutTheRope"
 
-VERSION=$(dotnet msbuild CutTheRope/CutTheRope.csproj \
+# =========================
+# Project / publish paths
+# =========================
+PROJECT="CutTheRope/CutTheRope.csproj"
+PUBLISH_DIR="CutTheRope/bin/Publish/osx-arm64"
+APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
+ICON_SOURCE="$PUBLISH_DIR/CutTheRopeIcon.icns"
+ICON_NAME="CutTheRope"
+
+# =========================
+# Resolve version from csproj
+# =========================
+VERSION=$(dotnet msbuild "$PROJECT" \
   -nologo -v:q \
   -getProperty:InformationalVersion \
   -p:Configuration=Release \
   -p:TargetFramework=net9.0)
 
-PUBLISH_DIR="CutTheRope/bin/Publish/osx-arm64"
-APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
-
 echo "📦 Bundling Cut The Rope: DX v$VERSION"
 
+# =========================
 # Clean old bundle
+# =========================
 rm -rf "$APP_DIR"
 
-# Create structure
+# =========================
+# Create bundle structure
+# =========================
 mkdir -p "$APP_DIR/Contents/MacOS"
 mkdir -p "$APP_DIR/Contents/Resources"
 
-# Copy runtime files (exclude .app and content)
+# =========================
+# Copy runtime files
+# =========================
 rsync -av \
   --exclude '*.app' \
   --exclude 'content' \
+  --exclude '*.icns' \
   "$PUBLISH_DIR/" \
   "$APP_DIR/Contents/MacOS/"
 
-# Copy game content → Resources
+# =========================
+# Copy game content
+# =========================
 if [ -d "$PUBLISH_DIR/content" ]; then
   rsync -av \
     "$PUBLISH_DIR/content/" \
@@ -39,18 +61,25 @@ else
   echo "⚠️ Warning: content folder not found"
 fi
 
+# =========================
 # Ensure executable bit
+# =========================
 chmod +x "$APP_DIR/Contents/MacOS/$EXEC_NAME"
 
-# Optional icon
-if [ -f "macos/CutTheRope.icns" ]; then
-  cp "macos/CutTheRope.icns" "$APP_DIR/Contents/Resources/"
-  ICON_KEY="<key>CFBundleIconFile</key><string>CutTheRope</string>"
+# =========================
+# Copy app icon
+# =========================
+if [ -f "$ICON_SOURCE" ]; then
+  cp "$ICON_SOURCE" "$APP_DIR/Contents/Resources/$ICON_NAME.icns"
+  ICON_KEY="<key>CFBundleIconFile</key><string>$ICON_NAME</string>"
 else
+  echo "⚠️ Warning: icon not found"
   ICON_KEY=""
 fi
 
+# =========================
 # Write Info.plist
+# =========================
 cat > "$APP_DIR/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
@@ -82,7 +111,9 @@ cat > "$APP_DIR/Contents/Info.plist" <<EOF
 </plist>
 EOF
 
-# Remove quarantine (dev convenience)
+# =========================
+# Dev convenience
+# =========================
 xattr -dr com.apple.quarantine "$APP_DIR" || true
 
 echo "✅ $APP_NAME.app created successfully!"
