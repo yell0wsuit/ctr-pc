@@ -82,6 +82,18 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Checks if a resource name is an image.
+        /// </summary>
+        public static bool IsImage(string resourceName)
+        {
+            if (imageNames_ == null)
+            {
+                InitializeImageNames();
+            }
+            return imageNames_.Contains(resourceName);
+        }
+
+        /// <summary>
         /// List all of texture resources.
         /// </summary>
         private static void InitializeImageNames()
