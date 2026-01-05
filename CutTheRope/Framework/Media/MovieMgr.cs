@@ -1,6 +1,3 @@
-using CutTheRope.Desktop;
-using CutTheRope.Helpers;
-
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 
