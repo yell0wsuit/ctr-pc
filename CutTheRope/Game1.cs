@@ -321,7 +321,7 @@ namespace CutTheRope
             }
 
             _tempIconPath ??= EmbeddedIconExtractor.ExtractToTemp(
-                    "CutTheRope.CutTheRope.ico"
+                    "CutTheRope.CutTheRopeIcon.ico"
                 );
 
             Win32IconSetter.ApplyIcon(_hwnd, _tempIconPath);
