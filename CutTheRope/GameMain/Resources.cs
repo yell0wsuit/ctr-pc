@@ -448,9 +448,9 @@ namespace CutTheRope.GameMain
         internal static class Music
         {
 #if MONOGAME_WINDOWSDX
-    private const string Suffix = "_windows";
+            private const string Suffix = "_windows";
 #else
-    private const string Suffix = "";
+            private const string Suffix = "";
 #endif
             public const string MenuMusic = "menu_music" + Suffix;
             public const string GameMusic = "game_music" + Suffix;
