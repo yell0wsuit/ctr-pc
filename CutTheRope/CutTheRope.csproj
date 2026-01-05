@@ -41,7 +41,7 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference
       Include="FontStashSharp.MonoGame"
@@ -134,6 +134,10 @@
 
   <ItemGroup>
     <MonoGameContentReference Include="..\content\content.mgcb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CutTheRope.ico" />
   </ItemGroup>
 
   <Target
