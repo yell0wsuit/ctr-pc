@@ -59,3 +59,6 @@ obj/*
 .claude/*
 
 .DS_Store
+
+# exclude csproj.user files
+*.csproj.user
