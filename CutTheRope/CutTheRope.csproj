@@ -29,7 +29,9 @@
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest Condition="'$(TargetFramework)' == 'net9.0-windows'">app.manifest</ApplicationManifest>
-    <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
+    <ApplicationIcon Condition="'$(TargetFramework)' == 'net9.0-windows'">
+      CutTheRope.ico
+    </ApplicationIcon>
     <AssemblyVersion>2.4.5.0</AssemblyVersion>
     <FileVersion>2.4.5.0</FileVersion>
     <InformationalVersion>2.4.5.0</InformationalVersion>
@@ -138,7 +140,7 @@
     <MonoGameContentReference Include="..\content\content.mgcb" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
     <EmbeddedResource Include="CutTheRope.ico" />
   </ItemGroup>
 
