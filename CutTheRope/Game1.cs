@@ -101,8 +101,13 @@ namespace CutTheRope
 
         protected override void Initialize()
         {
-            string version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)
-                .FileVersion ?? "Unknown";
+            string version =
+                Assembly.GetExecutingAssembly()
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                    ?.InformationalVersion
+                ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+                ?? "Unknown";
+
             Window.Title = $"Cut The Rope: DX v{version}";
             base.Initialize();
         }
