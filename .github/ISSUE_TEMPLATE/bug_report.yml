@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a bug or incorrect behavior in Cut the Rope DX
+labels: ["bug"]
+body:
+    - type: checkboxes
+      attributes:
+          label: Duplicated issue check
+          description: Please make sure that this issue has not been reported before.
+          options:
+              - label: I confirm that I have searched the existing issue(s)
+                required: true
+    - type: input
+      id: version
+      attributes:
+          label: Cut the Rope DX version
+          description: The version of Cut the Rope DX you are using. It is found in the title bar.
+      validations:
+          required: true
+    - type: textarea
+      id: description
+      attributes:
+          label: Description
+          description: Describe the bug.
+      validations:
+          required: true
+    - type: textarea
+      id: expected
+      attributes:
+          label: Expected behavior
+          description: A concise description of what you expected to happen.
+      validations:
+          required: true
+    - type: textarea
+      id: reproduction
+      attributes:
+          label: Reproduction steps
+          description: Steps to reproduce the behavior.
+          placeholder: |
+              1. Open this...
+              1. Do this...
+              1. See error...
+      validations:
+          required: true
+    #- type: dropdown
+    #  id: os
+    #  attributes:
+    #      label: Operating system
+    #      description: Which operating system are you using?
+    #      options:
+    #          - Windows
+    #          - Linux
+    #          - macOS
+    #          - Other (specify in "Additional info")
+    #  validations:
+    #      required: true
+    - type: textarea
+      attributes:
+          label: Additional info
+          description: Any extra info, logs, or stack traces go here.
+          placeholder: |
+              Paste any error logs or useful notes here...
+      validations:
+          required: false
