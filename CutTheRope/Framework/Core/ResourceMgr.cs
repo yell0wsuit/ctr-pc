@@ -240,8 +240,9 @@ namespace CutTheRope.Framework.Core
 
         public virtual CTRTexture2D LoadTextureImageInfo(int resId, string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
-            TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
-            bool preferTexturePacker = atlasConfig?.Format == TextureAtlasFormat.TexturePackerJson;
+            bool isImageResource = Resources.IsImage(resourceName);
+            TextureAtlasConfig atlasConfig = isImageResource ? GetTextureAtlasConfig(resourceName) : null;
+            bool preferTexturePacker = isImageResource && atlasConfig?.Format == TextureAtlasFormat.TexturePackerJson;
 
             XElement xmlInfo = i;
             if (!preferTexturePacker)
@@ -250,7 +251,7 @@ namespace CutTheRope.Framework.Core
             }
 
             ParsedTexturePackerAtlas parsedAtlas = null;
-            if (preferTexturePacker || xmlInfo == null)
+            if (isImageResource && (preferTexturePacker || xmlInfo == null))
             {
                 parsedAtlas = TryLoadTexturePackerAtlas(atlasConfig, path);
                 if (parsedAtlas == null && preferTexturePacker && xmlInfo == null)
