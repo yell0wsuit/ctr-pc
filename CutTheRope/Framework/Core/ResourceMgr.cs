@@ -670,7 +670,7 @@ namespace CutTheRope.Framework.Core
                 xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
                 return;
             }
-            if (Resources.IsSound(localizedName) || Resources.IsMusic(localizedName))
+            if (Resources.IsSound(localizedName))
             {
                 _ = Application.SharedSoundMgr().GetSound(localizedResId);
                 return;
