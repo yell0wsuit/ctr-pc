@@ -1,3 +1,3 @@
-dotnet publish -c Release -f net9.0-windows -r win-x64 -p:PublishReadyToRun=false -p:TieredCompilation=false --self-contained -o .\CutTheRope\bin\Publish\win-x64
-dotnet publish -c Release -f net9.0 -r osx-arm64 -p:PublishReadyToRun=false -p:TieredCompilation=false --self-contained -o .\CutTheRope\bin\Publish\osx-arm64
-dotnet publish -c Release -f net9.0 -r linux-x64 -p:PublishReadyToRun=false -p:TieredCompilation=false --self-contained -o .\CutTheRope\bin\Publish\linux-x64
+dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net9.0-windows -r win-x64 -p:PublishReadyToRun=false -p:TieredCompilation=false --self-contained -o .\CutTheRope\bin\Publish\win-x64
+dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net9.0 -r osx-arm64 -p:PublishReadyToRun=false -p:TieredCompilation=false --self-contained -o .\CutTheRope\bin\Publish\osx-arm64
+dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net9.0 -r linux-x64 -p:PublishReadyToRun=false -p:TieredCompilation=false --self-contained -o .\CutTheRope\bin\Publish\linux-x64
