@@ -14,6 +14,7 @@ namespace CutTheRope.GameMain
     internal static class Resources
     {
         private static HashSet<string> soundNames_;
+        private static HashSet<string> musicNames_;
         private static HashSet<string> fontNames_;
         private static HashSet<string> imageNames_;
 
@@ -30,12 +31,17 @@ namespace CutTheRope.GameMain
             {
                 InitializeSoundNames();
             }
+            if (musicNames_ == null)
+            {
+                InitializeMusicNames();
+            }
             if (fontNames_ == null)
             {
                 InitializeFontNames();
             }
             return imageNames_.Contains(resourceName) ||
                    soundNames_.Contains(resourceName) ||
+                   musicNames_.Contains(resourceName) ||
                    fontNames_.Contains(resourceName);
         }
 
@@ -49,6 +55,18 @@ namespace CutTheRope.GameMain
                 InitializeSoundNames();
             }
             return soundNames_.Contains(resourceName);
+        }
+
+        /// <summary>
+        /// Checks if a resource name is music.
+        /// </summary>
+        public static bool IsMusic(string resourceName)
+        {
+            if (musicNames_ == null)
+            {
+                InitializeMusicNames();
+            }
+            return musicNames_.Contains(resourceName);
         }
 
         /// <summary>
@@ -135,7 +153,19 @@ namespace CutTheRope.GameMain
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
                 Snd.ScratchOut, Snd.GhostPuff, Snd.XmasBell, Snd.SteamStart,
                 Snd.SteamStart2, Snd.SteamEnd, Snd.LanternTeleportIn,
-                Snd.LanternTeleportOut
+                Snd.LanternTeleportOut, Snd.TeleportXmas
+            ];
+        }
+
+        /// <summary>
+        /// List all of audio resources.
+        /// </summary>
+        private static void InitializeMusicNames()
+        {
+            musicNames_ =
+            [
+                Music.MenuMusic, Music.MenuMusicXmas, Music.GameMusic, Music.GameMusicXmas,
+                Music.GameMusic2,Music.GameMusic3, Music.GameMusic4
             ];
         }
 
