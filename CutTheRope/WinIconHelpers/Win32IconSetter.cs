@@ -49,7 +49,7 @@ internal static partial class Win32IconSetter
     /// <returns>
     /// The result of the message processing, which depends on the message sent.
     /// </returns>
-    [LibraryImport("user32.dll")]
+    [LibraryImport("user32.dll", EntryPoint = "SendMessageW")]
     private static partial IntPtr SendMessage(
         IntPtr hWnd,
         int msg,
@@ -72,7 +72,9 @@ internal static partial class Win32IconSetter
     /// <returns>
     /// A handle to the loaded image, or <see cref="IntPtr.Zero"/> on failure.
     /// </returns>
-    [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport("user32.dll",
+        EntryPoint = "LoadImageW",
+        StringMarshalling = StringMarshalling.Utf16)]
     private static partial IntPtr LoadImage(
         IntPtr hInst,
         string name,
