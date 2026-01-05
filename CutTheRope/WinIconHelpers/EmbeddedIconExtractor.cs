@@ -36,18 +36,14 @@ internal static class EmbeddedIconExtractor
     /// </remarks>
     public static string ExtractToTemp(string resourceName)
     {
-        var asm = Assembly.GetExecutingAssembly();
-        using Stream? s = asm.GetManifestResourceStream(resourceName);
-
-        if (s == null)
-            throw new InvalidOperationException($"Missing resource: {resourceName}");
-
+        Assembly asm = Assembly.GetExecutingAssembly();
+        using Stream s = asm.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Missing resource: {resourceName}");
         string path = Path.Combine(
             Path.GetTempPath(),
             $"ctr_icon_{Guid.NewGuid():N}.ico"
         );
 
-        using var fs = File.Create(path);
+        using FileStream fs = File.Create(path);
         s.CopyTo(fs);
 
         return path;
