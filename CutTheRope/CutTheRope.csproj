@@ -140,7 +140,7 @@
     <EmbeddedResource Include="CutTheRopeIcon.ico" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <None Include="./CutTheRopeIcon.icns">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
