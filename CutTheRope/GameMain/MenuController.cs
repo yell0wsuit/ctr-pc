@@ -864,7 +864,7 @@ namespace CutTheRope.GameMain
                 {
                     // drawing om nom and the background behind him in the box
                     int q3 = 1;
-                    MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxColor(n));
+                    MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxHoleBgColor(n));
                     monsterSlot.c = c;
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
