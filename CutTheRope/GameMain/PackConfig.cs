@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
+using CutTheRope.Framework;
 using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
@@ -18,6 +19,7 @@ namespace CutTheRope.GameMain
         string[] boxBackgrounds,
         string supportResourceName,
         string[] boxCovers,
+        RGBAColor boxHoleBgColor,
         bool earthBg)
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
@@ -32,6 +34,9 @@ namespace CutTheRope.GameMain
         /// <summary>String resource names for cover assets.</summary>
         public string[] BoxCovers { get; } = boxCovers;
 
+        /// <summary>Box background color for pack selection menu.</summary>
+        public RGBAColor BoxHoleBgColor { get; } = boxHoleBgColor;
+
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
 
@@ -45,6 +50,9 @@ namespace CutTheRope.GameMain
     internal static class PackConfig
     {
         private static readonly string[] EmptyResourceNames = [null];
+
+        /// <summary>Default box color when not specified in packs.xml (dark gray: 45, 45, 53).</summary>
+        private static readonly RGBAColor DefaultBoxHoleBgColor = RGBAColor.MakeRGBA(45 / 255f, 45 / 255f, 53 / 255f, 1f);
 
         private static readonly List<PackDefinition> packs;
 
@@ -106,6 +114,11 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count && packs[pack].EarthBg;
         }
 
+        public static RGBAColor GetBoxHoleBgColor(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].BoxHoleBgColor : DefaultBoxHoleBgColor;
+        }
+
         private static List<PackDefinition> LoadFromXml()
         {
             XElement root = XElementExtensions.LoadContentXml("packs.xml");
@@ -133,6 +146,8 @@ namespace CutTheRope.GameMain
                 RequireResourceNames(boxCovers, "boxCover");
                 ValidateResourceNames(boxCovers, "boxCover");
 
+                RGBAColor boxHoleBgColor = ParseColorAttribute(packElement, "boxHoleBgColor");
+
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
                 results.Add(new PackDefinition(
@@ -141,6 +156,7 @@ namespace CutTheRope.GameMain
                     boxBackgrounds,
                     supportResourceName,
                     boxCovers,
+                    boxHoleBgColor,
                     earthBg));
             }
 
@@ -157,6 +173,27 @@ namespace CutTheRope.GameMain
         {
             string value = element.AttributeAsNSString(attributeName);
             return string.IsNullOrWhiteSpace(value) ? defaultValue : bool.Parse(value);
+        }
+
+        private static RGBAColor ParseColorAttribute(XElement element, string attributeName)
+        {
+            string value = element.AttributeAsNSString(attributeName);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return DefaultBoxHoleBgColor;
+            }
+
+            string[] parts = value.Split(',');
+            if (parts.Length >= 3)
+            {
+                float r = int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture) / 255f;
+                float g = int.Parse(parts[1].Trim(), CultureInfo.InvariantCulture) / 255f;
+                float b = int.Parse(parts[2].Trim(), CultureInfo.InvariantCulture) / 255f;
+                float a = parts.Length >= 4 ? int.Parse(parts[3].Trim(), CultureInfo.InvariantCulture) / 255f : 1f;
+                return RGBAColor.MakeRGBA(r, g, b, a);
+            }
+
+            return DefaultBoxHoleBgColor;
         }
 
         private static int ParseLevelCount(XElement element)
