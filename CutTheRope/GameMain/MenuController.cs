@@ -862,11 +862,10 @@ namespace CutTheRope.GameMain
             {
                 if (n != CTRPreferences.GetPacksCount())
                 {
-                    int q2 = 0;
+                    // drawing om nom and the background behind him in the box
                     int q3 = 1;
-                    MonsterSlot monsterSlot = MonsterSlot.MonsterSlot_createWithResIDQuad(Resources.Img.MenuPackSelection, q2);
+                    MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxHoleBgColor(n));
                     monsterSlot.c = c;
-                    monsterSlot.DoRestoreCutTransparency();
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
@@ -1978,48 +1977,50 @@ namespace CutTheRope.GameMain
             public IButtonDelegation delegateValue;
         }
 
-        public sealed class MonsterSlot : Image
+        /// <summary>
+        /// Draws a colored rectangle background for Om Nom in the pack selection menu.
+        /// Uses scissor clipping to reveal Om Nom as the box scrolls into view.
+        /// </summary>
+        public sealed class MonsterSlot : ColorRect
         {
-            public static MonsterSlot MonsterSlot_create(CTRTexture2D t)
+            /// <summary>
+            /// Quad index for the box background in MenuPackSelection texture.
+            /// </summary>
+            private const int QuadIndex = 0;
+
+            /// <summary>
+            /// Creates a new <see cref="MonsterSlot"/> with the specified background color.
+            /// Dimensions and positioning are derived from the MenuPackSelection texture.
+            /// </summary>
+            /// <param name="color">Background fill color for the slot.</param>
+            /// <returns>A new <see cref="MonsterSlot"/> instance.</returns>
+            public static MonsterSlot Create(RGBAColor color)
             {
-                return (MonsterSlot)new MonsterSlot().InitWithTexture(t);
+                CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackSelection);
+                MonsterSlot slot = new()
+                {
+                    width = (int)texture.preCutSize.x,
+                    height = (int)texture.preCutSize.y,
+                    FillColor = color,
+                    quadOffset = texture.quadOffsets[QuadIndex],
+                    quadSize = Vect(texture.quadRects[QuadIndex].w, texture.quadRects[QuadIndex].h)
+                };
+                return slot;
             }
 
-            public static MonsterSlot MonsterSlot_createWithResID(int r)
-            {
-                return MonsterSlot_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-            }
-
-            public static MonsterSlot MonsterSlot_createWithResID(string resourceName)
-            {
-                return MonsterSlot_create(Application.GetTexture(resourceName));
-            }
-
-            public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
-            {
-                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-                monsterSlot.SetDrawQuad(q);
-                return monsterSlot;
-            }
-
-            public static MonsterSlot MonsterSlot_createWithResIDQuad(string resourceName, int q)
-            {
-                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(resourceName));
-                monsterSlot.SetDrawQuad(q);
-                return monsterSlot;
-            }
-
+            /// <inheritdoc/>
             public override void Draw()
             {
                 PreDraw();
-                if (quadToDraw == -1)
-                {
-                    GLDrawer.DrawImage(texture, drawX, drawY);
-                }
-                else
-                {
-                    DrawQuad(quadToDraw);
-                }
+                // Draw the colored rectangle at the quad offset position
+                GLDrawer.DrawSolidRectWOBorder(
+                    drawX + quadOffset.x,
+                    drawY + quadOffset.y,
+                    quadSize.x,
+                    quadSize.y,
+                    FillColor);
+
+                // Apply scissor clipping to reveal Om Nom during scroll animation
                 float num = c.GetScroll().x;
                 Vector preCutSize = Application.GetTexture(Resources.Img.MenuPackSelection).preCutSize;
                 if (num >= s && num < e)
@@ -2032,11 +2033,20 @@ namespace CutTheRope.GameMain
                 }
             }
 
+            /// <summary>Reference to the scrollable container for scroll position.</summary>
             public ScrollableContainer c;
 
+            /// <summary>Start scroll position for scissor clipping.</summary>
             public float s;
 
+            /// <summary>End scroll position for scissor clipping.</summary>
             public float e;
+
+            /// <summary>Offset within the preCut area where the quad is drawn.</summary>
+            private Vector quadOffset;
+
+            /// <summary>Actual size of the colored rectangle to draw.</summary>
+            private Vector quadSize;
         }
     }
 }

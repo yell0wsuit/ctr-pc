@@ -20,18 +20,14 @@
 
     <TargetFrameworks>net9.0</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">net9.0-windows;net9.0</TargetFrameworks>
-    <TargetFrameworks
-      Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('win'))">
+    <TargetFrameworks Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('win'))">
       net9.0-windows</TargetFrameworks>
-    <TargetFrameworks
-      Condition="'$(RuntimeIdentifier)' != '' AND ($(RuntimeIdentifier.StartsWith('linux')) OR $(RuntimeIdentifier.StartsWith('osx')))">
+    <TargetFrameworks Condition="'$(RuntimeIdentifier)' != '' AND ($(RuntimeIdentifier.StartsWith('linux')) OR $(RuntimeIdentifier.StartsWith('osx')))">
       net9.0</TargetFrameworks>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest Condition="'$(TargetFramework)' == 'net9.0-windows'">app.manifest</ApplicationManifest>
-    <ApplicationIcon Condition="'$(TargetFramework)' == 'net9.0-windows'">
-      CutTheRopeIcon.ico
-    </ApplicationIcon>
+    <ApplicationIcon Condition="'$(TargetFramework)' == 'net9.0-windows'">CutTheRopeIcon.ico</ApplicationIcon>
     <AssemblyVersion>2.4.5.0</AssemblyVersion>
     <FileVersion>2.4.5.0</FileVersion>
     <InformationalVersion>2.4.5.0</InformationalVersion>
@@ -50,11 +46,11 @@
     <PackageReference
       Include="FontStashSharp.MonoGame"
       Version="1.5.2"
-    />
+      />
     <PackageReference
       Include="MonoGame.Content.Builder.Task"
       Version="3.8.4.1"
-    />
+      />
   </ItemGroup>
 
   <!-- When building net9.0-windows, use WindowsDX backend -->
@@ -62,7 +58,7 @@
     <PackageReference
       Include="MonoGame.Framework.WindowsDX"
       Version="3.8.4.1"
-    />
+      />
   </ItemGroup>
 
   <!-- When building net9.0, use DesktopGL backend (cross-platform) -->
@@ -70,7 +66,7 @@
     <PackageReference
       Include="MonoGame.Framework.DesktopGL"
       Version="3.8.4.1"
-    />
+      />
   </ItemGroup>
 
   <!-- Compiler constants for WindowsDX builds. -->
@@ -95,7 +91,7 @@
     <None
       Include="..\content\**"
       Exclude="..\content\sounds\**"
-    >
+      >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
@@ -126,7 +122,7 @@
     <None
       Include="..\content\sounds\*.xnb"
       Exclude="..\content\sounds\*_windows.xnb"
-    >
+      >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\sounds\%(Filename)%(Extension)</Link>
     </None>
@@ -144,21 +140,30 @@
     <EmbeddedResource Include="CutTheRopeIcon.ico" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('osx'))">
     <None Include="./CutTheRopeIcon.icns">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>
+    <EmbeddedResource Include="CutTheRopeIcon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('linux'))">
+    <EmbeddedResource Include="CutTheRopeIcon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <Target
     Name="RestoreDotnetTools"
     BeforeTargets="CollectPackageReferences"
-  >
+    >
     <Message
       Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)"
       Importance="High"
-    />
+      />
     <Exec Command="dotnet tool restore" />
   </Target>
 </Project>

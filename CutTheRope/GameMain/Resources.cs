@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
                 Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
-                Img.Snowflakes, Img.CharGreetingXmas,
+                Img.Snowflakes, Img.CharGreetingXmas, Img.ObjSock,
                 Img.Bgr14Cover, Img.Bgr14P1, Img.ObjLantern,
                 Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuLogoXmasHat,
                 Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
@@ -144,7 +144,8 @@ namespace CutTheRope.GameMain
                 Img.ObjCandy32, Img.ObjCandy33, Img.ObjCandy34, Img.ObjCandy35, Img.ObjCandy36,
                 Img.ObjCandy37, Img.ObjCandy38, Img.ObjCandy39, Img.ObjCandy40, Img.ObjCandy41,
                 Img.ObjCandy42, Img.ObjCandy43, Img.ObjCandy44, Img.ObjCandy45, Img.ObjCandy46,
-                Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51
+                Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51,
+                Img.ObjCandy52
             ];
         }
 
