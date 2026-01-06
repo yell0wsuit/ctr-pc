@@ -86,6 +86,13 @@
     <None Include="app.manifest" />
   </ItemGroup>
 
+  <!-- Copy alsoft.ini, without this the audio can sound wrong, especially on headphones. -->
+  <ItemGroup>
+    <None Include="alsoft.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <!-- Copy content files, but exclude sounds directory (we'll handle it separately). -->
   <ItemGroup>
     <None
