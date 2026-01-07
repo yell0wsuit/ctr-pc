@@ -172,10 +172,6 @@ namespace CutTheRope
 
         protected override void Update(GameTime gameTime)
         {
-#if WINDOWS
-            TryApplyEmbeddedIcon();
-#endif
-
             KeyboardState keyboardState = Keyboard.GetState();
             bool flag = keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt);
             bool enterPressed = keyboardState.IsKeyDown(Keys.Enter);
@@ -306,29 +302,6 @@ namespace CutTheRope
             bFirstFrame = false;
         }
 
-#if WINDOWS
-        private void TryApplyEmbeddedIcon()
-        {
-            if (_iconApplied)
-            {
-                return;
-            }
-
-            _hwnd = HwndFinder.FindMainWindowForCurrentProcess();
-            if (_hwnd == IntPtr.Zero)
-            {
-                return;
-            }
-
-            _tempIconPath ??= EmbeddedIconExtractor.ExtractToTemp(
-                    "CutTheRope.CutTheRopeIcon.ico"
-                );
-
-            Win32IconSetter.ApplyIcon(_hwnd, _tempIconPath);
-            _iconApplied = true;
-        }
-#endif
-
         private Branding branding;
 
         private bool _altEnterPressed;
@@ -352,12 +325,5 @@ namespace CutTheRope
         private TimeSpan elapsedTime = TimeSpan.Zero;
 
         private bool bFirstFrame = true;
-
-#if WINDOWS
-        private bool _iconApplied;
-        private IntPtr _hwnd = IntPtr.Zero;
-        private string _tempIconPath;
-#endif
-
     }
 }
