@@ -137,7 +137,15 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <EmbeddedResource Include="CutTheRopeIcon.ico" />
+    <EmbeddedResource Include="CutTheRopeIcon.ico">
+      <LogicalName>Icon.ico</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <EmbeddedResource Include="CutTheRopeIcon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('osx'))">
@@ -145,15 +153,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>
-    <EmbeddedResource Include="CutTheRopeIcon.bmp">
-      <LogicalName>Icon.bmp</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('linux'))">
-    <EmbeddedResource Include="CutTheRopeIcon.bmp">
-      <LogicalName>Icon.bmp</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
 
   <Target
