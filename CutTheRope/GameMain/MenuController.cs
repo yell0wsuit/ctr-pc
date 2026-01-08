@@ -886,8 +886,8 @@ namespace CutTheRope.GameMain
                     Image packPerfect = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 15);
                     packPerfect.DoRestoreCutTransparency();
                     packPerfect.anchor = packPerfect.parentAnchor = 9;
-                    packPerfect.y = 440f;
-                    packPerfect.x = 100f;
+                    packPerfect.y = 420f;
+                    packPerfect.x = 95f;
                     _ = image.AddChild(packPerfect);
                 }
                 if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
