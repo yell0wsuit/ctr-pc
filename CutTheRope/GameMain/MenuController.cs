@@ -883,6 +883,7 @@ namespace CutTheRope.GameMain
                 _ = baseElement.AddChild(image);
                 if (CTRPreferences.IsPackPerfect(n) & n != CTRPreferences.GetPacksCount())
                 {
+                    //Create perfect pack badge
                     Image packPerfect = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 15);
                     packPerfect.DoRestoreCutTransparency();
                     packPerfect.anchor = packPerfect.parentAnchor = 9;
