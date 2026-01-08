@@ -881,6 +881,15 @@ namespace CutTheRope.GameMain
                     _ = monsterSlot.AddChild(image3);
                 }
                 _ = baseElement.AddChild(image);
+                if (CTRPreferences.IsPackPerfect(n) & n != CTRPreferences.GetPacksCount())
+                {
+                    // Create perfect pack badge
+                    Image packPerfect = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 15);
+                    packPerfect.parentAnchor = packPerfect.anchor = 33; // bottom-left
+                    packPerfect.x = 100f;
+                    packPerfect.y = -100f;
+                    _ = image.AddChild(packPerfect);
+                }
                 if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
                 {
                     Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 2);
