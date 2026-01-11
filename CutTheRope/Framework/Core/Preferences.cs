@@ -59,7 +59,7 @@ namespace CutTheRope.Framework.Core
                 return exeDir;
             }
 
-            // 2. Fallback to Documents/CutTheRope-DX
+            // 2. Fallback to Documents/{SaveFolderName}
             string documentsDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 SaveFolderName);
@@ -68,7 +68,7 @@ namespace CutTheRope.Framework.Core
                 return documentsDir;
             }
 
-            // 3. Final fallback to LocalApplicationData/CutTheRope-DX
+            // 3. Final fallback to LocalApplicationData/{SaveFolderName}
             string localAppDataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 SaveFolderName);
