@@ -49,9 +49,9 @@ namespace CutTheRope.Framework.Core
 
         private static string DetermineSaveDirectory()
         {
-            // 1. Try executable directory first
+            // 1. Try executable directory first (excluding macOS .app bundle)
             string exeDir = AppContext.BaseDirectory;
-            if (IsDirectoryWritable(exeDir))
+            if (!IsInsideMacAppBundle(exeDir) && IsDirectoryWritable(exeDir))
             {
                 return exeDir;
             }
@@ -108,6 +108,25 @@ namespace CutTheRope.Framework.Core
             {
                 return false;
             }
+        }
+
+        private static bool IsInsideMacAppBundle(string path)
+        {
+            DirectoryInfo dir = new(path);
+
+            while (dir != null)
+            {
+                if (dir.Name.Equals("MacOS", StringComparison.OrdinalIgnoreCase) &&
+                    dir.Parent?.Name.Equals("Contents", StringComparison.OrdinalIgnoreCase) == true &&
+                    dir.Parent.Parent?.Name.EndsWith(".app", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    return true;
+                }
+
+                dir = dir.Parent;
+            }
+
+            return false;
         }
 
         public Preferences()
