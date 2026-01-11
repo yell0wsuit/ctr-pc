@@ -12,7 +12,7 @@ namespace CutTheRope.Framework.Core
         private const string LegacyBinaryFileName = "ctr_save.bin";
         private const string MigratedBinaryFileName = "ctr_bin_candeletethis.bin";
         private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
-        private const string SaveFolderName = "CutTheRope-DX";
+        private const string SaveFolderName = "CutTheRopeDX_SaveData";
         private static string SaveFilePath => Path.Combine(SaveDirectory, SaveFileName);
         private static string LegacyBinaryFilePath => Path.Combine(SaveDirectory, LegacyBinaryFileName);
         private static string MigratedBinaryFilePath => Path.Combine(SaveDirectory, MigratedBinaryFileName);
