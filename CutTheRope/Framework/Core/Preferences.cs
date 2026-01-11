@@ -34,6 +34,9 @@ namespace CutTheRope.Framework.Core
         /// </item>
         /// </list>
         /// </summary>
+        /// <remarks>
+        /// Todo: Add custom save directory when setting UI is implemented.
+        /// </remarks>
         private static string SaveDirectory
         {
             get
