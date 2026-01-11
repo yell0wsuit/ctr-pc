@@ -50,13 +50,22 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Determines the best available save directory based on writability and platform constraints.
+        /// </summary>
+        /// <returns>The path to the save directory.</returns>
         private static string DetermineSaveDirectory()
         {
             // 1. Try executable directory first (excluding macOS .app bundle)
             string exeDir = AppContext.BaseDirectory;
-            if (!IsInsideMacAppBundle(exeDir) && IsDirectoryWritable(exeDir))
+            if (!IsInsideMacAppBundle(exeDir))
             {
-                return exeDir;
+                string exeSaveDir = Path.Combine(exeDir, SaveFolderName);
+                if (TryCreateDirectory(exeSaveDir))
+                {
+                    MigrateOldSaveFiles(exeDir, exeSaveDir);
+                    return exeSaveDir;
+                }
             }
 
             // 2. Fallback to Documents/{SaveFolderName}
@@ -82,6 +91,41 @@ namespace CutTheRope.Framework.Core
             return ".";
         }
 
+        /// <summary>
+        /// Migrates save files from an old location to a new directory.
+        /// Only moves files that exist in the old location and don't exist in the new location.
+        /// </summary>
+        /// <param name="oldDir">The old directory containing save files.</param>
+        /// <param name="newDir">The new directory to move save files to.</param>
+        private static void MigrateOldSaveFiles(string oldDir, string newDir)
+        {
+            string[] filesToMigrate = [SaveFileName, LegacyBinaryFileName, MigratedBinaryFileName];
+
+            foreach (string fileName in filesToMigrate)
+            {
+                string oldPath = Path.Combine(oldDir, fileName);
+                string newPath = Path.Combine(newDir, fileName);
+
+                if (File.Exists(oldPath) && !File.Exists(newPath))
+                {
+                    try
+                    {
+                        File.Move(oldPath, newPath);
+                        Console.WriteLine($"[Preferences] Migrated {fileName} to new save directory");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Preferences] Failed to migrate {fileName}: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tests whether a directory is writable by creating and deleting a temporary file.
+        /// </summary>
+        /// <param name="path">The directory path to test.</param>
+        /// <returns><c>true</c> if the directory is writable; otherwise, <c>false</c>.</returns>
         private static bool IsDirectoryWritable(string path)
         {
             try
@@ -97,6 +141,11 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Attempts to create a directory and verifies it is writable.
+        /// </summary>
+        /// <param name="path">The directory path to create.</param>
+        /// <returns><c>true</c> if the directory exists and is writable; otherwise, <c>false</c>.</returns>
         private static bool TryCreateDirectory(string path)
         {
             try
@@ -113,6 +162,12 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Determines whether the given path is inside a macOS .app bundle.
+        /// Checks for the standard bundle structure: *.app/Contents/MacOS/
+        /// </summary>
+        /// <param name="path">The path to check.</param>
+        /// <returns><c>true</c> if the path is inside a macOS .app bundle; otherwise, <c>false</c>.</returns>
         private static bool IsInsideMacAppBundle(string path)
         {
             DirectoryInfo dir = new(path);
