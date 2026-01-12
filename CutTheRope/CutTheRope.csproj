@@ -23,7 +23,7 @@
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationManifest Condition="'$(TargetFramework)' == 'net9.0-windows'">app.manifest</ApplicationManifest>
-    <ApplicationIcon Condition="'$(TargetFramework)' == 'net9.0-windows'">CutTheRopeIcon.ico</ApplicationIcon>
+    <ApplicationIcon Condition="'$(TargetFramework)' == 'net9.0-windows'">icons/CutTheRopeIcon.ico</ApplicationIcon>
     <AssemblyVersion>2.4.5.0</AssemblyVersion>
     <FileVersion>2.4.5.0</FileVersion>
     <InformationalVersion>2.4.5.0</InformationalVersion>
@@ -149,19 +149,19 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <EmbeddedResource Include="CutTheRopeIcon.ico">
+    <EmbeddedResource Include="icons/CutTheRopeIcon.ico">
       <LogicalName>Icon.ico</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <EmbeddedResource Include="CutTheRopeIcon.bmp">
+    <EmbeddedResource Include="icons/CutTheRopeIcon.bmp">
       <LogicalName>Icon.bmp</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('osx'))">
-    <None Include="./CutTheRopeIcon.icns">
+    <None Include="./icons/CutTheRopeIcon.icns">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>

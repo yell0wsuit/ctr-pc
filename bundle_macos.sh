@@ -15,7 +15,7 @@ ICON_NAME="CutTheRope"
 PROJECT="CutTheRope/CutTheRope.csproj"
 PUBLISH_DIR="CutTheRope/bin/Publish/osx-arm64"
 APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
-ICON_SOURCE="$PUBLISH_DIR/CutTheRopeIcon.icns"
+ICON_SOURCE="$PUBLISH_DIR/icons/CutTheRopeIcon.icns"
 ICON_NAME="CutTheRope"
 
 # =========================
