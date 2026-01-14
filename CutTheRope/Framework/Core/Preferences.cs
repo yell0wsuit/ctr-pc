@@ -12,8 +12,180 @@ namespace CutTheRope.Framework.Core
         private const string LegacyBinaryFileName = "ctr_save.bin";
         private const string MigratedBinaryFileName = "ctr_bin_candeletethis.bin";
         private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
-
+        private const string SaveFolderName = "CutTheRopeDX_SaveData";
+        private static string SaveFilePath => Path.Combine(SaveDirectory, SaveFileName);
+        private static string LegacyBinaryFilePath => Path.Combine(SaveDirectory, LegacyBinaryFileName);
+        private static string MigratedBinaryFilePath => Path.Combine(SaveDirectory, MigratedBinaryFileName);
         public static bool GameSaveRequested { get; set; }
+
+        private static string _saveDirectory;
+
+        /// <summary>
+        /// Gets the save directory with the following fallback priority:
+        /// <list type="bullet">
+        /// <item>
+        /// <description>Next to the executable (preferred for portability)</description>
+        /// </item>
+        /// <item>
+        /// <description>User's Documents folder</description>
+        /// </item>
+        /// <item>
+        /// <description>LocalApplicationData (final fallback)</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <remarks>
+        /// Todo: Add custom save directory when setting UI is implemented.
+        /// </remarks>
+        private static string SaveDirectory
+        {
+            get
+            {
+                if (_saveDirectory == null)
+                {
+                    _saveDirectory = DetermineSaveDirectory();
+                    Console.WriteLine($"[Preferences] Using save directory: {_saveDirectory}");
+                }
+                return _saveDirectory;
+            }
+        }
+
+        /// <summary>
+        /// Determines the best available save directory based on writability and platform constraints.
+        /// </summary>
+        /// <returns>The path to the save directory.</returns>
+        private static string DetermineSaveDirectory()
+        {
+            // 1. Try executable directory first (excluding macOS .app bundle)
+            string exeDir = AppContext.BaseDirectory;
+            if (!IsInsideMacAppBundle(exeDir))
+            {
+                string exeSaveDir = Path.Combine(exeDir, SaveFolderName);
+                if (TryCreateDirectory(exeSaveDir))
+                {
+                    MigrateOldSaveFiles(exeDir, exeSaveDir);
+                    return exeSaveDir;
+                }
+            }
+
+            // 2. Fallback to Documents/{SaveFolderName}
+            string documentsDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                SaveFolderName);
+            if (TryCreateDirectory(documentsDir))
+            {
+                return documentsDir;
+            }
+
+            // 3. Final fallback to LocalApplicationData/{SaveFolderName}
+            string localAppDataDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                SaveFolderName);
+            if (TryCreateDirectory(localAppDataDir))
+            {
+                return localAppDataDir;
+            }
+
+            // Last resort: current directory
+            Console.WriteLine("[Preferences] Warning: All save directory options failed, using current directory");
+            return ".";
+        }
+
+        /// <summary>
+        /// Migrates save files from an old location to a new directory.
+        /// Only moves files that exist in the old location and don't exist in the new location.
+        /// </summary>
+        /// <param name="oldDir">The old directory containing save files.</param>
+        /// <param name="newDir">The new directory to move save files to.</param>
+        private static void MigrateOldSaveFiles(string oldDir, string newDir)
+        {
+            string[] filesToMigrate = [SaveFileName, LegacyBinaryFileName, MigratedBinaryFileName];
+
+            foreach (string fileName in filesToMigrate)
+            {
+                string oldPath = Path.Combine(oldDir, fileName);
+                string newPath = Path.Combine(newDir, fileName);
+
+                if (File.Exists(oldPath) && !File.Exists(newPath))
+                {
+                    try
+                    {
+                        File.Move(oldPath, newPath);
+                        Console.WriteLine($"[Preferences] Migrated {fileName} to new save directory");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Preferences] Failed to migrate {fileName}: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tests whether a directory is writable by creating and deleting a temporary file.
+        /// </summary>
+        /// <param name="path">The directory path to test.</param>
+        /// <returns><c>true</c> if the directory is writable; otherwise, <c>false</c>.</returns>
+        private static bool IsDirectoryWritable(string path)
+        {
+            try
+            {
+                string testFile = Path.Combine(path, ".write_test_" + Guid.NewGuid().ToString("N"));
+                File.WriteAllText(testFile, "test");
+                File.Delete(testFile);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to create a directory and verifies it is writable.
+        /// </summary>
+        /// <param name="path">The directory path to create.</param>
+        /// <returns><c>true</c> if the directory exists and is writable; otherwise, <c>false</c>.</returns>
+        private static bool TryCreateDirectory(string path)
+        {
+            try
+            {
+                if (!Directory.Exists(path))
+                {
+                    _ = Directory.CreateDirectory(path);
+                }
+                return IsDirectoryWritable(path);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the given path is inside a macOS .app bundle.
+        /// Checks for the standard bundle structure: *.app/Contents/MacOS/
+        /// </summary>
+        /// <param name="path">The path to check.</param>
+        /// <returns><c>true</c> if the path is inside a macOS .app bundle; otherwise, <c>false</c>.</returns>
+        private static bool IsInsideMacAppBundle(string path)
+        {
+            DirectoryInfo dir = new(path);
+
+            while (dir != null)
+            {
+                if (dir.Name.Equals("MacOS", StringComparison.OrdinalIgnoreCase) &&
+                    dir.Parent?.Name.Equals("Contents", StringComparison.OrdinalIgnoreCase) == true &&
+                    dir.Parent.Parent?.Name.EndsWith(".app", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    return true;
+                }
+
+                dir = dir.Parent;
+            }
+
+            return false;
+        }
 
         public Preferences()
         {
@@ -116,12 +288,12 @@ namespace CutTheRope.Framework.Core
             try
             {
                 string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
-                File.WriteAllText(SaveFileName, json);
+                File.WriteAllText(SaveFilePath, json);
                 GameSaveRequested = false;
             }
             catch (Exception ex)
             {
-                LOG($"Error saving preferences: {ex}");
+                Console.WriteLine($"Error saving preferences: {ex}");
                 GameSaveRequested = false;
             }
         }
@@ -140,7 +312,7 @@ namespace CutTheRope.Framework.Core
             }
             catch (Exception ex)
             {
-                LOG($"Error: cannot save, {ex}");
+                Console.WriteLine($"Error: cannot save, {ex}");
                 return false;
             }
         }
@@ -168,7 +340,7 @@ namespace CutTheRope.Framework.Core
             }
             catch (Exception ex)
             {
-                LOG($"Error: cannot load, {ex}");
+                Console.WriteLine($"Error: cannot load, {ex}");
                 return false;
             }
         }
@@ -182,11 +354,11 @@ namespace CutTheRope.Framework.Core
             PreferencesData.Clear();
 
             // Try to load from JSON first (preferred format)
-            if (File.Exists(SaveFileName))
+            if (File.Exists(SaveFilePath))
             {
                 try
                 {
-                    string json = File.ReadAllText(SaveFileName);
+                    string json = File.ReadAllText(SaveFilePath);
                     Dictionary<string, object> data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
 
                     if (data != null)
@@ -200,51 +372,51 @@ namespace CutTheRope.Framework.Core
                 }
                 catch (Exception ex)
                 {
-                    LOG($"Error loading JSON preferences: {ex}");
+                    Console.WriteLine($"Error loading JSON preferences: {ex}");
                 }
             }
 
             // Fall back to legacy binary format
-            if (File.Exists(LegacyBinaryFileName))
+            if (File.Exists(LegacyBinaryFilePath))
             {
                 try
                 {
-                    using FileStream fileStream = File.OpenRead(LegacyBinaryFileName);
+                    using FileStream fileStream = File.OpenRead(LegacyBinaryFilePath);
                     if (LoadLegacyBinaryFormat(fileStream))
                     {
-                        LOG("Successfully migrated preferences from binary to JSON format");
+                        Console.WriteLine("Successfully migrated preferences from binary to JSON format");
 
                         // Save as JSON
                         try
                         {
                             string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
-                            File.WriteAllText(SaveFileName, json);
+                            File.WriteAllText(SaveFilePath, json);
                         }
                         catch (Exception ex)
                         {
-                            LOG($"Error saving migrated preferences as JSON: {ex}");
+                            Console.WriteLine($"Error saving migrated preferences as JSON: {ex}");
                         }
 
                         // Rename old binary file
                         try
                         {
-                            if (File.Exists(MigratedBinaryFileName))
+                            if (File.Exists(MigratedBinaryFilePath))
                             {
-                                File.Delete(MigratedBinaryFileName);
+                                File.Delete(MigratedBinaryFilePath);
                             }
 
-                            File.Move(LegacyBinaryFileName, MigratedBinaryFileName);
-                            LOG($"Moved legacy binary to {MigratedBinaryFileName}");
+                            File.Move(LegacyBinaryFilePath, MigratedBinaryFilePath);
+                            Console.WriteLine($"Moved legacy binary to {MigratedBinaryFilePath}");
                         }
                         catch (Exception ex)
                         {
-                            LOG($"Error renaming legacy binary file: {ex}");
+                            Console.WriteLine($"Error renaming legacy binary file: {ex}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    LOG($"Error loading legacy binary preferences: {ex}");
+                    Console.WriteLine($"Error loading legacy binary preferences: {ex}");
                 }
             }
         }
@@ -280,7 +452,7 @@ namespace CutTheRope.Framework.Core
             }
             catch (Exception ex)
             {
-                LOG($"Error: cannot load legacy binary format, {ex}");
+                Console.WriteLine($"Error: cannot load legacy binary format, {ex}");
                 return false;
             }
         }

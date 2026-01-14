@@ -14,6 +14,7 @@ namespace CutTheRope.GameMain
     internal static class Resources
     {
         private static HashSet<string> soundNames_;
+        private static HashSet<string> musicNames_;
         private static HashSet<string> fontNames_;
         private static HashSet<string> imageNames_;
 
@@ -30,12 +31,17 @@ namespace CutTheRope.GameMain
             {
                 InitializeSoundNames();
             }
+            if (musicNames_ == null)
+            {
+                InitializeMusicNames();
+            }
             if (fontNames_ == null)
             {
                 InitializeFontNames();
             }
             return imageNames_.Contains(resourceName) ||
                    soundNames_.Contains(resourceName) ||
+                   musicNames_.Contains(resourceName) ||
                    fontNames_.Contains(resourceName);
         }
 
@@ -52,6 +58,18 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Checks if a resource name is music.
+        /// </summary>
+        public static bool IsMusic(string resourceName)
+        {
+            if (musicNames_ == null)
+            {
+                InitializeMusicNames();
+            }
+            return musicNames_.Contains(resourceName);
+        }
+
+        /// <summary>
         /// Checks if a resource name is a font.
         /// </summary>
         public static bool IsFont(string resourceName)
@@ -61,6 +79,18 @@ namespace CutTheRope.GameMain
                 InitializeFontNames();
             }
             return fontNames_.Contains(resourceName);
+        }
+
+        /// <summary>
+        /// Checks if a resource name is an image.
+        /// </summary>
+        public static bool IsImage(string resourceName)
+        {
+            if (imageNames_ == null)
+            {
+                InitializeImageNames();
+            }
+            return imageNames_.Contains(resourceName);
         }
 
         /// <summary>
@@ -102,7 +132,7 @@ namespace CutTheRope.GameMain
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
                 Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
-                Img.Snowflakes, Img.CharGreetingXmas,
+                Img.Snowflakes, Img.CharGreetingXmas, Img.ObjSock,
                 Img.Bgr14Cover, Img.Bgr14P1, Img.ObjLantern,
                 Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuLogoXmasHat,
                 Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
@@ -114,7 +144,8 @@ namespace CutTheRope.GameMain
                 Img.ObjCandy32, Img.ObjCandy33, Img.ObjCandy34, Img.ObjCandy35, Img.ObjCandy36,
                 Img.ObjCandy37, Img.ObjCandy38, Img.ObjCandy39, Img.ObjCandy40, Img.ObjCandy41,
                 Img.ObjCandy42, Img.ObjCandy43, Img.ObjCandy44, Img.ObjCandy45, Img.ObjCandy46,
-                Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51
+                Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51,
+                Img.ObjCandy52
             ];
         }
 
@@ -133,11 +164,21 @@ namespace CutTheRope.GameMain
                 Snd.SpiderFall, Snd.SpiderWin, Snd.Wheel, Snd.Win, Snd.GravityOff,
                 Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
-                Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
-                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.XmasBell,
-                Snd.MenuMusicXmas, Snd.GameMusicXmas, Snd.SteamStart,
+                Snd.ScratchOut, Snd.GhostPuff, Snd.XmasBell, Snd.SteamStart,
                 Snd.SteamStart2, Snd.SteamEnd, Snd.LanternTeleportIn,
-                Snd.LanternTeleportOut
+                Snd.LanternTeleportOut, Snd.TeleportXmas
+            ];
+        }
+
+        /// <summary>
+        /// List all of audio resources.
+        /// </summary>
+        private static void InitializeMusicNames()
+        {
+            musicNames_ =
+            [
+                Music.MenuMusic, Music.MenuMusicXmas, Music.GameMusic, Music.GameMusicXmas,
+                Music.GameMusic2,Music.GameMusic3, Music.GameMusic4
             ];
         }
 
@@ -392,7 +433,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Sound effect and music resource names.
+        /// Sound effect resource names.
         /// </summary>
         internal static class Snd
         {
@@ -434,21 +475,33 @@ namespace CutTheRope.GameMain
             public const string Teleport = "teleport";
             public const string ScratchIn = "scratch_in";
             public const string ScratchOut = "scratch_out";
-            public const string MenuMusic = "menu_music";
-            public const string GameMusic = "game_music";
-            public const string GameMusic2 = "game_music2";
-            public const string GameMusic3 = "game_music3";
-            public const string GameMusic4 = "game_music4";
             public const string GhostPuff = "ghost_puff";
             public const string XmasBell = "xmas_bell";
-            public const string MenuMusicXmas = "menu_music_xmas";
-            public const string GameMusicXmas = "game_music_xmas";
             public const string TeleportXmas = "teleport_xmas";
             public const string SteamStart = "steam_start";
             public const string SteamStart2 = "steam_start2";
             public const string SteamEnd = "steam_end";
             public const string LanternTeleportIn = "lantern_teleport_in";
             public const string LanternTeleportOut = "lantern_teleport_out";
+        }
+
+        /// <summary>
+        /// Music resource names.
+        /// </summary>
+        internal static class Music
+        {
+#if MONOGAME_WINDOWSDX
+            private const string Suffix = "_windows";
+#else
+            private const string Suffix = "";
+#endif
+            public const string MenuMusic = "menu_music" + Suffix;
+            public const string GameMusic = "game_music" + Suffix;
+            public const string GameMusic2 = "game_music2" + Suffix;
+            public const string GameMusic3 = "game_music3" + Suffix;
+            public const string GameMusic4 = "game_music4" + Suffix;
+            public const string MenuMusicXmas = "menu_music_xmas" + Suffix;
+            public const string GameMusicXmas = "game_music_xmas" + Suffix;
         }
 
         /// <summary>
