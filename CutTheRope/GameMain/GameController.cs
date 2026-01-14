@@ -36,15 +36,15 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.StopMusic();
             if (SpecialEvents.IsXmas)
             {
-                CTRSoundMgr.PlayMusic(Resources.Snd.GameMusicXmas);
+                CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
             }
             else
             {
                 CTRSoundMgr.PlayRandomMusic(
-                    Resources.Snd.GameMusic,
-                    Resources.Snd.GameMusic2,
-                    Resources.Snd.GameMusic3,
-                    Resources.Snd.GameMusic4
+                    Resources.Music.GameMusic,
+                    Resources.Music.GameMusic2,
+                    Resources.Music.GameMusic3,
+                    Resources.Music.GameMusic4
                 );
             }
             InitGameView();
@@ -436,15 +436,15 @@ namespace CutTheRope.GameMain
                         CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
                         if (SpecialEvents.IsXmas)
                         {
-                            CTRSoundMgr.PlayMusic(Resources.Snd.GameMusicXmas);
+                            CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
                         }
                         else
                         {
                             CTRSoundMgr.PlayRandomMusic(
-                                Resources.Snd.GameMusic,
-                                Resources.Snd.GameMusic2,
-                                Resources.Snd.GameMusic3,
-                                Resources.Snd.GameMusic4
+                                Resources.Music.GameMusic,
+                                Resources.Music.GameMusic2,
+                                Resources.Music.GameMusic3,
+                                Resources.Music.GameMusic4
                             );
                         }
                         return;
