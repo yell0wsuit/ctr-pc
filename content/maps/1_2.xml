@@ -15,31 +15,19 @@
         <grab x="494" y="69" length="320" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
     </layer>
     <layer name="En_Track">
-        <tutorial01 x="223" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="276" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="329" y="92" locale="en" moveSpeed="100" rotateSpeed="100" />
-        <tutorial11 x="205" y="135" locale="en" moveSpeed="100" rotateSpeed="100" special="2" />
-        <tutorialText x="-15" y="78" locale="en" text="Using the trackpad slide two fingers across to cut the rope" width="190" />
+        <tutorialText x="333" y="285" locale="en" text="Collect as many stars as you can" width="150" />
+        <tutorial09 x="313" y="321" locale="en" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Ru_Track">
-        <tutorialText x="-35" y="70" locale="ru" text="Перерезайте веревку движением двух пальцев, используя трекпад" width="200" />
-        <tutorial01 x="223" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="276" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="329" y="92" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorial11 x="205" y="135" locale="ru" moveSpeed="100" rotateSpeed="100" special="2" />
+        <tutorial09 x="265" y="315" locale="ru" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="303" y="278" locale="ru" text="Старайтесь собрать как можно больше звезд" width="210" />
     </layer>
     <layer name="De_Track">
-        <tutorialText x="-15" y="78" locale="de" text="Ziehe zwei Finger über dasTrackpad, um das Seil zu zerschneiden" width="200" />
-        <tutorial01 x="223" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="276" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="329" y="92" locale="de" moveSpeed="100" rotateSpeed="100" />
-        <tutorial11 x="205" y="135" locale="de" moveSpeed="100" rotateSpeed="100" special="2" />
+        <tutorialText x="326" y="285" locale="de" text="Sammle möglichst viele Sterne." width="170" />
+        <tutorial09 x="306" y="321" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Fr_Track">
-        <tutorialText x="-14" y="78" locale="fr" text="Sur le trackpad, glisse deux doigts sur une corde pour la couper" width="200" />
-        <tutorial01 x="223" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="276" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="329" y="92" locale="fr" moveSpeed="100" rotateSpeed="100" />
-        <tutorial11 x="205" y="135" locale="fr" moveSpeed="100" rotateSpeed="100" special="2" />
+        <tutorialText x="337" y="285" locale="fr" text="Recueillez le plus d'étoiles possible" width="150" />
+        <tutorial09 x="313" y="321" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
 </map>

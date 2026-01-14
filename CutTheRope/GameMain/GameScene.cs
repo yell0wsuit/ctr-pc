@@ -44,11 +44,6 @@ namespace CutTheRope.GameMain
 
         public static bool ShouldSkipTutorialElement(XElement c)
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 1)
-            {
-                return true;
-            }
             string @string = Application.SharedAppSettings().GetString(8);
             string nSString = c.AttributeAsNSString("locale");
             if (@string.IsEqualToString("en") || @string.IsEqualToString("ru") || @string.IsEqualToString("de") || @string.IsEqualToString("fr"))
