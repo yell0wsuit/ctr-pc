@@ -1,4 +1,14 @@
+
+<<<<<<< TODO: Unmerged change from project 'CutTheRope(net9.0)', Before:
 using CutTheRope.Desktop;
+=======
+using CutTheRope.Desktop;
+
+using Microsoft.Xna.Framework.Graphics;
+>>>>>>> After
+using CutTheRope.Desktop;
+
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -15,7 +25,13 @@ namespace CutTheRope.Framework.Visual
             {
                 OpenGL.GlEnable(0);
                 OpenGL.GlBindTexture(t.Name());
+<<<<<<< TODO: Unmerged change from project 'CutTheRope(net9.0)', Before:
                 var vertices = QuadVertexCache.GetTexturedQuad(
+=======
+                VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
+>>>>>>> After
+
+                VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                     x, y, t._realWidth, t._realHeight,
                     0f, 0f, t._maxS, t._maxT);
                 OpenGL.DrawTriangleStrip(vertices);
