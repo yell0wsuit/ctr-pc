@@ -348,26 +348,18 @@ namespace CutTheRope.Framework.Visual
         /// <param name="w">Width of the rectangle.</param>
         /// <param name="h">Height of the rectangle.</param>
         /// <param name="fill">Fill color of the rectangle.</param>
-        /// <remarks>
-        /// This method temporarily disables texture client state to draw using vertex colors,
-        /// and resets the color to white afterwards to prevent color bleeding to subsequent draws.
-        /// </remarks>
         public static void DrawSolidRectWOBorder(float x, float y, float w, float h, RGBAColor fill)
         {
-            float[] pointer =
-            [
-                x,
-                y,
-                x + w,
-                y,
-                x,
-                y + h,
-                x + w,
-                y + h
-            ];
-            VertexPositionColor[] vertices = BuildColoredVertices(pointer, 4, fill.ToXNA());
-            OpenGL.DrawTriangleStrip(vertices);
+            Color color = fill.ToXNA();
+            s_rectVertices[0] = new VertexPositionColor(new Vector3(x, y, 0f), color);
+            s_rectVertices[1] = new VertexPositionColor(new Vector3(x + w, y, 0f), color);
+            s_rectVertices[2] = new VertexPositionColor(new Vector3(x, y + h, 0f), color);
+            s_rectVertices[3] = new VertexPositionColor(new Vector3(x + w, y + h, 0f), color);
+            OpenGL.DrawTriangleStrip(s_rectVertices);
         }
+
+        // Cached vertex array for rectangle drawing
+        private static readonly VertexPositionColor[] s_rectVertices = new VertexPositionColor[4];
 
         public static void DrawPolygon(float[] vertices, int vertexCount, RGBAColor color)
         {
