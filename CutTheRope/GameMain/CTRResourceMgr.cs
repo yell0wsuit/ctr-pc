@@ -70,10 +70,7 @@ namespace CutTheRope.GameMain
                 {
                     return Resources.Img.MenuExtraButtonsFr;
                 }
-                if (LANGUAGE == Language.LANGES)
-                {
-                    return Resources.Img.MenuExtraButtonsEs;
-                }
+                
             }
 
             return resourceName;
