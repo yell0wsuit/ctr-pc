@@ -13,7 +13,6 @@ namespace CutTheRope.GameMain
     {
         protected static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
-            OpenGL.GlLineWidth(3.0);
             for (int i = 0; i < s.vertexCount; i += 2)
             {
                 VertexPositionColor[] lineVertices = GLDrawer.BuildAntialiasedLineVertices(
@@ -25,7 +24,6 @@ namespace CutTheRope.GameMain
                     color);
                 OpenGL.DrawTriangleStrip(lineVertices);
             }
-            OpenGL.GlLineWidth(1.0);
         }
 
         public Grab()

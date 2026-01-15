@@ -489,9 +489,7 @@ namespace CutTheRope.GameMain
                     ConstraintedPoint constraintedPoint = parts[i];
                     array[i] = constraintedPoint.pos;
                 }
-                OpenGL.GlLineWidth(lineWidth);
                 DrawBungee(this, array, count, 4, 0);
-                OpenGL.GlLineWidth(1.0);
                 return;
             }
             Vector[] array2 = new Vector[count];
@@ -527,7 +525,6 @@ namespace CutTheRope.GameMain
                     num++;
                 }
             }
-            OpenGL.GlLineWidth(lineWidth);
             int num2 = count - num;
             if (num2 > 0)
             {
@@ -537,7 +534,6 @@ namespace CutTheRope.GameMain
             {
                 DrawBungee(this, array3, num, 4, cutIndex);
             }
-            OpenGL.GlLineWidth(1.0);
         }
 
         /// <summary>

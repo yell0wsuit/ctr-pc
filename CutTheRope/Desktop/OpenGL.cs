@@ -398,19 +398,6 @@ namespace CutTheRope.Desktop
 
         #endregion
 
-        #region Line Width (Stub)
-
-        /// <summary>
-        /// Sets the line width for line rendering.
-        /// Note: This is a stub - MonoGame does not support variable line widths.
-        /// </summary>
-        public static void GlLineWidth(double width)
-        {
-            s_LineWidth = width;
-        }
-
-        #endregion
-
         #region Drawing Methods
 
         /// <summary>
@@ -755,9 +742,6 @@ namespace CutTheRope.Desktop
 
         // Constants
         private static readonly Vector3 s_normal = new(0f, 0f, 1f);
-
-        // Line width (stub - not used by MonoGame)
-        private static double s_LineWidth;
 
         #endregion
     }
