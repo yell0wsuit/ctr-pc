@@ -28,6 +28,7 @@ namespace CutTheRope.Framework.Core
                     Language.LANGFR => "fr",
                     Language.LANGZH => "zh",
                     Language.LANGJA => "ja",
+                    Language.LANGES => "es",
                     _ => "en",
                 };
         }
@@ -46,9 +47,13 @@ namespace CutTheRope.Framework.Core
                 {
                     LANGUAGE = Language.LANGDE;
                 }
-                if (locale == "fr")
+                else if (locale == "fr")
                 {
                     LANGUAGE = Language.LANGFR;
+                }
+                if (locale == "es")
+                {
+                    LANGUAGE = Language.LANGES;
                 }
             }
         }

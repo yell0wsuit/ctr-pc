@@ -173,6 +173,10 @@ namespace CutTheRope.Framework.Core
                 {
                     tag = "de";
                 }
+                if (LANGUAGE == Language.LANGES)
+                {
+                    tag = "es";
+                }
                 XElement xMLNode2 = xMLNode.FindChildWithTagNameRecursively(tag, false);
                 xMLNode2 ??= xMLNode.FindChildWithTagNameRecursively("en", false);
                 return xMLNode2?.ValueAsNSString() ?? string.Empty;
@@ -187,7 +191,8 @@ namespace CutTheRope.Framework.Core
             bool isLanguageSupported = LANGUAGE is Language.LANGEN or
                                        Language.LANGDE or
                                        Language.LANGFR or
-                                       Language.LANGRU;
+                                       Language.LANGRU or
+                                       Language.LANGES;
 
             if (preferOldFontSystem && isLanguageSupported)
             {

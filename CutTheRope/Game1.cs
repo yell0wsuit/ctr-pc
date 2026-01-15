@@ -154,6 +154,10 @@ namespace CutTheRope
             {
                 result = Language.LANGFR;
             }
+            if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "es")
+            {
+                result = Language.LANGES;
+            }
             return result;
         }
 

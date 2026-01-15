@@ -90,7 +90,8 @@ namespace CutTheRope.Framework.Core
                 string text = Preferences.GetStringForKey("PREFS_LOCALE");
                 if (text == null || text.Length == 0)
                 {
-                    text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";
+                    text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "es" ? "es" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr" ? "fr" : "en"; // this line is awful 
+
                 }
                 appSettings.SetString(8, text);
             }
@@ -163,6 +164,7 @@ namespace CutTheRope.Framework.Core
                 Language.LANGFR => "fr",
                 Language.LANGZH => "zh",
                 Language.LANGJA => "ja",
+                Language.LANGES => "es",
                 _ => "en",
             };
 
