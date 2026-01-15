@@ -1,5 +1,7 @@
 using CutTheRope.Desktop;
 
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.Framework.Visual
 {
     internal sealed class Grabber : FrameworkTypes
@@ -15,7 +17,7 @@ namespace CutTheRope.Framework.Visual
             {
                 OpenGL.GlEnable(0);
                 OpenGL.GlBindTexture(t.Name());
-                var vertices = QuadVertexCache.GetTexturedQuad(
+                VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                     x, y, t._realWidth, t._realHeight,
                     0f, 0f, t._maxS, t._maxT);
                 OpenGL.DrawTriangleStrip(vertices);
