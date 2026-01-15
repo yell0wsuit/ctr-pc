@@ -55,6 +55,10 @@ namespace CutTheRope.GameMain
                 {
                     return Resources.Img.MenuResultFr;
                 }
+                if (LANGUAGE == Language.LANGES)
+                {
+                    return Resources.Img.MenuResultEs;
+                }
             }
             else if (resourceName == Resources.Img.MenuExtraButtonsEn)
             {

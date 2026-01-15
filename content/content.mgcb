@@ -1741,6 +1741,18 @@
 /processorParam:TextureFormat=Color
 /build:menu_result_ru.png
 
+#begin menu_result_es.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:menu_result_es.png
+
 #begin menu_result.png
 /importer:TextureImporter
 /processor:TextureProcessor

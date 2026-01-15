@@ -1321,6 +1321,7 @@ namespace CutTheRope.GameMain
         internal const int IMG_MENU_RESULT_FR_stamp = 0;
 
         internal const int IMG_MENU_RESULT_GR_stamp_gr = 0;
+        internal const int IMG_MENU_RESULT_ES_stamp_es = 0;
 
         internal const int IMG_MENU_EXTRA_BUTTONS_EN_en = 0;
 

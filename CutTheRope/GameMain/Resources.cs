@@ -129,7 +129,7 @@ namespace CutTheRope.GameMain
                 Img.Bgr07Cover, Img.Bgr08Cover, Img.Bgr09Cover, Img.Bgr10Cover,
                 Img.Bgr11Cover, Img.MenuExtraButtonsFr, Img.MenuExtraButtonsGr,
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
-                Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
+                Img.MenuResultRu, Img.MenuResultEs, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
                 Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
                 Img.Snowflakes, Img.CharGreetingXmas, Img.ObjSock,
@@ -301,6 +301,7 @@ namespace CutTheRope.GameMain
             public const string HudButtonsRu = "hud_buttons_ru";
             public const string HudButtonsGr = "hud_buttons_gr";
             public const string MenuResultRu = "menu_result_ru";
+            public const string MenuResultEs = "menu_result_es";
             public const string MenuResultFr = "menu_result_fr";
             public const string MenuResultGr = "menu_result_gr";
             public const string MenuExtraButtonsEn = "menu_extra_buttons_en";

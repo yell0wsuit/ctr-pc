@@ -875,6 +875,14 @@
       <preCutHeight>1597</preCutHeight>
     </info>
   </resource>
+  <resource name="menu_result_es">
+    <info format="0" fileFormat="0" filter="1">
+      <quads>0,0,239,239,</quads>
+      <offsets>811,344,</offsets>
+      <preCutWidth>2028</preCutWidth>
+      <preCutHeight>1597</preCutHeight>
+    </info>
+  </resource>
   <resource name="menu_result_fr">
     <info format="0" fileFormat="0" filter="1">
       <quads>0,0,228,228,</quads>
