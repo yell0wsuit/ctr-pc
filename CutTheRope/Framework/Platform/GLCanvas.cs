@@ -63,8 +63,6 @@ namespace CutTheRope.Framework.Platform
 
         public static void PrepareOpenGL()
         {
-            OpenGL.GlEnableClientState(11);
-            OpenGL.GlEnableClientState(12);
         }
 
         public void SetDefaultRealProjection()
@@ -168,8 +166,6 @@ namespace CutTheRope.Framework.Platform
         {
             SetDefaultProjection();
             OpenGL.GlDisable(1);
-            OpenGL.GlEnableClientState(11);
-            OpenGL.GlEnableClientState(12);
         }
 
         public static void AfterRender()

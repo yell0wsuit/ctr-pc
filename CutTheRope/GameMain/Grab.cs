@@ -5,6 +5,7 @@ using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
@@ -12,19 +13,18 @@ namespace CutTheRope.GameMain
     {
         protected static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
-            OpenGL.GlColor4f(color.ToXNA());
             OpenGL.GlLineWidth(3.0);
-            OpenGL.GlDisableClientState(0);
-            OpenGL.GlEnableClientState(13);
-            OpenGL.GlColorPointer_setAdditive(s.vertexCount * 8);
-            OpenGL.GlVertexPointer_setAdditive(2, 5, 0, s.vertexCount * 16);
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                GLDrawer.DrawAntialiasedLine(s.vertices[i * 2], s.vertices[(i * 2) + 1], s.vertices[(i * 2) + 2], s.vertices[(i * 2) + 3], 3f, color);
+                VertexPositionColor[] lineVertices = GLDrawer.BuildAntialiasedLineVertices(
+                    s.vertices[i * 2],
+                    s.vertices[(i * 2) + 1],
+                    s.vertices[(i * 2) + 2],
+                    s.vertices[(i * 2) + 3],
+                    3f,
+                    color);
+                OpenGL.DrawTriangleStrip(lineVertices);
             }
-            OpenGL.GlDrawArrays(8, 0, 8);
-            OpenGL.GlEnableClientState(0);
-            OpenGL.GlDisableClientState(13);
             OpenGL.GlLineWidth(1.0);
         }
 

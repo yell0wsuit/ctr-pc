@@ -73,9 +73,9 @@ namespace CutTheRope.Framework.Visual
         {
             OpenGL.GlEnable(0);
             OpenGL.GlBindTexture(image.texture.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(vertices));
-            OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(texCoordinates));
-            OpenGL.GlDrawElements(7, n * 6, indices);
+            VertexPositionNormalTexture[] quadVertices = GetVertexBuffer(n * 4);
+            OpenGL.FillTexturedVertices(vertices, texCoordinates, quadVertices, n);
+            OpenGL.DrawTriangleList(quadVertices, indices, n * 6);
         }
 
         public void Optimize(VertexPositionNormalTexture[] v)
@@ -95,7 +95,7 @@ namespace CutTheRope.Framework.Visual
             }
             OpenGL.GlEnable(0);
             OpenGL.GlBindTexture(image.texture.Name());
-            OpenGL.Optimized_DrawTriangleList(verticesOptimized, indices);
+            OpenGL.DrawTriangleList(verticesOptimized, indices);
         }
 
         public override void Draw()
@@ -143,5 +143,16 @@ namespace CutTheRope.Framework.Visual
         public int numberOfQuadsToDraw;
 
         private VertexPositionNormalTexture[] verticesOptimized;
+
+        private VertexPositionNormalTexture[] verticesCache;
+
+        private VertexPositionNormalTexture[] GetVertexBuffer(int vertexCount)
+        {
+            if (verticesCache == null || verticesCache.Length < vertexCount)
+            {
+                verticesCache = new VertexPositionNormalTexture[vertexCount];
+            }
+            return verticesCache;
+        }
     }
 }

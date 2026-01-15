@@ -9,6 +9,7 @@ using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
@@ -296,8 +297,15 @@ namespace CutTheRope.GameMain
                             num3 += num10;
                         }
                         OpenGL.GlColor4f(Color.White);
-                        OpenGL.GlVertexPointer(2, 5, 0, array3);
-                        OpenGL.GlDrawArrays(8, 0, num4 / 2);
+                        int vertexCount = num4 / 2;
+                        VertexPositionColor[] vertices = new VertexPositionColor[vertexCount];
+                        int positionIndex = 0;
+                        for (int vertex = 0; vertex < vertexCount; vertex++)
+                        {
+                            Vector3 position = new(array3[positionIndex++], array3[positionIndex++], 0f);
+                            vertices[vertex] = new VertexPositionColor(position, Color.White);
+                        }
+                        OpenGL.DrawTriangleStrip(vertices);
                     }
                 }
             }

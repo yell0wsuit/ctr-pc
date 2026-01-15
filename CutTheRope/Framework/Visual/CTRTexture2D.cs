@@ -2,6 +2,7 @@ using CutTheRope.Commons;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
@@ -27,9 +28,8 @@ namespace CutTheRope.Framework.Visual
             float[] pointer2 = array;
             OpenGL.GlEnable(0);
             OpenGL.GlBindTexture(t.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, pointer2);
-            OpenGL.GlTexCoordPointer(2, 5, 0, pointer);
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = BuildTexturedQuad(pointer2, pointer);
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public CTRTexture2D Name()
@@ -84,9 +84,8 @@ namespace CutTheRope.Framework.Visual
             float[] pointer = array;
             OpenGL.GlEnable(0);
             OpenGL.GlBindTexture(t.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, pointer);
-            OpenGL.GlTexCoordPointer(2, 5, 0, quad2D.ToFloatArray());
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = BuildTexturedQuad(pointer, quad2D.ToFloatArray());
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public static void DrawAtPoint(CTRTexture2D t, Vector point)
@@ -104,9 +103,8 @@ namespace CutTheRope.Framework.Visual
             float[] pointer2 = array;
             OpenGL.GlEnable(0);
             OpenGL.GlBindTexture(t.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, pointer2);
-            OpenGL.GlTexCoordPointer(2, 5, 0, pointer);
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = BuildTexturedQuad(pointer2, pointer);
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public void CalculateForQuickDrawing()
@@ -131,6 +129,17 @@ namespace CutTheRope.Framework.Visual
 
         public static void SetAliasTexParameters()
         {
+        }
+
+        private static VertexPositionNormalTexture[] BuildTexturedQuad(float[] positions, float[] texCoords)
+        {
+            return
+            [
+                new VertexPositionNormalTexture(new Vector3(positions[0], positions[1], positions[2]), Vector3.UnitZ, new Vector2(texCoords[0], texCoords[1])),
+                new VertexPositionNormalTexture(new Vector3(positions[3], positions[4], positions[5]), Vector3.UnitZ, new Vector2(texCoords[2], texCoords[3])),
+                new VertexPositionNormalTexture(new Vector3(positions[6], positions[7], positions[8]), Vector3.UnitZ, new Vector2(texCoords[4], texCoords[5])),
+                new VertexPositionNormalTexture(new Vector3(positions[9], positions[10], positions[11]), Vector3.UnitZ, new Vector2(texCoords[6], texCoords[7]))
+            ];
         }
 
         public void Reg()

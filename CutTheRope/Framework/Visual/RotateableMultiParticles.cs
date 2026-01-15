@@ -1,4 +1,3 @@
-using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Visual
@@ -98,9 +97,6 @@ namespace CutTheRope.Framework.Visual
             {
                 UpdateParticle(ref particles[particleIdx], delta);
             }
-            OpenGL.GlBindBuffer(2, colorsID);
-            OpenGL.GlBufferData(2, colors, 3);
-            OpenGL.GlBindBuffer(2, 0U);
         }
 
         public float rotateSpeed;

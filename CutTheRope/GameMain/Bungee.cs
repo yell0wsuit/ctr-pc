@@ -8,6 +8,7 @@ using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
@@ -86,22 +87,28 @@ namespace CutTheRope.GameMain
                 ccolors2[5] = rgbaColor;
                 ccolors2[6] = color;
                 ccolors2[7] = color;
-                OpenGL.GlDisableClientState(0);
-                OpenGL.GlEnableClientState(13);
                 if (highlighted)
                 {
                     OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                    OpenGL.GlColorPointer(4, 5, 0, ccolors);
-                    OpenGL.GlVertexPointer(2, 5, 0, pointer);
-                    OpenGL.GlDrawArrays(8, 0, 8);
+                    VertexPositionColor[] highlightVertices = BuildColoredVertices(pointer, ccolors, 8);
+                    OpenGL.DrawTriangleStrip(highlightVertices);
                 }
                 OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                OpenGL.GlColorPointer(4, 5, 0, ccolors2);
-                OpenGL.GlVertexPointer(2, 5, 0, pointer2);
-                OpenGL.GlDrawArrays(8, 0, 10);
-                OpenGL.GlEnableClientState(0);
-                OpenGL.GlDisableClientState(13);
+                VertexPositionColor[] mainVertices = BuildColoredVertices(pointer2, ccolors2, 10);
+                OpenGL.DrawTriangleStrip(mainVertices);
             }
+        }
+
+        private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
+        {
+            VertexPositionColor[] vertices = new VertexPositionColor[vertexCount];
+            int positionIndex = 0;
+            for (int i = 0; i < vertexCount; i++)
+            {
+                Vector3 position = new(positions[positionIndex++], positions[positionIndex++], 0f);
+                vertices[i] = new VertexPositionColor(position, colors[i].ToXNA());
+            }
+            return vertices;
         }
 
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)

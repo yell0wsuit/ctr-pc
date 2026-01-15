@@ -5,6 +5,9 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.GameMain;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.Framework.Visual
 {
     internal class Image : BaseElement
@@ -264,9 +267,8 @@ namespace CutTheRope.Framework.Visual
             ];
             OpenGL.GlEnable(0);
             OpenGL.GlBindTexture(texture.Name());
-            OpenGL.GlVertexPointer(2, 5, 0, pointer);
-            OpenGL.GlTexCoordPointer(2, 5, 0, texture.quads[n].ToFloatArray());
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = BuildTexturedQuad(pointer, texture.quads[n].ToFloatArray());
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public override bool HandleAction(ActionData a)
@@ -295,6 +297,17 @@ namespace CutTheRope.Framework.Visual
                 texture = null;
             }
             base.Dispose(disposing);
+        }
+
+        private static VertexPositionNormalTexture[] BuildTexturedQuad(float[] positions, float[] texCoords)
+        {
+            return
+            [
+                new VertexPositionNormalTexture(new Vector3(positions[0], positions[1], 0f), Vector3.UnitZ, new Vector2(texCoords[0], texCoords[1])),
+                new VertexPositionNormalTexture(new Vector3(positions[2], positions[3], 0f), Vector3.UnitZ, new Vector2(texCoords[2], texCoords[3])),
+                new VertexPositionNormalTexture(new Vector3(positions[4], positions[5], 0f), Vector3.UnitZ, new Vector2(texCoords[4], texCoords[5])),
+                new VertexPositionNormalTexture(new Vector3(positions[6], positions[7], 0f), Vector3.UnitZ, new Vector2(texCoords[6], texCoords[7]))
+            ];
         }
 
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";

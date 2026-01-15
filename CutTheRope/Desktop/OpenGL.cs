@@ -25,7 +25,6 @@ namespace CutTheRope.Desktop
             {
                 s_Blend.Enable();
             }
-            s_glServerSideFlags[cap] = true;
         }
 
         public static void GlDisable(int cap)
@@ -38,17 +37,6 @@ namespace CutTheRope.Desktop
             {
                 s_Blend.Disable();
             }
-            s_glServerSideFlags[cap] = false;
-        }
-
-        public static void GlEnableClientState(int cap)
-        {
-            s_glClientStateFlags[cap] = true;
-        }
-
-        public static void GlDisableClientState(int cap)
-        {
-            s_glClientStateFlags[cap] = false;
         }
 
         public static RenderTarget2D DetachRenderTarget()
@@ -206,177 +194,9 @@ namespace CutTheRope.Desktop
         {
         }
 
-        public static void GlGenBuffers(int n, ref uint buffer)
-        {
-        }
-
-        public static void GlGenBuffers(int n, ref uint[] buffers)
-        {
-        }
-
-        public static void GlDeleteBuffers(int n, ref uint[] buffers)
-        {
-        }
-
-        public static void GlDeleteBuffers(int n, ref uint buffers)
-        {
-        }
-
-        public static void GlBindBuffer(int target, uint buffer)
-        {
-        }
-
-        public static void GlBufferData(int target, RGBAColor[] data, int usage)
-        {
-        }
-
-        public static void GlBufferData(int target, PointSprite[] data, int usage)
-        {
-        }
-
-        public static void GlColorPointer(int size, int type, int stride, RGBAColor[] pointer)
-        {
-            s_GLColorPointer = pointer;
-        }
-
-        public static void GlVertexPointer(int size, int type, int stride, object pointer)
-        {
-            s_GLVertexPointer = new GLVertexPointer(size, pointer);
-        }
-
-        public static void GlTexCoordPointer(int size, int type, int stride, object pointer)
-        {
-            s_GLTexCoordPointer = new GLTexCoordPointer(size, pointer);
-        }
-
-        public static void GlDrawArrays(int mode, int first, int count)
-        {
-            if (mode == 8)
-            {
-                DrawTriangleStrip(first, count);
-                return;
-            }
-            if (mode - 9 > 1)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public static void GlColorPointer_setAdditive(int size)
-        {
-            s_GLColorPointer = new RGBAColor[size];
-            s_GLColorPointer_additive_position = 0;
-        }
-
-        public static void GlColorPointer_add(int size, int type, int stride, RGBAColor[] pointer)
-        {
-            pointer.CopyTo(s_GLColorPointer, s_GLColorPointer_additive_position);
-            s_GLColorPointer_additive_position += pointer.Length;
-        }
-
-        public static void GlVertexPointer_setAdditive(int size, int type, int stride, int length)
-        {
-            s_GLVertexPointer = new GLVertexPointer(size, new float[length]);
-            s_GLVertexPointer_additive_position = 0;
-        }
-
-        public static void GlVertexPointer_add(int size, int type, int stride, float[] pointer)
-        {
-            pointer.CopyTo(s_GLVertexPointer.pointer_, s_GLVertexPointer_additive_position);
-            s_GLVertexPointer_additive_position += pointer.Length;
-        }
-
-        private static VertexPositionColor[] ConstructColorVertices()
-        {
-            VertexPositionColor[] array = new VertexPositionColor[s_GLVertexPointer.Count];
-            int num = 0;
-            Vector3 position = default;
-            for (int i = 0; i < array.Length; i++)
-            {
-                position.X = s_GLVertexPointer.pointer_[num++];
-                position.Y = s_GLVertexPointer.pointer_[num++];
-                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
-                array[i] = new VertexPositionColor(position, s_GLColorPointer[i].ToXNA());
-            }
-            return array;
-        }
-
-        private static VertexPositionColor[] ConstructCurrentColorVertices()
-        {
-            VertexPositionColor[] array = new VertexPositionColor[s_GLVertexPointer.Count];
-            int num = 0;
-            for (int i = 0; i < array.Length; i++)
-            {
-                Vector3 position = default;
-                position.X = s_GLVertexPointer.pointer_[num++];
-                position.Y = s_GLVertexPointer.pointer_[num++];
-                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
-                array[i] = new VertexPositionColor(position, s_Color);
-            }
-            s_GLVertexPointer = null;
-            return array;
-        }
-
-        private static VertexPositionNormalTexture[] ConstructTexturedVertices()
-        {
-            VertexPositionNormalTexture[] array = new VertexPositionNormalTexture[s_GLVertexPointer.Count];
-            int num = 0;
-            int num2 = 0;
-            for (int i = 0; i < array.Length; i++)
-            {
-                Vector3 position = default;
-                position.X = s_GLVertexPointer.pointer_[num++];
-                position.Y = s_GLVertexPointer.pointer_[num++];
-                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
-                Vector2 textureCoordinate = default;
-                textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
-                textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
-                int num3 = 2;
-                while (num3 < s_GLTexCoordPointer.size_)
-                {
-                    num3++;
-                    num2++;
-                }
-                array[i] = new VertexPositionNormalTexture(position, normal, textureCoordinate);
-            }
-            s_GLTexCoordPointer = null;
-            s_GLVertexPointer = null;
-            return array;
-        }
-
-        private static VertexPositionColorTexture[] ConstructTexturedColoredVertices(int vertexCount)
-        {
-            VertexPositionColorTexture[] array = new VertexPositionColorTexture[vertexCount];
-            int num = 0;
-            int num2 = 0;
-            for (int i = 0; i < array.Length; i++)
-            {
-                Vector3 position = default;
-                position.X = s_GLVertexPointer.pointer_[num++];
-                position.Y = s_GLVertexPointer.pointer_[num++];
-                position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
-                Vector2 textureCoordinate = default;
-                textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
-                textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
-                int num3 = 2;
-                while (num3 < s_GLTexCoordPointer.size_)
-                {
-                    num3++;
-                    num2++;
-                }
-                Color color = s_GLColorPointer[i].ToXNA();
-                array[i] = new VertexPositionColorTexture(position, color, textureCoordinate);
-            }
-            s_GLTexCoordPointer = null;
-            s_GLVertexPointer = null;
-            return array;
-        }
-
         public static void Init()
         {
             InitRasterizerState();
-            s_glServerSideFlags[0] = true;
-            s_glClientStateFlags[0] = true;
             s_effectTexture = new BasicEffect(Global.GraphicsDevice)
             {
                 VertexColorEnabled = false,
@@ -440,27 +260,12 @@ namespace CutTheRope.Desktop
             };
         }
 
-        private static void DrawTriangleStrip(int first, int count)
-        {
-            _ = s_glServerSideFlags.TryGetValue(0, out bool value);
-            if (value)
-            {
-                _ = s_glClientStateFlags.TryGetValue(0, out value);
-            }
-            if (value)
-            {
-                DrawTriangleStripTextured(first, count);
-                return;
-            }
-            DrawTriangleStripColored(first, count);
-        }
-
         public static VertexPositionColor[] GetLastVertices_PositionColor()
         {
             return s_LastVertices_PositionColor;
         }
 
-        public static void Optimized_DrawTriangleStripColored(VertexPositionColor[] vertices)
+        public static void DrawTriangleStrip(VertexPositionColor[] vertices)
         {
             BasicEffect effect = GetEffect(false, true);
             if (effect.Alpha == 0f)
@@ -470,39 +275,37 @@ namespace CutTheRope.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, vertices, 0, vertices.Length - 2);
+                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertices.Length - 2);
             }
+            s_LastVertices_PositionColor = vertices;
         }
 
-        private static void DrawTriangleStripColored(int first, int count)
-        {
-            BasicEffect effect = GetEffect(false, true);
-            if (effect.Alpha == 0f)
-            {
-                s_LastVertices_PositionColor = null;
-                return;
-            }
-            _ = s_glClientStateFlags.TryGetValue(13, out bool value);
-            VertexPositionColor[] array = s_LastVertices_PositionColor = value ? ConstructColorVertices() : ConstructCurrentColorVertices();
-            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
-            {
-                effectPass.Apply();
-                Global.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, array, 0, array.Length - 2);
-            }
-        }
-
-        private static void DrawTriangleStripTextured(int first, int count)
+        public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices)
         {
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
                 return;
             }
-            VertexPositionNormalTexture[] array = ConstructTexturedVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, array, 0, array.Length - 2);
+                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertices.Length - 2);
+            }
+            s_LastVertices_PositionNormalTexture = vertices;
+        }
+
+        public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices)
+        {
+            BasicEffect effect = GetEffect(true, true);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertices.Length - 2);
             }
         }
 
@@ -527,7 +330,7 @@ namespace CutTheRope.Desktop
             return s_Color;
         }
 
-        public static void Optimized_DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
+        public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
@@ -537,35 +340,29 @@ namespace CutTheRope.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3);
+                DrawIndexedPrimitives(PrimitiveType.TriangleList, vertices, indices, indices.Length, indices.Length / 3);
             }
+            s_LastVertices_PositionNormalTexture = vertices;
         }
 
-        private static void DrawTriangleList(int first, int count, short[] indices)
+        public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
-            _ = s_glClientStateFlags.TryGetValue(13, out bool value);
-            if (value)
-            {
-                DrawTriangleListColored(first, count, indices);
-                return;
-            }
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
-                s_LastVertices_PositionNormalTexture = null;
                 return;
             }
-            VertexPositionNormalTexture[] array = s_LastVertices_PositionNormalTexture = ConstructTexturedVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, array, 0, array.Length, indices, 0, indices.Length / 3);
+                DrawIndexedPrimitives(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
             }
+            s_LastVertices_PositionNormalTexture = vertices;
         }
 
-        private static void DrawTriangleListColored(int first, int count, short[] indices)
+        public static void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
         {
-            if (count == 0)
+            if (indexCount == 0)
             {
                 return;
             }
@@ -574,21 +371,111 @@ namespace CutTheRope.Desktop
             {
                 return;
             }
-            int num = count / 3 * 2;
-            VertexPositionColorTexture[] vertexData = ConstructTexturedColoredVertices(num);
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                Global.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexData, 0, num, indices, 0, count / 3);
+                DrawIndexedPrimitives(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
             }
         }
 
-        public static void GlDrawElements(int mode, int count, short[] indices)
+        public static void DrawLineStrip(VertexPositionColor[] vertices)
         {
-            if (mode == 7)
+            if (vertices.Length < 2)
             {
-                DrawTriangleList(0, count, indices);
+                return;
             }
+            BasicEffect effect = GetEffect(false, true);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawPrimitives(PrimitiveType.LineStrip, vertices, vertices.Length - 1);
+            }
+        }
+
+        public static void FillTexturedVertices(Quad3D[] positions, Quad2D[] texCoordinates, VertexPositionNormalTexture[] vertices, int quadCount)
+        {
+            int vertexIndex = 0;
+            for (int i = 0; i < quadCount; i++)
+            {
+                float[] positionArray = positions[i].ToFloatArray();
+                float[] texArray = texCoordinates[i].ToFloatArray();
+                for (int vertex = 0; vertex < 4; vertex++)
+                {
+                    int positionOffset = vertex * 3;
+                    int texOffset = vertex * 2;
+                    Vector3 position = new(positionArray[positionOffset], positionArray[positionOffset + 1], positionArray[positionOffset + 2]);
+                    Vector2 texCoord = new(texArray[texOffset], texArray[texOffset + 1]);
+                    vertices[vertexIndex++] = new VertexPositionNormalTexture(position, normal, texCoord);
+                }
+            }
+        }
+
+        public static void FillTexturedColoredVertices(Quad3D[] positions, Quad2D[] texCoordinates, RGBAColor[] colors, VertexPositionColorTexture[] vertices, int quadCount)
+        {
+            int vertexIndex = 0;
+            for (int i = 0; i < quadCount; i++)
+            {
+                float[] positionArray = positions[i].ToFloatArray();
+                float[] texArray = texCoordinates[i].ToFloatArray();
+                int colorIndex = i * 4;
+                for (int vertex = 0; vertex < 4; vertex++)
+                {
+                    int positionOffset = vertex * 3;
+                    int texOffset = vertex * 2;
+                    Vector3 position = new(positionArray[positionOffset], positionArray[positionOffset + 1], positionArray[positionOffset + 2]);
+                    Vector2 texCoord = new(texArray[texOffset], texArray[texOffset + 1]);
+                    Color color = colors[colorIndex + vertex].ToXNA();
+                    vertices[vertexIndex++] = new VertexPositionColorTexture(position, color, texCoord);
+                }
+            }
+        }
+
+        private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int primitiveCount) where T : struct, IVertexType
+        {
+            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertices.Length);
+            vertexBuffer.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
+            Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+            Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
+            Global.GraphicsDevice.SetVertexBuffer(null);
+        }
+
+        private static void DrawIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertices, short[] indices, int indexCount, int primitiveCount) where T : struct, IVertexType
+        {
+            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertices.Length);
+            vertexBuffer.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
+            IndexBuffer indexBuffer = GetIndexBuffer(indexCount);
+            indexBuffer.SetData(indices, 0, indexCount);
+            Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+            Global.GraphicsDevice.Indices = indexBuffer;
+            Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, 0, 0, primitiveCount);
+            Global.GraphicsDevice.SetVertexBuffer(null);
+            Global.GraphicsDevice.Indices = null;
+        }
+
+        private static DynamicVertexBuffer GetVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
+        {
+            Type vertexType = typeof(T);
+            if (s_vertexBuffer == null || s_vertexBufferType != vertexType || s_vertexBuffer.VertexCount < vertexCount)
+            {
+                s_vertexBuffer?.Dispose();
+                s_vertexBufferType = vertexType;
+                s_vertexBuffer = new DynamicVertexBuffer(Global.GraphicsDevice, default(T).VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
+            }
+            return s_vertexBuffer;
+        }
+
+        private static IndexBuffer GetIndexBuffer(int indexCount)
+        {
+            if (s_indexBuffer == null || s_indexBuffer.IndexCount < indexCount)
+            {
+                s_indexBuffer?.Dispose();
+                s_indexBuffer = new IndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
+            }
+            return s_indexBuffer;
         }
 
         public static void GlScissor(double x, double y, double width, double height)
@@ -634,10 +521,6 @@ namespace CutTheRope.Desktop
             GlScissor((double)x, (double)y, (double)w, (double)h);
         }
 
-        private static readonly Dictionary<int, bool> s_glServerSideFlags = [];
-
-        private static readonly Dictionary<int, bool> s_glClientStateFlags = [];
-
         private static RenderTarget2D s_RenderTarget;
 
         private static Viewport s_Viewport;
@@ -660,16 +543,6 @@ namespace CutTheRope.Desktop
 
         private static BlendParams s_Blend = new();
 
-        private static RGBAColor[] s_GLColorPointer;
-
-        private static GLVertexPointer s_GLVertexPointer;
-
-        private static GLTexCoordPointer s_GLTexCoordPointer;
-
-        private static int s_GLColorPointer_additive_position;
-
-        private static int s_GLVertexPointer_additive_position;
-
         private static Vector3 normal = new(0f, 0f, 1f);
 
         private static BasicEffect s_effectTexture;
@@ -686,28 +559,15 @@ namespace CutTheRope.Desktop
 
         private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
 
+        private static DynamicVertexBuffer s_vertexBuffer;
+
+        private static IndexBuffer s_indexBuffer;
+
+        private static Type s_vertexBufferType;
+
         private static Rectangle ScreenRect = new(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
 
         private static double s_LineWidth;
 
-        private sealed class GLVertexPointer(int size, object pointer)
-        {
-            // (get) Token: 0x06000653 RID: 1619 RVA: 0x00033AD0 File Offset: 0x00031CD0
-            public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
-
-            public int size_ = size;
-
-            public float[] pointer_ = pointer != null ? (float[])pointer : null;
-        }
-
-        private sealed class GLTexCoordPointer(int size, object pointer)
-        {
-            // (get) Token: 0x06000655 RID: 1621 RVA: 0x00033B16 File Offset: 0x00031D16
-            public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
-
-            public int size_ = size;
-
-            public float[] pointer_ = pointer != null ? (float[])pointer : null;
-        }
     }
 }

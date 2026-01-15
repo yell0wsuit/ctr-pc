@@ -1,4 +1,3 @@
-using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 
 using Microsoft.Xna.Framework.Graphics;
@@ -90,11 +89,6 @@ namespace CutTheRope.Framework.Visual
             {
                 UpdateParticle(ref particles[particleIdx], delta);
             }
-            OpenGL.GlBindBuffer(2, verticesID);
-            OpenGL.GlBufferData(2, vertices, 3);
-            OpenGL.GlBindBuffer(2, colorsID);
-            OpenGL.GlBufferData(2, colors, 3);
-            OpenGL.GlBindBuffer(2, 0U);
         }
 
         protected override void Dispose(bool disposing)
@@ -104,16 +98,6 @@ namespace CutTheRope.Framework.Visual
                 particles = null;
                 vertices = null;
                 colors = null;
-                if (verticesID != 0)
-                {
-                    OpenGL.GlDeleteBuffers(1, ref verticesID);
-                    verticesID = 0;
-                }
-                if (colorsID != 0)
-                {
-                    OpenGL.GlDeleteBuffers(1, ref colorsID);
-                    colorsID = 0;
-                }
                 texture = null;
             }
             base.Dispose(disposing);
@@ -142,8 +126,6 @@ namespace CutTheRope.Framework.Visual
             }
             active = false;
             blendAdditive = false;
-            OpenGL.GlGenBuffers(1, ref verticesID);
-            OpenGL.GlGenBuffers(1, ref colorsID);
             return this;
         }
 
@@ -286,10 +268,6 @@ namespace CutTheRope.Framework.Visual
         public PointSprite[] vertices;
 
         public RGBAColor[] colors;
-
-        private uint verticesID;
-
-        public uint colorsID;
 
         public int particleIdx;
 
