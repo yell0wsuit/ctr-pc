@@ -2,7 +2,6 @@ using CutTheRope.Commons;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
