@@ -347,6 +347,10 @@ namespace CutTheRope.GameMain
             {
                 q = 6;
             }
+            else if (@string.IsEqualToString("es"))
+            {
+                q = 11;
+            }
             string string2 = Application.GetString(STR_MENU_LANGUAGE);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
@@ -1551,7 +1555,8 @@ namespace CutTheRope.GameMain
                     "en",
                     "ru",
                     "de",
-                    "fr"
+                    "fr",
+                    "es"
                         ];
                         int num = array3.Length;
                         bool flag4 = false;
