@@ -9,191 +9,26 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Desktop
 {
+    /// <summary>
+    /// Provides OpenGL ES 1.x emulation layer for MonoGame/XNA rendering.
+    /// This class translates legacy OpenGL-style API calls to modern MonoGame primitives,
+    /// using vertex buffers for efficient GPU rendering.
+    /// </summary>
     internal sealed class OpenGL
     {
-        public static void GlGenTextures(int n, object textures)
-        {
-        }
+        #region OpenGL State Constants
+        private const int GL_BLEND = 1;
+        private const int GL_SCISSOR_TEST = 4;
+        private const int GL_MODELVIEW = 14;
+        private const int GL_PROJECTION = 15;
+        #endregion
 
-        public static void GlBindTexture(int target, uint texture)
-        {
-        }
+        #region Initialization
 
-        public static void GlEnable(int cap)
-        {
-            if (cap == 1)
-            {
-                s_Blend.Enable();
-            }
-        }
-
-        public static void GlDisable(int cap)
-        {
-            if (cap == 4)
-            {
-                GlScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
-            }
-            if (cap == 1)
-            {
-                s_Blend.Disable();
-            }
-        }
-
-        public static RenderTarget2D DetachRenderTarget()
-        {
-            RenderTarget2D renderTarget2D = s_RenderTarget;
-            s_RenderTarget = null;
-            return renderTarget2D;
-        }
-
-        public static void CopyFromRenderTargetToScreen()
-        {
-            if (Global.ScreenSizeManager.IsFullScreen && s_RenderTarget != null)
-            {
-                Global.GraphicsDevice.Clear(Color.Black);
-                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
-                Global.SpriteBatch.End();
-            }
-        }
-
-        public static void GlViewport(double x, double y, double width, double height)
-        {
-            GlViewport((int)x, (int)y, (int)width, (int)height);
-        }
-
-        public static void GlViewport(int x, int y, int width, int height)
-        {
-            s_Viewport.X = x;
-            s_Viewport.Y = y;
-            s_Viewport.Width = width;
-            s_Viewport.Height = height;
-            if (Global.ScreenSizeManager.IsFullScreen)
-            {
-                if (s_RenderTarget == null || s_RenderTarget.Bounds.Width != s_Viewport.Bounds.Width || s_RenderTarget.Bounds.Height != s_Viewport.Bounds.Height)
-                {
-                    s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, s_Viewport.Width, s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None);
-                }
-                Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
-                Global.GraphicsDevice.Clear(Color.Black);
-                return;
-            }
-            s_RenderTarget = null;
-        }
-
-        public static void GlMatrixMode(int mode)
-        {
-            s_glMatrixMode = mode;
-        }
-
-        public static void GlLoadIdentity()
-        {
-            if (s_glMatrixMode == 14)
-            {
-                s_matrixModelView = Matrix.Identity;
-                return;
-            }
-            if (s_glMatrixMode == 15)
-            {
-                s_matrixProjection = Matrix.Identity;
-                return;
-            }
-            if (s_glMatrixMode == 16)
-            {
-                throw new NotImplementedException();
-            }
-            if (s_glMatrixMode != 17)
-            {
-                return;
-            }
-            throw new NotImplementedException();
-        }
-
-        public static void GlOrthof(double left, double right, double bottom, double top, double near, double far)
-        {
-            s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
-        }
-
-        public static void GlPopMatrix()
-        {
-            if (s_matrixModelViewStack.Count > 0)
-            {
-                int index = s_matrixModelViewStack.Count - 1;
-                s_matrixModelView = s_matrixModelViewStack[index];
-                s_matrixModelViewStack.RemoveAt(index);
-            }
-        }
-
-        public static void GlPushMatrix()
-        {
-            s_matrixModelViewStack.Add(s_matrixModelView);
-        }
-
-        public static void GlScalef(double x, double y, double z)
-        {
-            GlScalef((float)x, (float)y, (float)z);
-        }
-
-        public static void GlScalef(float x, float y, float z)
-        {
-            s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
-        }
-
-        public static void GlRotatef(double angle, double x, double y, double z)
-        {
-            GlRotatef((float)angle, (float)x, (float)y, (float)z);
-        }
-
-        public static void GlRotatef(float angle, float x, float y, float z)
-        {
-            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
-        }
-
-        public static void GlTranslatef(double x, double y, double z)
-        {
-            GlTranslatef((float)x, (float)y, (float)z);
-        }
-
-        public static void GlTranslatef(float x, float y, float z)
-        {
-            s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
-        }
-
-        public static void GlBindTexture(CTRTexture2D t)
-        {
-            s_Texture = t;
-        }
-
-        public static void GlClearColor(Color c)
-        {
-            s_glClearColor = c;
-        }
-
-        public static void GlClearColorf(double red, double green, double blue, double alpha)
-        {
-            s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
-        }
-
-        public static void GlClear(int mask_NotUsedParam)
-        {
-            BlendParams.ApplyDefault();
-            Global.GraphicsDevice.Clear(s_glClearColor);
-        }
-
-        public static void GlColor4f(Color c)
-        {
-            s_Color = c;
-        }
-
-        public static void GlBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
-        {
-            s_Blend = new BlendParams(sfactor, dfactor);
-        }
-
-        public static void DrawSegment(float x1, float y1, float x2, float y2, RGBAColor color)
-        {
-        }
-
+        /// <summary>
+        /// Initializes the OpenGL emulation layer. Must be called before any rendering operations.
+        /// Sets up BasicEffect shaders and rasterizer states.
+        /// </summary>
         public static void Init()
         {
             InitRasterizerState();
@@ -219,32 +54,6 @@ namespace CutTheRope.Desktop
             };
         }
 
-        private static BasicEffect GetEffect(bool useTexture, bool useColor)
-        {
-            BasicEffect basicEffect = !useTexture ? s_effectColor : useColor ? s_effectTextureColor : s_effectTexture;
-            if (useTexture)
-            {
-                basicEffect.Alpha = s_Color.A / 255f;
-                if (basicEffect.Alpha == 0f)
-                {
-                    return basicEffect;
-                }
-                basicEffect.Texture = s_Texture.xnaTexture_;
-                s_Texture_OptimizeLastUsed = s_Texture;
-                basicEffect.DiffuseColor = s_Color.ToVector3();
-                Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
-                Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
-            }
-            else
-            {
-                Global.GraphicsDevice.RasterizerState = s_rasterizerStateSolidColor;
-            }
-            basicEffect.World = s_matrixModelView;
-            basicEffect.Projection = s_matrixProjection;
-            s_Blend.Apply();
-            return basicEffect;
-        }
-
         private static void InitRasterizerState()
         {
             s_rasterizerStateSolidColor = new RasterizerState
@@ -260,11 +69,353 @@ namespace CutTheRope.Desktop
             };
         }
 
-        public static VertexPositionColor[] GetLastVertices_PositionColor()
+        #endregion
+
+        #region Enable/Disable State
+
+        /// <summary>
+        /// Enables an OpenGL capability.
+        /// </summary>
+        /// <param name="cap">Capability constant: 1 = GL_BLEND</param>
+        public static void GlEnable(int cap)
         {
-            return s_LastVertices_PositionColor;
+            if (cap == GL_BLEND)
+            {
+                s_Blend.Enable();
+            }
         }
 
+        /// <summary>
+        /// Disables an OpenGL capability.
+        /// </summary>
+        /// <param name="cap">Capability constant: 1 = GL_BLEND, 4 = GL_SCISSOR_TEST</param>
+        public static void GlDisable(int cap)
+        {
+            if (cap == GL_SCISSOR_TEST)
+            {
+                GlScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+            }
+            if (cap == GL_BLEND)
+            {
+                s_Blend.Disable();
+            }
+        }
+
+        #endregion
+
+        #region Viewport and Render Target
+
+        /// <summary>
+        /// Sets the viewport dimensions.
+        /// </summary>
+        public static void GlViewport(double x, double y, double width, double height)
+        {
+            GlViewport((int)x, (int)y, (int)width, (int)height);
+        }
+
+        /// <summary>
+        /// Sets the viewport dimensions and manages render target for fullscreen mode.
+        /// In fullscreen mode, creates a render target matching the viewport size.
+        /// </summary>
+        public static void GlViewport(int x, int y, int width, int height)
+        {
+            s_Viewport.X = x;
+            s_Viewport.Y = y;
+            s_Viewport.Width = width;
+            s_Viewport.Height = height;
+            if (Global.ScreenSizeManager.IsFullScreen)
+            {
+                if (s_RenderTarget == null || s_RenderTarget.Bounds.Width != s_Viewport.Bounds.Width || s_RenderTarget.Bounds.Height != s_Viewport.Bounds.Height)
+                {
+                    s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, s_Viewport.Width, s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                }
+                Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
+                Global.GraphicsDevice.Clear(Color.Black);
+                return;
+            }
+            s_RenderTarget = null;
+        }
+
+        /// <summary>
+        /// Detaches and returns the current render target, setting the internal reference to null.
+        /// Used for screen capture operations.
+        /// </summary>
+        public static RenderTarget2D DetachRenderTarget()
+        {
+            RenderTarget2D renderTarget2D = s_RenderTarget;
+            s_RenderTarget = null;
+            return renderTarget2D;
+        }
+
+        /// <summary>
+        /// Copies the render target contents to the screen in fullscreen mode.
+        /// Applies scaling to fit the display.
+        /// </summary>
+        public static void CopyFromRenderTargetToScreen()
+        {
+            if (Global.ScreenSizeManager.IsFullScreen && s_RenderTarget != null)
+            {
+                Global.GraphicsDevice.Clear(Color.Black);
+                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
+                Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
+                Global.SpriteBatch.End();
+            }
+        }
+
+        #endregion
+
+        #region Matrix Operations
+
+        /// <summary>
+        /// Sets the current matrix mode for subsequent matrix operations.
+        /// </summary>
+        /// <param name="mode">Matrix mode: 14 = GL_MODELVIEW, 15 = GL_PROJECTION</param>
+        public static void GlMatrixMode(int mode)
+        {
+            s_glMatrixMode = mode;
+        }
+
+        /// <summary>
+        /// Resets the current matrix to identity based on the active matrix mode.
+        /// </summary>
+        public static void GlLoadIdentity()
+        {
+            if (s_glMatrixMode == GL_MODELVIEW)
+            {
+                s_matrixModelView = Matrix.Identity;
+                return;
+            }
+            if (s_glMatrixMode == GL_PROJECTION)
+            {
+                s_matrixProjection = Matrix.Identity;
+                return;
+            }
+            if (s_glMatrixMode is 16 or 17)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Sets up an orthographic projection matrix.
+        /// </summary>
+        public static void GlOrthof(double left, double right, double bottom, double top, double near, double far)
+        {
+            s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
+        }
+
+        /// <summary>
+        /// Pushes the current model-view matrix onto the stack.
+        /// </summary>
+        public static void GlPushMatrix()
+        {
+            s_matrixModelViewStack.Add(s_matrixModelView);
+        }
+
+        /// <summary>
+        /// Pops and restores the model-view matrix from the stack.
+        /// </summary>
+        public static void GlPopMatrix()
+        {
+            if (s_matrixModelViewStack.Count > 0)
+            {
+                int index = s_matrixModelViewStack.Count - 1;
+                s_matrixModelView = s_matrixModelViewStack[index];
+                s_matrixModelViewStack.RemoveAt(index);
+            }
+        }
+
+        /// <summary>
+        /// Applies a scale transformation to the current model-view matrix.
+        /// </summary>
+        public static void GlScalef(double x, double y, double z)
+        {
+            GlScalef((float)x, (float)y, (float)z);
+        }
+
+        /// <summary>
+        /// Applies a scale transformation to the current model-view matrix.
+        /// </summary>
+        public static void GlScalef(float x, float y, float z)
+        {
+            s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Applies a rotation transformation around the Z axis (2D rotation).
+        /// </summary>
+        /// <param name="angle">Rotation angle in degrees.</param>
+        public static void GlRotatef(double angle, double x, double y, double z)
+        {
+            GlRotatef((float)angle, (float)x, (float)y, (float)z);
+        }
+
+        /// <summary>
+        /// Applies a rotation transformation around the Z axis (2D rotation).
+        /// </summary>
+        /// <param name="angle">Rotation angle in degrees.</param>
+        public static void GlRotatef(float angle, float x, float y, float z)
+        {
+            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Applies a translation transformation to the current model-view matrix.
+        /// </summary>
+        public static void GlTranslatef(double x, double y, double z)
+        {
+            GlTranslatef((float)x, (float)y, (float)z);
+        }
+
+        /// <summary>
+        /// Applies a translation transformation to the current model-view matrix.
+        /// Note: Z component is ignored for 2D rendering.
+        /// </summary>
+        public static void GlTranslatef(float x, float y, float z)
+        {
+            s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Returns the current model-view matrix.
+        /// </summary>
+        public static Matrix GetModelViewMatrix()
+        {
+            return s_matrixModelView;
+        }
+
+        #endregion
+
+        #region Color and Blending
+
+        /// <summary>
+        /// Sets the current drawing color.
+        /// </summary>
+        public static void GlColor4f(Color c)
+        {
+            s_Color = c;
+        }
+
+        /// <summary>
+        /// Returns the current drawing color.
+        /// </summary>
+        public static Color GetCurrentColor()
+        {
+            return s_Color;
+        }
+
+        /// <summary>
+        /// Sets the clear color for GlClear operations.
+        /// </summary>
+        public static void GlClearColor(Color c)
+        {
+            s_glClearColor = c;
+        }
+
+        /// <summary>
+        /// Sets the clear color using RGBA float components (0.0-1.0).
+        /// </summary>
+        public static void GlClearColorf(double red, double green, double blue, double alpha)
+        {
+            s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
+        }
+
+        /// <summary>
+        /// Clears the screen with the current clear color.
+        /// </summary>
+        /// <param name="mask_NotUsedParam">OpenGL clear mask (ignored, always clears color buffer).</param>
+        public static void GlClear(int mask_NotUsedParam)
+        {
+            BlendParams.ApplyDefault();
+            Global.GraphicsDevice.Clear(s_glClearColor);
+        }
+
+        /// <summary>
+        /// Sets the blending function for alpha blending operations.
+        /// </summary>
+        public static void GlBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
+        {
+            s_Blend = new BlendParams(sfactor, dfactor);
+        }
+
+        #endregion
+
+        #region Texture Binding
+
+        /// <summary>
+        /// Binds a texture for subsequent rendering operations.
+        /// </summary>
+        public static void GlBindTexture(CTRTexture2D t)
+        {
+            s_Texture = t;
+        }
+
+        #endregion
+
+        #region Scissor (Clipping)
+
+        /// <summary>
+        /// Sets the scissor rectangle for clipping.
+        /// </summary>
+        public static void GlScissor(double x, double y, double width, double height)
+        {
+            GlScissor((int)x, (int)y, (int)width, (int)height);
+        }
+
+        /// <summary>
+        /// Sets the scissor rectangle for clipping, scaled to match the current viewport.
+        /// </summary>
+        public static void GlScissor(int x, int y, int width, int height)
+        {
+            try
+            {
+                Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
+                float scaleX = FrameworkTypes.SCREEN_WIDTH / bounds.Width;
+                float scaleY = FrameworkTypes.SCREEN_HEIGHT / bounds.Height;
+                Rectangle scissorRect = new((int)(x / scaleX), (int)(y / scaleY), (int)(width / scaleX), (int)(height / scaleY));
+                Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRect, bounds);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Sets the scissor rectangle (alias for GlScissor).
+        /// </summary>
+        public static void SetScissorRectangle(double x, double y, double w, double h)
+        {
+            GlScissor(x, y, w, h);
+        }
+
+        /// <summary>
+        /// Sets the scissor rectangle (alias for GlScissor).
+        /// </summary>
+        public static void SetScissorRectangle(float x, float y, float w, float h)
+        {
+            GlScissor(x, y, w, h);
+        }
+
+        #endregion
+
+        #region Line Width (Stub)
+
+        /// <summary>
+        /// Sets the line width for line rendering.
+        /// Note: This is a stub - MonoGame does not support variable line widths.
+        /// </summary>
+        public static void GlLineWidth(double width)
+        {
+            s_LineWidth = width;
+        }
+
+        #endregion
+
+        #region Drawing Methods
+
+        /// <summary>
+        /// Draws a triangle strip using colored vertices (no texture).
+        /// </summary>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices)
         {
             BasicEffect effect = GetEffect(false, true);
@@ -280,6 +431,9 @@ namespace CutTheRope.Desktop
             s_LastVertices_PositionColor = vertices;
         }
 
+        /// <summary>
+        /// Draws a triangle strip using textured vertices.
+        /// </summary>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices)
         {
             BasicEffect effect = GetEffect(true, false);
@@ -295,6 +449,9 @@ namespace CutTheRope.Desktop
             s_LastVertices_PositionNormalTexture = vertices;
         }
 
+        /// <summary>
+        /// Draws a triangle strip using textured and colored vertices.
+        /// </summary>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices)
         {
             BasicEffect effect = GetEffect(true, true);
@@ -309,27 +466,9 @@ namespace CutTheRope.Desktop
             }
         }
 
-        public static VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
-        {
-            return s_LastVertices_PositionNormalTexture;
-        }
-
         /// <summary>
-        /// Returns the current model-view matrix that is being applied to drawable elements.
+        /// Draws an indexed triangle list using textured vertices.
         /// </summary>
-        public static Matrix GetModelViewMatrix()
-        {
-            return s_matrixModelView;
-        }
-
-        /// <summary>
-        /// Returns the current OpenGL emulation color state.
-        /// </summary>
-        public static Color GetCurrentColor()
-        {
-            return s_Color;
-        }
-
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
             BasicEffect effect = GetEffect(true, false);
@@ -345,6 +484,9 @@ namespace CutTheRope.Desktop
             s_LastVertices_PositionNormalTexture = vertices;
         }
 
+        /// <summary>
+        /// Draws an indexed triangle list using textured vertices with explicit index count.
+        /// </summary>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
             BasicEffect effect = GetEffect(true, false);
@@ -360,6 +502,9 @@ namespace CutTheRope.Desktop
             s_LastVertices_PositionNormalTexture = vertices;
         }
 
+        /// <summary>
+        /// Draws an indexed triangle list using textured and colored vertices.
+        /// </summary>
         public static void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
         {
             if (indexCount == 0)
@@ -378,6 +523,9 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Draws a line strip using colored vertices.
+        /// </summary>
         public static void DrawLineStrip(VertexPositionColor[] vertices)
         {
             if (vertices.Length < 2)
@@ -396,6 +544,26 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Draws a line segment (stub - not implemented).
+        /// Used for debug visualization.
+        /// </summary>
+        public static void DrawSegment(float _, float __, float ___, float ____, RGBAColor _____)
+        {
+            // Stub: Debug visualization not implemented
+        }
+
+        #endregion
+
+        #region Vertex Buffer Helpers
+
+        /// <summary>
+        /// Fills a vertex array with textured quad data from Quad3D positions and Quad2D texture coordinates.
+        /// </summary>
+        /// <param name="positions">Array of 3D quad positions.</param>
+        /// <param name="texCoordinates">Array of 2D texture coordinates.</param>
+        /// <param name="vertices">Output vertex array (must be pre-allocated with quadCount * 4 elements).</param>
+        /// <param name="quadCount">Number of quads to process.</param>
         public static void FillTexturedVertices(Quad3D[] positions, Quad2D[] texCoordinates, VertexPositionNormalTexture[] vertices, int quadCount)
         {
             int vertexIndex = 0;
@@ -409,11 +577,19 @@ namespace CutTheRope.Desktop
                     int texOffset = vertex * 2;
                     Vector3 position = new(positionArray[positionOffset], positionArray[positionOffset + 1], positionArray[positionOffset + 2]);
                     Vector2 texCoord = new(texArray[texOffset], texArray[texOffset + 1]);
-                    vertices[vertexIndex++] = new VertexPositionNormalTexture(position, normal, texCoord);
+                    vertices[vertexIndex++] = new VertexPositionNormalTexture(position, s_normal, texCoord);
                 }
             }
         }
 
+        /// <summary>
+        /// Fills a vertex array with textured and colored quad data.
+        /// </summary>
+        /// <param name="positions">Array of 3D quad positions.</param>
+        /// <param name="texCoordinates">Array of 2D texture coordinates.</param>
+        /// <param name="colors">Array of vertex colors (4 per quad).</param>
+        /// <param name="vertices">Output vertex array (must be pre-allocated with quadCount * 4 elements).</param>
+        /// <param name="quadCount">Number of quads to process.</param>
         public static void FillTexturedColoredVertices(Quad3D[] positions, Quad2D[] texCoordinates, RGBAColor[] colors, VertexPositionColorTexture[] vertices, int quadCount)
         {
             int vertexIndex = 0;
@@ -432,6 +608,63 @@ namespace CutTheRope.Desktop
                     vertices[vertexIndex++] = new VertexPositionColorTexture(position, color, texCoord);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the last drawn colored vertices (for debugging/inspection).
+        /// </summary>
+        public static VertexPositionColor[] GetLastVertices_PositionColor()
+        {
+            return s_LastVertices_PositionColor;
+        }
+
+        /// <summary>
+        /// Returns the last drawn textured vertices (for debugging/inspection).
+        /// </summary>
+        public static VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
+        {
+            return s_LastVertices_PositionNormalTexture;
+        }
+
+        #endregion
+
+        #region Utility
+
+        /// <summary>
+        /// Gets the SpriteBatch instance for text and sprite rendering.
+        /// </summary>
+        public static SpriteBatch GetSpriteBatch()
+        {
+            return Global.SpriteBatch;
+        }
+
+        #endregion
+
+        #region Private Rendering Implementation
+
+        private static BasicEffect GetEffect(bool useTexture, bool useColor)
+        {
+            BasicEffect basicEffect = !useTexture ? s_effectColor : useColor ? s_effectTextureColor : s_effectTexture;
+            if (useTexture)
+            {
+                basicEffect.Alpha = s_Color.A / 255f;
+                if (basicEffect.Alpha == 0f)
+                {
+                    return basicEffect;
+                }
+                basicEffect.Texture = s_Texture.xnaTexture_;
+                basicEffect.DiffuseColor = s_Color.ToVector3();
+                Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
+                Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+            }
+            else
+            {
+                Global.GraphicsDevice.RasterizerState = s_rasterizerStateSolidColor;
+            }
+            basicEffect.World = s_matrixModelView;
+            basicEffect.Projection = s_matrixProjection;
+            s_Blend.Apply();
+            return basicEffect;
         }
 
         private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int primitiveCount) where T : struct, IVertexType
@@ -478,96 +711,54 @@ namespace CutTheRope.Desktop
             return s_indexBuffer;
         }
 
-        public static void GlScissor(double x, double y, double width, double height)
-        {
-            GlScissor((int)x, (int)y, (int)width, (int)height);
-        }
+        #endregion
 
-        public static void GlScissor(int x, int y, int width, int height)
-        {
-            try
-            {
-                Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
-                float num = FrameworkTypes.SCREEN_WIDTH / bounds.Width;
-                float num2 = FrameworkTypes.SCREEN_HEIGHT / bounds.Height;
-                Rectangle value = new((int)(x / num), (int)(y / num2), (int)(width / num), (int)(height / num2));
-                Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(value, bounds);
-            }
-            catch (Exception)
-            {
-            }
-        }
+        #region Static Fields
 
-        public static void GlLineWidth(double width)
-        {
-            s_LineWidth = width;
-        }
-
-        /// <summary>
-        /// Gets the SpriteBatch instance for rendering text and sprites.
-        /// </summary>
-        public static SpriteBatch GetSpriteBatch()
-        {
-            return Global.SpriteBatch;
-        }
-
-        public static void SetScissorRectangle(double x, double y, double w, double h)
-        {
-            SetScissorRectangle((float)x, (float)y, (float)w, (float)h);
-        }
-
-        public static void SetScissorRectangle(float x, float y, float w, float h)
-        {
-            GlScissor((double)x, (double)y, (double)w, (double)h);
-        }
-
+        // Render target for fullscreen mode
         private static RenderTarget2D s_RenderTarget;
-
         private static Viewport s_Viewport;
 
+        // Matrix state
         private static int s_glMatrixMode;
-
         private static readonly List<Matrix> s_matrixModelViewStack = [];
-
         private static Matrix s_matrixModelView = Matrix.Identity;
-
         private static Matrix s_matrixProjection = Matrix.Identity;
 
+        // Texture state
         private static CTRTexture2D s_Texture;
 
-        private static CTRTexture2D s_Texture_OptimizeLastUsed;
-
+        // Color state
         private static Color s_glClearColor = Color.White;
-
         private static Color s_Color = Color.White;
 
+        // Blend state
         private static BlendParams s_Blend = new();
 
-        private static Vector3 normal = new(0f, 0f, 1f);
-
+        // Shader effects
         private static BasicEffect s_effectTexture;
-
         private static BasicEffect s_effectColor;
-
         private static BasicEffect s_effectTextureColor;
 
+        // Rasterizer states
         private static RasterizerState s_rasterizerStateSolidColor;
-
         private static RasterizerState s_rasterizerStateTexture;
 
-        private static VertexPositionColor[] s_LastVertices_PositionColor;
-
-        private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
-
+        // Vertex buffers (reused for performance)
         private static DynamicVertexBuffer s_vertexBuffer;
-
         private static IndexBuffer s_indexBuffer;
-
         private static Type s_vertexBufferType;
 
-        private static Rectangle ScreenRect = new(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
+        // Last drawn vertices (for debugging)
+        private static VertexPositionColor[] s_LastVertices_PositionColor;
+        private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
 
+        // Constants
+        private static readonly Vector3 s_normal = new(0f, 0f, 1f);
+
+        // Line width (stub - not used by MonoGame)
         private static double s_LineWidth;
 
+        #endregion
     }
 }
