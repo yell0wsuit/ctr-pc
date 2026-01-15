@@ -878,7 +878,7 @@ Assistance juridique : Hughes Media Law Group</fr>
     <en>Magic Box Completed</en>
     <ru>Волшебная коробка завершена</ru>
     <de>Magiekiste abgeschlossen</de>
-    <es></es>
+    <es>Caja mágica completada</es>
     <fr>Boîte Magique terminée</fr>
   </string>
   <string name="AC_VALENTINE_BOX_COMPLETED">
@@ -1173,7 +1173,7 @@ Assistance juridique : Hughes Media Law Group</fr>
     <ru>Вы действительно хотите выйти из игры?</ru>
     <fr>Veux-tu vraiment quitter ?</fr>
     <de>Bist du sicher, dass du beenden willst?</de>
-    <es></es>
+    <es>¿Estás seguro de que quieres salir?</es>
   </string>
   <string name="QUIT_BUTTON">
     <en>Quit</en>
