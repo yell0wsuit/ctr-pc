@@ -15,7 +15,6 @@ namespace CutTheRope.GameMain
     internal class ResDataPhoneFull
     {
         private const string ResourceDataFileName = ContentPaths.ResourceDataFile;
-        private const string MenuStringsFileName = ContentPaths.MenuStringsFile;
 
         public static string GetXml(string resName)
         {
@@ -50,13 +49,6 @@ namespace CutTheRope.GameMain
             // Load game assets (res_data_phone_full.xml)
             Dictionary<string, string> resourceData = LoadXmlFile(ResourceDataFileName, "resource");
             foreach (KeyValuePair<string, string> kvp in resourceData)
-            {
-                result[kvp.Key] = kvp.Value;
-            }
-
-            // Load menu strings (menu_strings.xml)
-            Dictionary<string, string> menuData = LoadXmlFile(MenuStringsFileName, "string");
-            foreach (KeyValuePair<string, string> kvp in menuData)
             {
                 result[kvp.Key] = kvp.Value;
             }

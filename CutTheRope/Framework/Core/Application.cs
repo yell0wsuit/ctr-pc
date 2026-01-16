@@ -1,10 +1,10 @@
 using System;
-using System.Xml.Linq;
 
 using CutTheRope.Framework.Media;
 using CutTheRope.Framework.Platform;
 using CutTheRope.Framework.Visual;
 using CutTheRope.GameMain;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 
@@ -145,46 +145,9 @@ namespace CutTheRope.Framework.Core
                 $"Texture '{resolvedName}' could not be loaded. Ensure the resource name is correct and the asset is registered in TexturePackerRegistry.json.");
         }
 
-        internal static string GetString(string xmlElementName)
+        internal static string GetString(string stringKey)
         {
-            string xmlContent = GetXml(xmlElementName);
-            if (string.IsNullOrEmpty(xmlContent))
-            {
-                return string.Empty;
-            }
-
-            string languageCode = LanguageHelper.ToCode(LANGUAGE);
-
-            try
-            {
-                // Wrap content in a root element for proper XML parsing
-                string wrappedXml = $"<root>{xmlContent}</root>";
-                XDocument doc = XDocument.Parse(wrappedXml);
-
-                // Try to find element matching the current language
-                XElement languageElement = doc.Root?.Element(languageCode);
-                if (languageElement != null)
-                {
-                    return languageElement.Value.Trim();
-                }
-
-                // Fallback: try English if current language not found
-                if (languageCode != "en")
-                {
-                    languageElement = doc.Root?.Element("en");
-                    if (languageElement != null)
-                    {
-                        return languageElement.Value.Trim();
-                    }
-                }
-            }
-            catch
-            {
-                // If XML parsing fails, return empty string
-                return string.Empty;
-            }
-
-            return string.Empty;
+            return LocalizationManager.GetString(stringKey);
         }
 
         public virtual void UpdateOrientation()

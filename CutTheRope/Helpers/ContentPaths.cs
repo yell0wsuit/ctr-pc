@@ -50,9 +50,9 @@ namespace CutTheRope.Helpers
         public const string ResourceDataFile = "res_data_phone_full.xml";
 
         /// <summary>
-        /// The menu strings XML filename.
+        /// The menu strings JSON filename.
         /// </summary>
-        public const string MenuStringsFile = "menu_strings.xml";
+        public const string MenuStringsFile = "menu_strings.json";
 
         /// <summary>
         /// The Texture Packer registry JSON filename.
