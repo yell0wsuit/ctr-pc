@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
                     Language.LANGEN => Resources.Img.HudButtonsEn,
                     Language.LANGRU => Resources.Img.HudButtonsRu,
                     Language.LANGDE => Resources.Img.HudButtonsGr,
-                    Language.LANGFR => throw new NotImplementedException(),
+                    Language.LANGFR => Resources.Img.HudButtonsEn,
                     Language.LANGZH => throw new NotImplementedException(),
                     Language.LANGJA => throw new NotImplementedException(),
                     _ => Resources.Img.HudButtonsEn,
@@ -50,7 +50,7 @@ namespace CutTheRope.GameMain
                 },
                 _ when resourceName == Resources.Img.MenuExtraButtonsEn => LANGUAGE switch
                 {
-                    Language.LANGEN => Resources.Img.HudButtonsEn,
+                    Language.LANGEN => Resources.Img.MenuExtraButtonsEn,
                     Language.LANGRU => Resources.Img.MenuExtraButtonsRu,
                     Language.LANGDE => Resources.Img.MenuExtraButtonsGr,
                     Language.LANGFR => Resources.Img.MenuExtraButtonsFr,
