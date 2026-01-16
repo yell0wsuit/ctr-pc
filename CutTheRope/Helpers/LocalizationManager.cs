@@ -69,7 +69,7 @@ namespace CutTheRope.Helpers
         /// <returns>The localized string, or empty string if not found.</returns>
         public static string GetString(string key)
         {
-            string languageCode = LanguageHelper.ToCode(ResDataPhoneFull.LANGUAGE);
+            string languageCode = LanguageHelper.CurrentCode;
             return GetString(key, languageCode);
         }
 
