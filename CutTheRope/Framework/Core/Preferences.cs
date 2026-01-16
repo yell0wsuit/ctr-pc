@@ -264,6 +264,15 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
+        /// Checks if a preference key exists in memory.
+        /// This might be removed once the setting UI is implemented.
+        /// </summary>
+        protected static bool ContainsKey(string key)
+        {
+            return PreferencesData.ContainsKey(key);
+        }
+
+        /// <summary>
         /// Requests the preferences to be saved on the next Update call.
         /// </summary>
         public static void RequestSave()

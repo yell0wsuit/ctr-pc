@@ -57,12 +57,22 @@ namespace CutTheRope.GameMain
                 playLevelScroll = false;
             }
             SetIntForKey(2, "PREFS_VERSION", true);
+            SetRpcPreferenceInJson(); // temporary hack, remove after setting UI is implemented
         }
 
         private static void ResetMusicSound()
         {
             SetBooleanForKey(true, "SOUND_ON", true);
             SetBooleanForKey(true, "MUSIC_ON", true);
+        }
+
+        // temporary hack, remove after setting UI is implemented
+        private static void SetRpcPreferenceInJson()
+        {
+            if (!ContainsKey(PREFS_RPC_ENABLED))
+            {
+                SetBooleanForKey(true, PREFS_RPC_ENABLED, true);
+            }
         }
 
         private static bool IsShareware()
@@ -256,6 +266,7 @@ namespace CutTheRope.GameMain
             SetIntForKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
             SetIntForKey(0, "PREFS_LAST_PACK", true);
             SetBooleanForKey(true, "PREFS_WINDOW_FULLSCREEN", true);
+            SetBooleanForKey(true, PREFS_RPC_ENABLED, true);
             CheckForUnlockIAP();
             RequestSave();
             SetScoreHash();
@@ -360,6 +371,8 @@ namespace CutTheRope.GameMain
         public const string PREFS_PREFER_OLD_FONT_SYSTEM = "PREFS_PREFER_OLD_FONT_SYSTEM";
 
         public const string PREFS_IS_EXIST = "PREFS_EXIST";
+
+        public const string PREFS_RPC_ENABLED = "PREFS_RPC_ENABLED";
 
         public const string PREFS_SOUND_ON = "SOUND_ON";
 

@@ -148,9 +148,15 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets a localized string by its key.
         /// </summary>
-        internal static string GetString(string stringKey)
+        internal static string GetString(string stringKey, bool forceEnglish = false)
         {
-            return LocalizationManager.GetString(stringKey);
+            if (string.IsNullOrEmpty(stringKey))
+            {
+                return string.Empty;
+            }
+
+            string languageCode = forceEnglish ? "en" : LanguageHelper.CurrentCode;
+            return LocalizationManager.GetString(stringKey, languageCode);
         }
 
         public virtual void UpdateOrientation()

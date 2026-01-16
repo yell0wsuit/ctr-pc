@@ -127,6 +127,8 @@ namespace CutTheRope.GameMain
                         }
                         LOG("activate child menu");
                         ActivateChild(1);
+                        //Show menu presence after loading screen
+                        Game1.RPC?.MenuPresence();
                         return;
                     }
                 case 1:
@@ -212,6 +214,8 @@ namespace CutTheRope.GameMain
                             LoadingController loadingController = (LoadingController)GetChild(2);
                             loadingController.nextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
                             ActivateChild(2);
+                            //Show menu presence on exit to menu
+                            Game1.RPC?.MenuPresence();
                             GC.Collect();
                         }
                         return;
