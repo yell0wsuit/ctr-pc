@@ -163,7 +163,7 @@ namespace CutTheRope.Commons
                 LOG("Application already created");
                 return;
             }
-            LANGUAGE = language;
+            LanguageHelper.Current = language;
             FmInit();
             gApp = new CTRApp();
             gApp.ApplicationDidFinishLaunching();

@@ -143,10 +143,12 @@ namespace CutTheRope.Framework.Core
         {
             // Check if user prefers old font system for supported languages (en, de, fr, ru)
             bool preferOldFontSystem = Preferences.GetBooleanForKey("PREFS_PREFER_OLD_FONT_SYSTEM");
-            bool isLanguageSupported = LANGUAGE is Language.LANGEN or
-                                       Language.LANGDE or
-                                       Language.LANGFR or
-                                       Language.LANGRU;
+            bool isLanguageSupported = LanguageHelper.IsCurrentAny(
+                Language.LANGEN,
+                Language.LANGDE,
+                Language.LANGFR,
+                Language.LANGRU
+            );
 
             if (preferOldFontSystem && isLanguageSupported)
             {
@@ -163,7 +165,7 @@ namespace CutTheRope.Framework.Core
             }
 
             // Load FontStashSharp font using the new system
-            FontConfiguration config = Resources.FontConfig.GetConfiguration(resourceName, (int)LANGUAGE);
+            FontConfiguration config = Resources.FontConfig.GetConfiguration(resourceName, LanguageHelper.CurrentAsInt);
             FontStashFont fontStashFont = FontManager.LoadFont(
                 config.FontFile,
                 config.Size,

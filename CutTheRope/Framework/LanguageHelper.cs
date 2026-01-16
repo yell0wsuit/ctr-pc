@@ -3,10 +3,48 @@ using System.Globalization;
 namespace CutTheRope.Framework
 {
     /// <summary>
-    /// Centralized utility for language-related conversions.
+    /// Centralized utility for language-related conversions and current language state.
     /// </summary>
     public static class LanguageHelper
     {
+        /// <summary>
+        /// Gets or sets the current language setting.
+        /// </summary>
+        public static Language Current { get; set; } = Language.LANGEN;
+
+        /// <summary>
+        /// Gets the current language as an ISO 639-1 two-letter code.
+        /// </summary>
+        public static string CurrentCode => ToCode(Current);
+
+        /// <summary>
+        /// Gets the current language as its integer enum value.
+        /// </summary>
+        public static int CurrentAsInt => (int)Current;
+
+        /// <summary>
+        /// Checks if the given language matches the current language.
+        /// </summary>
+        public static bool IsCurrent(Language language)
+        {
+            return Current == language;
+        }
+
+        /// <summary>
+        /// Checks if the current language matches any of the given languages.
+        /// </summary>
+        public static bool IsCurrentAny(params Language[] languages)
+        {
+            foreach (Language lang in languages)
+            {
+                if (Current == lang)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// Converts a Language enum to its ISO 639-1 two-letter code.
         /// </summary>
@@ -46,7 +84,13 @@ namespace CutTheRope.Framework
         /// </summary>
         public static Language FromSystemCulture()
         {
-            return FromCode(CultureInfo.CurrentCulture.TwoLetterISOLanguageName);
+            string code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+            Language lang = FromCode(code);
+
+            // Only allow supported languages, otherwise force English
+            return lang is Language.LANGRU or Language.LANGDE or Language.LANGFR
+                ? lang
+                : Language.LANGEN;
         }
     }
 }
