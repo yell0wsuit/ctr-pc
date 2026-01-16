@@ -40,7 +40,7 @@ namespace CutTheRope.GameMain
                 },
                 _ when resourceName == Resources.Img.MenuResultEn => LANGUAGE switch
                 {
-                    Language.LANGEN => Resources.Img.HudButtonsEn,
+                    Language.LANGEN => Resources.Img.MenuResultEn,
                     Language.LANGRU => Resources.Img.MenuResultRu,
                     Language.LANGDE => Resources.Img.MenuResultGr,
                     Language.LANGFR => Resources.Img.MenuResultFr,
