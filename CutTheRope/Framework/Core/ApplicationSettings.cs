@@ -16,11 +16,25 @@ namespace CutTheRope.Framework.Core
             return value;
         }
 
+        /// <summary>
+        /// Gets a string application setting.
+        /// </summary>
+        /// <param name="s">The setting identifier (see <see cref="AppSettings"/>).</param>
+        /// <returns>The locale code if <c>s</c> is <see cref="AppSettings.APP_SETTING_LOCALE"/>, otherwise an empty string.</returns>
         public string GetString(int s)
         {
             return s != (int)AppSettings.APP_SETTING_LOCALE ? "" : locale ?? LanguageHelper.ToCode(LANGUAGE);
         }
 
+        /// <summary>
+        /// Sets a string application setting.
+        /// </summary>
+        /// <param name="sid">The setting identifier (see <see cref="AppSettings"/>).</param>
+        /// <param name="str">The string value to set.</param>
+        /// <remarks>
+        /// Currently only <see cref="AppSettings.APP_SETTING_LOCALE"/> is supported.
+        /// Setting the locale also updates the <see cref="FrameworkTypes.LANGUAGE"/> field.
+        /// </remarks>
         public void SetString(int sid, string str)
         {
             if (sid == (int)AppSettings.APP_SETTING_LOCALE)
