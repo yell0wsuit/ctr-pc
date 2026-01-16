@@ -1,11 +1,10 @@
 using System;
-using System.Globalization;
-using System.Xml.Linq;
 
 using CutTheRope.Framework.Media;
 using CutTheRope.Framework.Platform;
 using CutTheRope.Framework.Visual;
 using CutTheRope.GameMain;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 
@@ -88,9 +87,9 @@ namespace CutTheRope.Framework.Core
             if (ApplicationSettings.GetBool(7))
             {
                 string text = Preferences.GetStringForKey("PREFS_LOCALE");
-                if (text == null || text.Length == 0)
+                if (string.IsNullOrEmpty(text))
                 {
-                    text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";
+                    text = LanguageHelper.ToCode(LanguageHelper.FromSystemCulture());
                 }
                 appSettings.SetString(8, text);
             }
@@ -146,56 +145,12 @@ namespace CutTheRope.Framework.Core
                 $"Texture '{resolvedName}' could not be loaded. Ensure the resource name is correct and the asset is registered in TexturePackerRegistry.json.");
         }
 
-        internal static string GetString(string xmlElementName)
+        /// <summary>
+        /// Gets a localized string by its key.
+        /// </summary>
+        internal static string GetString(string stringKey)
         {
-            string xmlContent = GetXml(xmlElementName);
-            if (string.IsNullOrEmpty(xmlContent))
-            {
-                return string.Empty;
-            }
-
-            // Parse the XML to get the correct language
-            string languageCode = LANGUAGE switch
-            {
-                Language.LANGEN => "en",
-                Language.LANGRU => "ru",
-                Language.LANGDE => "de",
-                Language.LANGFR => "fr",
-                Language.LANGZH => "zh",
-                Language.LANGJA => "ja",
-                _ => "en",
-            };
-
-            try
-            {
-                // Wrap content in a root element for proper XML parsing
-                string wrappedXml = $"<root>{xmlContent}</root>";
-                XDocument doc = XDocument.Parse(wrappedXml);
-
-                // Try to find element matching the current language
-                XElement languageElement = doc.Root?.Element(languageCode);
-                if (languageElement != null)
-                {
-                    return languageElement.Value.Trim();
-                }
-
-                // Fallback: try English if current language not found
-                if (languageCode != "en")
-                {
-                    languageElement = doc.Root?.Element("en");
-                    if (languageElement != null)
-                    {
-                        return languageElement.Value.Trim();
-                    }
-                }
-            }
-            catch
-            {
-                // If XML parsing fails, return empty string
-                return string.Empty;
-            }
-
-            return string.Empty;
+            return LocalizationManager.GetString(stringKey);
         }
 
         public virtual void UpdateOrientation()

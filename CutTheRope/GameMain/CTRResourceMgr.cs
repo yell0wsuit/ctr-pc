@@ -21,58 +21,42 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static string HandleLocalizedResource(string resourceName)
         {
-            if (string.IsNullOrEmpty(resourceName))
-            {
-                return resourceName;
-            }
-
-            if (resourceName == Resources.Img.HudButtonsEn)
-            {
-                if (LANGUAGE == Language.LANGRU)
+            return string.IsNullOrEmpty(resourceName)
+                ? resourceName
+                : resourceName switch
                 {
-                    return Resources.Img.HudButtonsRu;
-                }
-                if (LANGUAGE == Language.LANGDE)
-                {
-                    return Resources.Img.HudButtonsGr;
-                }
-                if (LANGUAGE == Language.LANGFR)
-                {
-                    return Resources.Img.HudButtonsEn;
-                }
-            }
-            else if (resourceName == Resources.Img.MenuResultEn)
-            {
-                if (LANGUAGE == Language.LANGRU)
-                {
-                    return Resources.Img.MenuResultRu;
-                }
-                if (LANGUAGE == Language.LANGDE)
-                {
-                    return Resources.Img.MenuResultGr;
-                }
-                if (LANGUAGE == Language.LANGFR)
-                {
-                    return Resources.Img.MenuResultFr;
-                }
-            }
-            else if (resourceName == Resources.Img.MenuExtraButtonsEn)
-            {
-                if (LANGUAGE == Language.LANGRU)
-                {
-                    return Resources.Img.MenuExtraButtonsRu;
-                }
-                if (LANGUAGE == Language.LANGDE)
-                {
-                    return Resources.Img.MenuExtraButtonsGr;
-                }
-                if (LANGUAGE == Language.LANGFR)
-                {
-                    return Resources.Img.MenuExtraButtonsFr;
-                }
-            }
-
-            return resourceName;
+                    _ when resourceName == Resources.Img.HudButtonsEn => LANGUAGE switch
+                    {
+                        Language.LANGEN => Resources.Img.HudButtonsEn,
+                        Language.LANGRU => Resources.Img.HudButtonsRu,
+                        Language.LANGDE => Resources.Img.HudButtonsGr,
+                        Language.LANGFR => Resources.Img.HudButtonsEn,
+                        Language.LANGZH => throw new NotImplementedException(),
+                        Language.LANGJA => throw new NotImplementedException(),
+                        _ => Resources.Img.HudButtonsEn,
+                    },
+                    _ when resourceName == Resources.Img.MenuResultEn => LANGUAGE switch
+                    {
+                        Language.LANGEN => Resources.Img.MenuResultEn,
+                        Language.LANGRU => Resources.Img.MenuResultRu,
+                        Language.LANGDE => Resources.Img.MenuResultGr,
+                        Language.LANGFR => Resources.Img.MenuResultFr,
+                        Language.LANGZH => throw new NotImplementedException(),
+                        Language.LANGJA => throw new NotImplementedException(),
+                        _ => Resources.Img.MenuResultEn,
+                    },
+                    _ when resourceName == Resources.Img.MenuExtraButtonsEn => LANGUAGE switch
+                    {
+                        Language.LANGEN => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGRU => Resources.Img.MenuExtraButtonsRu,
+                        Language.LANGDE => Resources.Img.MenuExtraButtonsGr,
+                        Language.LANGFR => Resources.Img.MenuExtraButtonsFr,
+                        Language.LANGZH => throw new NotImplementedException(),
+                        Language.LANGJA => throw new NotImplementedException(),
+                        _ => Resources.Img.MenuExtraButtonsEn,
+                    },
+                    _ => resourceName,
+                };
         }
 
         /// <summary>

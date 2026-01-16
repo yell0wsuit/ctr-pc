@@ -4,8 +4,6 @@ using CutTheRope.Commons;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
-using static CutTheRope.GameMain.ResDataPhoneFull;
-
 namespace CutTheRope.GameMain
 {
     internal sealed class PopUpMenu(MenuController controller)
@@ -24,21 +22,21 @@ namespace CutTheRope.GameMain
             image.scaleX = 1.3f;
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT1));
+            text.SetString(Application.GetString("CANT_UNLOCK_TEXT1"));
             text.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 1);
             text.y -= num;
             _ = popup.AddChild(text);
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.SetAlignment(2);
-            text2.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT2));
+            text2.SetString(Application.GetString("CANT_UNLOCK_TEXT2"));
             text2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 2);
             _ = popup.AddChild(text2);
             text2.y -= num;
             Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text3.SetAlignment(2);
-            text3.SetStringandWidth(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT3), 600f);
+            text3.SetStringandWidth(Application.GetString("CANT_UNLOCK_TEXT3"), 600f);
             text3.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text3, Resources.Img.MenuPopup, 3);
             text3.y += 50f;
@@ -49,7 +47,7 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithQuadOffset(hBox, Resources.Img.MenuPopup, 5);
             hBox.y -= num;
             _ = popup.AddChild(hBox);
-            Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), MenuButtonId.PopupOk, menuController);
+            Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("OK"), MenuButtonId.PopupOk, menuController);
             button.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             _ = popup.AddChild(button);
@@ -66,19 +64,19 @@ namespace CutTheRope.GameMain
             _ = popup.AddChild(image);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT), 600.0);
+            text.SetStringandWidth(Application.GetString("GAME_FINISHED_TEXT"), 600.0);
             text.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
             text.y -= 170f;
             _ = image.AddChild(text);
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text2.SetAlignment(2);
-            text2.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT2), 700.0);
+            text2.SetStringandWidth(Application.GetString("GAME_FINISHED_TEXT2"), 700.0);
             text2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuPopup, 3);
             text2.y += 30f;
             _ = image.AddChild(text2);
-            Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OK), MenuButtonId.PopupOk, menuController);
+            Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("OK"), MenuButtonId.PopupOk, menuController);
             button.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             _ = image.AddChild(button);
@@ -100,12 +98,12 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 2);
             text.y -= 120f;
             _ = image.AddChild(text);
-            Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_YES), buttonYesId, menuController);
+            Button button = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("YES"), buttonYesId, menuController);
             button.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuPopup, 4);
             button.y -= button.height;
             _ = image.AddChild(button);
-            Button button2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_NO), buttonNoId, menuController);
+            Button button2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("NO"), buttonNoId, menuController);
             button2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuPopup, 4);
             _ = image.AddChild(button2);

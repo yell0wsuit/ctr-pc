@@ -14,7 +14,7 @@ namespace CutTheRope.GameMain
             AddViewwithID(loadingView, 0);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString(STR_MENU_LOADING), 300f);
+            text.SetStringandWidth(Application.GetString("LOADING"), 300f);
             text.anchor = text.parentAnchor = 18;
             _ = loadingView.AddChild(text);
         }

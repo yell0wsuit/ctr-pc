@@ -15,7 +15,6 @@ namespace CutTheRope.GameMain
     internal class ResDataPhoneFull
     {
         private const string ResourceDataFileName = ContentPaths.ResourceDataFile;
-        private const string MenuStringsFileName = ContentPaths.MenuStringsFile;
 
         public static string GetXml(string resName)
         {
@@ -50,13 +49,6 @@ namespace CutTheRope.GameMain
             // Load game assets (res_data_phone_full.xml)
             Dictionary<string, string> resourceData = LoadXmlFile(ResourceDataFileName, "resource");
             foreach (KeyValuePair<string, string> kvp in resourceData)
-            {
-                result[kvp.Key] = kvp.Value;
-            }
-
-            // Load menu strings (menu_strings.xml)
-            Dictionary<string, string> menuData = LoadXmlFile(MenuStringsFileName, "string");
-            foreach (KeyValuePair<string, string> kvp in menuData)
             {
                 result[kvp.Key] = kvp.Value;
             }
@@ -276,19 +268,7 @@ namespace CutTheRope.GameMain
 
         internal const int IMG_MENU_OPTIONS__short_button_left = 12;
 
-        internal const string STR_MENU_ABOUT_SPECIAL_THANKS = "ABOUT_SPECIAL_THANKS";
-
-        internal const string STR_MENU_ABOUT_TEXT = "ABOUT_TEXT";
-
-        internal const string STR_MENU_ACHIEVEMENT_GAINED = "ACHIEVEMENT_GAINED";
-
         internal const int STR_MENU_ACHIEVEMENT_UNLOCKED = 655504;
-
-        internal const string STR_MENU_QUIT = "QUIT";
-
-        internal const string STR_MENU_QUIT_BUTTON = "QUIT_BUTTON";
-
-        internal const string STR_MENU_FACEBOOK_BUTTON = "FACEBOOK_BUTTON";
 
         internal const int STR_MENU_AC_BRONZE_SCISSORS = 655426;
 
@@ -446,69 +426,15 @@ namespace CutTheRope.GameMain
 
         internal const int STR_MENU_AC_WEIGHT_LOSER_DESCR = 655453;
 
-        internal const string STR_MENU_BEST_SCORE = "BEST_SCORE";
-
-        internal const string STR_MENU_BOX10_LABEL = "BOX10_LABEL";
-
-        internal const string STR_MENU_BOX11_LABEL = "BOX11_LABEL";
-
-        internal const string STR_MENU_BOX12_LABEL = "BOX12_LABEL";
-
-        internal const string STR_MENU_BOX13_LABEL = "BOX13_LABEL";
-
-        internal const string STR_MENU_BOX14_LABEL = "BOX14_LABEL";
-
-        internal const string STR_MENU_BOX1_LABEL = "BOX1_LABEL";
-
-        internal const string STR_MENU_BOX2_LABEL = "BOX2_LABEL";
-
-        internal const string STR_MENU_BOX3_LABEL = "BOX3_LABEL";
-
-        internal const string STR_MENU_BOX4_LABEL = "BOX4_LABEL";
-
-        internal const string STR_MENU_BOX5_LABEL = "BOX5_LABEL";
-
-        internal const string STR_MENU_BOX6_LABEL = "BOX6_LABEL";
-
-        internal const string STR_MENU_BOX7_LABEL = "BOX7_LABEL";
-
-        internal const string STR_MENU_BOX8_LABEL = "BOX8_LABEL";
-
-        internal const string STR_MENU_BOX9_LABEL = "BOX9_LABEL";
-
-        internal const string STR_MENU_BOX_SOON_LABEL = "BOX_SOON_LABEL";
-
         internal const int STR_MENU_CANCEL = 655403;
-
-        internal const string STR_MENU_CANT_UNLOCK_TEXT1 = "CANT_UNLOCK_TEXT1";
-
-        internal const string STR_MENU_CANT_UNLOCK_TEXT2 = "CANT_UNLOCK_TEXT2";
-
-        internal const string STR_MENU_CANT_UNLOCK_TEXT3 = "CANT_UNLOCK_TEXT3";
 
         internal const int STR_MENU_CHANGE_TITLE = 655424;
 
-        internal const string STR_MENU_CLICK_TO_CUT = "CLICK_TO_CUT";
-
-        internal const string STR_MENU_CONTINUE = "CONTINUE";
-
-        internal const string STR_MENU_CREDITS = "CREDITS";
-
         internal const int STR_MENU_CRYSTAL = 655366;
-
-        internal const string STR_MENU_DRAG_TO_CUT = "DRAG_TO_CUT";
 
         internal const int STR_MENU_EXTRAS = 655362;
 
-        internal const string STR_MENU_FINAL_SCORE = "FINAL_SCORE";
-
         internal const int STR_MENU_FULL_VERSION = 655363;
-
-        internal const string STR_MENU_GAME_FINISHED_TEXT = "GAME_FINISHED_TEXT";
-
-        internal const string STR_MENU_GAME_FINISHED_TEXT2 = "GAME_FINISHED_TEXT2";
-
-        internal const string STR_MENU_LANGUAGE = "LANGUAGE";
 
         internal const int STR_MENU_LEADERBOARD_EDIT = 655420;
 
@@ -518,65 +444,17 @@ namespace CutTheRope.GameMain
 
         internal const int STR_MENU_LEADERBOARD_SCORE = 655419;
 
-        internal const string STR_MENU_LEVEL = "LEVEL";
-
-        internal const string STR_MENU_LEVEL_CLEARED1 = "LEVEL_CLEARED1";
-
-        internal const string STR_MENU_LEVEL_CLEARED2 = "LEVEL_CLEARED2";
-
-        internal const string STR_MENU_LEVEL_CLEARED3 = "LEVEL_CLEARED3";
-
-        internal const string STR_MENU_LEVEL_CLEARED4 = "LEVEL_CLEARED4";
-
-        internal const string STR_MENU_LEVEL_SELECT = "LEVEL_SELECT";
-
-        internal const string STR_MENU_LOADING = "LOADING";
-
-        internal const string STR_MENU_MAIN_MENU = "MAIN_MENU";
-
-        internal const string STR_MENU_MENU = "MENU";
-
         internal const int STR_MENU_MUSIC_OFF = 655367;
-
-        internal const string STR_MENU_NEXT = "NEXT";
-
-        internal const string STR_MENU_NO = "NO";
-
-        internal const string STR_MENU_OK = "OK";
-
-        internal const string STR_MENU_OPTIONS = "OPTIONS";
-
-        internal const string STR_MENU_PLAY = "PLAY";
-
-        internal const string STR_MENU_PROCESSING = "PROCESSING";
 
         internal const int STR_MENU_RATEME_TEXT = 655402;
 
         internal const int STR_MENU_RATEME_TITLE = 655401;
 
-        internal const string STR_MENU_REPLAY = "REPLAY";
-
-        internal const string STR_MENU_RESET = "RESET";
-
-        internal const string STR_MENU_RESET_TEXT = "RESET_TEXT";
-
         internal const int STR_MENU_SCORE = 655381;
-
-        internal const string STR_MENU_SKIP_LEVEL = "SKIP_LEVEL";
 
         internal const int STR_MENU_SOUNDS_OFF = 655369;
 
         internal const int STR_MENU_SOUNDS_ON = 655368;
-
-        internal const string STR_MENU_STAR_BONUS = "STAR_BONUS";
-
-        internal const string STR_MENU_TIME = "TIME";
-
-        internal const string STR_MENU_TOTAL_STARS = "TOTAL_STARS";
-
-        internal const string STR_MENU_UNLOCK_HINT = "UNLOCK_HINT";
-
-        internal const string STR_MENU_YES = "YES";
 
         internal const int IMG_MENU_BGR_bgr_default = 0;
 

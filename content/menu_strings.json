@@ -1,0 +1,955 @@
+{
+    "PLAY": {
+        "en": "Play",
+        "ru": "Играть",
+        "fr": "Jouer",
+        "de": "Spielen"
+    },
+    "OPTIONS": {
+        "en": "Options",
+        "ru": "Настройки",
+        "fr": "Options",
+        "de": "Einstellungen"
+    },
+    "EXTRAS": {
+        "en": "Extras",
+        "ru": "Дополнительно",
+        "fr": "Extras",
+        "de": "Extras"
+    },
+    "FULL_VERSION": {
+        "en": "Full version",
+        "ru": "Полная версия",
+        "fr": "Version complète",
+        "de": "Vollversion"
+    },
+    "RESET": {
+        "en": "Reset game",
+        "ru": "Сброс прогресса",
+        "fr": "Réinitialiser",
+        "de": "Zurücksetzen"
+    },
+    "CREDITS": {
+        "en": "Credits",
+        "ru": "Авторы",
+        "fr": "Crédits",
+        "de": "Mitwirkende"
+    },
+    "CRYSTAL": {
+        "en": "Scoreloop",
+        "ru": "Scoreloop",
+        "fr": "Scoreloop",
+        "de": "Scoreloop"
+    },
+    "MUSIC_OFF": {
+        "en": "Music off",
+        "ru": "Музыка выкл.",
+        "fr": "Musique : non",
+        "de": "Musik aus"
+    },
+    "SOUNDS_ON": {
+        "en": "Sounds on",
+        "ru": "Звук вкл.",
+        "fr": "Sons : oui",
+        "de": "Sound an"
+    },
+    "SOUNDS_OFF": {
+        "en": "Sounds off",
+        "ru": "Звук выкл.",
+        "fr": "Sons : non",
+        "de": "Sound aus"
+    },
+    "LANGUAGE": {
+        "en": "Language:",
+        "ru": "Язык:",
+        "fr": "Langue : ",
+        "de": "Sprache:"
+    },
+    "RESET_TEXT": {
+        "en": "Are you sure you want to reset your progress?",
+        "ru": "Уверены, что хотите сбросить игровой прогресс?",
+        "fr": "Veux-tu vraiment réinitialiser\nta progression ?",
+        "de": "Spielfortschritt wirklich zurücksetzen?"
+    },
+    "LEVEL_CLEARED1": {
+        "en": "Passable!",
+        "ru": "Уровень пройден!",
+        "fr": "Passable !",
+        "de": "Akzeptabel!"
+    },
+    "LEVEL_CLEARED2": {
+        "en": "Good!",
+        "ru": "Хорошо!",
+        "fr": "Bien !",
+        "de": "Gut!"
+    },
+    "LEVEL_CLEARED3": {
+        "en": "Great!",
+        "ru": "Отлично!",
+        "fr": "Super !",
+        "de": "Klasse!"
+    },
+    "LEVEL_CLEARED4": {
+        "en": "Excellent!",
+        "ru": "Супер!",
+        "fr": "Formidable !",
+        "de": "Hervorragend!"
+    },
+    "LEVEL": {
+        "en": "Level",
+        "ru": "Уровень",
+        "fr": "Niveau",
+        "de": "Level"
+    },
+    "TIME": {
+        "en": "Time",
+        "ru": "Время",
+        "fr": "Temps",
+        "de": "Zeit"
+    },
+    "STAR_BONUS": {
+        "en": "Star Bonus",
+        "ru": "Бонус за звезды",
+        "fr": "Bonus étoiles",
+        "de": "Sternbonus"
+    },
+    "FINAL_SCORE": {
+        "en": "Your Final Score",
+        "ru": "Итоговые очки",
+        "fr": "Score final",
+        "de": "Endergebnis"
+    },
+    "BEST_SCORE": {
+        "en": "Best Score",
+        "ru": "Лучший результат",
+        "fr": "Meilleur score",
+        "de": "Beste Punktzahl"
+    },
+    "SCORE": {
+        "en": "Score",
+        "ru": "Очки",
+        "fr": "Score",
+        "de": "Punktzahl"
+    },
+    "YES": {
+        "en": "Yes",
+        "ru": "Да",
+        "fr": "Oui",
+        "de": "Ja"
+    },
+    "NO": {
+        "en": "No",
+        "ru": "Нет",
+        "fr": "Non",
+        "de": "Nein"
+    },
+    "REPLAY": {
+        "en": "Replay",
+        "ru": "Еще раз",
+        "fr": "Rejouer",
+        "de": "Nochmal"
+    },
+    "NEXT": {
+        "en": "Next",
+        "ru": "Вперед",
+        "fr": "Suivant",
+        "de": "Weiter"
+    },
+    "MENU": {
+        "en": "Menu",
+        "ru": "Меню",
+        "fr": "Menu",
+        "de": "Menü"
+    },
+    "LOADING": {
+        "en": "Loading...",
+        "ru": "Загрузка...",
+        "fr": "Chargement...",
+        "de": "Lädt ..."
+    },
+    "TOTAL_STARS": {
+        "en": "Total: %d",
+        "ru": "Всего: %d",
+        "fr": "Total : %d",
+        "de": "Gesamt: %d"
+    },
+    "OK": {
+        "en": "Ok",
+        "ru": "ОК",
+        "fr": "OK",
+        "de": "OK"
+    },
+    "UNLOCK_HINT": {
+        "en": "Collect %d stars to unlock this level pack",
+        "ru": "Соберите %d звезд чтобы открыть коробку",
+        "fr": "Collecte %d étoiles pour débloquer ce pack de niveaux",
+        "de": "Sammle %d Sterne, um dieses Level-Pack freizuschalten."
+    },
+    "CANT_UNLOCK_TEXT1": {
+        "en": "You are missing",
+        "ru": "Вам не хватает всего",
+        "fr": "Il te manque",
+        "de": "Dir fehlen noch"
+    },
+    "CANT_UNLOCK_TEXT2": {
+        "en": "to unlock this box",
+        "ru": "чтобы открыть коробку",
+        "fr": "pour débloquer la boîte",
+        "de": "zum Öffnen der Kiste."
+    },
+    "CANT_UNLOCK_TEXT3": {
+        "en": "Get more stars from the earlier levels",
+        "ru": "Соберите больше звезд в предыдущих уровнях",
+        "fr": "Obtiens plus d'étoiles dans les niveaux précédents ",
+        "de": "Hole dir mehr Sterne aus den vorherigen Levels."
+    },
+    "GAME_FINISHED_TEXT": {
+        "en": "You have finished the game!",
+        "ru": "Вы успешно прошли игру!",
+        "fr": "Tu as terminé le jeu !",
+        "de": "Du hast das Spiel geschafft!"
+    },
+    "GAME_FINISHED_TEXT2": {
+        "en": "Check back for the new levels coming with the updates",
+        "ru": "Новые уровни будут добавляться с обновлениями",
+        "fr": "Reviens plus tard pour découvrir les nouveaux niveaux contenus dans les mises à jour",
+        "de": "Verpass nicht die neuen Levels in den kommenden Updates!"
+    },
+    "ACHIEVEMENT_GAINED": {
+        "en": "achievement gained!",
+        "ru": "разлочено!",
+        "fr": "succès obtenu !",
+        "de": "Erfolg errungen!"
+    },
+    "CONTINUE": {
+        "en": "Continue",
+        "ru": "Продолжить",
+        "fr": "Continuer",
+        "de": "Fortfahren"
+    },
+    "SKIP_LEVEL": {
+        "en": "Skip level",
+        "ru": "Пропустить",
+        "fr": "Passer le niveau",
+        "de": "Überspringen"
+    },
+    "LEVEL_SELECT": {
+        "en": "Level select",
+        "ru": "Выбор уровня",
+        "fr": "Sélect. niv.",
+        "de": "Level wählen"
+    },
+    "MAIN_MENU": {
+        "en": "Main menu",
+        "ru": "Главное меню",
+        "fr": "Menu princ.",
+        "de": "Hauptmenü"
+    },
+    "RATEME_TITLE": {
+        "en": "Enjoying Cut the Rope: DX?",
+        "ru": "Нравится Cut the Rope: DX?",
+        "fr": "Tu aimes Cut the Rope: DX ?",
+        "de": "Hat dir \"Cut the Rope: DX\" gefallen?"
+    },
+    "RATEME_TEXT": {
+        "en": "If so, please rate this game on the App Store with 5 stars so we can keep the free updates coming.",
+        "ru": "Если да, оцените игру 5-ю звездами на App Store, и мы продолжим выпускать бесплатные обновления.",
+        "fr": "Si oui, donne 5 étoiles à ce jeu sur l'App Store. Nous pourrons ainsi continuer à fournir des mises à jour gratuites.",
+        "de": "Dann bewerte das Spiel im App Store mit 5 Sternen, damit wir dir auch in Zukunft kostenlose Updates bringen können."
+    },
+    "CANCEL": {
+        "en": "Cancel",
+        "ru": "Отмена",
+        "fr": "Annuler",
+        "de": "Abbrechen"
+    },
+    "BOX1_LABEL": {
+        "en": "Cardboard Box",
+        "ru": "Картонная",
+        "fr": "Carton",
+        "de": "Pappkiste"
+    },
+    "BOX2_LABEL": {
+        "en": "Fabric Box",
+        "ru": "Тканевая",
+        "fr": "Tissu",
+        "de": "Stoffkiste"
+    },
+    "BOX3_LABEL": {
+        "en": "Foil Box",
+        "ru": "Из фольги",
+        "fr": "Papier",
+        "de": "Folienkiste"
+    },
+    "BOX4_LABEL": {
+        "en": "Magic Box",
+        "ru": "Волшебная",
+        "fr": "Magique",
+        "de": "Magiekiste"
+    },
+    "BOX5_LABEL": {
+        "en": "Valentine Box",
+        "ru": "Валентинка",
+        "fr": "Valentin",
+        "de": "Valentinskiste"
+    },
+    "BOX6_LABEL": {
+        "en": "Toy Box",
+        "ru": "Игрушечная",
+        "fr": "Jouets",
+        "de": "Spielzeugkiste"
+    },
+    "BOX7_LABEL": {
+        "en": "Gift Box",
+        "ru": "Подарочная",
+        "fr": "Cadeau",
+        "de": "Geschenkkiste"
+    },
+    "BOX8_LABEL": {
+        "en": "Cosmic Box",
+        "ru": "Космическая",
+        "fr": "Cosmique",
+        "de": "Kosmoskiste"
+    },
+    "BOX9_LABEL": {
+        "en": "Toolbox",
+        "ru": "Инструменты",
+        "fr": "Outils",
+        "de": "Werkzeugkiste"
+    },
+    "BOX10_LABEL": {
+        "en": "Buzz Box",
+        "ru": "Медовая",
+        "fr": "Abeille",
+        "de": "Summkiste"
+    },
+    "BOX11_LABEL": {
+        "en": "DJ Box",
+        "ru": "DJ",
+        "fr": "DJ",
+        "de": "DJ-Kiste"
+    },
+    "BOX12_LABEL": {
+        "en": "Spooky Box",
+        "ru": "С призраками",
+        "fr": "Fantôme",
+        "de": "Spukbox",
+        "ko": "유령 상자",
+        "zh": "幽灵盒",
+        "ja": "オバケの箱",
+        "es": "Espectro",
+        "it": "Spettrale",
+        "nl": "Spookachtig",
+        "br": "Fantasma"
+    },
+    "BOX13_LABEL": {
+        "en": "Steam Box",
+        "ru": "Паровая",
+        "fr": "Boîte à vapeur",
+        "de": "Dampfbox",
+        "ko": "증기 상자",
+        "zh": "蒸汽盒",
+        "ja": "スチームの箱",
+        "es": "Caja de vapor",
+        "it": "Vapore",
+        "nl": "Stoomkast",
+        "br": "Vaporeira"
+    },
+    "BOX14_LABEL": {
+        "en": "Lantern Box",
+        "ru": "коробке с фонариками",
+        "fr": "boîte lampion",
+        "de": "Laternenkiste",
+        "ko": "랜턴 상자",
+        "zh": "灯笼盒",
+        "ja": "ちょうちんの箱",
+        "es": "caja de linternas",
+        "it": "scatola delle lanterne",
+        "nl": "Lampionnendoos",
+        "br": "Caixa de Lanternas",
+        "zh_tw": "燈籠盒"
+    },
+    "BOX_SOON_LABEL": {
+        "en": "New levels coming soon!",
+        "ru": "Новые уровни на подходе!",
+        "fr": "Nouveaux niveaux bientôt disponibles !",
+        "de": "Bald gibt es neue Levels!"
+    },
+    "ABOUT_TEXT": {
+        "en": "Cut the Rope: DX ver. %@\n\nA fan-made enhancement of the PC version of Cut the Rope.\n\nhttps://github.com/yell0wsuit/cuttherope-dx\n\nOriginally developed and published by ZeptoLab. Copyright 2012 by ZeptoLab.\n\nAdditional Design:\nNataliya Omelyanchuk\n\nMusic and Sounds:\nAlexander Falinski",
+        "ru": "Cut the Rope: DX версия %@\n2012 ZeptoLab.\n\nИгра разработана и издается ZeptoLab.\n\nДополнительный гейм-дизайн:\nНаталья Омельянчук\n\nМузыка и звуки:\nАлександр Фалинский",
+        "fr": "Cut the Rope: DX ver. %@\nCopyright 2012 ZeptoLab.\n\nJeu développé et édité par ZeptoLab.\n\nConception de niveaux supplémentaires :\nNataliya Omelyanchuk\n\nMusique et bruitages :\nAlexander Falinski",
+        "de": "Cut the Rope: DX Version: %@\nCopyright 2012 von ZeptoLab.\n\nDas Spiel wurde von ZeptoLab entwickelt und veröffentlicht.\n\nZusätzliches Design:\nNataliya Omelyanchuk\n\nMusik und Sound:\nAlexander Falinski"
+    },
+    "ABOUT_SPECIAL_THANKS": {
+        "en": "Quality assurance:\nSPL\nUniversally Speaking\n\nSpecial Thanks:\nVladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra Dubovitskaya, Grigory Kireev, Viktor Kuzmin, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\nVery Special Thanks: 1C Wireless\n\n(c) ZeptoLab UK Ltd.  All rights reserved. ZeptoLab, Cut the Rope, Om Nom and Feed with Candy are the trademarks of ZeptoLab.\n\nLegal: Hughes Media Law Group",
+        "ru": "Контроль качества: \nSPL\nUniversally Speaking\n\nОтдельное спасибо:\nВладимир Агафонов, Максим Чекмарёв, Дмитрий Черненко, Александр Данилов, Александра Дубовицкая, Григорий Киреев, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Андрей Венгерский, Барбос, Юлия Воинова, Елена Волк\n\nОгромное спасибо: 1C Wireless\n\n(c) ZeptoLab UK Ltd. Все права защищены. ZeptoLab, Cut the Rope, Om Nom и Feed with Candy являются торговыми марками ZeptoLab.\n\nЮридическая поддержка: Hughes Media Law Group",
+        "de": "Qualitätssicherung: \nSPL\nUniversally Speaking\n\nBesonderen Dank an:\nVladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra Dubovitskaya, Grigory Kireev, Viktor Kuzmin, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\nUnd ganz besonderen Dank an: 1C Wireless\n\n(c) ZeptoLab UK Ltd.  Alle Rechte vorbehalten. ZeptoLab, Cut the Rope, Om Nom und Feed with Candy sind Warenzeichen von ZeptoLab.\n\nRechtsbeistand: Hughes Media Law Group",
+        "fr": "Assurance qualité :  \nSPL\nUniversally Speaking\n\nRemerciements particuliers :\nVladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra Dubovitskaya, Grigory Kireev, Viktor Kuzmin, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\nRemerciements très particuliers : 1C Wireless\n\n(c) ZeptoLab UK Ltd.  Tous droits réservés. ZeptoLab, Cut the Rope, Om Nom et Feed with Candy sont des marques commerciales de ZeptoLab.\n\nAssistance juridique : Hughes Media Law Group"
+    },
+    "LEADERBOARD_NAME": {
+        "en": "Name",
+        "ru": "Имя",
+        "fr": "Nom",
+        "de": "Name"
+    },
+    "LEADERBOARD_SCORE": {
+        "en": "Score",
+        "ru": "Очки",
+        "fr": "Score",
+        "de": "Punktzahl"
+    },
+    "LEADERBOARD_EDIT": {
+        "en": "edit your name",
+        "ru": "отредактировать имя",
+        "fr": "changer nom",
+        "de": "Name ändern"
+    },
+    "LEADERBOARD_NO_DATA": {
+        "en": "No data",
+        "ru": "Нет данных",
+        "fr": "Pas de données",
+        "de": "Keine Daten"
+    },
+    "CLICK_TO_CUT": {
+        "en": "Click to cut",
+        "ru": "Щелчком",
+        "fr": "Cliquer",
+        "de": "Klicke: Schneide"
+    },
+    "DRAG_TO_CUT": {
+        "en": "Drag to cut",
+        "ru": "Перетаскиванием",
+        "fr": "Glisser",
+        "de": "Ziehe: Schneide"
+    },
+    "CHANGE_TITLE": {
+        "en": "Change your name:",
+        "ru": "Измените свое имя:",
+        "fr": "Changer de nom :",
+        "de": "Ändere deinen Namen:"
+    },
+    "PROCESSING": {
+        "en": "Processing...",
+        "ru": "Обработка...",
+        "fr": "Traitement en cours...",
+        "de": "Wird bearbeitet ..."
+    },
+    "AC_BRONZE_SCISSORS": {
+        "en": "Bronze Scissors",
+        "ru": "Бронзовые ножницы",
+        "de": "Bronzeschere",
+        "fr": "Ciseaux de bronze"
+    },
+    "AC_SILVER_SCISSORS": {
+        "en": "Silver Scissors",
+        "ru": "Серебряные ножницы",
+        "de": "Silberschere",
+        "fr": "Ciseaux d'argent"
+    },
+    "AC_GOLDEN_SCISSORS": {
+        "en": "Golden Scissors",
+        "ru": "Золотые ножницы",
+        "de": "Goldschere",
+        "fr": "Ciseaux d'or"
+    },
+    "AC_ROPE_CUTTER": {
+        "en": "Rope Cutter",
+        "ru": "Веревкорез",
+        "de": "Seilschneider",
+        "fr": "Coupeur de cordes"
+    },
+    "AC_ROPE_CUTTER_MANIAC": {
+        "en": "Rope Cutter Maniac",
+        "ru": "Маньяк-веревкорез",
+        "de": "Extremseilschneider",
+        "fr": "Coupeur compulsif"
+    },
+    "AC_ULTIMATE_ROPE_CUTTER": {
+        "en": "Ultimate Rope Cutter",
+        "ru": "Идеальный веревкорез",
+        "de": "Megaseilschneider",
+        "fr": "Ultime coupeur"
+    },
+    "AC_BUBBLE_POPPER": {
+        "en": "Bubble Popper",
+        "ru": "Пузыревзрыватель",
+        "de": "Blasenplatzer",
+        "fr": "Éclateur de bulles"
+    },
+    "AC_BUBBLE_MASTER": {
+        "en": "Bubble Master",
+        "ru": "Повелитель пузырей",
+        "de": "Blasenmeister",
+        "fr": "Maître des bulles"
+    },
+    "AC_SPIDER_BUSTER": {
+        "en": "Spider Buster",
+        "ru": "Охотник за пауками",
+        "de": "Spinnenbezwinger",
+        "fr": "Anti-araignées"
+    },
+    "AC_SPIDER_TAMER": {
+        "en": "Spider Tamer",
+        "ru": "Укротитель пауков",
+        "de": "Spinnendompteur",
+        "fr": "Dompteur d'araignées"
+    },
+    "AC_WEIGHT_LOSER": {
+        "en": "Weight Loser",
+        "ru": "Сбрасывающий вес",
+        "de": "Auf Diät",
+        "fr": "Régime sans bonbons"
+    },
+    "AC_CALORIE_MINIMIZER": {
+        "en": "Calorie Minimizer",
+        "ru": "Минимизатор калорий",
+        "de": "Total schlank",
+        "fr": "Réducteur de calories"
+    },
+    "AC_QUICK_FINGER": {
+        "en": "Quick Finger",
+        "ru": "Быстрый палец",
+        "de": "Schnelle Finger",
+        "fr": "Doigts agiles"
+    },
+    "AC_MASTER_FINGER": {
+        "en": "Master Finger",
+        "ru": "Палец мастера",
+        "de": "Meisterfinger",
+        "fr": "Doigts divins"
+    },
+    "AC_TUMMY_TEASER": {
+        "en": "Tummy Teaser",
+        "ru": "Дразнилка для пуза",
+        "de": "Hungrigmacher",
+        "fr": "Taquineur d'estomac"
+    },
+    "AC_ROMANTIC_SOUL": {
+        "en": "Romantic Soul",
+        "ru": "Душа романтика",
+        "de": "Romantiker",
+        "fr": "Âme romantique"
+    },
+    "AC_MAGICIAN": {
+        "en": "Magician",
+        "ru": "Волшебник",
+        "de": "Magier",
+        "fr": "Magicien"
+    },
+    "AC_BRONZE_SCISSORS_DESCR": {
+        "en": "Collect 50 stars",
+        "ru": "Соберите 50 звезд",
+        "de": "Sammle 50 Sterne",
+        "fr": "Récupère 50 étoiles"
+    },
+    "AC_SILVER_SCISSORS_DESCR": {
+        "en": "Collect 150 stars",
+        "ru": "Соберите 150 звезд",
+        "de": "Sammle 150 Sterne",
+        "fr": "Récupère 150 étoiles"
+    },
+    "AC_GOLDEN_SCISSORS_DESCR": {
+        "en": "Collect 300 stars",
+        "ru": "Соберите 300 звезд",
+        "de": "Sammle 300 Sterne",
+        "fr": "Récupère 300 étoiles"
+    },
+    "AC_ROPE_CUTTER_DESCR": {
+        "en": "Cut 100 ropes",
+        "ru": "Перережьте 100 веревок",
+        "de": "Schneide 100 Seile",
+        "fr": "Coupe 100 cordes"
+    },
+    "AC_ROPE_CUTTER_MANIAC_DESCR": {
+        "en": "Cut 800 ropes",
+        "ru": "Перережьте 800 веревок",
+        "de": "Schneide 800 Seile",
+        "fr": "Coupe 800 cordes"
+    },
+    "AC_ULTIMATE_ROPE_CUTTER_DESCR": {
+        "en": "Cut 2000 ropes",
+        "ru": "Перережьте 2000 веревок",
+        "de": "Schneide 2000 Seile",
+        "fr": "Coupe 2000 cordes"
+    },
+    "AC_BUBBLE_POPPER_DESCR": {
+        "en": "Pop 50 bubbles",
+        "ru": "Лопните 50 пузырей",
+        "de": "Lasse 50 Blasen platzen",
+        "fr": "Éclate 50 bulles"
+    },
+    "AC_BUBBLE_MASTER_DESCR": {
+        "en": "Pop 300 bubbles",
+        "ru": "Лопните 300 пузырей",
+        "de": "Lasse 300 Blasen platzen",
+        "fr": "Éclate 300 bulles"
+    },
+    "AC_SPIDER_BUSTER_DESCR": {
+        "en": "Outsmart 40 spiders",
+        "ru": "Перехитрите 40 пауков",
+        "de": "Überliste 40 Spinnen",
+        "fr": "Stoppe 40 araignées"
+    },
+    "AC_SPIDER_TAMER_DESCR": {
+        "en": "Outsmart 200 spiders",
+        "ru": "Перехитрите 200 пауков",
+        "de": "Überliste 200 Spinnen",
+        "fr": "Stoppe 200 araignées"
+    },
+    "AC_WEIGHT_LOSER_DESCR": {
+        "en": "Lose candy 50 times",
+        "ru": "Потеряйте леденец 50 раз",
+        "de": "Verlier 50 Bonbons",
+        "fr": "Laisse échapper le bonbon 50 fois"
+    },
+    "AC_CALORIE_MINIMIZER_DESCR": {
+        "en": "Lose candy 200 times",
+        "ru": "Потеряйте леденец 200 раз",
+        "de": "Verlier 200 Bonbons",
+        "fr": "Laisse échapper le bonbon 200 fois"
+    },
+    "AC_QUICK_FINGER_DESCR": {
+        "en": "Cut 3 ropes at once",
+        "ru": "Одновременно перережьте 3 веревки",
+        "de": "Schneide 3 Seile gleichzeitig",
+        "fr": "Coupe 3 cordes d'un seul coup"
+    },
+    "AC_MASTER_FINGER_DESCR": {
+        "en": "Cut 5 ropes at once",
+        "ru": "Одновременно перережьте 5 веревок",
+        "de": "Schneide 5 Seile gleichzeitig",
+        "fr": "Coupe 5 cordes d'un seul coup"
+    },
+    "AC_TUMMY_TEASER_DESCR": {
+        "en": "Have Om Nom open his mouth 10 times in a row",
+        "ru": "Заставьте Ам Няма открыть рот 10 раз подряд",
+        "de": "Sorge dafür, dass Om Nom seinen Mund 10 Mal nacheinander öffnet",
+        "fr": "Fais ouvrir sa bouche à Om Nom 10 fois d'affilée"
+    },
+    "AC_ROMANTIC_SOUL_DESCR": {
+        "en": "Reunite 100 candies",
+        "ru": "Соберите 100 леденцов",
+        "de": "Bringe 100 Bonbons zusammen",
+        "fr": "Associe 100 bonbons"
+    },
+    "AC_MAGICIAN_DESCR": {
+        "en": "Drop candy into magic hats 200 times",
+        "ru": "Бросьте леденец в волшебные шляпы 200 раз",
+        "de": "Lasse 200 Bonbons in Zauberhüte fallen",
+        "fr": "Fais tomber le bonbon dans le chapeau magique 200 fois"
+    },
+    "AC_CARDBOARD_BOX_COMPLETED": {
+        "en": "Cardboard Box Completed",
+        "ru": "Картонная коробка завершена",
+        "de": "Pappkiste abgeschlossen",
+        "fr": "Boîte Carton terminée"
+    },
+    "AC_FABRIC_BOX_COMPLETED": {
+        "en": "Fabric Box Completed",
+        "ru": "Тканевая коробка завершена",
+        "de": "Stoffkiste abgeschlossen",
+        "fr": "Boîte Tissu terminée"
+    },
+    "AC_FOIL_BOX_COMPLETED": {
+        "en": "Foil Box Completed",
+        "ru": "Коробка из фольги завершена",
+        "de": "Folienkiste abgeschlossen",
+        "fr": "Boîte Papier terminée"
+    },
+    "AC_MAGIC_BOX_COMPLETED": {
+        "en": "Magic Box Completed",
+        "ru": "Волшебная коробка завершена",
+        "de": "Magiekiste abgeschlossen",
+        "fr": "Boîte Magique terminée"
+    },
+    "AC_VALENTINE_BOX_COMPLETED": {
+        "en": "Valentine Box Completed",
+        "ru": "Коробка Валентинка завершена",
+        "de": "Valentinskiste abgeschlossen",
+        "fr": "Boîte Valentin terminée"
+    },
+    "AC_TOY_BOX_COMPLETED": {
+        "en": "Toy Box Completed",
+        "ru": "Игрушечная коробка завершена",
+        "de": "Spielzeugkiste abgeschlossen",
+        "fr": "Boîte Jouets terminée"
+    },
+    "AC_GIFT_BOX_COMPLETED": {
+        "en": "Gift Box Completed",
+        "ru": "Подарочная коробка завершена",
+        "de": "Geschenkkiste abgeschlossen",
+        "fr": "Boîte Cadeau terminée"
+    },
+    "AC_COSMIC_BOX_COMPLETED": {
+        "en": "Cosmic Box Completed",
+        "ru": "Космическая коробка завершена",
+        "de": "Kosmoskiste abgeschlossen",
+        "fr": "Boîte Cosmique terminée"
+    },
+    "AC_TOOLBOX_COMPLETED": {
+        "en": "Toolbox Completed",
+        "ru": "Коробка Инструменты завершена",
+        "de": "Werkzeugkiste abgeschlossen",
+        "fr": "Boîte Outils terminée"
+    },
+    "AC_BUZZ_BOX_COMPLETED": {
+        "en": "Buzz Box Completed",
+        "ru": "Медовая коробка завершена",
+        "de": "Summkiste abgeschlossen",
+        "fr": "Boîte Abeille terminée"
+    },
+    "AC_DJ_BOX_COMPLETED": {
+        "en": "DJ Box Completed",
+        "ru": "Коробка DJ завершена",
+        "de": "DJ-Kiste abgeschlossen",
+        "fr": "Boîte DJ terminée"
+    },
+    "AC_CARDBOARD_BOX_PERFECT": {
+        "en": "Cardboard Box Perfect",
+        "ru": "Картонная коробка - идеально!",
+        "de": "Pappkiste Perfekt",
+        "fr": "Boîte Carton à 100%"
+    },
+    "AC_FABRIC_BOX_PERFECT": {
+        "en": "Fabric Box Perfect",
+        "ru": "Тканевая коробка - идеально!",
+        "de": "Stoffkiste Perfekt",
+        "fr": "Boîte Tissu à 100%"
+    },
+    "AC_FOIL_BOX_PERFECT": {
+        "en": "Foil Box Perfect",
+        "ru": "Коробка из фольги - идеально!",
+        "de": "Folienkiste Perfekt",
+        "fr": "Boîte Papier à 100%"
+    },
+    "AC_MAGIC_BOX_PERFECT": {
+        "en": "Magic Box Perfect",
+        "ru": "Волшебная коробка - идеально!",
+        "de": "Magiekiste Perfekt",
+        "fr": "Boîte Magique à 100%"
+    },
+    "AC_VALENTINE_BOX_PERFECT": {
+        "en": "Valentine Box Perfect",
+        "ru": "Коробка Валентинка - идеально!",
+        "de": "Valentinskiste Perfekt",
+        "fr": "Boîte Valentin à 100%"
+    },
+    "AC_TOY_BOX_PERFECT": {
+        "en": "Toy Box Perfect",
+        "ru": "Игрушечная коробка - идеально!",
+        "de": "Spielzeugkiste Perfekt",
+        "fr": "Boîte Jouets à 100%"
+    },
+    "AC_GIFT_BOX_PERFECT": {
+        "en": "Gift Box Perfect",
+        "ru": "Подарочная коробка - идеально!",
+        "de": "Geschenkkiste Perfekt",
+        "fr": "Boîte Cadeau à 100%"
+    },
+    "AC_COSMIC_BOX_PERFECT": {
+        "en": "Cosmic Box Perfect",
+        "ru": "Космическая коробка - идеально!",
+        "de": "Kosmoskiste Perfekt",
+        "fr": "Boîte Cosmique à 100%"
+    },
+    "AC_TOOLBOX_PERFECT": {
+        "en": "Toolbox Perfect",
+        "ru": "Коробка с инструментами - идеально!",
+        "de": "Werkzeugkiste Perfekt",
+        "fr": "Boîte Outils à 100%"
+    },
+    "AC_BUZZ_BOX_PERFECT": {
+        "en": "Buzz Box Perfect",
+        "ru": "Медовая коробка - идеально!",
+        "de": "Summkiste Perfekt",
+        "fr": "Boîte Abeille à 100%"
+    },
+    "AC_DJ_BOX_PERFECT": {
+        "en": "DJ Box Perfect",
+        "ru": "Коробка DJ - идеально!",
+        "de": "DJ-Kiste Perfekt",
+        "fr": "Boîte DJ à 100%"
+    },
+    "AC_CARDBOARD_BOX_DESCR": {
+        "en": "Complete the Cardboard Box",
+        "ru": "Завершите Картонную коробку",
+        "de": "Schließe Pappkiste ab",
+        "fr": "Terminer la boîte Carton"
+    },
+    "AC_FABRIC_BOX_DESCR": {
+        "en": "Complete the Fabric Box",
+        "ru": "Завершите Тканевую коробку",
+        "de": "Schließe Stoffkiste ab",
+        "fr": "Terminer la boîte Tissu"
+    },
+    "AC_FOIL_BOX_DESCR": {
+        "en": "Complete the Foil Box",
+        "ru": "Завершите Коробку Из фольги",
+        "de": "Schließe Folienkiste ab",
+        "fr": "Terminer la boîte Papier"
+    },
+    "AC_MAGIC_BOX_DESCR": {
+        "en": "Complete the Magic Box",
+        "ru": "Завершите Волшебную коробку",
+        "de": "Schließe Magiekiste ab",
+        "fr": "Terminer la boîte Magique"
+    },
+    "AC_VALENTINE_BOX_DESCR": {
+        "en": "Complete the Valentine Box",
+        "ru": "Завершите коробку Валентинка",
+        "de": "Schließe Valentinskiste ab",
+        "fr": "Terminer la boîte Valentin"
+    },
+    "AC_TOY_BOX_DESCR": {
+        "en": "Complete the Toy Box",
+        "ru": "Завершите Игрушечную коробку",
+        "de": "Schließe Spielzeugkiste ab",
+        "fr": "Terminer la boîte Jouets"
+    },
+    "AC_GIFT_BOX_DESCR": {
+        "en": "Complete the Gift Box",
+        "ru": "Завершите Подарочную коробку",
+        "de": "Schließe Geschenkkiste ab",
+        "fr": "Terminer la boîte Cadeau"
+    },
+    "AC_COSMIC_BOX_DESCR": {
+        "en": "Complete the Cosmic Box",
+        "ru": "Завершите Космическую коробку",
+        "de": "Schließe Kosmoskiste ab",
+        "fr": "Terminer la boîte Cosmique"
+    },
+    "AC_TOOLBOX_DESCR": {
+        "en": "Complete the Toolbox",
+        "ru": "Завершите коробку Инструменты",
+        "de": "Schließe Werkzeugkiste ab",
+        "fr": "Terminer la boîte Outils"
+    },
+    "AC_BUZZ_BOX_DESCR": {
+        "en": "Complete the Buzz Box",
+        "ru": "Завершите Медовую коробку",
+        "de": "Schließe Summkiste ab",
+        "fr": "Terminer la boîte Abeille"
+    },
+    "AC_DJ_BOX_DESCR": {
+        "en": "Complete the DJ Box",
+        "ru": "Завершите DJ коробку",
+        "de": "Schließe DJ-Kiste ab",
+        "fr": "Terminer la boîte DJ"
+    },
+    "AC_CARDBOARD_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Cardboard Box",
+        "ru": "Получите по три звезды на всех уровнях Картонной коробки",
+        "de": "Erhalte in allen Levels von Pappkiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Carton"
+    },
+    "AC_FABRIC_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Fabric Box",
+        "ru": "Получите по три звезды на всех уровнях Тканевой коробки",
+        "de": "Erhalte in allen Levels von Stoffkiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Tissu"
+    },
+    "AC_FOIL_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Foil Box",
+        "ru": "Получите по три звезды на всех уровнях коробки Из фольги",
+        "de": "Erhalte in allen Levels von Folienkiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Papier"
+    },
+    "AC_MAGIC_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Magic Box",
+        "ru": "Получите по три звезды на всех уровнях Волшебной коробки",
+        "de": "Erhalte in allen Levels von Magiekiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Magique"
+    },
+    "AC_VALENTINE_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Valentine Box",
+        "ru": "Получите по три звезды на всех уровнях коробки Валентинка",
+        "de": "Erhalte in allen Levels von   drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Valentin"
+    },
+    "AC_TOY_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Toy Box",
+        "ru": "Получите по три звезды на всех уровнях Игрушечной коробки",
+        "de": "Erhalte in allen Levels von Spielzeugkiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Jouets"
+    },
+    "AC_GIFT_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Gift Box",
+        "ru": "Получите по три звезды на всех уровнях Подарочной коробки",
+        "de": "Erhalte in allen Levels von Geschenkkiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Cadeau"
+    },
+    "AC_COSMIC_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Cosmic Box",
+        "ru": "Получите по три звезды на всех уровнях Космической коробки",
+        "de": "Erhalte in allen Levels von Kosmoskiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Cosmique"
+    },
+    "AC_TOOLBOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Toolbox",
+        "ru": "Получите по три звезды на всех уровнях коробки Инструменты",
+        "de": "Erhalte in allen Levels von Werkzeugkiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Outils"
+    },
+    "AC_BUZZ_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of Buzz Box",
+        "ru": "Получите по три звезды на всех уровнях Медовой коробки",
+        "de": "Erhalte in allen Levels von Summkiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte Abeille"
+    },
+    "AC_DJ_BOX_PERFECT_DESCR": {
+        "en": "Get three stars in all levels of DJ Box",
+        "ru": "Получите по три звезды на всех уровнях DJ коробки",
+        "de": "Erhalte in allen Levels von DJ-Kiste drei Sterne",
+        "fr": "Récupérer les trois étoiles dans chaque niveau de la boîte DJ"
+    },
+    "ACHIEVEMENT_UNLOCKED": {
+        "en": "Achievement unlocked!",
+        "ru": "Новое достижение!",
+        "de": "Erfolg freigeschaltet!",
+        "fr": "Succès débloqué !"
+    },
+    "QUIT": {
+        "en": "Are you sure you want to quit?",
+        "ru": "Вы действительно хотите выйти из игры?",
+        "fr": "Veux-tu vraiment quitter ?",
+        "de": "Bist du sicher, dass du beenden willst?"
+    },
+    "QUIT_BUTTON": {
+        "en": "Quit",
+        "ru": "Выход",
+        "fr": "Quitter",
+        "de": "Beenden"
+    },
+    "FACEBOOK_BUTTON": {
+        "en": ""
+    },
+    "CANDIES_BTN": {
+        "en": "Candies",
+        "ru": "Леденцы",
+        "fr": "Bonbons",
+        "de": "Bonbons",
+        "ko": "사탕",
+        "zh": "糖果",
+        "ja": "キャンディー",
+        "es": "Caramelos",
+        "it": "Caramelle",
+        "nl": "Snoep",
+        "br": "Doces",
+        "zh_tw": "糖果"
+    },
+    "ROPE_SKINS_BTN": {
+        "en": "Ropes",
+        "ru": "Верёвки",
+        "fr": "Cordes",
+        "de": "Seile",
+        "ko": "로프",
+        "zh": "绳子",
+        "ja": "ロープ",
+        "es": "Cuerdas",
+        "it": "Corde",
+        "nl": "Touwen",
+        "br": "Cordas",
+        "zh_tw": "繩索"
+    }
+}

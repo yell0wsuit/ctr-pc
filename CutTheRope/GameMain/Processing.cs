@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
                 timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                 _ = image.AddTimeline(timeline);
                 image.PlayTimeline(0);
-                Text c = Text.CreateWithFontandString(Resources.Fnt.BigFont, Application.GetString(STR_MENU_PROCESSING));
+                Text c = Text.CreateWithFontandString(Resources.Fnt.BigFont, Application.GetString("PROCESSING"));
                 HBox hBox = new HBox().InitWithOffsetAlignHeight(10f, 16, image.height);
                 hBox.parentAnchor = hBox.anchor = 18;
                 _ = AddChild(hBox);
