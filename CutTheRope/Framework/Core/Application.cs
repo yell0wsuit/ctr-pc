@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Media;
@@ -88,9 +87,9 @@ namespace CutTheRope.Framework.Core
             if (ApplicationSettings.GetBool(7))
             {
                 string text = Preferences.GetStringForKey("PREFS_LOCALE");
-                if (text == null || text.Length == 0)
+                if (string.IsNullOrEmpty(text))
                 {
-                    text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";
+                    text = LanguageHelper.ToCode(LanguageHelper.FromSystemCulture());
                 }
                 appSettings.SetString(8, text);
             }
@@ -154,17 +153,7 @@ namespace CutTheRope.Framework.Core
                 return string.Empty;
             }
 
-            // Parse the XML to get the correct language
-            string languageCode = LANGUAGE switch
-            {
-                Language.LANGEN => "en",
-                Language.LANGRU => "ru",
-                Language.LANGDE => "de",
-                Language.LANGFR => "fr",
-                Language.LANGZH => "zh",
-                Language.LANGJA => "ja",
-                _ => "en",
-            };
+            string languageCode = LanguageHelper.ToCode(LANGUAGE);
 
             try
             {

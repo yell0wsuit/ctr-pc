@@ -160,19 +160,7 @@ namespace CutTheRope.Framework.Core
             }
             if (xMLNode != null)
             {
-                string tag = "en";
-                if (LANGUAGE == Language.LANGRU)
-                {
-                    tag = "ru";
-                }
-                if (LANGUAGE == Language.LANGFR)
-                {
-                    tag = "fr";
-                }
-                if (LANGUAGE == Language.LANGDE)
-                {
-                    tag = "de";
-                }
+                string tag = LanguageHelper.ToCode(LANGUAGE);
                 XElement xMLNode2 = xMLNode.FindChildWithTagNameRecursively(tag, false);
                 xMLNode2 ??= xMLNode.FindChildWithTagNameRecursively("en", false);
                 return xMLNode2?.ValueAsNSString() ?? string.Empty;

@@ -26,53 +26,30 @@ namespace CutTheRope.GameMain
                 return resourceName;
             }
 
-            if (resourceName == Resources.Img.HudButtonsEn)
+            return resourceName switch
             {
-                if (LANGUAGE == Language.LANGRU)
+                _ when resourceName == Resources.Img.HudButtonsEn => LANGUAGE switch
                 {
-                    return Resources.Img.HudButtonsRu;
-                }
-                if (LANGUAGE == Language.LANGDE)
+                    Language.LANGRU => Resources.Img.HudButtonsRu,
+                    Language.LANGDE => Resources.Img.HudButtonsGr,
+                    _ => Resources.Img.HudButtonsEn,
+                },
+                _ when resourceName == Resources.Img.MenuResultEn => LANGUAGE switch
                 {
-                    return Resources.Img.HudButtonsGr;
-                }
-                if (LANGUAGE == Language.LANGFR)
+                    Language.LANGRU => Resources.Img.MenuResultRu,
+                    Language.LANGDE => Resources.Img.MenuResultGr,
+                    Language.LANGFR => Resources.Img.MenuResultFr,
+                    _ => Resources.Img.MenuResultEn,
+                },
+                _ when resourceName == Resources.Img.MenuExtraButtonsEn => LANGUAGE switch
                 {
-                    return Resources.Img.HudButtonsEn;
-                }
-            }
-            else if (resourceName == Resources.Img.MenuResultEn)
-            {
-                if (LANGUAGE == Language.LANGRU)
-                {
-                    return Resources.Img.MenuResultRu;
-                }
-                if (LANGUAGE == Language.LANGDE)
-                {
-                    return Resources.Img.MenuResultGr;
-                }
-                if (LANGUAGE == Language.LANGFR)
-                {
-                    return Resources.Img.MenuResultFr;
-                }
-            }
-            else if (resourceName == Resources.Img.MenuExtraButtonsEn)
-            {
-                if (LANGUAGE == Language.LANGRU)
-                {
-                    return Resources.Img.MenuExtraButtonsRu;
-                }
-                if (LANGUAGE == Language.LANGDE)
-                {
-                    return Resources.Img.MenuExtraButtonsGr;
-                }
-                if (LANGUAGE == Language.LANGFR)
-                {
-                    return Resources.Img.MenuExtraButtonsFr;
-                }
-            }
-
-            return resourceName;
+                    Language.LANGRU => Resources.Img.MenuExtraButtonsRu,
+                    Language.LANGDE => Resources.Img.MenuExtraButtonsGr,
+                    Language.LANGFR => Resources.Img.MenuExtraButtonsFr,
+                    _ => Resources.Img.MenuExtraButtonsEn,
+                },
+                _ => resourceName,
+            };
         }
 
         /// <summary>

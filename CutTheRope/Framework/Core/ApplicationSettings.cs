@@ -18,38 +18,15 @@ namespace CutTheRope.Framework.Core
 
         public string GetString(int s)
         {
-            return s != 8
-                ? ""
-                : locale ?? LANGUAGE switch
-                {
-                    Language.LANGEN => "en",
-                    Language.LANGRU => "ru",
-                    Language.LANGDE => "de",
-                    Language.LANGFR => "fr",
-                    Language.LANGZH => "zh",
-                    Language.LANGJA => "ja",
-                    _ => "en",
-                };
+            return s != 8 ? "" : locale ?? LanguageHelper.ToCode(LANGUAGE);
         }
 
         public void SetString(int sid, string str)
         {
             if (sid == 8)
             {
-                locale = str.ToString();
-                LANGUAGE = Language.LANGEN;
-                if (locale == "ru")
-                {
-                    LANGUAGE = Language.LANGRU;
-                }
-                else if (locale == "de")
-                {
-                    LANGUAGE = Language.LANGDE;
-                }
-                if (locale == "fr")
-                {
-                    LANGUAGE = Language.LANGFR;
-                }
+                locale = str;
+                LANGUAGE = LanguageHelper.FromCode(locale);
             }
         }
 
