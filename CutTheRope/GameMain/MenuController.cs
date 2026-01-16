@@ -347,7 +347,7 @@ namespace CutTheRope.GameMain
             {
                 q = 6;
             }
-            string string2 = Application.GetString(STR_MENU_LANGUAGE);
+            string string2 = Application.GetString("LANGUAGE");
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
@@ -482,14 +482,14 @@ namespace CutTheRope.GameMain
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
-            Button c = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_PLAY), MenuButtonId.Play, this);
+            Button c = CreateButtonWithTextIDDelegate(Application.GetString("PLAY"), MenuButtonId.Play, this);
             _ = vBox.AddChild(c);
-            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_OPTIONS), MenuButtonId.Options, this);
+            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString("OPTIONS"), MenuButtonId.Options, this);
             _ = vBox.AddChild(c2);
-            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_QUIT_BUTTON), MenuButtonId.ShowQuitPopup, this);
+            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup, this);
             _ = vBox.AddChild(c3);
             _ = baseElement.AddChild(vBox);
-            bool flag = Application.GetString(STR_MENU_FACEBOOK_BUTTON).Length() > 0;
+            bool flag = Application.GetString("FACEBOOK_BUTTON").Length() > 0;
             if (flag)
             {
                 BaseElement baseElement2 = new();
@@ -535,8 +535,8 @@ namespace CutTheRope.GameMain
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
             _ = menuView.AddChild(baseElement);
-            BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString(STR_MENU_DRAG_TO_CUT), -1, null);
-            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.GetString(STR_MENU_CLICK_TO_CUT), MenuButtonId.ToggleClickToCut, this);
+            BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString("DRAG_TO_CUT"), -1, null);
+            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.GetString("CLICK_TO_CUT"), MenuButtonId.ToggleClickToCut, this);
             HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80.0), 16, MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(baseElement2);
@@ -563,9 +563,9 @@ namespace CutTheRope.GameMain
             _ = vBox.AddChild(hBox2);
             Button c = CreateLanguageButtonWithIDDelegate(MenuButtonId.Language, this);
             _ = vBox.AddChild(c);
-            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_RESET), MenuButtonId.ShowReset, this);
+            Button c2 = CreateButtonWithTextIDDelegate(Application.GetString("RESET"), MenuButtonId.ShowReset, this);
             _ = vBox.AddChild(c2);
-            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_CREDITS), MenuButtonId.ShowCredits, this);
+            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("CREDITS"), MenuButtonId.ShowCredits, this);
             _ = vBox.AddChild(c3);
             _ = baseElement.AddChild(vBox);
             hBox.y = (vBox.height / 2) + 10;
@@ -600,14 +600,14 @@ namespace CutTheRope.GameMain
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString(STR_MENU_RESET_TEXT), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
+            text.SetStringandWidth(Application.GetString("RESET_TEXT"), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
             text.anchor = text.parentAnchor = 18;
             _ = baseElement.AddChild(text);
             text.y = -200f;
-            Button button = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_YES), MenuButtonId.ConfirmResetYes, this);
+            Button button = CreateButtonWithTextIDDelegate(Application.GetString("YES"), MenuButtonId.ConfirmResetYes, this);
             button.anchor = button.parentAnchor = 34;
             button.y = -540f;
-            Button button2 = CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_NO), MenuButtonId.ConfirmResetNo, this);
+            Button button2 = CreateButtonWithTextIDDelegate(Application.GetString("NO"), MenuButtonId.ConfirmResetNo, this);
             button2.anchor = button2.parentAnchor = 34;
             button2.y = -320f;
             _ = baseElement.AddChild(button);
@@ -639,7 +639,7 @@ namespace CutTheRope.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
-            string text = Application.GetString(STR_MENU_ABOUT_TEXT).ToString();
+            string text = Application.GetString("ABOUT_TEXT").ToString();
             string[] separator = ["%@"];
             string[] array = text.Split(separator, StringSplitOptions.None);
             for (int i = 0; i < array.Length; i++)
@@ -675,7 +675,7 @@ namespace CutTheRope.GameMain
             _ = vBox.AddChild(text2);
             Image c2 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 2);
             _ = vBox.AddChild(c2);
-            string @string = Application.GetString(STR_MENU_ABOUT_SPECIAL_THANKS);
+            string @string = Application.GetString("ABOUT_SPECIAL_THANKS");
             Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text3.SetAlignment(2);
             text3.SetStringandWidth(@string, num);
@@ -801,7 +801,7 @@ namespace CutTheRope.GameMain
             string nsstring;
             if (n == CTRPreferences.GetPacksCount())
             {
-                nsstring = Application.GetString(STR_MENU_BOX_SOON_LABEL);
+                nsstring = Application.GetString("BOX_SOON_LABEL");
             }
             else
             {
@@ -809,21 +809,21 @@ namespace CutTheRope.GameMain
                 string text4 = ". ";
                 string boxLabelId = n switch
                 {
-                    0 => STR_MENU_BOX1_LABEL,
-                    1 => STR_MENU_BOX2_LABEL,
-                    2 => STR_MENU_BOX3_LABEL,
-                    3 => STR_MENU_BOX4_LABEL,
-                    4 => STR_MENU_BOX5_LABEL,
-                    5 => STR_MENU_BOX6_LABEL,
-                    6 => STR_MENU_BOX7_LABEL,
-                    7 => STR_MENU_BOX8_LABEL,
-                    8 => STR_MENU_BOX9_LABEL,
-                    9 => STR_MENU_BOX10_LABEL,
-                    10 => STR_MENU_BOX11_LABEL,
-                    11 => STR_MENU_BOX12_LABEL,
-                    12 => STR_MENU_BOX13_LABEL,
-                    13 => STR_MENU_BOX14_LABEL,
-                    _ => STR_MENU_BOX1_LABEL,
+                    0 => "BOX1_LABEL",
+                    1 => "BOX2_LABEL",
+                    2 => "BOX3_LABEL",
+                    3 => "BOX4_LABEL",
+                    4 => "BOX5_LABEL",
+                    5 => "BOX6_LABEL",
+                    6 => "BOX7_LABEL",
+                    7 => "BOX8_LABEL",
+                    8 => "BOX9_LABEL",
+                    9 => "BOX10_LABEL",
+                    10 => "BOX11_LABEL",
+                    11 => "BOX12_LABEL",
+                    12 => "BOX13_LABEL",
+                    13 => "BOX14_LABEL",
+                    _ => "BOX1_LABEL",
                 };
                 string @string = Application.GetString(boxLabelId);
                 nsstring = text3 + text4 + (@string?.ToString());
@@ -848,7 +848,7 @@ namespace CutTheRope.GameMain
                 hBox.y = 110f;
                 _ = image2.AddChild(hBox);
                 Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-                string newString = Application.GetString(STR_MENU_UNLOCK_HINT).ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture));
+                string newString = Application.GetString("UNLOCK_HINT").ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture));
                 text.SetAlignment(2);
                 text.anchor = 10;
                 text.parentAnchor = 34;
@@ -938,7 +938,7 @@ namespace CutTheRope.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
-            string text = Application.GetString(STR_MENU_TOTAL_STARS).ToString();
+            string text = Application.GetString("TOTAL_STARS").ToString();
             text = text.Replace("%d", "");
             HBox hBox = CreateTextWithStar(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
             hBox.x = -30f - Canvas.xOffsetScaled;
@@ -1545,45 +1545,28 @@ namespace CutTheRope.GameMain
                     }
                 case var id when id == MenuButtonId.Language:
                     {
-                        string @string = Application.SharedAppSettings().GetString(8);
-                        string[] array3 =
-                        [
-                    "en",
-                    "ru",
-                    "de",
-                    "fr"
-                        ];
-                        int num = array3.Length;
-                        bool flag4 = false;
-                        for (int j = 0; j < num; j++)
-                        {
-                            if (@string.IsEqualToString(array3[j]))
-                            {
-                                string nSString = array3[(j + 1) % num];
-                                Application.SharedAppSettings().SetString(8, nSString);
-                                Preferences.SetStringForKey(nSString.ToString(), "PREFS_LOCALE", true);
-                                flag4 = true;
-                                break;
-                            }
-                        }
-                        if (!flag4)
-                        {
-                            Application.SharedAppSettings().SetString(8, array3[1]);
-                            Preferences.SetStringForKey(array3[1].ToString(), "PREFS_LOCALE", true);
-                        }
+                        // Languages in the setting UI
+                        string[] availableLanguages = ["en", "ru", "de", "fr"];
+
+                        string currentLocale = Application.SharedAppSettings().GetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE);
+                        int currentIndex = Array.IndexOf(availableLanguages, currentLocale);
+                        string nextLocale = availableLanguages[(currentIndex + 1) % availableLanguages.Length];
+
+                        Application.SharedAppSettings().SetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE, nextLocale);
+                        Preferences.SetStringForKey(nextLocale, "PREFS_LOCALE", true);
                         CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
                         ctrresourceMgr2.FreePack(PackLocalizationMenu);
                         ctrresourceMgr2.ClearCachedResources();
                         ctrresourceMgr2.InitLoading();
                         ctrresourceMgr2.LoadPack(PackLocalizationMenu);
                         ctrresourceMgr2.LoadImmediately();
-                        DeleteView(5);
+                        DeleteView(VIEW_PACK_SELECT);
                         CreatePackSelect();
-                        DeleteView(0);
+                        DeleteView(VIEW_MAIN_MENU);
                         CreateMainMenu();
-                        DeleteView(4);
+                        DeleteView(VIEW_RESET);
                         CreateReset();
-                        DeleteView(3);
+                        DeleteView(VIEW_ABOUT);
                         CreateAbout();
                         DeleteView(VIEW_CANDY_SELECT);
                         CreateCandySelection();
@@ -1621,7 +1604,7 @@ namespace CutTheRope.GameMain
                     }
                     break;
                 case var id when id == MenuButtonId.ShowQuitPopup:
-                    ShowYesNoPopup(Application.GetString(STR_MENU_QUIT), MenuButtonId.QuitGame, MenuButtonId.ClosePopup);
+                    ShowYesNoPopup(Application.GetString("QUIT"), MenuButtonId.QuitGame, MenuButtonId.ClosePopup);
                     return;
                 case var id when id == MenuButtonId.CandySelect:
                     // Switch to candy selection mode or open candy selection view

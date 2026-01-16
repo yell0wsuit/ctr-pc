@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
 using System.Threading;
 
@@ -141,20 +140,7 @@ namespace CutTheRope
 
         private static Language GetSystemLanguage()
         {
-            Language result = Language.LANGEN;
-            if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru")
-            {
-                result = Language.LANGRU;
-            }
-            if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de")
-            {
-                result = Language.LANGDE;
-            }
-            if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")
-            {
-                result = Language.LANGFR;
-            }
-            return result;
+            return LanguageHelper.FromSystemCulture();
         }
 
         public bool IsKeyPressed(Keys key)

@@ -61,7 +61,7 @@ namespace CutTheRope.GameMain
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1.0);
             Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture));
             text.anchor = 33;
-            Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, Application.GetString(STR_MENU_LEVEL));
+            Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, Application.GetString("LEVEL"));
             text2.anchor = 33;
             text2.parentAnchor = 9;
             text.SetName("levelLabel");
