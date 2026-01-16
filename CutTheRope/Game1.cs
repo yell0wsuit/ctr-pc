@@ -18,7 +18,9 @@ namespace CutTheRope
 {
     public class Game1 : Game
     {
-        // (get) Token: 0x06000022 RID: 34 RVA: 0x00002517 File Offset: 0x00000717
+        //RPC helper instance
+        public static RPCHelpers RPC { get; private set; }
+
         public Game1()
         {
             Global.XnaGame = this;
@@ -84,6 +86,8 @@ namespace CutTheRope
         {
             Preferences.RequestSave();
             Preferences.Update();
+            //Dispose of RPC
+            RPC?.Dispose();
         }
 
         private void Game1_Deactivated(object sender, EventArgs e)
@@ -99,15 +103,18 @@ namespace CutTheRope
 
         protected override void Initialize()
         {
+            //Create RPC helper instance
+            RPC = new RPCHelpers();
             string version =
                 Assembly.GetExecutingAssembly()
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                     ?.InformationalVersion
                 ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
                 ?? "Unknown";
-
             Window.Title = $"Cut The Rope: DX v{version}";
             base.Initialize();
+            //Initialize RPC
+            RPC.Setup();
         }
 
         protected override void LoadContent()

@@ -171,7 +171,7 @@ namespace CutTheRope.GameMain
 
         public void BoxClosed()
         {
-            CTRPreferences cTRPreferences = Application.SharedPreferences();
+            _ = Application.SharedPreferences();
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
             int pack = ctrrootController.GetPack();
             _ = ctrrootController.GetLevel();
@@ -290,6 +290,11 @@ namespace CutTheRope.GameMain
                     0.5);
             };
             boxOpenClose.LevelWon();
+
+            // Update RPC to show win state with stars and score
+            CTRRootController ctrRoot = (CTRRootController)Application.SharedRootController();
+            Game1.RPC.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), gameScene.starsCollected, true, gameScene.score, (int)gameScene.time);
+
             UnlockNextLevel();
         }
 
