@@ -1545,32 +1545,15 @@ namespace CutTheRope.GameMain
                     }
                 case var id when id == MenuButtonId.Language:
                     {
-                        string @string = Application.SharedAppSettings().GetString(8);
-                        string[] array3 =
-                        [
-                    "en",
-                    "ru",
-                    "de",
-                    "fr"
-                        ];
-                        int num = array3.Length;
-                        bool flag4 = false;
-                        for (int j = 0; j < num; j++)
-                        {
-                            if (@string.IsEqualToString(array3[j]))
-                            {
-                                string nSString = array3[(j + 1) % num];
-                                Application.SharedAppSettings().SetString(8, nSString);
-                                Preferences.SetStringForKey(nSString.ToString(), "PREFS_LOCALE", true);
-                                flag4 = true;
-                                break;
-                            }
-                        }
-                        if (!flag4)
-                        {
-                            Application.SharedAppSettings().SetString(8, array3[1]);
-                            Preferences.SetStringForKey(array3[1].ToString(), "PREFS_LOCALE", true);
-                        }
+                        // Languages in the setting UI
+                        string[] availableLanguages = ["en", "ru", "de", "fr"];
+
+                        string currentLocale = Application.SharedAppSettings().GetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE);
+                        int currentIndex = Array.IndexOf(availableLanguages, currentLocale);
+                        string nextLocale = availableLanguages[(currentIndex + 1) % availableLanguages.Length];
+
+                        Application.SharedAppSettings().SetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE, nextLocale);
+                        Preferences.SetStringForKey(nextLocale, "PREFS_LOCALE", true);
                         CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
                         ctrresourceMgr2.FreePack(PackLocalizationMenu);
                         ctrresourceMgr2.ClearCachedResources();
