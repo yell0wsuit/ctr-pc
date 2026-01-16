@@ -10,30 +10,36 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Converts a Language enum to its ISO 639-1 two-letter code.
         /// </summary>
-        public static string ToCode(Language language) => language switch
+        public static string ToCode(Language language)
         {
-            Language.LANGEN => "en",
-            Language.LANGRU => "ru",
-            Language.LANGDE => "de",
-            Language.LANGFR => "fr",
-            Language.LANGZH => "zh",
-            Language.LANGJA => "ja",
-            _ => "en",
-        };
+            return language switch
+            {
+                Language.LANGEN => "en",
+                Language.LANGRU => "ru",
+                Language.LANGDE => "de",
+                Language.LANGFR => "fr",
+                Language.LANGZH => "zh",
+                Language.LANGJA => "ja",
+                _ => "en",
+            };
+        }
 
         /// <summary>
         /// Converts an ISO 639-1 two-letter code to a Language enum.
         /// Returns LANGEN for unrecognized codes.
         /// </summary>
-        public static Language FromCode(string code) => code switch
+        public static Language FromCode(string code)
         {
-            "ru" => Language.LANGRU,
-            "de" => Language.LANGDE,
-            "fr" => Language.LANGFR,
-            "zh" => Language.LANGZH,
-            "ja" => Language.LANGJA,
-            _ => Language.LANGEN,
-        };
+            return code switch
+            {
+                "ru" => Language.LANGRU,
+                "de" => Language.LANGDE,
+                "fr" => Language.LANGFR,
+                "zh" => Language.LANGZH,
+                "ja" => Language.LANGJA,
+                _ => Language.LANGEN,
+            };
+        }
 
         /// <summary>
         /// Detects the appropriate Language from the system's current culture.
