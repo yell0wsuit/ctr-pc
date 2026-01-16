@@ -77,7 +77,7 @@ namespace CutTheRope.Framework.Core
                 return value;
             }
 
-            string path = resType != ResourceType.STRINGS ? CTRResourceMgr.XNA_ResName(resourceName) : "";
+            string path = CTRResourceMgr.XNA_ResName(resourceName);
             bool flag = false;
             float scaleX = GetNormalScaleX(resId);
             float scaleY = GetNormalScaleY(resId);
@@ -97,12 +97,6 @@ namespace CutTheRope.Framework.Core
                     break;
                 case ResourceType.SOUND:
                     value = LoadSoundInfo(path);
-                    break;
-                case ResourceType.STRINGS:
-                    {
-                        string strValue = LoadStringsInfo(resId);
-                        value = strValue.Replace('\u00a0', ' ');
-                    }
                     break;
                 case ResourceType.BINARY:
                     break;
@@ -143,12 +137,6 @@ namespace CutTheRope.Framework.Core
         public virtual FrameworkTypes LoadSoundInfo(string path)
         {
             return new FrameworkTypes();
-        }
-
-        public static string LoadStringsInfo(int key)
-        {
-            key &= 65535;
-            return LocalizationManager.GetStringByIndex(key);
         }
 
         public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
@@ -726,7 +714,6 @@ namespace CutTheRope.Framework.Core
             FONT,
             SOUND,
             BINARY,
-            STRINGS,
             ELEMENT
         }
     }

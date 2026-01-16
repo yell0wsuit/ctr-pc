@@ -74,37 +74,6 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// Gets a localized string by index, preserving compatibility with legacy code.
-        /// </summary>
-        /// <param name="index">The string index</param>
-        /// <returns>The localized string, or empty string if not found.</returns>
-        public static string GetStringByIndex(int index)
-        {
-            EnsureStringsLoaded();
-
-            lock (jsonStringsLock_)
-            {
-                if (jsonStrings_ == null || index < 0 || index >= jsonStrings_.Count)
-                {
-                    return string.Empty;
-                }
-
-                // Get the key at the specified index
-                int currentIndex = 0;
-                foreach (string key in jsonStrings_.Keys)
-                {
-                    if (currentIndex == index)
-                    {
-                        return GetString(key);
-                    }
-                    currentIndex++;
-                }
-
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
         /// Checks if a string key exists in the localization data.
         /// </summary>
         public static bool HasString(string key)
