@@ -1290,8 +1290,6 @@ namespace CutTheRope.GameMain
 
         internal static int[] PACK_LOCALIZATION_MENU = [149, -1];
 
-        public static Language LANGUAGE = Language.LANGEN;
-
         private static readonly Lock resourcesLock_ = new();
 
         private static Dictionary<string, string> allResources_;
