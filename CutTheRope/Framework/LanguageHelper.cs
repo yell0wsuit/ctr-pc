@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace CutTheRope.Framework
@@ -7,6 +8,20 @@ namespace CutTheRope.Framework
     /// </summary>
     public static class LanguageHelper
     {
+        // Available languages code for the UI
+        // More languages go here
+        private static readonly string[] uiLanguageCodes = [
+            "en", // English
+            "ru", // Russian
+            "de", // German
+            "fr" // French
+        ];
+
+        /// <summary>
+        /// Gets the list of language codes available in the UI.
+        /// </summary>
+        public static IReadOnlyList<string> UiLanguageCodes => uiLanguageCodes;
+
         /// <summary>
         /// Gets or sets the current language setting.
         /// </summary>
@@ -43,6 +58,51 @@ namespace CutTheRope.Framework
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Checks if the given language is available in the UI.
+        /// </summary>
+        public static bool IsUiLanguage(Language language)
+        {
+            return IsUiLanguageCode(ToCode(language));
+        }
+
+        /// <summary>
+        /// Checks if the given language code is available in the UI.
+        /// </summary>
+        public static bool IsUiLanguageCode(string code)
+        {
+            if (string.IsNullOrEmpty(code))
+            {
+                return false;
+            }
+
+            foreach (string uiCode in uiLanguageCodes)
+            {
+                if (uiCode == code)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the next language code in the UI cycle.
+        /// </summary>
+        public static string GetNextUiLanguageCode(string currentCode)
+        {
+            for (int i = 0; i < uiLanguageCodes.Length; i++)
+            {
+                if (uiLanguageCodes[i] == currentCode)
+                {
+                    return uiLanguageCodes[(i + 1) % uiLanguageCodes.Length];
+                }
+            }
+
+            return uiLanguageCodes[0];
         }
 
         /// <summary>
@@ -88,9 +148,7 @@ namespace CutTheRope.Framework
             Language lang = FromCode(code);
 
             // Only allow supported languages, otherwise force English
-            return lang is Language.LANGRU or Language.LANGDE or Language.LANGFR
-                ? lang
-                : Language.LANGEN;
+            return IsUiLanguage(lang) ? lang : Language.LANGEN;
         }
     }
 }

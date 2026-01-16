@@ -1545,12 +1545,9 @@ namespace CutTheRope.GameMain
                     }
                 case var id when id == MenuButtonId.Language:
                     {
-                        // Languages in the setting UI
-                        string[] availableLanguages = ["en", "ru", "de", "fr"];
-
+                        // Cycle through languages in the setting UI
                         string currentLocale = Application.SharedAppSettings().GetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE);
-                        int currentIndex = Array.IndexOf(availableLanguages, currentLocale);
-                        string nextLocale = availableLanguages[(currentIndex + 1) % availableLanguages.Length];
+                        string nextLocale = LanguageHelper.GetNextUiLanguageCode(currentLocale);
 
                         Application.SharedAppSettings().SetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE, nextLocale);
                         Preferences.SetStringForKey(nextLocale, "PREFS_LOCALE", true);
