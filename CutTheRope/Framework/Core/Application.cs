@@ -145,6 +145,9 @@ namespace CutTheRope.Framework.Core
                 $"Texture '{resolvedName}' could not be loaded. Ensure the resource name is correct and the asset is registered in TexturePackerRegistry.json.");
         }
 
+        /// <summary>
+        /// Gets a localized string by its key.
+        /// </summary>
         internal static string GetString(string stringKey)
         {
             return LocalizationManager.GetString(stringKey);
