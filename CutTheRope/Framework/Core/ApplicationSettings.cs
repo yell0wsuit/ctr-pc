@@ -18,12 +18,12 @@ namespace CutTheRope.Framework.Core
 
         public string GetString(int s)
         {
-            return s != 8 ? "" : locale ?? LanguageHelper.ToCode(LANGUAGE);
+            return s != (int)AppSettings.APP_SETTING_LOCALE ? "" : locale ?? LanguageHelper.ToCode(LANGUAGE);
         }
 
         public void SetString(int sid, string str)
         {
-            if (sid == 8)
+            if (sid == (int)AppSettings.APP_SETTING_LOCALE)
             {
                 locale = str;
                 LANGUAGE = LanguageHelper.FromCode(locale);
