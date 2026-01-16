@@ -4,8 +4,6 @@ using CutTheRope.Commons;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
-using static CutTheRope.GameMain.ResDataPhoneFull;
-
 namespace CutTheRope.GameMain
 {
     internal sealed class PopUpMenu(MenuController controller)
