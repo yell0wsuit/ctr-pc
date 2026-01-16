@@ -1560,13 +1560,13 @@ namespace CutTheRope.GameMain
                         ctrresourceMgr2.InitLoading();
                         ctrresourceMgr2.LoadPack(PackLocalizationMenu);
                         ctrresourceMgr2.LoadImmediately();
-                        DeleteView(5);
+                        DeleteView(VIEW_PACK_SELECT);
                         CreatePackSelect();
-                        DeleteView(0);
+                        DeleteView(VIEW_MAIN_MENU);
                         CreateMainMenu();
-                        DeleteView(4);
+                        DeleteView(VIEW_RESET);
                         CreateReset();
-                        DeleteView(3);
+                        DeleteView(VIEW_ABOUT);
                         CreateAbout();
                         DeleteView(VIEW_CANDY_SELECT);
                         CreateCandySelection();
