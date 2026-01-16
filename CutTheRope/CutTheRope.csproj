@@ -145,6 +145,13 @@
     </None>
   </ItemGroup>
 
+  <!-- OpenGL build (Linux/macOS), include alsoft.ini to disable HTRF. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <None Include="..\alsoft.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <ItemGroup>
     <MonoGameContentReference Include="..\content\content.mgcb" />
   </ItemGroup>
