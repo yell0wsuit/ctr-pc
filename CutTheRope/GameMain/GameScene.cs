@@ -44,20 +44,13 @@ namespace CutTheRope.GameMain
 
         public static bool ShouldSkipTutorialElement(XElement c)
         {
-            string @string = Application.SharedAppSettings().GetString(8);
-            string nSString = c.AttributeAsNSString("locale");
-            if (@string.IsEqualToString("en") || @string.IsEqualToString("ru") || @string.IsEqualToString("de") || @string.IsEqualToString("fr"))
+            string currentLang = LanguageHelper.CurrentCode;
+            string locale = c.AttributeAsNSString("locale");
+            if (LanguageHelper.IsUiLanguageCode(currentLang))
             {
-                if (!nSString.IsEqualToString(@string))
-                {
-                    return true;
-                }
+                return !locale.IsEqualToString(currentLang);
             }
-            else if (!nSString.IsEqualToString("en"))
-            {
-                return true;
-            }
-            return false;
+            return !locale.IsEqualToString("en");
         }
 
         public void ShowGreeting()

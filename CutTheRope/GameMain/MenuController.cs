@@ -333,20 +333,7 @@ namespace CutTheRope.GameMain
 
         public static Button CreateLanguageButtonWithIDDelegate(ButtonId bid, IButtonDelegation d)
         {
-            string @string = Application.SharedAppSettings().GetString(8);
-            int q = 7;
-            if (@string.IsEqualToString("ru"))
-            {
-                q = 4;
-            }
-            else if (@string.IsEqualToString("de"))
-            {
-                q = 5;
-            }
-            else if (@string.IsEqualToString("fr"))
-            {
-                q = 6;
-            }
+            int q = LanguageHelper.GetLanguageFlagQuadIndex();
             string string2 = Application.GetString("LANGUAGE");
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);

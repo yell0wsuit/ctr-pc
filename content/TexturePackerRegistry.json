@@ -1,6 +1,12 @@
 {
     "textures": [
         {
+            "resourceName": "menu_extra_buttons",
+            "atlasPath": "menu_extra_buttons.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
             "resourceName": "menu_pack_selection",
             "atlasPath": "menu_pack_selection.json",
             "useAntialias": true,

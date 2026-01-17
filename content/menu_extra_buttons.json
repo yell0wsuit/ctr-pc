@@ -1,0 +1,141 @@
+{
+    "frames": [
+        {
+            "filename": "frame_00_backbtn.png",
+            "frame": { "x": 210, "y": 1, "w": 209, "h": 205 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 209, "h": 205 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_01_backbtn_active.png",
+            "frame": { "x": 1, "y": 1, "w": 207, "h": 206 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 207, "h": 206 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_02_facebookbtn.png",
+            "frame": { "x": 421, "y": 1, "w": 94, "h": 97 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 456, "y": 89, "w": 94, "h": 97 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_03_twitterbtn.png",
+            "frame": { "x": 421, "y": 100, "w": 94, "h": 97 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 562, "y": 89, "w": 94, "h": 97 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_04_russian.png",
+            "frame": { "x": 1021, "y": 1, "w": 123, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 123, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_05_german.png",
+            "frame": { "x": 1021, "y": 89, "w": 123, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 123, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_06_french.png",
+            "frame": { "x": 1146, "y": 1, "w": 123, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 123, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_07_english.png",
+            "frame": { "x": 1146, "y": 89, "w": 122, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 122, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_08_japanese.png",
+            "frame": { "x": 517, "y": 96, "w": 124, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 124, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_09_chinese.png",
+            "frame": { "x": 643, "y": 1, "w": 124, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 124, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_10_korean.png",
+            "frame": { "x": 643, "y": 89, "w": 124, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 124, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_11_spanish.png",
+            "frame": { "x": 769, "y": 1, "w": 124, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 124, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_12_portuguese.png",
+            "frame": { "x": 769, "y": 89, "w": 124, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 124, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_13_italian.png",
+            "frame": { "x": 895, "y": 1, "w": 124, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 124, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_14_dutch.png",
+            "frame": { "x": 895, "y": 89, "w": 124, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 54, "w": 124, "h": 86 },
+            "sourceSize": { "w": 679, "h": 206 }
+        },
+        {
+            "filename": "frame_15_worldwide.png",
+            "frame": { "x": 517, "y": 1, "w": 124, "h": 93 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 261, "y": 49, "w": 124, "h": 93 },
+            "sourceSize": { "w": 679, "h": 206 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_extra_buttons.png",
+        "format": "RGBA8888",
+        "size": { "w": 1270, "h": 208 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:9a7bd957593d06fdd49922fa6fc0b525:a17b3b18ff008deda1779b515a3c9a7a:48ba2060699c239f9dccfa4027b970d3$"
+    }
+}
