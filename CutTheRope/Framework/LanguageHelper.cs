@@ -150,5 +150,22 @@ namespace CutTheRope.Framework
             // Only allow supported languages, otherwise force English
             return IsUiLanguage(lang) ? lang : Language.LANGEN;
         }
+
+        /// <summary>
+        /// Gets the quad index for the current language's flag icon in MenuExtraButtons.
+        /// </summary>
+        public static int GetLanguageFlagQuadIndex()
+        {
+            return Current switch
+            {
+                Language.LANGRU => 4, // Russian flag quad
+                Language.LANGDE => 5, // German flag quad
+                Language.LANGFR => 6, // French flag quad
+                Language.LANGEN => 7, // English flag quad
+                Language.LANGZH => throw new System.NotImplementedException(),
+                Language.LANGJA => throw new System.NotImplementedException(),
+                _ => 15, // Woldwide flag for fallback
+            };
+        }
     }
 }
