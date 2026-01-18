@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign special="4" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <grab x="178" y="205" length="200" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <candy x="291" y="316" />
+        <target x="177" y="143" />
+        <star x="169" y="412" path="RW30" moveSpeed="40" timeout="-1" />
+        <star x="177" y="435" path="RC40" moveSpeed="30" timeout="-1" />
+        <star x="198" y="421" path="RW20" moveSpeed="20" timeout="-1" />
+        <grab x="300" y="203" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <hiddenElement x="80" y="64" radius="30" />
+        <gap x="175" y="56" angle="0" radius="50" activeTime="2.0" index="2" />
+        <gap x="81" y="430" angle="0" radius="50" activeTime="2.0" index="1" />
+    </layer>
+    <layer name="en">
+        <tutorialText x="11" y="244" locale="en" text="Mouse is catching candy and moving it to different holes" width="170" />
+        <tutorialText x="65" y="271" locale="en" text="Tap the mouse to drop the candy" width="130" special="4" />
+        <tutorial04 x="109" y="366" locale="en" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorial09 x="47" y="318" locale="en" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="ru">
+        <tutorialText x="6" y="226" locale="ru" text="Мышка хватает конфету и перетаскивает ее от норки к норке" width="130" />
+        <tutorial04 x="109" y="365" locale="ru" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="61" y="269" locale="ru" text="Коснитесь мышки, чтоб отобрать конфету" width="170" special="4" />
+        <tutorial09 x="34" y="317" locale="ru" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="fr">
+        <tutorialText x="9" y="222" locale="fr" text="La souris attrape un bonbon et le déplace dans des trous différents " width="150" />
+        <tutorial04 x="109" y="368" locale="fr" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="61" y="267" locale="fr" text="Appuie sur la souris pour lâcher le bonbon " width="170" special="4" />
+        <tutorial09 x="34" y="315" locale="fr" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="de">
+        <tutorialText x="64" y="268" locale="de" text="Tippen Sie auf die Maus, damit sie die Bonbons fallen lässt " width="150" special="4" />
+        <tutorial04 x="109" y="365" locale="de" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="12" y="227" locale="de" text="Die Maus fängt Bonbons und schafft sie in verschiedene Löcher " width="170" />
+        <tutorial09 x="34" y="316" locale="de" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="ko">
+        <tutorialText x="4" y="260" locale="ko" text="생쥐가 사탕을 잡아 다른 구멍으로 옮깁니다 " width="130" />
+        <tutorial04 x="110" y="367" locale="ko" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="63" y="276" locale="ko" text="생쥐를 탭하여 사탕을 떨어뜨리세요 " width="170" special="4" />
+        <tutorial09 x="35" y="315" locale="ko" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="zh">
+        <tutorialText x="11" y="243" locale="zh" text="老鼠正在抓糖果， 并把糖果 转移到不同的洞穴里" width="140" />
+        <tutorial04 x="110" y="364" locale="zh" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="61" y="284" locale="zh" text="点击老鼠图标 丢下糖果" width="170" special="4" />
+        <tutorial09 x="31" y="316" locale="zh" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="ja">
+        <tutorialText x="-4" y="220" locale="ja" text="ネズミは キャンディを 手に入れて、 別の 穴へと 運んでいる ところです " width="130" />
+        <tutorial04 x="110" y="364" locale="ja" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="57" y="276" locale="ja" text="ネズミを タップ すると、 キャンディを 落とします" width="170" special="4" />
+        <tutorial09 x="34" y="317" locale="ja" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="es">
+        <tutorialText x="61" y="268" locale="es" text="Pulse sobre el ratón para soltar el dulce" width="130" special="4" />
+        <tutorial04 x="110" y="366" locale="es" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="6" y="212" locale="es" text="El ratón atrapa golosinas y las lleva por los distintos hoyos" width="130" />
+        <tutorial09 x="33" y="314" locale="es" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="it">
+        <tutorialText x="7" y="212" locale="it" text="Il topo sta prendendo la caramella e dirigendosi verso le sue tane " width="145" />
+        <tutorial04 x="108" y="366" locale="it" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="62" y="269" locale="it" text="Tocca il topo per far cadere la caramella" width="170" special="4" />
+        <tutorial09 x="33" y="315" locale="it" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="nl">
+        <tutorialText x="59" y="268" locale="nl" text="Tik op de muis zodat de snoep valt" width="150" special="4" />
+        <tutorial04 x="107" y="367" locale="nl" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="5" y="230" locale="nl" text="De muis vangt snoep op en verplaatst het naar diverse gaten" width="160" />
+        <tutorial09 x="34" y="314" locale="nl" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+    <layer name="br">
+        <tutorialText x="7" y="218" locale="br" text="O rato coleciona doces e os carrega a buracos diferentes " width="130" />
+        <tutorial04 x="109" y="367" locale="br" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="61" y="272" locale="br" text="Clique no mouse para soltar os doces " width="170" special="4" />
+        <tutorial09 x="35" y="315" locale="br" moveSpeed="100" rotateSpeed="100" special="4" />
+    </layer>
+</map>

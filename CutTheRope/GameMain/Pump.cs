@@ -4,8 +4,10 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Pump : GameObject
+    internal sealed class Pump : GameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionProvider, IConveyorPositionSetter
     {
+        private static readonly Vector ConveyorOffset = Vect(0.8f, -1.2f);
+
         public static Pump Pump_create(CTRTexture2D t)
         {
             return (Pump)new Pump().InitWithTexture(t);
@@ -43,6 +45,32 @@ namespace CutTheRope.GameMain
             t2 = VectRotateAround(t2, angle, x, y);
         }
 
+        public Vector GetConveyorSize()
+        {
+            const float scale = 0.48f;
+            return Vect(bb.w * scale, bb.h * scale);
+        }
+
+        public float GetConveyorPadding()
+        {
+            Vector size = GetConveyorSize();
+            return (size.x + size.y) / 4f;
+        }
+
+        public Vector GetConveyorPosition()
+        {
+            Vector offset = VectRotate(ConveyorOffset, angle);
+            return VectAdd(Vect(x, y), offset);
+        }
+
+        public void SetConveyorPosition(Vector position)
+        {
+            Vector offset = VectRotate(ConveyorOffset, angle);
+            Vector adjusted = VectSub(position, offset);
+            x = adjusted.x;
+            y = adjusted.y;
+        }
+
         public double angle;
 
         public Vector t1;
@@ -60,5 +88,11 @@ namespace CutTheRope.GameMain
         public float initial_y;
 
         public RotatedCircle initial_rotatedCircle;
+
+        public int ConveyorId { get; set; } = -1;
+
+        public float? ConveyorBaseScaleX { get; set; }
+
+        public float? ConveyorBaseScaleY { get; set; }
     }
 }

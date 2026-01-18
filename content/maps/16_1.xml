@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" nightLevel="true" />
+    </layer>
+    <layer name="Objects">
+        <grab x="94" y="47" length="55" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <candy x="91" y="147" />
+        <grab x="100" y="253" length="110" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <grab x="220" y="253" length="110" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <lightBulb x="160" y="214" bulbNumber="first" litRadius="97" />
+        <target x="96" y="401" />
+        <grab x="160" y="118" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <hiddenElement x="227" y="156" radius="30" />
+        <star x="95" y="330" timeout="-1" />
+        <star x="78" y="356" timeout="-1" />
+        <star x="111" y="356" timeout="-1" />
+    </layer>
+    <layer name="en">
+        <tutorialText x="170" y="320" locale="en" text="Illuminate Om Nom to wake him up" width="120" height="60" />
+        <tutorial04 x="160" y="400" locale="en" angle="0" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="ru">
+        <tutorial04 x="160" y="400" locale="ru" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="170" y="320" locale="ru" text="Посветите на Ам Няма, чтобы его разбудить" width="120" height="60" />
+    </layer>
+    <layer name="fr">
+        <tutorial04 x="160" y="400" locale="fr" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="170" y="320" locale="fr" text="Éclairez Om Nom pour le réveiller" width="120" height="60" />
+    </layer>
+    <layer name="de">
+        <tutorialText x="170" y="320" locale="de" text="Beleuchte Om Nom, um ihn aufzuwecken" width="120" height="60" />
+        <tutorial04 x="160" y="400" locale="de" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="es">
+        <tutorialText x="170" y="320" locale="es" text="Ilumina a Om Nom para despertarlo" width="120" height="60" />
+        <tutorial04 x="160" y="400" locale="es" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="it">
+        <tutorial04 x="160" y="400" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="170" y="320" locale="it" text="Illumina Om Nom per svegliarlo" width="120" height="60" />
+    </layer>
+    <layer name="nl">
+        <tutorialText x="170" y="320" locale="nl" text="Schijn op Om Nom om hem wakker te maken" width="120" height="60" />
+        <tutorial04 x="160" y="400" locale="nl" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="br">
+        <tutorial04 x="160" y="400" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="170" y="320" locale="br" text="Ilumine Om Nom para acordá-lo" width="120" height="60" />
+    </layer>
+    <layer name="ko">
+        <tutorial04 x="160" y="400" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="170" y="320" locale="ko" text="Om Nom 에게 조명을 비춰 잠을 깨우세요" width="120" height="60" />
+    </layer>
+    <layer name="zh">
+        <tutorial04 x="160" y="400" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="170" y="320" locale="zh" text="照亮 Om Nom 让他醒来" width="120" height="60" />
+    </layer>
+    <layer name="ja">
+        <tutorial04 x="160" y="400" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="170" y="320" locale="ja" text="Om Nom に*光を当てて*彼を起こす" width="120" height="60" />
+    </layer>
+</map>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <candy x="34" y="203" />
+        <target x="165" y="215" />
+        <gap x="163" y="384" angle="0" radius="50" activeTime="1.0" index="1" />
+        <gap x="161" y="86" angle="0" radius="50" activeTime="1.0" index="2" />
+        <star x="164" y="144" timeout="-1" />
+        <star x="52" y="384" timeout="-1" />
+        <star x="277" y="383" timeout="-1" />
+        <grab x="34" y="94" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="98" y="307" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="60" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="229" y="306" length="100" wheel="false" gun="false" kickable="false" kicked="false" radius="60" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <hiddenElement x="279" y="95" radius="30" />
+    </layer>
+</map>

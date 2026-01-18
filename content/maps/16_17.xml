@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" nightLevel="true" />
+    </layer>
+    <layer name="Objects">
+        <candy x="204" y="400" />
+        <target x="172" y="236" />
+        <lightBulb x="214" y="181" bulbNumber="first" litRadius="50" />
+        <grab x="171" y="338" length="50" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="true" moveOffset="0" spider="false" helicopter="false" part="L" path="RC65" hidePath="false" moveSpeed="50" bindBulb="false" bulbNumber="first" />
+        <grab x="170" y="125" length="50" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="true" moveOffset="0" spider="false" helicopter="false" part="L" path="RW65" hidePath="false" moveSpeed="50" bindBulb="true" bulbNumber="first" />
+        <star x="96" y="235" timeout="-1" />
+        <star x="171" y="123" timeout="-1" />
+        <star x="252" y="237" timeout="-1" />
+        <gravitySwitch x="276" y="421" />
+        <bubble x="58" y="335" />
+        <bubble x="59" y="126" />
+        <hiddenElement x="60" y="60" radius="30" />
+    </layer>
+</map>

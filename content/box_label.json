@@ -1,0 +1,21 @@
+{
+    "frames": [
+        {
+            "filename": "box_label.png",
+            "frame": { "x": 1, "y": 1, "w": 212, "h": 109 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 241, "y": 365, "w": 212, "h": 109 },
+            "sourceSize": { "w": 500, "h": 512 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "box_label.png",
+        "format": "RGBA8888",
+        "size": { "w": 214, "h": 111 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:7960a42898b75e550ef518815dcca9d9:92bcae9bdf3cf53012bee8df299e4750:b96839d20adc0cfc6d105b7a230fd7cf$"
+    }
+}

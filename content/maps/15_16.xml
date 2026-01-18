@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <candy x="212" y="401" />
+        <target x="268" y="262" />
+        <gap x="211" y="427" angle="0" radius="50" activeTime="1.0" index="1" />
+        <gap x="129" y="80" angle="180" radius="50" activeTime="1.0" index="2" />
+        <steamTube x="48" y="137" angle=" 90" />
+        <star x="42" y="291" timeout="-1" />
+        <star x="146" y="190" timeout="-1" />
+        <star x="262" y="193" timeout="-1" />
+        <ghost x="136" y="271" bouncer="true" bubble="false" grab="true" radius="50" angle="0" />
+        <steamTube x="48" y="178" angle=" 90" />
+        <hiddenElement x="259" y="61" radius="30" />
+    </layer>
+</map>

@@ -16,6 +16,22 @@ namespace CutTheRope.GameMain
         private void LoadObjectsFromMap(XElement map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             List<XElement> list = [.. map.Elements()];
+            // Preload light bulbs so bindBulb grabs can resolve regardless of XML order.
+            foreach (XElement xmlnode2 in list)
+            {
+                foreach (XElement item3 in xmlnode2.Elements())
+                {
+                    switch (item3.Name.LocalName)
+                    {
+                        case "lightBulb":
+                        case "lightbulb":
+                            LoadLightBulb(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
             foreach (XElement xmlnode2 in list)
             {
                 foreach (XElement item3 in xmlnode2.Elements())
@@ -79,8 +95,20 @@ namespace CutTheRope.GameMain
                         case "ghost":
                             LoadGhost(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
+                        case "conveyorBelt":
+                        case "transporter":
+                            LoadConveyorBelt(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
                         case "lantern":
                             LoadLantern(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
+                        case "lightBulb":
+                        case "lightbulb":
+                            // Preloaded above.
+                            break;
+                        case "gap":
+                        case "mouse":
+                            LoadMouse(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         default:
                             break;

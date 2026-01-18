@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" nightLevel="true" />
+    </layer>
+    <layer name="Objects">
+        <candy x="226" y="317" />
+        <target x="126" y="169" />
+        <lightBulb x="228" y="136" bulbNumber="first" litRadius="50" />
+        <grab x="176" y="224" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="true" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <grab x="277" y="225" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="true" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <star x="119" y="308" timeout="-1" />
+        <star x="227" y="184" timeout="-1" />
+        <star x="124" y="104" timeout="-1" />
+        <grab x="177" y="224" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="true" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <pump x="227" y="401" angle="270" isCloneable="false" />
+        <grab x="278" y="224" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="true" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <ghost x="151" y="427" bouncer="true" bubble="true" grab="false" radius="100" angle="0" />
+        <ghost x="92" y="427" bouncer="true" bubble="true" grab="false" radius="100" angle="0" />
+        <bubble x="226" y="131" />
+        <hiddenElement x="227" y="69" radius="30" />
+    </layer>
+</map>

@@ -30,6 +30,20 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        private bool HandleLightBulbBubbleTouch(LightBulb bulb, float tx, float ty)
+        {
+            if (bulb?.capturingBubble == null)
+            {
+                return false;
+            }
+            if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, bulb.constraint.pos.x - BUBBLE_RADIUS, bulb.constraint.pos.y - BUBBLE_RADIUS, BUBBLE_RADIUS * 2f, BUBBLE_RADIUS * 2f))
+            {
+                PopLightBulbBubble(bulb);
+                return true;
+            }
+            return false;
+        }
+
         public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
@@ -48,6 +62,12 @@ namespace CutTheRope.GameMain
             {
                 gravityTouchDown = ti;
             }
+            float worldX = tx + camera.pos.x;
+            float worldY = ty + camera.pos.y;
+            if (miceManager != null && miceManager.HandleClick(worldX, worldY))
+            {
+                return true;
+            }
             Vector vector = Vect(tx, ty);
             if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
             {
@@ -62,6 +82,16 @@ namespace CutTheRope.GameMain
                 if (candyBubbleR != null && HandleBubbleTouchXY(starR, tx, ty))
                 {
                     return true;
+                }
+            }
+            if (lightBulbs.Count > 0)
+            {
+                foreach (LightBulb bulb in lightBulbs)
+                {
+                    if (HandleLightBulbBubbleTouch(bulb, tx, ty))
+                    {
+                        return true;
+                    }
                 }
             }
             if (!dragging[ti])
@@ -185,6 +215,11 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
+            if (conveyors.OnPointerDown(worldX, worldY, ti))
+            {
+                dragging[ti] = false;
+                return true;
+            }
             if (clickToCut && !ignoreTouches)
             {
                 Vector s = default;
@@ -254,6 +289,7 @@ namespace CutTheRope.GameMain
                     bungee.moverDragging = -1;
                 }
             }
+            _ = conveyors.OnPointerUp(tx + camera.pos.x, ty + camera.pos.y, ti);
             return true;
         }
 
@@ -416,6 +452,10 @@ namespace CutTheRope.GameMain
                         return true;
                     }
                 }
+            }
+            if (conveyors.OnPointerMove(tx + camera.pos.x, ty + camera.pos.y, ti))
+            {
+                return true;
             }
             if (dragging[ti])
             {

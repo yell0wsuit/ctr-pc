@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map height="480" gridSize="32" width="320" />
+        <gameDesign nightLevel="false" ropePhysicsSpeed="1" twoParts="true" />
+    </layer>
+    <layer name="Objects">
+        <transporter velocity="10" direction="forward" length="200" angle="90" x="59" y="369" type="manual" width="50" />
+        <target x="155" y="50" />
+        <steamTube angle="0" x="60" y="342" />
+        <candyL x="109" y="158" />
+        <transporter velocity="10" direction="forward" length="200" angle="90" x="265" y="292" type="manual" width="50" />
+        <steamTube angle="0" x="266" y="265" />
+        <candyR x="200" y="157" />
+        <bouncer1 size="1" angle="-25" x="269" y="371" />
+        <bubble x="109" y="401" />
+        <bouncer1 size="1" angle="21" x="74" y="456" />
+        <star x="57" y="50" timeout="-1" />
+        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="R" moveOffset="0" moveVertical="false" length="93" x="289" bulbNumber="first" y="62" moveLength="-1" radius="-1" />
+        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="R" moveOffset="0" moveVertical="false" length="93" x="107" bulbNumber="first" y="64" moveLength="-1" radius="-1" />
+        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="L" moveOffset="0" moveVertical="false" length="93" x="203" bulbNumber="first" y="64" moveLength="-1" radius="-1" />
+        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="L" moveOffset="0" moveVertical="false" length="93" x="21" bulbNumber="first" y="64" moveLength="-1" radius="-1" />
+        <star x="260" y="336" timeout="-1" />
+        <star x="112" y="292" timeout="-1" />
+        <spike1 size="1" angle="90" x="304" y="193" toggled="false" />
+        <spike1 size="1" angle="90" x="17" y="197" toggled="false" />
+        <hiddenElement x="267" y="431" />
+    </layer>
+</map>

@@ -37,18 +37,44 @@ namespace CutTheRope.GameMain
             bubbles = new DynamicArray<Bubble>();
             pumps = new DynamicArray<Pump>();
             tubes = new DynamicArray<SteamTube>();
+            lightBulbs = new DynamicArray<LightBulb>();
             socks = new DynamicArray<Sock>();
             tutorialImages = new DynamicArray<CTRGameObject>();
             tutorials = new DynamicArray<Text>();
             bouncers = new DynamicArray<Bouncer>();
             rotatedCircles = new DynamicArray<RotatedCircle>();
             ghosts = new DynamicArray<Ghost>();
+            conveyors = new ConveyorBeltObject();
+
+            // Cleanup old mice before creating new arrays
+            if (mice != null)
+            {
+                foreach (object obj in mice)
+                {
+                    if (obj is Mouse mouse)
+                    {
+                        mouse.Cleanup();
+                    }
+                }
+            }
+
+            mice = new DynamicArray<Mouse>();
+            miceManager = null;
             earthAnims = null;
             pollenDrawer = new PollenDrawer();
             isCandyInGhostBubbleAnimationLoaded = false;
             isCandyInGhostBubbleAnimationLeftLoaded = false;
             isCandyInGhostBubbleAnimationRightLoaded = false;
             shouldRestoreSecondGhost = false;
+            sleepAnimPrimary = null;
+            sleepAnimSecondary = null;
+            isNightTargetAwake = null;
+            sleepPulseActive = false;
+            sleepPulseTime = 0f;
+            sleepPulseDelay = 0f;
+            sleepPulseBaseY = 0f;
+            sleepSoundTimer = 0f;
+            gameLostTriggered = false;
         }
 
         /// <summary>

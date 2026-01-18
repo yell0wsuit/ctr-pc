@@ -31,6 +31,14 @@ namespace CutTheRope.GameMain
             // Load all game objects from XML
             LoadObjectsFromMap(map, num, num3, num2, num4, num5);
 
+            conveyors.AttachItems(stars);
+            conveyors.AttachItems(socks);
+            conveyors.AttachItems(bubbles);
+            conveyors.AttachItems(tubes);
+            conveyors.AttachItems(pumps);
+            conveyors.AttachItems(bouncers);
+            conveyors.SortBelts();
+
             // Load two-parts candy bubble animations
             LoadCandyBubbleAnimations();
             foreach (object obj in rotatedCircles)
@@ -151,6 +159,10 @@ namespace CutTheRope.GameMain
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
             if (t.element is RotatedCircle rotatedCircle && rotatedCircles.GetObjectIndex(rotatedCircle) != -1)
+            {
+                return;
+            }
+            if (nightLevel && isNightTargetAwake == false)
             {
                 return;
             }

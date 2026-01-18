@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Sfe;
@@ -28,6 +29,8 @@ namespace CutTheRope.GameMain
             bool spider = xmlNode.AttributeAsNSString("spider").IsEqualToString("true");
             bool flag = xmlNode.AttributeAsNSString("part").IsEqualToString("L");
             bool flag2 = xmlNode.AttributeAsNSString("hidePath").IsEqualToString("true");
+            bool bindBulb = xmlNode.AttributeAsNSString("bindBulb").IsEqualToString("true");
+            string bulbNumber = xmlNode.AttributeAsNSString("bulbNumber");
             Grab grab = new();
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
@@ -62,7 +65,19 @@ namespace CutTheRope.GameMain
             if (num12 == -1f)
             {
                 ConstraintedPoint constraintedPoint = star;
-                if (twoParts != 2)
+                if (bindBulb)
+                {
+                    LightBulb bulb = FindLightBulbForBinding(bulbNumber);
+                    if (bulb != null)
+                    {
+                        constraintedPoint = bulb.constraint;
+                    }
+                    else if (twoParts != 2)
+                    {
+                        constraintedPoint = flag ? starL : starR;
+                    }
+                }
+                else if (twoParts != 2)
                 {
                     constraintedPoint = flag ? starL : starR;
                 }
@@ -73,6 +88,26 @@ namespace CutTheRope.GameMain
             grab.SetRadius(num12);
             grab.SetMoveLengthVerticalOffset(k, v, o);
             _ = bungees.AddObject(grab);
+        }
+
+        private LightBulb FindLightBulbForBinding(string bulbNumber)
+        {
+            if (lightBulbs.Count == 0)
+            {
+                return null;
+            }
+            if (!string.IsNullOrEmpty(bulbNumber))
+            {
+                for (int i = 0; i < lightBulbs.Count; i++)
+                {
+                    LightBulb bulb = lightBulbs.ObjectAtIndex(i);
+                    if (bulb != null && string.Equals(bulb.bulbNumber, bulbNumber, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return bulb;
+                    }
+                }
+            }
+            return lightBulbs.ObjectAtIndex(lightBulbs.Count - 1);
         }
     }
 }

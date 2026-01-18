@@ -96,6 +96,7 @@ namespace CutTheRope.Framework.Visual
                         {
                             thiss.delegateTimelineDelegate.TimelineFinished(thiss);
                         }
+                        thiss.OnFinished?.Invoke();
                     }
                     break;
                 case LoopType.TIMELINE_REPLAY:
@@ -108,6 +109,7 @@ namespace CutTheRope.Framework.Visual
                             {
                                 thiss.StopTimeline();
                                 thiss.delegateTimelineDelegate?.TimelineFinished(thiss);
+                                thiss.OnFinished?.Invoke();
                             }
                         }
                         thiss.time = Math.Min(thiss.time - thiss.length, thiss.length);
@@ -133,6 +135,7 @@ namespace CutTheRope.Framework.Visual
                                 {
                                     thiss.StopTimeline();
                                     thiss.delegateTimelineDelegate?.TimelineFinished(thiss);
+                                    thiss.OnFinished?.Invoke();
                                 }
                             }
                             thiss.time = Math.Min(0f - thiss.time, thiss.length);
@@ -183,6 +186,8 @@ namespace CutTheRope.Framework.Visual
         }
 
         public ITimelineDelegate delegateTimelineDelegate;
+
+        public Action OnFinished;
 
         public BaseElement element;
 
