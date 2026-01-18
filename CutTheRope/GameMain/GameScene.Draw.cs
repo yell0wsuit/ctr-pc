@@ -15,6 +15,17 @@ namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
+        private static VertexPositionColor[] s_stripVerticesCache;
+
+        private static VertexPositionColor[] GetStripVertexCache(int vertexCount)
+        {
+            if (s_stripVerticesCache == null || s_stripVerticesCache.Length < vertexCount)
+            {
+                s_stripVerticesCache = new VertexPositionColor[vertexCount];
+            }
+            return s_stripVerticesCache;
+        }
+
         public override void Draw()
         {
             OpenGL.GlClear(0);
@@ -298,14 +309,14 @@ namespace CutTheRope.GameMain
                         }
                         OpenGL.GlColor4f(Color.White);
                         int vertexCount = num4 / 2;
-                        VertexPositionColor[] vertices = new VertexPositionColor[vertexCount];
+                        VertexPositionColor[] vertices = GetStripVertexCache(vertexCount);
                         int positionIndex = 0;
                         for (int vertex = 0; vertex < vertexCount; vertex++)
                         {
                             Vector3 position = new(array3[positionIndex++], array3[positionIndex++], 0f);
                             vertices[vertex] = new VertexPositionColor(position, Color.White);
                         }
-                        OpenGL.DrawTriangleStrip(vertices);
+                        OpenGL.DrawTriangleStrip(vertices, vertexCount);
                     }
                 }
             }

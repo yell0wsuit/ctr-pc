@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
@@ -13,6 +15,10 @@ namespace CutTheRope.GameMain
     {
         protected static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
+            int segmentCount = s.vertexCount / 2;
+            int totalVertices = segmentCount * 8;
+            VertexPositionColor[] vertices = GetGrabCircleVertexCache(totalVertices);
+            int writeIndex = 0;
             for (int i = 0; i < s.vertexCount; i += 2)
             {
                 VertexPositionColor[] lineVertices = GLDrawer.BuildAntialiasedLineVertices(
@@ -22,7 +28,12 @@ namespace CutTheRope.GameMain
                     s.vertices[(i * 2) + 3],
                     3f,
                     color);
-                OpenGL.DrawTriangleStrip(lineVertices);
+                Array.Copy(lineVertices, 0, vertices, writeIndex, 8);
+                writeIndex += 8;
+            }
+            if (writeIndex > 0)
+            {
+                OpenGL.DrawTriangleStrip(vertices, writeIndex);
             }
         }
 
@@ -475,6 +486,17 @@ namespace CutTheRope.GameMain
         public float[] vertices;
 
         public int vertexCount;
+
+        private static VertexPositionColor[] s_grabCircleVerticesCache;
+
+        private static VertexPositionColor[] GetGrabCircleVertexCache(int vertexCount)
+        {
+            if (s_grabCircleVerticesCache == null || s_grabCircleVerticesCache.Length < vertexCount)
+            {
+                s_grabCircleVerticesCache = new VertexPositionColor[vertexCount];
+            }
+            return s_grabCircleVerticesCache;
+        }
 
         public bool wheel;
 

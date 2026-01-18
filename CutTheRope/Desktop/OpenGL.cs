@@ -405,6 +405,15 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices)
         {
+            DrawTriangleStrip(vertices, vertices.Length);
+        }
+
+        public static void DrawTriangleStrip(VertexPositionColor[] vertices, int vertexCount)
+        {
+            if (vertexCount < 3)
+            {
+                return;
+            }
             BasicEffect effect = GetEffect(false, true);
             if (effect.Alpha == 0f)
             {
@@ -413,7 +422,7 @@ namespace CutTheRope.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertices.Length - 2);
+                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
             }
             s_LastVertices_PositionColor = vertices;
         }
@@ -423,6 +432,15 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices)
         {
+            DrawTriangleStrip(vertices, vertices.Length);
+        }
+
+        public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount < 3)
+            {
+                return;
+            }
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
@@ -431,7 +449,7 @@ namespace CutTheRope.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertices.Length - 2);
+                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
             }
             s_LastVertices_PositionNormalTexture = vertices;
         }
@@ -441,6 +459,15 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices)
         {
+            DrawTriangleStrip(vertices, vertices.Length);
+        }
+
+        public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount < 3)
+            {
+                return;
+            }
             BasicEffect effect = GetEffect(true, true);
             if (effect.Alpha == 0f)
             {
@@ -449,7 +476,7 @@ namespace CutTheRope.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertices.Length - 2);
+                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
             }
         }
 
@@ -515,7 +542,12 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void DrawLineStrip(VertexPositionColor[] vertices)
         {
-            if (vertices.Length < 2)
+            DrawLineStrip(vertices, vertices.Length);
+        }
+
+        public static void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
+        {
+            if (vertexCount < 2)
             {
                 return;
             }
@@ -527,7 +559,7 @@ namespace CutTheRope.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.LineStrip, vertices, vertices.Length - 1);
+                DrawPrimitives(PrimitiveType.LineStrip, vertices, vertexCount, vertexCount - 1);
             }
         }
 
@@ -656,8 +688,13 @@ namespace CutTheRope.Desktop
 
         private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int primitiveCount) where T : struct, IVertexType
         {
-            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertices.Length);
-            vertexBuffer.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
+            DrawPrimitives(primitiveType, vertices, vertices.Length, primitiveCount);
+        }
+
+        private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int vertexCount, int primitiveCount) where T : struct, IVertexType
+        {
+            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertexCount);
+            vertexBuffer.SetData(vertices, 0, vertexCount, SetDataOptions.Discard);
             Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
             Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
             Global.GraphicsDevice.SetVertexBuffer(null);
@@ -679,13 +716,13 @@ namespace CutTheRope.Desktop
         private static DynamicVertexBuffer GetVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
         {
             Type vertexType = typeof(T);
-            if (s_vertexBuffer == null || s_vertexBufferType != vertexType || s_vertexBuffer.VertexCount < vertexCount)
+            if (!s_vertexBuffers.TryGetValue(vertexType, out DynamicVertexBuffer vertexBuffer) || vertexBuffer.VertexCount < vertexCount)
             {
-                s_vertexBuffer?.Dispose();
-                s_vertexBufferType = vertexType;
-                s_vertexBuffer = new DynamicVertexBuffer(Global.GraphicsDevice, default(T).VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
+                vertexBuffer?.Dispose();
+                vertexBuffer = new DynamicVertexBuffer(Global.GraphicsDevice, default(T).VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
+                s_vertexBuffers[vertexType] = vertexBuffer;
             }
-            return s_vertexBuffer;
+            return vertexBuffer;
         }
 
         private static IndexBuffer GetIndexBuffer(int indexCount)
@@ -731,10 +768,9 @@ namespace CutTheRope.Desktop
         private static RasterizerState s_rasterizerStateSolidColor;
         private static RasterizerState s_rasterizerStateTexture;
 
-        // Vertex buffers (reused for performance)
-        private static DynamicVertexBuffer s_vertexBuffer;
+        // Vertex buffers (reused for performance, per vertex type)
+        private static readonly Dictionary<Type, DynamicVertexBuffer> s_vertexBuffers = [];
         private static IndexBuffer s_indexBuffer;
-        private static Type s_vertexBufferType;
 
         // Last drawn vertices (for debugging)
         private static VertexPositionColor[] s_LastVertices_PositionColor;
