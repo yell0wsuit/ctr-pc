@@ -713,11 +713,6 @@ namespace CutTheRope.Desktop
             return basicEffect;
         }
 
-        private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int primitiveCount) where T : struct, IVertexType
-        {
-            DrawPrimitives(primitiveType, vertices, vertices.Length, primitiveCount);
-        }
-
         private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int vertexCount, int primitiveCount) where T : struct, IVertexType
         {
             DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertexCount);
