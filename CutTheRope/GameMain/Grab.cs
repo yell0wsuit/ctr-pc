@@ -221,14 +221,14 @@ namespace CutTheRope.GameMain
             {
                 back.Draw();
             }
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
                 DrawGrabCircle(this, x, y, radius, vertexCount, rgbaColor);
             }
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
         }
 
         public void DrawBungee()
@@ -240,7 +240,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             PreDraw();
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             Bungee bungee = rope;
             if (wheel)
             {
@@ -250,10 +250,10 @@ namespace CutTheRope.GameMain
                 wheelImage.Draw();
                 OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             bungee?.Draw();
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             if (moveLength <= 0.0)
             {
                 front.Draw();

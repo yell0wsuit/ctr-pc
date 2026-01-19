@@ -71,7 +71,7 @@ namespace CutTheRope.Framework.Visual
 
         private void DrawNumberOfQuads(int n)
         {
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(image.texture.Name());
             VertexPositionNormalTexture[] quadVertices = GetVertexBuffer(n * 4);
             OpenGL.FillTexturedVertices(vertices, texCoordinates, quadVertices, n);
@@ -93,7 +93,7 @@ namespace CutTheRope.Framework.Visual
                 DrawNumberOfQuads(totalQuads);
                 return;
             }
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(image.texture.Name());
             OpenGL.DrawTriangleList(verticesOptimized, indices);
         }

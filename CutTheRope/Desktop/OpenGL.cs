@@ -17,9 +17,36 @@ namespace CutTheRope.Desktop
     internal sealed class OpenGL
     {
         #region OpenGL State Constants
-        private const int GL_BLEND = 1;
-        private const int GL_SCISSOR_TEST = 4;
+        /// <summary>
+        /// Enables/disables 2D texture mapping. When enabled, textures are applied to primitives.
+        /// OpenGL equivalent: GL_TEXTURE_2D (0x0DE1)
+        /// </summary>
+        public const int GL_TEXTURE_2D = 0;
+
+        /// <summary>
+        /// Enables/disables alpha blending. When enabled, fragments are blended with the framebuffer
+        /// using the blend function set by <see cref="GlBlendFunc"/>.
+        /// OpenGL equivalent: GL_BLEND (0x0BE2)
+        /// </summary>
+        public const int GL_BLEND = 1;
+
+        /// <summary>
+        /// Enables/disables scissor test. When enabled, fragments outside the scissor rectangle
+        /// set by <see cref="GlScissor"/> are discarded.
+        /// OpenGL equivalent: GL_SCISSOR_TEST (0x0C11)
+        /// </summary>
+        public const int GL_SCISSOR_TEST = 4;
+
+        /// <summary>
+        /// Selects the modelview matrix stack for subsequent matrix operations.
+        /// OpenGL equivalent: GL_MODELVIEW (0x1700)
+        /// </summary>
         private const int GL_MODELVIEW = 14;
+
+        /// <summary>
+        /// Selects the projection matrix stack for subsequent matrix operations.
+        /// OpenGL equivalent: GL_PROJECTION (0x1701)
+        /// </summary>
         private const int GL_PROJECTION = 15;
         #endregion
 

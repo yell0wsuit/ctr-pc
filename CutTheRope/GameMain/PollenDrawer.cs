@@ -141,7 +141,7 @@ namespace CutTheRope.GameMain
             {
                 PreDraw();
                 OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                OpenGL.GlEnable(0);
+                OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
                 OpenGL.GlBindTexture(drawer.image.texture.Name());
                 int quadCount = pollenCount - 1;
                 if (quadCount > 0)

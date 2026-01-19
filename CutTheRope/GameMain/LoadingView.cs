@@ -25,8 +25,8 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             Global.MouseCursor.Enable(false);
-            OpenGL.GlEnable(0);
-            OpenGL.GlEnable(1);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGL.GlEnable(OpenGL.GL_BLEND);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -73,7 +73,7 @@ namespace CutTheRope.GameMain
             CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);
             if (!game)
             {
-                OpenGL.GlEnable(4);
+                OpenGL.GlEnable(OpenGL.GL_SCISSOR_TEST);
                 OpenGL.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
             }
             OpenGL.GlColor4f(Color.White);
@@ -83,7 +83,7 @@ namespace CutTheRope.GameMain
             GLDrawer.DrawImageQuad(texture2, 1, (double)num3, 80.0);
             if (!game)
             {
-                OpenGL.GlDisable(4);
+                OpenGL.GlDisable(OpenGL.GL_SCISSOR_TEST);
             }
             if (game)
             {
@@ -98,8 +98,8 @@ namespace CutTheRope.GameMain
             }
             PostDraw();
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlDisable(0);
-            OpenGL.GlDisable(1);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+            OpenGL.GlDisable(OpenGL.GL_BLEND);
         }
 
         public bool game;

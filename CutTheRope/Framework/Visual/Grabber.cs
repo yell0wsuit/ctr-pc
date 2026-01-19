@@ -15,7 +15,7 @@ namespace CutTheRope.Framework.Visual
         {
             if (t != null)
             {
-                OpenGL.GlEnable(0);
+                OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
                 OpenGL.GlBindTexture(t.Name());
                 VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                     x, y, t._realWidth, t._realHeight,

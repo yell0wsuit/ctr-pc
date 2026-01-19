@@ -31,8 +31,8 @@ namespace CutTheRope.GameMain
             OpenGL.GlClear(0);
             PreDraw();
             camera.ApplyCameraTransformation();
-            OpenGL.GlEnable(0);
-            OpenGL.GlDisable(1);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGL.GlDisable(OpenGL.GL_BLEND);
             Vector pos = VectDiv(camera.pos, 1.25f);
             back.UpdateWithCameraPos(pos);
             float num = Canvas.xOffsetScaled;
@@ -61,7 +61,7 @@ namespace CutTheRope.GameMain
                 r.h -= num3 * 2f;
                 GLDrawer.DrawImagePart(texture, r, 0.0, (double)(num5 + num3));
             }
-            OpenGL.GlEnable(1);
+            OpenGL.GlEnable(OpenGL.GL_BLEND);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (earthAnims != null)
             {
@@ -72,12 +72,12 @@ namespace CutTheRope.GameMain
             }
             OpenGL.GlTranslatef((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
             OpenGL.GlPopMatrix();
-            OpenGL.GlEnable(1);
+            OpenGL.GlEnable(OpenGL.GL_BLEND);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
             gravityButton?.Draw();
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             support.Draw();
             target.Draw();
@@ -198,16 +198,16 @@ namespace CutTheRope.GameMain
             }
             aniPool.Draw();
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlColor4f(Color.White);
             DrawCuts();
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
             staticAniPool.Draw();
             if (nightLevel)
             {
-                OpenGL.GlDisable(4);
+                OpenGL.GlDisable(OpenGL.GL_SCISSOR_TEST);
             }
             PostDraw();
         }
