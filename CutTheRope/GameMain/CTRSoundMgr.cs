@@ -1,5 +1,6 @@
 using System.Linq;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Media;
 
@@ -7,9 +8,17 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class CTRSoundMgr : SoundMgr
+    /// <summary>
+    /// Game-specific sound manager that wraps <see cref="SoundMgr"/> with user preference checks.
+    /// All sound and music playback respects the SOUND_ON and MUSIC_ON user preferences.
+    /// </summary>
+    internal sealed class CTRSoundMgr : FrameworkTypes
     {
-        public static new void PlaySound(int s)
+        /// <summary>
+        /// Plays a sound effect by its resource ID if sound is enabled.
+        /// </summary>
+        /// <param name="s">The resource ID of the sound effect to play.</param>
+        public static void PlaySound(int s)
         {
             if (Preferences.GetBooleanForKey("SOUND_ON"))
             {
@@ -29,6 +38,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Enables or disables looped sound playback globally.
+        /// </summary>
+        /// <param name="bEnable">If <c>true</c>, looped sounds are enabled; otherwise, they are stopped and disabled.</param>
         public static void EnableLoopedSounds(bool bEnable)
         {
             s_EnableLoopedSounds = bEnable;
@@ -38,7 +51,12 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public static new SoundEffectInstance PlaySoundLooped(int s)
+        /// <summary>
+        /// Plays a looping sound effect by its resource ID if sound and looped sounds are enabled.
+        /// </summary>
+        /// <param name="s">The resource ID of the sound effect to loop.</param>
+        /// <returns>The sound effect instance for controlling playback, or <c>null</c> if disabled.</returns>
+        public static SoundEffectInstance PlaySoundLooped(int s)
         {
             return s_EnableLoopedSounds && Preferences.GetBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
         }
@@ -51,7 +69,7 @@ namespace CutTheRope.GameMain
         {
             return !s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON")
                 ? null
-                : Application.SharedSoundMgr().PlaySoundLooped(GetResourceId(soundResourceName));
+                : Application.SharedSoundMgr().PlaySoundLooped(ResourceNameTranslator.ToResourceId(soundResourceName));
         }
 
         /// <summary>
@@ -77,7 +95,7 @@ namespace CutTheRope.GameMain
             if (Preferences.GetBooleanForKey("MUSIC_ON") && !string.IsNullOrWhiteSpace(musicResourceName))
             {
                 int musicId = ResourceNameTranslator.ToResourceId(musicResourceName);
-                Application.SharedSoundMgr().PlayMusic(musicId);
+                SoundMgr.PlayMusic(musicId);
             }
         }
 
@@ -99,6 +117,10 @@ namespace CutTheRope.GameMain
             PlayRandomMusic(musicIds);
         }
 
+        /// <summary>
+        /// Plays a random music track from the supplied resource IDs, avoiding immediate repetition.
+        /// </summary>
+        /// <param name="musicIds">Candidate music resource IDs.</param>
         public static void PlayRandomMusic(params int[] musicIds)
         {
             if (musicIds == null || musicIds.Length == 0)
@@ -116,47 +138,75 @@ namespace CutTheRope.GameMain
             PlayMusic(num);
         }
 
-        public static new void PlayMusic(int f)
+        /// <summary>
+        /// Plays background music by its resource ID if music is enabled.
+        /// </summary>
+        /// <param name="f">The resource ID of the music track to play.</param>
+        public static void PlayMusic(int f)
         {
             if (Preferences.GetBooleanForKey("MUSIC_ON"))
             {
-                Application.SharedSoundMgr().PlayMusic(f);
+                SoundMgr.PlayMusic(f);
             }
         }
 
-        public static new void StopLoopedSounds()
+        /// <summary>
+        /// Stops all currently playing looped sound effects.
+        /// </summary>
+        public static void StopLoopedSounds()
         {
             Application.SharedSoundMgr().StopLoopedSounds();
         }
 
+        /// <summary>
+        /// Stops all currently playing sound effects.
+        /// </summary>
         public static void StopSounds()
         {
             Application.SharedSoundMgr().StopAllSounds();
         }
 
+        /// <summary>
+        /// Stops all currently playing sounds and music.
+        /// </summary>
         public static void StopAll()
         {
             StopSounds();
             StopMusic();
         }
 
-        public static new void StopMusic()
+        /// <summary>
+        /// Stops the currently playing background music.
+        /// </summary>
+        public static void StopMusic()
         {
-            Application.SharedSoundMgr().StopMusic();
+            SoundMgr.StopMusic();
         }
 
-        public static new void Pause()
+        /// <summary>
+        /// Pauses all sound effects and music playback.
+        /// </summary>
+        public static void Pause()
         {
             Application.SharedSoundMgr().Pause();
         }
 
-        public static new void Unpause()
+        /// <summary>
+        /// Resumes all paused sound effects and music playback.
+        /// </summary>
+        public static void Unpause()
         {
             Application.SharedSoundMgr().Unpause();
         }
 
+        /// <summary>
+        /// Indicates whether looped sound playback is currently enabled.
+        /// </summary>
         private static bool s_EnableLoopedSounds = true;
 
+        /// <summary>
+        /// Tracks the previously played music ID to avoid immediate repetition in random playback.
+        /// </summary>
         private static int prevMusic = -1;
     }
 }
