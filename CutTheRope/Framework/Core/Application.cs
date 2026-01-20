@@ -65,7 +65,7 @@ namespace CutTheRope.Framework.Core
             return new CTRResourceMgr();
         }
 
-        public virtual SoundMgr CreateSoundMgr()
+        public static SoundMgr CreateSoundMgr()
         {
             return new SoundMgr();
         }
