@@ -155,18 +155,18 @@ namespace CutTheRope.GameMain
         {
             if (IsRightControllerActive() || IsLeftControllerActive())
             {
-                OpenGL.GlDisable(0);
+                OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
                 OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             vinilTL.color = vinilTR.color = vinilBL.color = vinilBR.color = RGBAColor.solidOpaqueRGBA;
             vinilTL.Draw();
             vinilTR.Draw();
             vinilBL.Draw();
             vinilBR.Draw();
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             if (IsRightControllerActive() || IsLeftControllerActive() || color.a < 1.0)
             {
@@ -182,10 +182,10 @@ namespace CutTheRope.GameMain
                     GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, rotatedCircle.x, rotatedCircle.y, rotatedCircle.sizeInPixels, 51, 7f * rotatedCircle.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
             vinilHighlightL.Draw();
@@ -195,12 +195,12 @@ namespace CutTheRope.GameMain
             vinilStickerL.rotation = vinilStickerR.rotation = rotation;
             vinilStickerL.Draw();
             vinilStickerR.Draw();
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             GLDrawer.DrawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
             GLDrawer.DrawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             vinilControllerL.color = color;
             vinilControllerR.color = color;
             base.Draw();

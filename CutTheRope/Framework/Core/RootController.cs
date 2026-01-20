@@ -72,8 +72,8 @@ namespace CutTheRope.Framework.Core
         private void DrawViewTransition()
         {
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
-            OpenGL.GlEnable(1);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGL.GlEnable(OpenGL.GL_BLEND);
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Application.SharedCanvas().SetDefaultRealProjection();
             int num2 = viewTransition;
@@ -86,11 +86,11 @@ namespace CutTheRope.Framework.Core
                     {
                         RGBAColor fill = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
                         Grabber.DrawGrabbedImage(prevScreenImage, 0, 0);
-                        OpenGL.GlDisable(0);
-                        OpenGL.GlEnable(1);
+                        OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+                        OpenGL.GlEnable(OpenGL.GL_BLEND);
                         OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill);
-                        OpenGL.GlDisable(1);
+                        OpenGL.GlDisable(OpenGL.GL_BLEND);
                     }
                     else
                     {
@@ -109,11 +109,11 @@ namespace CutTheRope.Framework.Core
                 {
                     RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - ((double)num * 2.0)) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - ((double)num * 2.0));
                     Grabber.DrawGrabbedImage(nextScreenImage, 0, 0);
-                    OpenGL.GlDisable(0);
-                    OpenGL.GlEnable(1);
+                    OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+                    OpenGL.GlEnable(OpenGL.GL_BLEND);
                     OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                     GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill2);
-                    OpenGL.GlDisable(1);
+                    OpenGL.GlDisable(OpenGL.GL_BLEND);
                 }
                 else
                 {
@@ -129,8 +129,8 @@ namespace CutTheRope.Framework.Core
                 }
             }
             ApplyLandscape();
-            OpenGL.GlDisable(0);
-            OpenGL.GlDisable(1);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+            OpenGL.GlDisable(OpenGL.GL_BLEND);
         }
 
         public override void Activate()

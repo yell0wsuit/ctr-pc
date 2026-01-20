@@ -93,7 +93,7 @@ namespace CutTheRope.GameMain
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             back.Draw();
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 CTRRootController rootController = (CTRRootController)Application.SharedRootController();
@@ -102,11 +102,11 @@ namespace CutTheRope.GameMain
                 DrawGrabCircle(this, x, y, radius, vertexCount, grabColor);
             }
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
-            OpenGL.GlDisable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             rope?.Draw();
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             front.color = color;
             front.Draw();

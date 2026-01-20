@@ -121,7 +121,7 @@ namespace CutTheRope.GameMain
         {
             if (IsRightControllerActive() || IsLeftControllerActive())
             {
-                OpenGL.GlDisable(0);
+                OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
                 OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 if (color.a != 1.0)
@@ -130,7 +130,7 @@ namespace CutTheRope.GameMain
                 }
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
                 OpenGL.GlColor4f(Color.White);
-                OpenGL.GlEnable(0);
+                OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             }
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
@@ -138,7 +138,7 @@ namespace CutTheRope.GameMain
             vinilControllerR.color = color;
             vinil.color = color;
             vinil.Draw();
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj in circlesArray)
             {
@@ -150,7 +150,7 @@ namespace CutTheRope.GameMain
             }
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             vinilHighlightL.Draw();
             vinilHighlightR.Draw();
             base.Draw();

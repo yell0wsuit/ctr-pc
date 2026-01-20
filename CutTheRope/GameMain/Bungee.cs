@@ -8,6 +8,7 @@ using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
@@ -59,22 +60,34 @@ namespace CutTheRope.GameMain
                 Vector vector5 = VectSub(v8, vector2);
                 Vector vector6 = VectAdd(v5, vector2);
                 Vector vector7 = VectAdd(v9, vector2);
-                float[] pointer =
-                [
-                    vector3.x, vector3.y, v11.x, v11.y, v4.x, v4.y, v8.x, v8.y, v5.x, v5.y,
-                    v9.x, v9.y, v10.x, v10.y, v12.x, v12.y
-                ];
+                float[] pointer = GetFloatCache(ref s_bungeePointerCache, 16);
+                int pointerIndex = 0;
+                WritePair(pointer, ref pointerIndex, vector3);
+                WritePair(pointer, ref pointerIndex, v11);
+                WritePair(pointer, ref pointerIndex, v4);
+                WritePair(pointer, ref pointerIndex, v8);
+                WritePair(pointer, ref pointerIndex, v5);
+                WritePair(pointer, ref pointerIndex, v9);
+                WritePair(pointer, ref pointerIndex, v10);
+                WritePair(pointer, ref pointerIndex, v12);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.a = 0.1f * color.a;
                 ccolors[2] = whiteRGBA;
                 ccolors[3] = whiteRGBA;
                 ccolors[4] = whiteRGBA;
                 ccolors[5] = whiteRGBA;
-                float[] pointer2 =
-                [
-                    v4.x, v4.y, v8.x, v8.y, vector4.x, vector4.y, vector5.x, vector5.y, v.x, v.y,
-                    v2.x, v2.y, vector6.x, vector6.y, vector7.x, vector7.y, v5.x, v5.y, v9.x, v9.y
-                ];
+                float[] pointer2 = GetFloatCache(ref s_bungeePointerCache2, 20);
+                int pointer2Index = 0;
+                WritePair(pointer2, ref pointer2Index, v4);
+                WritePair(pointer2, ref pointer2Index, v8);
+                WritePair(pointer2, ref pointer2Index, vector4);
+                WritePair(pointer2, ref pointer2Index, vector5);
+                WritePair(pointer2, ref pointer2Index, v);
+                WritePair(pointer2, ref pointer2Index, v2);
+                WritePair(pointer2, ref pointer2Index, vector6);
+                WritePair(pointer2, ref pointer2Index, vector7);
+                WritePair(pointer2, ref pointer2Index, v5);
+                WritePair(pointer2, ref pointer2Index, v9);
                 RGBAColor rgbaColor = color;
                 float num = 0.15f * color.a;
                 color.r += num;
@@ -86,22 +99,52 @@ namespace CutTheRope.GameMain
                 ccolors2[5] = rgbaColor;
                 ccolors2[6] = color;
                 ccolors2[7] = color;
-                OpenGL.GlDisableClientState(0);
-                OpenGL.GlEnableClientState(13);
                 if (highlighted)
                 {
                     OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                    OpenGL.GlColorPointer(4, 5, 0, ccolors);
-                    OpenGL.GlVertexPointer(2, 5, 0, pointer);
-                    OpenGL.GlDrawArrays(8, 0, 8);
+                    VertexPositionColor[] highlightVertices = BuildColoredVertices(pointer, ccolors, 8);
+                    OpenGL.DrawTriangleStrip(highlightVertices, 8);
                 }
                 OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                OpenGL.GlColorPointer(4, 5, 0, ccolors2);
-                OpenGL.GlVertexPointer(2, 5, 0, pointer2);
-                OpenGL.GlDrawArrays(8, 0, 10);
-                OpenGL.GlEnableClientState(0);
-                OpenGL.GlDisableClientState(13);
+                VertexPositionColor[] mainVertices = BuildColoredVertices(pointer2, ccolors2, 10);
+                OpenGL.DrawTriangleStrip(mainVertices, 10);
             }
+        }
+
+        private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
+        {
+            VertexPositionColor[] vertices = GetVertexCache(ref s_bungeeVerticesCache, vertexCount);
+            int positionIndex = 0;
+            for (int i = 0; i < vertexCount; i++)
+            {
+                Vector3 position = new(positions[positionIndex++], positions[positionIndex++], 0f);
+                vertices[i] = new VertexPositionColor(position, colors[i].ToXNA());
+            }
+            return vertices;
+        }
+
+        private static VertexPositionColor[] GetVertexCache(ref VertexPositionColor[] cache, int vertexCount)
+        {
+            if (cache == null || cache.Length < vertexCount)
+            {
+                cache = new VertexPositionColor[vertexCount];
+            }
+            return cache;
+        }
+
+        private static float[] GetFloatCache(ref float[] cache, int length)
+        {
+            if (cache == null || cache.Length < length)
+            {
+                cache = new float[length];
+            }
+            return cache;
+        }
+
+        private static void WritePair(float[] buffer, ref int index, Vector v)
+        {
+            buffer[index++] = v.x;
+            buffer[index++] = v.y;
         }
 
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)
@@ -482,9 +525,7 @@ namespace CutTheRope.GameMain
                     ConstraintedPoint constraintedPoint = parts[i];
                     array[i] = constraintedPoint.pos;
                 }
-                OpenGL.GlLineWidth(lineWidth);
                 DrawBungee(this, array, count, 4, 0);
-                OpenGL.GlLineWidth(1.0);
                 return;
             }
             Vector[] array2 = new Vector[count];
@@ -520,7 +561,6 @@ namespace CutTheRope.GameMain
                     num++;
                 }
             }
-            OpenGL.GlLineWidth(lineWidth);
             int num2 = count - num;
             if (num2 > 0)
             {
@@ -530,7 +570,6 @@ namespace CutTheRope.GameMain
             {
                 DrawBungee(this, array3, num, 4, cutIndex);
             }
-            OpenGL.GlLineWidth(1.0);
         }
 
         /// <summary>
@@ -727,6 +766,10 @@ namespace CutTheRope.GameMain
         private bool ownsAnchor;
 
         private bool ownsTail;
+
+        private static VertexPositionColor[] s_bungeeVerticesCache;
+        private static float[] s_bungeePointerCache;
+        private static float[] s_bungeePointerCache2;
 
         private static readonly RGBAColor[] ccolors =
 [

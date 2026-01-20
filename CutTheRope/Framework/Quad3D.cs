@@ -11,18 +11,18 @@ namespace CutTheRope.Framework
         {
             return new Quad3D
             {
-                blX = x,
-                blY = y,
-                blZ = z,
-                brX = x + w,
-                brY = y,
-                brZ = z,
-                tlX = x,
-                tlY = y + h,
-                tlZ = z,
-                trX = x + w,
-                trY = y + h,
-                trZ = z
+                BlX = x,
+                BlY = y,
+                BlZ = z,
+                BrX = x + w,
+                BrY = y,
+                BrZ = z,
+                TlX = x,
+                TlY = y + h,
+                TlZ = z,
+                TrX = x + w,
+                TrY = y + h,
+                TrZ = z
             };
         }
 
@@ -30,18 +30,18 @@ namespace CutTheRope.Framework
         {
             return new Quad3D
             {
-                blX = x1,
-                blY = y1,
-                blZ = 0f,
-                brX = x2,
-                brY = y2,
-                brZ = 0f,
-                tlX = x3,
-                tlY = y3,
-                tlZ = 0f,
-                trX = x4,
-                trY = y4,
-                trZ = 0f
+                BlX = x1,
+                BlY = y1,
+                BlZ = 0f,
+                BrX = x2,
+                BrY = y2,
+                BrZ = 0f,
+                TlX = x3,
+                TlY = y3,
+                TlZ = 0f,
+                TrX = x4,
+                TrY = y4,
+                TrZ = 0f
             };
         }
 
@@ -49,35 +49,35 @@ namespace CutTheRope.Framework
         {
             _array ??=
                 [
-                    blX, blY, blZ, brX, brY, brZ, tlX, tlY, tlZ, trX,
-                    trY, trZ
+                    BlX, BlY, BlZ, BrX, BrY, BrZ, TlX, TlY, TlZ, TrX,
+                    TrY, TrZ
                 ];
             return _array;
         }
 
-        private float blX;
+        public float BlX { get; private set; }
 
-        private float blY;
+        public float BlY { get; private set; }
 
-        private float blZ;
+        public float BlZ { get; private set; }
 
-        private float brX;
+        public float BrX { get; private set; }
 
-        private float brY;
+        public float BrY { get; private set; }
 
-        private float brZ;
+        public float BrZ { get; private set; }
 
-        private float tlX;
+        public float TlX { get; private set; }
 
-        private float tlY;
+        public float TlY { get; private set; }
 
-        private float tlZ;
+        public float TlZ { get; private set; }
 
-        private float trX;
+        public float TrX { get; private set; }
 
-        private float trY;
+        public float TrY { get; private set; }
 
-        private float trZ;
+        public float TrZ { get; private set; }
 
         private float[] _array;
     }

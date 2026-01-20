@@ -1,4 +1,3 @@
-using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
@@ -116,9 +115,6 @@ namespace CutTheRope.GameMain
             {
                 UpdateParticle(ref particles[particleIdx], delta);
             }
-            OpenGL.GlBindBuffer(2, colorsID);
-            OpenGL.GlBufferData(2, colors, 3);
-            OpenGL.GlBindBuffer(2, 0U);
         }
     }
 }

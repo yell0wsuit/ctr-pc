@@ -5,6 +5,8 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.GameMain;
 
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.Framework.Visual
 {
     internal class Image : BaseElement
@@ -244,29 +246,20 @@ namespace CutTheRope.Framework.Visual
         {
             float w = texture.quadRects[n].w;
             float h = texture.quadRects[n].h;
-            float num = drawX;
-            float num2 = drawY;
+            float x = drawX;
+            float y = drawY;
             if (restoreCutTransparency)
             {
-                num += texture.quadOffsets[n].x;
-                num2 += texture.quadOffsets[n].y;
+                x += texture.quadOffsets[n].x;
+                y += texture.quadOffsets[n].y;
             }
-            float[] pointer =
-            [
-                num,
-                num2,
-                num + w,
-                num2,
-                num,
-                num2 + h,
-                num + w,
-                num2 + h
-            ];
-            OpenGL.GlEnable(0);
+            Quad2D quad = texture.quads[n];
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(texture.Name());
-            OpenGL.GlVertexPointer(2, 5, 0, pointer);
-            OpenGL.GlTexCoordPointer(2, 5, 0, texture.quads[n].ToFloatArray());
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
+                x, y, w, h,
+                quad.tlX, quad.tlY, quad.brX, quad.brY);
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public override bool HandleAction(ActionData a)
@@ -296,6 +289,7 @@ namespace CutTheRope.Framework.Visual
             }
             base.Dispose(disposing);
         }
+
 
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";
 

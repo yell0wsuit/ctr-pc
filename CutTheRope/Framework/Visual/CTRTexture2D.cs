@@ -10,26 +10,16 @@ namespace CutTheRope.Framework.Visual
     {
         public static void DrawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
         {
-            float num = t._invWidth * rect.x;
-            float num2 = t._invHeight * rect.y;
-            float num3 = num + (t._invWidth * rect.w);
-            float num4 = num2 + (t._invHeight * rect.h);
-            float[] pointer = [num, num2, num3, num2, num, num4, num3, num4];
-            float[] array = new float[12];
-            array[0] = point.x;
-            array[1] = point.y;
-            array[3] = rect.w + point.x;
-            array[4] = point.y;
-            array[6] = point.x;
-            array[7] = rect.h + point.y;
-            array[9] = rect.w + point.x;
-            array[10] = rect.h + point.y;
-            float[] pointer2 = array;
-            OpenGL.GlEnable(0);
+            float texLeft = t._invWidth * rect.x;
+            float texTop = t._invHeight * rect.y;
+            float texRight = texLeft + (t._invWidth * rect.w);
+            float texBottom = texTop + (t._invHeight * rect.h);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(t.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, pointer2);
-            OpenGL.GlTexCoordPointer(2, 5, 0, pointer);
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
+                point.x, point.y, rect.w, rect.h,
+                texLeft, texTop, texRight, texBottom);
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public CTRTexture2D Name()
@@ -72,41 +62,24 @@ namespace CutTheRope.Framework.Visual
         public static void DrawQuadAtPoint(CTRTexture2D t, int q, Vector point)
         {
             Quad2D quad2D = t.quads[q];
-            float[] array = new float[12];
-            array[0] = point.x;
-            array[1] = point.y;
-            array[3] = t.quadRects[q].w + point.x;
-            array[4] = point.y;
-            array[6] = point.x;
-            array[7] = t.quadRects[q].h + point.y;
-            array[9] = t.quadRects[q].w + point.x;
-            array[10] = t.quadRects[q].h + point.y;
-            float[] pointer = array;
-            OpenGL.GlEnable(0);
+            float w = t.quadRects[q].w;
+            float h = t.quadRects[q].h;
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(t.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, pointer);
-            OpenGL.GlTexCoordPointer(2, 5, 0, quad2D.ToFloatArray());
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
+                point.x, point.y, w, h,
+                quad2D.tlX, quad2D.tlY, quad2D.brX, quad2D.brY);
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public static void DrawAtPoint(CTRTexture2D t, Vector point)
         {
-            float[] pointer = [0f, 0f, t._maxS, 0f, 0f, t._maxT, t._maxS, t._maxT];
-            float[] array = new float[12];
-            array[0] = point.x;
-            array[1] = point.y;
-            array[3] = t._realWidth + point.x;
-            array[4] = point.y;
-            array[6] = point.x;
-            array[7] = t._realHeight + point.y;
-            array[9] = t._realWidth + point.x;
-            array[10] = t._realHeight + point.y;
-            float[] pointer2 = array;
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(t.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, pointer2);
-            OpenGL.GlTexCoordPointer(2, 5, 0, pointer);
-            OpenGL.GlDrawArrays(8, 0, 4);
+            VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
+                point.x, point.y, t._realWidth, t._realHeight,
+                0f, 0f, t._maxS, t._maxT);
+            OpenGL.DrawTriangleStrip(vertices);
         }
 
         public void CalculateForQuickDrawing()
@@ -132,6 +105,7 @@ namespace CutTheRope.Framework.Visual
         public static void SetAliasTexParameters()
         {
         }
+
 
         public void Reg()
         {

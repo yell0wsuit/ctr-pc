@@ -50,21 +50,19 @@ namespace CutTheRope.Framework.Platform
                 string @string = fps.ToString("F1", CultureInfo.InvariantCulture);
                 fpsText.SetString(@string);
                 OpenGL.GlColor4f(Color.White);
-                OpenGL.GlEnable(0);
-                OpenGL.GlEnable(1);
+                OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+                OpenGL.GlEnable(OpenGL.GL_BLEND);
                 OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 fpsText.x = 5f;
                 fpsText.y = 5f;
                 fpsText.Draw();
-                OpenGL.GlDisable(1);
-                OpenGL.GlDisable(0);
+                OpenGL.GlDisable(OpenGL.GL_BLEND);
+                OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             }
         }
 
         public static void PrepareOpenGL()
         {
-            OpenGL.GlEnableClientState(11);
-            OpenGL.GlEnableClientState(12);
         }
 
         public void SetDefaultRealProjection()
@@ -167,9 +165,7 @@ namespace CutTheRope.Framework.Platform
         public void BeforeRender()
         {
             SetDefaultProjection();
-            OpenGL.GlDisable(1);
-            OpenGL.GlEnableClientState(11);
-            OpenGL.GlEnableClientState(12);
+            OpenGL.GlDisable(OpenGL.GL_BLEND);
         }
 
         public static void AfterRender()
