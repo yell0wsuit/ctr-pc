@@ -84,7 +84,7 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         public SoundEffect GetSound(string soundResourceName)
         {
-            int soundResID = GetResourceId(soundResourceName);
+            int soundResID = ResourceNameTranslator.ToResourceId(soundResourceName);
             return GetSound(soundResID);
         }
 
@@ -120,7 +120,7 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         public void PlaySound(string soundResourceName)
         {
-            int soundResID = GetResourceId(soundResourceName);
+            int soundResID = ResourceNameTranslator.ToResourceId(soundResourceName);
             PlaySound(soundResID);
         }
 
