@@ -615,15 +615,33 @@ namespace CutTheRope.Desktop
             int vertexIndex = 0;
             for (int i = 0; i < quadCount; i++)
             {
-                float[] positionArray = positions[i].ToFloatArray();
-                float[] texArray = texCoordinates[i].ToFloatArray();
+                Quad3D position = positions[i];
+                Vector3 pos0 = new(position.BlX, position.BlY, position.BlZ);
+                Vector3 pos1 = new(position.BrX, position.BrY, position.BrZ);
+                Vector3 pos2 = new(position.TlX, position.TlY, position.TlZ);
+                Vector3 pos3 = new(position.TrX, position.TrY, position.TrZ);
+                Quad2D tex = texCoordinates[i];
+                Vector2 tex0 = new(tex.tlX, tex.tlY);
+                Vector2 tex1 = new(tex.trX, tex.trY);
+                Vector2 tex2 = new(tex.blX, tex.blY);
+                Vector2 tex3 = new(tex.brX, tex.brY);
                 for (int vertex = 0; vertex < 4; vertex++)
                 {
-                    int positionOffset = vertex * 3;
-                    int texOffset = vertex * 2;
-                    Vector3 position = new(positionArray[positionOffset], positionArray[positionOffset + 1], positionArray[positionOffset + 2]);
-                    Vector2 texCoord = new(texArray[texOffset], texArray[texOffset + 1]);
-                    vertices[vertexIndex++] = new VertexPositionNormalTexture(position, s_normal, texCoord);
+                    Vector3 positionValue = vertex switch
+                    {
+                        0 => pos0,
+                        1 => pos1,
+                        2 => pos2,
+                        _ => pos3
+                    };
+                    Vector2 texCoord = vertex switch
+                    {
+                        0 => tex0,
+                        1 => tex1,
+                        2 => tex2,
+                        _ => tex3
+                    };
+                    vertices[vertexIndex++] = new VertexPositionNormalTexture(positionValue, s_normal, texCoord);
                 }
             }
         }
@@ -641,17 +659,35 @@ namespace CutTheRope.Desktop
             int vertexIndex = 0;
             for (int i = 0; i < quadCount; i++)
             {
-                float[] positionArray = positions[i].ToFloatArray();
-                float[] texArray = texCoordinates[i].ToFloatArray();
+                Quad3D position = positions[i];
+                Vector3 pos0 = new(position.BlX, position.BlY, position.BlZ);
+                Vector3 pos1 = new(position.BrX, position.BrY, position.BrZ);
+                Vector3 pos2 = new(position.TlX, position.TlY, position.TlZ);
+                Vector3 pos3 = new(position.TrX, position.TrY, position.TrZ);
+                Quad2D tex = texCoordinates[i];
+                Vector2 tex0 = new(tex.tlX, tex.tlY);
+                Vector2 tex1 = new(tex.trX, tex.trY);
+                Vector2 tex2 = new(tex.blX, tex.blY);
+                Vector2 tex3 = new(tex.brX, tex.brY);
                 int colorIndex = i * 4;
                 for (int vertex = 0; vertex < 4; vertex++)
                 {
-                    int positionOffset = vertex * 3;
-                    int texOffset = vertex * 2;
-                    Vector3 position = new(positionArray[positionOffset], positionArray[positionOffset + 1], positionArray[positionOffset + 2]);
-                    Vector2 texCoord = new(texArray[texOffset], texArray[texOffset + 1]);
+                    Vector3 positionValue = vertex switch
+                    {
+                        0 => pos0,
+                        1 => pos1,
+                        2 => pos2,
+                        _ => pos3
+                    };
+                    Vector2 texCoord = vertex switch
+                    {
+                        0 => tex0,
+                        1 => tex1,
+                        2 => tex2,
+                        _ => tex3
+                    };
                     Color color = colors[colorIndex + vertex].ToXNA();
-                    vertices[vertexIndex++] = new VertexPositionColorTexture(position, color, texCoord);
+                    vertices[vertexIndex++] = new VertexPositionColorTexture(positionValue, color, texCoord);
                 }
             }
         }
