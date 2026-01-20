@@ -181,7 +181,7 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void DrawBB()
         {
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             if (rotatedBB)
             {
                 OpenGL.DrawSegment(drawX + rbb.tlX, drawY + rbb.tlY, drawX + rbb.trX, drawY + rbb.trY, RGBAColor.redRGBA);
@@ -193,7 +193,7 @@ namespace CutTheRope.Framework.Helpers
             {
                 GLDrawer.DrawRect(drawX + bb.x, drawY + bb.y, bb.w, bb.h, RGBAColor.redRGBA);
             }
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlColor4f(Color.White);
         }
 

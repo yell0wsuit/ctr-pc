@@ -22,7 +22,7 @@ namespace CutTheRope.Framework.Visual
             {
                 delegateProvider(ref sp, ref mp, ref sc);
             }
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             bool flag = false;
             float num;
             float num2;
@@ -57,7 +57,7 @@ namespace CutTheRope.Framework.Visual
                 GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, backColor);
                 GLDrawer.DrawSolidRectWOBorder(drawX + num2, drawY + num5, num, num3, scrollerColor);
             }
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlColor4f(Color.White);
             PostDraw();
         }

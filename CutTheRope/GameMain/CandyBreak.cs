@@ -2,6 +2,8 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Visual;
 
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.GameMain
 {
     internal sealed class CandyBreak : RotateableMultiParticles
@@ -68,15 +70,27 @@ namespace CutTheRope.GameMain
         {
             PreDraw();
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(drawer.image.texture.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(drawer.vertices));
-            OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(drawer.texCoordinates));
-            OpenGL.GlBindBuffer(2, colorsID);
-            OpenGL.GlDrawElements(7, particleIdx * 6, drawer.indices);
-            OpenGL.GlBindBuffer(2, 0U);
-            OpenGL.GlDisableClientState(13);
+            int quadCount = particleIdx;
+            if (quadCount > 0)
+            {
+                VertexPositionNormalTexture[] vertexBuffer = GetVertexBuffer(quadCount * 4);
+                OpenGL.FillTexturedVertices(drawer.vertices, drawer.texCoordinates, vertexBuffer, quadCount);
+                OpenGL.DrawTriangleList(vertexBuffer, drawer.indices, quadCount * 6);
+            }
             PostDraw();
+        }
+
+        private VertexPositionNormalTexture[] verticesCache;
+
+        private VertexPositionNormalTexture[] GetVertexBuffer(int vertexCount)
+        {
+            if (verticesCache == null || verticesCache.Length < vertexCount)
+            {
+                verticesCache = new VertexPositionNormalTexture[vertexCount];
+            }
+            return verticesCache;
         }
     }
 }

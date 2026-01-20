@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
@@ -5,6 +7,7 @@ using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
@@ -12,20 +15,26 @@ namespace CutTheRope.GameMain
     {
         protected static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
-            OpenGL.GlColor4f(color.ToXNA());
-            OpenGL.GlLineWidth(3.0);
-            OpenGL.GlDisableClientState(0);
-            OpenGL.GlEnableClientState(13);
-            OpenGL.GlColorPointer_setAdditive(s.vertexCount * 8);
-            OpenGL.GlVertexPointer_setAdditive(2, 5, 0, s.vertexCount * 16);
+            int segmentCount = s.vertexCount / 2;
+            int totalVertices = segmentCount * 8;
+            VertexPositionColor[] vertices = GetGrabCircleVertexCache(totalVertices);
+            int writeIndex = 0;
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                GLDrawer.DrawAntialiasedLine(s.vertices[i * 2], s.vertices[(i * 2) + 1], s.vertices[(i * 2) + 2], s.vertices[(i * 2) + 3], 3f, color);
+                VertexPositionColor[] lineVertices = GLDrawer.BuildAntialiasedLineVertices(
+                    s.vertices[i * 2],
+                    s.vertices[(i * 2) + 1],
+                    s.vertices[(i * 2) + 2],
+                    s.vertices[(i * 2) + 3],
+                    3f,
+                    color);
+                Array.Copy(lineVertices, 0, vertices, writeIndex, 8);
+                writeIndex += 8;
             }
-            OpenGL.GlDrawArrays(8, 0, 8);
-            OpenGL.GlEnableClientState(0);
-            OpenGL.GlDisableClientState(13);
-            OpenGL.GlLineWidth(1.0);
+            if (writeIndex > 0)
+            {
+                OpenGL.DrawTriangleStrip(vertices, writeIndex);
+            }
         }
 
         public Grab()
@@ -212,14 +221,14 @@ namespace CutTheRope.GameMain
             {
                 back.Draw();
             }
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
                 DrawGrabCircle(this, x, y, radius, vertexCount, rgbaColor);
             }
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
         }
 
         public void DrawBungee()
@@ -231,7 +240,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             PreDraw();
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             Bungee bungee = rope;
             if (wheel)
             {
@@ -241,10 +250,10 @@ namespace CutTheRope.GameMain
                 wheelImage.Draw();
                 OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             bungee?.Draw();
             OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             if (moveLength <= 0.0)
             {
                 front.Draw();
@@ -477,6 +486,17 @@ namespace CutTheRope.GameMain
         public float[] vertices;
 
         public int vertexCount;
+
+        private static VertexPositionColor[] s_grabCircleVerticesCache;
+
+        private static VertexPositionColor[] GetGrabCircleVertexCache(int vertexCount)
+        {
+            if (s_grabCircleVerticesCache == null || s_grabCircleVerticesCache.Length < vertexCount)
+            {
+                s_grabCircleVerticesCache = new VertexPositionColor[vertexCount];
+            }
+            return s_grabCircleVerticesCache;
+        }
 
         public bool wheel;
 

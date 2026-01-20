@@ -1,6 +1,9 @@
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.Framework.Visual
 {
     internal sealed class GLDrawer : FrameworkTypes
@@ -190,12 +193,12 @@ namespace CutTheRope.Framework.Visual
 
         public static void DrawAntialiasedCurve2(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float width, float fadeWidth, RGBAColor fill)
         {
-            float[] array = new float[((vertexCount - 1) * 12) + 4];
-            float[] array2 = new float[vertexCount * 2];
-            float[] array3 = new float[vertexCount * 2];
-            float[] array4 = new float[vertexCount * 2];
-            float[] array5 = new float[vertexCount * 2];
-            RGBAColor[] array6 = new RGBAColor[((vertexCount - 1) * 6) + 2];
+            float[] array = GetFloatCache(ref s_curveVerticesCache, ((vertexCount - 1) * 12) + 4);
+            float[] array2 = GetFloatCache(ref s_curveOuterCache, vertexCount * 2);
+            float[] array3 = GetFloatCache(ref s_curveInnerCache, vertexCount * 2);
+            float[] array4 = GetFloatCache(ref s_curveInnerEdgeCache, vertexCount * 2);
+            float[] array5 = GetFloatCache(ref s_curveInnerFadeCache, vertexCount * 2);
+            RGBAColor[] array6 = GetColorCache(ref s_curveColorCache, ((vertexCount - 1) * 6) + 2);
             CalcCurve(cx, cy, radius + fadeWidth, startAngle, endAngle, vertexCount, array2);
             CalcCurve(cx, cy, radius, startAngle, endAngle, vertexCount, array3);
             CalcCurve(cx, cy, radius - width, startAngle, endAngle, vertexCount, array4);
@@ -245,13 +248,9 @@ namespace CutTheRope.Framework.Visual
             array[((vertexCount - 1) * 12) + 2] = array2[(vertexCount * 2) - 2];
             array[((vertexCount - 1) * 12) + 3] = array2[(vertexCount * 2) - 1];
             array6[((vertexCount - 1) * 6) + 1] = RGBAColor.transparentRGBA;
-            OpenGL.GlColorPointer(4, 5, 0, array6);
-            OpenGL.GlDisableClientState(0);
-            OpenGL.GlEnableClientState(13);
-            OpenGL.GlVertexPointer(2, 5, 0, array);
-            OpenGL.GlDrawArrays(8, 0, ((vertexCount - 1) * 6) + 2);
-            OpenGL.GlEnableClientState(0);
-            OpenGL.GlDisableClientState(13);
+            int stripVertexCount = ((vertexCount - 1) * 6) + 2;
+            VertexPositionColor[] vertices = BuildColoredVertices(array, array6, stripVertexCount);
+            OpenGL.DrawTriangleStrip(vertices, stripVertexCount);
         }
 
         private static void CalcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
@@ -274,7 +273,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        public static void DrawAntialiasedLine(float x1, float y1, float x2, float y2, float size, RGBAColor color)
+        public static VertexPositionColor[] BuildAntialiasedLineVertices(float x1, float y1, float x2, float y2, float size, RGBAColor color)
         {
             Vector v = Vect(x1, y1);
             Vector vector = VectSub(Vect(x2, y2), v);
@@ -292,17 +291,18 @@ namespace CutTheRope.Framework.Visual
             Vector vector4 = VectSub(v4, vector2);
             Vector vector5 = VectAdd(v3, vector2);
             Vector vector6 = VectAdd(v5, vector2);
-            float[] pointer =
-            [
-                v2.x, v2.y, v4.x, v4.y, vector3.x, vector3.y, vector4.x, vector4.y, vector5.x, vector5.y,
-                vector6.x, vector6.y, v3.x, v3.y, v5.x, v5.y
-            ];
-            colors[2] = color;
-            colors[3] = color;
-            colors[4] = color;
-            colors[5] = color;
-            OpenGL.GlColorPointer_add(4, 5, 0, colors);
-            OpenGL.GlVertexPointer_add(2, 5, 0, pointer);
+            VertexPositionColor[] vertices = GetVertexCache(ref s_antialiasedLineVerticesCache, 8);
+            Color transparent = RGBAColor.transparentRGBA.ToXNA();
+            Color lineColor = color.ToXNA();
+            vertices[0] = new VertexPositionColor(new Vector3(v2.x, v2.y, 0f), transparent);
+            vertices[1] = new VertexPositionColor(new Vector3(v4.x, v4.y, 0f), transparent);
+            vertices[2] = new VertexPositionColor(new Vector3(vector3.x, vector3.y, 0f), lineColor);
+            vertices[3] = new VertexPositionColor(new Vector3(vector4.x, vector4.y, 0f), lineColor);
+            vertices[4] = new VertexPositionColor(new Vector3(vector5.x, vector5.y, 0f), lineColor);
+            vertices[5] = new VertexPositionColor(new Vector3(vector6.x, vector6.y, 0f), lineColor);
+            vertices[6] = new VertexPositionColor(new Vector3(v3.x, v3.y, 0f), transparent);
+            vertices[7] = new VertexPositionColor(new Vector3(v5.x, v5.y, 0f), transparent);
+            return vertices;
         }
 
         public static void DrawRect(float x, float y, float w, float h, RGBAColor color)
@@ -343,66 +343,112 @@ namespace CutTheRope.Framework.Visual
         /// <param name="w">Width of the rectangle.</param>
         /// <param name="h">Height of the rectangle.</param>
         /// <param name="fill">Fill color of the rectangle.</param>
-        /// <remarks>
-        /// This method temporarily disables texture client state to draw using vertex colors,
-        /// and resets the color to white afterwards to prevent color bleeding to subsequent draws.
-        /// </remarks>
         public static void DrawSolidRectWOBorder(float x, float y, float w, float h, RGBAColor fill)
         {
-            float[] pointer =
-            [
-                x,
-                y,
-                x + w,
-                y,
-                x,
-                y + h,
-                x + w,
-                y + h
-            ];
-            // Disable texture coordinates to use colored (non-textured) rendering
-            OpenGL.GlDisableClientState(0);
-            OpenGL.GlColor4f(fill.ToXNA());
-            OpenGL.GlVertexPointer(2, 5, 0, pointer);
-            OpenGL.GlDrawArrays(8, 0, 4);
-            // Reset color to white to prevent color bleeding to subsequent textured draws
-            OpenGL.GlColor4f(RGBAColor.solidOpaqueRGBA.ToXNA());
-            OpenGL.GlEnableClientState(0);
+            Color color = fill.ToXNA();
+            s_rectVertices[0] = new VertexPositionColor(new Vector3(x, y, 0f), color);
+            s_rectVertices[1] = new VertexPositionColor(new Vector3(x + w, y, 0f), color);
+            s_rectVertices[2] = new VertexPositionColor(new Vector3(x, y + h, 0f), color);
+            s_rectVertices[3] = new VertexPositionColor(new Vector3(x + w, y + h, 0f), color);
+            OpenGL.DrawTriangleStrip(s_rectVertices, 4);
         }
+
+        // Cached vertex array for rectangle drawing
+        private static readonly VertexPositionColor[] s_rectVertices = new VertexPositionColor[4];
 
         public static void DrawPolygon(float[] vertices, int vertexCount, RGBAColor color)
         {
-            OpenGL.GlColor4f(color.ToXNA());
-            OpenGL.GlVertexPointer(2, 5, 0, vertices);
-            OpenGL.GlDrawArrays(9, 0, vertexCount);
+            VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, color.ToXNA());
+            OpenGL.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
         public static void DrawSolidPolygon(float[] vertices, int vertexCount, RGBAColor border, RGBAColor fill)
         {
-            OpenGL.GlVertexPointer(2, 5, 0, vertices);
-            OpenGL.GlColor4f(fill.ToXNA());
-            OpenGL.GlDrawArrays(8, 0, vertexCount);
-            OpenGL.GlColor4f(border.ToXNA());
-            OpenGL.GlDrawArrays(9, 0, vertexCount);
+            VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
+            OpenGL.DrawTriangleStrip(fillVertices, vertexCount);
+            VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, border.ToXNA());
+            OpenGL.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
         public static void DrawSolidPolygonWOBorder(float[] vertices, int vertexCount, RGBAColor fill)
         {
-            OpenGL.GlVertexPointer(2, 5, 0, vertices);
-            OpenGL.GlColor4f(fill.ToXNA());
-            OpenGL.GlDrawArrays(8, 0, vertexCount);
+            VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
+            OpenGL.DrawTriangleStrip(fillVertices, vertexCount);
         }
 
-        private static readonly RGBAColor[] colors =
-[
-    RGBAColor.transparentRGBA,
-            RGBAColor.transparentRGBA,
-            RGBAColor.transparentRGBA,
-            RGBAColor.transparentRGBA,
-            RGBAColor.transparentRGBA,
-            RGBAColor.transparentRGBA,
-            RGBAColor.transparentRGBA,
-            RGBAColor.transparentRGBA
-];
+        private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
+        {
+            VertexPositionColor[] vertices = GetVertexCache(ref s_coloredVerticesCache, vertexCount);
+            int positionIndex = 0;
+            for (int i = 0; i < vertexCount; i++)
+            {
+                Vector3 position = new(positions[positionIndex++], positions[positionIndex++], 0f);
+                vertices[i] = new VertexPositionColor(position, colors[i].ToXNA());
+            }
+            return vertices;
+        }
+
+        private static VertexPositionColor[] BuildColoredVertices(float[] positions, int vertexCount, Color color)
+        {
+            VertexPositionColor[] vertices = GetVertexCache(ref s_coloredVerticesCache, vertexCount);
+            int positionIndex = 0;
+            for (int i = 0; i < vertexCount; i++)
+            {
+                Vector3 position = new(positions[positionIndex++], positions[positionIndex++], 0f);
+                vertices[i] = new VertexPositionColor(position, color);
+            }
+            return vertices;
+        }
+
+        private static VertexPositionColor[] BuildClosedLineVertices(float[] positions, int vertexCount, Color color)
+        {
+            VertexPositionColor[] vertices = GetVertexCache(ref s_lineVerticesCache, vertexCount + 1);
+            int positionIndex = 0;
+            for (int i = 0; i < vertexCount; i++)
+            {
+                Vector3 position = new(positions[positionIndex++], positions[positionIndex++], 0f);
+                vertices[i] = new VertexPositionColor(position, color);
+            }
+            vertices[^1] = vertices[0];
+            return vertices;
+        }
+
+        private static VertexPositionColor[] GetVertexCache(ref VertexPositionColor[] cache, int vertexCount)
+        {
+            if (cache == null || cache.Length < vertexCount)
+            {
+                cache = new VertexPositionColor[vertexCount];
+            }
+            return cache;
+        }
+
+        private static float[] GetFloatCache(ref float[] cache, int length)
+        {
+            if (cache == null || cache.Length < length)
+            {
+                cache = new float[length];
+            }
+            return cache;
+        }
+
+        private static RGBAColor[] GetColorCache(ref RGBAColor[] cache, int length)
+        {
+            if (cache == null || cache.Length < length)
+            {
+                cache = new RGBAColor[length];
+            }
+            return cache;
+        }
+
+        private static VertexPositionColor[] s_coloredVerticesCache;
+        private static VertexPositionColor[] s_lineVerticesCache;
+        private static VertexPositionColor[] s_antialiasedLineVerticesCache;
+        private static float[] s_curveVerticesCache;
+        private static float[] s_curveOuterCache;
+        private static float[] s_curveInnerCache;
+        private static float[] s_curveInnerEdgeCache;
+        private static float[] s_curveInnerFadeCache;
+        private static RGBAColor[] s_curveColorCache;
+
     }
 }

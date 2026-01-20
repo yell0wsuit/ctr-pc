@@ -1,6 +1,8 @@
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Visual;
 
+using Microsoft.Xna.Framework.Graphics;
+
 namespace CutTheRope.GameMain
 {
     internal sealed class StarsBreak : RotateableMultiParticles
@@ -57,17 +59,27 @@ namespace CutTheRope.GameMain
         {
             PreDraw();
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(drawer.image.texture.Name());
-            OpenGL.GlVertexPointer(3, 5, 0, ToFloatArray(drawer.vertices));
-            OpenGL.GlTexCoordPointer(2, 5, 0, ToFloatArray(drawer.texCoordinates));
-            OpenGL.GlEnableClientState(13);
-            OpenGL.GlBindBuffer(2, colorsID);
-            OpenGL.GlColorPointer(4, 5, 0, colors);
-            OpenGL.GlDrawElements(7, particleIdx * 6, drawer.indices);
-            OpenGL.GlBindBuffer(2, 0U);
-            OpenGL.GlDisableClientState(13);
+            int quadCount = particleIdx;
+            if (quadCount > 0)
+            {
+                VertexPositionColorTexture[] vertexBuffer = GetVertexBuffer(quadCount * 4);
+                OpenGL.FillTexturedColoredVertices(drawer.vertices, drawer.texCoordinates, colors, vertexBuffer, quadCount);
+                OpenGL.DrawTriangleList(vertexBuffer, drawer.indices, quadCount * 6);
+            }
             PostDraw();
+        }
+
+        private VertexPositionColorTexture[] verticesCache;
+
+        private VertexPositionColorTexture[] GetVertexBuffer(int vertexCount)
+        {
+            if (verticesCache == null || verticesCache.Length < vertexCount)
+            {
+                verticesCache = new VertexPositionColorTexture[vertexCount];
+            }
+            return verticesCache;
         }
     }
 }

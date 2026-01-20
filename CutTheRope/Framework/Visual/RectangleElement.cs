@@ -14,7 +14,7 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             base.PreDraw();
-            OpenGL.GlDisable(0);
+            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             if (solid)
             {
                 GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, color);
@@ -23,7 +23,7 @@ namespace CutTheRope.Framework.Visual
             {
                 GLDrawer.DrawRect(drawX, drawY, width, height, color);
             }
-            OpenGL.GlEnable(0);
+            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlColor4f(Color.White);
             base.PostDraw();
         }
