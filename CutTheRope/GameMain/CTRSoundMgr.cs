@@ -2,6 +2,7 @@ using System.Linq;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Media;
 
 using Microsoft.Xna.Framework.Audio;
 
