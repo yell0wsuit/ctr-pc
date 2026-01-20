@@ -762,8 +762,7 @@ namespace CutTheRope.Desktop
         {
             DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertices.Length);
             vertexBuffer.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
-            IndexBuffer indexBuffer = GetIndexBuffer(indexCount);
-            indexBuffer.SetData(indices, 0, indexCount);
+            IndexBuffer indexBuffer = GetIndexBuffer(indexCount, indices);
             Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
             Global.GraphicsDevice.Indices = indexBuffer;
             Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, 0, 0, primitiveCount);
@@ -783,12 +782,13 @@ namespace CutTheRope.Desktop
             return vertexBuffer;
         }
 
-        private static IndexBuffer GetIndexBuffer(int indexCount)
+        private static IndexBuffer GetIndexBuffer(int indexCount, short[] indices)
         {
             if (s_indexBuffer == null || s_indexBuffer.IndexCount < indexCount)
             {
                 s_indexBuffer?.Dispose();
                 s_indexBuffer = new IndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
+                s_indexBuffer.SetData(indices, 0, indexCount);
             }
             return s_indexBuffer;
         }
