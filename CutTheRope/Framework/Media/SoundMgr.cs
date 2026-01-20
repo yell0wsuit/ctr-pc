@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.Framework.Media
 {
-    internal class SoundMgr : FrameworkTypes
+    internal sealed class SoundMgr : FrameworkTypes
     {
         public SoundMgr()
         {
