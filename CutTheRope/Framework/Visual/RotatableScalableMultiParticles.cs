@@ -105,8 +105,14 @@ namespace CutTheRope.Framework.Visual
 
         public float initialAngle;
 
+#pragma warning disable CS0649
         public float rotateSpeed;
+#pragma warning restore CS0649
 
         public float rotateSpeedVar;
+
+#pragma warning disable CS0649
+        private readonly float endSize;
+#pragma warning restore CS0649
     }
 }

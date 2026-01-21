@@ -233,7 +233,7 @@ namespace CutTheRope.Framework.Visual
 
         public float size;
 
-        public float endSize;
+        // public float endSize;
 
         public float sizeVar;
 
