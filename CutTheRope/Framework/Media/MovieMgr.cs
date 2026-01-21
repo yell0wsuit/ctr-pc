@@ -1,12 +1,16 @@
+#if MONOGAME_WINDOWSDX
 using CutTheRope.Desktop;
 using CutTheRope.Helpers;
+#endif
+
+using System;
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.Framework.Media
 {
-    internal sealed class MovieMgr : FrameworkTypes, System.IDisposable
+    internal sealed class MovieMgr : FrameworkTypes, IDisposable
     {
         public void PlayURL(string moviePath, bool mute)
         {
