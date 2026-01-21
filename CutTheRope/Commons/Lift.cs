@@ -63,7 +63,6 @@ namespace CutTheRope.Commons
 
         public float yPercent;
 
-        // (Invoke) Token: 0x0600068D RID: 1677
         public delegate void PercentXY(float px, float py);
     }
 }
