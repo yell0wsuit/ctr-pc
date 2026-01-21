@@ -305,7 +305,7 @@ namespace CutTheRope.GameMain
 
         private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.2);
 
-        private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
+        // private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
 
         private readonly float OUTER_CIRCLE_WIDTH = RTPD(7.0) * 3f;
 
