@@ -424,16 +424,16 @@ namespace CutTheRope.GameMain
             public RGBAColor c;
         }
 
-        private sealed class SCandy : ConstraintedPoint
-        {
-            public bool good;
+        // private sealed class SCandy : ConstraintedPoint
+        // {
+        // public bool good;
 
-            public float speed;
+        // public float speed;
 
-            public float angle;
+        // public float angle;
 
-            public float lastAngleChange;
-        }
+        // public float lastAngleChange;
+        // }
 
         private sealed class TutorialText : Text
         {
