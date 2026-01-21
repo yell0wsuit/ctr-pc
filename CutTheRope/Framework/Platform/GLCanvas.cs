@@ -198,7 +198,7 @@ namespace CutTheRope.Framework.Platform
 
         public int xOffsetScaled;
 
-        public int yOffsetScaled;
+        // public int yOffsetScaled;
 
         public int backingWidth;
 
