@@ -46,11 +46,7 @@ namespace CutTheRope.GameMain
         {
             string currentLang = LanguageHelper.CurrentCode;
             string locale = c.AttributeAsNSString("locale");
-            if (LanguageHelper.IsUiLanguageCode(currentLang))
-            {
-                return !locale.IsEqualToString(currentLang);
-            }
-            return !locale.IsEqualToString("en");
+            return LanguageHelper.IsUiLanguageCode(currentLang) ? !locale.IsEqualToString(currentLang) : !locale.IsEqualToString("en");
         }
 
         public void ShowGreeting()
