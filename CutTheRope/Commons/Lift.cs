@@ -9,14 +9,12 @@ namespace CutTheRope.Commons
         public override bool OnTouchDownXY(float tx, float ty)
         {
             startX = tx - x;
-            startY = ty - y;
             return base.OnTouchDownXY(tx, ty);
         }
 
         public override bool OnTouchUpXY(float tx, float ty)
         {
             startX = 0f;
-            startY = 0f;
             return base.OnTouchUpXY(tx, ty);
         }
 
@@ -25,14 +23,14 @@ namespace CutTheRope.Commons
             if (state == BUTTON_STATE.BUTTON_DOWN)
             {
                 x = Math.Max(Math.Min(tx - startX, maxX), minX);
-                y = Math.Max(Math.Min(ty - startY, 0f), 0f);
+                y = 0f;
                 if (maxX != 0f)
                 {
                     float num = (x - minX) / (maxX - minX);
                     if (num != xPercent)
                     {
                         xPercent = num;
-                        liftDelegate?.Invoke(xPercent, yPercent);
+                        liftDelegate?.Invoke(xPercent, 0f);
                     }
                 }
                 return true;
@@ -51,8 +49,6 @@ namespace CutTheRope.Commons
 
         public float startX;
 
-        public float startY;
-
         public PercentXY liftDelegate;
 
         public float minX;
@@ -60,8 +56,6 @@ namespace CutTheRope.Commons
         public float maxX;
 
         public float xPercent;
-
-        public float yPercent;
 
         public delegate void PercentXY(float px, float py);
     }
