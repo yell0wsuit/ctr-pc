@@ -130,14 +130,13 @@ namespace CutTheRope.Commons
             Vector scroll = container.GetScroll();
             Vector maxScroll = container.GetMaxScroll();
             float num = 0f;
-            float num2 = 0f;
             if (maxScroll.x != 0f)
             {
                 num = scroll.x / maxScroll.x;
             }
             if (maxScroll.y != 0f)
             {
-                num2 = scroll.y / maxScroll.y;
+                _ = scroll.y / maxScroll.y;
             }
             lift.x = ((lift.maxX - lift.minX) * num) + lift.minX;
             lift.y = 0f;
@@ -157,14 +156,13 @@ namespace CutTheRope.Commons
             {
                 Vector vector = VectNeg(container.GetScrollPoint(i));
                 float num = 0f;
-                float num2 = 0f;
                 if (maxScroll.x != 0f)
                 {
                     num = vector.x / maxScroll.x;
                 }
                 if (maxScroll.y != 0f)
                 {
-                    num2 = vector.y / maxScroll.y;
+                    _ = vector.y / maxScroll.y;
                 }
                 float num3 = ((lift.maxX - lift.minX) * num) + lift.minX;
                 spoints[i] = Vect(num3, 0f);
