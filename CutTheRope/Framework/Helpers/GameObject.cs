@@ -78,10 +78,10 @@ namespace CutTheRope.Framework.Helpers
         public override void Draw()
         {
             base.Draw();
-            if (isDrawBB)
-            {
-                DrawBB();
-            }
+            // if (isDrawBB)
+            // {
+            //     DrawBB();
+            // }
         }
 
         protected override void Dispose(bool disposing)
@@ -234,7 +234,7 @@ namespace CutTheRope.Framework.Helpers
 
         public bool rotatedBB;
 
-        public bool isDrawBB;
+        // public bool isDrawBB;
 
         public bool topLeftCalculated;
     }
