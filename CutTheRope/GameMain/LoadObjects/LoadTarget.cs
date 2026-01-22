@@ -22,7 +22,11 @@ namespace CutTheRope.GameMain
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
             string supportResourceName = PackConfig.GetSupportResourceName(pack);
 
-            support = Image.Image_createWithResIDQuad(supportResourceName, pack);
+            // Clamp quad index to valid range; fall back to first quad if pack index exceeds available quads
+            CTRTexture2D supportTexture = Application.GetTexture(supportResourceName);
+            int quadIndex = (pack >= 0 && pack < supportTexture.quadRects.Length) ? pack : 0;
+
+            support = Image.Image_createWithResIDQuad(supportResourceName, quadIndex);
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
