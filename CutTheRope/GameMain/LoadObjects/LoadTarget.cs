@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
             string supportResourceName = PackConfig.GetSupportResourceName(pack);
 
             // Clamp quad index to valid range; fall back to first quad if pack index exceeds available quads
-            var supportTexture = Application.GetTexture(supportResourceName);
+            CTRTexture2D supportTexture = Application.GetTexture(supportResourceName);
             int quadIndex = (pack >= 0 && pack < supportTexture.quadRects.Length) ? pack : 0;
 
             support = Image.Image_createWithResIDQuad(supportResourceName, quadIndex);
