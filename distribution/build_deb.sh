@@ -14,9 +14,10 @@ DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut t
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT="CutTheRope/CutTheRope.csproj"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT="$PROJECT_ROOT/CutTheRope/CutTheRope.csproj"
 BUILD_DIR="$SCRIPT_DIR/deb_build"
-PUBLISH_DIR="$SCRIPT_DIR/CutTheRope/bin/Publish/linux-x64"
+PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/linux-x64"
 
 # Resolve version from csproj
 VERSION=$(dotnet msbuild "$PROJECT" \
@@ -89,8 +90,8 @@ Keywords=puzzle;game;cut;rope;omnom;
 EOF
 
 # Copy icon
-if [ -f "$SCRIPT_DIR/CutTheRope/icons/CutTheRopeIcon_512.png" ]; then
-    cp "$SCRIPT_DIR/CutTheRope/icons/CutTheRopeIcon_512.png" "$DEB_ROOT/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
+if [ -f "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" ]; then
+    cp "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" "$DEB_ROOT/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
 fi
 
 # Post-install script (optional - update icon cache)

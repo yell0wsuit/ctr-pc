@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 # =========================
 # App metadata
 # =========================
@@ -12,8 +15,8 @@ ICON_NAME="CutTheRope"
 # =========================
 # Project / publish paths
 # =========================
-PROJECT="CutTheRope/CutTheRope.csproj"
-PUBLISH_DIR="CutTheRope/bin/Publish/osx-arm64"
+PROJECT="$PROJECT_ROOT/CutTheRope/CutTheRope.csproj"
+PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/osx-arm64"
 APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
 ICON_SOURCE="$PUBLISH_DIR/icons/CutTheRopeIcon.icns"
 
