@@ -7,10 +7,8 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # =========================
 # App metadata
 # =========================
-APP_NAME="CutTheRope"
-EXEC_NAME="CutTheRope-DX"
+APP_NAME="CutTheRope-DX"
 BUNDLE_ID="page.yell0wsuit.cuttherope.dx"
-ICON_NAME="CutTheRope"
 
 # =========================
 # Project / publish paths
@@ -68,23 +66,19 @@ else
 fi
 
 # Ensure executable bit
-chmod +x "$APP_DIR/Contents/MacOS/$EXEC_NAME"
+chmod +x "$APP_DIR/Contents/MacOS/$APP_NAME"
 
-# Copy app icon and set ICON_KEY for plist
+# Copy app icon
 if [ -f "$ICON_SOURCE" ]; then
-  cp "$ICON_SOURCE" "$APP_DIR/Contents/Resources/$ICON_NAME.icns"
-  ICON_KEY="<key>CFBundleIconFile<\/key><string>$ICON_NAME<\/string>"
+  cp "$ICON_SOURCE" "$APP_DIR/Contents/Resources/$APP_NAME.icns"
 else
   echo "Warning: icon not found at $ICON_SOURCE"
-  ICON_KEY=""
 fi
 
 # Write Info.plist
-sed -e "s/{{EXEC_NAME}}/$EXEC_NAME/g" \
+sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
     -e "s/{{BUNDLE_ID}}/$BUNDLE_ID/g" \
-    -e "s/{{APP_NAME}}/$APP_NAME/g" \
     -e "s/{{VERSION}}/$VERSION/g" \
-    -e "s/{{ICON_KEY}}/$ICON_KEY/g" \
     "$TEMPLATES_DIR/Info.plist" > "$APP_DIR/Contents/Info.plist"
 
 # =========================
