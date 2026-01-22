@@ -190,7 +190,9 @@ namespace CutTheRope.GameMain
         public static int GetLastPack()
         {
             int val = GetIntForKey("PREFS_LAST_PACK");
-            return Math.Min(Math.Max(0, val), GetPacksCount() + 1);
+            int maxPack = GetPacksCount();
+            // If saved pack is out of range, fall back to first pack
+            return (val >= 0 && val <= maxPack) ? val : 0;
         }
 
         public static void GameViewChanged(string NameOfView)
