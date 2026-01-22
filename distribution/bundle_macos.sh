@@ -19,6 +19,7 @@ PROJECT="$PROJECT_ROOT/CutTheRope/CutTheRope.csproj"
 PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/osx-arm64"
 APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
 ICON_SOURCE="$PUBLISH_DIR/icons/CutTheRopeIcon.icns"
+TEMPLATES_DIR="$SCRIPT_DIR/templates/macos"
 
 # =========================
 # Resolve version from csproj
@@ -69,46 +70,22 @@ fi
 # Ensure executable bit
 chmod +x "$APP_DIR/Contents/MacOS/$EXEC_NAME"
 
-# Copy app icon
+# Copy app icon and set ICON_KEY for plist
 if [ -f "$ICON_SOURCE" ]; then
   cp "$ICON_SOURCE" "$APP_DIR/Contents/Resources/$ICON_NAME.icns"
-  ICON_KEY="<key>CFBundleIconFile</key><string>$ICON_NAME</string>"
+  ICON_KEY="<key>CFBundleIconFile<\/key><string>$ICON_NAME<\/string>"
 else
   echo "Warning: icon not found at $ICON_SOURCE"
   ICON_KEY=""
 fi
 
 # Write Info.plist
-cat > "$APP_DIR/Contents/Info.plist" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
- "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>CFBundleExecutable</key>
-  <string>$EXEC_NAME</string>
-
-  <key>CFBundleIdentifier</key>
-  <string>$BUNDLE_ID</string>
-
-  <key>CFBundleName</key>
-  <string>$APP_NAME</string>
-
-  <key>CFBundleVersion</key>
-  <string>$VERSION</string>
-
-  <key>CFBundleShortVersionString</key>
-  <string>$VERSION</string>
-
-  <key>CFBundlePackageType</key>
-  <string>APPL</string>
-
-  <key>NSHighResolutionCapable</key>
-  <true/>
-  $ICON_KEY
-</dict>
-</plist>
-EOF
+sed -e "s/{{EXEC_NAME}}/$EXEC_NAME/g" \
+    -e "s/{{BUNDLE_ID}}/$BUNDLE_ID/g" \
+    -e "s/{{APP_NAME}}/$APP_NAME/g" \
+    -e "s/{{VERSION}}/$VERSION/g" \
+    -e "s/{{ICON_KEY}}/$ICON_KEY/g" \
+    "$TEMPLATES_DIR/Info.plist" > "$APP_DIR/Contents/Info.plist"
 
 # =========================
 # Step 3: Finalize

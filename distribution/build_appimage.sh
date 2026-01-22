@@ -24,6 +24,7 @@ BUILD_DIR="$SCRIPT_DIR/appimage_build"
 PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/linux-x64"
 APPDIR="$BUILD_DIR/$APP_NAME.AppDir"
 TOOLS_DIR="$SCRIPT_DIR/tools"
+TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
 
 # Resolve version from csproj
 VERSION=$(dotnet msbuild "$PROJECT" \
@@ -73,19 +74,12 @@ chmod +x "$APPDIR/AppRun"
 echo "[4/5] Creating metadata files..."
 
 # Desktop entry (in root of AppDir for appimagetool)
-cat > "$APPDIR/$APP_NAME.desktop" << EOF
-[Desktop Entry]
-Name=$APP_DISPLAY_NAME
-Comment=$DESCRIPTION
-Exec=$EXEC_NAME
-Icon=$APP_NAME
-Terminal=false
-Type=Application
-Categories=Game;
-Keywords=puzzle;game;cut;rope;omnom;
-X-AppImage-Name=$APP_DISPLAY_NAME
-X-AppImage-Version=$VERSION
-EOF
+sed -e "s/{{APP_DISPLAY_NAME}}/$APP_DISPLAY_NAME/g" \
+    -e "s/{{DESCRIPTION}}/$DESCRIPTION/g" \
+    -e "s/{{EXEC_NAME}}/$EXEC_NAME/g" \
+    -e "s/{{APP_NAME}}/$APP_NAME/g" \
+    -e "s/{{VERSION}}/$VERSION/g" \
+    "$TEMPLATES_DIR/appimage.desktop" > "$APPDIR/$APP_NAME.desktop"
 
 # Also copy to standard location
 cp "$APPDIR/$APP_NAME.desktop" "$APPDIR/usr/share/applications/"
@@ -100,32 +94,16 @@ else
     echo "Warning: Icon not found at icons/CutTheRopeIcon_512.png"
 fi
 
-# Create AppStream metadata (optional but recommended)
+# Create AppStream metadata
 mkdir -p "$APPDIR/usr/share/metainfo"
-cat > "$APPDIR/usr/share/metainfo/$APP_ID.metainfo.xml" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop-application">
-  <id>$APP_ID</id>
-  <name>$APP_DISPLAY_NAME</name>
-  <summary>A fan-made enhancement of the PC version of Cut the Rope</summary>
-  <metadata_license>CC-BY-SA-4.0</metadata_license>
-  <developer id="$APP_ID">
-    <name>yell0wsuit</name>
-  </developer>
-  <description>
-    <p>Cut the Rope: DX is a fan-made enhancement of the PC version of Cut the Rope, featuring improved graphics, additional content, and quality-of-life improvements.</p>
-  </description>
-  <launchable type="desktop-id">$APP_NAME.desktop</launchable>
-  <url type="homepage">https://github.com/yell0wsuit/cuttherope-dx</url>
-  <provides>
-    <binary>$EXEC_NAME</binary>
-  </provides>
-  <content_rating type="oars-1.1"/>
-  <releases>
-    <release version="$VERSION" date="$(date +%Y-%m-%d)"/>
-  </releases>
-</component>
-EOF
+RELEASE_DATE=$(date +%Y-%m-%d)
+sed -e "s/{{APP_ID}}/$APP_ID/g" \
+    -e "s/{{APP_DISPLAY_NAME}}/$APP_DISPLAY_NAME/g" \
+    -e "s/{{APP_NAME}}/$APP_NAME/g" \
+    -e "s/{{EXEC_NAME}}/$EXEC_NAME/g" \
+    -e "s/{{VERSION}}/$VERSION/g" \
+    -e "s/{{RELEASE_DATE}}/$RELEASE_DATE/g" \
+    "$TEMPLATES_DIR/appimage.metainfo.xml" > "$APPDIR/usr/share/metainfo/$APP_ID.metainfo.xml"
 
 # Step 5: Build AppImage
 echo "[5/5] Building AppImage..."
