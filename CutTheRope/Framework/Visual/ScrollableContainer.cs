@@ -363,7 +363,7 @@ namespace CutTheRope.Framework.Visual
 
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
-            float num = Application.SharedAppSettings().GetInt(5);
+            float num = ApplicationSettings.GetInt(5);
             fixedDelta = (float)(1.0 / (double)num);
             spoints = null;
             spointsNum = -1;

@@ -46,11 +46,7 @@ namespace CutTheRope.GameMain
         {
             string currentLang = LanguageHelper.CurrentCode;
             string locale = c.AttributeAsNSString("locale");
-            if (LanguageHelper.IsUiLanguageCode(currentLang))
-            {
-                return !locale.IsEqualToString(currentLang);
-            }
-            return !locale.IsEqualToString("en");
+            return LanguageHelper.IsUiLanguageCode(currentLang) ? !locale.IsEqualToString(currentLang) : !locale.IsEqualToString("en");
         }
 
         public void ShowGreeting()
@@ -428,16 +424,16 @@ namespace CutTheRope.GameMain
             public RGBAColor c;
         }
 
-        private sealed class SCandy : ConstraintedPoint
-        {
-            public bool good;
+        // private sealed class SCandy : ConstraintedPoint
+        // {
+        // public bool good;
 
-            public float speed;
+        // public float speed;
 
-            public float angle;
+        // public float angle;
 
-            public float lastAngleChange;
-        }
+        // public float lastAngleChange;
+        // }
 
         private sealed class TutorialText : Text
         {

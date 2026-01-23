@@ -130,17 +130,16 @@ namespace CutTheRope.Commons
             Vector scroll = container.GetScroll();
             Vector maxScroll = container.GetMaxScroll();
             float num = 0f;
-            float num2 = 0f;
             if (maxScroll.x != 0f)
             {
                 num = scroll.x / maxScroll.x;
             }
             if (maxScroll.y != 0f)
             {
-                num2 = scroll.y / maxScroll.y;
+                _ = scroll.y / maxScroll.y;
             }
             lift.x = ((lift.maxX - lift.minX) * num) + lift.minX;
-            lift.y = ((lift.maxY - lift.minY) * num2) + lift.minY;
+            lift.y = 0f;
         }
 
         public void CalcScrollPoints()
@@ -157,18 +156,16 @@ namespace CutTheRope.Commons
             {
                 Vector vector = VectNeg(container.GetScrollPoint(i));
                 float num = 0f;
-                float num2 = 0f;
                 if (maxScroll.x != 0f)
                 {
                     num = vector.x / maxScroll.x;
                 }
                 if (maxScroll.y != 0f)
                 {
-                    num2 = vector.y / maxScroll.y;
+                    _ = vector.y / maxScroll.y;
                 }
                 float num3 = ((lift.maxX - lift.minX) * num) + lift.minX;
-                float num4 = ((lift.maxY - lift.minY) * num2) + lift.minY;
-                spoints[i] = Vect(num3, num4);
+                spoints[i] = Vect(num3, 0f);
             }
             for (int j = 0; j < spointsNum; j++)
             {
