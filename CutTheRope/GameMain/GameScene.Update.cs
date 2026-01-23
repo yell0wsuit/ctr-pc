@@ -213,6 +213,11 @@ namespace CutTheRope.GameMain
                             {
                                 if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                                 {
+                                    // Don't let spider activate if rope is not attached to candy
+                                    if (grab.shouldActivate && !IsCandyPoint(rope.tail))
+                                    {
+                                        grab.shouldActivate = false;
+                                    }
                                     grab.UpdateSpider(delta);
                                 }
                                 if (grab.spiderPos == -1f)
@@ -222,10 +227,6 @@ namespace CutTheRope.GameMain
                                     {
                                         SpiderWon(grab);
                                         break;
-                                    }
-                                    else
-                                    {
-                                        grab.shouldActivate = false;
                                     }
                                 }
                             }
