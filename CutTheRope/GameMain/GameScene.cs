@@ -141,6 +141,14 @@ namespace CutTheRope.GameMain
             Teleport();
         }
 
+        private void Selector_dropLightBulbFromSock(FrameworkTypes param)
+        {
+            if (param is LightBulb bulb)
+            {
+                DropLightBulbFromSock(bulb);
+            }
+        }
+
         private void Selector_revealCandyFromLantern(FrameworkTypes param)
         {
             isCandyInLantern = false;
@@ -212,6 +220,24 @@ namespace CutTheRope.GameMain
 
         public const int GRAB_MOVE_RADIUS = 65;
 
+        private const int CharAnimationSleeping = 15;
+
+        private const int SleepAnimStart = 0;
+
+        private const int SleepAnimEnd = 6;
+
+        private const int SleepZzzStart = 7;
+
+        private const int SleepZzzEnd = 43;
+
+        private const float SleepAnimFrameDelay = 0.05f;
+
+        private const float SleepPulsePivotYRatio = 433f / 480f;
+
+        private const float NightSleepSoundInterval = 4f;
+
+        private const int NightConstraintRelaxationSteps = 30;
+
         public const int RC_CONTROLLER_RADIUS = 90;
 
         public const int CANDY_BLINK_INITIAL = 0;
@@ -277,6 +303,8 @@ namespace CutTheRope.GameMain
 
         private DynamicArray<SteamTube> tubes;
 
+        private DynamicArray<LightBulb> lightBulbs;
+
         private DynamicArray<Sock> socks;
 
         private DynamicArray<Bouncer> bouncers;
@@ -289,6 +317,12 @@ namespace CutTheRope.GameMain
 
         private DynamicArray<Ghost> ghosts;
 
+        private DynamicArray<Mouse> mice;
+
+        private MiceObject miceManager;
+
+        private ConveyorBeltObject conveyors;
+
         private GameObject candyL;
 
         private GameObject candyR;
@@ -298,6 +332,22 @@ namespace CutTheRope.GameMain
         private ConstraintedPoint starR;
 
         private Animation blink;
+
+        private Animation sleepAnimPrimary;
+
+        private Animation sleepAnimSecondary;
+
+        private bool? isNightTargetAwake;
+
+        private bool sleepPulseActive;
+
+        private float sleepPulseTime;
+
+        private float sleepPulseDelay;
+
+        private float sleepPulseBaseY;
+
+        private float sleepSoundTimer;
 
         private readonly bool[] dragging = new bool[5];
 
@@ -386,6 +436,8 @@ namespace CutTheRope.GameMain
         public bool ignoreTouches;
 
         public bool nightLevel;
+
+        public bool gameLostTriggered;
 
         public bool gravityNormal;
 

@@ -4,7 +4,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class Bubble : GameObject
+    internal class Bubble : GameObject, IConveyorItem
     {
         public static Bubble Bubble_create(CTRTexture2D t)
         {
@@ -31,7 +31,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             PreDraw();
-            if (!withoutShadow)
+            if (!withoutShadow && ConveyorId == -1)
             {
                 if (quadToDraw == -1)
                 {
@@ -56,5 +56,13 @@ namespace CutTheRope.GameMain
         public RotatedCircle initial_rotatedCircle;
 
         public bool withoutShadow;
+
+        public bool capturedByBulb;
+
+        public int ConveyorId { get; set; } = -1;
+
+        public float? ConveyorBaseScaleX { get; set; }
+
+        public float? ConveyorBaseScaleY { get; set; }
     }
 }

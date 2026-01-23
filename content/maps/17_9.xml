@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map height="480" gridSize="32" width="320" />
+        <gameDesign nightLevel="false" ropePhysicsSpeed="1" twoParts="false" />
+    </layer>
+    <layer name="Objects">
+        <candy x="135" y="250" />
+        <target x="43" y="156" />
+        <transporter velocity="10" direction="forward" length="250" angle="90" x="133" y="404" type="manual" width="50" />
+        <bouncer1 size="1" angle="0" x="134" y="175" />
+        <bubble x="130" y="250" />
+        <pump angle="0" x="56" y="434" />
+        <transporter velocity="10" direction="forward" length="250" angle="90" x="210" y="403" type="manual" width="50" />
+        <bouncer1 size="1" angle="0" x="221" y="175" />
+        <pump angle="180" x="287" y="190" />
+        <star x="212" y="447" timeout="-1" />
+        <star x="210" y="50" timeout="-1" />
+        <star x="133" y="362" timeout="-1" />
+        <hiddenElement x="41" y="236" />
+    </layer>
+</map>

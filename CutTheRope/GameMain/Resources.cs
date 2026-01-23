@@ -112,7 +112,7 @@ namespace CutTheRope.GameMain
                 Img.HudButtonsEn, Img.MenuResultEn, Img.ObjStarDisappear,
                 Img.ObjBubbleFlight, Img.ObjBubblePop, Img.ObjHookAuto,
                 Img.ObjBubbleAttached, Img.ObjHook01, Img.ObjHook02, Img.ObjStarIdle,
-                Img.HudStar, Img.CharAnimations, Img.ObjHookRegulated, Img.ObjHookMovable,
+                Img.HudStar, Img.CharAnimations, Img.CharAnimationsSleeping, Img.ObjHookRegulated, Img.ObjHookMovable,
                 Img.ObjPump, Img.TutorialSigns, Img.ObjHat, Img.ObjBouncer01,
                 Img.ObjBouncer02, Img.ObjSpikes01, Img.ObjSpikes02, Img.ObjSpikes03,
                 Img.ObjSpikes04, Img.ObjElectrodes, Img.ObjRotatableSpikes01,
@@ -133,8 +133,11 @@ namespace CutTheRope.GameMain
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
                 Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
                 Img.Snowflakes, Img.CharGreetingXmas, Img.ObjSock,
-                Img.Bgr14Cover, Img.Bgr14P1, Img.ObjLantern,
+                Img.Bgr14Cover, Img.Bgr14P1, Img.ObjLantern, Img.ObjLighter,
+                Img.Bgr15Cover, Img.Bgr15P1, Img.ObjGap,
+                Img.Bgr16Cover, Img.Bgr16P1, Img.ObjStarNight,
                 Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuLogoXmasHat,
+                Img.Bgr17Cover, Img.Bgr17P1, Img.BoxLabel, Img.ObjTransporter,
                 Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
                 Img.ObjCandy07, Img.ObjCandy08, Img.ObjCandy09, Img.ObjCandy10, Img.ObjCandy11,
                 Img.ObjCandy12, Img.ObjCandy13, Img.ObjCandy14, Img.ObjCandy15, Img.ObjCandy16,
@@ -166,7 +169,11 @@ namespace CutTheRope.GameMain
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
                 Snd.ScratchOut, Snd.GhostPuff, Snd.XmasBell, Snd.SteamStart,
                 Snd.SteamStart2, Snd.SteamEnd, Snd.LanternTeleportIn,
-                Snd.LanternTeleportOut, Snd.TeleportXmas
+                Snd.LanternTeleportOut, Snd.TeleportXmas, Snd.MouseIdle, Snd.MouseRustle,
+                Snd.MouseTap, Snd.MonsterSleep1, Snd.MonsterSleep2, Snd.MonsterSleep3,
+                Snd.StarLight1, Snd.StarLight2,
+                Snd.Conv01, Snd.Conv02, Snd.Conv03, Snd.Conv04,
+                Snd.TransporterMove, Snd.TransporterDrop
             ];
         }
 
@@ -178,7 +185,7 @@ namespace CutTheRope.GameMain
             musicNames_ =
             [
                 Music.MenuMusic, Music.MenuMusicXmas, Music.GameMusic, Music.GameMusicXmas,
-                Music.GameMusic2,Music.GameMusic3, Music.GameMusic4
+                Music.GameMusic2, Music.GameMusic3, Music.GameMusic4, Music.GameMusic5
             ];
         }
 
@@ -237,8 +244,10 @@ namespace CutTheRope.GameMain
             public const string ObjHook01 = "obj_hook_01";
             public const string ObjHook02 = "obj_hook_02";
             public const string ObjStarIdle = "obj_star_idle";
+            public const string ObjStarNight = "obj_star_night";
             public const string HudStar = "hud_star";
             public const string CharAnimations = "char_animations";
+            public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string ObjHookRegulated = "obj_hook_regulated";
             public const string ObjHookMovable = "obj_hook_movable";
             public const string ObjPump = "obj_pump";
@@ -321,6 +330,16 @@ namespace CutTheRope.GameMain
             public const string Bgr14Cover = "bgr_14_cover";
             public const string Bgr14P1 = "bgr_14_p1";
             public const string ObjLantern = "obj_lantern";
+            public const string Bgr15Cover = "bgr_15_cover";
+            public const string Bgr15P1 = "bgr_15_p1";
+            public const string ObjGap = "obj_gap";
+            public const string Bgr16Cover = "bgr_16_cover";
+            public const string Bgr16P1 = "bgr_16_p1";
+            public const string ObjLighter = "obj_lighter";
+            public const string Bgr17Cover = "bgr_17_cover";
+            public const string Bgr17P1 = "bgr_17_p1";
+            public const string BoxLabel = "box_label";
+            public const string ObjTransporter = "obj_transporter";
 
             // Candies
             public const string ObjCandyFx = "candies/obj_candy_fx";
@@ -483,6 +502,20 @@ namespace CutTheRope.GameMain
             public const string SteamEnd = "steam_end";
             public const string LanternTeleportIn = "lantern_teleport_in";
             public const string LanternTeleportOut = "lantern_teleport_out";
+            public const string MouseRustle = "mouse_rustle";
+            public const string MouseTap = "mouse_tap";
+            public const string MouseIdle = "mouse_idle";
+            public const string MonsterSleep1 = "monster_sleep01";
+            public const string MonsterSleep2 = "monster_sleep02";
+            public const string MonsterSleep3 = "monster_sleep03";
+            public const string StarLight1 = "star_light01";
+            public const string StarLight2 = "star_light02";
+            public const string TransporterDrop = "transporter_drop";
+            public const string TransporterMove = "transporter_move";
+            public const string Conv01 = "con01";
+            public const string Conv02 = "con02";
+            public const string Conv03 = "con03";
+            public const string Conv04 = "con04";
         }
 
         /// <summary>
@@ -500,6 +533,7 @@ namespace CutTheRope.GameMain
             public const string GameMusic2 = "game_music2" + Suffix;
             public const string GameMusic3 = "game_music3" + Suffix;
             public const string GameMusic4 = "game_music4" + Suffix;
+            public const string GameMusic5 = "game_music5" + Suffix;
             public const string MenuMusicXmas = "menu_music_xmas" + Suffix;
             public const string GameMusicXmas = "game_music_xmas" + Suffix;
         }

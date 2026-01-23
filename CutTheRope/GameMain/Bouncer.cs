@@ -3,7 +3,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class Bouncer : CTRGameObject
+    internal class Bouncer : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionSetter
     {
         public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
@@ -51,6 +51,24 @@ namespace CutTheRope.GameMain
             b2 = VectRotateAround(b2, angle, x, y);
         }
 
+        public Vector GetConveyorSize()
+        {
+            return Vect(width, height);
+        }
+
+        public float GetConveyorPadding()
+        {
+            Vector size = GetConveyorSize();
+            return (size.x + size.y) / 4f;
+        }
+
+        public void SetConveyorPosition(Vector position)
+        {
+            x = position.x;
+            y = position.y;
+            UpdateRotation();
+        }
+
         public float angle;
 
         public Vector t1;
@@ -62,6 +80,12 @@ namespace CutTheRope.GameMain
         public Vector b2;
 
         public bool skip;
+
+        public int ConveyorId { get; set; } = -1;
+
+        public float? ConveyorBaseScaleX { get; set; }
+
+        public float? ConveyorBaseScaleY { get; set; }
 
         private const int SmallBouncerWidth = 1;
 

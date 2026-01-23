@@ -20,7 +20,8 @@ namespace CutTheRope.GameMain
         string supportResourceName,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
-        bool earthBg)
+        bool earthBg,
+        string boxLabelText)
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
@@ -42,6 +43,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Whether this pack uses earth background animations.</summary>
         public bool EarthBg { get; } = earthBg;
+
+        /// <summary>Localization key for optional box label text (e.g., "the hardest one").</summary>
+        public string BoxLabelText { get; } = boxLabelText;
     }
 
     /// <summary>
@@ -119,6 +123,11 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxHoleBgColor : DefaultBoxHoleBgColor;
         }
 
+        public static string GetBoxLabelText(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].BoxLabelText : null;
+        }
+
         private static List<PackDefinition> LoadFromXml()
         {
             XElement root = XElementExtensions.LoadContentXml("packs.xml");
@@ -150,6 +159,8 @@ namespace CutTheRope.GameMain
 
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
+                string boxLabelText = ParseResourceName(packElement, "boxLabelText");
+
                 results.Add(new PackDefinition(
                     unlockStars,
                     levelCount,
@@ -157,7 +168,8 @@ namespace CutTheRope.GameMain
                     supportResourceName,
                     boxCovers,
                     boxHoleBgColor,
-                    earthBg));
+                    earthBg,
+                    boxLabelText));
             }
 
             return results;

@@ -7,7 +7,7 @@
         boxCover="bgr_01_cover"
         boxHoleBgColor="70,37,0"
         levelCount="25"
-        />
+    />
     <pack
         index="1"
         unlockStars="30"
@@ -15,7 +15,7 @@
         boxCover="bgr_02_cover"
         boxHoleBgColor="39,52,0"
         levelCount="25"
-        />
+    />
     <pack
         index="2"
         unlockStars="80"
@@ -23,7 +23,7 @@
         boxCover="bgr_03_cover"
         boxHoleBgColor="44,45,54"
         levelCount="25"
-        />
+    />
     <pack
         index="3"
         unlockStars="170"
@@ -31,7 +31,7 @@
         boxCover="bgr_04_cover"
         boxHoleBgColor="31,42,84"
         levelCount="25"
-        />
+    />
     <pack
         index="4"
         unlockStars="240"
@@ -39,7 +39,7 @@
         boxCover="bgr_05_cover"
         boxHoleBgColor="69,31,50"
         levelCount="25"
-        />
+    />
     <pack
         index="5"
         unlockStars="300"
@@ -47,7 +47,7 @@
         boxCover="bgr_06_cover"
         boxHoleBgColor="75,33,0"
         levelCount="25"
-        />
+    />
     <pack
         index="6"
         unlockStars="350"
@@ -55,7 +55,7 @@
         boxCover="bgr_07_cover"
         boxHoleBgColor="84,22,0"
         levelCount="25"
-        />
+    />
     <pack
         index="7"
         unlockStars="400"
@@ -64,7 +64,7 @@
         boxHoleBgColor="0,51,78"
         levelCount="25"
         earthBg="true"
-        />
+    />
     <pack
         index="8"
         unlockStars="450"
@@ -72,7 +72,7 @@
         boxCover="bgr_09_cover"
         boxHoleBgColor="98,0,0"
         levelCount="25"
-        />
+    />
     <pack
         index="9"
         unlockStars="500"
@@ -80,7 +80,7 @@
         boxCover="bgr_10_cover"
         boxHoleBgColor="66,40,0"
         levelCount="25"
-        />
+    />
     <pack
         index="10"
         unlockStars="550"
@@ -88,7 +88,7 @@
         boxCover="bgr_11_cover"
         boxHoleBgColor="0,47,90"
         levelCount="25"
-        />
+    />
     <pack
         index="11"
         unlockStars="600"
@@ -96,7 +96,7 @@
         boxCover="bgr_12_cover"
         boxHoleBgColor="0,58,0"
         levelCount="25"
-        />
+    />
     <pack
         index="12"
         unlockStars="650"
@@ -104,7 +104,7 @@
         boxCover="bgr_13_cover"
         boxHoleBgColor="63,42,0"
         levelCount="25"
-        />
+    />
     <pack
         index="13"
         unlockStars="700"
@@ -112,5 +112,30 @@
         boxCover="bgr_14_cover"
         boxHoleBgColor="89,12,0"
         levelCount="25"
-        />
+    />
+    <pack
+        index="14"
+        unlockStars="750"
+        boxBackground="bgr_15_p1,bgr_15_p1"
+        boxCover="bgr_15_cover"
+        boxHoleBgColor="56,45,0"
+        levelCount="25"
+    />
+    <pack
+        index="15"
+        unlockStars="800"
+        boxBackground="bgr_16_p1,bgr_16_p1"
+        boxCover="bgr_16_cover"
+        boxHoleBgColor="37,32,104"
+        levelCount="25"
+    />
+    <pack
+        index="16"
+        unlockStars="850"
+        boxBackground="bgr_17_p1,bgr_17_p1"
+        boxCover="bgr_17_cover"
+        boxHoleBgColor="55,38,62"
+        levelCount="25"
+        boxLabelText="HARDEST_LABEL"
+    />
 </packs>

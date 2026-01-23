@@ -723,7 +723,7 @@ namespace CutTheRope.GameMain
             10, // pack 7
         ];
 
-        // MenuPackSelection2 quads 0-6 are packs 8-14
+        // MenuPackSelection2 quads 0-7 are packs 8-15
         private static readonly int[] PackSelection2QuadMap =
         [
             0, // pack 8
@@ -733,7 +733,10 @@ namespace CutTheRope.GameMain
             4, // pack 12
             5, // pack 13
             6, // pack 14
-            7, // coming soon box
+            7, // pack 15
+            8, // pack 16
+            9, // pack 17
+            10, // coming soon box
         ];
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
@@ -810,6 +813,9 @@ namespace CutTheRope.GameMain
                     11 => "BOX12_LABEL",
                     12 => "BOX13_LABEL",
                     13 => "BOX14_LABEL",
+                    14 => "BOX15_LABEL",
+                    15 => "BOX16_LABEL",
+                    16 => "BOX17_LABEL",
                     _ => "BOX1_LABEL",
                 };
                 string @string = Application.GetString(boxLabelId);
@@ -891,6 +897,25 @@ namespace CutTheRope.GameMain
                     timeline.AddKeyFrame(KeyFrame.MakeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
                     _ = image4.AddTimeline(timeline);
                 }
+            }
+            // Add box label if defined in packs.xml
+            string boxLabelTextKey = PackConfig.GetBoxLabelText(n);
+            if (!string.IsNullOrEmpty(boxLabelTextKey))
+            {
+                Image boxLabel = Image.Image_createWithResIDQuad(Resources.Img.BoxLabel, 0);
+                boxLabel.parentAnchor = boxLabel.anchor = 36; // bottom-right
+                boxLabel.x = -90f;
+                boxLabel.y = -90f;
+                _ = image.AddChild(boxLabel);
+
+                // Add rotated text centered on the label (like button text)
+                Text labelText = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
+                labelText.SetString(Application.GetString(boxLabelTextKey));
+                labelText.scaleX = labelText.scaleY = 0.35f;
+                labelText.SetAlignment(1); // Center alignment
+                labelText.anchor = labelText.parentAnchor = 18; // center-center like buttons
+                labelText.rotation = -16f;
+                _ = boxLabel.AddChild(labelText);
             }
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.anchor = text2.parentAnchor = 10;

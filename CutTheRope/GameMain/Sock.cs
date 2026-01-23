@@ -3,8 +3,12 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Sock : CTRGameObject
+    internal sealed class Sock : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionProvider, IConveyorPositionSetter
     {
+        private const float SockConveyorSizeScale = 0.28f;
+        private static readonly Vector SockConveyorOffset = Vect(-2.1f, 15f);
+        private const float ConveyorPm = 1.2f;
+
         public static Sock Sock_create(CTRTexture2D t)
         {
             return (Sock)new Sock().InitWithTexture(t);
@@ -85,6 +89,37 @@ namespace CutTheRope.GameMain
             }
         }
 
+        public Vector GetConveyorSize()
+        {
+            return Vect(width * SockConveyorSizeScale, height * SockConveyorSizeScale);
+        }
+
+        public float GetConveyorPadding()
+        {
+            Vector size = GetConveyorSize();
+            return (size.x + size.y) / 4f;
+        }
+
+        public Vector GetConveyorPosition()
+        {
+            float pmScale = RotatedCircle.PM / ConveyorPm;
+            Vector offset = Vect(SockConveyorOffset.x * pmScale, SockConveyorOffset.y * pmScale);
+            // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
+            offset = VectRotate(offset, angle);
+            return VectAdd(Vect(x, y), offset);
+        }
+
+        public void SetConveyorPosition(Vector position)
+        {
+            float pmScale = RotatedCircle.PM / ConveyorPm;
+            Vector offset = Vect(SockConveyorOffset.x * pmScale, SockConveyorOffset.y * pmScale);
+            // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
+            offset = VectRotate(offset, angle);
+            Vector adjusted = VectSub(position, offset);
+            x = adjusted.x;
+            y = adjusted.y;
+        }
+
         public const float SOCK_IDLE_TIMOUT = 0.8f;
 
         public const int SOCK_RECEIVING = 0;
@@ -108,5 +143,11 @@ namespace CutTheRope.GameMain
         public float idleTimeout;
         private string XmasSock;
         public Animation light;
+
+        public int ConveyorId { get; set; } = -1;
+
+        public float? ConveyorBaseScaleX { get; set; }
+
+        public float? ConveyorBaseScaleY { get; set; }
     }
 }

@@ -436,6 +436,11 @@ namespace CutTheRope.GameMain
             Resources.Img.ObjSock,
             Resources.Img.ObjPipe,
             Resources.Img.ObjLantern,
+            Resources.Img.ObjGap,
+            Resources.Img.ObjLighter,
+            Resources.Img.CharAnimationsSleeping,
+            Resources.Img.ObjStarNight,
+            Resources.Img.ObjTransporter,
             null
         ];
     }

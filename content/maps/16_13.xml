@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" nightLevel="true" />
+    </layer>
+    <layer name="Objects">
+        <candy x="151" y="368" />
+        <target x="111" y="249" />
+        <lightBulb x="207" y="367" bulbNumber="first" litRadius="50" />
+        <steamTube x="153" y="414" angle="0" />
+        <steamTube x="103" y="414" angle="0" />
+        <steamTube x="206" y="414" angle="0" />
+        <pump x="33" y="128" angle="0" isCloneable="false" />
+        <pump x="287" y="343" angle="180" isCloneable="false" />
+        <star x="164" y="200" timeout="-1" />
+        <star x="194" y="251" timeout="-1" />
+        <star x="131" y="154" timeout="-1" />
+        <steamTube x="107" y="75" angle=" 180" />
+        <steamTube x="157" y="75" angle=" 180" />
+        <steamTube x="210" y="75" angle=" 180" />
+        <gravitySwitch x="275" y="444" />
+        <hiddenElement x="267" y="148" radius="30" />
+        <hidden02 x="42" y="418" angle="97" drawing="19" />
+    </layer>
+</map>

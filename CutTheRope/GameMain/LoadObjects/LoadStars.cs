@@ -15,6 +15,10 @@ namespace CutTheRope.GameMain
         private void LoadStar(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             Star star = Star.Star_createWithResID(Resources.Img.ObjStarIdle);
+            if (nightLevel)
+            {
+                star.EnableNightMode();
+            }
             star.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
             star.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
             star.timeout = xmlNode.AttributeAsNSString("timeout").FloatValue();

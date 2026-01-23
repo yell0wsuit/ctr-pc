@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map height="480" gridSize="32" width="320" />
+        <gameDesign nightLevel="false" ropePhysicsSpeed="1" special="5" twoParts="false" />
+    </layer>
+    <layer name="Nl">
+        <tutorialText text="Versleep de Band om er een voorwerp op te laten bewegen" x="20" y="150" height="60" locale="nl" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="245" locale="nl" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="nl" />
+    </layer>
+    <layer name="Br">
+        <tutorialText text="Arraste a esteira para mover os objetos que estão nela" x="20" y="160" height="60" locale="br" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="br" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="br" />
+    </layer>
+    <layer name="It">
+        <tutorialText text="Trascina la cintura per usarla per spostare gli oggetti" x="20" y="150" height="60" locale="it" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="245" locale="it" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="it" />
+    </layer>
+    <layer name="Ja">
+        <tutorialText text="ベルトを *ドラッグして、 *目標の*下に *動かしてね。" x="5" y="150" height="60" locale="ja" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="245" locale="ja" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="ja" />
+    </layer>
+    <layer name="De">
+        <tutorialText text="Ziehe das Band, um Objekte zu bewegen." x="20" y="160" height="60" locale="de" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="de" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="de" />
+    </layer>
+    <layer name="Es">
+        <tutorialText text="Arrastra la cinta para mover objetos con ella" x="20" y="160" height="60" locale="es" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="es" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="es" />
+    </layer>
+    <layer name="En">
+        <tutorialText text="Drag the belt to move objects with it" x="20" y="160" height="60" locale="en" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="en" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="en" />
+    </layer>
+    <layer name="Ko">
+        <tutorialText text="컨베이어로 물건을 *옮기려면 벨트를 *드래그하세요." x="20" y="150" height="60" locale="ko" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="245" locale="ko" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="ko" />
+    </layer>
+    <layer name="Fr">
+        <tutorialText text="Faites glisser le tapis pour déplacer des objets" x="20" y="160" height="60" locale="fr" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="fr" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="fr" />
+    </layer>
+    <layer name="Ru">
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="ru" />
+        <tutorialText text="Конвейер двигает объекты на нём." x="20" y="160" height="60" locale="ru" width="150" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="ru" />
+    </layer>
+    <layer name="Objects">
+        <transporter velocity="10" direction="forward" length="275" angle="25" x="35" y="379" type="manual" width="55" />
+        <bubble x="215" y="292" />
+        <star x="88" y="131" timeout="-1" />
+        <target x="88" y="64" />
+        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="L" hidePath="false" moveOffset="0" moveVertical="false" length="100" x="153" bulbNumber="first" y="62" moveLength="-1" radius="-1" />
+        <candy x="208" y="175" />
+        <star x="88" y="405" timeout="-1" />
+        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="L" hidePath="false" moveOffset="0" moveVertical="false" length="100" x="275" bulbNumber="first" y="62" moveLength="-1" radius="-1" />
+        <star x="88" y="288" timeout="-1" />
+        <hiddenElement x="210" y="63" />
+    </layer>
+    <layer name="Zh">
+        <tutorialText text="拖动传送带，*移动它上面的物体" x="20" y="160" height="60" locale="zh" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="zh" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="zh" />
+    </layer>
+</map>

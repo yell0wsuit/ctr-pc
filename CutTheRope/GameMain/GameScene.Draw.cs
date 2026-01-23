@@ -76,11 +76,20 @@ namespace CutTheRope.GameMain
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
             gravityButton?.Draw();
+            miceManager?.DrawHoles();
             OpenGL.GlColor4f(Color.White);
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             support.Draw();
             target.Draw();
+            if (sleepAnimPrimary?.visible == true)
+            {
+                sleepAnimPrimary.Draw();
+            }
+            if (sleepAnimSecondary?.visible == true)
+            {
+                sleepAnimSecondary.Draw();
+            }
             foreach (object obj2 in tutorials)
             {
                 ((Text)obj2).Draw();
@@ -97,6 +106,7 @@ namespace CutTheRope.GameMain
             {
                 ((RotatedCircle)obj5).Draw();
             }
+            conveyors.Draw();
             foreach (object obj6 in bubbles)
             {
                 ((GameObject)obj6).Draw();
@@ -113,6 +123,7 @@ namespace CutTheRope.GameMain
             {
                 ((Bouncer)obj9).Draw();
             }
+            miceManager?.DrawMice();
             foreach (object obj10 in socks)
             {
                 Sock sock = (Sock)obj10;
@@ -150,6 +161,10 @@ namespace CutTheRope.GameMain
                 ((Grab)obj12).Draw();
             }
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            foreach (LightBulb bulb in lightBulbs)
+            {
+                bulb?.DrawLight();
+            }
             foreach (object obj13 in stars)
             {
                 ((GameObject)obj13).Draw();
@@ -184,6 +199,10 @@ namespace CutTheRope.GameMain
                     candyR.Draw();
                 }
             }
+            foreach (LightBulb bulb in lightBulbs)
+            {
+                bulb?.DrawBottleAndFirefly();
+            }
             foreach (SteamTube steamTube2 in tubes)
             {
                 steamTube2?.DrawFront();
@@ -205,10 +224,6 @@ namespace CutTheRope.GameMain
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
             staticAniPool.Draw();
-            if (nightLevel)
-            {
-                OpenGL.GlDisable(OpenGL.GL_SCISSOR_TEST);
-            }
             PostDraw();
         }
 
