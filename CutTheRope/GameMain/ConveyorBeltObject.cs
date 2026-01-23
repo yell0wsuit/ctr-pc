@@ -8,17 +8,28 @@ using static CutTheRope.Framework.Helpers.CTRMathHelper;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Manages a collection of conveyor belts in a level, handling their updates, rendering,
+    /// item attachment, and coordinating pointer input across overlapping belts.
+    /// </summary>
     internal sealed class ConveyorBeltObject
     {
         private readonly Dictionary<int, Vector> pointerPositions = [];
         private readonly List<ConveyorBelt> list = [];
         private bool needsSort;
 
+        /// <summary>
+        /// Gets the number of conveyor belts in this collection.
+        /// </summary>
+        /// <returns>The count of belts.</returns>
         public int Count()
         {
             return list.Count;
         }
 
+        /// <summary>
+        /// Removes all conveyor belts and resets the collection state.
+        /// </summary>
         public void Clear()
         {
             list.Clear();
@@ -26,16 +37,27 @@ namespace CutTheRope.GameMain
             needsSort = false;
         }
 
+        /// <summary>
+        /// Adds a conveyor belt to the collection.
+        /// </summary>
+        /// <param name="belt">The belt to add.</param>
         public void Push(ConveyorBelt belt)
         {
             list.Add(belt);
         }
 
+        /// <summary>
+        /// Returns an enumerable for iterating over all belts in the collection.
+        /// </summary>
+        /// <returns>An enumerable of conveyor belts.</returns>
         public IEnumerable<ConveyorBelt> Iterator()
         {
             return list;
         }
 
+        /// <summary>
+        /// Draws all conveyor belts in the collection.
+        /// </summary>
         public void Draw()
         {
             foreach (ConveyorBelt belt in list)
@@ -44,6 +66,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Attaches a collection of items to any belts they overlap with.
+        /// </summary>
+        /// <param name="items">The items to attach.</param>
         public void AttachItems(IEnumerable<BaseElement> items)
         {
             foreach (BaseElement item in items)
@@ -56,6 +82,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Processes items to handle transitions between manual and automatic belts.
+        /// </summary>
+        /// <param name="items">The items to process.</param>
         public void ProcessItems(IEnumerable<BaseElement> items)
         {
             foreach (BaseElement item in items)
@@ -68,6 +98,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Updates all conveyor belts and performs deferred sorting if needed.
+        /// </summary>
+        /// <param name="deltaTime">The time elapsed since the last frame in seconds.</param>
         public void Update(float deltaTime)
         {
             foreach (ConveyorBelt belt in list)
@@ -82,6 +116,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Removes an item from all belts in the collection.
+        /// </summary>
+        /// <param name="item">The item to remove.</param>
         public void Remove(BaseElement item)
         {
             foreach (ConveyorBelt belt in list)
@@ -90,6 +128,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Handles pointer down events, storing the position for later direction detection.
+        /// </summary>
+        /// <param name="pointerX">The x-coordinate of the pointer.</param>
+        /// <param name="pointerY">The y-coordinate of the pointer.</param>
+        /// <param name="pointerId">The unique identifier of the pointer.</param>
+        /// <returns>True if a belt captured the pointer; false otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
             for (int i = list.Count - 1; i >= 0; i--)
@@ -104,6 +149,13 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Handles pointer up events, releasing any captured belt.
+        /// </summary>
+        /// <param name="pointerX">The x-coordinate of the pointer.</param>
+        /// <param name="pointerY">The y-coordinate of the pointer.</param>
+        /// <param name="pointerId">The unique identifier of the pointer.</param>
+        /// <returns>True if a belt released the pointer; false otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
             for (int i = list.Count - 1; i >= 0; i--)
@@ -118,6 +170,14 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Handles pointer move events. When the drag exceeds a threshold, selects the belt
+        /// whose direction best matches the drag direction for disambiguation.
+        /// </summary>
+        /// <param name="pointerX">The x-coordinate of the pointer.</param>
+        /// <param name="pointerY">The y-coordinate of the pointer.</param>
+        /// <param name="pointerId">The unique identifier of the pointer.</param>
+        /// <returns>True if a belt handled the movement; false otherwise.</returns>
         public bool OnPointerMove(float pointerX, float pointerY, int pointerId)
         {
             if (pointerPositions.TryGetValue(pointerId, out Vector start))
@@ -166,6 +226,9 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Attaches an item to all belts that contain its position.
+        /// </summary>
         private void AttachItemToBelts(BaseElement item)
         {
             Vector position = ConveyorBelt.GetItemPosition(item);
@@ -178,6 +241,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Processes an item to handle belt transitions. Items on manual belts can transfer
+        /// to active manual belts or automatic belts when overlapping.
+        /// </summary>
         private void ProcessItem(BaseElement item)
         {
             ConveyorBelt manualBelt = null;
@@ -219,6 +286,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Transfers an item to a new belt, marking it for removal from all other belts.
+        /// </summary>
         private void MoveItemToBelt(ConveyorBelt belt, BaseElement item)
         {
             if (!belt.HasItem(item) || belt.IsItemMarkedForRemoval(item))
@@ -236,6 +306,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Sorts belts so that active manual belts have higher priority, followed by all manual belts.
+        /// This ensures proper input handling when belts overlap.
+        /// </summary>
         public void SortBelts()
         {
             int end = Count() - 1;
@@ -253,6 +327,9 @@ namespace CutTheRope.GameMain
             SortByManualFlag();
         }
 
+        /// <summary>
+        /// Secondary sort pass that moves all manual belts to the end of the list.
+        /// </summary>
         private void SortByManualFlag()
         {
             int end = Count() - 1;
@@ -269,11 +346,17 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Swaps two belts in the list by their indices.
+        /// </summary>
         private void SwapBelts(int fromIndex, int toIndex)
         {
             (list[toIndex], list[fromIndex]) = (list[fromIndex], list[toIndex]);
         }
 
+        /// <summary>
+        /// Requests a deferred sort of the belt list on the next update.
+        /// </summary>
         private void RequestSort()
         {
             needsSort = true;
