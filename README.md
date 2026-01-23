@@ -23,23 +23,25 @@ Please note that the game is only available on Windows 10 and later. More platfo
 
 ## Features
 
-- More boxes beyond DJ Box, ported from the Windows Phone version (up to Lantern Box).
+- More boxes beyond DJ Box, from Spooky Box to Mechanical Box.
 - Seasonal Christmas theme and decorations, available during December and January.
 - **Dynamic level UI**, supports variable numbers of levels. Currently, the code only supports fewer than 25 levels.
 - Support loading custom sprites and animations from [TexturePacker](https://www.codeandweb.com/texturepacker) in JSON array format. This allows easier modding and adding new assets.
 - Improved experience and bug fixes over the original PC version.
+- Better save file format. The save file (`ctr_preferences.json`) is stored in a `CutTheRopeDX_SaveData` folder, with the following fallback priority:
+  - Next to the game executable (preferred for portability)
+  - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
+  - `%LOCALAPPDATA%/CutTheRopeDX_SaveData` (Windows) or equivalent on other platforms
 
 ## Goals
 
 ### Short-term goals
 
-- [ ] **Add more boxes**, up to Lantern Box pack.
-  - Later packs are **not** planned.
-- [ ] **Cross-platform support**: Switch to cross-platform building.
-- [ ] **Video player**: Implement video player for intro and outro cutscenes for cross-platform support.
+Please see [issue #68](https://github.com/yell0wsuit/cuttherope-dx/issues/68) for the current short-term goals.
 
 ### Long-term goals
 
+- [ ] **Cross-platform video support**: Enable video playback on Linux (and macOS).
 - [ ] **Bug fixing and polish**: Fix bugs, and ensure everything works smoothly.
 - [ ] **Code optimization and modernization**: Optimize performance-critical code, and modernize codebase.
 
@@ -55,7 +57,7 @@ The development of *Cut the Rope: DX* is an ongoing process, and contributions a
 
 To test the game during the development process, follow these steps:
 
-1. Ensure you have [.NET 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) installed on your machine.
+1. Ensure you have [latest .NET](https://dotnet.microsoft.com/en-us/download/dotnet/) installed on your machine.
 
 2. Clone the repository to your PC:
 
@@ -66,12 +68,16 @@ To test the game during the development process, follow these steps:
 
     You can also use [GitHub Desktop](https://desktop.github.com/) for ease of cloning.
 
-3. Run the following commands:
+3. For most cases, you can build the game using the following commands:
 
-   ```bash
-   # Build the executable
-   dotnet build
+    ```bash
+    # Windows
+    # Only applicable for Windows, cannot be used on macOS or Linux
+    dotnet build CutTheRope\CutTheRope.csproj -c Release -f net9.0-windows -o .\CutTheRope\bin\Publish\win-x64
 
-   # Format code according to .NET standards
-   dotnet format
-   ```
+    # macOS
+    dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net9.0 -r osx-arm64 -o .\CutTheRope\bin\Publish\osx-arm64
+
+    # Linux
+    dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net9.0 -r linux-x64 -o .\CutTheRope\bin\Publish\linux-x64
+    ```
