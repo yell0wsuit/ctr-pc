@@ -877,7 +877,7 @@ namespace CutTheRope.GameMain
                     packPerfect.y = -100f;
                     _ = image.AddChild(packPerfect);
                 }
-                if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
+                if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED && n != CTRPreferences.GetPacksCount())
                 {
                     Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 2);
                     image4.SetName("lockHideMe");
