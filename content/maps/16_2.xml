@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" nightLevel="true" />
+    </layer>
+    <layer name="Objects">
+        <target x="160" y="409" />
+        <candy x="44" y="309" />
+        <lightBulb x="261" y="159" bulbNumber="first" litRadius="65" />
+        <grab x="262" y="68" length="60" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="130" moveVertical="false" moveOffset="130" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <bubble x="97" y="366" />
+        <grab x="46" y="193" length="80" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <grab x="156" y="308" length="80" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <grab x="50" y="423" length="80" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <star x="86" y="194" timeout="-1" />
+        <star x="167" y="196" timeout="-1" />
+        <star x="126" y="195" timeout="-1" />
+        <hiddenElement x="257" y="411" radius="30" />
+    </layer>
+    <layer name="en">
+        <tutorial04 x="139" y="253" locale="en" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="157" y="215" locale="en" text="Illuminate stars to activate them" width="140" />
+    </layer>
+    <layer name="ru">
+        <tutorial04 x="139" y="255" locale="ru" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="162" y="215" locale="ru" text="Посветите на звезды, чтобы их активировать" width="140" />
+    </layer>
+    <layer name="fr">
+        <tutorial04 x="139" y="253" locale="fr" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="160" y="216" locale="fr" text="Éclairez les étoiles pour les activer" width="140" />
+    </layer>
+    <layer name="de">
+        <tutorial04 x="140" y="254" locale="de" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="159" y="216" locale="de" text="Beleuchte die Sterne, um sie zu aktivieren" width="140" />
+    </layer>
+    <layer name="es">
+        <tutorial04 x="140" y="254" locale="es" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="158" y="217" locale="es" text="Ilumina a las estrellas para activarlas" width="140" />
+    </layer>
+    <layer name="it">
+        <tutorial04 x="140" y="254" locale="it" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="159" y="225" locale="it" text="Illumina le stelle per attivarle" width="140" />
+    </layer>
+    <layer name="nl">
+        <tutorial04 x="139" y="253" locale="nl" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="171" y="223" locale="nl" text="Schijn op sterren om ze te activeren" width="120" />
+    </layer>
+    <layer name="br">
+        <tutorial04 x="139" y="252" locale="br" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="162" y="226" locale="br" text="Ilumine estrelas para ativá-las" width="140" />
+    </layer>
+    <layer name="ko">
+        <tutorial04 x="139" y="254" locale="ko" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="168" y="232" locale="ko" text="별에 조명을 비춰 움직이게 하세요" width="120" />
+    </layer>
+    <layer name="zh">
+        <tutorial04 x="137" y="253" locale="zh" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="173" y="229" locale="zh" text="照亮星星 即可激活" width="120" />
+    </layer>
+    <layer name="ja">
+        <tutorial04 x="137" y="254" locale="ja" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="157" y="231" locale="ja" text="スターに*光を当て て*アクティブ化する" width="150" />
+    </layer>
+</map>

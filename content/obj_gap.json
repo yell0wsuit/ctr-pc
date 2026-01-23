@@ -1,0 +1,197 @@
+{
+    "frames": [
+        {
+            "filename": "cheese_hole.png",
+            "frame": { "x": 1, "y": 1, "w": 167, "h": 174 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 291, "y": 287, "w": 167, "h": 174 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0000.png",
+            "frame": { "x": 323, "y": 234, "w": 25, "h": 15 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 364, "y": 404, "w": 25, "h": 15 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0001.png",
+            "frame": { "x": 377, "y": 234, "w": 26, "h": 9 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 363, "y": 407, "w": 26, "h": 9 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0002.png",
+            "frame": { "x": 170, "y": 145, "w": 36, "h": 20 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 358, "y": 401, "w": 36, "h": 20 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0003.png",
+            "frame": { "x": 377, "y": 234, "w": 26, "h": 9 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 363, "y": 407, "w": 26, "h": 9 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0004.png",
+            "frame": { "x": 323, "y": 234, "w": 25, "h": 15 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 364, "y": 404, "w": 25, "h": 15 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0005.png",
+            "frame": { "x": 350, "y": 234, "w": 25, "h": 10 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 364, "y": 407, "w": 25, "h": 10 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0006.png",
+            "frame": { "x": 170, "y": 145, "w": 36, "h": 20 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 358, "y": 401, "w": 36, "h": 20 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0007.png",
+            "frame": { "x": 350, "y": 234, "w": 25, "h": 10 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 364, "y": 407, "w": 25, "h": 10 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "eyes/0008.png",
+            "frame": { "x": 323, "y": 234, "w": 25, "h": 15 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 364, "y": 404, "w": 25, "h": 15 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "idle.png",
+            "frame": { "x": 436, "y": 169, "w": 125, "h": 81 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 311, "y": 370, "w": 125, "h": 81 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0000.png",
+            "frame": { "x": 436, "y": 132, "w": 96, "h": 34 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 326, "y": 417, "w": 96, "h": 34 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0001.png",
+            "frame": { "x": 1, "y": 177, "w": 113, "h": 71 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 318, "y": 380, "w": 113, "h": 71 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0002.png",
+            "frame": { "x": 323, "y": 143, "w": 111, "h": 89 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 317, "y": 362, "w": 111, "h": 89 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0003.png",
+            "frame": { "x": 563, "y": 169, "w": 92, "h": 62 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 331, "y": 388, "w": 92, "h": 62 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0004.png",
+            "frame": { "x": 535, "y": 1, "w": 117, "h": 126 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 316, "y": 326, "w": 117, "h": 126 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0005.png",
+            "frame": { "x": 170, "y": 1, "w": 111, "h": 142 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 318, "y": 309, "w": 111, "h": 142 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0006.png",
+            "frame": { "x": 210, "y": 145, "w": 111, "h": 97 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 317, "y": 354, "w": 111, "h": 97 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0007.png",
+            "frame": { "x": 535, "y": 129, "w": 98, "h": 38 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 326, "y": 413, "w": 98, "h": 38 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0008.png",
+            "frame": { "x": 406, "y": 1, "w": 127, "h": 129 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 310, "y": 322, "w": 127, "h": 129 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0009.png",
+            "frame": { "x": 283, "y": 1, "w": 121, "h": 140 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 313, "y": 311, "w": 121, "h": 140 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0010.png",
+            "frame": { "x": 116, "y": 177, "w": 92, "h": 69 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 331, "y": 381, "w": 92, "h": 69 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "mouse/0011.png",
+            "frame": { "x": 210, "y": 244, "w": 3, "h": 3 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 3, "h": 3 },
+            "sourceSize": { "w": 749, "h": 749 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_gap.png",
+        "format": "RGBA8888",
+        "size": { "w": 656, "h": 251 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:93eac94a9b120b58710fe853978309c7:c58e2252dbaf6c8462c530444e355916:6ccc2395d1b5f7217e8daa03435ff880$"
+    }
+}

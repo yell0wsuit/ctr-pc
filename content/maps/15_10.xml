@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <candy x="87" y="416" />
+        <gap x="89" y="44" angle="180" radius="50" activeTime="2.0" index="2" />
+        <gap x="87" y="448" angle="0" radius="50" activeTime="2.0" index="1" />
+        <star x="29" y="357" path="100,0" moveSpeed="40" timeout="-1" />
+        <star x="50" y="365" path="100,0" moveSpeed="40" timeout="-1" />
+        <star x="40" y="338" path="100,0" moveSpeed="40" timeout="-1" />
+        <target x="261" y="353" />
+        <sock x="22" y="188" group="1" angle="270" path="150,0" moveSpeed="70" />
+        <sock x="177" y="256" group="0" angle="270" path="-150,0" moveSpeed="60" />
+        <sock x="19" y="120" group="0" angle="270" path="150,0" moveSpeed="85" />
+        <sock x="261" y="418" group="1" angle="270" />
+        <hiddenElement x="263" y="137" radius="30" />
+    </layer>
+</map>

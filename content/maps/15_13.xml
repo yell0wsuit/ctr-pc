@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
+    </layer>
+    <layer name="Objects">
+        <candy x="157" y="160" />
+        <target x="64" y="427" />
+        <gap x="250" y="274" angle="0" radius="50" activeTime="1.0" index="1" />
+        <gap x="67" y="276" angle="0" radius="50" activeTime="1.0" index="2" />
+        <grab x="58" y="161" length="75" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="159" y="50" length="75" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <star x="157" y="372" timeout="-1" />
+        <star x="25" y="161" path="60,0" moveSpeed="30" timeout="-1" />
+        <star x="301" y="163" path="-60,0" moveSpeed="30" timeout="-1" />
+        <grab x="158" y="264" length="75" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="263" y="162" length="75" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <gap x="255" y="63" angle="0" radius="50" activeTime="1.0" index="4" />
+        <gap x="66" y="67" angle="0" radius="50" activeTime="1.0" index="3" />
+        <spike1 x="109" y="120" angle="40" size="1" toggled="false" />
+        <spike1 x="203" y="123" angle="-40" size="1" toggled="false" />
+        <spike1 x="199" y="203" angle="40" size="1" toggled="false" />
+        <spike1 x="105" y="202" angle="-40" size="1" toggled="false" />
+        <hiddenElement x="158" y="51" radius="30" />
+        <hidden03 x="258" y="399" drawing="19" />
+    </layer>
+</map>

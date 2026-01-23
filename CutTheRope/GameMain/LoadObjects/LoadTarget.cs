@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
@@ -40,6 +41,10 @@ namespace CutTheRope.GameMain
 
             target.AddImage(Resources.Img.CharAnimations2);
             target.AddImage(Resources.Img.CharAnimations3);
+            if (nightLevel)
+            {
+                target.AddImage(Resources.Img.CharAnimationsSleeping);
+            }
             if (SpecialEvents.IsXmas)
             {
                 target.AddImage(Resources.Img.CharGreetingXmas);
@@ -110,6 +115,50 @@ namespace CutTheRope.GameMain
             target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations2, 4, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 20, 46);
             target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations3, 5, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
 
+            if (nightLevel)
+            {
+                target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimationsSleeping, CharAnimationSleeping, SleepAnimFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, SleepAnimStart, SleepAnimEnd);
+
+                List<int> zzzFrames = [];
+                for (int frame = SleepZzzStart; frame <= SleepZzzEnd; frame++)
+                {
+                    zzzFrames.Add(frame);
+                }
+                List<int> zzzHold = [];
+                for (int i = 0; i < 15; i++)
+                {
+                    zzzHold.Add(SleepZzzStart);
+                }
+                List<int> zzzPrimarySequence = [];
+                zzzPrimarySequence.AddRange(zzzFrames);
+                zzzPrimarySequence.AddRange(zzzHold);
+                List<int> zzzSecondarySequence = [];
+                zzzSecondarySequence.AddRange(zzzHold);
+                zzzSecondarySequence.AddRange(zzzFrames);
+
+                List<int> zzzPrimaryTail = zzzPrimarySequence.Count > 1 ? zzzPrimarySequence.GetRange(1, zzzPrimarySequence.Count - 1) : [];
+                List<int> zzzSecondaryTail = zzzSecondarySequence.Count > 1 ? zzzSecondarySequence.GetRange(1, zzzSecondarySequence.Count - 1) : [];
+
+                sleepAnimPrimary = Animation.Animation_createWithResID(Resources.Img.CharAnimationsSleeping);
+                sleepAnimPrimary.anchor = sleepAnimPrimary.parentAnchor = 18;
+                sleepAnimPrimary.DoRestoreCutTransparency();
+                sleepAnimPrimary.AddAnimationWithIDDelayLoopCountSequence(0, 1f / 30f, Timeline.LoopType.TIMELINE_REPLAY, zzzPrimarySequence.Count, zzzPrimarySequence[0], zzzPrimaryTail);
+                sleepAnimPrimary.PlayTimeline(0);
+                sleepAnimPrimary.visible = false;
+
+                sleepAnimSecondary = Animation.Animation_createWithResID(Resources.Img.CharAnimationsSleeping);
+                sleepAnimSecondary.anchor = sleepAnimSecondary.parentAnchor = 18;
+                sleepAnimSecondary.DoRestoreCutTransparency();
+                sleepAnimSecondary.AddAnimationWithIDDelayLoopCountSequence(0, 1f / 30f, Timeline.LoopType.TIMELINE_REPLAY, zzzSecondarySequence.Count, zzzSecondarySequence[0], zzzSecondaryTail);
+                sleepAnimSecondary.PlayTimeline(0);
+                sleepAnimSecondary.visible = false;
+            }
+            else
+            {
+                sleepAnimPrimary = null;
+                sleepAnimSecondary = null;
+            }
+
             // Setup animation transitions
             target.SwitchToAnimationatEndOfAnimationDelay(9, 6, 0.05f);
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations2, 4, Resources.Img.CharAnimations, 8, 0.05f);
@@ -126,10 +175,13 @@ namespace CutTheRope.GameMain
                 target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, 0, Resources.Img.CharIdleXmas, 13, 0.05f);
             }
 
-            // Show greeting if needed
+            // Show greeting if needed (skip for night levels)
             if (CTRRootController.IsShowGreeting())
             {
-                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
+                if (!nightLevel)
+                {
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
+                }
                 CTRRootController.SetShowGreeting(false);
             }
 

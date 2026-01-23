@@ -28,10 +28,69 @@ namespace CutTheRope.GameMain
             }
         }
 
+        private void DropLightBulbFromSock(LightBulb bulb)
+        {
+            if (bulb == null || bulb.attachedSock == null)
+            {
+                return;
+            }
+
+            Sock sock = bulb.attachedSock;
+            if (sock.light != null)
+            {
+                sock.light.PlayTimeline(0);
+                sock.light.visible = true;
+            }
+
+            Vector v = Vect(0f, -16f);
+            v = VectRotate(v, (double)DEGREES_TO_RADIANS(sock.rotation));
+            bulb.constraint.pos.x = sock.x;
+            bulb.constraint.pos.y = sock.y;
+            bulb.constraint.pos = VectAdd(bulb.constraint.pos, v);
+            bulb.constraint.prevPos.x = bulb.constraint.pos.x;
+            bulb.constraint.prevPos.y = bulb.constraint.pos.y;
+            bulb.constraint.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(sock.rotation)), bulb.sockSpeed);
+            bulb.constraint.posDelta = VectDiv(bulb.constraint.v, 60f);
+            bulb.constraint.prevPos = VectSub(bulb.constraint.pos, bulb.constraint.posDelta);
+            bulb.attachedSock = null;
+            bulb.sockSpeed = 0f;
+            bulb.SyncToConstraint();
+        }
+
         public void AnimateLevelRestart()
         {
             restartState = 0;
             dimTime = 0.15f;
+        }
+
+        private void ReleaseLightBulbRopes(LightBulb bulb)
+        {
+            if (bulb == null)
+            {
+                return;
+            }
+
+            int num = bungees.Count;
+            for (int i = 0; i < num; i++)
+            {
+                Grab grab = bungees.ObjectAtIndex(i);
+                Bungee rope = grab.rope;
+                if (rope != null && rope.tail == bulb.constraint)
+                {
+                    if (rope.cut == -1)
+                    {
+                        rope.SetCut(rope.parts.Count - 2);
+                    }
+                    else
+                    {
+                        rope.hideTailParts = true;
+                    }
+                    if (grab.hasSpider && grab.spiderActive)
+                    {
+                        SpiderBusted(grab);
+                    }
+                }
+            }
         }
 
         public void ReleaseAllRopes(bool left)
@@ -71,6 +130,16 @@ namespace CutTheRope.GameMain
         public void GameWon()
         {
             dd.CancelAllDispatches();
+
+            // Hide sleep animations and reset sleep state for night levels
+            SetNightSleepVisibility(false);
+            sleepPulseActive = false;
+            sleepSoundTimer = 0f;
+            target.scaleX = 1f;
+            target.scaleY = 1f;
+            target.rotationCenterX = 0f;
+            target.rotationCenterY = 0f;
+
             target.PlayTimeline(6);
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterChewing);
             if (candyBubble != null)
@@ -95,15 +164,59 @@ namespace CutTheRope.GameMain
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2.0);
             CalculateScore();
             ReleaseAllRopes(false);
+
+            // Make the mouse retreat and lock it from advancing to next mouse
+            if (miceManager != null && mice != null)
+            {
+                foreach (object obj in mice)
+                {
+                    if (obj is Mouse mouse && mouse.IsActive)
+                    {
+                        mouse.BeginRetreat();
+                        break;
+                    }
+                }
+            }
+            miceManager?.LockActiveMouse();
         }
 
         public void GameLost()
         {
+            if (gameLostTriggered)
+            {
+                return;
+            }
+            gameLostTriggered = true;
+
             dd.CancelAllDispatches();
+
+            // Hide sleep animations and reset sleep state for night levels
+            SetNightSleepVisibility(false);
+            sleepPulseActive = false;
+            sleepSoundTimer = 0f;
+            target.scaleX = 1f;
+            target.scaleY = 1f;
+            target.rotationCenterX = 0f;
+            target.rotationCenterY = 0f;
+
             target.PlayAnimationtimeline(Resources.Img.CharAnimations3, 5);
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
             gameSceneDelegate.GameLost();
+
+            // Make the mouse retreat and lock it from advancing to next mouse
+            if (miceManager != null && mice != null)
+            {
+                foreach (object obj in mice)
+                {
+                    if (obj is Mouse mouse && mouse.IsActive)
+                    {
+                        mouse.BeginRetreat();
+                        break;
+                    }
+                }
+            }
+            miceManager?.LockActiveMouse();
         }
 
         public void PopCandyBubble(bool left)
@@ -194,6 +307,24 @@ namespace CutTheRope.GameMain
             animation.GetTimeline(i).delegateTimelineDelegate = aniPool;
             animation.PlayTimeline(0);
             _ = aniPool.AddChild(animation);
+        }
+
+        private void PopLightBulbBubble(LightBulb bulb)
+        {
+            if (bulb?.capturingBubble == null)
+            {
+                return;
+            }
+
+            EnableGhostCycleForBubble(bulb.capturingBubble);
+            bulb.capturingBubble.capturedByBulb = false;
+            bulb.capturingBubble.popped = true;
+            bulb.capturingBubble.RemoveChildWithID(0);
+            conveyors.Remove(bulb.capturingBubble);
+            bulb.capturingBubble = null;
+            bulb.capturingGhostBubble = false;
+
+            PopBubbleAtXY(bulb.x, bulb.y);
         }
 
         public void ResetBungeeHighlight()

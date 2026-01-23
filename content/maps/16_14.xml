@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" nightLevel="true" />
+    </layer>
+    <layer name="Objects">
+        <candy x="208" y="83" />
+        <lightBulb x="69" y="334" bulbNumber="first" litRadius="50" />
+        <grab x="74" y="83" length="50" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <grab x="295" y="82" length="50" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="false" bulbNumber="first" />
+        <grab x="66" y="473" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <grab x="72" y="197" length="70" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" bindBulb="true" bulbNumber="first" />
+        <star x="102" y="120" timeout="-1" />
+        <target x="263" y="331" />
+        <sock x="117" y="205" group="1" angle="270" />
+        <sock x="264" y="244" group="1" angle="90" />
+        <star x="281" y="277" timeout="-1" />
+        <star x="250" y="276" timeout="-1" />
+        <bubble x="264" y="450" />
+        <hiddenElement x="185" y="230" radius="30" />
+    </layer>
+</map>

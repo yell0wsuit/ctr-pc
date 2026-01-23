@@ -155,6 +155,13 @@ namespace CutTheRope.GameMain
                                     bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee);
+
+                                    // If mouse already has this candy, immediately cut the rope
+                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                    {
+                                        bungee.SetCut(bungee.parts.Count - 2);
+                                    }
+
                                     CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                                     if (grab.mover != null)
                                     {
@@ -167,6 +174,13 @@ namespace CutTheRope.GameMain
                                     bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee2);
+
+                                    // If mouse already has this candy, immediately cut the rope
+                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                    {
+                                        bungee2.SetCut(bungee2.parts.Count - 2);
+                                    }
+
                                     CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                                     if (grab.mover != null)
                                     {
@@ -180,10 +194,40 @@ namespace CutTheRope.GameMain
                                 bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee3);
+
+                                // If mouse already has this candy, immediately cut the rope
+                                if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                {
+                                    bungee3.SetCut(bungee3.parts.Count - 2);
+                                }
+
                                 CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                                 if (grab.mover != null)
                                 {
                                     CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                }
+                            }
+                            if (grab.rope == null && lightBulbs.Count > 0)
+                            {
+                                foreach (LightBulb bulb in lightBulbs)
+                                {
+                                    if (bulb == null || bulb.attachedSock != null)
+                                    {
+                                        continue;
+                                    }
+                                    if (VectDistance(Vect(grab.x, grab.y), bulb.constraint.pos) <= grab.radius + 42f)
+                                    {
+                                        Bungee bungeeBulb = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, bulb.constraint, bulb.constraint.pos.x, bulb.constraint.pos.y, grab.radius + 42f);
+                                        bungeeBulb.bungeeAnchor.pin = bungeeBulb.bungeeAnchor.pos;
+                                        grab.hideRadius = true;
+                                        grab.SetRope(bungeeBulb);
+                                        CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+                                        if (grab.mover != null)
+                                        {
+                                            CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -230,7 +274,7 @@ namespace CutTheRope.GameMain
                                     }
                                     gameObject.rotation = num9 + rope.initialCandleAngle;
                                 }
-                                else
+                                else if (!noCandy && constraintedPoint2 == star)
                                 {
                                     if (!rope.chosenOne)
                                     {
@@ -425,6 +469,24 @@ namespace CutTheRope.GameMain
                 }
             }
             target.Update(delta);
+            UpdateLightBulbPhysics(delta);
+            UpdateNightLevel(delta);
+            if (delta > 0f)
+            {
+                float remaining = delta;
+                while (remaining > 0f)
+                {
+                    float step = Math.Min(0.01f, remaining);
+                    conveyors.Update(step);
+                    conveyors.ProcessItems(bubbles);
+                    conveyors.ProcessItems(stars);
+                    conveyors.ProcessItems(bouncers);
+                    conveyors.ProcessItems(socks);
+                    conveyors.ProcessItems(tubes);
+                    conveyors.ProcessItems(pumps);
+                    remaining -= step;
+                }
+            }
             if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
             {
                 foreach (object obj2 in stars)
@@ -435,10 +497,16 @@ namespace CutTheRope.GameMain
                     {
                         star.GetTimeline(1).delegateTimelineDelegate = aniPool;
                         _ = aniPool.AddChild(star);
+                        conveyors.Remove(star);
                         stars.RemoveObject(star);
                         star.timedAnim.PlayTimeline(1);
                         star.PlayTimeline(1);
                         break;
+                    }
+                    bool canCollect = !nightLevel || star.IsLit;
+                    if (!canCollect)
+                    {
+                        continue;
                     }
                     if (twoParts == 2 ? GameObject.ObjectsIntersect(candy, star) && !noCandy : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) || (GameObject.ObjectsIntersect(candyR, star) && !noCandyR))
                     {
@@ -456,6 +524,7 @@ namespace CutTheRope.GameMain
                         animation2.GetTimeline(n2).delegateTimelineDelegate = aniPool;
                         animation2.PlayTimeline(0);
                         _ = aniPool.AddChild(animation2);
+                        conveyors.Remove(star);
                         stars.RemoveObject(star);
                         CTRSoundMgr.PlaySound(starsCollected switch
                         {
@@ -508,6 +577,7 @@ namespace CutTheRope.GameMain
                         CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
+                        conveyors.Remove(bubble3);
                         break;
                     }
                     if (!noCandyR && !bubble3.popped && PointInRect(candyR.x, candyR.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
@@ -538,6 +608,7 @@ namespace CutTheRope.GameMain
                         CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
+                        conveyors.Remove(bubble3);
                         break;
                     }
                 }
@@ -575,7 +646,35 @@ namespace CutTheRope.GameMain
                     CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                     bubble3.popped = true;
                     bubble3.RemoveChildWithID(0);
+                    conveyors.Remove(bubble3);
                     break;
+                }
+                if (!bubble3.popped && lightBulbs.Count > 0)
+                {
+                    foreach (LightBulb bulb in lightBulbs)
+                    {
+                        if (bulb == null || bulb.attachedSock != null)
+                        {
+                            continue;
+                        }
+                        if (PointInRect(bulb.x, bulb.y, bubble3.x - BUBBLE_RADIUS, bubble3.y - BUBBLE_RADIUS, BUBBLE_RADIUS * 2f, BUBBLE_RADIUS * 2f))
+                        {
+                            if (bulb.capturingBubble != null && bulb.capturingBubble != bubble3)
+                            {
+                                PopLightBulbBubble(bulb);
+                            }
+
+                            bool isGhost = DisableGhostCycleForBubble(bubble3);
+                            bulb.capturingBubble = bubble3;
+                            bulb.capturingGhostBubble = isGhost;
+                            bubble3.capturedByBulb = !isGhost;
+                            bubble3.popped = true;
+                            bubble3.RemoveChildWithID(0);
+                            conveyors.Remove(bubble3);
+                            CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
+                            break;
+                        }
+                    }
                 }
                 if (!bubble3.withoutShadow)
                 {
@@ -621,7 +720,7 @@ namespace CutTheRope.GameMain
                     steamTube.Update(delta);
                     if (steamTube.steamState != 3)
                     {
-                        OperateSteamTube(steamTube);
+                        OperateSteamTube(steamTube, delta);
                     }
                 }
             }
@@ -700,6 +799,40 @@ namespace CutTheRope.GameMain
             {
                 rotatedCircles.RemoveObject(rotatedCircle6);
             }
+            if (miceManager != null)
+            {
+                miceManager.Update(delta);
+
+                ConstraintedPoint targetStar = null;
+                GameObject targetCandy = null;
+                bool isLeft = false;
+
+                if (twoParts != 2)
+                {
+                    if (!noCandyL)
+                    {
+                        targetStar = starL;
+                        targetCandy = candyL;
+                        isLeft = true;
+                    }
+                    else if (!noCandyR)
+                    {
+                        targetStar = starR;
+                        targetCandy = candyR;
+                    }
+                }
+                else if (!noCandy)
+                {
+                    targetStar = star;
+                    targetCandy = candy;
+                }
+
+                if (targetStar != null && targetCandy != null && !miceManager.ActiveMouseHasCandy() && miceManager.IsActiveMouseInRange(targetStar))
+                {
+                    miceManager.GrabWithActiveMouse(targetStar, targetCandy, isLeft);
+                    TriggerSpecialTutorial(4);
+                }
+            }
             float num13 = RTPD(20.0);
             foreach (object obj11 in socks)
             {
@@ -709,25 +842,65 @@ namespace CutTheRope.GameMain
                 {
                     sock3.state = Sock.SOCK_IDLE;
                 }
+
+                bool wasIdle = sock3.state == Sock.SOCK_IDLE;
+
                 float num14 = sock3.rotation;
                 sock3.rotation = 0f;
                 sock3.UpdateRotation();
-                Vector ptr = VectRotate(star.posDelta, (double)DEGREES_TO_RADIANS(0f - num14));
+                float invRotation = DEGREES_TO_RADIANS(0f - num14);
+                Vector ptr = VectRotate(star.posDelta, invRotation);
                 sock3.rotation = num14;
                 sock3.UpdateRotation();
-                if (ptr.y >= 0.0 && (LineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f) || LineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, star.pos.x - num13, star.pos.y - num13, num13 * 2f, num13 * 2f)))
-                {
-                    if (sock3.state != Sock.SOCK_IDLE)
-                    {
-                        continue;
-                    }
 
+                float bbX = star.pos.x - num13;
+                float bbY = star.pos.y - num13;
+                float bbSize = num13 * 2f;
+
+                bool candyHits = ptr.y >= 0.0 &&
+                    (LineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, bbX, bbY, bbSize, bbSize) ||
+                     LineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, bbX, bbY, bbSize, bbSize));
+
+                bool bulbHits = false;
+                if (!wasIdle && lightBulbs.Count > 0)
+                {
+                    foreach (LightBulb bulb in lightBulbs)
+                    {
+                        if (bulb == null || bulb.attachedSock != null)
+                        {
+                            continue;
+                        }
+                        Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
+                        float bulbX = bulb.constraint.pos.x - num13;
+                        float bulbY = bulb.constraint.pos.y - num13;
+                        bool bulbHit = bulbDelta.y >= 0.0 &&
+                            (LineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, bulbX, bulbY, bbSize, bbSize) ||
+                             LineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, bulbX, bulbY, bbSize, bbSize));
+                        if (bulbHit)
+                        {
+                            bulbHits = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!wasIdle)
+                {
+                    if (!candyHits && !bulbHits && sock3.idleTimeout == 0f)
+                    {
+                        sock3.idleTimeout = 0.8f;
+                    }
+                    continue;
+                }
+
+                if (candyHits && targetSock == null)
+                {
                     foreach (Sock sock4 in socks)
                     {
                         if (sock4 != sock3 && sock4.group == sock3.group)
                         {
-                            sock3.state = Sock.SOCK_RECEIVING;
                             sock4.state = Sock.SOCK_THROWING;
+                            sock4.idleTimeout = 0.8f;
                             ReleaseAllRopes(false);
                             savedSockSpeed = 0.9f * VectLength(star.v);
                             savedSockSpeed *= 1.4f;
@@ -749,9 +922,61 @@ namespace CutTheRope.GameMain
                         }
                     }
                 }
-                if (sock3.state != Sock.SOCK_IDLE && sock3.idleTimeout == 0f)
+
+                if (lightBulbs.Count > 0)
                 {
-                    sock3.idleTimeout = 0.8f;
+                    bool bulbTeleported = false;
+                    foreach (LightBulb bulb in lightBulbs)
+                    {
+                        if (bulb == null || bulb.attachedSock != null)
+                        {
+                            continue;
+                        }
+                        Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
+                        float bulbX = bulb.constraint.pos.x - num13;
+                        float bulbY = bulb.constraint.pos.y - num13;
+                        bool bulbHit = bulbDelta.y >= 0.0 &&
+                            (LineInRect(sock3.t1.x, sock3.t1.y, sock3.t2.x, sock3.t2.y, bulbX, bulbY, bbSize, bbSize) ||
+                             LineInRect(sock3.b1.x, sock3.b1.y, sock3.b2.x, sock3.b2.y, bulbX, bulbY, bbSize, bbSize));
+
+                        if (!bulbHit)
+                        {
+                            continue;
+                        }
+
+                        foreach (Sock sock4 in socks)
+                        {
+                            if (sock4 != sock3 && sock4.group == sock3.group)
+                            {
+                                sock4.state = Sock.SOCK_THROWING;
+                                sock4.idleTimeout = 0.8f;
+                                ReleaseLightBulbRopes(bulb);
+                                bulb.sockSpeed = 0.9f * VectLength(bulb.constraint.v);
+                                bulb.sockSpeed *= 1.4f;
+                                bulb.attachedSock = sock4;
+                                sock3.light.PlayTimeline(0);
+                                sock3.light.visible = true;
+
+                                if (SpecialEvents.IsXmas)
+                                {
+                                    CTRSoundMgr.PlaySound(Resources.Snd.TeleportXmas);
+                                }
+                                else
+                                {
+                                    CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
+                                }
+
+                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_dropLightBulbFromSock), bulb, 0.1);
+                                bulbTeleported = true;
+                                break;
+                            }
+                        }
+
+                        if (bulbTeleported)
+                        {
+                            break;
+                        }
+                    }
                 }
             }
             foreach (object obj13 in razors)
@@ -906,7 +1131,23 @@ namespace CutTheRope.GameMain
                         HandleBouncePtDelta(bouncer, star, delta);
                     }
                 }
-                else
+                bool bulbHit = false;
+                if (lightBulbs.Count > 0)
+                {
+                    foreach (LightBulb bulb in lightBulbs)
+                    {
+                        if (bulb == null || bulb.attachedSock != null)
+                        {
+                            continue;
+                        }
+                        if (LineInRect(bouncer.t1.x, bouncer.t1.y, bouncer.t2.x, bouncer.t2.y, bulb.constraint.pos.x - num16, bulb.constraint.pos.y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.x, bouncer.b1.y, bouncer.b2.x, bouncer.b2.y, bulb.constraint.pos.x - num16, bulb.constraint.pos.y - num16, num16 * 2f, num16 * 2f))
+                        {
+                            HandleBouncePtDelta(bouncer, bulb.constraint, delta);
+                            bulbHit = true;
+                        }
+                    }
+                }
+                if (!flag8 && !bulbHit)
                 {
                     bouncer.skip = false;
                 }
@@ -965,9 +1206,28 @@ namespace CutTheRope.GameMain
                     star.ApplyImpulseDelta(Vect((0f - star.v.x) / num18, ((0f - star.v.y) / num18) + num17), delta);
                 }
             }
+            if (lightBulbs.Count > 0)
+            {
+                foreach (LightBulb bulb in lightBulbs)
+                {
+                    if (bulb == null || bulb.attachedSock != null || bulb.capturingBubble == null)
+                    {
+                        continue;
+                    }
+                    if (gravityButton != null && !gravityNormal)
+                    {
+                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.x) / num18, ((0f - bulb.constraint.v.y) / num18) - num17), delta);
+                    }
+                    else
+                    {
+                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.x) / num18, ((0f - bulb.constraint.v.y) / num18) + num17), delta);
+                    }
+                }
+            }
+            bool canInteractWithTarget = !nightLevel || isNightTargetAwake == true;
             if (!noCandy)
             {
-                if (!mouthOpen)
+                if (!mouthOpen && canInteractWithTarget)
                 {
                     if (!isCandyInLantern && VectDistance(star.pos, Vect(target.x, target.y)) < 200f)
                     {
@@ -977,7 +1237,7 @@ namespace CutTheRope.GameMain
                         mouthCloseTimer = 1f;
                     }
                 }
-                else if (mouthCloseTimer > 0.0)
+                else if (mouthCloseTimer > 0.0 && canInteractWithTarget)
                 {
                     _ = Mover.MoveVariableToTarget(ref mouthCloseTimer, 0.0, 1.0, (double)delta);
                     if (mouthCloseTimer <= 0.0)
@@ -999,7 +1259,7 @@ namespace CutTheRope.GameMain
                         }
                     }
                 }
-                if (restartState != 0 && GameObject.ObjectsIntersect(candy, target))
+                if (restartState != 0 && canInteractWithTarget && GameObject.ObjectsIntersect(candy, target))
                 {
                     GameWon();
                     return;

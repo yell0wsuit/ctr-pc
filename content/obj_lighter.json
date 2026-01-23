@@ -1,0 +1,357 @@
+{
+    "frames": [
+        {
+            "filename": "01_light.png",
+            "frame": { "x": 1, "y": 1, "w": 405, "h": 425 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 405, "h": 425 },
+            "sourceSize": { "w": 405, "h": 425 }
+        },
+        {
+            "filename": "02_bottle.png",
+            "frame": { "x": 1, "y": 428, "w": 259, "h": 228 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 245, "y": 260, "w": 259, "h": 228 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "03_top.png",
+            "frame": { "x": 385, "y": 1145, "w": 99, "h": 51 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 320, "y": 300, "w": 99, "h": 51 },
+            "sourceSize": { "w": 749, "h": 749 }
+        },
+        {
+            "filename": "firefly/0000.png",
+            "frame": { "x": 408, "y": 1, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0001.png",
+            "frame": { "x": 408, "y": 89, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0002.png",
+            "frame": { "x": 408, "y": 177, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0003.png",
+            "frame": { "x": 408, "y": 265, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0004.png",
+            "frame": { "x": 408, "y": 353, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0005.png",
+            "frame": { "x": 262, "y": 428, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0006.png",
+            "frame": { "x": 358, "y": 441, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0007.png",
+            "frame": { "x": 262, "y": 516, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0008.png",
+            "frame": { "x": 358, "y": 529, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0009.png",
+            "frame": { "x": 262, "y": 604, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0010.png",
+            "frame": { "x": 358, "y": 617, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0011.png",
+            "frame": { "x": 1, "y": 658, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0012.png",
+            "frame": { "x": 97, "y": 658, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0013.png",
+            "frame": { "x": 193, "y": 692, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0014.png",
+            "frame": { "x": 1, "y": 746, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0015.png",
+            "frame": { "x": 97, "y": 746, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0016.png",
+            "frame": { "x": 289, "y": 705, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0017.png",
+            "frame": { "x": 193, "y": 780, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0018.png",
+            "frame": { "x": 385, "y": 705, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0019.png",
+            "frame": { "x": 1, "y": 834, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0020.png",
+            "frame": { "x": 97, "y": 834, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0021.png",
+            "frame": { "x": 289, "y": 793, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0022.png",
+            "frame": { "x": 193, "y": 868, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0023.png",
+            "frame": { "x": 385, "y": 793, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0024.png",
+            "frame": { "x": 1, "y": 922, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0025.png",
+            "frame": { "x": 97, "y": 922, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0026.png",
+            "frame": { "x": 289, "y": 881, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0027.png",
+            "frame": { "x": 193, "y": 956, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0028.png",
+            "frame": { "x": 385, "y": 881, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0029.png",
+            "frame": { "x": 1, "y": 1010, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0030.png",
+            "frame": { "x": 97, "y": 1010, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0031.png",
+            "frame": { "x": 289, "y": 969, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0032.png",
+            "frame": { "x": 193, "y": 1044, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0033.png",
+            "frame": { "x": 1, "y": 1098, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0034.png",
+            "frame": { "x": 97, "y": 1098, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0035.png",
+            "frame": { "x": 385, "y": 969, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0036.png",
+            "frame": { "x": 193, "y": 1132, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0037.png",
+            "frame": { "x": 289, "y": 1057, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0038.png",
+            "frame": { "x": 289, "y": 1145, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        },
+        {
+            "filename": "firefly/0039.png",
+            "frame": { "x": 385, "y": 1057, "w": 94, "h": 86 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 19, "y": 21, "w": 94, "h": 86 },
+            "sourceSize": { "w": 128, "h": 128 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_lighter.png",
+        "format": "RGBA8888",
+        "size": { "w": 503, "h": 1232 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:1d2ccbdd209ea9ab92f2dd12a36074ee:9c4eec523f872f6aec5f5c7405ffe5f2:d278c44e822a76a1fa198e05d00d5554$"
+    }
+}

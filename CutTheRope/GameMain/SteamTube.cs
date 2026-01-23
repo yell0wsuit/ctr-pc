@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Steam tube object that emits animated steam puffs based on its valve state.
     /// </summary>
-    internal sealed class SteamTube : BaseElement, ITimelineDelegate
+    internal sealed class SteamTube : BaseElement, ITimelineDelegate, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionSetter
     {
         public SteamTube()
         {
@@ -36,16 +36,20 @@ namespace CutTheRope.GameMain
             rotation = angle;
             anchor = 18;
             steamBack = new BaseElement();
+            steamBack.anchor = steamBack.parentAnchor = 18;
             steamFront = new BaseElement();
+            steamFront.anchor = steamFront.parentAnchor = 18;
             tube = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 0);
-            tube.x = position.x;
-            tube.y = position.y;
+            tube.x = 0f;
+            tube.y = 0f;
             tube.anchor = 10;
+            tube.parentAnchor = 18;
             _ = AddChild(tube);
             valve = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 1);
-            valve.x = position.x;
-            valve.y = position.y + (27f * heightScale);
+            valve.x = 0f;
+            valve.y = 27f * heightScale;
             valve.anchor = 18;
+            valve.parentAnchor = 18;
             _ = AddChild(valve);
             _ = AddChild(steamBack);
             _ = AddChild(steamFront);
@@ -115,9 +119,11 @@ namespace CutTheRope.GameMain
 
         public override bool OnTouchDownXY(float tx, float ty)
         {
-            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
+            Vector vector = onConveyor
+                ? Vect(x, y)
+                : VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
             float num = VectLength(VectSub(Vect(tx, ty), vector));
-            if (num < 30f)
+            if (num < 40f)
             {
                 int num2 = 0;
                 switch (steamState)
@@ -158,6 +164,27 @@ namespace CutTheRope.GameMain
         {
             BaseElement element = t.element;
             element.parent.RemoveChild(element);
+        }
+
+        public Vector GetConveyorSize()
+        {
+            return Vect(40f, 56f);
+        }
+
+        public float GetConveyorPadding()
+        {
+            return 40f * 0.3f;
+        }
+
+        public void SetConveyorPosition(Vector position)
+        {
+            onConveyor = true;
+            tube.y = -24f * heightScale;
+            valve.y = 3f * heightScale;
+            steamBack.y = -27f * heightScale;
+            steamFront.y = -27f * heightScale;
+            x = position.x;
+            y = position.y;
         }
 
         /// <summary>
@@ -289,6 +316,7 @@ namespace CutTheRope.GameMain
         }
 
         private float heightScale = 1f;
+        private bool onConveyor;
         public int steamState;
 
         private DelayedDispatcher dd;
@@ -302,5 +330,11 @@ namespace CutTheRope.GameMain
         private BaseElement steamFront;
 
         private float phase;
+
+        public int ConveyorId { get; set; } = -1;
+
+        public float? ConveyorBaseScaleX { get; set; }
+
+        public float? ConveyorBaseScaleY { get; set; }
     }
 }
