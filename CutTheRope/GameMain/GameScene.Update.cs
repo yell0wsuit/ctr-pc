@@ -217,11 +217,15 @@ namespace CutTheRope.GameMain
                                 }
                                 if (grab.spiderPos == -1f)
                                 {
-                                    // Only let spider win if rope is attached to candy, not light bulb
-                                    if (rope.tail == star || rope.tail == starL || rope.tail == starR)
+                                    // Only let spider win if rope is attached to candy
+                                    if (IsCandyPoint(rope.tail))
                                     {
                                         SpiderWon(grab);
                                         break;
+                                    }
+                                    else
+                                    {
+                                        grab.shouldActivate = false;
                                     }
                                 }
                             }
