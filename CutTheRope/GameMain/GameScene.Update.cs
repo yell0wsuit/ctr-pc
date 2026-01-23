@@ -217,8 +217,12 @@ namespace CutTheRope.GameMain
                                 }
                                 if (grab.spiderPos == -1f)
                                 {
-                                    SpiderWon(grab);
-                                    break;
+                                    // Only let spider win if rope is attached to candy, not light bulb
+                                    if (rope.tail == star || rope.tail == starL || rope.tail == starR)
+                                    {
+                                        SpiderWon(grab);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -313,6 +317,13 @@ namespace CutTheRope.GameMain
                                         bungeeBulb.bungeeAnchor.pin = bungeeBulb.bungeeAnchor.pos;
                                         grab.hideRadius = true;
                                         grab.SetRope(bungeeBulb);
+
+                                        // Spider can't grab light bulbs - keep it idle
+                                        if (grab.hasSpider)
+                                        {
+                                            grab.shouldActivate = false;
+                                        }
+
                                         CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                                         if (grab.mover != null)
                                         {
