@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name={{APP_DISPLAY_NAME}}
+Comment={{DESCRIPTION}}
+Exec={{APP_NAME}}
+Icon={{APP_NAME}}
+Terminal=false
+Type=Application
+Categories=Game;
+Keywords=puzzle;game;cut;rope;omnom;

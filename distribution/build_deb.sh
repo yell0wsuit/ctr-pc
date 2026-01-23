@@ -14,9 +14,11 @@ DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut t
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT="CutTheRope/CutTheRope.csproj"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT="$PROJECT_ROOT/CutTheRope/CutTheRope.csproj"
 BUILD_DIR="$SCRIPT_DIR/deb_build"
-PUBLISH_DIR="$SCRIPT_DIR/CutTheRope/bin/Publish/linux-x64"
+PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/linux-x64"
+TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
 
 # Resolve version from csproj
 VERSION=$(dotnet msbuild "$PROJECT" \
@@ -64,33 +66,22 @@ chmod +x "$DEB_ROOT/usr/bin/$APP_NAME"
 echo "[4/5] Creating package metadata..."
 
 # Control file
-cat > "$DEB_ROOT/DEBIAN/control" << EOF
-Package: $APP_NAME
-Version: $VERSION
-Section: games
-Priority: optional
-Architecture: $ARCHITECTURE
-Maintainer: $MAINTAINER
-Description: $DESCRIPTION
- Project website: https://github.com/yell0wsuit/cuttherope-dx
-EOF
+sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
+    -e "s/{{VERSION}}/$VERSION/g" \
+    -e "s/{{ARCHITECTURE}}/$ARCHITECTURE/g" \
+    -e "s/{{MAINTAINER}}/$MAINTAINER/g" \
+    -e "s/{{DESCRIPTION}}/$DESCRIPTION/g" \
+    "$TEMPLATES_DIR/deb.control" > "$DEB_ROOT/DEBIAN/control"
 
 # Desktop entry
-cat > "$DEB_ROOT/usr/share/applications/$APP_NAME.desktop" << EOF
-[Desktop Entry]
-Name=$APP_DISPLAY_NAME
-Comment=$DESCRIPTION
-Exec=$APP_NAME
-Icon=$APP_NAME
-Terminal=false
-Type=Application
-Categories=Game;
-Keywords=puzzle;game;cut;rope;omnom;
-EOF
+sed -e "s/{{APP_DISPLAY_NAME}}/$APP_DISPLAY_NAME/g" \
+    -e "s/{{DESCRIPTION}}/$DESCRIPTION/g" \
+    -e "s/{{APP_NAME}}/$APP_NAME/g" \
+    "$TEMPLATES_DIR/deb.desktop" > "$DEB_ROOT/usr/share/applications/$APP_NAME.desktop"
 
 # Copy icon
-if [ -f "$SCRIPT_DIR/CutTheRope/icons/CutTheRopeIcon_512.png" ]; then
-    cp "$SCRIPT_DIR/CutTheRope/icons/CutTheRopeIcon_512.png" "$DEB_ROOT/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
+if [ -f "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" ]; then
+    cp "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" "$DEB_ROOT/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
 fi
 
 # Post-install script (optional - update icon cache)
