@@ -209,7 +209,7 @@ namespace CutTheRope.GameMain
             rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.SetSize(size);
-            rotatedCircle.SetHasOneHandle(hasOneHandle_);
+            rotatedCircle.SetHasOneHandle(HasOneHandle());
             rotatedCircle.vinilControllerL.visible = false;
             rotatedCircle.vinilControllerR.visible = false;
             return rotatedCircle;
@@ -301,11 +301,9 @@ namespace CutTheRope.GameMain
 
         private const string VinylTexture = Resources.Img.ObjVinil;
 
-        private readonly bool hasOneHandle_;
-
         private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.2);
 
-        private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
+        // private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
 
         private readonly float OUTER_CIRCLE_WIDTH = RTPD(7.0) * 3f;
 

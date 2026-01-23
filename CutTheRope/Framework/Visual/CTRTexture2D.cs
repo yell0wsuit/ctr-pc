@@ -146,7 +146,7 @@ namespace CutTheRope.Framework.Visual
         {
             _resName = path;
             _name = 65536U;
-            _localTexParams = _texParams;
+            // _localTexParams = _texParams;
             Reg();
             xnaTexture_ = Images.Get(path);
             if (xnaTexture_ == null)
@@ -216,7 +216,7 @@ namespace CutTheRope.Framework.Visual
         {
             _name = 65536U;
             _lowypoint = -1;
-            _localTexParams = _defaultTexParams;
+            // _localTexParams = _defaultTexParams;
             Reg();
             int num = CalcRealSize(w);
             int num2 = CalcRealSize(h);
@@ -309,11 +309,11 @@ namespace CutTheRope.Framework.Visual
 
         private bool _isWvga;
 
-        private TexParams _localTexParams;
+        // private TexParams _localTexParams;
 
-        private static readonly TexParams _defaultTexParams;
+        // private static readonly TexParams _defaultTexParams;
 
-        private static readonly TexParams _texParams;
+        // private static readonly TexParams _texParams;
         private static CTRTexture2D root;
 
         private static CTRTexture2D tail;

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Xml.Linq;
 
-using CutTheRope.Framework;
 using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;

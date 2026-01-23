@@ -279,11 +279,11 @@ namespace CutTheRope.GameMain
             return false;
         }
 
-        private RGBAColor CIRCLE_COLOR1 = RGBAColor.MakeRGBA(0.306, 0.298, 0.454, 1.0);
+        // private RGBAColor CIRCLE_COLOR1 = RGBAColor.MakeRGBA(0.306, 0.298, 0.454, 1.0);
 
-        private RGBAColor CIRCLE_COLOR2 = RGBAColor.MakeRGBA(0.239, 0.231, 0.356, 1.0);
+        // private RGBAColor CIRCLE_COLOR2 = RGBAColor.MakeRGBA(0.239, 0.231, 0.356, 1.0);
 
-        private RGBAColor CIRCLE_COLOR3 = RGBAColor.MakeRGBA(0.29, 0.286, 0.419, 1.0);
+        // private RGBAColor CIRCLE_COLOR3 = RGBAColor.MakeRGBA(0.29, 0.286, 0.419, 1.0);
 
         private RGBAColor INNER_CIRCLE_COLOR1 = RGBAColor.MakeRGBA(0.6901960784313725, 0.4196078431372549, 0.07450980392156863, 1.0);
 
@@ -299,21 +299,21 @@ namespace CutTheRope.GameMain
 
         public int soundPlaying;
 
-        public Vector lastTouch;
+        // public Vector lastTouch;
 
         public Vector handle1;
 
         public Vector handle2;
 
-        public Vector inithanlde1;
+        // public Vector inithanlde1;
 
-        public Vector inithanlde2;
+        // public Vector inithanlde2;
 
         public DynamicArray<RotatedCircle2> circlesArray;
 
         public List<BaseElement> containedObjects;
 
-        public bool removeOnNextUpdate;
+        // public bool removeOnNextUpdate;
 
         private Image vinilStickerL;
 

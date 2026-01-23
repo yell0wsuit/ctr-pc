@@ -230,7 +230,7 @@ namespace CutTheRope.Framework.Core
         /// to the currently active controller. Events are blocked during transitions
         /// or when the application is suspended.
         /// </remarks>
-        public virtual bool HandleMouseWheel(int scrollDelta)
+        public override bool HandleMouseWheel(int scrollDelta)
         {
             return currentController != null && !suspended && transitionTime == -1f && currentController.HandleMouseWheel(scrollDelta);
         }
@@ -316,7 +316,7 @@ namespace CutTheRope.Framework.Core
 
         private CTRTexture2D nextScreenImage;
 
-        private readonly Grabber screenGrabber = new();
+        // private readonly Grabber screenGrabber = new();
 
         private bool deactivateCurrentController;
 

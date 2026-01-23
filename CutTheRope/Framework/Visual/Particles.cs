@@ -233,7 +233,7 @@ namespace CutTheRope.Framework.Visual
 
         public float size;
 
-        public float endSize;
+        // public float endSize;
 
         public float sizeVar;
 
@@ -257,7 +257,7 @@ namespace CutTheRope.Framework.Visual
 
         public bool blendAdditive;
 
-        public bool colorModulate;
+        // public bool colorModulate;
 
         public float emissionRate;
 
@@ -273,7 +273,6 @@ namespace CutTheRope.Framework.Visual
 
         public ParticlesFinished particlesDelegate;
 
-        // (Invoke) Token: 0x06000668 RID: 1640
         public delegate void ParticlesFinished(Particles p);
     }
 }

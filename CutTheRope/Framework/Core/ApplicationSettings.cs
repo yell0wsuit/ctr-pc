@@ -5,7 +5,7 @@ namespace CutTheRope.Framework.Core
 {
     internal sealed class ApplicationSettings : FrameworkTypes
     {
-        public int GetInt(int s)
+        public static int GetInt(int s)
         {
             return s == 5 ? fps : s != 6 ? throw new NotImplementedException() : (int)orientation;
         }
@@ -46,7 +46,7 @@ namespace CutTheRope.Framework.Core
 
         private static readonly int fps = 60;
 
-        private readonly ORIENTATION orientation;
+        private static readonly ORIENTATION orientation = ORIENTATION.LANDSCAPE_LEFT;
 
         private string locale;
 
