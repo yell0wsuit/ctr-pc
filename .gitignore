@@ -62,3 +62,6 @@ obj/*
 
 # exclude csproj.user files
 *.csproj.user
+
+# AppImage build artifacts
+*.AppImage

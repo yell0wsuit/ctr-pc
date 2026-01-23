@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>{{APP_ID}}</id>
+  <name>{{APP_DISPLAY_NAME}}</name>
+  <summary>A fan-made enhancement of the PC version of Cut the Rope</summary>
+  <metadata_license>CC-BY-SA-4.0</metadata_license>
+  <developer id="{{APP_ID}}">
+    <name>yell0wsuit</name>
+  </developer>
+  <description>
+    <p>Cut the Rope: DX is a fan-made enhancement of the PC version of Cut the Rope, featuring improved graphics, additional content, and quality-of-life improvements.</p>
+  </description>
+  <launchable type="desktop-id">{{APP_NAME}}.desktop</launchable>
+  <url type="homepage">https://github.com/yell0wsuit/cuttherope-dx</url>
+  <provides>
+    <binary>{{EXEC_NAME}}</binary>
+  </provides>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="{{VERSION}}" date="{{RELEASE_DATE}}"/>
+  </releases>
+</component>
