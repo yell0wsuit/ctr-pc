@@ -8,6 +8,11 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Represents a conveyor belt game element that transports items along a linear path.
+    /// Items placed on the belt are automatically moved in the belt's direction, with support
+    /// for both automatic (constant velocity) and manual (user-draggable) operation modes.
+    /// </summary>
     internal sealed class ConveyorBelt : BaseElement
     {
         private const float BeltPlateScaleX = 0.7f;
@@ -20,16 +25,28 @@ namespace CutTheRope.GameMain
         private const int ImgObjTransporterPlateArrowLeft = 6;
         private const int ImgObjTransporterHighlight = 7;
 
+        /// <summary>
+        /// Tracks the state of an item riding on the conveyor belt.
+        /// </summary>
+        /// <param name="initialOffset">The starting offset position along the belt.</param>
         private sealed class ConveyorItemState(float initialOffset)
         {
             private static int nextIndex;
+            /// <summary>Whether the item should be removed from the belt.</summary>
             public bool markedForRemoval;
+            /// <summary>Whether the item is still sliding perpendicular to settle onto the belt center.</summary>
             public bool isSettling = true;
+            /// <summary>The target offset for the next frame.</summary>
             public float nextOffset = initialOffset;
+            /// <summary>The current offset position along the belt length.</summary>
             public float offset = initialOffset;
+            /// <summary>Unique index for ordering items.</summary>
             public int index = nextIndex++;
         }
 
+        /// <summary>
+        /// Handles the visual rendering of the conveyor belt's moving surface using tiled plate segments.
+        /// </summary>
         private sealed class ConveyorBeltVisual : BaseElement
         {
             private readonly int plateQuad;
@@ -40,8 +57,15 @@ namespace CutTheRope.GameMain
             private readonly float tileScaleY;
             private readonly string textureName = Resources.Img.ObjTransporter;
 
+            /// <summary>The current visual offset for the scrolling belt texture.</summary>
             public float offset;
 
+            /// <summary>
+            /// Creates a new conveyor belt visual surface.
+            /// </summary>
+            /// <param name="width">The width of the belt surface.</param>
+            /// <param name="height">The height of the belt surface.</param>
+            /// <param name="direction">The movement direction indicator: negative for left arrow, positive for right arrow, zero for no arrow.</param>
             public ConveyorBeltVisual(float width, float height, int direction)
             {
                 this.width = (int)Math.Ceiling(width);
@@ -63,6 +87,10 @@ namespace CutTheRope.GameMain
                 _ = AddChild(template);
             }
 
+            /// <summary>
+            /// Moves the belt visual by the specified delta, wrapping around at the edges.
+            /// </summary>
+            /// <param name="delta">The distance to move the belt texture.</param>
             public void Move(float delta)
             {
                 if (tileWidth <= 0)
@@ -87,6 +115,9 @@ namespace CutTheRope.GameMain
                 }
             }
 
+            /// <summary>
+            /// Recalculates and positions all tile segments to fill the belt width at the current offset.
+            /// </summary>
             public void UpdateLayout()
             {
                 if (tileWidth <= 0 || tileHeight <= 0 || width <= 0)
@@ -126,6 +157,13 @@ namespace CutTheRope.GameMain
                 }
             }
 
+            /// <summary>
+            /// Positions a single tile segment at the specified location.
+            /// </summary>
+            /// <param name="index">The segment index in the pool.</param>
+            /// <param name="left">The left edge position of this segment.</param>
+            /// <param name="width">The width to display for this segment.</param>
+            /// <returns>The next segment index to use.</returns>
             private int LayoutSegment(int index, float left, float width)
             {
                 Image segment = EnsureSegment(index);
@@ -146,6 +184,11 @@ namespace CutTheRope.GameMain
                 return index + 1;
             }
 
+            /// <summary>
+            /// Gets an existing segment at the index or creates a new one if needed.
+            /// </summary>
+            /// <param name="index">The segment index.</param>
+            /// <returns>The image segment at the specified index.</returns>
             private Image EnsureSegment(int index)
             {
                 if (index < segments.Count)
@@ -162,12 +205,28 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConveyorBelt"/> class with default anchor settings.
+        /// Use <see cref="Create"/> or <see cref="InitializeBelt"/> to fully configure the belt.
+        /// </summary>
         public ConveyorBelt()
         {
             anchor = 17;
             parentAnchor = -1;
         }
 
+        /// <summary>
+        /// Creates and initializes a new conveyor belt instance.
+        /// </summary>
+        /// <param name="id">Unique identifier for this belt.</param>
+        /// <param name="x">The x-coordinate of the belt's left edge origin.</param>
+        /// <param name="y">The y-coordinate of the belt's left edge origin.</param>
+        /// <param name="length">The length of the belt along its direction.</param>
+        /// <param name="height">The height (thickness) of the belt.</param>
+        /// <param name="rotation">The rotation angle in degrees.</param>
+        /// <param name="isManual">If true, the belt is controlled by user drag; otherwise it moves automatically.</param>
+        /// <param name="velocity">The automatic movement speed (used only when not manual).</param>
+        /// <returns>A fully initialized conveyor belt.</returns>
         public static ConveyorBelt Create(
             int id,
             float x,
@@ -183,6 +242,17 @@ namespace CutTheRope.GameMain
             return belt;
         }
 
+        /// <summary>
+        /// Configures the belt with the specified parameters and rebuilds its visuals.
+        /// </summary>
+        /// <param name="id">Unique identifier for this belt.</param>
+        /// <param name="x">The x-coordinate of the belt's left edge origin.</param>
+        /// <param name="y">The y-coordinate of the belt's left edge origin.</param>
+        /// <param name="length">The length of the belt along its direction.</param>
+        /// <param name="height">The height (thickness) of the belt.</param>
+        /// <param name="rotation">The rotation angle in degrees.</param>
+        /// <param name="isManual">If true, the belt is controlled by user drag; otherwise it moves automatically.</param>
+        /// <param name="velocity">The automatic movement speed (used only when not manual).</param>
         public void InitializeBelt(
             int id,
             float x,
@@ -215,6 +285,11 @@ namespace CutTheRope.GameMain
             BuildVisuals();
         }
 
+        /// <summary>
+        /// Updates the belt and all items on it each frame. Handles movement, collision avoidance,
+        /// wrapping, and settling of items onto the belt surface.
+        /// </summary>
+        /// <param name="deltaTime">The time elapsed since the last frame in seconds.</param>
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
@@ -404,6 +479,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Handles pointer down events for manual belt dragging.
+        /// </summary>
+        /// <param name="pointerX">The x-coordinate of the pointer in world space.</param>
+        /// <param name="pointerY">The y-coordinate of the pointer in world space.</param>
+        /// <param name="pointerId">The unique identifier of the pointer.</param>
+        /// <returns>True if the belt captured the pointer; false otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
             if (!IsManual)
@@ -428,6 +510,13 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Handles pointer up events to release manual belt dragging.
+        /// </summary>
+        /// <param name="pointerX">The x-coordinate of the pointer in world space.</param>
+        /// <param name="pointerY">The y-coordinate of the pointer in world space.</param>
+        /// <param name="pointerId">The unique identifier of the pointer.</param>
+        /// <returns>True if the belt released its captured pointer; false otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
             _ = pointerX;
@@ -457,6 +546,13 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Handles pointer move events to drag the manual belt.
+        /// </summary>
+        /// <param name="pointerX">The x-coordinate of the pointer in world space.</param>
+        /// <param name="pointerY">The y-coordinate of the pointer in world space.</param>
+        /// <param name="pointerId">The unique identifier of the pointer.</param>
+        /// <returns>True if the belt handled the movement; false otherwise.</returns>
         public bool OnPointerMove(float pointerX, float pointerY, int pointerId)
         {
             if (!IsManual)
@@ -477,18 +573,35 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Determines whether a world-space point is within the belt's bounds.
+        /// </summary>
+        /// <param name="worldPoint">The point to test in world coordinates.</param>
+        /// <returns>True if the point is inside the belt area; false otherwise.</returns>
         public bool Contains(Vector worldPoint)
         {
             Vector local = ToLocalSpace(worldPoint);
             return local.x >= 0f && local.x <= beltWidth && local.y >= -0.5f * beltHeight && local.y <= 0.5f * beltHeight;
         }
 
+        /// <summary>
+        /// Determines whether a world-space point is within the belt's bounds plus a padding margin.
+        /// </summary>
+        /// <param name="worldPoint">The point to test in world coordinates.</param>
+        /// <param name="padding">The extra margin around the belt bounds.</param>
+        /// <returns>True if the point is inside the padded belt area; false otherwise.</returns>
         public bool ContainsWithPadding(Vector worldPoint, float padding)
         {
             Vector local = ToLocalSpace(worldPoint);
             return local.x >= -padding && local.x <= beltWidth + padding && local.y >= (-0.5f * beltHeight) - padding && local.y <= (0.5f * beltHeight) + padding;
         }
 
+        /// <summary>
+        /// Transforms a world-space point into the belt's local coordinate space.
+        /// Local X runs along the belt length; local Y is perpendicular to the belt.
+        /// </summary>
+        /// <param name="worldPoint">The point in world coordinates.</param>
+        /// <returns>The point in belt-local coordinates.</returns>
         public Vector ToLocalSpace(Vector worldPoint)
         {
             float perpAngle = rotationRad - (0.5f * (float)Math.PI);
@@ -498,11 +611,19 @@ namespace CutTheRope.GameMain
             return Vect((direction.x * dx) + (direction.y * dy), (perp.x * dx) + (perp.y * dy));
         }
 
+        /// <summary>
+        /// Attaches an item to the conveyor belt for transport.
+        /// </summary>
+        /// <param name="item">The element to attach to the belt.</param>
         public void AttachItem(BaseElement item)
         {
             RegisterItem(item);
         }
 
+        /// <summary>
+        /// Marks an item for removal from the belt. The item will be removed once it exits the belt bounds.
+        /// </summary>
+        /// <param name="item">The element to mark for removal.</param>
         public void MarkItemForRemoval(BaseElement item)
         {
             if (itemStates.TryGetValue(item, out ConveyorItemState state))
@@ -516,30 +637,57 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Checks whether an item is currently attached to this belt.
+        /// </summary>
+        /// <param name="item">The element to check.</param>
+        /// <returns>True if the item is on this belt; false otherwise.</returns>
         public bool HasItem(BaseElement item)
         {
             return itemStates.ContainsKey(item);
         }
 
+        /// <summary>
+        /// Immediately removes an item from the belt's tracking state.
+        /// </summary>
+        /// <param name="item">The element to remove.</param>
         public void Remove(BaseElement item)
         {
             _ = itemStates.Remove(item);
         }
 
+        /// <summary>
+        /// Checks whether an item has been marked for removal.
+        /// </summary>
+        /// <param name="item">The element to check.</param>
+        /// <returns>True if the item is marked for removal; false otherwise.</returns>
         public bool IsItemMarkedForRemoval(BaseElement item)
         {
             return itemStates.TryGetValue(item, out ConveyorItemState state) && state.markedForRemoval;
         }
 
+        /// <summary>
+        /// Determines whether the belt is currently moving.
+        /// </summary>
+        /// <returns>True if the belt has non-zero movement delta; false otherwise.</returns>
         public bool IsActive()
         {
             return active;
         }
 
+        /// <summary>
+        /// Gets whether this belt is controlled manually by user drag input.
+        /// </summary>
         public bool IsManual { get; private set; }
 
+        /// <summary>
+        /// Gets the normalized direction vector along the belt's length.
+        /// </summary>
         public Vector Direction => direction;
 
+        /// <summary>
+        /// Wraps an offset value to stay within the belt width range.
+        /// </summary>
         private static float WrapOffset(float value, float maxWidth)
         {
             float width = maxWidth;
@@ -555,6 +703,9 @@ namespace CutTheRope.GameMain
             return wrapped;
         }
 
+        /// <summary>
+        /// Registers an item with the belt and calculates its initial offset position.
+        /// </summary>
         private void RegisterItem(BaseElement item)
         {
             Vector position = GetItemPosition(item);
@@ -569,6 +720,9 @@ namespace CutTheRope.GameMain
             CacheBaseScale(item);
         }
 
+        /// <summary>
+        /// Constructs the belt's visual components including frame, pillars, and moving surface.
+        /// </summary>
         private void BuildVisuals()
         {
             float scale = 0.75f;
@@ -676,6 +830,9 @@ namespace CutTheRope.GameMain
             _ = AddChild(highlightRight);
         }
 
+        /// <summary>
+        /// Creates a visual piece for the belt frame from the transporter sprite sheet.
+        /// </summary>
         private static Image CreatePiece(int quad)
         {
             Image piece = Image.Image_createWithResIDQuad(Resources.Img.ObjTransporter, quad);
@@ -686,6 +843,9 @@ namespace CutTheRope.GameMain
             return piece;
         }
 
+        /// <summary>
+        /// Removes items that are marked for removal and have exited the belt bounds.
+        /// </summary>
         private void CleanupMarkedItems()
         {
             List<BaseElement> toRemove = [];
@@ -705,11 +865,17 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Plays a random conveyor movement sound effect for manual dragging feedback.
+        /// </summary>
         private static void PlayManualMoveSound()
         {
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Conv01, Resources.Snd.Conv02, Resources.Snd.Conv03, Resources.Snd.Conv04);
         }
 
+        /// <summary>
+        /// Stores the item's original scale values for later restoration.
+        /// </summary>
         private static void CacheBaseScale(BaseElement item)
         {
             if (item is not IConveyorItem conveyorItem)
@@ -721,6 +887,9 @@ namespace CutTheRope.GameMain
             conveyorItem.ConveyorBaseScaleY ??= item.scaleY;
         }
 
+        /// <summary>
+        /// Restores the item's scale to its original cached values.
+        /// </summary>
         private static void RestoreItemScale(BaseElement item)
         {
             if (item is not IConveyorItem conveyorItem)
@@ -738,6 +907,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Applies a scale factor to the item relative to its cached base scale.
+        /// </summary>
         private static void ApplyItemScale(BaseElement item, float scale)
         {
             if (item is not IConveyorItem conveyorItem)
@@ -752,11 +924,19 @@ namespace CutTheRope.GameMain
             item.scaleY = baseY * scale;
         }
 
+        /// <summary>
+        /// Gets the world-space position of an item, using its conveyor position provider if available.
+        /// </summary>
+        /// <param name="item">The element to get the position for.</param>
+        /// <returns>The item's position in world coordinates.</returns>
         public static Vector GetItemPosition(BaseElement item)
         {
             return item is IConveyorPositionProvider provider ? provider.GetConveyorPosition() : Vect(item.x, item.y);
         }
 
+        /// <summary>
+        /// Sets the world-space position of an item, using its conveyor position setter if available.
+        /// </summary>
         private static void SetItemPosition(BaseElement item, Vector position)
         {
             if (item is IConveyorPositionSetter setter)
@@ -768,6 +948,9 @@ namespace CutTheRope.GameMain
             item.y = position.y;
         }
 
+        /// <summary>
+        /// Determines the effective size of an item for collision and spacing calculations.
+        /// </summary>
         private static Vector GetItemSize(BaseElement item)
         {
             if (item is IConveyorSizeProvider provider)
@@ -815,6 +998,11 @@ namespace CutTheRope.GameMain
             return Vect(fallbackWidth, fallbackHeight);
         }
 
+        /// <summary>
+        /// Gets the padding distance for detecting when an item is near the belt.
+        /// </summary>
+        /// <param name="item">The element to get padding for.</param>
+        /// <returns>The padding distance in world units.</returns>
         public static float GetItemPadding(BaseElement item)
         {
             if (item is IConveyorPaddingProvider provider)
