@@ -38,6 +38,12 @@
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <TieredCompilation>false</TieredCompilation>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+
+    <!-- Default: build content -->
+    <RunMGCB>true</RunMGCB>
+
+    <!-- Auto-disable in CI (GitHub Actions, GitLab, Azure, etc. set CI=true) -->
+    <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
   </PropertyGroup>
 
   <!-- DesktopGL publish defaults (macOS / Linux) -->
@@ -152,7 +158,7 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(RunMGCB)' == 'true'">
     <MonoGameContentReference Include="..\content\content.mgcb" />
   </ItemGroup>
 
