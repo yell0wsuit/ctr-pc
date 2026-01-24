@@ -15,6 +15,6 @@ namespace CutTheRope.Framework.Core
         public bool UseAntialias { get; init; } = true;
 
         /// <summary>Whether sprite centers should be offset to their geometric centers.</summary>
-        public bool CenterOffsets { get; init; } = false;
+        public bool CenterOffsets { get; init; }
     }
 }
