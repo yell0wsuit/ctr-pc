@@ -1,0 +1,35 @@
+name: PR Code Quality
+
+on:
+    pull_request:
+        branches: [main]
+        paths:
+            - "**.cs"
+
+jobs:
+    code-quality:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@main
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@main
+              with:
+                  dotnet-version: "10.x"
+
+            - name: Restore dependencies
+              run: dotnet restore
+
+            - name: Check formatting
+              run: dotnet format --verify-no-changes --verbosity diagnostic
+
+            - name: Install Roslynator
+              run: dotnet tool install -g roslynator.dotnet.cli
+
+            - name: Run Roslynator analysis
+              run: roslynator analyze CutTheRope.sln
+
+            - name: Build
+              run: dotnet build --no-restore -c Release
