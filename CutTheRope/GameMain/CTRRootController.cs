@@ -238,14 +238,14 @@ namespace CutTheRope.GameMain
         {
         }
 
-        public static bool IsHacked()
-        {
-            return false;
-        }
+        //public static bool IsHacked()
+        //{
+        //    return false;
+        //}
 
-        public static void SetHacked()
-        {
-        }
+        //public static void SetHacked()
+        //{
+        //}
 
         public static void SetInCrystal(bool b)
         {

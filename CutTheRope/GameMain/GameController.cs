@@ -208,11 +208,11 @@ namespace CutTheRope.GameMain
             {
                 num2 += CTRPreferences.GetScoreForPackLevel(pack, i);
             }
-            if (!CTRRootController.IsHacked())
-            {
-                CTRPreferences.SetScoreHash();
-                Preferences.RequestSave();
-            }
+            //if (!CTRRootController.IsHacked())
+            //{
+            //    CTRPreferences.SetScoreHash();
+            //    Preferences.RequestSave();
+            //}
             boxCloseHandled = true;
         }
 
@@ -221,10 +221,10 @@ namespace CutTheRope.GameMain
             boxCloseHandled = false;
             _ = Application.SharedPreferences();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            if (!CTRPreferences.IsScoreHashValid())
-            {
-                CTRRootController.SetHacked();
-            }
+            //if (!CTRPreferences.IsScoreHashValid())
+            //{
+            //CTRRootController.SetHacked();
+            //}
             CTRSoundMgr.PlaySound(Resources.Snd.Win);
             View view = GetView(0);
             view.GetChild(4).touchable = true;
