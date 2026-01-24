@@ -52,10 +52,10 @@ namespace CutTheRope.GameMain
                     }
                     else
                     {
-                        particle.deltaColor.r = (endColor.r - startColor.r) / num;
-                        particle.deltaColor.g = (endColor.g - startColor.g) / num;
-                        particle.deltaColor.b = (endColor.b - startColor.b) / num;
-                        particle.deltaColor.a = (endColor.a - startColor.a) / num;
+                        particle.deltaColor.RedColor = (endColor.RedColor - startColor.RedColor) / num;
+                        particle.deltaColor.GreenColor = (endColor.GreenColor - startColor.GreenColor) / num;
+                        particle.deltaColor.BlueColor = (endColor.BlueColor - startColor.BlueColor) / num;
+                        particle.deltaColor.AlphaChannel = (endColor.AlphaChannel - startColor.AlphaChannel) / num;
                         float num3 = 0.98f;
                         particle.width *= num3;
                         particle.height *= num3;

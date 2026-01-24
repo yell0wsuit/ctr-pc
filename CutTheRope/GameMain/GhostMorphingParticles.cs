@@ -51,10 +51,10 @@ namespace CutTheRope.GameMain
                     float fadeThreshold = 0.7f * life;
                     if (particle.life < fadeThreshold)
                     {
-                        particle.deltaColor.r = (endColor.r - startColor.r) / fadeThreshold;
-                        particle.deltaColor.g = (endColor.g - startColor.g) / fadeThreshold;
-                        particle.deltaColor.b = (endColor.b - startColor.b) / fadeThreshold;
-                        particle.deltaColor.a = (endColor.a - startColor.a) / fadeThreshold;
+                        particle.deltaColor.RedColor = (endColor.RedColor - startColor.RedColor) / fadeThreshold;
+                        particle.deltaColor.GreenColor = (endColor.GreenColor - startColor.GreenColor) / fadeThreshold;
+                        particle.deltaColor.BlueColor = (endColor.BlueColor - startColor.BlueColor) / fadeThreshold;
+                        particle.deltaColor.AlphaChannel = (endColor.AlphaChannel - startColor.AlphaChannel) / fadeThreshold;
                     }
                     particle.dir = VectMult(particle.dir, 0.83);
                     particle.width *= 1.015f;

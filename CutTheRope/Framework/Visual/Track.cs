@@ -87,10 +87,10 @@ namespace CutTheRope.Framework.Visual
                     currentStepPerSecond.value.rotation.angle = (dst.value.rotation.angle - src.value.rotation.angle) / keyFrameTimeLeft;
                     break;
                 case TrackType.TRACK_COLOR:
-                    currentStepPerSecond.value.color.rgba.r = (dst.value.color.rgba.r - src.value.color.rgba.r) / keyFrameTimeLeft;
-                    currentStepPerSecond.value.color.rgba.g = (dst.value.color.rgba.g - src.value.color.rgba.g) / keyFrameTimeLeft;
-                    currentStepPerSecond.value.color.rgba.b = (dst.value.color.rgba.b - src.value.color.rgba.b) / keyFrameTimeLeft;
-                    currentStepPerSecond.value.color.rgba.a = (dst.value.color.rgba.a - src.value.color.rgba.a) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.RedColor = (dst.value.color.rgba.RedColor - src.value.color.rgba.RedColor) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.GreenColor = (dst.value.color.rgba.GreenColor - src.value.color.rgba.GreenColor) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.BlueColor = (dst.value.color.rgba.BlueColor - src.value.color.rgba.BlueColor) / keyFrameTimeLeft;
+                    currentStepPerSecond.value.color.rgba.AlphaChannel = (dst.value.color.rgba.AlphaChannel - src.value.color.rgba.AlphaChannel) / keyFrameTimeLeft;
                     break;
                 case TrackType.TRACK_ACTION:
                     break;
@@ -150,34 +150,34 @@ namespace CutTheRope.Framework.Visual
                     case TrackType.TRACK_COLOR:
                         {
                             ColorParams color = currentStepPerSecond.value.color;
-                            color.rgba.r *= 2f;
+                            color.rgba.RedColor *= 2f;
                             ColorParams color2 = currentStepPerSecond.value.color;
-                            color2.rgba.g *= 2f;
+                            color2.rgba.GreenColor *= 2f;
                             ColorParams color3 = currentStepPerSecond.value.color;
-                            color3.rgba.b *= 2f;
+                            color3.rgba.BlueColor *= 2f;
                             ColorParams color4 = currentStepPerSecond.value.color;
-                            color4.rgba.a *= 2f;
-                            currentStepAcceleration.value.color.rgba.r = currentStepPerSecond.value.color.rgba.r / keyFrameTimeLeft;
-                            currentStepAcceleration.value.color.rgba.g = currentStepPerSecond.value.color.rgba.g / keyFrameTimeLeft;
-                            currentStepAcceleration.value.color.rgba.b = currentStepPerSecond.value.color.rgba.b / keyFrameTimeLeft;
-                            currentStepAcceleration.value.color.rgba.a = currentStepPerSecond.value.color.rgba.a / keyFrameTimeLeft;
+                            color4.rgba.AlphaChannel *= 2f;
+                            currentStepAcceleration.value.color.rgba.RedColor = currentStepPerSecond.value.color.rgba.RedColor / keyFrameTimeLeft;
+                            currentStepAcceleration.value.color.rgba.GreenColor = currentStepPerSecond.value.color.rgba.GreenColor / keyFrameTimeLeft;
+                            currentStepAcceleration.value.color.rgba.BlueColor = currentStepPerSecond.value.color.rgba.BlueColor / keyFrameTimeLeft;
+                            currentStepAcceleration.value.color.rgba.AlphaChannel = currentStepPerSecond.value.color.rgba.AlphaChannel / keyFrameTimeLeft;
                             if (dst.transitionType == KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN)
                             {
-                                currentStepPerSecond.value.color.rgba.r = 0f;
-                                currentStepPerSecond.value.color.rgba.g = 0f;
-                                currentStepPerSecond.value.color.rgba.b = 0f;
-                                currentStepPerSecond.value.color.rgba.a = 0f;
+                                currentStepPerSecond.value.color.rgba.RedColor = 0f;
+                                currentStepPerSecond.value.color.rgba.GreenColor = 0f;
+                                currentStepPerSecond.value.color.rgba.BlueColor = 0f;
+                                currentStepPerSecond.value.color.rgba.AlphaChannel = 0f;
                             }
                             else
                             {
                                 ColorParams color5 = currentStepAcceleration.value.color;
-                                color5.rgba.r *= -1f;
+                                color5.rgba.RedColor *= -1f;
                                 ColorParams color6 = currentStepAcceleration.value.color;
-                                color6.rgba.g *= -1f;
+                                color6.rgba.GreenColor *= -1f;
                                 ColorParams color7 = currentStepAcceleration.value.color;
-                                color7.rgba.b *= -1f;
+                                color7.rgba.BlueColor *= -1f;
                                 ColorParams color8 = currentStepAcceleration.value.color;
-                                color8.rgba.a *= -1f;
+                                color8.rgba.AlphaChannel *= -1f;
                             }
                             break;
                         }
@@ -235,10 +235,10 @@ namespace CutTheRope.Framework.Visual
                         t.element.color = kf.value.color.rgba;
                         return;
                     }
-                    t.element.color.r = elementPrevState.value.color.rgba.r + kf.value.color.rgba.r;
-                    t.element.color.g = elementPrevState.value.color.rgba.g + kf.value.color.rgba.g;
-                    t.element.color.b = elementPrevState.value.color.rgba.b + kf.value.color.rgba.b;
-                    t.element.color.a = elementPrevState.value.color.rgba.a + kf.value.color.rgba.a;
+                    t.element.color.RedColor = elementPrevState.value.color.rgba.RedColor + kf.value.color.rgba.RedColor;
+                    t.element.color.GreenColor = elementPrevState.value.color.rgba.GreenColor + kf.value.color.rgba.GreenColor;
+                    t.element.color.BlueColor = elementPrevState.value.color.rgba.BlueColor + kf.value.color.rgba.BlueColor;
+                    t.element.color.AlphaChannel = elementPrevState.value.color.rgba.AlphaChannel + kf.value.color.rgba.AlphaChannel;
                     return;
                 case TrackType.TRACK_ACTION:
                     {
@@ -414,33 +414,33 @@ namespace CutTheRope.Framework.Visual
                     case TrackType.TRACK_COLOR:
                         {
                             ColorParams color = thiss.currentStepPerSecond.value.color;
-                            color.rgba.r += thiss.currentStepAcceleration.value.color.rgba.r * delta;
+                            color.rgba.RedColor += thiss.currentStepAcceleration.value.color.rgba.RedColor * delta;
                             ColorParams color2 = thiss.currentStepPerSecond.value.color;
-                            color2.rgba.g += thiss.currentStepAcceleration.value.color.rgba.g * delta;
+                            color2.rgba.GreenColor += thiss.currentStepAcceleration.value.color.rgba.GreenColor * delta;
                             ColorParams color3 = thiss.currentStepPerSecond.value.color;
-                            color3.rgba.b += thiss.currentStepAcceleration.value.color.rgba.b * delta;
+                            color3.rgba.BlueColor += thiss.currentStepAcceleration.value.color.rgba.BlueColor * delta;
                             ColorParams color4 = thiss.currentStepPerSecond.value.color;
-                            color4.rgba.a += thiss.currentStepAcceleration.value.color.rgba.a * delta;
-                            float num13 = thiss.currentStepAcceleration.value.color.rgba.r * delta;
-                            float num14 = thiss.currentStepAcceleration.value.color.rgba.g * delta;
-                            float num15 = thiss.currentStepAcceleration.value.color.rgba.b * delta;
-                            float num16 = thiss.currentStepAcceleration.value.color.rgba.a * delta;
+                            color4.rgba.AlphaChannel += thiss.currentStepAcceleration.value.color.rgba.AlphaChannel * delta;
+                            float num13 = thiss.currentStepAcceleration.value.color.rgba.RedColor * delta;
+                            float num14 = thiss.currentStepAcceleration.value.color.rgba.GreenColor * delta;
+                            float num15 = thiss.currentStepAcceleration.value.color.rgba.BlueColor * delta;
+                            float num16 = thiss.currentStepAcceleration.value.color.rgba.AlphaChannel * delta;
                             ColorParams color5 = thiss.currentStepPerSecond.value.color;
-                            color5.rgba.r += num13;
+                            color5.rgba.RedColor += num13;
                             ColorParams color6 = thiss.currentStepPerSecond.value.color;
-                            color6.rgba.g += num14;
+                            color6.rgba.GreenColor += num14;
                             ColorParams color7 = thiss.currentStepPerSecond.value.color;
-                            color7.rgba.b += num15;
+                            color7.rgba.BlueColor += num15;
                             ColorParams color8 = thiss.currentStepPerSecond.value.color;
-                            color8.rgba.a += num16;
+                            color8.rgba.AlphaChannel += num16;
                             BaseElement element = timeline.element;
-                            element.color.r += (keyFrame.value.color.rgba.r + (num13 / 2f)) * delta;
+                            element.color.RedColor += (keyFrame.value.color.rgba.RedColor + (num13 / 2f)) * delta;
                             BaseElement element2 = timeline.element;
-                            element2.color.g += (keyFrame.value.color.rgba.g + (num14 / 2f)) * delta;
+                            element2.color.GreenColor += (keyFrame.value.color.rgba.GreenColor + (num14 / 2f)) * delta;
                             BaseElement element3 = timeline.element;
-                            element3.color.b += (keyFrame.value.color.rgba.b + (num15 / 2f)) * delta;
+                            element3.color.BlueColor += (keyFrame.value.color.rgba.BlueColor + (num15 / 2f)) * delta;
                             BaseElement element4 = timeline.element;
-                            element4.color.a += (keyFrame.value.color.rgba.a + (num16 / 2f)) * delta;
+                            element4.color.AlphaChannel += (keyFrame.value.color.rgba.AlphaChannel + (num16 / 2f)) * delta;
                             break;
                         }
 
@@ -470,13 +470,13 @@ namespace CutTheRope.Framework.Visual
                     case TrackType.TRACK_COLOR:
                         {
                             BaseElement element5 = timeline.element;
-                            element5.color.r += thiss.currentStepPerSecond.value.color.rgba.r * delta;
+                            element5.color.RedColor += thiss.currentStepPerSecond.value.color.rgba.RedColor * delta;
                             BaseElement element6 = timeline.element;
-                            element6.color.g += thiss.currentStepPerSecond.value.color.rgba.g * delta;
+                            element6.color.GreenColor += thiss.currentStepPerSecond.value.color.rgba.GreenColor * delta;
                             BaseElement element7 = timeline.element;
-                            element7.color.b += thiss.currentStepPerSecond.value.color.rgba.b * delta;
+                            element7.color.BlueColor += thiss.currentStepPerSecond.value.color.rgba.BlueColor * delta;
                             BaseElement element8 = timeline.element;
-                            element8.color.a += thiss.currentStepPerSecond.value.color.rgba.a * delta;
+                            element8.color.AlphaChannel += thiss.currentStepPerSecond.value.color.rgba.AlphaChannel * delta;
                             break;
                         }
 

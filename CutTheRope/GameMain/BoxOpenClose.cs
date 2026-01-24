@@ -51,7 +51,7 @@ namespace CutTheRope.GameMain
                         text21.SetEnabled(true);
                         Text text22 = (Text)result.GetChildWithName("scoreValue");
                         text22.SetEnabled(true);
-                        text28.color.a = text21.color.a = text22.color.a = 1f - (raDelay / 0.2f);
+                        text28.color.AlphaChannel = text21.color.AlphaChannel = text22.color.AlphaChannel = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 2;
@@ -80,7 +80,7 @@ namespace CutTheRope.GameMain
                     {
                         BaseElement baseElement = (Text)result.GetChildWithName("dataTitle");
                         Text text23 = (Text)result.GetChildWithName("dataValue");
-                        baseElement.color.a = text23.color.a = raDelay / 0.2f;
+                        baseElement.color.AlphaChannel = text23.color.AlphaChannel = raDelay / 0.2f;
                         if (flag)
                         {
                             raState = 4;
@@ -97,7 +97,7 @@ namespace CutTheRope.GameMain
                     {
                         BaseElement baseElement2 = (Text)result.GetChildWithName("dataTitle");
                         Text text24 = (Text)result.GetChildWithName("dataValue");
-                        baseElement2.color.a = text24.color.a = 1f - (raDelay / 0.2f);
+                        baseElement2.color.AlphaChannel = text24.color.AlphaChannel = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 5;
@@ -126,7 +126,7 @@ namespace CutTheRope.GameMain
                     {
                         BaseElement baseElement3 = (Text)result.GetChildWithName("dataTitle");
                         Text text25 = (Text)result.GetChildWithName("dataValue");
-                        baseElement3.color.a = text25.color.a = raDelay / 0.2f;
+                        baseElement3.color.AlphaChannel = text25.color.AlphaChannel = raDelay / 0.2f;
                         if (flag)
                         {
                             raState = 7;
@@ -143,7 +143,7 @@ namespace CutTheRope.GameMain
                     {
                         BaseElement baseElement4 = (Text)result.GetChildWithName("dataTitle");
                         Text text26 = (Text)result.GetChildWithName("dataValue");
-                        baseElement4.color.a = text26.color.a = 1f - (raDelay / 0.2f);
+                        baseElement4.color.AlphaChannel = text26.color.AlphaChannel = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 8;
@@ -573,7 +573,7 @@ namespace CutTheRope.GameMain
             BaseElement baseElement = (Text)result.GetChildWithName("dataTitle");
             Text text2 = (Text)result.GetChildWithName("dataValue");
             Text text3 = (Text)result.GetChildWithName("scoreValue");
-            baseElement.color.a = text2.color.a = text3.color.a = 1f;
+            baseElement.color.AlphaChannel = text2.color.AlphaChannel = text3.color.AlphaChannel = 1f;
         }
 
         public void CreateOpenCloseAnims()
