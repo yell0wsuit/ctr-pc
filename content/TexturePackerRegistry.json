@@ -28,15 +28,6 @@
             "resourceName": "obj_ghost",
             "atlasPath": "obj_ghost.json",
             "useAntialias": true,
-            "frameOrder": [
-                "00_body",
-                "01_face.png",
-                "bubbles_0000",
-                "bubbles_0001",
-                "bubbles_0002",
-                "bubbles_0003",
-                "bubbles_0004"
-            ],
             "centerOffsets": false
         },
         {
