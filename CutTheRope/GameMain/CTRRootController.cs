@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRope.Commons;
-using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Platform;
 
@@ -11,7 +10,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CTRRootController : RootController
     {
-        public static void LogEvent(string s)
+        public static void LogEvent(string _)
         {
         }
 
@@ -35,7 +34,7 @@ namespace CutTheRope.GameMain
             mapName = map;
         }
 
-        public static void SetMapsList(Dictionary<string, XElement> l)
+        public static void SetMapsList(Dictionary<string, XElement> _)
         {
         }
 
@@ -124,7 +123,7 @@ namespace CutTheRope.GameMain
                         {
                             AndroidAPI.DisableBanners();
                         }
-                        LOG("activate child menu");
+                        LOG();
                         ActivateChild(1);
                         //Show menu presence after loading screen
                         Game1.RPC?.MenuPresence();
@@ -234,7 +233,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
-        public static void CheckMapIsValid(FrameworkTypes data)
+        public static void CheckMapIsValid()
         {
         }
 
@@ -301,7 +300,7 @@ namespace CutTheRope.GameMain
             ((CTRRootController)Application.SharedRootController()).showGreeting = s;
         }
 
-        public static void PostAchievementName(string name, string s)
+        public static void PostAchievementName(string _, string _1)
         {
         }
 

@@ -13,7 +13,7 @@ namespace CutTheRope.GameMain
 {
     internal class Grab : CTRGameObject
     {
-        protected static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
+        protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
             int segmentCount = s.vertexCount / 2;
             int totalVertices = segmentCount * 8;
@@ -225,7 +225,7 @@ namespace CutTheRope.GameMain
             if (radius != -1f || hideRadius)
             {
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
-                DrawGrabCircle(this, x, y, radius, vertexCount, rgbaColor);
+                DrawGrabCircle(this, rgbaColor);
             }
             OpenGL.GlColor4f(Color.White);
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);

@@ -6,7 +6,7 @@ namespace CutTheRope.Framework.Visual
 {
     internal sealed class Font : FontGeneric
     {
-        public Font InitWithVariableSizeCharscharMapFileKerning(string strParam, CTRTexture2D charmapfile, object k)
+        public Font InitWithVariableSizeCharscharMapFileKerning(string strParam, CTRTexture2D charmapfile)
         {
             _isWvga = charmapfile.IsWvga();
             charmap = new Image().InitWithTexture(charmapfile);

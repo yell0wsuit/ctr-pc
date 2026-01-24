@@ -194,7 +194,7 @@ namespace CutTheRope.Framework.Core
             {
                 _ = xMLNode3.ValueAsNSString();
             }
-            Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)LoadResource(resID, ResourceType.IMAGE), null);
+            Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)LoadResource(resID, ResourceType.IMAGE));
             font.SetCharOffsetLineOffsetSpaceWidth(num, num2, num3);
             return font;
         }
@@ -239,7 +239,7 @@ namespace CutTheRope.Framework.Core
                 CTRTexture2D.SetAliasTexParameters();
             }
 
-            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(text, true)
+            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(text)
                 ?? throw new FileNotFoundException("texture not found: " + text, text);
             if (isWvga)
             {
@@ -351,7 +351,7 @@ namespace CutTheRope.Framework.Core
                 quadData[index + 2] = rect.w;
                 quadData[index + 3] = rect.h;
             }
-            SetQuadsInfo(texture, quadData, quadData.Length, scaleX, scaleY);
+            SetQuadsInfo(texture, quadData, scaleX, scaleY);
 
             if (atlas.Offsets.Count == atlas.Rects.Count && atlas.HasNonZeroOffset)
             {
@@ -390,7 +390,7 @@ namespace CutTheRope.Framework.Core
                     {
                         array[j] = list[j].FloatValue();
                     }
-                    SetQuadsInfo(t, array, list.Count, scaleX, scaleY);
+                    SetQuadsInfo(t, array, scaleX, scaleY);
                 }
             }
             XElement xMLNode2 = i.FindChildWithTagNameRecursively("offsets", false);
@@ -427,7 +427,7 @@ namespace CutTheRope.Framework.Core
             return ContentPaths.GetRelativePathWithContentFolder(relPath);
         }
 
-        private static void SetQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
+        private static void SetQuadsInfo(CTRTexture2D t, float[] data, float scaleX, float scaleY)
         {
             int num = data.Length / 4;
             t.SetQuadsCapacity(num);

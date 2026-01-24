@@ -620,7 +620,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
-        private static void PostFlurryLevelEvent(string s)
+        private static void PostFlurryLevelEvent(string _)
         {
         }
 
@@ -680,7 +680,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public void SetAdSkipper(object skipper)
+        public void SetAdSkipper()
         {
             _ = (GameView)GetView(0);
         }

@@ -79,7 +79,7 @@ namespace CutTheRope.GameMain
             base.Deactivate();
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string _, bool _1)
         {
             if (rootNode != null)
             {
