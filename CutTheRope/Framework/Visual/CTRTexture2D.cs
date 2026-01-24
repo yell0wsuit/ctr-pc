@@ -169,21 +169,16 @@ namespace CutTheRope.Framework.Visual
             _lowypoint = h;
             int num = CalcRealSize(w);
             int num2 = CalcRealSize(h);
-            _size = new Vector(num, num2);
+            //_size = new Vector(num, num2);
             _width = (uint)num;
             _height = (uint)num2;
-            _format = _defaultAlphaPixelFormat;
+            //_format = _defaultAlphaPixelFormat;
             _maxS = w / (float)num;
             _maxT = h / (float)num2;
         }
 
         private static void Resume()
         {
-        }
-
-        public static void SetDefaultAlphaPixelFormat(Texture2DPixelFormat format)
-        {
-            _defaultAlphaPixelFormat = format;
         }
 
         public static void OptimizeMemory()
@@ -234,8 +229,8 @@ namespace CutTheRope.Framework.Visual
             Global.GraphicsDevice.SetRenderTarget(null);
             Application.SharedRootController().transitionTime = transitionTime;
             xnaTexture_ = renderTarget;
-            _format = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
-            _size = new Vector(num, num2);
+            //_format = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
+            //_size = new Vector(num, num2);
             _width = (uint)num;
             _height = (uint)num2;
             _maxS = w / (float)num;
@@ -279,9 +274,9 @@ namespace CutTheRope.Framework.Visual
 
         private float _scaleY;
 
-        private Texture2DPixelFormat _format;
+        // private Texture2DPixelFormat _format;
 
-        private Vector _size;
+        // private Vector _size;
 
         public Vector[] quadOffsets;
 
@@ -313,10 +308,6 @@ namespace CutTheRope.Framework.Visual
         private CTRTexture2D next;
 
         private CTRTexture2D prev;
-
-        public static Texture2DPixelFormat kTexture2DPixelFormat_Default = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
-
-        private static Texture2DPixelFormat _defaultAlphaPixelFormat = kTexture2DPixelFormat_Default;
 
         public enum Texture2DPixelFormat
         {
