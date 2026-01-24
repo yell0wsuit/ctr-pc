@@ -10,7 +10,7 @@ namespace CutTheRope.Framework.Visual
         {
             _isWvga = charmapfile.IsWvga();
             charmap = new Image().InitWithTexture(charmapfile);
-            quadsCount = charmapfile.quadsCount;
+            // quadsCount = charmapfile.quadsCount;
             height = charmapfile.quadRects[0].h;
             chars = strParam.Copy();
             sortedChars = chars.GetCharacters();
@@ -108,7 +108,7 @@ namespace CutTheRope.Framework.Visual
 
         private bool _isWvga;
 
-        private int quadsCount;
+        // private int quadsCount;
 
         private float height;
 
