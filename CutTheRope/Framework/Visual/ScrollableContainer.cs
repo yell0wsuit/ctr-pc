@@ -110,7 +110,7 @@ namespace CutTheRope.Framework.Visual
                 {
                     touchTimer = 0f;
                     passTouches = true;
-                    if (base.OnTouchDownXY(savedTouch.x, savedTouch.y))
+                    if (base.OnTouchDownXY(savedTouch.XAxis, savedTouch.YAxis))
                     {
                         return;
                     }
@@ -122,7 +122,7 @@ namespace CutTheRope.Framework.Visual
                 if (touchReleaseTimer <= 0.0)
                 {
                     touchReleaseTimer = 0f;
-                    if (base.OnTouchUpXY(savedTouch.x, savedTouch.y))
+                    if (base.OnTouchUpXY(savedTouch.XAxis, savedTouch.YAxis))
                     {
                         return;
                     }
@@ -159,7 +159,7 @@ namespace CutTheRope.Framework.Visual
             {
                 Vector vector = spoints[targetSpoint];
                 MoveToPointDeltaSpeed(vector, delta, (float)Math.Max(100.0, (double)VectDistance(vector, Vect(container.x, container.y)) * 4.0 * spointMoveMultiplier));
-                if (container.x == vector.x && container.y == vector.y)
+                if (container.x == vector.XAxis && container.y == vector.YAxis)
                 {
                     delegateScrollableContainerProtocol?.ScrollableContainerreachedScrollPoint(this, targetSpoint);
                     movingToSpoint = false;
@@ -179,15 +179,15 @@ namespace CutTheRope.Framework.Visual
                 Vector v = VectMult(VectNeg(move), 7f); // Decelerate faster after scrolling
                 move = VectAdd(move, VectMult(v, delta));
                 Vector off = VectMult(move, delta);
-                if ((double)Math.Abs(off.x) < 0.2)
+                if ((double)Math.Abs(off.XAxis) < 0.2)
                 {
-                    off.x = 0f;
-                    move.x = 0f;
+                    off.XAxis = 0f;
+                    move.XAxis = 0f;
                 }
-                if ((double)Math.Abs(off.y) < 0.2)
+                if ((double)Math.Abs(off.YAxis) < 0.2)
                 {
-                    off.y = 0f;
-                    move.y = 0f;
+                    off.YAxis = 0f;
+                    move.YAxis = 0f;
                 }
                 _ = MoveContainerBy(off);
             }
@@ -262,8 +262,8 @@ namespace CutTheRope.Framework.Visual
             {
                 Vector vector2 = VectSub(vector, dragStart);
                 dragStart = vector;
-                vector2.x = FIT_TO_BOUNDARIES(vector2.x, 0f - maxTouchMoveLength, maxTouchMoveLength);
-                vector2.y = FIT_TO_BOUNDARIES(vector2.y, 0f - maxTouchMoveLength, maxTouchMoveLength);
+                vector2.XAxis = FIT_TO_BOUNDARIES(vector2.XAxis, 0f - maxTouchMoveLength, maxTouchMoveLength);
+                vector2.YAxis = FIT_TO_BOUNDARIES(vector2.YAxis, 0f - maxTouchMoveLength, maxTouchMoveLength);
                 totalDrag = VectAdd(totalDrag, vector2);
                 if ((touchTimer > 0.0 || untouchChildsOnMove) && VectLength(totalDrag) > touchMoveIgnoreLength)
                 {
@@ -273,19 +273,19 @@ namespace CutTheRope.Framework.Visual
                 }
                 if (container.width <= width)
                 {
-                    vector2.x = 0f;
+                    vector2.XAxis = 0f;
                 }
                 if (container.height <= height)
                 {
-                    vector2.y = 0f;
+                    vector2.YAxis = 0f;
                 }
                 if (shouldBounceHorizontally && (container.x > 0.0 || container.x < (float)(-(float)container.width + width)))
                 {
-                    vector2.x /= 2f;
+                    vector2.XAxis /= 2f;
                 }
                 if (shouldBounceVertically && (container.y > 0.0 || container.y < (float)(-(float)container.height + height)))
                 {
-                    vector2.y /= 2f;
+                    vector2.YAxis /= 2f;
                 }
                 staticMove = MoveContainerBy(vector2);
                 move = vectZero;
@@ -311,7 +311,7 @@ namespace CutTheRope.Framework.Visual
             }
             if (touchTimer > 0.0)
             {
-                bool flag2 = base.OnTouchDownXY(savedTouch.x, savedTouch.y);
+                bool flag2 = base.OnTouchDownXY(savedTouch.XAxis, savedTouch.YAxis);
                 touchReleaseTimer = 0.2f;
                 touchTimer = 0f;
                 if (dontHandleTouchDownsHandledByChilds && flag2)
@@ -461,8 +461,8 @@ namespace CutTheRope.Framework.Visual
         public void SetScroll(Vector s)
         {
             move = vectZero;
-            container.x = 0f - s.x;
-            container.y = 0f - s.y;
+            container.x = 0f - s.XAxis;
+            container.y = 0f - s.YAxis;
             movingToSpoint = false;
             targetSpoint = -1;
             lastTargetSpoint = -1;
@@ -471,8 +471,8 @@ namespace CutTheRope.Framework.Visual
         public void PlaceToScrollPoint(int sp)
         {
             move = vectZero;
-            container.x = spoints[sp].x;
-            container.y = spoints[sp].y;
+            container.x = spoints[sp].XAxis;
+            container.y = spoints[sp].YAxis;
             movingToSpoint = false;
             targetSpoint = -1;
             lastTargetSpoint = sp;
@@ -502,7 +502,7 @@ namespace CutTheRope.Framework.Visual
             Vector v = Vect(container.x, container.y);
             for (int i = 0; i < spointsNum; i++)
             {
-                if (spoints[i].x <= 0.0 && (spoints[i].x >= (float)(-(float)container.width + width) || spoints[i].x >= 0.0) && spoints[i].y <= 0.0 && (spoints[i].y >= (float)(-(float)container.height + height) || spoints[i].y >= 0.0))
+                if (spoints[i].XAxis <= 0.0 && (spoints[i].XAxis >= (float)(-(float)container.width + width) || spoints[i].XAxis >= 0.0) && spoints[i].YAxis <= 0.0 && (spoints[i].YAxis >= (float)(-(float)container.height + height) || spoints[i].YAxis >= 0.0))
                 {
                     float num4 = VectDistance(spoints[i], v);
                     if ((VectEqual(d, vectZero) || Math.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - num3) <= 90f) && num4 < num2)
@@ -534,8 +534,8 @@ namespace CutTheRope.Framework.Visual
 
         public Vector MoveContainerBy(Vector off)
         {
-            float val = container.x + off.x;
-            float val2 = container.y + off.y;
+            float val = container.x + off.XAxis;
+            float val2 = container.y + off.YAxis;
             if (!shouldBounceHorizontally)
             {
                 val = (float)Math.Min((double)Math.Max((float)(-(float)container.width + width), val), 0.0);
@@ -555,8 +555,8 @@ namespace CutTheRope.Framework.Visual
             Vector v = VectSub(tsp, Vect(container.x, container.y));
             v = VectNormalize(v);
             v = VectMult(v, speed);
-            _ = Mover.MoveVariableToTarget(ref container.x, tsp.x, Math.Abs(v.x), delta);
-            _ = Mover.MoveVariableToTarget(ref container.y, tsp.y, Math.Abs(v.y), delta);
+            _ = Mover.MoveVariableToTarget(ref container.x, tsp.XAxis, Math.Abs(v.XAxis), delta);
+            _ = Mover.MoveVariableToTarget(ref container.y, tsp.YAxis, Math.Abs(v.YAxis), delta);
             targetPoint = tsp;
             move = vectZero;
         }

@@ -25,13 +25,13 @@ namespace CutTheRope.GameMain
             gsBubbles = bubbles;
             gsBungees = bungees;
             gsBouncers = bouncers;
-            x = position.x;
-            y = position.y;
+            x = position.XAxis;
+            y = position.YAxis;
             ghostImage = new BaseElement();
             _ = AddChild(ghostImage);
             morphingBubbles = new GhostMorphingParticles().InitWithTotalParticles(7);
-            morphingBubbles.x = position.x;
-            morphingBubbles.y = position.y;
+            morphingBubbles.x = position.XAxis;
+            morphingBubbles.y = position.YAxis;
             _ = AddChild(morphingBubbles);
 
             Timeline appearTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
@@ -48,8 +48,8 @@ namespace CutTheRope.GameMain
             float random = RND_0_1;
 
             ghostImageFace = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 1);
-            ghostImageFace.x = position.x;
-            ghostImageFace.y = position.y;
+            ghostImageFace.x = position.XAxis;
+            ghostImageFace.y = position.YAxis;
             ghostImageFace.anchor = 18;
             _ = ghostImage.AddChild(ghostImageFace);
 
@@ -61,8 +61,8 @@ namespace CutTheRope.GameMain
             ghostImageFace.PlayTimeline(13);
 
             ghostImageBody = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 0);
-            ghostImageBody.x = position.x;
-            ghostImageBody.y = position.y;
+            ghostImageBody.x = position.XAxis;
+            ghostImageBody.y = position.YAxis;
             ghostImageBody.anchor = 18;
             _ = ghostImage.AddChild(ghostImageBody);
 
@@ -243,8 +243,8 @@ namespace CutTheRope.GameMain
                                 x,
                                 y,
                                 ropeAnchor,
-                                anchorPos.x,
-                                anchorPos.y,
+                                anchorPos.XAxis,
+                                anchorPos.YAxis,
                                 ropeLength);
                             autoRope.bungeeAnchor.pin = autoRope.bungeeAnchor.pos;
                             grab.SetRope(autoRope);

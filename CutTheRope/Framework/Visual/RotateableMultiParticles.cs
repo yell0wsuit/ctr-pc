@@ -16,15 +16,15 @@ namespace CutTheRope.Framework.Visual
             if (p.life > 0f)
             {
                 Vector vector = vectZero;
-                if (p.pos.x != 0f || p.pos.y != 0f)
+                if (p.pos.XAxis != 0f || p.pos.YAxis != 0f)
                 {
                     vector = VectNormalize(p.pos);
                 }
                 Vector v = vector;
                 vector = VectMult(vector, p.radialAccel);
-                float num = v.x;
-                v.x = 0f - v.y;
-                v.y = num;
+                float num = v.XAxis;
+                v.XAxis = 0f - v.YAxis;
+                v.YAxis = num;
                 v = VectMult(v, p.tangentialAccel);
                 Vector v2 = VectAdd(VectAdd(vector, v), gravity);
                 v2 = VectMult(v2, delta);
@@ -36,16 +36,16 @@ namespace CutTheRope.Framework.Visual
                 p.color.BlueColor += p.deltaColor.BlueColor * delta;
                 p.color.AlphaChannel += p.deltaColor.AlphaChannel * delta;
                 p.life -= delta;
-                float num2 = p.pos.x - (p.width / 2f);
-                float num3 = p.pos.y - (p.height / 2f);
-                float num4 = p.pos.x + (p.width / 2f);
-                float num5 = p.pos.y - (p.height / 2f);
-                float num6 = p.pos.x - (p.width / 2f);
-                float num7 = p.pos.y + (p.height / 2f);
-                float num9 = p.pos.x + (p.width / 2f);
-                float num8 = p.pos.y + (p.height / 2f);
-                float cx = p.pos.x;
-                float cy = p.pos.y;
+                float num2 = p.pos.XAxis - (p.width / 2f);
+                float num3 = p.pos.YAxis - (p.height / 2f);
+                float num4 = p.pos.XAxis + (p.width / 2f);
+                float num5 = p.pos.YAxis - (p.height / 2f);
+                float num6 = p.pos.XAxis - (p.width / 2f);
+                float num7 = p.pos.YAxis + (p.height / 2f);
+                float num9 = p.pos.XAxis + (p.width / 2f);
+                float num8 = p.pos.YAxis + (p.height / 2f);
+                float cx = p.pos.XAxis;
+                float cy = p.pos.YAxis;
                 Vector v3 = Vect(num2, num3);
                 Vector v4 = Vect(num4, num5);
                 Vector v5 = Vect(num6, num7);
@@ -57,7 +57,7 @@ namespace CutTheRope.Framework.Visual
                 v4 = RotatePreCalc(v4, cosA, sinA, cx, cy);
                 v5 = RotatePreCalc(v5, cosA, sinA, cx, cy);
                 v6 = RotatePreCalc(v6, cosA, sinA, cx, cy);
-                drawer.vertices[particleIdx] = Quad3D.MakeQuad3DEx(v3.x, v3.y, v4.x, v4.y, v5.x, v5.y, v6.x, v6.y);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3DEx(v3.XAxis, v3.YAxis, v4.XAxis, v4.YAxis, v5.XAxis, v5.YAxis, v6.XAxis, v6.YAxis);
                 for (int i = 0; i < 4; i++)
                 {
                     colors[(particleIdx * 4) + i] = p.color;

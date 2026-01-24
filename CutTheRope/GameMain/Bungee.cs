@@ -52,10 +52,10 @@ namespace CutTheRope.GameMain
                 }
                 v8 = VectAdd(v8, v);
                 v9 = VectAdd(v9, v);
-                lx = v6.x;
-                ly = v6.y;
-                rx = v7.x;
-                ry = v7.y;
+                lx = v6.XAxis;
+                ly = v6.YAxis;
+                rx = v7.XAxis;
+                ry = v7.YAxis;
                 Vector vector4 = VectSub(v4, vector2);
                 Vector vector5 = VectSub(v8, vector2);
                 Vector vector6 = VectAdd(v5, vector2);
@@ -143,8 +143,8 @@ namespace CutTheRope.GameMain
 
         private static void WritePair(float[] buffer, ref int index, Vector v)
         {
-            buffer[index++] = v.x;
-            buffer[index++] = v.y;
+            buffer[index++] = v.XAxis;
+            buffer[index++] = v.YAxis;
         }
 
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)
@@ -194,7 +194,7 @@ namespace CutTheRope.GameMain
                 rgbaColor4.GreenColor *= num2;
                 rgbaColor4.BlueColor *= num2;
             }
-            float num3 = VectDistance(Vect(pts[0].x, pts[0].y), Vect(pts[1].x, pts[1].y));
+            float num3 = VectDistance(Vect(pts[0].XAxis, pts[0].YAxis), Vect(pts[1].XAxis, pts[1].YAxis));
             b.relaxed = (double)num3 <= BUNGEE_REST_LEN + 0.3
                 ? 0
                 : (double)num3 <= BUNGEE_REST_LEN + 1.0 ? 1 : (double)num3 <= BUNGEE_REST_LEN + 4.0 ? 2 : 3;
@@ -236,10 +236,10 @@ namespace CutTheRope.GameMain
                     break;
                 }
                 Vector vector = GLDrawer.CalcPathBezier(pts, count, num7);
-                array[num8++] = vector.x;
-                array[num8++] = vector.y;
-                b.drawPts[num9++] = vector.x;
-                b.drawPts[num9++] = vector.y;
+                array[num8++] = vector.XAxis;
+                array[num8++] = vector.YAxis;
+                b.drawPts[num9++] = vector.XAxis;
+                b.drawPts[num9++] = vector.YAxis;
                 if (num8 >= 8 || (double)num7 == 1.0)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
@@ -463,7 +463,7 @@ namespace CutTheRope.GameMain
                 ConstraintedPoint constraintedPoint = parts[i];
                 if (constraintedPoint != null)
                 {
-                    if (bungeeAnchor.pin.x != -1f)
+                    if (bungeeAnchor.pin.XAxis != -1f)
                     {
                         if (constraintedPoint != tail)
                         {
@@ -545,7 +545,7 @@ namespace CutTheRope.GameMain
                         flag2 = false;
                     }
                 }
-                if (constraintedPoint2.pin.x == -1f && !flag2)
+                if (constraintedPoint2.pin.XAxis == -1f && !flag2)
                 {
                     flag = true;
                     cutIndex = j;

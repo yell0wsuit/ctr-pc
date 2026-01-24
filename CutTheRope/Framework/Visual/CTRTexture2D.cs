@@ -17,7 +17,7 @@ namespace CutTheRope.Framework.Visual
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
-                point.x, point.y, rect.w, rect.h,
+                point.XAxis, point.YAxis, rect.w, rect.h,
                 texLeft, texTop, texRight, texBottom);
             OpenGL.DrawTriangleStrip(vertices);
         }
@@ -67,7 +67,7 @@ namespace CutTheRope.Framework.Visual
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
-                point.x, point.y, w, h,
+                point.XAxis, point.YAxis, w, h,
                 quad2D.tlX, quad2D.tlY, quad2D.brX, quad2D.brY);
             OpenGL.DrawTriangleStrip(vertices);
         }
@@ -77,7 +77,7 @@ namespace CutTheRope.Framework.Visual
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
-                point.x, point.y, t._realWidth, t._realHeight,
+                point.XAxis, point.YAxis, t._realWidth, t._realHeight,
                 0f, 0f, t._maxS, t._maxT);
             OpenGL.DrawTriangleStrip(vertices);
         }

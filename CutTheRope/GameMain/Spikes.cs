@@ -32,8 +32,8 @@ namespace CutTheRope.GameMain
                 _ = AddChild(rotateButton);
                 Vector quadOffset = GetQuadOffset(Resources.Img.ObjRotatableSpikesButton, num);
                 Vector quadSize = GetQuadSize(Resources.Img.ObjRotatableSpikesButton, num);
-                Vector vector = VectSub(Vect(image.texture.preCutSize.x, image.texture.preCutSize.y), VectAdd(quadSize, quadOffset));
-                rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + (quadSize.x / 2f), 0f - vector.x + (quadSize.x / 2f), 0f - quadOffset.y + (quadSize.y / 2f), 0f - vector.y + (quadSize.y / 2f));
+                Vector vector = VectSub(Vect(image.texture.preCutSize.XAxis, image.texture.preCutSize.YAxis), VectAdd(quadSize, quadOffset));
+                rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.XAxis + (quadSize.XAxis / 2f), 0f - vector.XAxis + (quadSize.XAxis / 2f), 0f - quadOffset.YAxis + (quadSize.YAxis / 2f), 0f - vector.YAxis + (quadSize.YAxis / 2f));
             }
             passColorToChilds = false;
             spikesNormal = false;
@@ -56,12 +56,12 @@ namespace CutTheRope.GameMain
         {
             float num = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
             num /= 2f;
-            t1.x = x - num;
-            t2.x = x + num;
-            t1.y = t2.y = y - 5f;
-            b1.x = t1.x;
-            b2.x = t2.x;
-            b1.y = b2.y = y + 5f;
+            t1.XAxis = x - num;
+            t2.XAxis = x + num;
+            t1.YAxis = t2.YAxis = y - 5f;
+            b1.XAxis = t1.XAxis;
+            b2.XAxis = t2.XAxis;
+            b1.YAxis = b2.YAxis = y + 5f;
             angle = DEGREES_TO_RADIANS(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);

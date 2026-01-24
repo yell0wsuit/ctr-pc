@@ -16,11 +16,11 @@ namespace CutTheRope.GameMain
                 targetSock.light.visible = true;
                 Vector v = Vect(0f, -16f);
                 v = VectRotate(v, (double)DEGREES_TO_RADIANS(targetSock.rotation));
-                star.pos.x = targetSock.x;
-                star.pos.y = targetSock.y;
+                star.pos.XAxis = targetSock.x;
+                star.pos.YAxis = targetSock.y;
                 star.pos = VectAdd(star.pos, v);
-                star.prevPos.x = star.pos.x;
-                star.prevPos.y = star.pos.y;
+                star.prevPos.XAxis = star.pos.XAxis;
+                star.prevPos.YAxis = star.pos.YAxis;
                 star.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
                 star.posDelta = VectDiv(star.v, 60f);
                 star.prevPos = VectSub(star.pos, star.posDelta);
@@ -44,11 +44,11 @@ namespace CutTheRope.GameMain
 
             Vector v = Vect(0f, -16f);
             v = VectRotate(v, (double)DEGREES_TO_RADIANS(sock.rotation));
-            bulb.constraint.pos.x = sock.x;
-            bulb.constraint.pos.y = sock.y;
+            bulb.constraint.pos.XAxis = sock.x;
+            bulb.constraint.pos.YAxis = sock.y;
             bulb.constraint.pos = VectAdd(bulb.constraint.pos, v);
-            bulb.constraint.prevPos.x = bulb.constraint.pos.x;
-            bulb.constraint.prevPos.y = bulb.constraint.pos.y;
+            bulb.constraint.prevPos.XAxis = bulb.constraint.pos.XAxis;
+            bulb.constraint.prevPos.YAxis = bulb.constraint.pos.YAxis;
             bulb.constraint.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(sock.rotation)), bulb.sockSpeed);
             bulb.constraint.posDelta = VectDiv(bulb.constraint.v, 60f);
             bulb.constraint.prevPos = VectSub(bulb.constraint.pos, bulb.constraint.posDelta);
@@ -341,15 +341,15 @@ namespace CutTheRope.GameMain
 
         public void OnButtonPressed(GameSceneButtonId n)
         {
-            if (MaterialPoint.globalGravity.y == 784.0)
+            if (MaterialPoint.globalGravity.YAxis == 784.0)
             {
-                MaterialPoint.globalGravity.y = -784f;
+                MaterialPoint.globalGravity.YAxis = -784f;
                 gravityNormal = false;
                 CTRSoundMgr.PlaySound(Resources.Snd.GravityOn);
             }
             else
             {
-                MaterialPoint.globalGravity.y = 784f;
+                MaterialPoint.globalGravity.YAxis = 784f;
                 gravityNormal = true;
                 CTRSoundMgr.PlaySound(Resources.Snd.GravityOff);
             }

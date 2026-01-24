@@ -19,18 +19,18 @@ namespace CutTheRope.GameMain
             {
                 Vector v = Vect(c.x, c.y);
                 Vector vector = default;
-                vector.x = p.x - (p.bb.w / 2f);
+                vector.XAxis = p.x - (p.bb.w / 2f);
                 Vector vector2 = default;
-                vector2.x = p.x + (p.bb.w / 2f);
-                vector.y = vector2.y = p.y;
+                vector2.XAxis = p.x + (p.bb.w / 2f);
+                vector.YAxis = vector2.YAxis = p.y;
                 if (p.angle != 0.0)
                 {
                     v = VectRotateAround(v, 0.0 - p.angle, p.x, p.y);
                 }
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
-                if (v.y < vector.y && RectInRect((float)(v.x - (p.bb.w / 2.0)), (float)(v.y - (p.bb.h / 2.0)), (float)(v.x + (p.bb.w / 2.0)), (float)(v.y + (p.bb.h / 2.0)), vector.x, vector.y - num, vector2.x, vector2.y))
+                if (v.YAxis < vector.YAxis && RectInRect((float)(v.XAxis - (p.bb.w / 2.0)), (float)(v.YAxis - (p.bb.h / 2.0)), (float)(v.XAxis + (p.bb.w / 2.0)), (float)(v.YAxis + (p.bb.h / 2.0)), vector.XAxis, vector.YAxis - num, vector2.XAxis, vector2.YAxis))
                 {
-                    float num2 = num * 2f * (num - (vector.y - v.y)) / num;
+                    float num2 = num * 2f * (num - (vector.YAxis - v.YAxis)) / num;
                     Vector v2 = Vect(0f, 0f - num2);
                     v2 = VectRotate(v2, p.angle);
                     s.ApplyImpulseDelta(v2, 0.016f);
@@ -47,12 +47,12 @@ namespace CutTheRope.GameMain
             {
                 b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
-                int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y ? 1 : -1;
+                int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).YAxis >= b.y ? 1 : -1;
                 float s2 = MAX((double)(VectLength(vector) * 40f), 840.0) * num;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
                 s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
-                s.prevPos.y = s.pos.y;
+                s.prevPos.YAxis = s.pos.YAxis;
                 s.pos = VectRotateAround(s.pos, b.angle, b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, b.angle, b.x, b.y);
                 s.ApplyImpulseDelta(impulse, delta);
@@ -88,14 +88,14 @@ namespace CutTheRope.GameMain
 
             bool ApplyImpulse(ConstraintedPoint pt)
             {
-                Vector position = Vect(pt.pos.x, pt.pos.y);
-                Vector velocity = Vect(pt.v.x, pt.v.y);
+                Vector position = Vect(pt.pos.XAxis, pt.pos.YAxis);
+                Vector velocity = Vect(pt.v.XAxis, pt.v.YAxis);
                 position = VectRotateAround(position, 0.0 - angle, tube.x, tube.y);
                 velocity = VectRotate(velocity, 0.0 - angle);
 
                 bool insideTube = RectInRect(
-                    position.x - collisionRadius, position.y - (collisionRadius / 2f),
-                    position.x + collisionRadius, position.y + collisionRadius,
+                    position.XAxis - collisionRadius, position.YAxis - (collisionRadius / 2f),
+                    position.XAxis + collisionRadius, position.YAxis + collisionRadius,
                     rectLeft, rectTop, rectRight, rectBottom);
 
                 if (!insideTube)
@@ -114,10 +114,10 @@ namespace CutTheRope.GameMain
                     (tube.rotation == 180f && gravityInverted);
                 if (applyHorizontalCentering)
                 {
-                    float deltaX = tube.x - position.x;
+                    float deltaX = tube.x - position.XAxis;
                     horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
-                        ? ((0f - velocity.x) / damping) + (0.25f * deltaX)
-                        : ABS(velocity.x) < 1f ? 0f - velocity.x : (0f - velocity.x) / damping;
+                        ? ((0f - velocity.XAxis) / damping) + (0.25f * deltaX)
+                        : ABS(velocity.XAxis) < 1f ? 0f - velocity.XAxis : (0f - velocity.XAxis) / damping;
                 }
 
                 bool alignedWithGravity =
@@ -139,8 +139,8 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                Vector impulse = Vect(horizontalImpulse, ((0f - velocity.y) / localDamping) + gravityCompensation);
-                float distanceBelowValve = tube.y - position.y;
+                Vector impulse = Vect(horizontalImpulse, ((0f - velocity.YAxis) / localDamping) + gravityCompensation);
+                float distanceBelowValve = tube.y - position.YAxis;
                 if (distanceBelowValve > currentHeight + collisionRadius)
                 {
                     float attenuation = (float)Math.Exp(-2f * (distanceBelowValve - (currentHeight + collisionRadius)));
@@ -196,8 +196,8 @@ namespace CutTheRope.GameMain
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + 80f, p.y);
             v = VectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
-            pumpDirt.x = v.x;
-            pumpDirt.y = v.y;
+            pumpDirt.x = v.XAxis;
+            pumpDirt.y = v.YAxis;
             pumpDirt.StartSystem(5);
             _ = aniPool.AddChild(pumpDirt);
             if (!noCandy)
@@ -247,14 +247,14 @@ namespace CutTheRope.GameMain
                         bool flag = false;
                         if (r == null)
                         {
-                            flag = (!grab.wheel || !LineInRect(v1.x, v1.y, v2.x, v2.y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && LineInLine(v1.x, v1.y, v2.x, v2.y, constraintedPoint.pos.x, constraintedPoint.pos.y, constraintedPoint2.pos.x, constraintedPoint2.pos.y);
+                            flag = (!grab.wheel || !LineInRect(v1.XAxis, v1.YAxis, v2.XAxis, v2.YAxis, grab.x - 110f, grab.y - 110f, 220f, 220f)) && LineInLine(v1.XAxis, v1.YAxis, v2.XAxis, v2.YAxis, constraintedPoint.pos.XAxis, constraintedPoint.pos.YAxis, constraintedPoint2.pos.XAxis, constraintedPoint2.pos.YAxis);
                         }
-                        else if (constraintedPoint.prevPos.x != 2.1474836E+09f)
+                        else if (constraintedPoint.prevPos.XAxis != 2.1474836E+09f)
                         {
-                            float num2 = MinOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
-                            float y1t = MinOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
-                            float x1r = MaxOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
-                            float y1b = MaxOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
+                            float num2 = MinOf4(constraintedPoint.pos.XAxis, constraintedPoint.prevPos.XAxis, constraintedPoint2.pos.XAxis, constraintedPoint2.prevPos.XAxis);
+                            float y1t = MinOf4(constraintedPoint.pos.YAxis, constraintedPoint.prevPos.YAxis, constraintedPoint2.pos.YAxis, constraintedPoint2.prevPos.YAxis);
+                            float x1r = MaxOf4(constraintedPoint.pos.XAxis, constraintedPoint.prevPos.XAxis, constraintedPoint2.pos.XAxis, constraintedPoint2.prevPos.XAxis);
+                            float y1b = MaxOf4(constraintedPoint.pos.YAxis, constraintedPoint.prevPos.YAxis, constraintedPoint2.pos.YAxis, constraintedPoint2.prevPos.YAxis);
                             flag = RectInRect(num2, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
                         }
                         if (flag)
@@ -438,7 +438,7 @@ namespace CutTheRope.GameMain
             {
                 ConstraintedPoint constraintedPoint = rope.parts[i];
                 float num3 = VectDistance(constraintedPoint.pos, v);
-                if (num3 < num2 && (!g.wheel || !PointInRect(constraintedPoint.pos.x, constraintedPoint.pos.y, g.x - 110f, g.y - 110f, 220f, 220f)))
+                if (num3 < num2 && (!g.wheel || !PointInRect(constraintedPoint.pos.XAxis, constraintedPoint.pos.YAxis, g.x - 110f, g.y - 110f, 220f, 220f)))
                 {
                     num2 = num3;
                     result = rope;

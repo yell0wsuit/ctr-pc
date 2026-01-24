@@ -155,8 +155,8 @@ namespace CutTheRope.Framework.Visual
             float num = 1f - delta;
             return new Vector
             {
-                x = (a.x * num) + (b.x * delta),
-                y = (a.y * num) + (b.y * delta)
+                XAxis = (a.XAxis * num) + (b.XAxis * delta),
+                YAxis = (a.YAxis * num) + (b.YAxis * delta)
             };
         }
 
@@ -294,14 +294,14 @@ namespace CutTheRope.Framework.Visual
             VertexPositionColor[] vertices = GetVertexCache(ref s_antialiasedLineVerticesCache, 8);
             Color transparent = RGBAColor.transparentRGBA.ToXNA();
             Color lineColor = color.ToXNA();
-            vertices[0] = new VertexPositionColor(new Vector3(v2.x, v2.y, 0f), transparent);
-            vertices[1] = new VertexPositionColor(new Vector3(v4.x, v4.y, 0f), transparent);
-            vertices[2] = new VertexPositionColor(new Vector3(vector3.x, vector3.y, 0f), lineColor);
-            vertices[3] = new VertexPositionColor(new Vector3(vector4.x, vector4.y, 0f), lineColor);
-            vertices[4] = new VertexPositionColor(new Vector3(vector5.x, vector5.y, 0f), lineColor);
-            vertices[5] = new VertexPositionColor(new Vector3(vector6.x, vector6.y, 0f), lineColor);
-            vertices[6] = new VertexPositionColor(new Vector3(v3.x, v3.y, 0f), transparent);
-            vertices[7] = new VertexPositionColor(new Vector3(v5.x, v5.y, 0f), transparent);
+            vertices[0] = new VertexPositionColor(new Vector3(v2.XAxis, v2.YAxis, 0f), transparent);
+            vertices[1] = new VertexPositionColor(new Vector3(v4.XAxis, v4.YAxis, 0f), transparent);
+            vertices[2] = new VertexPositionColor(new Vector3(vector3.XAxis, vector3.YAxis, 0f), lineColor);
+            vertices[3] = new VertexPositionColor(new Vector3(vector4.XAxis, vector4.YAxis, 0f), lineColor);
+            vertices[4] = new VertexPositionColor(new Vector3(vector5.XAxis, vector5.YAxis, 0f), lineColor);
+            vertices[5] = new VertexPositionColor(new Vector3(vector6.XAxis, vector6.YAxis, 0f), lineColor);
+            vertices[6] = new VertexPositionColor(new Vector3(v3.XAxis, v3.YAxis, 0f), transparent);
+            vertices[7] = new VertexPositionColor(new Vector3(v5.XAxis, v5.YAxis, 0f), transparent);
             return vertices;
         }
 
