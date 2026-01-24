@@ -145,7 +145,6 @@ namespace CutTheRope.Framework.Visual
         public CTRTexture2D InitWithPath(string path, bool assets)
         {
             _resName = path;
-            _name = 65536U;
             // _localTexParams = _texParams;
             Reg();
             xnaTexture_ = Images.Get(path);
@@ -176,7 +175,6 @@ namespace CutTheRope.Framework.Visual
             _format = _defaultAlphaPixelFormat;
             _maxS = w / (float)num;
             _maxT = h / (float)num2;
-            _hasPremultipliedAlpha = true;
         }
 
         private static void Resume()
@@ -214,7 +212,6 @@ namespace CutTheRope.Framework.Visual
 
         public CTRTexture2D InitFromPixels(int x, int y, int w, int h)
         {
-            _name = 65536U;
             _lowypoint = -1;
             // _localTexParams = _defaultTexParams;
             Reg();
@@ -243,7 +240,6 @@ namespace CutTheRope.Framework.Visual
             _height = (uint)num2;
             _maxS = w / (float)num;
             _maxT = h / (float)num2;
-            _hasPremultipliedAlpha = true;
             quadsCount = 0;
             CalculateForQuickDrawing();
             Resume();
@@ -267,8 +263,6 @@ namespace CutTheRope.Framework.Visual
 
         public string _resName;
 
-        private uint _name;
-
         public Quad2D[] quads;
 
         private uint _width;
@@ -288,8 +282,6 @@ namespace CutTheRope.Framework.Visual
         private Texture2DPixelFormat _format;
 
         private Vector _size;
-
-        private bool _hasPremultipliedAlpha;
 
         public Vector[] quadOffsets;
 
