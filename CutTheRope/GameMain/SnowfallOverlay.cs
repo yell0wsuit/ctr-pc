@@ -190,12 +190,12 @@ namespace CutTheRope.GameMain
                 Vector offset = offsets[flake.FrameIndex];
 
                 // Calculate scaled dimensions with safety checks for invalid texture data
-                float safePreCutWidth = IsFinite(preCut.XAxis) && preCut.XAxis > 0 && preCut.XAxis < 10000 ? preCut.XAxis : rect.w;
-                float safePreCutHeight = IsFinite(preCut.YAxis) && preCut.YAxis > 0 && preCut.YAxis < 10000 ? preCut.YAxis : rect.h;
+                float safePreCutWidth = IsFinite(preCut.X) && preCut.X > 0 && preCut.X < 10000 ? preCut.X : rect.w;
+                float safePreCutHeight = IsFinite(preCut.Y) && preCut.Y > 0 && preCut.Y < 10000 ? preCut.Y : rect.h;
                 float scaledPreWidth = safePreCutWidth * flake.Scale;
                 float scaledPreHeight = safePreCutHeight * flake.Scale;
-                float scaledOffsetX = offset.XAxis * flake.Scale;
-                float scaledOffsetY = offset.YAxis * flake.Scale;
+                float scaledOffsetX = offset.X * flake.Scale;
+                float scaledOffsetY = offset.Y * flake.Scale;
 
                 // Apply horizontal swinging motion
                 float swingOffset = (float)Math.Sin(flake.SwingPhase) * flake.SwingAmplitude;

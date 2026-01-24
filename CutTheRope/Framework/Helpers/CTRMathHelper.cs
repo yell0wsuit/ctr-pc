@@ -273,22 +273,22 @@ namespace CutTheRope.Framework.Helpers
 
         public static bool VectEqual(Vector v1, Vector v2)
         {
-            return v1.XAxis == v2.XAxis && v1.YAxis == v2.YAxis;
+            return v1.X == v2.X && v1.Y == v2.Y;
         }
 
         public static Vector VectAdd(Vector v1, Vector v2)
         {
-            return new Vector(v1.XAxis + v2.XAxis, v1.YAxis + v2.YAxis);
+            return new Vector(v1.X + v2.X, v1.Y + v2.Y);
         }
 
         public static Vector VectNeg(Vector v)
         {
-            return new Vector(0f - v.XAxis, 0f - v.YAxis);
+            return new Vector(0f - v.X, 0f - v.Y);
         }
 
         public static Vector VectSub(Vector v1, Vector v2)
         {
-            return new Vector(v1.XAxis - v2.XAxis, v1.YAxis - v2.YAxis);
+            return new Vector(v1.X - v2.X, v1.Y - v2.Y);
         }
 
         public static Vector VectMult(Vector v, double s)
@@ -298,37 +298,37 @@ namespace CutTheRope.Framework.Helpers
 
         public static Vector VectMult(Vector v, float s)
         {
-            return new Vector(v.XAxis * s, v.YAxis * s);
+            return new Vector(v.X * s, v.Y * s);
         }
 
         public static Vector VectDiv(Vector v, float s)
         {
-            return new Vector(v.XAxis / s, v.YAxis / s);
+            return new Vector(v.X / s, v.Y / s);
         }
 
         public static float VectDot(Vector v1, Vector v2)
         {
-            return (v1.XAxis * v2.XAxis) + (v1.YAxis * v2.YAxis);
+            return (v1.X * v2.X) + (v1.Y * v2.Y);
         }
 
         public static Vector VectPerp(Vector v)
         {
-            return new Vector(0f - v.YAxis, v.XAxis);
+            return new Vector(0f - v.Y, v.X);
         }
 
         public static Vector VectRperp(Vector v)
         {
-            return new Vector(v.YAxis, 0f - v.XAxis);
+            return new Vector(v.Y, 0f - v.X);
         }
 
         public static float VectAngle(Vector v)
         {
-            return (float)Math.Atan((double)(v.YAxis / v.XAxis));
+            return (float)Math.Atan((double)(v.Y / v.X));
         }
 
         public static float VectAngleNormalized(Vector v)
         {
-            return (float)Math.Atan2(v.YAxis, v.XAxis);
+            return (float)Math.Atan2(v.Y, v.X);
         }
 
         public static float VectLength(Vector v)
@@ -360,25 +360,25 @@ namespace CutTheRope.Framework.Helpers
         {
             float num = FmCos((float)rad);
             float num2 = FmSin((float)rad);
-            float num3 = (v.XAxis * num) - (v.YAxis * num2);
-            float yParam = (v.XAxis * num2) + (v.YAxis * num);
+            float num3 = (v.X * num) - (v.Y * num2);
+            float yParam = (v.X * num2) + (v.Y * num);
             return new Vector(num3, yParam);
         }
 
         public static Vector VectRotateAround(Vector v, double rad, float cx, float cy)
         {
             Vector v2 = v;
-            v2.XAxis -= cx;
-            v2.YAxis -= cy;
+            v2.X -= cx;
+            v2.Y -= cy;
             v2 = VectRotate(v2, rad);
-            v2.XAxis += cx;
-            v2.YAxis += cy;
+            v2.X += cx;
+            v2.Y += cy;
             return v2;
         }
 
         private static int Vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
         {
-            return (p.XAxis < x_min ? 1 : 0) + (p.XAxis > x_max ? 2 : 0) + (p.YAxis < y_min ? 4 : 0) + (p.YAxis > y_max ? 8 : 0);
+            return (p.X < x_min ? 1 : 0) + (p.X > x_max ? 2 : 0) + (p.Y < y_min ? 4 : 0) + (p.Y > y_max ? 8 : 0);
         }
 
         public static bool LineInRect(float x1, float y1, float x2, float y2, float rx, float ry, float w, float h)
@@ -410,29 +410,29 @@ namespace CutTheRope.Framework.Helpers
                 if ((num5 & 1) != 0)
                 {
                     Vector temp = vectorClass3.VectorPoint;
-                    temp.YAxis += (y1 - y2) * (rx - temp.XAxis) / (x1 - x2);
-                    temp.XAxis = rx;
+                    temp.Y += (y1 - y2) * (rx - temp.X) / (x1 - x2);
+                    temp.X = rx;
                     vectorClass3.VectorPoint = temp;
                 }
                 else if ((num5 & 2) != 0)
                 {
                     Vector temp = vectorClass3.VectorPoint;
-                    temp.YAxis += (y1 - y2) * (num - temp.XAxis) / (x1 - x2);
-                    temp.XAxis = num;
+                    temp.Y += (y1 - y2) * (num - temp.X) / (x1 - x2);
+                    temp.X = num;
                     vectorClass3.VectorPoint = temp;
                 }
                 if ((num5 & 4) != 0)
                 {
                     Vector temp = vectorClass3.VectorPoint;
-                    temp.XAxis += (x1 - x2) * (ry - temp.YAxis) / (y1 - y2);
-                    temp.YAxis = ry;
+                    temp.X += (x1 - x2) * (ry - temp.Y) / (y1 - y2);
+                    temp.Y = ry;
                     vectorClass3.VectorPoint = temp;
                 }
                 else if ((num5 & 8) != 0)
                 {
                     Vector temp = vectorClass3.VectorPoint;
-                    temp.XAxis += (x1 - x2) * (num2 - temp.YAxis) / (y1 - y2);
-                    temp.YAxis = num2;
+                    temp.X += (x1 - x2) * (num2 - temp.Y) / (y1 - y2);
+                    temp.Y = num2;
                     vectorClass3.VectorPoint = temp;
                 }
                 if (num5 == num3)
@@ -450,17 +450,17 @@ namespace CutTheRope.Framework.Helpers
         public static bool LineInLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
             Vector vector = default;
-            vector.XAxis = x3 - x1 + x4 - x2;
-            vector.YAxis = y3 - y1 + y4 - y2;
+            vector.X = x3 - x1 + x4 - x2;
+            vector.Y = y3 - y1 + y4 - y2;
             Vector vector2 = default;
-            vector2.XAxis = x2 - x1;
-            vector2.YAxis = y2 - y1;
+            vector2.X = x2 - x1;
+            vector2.Y = y2 - y1;
             Vector vector3 = default;
-            vector3.XAxis = x4 - x3;
-            vector3.YAxis = y4 - y3;
-            float value = (vector2.YAxis * vector3.XAxis) - (vector3.YAxis * vector2.XAxis);
-            float num = (vector3.XAxis * vector.YAxis) - (vector3.YAxis * vector.XAxis);
-            float value2 = (vector2.XAxis * vector.YAxis) - (vector2.YAxis * vector.XAxis);
+            vector3.X = x4 - x3;
+            vector3.Y = y4 - y3;
+            float value = (vector2.Y * vector3.X) - (vector3.Y * vector2.X);
+            float num = (vector3.X * vector.Y) - (vector3.Y * vector.X);
+            float value2 = (vector2.X * vector.Y) - (vector2.Y * vector.X);
             return Math.Abs(num) <= Math.Abs(value) && Math.Abs(value2) <= Math.Abs(value);
         }
 

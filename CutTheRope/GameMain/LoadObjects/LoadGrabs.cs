@@ -81,7 +81,7 @@ namespace CutTheRope.GameMain
                 {
                     constraintedPoint = flag ? starL : starR;
                 }
-                Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.XAxis, constraintedPoint.pos.YAxis, len);
+                Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
                 bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                 grab.SetRope(bungee);
             }

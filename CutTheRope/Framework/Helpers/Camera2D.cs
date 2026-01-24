@@ -14,8 +14,8 @@ namespace CutTheRope.Framework.Helpers
 
         public void MoveToXYImmediate(float x, float y, bool immediate)
         {
-            target.XAxis = x;
-            target.YAxis = y;
+            target.X = x;
+            target.Y = y;
             if (immediate)
             {
                 pos = target;
@@ -38,7 +38,7 @@ namespace CutTheRope.Framework.Helpers
             {
                 pos = VectAdd(pos, VectMult(offset, delta));
                 // pos = Vect(Round(pos.x), Round(pos.y));
-                if (!SameSign(offset.XAxis, target.XAxis - pos.XAxis) || !SameSign(offset.YAxis, target.YAxis - pos.YAxis))
+                if (!SameSign(offset.X, target.X - pos.X) || !SameSign(offset.Y, target.Y - pos.Y))
                 {
                     pos = target;
                 }
@@ -47,12 +47,12 @@ namespace CutTheRope.Framework.Helpers
 
         public void ApplyCameraTransformation()
         {
-            OpenGL.GlTranslatef((double)(0f - pos.XAxis), (double)(0f - pos.YAxis), 0.0);
+            OpenGL.GlTranslatef((double)(0f - pos.X), (double)(0f - pos.Y), 0.0);
         }
 
         public void CancelCameraTransformation()
         {
-            OpenGL.GlTranslatef(pos.XAxis, pos.YAxis, 0.0);
+            OpenGL.GlTranslatef(pos.X, pos.Y, 0.0);
         }
 
         public CAMERATYPE type;

@@ -45,15 +45,15 @@ namespace CutTheRope.Framework.Visual
             if (p.life > 0f)
             {
                 Vector vector = vectZero;
-                if (p.pos.XAxis != 0f || p.pos.YAxis != 0f)
+                if (p.pos.X != 0f || p.pos.Y != 0f)
                 {
                     vector = VectNormalize(p.pos);
                 }
                 Vector v = vector;
                 vector = VectMult(vector, p.radialAccel);
-                float num = v.XAxis;
-                v.XAxis = 0f - v.YAxis;
-                v.YAxis = num;
+                float num = v.X;
+                v.X = 0f - v.Y;
+                v.Y = num;
                 v = VectMult(v, p.tangentialAccel);
                 Vector v2 = VectAdd(VectAdd(vector, v), gravity);
                 v2 = VectMult(v2, delta);
@@ -65,7 +65,7 @@ namespace CutTheRope.Framework.Visual
                 p.color.BlueColor += p.deltaColor.BlueColor * delta;
                 p.color.AlphaChannel += p.deltaColor.AlphaChannel * delta;
                 p.life -= delta;
-                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.XAxis - (p.width / 2f)), (double)(p.pos.YAxis - (p.height / 2f)), 0.0, p.width, p.height);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.X - (p.width / 2f)), (double)(p.pos.Y - (p.height / 2f)), 0.0, p.width, p.height);
                 for (int i = 0; i < 4; i++)
                 {
                     colors[(particleIdx * 4) + i] = p.color;

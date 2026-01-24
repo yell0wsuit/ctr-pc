@@ -28,7 +28,7 @@ namespace CutTheRope.GameMain
 
         public bool PointOutOfScreen(ConstraintedPoint p)
         {
-            return p.pos.YAxis > mapHeight + 400f || p.pos.YAxis < -400f;
+            return p.pos.Y > mapHeight + 400f || p.pos.Y < -400f;
         }
 
         public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string _, bool _1)

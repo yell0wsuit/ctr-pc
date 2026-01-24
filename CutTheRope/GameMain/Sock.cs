@@ -53,12 +53,12 @@ namespace CutTheRope.GameMain
         public void UpdateRotation()
         {
             float num = 140f;
-            t1.XAxis = x - (num / 2f) - 20f;
-            t2.XAxis = x + (num / 2f) - 20f;
-            t1.YAxis = t2.YAxis = y;
-            b1.XAxis = t1.XAxis;
-            b2.XAxis = t2.XAxis;
-            b1.YAxis = b2.YAxis = y + 15f;
+            t1.X = x - (num / 2f) - 20f;
+            t2.X = x + (num / 2f) - 20f;
+            t1.Y = t2.Y = y;
+            b1.X = t1.X;
+            b2.X = t2.X;
+            b1.Y = b2.Y = y + 15f;
             angle = DEGREES_TO_RADIANS(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);
@@ -97,13 +97,13 @@ namespace CutTheRope.GameMain
         public float GetConveyorPadding()
         {
             Vector size = GetConveyorSize();
-            return (size.XAxis + size.YAxis) / 4f;
+            return (size.X + size.Y) / 4f;
         }
 
         public Vector GetConveyorPosition()
         {
             float pmScale = RotatedCircle.PM / ConveyorPm;
-            Vector offset = Vect(SockConveyorOffset.XAxis * pmScale, SockConveyorOffset.YAxis * pmScale);
+            Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
             // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
             offset = VectRotate(offset, angle);
             return VectAdd(Vect(x, y), offset);
@@ -112,12 +112,12 @@ namespace CutTheRope.GameMain
         public void SetConveyorPosition(Vector position)
         {
             float pmScale = RotatedCircle.PM / ConveyorPm;
-            Vector offset = Vect(SockConveyorOffset.XAxis * pmScale, SockConveyorOffset.YAxis * pmScale);
+            Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
             // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
             offset = VectRotate(offset, angle);
             Vector adjusted = VectSub(position, offset);
-            x = adjusted.XAxis;
-            y = adjusted.YAxis;
+            x = adjusted.X;
+            y = adjusted.Y;
         }
 
         public const float SOCK_IDLE_TIMOUT = 0.8f;

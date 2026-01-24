@@ -15,8 +15,8 @@ namespace CutTheRope.GameMain
                 return null;
             }
             duration = 2f;
-            gravity.XAxis = 0f;
-            gravity.YAxis = 500f;
+            gravity.X = 0f;
+            gravity.Y = 500f;
             angle = -90f;
             angleVar = 50f;
             speed = 150f;
@@ -25,8 +25,8 @@ namespace CutTheRope.GameMain
             radialAccelVar = 1f;
             tangentialAccel = 0f;
             tangentialAccelVar = 1f;
-            posVar.XAxis = 0f;
-            posVar.YAxis = 0f;
+            posVar.X = 0f;
+            posVar.Y = 0f;
             life = 3f;
             lifeVar = 0f;
             size = 1f;

@@ -345,7 +345,7 @@ namespace CutTheRope.GameMain
 
                 Vector size = GetItemSize(item);
                 Vector position = GetItemPosition(item);
-                Vector projectedSize = Vect(size.XAxis * direction.XAxis, size.YAxis * direction.YAxis);
+                Vector projectedSize = Vect(size.X * direction.X, size.Y * direction.Y);
                 float halfLength = VectLength(projectedSize) / 2f;
 
                 float scale = 1f;
@@ -375,8 +375,8 @@ namespace CutTheRope.GameMain
 
                     float separation = neighborState.offset - itemState.offset;
                     Vector neighborSize = GetItemSize(neighbor);
-                    Vector combined = Vect(size.XAxis + neighborSize.XAxis, size.YAxis + neighborSize.YAxis);
-                    float combinedSq = (combined.XAxis * combined.XAxis) + (combined.YAxis * combined.YAxis);
+                    Vector combined = Vect(size.X + neighborSize.X, size.Y + neighborSize.Y);
+                    float combinedSq = (combined.X * combined.X) + (combined.Y * combined.Y);
                     if (0.25f * combinedSq > separation * separation)
                     {
                         if (Math.Abs(separation) < 0.001f)
@@ -395,22 +395,22 @@ namespace CutTheRope.GameMain
                 ApplyItemScale(item, scale);
 
                 Vector offsetVector = Vect(
-                    x + (direction.XAxis * projectedOffset) - position.XAxis,
-                    y + (direction.YAxis * projectedOffset) - position.YAxis);
+                    x + (direction.X * projectedOffset) - position.X,
+                    y + (direction.Y * projectedOffset) - position.Y);
 
                 if (itemState.isSettling)
                 {
-                    Vector perpendicular = Vect(direction.YAxis, -direction.XAxis);
-                    float slideDistance = ((offsetVector.XAxis * perpendicular.XAxis) + (offsetVector.YAxis * perpendicular.YAxis)) / VectLength(direction);
-                    Vector projectedSlide = Vect(perpendicular.XAxis * slideDistance, perpendicular.YAxis * slideDistance);
+                    Vector perpendicular = Vect(direction.Y, -direction.X);
+                    float slideDistance = ((offsetVector.X * perpendicular.X) + (offsetVector.Y * perpendicular.Y)) / VectLength(direction);
+                    Vector projectedSlide = Vect(perpendicular.X * slideDistance, perpendicular.Y * slideDistance);
 
                     float maxSlide = 800f * deltaTime;
-                    float slideLengthSq = (projectedSlide.XAxis * projectedSlide.XAxis) + (projectedSlide.YAxis * projectedSlide.YAxis);
+                    float slideLengthSq = (projectedSlide.X * projectedSlide.X) + (projectedSlide.Y * projectedSlide.Y);
                     if (slideLengthSq >= maxSlide * maxSlide)
                     {
                         float slideLength = (float)Math.Sqrt(slideLengthSq);
                         float factor = (slideLength - maxSlide) / slideLength;
-                        projectedSlide = Vect(projectedSlide.XAxis * factor, projectedSlide.YAxis * factor);
+                        projectedSlide = Vect(projectedSlide.X * factor, projectedSlide.Y * factor);
                     }
                     else
                     {
@@ -495,10 +495,10 @@ namespace CutTheRope.GameMain
 
             Vector local = ToLocalSpace(Vect(pointerX, pointerY));
             bool insideBounds =
-                local.XAxis >= 0f &&
-                local.XAxis <= beltWidth &&
-                local.YAxis >= -0.5f * beltHeight &&
-                local.YAxis <= 0.5f * beltHeight;
+                local.X >= 0f &&
+                local.X <= beltWidth &&
+                local.Y >= -0.5f * beltHeight &&
+                local.Y <= 0.5f * beltHeight;
 
             if (insideBounds)
             {
@@ -563,7 +563,7 @@ namespace CutTheRope.GameMain
             if (activePointerId == pointerId)
             {
                 Vector local = ToLocalSpace(Vect(pointerX, pointerY));
-                offsetDelta = local.XAxis - lastDragPosition.XAxis;
+                offsetDelta = local.X - lastDragPosition.X;
                 offset += offsetDelta;
                 offset = WrapOffset(offset, beltWidth);
                 lastDragPosition = local;
@@ -581,7 +581,7 @@ namespace CutTheRope.GameMain
         public bool Contains(Vector worldPoint)
         {
             Vector local = ToLocalSpace(worldPoint);
-            return local.XAxis >= 0f && local.XAxis <= beltWidth && local.YAxis >= -0.5f * beltHeight && local.YAxis <= 0.5f * beltHeight;
+            return local.X >= 0f && local.X <= beltWidth && local.Y >= -0.5f * beltHeight && local.Y <= 0.5f * beltHeight;
         }
 
         /// <summary>
@@ -593,7 +593,7 @@ namespace CutTheRope.GameMain
         public bool ContainsWithPadding(Vector worldPoint, float padding)
         {
             Vector local = ToLocalSpace(worldPoint);
-            return local.XAxis >= -padding && local.XAxis <= beltWidth + padding && local.YAxis >= (-0.5f * beltHeight) - padding && local.YAxis <= (0.5f * beltHeight) + padding;
+            return local.X >= -padding && local.X <= beltWidth + padding && local.Y >= (-0.5f * beltHeight) - padding && local.Y <= (0.5f * beltHeight) + padding;
         }
 
         /// <summary>
@@ -606,9 +606,9 @@ namespace CutTheRope.GameMain
         {
             float perpAngle = rotationRad - (0.5f * (float)Math.PI);
             Vector perp = Vect(Cosf(perpAngle), Sinf(perpAngle));
-            float dx = worldPoint.XAxis - x;
-            float dy = worldPoint.YAxis - y;
-            return Vect((direction.XAxis * dx) + (direction.YAxis * dy), (perp.XAxis * dx) + (perp.YAxis * dy));
+            float dx = worldPoint.X - x;
+            float dy = worldPoint.Y - y;
+            return Vect((direction.X * dx) + (direction.Y * dy), (perp.X * dx) + (perp.Y * dy));
         }
 
         /// <summary>
@@ -709,8 +709,8 @@ namespace CutTheRope.GameMain
         private void RegisterItem(BaseElement item)
         {
             Vector position = GetItemPosition(item);
-            Vector offsetVector = Vect(position.XAxis - x, position.YAxis - y);
-            float initialOffset = Math.Max(Math.Min((offsetVector.XAxis * direction.XAxis) + (offsetVector.YAxis * direction.YAxis), beltWidth), 0f);
+            Vector offsetVector = Vect(position.X - x, position.Y - y);
+            float initialOffset = Math.Max(Math.Min((offsetVector.X * direction.X) + (offsetVector.Y * direction.Y), beltWidth), 0f);
             itemStates[item] = new ConveyorItemState(initialOffset);
             items.Add(item);
             if (item is IConveyorItem conveyorItem)
@@ -944,8 +944,8 @@ namespace CutTheRope.GameMain
                 setter.SetConveyorPosition(position);
                 return;
             }
-            item.x = position.XAxis;
-            item.y = position.YAxis;
+            item.x = position.X;
+            item.y = position.Y;
         }
 
         /// <summary>
@@ -1010,7 +1010,7 @@ namespace CutTheRope.GameMain
                 return provider.GetConveyorPadding();
             }
             Vector size = GetItemSize(item);
-            return (size.XAxis + size.YAxis) / 4f;
+            return (size.X + size.Y) / 4f;
         }
 
         private float velocity = 10f;

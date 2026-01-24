@@ -9,12 +9,12 @@ namespace CutTheRope.Framework.Visual
         public static Vector RotatePreCalc(Vector v, float cosA, float sinA, float cx, float cy)
         {
             Vector result = v;
-            result.XAxis -= cx;
-            result.YAxis -= cy;
-            float num = (result.XAxis * cosA) - (result.YAxis * sinA);
-            float num2 = (result.XAxis * sinA) + (result.YAxis * cosA);
-            result.XAxis = num + cx;
-            result.YAxis = num2 + cy;
+            result.X -= cx;
+            result.Y -= cy;
+            float num = (result.X * cosA) - (result.Y * sinA);
+            float num2 = (result.X * sinA) + (result.Y * cosA);
+            result.X = num + cx;
+            result.Y = num2 + cy;
             return result;
         }
 
@@ -23,15 +23,15 @@ namespace CutTheRope.Framework.Visual
             if (p.life > 0f)
             {
                 Vector vector = vectZero;
-                if (p.pos.XAxis != 0f || p.pos.YAxis != 0f)
+                if (p.pos.X != 0f || p.pos.Y != 0f)
                 {
                     vector = VectNormalize(p.pos);
                 }
                 Vector v = vector;
                 vector = VectMult(vector, p.radialAccel);
-                float num = v.XAxis;
-                v.XAxis = 0f - v.YAxis;
-                v.YAxis = num;
+                float num = v.X;
+                v.X = 0f - v.Y;
+                v.Y = num;
                 v = VectMult(v, p.tangentialAccel);
                 Vector v2 = VectAdd(VectAdd(vector, v), gravity);
                 v2 = VectMult(v2, delta);
@@ -43,8 +43,8 @@ namespace CutTheRope.Framework.Visual
                 p.color.BlueColor += p.deltaColor.BlueColor * delta;
                 p.color.AlphaChannel += p.deltaColor.AlphaChannel * delta;
                 p.life -= delta;
-                vertices[particleIdx].x = p.pos.XAxis;
-                vertices[particleIdx].y = p.pos.YAxis;
+                vertices[particleIdx].x = p.pos.X;
+                vertices[particleIdx].y = p.pos.Y;
                 vertices[particleIdx].size = p.size;
                 colors[particleIdx] = p.color;
                 particleIdx++;
@@ -142,13 +142,13 @@ namespace CutTheRope.Framework.Visual
 
         public virtual void InitParticle(ref Particle particle)
         {
-            particle.pos.XAxis = x + (posVar.XAxis * RND_MINUS1_1);
-            particle.pos.YAxis = y + (posVar.YAxis * RND_MINUS1_1);
+            particle.pos.X = x + (posVar.X * RND_MINUS1_1);
+            particle.pos.Y = y + (posVar.Y * RND_MINUS1_1);
             particle.startPos = particle.pos;
             float num = DEGREES_TO_RADIANS(angle + (angleVar * RND_MINUS1_1));
             Vector v = default;
-            v.YAxis = Sinf(num);
-            v.XAxis = Cosf(num);
+            v.Y = Sinf(num);
+            v.X = Cosf(num);
             float s = speed + (speedVar * RND_MINUS1_1);
             particle.dir = VectMult(v, s);
             particle.radialAccel = radialAccel + (radialAccelVar * RND_MINUS1_1);
