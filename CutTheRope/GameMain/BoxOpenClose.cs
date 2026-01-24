@@ -383,7 +383,7 @@ namespace CutTheRope.GameMain
             timeline.delegateTimelineDelegate = this;
             _ = openCloseAnims.AddChild(image);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
-            float num2 = (SCREEN_WIDTH / 2f) - quadSize.x;
+            float num2 = (SCREEN_WIDTH / 2f) - quadSize.X;
             Image image2 = Image.Image_createWithResIDQuad(boxCover, 0);
             Image image3 = Image.Image_createWithResIDQuad(boxCover, 0);
             image2.x = num2;

@@ -58,7 +58,7 @@ namespace CutTheRope.GameMain
 
         public void HandleWheelRotate(Vector v)
         {
-            if (lastWheelTouch.x - v.x == 0f && lastWheelTouch.y - v.y == 0f)
+            if (lastWheelTouch.X - v.X == 0f && lastWheelTouch.Y - v.Y == 0f)
             {
                 return;
             }
@@ -134,10 +134,10 @@ namespace CutTheRope.GameMain
                 Vector pos = mover.pos;
                 Vector vector = VectSub(vector2, pos);
                 float t = 0f;
-                if (ABS(vector.x) > 15f)
+                if (ABS(vector.X) > 15f)
                 {
                     float num = 10f;
-                    t = vector.x > 0f ? num : 0f - num;
+                    t = vector.X > 0f ? num : 0f - num;
                 }
                 _ = Mover.MoveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
@@ -185,8 +185,8 @@ namespace CutTheRope.GameMain
                         float num3 = spiderPos - num;
                         Vector v = VectSub(vector2, vector);
                         v = VectMult(v, num3 / num2);
-                        spider.x = vector.x + v.x;
-                        spider.y = vector.y + v.y;
+                        spider.x = vector.X + v.X;
+                        spider.y = vector.Y + v.Y;
                         if (i > rope.drawPtsCount - 3)
                         {
                             flag = true;
@@ -420,10 +420,10 @@ namespace CutTheRope.GameMain
             animation.JumpTo(RND_RANGE(0, 2));
             _ = bee.AddChild(animation);
             Vector quadOffset = GetQuadOffset(Resources.Img.ObjBeeHd, 0);
-            bee.x = 0f - quadOffset.x;
-            bee.y = 0f - quadOffset.y;
-            bee.rotationCenterX = quadOffset.x - (bee.width / 2);
-            bee.rotationCenterY = quadOffset.y - (bee.height / 2);
+            bee.x = 0f - quadOffset.X;
+            bee.y = 0f - quadOffset.Y;
+            bee.rotationCenterX = quadOffset.X - (bee.width / 2);
+            bee.rotationCenterY = quadOffset.Y - (bee.height / 2);
             bee.scaleX = bee.scaleY = 0.7692308f;
             _ = AddChild(bee);
         }

@@ -66,7 +66,7 @@ namespace CutTheRope.Framework.Visual
                 ResizeCapacity(n + 1);
             }
             texCoordinates[n] = image.texture.quads[q];
-            vertices[n] = Quad3D.MakeQuad3D((double)(dx + image.texture.quadOffsets[q].x), (double)(dy + image.texture.quadOffsets[q].y), 0.0, image.texture.quadRects[q].w, image.texture.quadRects[q].h);
+            vertices[n] = Quad3D.MakeQuad3D((double)(dx + image.texture.quadOffsets[q].X), (double)(dy + image.texture.quadOffsets[q].Y), 0.0, image.texture.quadRects[q].w, image.texture.quadRects[q].h);
         }
 
         private void DrawNumberOfQuads(int n)

@@ -19,18 +19,18 @@ namespace CutTheRope.GameMain
             {
                 Vector v = Vect(c.x, c.y);
                 Vector vector = default;
-                vector.x = p.x - (p.bb.w / 2f);
+                vector.X = p.x - (p.bb.w / 2f);
                 Vector vector2 = default;
-                vector2.x = p.x + (p.bb.w / 2f);
-                vector.y = vector2.y = p.y;
+                vector2.X = p.x + (p.bb.w / 2f);
+                vector.Y = vector2.Y = p.y;
                 if (p.angle != 0.0)
                 {
                     v = VectRotateAround(v, 0.0 - p.angle, p.x, p.y);
                 }
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
-                if (v.y < vector.y && RectInRect((float)(v.x - (p.bb.w / 2.0)), (float)(v.y - (p.bb.h / 2.0)), (float)(v.x + (p.bb.w / 2.0)), (float)(v.y + (p.bb.h / 2.0)), vector.x, vector.y - num, vector2.x, vector2.y))
+                if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2.0)), (float)(v.Y - (p.bb.h / 2.0)), (float)(v.X + (p.bb.w / 2.0)), (float)(v.Y + (p.bb.h / 2.0)), vector.X, vector.Y - num, vector2.X, vector2.Y))
                 {
-                    float num2 = num * 2f * (num - (vector.y - v.y)) / num;
+                    float num2 = num * 2f * (num - (vector.Y - v.Y)) / num;
                     Vector v2 = Vect(0f, 0f - num2);
                     v2 = VectRotate(v2, p.angle);
                     s.ApplyImpulseDelta(v2, 0.016f);
@@ -47,12 +47,12 @@ namespace CutTheRope.GameMain
             {
                 b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
-                int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).y >= b.y ? 1 : -1;
+                int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
                 float s2 = MAX((double)(VectLength(vector) * 40f), 840.0) * num;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
                 s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
-                s.prevPos.y = s.pos.y;
+                s.prevPos.Y = s.pos.Y;
                 s.pos = VectRotateAround(s.pos, b.angle, b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, b.angle, b.x, b.y);
                 s.ApplyImpulseDelta(impulse, delta);
@@ -88,14 +88,14 @@ namespace CutTheRope.GameMain
 
             bool ApplyImpulse(ConstraintedPoint pt)
             {
-                Vector position = Vect(pt.pos.x, pt.pos.y);
-                Vector velocity = Vect(pt.v.x, pt.v.y);
+                Vector position = Vect(pt.pos.X, pt.pos.Y);
+                Vector velocity = Vect(pt.v.X, pt.v.Y);
                 position = VectRotateAround(position, 0.0 - angle, tube.x, tube.y);
                 velocity = VectRotate(velocity, 0.0 - angle);
 
                 bool insideTube = RectInRect(
-                    position.x - collisionRadius, position.y - (collisionRadius / 2f),
-                    position.x + collisionRadius, position.y + collisionRadius,
+                    position.X - collisionRadius, position.Y - (collisionRadius / 2f),
+                    position.X + collisionRadius, position.Y + collisionRadius,
                     rectLeft, rectTop, rectRight, rectBottom);
 
                 if (!insideTube)
@@ -114,10 +114,10 @@ namespace CutTheRope.GameMain
                     (tube.rotation == 180f && gravityInverted);
                 if (applyHorizontalCentering)
                 {
-                    float deltaX = tube.x - position.x;
+                    float deltaX = tube.x - position.X;
                     horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
-                        ? ((0f - velocity.x) / damping) + (0.25f * deltaX)
-                        : ABS(velocity.x) < 1f ? 0f - velocity.x : (0f - velocity.x) / damping;
+                        ? ((0f - velocity.X) / damping) + (0.25f * deltaX)
+                        : ABS(velocity.X) < 1f ? 0f - velocity.X : (0f - velocity.X) / damping;
                 }
 
                 bool alignedWithGravity =
@@ -139,8 +139,8 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                Vector impulse = Vect(horizontalImpulse, ((0f - velocity.y) / localDamping) + gravityCompensation);
-                float distanceBelowValve = tube.y - position.y;
+                Vector impulse = Vect(horizontalImpulse, ((0f - velocity.Y) / localDamping) + gravityCompensation);
+                float distanceBelowValve = tube.y - position.Y;
                 if (distanceBelowValve > currentHeight + collisionRadius)
                 {
                     float attenuation = (float)Math.Exp(-2f * (distanceBelowValve - (currentHeight + collisionRadius)));
@@ -196,8 +196,8 @@ namespace CutTheRope.GameMain
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + 80f, p.y);
             v = VectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
-            pumpDirt.x = v.x;
-            pumpDirt.y = v.y;
+            pumpDirt.x = v.X;
+            pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);
             _ = aniPool.AddChild(pumpDirt);
             if (!noCandy)
@@ -247,14 +247,14 @@ namespace CutTheRope.GameMain
                         bool flag = false;
                         if (r == null)
                         {
-                            flag = (!grab.wheel || !LineInRect(v1.x, v1.y, v2.x, v2.y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && LineInLine(v1.x, v1.y, v2.x, v2.y, constraintedPoint.pos.x, constraintedPoint.pos.y, constraintedPoint2.pos.x, constraintedPoint2.pos.y);
+                            flag = (!grab.wheel || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
                         }
-                        else if (constraintedPoint.prevPos.x != 2.1474836E+09f)
+                        else if (constraintedPoint.prevPos.X != 2.1474836E+09f)
                         {
-                            float num2 = MinOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
-                            float y1t = MinOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
-                            float x1r = MaxOf4(constraintedPoint.pos.x, constraintedPoint.prevPos.x, constraintedPoint2.pos.x, constraintedPoint2.prevPos.x);
-                            float y1b = MaxOf4(constraintedPoint.pos.y, constraintedPoint.prevPos.y, constraintedPoint2.pos.y, constraintedPoint2.prevPos.y);
+                            float num2 = MinOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
+                            float y1t = MinOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
+                            float x1r = MaxOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
+                            float y1b = MaxOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
                             flag = RectInRect(num2, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
                         }
                         if (flag)
@@ -438,7 +438,7 @@ namespace CutTheRope.GameMain
             {
                 ConstraintedPoint constraintedPoint = rope.parts[i];
                 float num3 = VectDistance(constraintedPoint.pos, v);
-                if (num3 < num2 && (!g.wheel || !PointInRect(constraintedPoint.pos.x, constraintedPoint.pos.y, g.x - 110f, g.y - 110f, 220f, 220f)))
+                if (num3 < num2 && (!g.wheel || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - 110f, g.y - 110f, 220f, 220f)))
                 {
                     num2 = num3;
                     result = rope;

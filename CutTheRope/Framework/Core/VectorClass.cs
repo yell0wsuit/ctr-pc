@@ -8,9 +8,9 @@ namespace CutTheRope.Framework.Core
 
         public VectorClass(Vector Value)
         {
-            v = Value;
+            VectorPoint = Value;
         }
 
-        public Vector v;
+        public Vector VectorPoint { get; set; }
     }
 }

@@ -54,8 +54,8 @@ namespace CutTheRope.Framework.Helpers
                 float num4 = 0f;
                 for (int i = 0; i < num2; i++)
                 {
-                    float x = s.x + (num * (float)Math.Cos((double)num4));
-                    float y = s.y + (num * (float)Math.Sin((double)num4));
+                    float x = s.X + (num * (float)Math.Cos((double)num4));
+                    float y = s.Y + (num * (float)Math.Sin((double)num4));
                     AddPathPoint(Vect(x, y));
                     num4 += num3;
                 }
@@ -71,7 +71,7 @@ namespace CutTheRope.Framework.Helpers
             {
                 string nSString2 = list[j];
                 string nSString3 = list[j + 1];
-                AddPathPoint(Vect(s.x + nSString2.FloatValue(), s.y + nSString3.FloatValue()));
+                AddPathPoint(Vect(s.X + nSString2.FloatValue(), s.Y + nSString3.FloatValue()));
             }
         }
 

@@ -37,9 +37,9 @@ namespace CutTheRope.GameMain
 
         public void UpdateRotation()
         {
-            t1.x = x - (bb.w / 2f);
-            t2.x = x + (bb.w / 2f);
-            t1.y = t2.y = y;
+            t1.X = x - (bb.w / 2f);
+            t2.X = x + (bb.w / 2f);
+            t1.Y = t2.Y = y;
             angle = DEGREES_TO_RADIANS(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);
@@ -54,7 +54,7 @@ namespace CutTheRope.GameMain
         public float GetConveyorPadding()
         {
             Vector size = GetConveyorSize();
-            return (size.x + size.y) / 4f;
+            return (size.X + size.Y) / 4f;
         }
 
         public Vector GetConveyorPosition()
@@ -67,8 +67,8 @@ namespace CutTheRope.GameMain
         {
             Vector offset = VectRotate(ConveyorOffset, angle);
             Vector adjusted = VectSub(position, offset);
-            x = adjusted.x;
-            y = adjusted.y;
+            x = adjusted.X;
+            y = adjusted.Y;
         }
 
         public double angle;

@@ -20,8 +20,8 @@ namespace CutTheRope.GameMain
             SharedCandyPoint = null;
             GetAllLanterns().Add(this);
 
-            x = position.x;
-            y = position.y;
+            x = position.X;
+            y = position.Y;
             lanternState = LanternStateInactive;
 
             delayedDispatcher ??= new DelayedDispatcher();

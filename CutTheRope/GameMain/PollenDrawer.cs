@@ -59,8 +59,8 @@ namespace CutTheRope.GameMain
             num7 *= (int)num2;
             Pollen pollen = default;
             pollen.parentIndex = pi;
-            pollen.x = v.x;
-            pollen.y = v.y;
+            pollen.x = v.X;
+            pollen.y = v.Y;
             float num8 = 1f;
             float num9 = Math.Min(num8 - num, num8 - num2);
             float rND_0_ = RND_0_1;
@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
             pollen.startAlpha = 1f;
             pollen.alpha = (0.7f * rND_0_) + 0.3f;
             Quad2D qt = drawer.image.texture.quads[0];
-            Quad3D qv = Quad3D.MakeQuad3D((double)(v.x - (num6 / 2)), (double)(v.y - (num7 / 2)), 0.0, num6, num7);
+            Quad3D qv = Quad3D.MakeQuad3D((double)(v.X - (num6 / 2)), (double)(v.Y - (num7 / 2)), 0.0, num6, num7);
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
             if (pollenCount >= totalCapacity)
             {
@@ -100,8 +100,8 @@ namespace CutTheRope.GameMain
             for (int i = 0; i <= num2; i++)
             {
                 Vector v4 = VectAdd(vector, VectMult(v3, i * num));
-                v4.x += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
-                v4.y += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
+                v4.X += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
+                v4.Y += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
                 AddPollenAtparentIndex(v4, p1);
             }
         }

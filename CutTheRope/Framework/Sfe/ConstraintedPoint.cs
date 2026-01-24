@@ -149,12 +149,12 @@ namespace CutTheRope.Framework.Sfe
             }
             totalForce = VectMult(totalForce, invWeight);
             a = VectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
-            if (prevPos.x == 2.1474836E+09f)
+            if (prevPos.X == 2.1474836E+09f)
             {
                 prevPos = pos;
             }
-            posDelta.x = pos.x - prevPos.x + a.x;
-            posDelta.y = pos.y - prevPos.y + a.y;
+            posDelta.X = pos.X - prevPos.X + a.X;
+            posDelta.Y = pos.Y - prevPos.Y + a.Y;
             v = VectMult(posDelta, (float)(1.0 / (double)delta));
             prevPos = pos;
             pos = VectAdd(pos, posDelta);
@@ -170,7 +170,7 @@ namespace CutTheRope.Framework.Sfe
             {
                 return;
             }
-            if (p.pin.x != -1f)
+            if (p.pin.X != -1f)
             {
                 p.pos = p.pin;
                 return;
@@ -179,10 +179,10 @@ namespace CutTheRope.Framework.Sfe
             for (int i = 0; i < count; i++)
             {
                 Constraint constraint = p.constraints[i];
-                Vector vector;
-                vector.x = constraint.cp.pos.x - p.pos.x;
-                vector.y = constraint.cp.pos.y - p.pos.y;
-                if (vector.x == 0f && vector.y == 0f)
+                Vector vector = new(
+                    constraint.cp.pos.X - p.pos.X,
+                    constraint.cp.pos.Y - p.pos.Y);
+                if (vector.X == 0f && vector.Y == 0f)
                 {
                     vector = Vect(1f, 1f);
                 }
@@ -204,14 +204,14 @@ namespace CutTheRope.Framework.Sfe
                 float num3 = num > 1f ? num : 1f;
                 float num4 = (num - restLength) / (num3 * (p.invWeight + num2));
                 float num5 = p.invWeight * num4;
-                vector.x *= num5;
-                vector.y *= num5;
+                vector.X *= num5;
+                vector.Y *= num5;
                 num5 = num2 * num4;
-                vector2.x *= num5;
-                vector2.y *= num5;
-                p.pos.x += vector.x;
-                p.pos.y += vector.y;
-                if (constraint.cp.pin.x == -1f)
+                vector2.X *= num5;
+                vector2.Y *= num5;
+                p.pos.X += vector.X;
+                p.pos.Y += vector.Y;
+                if (constraint.cp.pin.X == -1f)
                 {
                     constraint.cp.pos = VectSub(constraint.cp.pos, vector2);
                 }
@@ -236,12 +236,12 @@ namespace CutTheRope.Framework.Sfe
             }
             p.totalForce = VectMult(p.totalForce, p.invWeight);
             p.a = VectMult(p.totalForce, (float)((double)delta / 1.0 * 0.01600000075995922 * (double)koeff));
-            if (p.prevPos.x == 2.1474836E+09f)
+            if (p.prevPos.X == 2.1474836E+09f)
             {
                 p.prevPos = p.pos;
             }
-            p.posDelta.x = p.pos.x - p.prevPos.x + p.a.x;
-            p.posDelta.y = p.pos.y - p.prevPos.y + p.a.y;
+            p.posDelta.X = p.pos.X - p.prevPos.X + p.a.X;
+            p.posDelta.Y = p.pos.Y - p.prevPos.Y + p.a.Y;
             p.v = VectMult(p.posDelta, (float)(1.0 / (double)delta));
             p.prevPos = p.pos;
             p.pos = VectAdd(p.pos, p.posDelta);

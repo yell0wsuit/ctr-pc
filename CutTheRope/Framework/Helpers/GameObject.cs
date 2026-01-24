@@ -64,8 +64,8 @@ namespace CutTheRope.Framework.Helpers
             if (mover != null)
             {
                 mover.Update(delta);
-                x = mover.pos.x;
-                y = mover.pos.y;
+                x = mover.pos.X;
+                y = mover.pos.Y;
                 if (rotatedBB)
                 {
                     RotateWithBB((float)mover.angle_);
@@ -150,7 +150,7 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void SetBBFromFirstQuad()
         {
-            bb = new CTRRectangle((float)Math.Round(texture.quadOffsets[0].x), (float)Math.Round(texture.quadOffsets[0].y), texture.quadRects[0].w, texture.quadRects[0].h);
+            bb = new CTRRectangle((float)Math.Round(texture.quadOffsets[0].X), (float)Math.Round(texture.quadOffsets[0].Y), texture.quadRects[0].w, texture.quadRects[0].h);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
@@ -169,14 +169,14 @@ namespace CutTheRope.Framework.Helpers
             v2 = VectRotateAround(v2, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
             v3 = VectRotateAround(v3, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
             v4 = VectRotateAround(v4, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
-            rbb.tlX = v.x;
-            rbb.tlY = v.y;
-            rbb.trX = v2.x;
-            rbb.trY = v2.y;
-            rbb.brX = v3.x;
-            rbb.brY = v3.y;
-            rbb.blX = v4.x;
-            rbb.blY = v4.y;
+            rbb.tlX = v.X;
+            rbb.tlY = v.Y;
+            rbb.trX = v2.X;
+            rbb.trY = v2.Y;
+            rbb.brX = v3.X;
+            rbb.brY = v3.Y;
+            rbb.blX = v4.X;
+            rbb.blY = v4.Y;
         }
 
         public virtual void DrawBB()
@@ -210,7 +210,7 @@ namespace CutTheRope.Framework.Helpers
         {
             float checkX = o.drawX + o.bb.x;
             float checkY = o.drawY + o.bb.y;
-            return PointInRect(p.x, p.y, checkX, checkY, o.bb.w, o.bb.h);
+            return PointInRect(p.X, p.Y, checkX, checkY, o.bb.w, o.bb.h);
         }
 
         public static bool RectInObject(float r1x, float r1y, float r2x, float r2y, GameObject o)

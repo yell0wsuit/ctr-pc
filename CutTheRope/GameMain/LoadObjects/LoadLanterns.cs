@@ -22,8 +22,8 @@ namespace CutTheRope.GameMain
             {
                 isCandyInLantern = true;
                 lantern.CaptureCandy(star);
-                candy.x = star.pos.x;
-                candy.y = star.pos.y;
+                candy.x = star.pos.X;
+                candy.y = star.pos.Y;
                 candy.color = RGBAColor.transparentRGBA;
             }
         }

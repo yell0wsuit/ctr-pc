@@ -76,8 +76,8 @@ namespace CutTheRope.GameMain
                 float t = (elapsed - start.Time) / span;
                 t = t < 0f ? 0f : (t > 1f ? 1f : t);
                 currentOffset = new Vector(
-                    start.Offset.x + ((end.Offset.x - start.Offset.x) * t),
-                    start.Offset.y + ((end.Offset.y - start.Offset.y) * t));
+                    start.Offset.X + ((end.Offset.X - start.Offset.X) * t),
+                    start.Offset.Y + ((end.Offset.Y - start.Offset.Y) * t));
                 return currentOffset;
             }
 
@@ -234,8 +234,8 @@ namespace CutTheRope.GameMain
             if (carriedCandy != null && carriedStar == null)
             {
                 Vector offset = entryOffsets[3];
-                carriedCandy.x = x + offset.x;
-                carriedCandy.y = y + offset.y;
+                carriedCandy.x = x + offset.X;
+                carriedCandy.y = y + offset.Y;
             }
 
             PlayAnimation(carriedCandy != null ? MouseAnimationId.EntryWithCandy : MouseAnimationId.EntryEmpty);
@@ -280,7 +280,7 @@ namespace CutTheRope.GameMain
             star.disableGravity = true;
             star.v = default;
             Vector offset = entryOffsets[3];
-            star.pos = Vect(x + offset.x, y + offset.y);
+            star.pos = Vect(x + offset.X, y + offset.Y);
             star.prevPos = star.pos;
             mouthPathPlayer.Play(CreateEntryPath());
             grabAnimating = true;
@@ -372,7 +372,7 @@ namespace CutTheRope.GameMain
 
             if (carriedStar != null)
             {
-                carriedStar.pos = Vect(x + mouthOffset.x, y + mouthOffset.y);
+                carriedStar.pos = Vect(x + mouthOffset.X, y + mouthOffset.Y);
                 carriedStar.prevPos = carriedStar.pos;
             }
 
@@ -403,7 +403,7 @@ namespace CutTheRope.GameMain
             star.disableGravity = true;
             star.v = default;
             Vector offset = entryOffsets[3];
-            star.pos = Vect(x + offset.x, y + offset.y);
+            star.pos = Vect(x + offset.X, y + offset.Y);
             star.prevPos = star.pos;
             mouthPathPlayer.Play(CreateEntryPath());
             grabAnimating = true;

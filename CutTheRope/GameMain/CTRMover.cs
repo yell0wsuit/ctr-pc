@@ -24,8 +24,8 @@ namespace CutTheRope.GameMain
                 float num4 = 0f;
                 for (int i = 0; i < num2; i++)
                 {
-                    float x = s.x + (num * Cosf(num4));
-                    float y = s.y + (num * Sinf(num4));
+                    float x = s.X + (num * Cosf(num4));
+                    float y = s.Y + (num * Sinf(num4));
                     AddPathPoint(Vect(x, y));
                     num4 += num3;
                 }
@@ -41,7 +41,7 @@ namespace CutTheRope.GameMain
             {
                 string nSString2 = list[j];
                 string nSString3 = list[j + 1];
-                AddPathPoint(Vect(s.x + (nSString2.FloatValue() * 3f), s.y + (nSString3.FloatValue() * 3f)));
+                AddPathPoint(Vect(s.X + (nSString2.FloatValue() * 3f), s.Y + (nSString3.FloatValue() * 3f)));
             }
         }
     }

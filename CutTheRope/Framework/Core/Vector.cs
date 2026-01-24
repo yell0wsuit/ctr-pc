@@ -8,25 +8,25 @@ namespace CutTheRope.Framework.Core
     {
         public Vector(Vector2 v)
         {
-            x = v.X;
-            y = v.Y;
+            X = v.X;
+            Y = v.Y;
         }
 
         public Vector(double xParam, double yParam)
         {
-            x = (float)xParam;
-            y = (float)yParam;
+            X = (float)xParam;
+            Y = (float)yParam;
         }
 
         public Vector(float xParam, float yParam)
         {
-            x = xParam;
-            y = yParam;
+            X = xParam;
+            Y = yParam;
         }
 
         public readonly Vector2 ToXNA()
         {
-            return new Vector2(x, y);
+            return new Vector2(X, Y);
         }
 
         public override readonly string ToString()
@@ -34,15 +34,15 @@ namespace CutTheRope.Framework.Core
             return string.Concat(new string[]
             {
                 "Vector(x=",
-                x.ToString(CultureInfo.InvariantCulture),
+                X.ToString(CultureInfo.InvariantCulture),
                 ",y=",
-                y.ToString(CultureInfo.InvariantCulture),
+                Y.ToString(CultureInfo.InvariantCulture),
                 ")"
             });
         }
 
-        public float x;
+        public float X { get; set; }
 
-        public float y;
+        public float Y { get; set; }
     }
 }

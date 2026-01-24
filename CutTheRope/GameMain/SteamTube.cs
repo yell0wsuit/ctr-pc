@@ -30,8 +30,8 @@ namespace CutTheRope.GameMain
         /// </param>
         public SteamTube InitWithPositionAngle(Vector position, float angle, float heightScale = 1f)
         {
-            x = position.x;
-            y = position.y;
+            x = position.X;
+            y = position.Y;
             this.heightScale = heightScale;
             rotation = angle;
             anchor = 18;
@@ -183,8 +183,8 @@ namespace CutTheRope.GameMain
             valve.y = 3f * heightScale;
             steamBack.y = -27f * heightScale;
             steamFront.y = -27f * heightScale;
-            x = position.x;
-            y = position.y;
+            x = position.X;
+            y = position.Y;
         }
 
         /// <summary>

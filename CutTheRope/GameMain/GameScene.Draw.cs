@@ -55,7 +55,7 @@ namespace CutTheRope.GameMain
                 }
                 CTRTexture2D texture = Application.GetTexture(textureResourceName);
                 int num4 = 0;
-                float num5 = texture.quadOffsets[num4].y;
+                float num5 = texture.quadOffsets[num4].Y;
                 CTRRectangle r = texture.quadRects[num4];
                 r.y += num3;
                 r.h -= num3 * 2f;
@@ -173,8 +173,8 @@ namespace CutTheRope.GameMain
             {
                 if (!isCandyInLantern)
                 {
-                    candy.x = star.pos.x;
-                    candy.y = star.pos.y;
+                    candy.x = star.pos.X;
+                    candy.y = star.pos.Y;
                 }
                 candy.Draw();
                 if (candyBlink.GetCurrentTimeline() != null && !isCandyInLantern)
@@ -188,14 +188,14 @@ namespace CutTheRope.GameMain
             {
                 if (!noCandyL)
                 {
-                    candyL.x = starL.pos.x;
-                    candyL.y = starL.pos.y;
+                    candyL.x = starL.pos.X;
+                    candyL.y = starL.pos.Y;
                     candyL.Draw();
                 }
                 if (!noCandyR)
                 {
-                    candyR.x = starR.pos.x;
-                    candyR.y = starR.pos.y;
+                    candyR.x = starR.pos.X;
+                    candyR.y = starR.pos.Y;
                     candyR.Draw();
                 }
             }
@@ -259,7 +259,7 @@ namespace CutTheRope.GameMain
                         {
                             list.Add(array[k]);
                         }
-                        else if (array[k].x != vector.x || array[k].y != vector.y)
+                        else if (array[k].X != vector.X || array[k].Y != vector.Y)
                         {
                             list.Add(array[k]);
                             flag = false;
@@ -286,8 +286,8 @@ namespace CutTheRope.GameMain
                             {
                                 break;
                             }
-                            array2[num9++] = vector2.x;
-                            array2[num9++] = vector2.y;
+                            array2[num9++] = vector2.X;
+                            array2[num9++] = vector2.Y;
                             if ((double)num8 == 1.0)
                             {
                                 break;
@@ -309,17 +309,17 @@ namespace CutTheRope.GameMain
                             {
                                 Vector vector4 = VectAdd(vector3, VectMult(v4, s));
                                 Vector vector5 = VectAdd(vector3, VectMult(v5, s));
-                                array3[num4++] = vector5.x;
-                                array3[num4++] = vector5.y;
-                                array3[num4++] = vector4.x;
-                                array3[num4++] = vector4.y;
+                                array3[num4++] = vector5.X;
+                                array3[num4++] = vector5.Y;
+                                array3[num4++] = vector4.X;
+                                array3[num4++] = vector4.Y;
                             }
                             Vector vector6 = VectAdd(vector8, VectMult(v4, s2));
                             Vector vector7 = VectAdd(vector8, VectMult(v5, s2));
-                            array3[num4++] = vector7.x;
-                            array3[num4++] = vector7.y;
-                            array3[num4++] = vector6.x;
-                            array3[num4++] = vector6.y;
+                            array3[num4++] = vector7.X;
+                            array3[num4++] = vector7.Y;
+                            array3[num4++] = vector6.X;
+                            array3[num4++] = vector6.Y;
                             num3 += num10;
                         }
                         OpenGL.GlColor4f(Color.White);

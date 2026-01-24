@@ -336,28 +336,28 @@ namespace CutTheRope.GameMain
             // For slow collisions, just separate without velocity exchange
             if (speedSum <= 0f || overlap < 1000f / speedSum * 2f)
             {
-                float normX = delta.x / dist;
-                float normY = delta.y / dist;
+                float normX = delta.X / dist;
+                float normY = delta.Y / dist;
                 float offset = overlap / 2f;
-                a.pos.x += normX * offset;
-                a.pos.y += normY * offset;
-                b.pos.x -= normX * offset;
-                b.pos.y -= normY * offset;
+                a.pos.X += normX * offset;
+                a.pos.Y += normY * offset;
+                b.pos.X -= normX * offset;
+                b.pos.Y -= normY * offset;
                 return;
             }
 
             // Fast collision: calculate elastic velocity exchange
             Vector g = VectSub(b.pos, a.pos);
-            float h = -g.y;
-            float m = g.x;
-            float f = ((a.v.x * g.x) + (a.v.y * g.y)) / minDistance;
-            float e = ((a.v.x * h) + (a.v.y * m)) / minDistance;
-            h = ((b.v.x * h) + (a.v.x * m)) / minDistance;
+            float h = -g.Y;
+            float m = g.X;
+            float f = ((a.v.X * g.X) + (a.v.Y * g.Y)) / minDistance;
+            float e = ((a.v.X * h) + (a.v.Y * m)) / minDistance;
+            h = ((b.v.X * h) + (a.v.X * m)) / minDistance;
             m = f;
-            f = ((b.v.x * g.x) + (b.v.y * g.y)) / minDistance;
+            f = ((b.v.X * g.X) + (b.v.Y * g.Y)) / minDistance;
 
-            float nx = g.x / minDistance;
-            float ny = g.y / minDistance;
+            float nx = g.X / minDistance;
+            float ny = g.Y / minDistance;
 
             // Compute new velocities by exchanging normal components
             float aVx = (f * nx) - (e * ny);
@@ -365,24 +365,24 @@ namespace CutTheRope.GameMain
             float bVx = (m * nx) - (h * ny);
             float bVy = (m * ny) + (h * nx);
 
-            a.v.x = aVx;
-            a.v.y = aVy;
-            b.v.x = bVx;
-            b.v.y = bVy;
+            a.v.X = aVx;
+            a.v.Y = aVy;
+            b.v.X = bVx;
+            b.v.Y = bVy;
 
             // Separate the points to eliminate overlap
-            float sepX = overlap / 2f * (delta.x / dist);
-            float sepY = overlap / 2f * (delta.y / dist);
-            a.pos.x += sepX;
-            a.pos.y += sepY;
-            b.pos.x -= sepX;
-            b.pos.y -= sepY;
+            float sepX = overlap / 2f * (delta.X / dist);
+            float sepY = overlap / 2f * (delta.Y / dist);
+            a.pos.X += sepX;
+            a.pos.Y += sepY;
+            b.pos.X -= sepX;
+            b.pos.Y -= sepY;
 
             // Update previous positions to maintain velocity in Verlet integration
-            a.prevPos.x = a.pos.x - (a.v.x / 60f);
-            a.prevPos.y = a.pos.y - (a.v.y / 60f);
-            b.prevPos.x = b.pos.x - (b.v.x / 60f);
-            b.prevPos.y = b.pos.y - (b.v.y / 60f);
+            a.prevPos.X = a.pos.X - (a.v.X / 60f);
+            a.prevPos.Y = a.pos.Y - (a.v.Y / 60f);
+            b.prevPos.X = b.pos.X - (b.v.X / 60f);
+            b.prevPos.Y = b.pos.Y - (b.v.Y / 60f);
         }
     }
 }

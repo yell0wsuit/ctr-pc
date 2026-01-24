@@ -64,8 +64,8 @@ namespace CutTheRope.GameMain
                     }
                     else if (item2.Name.LocalName == "candyL")
                     {
-                        starL.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                        starL.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                        starL.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                        starL.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                         int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
                         string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
                         candyL = GameObject.GameObject_createWithResIDQuad(candyResource, 8);
@@ -73,14 +73,14 @@ namespace CutTheRope.GameMain
                         candyL.passTransformationsToChilds = false;
                         candyL.DoRestoreCutTransparency();
                         candyL.anchor = 18;
-                        candyL.x = starL.pos.x;
-                        candyL.y = starL.pos.y;
+                        candyL.x = starL.pos.X;
+                        candyL.y = starL.pos.Y;
                         candyL.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
                     }
                     else if (item2.Name.LocalName == "candyR")
                     {
-                        starR.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                        starR.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                        starR.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                        starR.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                         int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
                         string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
                         candyR = GameObject.GameObject_createWithResIDQuad(candyResource, 9);
@@ -88,14 +88,14 @@ namespace CutTheRope.GameMain
                         candyR.passTransformationsToChilds = false;
                         candyR.DoRestoreCutTransparency();
                         candyR.anchor = 18;
-                        candyR.x = starR.pos.x;
-                        candyR.y = starR.pos.y;
+                        candyR.x = starR.pos.X;
+                        candyR.y = starR.pos.Y;
                         candyR.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
                     }
                     else if (item2.Name.LocalName == "candy")
                     {
-                        star.pos.x = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                        star.pos.y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                        star.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                        star.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                     }
                 }
             }

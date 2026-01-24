@@ -225,8 +225,8 @@ namespace CutTheRope.GameMain
         /// </remarks>
         public void SyncToConstraint()
         {
-            x = constraint.pos.x;
-            y = constraint.pos.y;
+            x = constraint.pos.X;
+            y = constraint.pos.Y;
             CalculateTopLeft(this);
         }
 

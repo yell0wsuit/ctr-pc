@@ -118,7 +118,7 @@ namespace CutTheRope.GameMain
                 float num2;
                 if (mapWidth > SCREEN_WIDTH)
                 {
-                    if (constraintedPoint.pos.x > mapWidth / 2.0)
+                    if (constraintedPoint.pos.X > mapWidth / 2.0)
                     {
                         num = 0f;
                         num2 = 0f;
@@ -129,7 +129,7 @@ namespace CutTheRope.GameMain
                         num2 = 0f;
                     }
                 }
-                else if (constraintedPoint.pos.y > mapHeight / 2.0)
+                else if (constraintedPoint.pos.Y > mapHeight / 2.0)
                 {
                     num = 0f;
                     num2 = 0f;
@@ -139,8 +139,8 @@ namespace CutTheRope.GameMain
                     num = 0f;
                     num2 = mapHeight - SCREEN_HEIGHT;
                 }
-                double num6 = (double)(constraintedPoint.pos.x - (SCREEN_WIDTH / 2f));
-                float num3 = constraintedPoint.pos.y - (SCREEN_HEIGHT / 2f);
+                double num6 = (double)(constraintedPoint.pos.X - (SCREEN_WIDTH / 2f));
+                float num3 = constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f);
                 float num4 = FIT_TO_BOUNDARIES(num6, 0.0, (double)(mapWidth - SCREEN_WIDTH));
                 float num5 = FIT_TO_BOUNDARIES((double)num3, 0.0, (double)(mapHeight - SCREEN_HEIGHT));
                 camera.MoveToXYImmediate(num, num2, true);
