@@ -168,10 +168,10 @@ namespace CutTheRope.GameMain
             vinilBR.Draw();
             OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            if (IsRightControllerActive() || IsLeftControllerActive() || color.a < 1.0)
+            if (IsRightControllerActive() || IsLeftControllerActive() || color.AlphaChannel < 1.0)
             {
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
-                whiteRGBA.a = 1f - color.a;
+                whiteRGBA.AlphaChannel = 1f - color.AlphaChannel;
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
             }
             for (int i = 0; i < circlesArray.Count; i++)

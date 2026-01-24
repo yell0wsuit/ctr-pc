@@ -124,9 +124,9 @@ namespace CutTheRope.GameMain
                 OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
                 OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
-                if (color.a != 1.0)
+                if (color.AlphaChannel != 1.0)
                 {
-                    whiteRGBA.a = color.a;
+                    whiteRGBA.AlphaChannel = color.AlphaChannel;
                 }
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
                 OpenGL.GlColor4f(Color.White);

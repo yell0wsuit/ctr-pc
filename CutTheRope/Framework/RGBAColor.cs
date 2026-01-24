@@ -9,10 +9,10 @@ namespace CutTheRope.Framework
         public readonly Color ToXNA()
         {
             Color result = default;
-            int num = (int)(r * 255f);
-            int num2 = (int)(g * 255f);
-            int num3 = (int)(b * 255f);
-            int num4 = (int)(a * 255f);
+            int num = (int)(RedColor * 255f);
+            int num2 = (int)(GreenColor * 255f);
+            int num3 = (int)(BlueColor * 255f);
+            int num4 = (int)(AlphaChannel * 255f);
             result.R = (byte)(num >= 0 ? num > 255 ? 255 : num : 0);
             result.G = (byte)(num2 >= 0 ? num2 > 255 ? 255 : num2 : 0);
             result.B = (byte)(num3 >= 0 ? num3 > 255 ? 255 : num3 : 0);
@@ -23,7 +23,7 @@ namespace CutTheRope.Framework
         public readonly Color ToWhiteAlphaXNA()
         {
             Color result = default;
-            int num = (int)(a * 255f);
+            int num = (int)(AlphaChannel * 255f);
             result.R = byte.MaxValue;
             result.G = byte.MaxValue;
             result.B = byte.MaxValue;
@@ -43,28 +43,28 @@ namespace CutTheRope.Framework
 
         public static bool RGBAEqual(RGBAColor a, RGBAColor b)
         {
-            return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+            return a.RedColor == b.RedColor && a.GreenColor == b.GreenColor && a.BlueColor == b.BlueColor && a.AlphaChannel == b.AlphaChannel;
         }
 
         public RGBAColor(double R, double G, double B, double A)
         {
-            r = (float)R;
-            g = (float)G;
-            b = (float)B;
-            a = (float)A;
+            RedColor = (float)R;
+            GreenColor = (float)G;
+            BlueColor = (float)B;
+            AlphaChannel = (float)A;
         }
 
         public RGBAColor(float R, float G, float B, float A)
         {
-            r = R;
-            g = G;
-            b = B;
-            a = A;
+            RedColor = R;
+            GreenColor = G;
+            BlueColor = B;
+            AlphaChannel = A;
         }
 
         public readonly float[] ToFloatArray()
         {
-            return [r, g, b, a];
+            return [RedColor, GreenColor, BlueColor, AlphaChannel];
         }
 
         public static float[] ToFloatArray(RGBAColor[] colors)
@@ -93,12 +93,12 @@ namespace CutTheRope.Framework
 
         public static readonly RGBAColor whiteRGBA = new(1.0, 1.0, 1.0, 1.0);
 
-        public float r { get; set; }
+        public float RedColor { get; set; }
 
-        public float g { get; set; }
+        public float GreenColor { get; set; }
 
-        public float b { get; set; }
+        public float BlueColor { get; set; }
 
-        public float a { get; set; }
+        public float AlphaChannel { get; set; }
     }
 }

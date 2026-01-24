@@ -285,8 +285,8 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            float next = MathF.Min(1f, MathF.Max(0f, element.color.a + delta));
-            element.color = RGBAColor.MakeRGBA(element.color.r, element.color.g, element.color.b, next);
+            float next = MathF.Min(1f, MathF.Max(0f, element.color.AlphaChannel + delta));
+            element.color = RGBAColor.MakeRGBA(element.color.RedColor, element.color.GreenColor, element.color.BlueColor, next);
         }
 
         private void UpdateNightVisibility()

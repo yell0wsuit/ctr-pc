@@ -4,7 +4,7 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Sfe
 {
-    internal class ConstraintedPoint : MaterialPoint
+    internal sealed class ConstraintedPoint : MaterialPoint
     {
         protected override void Dispose(bool disposing)
         {
@@ -22,7 +22,7 @@ namespace CutTheRope.Framework.Sfe
             constraints = [];
         }
 
-        public virtual void AddConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
+        public void AddConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
         {
             Constraint constraint = new()
             {
@@ -33,7 +33,7 @@ namespace CutTheRope.Framework.Sfe
             constraints.Add(constraint);
         }
 
-        public virtual void RemoveConstraint(ConstraintedPoint o)
+        public void RemoveConstraint(ConstraintedPoint o)
         {
             for (int i = 0; i < constraints.Count; i++)
             {
@@ -45,12 +45,12 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
-        public virtual void RemoveConstraints()
+        public void RemoveConstraints()
         {
             constraints = [];
         }
 
-        public virtual void ChangeConstraintFromTo(ConstraintedPoint o, ConstraintedPoint n)
+        public void ChangeConstraintFromTo(ConstraintedPoint o, ConstraintedPoint n)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -64,7 +64,7 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
-        public virtual void ChangeConstraintFromTowithRestLength(ConstraintedPoint o, ConstraintedPoint n, float l)
+        public void ChangeConstraintFromTowithRestLength(ConstraintedPoint o, ConstraintedPoint n, float l)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -79,7 +79,7 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
-        public virtual void ChangeRestLengthToFor(float l, ConstraintedPoint n)
+        public void ChangeRestLengthToFor(float l, ConstraintedPoint n)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -93,7 +93,7 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
-        public virtual bool HasConstraintTo(ConstraintedPoint p)
+        public bool HasConstraintTo(ConstraintedPoint p)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -107,7 +107,7 @@ namespace CutTheRope.Framework.Sfe
             return false;
         }
 
-        public virtual float RestLengthFor(ConstraintedPoint n)
+        public float RestLengthFor(ConstraintedPoint n)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -133,7 +133,7 @@ namespace CutTheRope.Framework.Sfe
             Update(delta, 1f);
         }
 
-        public virtual void Update(float delta, float koeff)
+        public void Update(float delta, float koeff)
         {
             totalForce = vectZero;
             if (!disableGravity)

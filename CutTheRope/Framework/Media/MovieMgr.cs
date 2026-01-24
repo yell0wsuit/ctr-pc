@@ -121,7 +121,7 @@ namespace CutTheRope.Framework.Media
 
         public new void Dispose()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

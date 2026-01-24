@@ -89,7 +89,7 @@ namespace CutTheRope.Framework.Helpers
             {
                 pos = path[0];
                 targetPoint = 1;
-                CalculateOffset();
+                // CalculateOffset();
             }
         }
 
@@ -112,14 +112,14 @@ namespace CutTheRope.Framework.Helpers
         {
             targetPoint = p;
             pos = path[targetPoint];
-            CalculateOffset();
+            // CalculateOffset();
         }
 
-        public virtual void CalculateOffset()
-        {
-            Vector v = path[targetPoint];
-            offset = VectMult(VectNormalize(VectSub(v, pos)), moveSpeed[targetPoint]);
-        }
+        //public virtual void CalculateOffset()
+        //{
+        // Vector v = path[targetPoint];
+        // offset = VectMult(VectNormalize(VectSub(v, pos)), moveSpeed[targetPoint]);
+        //}
 
         public virtual void SetMoveSpeedforPoint(float ms, int i)
         {
@@ -155,7 +155,7 @@ namespace CutTheRope.Framework.Helpers
                     if (distance <= 0f)
                     {
                         AdvanceTarget();
-                        CalculateOffset();
+                        // CalculateOffset();
                         noProgressSteps++;
                         if (noProgressSteps > maxNoProgressSteps)
                         {
@@ -175,7 +175,7 @@ namespace CutTheRope.Framework.Helpers
                         pos = v;
                         timeRemaining -= timeToTarget;
                         AdvanceTarget();
-                        CalculateOffset();
+                        // CalculateOffset();
                         continue;
                     }
                     Vector dir = VectMult(toTarget, 1f / distance);
@@ -285,6 +285,6 @@ namespace CutTheRope.Framework.Helpers
 
         private float overrun;
 
-        private Vector offset;
+        // private Vector offset;
     }
 }

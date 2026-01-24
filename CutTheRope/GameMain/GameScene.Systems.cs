@@ -155,18 +155,18 @@ namespace CutTheRope.GameMain
             {
                 if (!noCandy)
                 {
-                    ApplyImpulse(star);
+                    _ = ApplyImpulse(star);
                 }
             }
             else
             {
                 if (!noCandyL)
                 {
-                    ApplyImpulse(starL);
+                    _ = ApplyImpulse(starL);
                 }
                 if (!noCandyR)
                 {
-                    ApplyImpulse(starR);
+                    _ = ApplyImpulse(starR);
                 }
             }
 
@@ -179,7 +179,7 @@ namespace CutTheRope.GameMain
                     {
                         continue;
                     }
-                    ApplyImpulse(bulb.constraint);
+                    _ = ApplyImpulse(bulb.constraint);
                 }
             }
         }
