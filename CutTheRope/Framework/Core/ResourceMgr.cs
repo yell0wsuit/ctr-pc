@@ -215,18 +215,15 @@ namespace CutTheRope.Framework.Core
                 CTRTexture2D.SetAliasTexParameters();
             }
 
-            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(pngPath);
-            if (texture2D == null)
-            {
-                throw new FileNotFoundException(
+            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(pngPath) ?? throw new FileNotFoundException(
                     $"Resource '{resourceName}' is missing the PNG. Did you forget to add {resourceName}.png?",
                     pngPath);
-            }
 
             if (isWvga)
             {
                 texture2D.SetWvga();
             }
+
             texture2D.SetScale(scaleX, scaleY);
 
             ApplyTexturePackerInfo(texture2D, parsedAtlas, isWvga, scaleX, scaleY);
@@ -322,11 +319,6 @@ namespace CutTheRope.Framework.Core
                     texture.preCutSize.Y /= 1.5f;
                 }
             }
-        }
-
-        private static string FullPathFromRelativePath(string relPath)
-        {
-            return ContentPaths.GetRelativePathWithContentFolder(relPath);
         }
 
         private static void SetQuadsInfo(CTRTexture2D t, float[] data, float scaleX, float scaleY)
