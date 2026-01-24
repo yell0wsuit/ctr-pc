@@ -1,0 +1,115 @@
+{
+  "frames": {
+    "frame_0000": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 194,
+        "h": 127
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 319,
+        "y": 69,
+        "w": 194,
+        "h": 127
+      },
+      "sourceSize": {
+        "w": 833,
+        "h": 250
+      }
+    },
+    "frame_0001": {
+      "frame": {
+        "x": 0,
+        "y": 127,
+        "w": 201,
+        "h": 103
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 316,
+        "y": 81,
+        "w": 201,
+        "h": 103
+      },
+      "sourceSize": {
+        "w": 833,
+        "h": 250
+      }
+    },
+    "frame_0002": {
+      "frame": {
+        "x": 0,
+        "y": 230,
+        "w": 204,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 314,
+        "y": 87,
+        "w": 204,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 833,
+        "h": 250
+      }
+    },
+    "frame_0003": {
+      "frame": {
+        "x": 0,
+        "y": 326,
+        "w": 193,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 319,
+        "y": 55,
+        "w": 193,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 833,
+        "h": 250
+      }
+    },
+    "frame_0004": {
+      "frame": {
+        "x": 0,
+        "y": 468,
+        "w": 194,
+        "h": 111
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 319,
+        "y": 77,
+        "w": 194,
+        "h": 111
+      },
+      "sourceSize": {
+        "w": 833,
+        "h": 250
+      }
+    }
+  },
+  "meta": {
+    "app": "Converted from XML",
+    "version": "1.0",
+    "image": "obj_bouncer_01.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 204,
+      "h": 579
+    },
+    "scale": "1"
+  }
+}

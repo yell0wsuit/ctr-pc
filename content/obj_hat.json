@@ -1,0 +1,115 @@
+{
+  "frames": {
+    "frame_0000": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 294,
+        "h": 335
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 53,
+        "y": 6,
+        "w": 294,
+        "h": 335
+      },
+      "sourceSize": {
+        "w": 431,
+        "h": 431
+      }
+    },
+    "frame_0001": {
+      "frame": {
+        "x": 294,
+        "y": 0,
+        "w": 297,
+        "h": 336
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 51,
+        "y": 3,
+        "w": 297,
+        "h": 336
+      },
+      "sourceSize": {
+        "w": 431,
+        "h": 431
+      }
+    },
+    "frame_0002": {
+      "frame": {
+        "x": 0,
+        "y": 335,
+        "w": 291,
+        "h": 252
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 55,
+        "y": 78,
+        "w": 291,
+        "h": 252
+      },
+      "sourceSize": {
+        "w": 431,
+        "h": 431
+      }
+    },
+    "frame_0003": {
+      "frame": {
+        "x": 591,
+        "y": 0,
+        "w": 307,
+        "h": 293
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 47,
+        "y": 57,
+        "w": 307,
+        "h": 293
+      },
+      "sourceSize": {
+        "w": 431,
+        "h": 431
+      }
+    },
+    "frame_0004": {
+      "frame": {
+        "x": 0,
+        "y": 587,
+        "w": 276,
+        "h": 224
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 63,
+        "y": 98,
+        "w": 276,
+        "h": 224
+      },
+      "sourceSize": {
+        "w": 431,
+        "h": 431
+      }
+    }
+  },
+  "meta": {
+    "app": "Converted from XML",
+    "version": "1.0",
+    "image": "obj_hat.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 898,
+      "h": 811
+    },
+    "scale": "1"
+  }
+}

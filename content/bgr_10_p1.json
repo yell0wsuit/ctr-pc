@@ -1,0 +1,35 @@
+{
+  "frames": {
+    "frame_0000": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 2048,
+        "h": 1152
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 2048,
+        "h": 1152
+      },
+      "sourceSize": {
+        "w": 2048,
+        "h": 2304
+      }
+    }
+  },
+  "meta": {
+    "app": "Converted from XML",
+    "version": "1.0",
+    "image": "bgr_10_p1.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 2048,
+      "h": 1152
+    },
+    "scale": "1"
+  }
+}
