@@ -11,6 +11,6 @@ namespace CutTheRope.Framework.Core
             VectorPoint = Value;
         }
 
-        public Vector VectorPoint;
+        public Vector VectorPoint { get; set; }
     }
 }

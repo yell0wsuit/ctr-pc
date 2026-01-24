@@ -41,8 +41,8 @@ namespace CutTheRope.Framework.Core
             });
         }
 
-        public float XAxis;
+        public float XAxis { get; set; }
 
-        public float YAxis;
+        public float YAxis { get; set; }
     }
 }

@@ -179,9 +179,9 @@ namespace CutTheRope.Framework.Sfe
             for (int i = 0; i < count; i++)
             {
                 Constraint constraint = p.constraints[i];
-                Vector vector;
-                vector.XAxis = constraint.cp.pos.XAxis - p.pos.XAxis;
-                vector.YAxis = constraint.cp.pos.YAxis - p.pos.YAxis;
+                Vector vector = new(
+                    constraint.cp.pos.XAxis - p.pos.XAxis,
+                    constraint.cp.pos.YAxis - p.pos.YAxis);
                 if (vector.XAxis == 0f && vector.YAxis == 0f)
                 {
                     vector = Vect(1f, 1f);

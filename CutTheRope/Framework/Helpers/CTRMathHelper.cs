@@ -409,27 +409,31 @@ namespace CutTheRope.Framework.Helpers
                 }
                 if ((num5 & 1) != 0)
                 {
-                    VectorClass vectorClass4 = vectorClass3;
-                    vectorClass4.VectorPoint.YAxis += (y1 - y2) * (rx - vectorClass3.VectorPoint.XAxis) / (x1 - x2);
-                    vectorClass3.VectorPoint.XAxis = rx;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.YAxis += (y1 - y2) * (rx - temp.XAxis) / (x1 - x2);
+                    temp.XAxis = rx;
+                    vectorClass3.VectorPoint = temp;
                 }
                 else if ((num5 & 2) != 0)
                 {
-                    VectorClass vectorClass5 = vectorClass3;
-                    vectorClass5.VectorPoint.YAxis += (y1 - y2) * (num - vectorClass3.VectorPoint.XAxis) / (x1 - x2);
-                    vectorClass3.VectorPoint.XAxis = num;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.YAxis += (y1 - y2) * (num - temp.XAxis) / (x1 - x2);
+                    temp.XAxis = num;
+                    vectorClass3.VectorPoint = temp;
                 }
                 if ((num5 & 4) != 0)
                 {
-                    VectorClass vectorClass6 = vectorClass3;
-                    vectorClass6.VectorPoint.XAxis += (x1 - x2) * (ry - vectorClass3.VectorPoint.YAxis) / (y1 - y2);
-                    vectorClass3.VectorPoint.YAxis = ry;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.XAxis += (x1 - x2) * (ry - temp.YAxis) / (y1 - y2);
+                    temp.YAxis = ry;
+                    vectorClass3.VectorPoint = temp;
                 }
                 else if ((num5 & 8) != 0)
                 {
-                    VectorClass vectorClass7 = vectorClass3;
-                    vectorClass7.VectorPoint.XAxis += (x1 - x2) * (num2 - vectorClass3.VectorPoint.YAxis) / (y1 - y2);
-                    vectorClass3.VectorPoint.YAxis = num2;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.XAxis += (x1 - x2) * (num2 - temp.YAxis) / (y1 - y2);
+                    temp.YAxis = num2;
+                    vectorClass3.VectorPoint = temp;
                 }
                 if (num5 == num3)
                 {
