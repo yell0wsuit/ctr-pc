@@ -46,7 +46,7 @@ namespace CutTheRope.Framework.Visual
                     return cachedFont;
                 }
 
-                fontCache.Remove(cacheKey);
+                _ = fontCache.Remove(cacheKey);
             }
 
             // Get or create FontSystem for this font file
