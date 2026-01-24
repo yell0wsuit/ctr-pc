@@ -273,22 +273,22 @@ namespace CutTheRope.Framework.Helpers
 
         public static bool VectEqual(Vector v1, Vector v2)
         {
-            return v1.x == v2.x && v1.y == v2.y;
+            return v1.X == v2.X && v1.Y == v2.Y;
         }
 
         public static Vector VectAdd(Vector v1, Vector v2)
         {
-            return new Vector(v1.x + v2.x, v1.y + v2.y);
+            return new Vector(v1.X + v2.X, v1.Y + v2.Y);
         }
 
         public static Vector VectNeg(Vector v)
         {
-            return new Vector(0f - v.x, 0f - v.y);
+            return new Vector(0f - v.X, 0f - v.Y);
         }
 
         public static Vector VectSub(Vector v1, Vector v2)
         {
-            return new Vector(v1.x - v2.x, v1.y - v2.y);
+            return new Vector(v1.X - v2.X, v1.Y - v2.Y);
         }
 
         public static Vector VectMult(Vector v, double s)
@@ -298,37 +298,37 @@ namespace CutTheRope.Framework.Helpers
 
         public static Vector VectMult(Vector v, float s)
         {
-            return new Vector(v.x * s, v.y * s);
+            return new Vector(v.X * s, v.Y * s);
         }
 
         public static Vector VectDiv(Vector v, float s)
         {
-            return new Vector(v.x / s, v.y / s);
+            return new Vector(v.X / s, v.Y / s);
         }
 
         public static float VectDot(Vector v1, Vector v2)
         {
-            return (v1.x * v2.x) + (v1.y * v2.y);
+            return (v1.X * v2.X) + (v1.Y * v2.Y);
         }
 
         public static Vector VectPerp(Vector v)
         {
-            return new Vector(0f - v.y, v.x);
+            return new Vector(0f - v.Y, v.X);
         }
 
         public static Vector VectRperp(Vector v)
         {
-            return new Vector(v.y, 0f - v.x);
+            return new Vector(v.Y, 0f - v.X);
         }
 
         public static float VectAngle(Vector v)
         {
-            return (float)Math.Atan((double)(v.y / v.x));
+            return (float)Math.Atan((double)(v.Y / v.X));
         }
 
         public static float VectAngleNormalized(Vector v)
         {
-            return (float)Math.Atan2(v.y, v.x);
+            return (float)Math.Atan2(v.Y, v.X);
         }
 
         public static float VectLength(Vector v)
@@ -360,25 +360,25 @@ namespace CutTheRope.Framework.Helpers
         {
             float num = FmCos((float)rad);
             float num2 = FmSin((float)rad);
-            float num3 = (v.x * num) - (v.y * num2);
-            float yParam = (v.x * num2) + (v.y * num);
+            float num3 = (v.X * num) - (v.Y * num2);
+            float yParam = (v.X * num2) + (v.Y * num);
             return new Vector(num3, yParam);
         }
 
         public static Vector VectRotateAround(Vector v, double rad, float cx, float cy)
         {
             Vector v2 = v;
-            v2.x -= cx;
-            v2.y -= cy;
+            v2.X -= cx;
+            v2.Y -= cy;
             v2 = VectRotate(v2, rad);
-            v2.x += cx;
-            v2.y += cy;
+            v2.X += cx;
+            v2.Y += cy;
             return v2;
         }
 
         private static int Vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
         {
-            return (p.x < x_min ? 1 : 0) + (p.x > x_max ? 2 : 0) + (p.y < y_min ? 4 : 0) + (p.y > y_max ? 8 : 0);
+            return (p.X < x_min ? 1 : 0) + (p.X > x_max ? 2 : 0) + (p.Y < y_min ? 4 : 0) + (p.Y > y_max ? 8 : 0);
         }
 
         public static bool LineInRect(float x1, float y1, float x2, float y2, float rx, float ry, float w, float h)
@@ -387,8 +387,8 @@ namespace CutTheRope.Framework.Helpers
             VectorClass vectorClass2 = new(new Vector(x2, y2));
             float num = rx + w;
             float num2 = ry + h;
-            int num3 = Vcode(rx, ry, num, num2, vectorClass.v);
-            int num4 = Vcode(rx, ry, num, num2, vectorClass2.v);
+            int num3 = Vcode(rx, ry, num, num2, vectorClass.VectorPoint);
+            int num4 = Vcode(rx, ry, num, num2, vectorClass2.VectorPoint);
             while (num3 != 0 || num4 != 0)
             {
                 if ((num3 & num4) != 0)
@@ -409,35 +409,39 @@ namespace CutTheRope.Framework.Helpers
                 }
                 if ((num5 & 1) != 0)
                 {
-                    VectorClass vectorClass4 = vectorClass3;
-                    vectorClass4.v.y += (y1 - y2) * (rx - vectorClass3.v.x) / (x1 - x2);
-                    vectorClass3.v.x = rx;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.Y += (y1 - y2) * (rx - temp.X) / (x1 - x2);
+                    temp.X = rx;
+                    vectorClass3.VectorPoint = temp;
                 }
                 else if ((num5 & 2) != 0)
                 {
-                    VectorClass vectorClass5 = vectorClass3;
-                    vectorClass5.v.y += (y1 - y2) * (num - vectorClass3.v.x) / (x1 - x2);
-                    vectorClass3.v.x = num;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.Y += (y1 - y2) * (num - temp.X) / (x1 - x2);
+                    temp.X = num;
+                    vectorClass3.VectorPoint = temp;
                 }
                 if ((num5 & 4) != 0)
                 {
-                    VectorClass vectorClass6 = vectorClass3;
-                    vectorClass6.v.x += (x1 - x2) * (ry - vectorClass3.v.y) / (y1 - y2);
-                    vectorClass3.v.y = ry;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.X += (x1 - x2) * (ry - temp.Y) / (y1 - y2);
+                    temp.Y = ry;
+                    vectorClass3.VectorPoint = temp;
                 }
                 else if ((num5 & 8) != 0)
                 {
-                    VectorClass vectorClass7 = vectorClass3;
-                    vectorClass7.v.x += (x1 - x2) * (num2 - vectorClass3.v.y) / (y1 - y2);
-                    vectorClass3.v.y = num2;
+                    Vector temp = vectorClass3.VectorPoint;
+                    temp.X += (x1 - x2) * (num2 - temp.Y) / (y1 - y2);
+                    temp.Y = num2;
+                    vectorClass3.VectorPoint = temp;
                 }
                 if (num5 == num3)
                 {
-                    num3 = Vcode(rx, ry, num, num2, vectorClass.v);
+                    num3 = Vcode(rx, ry, num, num2, vectorClass.VectorPoint);
                 }
                 else
                 {
-                    num4 = Vcode(rx, ry, num, num2, vectorClass2.v);
+                    num4 = Vcode(rx, ry, num, num2, vectorClass2.VectorPoint);
                 }
             }
             return true;
@@ -446,17 +450,17 @@ namespace CutTheRope.Framework.Helpers
         public static bool LineInLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
             Vector vector = default;
-            vector.x = x3 - x1 + x4 - x2;
-            vector.y = y3 - y1 + y4 - y2;
+            vector.X = x3 - x1 + x4 - x2;
+            vector.Y = y3 - y1 + y4 - y2;
             Vector vector2 = default;
-            vector2.x = x2 - x1;
-            vector2.y = y2 - y1;
+            vector2.X = x2 - x1;
+            vector2.Y = y2 - y1;
             Vector vector3 = default;
-            vector3.x = x4 - x3;
-            vector3.y = y4 - y3;
-            float value = (vector2.y * vector3.x) - (vector3.y * vector2.x);
-            float num = (vector3.x * vector.y) - (vector3.y * vector.x);
-            float value2 = (vector2.x * vector.y) - (vector2.y * vector.x);
+            vector3.X = x4 - x3;
+            vector3.Y = y4 - y3;
+            float value = (vector2.Y * vector3.X) - (vector3.Y * vector2.X);
+            float num = (vector3.X * vector.Y) - (vector3.Y * vector.X);
+            float value2 = (vector2.X * vector.Y) - (vector2.Y * vector.X);
             return Math.Abs(num) <= Math.Abs(value) && Math.Abs(value2) <= Math.Abs(value);
         }
 

@@ -20,8 +20,8 @@ namespace CutTheRope.Commons
                 Image up = Image_createWithResIDQuad(resID, lq);
                 Image image = Image_createWithResIDQuad(resID, lqp);
                 Vector relativeQuadOffset = GetRelativeQuadOffset(resID, lq, lqp);
-                image.x += relativeQuadOffset.x;
-                image.y += relativeQuadOffset.y;
+                image.x += relativeQuadOffset.X;
+                image.y += relativeQuadOffset.Y;
                 lift = (Lift)new Lift().InitWithUpElementDownElementandID(up, image, 0);
                 lift.parentAnchor = 17;
                 lift.anchor = 18;
@@ -53,7 +53,7 @@ namespace CutTheRope.Commons
             int i = 0;
             while (i < spointsNum)
             {
-                if (lift.x <= spointsLimits[i].x)
+                if (lift.x <= spointsLimits[i].X)
                 {
                     activeSpoint = limitPoints[i];
                     if (delegateLiftScrollbarDelegate != null)
@@ -76,7 +76,7 @@ namespace CutTheRope.Commons
             UpdateLift();
             for (int i = 0; i < spointsNum; i++)
             {
-                if (lift.x <= spointsLimits[i].x)
+                if (lift.x <= spointsLimits[i].X)
                 {
                     int num = limitPoints[i];
                     if (activeSpoint != num)
@@ -87,7 +87,7 @@ namespace CutTheRope.Commons
                     return;
                 }
             }
-            if (lift.x >= spointsLimits[spointsNum - 1].x && activeSpoint != limitPoints[spointsNum - 1])
+            if (lift.x >= spointsLimits[spointsNum - 1].X && activeSpoint != limitPoints[spointsNum - 1])
             {
                 delegateLiftScrollbarDelegate?.ChangedActiveSpointFromTo(activeSpoint, limitPoints[spointsNum - 1]);
                 activeSpoint = limitPoints[spointsNum - 1];
@@ -122,7 +122,7 @@ namespace CutTheRope.Commons
         public void PercentXY(float px, float py)
         {
             Vector maxScroll = container.GetMaxScroll();
-            container.SetScroll(Vect(maxScroll.x * px, maxScroll.y * py));
+            container.SetScroll(Vect(maxScroll.X * px, maxScroll.Y * py));
         }
 
         public void UpdateLift()
@@ -130,13 +130,13 @@ namespace CutTheRope.Commons
             Vector scroll = container.GetScroll();
             Vector maxScroll = container.GetMaxScroll();
             float num = 0f;
-            if (maxScroll.x != 0f)
+            if (maxScroll.X != 0f)
             {
-                num = scroll.x / maxScroll.x;
+                num = scroll.X / maxScroll.X;
             }
-            if (maxScroll.y != 0f)
+            if (maxScroll.Y != 0f)
             {
-                _ = scroll.y / maxScroll.y;
+                _ = scroll.Y / maxScroll.Y;
             }
             lift.x = ((lift.maxX - lift.minX) * num) + lift.minX;
             lift.y = 0f;
@@ -156,13 +156,13 @@ namespace CutTheRope.Commons
             {
                 Vector vector = VectNeg(container.GetScrollPoint(i));
                 float num = 0f;
-                if (maxScroll.x != 0f)
+                if (maxScroll.X != 0f)
                 {
-                    num = vector.x / maxScroll.x;
+                    num = vector.X / maxScroll.X;
                 }
-                if (maxScroll.y != 0f)
+                if (maxScroll.Y != 0f)
                 {
-                    _ = vector.y / maxScroll.y;
+                    _ = vector.Y / maxScroll.Y;
                 }
                 float num3 = ((lift.maxX - lift.minX) * num) + lift.minX;
                 spoints[i] = Vect(num3, 0f);
@@ -178,7 +178,7 @@ namespace CutTheRope.Commons
                 flag = false;
                 for (int k = 0; k < spointsNum - 1; k++)
                 {
-                    if (spointsLimits[k].x > spointsLimits[k + 1].x)
+                    if (spointsLimits[k].X > spointsLimits[k + 1].X)
                     {
                         flag = true;
                         (spointsLimits[k + 1], spointsLimits[k]) = (spointsLimits[k], spointsLimits[k + 1]);
@@ -192,7 +192,7 @@ namespace CutTheRope.Commons
                 Vector vector4 = spointsLimits[l + 1];
                 Vector[] array = spointsLimits;
                 int num6 = l;
-                array[num6].x = array[num6].x + ((vector4.x - vector3.x) / 2f);
+                array[num6].X = array[num6].X + ((vector4.X - vector3.X) / 2f);
             }
         }
 

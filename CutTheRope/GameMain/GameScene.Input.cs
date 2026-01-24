@@ -12,7 +12,7 @@ namespace CutTheRope.GameMain
     {
         public bool HandleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
         {
-            if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
+            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, s.pos.X - 60f, s.pos.Y - 60f, 120f, 120f))
             {
                 PopCandyBubble(s == starL);
                 int num = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
@@ -36,7 +36,7 @@ namespace CutTheRope.GameMain
             {
                 return false;
             }
-            if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, bulb.constraint.pos.x - BUBBLE_RADIUS, bulb.constraint.pos.y - BUBBLE_RADIUS, BUBBLE_RADIUS * 2f, BUBBLE_RADIUS * 2f))
+            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bulb.constraint.pos.X - BUBBLE_RADIUS, bulb.constraint.pos.Y - BUBBLE_RADIUS, BUBBLE_RADIUS * 2f, BUBBLE_RADIUS * 2f))
             {
                 PopLightBulbBubble(bulb);
                 return true;
@@ -58,12 +58,12 @@ namespace CutTheRope.GameMain
             {
                 return true;
             }
-            if (gravityButton != null && ((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.x, ty + camera.pos.y, true))
+            if (gravityButton != null && ((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.X, ty + camera.pos.Y, true))
             {
                 gravityTouchDown = ti;
             }
-            float worldX = tx + camera.pos.x;
-            float worldY = ty + camera.pos.y;
+            float worldX = tx + camera.pos.X;
+            float worldY = ty + camera.pos.Y;
             if (miceManager != null && miceManager.HandleClick(worldX, worldY))
             {
                 return true;
@@ -102,7 +102,7 @@ namespace CutTheRope.GameMain
             foreach (object obj in spikes)
             {
                 Spikes spike = (Spikes)obj;
-                if (spike.rotateButton != null && spike.touchIndex == -1 && spike.rotateButton.OnTouchDownXY(tx + camera.pos.x, ty + camera.pos.y))
+                if (spike.rotateButton != null && spike.touchIndex == -1 && spike.rotateButton.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
                 {
                     spike.touchIndex = ti;
                     return true;
@@ -112,7 +112,7 @@ namespace CutTheRope.GameMain
             for (int i = 0; i < num; i++)
             {
                 Pump pump = pumps.ObjectAtIndex(i);
-                if (GameObject.PointInObject(Vect(tx + camera.pos.x, ty + camera.pos.y), pump))
+                if (GameObject.PointInObject(Vect(tx + camera.pos.X, ty + camera.pos.Y), pump))
                 {
                     pump.pumpTouchTimer = 0.05f;
                     pump.pumpTouch = ti;
@@ -121,14 +121,14 @@ namespace CutTheRope.GameMain
             }
             foreach (SteamTube steamTube in tubes)
             {
-                if (steamTube != null && steamTube.OnTouchDownXY(tx + camera.pos.x, ty + camera.pos.y))
+                if (steamTube != null && steamTube.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
                 {
                     return true;
                 }
             }
             foreach (Lantern lantern in Lantern.GetAllLanterns())
             {
-                if (lantern != null && lantern.OnTouchDown(tx + camera.pos.x, ty + camera.pos.y))
+                if (lantern != null && lantern.OnTouchDown(tx + camera.pos.X, ty + camera.pos.Y))
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_revealCandyFromLantern), null, Lantern.LanternCandyRevealTime);
                     return true;
@@ -140,8 +140,8 @@ namespace CutTheRope.GameMain
             foreach (object obj2 in rotatedCircles)
             {
                 RotatedCircle rotatedCircle2 = (RotatedCircle)obj2;
-                float num2 = VectDistance(Vect(tx + camera.pos.x, ty + camera.pos.y), rotatedCircle2.handle1);
-                float num3 = VectDistance(Vect(tx + camera.pos.x, ty + camera.pos.y), rotatedCircle2.handle2);
+                float num2 = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle1);
+                float num3 = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle2);
                 if ((num2 < 90f && !rotatedCircle2.HasOneHandle()) || num3 < 90f)
                 {
                     foreach (object obj3 in rotatedCircles)
@@ -160,7 +160,7 @@ namespace CutTheRope.GameMain
                             }
                         }
                     }
-                    rotatedCircle2.lastTouch = Vect(tx + camera.pos.x, ty + camera.pos.y);
+                    rotatedCircle2.lastTouch = Vect(tx + camera.pos.X, ty + camera.pos.Y);
                     rotatedCircle2.operating = ti;
                     if (num2 < 90f)
                     {
@@ -195,7 +195,7 @@ namespace CutTheRope.GameMain
                 foreach (object objGhost in ghosts)
                 {
                     Ghost ghost = (Ghost)objGhost;
-                    if (ghost != null && ghost.OnTouchDownXY(tx + camera.pos.x, ty + camera.pos.y))
+                    if (ghost != null && ghost.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
                     {
                         return true;
                     }
@@ -204,12 +204,12 @@ namespace CutTheRope.GameMain
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.wheel && PointInRect(tx + camera.pos.x, ty + camera.pos.y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
+                if (bungee.wheel && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
                 {
-                    bungee.HandleWheelTouch(Vect(tx + camera.pos.x, ty + camera.pos.y));
+                    bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                     bungee.wheelOperating = ti;
                 }
-                if (bungee.moveLength > 0.0 && PointInRect(tx + camera.pos.x, ty + camera.pos.y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
+                if (bungee.moveLength > 0.0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
                     bungee.moverDragging = ti;
                     return true;
@@ -224,7 +224,7 @@ namespace CutTheRope.GameMain
             {
                 Vector s = default;
                 Grab grab2 = null;
-                Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, tx + camera.pos.x, ty + camera.pos.y, ref grab2);
+                Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, tx + camera.pos.X, ty + camera.pos.Y, ref grab2);
                 if (nearestBungeeSegmentByBeziersPointsatXYgrab != null && nearestBungeeSegmentByBeziersPointsatXYgrab.highlighted && GetNearestBungeeSegmentByConstraintsforGrab(ref s, grab2) != null)
                 {
                     _ = CutWithRazorOrLine1Line2Immediate(null, s, s, false);
@@ -247,7 +247,7 @@ namespace CutTheRope.GameMain
             }
             if (gravityButton != null && gravityTouchDown == ti)
             {
-                if (((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.x, ty + camera.pos.y, true))
+                if (((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.X, ty + camera.pos.Y, true))
                 {
                     gravityButton.Toggle();
                     OnButtonPressed(0);
@@ -260,7 +260,7 @@ namespace CutTheRope.GameMain
                 if (spike.rotateButton != null && spike.touchIndex == ti)
                 {
                     spike.touchIndex = -1;
-                    if (spike.rotateButton.OnTouchUpXY(tx + camera.pos.x, ty + camera.pos.y))
+                    if (spike.rotateButton.OnTouchUpXY(tx + camera.pos.X, ty + camera.pos.Y))
                     {
                         return true;
                     }
@@ -289,7 +289,7 @@ namespace CutTheRope.GameMain
                     bungee.moverDragging = -1;
                 }
             }
-            _ = conveyors.OnPointerUp(tx + camera.pos.x, ty + camera.pos.y, ti);
+            _ = conveyors.OnPointerUp(tx + camera.pos.X, ty + camera.pos.Y, ti);
             return true;
         }
 
@@ -321,7 +321,7 @@ namespace CutTheRope.GameMain
                     if (rotatedCircle != null && rotatedCircle.operating == ti)
                     {
                         Vector v = Vect(rotatedCircle.x, rotatedCircle.y);
-                        Vector vector2 = Vect(tx + camera.pos.x, ty + camera.pos.y);
+                        Vector vector2 = Vect(tx + camera.pos.X, ty + camera.pos.Y);
                         Vector v2 = VectSub(rotatedCircle.lastTouch, v);
                         float num = VectAngleNormalized(VectSub(vector2, v)) - VectAngleNormalized(v2);
                         float initial_rotation = DEGREES_TO_RADIANS(rotatedCircle.rotation);
@@ -355,8 +355,8 @@ namespace CutTheRope.GameMain
                                 float a2 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - grab.initial_rotation;
                                 a2 = FBOUND_PI(a2);
                                 Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), (double)a2, rotatedCircle.x, rotatedCircle.y);
-                                grab.x = vector3.x;
-                                grab.y = vector3.y;
+                                grab.x = vector3.X;
+                                grab.y = vector3.Y;
                                 if (grab.rope != null)
                                 {
                                     grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
@@ -383,8 +383,8 @@ namespace CutTheRope.GameMain
                                 float a3 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - pump4.initial_rotation;
                                 a3 = FBOUND_PI(a3);
                                 Vector vector4 = VectRotateAround(Vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
-                                pump4.x = vector4.x;
-                                pump4.y = vector4.y;
+                                pump4.x = vector4.X;
+                                pump4.y = vector4.Y;
                                 pump4.rotation += RADIANS_TO_DEGREES(num);
                                 pump4.UpdateRotation();
                             }
@@ -404,15 +404,15 @@ namespace CutTheRope.GameMain
                                 float a4 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - bubble.initial_rotation;
                                 a4 = FBOUND_PI(a4);
                                 Vector vector5 = VectRotateAround(Vect(bubble.initial_x, bubble.initial_y), (double)a4, rotatedCircle.x, rotatedCircle.y);
-                                bubble.x = vector5.x;
-                                bubble.y = vector5.y;
+                                bubble.x = vector5.X;
+                                bubble.y = vector5.Y;
                             }
                         }
                         if (PointInRect(target.x, target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
                         {
                             Vector vector6 = VectRotateAround(Vect(target.x, target.y), (double)num, rotatedCircle.x, rotatedCircle.y);
-                            target.x = vector6.x;
-                            target.y = vector6.y;
+                            target.x = vector6.X;
+                            target.y = vector6.Y;
                         }
                         rotatedCircle.lastTouch = vector2;
                         return true;
@@ -427,18 +427,18 @@ namespace CutTheRope.GameMain
                 {
                     if (grab2.wheel && grab2.wheelOperating == ti)
                     {
-                        grab2.HandleWheelRotate(Vect(tx + camera.pos.x, ty + camera.pos.y));
+                        grab2.HandleWheelRotate(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                         return true;
                     }
                     if (grab2.moveLength > 0.0 && grab2.moverDragging == ti)
                     {
                         if (grab2.moveVertical)
                         {
-                            grab2.y = FIT_TO_BOUNDARIES(ty + camera.pos.y, grab2.minMoveValue, grab2.maxMoveValue);
+                            grab2.y = FIT_TO_BOUNDARIES(ty + camera.pos.Y, grab2.minMoveValue, grab2.maxMoveValue);
                         }
                         else
                         {
-                            grab2.x = FIT_TO_BOUNDARIES(tx + camera.pos.x, grab2.minMoveValue, grab2.maxMoveValue);
+                            grab2.x = FIT_TO_BOUNDARIES(tx + camera.pos.X, grab2.minMoveValue, grab2.maxMoveValue);
                         }
                         if (grab2.rope != null)
                         {
@@ -453,7 +453,7 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            if (conveyors.OnPointerMove(tx + camera.pos.x, ty + camera.pos.y, ti))
+            if (conveyors.OnPointerMove(tx + camera.pos.X, ty + camera.pos.Y, ti))
             {
                 return true;
             }

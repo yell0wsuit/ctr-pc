@@ -14,8 +14,8 @@ namespace CutTheRope.GameMain
                 return null;
             }
             duration = 2f;
-            gravity.x = 0f;
-            gravity.y = 200f;
+            gravity.X = 0f;
+            gravity.Y = 200f;
             angle = -90f;
             angleVar = 50f;
             speed = 150f;
@@ -26,8 +26,8 @@ namespace CutTheRope.GameMain
             tangentialAccelVar = 1f;
             x = SCREEN_WIDTH / 2f;
             y = SCREEN_HEIGHT / 2f;
-            posVar.x = SCREEN_WIDTH / 2f;
-            posVar.y = SCREEN_HEIGHT / 2f;
+            posVar.X = SCREEN_WIDTH / 2f;
+            posVar.Y = SCREEN_HEIGHT / 2f;
             life = 4f;
             lifeVar = 0f;
             size = 1f;

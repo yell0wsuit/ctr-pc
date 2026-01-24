@@ -182,15 +182,15 @@ namespace CutTheRope.GameMain
         {
             if (pointerPositions.TryGetValue(pointerId, out Vector start))
             {
-                Vector delta = Vect(pointerX - start.x, pointerY - start.y);
-                float distanceSq = (delta.x * delta.x) + (delta.y * delta.y);
+                Vector delta = Vect(pointerX - start.X, pointerY - start.Y);
+                float distanceSq = (delta.X * delta.X) + (delta.Y * delta.Y);
                 if (distanceSq < 4f)
                 {
                     return false;
                 }
 
                 float distance = VectLength(delta);
-                Vector direction = distance > 0 ? Vect(delta.x / distance, delta.y / distance) : vectZero;
+                Vector direction = distance > 0 ? Vect(delta.X / distance, delta.Y / distance) : vectZero;
 
                 float bestDot = -1f;
                 ConveyorBelt bestBelt = null;
@@ -200,7 +200,7 @@ namespace CutTheRope.GameMain
                     {
                         continue;
                     }
-                    float dot = Math.Abs((direction.x * belt.Direction.x) + (direction.y * belt.Direction.y));
+                    float dot = Math.Abs((direction.X * belt.Direction.X) + (direction.Y * belt.Direction.Y));
                     if (dot >= bestDot)
                     {
                         bestDot = dot;
@@ -208,7 +208,7 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                _ = (bestBelt?.OnPointerDown(start.x, start.y, pointerId));
+                _ = (bestBelt?.OnPointerDown(start.X, start.Y, pointerId));
 
                 _ = pointerPositions.Remove(pointerId);
             }

@@ -111,8 +111,8 @@ namespace CutTheRope.GameMain
             Image up = Image.Image_createWithResIDQuad(resourceName, q1);
             Image image = Image.Image_createWithResIDQuad(resourceName, q2);
             Vector relativeQuadOffset = Image.GetRelativeQuadOffset(resourceName, q2, q1);
-            image.x -= relativeQuadOffset.x;
-            image.y -= relativeQuadOffset.y;
+            image.x -= relativeQuadOffset.X;
+            image.y -= relativeQuadOffset.Y;
             Button button = new Button().InitWithUpElementDownElementandID(up, image, bid);
             button.delegateButtonDelegate = d;
             return button;
@@ -127,7 +127,7 @@ namespace CutTheRope.GameMain
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
             button.delegateButtonDelegate = d;
             CTRTexture2D texture = Application.GetTexture(resourceName);
-            button.ForceTouchRect(MakeRectangle(texture.quadOffsets[q1].x, texture.quadOffsets[q1].y, texture.quadRects[q1].w, texture.quadRects[q1].h));
+            button.ForceTouchRect(MakeRectangle(texture.quadOffsets[q1].X, texture.quadOffsets[q1].Y, texture.quadRects[q1].w, texture.quadRects[q1].h));
             return button;
         }
 
@@ -306,8 +306,8 @@ namespace CutTheRope.GameMain
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
             Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuOptions, num, q);
             image2.parentAnchor = image2.anchor = 9;
-            image2.x += offset.x;
-            image2.y += offset.y;
+            image2.x += offset.X;
+            image2.y += offset.Y;
             _ = image.AddChild(image2);
             if (b)
             {
@@ -491,15 +491,15 @@ namespace CutTheRope.GameMain
                 button.anchor = 9;
                 button.parentAnchor = 36;
                 Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuExtraButtons, 3);
-                button.x -= texture.preCutSize.x;
-                button.y -= texture.preCutSize.y;
+                button.x -= texture.preCutSize.X;
+                button.y -= texture.preCutSize.Y;
                 _ = baseElement2.AddChild(button);
                 Button button2 = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 2, 2, MenuButtonId.OpenFacebook, this);
                 button2.anchor = 9;
                 button2.parentAnchor = 36;
                 Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuExtraButtons, 2);
-                button2.x -= texture.preCutSize.x;
-                button2.y -= texture.preCutSize.y;
+                button2.x -= texture.preCutSize.X;
+                button2.y -= texture.preCutSize.Y;
                 if (flag)
                 {
                     _ = baseElement2.AddChild(button2);
@@ -508,8 +508,8 @@ namespace CutTheRope.GameMain
                 image.anchor = 9;
                 image.parentAnchor = 36;
                 Image.SetElementPositionWithQuadOffset(image, Resources.Img.MenuExtraButtonsEn, 0);
-                image.x -= texture.preCutSize.x;
-                image.y -= texture.preCutSize.y;
+                image.x -= texture.preCutSize.X;
+                image.y -= texture.preCutSize.Y;
                 _ = baseElement2.AddChild(image);
             }
             _ = menuView.AddChild(baseElement);
@@ -700,7 +700,7 @@ namespace CutTheRope.GameMain
 
         public static float GetBoxWidth()
         {
-            return Image.GetQuadSize(Resources.Img.MenuPackSelection, 4).x + (Image.GetQuadOffset(Resources.Img.MenuPackSelection, 4).x * 2f);
+            return Image.GetQuadSize(Resources.Img.MenuPackSelection, 4).X + (Image.GetQuadOffset(Resources.Img.MenuPackSelection, 4).X * 2f);
         }
 
         public static float GetPackOffset()
@@ -979,8 +979,8 @@ namespace CutTheRope.GameMain
             CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackSelection);
             BaseElement baseElement2 = new()
             {
-                width = (int)texture.preCutSize.x,
-                height = (int)texture.preCutSize.y
+                width = (int)texture.preCutSize.X,
+                height = (int)texture.preCutSize.Y
             };
             _ = hBox2.AddChild(baseElement2);
             float num3 = 0f + GetPackOffset();
@@ -1155,7 +1155,7 @@ namespace CutTheRope.GameMain
             Image image = Image.Image_createWithResIDQuad(boxCover, 0);
             Image image2 = Image.Image_createWithResIDQuad(boxCover, 0);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
-            float x = (SCREEN_WIDTH / 2f) - quadSize.x;
+            float x = (SCREEN_WIDTH / 2f) - quadSize.X;
             image.x = x;
             image2.x = SCREEN_WIDTH / 2f;
             image2.rotation = 180f;
@@ -1169,9 +1169,9 @@ namespace CutTheRope.GameMain
             _ = menuView.AddChild(image);
             Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 0);
             Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 1);
-            image3.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).x;
+            image3.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;
             image3.y = 80f;
-            image4.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).x;
+            image4.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).X;
             image4.y = 80f;
             _ = menuView.AddChild(image3);
             _ = menuView.AddChild(image4);
@@ -1719,8 +1719,8 @@ namespace CutTheRope.GameMain
             {
                 Vector scroll = aboutContainer.GetScroll();
                 Vector maxScroll = aboutContainer.GetMaxScroll();
-                scroll.y += 0.5f;
-                scroll.y = FIT_TO_BOUNDARIES(scroll.y, 0.0, maxScroll.y);
+                scroll.Y += 0.5f;
+                scroll.Y = FIT_TO_BOUNDARIES(scroll.Y, 0.0, maxScroll.Y);
                 aboutContainer.SetScroll(scroll);
                 return;
             }
@@ -2000,8 +2000,8 @@ namespace CutTheRope.GameMain
                 CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackSelection);
                 MonsterSlot slot = new()
                 {
-                    width = (int)texture.preCutSize.x,
-                    height = (int)texture.preCutSize.y,
+                    width = (int)texture.preCutSize.X,
+                    height = (int)texture.preCutSize.Y,
                     FillColor = color,
                     quadOffset = texture.quadOffsets[QuadIndex],
                     quadSize = Vect(texture.quadRects[QuadIndex].w, texture.quadRects[QuadIndex].h)
@@ -2015,18 +2015,18 @@ namespace CutTheRope.GameMain
                 PreDraw();
                 // Draw the colored rectangle at the quad offset position
                 GLDrawer.DrawSolidRectWOBorder(
-                    drawX + quadOffset.x,
-                    drawY + quadOffset.y,
-                    quadSize.x,
-                    quadSize.y,
+                    drawX + quadOffset.X,
+                    drawY + quadOffset.Y,
+                    quadSize.X,
+                    quadSize.Y,
                     FillColor);
 
                 // Apply scissor clipping to reveal Om Nom during scroll animation
-                float num = c.GetScroll().x;
+                float num = c.GetScroll().X;
                 Vector preCutSize = Application.GetTexture(Resources.Img.MenuPackSelection).preCutSize;
                 if (num >= s && num < e)
                 {
-                    num -= preCutSize.x + -20f;
+                    num -= preCutSize.X + -20f;
                     float num2 = num - ((s + e) / 2f);
                     OpenGL.SetScissorRectangle(250.0 - (double)num2, 0.0, 200.0, SCREEN_HEIGHT);
                     PostDraw();

@@ -13,8 +13,8 @@ namespace CutTheRope.GameMain
                 return null;
             }
             duration = 0.6f;
-            gravity.x = 0f;
-            gravity.y = 0f;
+            gravity.X = 0f;
+            gravity.Y = 0f;
             angle = a;
             angleVar = 10f;
             speed = 1000f;
@@ -23,8 +23,8 @@ namespace CutTheRope.GameMain
             radialAccelVar = 0f;
             tangentialAccel = 0f;
             tangentialAccelVar = 0f;
-            posVar.x = 0f;
-            posVar.y = 0f;
+            posVar.X = 0f;
+            posVar.Y = 0f;
             life = 0.6f;
             lifeVar = 0f;
             size = 2f;
@@ -75,7 +75,7 @@ namespace CutTheRope.GameMain
                 p.color.BlueColor += p.deltaColor.BlueColor * delta;
                 p.color.AlphaChannel += p.deltaColor.AlphaChannel * delta;
                 p.life -= delta;
-                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.x - (p.width / 2f)), (double)(p.pos.y - (p.height / 2f)), 0.0, p.width, p.height);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.X - (p.width / 2f)), (double)(p.pos.Y - (p.height / 2f)), 0.0, p.width, p.height);
                 for (int i = 0; i < 4; i++)
                 {
                     colors[(particleIdx * 4) + i] = p.color;

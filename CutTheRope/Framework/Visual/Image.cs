@@ -84,8 +84,8 @@ namespace CutTheRope.Framework.Visual
         public static void SetElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
         {
             Vector quadCenter = GetQuadCenter(textureID, quad);
-            e.x = quadCenter.x;
-            e.y = quadCenter.y;
+            e.x = quadCenter.X;
+            e.y = quadCenter.Y;
             e.anchor = 18;
         }
 
@@ -98,16 +98,16 @@ namespace CutTheRope.Framework.Visual
         public static void SetElementPositionWithQuadCenter(BaseElement e, string textureResourceName, int quad)
         {
             Vector quadCenter = GetQuadCenter(textureResourceName, quad);
-            e.x = quadCenter.x;
-            e.y = quadCenter.y;
+            e.x = quadCenter.X;
+            e.y = quadCenter.Y;
             e.anchor = 18;
         }
 
         public static void SetElementPositionWithQuadOffset(BaseElement e, int textureID, int quad)
         {
             Vector quadOffset = GetQuadOffset(textureID, quad);
-            e.x = quadOffset.x;
-            e.y = quadOffset.y;
+            e.x = quadOffset.X;
+            e.y = quadOffset.Y;
         }
 
         /// <summary>
@@ -119,15 +119,15 @@ namespace CutTheRope.Framework.Visual
         public static void SetElementPositionWithQuadOffset(BaseElement e, string textureResourceName, int quad)
         {
             Vector quadOffset = GetQuadOffset(textureResourceName, quad);
-            e.x = quadOffset.x;
-            e.y = quadOffset.y;
+            e.x = quadOffset.X;
+            e.y = quadOffset.Y;
         }
 
         public static void SetElementPositionWithRelativeQuadOffset(BaseElement e, int textureID, int quadToCountFrom, int quad)
         {
             Vector relativeQuadOffset = GetRelativeQuadOffset(textureID, quadToCountFrom, quad);
-            e.x = relativeQuadOffset.x;
-            e.y = relativeQuadOffset.y;
+            e.x = relativeQuadOffset.X;
+            e.y = relativeQuadOffset.Y;
         }
 
         /// <summary>
@@ -140,8 +140,8 @@ namespace CutTheRope.Framework.Visual
         public static void SetElementPositionWithRelativeQuadOffset(BaseElement e, string textureResourceName, int quadToCountFrom, int quad)
         {
             Vector relativeQuadOffset = GetRelativeQuadOffset(textureResourceName, quadToCountFrom, quad);
-            e.x = relativeQuadOffset.x;
-            e.y = relativeQuadOffset.y;
+            e.x = relativeQuadOffset.X;
+            e.y = relativeQuadOffset.Y;
         }
 
         public static Image Image_create(CTRTexture2D t)
@@ -220,11 +220,11 @@ namespace CutTheRope.Framework.Visual
 
         public virtual void DoRestoreCutTransparency()
         {
-            if (texture.preCutSize.x != vectUndefined.x)
+            if (texture.preCutSize.X != vectUndefined.X)
             {
                 restoreCutTransparency = true;
-                width = (int)texture.preCutSize.x;
-                height = (int)texture.preCutSize.y;
+                width = (int)texture.preCutSize.X;
+                height = (int)texture.preCutSize.Y;
             }
         }
 
@@ -250,8 +250,8 @@ namespace CutTheRope.Framework.Visual
             float y = drawY;
             if (restoreCutTransparency)
             {
-                x += texture.quadOffsets[n].x;
-                y += texture.quadOffsets[n].y;
+                x += texture.quadOffsets[n].X;
+                y += texture.quadOffsets[n].Y;
             }
             Quad2D quad = texture.quads[n];
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);

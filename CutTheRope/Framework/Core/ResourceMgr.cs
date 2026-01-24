@@ -359,8 +359,8 @@ namespace CutTheRope.Framework.Core
                 for (int j = 0; j < atlas.Offsets.Count; j++)
                 {
                     int offsetIndex = j * 2;
-                    offsetData[offsetIndex] = atlas.Offsets[j].x;
-                    offsetData[offsetIndex + 1] = atlas.Offsets[j].y;
+                    offsetData[offsetIndex] = atlas.Offsets[j].X;
+                    offsetData[offsetIndex + 1] = atlas.Offsets[j].Y;
                 }
                 SetOffsetsInfo(texture, offsetData, offsetData.Length, scaleX, scaleY);
             }
@@ -370,8 +370,8 @@ namespace CutTheRope.Framework.Core
                 texture.preCutSize = Vect(atlas.PreCutWidth, atlas.PreCutHeight);
                 if (isWvga)
                 {
-                    texture.preCutSize.x /= 1.5f;
-                    texture.preCutSize.y /= 1.5f;
+                    texture.preCutSize.X /= 1.5f;
+                    texture.preCutSize.Y /= 1.5f;
                 }
             }
         }
@@ -416,8 +416,8 @@ namespace CutTheRope.Framework.Core
                 t.preCutSize = Vect(xMLNode3.ValueAsNSString().IntValue(), xMLNode4.ValueAsNSString().IntValue());
                 if (isWvga)
                 {
-                    t.preCutSize.x /= 1.5f;
-                    t.preCutSize.y /= 1.5f;
+                    t.preCutSize.X /= 1.5f;
+                    t.preCutSize.Y /= 1.5f;
                 }
             }
         }
@@ -459,14 +459,14 @@ namespace CutTheRope.Framework.Core
             for (int i = 0; i < num; i++)
             {
                 int num2 = i * 2;
-                t.quadOffsets[i].x = data[num2];
-                t.quadOffsets[i].y = data[num2 + 1];
+                t.quadOffsets[i].X = data[num2];
+                t.quadOffsets[i].Y = data[num2 + 1];
                 Vector[] quadOffsets = t.quadOffsets;
                 int num3 = i;
-                quadOffsets[num3].x = quadOffsets[num3].x / scaleX;
+                quadOffsets[num3].X = quadOffsets[num3].X / scaleX;
                 Vector[] quadOffsets2 = t.quadOffsets;
                 int num4 = i;
-                quadOffsets2[num4].y = quadOffsets2[num4].y / scaleY;
+                quadOffsets2[num4].Y = quadOffsets2[num4].Y / scaleY;
             }
         }
 
