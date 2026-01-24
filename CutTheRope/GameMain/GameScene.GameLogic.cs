@@ -28,7 +28,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private void DropLightBulbFromSock(LightBulb bulb)
+        private static void DropLightBulbFromSock(LightBulb bulb)
         {
             if (bulb == null || bulb.attachedSock == null)
             {
