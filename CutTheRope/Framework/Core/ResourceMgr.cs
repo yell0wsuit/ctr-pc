@@ -226,16 +226,9 @@ namespace CutTheRope.Framework.Core
                 return null;
             }
 
-            bool useAntialias;
-            if (parsedAtlas == null && xmlInfo != null)
-            {
-                useAntialias = (xmlInfo.AttributeAsNSString("filter").IntValue() & 1) == 1;
-            }
-            else
-            {
-                useAntialias = atlasConfig?.UseAntialias ?? true;
-            }
-
+            bool useAntialias = parsedAtlas == null && xmlInfo != null
+                ? (xmlInfo.AttributeAsNSString("filter").IntValue() & 1) == 1
+                : atlasConfig?.UseAntialias ?? true;
             string text = FullPathFromRelativePath(path);
             if (useAntialias)
             {
