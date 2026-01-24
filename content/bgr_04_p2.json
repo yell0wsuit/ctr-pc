@@ -1,35 +1,36 @@
 {
-  "frames": {
-    "frame_0000": {
-      "frame": {
-        "x": 0,
-        "y": 0,
-        "w": 2048,
-        "h": 1072
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 768,
-        "w": 2048,
-        "h": 1072
-      },
-      "sourceSize": {
-        "w": 2048,
-        "h": 2304
-      }
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 2048,
+                "h": 1072
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 768,
+                "w": 2048,
+                "h": 1072
+            },
+            "sourceSize": {
+                "w": 2048,
+                "h": 2304
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "bgr_04_p2.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 2048,
+            "h": 1072
+        },
+        "scale": "1"
     }
-  },
-  "meta": {
-    "app": "Converted from XML",
-    "version": "1.0",
-    "image": "bgr_04_p2.png",
-    "format": "RGBA8888",
-    "size": {
-      "w": 2048,
-      "h": 1072
-    },
-    "scale": "1"
-  }
 }
