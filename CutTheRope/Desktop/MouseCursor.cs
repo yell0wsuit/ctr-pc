@@ -25,8 +25,8 @@ namespace CutTheRope.Desktop
 
         public void Load(ContentManager cm)
         {
-            _cursor = cm.Load<Texture2D>("cursor");
-            _cursorActive = cm.Load<Texture2D>("cursor_active");
+            _cursor = cm.Load<Texture2D>("images/cursor");
+            _cursorActive = cm.Load<Texture2D>("images/cursor_active");
         }
 
         public void Draw()
