@@ -1,5 +1,3 @@
-using CutTheRope.Framework.Visual;
-
 namespace CutTheRope.Framework.Core
 {
     /// <summary>
@@ -27,9 +25,6 @@ namespace CutTheRope.Framework.Core
 
         /// <summary>Overrides whether antialiasing should be applied when loading the atlas.</summary>
         public bool? UseAntialias { get; init; }
-
-        /// <summary>Optional pixel format override for atlas textures.</summary>
-        public CTRTexture2D.Texture2DPixelFormat? PixelFormat { get; init; }
 
         /// <summary>Explicit frame ordering when supplied by the metadata.</summary>
         public string[] FrameOrder { get; init; }

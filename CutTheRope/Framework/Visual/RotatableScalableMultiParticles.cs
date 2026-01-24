@@ -32,10 +32,10 @@ namespace CutTheRope.Framework.Visual
                 p.dir = VectAdd(p.dir, v2);
                 v2 = VectMult(p.dir, delta);
                 p.pos = VectAdd(p.pos, v2);
-                p.color.r += p.deltaColor.r * delta;
-                p.color.g += p.deltaColor.g * delta;
-                p.color.b += p.deltaColor.b * delta;
-                p.color.a += p.deltaColor.a * delta;
+                p.color.RedColor += p.deltaColor.RedColor * delta;
+                p.color.GreenColor += p.deltaColor.GreenColor * delta;
+                p.color.BlueColor += p.deltaColor.BlueColor * delta;
+                p.color.AlphaChannel += p.deltaColor.AlphaChannel * delta;
                 p.size += p.deltaSize * delta;
                 p.life -= delta;
                 float num2 = p.width * p.size;

@@ -333,7 +333,7 @@ namespace CutTheRope.Framework.Visual
             float inheritedRed = MathHelper.Clamp(parentColor.R / 255f, 0f, 1f);
             float inheritedGreen = MathHelper.Clamp(parentColor.G / 255f, 0f, 1f);
             float inheritedBlue = MathHelper.Clamp(parentColor.B / 255f, 0f, 1f);
-            float inheritedAlpha = MathHelper.Clamp(color.a * (parentColor.A / 255f), 0f, 1f);
+            float inheritedAlpha = MathHelper.Clamp(color.AlphaChannel * (parentColor.A / 255f), 0f, 1f);
 
             // Premultiply channels for correct blending
             float effectiveAlpha = MathHelper.Clamp(textColor.A / 255f * inheritedAlpha, 0f, 1f);

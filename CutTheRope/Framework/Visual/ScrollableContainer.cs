@@ -363,8 +363,8 @@ namespace CutTheRope.Framework.Visual
 
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
-            float num = ApplicationSettings.GetInt(5);
-            fixedDelta = (float)(1.0 / (double)num);
+            // float num = ApplicationSettings.GetInt(5);
+            // fixedDelta = (float)(1.0 / (double)num);
             spoints = null;
             spointsNum = -1;
             spointsCapacity = -1;
@@ -661,7 +661,7 @@ namespace CutTheRope.Framework.Visual
 
         public bool passTouches;
 
-        private float fixedDelta;
+        // private float fixedDelta;
 
         // private float deaccelerationSpeed;
 

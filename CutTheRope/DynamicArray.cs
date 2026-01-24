@@ -26,7 +26,7 @@ internal sealed class DynamicArray<T> : IEnumerable<T>
         Capacity = capacity;
         _highestIndex = -1;
         _overRealloc = 0;
-        _mutationsCount = 0;
+        // _mutationsCount = 0;
         _map = new T[Capacity];
         return this;
     }
@@ -72,7 +72,7 @@ internal sealed class DynamicArray<T> : IEnumerable<T>
             _highestIndex = index;
         }
 
-        _mutationsCount++;
+        // _mutationsCount++;
     }
 
     public T FirstObject()
@@ -97,13 +97,13 @@ internal sealed class DynamicArray<T> : IEnumerable<T>
             _map[i] = default;
         }
 
-        _mutationsCount++;
+        // _mutationsCount++;
     }
 
     public void UnsetObjectAtIndex(int k)
     {
         _map[k] = default;
-        _mutationsCount++;
+        // _mutationsCount++;
     }
 
     public void InsertObjectAtIndex(T obj, int k)
@@ -121,7 +121,7 @@ internal sealed class DynamicArray<T> : IEnumerable<T>
         }
 
         _map[k] = obj;
-        _mutationsCount++;
+        // _mutationsCount++;
     }
 
     public void RemoveObjectAtIndex(int index)
@@ -133,7 +133,7 @@ internal sealed class DynamicArray<T> : IEnumerable<T>
 
         _map[_highestIndex] = default;
         _highestIndex--;
-        _mutationsCount++;
+        // _mutationsCount++;
     }
 
     public void RemoveAllObjects()
@@ -183,7 +183,7 @@ internal sealed class DynamicArray<T> : IEnumerable<T>
     private T[] _map;
     private int _highestIndex;
     private int _overRealloc;
-    private ulong _mutationsCount;
+    // private ulong _mutationsCount;
 
     // --- Enumerator --------------------------------------------------
 
