@@ -246,7 +246,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        public static BaseElement CreateConfettiParticleNear(Vector p)
+        public static BaseElement CreateConfettiParticleNear()
         {
             Confetti confetti = Confetti.Confetti_createWithResID(Resources.Img.ConfettiParticles);
             confetti.DoRestoreCutTransparency();
@@ -354,7 +354,7 @@ namespace CutTheRope.GameMain
         {
             for (int i = 0; i < 70; i++)
             {
-                _ = confettiAnims.AddChild(CreateConfettiParticleNear(vectZero));
+                _ = confettiAnims.AddChild(CreateConfettiParticleNear());
             }
         }
 

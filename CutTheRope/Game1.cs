@@ -137,8 +137,6 @@ namespace CutTheRope
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
             CtrRenderer.OnSurfaceCreated();
             CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
-            branding = new Branding();
-            branding.LoadSplashScreens();
         }
 
         protected override void UnloadContent()
@@ -196,19 +194,7 @@ namespace CutTheRope
                 Thread.Sleep(500);
                 return;
             }
-            if (branding != null)
-            {
-                if (IsActive && branding.IsLoaded)
-                {
-                    if (branding.IsFinished)
-                    {
-                        branding = null;
-                        return;
-                    }
-                    branding.Update(gameTime);
-                }
-                return;
-            }
+
             if (IsKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
                 Application.SharedMovieMgr().Stop();
@@ -229,7 +215,7 @@ namespace CutTheRope
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
             MouseState mouseState = Desktop.MouseCursor.GetMouseState();
             _ = Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(mouseState.X), CtrRenderer.TransformY(mouseState.Y));
-            CtrRenderer.Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            CtrRenderer.Update();
             base.Update(gameTime);
         }
 
@@ -268,15 +254,6 @@ namespace CutTheRope
         {
             frameCounter++;
             GraphicsDevice.Clear(Color.Black);
-            if (branding != null)
-            {
-                if (branding.IsLoaded)
-                {
-                    branding.Draw(gameTime);
-                    Global.GraphicsDevice.SetRenderTarget(null);
-                }
-                return;
-            }
             Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
@@ -294,8 +271,6 @@ namespace CutTheRope
             base.Draw(gameTime);
             bFirstFrame = false;
         }
-
-        private Branding branding;
 
         private bool _altEnterPressed;
 

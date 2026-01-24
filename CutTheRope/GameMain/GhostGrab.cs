@@ -99,7 +99,7 @@ namespace CutTheRope.GameMain
                 CTRRootController rootController = (CTRRootController)Application.SharedRootController();
                 int pack = rootController.GetPack();
                 RGBAColor grabColor = pack == 6 ? RGBAColor.MakeRGBA(0.4, 0.7, 1.0, radiusAlpha * color.AlphaChannel) : RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha * color.AlphaChannel);
-                DrawGrabCircle(this, x, y, radius, vertexCount, grabColor);
+                DrawGrabCircle(this, grabColor);
             }
             OpenGL.GlColor4f(Color.White);
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);

@@ -195,7 +195,7 @@ namespace CutTheRope.GameMain
             return (val >= 0 && val <= maxPack) ? val : 0;
         }
 
-        public static void GameViewChanged(string NameOfView)
+        public static void GameViewChanged(string _)
         {
         }
 

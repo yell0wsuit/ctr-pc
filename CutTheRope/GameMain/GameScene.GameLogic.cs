@@ -339,7 +339,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public void OnButtonPressed(GameSceneButtonId n)
+        public void OnButtonPressed(GameSceneButtonId _)
         {
             if (MaterialPoint.globalGravity.Y == 784.0)
             {

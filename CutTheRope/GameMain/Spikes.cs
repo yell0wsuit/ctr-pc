@@ -142,7 +142,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public static void TimelineReachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public static void TimelineReachedKeyFramewithIndex(Timeline _, KeyFrame _1, int _2)
         {
         }
 
@@ -170,7 +170,7 @@ namespace CutTheRope.GameMain
             OnButtonPressed(SpikesButtonId.FromButtonId(buttonId));
         }
 
-        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline _, KeyFrame _1, int _2)
         {
         }
 

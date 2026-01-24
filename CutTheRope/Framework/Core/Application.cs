@@ -6,8 +6,6 @@ using CutTheRope.Framework.Visual;
 using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
-using Microsoft.Xna.Framework;
-
 namespace CutTheRope.Framework.Core
 {
     internal class Application : FrameworkTypes
@@ -57,7 +55,7 @@ namespace CutTheRope.Framework.Core
 
         public virtual GLCanvas CreateCanvas()
         {
-            return new GLCanvas().InitWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
+            return new GLCanvas().InitWithFrame();
         }
 
         public virtual CTRResourceMgr CreateResourceMgr()
@@ -175,7 +173,7 @@ namespace CutTheRope.Framework.Core
 
         private static ApplicationSettings appSettings;
 
-        private static readonly GLCanvas _canvas = new GLCanvas().InitWithFrame(default);
+        private static readonly GLCanvas _canvas = new GLCanvas().InitWithFrame();
 
         private static SoundMgr soundMgr;
 
