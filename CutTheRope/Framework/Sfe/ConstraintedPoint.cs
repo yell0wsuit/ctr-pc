@@ -130,11 +130,6 @@ namespace CutTheRope.Framework.Sfe
 
         public override void Update(float delta)
         {
-            Update(delta, 1f);
-        }
-
-        public void Update(float delta, float koeff)
-        {
             totalForce = vectZero;
             if (!disableGravity)
             {

@@ -26,7 +26,7 @@ namespace CutTheRope.Framework.Platform
             }
         }
 
-        public GLCanvas InitWithFrame(Rectangle frame_UNUSED)
+        public GLCanvas InitWithFrame()
         {
             xOffset = 0;
             yOffset = 0;
@@ -92,7 +92,7 @@ namespace CutTheRope.Framework.Platform
             OpenGL.GlLoadIdentity();
         }
 
-        public static void DrawRect(Rectangle rect)
+        public static void DrawRect()
         {
         }
 

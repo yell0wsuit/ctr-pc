@@ -229,7 +229,7 @@ namespace CutTheRope
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
             MouseState mouseState = Desktop.MouseCursor.GetMouseState();
             _ = Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(mouseState.X), CtrRenderer.TransformY(mouseState.Y));
-            CtrRenderer.Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            CtrRenderer.Update();
             base.Update(gameTime);
         }
 
@@ -272,7 +272,7 @@ namespace CutTheRope
             {
                 if (branding.IsLoaded)
                 {
-                    branding.Draw(gameTime);
+                    branding.Draw();
                     Global.GraphicsDevice.SetRenderTarget(null);
                 }
                 return;

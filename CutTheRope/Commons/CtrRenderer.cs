@@ -67,7 +67,7 @@ namespace CutTheRope.Commons
             }
         }
 
-        public static void Update(float gameTime)
+        public static void Update()
         {
             Java_com_zeptolab_ctr_CtrRenderer_nativeTick(16f);
         }
@@ -160,7 +160,7 @@ namespace CutTheRope.Commons
         {
             if (gApp != null)
             {
-                LOG("Application already created");
+                LOG();
                 return;
             }
             LanguageHelper.Current = language;
@@ -173,7 +173,7 @@ namespace CutTheRope.Commons
         {
             if (gApp == null)
             {
-                LOG("Application already destroyed");
+                LOG();
                 return;
             }
             Application.SharedSoundMgr().StopAllSounds();

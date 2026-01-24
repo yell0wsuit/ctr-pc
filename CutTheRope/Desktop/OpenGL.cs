@@ -281,7 +281,7 @@ namespace CutTheRope.Desktop
         /// Applies a rotation transformation around the Z axis (2D rotation).
         /// </summary>
         /// <param name="angle">Rotation angle in degrees.</param>
-        public static void GlRotatef(float angle, float x, float y, float z)
+        public static void GlRotatef(float angle, float _, float _1, float _2)
         {
             s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
         }
@@ -298,7 +298,7 @@ namespace CutTheRope.Desktop
         /// Applies a translation transformation to the current model-view matrix.
         /// Note: Z component is ignored for 2D rendering.
         /// </summary>
-        public static void GlTranslatef(float x, float y, float z)
+        public static void GlTranslatef(float x, float y, float _)
         {
             s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
         }
@@ -351,7 +351,7 @@ namespace CutTheRope.Desktop
         /// Clears the screen with the current clear color.
         /// </summary>
         /// <param name="mask_NotUsedParam">OpenGL clear mask (ignored, always clears color buffer).</param>
-        public static void GlClear(int mask_NotUsedParam)
+        public static void GlClear(int _)
         {
             BlendParams.ApplyDefault();
             Global.GraphicsDevice.Clear(s_glClearColor);

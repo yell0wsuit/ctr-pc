@@ -66,7 +66,7 @@ namespace CutTheRope.Desktop
             }
         }
 
-        public void Draw(GameTime gameTime)
+        public void Draw()
         {
             try
             {

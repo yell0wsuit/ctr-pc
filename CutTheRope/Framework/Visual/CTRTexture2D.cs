@@ -142,7 +142,7 @@ namespace CutTheRope.Framework.Visual
             next = prev = null;
         }
 
-        public CTRTexture2D InitWithPath(string path, bool assets)
+        public CTRTexture2D InitWithPath(string path)
         {
             _resName = path;
             // _localTexParams = _texParams;
@@ -205,7 +205,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        public CTRTexture2D InitFromPixels(int x, int y, int w, int h)
+        public CTRTexture2D InitFromPixels(int w, int h)
         {
             _lowypoint = -1;
             // _localTexParams = _defaultTexParams;

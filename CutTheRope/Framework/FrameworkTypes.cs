@@ -104,7 +104,7 @@ namespace CutTheRope.Framework
             return s;
         }
 
-        public static void LOG(string str)
+        public static void LOG()
         {
         }
 
@@ -133,7 +133,7 @@ namespace CutTheRope.Framework
             return (float)(IS_RETINA | IS_IPAD ? V * 2.0 : V);
         }
 
-        public static float CHOOSE3(double P1, double P2, double P3)
+        public static float CHOOSE3(double P1, double P2)
         {
             return WVGAH(P2, P1);
         }
@@ -220,7 +220,7 @@ namespace CutTheRope.Framework
 
         public sealed class FlurryAPI
         {
-            public static void LogEvent(string s)
+            public static void LogEvent()
             {
             }
         }

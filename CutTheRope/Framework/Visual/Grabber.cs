@@ -8,7 +8,7 @@ namespace CutTheRope.Framework.Visual
     {
         public static CTRTexture2D Grab()
         {
-            return new CTRTexture2D().InitFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
+            return new CTRTexture2D().InitFromPixels((int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
         }
 
         public static void DrawGrabbedImage(CTRTexture2D t, int x, int y)
