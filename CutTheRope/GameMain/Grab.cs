@@ -420,11 +420,21 @@ namespace CutTheRope.GameMain
             animation.JumpTo(RND_RANGE(0, 2));
             _ = bee.AddChild(animation);
             Vector quadOffset = GetQuadOffset(Resources.Img.ObjBeeHd, 0);
+            if (VectEqual(quadOffset, vectZero))
+            {
+                CTRTexture2D beeTexture = Application.GetTexture(Resources.Img.ObjBeeHd);
+                if (beeTexture.preCutSize.X != vectUndefined.X && beeTexture.preCutSize.Y != vectUndefined.Y)
+                {
+                    Vector bodyOffset = beeTexture.quadOffsets[BeeQuad];
+                    CTRRectangle bodyRect = beeTexture.quadRects[BeeQuad];
+                    quadOffset = Vect(bodyOffset.X + (bodyRect.w / 2f) + 6f, bodyOffset.Y + bodyRect.h + 4f);
+                }
+            }
             bee.x = 0f - quadOffset.X;
             bee.y = 0f - quadOffset.Y;
             bee.rotationCenterX = quadOffset.X - (bee.width / 2);
             bee.rotationCenterY = quadOffset.Y - (bee.height / 2);
-            bee.scaleX = bee.scaleY = 0.7692308f;
+            bee.scaleX = bee.scaleY = 0.77f;
             _ = AddChild(bee);
         }
 
