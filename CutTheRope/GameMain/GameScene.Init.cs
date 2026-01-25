@@ -128,7 +128,7 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             image.AddTimelinewithID(timeline, 0);
-            Image.SetElementPositionWithQuadOffset(image, Resources.Img.Bgr08P1, 1);
+            Image.SetElementPositionWithQuadOffset(image, Resources.BackgroundImg.Bgr08P1, 1);
             if (Canvas.isFullscreen)
             {
                 _ = Global.ScreenSizeManager.ScreenWidth;
