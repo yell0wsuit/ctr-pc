@@ -52,21 +52,21 @@ body:
               - macOS
       validations:
           required: true
-    - type: textarea
+    - type: input
       id: cpuspec
       attributes:
           label: CPU spec
           description: What type of CPU are you using? (Intel i9-14900, etc.)
       validations:
            required: true
-    - type: textarea
+    - type: input
       id: gpuspec
       attributes:
           label: GPU spec
           description: What GPU vendor are you using? (NVIDIA, Intel Arc, AMD, integrated GPU, etc.)
       validations:
            required: true
-    - type: textarea
+    - type: input
       attributes:
           label: RAM spec
           description: How much RAM do you have? (e.g. 8GB of RAM)
