@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 using CutTheRope.Desktop;
@@ -46,19 +45,22 @@ namespace CutTheRope.GameMain
             if (mapHeight > SCREEN_HEIGHT)
             {
                 int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
-                string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(pack);
-                string p2ResourceName = boxBackgrounds.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
-                if (string.IsNullOrWhiteSpace(p2ResourceName))
+                int p2Y = PackConfig.GetBoxBackgroundP2Y(pack);
+                if (p2Y > 0)
                 {
-                    throw new InvalidDataException($"packs.xml is missing secondary boxBackground for pack {pack}.");
-                }
-                CTRTexture2D p2Texture = Application.GetTexture(p2ResourceName);
-                CTRRectangle p2Rect = p2Texture.quadRects != null
-                    ? p2Texture.quadRects[0]
-                    : new CTRRectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
+                    string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(pack);
+                    string p2ResourceName = boxBackgrounds.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+                    if (!string.IsNullOrWhiteSpace(p2ResourceName))
+                    {
+                        CTRTexture2D p2Texture = Application.GetTexture(p2ResourceName);
+                        CTRRectangle p2Rect = p2Texture.quadRects != null
+                            ? p2Texture.quadRects[0]
+                            : new CTRRectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
 
-                // Draw p2 in the middle overlapping at y=896 (p1 is handled by TileMap)
-                GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, 896.0);
+                        // Draw p2 at configured Y position (p1 is handled by TileMap)
+                        GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
+                    }
+                }
             }
             OpenGL.GlEnable(OpenGL.GL_BLEND);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);

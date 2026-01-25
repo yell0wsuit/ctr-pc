@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
         int unlockStars,
         int levelCount,
         string[] boxBackgrounds,
+        int boxBackgroundP2Y,
         string supportResourceName,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
@@ -28,6 +29,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>String resource names for pack assets.</summary>
         public string[] BoxBackgrounds { get; } = boxBackgrounds;
+
+        /// <summary>Y position for secondary background (p2) in long levels. 0 means no p2.</summary>
+        public int BoxBackgroundP2Y { get; } = boxBackgroundP2Y;
 
         /// <summary>String resource name for the support asset.</summary>
         public string SupportResourceName { get; } = supportResourceName;
@@ -83,6 +87,11 @@ namespace CutTheRope.GameMain
         public static string[] GetBoxBackgrounds(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxBackgrounds : EmptyResourceNames;
+        }
+
+        public static int GetBoxBackgroundP2Y(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].BoxBackgroundP2Y : 0;
         }
 
         public static string[] GetBoxCovers(int pack)
@@ -147,6 +156,8 @@ namespace CutTheRope.GameMain
                 RequireResourceNames(boxBackgrounds, "boxBackground");
                 ValidateResourceNames(boxBackgrounds, "boxBackground");
 
+                int boxBackgroundP2Y = ParseIntAttribute(packElement, "boxBackgroundP2Y");
+
                 string supportResourceName = ParseResourceName(packElement, "supportResourceName");
                 supportResourceName ??= Resources.Img.CharSupports;
                 ValidateResourceName(supportResourceName, "supportResourceName");
@@ -165,6 +176,7 @@ namespace CutTheRope.GameMain
                     unlockStars,
                     levelCount,
                     boxBackgrounds,
+                    boxBackgroundP2Y,
                     supportResourceName,
                     boxCovers,
                     boxHoleBgColor,
