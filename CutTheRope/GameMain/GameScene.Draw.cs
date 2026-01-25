@@ -57,8 +57,12 @@ namespace CutTheRope.GameMain
                             ? p2Texture.quadRects[0]
                             : new CTRRectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
 
+                        // Enable blending for p2 to avoid dark seams where alpha overlaps p1.
+                        OpenGL.GlEnable(OpenGL.GL_BLEND);
+                        OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         // Draw p2 at configured Y position (p1 is handled by TileMap)
                         GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
+                        OpenGL.GlDisable(OpenGL.GL_BLEND);
                     }
                 }
             }
