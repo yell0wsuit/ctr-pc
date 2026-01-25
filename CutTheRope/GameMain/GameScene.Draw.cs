@@ -45,21 +45,20 @@ namespace CutTheRope.GameMain
             back.Draw();
             if (mapHeight > SCREEN_HEIGHT)
             {
-                float num3 = RTD(2.0);
                 int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
                 string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(pack);
-                string textureResourceName = boxBackgrounds.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
-                if (string.IsNullOrWhiteSpace(textureResourceName))
+                string p2ResourceName = boxBackgrounds.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+                if (string.IsNullOrWhiteSpace(p2ResourceName))
                 {
                     throw new InvalidDataException($"packs.xml is missing secondary boxBackground for pack {pack}.");
                 }
-                CTRTexture2D texture = Application.GetTexture(textureResourceName);
-                int num4 = 0;
-                float num5 = texture.quadOffsets[num4].Y;
-                CTRRectangle r = texture.quadRects[num4];
-                r.y += num3;
-                r.h -= num3 * 2f;
-                GLDrawer.DrawImagePart(texture, r, 0.0, (double)(num5 + num3));
+                CTRTexture2D p2Texture = Application.GetTexture(p2ResourceName);
+                CTRRectangle p2Rect = p2Texture.quadRects != null
+                    ? p2Texture.quadRects[0]
+                    : new CTRRectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
+
+                // Draw p2 in the middle overlapping at y=896 (p1 is handled by TileMap)
+                GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, 896.0);
             }
             OpenGL.GlEnable(OpenGL.GL_BLEND);
             OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
