@@ -238,7 +238,13 @@ namespace CutTheRope.Framework.Core
 
         private static ParsedTexturePackerAtlas LoadTexturePackerAtlas(TextureAtlasConfig config, string resourceName)
         {
-            string atlasPath = config?.AtlasPath;
+            // No atlas config means use full texture (e.g., background images)
+            if (config == null)
+            {
+                return null;
+            }
+
+            string atlasPath = config.AtlasPath;
             if (string.IsNullOrEmpty(atlasPath))
             {
                 throw new FileNotFoundException(

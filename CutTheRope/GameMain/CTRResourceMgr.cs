@@ -73,6 +73,12 @@ namespace CutTheRope.GameMain
 
         protected override TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
+            // Background images don't need JSON atlas - dimensions auto-detected from texture
+            if (Resources.BackgroundImg.IsBackgroundImg(resourceName))
+            {
+                return null;
+            }
+
             // Convention-based: all textures use JSON+PNG pairs in images folder
             return new TextureAtlasConfig
             {

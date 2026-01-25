@@ -236,6 +236,33 @@ namespace CutTheRope.GameMain
             public const string Bgr17P1 = "bgr_17_p1";
             public const string ZeptolabNoLink = "zeptolab_no_link";
             public const string SkinBackground = "skin_bg";
+
+            private static HashSet<string> backgroundImgNames_;
+
+            private static void InitializeBackgroundImgNames()
+            {
+                backgroundImgNames_ =
+                [
+                    Bgr01P1, Bgr01P2, Bgr02P1, Bgr02P2, Bgr03P1, Bgr03P2,
+                    Bgr04P1, Bgr04P2, Bgr05P1, Bgr05P2, Bgr06P1, Bgr06P2,
+                    Bgr07P1, Bgr07P2, Bgr08P1, Bgr08P2, Bgr09P1, Bgr09P2,
+                    Bgr10P1, Bgr10P2, Bgr11P1, Bgr11P2, Bgr12P1, Bgr13P1,
+                    Bgr14P1, Bgr15P1, Bgr16P1, Bgr17P1, ZeptolabNoLink, SkinBackground
+                ];
+            }
+
+            /// <summary>
+            /// Checks if a resource name is a background image.
+            /// Background images are loaded without JSON atlas files.
+            /// </summary>
+            public static bool IsBackgroundImg(string resourceName)
+            {
+                if (backgroundImgNames_ == null)
+                {
+                    InitializeBackgroundImgNames();
+                }
+                return backgroundImgNames_.Contains(resourceName);
+            }
         }
 
         /// <summary>
