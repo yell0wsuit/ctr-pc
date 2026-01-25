@@ -25,7 +25,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_01_cover.png
 
-#begin images/bgr_01_p1.png
+#begin images/backgrounds/bgr_01_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_01_p1.png
+/build:images/backgrounds/bgr_01_p1.png
 
-#begin images/bgr_01_p2.png
+#begin images/backgrounds/bgr_01_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,7 +47,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_01_p2.png
+/build:images/backgrounds/bgr_01_p2.png
 
 #begin images/bgr_02_cover.png
 /importer:TextureImporter
@@ -61,7 +61,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_02_cover.png
 
-#begin images/bgr_02_p1.png
+#begin images/backgrounds/bgr_02_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -71,9 +71,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_02_p1.png
+/build:images/backgrounds/bgr_02_p1.png
 
-#begin images/bgr_02_p2.png
+#begin images/backgrounds/bgr_02_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -83,7 +83,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_02_p2.png
+/build:images/backgrounds/bgr_02_p2.png
 
 #begin images/bgr_03_cover.png
 /importer:TextureImporter
@@ -97,7 +97,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_03_cover.png
 
-#begin images/bgr_03_p1.png
+#begin images/backgrounds/bgr_03_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -107,9 +107,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_03_p1.png
+/build:images/backgrounds/bgr_03_p1.png
 
-#begin images/bgr_03_p2.png
+#begin images/backgrounds/bgr_03_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -119,7 +119,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_03_p2.png
+/build:images/backgrounds/bgr_03_p2.png
 
 #begin images/bgr_04_cover.png
 /importer:TextureImporter
@@ -133,7 +133,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_04_cover.png
 
-#begin images/bgr_04_p1.png
+#begin images/backgrounds/bgr_04_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -143,9 +143,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_04_p1.png
+/build:images/backgrounds/bgr_04_p1.png
 
-#begin images/bgr_04_p2.png
+#begin images/backgrounds/bgr_04_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,7 +155,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_04_p2.png
+/build:images/backgrounds/bgr_04_p2.png
 
 #begin images/bgr_05_cover.png
 /importer:TextureImporter
@@ -169,7 +169,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_05_cover.png
 
-#begin images/bgr_05_p1.png
+#begin images/backgrounds/bgr_05_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -179,9 +179,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_05_p1.png
+/build:images/backgrounds/bgr_05_p1.png
 
-#begin images/bgr_05_p2.png
+#begin images/backgrounds/bgr_05_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -191,7 +191,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_05_p2.png
+/build:images/backgrounds/bgr_05_p2.png
 
 #begin images/bgr_06_cover.png
 /importer:TextureImporter
@@ -205,7 +205,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_06_cover.png
 
-#begin images/bgr_06_p1.png
+#begin images/backgrounds/bgr_06_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -215,9 +215,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_06_p1.png
+/build:images/backgrounds/bgr_06_p1.png
 
-#begin images/bgr_06_p2.png
+#begin images/backgrounds/bgr_06_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -227,7 +227,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_06_p2.png
+/build:images/backgrounds/bgr_06_p2.png
 
 #begin images/bgr_07_cover.png
 /importer:TextureImporter
@@ -241,7 +241,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_07_cover.png
 
-#begin images/bgr_07_p1.png
+#begin images/backgrounds/bgr_07_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -251,9 +251,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_07_p1.png
+/build:images/backgrounds/bgr_07_p1.png
 
-#begin images/bgr_07_p2.png
+#begin images/backgrounds/bgr_07_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -263,7 +263,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_07_p2.png
+/build:images/backgrounds/bgr_07_p2.png
 
 #begin images/bgr_08_cover.png
 /importer:TextureImporter
@@ -277,7 +277,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_08_cover.png
 
-#begin images/bgr_08_p1.png
+#begin images/backgrounds/bgr_08_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -287,9 +287,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_08_p1.png
+/build:images/backgrounds/bgr_08_p1.png
 
-#begin images/bgr_08_p2.png
+#begin images/backgrounds/bgr_08_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -299,7 +299,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_08_p2.png
+/build:images/backgrounds/bgr_08_p2.png
 
 #begin images/bgr_09_cover.png
 /importer:TextureImporter
@@ -313,7 +313,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_09_cover.png
 
-#begin images/bgr_09_p1.png
+#begin images/backgrounds/bgr_09_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -323,9 +323,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_09_p1.png
+/build:images/backgrounds/bgr_09_p1.png
 
-#begin images/bgr_09_p2.png
+#begin images/backgrounds/bgr_09_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -335,7 +335,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_09_p2.png
+/build:images/backgrounds/bgr_09_p2.png
 
 #begin images/bgr_10_cover.png
 /importer:TextureImporter
@@ -349,7 +349,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_10_cover.png
 
-#begin images/bgr_10_p1.png
+#begin images/backgrounds/bgr_10_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -359,9 +359,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_10_p1.png
+/build:images/backgrounds/bgr_10_p1.png
 
-#begin images/bgr_10_p2.png
+#begin images/backgrounds/bgr_10_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -371,7 +371,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_10_p2.png
+/build:images/backgrounds/bgr_10_p2.png
 
 #begin images/bgr_11_cover.png
 /importer:TextureImporter
@@ -385,7 +385,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_11_cover.png
 
-#begin images/bgr_11_p1.png
+#begin images/backgrounds/bgr_11_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -395,9 +395,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_11_p1.png
+/build:images/backgrounds/bgr_11_p1.png
 
-#begin images/bgr_11_p2.png
+#begin images/backgrounds/bgr_11_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -407,7 +407,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_11_p2.png
+/build:images/backgrounds/bgr_11_p2.png
 
 #begin images/bgr_12_cover.png
 /importer:TextureImporter
@@ -421,7 +421,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_12_cover.png
 
-#begin images/bgr_12_p1.png
+#begin images/backgrounds/bgr_12_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -431,7 +431,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_12_p1.png
+/build:images/backgrounds/bgr_12_p1.png
 
 #begin images/bgr_13_cover.png
 /importer:TextureImporter
@@ -445,7 +445,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_13_cover.png
 
-#begin images/bgr_13_p1.png
+#begin images/backgrounds/bgr_13_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -455,7 +455,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_13_p1.png
+/build:images/backgrounds/bgr_13_p1.png
 
 #begin images/bgr_14_cover.png
 /importer:TextureImporter
@@ -469,7 +469,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_14_cover.png
 
-#begin images/bgr_14_p1.png
+#begin images/backgrounds/bgr_14_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -479,7 +479,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_14_p1.png
+/build:images/backgrounds/bgr_14_p1.png
 
 #begin images/bgr_15_cover.png
 /importer:TextureImporter
@@ -493,7 +493,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_15_cover.png
 
-#begin images/bgr_15_p1.png
+#begin images/backgrounds/bgr_15_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -503,7 +503,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_15_p1.png
+/build:images/backgrounds/bgr_15_p1.png
 
 #begin images/big_font.png
 /importer:TextureImporter
@@ -1771,7 +1771,7 @@
 /processorParam:TextureFormat=Color
 /build:images/tutorial_signs.png
 
-#begin images/zeptolab_no_link.png
+#begin images/backgrounds/zeptolab_no_link.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1781,7 +1781,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/zeptolab_no_link.png
+/build:images/backgrounds/zeptolab_no_link.png
 
 #begin images/snowflakes.png
 /importer:TextureImporter
@@ -1903,7 +1903,7 @@
 /processorParam:TextureFormat=Color
 /build:images/menu_logo_new.png
 
-#begin images/skin_bg.png
+#begin images/backgrounds/skin_bg.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1913,7 +1913,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/skin_bg.png
+/build:images/backgrounds/skin_bg.png
 
 #begin images/candies/obj_candy_52.png
 /importer:TextureImporter
@@ -2563,7 +2563,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_16_cover.png
 
-#begin images/bgr_16_p1.png
+#begin images/backgrounds/bgr_16_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2573,7 +2573,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_16_p1.png
+/build:images/backgrounds/bgr_16_p1.png
 
 #begin images/obj_lighter.png
 /importer:TextureImporter
@@ -2653,7 +2653,7 @@
 /processorParam:TextureFormat=Color
 /build:images/bgr_17_cover.png
 
-#begin images/bgr_17_p1.png
+#begin images/backgrounds/bgr_17_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2663,7 +2663,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/bgr_17_p1.png
+/build:images/backgrounds/bgr_17_p1.png
 
 #begin images/obj_transporter.png
 /importer:TextureImporter

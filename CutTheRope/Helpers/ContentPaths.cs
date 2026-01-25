@@ -50,6 +50,11 @@ namespace CutTheRope.Helpers
         public const string ImagesDirectory = "images";
 
         /// <summary>
+        /// The subdirectory for background images without JSON atlas.
+        /// </summary>
+        public const string BackgroundsDirectory = $"{ImagesDirectory}/backgrounds";
+
+        /// <summary>
         /// The menu strings JSON filename.
         /// </summary>
         public const string MenuStringsFile = "menu_strings.json";
@@ -113,6 +118,17 @@ namespace CutTheRope.Helpers
         public static string GetImageContentPath(string resourceName)
         {
             return $"{ImagesDirectory}/{resourceName}";
+        }
+
+        /// <summary>
+        /// Gets the ContentManager-relative path to a background image resource.
+        /// Use for ContentManager.Load which already has "content" as root.
+        /// </summary>
+        /// <param name="resourceName">The resource name (e.g., "bgr_01_p1")</param>
+        /// <returns>The relative path from content root (e.g., "backgrounds/bgr_01_p1")</returns>
+        public static string GetBackgroundImageContentPath(string resourceName)
+        {
+            return $"{BackgroundsDirectory}/{resourceName}";
         }
 
         /// <summary>

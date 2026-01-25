@@ -205,7 +205,9 @@ namespace CutTheRope.Framework.Core
             ParsedTexturePackerAtlas parsedAtlas = LoadTexturePackerAtlas(atlasConfig, resourceName);
 
             bool useAntialias = atlasConfig?.UseAntialias ?? true;
-            string pngPath = ContentPaths.GetImageContentPath(resourceName);
+            string pngPath = Resources.IsBackgroundImg(resourceName)
+                ? ContentPaths.GetBackgroundImageContentPath(resourceName)
+                : ContentPaths.GetImageContentPath(resourceName);
             if (useAntialias)
             {
                 CTRTexture2D.SetAntiAliasTexParameters();
