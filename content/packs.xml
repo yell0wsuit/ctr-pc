@@ -71,6 +71,7 @@
         boxHoleBgColor="0,51,78"
         levelCount="25"
         earthBg="true"
+        earthBgPosition="1027,581"
         boxBackgroundP2Y="914"
     />
     <pack

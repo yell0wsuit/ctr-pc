@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
@@ -22,6 +23,7 @@ namespace CutTheRope.GameMain
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
         bool earthBg,
+        Vector? earthBgPosition,
         string boxLabelText)
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
@@ -47,6 +49,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Whether this pack uses earth background animations.</summary>
         public bool EarthBg { get; } = earthBg;
+
+        /// <summary>Position for earth background animation (null uses default).</summary>
+        public Vector? EarthBgPosition { get; } = earthBgPosition;
 
         /// <summary>Localization key for optional box label text (e.g., "the hardest one").</summary>
         public string BoxLabelText { get; } = boxLabelText;
@@ -127,6 +132,11 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count && packs[pack].EarthBg;
         }
 
+        public static Vector? GetEarthBgPosition(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].EarthBgPosition : null;
+        }
+
         public static RGBAColor GetBoxHoleBgColor(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxHoleBgColor : DefaultBoxHoleBgColor;
@@ -170,6 +180,8 @@ namespace CutTheRope.GameMain
 
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
+                Vector? earthBgPosition = ParseVectorAttribute(packElement, "earthBgPosition");
+
                 string boxLabelText = ParseResourceName(packElement, "boxLabelText");
 
                 results.Add(new PackDefinition(
@@ -181,6 +193,7 @@ namespace CutTheRope.GameMain
                     boxCovers,
                     boxHoleBgColor,
                     earthBg,
+                    earthBgPosition,
                     boxLabelText));
             }
 
@@ -197,6 +210,25 @@ namespace CutTheRope.GameMain
         {
             string value = element.AttributeAsNSString(attributeName);
             return string.IsNullOrWhiteSpace(value) ? defaultValue : bool.Parse(value);
+        }
+
+        private static Vector? ParseVectorAttribute(XElement element, string attributeName)
+        {
+            string value = element.AttributeAsNSString(attributeName);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            string[] parts = value.Split(',');
+            if (parts.Length >= 2)
+            {
+                float x = float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
+                float y = float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
+                return new Vector(x, y);
+            }
+
+            return null;
         }
 
         private static RGBAColor ParseColorAttribute(XElement element, string attributeName)
