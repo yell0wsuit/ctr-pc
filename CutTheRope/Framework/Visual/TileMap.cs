@@ -232,7 +232,7 @@ namespace CutTheRope.Framework.Visual
                         TileEntry tileEntry = tiles[num12];
                         ImageMultiDrawer imageMultiDrawer2 = drawers[tileEntry.drawerIndex];
                         CTRTexture2D texture = imageMultiDrawer2.image.texture;
-                        if (tileEntry.quad != -1)
+                        if (tileEntry.quad != -1 && texture.quadRects != null)
                         {
                             r.x += texture.quadRects[tileEntry.quad].x;
                             r.y += texture.quadRects[tileEntry.quad].y;
