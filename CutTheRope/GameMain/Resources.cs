@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
         private static HashSet<string> musicNames_;
         private static HashSet<string> fontNames_;
         private static HashSet<string> imageNames_;
+        private static HashSet<string> backgroundImgNames_;
 
         /// <summary>
         /// Checks if a resource name is valid (exists in Resources.cs).
@@ -26,6 +27,10 @@ namespace CutTheRope.GameMain
             if (imageNames_ == null)
             {
                 InitializeImageNames();
+            }
+            if (backgroundImgNames_ == null)
+            {
+                InitializeBackgroundImgNames();
             }
             if (soundNames_ == null)
             {
@@ -40,6 +45,7 @@ namespace CutTheRope.GameMain
                 InitializeFontNames();
             }
             return imageNames_.Contains(resourceName) ||
+                   backgroundImgNames_.Contains(resourceName) ||
                    soundNames_.Contains(resourceName) ||
                    musicNames_.Contains(resourceName) ||
                    fontNames_.Contains(resourceName);
@@ -90,7 +96,11 @@ namespace CutTheRope.GameMain
             {
                 InitializeImageNames();
             }
-            return imageNames_.Contains(resourceName);
+            if (backgroundImgNames_ == null)
+            {
+                InitializeBackgroundImgNames();
+            }
+            return imageNames_.Contains(resourceName) || backgroundImgNames_.Contains(resourceName);
         }
 
         /// <summary>
@@ -100,7 +110,7 @@ namespace CutTheRope.GameMain
         {
             imageNames_ =
             [
-                BackgroundImg.ZeptolabNoLink, Img.LoaderbarFull, Img.MenuButtonDefault,
+                Img.LoaderbarFull, Img.MenuButtonDefault,
                 Img.MenuLoading, Img.MenuNotification, Img.MenuAchievement,
                 Img.MenuOptions, Img.MenuBgr, Img.MenuPopup, Img.MenuLogo,
                 Img.MenuLogoNew, Img.CandySelectionFx, Img.SkinSelection, Img.MenuLevelSelection,
@@ -119,26 +129,20 @@ namespace CutTheRope.GameMain
                 Img.ObjRotatableSpikes02, Img.ObjRotatableSpikes03, Img.ObjRotatableSpikes04,
                 Img.ObjRotatableSpikesButton, Img.ObjBeeHd, Img.ObjPollenHd,
                 Img.CharSupports, Img.CharAnimations2, Img.CharAnimations3, Img.ObjVinil,
-                BackgroundImg.Bgr01P1, BackgroundImg.Bgr01P2, BackgroundImg.Bgr02P1, BackgroundImg.Bgr02P2,
-                BackgroundImg.Bgr03P1, BackgroundImg.Bgr03P2, BackgroundImg.Bgr04P1, BackgroundImg.Bgr04P2,
-                BackgroundImg.Bgr05P1, BackgroundImg.Bgr05P2, BackgroundImg.Bgr06P1, BackgroundImg.Bgr06P2,
-                BackgroundImg.Bgr07P1, BackgroundImg.Bgr07P2, BackgroundImg.Bgr08P1, BackgroundImg.Bgr08P2,
-                BackgroundImg.Bgr09P1, BackgroundImg.Bgr09P2, BackgroundImg.Bgr10P1, BackgroundImg.Bgr10P2,
-                BackgroundImg.Bgr11P1, BackgroundImg.Bgr11P2, Img.Bgr01Cover, Img.Bgr02Cover,
+                Img.Bgr01Cover, Img.Bgr02Cover,
                 Img.Bgr03Cover, Img.Bgr04Cover, Img.Bgr05Cover, Img.Bgr06Cover,
                 Img.Bgr07Cover, Img.Bgr08Cover, Img.Bgr09Cover, Img.Bgr10Cover,
                 Img.Bgr11Cover, Img.MenuExtraButtonsFr, Img.MenuExtraButtonsGr,
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
-                Img.MenuExtraButtonsEn, Img.Bgr12Cover, BackgroundImg.Bgr12P1,
-                Img.ObjGhost, Img.Bgr13Cover, BackgroundImg.Bgr13P1, Img.ObjPipe, Img.XmasLights,
+                Img.MenuExtraButtonsEn, Img.Bgr12Cover,
+                Img.ObjGhost, Img.Bgr13Cover, Img.ObjPipe, Img.XmasLights,
                 Img.Snowflakes, Img.CharGreetingXmas, Img.ObjSock,
-                Img.Bgr14Cover, BackgroundImg.Bgr14P1, Img.ObjLantern, Img.ObjLighter,
-                Img.Bgr15Cover, BackgroundImg.Bgr15P1, Img.ObjGap,
-                Img.Bgr16Cover, BackgroundImg.Bgr16P1, Img.ObjStarNight,
+                Img.Bgr14Cover, Img.ObjLantern, Img.ObjLighter,
+                Img.Bgr15Cover, Img.ObjGap,
+                Img.Bgr16Cover, Img.ObjStarNight,
                 Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuLogoXmasHat,
-                Img.Bgr17Cover, BackgroundImg.Bgr17P1, Img.BoxLabel, Img.ObjTransporter,
-                BackgroundImg.SkinBackground,
+                Img.Bgr17Cover, Img.BoxLabel, Img.ObjTransporter,
                 Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
                 Img.ObjCandy07, Img.ObjCandy08, Img.ObjCandy09, Img.ObjCandy10, Img.ObjCandy11,
                 Img.ObjCandy12, Img.ObjCandy13, Img.ObjCandy14, Img.ObjCandy15, Img.ObjCandy16,
@@ -202,6 +206,37 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Checks if a resource name is a background image.
+        /// Background images are loaded without JSON atlas files.
+        /// </summary>
+        public static bool IsBackgroundImg(string resourceName)
+        {
+            if (backgroundImgNames_ == null)
+            {
+                InitializeBackgroundImgNames();
+            }
+            return backgroundImgNames_.Contains(resourceName);
+        }
+
+        /// <summary>
+        /// List all of background image resources.
+        /// </summary>
+        private static void InitializeBackgroundImgNames()
+        {
+            backgroundImgNames_ =
+            [
+                BackgroundImg.Bgr01P1, BackgroundImg.Bgr01P2, BackgroundImg.Bgr02P1, BackgroundImg.Bgr02P2,
+                BackgroundImg.Bgr03P1, BackgroundImg.Bgr03P2, BackgroundImg.Bgr04P1, BackgroundImg.Bgr04P2,
+                BackgroundImg.Bgr05P1, BackgroundImg.Bgr05P2, BackgroundImg.Bgr06P1, BackgroundImg.Bgr06P2,
+                BackgroundImg.Bgr07P1, BackgroundImg.Bgr07P2, BackgroundImg.Bgr08P1, BackgroundImg.Bgr08P2,
+                BackgroundImg.Bgr09P1, BackgroundImg.Bgr09P2, BackgroundImg.Bgr10P1, BackgroundImg.Bgr10P2,
+                BackgroundImg.Bgr11P1, BackgroundImg.Bgr11P2, BackgroundImg.Bgr12P1, BackgroundImg.Bgr13P1,
+                BackgroundImg.Bgr14P1, BackgroundImg.Bgr15P1, BackgroundImg.Bgr16P1, BackgroundImg.Bgr17P1,
+                BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground
+            ];
+        }
+
+        /// <summary>
         /// Background images
         /// </summary>
         internal static class BackgroundImg
@@ -236,33 +271,6 @@ namespace CutTheRope.GameMain
             public const string Bgr17P1 = "bgr_17_p1";
             public const string ZeptolabNoLink = "zeptolab_no_link";
             public const string SkinBackground = "skin_bg";
-
-            private static HashSet<string> backgroundImgNames_;
-
-            private static void InitializeBackgroundImgNames()
-            {
-                backgroundImgNames_ =
-                [
-                    Bgr01P1, Bgr01P2, Bgr02P1, Bgr02P2, Bgr03P1, Bgr03P2,
-                    Bgr04P1, Bgr04P2, Bgr05P1, Bgr05P2, Bgr06P1, Bgr06P2,
-                    Bgr07P1, Bgr07P2, Bgr08P1, Bgr08P2, Bgr09P1, Bgr09P2,
-                    Bgr10P1, Bgr10P2, Bgr11P1, Bgr11P2, Bgr12P1, Bgr13P1,
-                    Bgr14P1, Bgr15P1, Bgr16P1, Bgr17P1, ZeptolabNoLink, SkinBackground
-                ];
-            }
-
-            /// <summary>
-            /// Checks if a resource name is a background image.
-            /// Background images are loaded without JSON atlas files.
-            /// </summary>
-            public static bool IsBackgroundImg(string resourceName)
-            {
-                if (backgroundImgNames_ == null)
-                {
-                    InitializeBackgroundImgNames();
-                }
-                return backgroundImgNames_.Contains(resourceName);
-            }
         }
 
         /// <summary>
