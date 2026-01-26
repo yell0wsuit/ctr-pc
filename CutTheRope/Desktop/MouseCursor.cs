@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Platform;
 using CutTheRope.Helpers;
 
@@ -14,6 +15,10 @@ namespace CutTheRope.Desktop
 {
     internal sealed class MouseCursor : IDisposable
     {
+        // Windows cursor size limits: max 256x256, typical 32-64px
+        private const int MaxCursorSize = 128;
+        private const int MinCursorSize = 16;
+
         public void Enable(bool b)
         {
             _enabled = b;
@@ -23,8 +28,12 @@ namespace CutTheRope.Desktop
         {
             _nativeCursor?.Dispose();
             _nativeCursorActive?.Dispose();
+            _scaledCursor?.Dispose();
+            _scaledCursorActive?.Dispose();
             _nativeCursor = null;
             _nativeCursorActive = null;
+            _scaledCursor = null;
+            _scaledCursorActive = null;
         }
 
         public void ReleaseButtons()
@@ -37,11 +46,117 @@ namespace CutTheRope.Desktop
             // Dispose old native cursors if reloading
             _nativeCursor?.Dispose();
             _nativeCursorActive?.Dispose();
+            _scaledCursor?.Dispose();
+            _scaledCursorActive?.Dispose();
 
+<<<<<<< HEAD
             _cursor = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor"));
             _cursorActive = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor_active"));
             _nativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_cursor, 0, 0);
             _nativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_cursorActive, 0, 0);
+=======
+            _cursor = cm.Load<Texture2D>("cursor");
+            _cursorActive = cm.Load<Texture2D>("cursor_active");
+
+            // Create initial native cursors (will be recreated with proper scale in Draw)
+            _lastViewWidth = 0;
+            _nativeCursor = null;
+            _nativeCursorActive = null;
+        }
+
+        private void UpdateScaledCursors()
+        {
+            if (_cursor == null || _cursorActive == null)
+            {
+                return;
+            }
+
+            Rectangle viewRect = Global.ScreenSizeManager.ScaledViewRect;
+            if (viewRect.Width == _lastViewWidth && _nativeCursor != null)
+            {
+                return;
+            }
+
+            _lastViewWidth = viewRect.Width;
+
+            // Calculate scale factor based on view size relative to game logical size
+            float scaleX = viewRect.Width / FrameworkTypes.SCREEN_WIDTH;
+            float scaleY = viewRect.Height / FrameworkTypes.SCREEN_HEIGHT;
+            float scale = Math.Min(scaleX, scaleY);
+
+            // Scale cursor to match game content scaling, but clamp to reasonable cursor sizes
+            int scaledWidth = (int)(_cursor.Width * scale);
+            int scaledHeight = (int)(_cursor.Height * scale);
+
+            // Clamp to Windows cursor size limits
+            if (scaledWidth > MaxCursorSize || scaledHeight > MaxCursorSize)
+            {
+                float clampScale = MaxCursorSize / (float)Math.Max(scaledWidth, scaledHeight);
+                scaledWidth = (int)(scaledWidth * clampScale);
+                scaledHeight = (int)(scaledHeight * clampScale);
+            }
+            if (scaledWidth < MinCursorSize || scaledHeight < MinCursorSize)
+            {
+                float clampScale = MinCursorSize / (float)Math.Min(scaledWidth, scaledHeight);
+                scaledWidth = (int)(scaledWidth * clampScale);
+                scaledHeight = (int)(scaledHeight * clampScale);
+            }
+
+            // Dispose old native cursors
+            _nativeCursor?.Dispose();
+            _nativeCursorActive?.Dispose();
+            _scaledCursor?.Dispose();
+            _scaledCursorActive?.Dispose();
+
+            // Create scaled textures and native cursors
+            _scaledCursor = ScaleTexture(_cursor, scaledWidth, scaledHeight);
+            _scaledCursorActive = ScaleTexture(_cursorActive,
+                (int)(_cursorActive.Width * scale * (scaledWidth / (float)(_cursor.Width * scale))),
+                (int)(_cursorActive.Height * scale * (scaledHeight / (float)(_cursor.Height * scale))));
+
+            _nativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursor, 0, 0);
+            _nativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursorActive, 0, 0);
+
+            // Force cursor update on next Draw
+            _cursorOverrideActive = false;
+        }
+
+        private static Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
+        {
+            // Ensure minimum size
+            targetWidth = Math.Max(1, targetWidth);
+            targetHeight = Math.Max(1, targetHeight);
+
+            RenderTarget2D renderTarget = new(Global.GraphicsDevice, targetWidth, targetHeight, false,
+                SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
+            // Save current render target
+            RenderTargetBinding[] previousTargets = Global.GraphicsDevice.GetRenderTargets();
+
+            Global.GraphicsDevice.SetRenderTarget(renderTarget);
+            Global.GraphicsDevice.Clear(Color.Transparent);
+
+            SpriteBatch spriteBatch = new(Global.GraphicsDevice);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                null, null, null, null);
+            spriteBatch.Draw(source, new Rectangle(0, 0, targetWidth, targetHeight), Color.White);
+            spriteBatch.End();
+            spriteBatch.Dispose();
+
+            // Restore previous render target
+            Global.GraphicsDevice.SetRenderTargets(previousTargets);
+
+            // Copy to regular Texture2D
+            // RenderTarget2D might cause issues with cursors
+            Color[] data = new Color[targetWidth * targetHeight];
+            renderTarget.GetData(data);
+
+            Texture2D result = new(Global.GraphicsDevice, targetWidth, targetHeight);
+            result.SetData(data);
+
+            renderTarget.Dispose();
+            return result;
+>>>>>>> a9dfbc5 (scale mouse cursor with game view size)
         }
 
         public void Draw()
@@ -56,6 +171,9 @@ namespace CutTheRope.Desktop
                 }
                 return;
             }
+
+            // Update scaled cursors if view size changed
+            UpdateScaledCursors();
 
             _mouseStateOriginal = Global.XnaGame.GetMouseState();
             if (_mouseStateOriginal.X < 0 || _mouseStateOriginal.Y < 0)
@@ -141,6 +259,12 @@ namespace CutTheRope.Desktop
         private Microsoft.Xna.Framework.Input.MouseCursor _nativeCursor;
 
         private Microsoft.Xna.Framework.Input.MouseCursor _nativeCursorActive;
+
+        private Texture2D _scaledCursor;
+
+        private Texture2D _scaledCursorActive;
+
+        private int _lastViewWidth;
 
         private MouseState _mouseStateTranformed;
 
