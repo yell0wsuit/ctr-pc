@@ -60,6 +60,7 @@ namespace CutTheRope.Desktop
 
             // Create initial native cursors (will be recreated with proper scale in Draw)
             _lastViewWidth = 0;
+            _lastViewHeight = 0;
             _nativeCursor = null;
             _nativeCursorActive = null;
         }
@@ -72,17 +73,27 @@ namespace CutTheRope.Desktop
             }
 
             Rectangle viewRect = Global.ScreenSizeManager.ScaledViewRect;
-            if (viewRect.Width == _lastViewWidth && _nativeCursor != null)
+            if (viewRect.Width <= 0 || viewRect.Height <= 0)
+            {
+                return;
+            }
+
+            if (viewRect.Width == _lastViewWidth && viewRect.Height == _lastViewHeight && _nativeCursor != null)
             {
                 return;
             }
 
             _lastViewWidth = viewRect.Width;
+            _lastViewHeight = viewRect.Height;
 
             // Calculate scale factor based on view size relative to game logical size
             float scaleX = viewRect.Width / FrameworkTypes.SCREEN_WIDTH;
             float scaleY = viewRect.Height / FrameworkTypes.SCREEN_HEIGHT;
             float scale = Math.Min(scaleX, scaleY);
+            if (scale <= 0f)
+            {
+                return;
+            }
 
             // Scale cursor to match game content scaling, but clamp to reasonable cursor sizes
             int scaledWidth = (int)(_cursor.Width * scale);
@@ -110,9 +121,11 @@ namespace CutTheRope.Desktop
 
             // Create scaled textures and native cursors
             _scaledCursor = ScaleTexture(_cursor, scaledWidth, scaledHeight);
-            _scaledCursorActive = ScaleTexture(_cursorActive,
-                (int)(_cursorActive.Width * scale * (scaledWidth / (float)(_cursor.Width * scale))),
-                (int)(_cursorActive.Height * scale * (scaledHeight / (float)(_cursor.Height * scale))));
+            float activeWidthRatio = _cursorActive.Width / (float)_cursor.Width;
+            float activeHeightRatio = _cursorActive.Height / (float)_cursor.Height;
+            int scaledActiveWidth = Math.Max(1, (int)(scaledWidth * activeWidthRatio));
+            int scaledActiveHeight = Math.Max(1, (int)(scaledHeight * activeHeightRatio));
+            _scaledCursorActive = ScaleTexture(_cursorActive, scaledActiveWidth, scaledActiveHeight);
 
             _nativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursor, 0, 0);
             _nativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursorActive, 0, 0);
@@ -132,8 +145,10 @@ namespace CutTheRope.Desktop
 
             // Save current render target
             RenderTargetBinding[] previousTargets = Global.GraphicsDevice.GetRenderTargets();
+            Viewport previousViewport = Global.GraphicsDevice.Viewport;
 
             Global.GraphicsDevice.SetRenderTarget(renderTarget);
+            Global.GraphicsDevice.Viewport = new Viewport(0, 0, targetWidth, targetHeight);
             Global.GraphicsDevice.Clear(Color.Transparent);
 
             SpriteBatch spriteBatch = new(Global.GraphicsDevice);
@@ -145,6 +160,7 @@ namespace CutTheRope.Desktop
 
             // Restore previous render target
             Global.GraphicsDevice.SetRenderTargets(previousTargets);
+            Global.GraphicsDevice.Viewport = previousViewport;
 
             // Copy to regular Texture2D
             // RenderTarget2D might cause issues with cursors
@@ -265,6 +281,8 @@ namespace CutTheRope.Desktop
         private Texture2D _scaledCursorActive;
 
         private int _lastViewWidth;
+
+        private int _lastViewHeight;
 
         private MouseState _mouseStateTranformed;
 
