@@ -42,7 +42,7 @@ namespace CutTheRope
             TargetElapsedTime = TimeSpan.FromTicks(166666L);
             IsFixedTimeStep = false;
             InactiveSleepTime = TimeSpan.FromTicks(500000L);
-            IsMouseVisible = false;
+            IsMouseVisible = true;
             Activated += Game1_Activated;
             Deactivated += Game1_Deactivated;
             Exiting += Game1_Exiting;
@@ -88,6 +88,7 @@ namespace CutTheRope
             Preferences.Update();
             //Dispose of RPC
             RPC?.Dispose();
+            Global.MouseCursor?.Dispose();
         }
 
         private void Game1_Deactivated(object sender, EventArgs e)
