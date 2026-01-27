@@ -163,49 +163,70 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Scales a texture to the specified dimensions using a render target.
+        /// Scales a texture to a square dimension using CPU-based bilinear interpolation.
+        /// Windows requires square cursor textures to avoid corruption.
         /// </summary>
         /// <param name="source">The source texture to scale.</param>
-        /// <param name="targetWidth">The target width in pixels.</param>
-        /// <param name="targetHeight">The target height in pixels.</param>
-        /// <returns>A new Texture2D with the scaled content.</returns>
+        /// <param name="targetWidth">The desired width in pixels.</param>
+        /// <param name="targetHeight">The desired height in pixels.</param>
+        /// <returns>A new square Texture2D with the scaled content.</returns>
         private static Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
         {
             // Ensure minimum size
             targetWidth = Math.Max(1, targetWidth);
             targetHeight = Math.Max(1, targetHeight);
 
-            RenderTarget2D renderTarget = new(Global.GraphicsDevice, targetWidth, targetHeight, false,
-                SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            // Windows requires square cursor textures
+            int squareSize = Math.Max(targetWidth, targetHeight);
 
-            // Save current render target
-            RenderTargetBinding[] previousTargets = Global.GraphicsDevice.GetRenderTargets();
-            Viewport previousViewport = Global.GraphicsDevice.Viewport;
+            // Get source pixel data
+            Color[] sourceData = new Color[source.Width * source.Height];
+            source.GetData(sourceData);
 
-            Global.GraphicsDevice.SetRenderTarget(renderTarget);
-            Global.GraphicsDevice.Viewport = new Viewport(0, 0, targetWidth, targetHeight);
-            Global.GraphicsDevice.Clear(Color.Transparent);
+            // Create destination with square dimensions
+            Color[] destData = new Color[squareSize * squareSize];
 
-            SpriteBatch spriteBatch = new(Global.GraphicsDevice);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                null, null, null, null);
-            spriteBatch.Draw(source, new Rectangle(0, 0, targetWidth, targetHeight), Color.White);
-            spriteBatch.End();
-            spriteBatch.Dispose();
+            // Bilinear interpolation scaling
+            float scaleX = (float)source.Width / targetWidth;
+            float scaleY = (float)source.Height / targetHeight;
 
-            // Restore previous render target
-            Global.GraphicsDevice.SetRenderTargets(previousTargets);
-            Global.GraphicsDevice.Viewport = previousViewport;
+            for (int y = 0; y < targetHeight; y++)
+            {
+                for (int x = 0; x < targetWidth; x++)
+                {
+                    float srcX = x * scaleX;
+                    float srcY = y * scaleY;
 
-            // Copy to regular Texture2D
-            // RenderTarget2D might cause issues with cursors
-            Color[] data = new Color[targetWidth * targetHeight];
-            renderTarget.GetData(data);
+                    int x0 = (int)srcX;
+                    int y0 = (int)srcY;
+                    int x1 = Math.Min(x0 + 1, source.Width - 1);
+                    int y1 = Math.Min(y0 + 1, source.Height - 1);
 
-            Texture2D result = new(Global.GraphicsDevice, targetWidth, targetHeight);
-            result.SetData(data);
+                    float fx = srcX - x0;
+                    float fy = srcY - y0;
 
-            renderTarget.Dispose();
+                    Color c00 = sourceData[(y0 * source.Width) + x0];
+                    Color c10 = sourceData[(y0 * source.Width) + x1];
+                    Color c01 = sourceData[(y1 * source.Width) + x0];
+                    Color c11 = sourceData[(y1 * source.Width) + x1];
+
+                    // Bilinear interpolation weights
+                    float w00 = (1 - fx) * (1 - fy);
+                    float w10 = fx * (1 - fy);
+                    float w01 = (1 - fx) * fy;
+                    float w11 = fx * fy;
+
+                    byte r = (byte)((c00.R * w00) + (c10.R * w10) + (c01.R * w01) + (c11.R * w11));
+                    byte g = (byte)((c00.G * w00) + (c10.G * w10) + (c01.G * w01) + (c11.G * w11));
+                    byte b = (byte)((c00.B * w00) + (c10.B * w10) + (c01.B * w01) + (c11.B * w11));
+                    byte a = (byte)((c00.A * w00) + (c10.A * w10) + (c01.A * w01) + (c11.A * w11));
+
+                    destData[(y * squareSize) + x] = new Color(r, g, b, a);
+                }
+            }
+
+            Texture2D result = new(Global.GraphicsDevice, squareSize, squareSize);
+            result.SetData(destData);
             return result;
 >>>>>>> a9dfbc5 (scale mouse cursor with game view size)
         }
