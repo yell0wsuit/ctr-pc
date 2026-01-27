@@ -13,17 +13,34 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.Desktop
 {
+    /// <summary>
+    /// Manages native OS mouse cursor with custom texture support.
+    /// Creates scaled native cursors from game textures that adapt to window size.
+    /// </summary>
     internal sealed class MouseCursor : IDisposable
     {
-        // Windows cursor size limits: max 256x256, typical 32-64px
+        /// <summary>
+        /// Maximum cursor size in pixels (OS limitation).
+        /// </summary>
         private const int MaxCursorSize = 128;
+
+        /// <summary>
+        /// Minimum cursor size in pixels for visibility.
+        /// </summary>
         private const int MinCursorSize = 16;
 
+        /// <summary>
+        /// Enables or disables the custom cursor display.
+        /// </summary>
+        /// <param name="b">True to show the custom cursor, false to hide it.</param>
         public void Enable(bool b)
         {
             _enabled = b;
         }
 
+        /// <summary>
+        /// Disposes all native cursor and texture resources.
+        /// </summary>
         public void Dispose()
         {
             _nativeCursor?.Dispose();
@@ -36,11 +53,18 @@ namespace CutTheRope.Desktop
             _scaledCursorActive = null;
         }
 
+        /// <summary>
+        /// Resets all mouse button states to released.
+        /// </summary>
         public void ReleaseButtons()
         {
             _mouseStateTranformed = new MouseState(_mouseStateTranformed.X, _mouseStateTranformed.Y, _mouseStateTranformed.ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
         }
 
+        /// <summary>
+        /// Loads cursor textures from content and prepares for native cursor creation.
+        /// </summary>
+        /// <param name="cm">The content manager to load textures from.</param>
         public void Load(ContentManager cm)
         {
             // Dispose old native cursors if reloading
@@ -65,6 +89,10 @@ namespace CutTheRope.Desktop
             _nativeCursorActive = null;
         }
 
+        /// <summary>
+        /// Updates scaled cursor textures when the view size changes.
+        /// Creates new native cursors sized proportionally to the game view.
+        /// </summary>
         private void UpdateScaledCursors()
         {
             if (_cursor == null || _cursorActive == null)
@@ -134,6 +162,13 @@ namespace CutTheRope.Desktop
             _cursorOverrideActive = false;
         }
 
+        /// <summary>
+        /// Scales a texture to the specified dimensions using a render target.
+        /// </summary>
+        /// <param name="source">The source texture to scale.</param>
+        /// <param name="targetWidth">The target width in pixels.</param>
+        /// <param name="targetHeight">The target height in pixels.</param>
+        /// <returns>A new Texture2D with the scaled content.</returns>
         private static Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
         {
             // Ensure minimum size
@@ -175,6 +210,10 @@ namespace CutTheRope.Desktop
 >>>>>>> a9dfbc5 (scale mouse cursor with game view size)
         }
 
+        /// <summary>
+        /// Updates cursor state and switches between normal/active cursors based on mouse button state.
+        /// Should be called each frame.
+        /// </summary>
         public void Draw()
         {
             if (!_enabled)
@@ -216,16 +255,29 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Gets the current mouse state transformed to game view coordinates.
+        /// </summary>
+        /// <returns>The transformed mouse state.</returns>
         public static MouseState GetMouseState()
         {
             return TransformMouseState(Global.XnaGame.GetMouseState());
         }
 
+        /// <summary>
+        /// Transforms a mouse state from window coordinates to game view coordinates.
+        /// </summary>
+        /// <param name="mouseState">The mouse state in window coordinates.</param>
+        /// <returns>The mouse state in game view coordinates.</returns>
         private static MouseState TransformMouseState(MouseState mouseState)
         {
             return new MouseState(Global.ScreenSizeManager.TransformWindowToViewX(mouseState.X), Global.ScreenSizeManager.TransformWindowToViewY(mouseState.Y), mouseState.ScrollWheelValue, mouseState.LeftButton, mouseState.MiddleButton, mouseState.RightButton, mouseState.XButton1, mouseState.XButton2);
         }
 
+        /// <summary>
+        /// Converts mouse input to touch locations for compatibility with touch-based game logic.
+        /// </summary>
+        /// <returns>A list of touch locations representing the current mouse state.</returns>
         public List<TouchLocation> GetTouchLocation()
         {
             List<TouchLocation> list = [];
