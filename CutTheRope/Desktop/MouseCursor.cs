@@ -186,21 +186,23 @@ namespace CutTheRope.Desktop
             Global.GraphicsDevice.Viewport = new Viewport(0, 0, targetWidth, targetHeight);
             Global.GraphicsDevice.Clear(Color.Transparent);
 
+            // Use NonPremultiplied to preserve alpha correctly when scaling
+            // AlphaBlend would cause semi-transparent edges to darken/corrupt
             SpriteBatch spriteBatch = new(Global.GraphicsDevice);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp,
                 null, null, null, null);
             spriteBatch.Draw(source, new Rectangle(0, 0, targetWidth, targetHeight), Color.White);
             spriteBatch.End();
             spriteBatch.Dispose();
 
+            // Copy pixel data BEFORE unbinding render target
+            // On WindowsDX, GetData after SetRenderTarget(null) can return garbage/static
+            Color[] data = new Color[targetWidth * targetHeight];
+            renderTarget.GetData(data);
+
             // Restore previous render target
             Global.GraphicsDevice.SetRenderTargets(previousTargets);
             Global.GraphicsDevice.Viewport = previousViewport;
-
-            // Copy to regular Texture2D
-            // RenderTarget2D might cause issues with cursors
-            Color[] data = new Color[targetWidth * targetHeight];
-            renderTarget.GetData(data);
 
             Texture2D result = new(Global.GraphicsDevice, targetWidth, targetHeight);
             result.SetData(data);
