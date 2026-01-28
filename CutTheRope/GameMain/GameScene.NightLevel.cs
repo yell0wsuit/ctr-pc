@@ -67,9 +67,26 @@ namespace CutTheRope.GameMain
                 {
                     continue;
                 }
-                if (!noCandy && targetSock == null)
+                // Resolve collision between light bulb and candy (skip if candy is being teleported by sock)
+                if (targetSock == null)
                 {
-                    ResolveConstraintCollision(bulb.constraint, star, lightBulbCollisionDistance);
+                    // Half candy mode: check collision with both candy halves
+                    if (twoParts != 2)
+                    {
+                        if (!noCandyL)
+                        {
+                            ResolveConstraintCollision(bulb.constraint, starL, lightBulbCollisionDistance);
+                        }
+                        if (!noCandyR)
+                        {
+                            ResolveConstraintCollision(bulb.constraint, starR, lightBulbCollisionDistance);
+                        }
+                    }
+                    // Full candy mode: check collision with the single candy
+                    else if (!noCandy)
+                    {
+                        ResolveConstraintCollision(bulb.constraint, star, lightBulbCollisionDistance);
+                    }
                 }
                 for (int j = i + 1; j < lightBulbs.Count; j++)
                 {
