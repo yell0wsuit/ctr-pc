@@ -1,0 +1,53 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 208, "w": 196, "h": 129 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 318, "y": 68, "w": 196, "h": 129 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 1, "y": 101, "w": 203, "h": 105 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 315, "y": 80, "w": 203, "h": 105 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "frame_0002.png",
+            "frame": { "x": 1, "y": 1, "w": 206, "h": 98 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 313, "y": 86, "w": 206, "h": 98 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "frame_0003.png",
+            "frame": { "x": 1, "y": 454, "w": 195, "h": 144 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 318, "y": 54, "w": 195, "h": 144 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "frame_0004.png",
+            "frame": { "x": 1, "y": 339, "w": 196, "h": 113 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 318, "y": 76, "w": 196, "h": 113 },
+            "sourceSize": { "w": 833, "h": 250 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_bouncer_01.png",
+        "format": "RGBA8888",
+        "size": { "w": 208, "h": 599 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:d95b2a492758543afbcf76f0dfb81cc1:2ebbe3c254b24756f0b2c87e9fe0198d:980777cd400bfad1c182f0cabac35373$"
+    }
+}

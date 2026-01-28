@@ -1,0 +1,99 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 137,
+                "h": 139
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 65,
+                "y": 70,
+                "w": 137,
+                "h": 139
+            },
+            "sourceSize": {
+                "w": 275,
+                "h": 275
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 137,
+                "y": 0,
+                "w": 105,
+                "h": 100
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 84,
+                "y": 86,
+                "w": 105,
+                "h": 100
+            },
+            "sourceSize": {
+                "w": 275,
+                "h": 275
+            }
+        },
+        {
+            "filename": "frame_0002",
+            "frame": {
+                "x": 0,
+                "y": 139,
+                "w": 235,
+                "h": 235
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 18,
+                "y": 19,
+                "w": 235,
+                "h": 235
+            },
+            "sourceSize": {
+                "w": 275,
+                "h": 275
+            }
+        },
+        {
+            "filename": "frame_0003",
+            "frame": {
+                "x": 0,
+                "y": 375,
+                "w": 240,
+                "h": 245
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 13,
+                "y": 14,
+                "w": 240,
+                "h": 245
+            },
+            "sourceSize": {
+                "w": 275,
+                "h": 275
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "obj_hook_regulated.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 242,
+            "h": 620
+        },
+        "scale": "1"
+    }
+}

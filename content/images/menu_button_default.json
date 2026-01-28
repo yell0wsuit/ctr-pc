@@ -1,0 +1,57 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 2,
+                "y": 2,
+                "w": 735,
+                "h": 174
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 102,
+                "y": 116,
+                "w": 735,
+                "h": 174
+            },
+            "sourceSize": {
+                "w": 936,
+                "h": 418
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 2,
+                "y": 180,
+                "w": 735,
+                "h": 174
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 102,
+                "y": 116,
+                "w": 735,
+                "h": 174
+            },
+            "sourceSize": {
+                "w": 936,
+                "h": 418
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "menu_button_default.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 737,
+            "h": 354
+        },
+        "scale": "1"
+    }
+}

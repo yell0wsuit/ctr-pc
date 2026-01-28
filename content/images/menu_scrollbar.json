@@ -1,0 +1,99 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 41,
+                "h": 783
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 99,
+                "y": 39,
+                "w": 41,
+                "h": 783
+            },
+            "sourceSize": {
+                "w": 227,
+                "h": 1145
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 0,
+                "y": 783,
+                "w": 41,
+                "h": 1060
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 99,
+                "y": 39,
+                "w": 41,
+                "h": 1060
+            },
+            "sourceSize": {
+                "w": 227,
+                "h": 1145
+            }
+        },
+        {
+            "filename": "frame_0002",
+            "frame": {
+                "x": 41,
+                "y": 0,
+                "w": 143,
+                "h": 150
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 49,
+                "y": 293,
+                "w": 143,
+                "h": 150
+            },
+            "sourceSize": {
+                "w": 227,
+                "h": 1145
+            }
+        },
+        {
+            "filename": "frame_0003",
+            "frame": {
+                "x": 41,
+                "y": 150,
+                "w": 143,
+                "h": 150
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 49,
+                "y": 293,
+                "w": 143,
+                "h": 150
+            },
+            "sourceSize": {
+                "w": 227,
+                "h": 1145
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "menu_scrollbar.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 184,
+            "h": 1843
+        },
+        "scale": "1"
+    }
+}

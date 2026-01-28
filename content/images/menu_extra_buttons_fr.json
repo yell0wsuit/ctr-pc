@@ -1,0 +1,36 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 361,
+                "h": 47
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 74,
+                "y": 109,
+                "w": 361,
+                "h": 47
+            },
+            "sourceSize": {
+                "w": 679,
+                "h": 206
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "menu_extra_buttons_fr.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 361,
+            "h": 47
+        },
+        "scale": "1"
+    }
+}

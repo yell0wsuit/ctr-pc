@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
             : base(parent)
         {
             View view = new();
-            Image image = Image.Image_createWithResID(Resources.Img.ZeptolabNoLink);
+            Image image = Image.Image_createWithResID(Resources.BackgroundImg.ZeptolabNoLink);
             image.parentAnchor = image.anchor = 18;
             image.scaleX = image.scaleY = 1.25f;
             _ = view.AddChild(image);

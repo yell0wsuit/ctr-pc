@@ -1,0 +1,20 @@
+{
+    "frames": {
+        "loaderbar_full.png": {
+            "frame": { "x": 0, "y": 0, "w": 558, "h": 37 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 558, "h": 37 },
+            "sourceSize": { "w": 558, "h": 37 }
+        }
+    },
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "loaderbar_full.png",
+        "format": "RGBA8888",
+        "size": { "w": 558, "h": 37 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:991fb033b50665c6aa563bddc854b26b:c4c6d5bd83be85f085175220a4cc9803:d1cfc0ff2efae7b4b7105da910cba541$"
+    }
+}

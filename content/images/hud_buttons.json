@@ -1,0 +1,57 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 96,
+                "h": 97
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 2237,
+                "y": 9,
+                "w": 96,
+                "h": 97
+            },
+            "sourceSize": {
+                "w": 2560,
+                "h": 122
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 96,
+                "y": 0,
+                "w": 96,
+                "h": 97
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 2237,
+                "y": 9,
+                "w": 96,
+                "h": 97
+            },
+            "sourceSize": {
+                "w": 2560,
+                "h": 122
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "hud_buttons.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 192,
+            "h": 97
+        },
+        "scale": "1"
+    }
+}

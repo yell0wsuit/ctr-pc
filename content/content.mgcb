@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin bgr_01_cover.png
+#begin images/bgr_01_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,9 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_01_cover.png
+/build:images/bgr_01_cover.png
 
-#begin bgr_01_p1.png
+#begin images/backgrounds/bgr_01_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_01_p1.png
+/build:images/backgrounds/bgr_01_p1.png
 
-#begin bgr_01_p2.png
+#begin images/backgrounds/bgr_01_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,9 +47,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_01_p2.png
+/build:images/backgrounds/bgr_01_p2.png
 
-#begin bgr_02_cover.png
+#begin images/bgr_02_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -59,9 +59,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_02_cover.png
+/build:images/bgr_02_cover.png
 
-#begin bgr_02_p1.png
+#begin images/backgrounds/bgr_02_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -71,9 +71,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_02_p1.png
+/build:images/backgrounds/bgr_02_p1.png
 
-#begin bgr_02_p2.png
+#begin images/backgrounds/bgr_02_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -83,9 +83,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_02_p2.png
+/build:images/backgrounds/bgr_02_p2.png
 
-#begin bgr_03_cover.png
+#begin images/bgr_03_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -95,9 +95,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_03_cover.png
+/build:images/bgr_03_cover.png
 
-#begin bgr_03_p1.png
+#begin images/backgrounds/bgr_03_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -107,9 +107,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_03_p1.png
+/build:images/backgrounds/bgr_03_p1.png
 
-#begin bgr_03_p2.png
+#begin images/backgrounds/bgr_03_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -119,9 +119,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_03_p2.png
+/build:images/backgrounds/bgr_03_p2.png
 
-#begin bgr_04_cover.png
+#begin images/bgr_04_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -131,9 +131,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_04_cover.png
+/build:images/bgr_04_cover.png
 
-#begin bgr_04_p1.png
+#begin images/backgrounds/bgr_04_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -143,9 +143,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_04_p1.png
+/build:images/backgrounds/bgr_04_p1.png
 
-#begin bgr_04_p2.png
+#begin images/backgrounds/bgr_04_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,9 +155,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_04_p2.png
+/build:images/backgrounds/bgr_04_p2.png
 
-#begin bgr_05_cover.png
+#begin images/bgr_05_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -167,9 +167,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_05_cover.png
+/build:images/bgr_05_cover.png
 
-#begin bgr_05_p1.png
+#begin images/backgrounds/bgr_05_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -179,9 +179,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_05_p1.png
+/build:images/backgrounds/bgr_05_p1.png
 
-#begin bgr_05_p2.png
+#begin images/backgrounds/bgr_05_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -191,9 +191,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_05_p2.png
+/build:images/backgrounds/bgr_05_p2.png
 
-#begin bgr_06_cover.png
+#begin images/bgr_06_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -203,9 +203,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_06_cover.png
+/build:images/bgr_06_cover.png
 
-#begin bgr_06_p1.png
+#begin images/backgrounds/bgr_06_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -215,9 +215,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_06_p1.png
+/build:images/backgrounds/bgr_06_p1.png
 
-#begin bgr_06_p2.png
+#begin images/backgrounds/bgr_06_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -227,9 +227,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_06_p2.png
+/build:images/backgrounds/bgr_06_p2.png
 
-#begin bgr_07_cover.png
+#begin images/bgr_07_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -239,9 +239,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_07_cover.png
+/build:images/bgr_07_cover.png
 
-#begin bgr_07_p1.png
+#begin images/backgrounds/bgr_07_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -251,9 +251,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_07_p1.png
+/build:images/backgrounds/bgr_07_p1.png
 
-#begin bgr_07_p2.png
+#begin images/backgrounds/bgr_07_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -263,9 +263,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_07_p2.png
+/build:images/backgrounds/bgr_07_p2.png
 
-#begin bgr_08_cover.png
+#begin images/bgr_08_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -275,9 +275,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_08_cover.png
+/build:images/bgr_08_cover.png
 
-#begin bgr_08_p1.png
+#begin images/backgrounds/bgr_08_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -287,9 +287,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_08_p1.png
+/build:images/backgrounds/bgr_08_p1.png
 
-#begin bgr_08_p2.png
+#begin images/backgrounds/bgr_08_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -299,9 +299,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_08_p2.png
+/build:images/backgrounds/bgr_08_p2.png
 
-#begin bgr_09_cover.png
+#begin images/bgr_09_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -311,9 +311,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_09_cover.png
+/build:images/bgr_09_cover.png
 
-#begin bgr_09_p1.png
+#begin images/backgrounds/bgr_09_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -323,9 +323,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_09_p1.png
+/build:images/backgrounds/bgr_09_p1.png
 
-#begin bgr_09_p2.png
+#begin images/backgrounds/bgr_09_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -335,9 +335,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_09_p2.png
+/build:images/backgrounds/bgr_09_p2.png
 
-#begin bgr_10_cover.png
+#begin images/bgr_10_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -347,9 +347,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_10_cover.png
+/build:images/bgr_10_cover.png
 
-#begin bgr_10_p1.png
+#begin images/backgrounds/bgr_10_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -359,9 +359,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_10_p1.png
+/build:images/backgrounds/bgr_10_p1.png
 
-#begin bgr_10_p2.png
+#begin images/backgrounds/bgr_10_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -371,9 +371,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_10_p2.png
+/build:images/backgrounds/bgr_10_p2.png
 
-#begin bgr_11_cover.png
+#begin images/bgr_11_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -383,9 +383,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_11_cover.png
+/build:images/bgr_11_cover.png
 
-#begin bgr_11_p1.png
+#begin images/backgrounds/bgr_11_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -395,9 +395,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_11_p1.png
+/build:images/backgrounds/bgr_11_p1.png
 
-#begin bgr_11_p2.png
+#begin images/backgrounds/bgr_11_p2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -407,9 +407,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_11_p2.png
+/build:images/backgrounds/bgr_11_p2.png
 
-#begin bgr_12_cover.png
+#begin images/bgr_12_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -419,9 +419,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_12_cover.png
+/build:images/bgr_12_cover.png
 
-#begin bgr_12_p1.png
+#begin images/backgrounds/bgr_12_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -431,9 +431,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_12_p1.png
+/build:images/backgrounds/bgr_12_p1.png
 
-#begin bgr_13_cover.png
+#begin images/bgr_13_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -443,9 +443,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_13_cover.png
+/build:images/bgr_13_cover.png
 
-#begin bgr_13_p1.png
+#begin images/backgrounds/bgr_13_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -455,9 +455,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_13_p1.png
+/build:images/backgrounds/bgr_13_p1.png
 
-#begin bgr_14_cover.png
+#begin images/bgr_14_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -467,9 +467,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_14_cover.png
+/build:images/bgr_14_cover.png
 
-#begin bgr_14_p1.png
+#begin images/backgrounds/bgr_14_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -479,9 +479,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_14_p1.png
+/build:images/backgrounds/bgr_14_p1.png
 
-#begin bgr_15_cover.png
+#begin images/bgr_15_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -491,9 +491,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_15_cover.png
+/build:images/bgr_15_cover.png
 
-#begin bgr_15_p1.png
+#begin images/backgrounds/bgr_15_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -503,9 +503,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_15_p1.png
+/build:images/backgrounds/bgr_15_p1.png
 
-#begin big_font.png
+#begin images/big_font.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -515,9 +515,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:big_font.png
+/build:images/big_font.png
 
-#begin char_animations.png
+#begin images/char_animations.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -527,9 +527,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_animations.png
+/build:images/char_animations.png
 
-#begin char_animations2.png
+#begin images/char_animations2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -539,9 +539,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_animations2.png
+/build:images/char_animations2.png
 
-#begin char_animations3.png
+#begin images/char_animations3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -551,9 +551,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_animations3.png
+/build:images/char_animations3.png
 
-#begin char_supports.png
+#begin images/char_supports.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -563,9 +563,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_supports.png
+/build:images/char_supports.png
 
-#begin confetti_particles.png
+#begin images/confetti_particles.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -575,9 +575,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:confetti_particles.png
+/build:images/confetti_particles.png
 
-#begin cursor_active.png
+#begin images/cursor_active.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -587,9 +587,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:cursor_active.png
+/build:images/cursor_active.png
 
-#begin cursor.png
+#begin images/cursor.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -599,9 +599,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:cursor.png
+/build:images/cursor.png
 
-#begin font_numbers_big.png
+#begin images/font_numbers_big.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -611,9 +611,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:font_numbers_big.png
+/build:images/font_numbers_big.png
 
-#begin gk-icon.png
+#begin images/hud_buttons_en.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -623,9 +623,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gk-icon.png
+/build:images/hud_buttons_en.png
 
-#begin gk-icon@2x.png
+#begin images/hud_buttons_gr.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -635,9 +635,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gk-icon@2x.png
+/build:images/hud_buttons_gr.png
 
-#begin gk-notification.png
+#begin images/hud_buttons_ru.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -647,9 +647,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gk-notification.png
+/build:images/hud_buttons_ru.png
 
-#begin gk-notification@2x.png
+#begin images/hud_buttons.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -659,9 +659,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gk-notification@2x.png
+/build:images/hud_buttons.png
 
-#begin hud_buttons_en.png
+#begin images/hud_star.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -671,9 +671,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:hud_buttons_en.png
+/build:images/hud_star.png
 
-#begin hud_buttons_gr.png
+#begin images/loaderbar_full.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -683,9 +683,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:hud_buttons_gr.png
+/build:images/loaderbar_full.png
 
-#begin hud_buttons_ru.png
+#begin images/menu_achievement.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -695,9 +695,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:hud_buttons_ru.png
+/build:images/menu_achievement.png
 
-#begin hud_buttons.png
+#begin images/menu_bgr_shadow.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -707,9 +707,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:hud_buttons.png
+/build:images/menu_bgr_shadow.png
 
-#begin hud_star.png
+#begin images/menu_bgr.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -719,9 +719,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:hud_star.png
+/build:images/menu_bgr.png
 
-#begin loaderbar_full.png
+#begin images/menu_bgr_xmas.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -731,9 +731,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:loaderbar_full.png
+/build:images/menu_bgr_xmas.png
 
-#begin menu_achievement.png
+#begin images/menu_button_achiv_cup.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -743,9 +743,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_achievement.png
+/build:images/menu_button_achiv_cup.png
 
-#begin menu_bgr_shadow.png
+#begin images/menu_button_default.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -755,9 +755,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_bgr_shadow.png
+/build:images/menu_button_default.png
 
-#begin menu_bgr.png
+#begin images/menu_button_short.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -767,9 +767,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_bgr.png
+/build:images/menu_button_short.png
 
-#begin menu_bgr_xmas.png
+#begin images/menu_extra_buttons_en.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -779,9 +779,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_bgr_xmas.png
+/build:images/menu_extra_buttons_en.png
 
-#begin menu_button_achiv_cup.png
+#begin images/menu_extra_buttons_fr.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -791,9 +791,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_button_achiv_cup.png
+/build:images/menu_extra_buttons_fr.png
 
-#begin menu_button_default.png
+#begin images/menu_extra_buttons_gr.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -803,9 +803,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_button_default.png
+/build:images/menu_extra_buttons_gr.png
 
-#begin menu_button_short.png
+#begin images/menu_extra_buttons_ru.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -815,9 +815,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_button_short.png
+/build:images/menu_extra_buttons_ru.png
 
-#begin menu_extra_buttons_en.png
+#begin images/menu_extra_buttons.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -827,9 +827,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_extra_buttons_en.png
+/build:images/menu_extra_buttons.png
 
-#begin menu_extra_buttons_fr.png
+#begin images/menu_leaderboard.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -839,9 +839,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_extra_buttons_fr.png
+/build:images/menu_leaderboard.png
 
-#begin menu_extra_buttons_gr.png
+#begin images/menu_level_selection.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -851,9 +851,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_extra_buttons_gr.png
+/build:images/menu_level_selection.png
 
-#begin menu_extra_buttons_ru.png
+#begin images/menu_loading.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -863,9 +863,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_extra_buttons_ru.png
+/build:images/menu_loading.png
 
-#begin menu_extra_buttons.png
+#begin images/menu_logo.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -875,9 +875,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_extra_buttons.png
+/build:images/menu_logo.png
 
-#begin menu_leaderboard.png
+#begin images/menu_notification.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -887,9 +887,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_leaderboard.png
+/build:images/menu_notification.png
 
-#begin menu_level_selection.png
+#begin images/menu_options.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -899,9 +899,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_level_selection.png
+/build:images/menu_options.png
 
-#begin menu_loading.png
+#begin images/menu_pack_selection.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -911,9 +911,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_loading.png
+/build:images/menu_pack_selection.png
 
-#begin menu_logo.png
+#begin images/menu_pack_selection2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -923,9 +923,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_logo.png
+/build:images/menu_pack_selection2.png
 
-#begin menu_notification.png
+#begin images/menu_pause.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -935,9 +935,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_notification.png
+/build:images/menu_pause.png
 
-#begin menu_options.png
+#begin images/menu_popup.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -947,9 +947,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_options.png
+/build:images/menu_popup.png
 
-#begin menu_pack_selection.png
+#begin images/menu_processing_hd.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -959,9 +959,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_pack_selection.png
+/build:images/menu_processing_hd.png
 
-#begin menu_pack_selection2.png
+#begin images/menu_result_en.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -971,9 +971,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_pack_selection2.png
+/build:images/menu_result_en.png
 
-#begin menu_pause.png
+#begin images/menu_result_fr.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -983,9 +983,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_pause.png
+/build:images/menu_result_fr.png
 
-#begin menu_popup.png
+#begin images/menu_result_gr.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -995,9 +995,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_popup.png
+/build:images/menu_result_gr.png
 
-#begin menu_processing_hd.png
+#begin images/menu_result_ru.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1007,9 +1007,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_processing_hd.png
+/build:images/menu_result_ru.png
 
-#begin menu_result_en.png
+#begin images/menu_result.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1019,9 +1019,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_result_en.png
+/build:images/menu_result.png
 
-#begin menu_result_fr.png
+#begin images/menu_scrollbar_changename.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1031,9 +1031,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_result_fr.png
+/build:images/menu_scrollbar_changename.png
 
-#begin menu_result_gr.png
+#begin images/menu_scrollbar.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1043,9 +1043,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_result_gr.png
+/build:images/menu_scrollbar.png
 
-#begin menu_result_ru.png
+#begin images/obj_bee_hd.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1055,9 +1055,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_result_ru.png
+/build:images/obj_bee_hd.png
 
-#begin menu_result.png
+#begin images/obj_bouncer_01.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1067,9 +1067,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_result.png
+/build:images/obj_bouncer_01.png
 
-#begin menu_scrollbar_changename.png
+#begin images/obj_bouncer_02.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1079,9 +1079,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_scrollbar_changename.png
+/build:images/obj_bouncer_02.png
 
-#begin menu_scrollbar.png
+#begin images/obj_bubble_attached.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1091,9 +1091,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_scrollbar.png
+/build:images/obj_bubble_attached.png
 
-#begin obj_bee_hd.png
+#begin images/obj_bubble_flight.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1103,9 +1103,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_bee_hd.png
+/build:images/obj_bubble_flight.png
 
-#begin obj_bouncer_01.png
+#begin images/obj_bubble_pop.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1115,9 +1115,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_bouncer_01.png
+/build:images/obj_bubble_pop.png
 
-#begin obj_bouncer_02.png
+#begin images/obj_electrodes.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1127,9 +1127,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_bouncer_02.png
+/build:images/obj_electrodes.png
 
-#begin obj_bubble_attached.png
+#begin images/obj_hat.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1139,9 +1139,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_bubble_attached.png
+/build:images/obj_hat.png
 
-#begin obj_bubble_flight.png
+#begin images/obj_sock_xmas.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1151,9 +1151,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_bubble_flight.png
+/build:images/obj_sock_xmas.png
 
-#begin obj_bubble_pop.png
+#begin images/obj_hook_01.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1163,9 +1163,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_bubble_pop.png
+/build:images/obj_hook_01.png
 
-#begin obj_electrodes.png
+#begin images/obj_hook_02.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1175,9 +1175,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_electrodes.png
+/build:images/obj_hook_02.png
 
-#begin obj_hat.png
+#begin images/obj_hook_auto.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1187,9 +1187,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_hat.png
+/build:images/obj_hook_auto.png
 
-#begin obj_sock_xmas.png
+#begin images/obj_hook_movable.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1199,9 +1199,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_sock_xmas.png
+/build:images/obj_hook_movable.png
 
-#begin obj_hook_01.png
+#begin images/obj_hook_regulated.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1211,9 +1211,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_hook_01.png
+/build:images/obj_hook_regulated.png
 
-#begin obj_hook_02.png
+#begin images/obj_pollen_hd.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1223,9 +1223,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_hook_02.png
+/build:images/obj_pollen_hd.png
 
-#begin obj_hook_auto.png
+#begin images/obj_pump.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1235,9 +1235,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_hook_auto.png
+/build:images/obj_pump.png
 
-#begin obj_hook_movable.png
+#begin images/obj_rotatable_spikes_01.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1247,9 +1247,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_hook_movable.png
+/build:images/obj_rotatable_spikes_01.png
 
-#begin obj_hook_regulated.png
+#begin images/obj_rotatable_spikes_02.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1259,9 +1259,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_hook_regulated.png
+/build:images/obj_rotatable_spikes_02.png
 
-#begin obj_pollen_hd.png
+#begin images/obj_rotatable_spikes_03.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1271,9 +1271,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_pollen_hd.png
+/build:images/obj_rotatable_spikes_03.png
 
-#begin obj_pump.png
+#begin images/obj_rotatable_spikes_04.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1283,9 +1283,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_pump.png
+/build:images/obj_rotatable_spikes_04.png
 
-#begin obj_rotatable_spikes_01.png
+#begin images/obj_rotatable_spikes_button.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1295,9 +1295,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_rotatable_spikes_01.png
+/build:images/obj_rotatable_spikes_button.png
 
-#begin obj_rotatable_spikes_02.png
+#begin images/obj_spider.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1307,9 +1307,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_rotatable_spikes_02.png
+/build:images/obj_spider.png
 
-#begin obj_rotatable_spikes_03.png
+#begin images/obj_spikes_01.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1319,9 +1319,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_rotatable_spikes_03.png
+/build:images/obj_spikes_01.png
 
-#begin obj_rotatable_spikes_04.png
+#begin images/obj_spikes_02.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1331,9 +1331,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_rotatable_spikes_04.png
+/build:images/obj_spikes_02.png
 
-#begin obj_rotatable_spikes_button.png
+#begin images/obj_spikes_03.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1343,9 +1343,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_rotatable_spikes_button.png
+/build:images/obj_spikes_03.png
 
-#begin obj_spider.png
+#begin images/obj_spikes_04.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1355,9 +1355,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_spider.png
+/build:images/obj_spikes_04.png
 
-#begin obj_spikes_01.png
+#begin images/obj_star_disappear.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1367,9 +1367,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_spikes_01.png
+/build:images/obj_star_disappear.png
 
-#begin obj_spikes_02.png
+#begin images/obj_star_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1379,9 +1379,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_spikes_02.png
+/build:images/obj_star_idle.png
 
-#begin obj_spikes_03.png
+#begin images/obj_vinil.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1391,9 +1391,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_spikes_03.png
+/build:images/obj_vinil.png
 
-#begin obj_spikes_04.png
+#begin images/obj_ghost.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1403,9 +1403,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_spikes_04.png
+/build:images/obj_ghost.png
 
-#begin obj_star_disappear.png
+#begin images/obj_pipe.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1415,9 +1415,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_star_disappear.png
+/build:images/obj_pipe.png
 
-#begin obj_star_idle.png
+#begin images/obj_lantern.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1427,9 +1427,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_star_idle.png
+/build:images/obj_lantern.png
 
-#begin obj_vinil.png
+#begin images/obj_gap.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1439,9 +1439,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_vinil.png
+/build:images/obj_gap.png
 
-#begin obj_ghost.png
+#begin images/small_font.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1451,9 +1451,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_ghost.png
+/build:images/small_font.png
 
-#begin obj_pipe.png
+#begin images/xmas_hat_logo.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1463,55 +1463,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_pipe.png
-
-#begin obj_lantern.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:obj_lantern.png
-
-#begin obj_gap.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:obj_gap.png
-
-#begin small_font.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:small_font.png
-
-#begin xmas_hat_logo.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:xmas_hat_logo.png
+/build:images/xmas_hat_logo.png
 
 #begin sounds/sfx/bouncer.wav
 /importer:WavImporter
@@ -1807,7 +1759,7 @@
 /processorParam:Quality=Best
 /build:sounds/sfx/mouse_tap.wav;sounds/sfx/mouse_tap
 
-#begin tutorial_signs.png
+#begin images/tutorial_signs.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1817,9 +1769,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tutorial_signs.png
+/build:images/tutorial_signs.png
 
-#begin zeptolab_no_link.png
+#begin images/backgrounds/zeptolab_no_link.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1829,9 +1781,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:zeptolab_no_link.png
+/build:images/backgrounds/zeptolab_no_link.png
 
-#begin zeptolab.png
+#begin images/snowflakes.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1841,9 +1793,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:zeptolab.png
+/build:images/snowflakes.png
 
-#begin snowflakes.png
+#begin images/christmas_lights.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1853,9 +1805,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:snowflakes.png
+/build:images/christmas_lights.png
 
-#begin christmas_lights.png
+#begin images/char_supports_xmas.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1865,9 +1817,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:christmas_lights.png
+/build:images/char_supports_xmas.png
 
-#begin char_supports_xmas.png
+#begin images/char_greeting_xmas.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1877,9 +1829,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_supports_xmas.png
+/build:images/char_greeting_xmas.png
 
-#begin char_greeting_xmas.png
+#begin images/char_idle_xmas.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1889,9 +1841,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_greeting_xmas.png
+/build:images/char_idle_xmas.png
 
-#begin char_idle_xmas.png
+#begin images/char_animations_paddington.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1901,9 +1853,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_idle_xmas.png
+/build:images/char_animations_paddington.png
 
-#begin char_animations_paddington.png
+#begin images/obj_candy_paddington.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1913,9 +1865,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_animations_paddington.png
+/build:images/obj_candy_paddington.png
 
-#begin obj_candy_paddington.png
+#begin images/skin_selection.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1925,9 +1877,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_candy_paddington.png
+/build:images/skin_selection.png
 
-#begin skin_selection.png
+#begin images/candy_selection_fx.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1937,9 +1889,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:skin_selection.png
+/build:images/candy_selection_fx.png
 
-#begin candy_selection_fx.png
+#begin images/menu_logo_new.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1949,9 +1901,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candy_selection_fx.png
+/build:images/menu_logo_new.png
 
-#begin menu_logo_new.png
+#begin images/backgrounds/skin_bg.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1961,21 +1913,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menu_logo_new.png
+/build:images/backgrounds/skin_bg.png
 
-#begin skin_bg.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:skin_bg.png
-
-#begin candies/obj_candy_52.png
+#begin images/candies/obj_candy_52.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1985,9 +1925,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_52.png
+/build:images/candies/obj_candy_52.png
 
-#begin candies/obj_candy_fx.png
+#begin images/candies/obj_candy_fx.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1997,9 +1937,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_fx.png
+/build:images/candies/obj_candy_fx.png
 
-#begin candies/obj_candy_01_new.png
+#begin images/candies/obj_candy_01_new.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2009,9 +1949,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_01_new.png
+/build:images/candies/obj_candy_01_new.png
 
-#begin candies/obj_candy_02.png
+#begin images/candies/obj_candy_02.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2021,9 +1961,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_02.png
+/build:images/candies/obj_candy_02.png
 
-#begin candies/obj_candy_03.png
+#begin images/candies/obj_candy_03.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2033,9 +1973,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_03.png
+/build:images/candies/obj_candy_03.png
 
-#begin candies/obj_candy_04.png
+#begin images/candies/obj_candy_04.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2045,9 +1985,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_04.png
+/build:images/candies/obj_candy_04.png
 
-#begin candies/obj_candy_05.png
+#begin images/candies/obj_candy_05.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2057,9 +1997,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_05.png
+/build:images/candies/obj_candy_05.png
 
-#begin candies/obj_candy_06.png
+#begin images/candies/obj_candy_06.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2069,9 +2009,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_06.png
+/build:images/candies/obj_candy_06.png
 
-#begin candies/obj_candy_07.png
+#begin images/candies/obj_candy_07.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2081,9 +2021,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_07.png
+/build:images/candies/obj_candy_07.png
 
-#begin candies/obj_candy_08.png
+#begin images/candies/obj_candy_08.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2093,9 +2033,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_08.png
+/build:images/candies/obj_candy_08.png
 
-#begin candies/obj_candy_09.png
+#begin images/candies/obj_candy_09.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2105,9 +2045,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_09.png
+/build:images/candies/obj_candy_09.png
 
-#begin candies/obj_candy_10.png
+#begin images/candies/obj_candy_10.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2117,9 +2057,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_10.png
+/build:images/candies/obj_candy_10.png
 
-#begin candies/obj_candy_11.png
+#begin images/candies/obj_candy_11.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2129,9 +2069,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_11.png
+/build:images/candies/obj_candy_11.png
 
-#begin candies/obj_candy_12.png
+#begin images/candies/obj_candy_12.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2141,9 +2081,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_12.png
+/build:images/candies/obj_candy_12.png
 
-#begin candies/obj_candy_13.png
+#begin images/candies/obj_candy_13.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2153,9 +2093,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_13.png
+/build:images/candies/obj_candy_13.png
 
-#begin candies/obj_candy_14.png
+#begin images/candies/obj_candy_14.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2165,9 +2105,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_14.png
+/build:images/candies/obj_candy_14.png
 
-#begin candies/obj_candy_15.png
+#begin images/candies/obj_candy_15.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2177,9 +2117,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_15.png
+/build:images/candies/obj_candy_15.png
 
-#begin candies/obj_candy_16.png
+#begin images/candies/obj_candy_16.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2189,9 +2129,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_16.png
+/build:images/candies/obj_candy_16.png
 
-#begin candies/obj_candy_17.png
+#begin images/candies/obj_candy_17.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2201,9 +2141,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_17.png
+/build:images/candies/obj_candy_17.png
 
-#begin candies/obj_candy_18.png
+#begin images/candies/obj_candy_18.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2213,9 +2153,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_18.png
+/build:images/candies/obj_candy_18.png
 
-#begin candies/obj_candy_19.png
+#begin images/candies/obj_candy_19.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2225,9 +2165,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_19.png
+/build:images/candies/obj_candy_19.png
 
-#begin candies/obj_candy_20.png
+#begin images/candies/obj_candy_20.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2237,9 +2177,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_20.png
+/build:images/candies/obj_candy_20.png
 
-#begin candies/obj_candy_21.png
+#begin images/candies/obj_candy_21.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2249,9 +2189,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_21.png
+/build:images/candies/obj_candy_21.png
 
-#begin candies/obj_candy_22.png
+#begin images/candies/obj_candy_22.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2261,9 +2201,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_22.png
+/build:images/candies/obj_candy_22.png
 
-#begin candies/obj_candy_23.png
+#begin images/candies/obj_candy_23.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2273,9 +2213,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_23.png
+/build:images/candies/obj_candy_23.png
 
-#begin candies/obj_candy_24.png
+#begin images/candies/obj_candy_24.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2285,9 +2225,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_24.png
+/build:images/candies/obj_candy_24.png
 
-#begin candies/obj_candy_25.png
+#begin images/candies/obj_candy_25.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2297,9 +2237,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_25.png
+/build:images/candies/obj_candy_25.png
 
-#begin candies/obj_candy_26.png
+#begin images/candies/obj_candy_26.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2309,9 +2249,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_26.png
+/build:images/candies/obj_candy_26.png
 
-#begin candies/obj_candy_27.png
+#begin images/candies/obj_candy_27.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2321,9 +2261,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_27.png
+/build:images/candies/obj_candy_27.png
 
-#begin candies/obj_candy_28.png
+#begin images/candies/obj_candy_28.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2333,9 +2273,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_28.png
+/build:images/candies/obj_candy_28.png
 
-#begin candies/obj_candy_29.png
+#begin images/candies/obj_candy_29.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2345,9 +2285,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_29.png
+/build:images/candies/obj_candy_29.png
 
-#begin candies/obj_candy_30.png
+#begin images/candies/obj_candy_30.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2357,9 +2297,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_30.png
+/build:images/candies/obj_candy_30.png
 
-#begin candies/obj_candy_31.png
+#begin images/candies/obj_candy_31.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2369,9 +2309,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_31.png
+/build:images/candies/obj_candy_31.png
 
-#begin candies/obj_candy_32.png
+#begin images/candies/obj_candy_32.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2381,9 +2321,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_32.png
+/build:images/candies/obj_candy_32.png
 
-#begin candies/obj_candy_33.png
+#begin images/candies/obj_candy_33.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2393,9 +2333,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_33.png
+/build:images/candies/obj_candy_33.png
 
-#begin candies/obj_candy_34.png
+#begin images/candies/obj_candy_34.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2405,9 +2345,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_34.png
+/build:images/candies/obj_candy_34.png
 
-#begin candies/obj_candy_35.png
+#begin images/candies/obj_candy_35.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2417,9 +2357,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_35.png
+/build:images/candies/obj_candy_35.png
 
-#begin candies/obj_candy_36.png
+#begin images/candies/obj_candy_36.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2429,9 +2369,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_36.png
+/build:images/candies/obj_candy_36.png
 
-#begin candies/obj_candy_37.png
+#begin images/candies/obj_candy_37.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2441,9 +2381,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_37.png
+/build:images/candies/obj_candy_37.png
 
-#begin candies/obj_candy_38.png
+#begin images/candies/obj_candy_38.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2453,9 +2393,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_38.png
+/build:images/candies/obj_candy_38.png
 
-#begin candies/obj_candy_39.png
+#begin images/candies/obj_candy_39.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2465,9 +2405,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_39.png
+/build:images/candies/obj_candy_39.png
 
-#begin candies/obj_candy_40.png
+#begin images/candies/obj_candy_40.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2477,9 +2417,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_40.png
+/build:images/candies/obj_candy_40.png
 
-#begin candies/obj_candy_41.png
+#begin images/candies/obj_candy_41.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2489,9 +2429,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_41.png
+/build:images/candies/obj_candy_41.png
 
-#begin candies/obj_candy_42.png
+#begin images/candies/obj_candy_42.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2501,9 +2441,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_42.png
+/build:images/candies/obj_candy_42.png
 
-#begin candies/obj_candy_43.png
+#begin images/candies/obj_candy_43.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2513,9 +2453,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_43.png
+/build:images/candies/obj_candy_43.png
 
-#begin candies/obj_candy_44.png
+#begin images/candies/obj_candy_44.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2525,9 +2465,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_44.png
+/build:images/candies/obj_candy_44.png
 
-#begin candies/obj_candy_45.png
+#begin images/candies/obj_candy_45.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2537,9 +2477,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_45.png
+/build:images/candies/obj_candy_45.png
 
-#begin candies/obj_candy_46.png
+#begin images/candies/obj_candy_46.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2549,9 +2489,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_46.png
+/build:images/candies/obj_candy_46.png
 
-#begin candies/obj_candy_47.png
+#begin images/candies/obj_candy_47.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2561,9 +2501,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_47.png
+/build:images/candies/obj_candy_47.png
 
-#begin candies/obj_candy_48.png
+#begin images/candies/obj_candy_48.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2573,9 +2513,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_48.png
+/build:images/candies/obj_candy_48.png
 
-#begin candies/obj_candy_49.png
+#begin images/candies/obj_candy_49.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2585,9 +2525,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_49.png
+/build:images/candies/obj_candy_49.png
 
-#begin candies/obj_candy_50.png
+#begin images/candies/obj_candy_50.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2597,9 +2537,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_50.png
+/build:images/candies/obj_candy_50.png
 
-#begin candies/obj_candy_51.png
+#begin images/candies/obj_candy_51.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2609,9 +2549,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:candies/obj_candy_51.png
+/build:images/candies/obj_candy_51.png
 
-#begin bgr_16_cover.png
+#begin images/bgr_16_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2621,9 +2561,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_16_cover.png
+/build:images/bgr_16_cover.png
 
-#begin bgr_16_p1.png
+#begin images/backgrounds/bgr_16_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2633,9 +2573,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_16_p1.png
+/build:images/backgrounds/bgr_16_p1.png
 
-#begin obj_lighter.png
+#begin images/obj_lighter.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2645,9 +2585,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_lighter.png
+/build:images/obj_lighter.png
 
-#begin obj_star_night.png
+#begin images/obj_star_night.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2657,7 +2597,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_star_night.png
+/build:images/obj_star_night.png
 
 #begin sounds/sfx/monster_sleep01.wav
 /importer:WavImporter
@@ -2689,7 +2629,7 @@
 /processorParam:Quality=Best
 /build:sounds/sfx/star_light02.wav
 
-#begin char_animations_sleeping.png
+#begin images/char_animations_sleeping.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2699,9 +2639,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:char_animations_sleeping.png
+/build:images/char_animations_sleeping.png
 
-#begin bgr_17_cover.png
+#begin images/bgr_17_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2711,9 +2651,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_17_cover.png
+/build:images/bgr_17_cover.png
 
-#begin bgr_17_p1.png
+#begin images/backgrounds/bgr_17_p1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2723,9 +2663,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:bgr_17_p1.png
+/build:images/backgrounds/bgr_17_p1.png
 
-#begin obj_transporter.png
+#begin images/obj_transporter.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2735,7 +2675,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:obj_transporter.png
+/build:images/obj_transporter.png
 
 #begin sounds/sfx/con01.wav
 /importer:WavImporter
@@ -2773,7 +2713,7 @@
 /processorParam:Quality=Best
 /build:sounds/sfx/transporter_move.wav
 
-#begin box_label.png
+#begin images/box_label.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2783,4 +2723,4 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:box_label.png
+/build:images/box_label.png

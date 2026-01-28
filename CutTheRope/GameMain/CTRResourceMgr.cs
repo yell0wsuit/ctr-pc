@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
-
-using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
@@ -78,110 +73,20 @@ namespace CutTheRope.GameMain
 
         protected override TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
-            Dictionary<string, TextureAtlasConfig> configs = LoadTexturePackerRegistry();
-            return configs.TryGetValue(resourceName, out TextureAtlasConfig config) ? config : null;
-        }
-
-        private static Dictionary<string, TextureAtlasConfig> LoadTexturePackerRegistry()
-        {
-            Dictionary<string, TextureAtlasConfig> result = [];
-
-            try
-            {
-                string registryPath = ContentPaths.GetTexturePackerRegistryPath();
-                string json = TryReadContentText(registryPath);
-                if (string.IsNullOrEmpty(json))
-                {
-                    Console.WriteLine($"TexturePackerRegistry not found at \"{registryPath}\". TexturePacker atlases will fall back to legacy XML data.");
-                    return result; // Return empty dict if no registry file
-                }
-
-                using JsonDocument doc = JsonDocument.Parse(json);
-
-                if (!doc.RootElement.TryGetProperty("textures", out JsonElement texturesElement) ||
-                    texturesElement.ValueKind != JsonValueKind.Array)
-                {
-                    return result;
-                }
-
-                foreach (JsonElement textureElement in texturesElement.EnumerateArray())
-                {
-                    if (!textureElement.TryGetProperty("resourceName", out JsonElement resourceNameElement) ||
-                        !textureElement.TryGetProperty("atlasPath", out JsonElement atlasPathElement))
-                    {
-                        continue;
-                    }
-
-                    string resourceName = resourceNameElement.GetString();
-                    string atlasPath = atlasPathElement.GetString();
-
-                    if (string.IsNullOrEmpty(resourceName))
-                    {
-                        throw new InvalidDataException($"TexturePackerRegistry entry is missing a resourceName.");
-                    }
-
-                    TextureAtlasConfig config = new()
-                    {
-                        Format = TextureAtlasFormat.TexturePackerJson,
-                        AtlasPath = atlasPath,
-                        ResourceName = resourceName,
-                        UseAntialias = GetBoolProperty(textureElement, "useAntialias", true),
-                        FrameOrder = GetStringArrayProperty(textureElement, "frameOrder"),
-                        CenterOffsets = GetBoolProperty(textureElement, "centerOffsets", false)
-                    };
-
-                    result[resourceName] = config;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to load TexturePackerRegistry.json: {ex.Message}");
-            }
-
-            return result;
-        }
-
-        private static bool GetBoolProperty(JsonElement element, string propertyName, bool defaultValue)
-        {
-            return (element.TryGetProperty(propertyName, out JsonElement prop) &&
-                prop.ValueKind == JsonValueKind.True) || ((!element.TryGetProperty(propertyName, out prop) ||
-                prop.ValueKind != JsonValueKind.False) && defaultValue);
-        }
-
-        private static string[] GetStringArrayProperty(JsonElement element, string propertyName)
-        {
-            if (!element.TryGetProperty(propertyName, out JsonElement prop) ||
-                prop.ValueKind != JsonValueKind.Array)
+            // Background images don't need JSON atlas - dimensions auto-detected from texture
+            if (Resources.IsBackgroundImg(resourceName))
             {
                 return null;
             }
 
-            List<string> result = [];
-            foreach (JsonElement item in prop.EnumerateArray())
+            // Convention-based: all textures use JSON+PNG pairs in images folder
+            return new TextureAtlasConfig
             {
-                if (item.ValueKind == JsonValueKind.String)
-                {
-                    result.Add(item.GetString());
-                }
-            }
-
-            return result.Count > 0 ? [.. result] : null;
+                AtlasPath = ContentPaths.GetImagePath(resourceName, ".json"),
+                ResourceName = resourceName,
+                UseAntialias = true,
+                CenterOffsets = false
+            };
         }
-
-        private static string TryReadContentText(string relativePath)
-        {
-            try
-            {
-                using Stream stream = TitleContainer.OpenStream(relativePath);
-                using StreamReader reader = new(stream);
-                return reader.ReadToEnd();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to open \"{relativePath}\": {ex.Message}");
-                return null;
-            }
-        }
-
     }
 }

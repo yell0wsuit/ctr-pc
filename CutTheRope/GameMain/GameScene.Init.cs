@@ -128,7 +128,15 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             image.AddTimelinewithID(timeline, 0);
-            Image.SetElementPositionWithQuadOffset(image, Resources.Img.Bgr08P1, 1);
+
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            Vector? earthBgPosition = PackConfig.GetEarthBgPosition(cTRRootController.GetPack());
+            if (earthBgPosition.HasValue)
+            {
+                image.x = earthBgPosition.Value.X;
+                image.y = earthBgPosition.Value.Y;
+            }
+
             if (Canvas.isFullscreen)
             {
                 _ = Global.ScreenSizeManager.ScreenWidth;

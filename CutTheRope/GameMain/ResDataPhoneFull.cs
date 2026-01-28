@@ -13,7 +13,8 @@ namespace CutTheRope.GameMain
 {
     internal class ResDataPhoneFull
     {
-        private const string ResourceDataFileName = ContentPaths.ResourceDataFile;
+        // Legacy: this file has been removed, kept for backwards compatibility
+        private const string ResourceDataFileName = "res_data_phone_full.xml";
 
         public static string GetXml(string resName)
         {
@@ -45,7 +46,7 @@ namespace CutTheRope.GameMain
         {
             Dictionary<string, string> result = [];
 
-            // Load game assets (res_data_phone_full.xml)
+            // Legacy: was used to load assets from res_data_phone_full.xml (now removed)
             Dictionary<string, string> resourceData = LoadXmlFile(ResourceDataFileName, "resource");
             foreach (KeyValuePair<string, string> kvp in resourceData)
             {

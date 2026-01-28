@@ -1,0 +1,57 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 1292,
+                "h": 1440
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 1292,
+                "h": 1440
+            },
+            "sourceSize": {
+                "w": 2560,
+                "h": 1440
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 1292,
+                "y": 0,
+                "w": 63,
+                "h": 1440
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 1284,
+                "y": 0,
+                "w": 63,
+                "h": 1440
+            },
+            "sourceSize": {
+                "w": 2560,
+                "h": 1440
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "bgr_13_cover.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 1355,
+            "h": 1440
+        },
+        "scale": "1"
+    }
+}

@@ -351,7 +351,7 @@ namespace CutTheRope.GameMain
         private bool showGreeting;
 
         private static readonly string[] PackStartup = [
-            Resources.Img.ZeptolabNoLink,
+            Resources.BackgroundImg.ZeptolabNoLink,
             Resources.Img.LoaderbarFull,
             null
         ];

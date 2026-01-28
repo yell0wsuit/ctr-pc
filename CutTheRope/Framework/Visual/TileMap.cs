@@ -58,14 +58,14 @@ namespace CutTheRope.Framework.Visual
             repeatedHorizontally = Repeat.NONE;
             horizontalRandom = false;
             verticalRandom = false;
-            restoreTileTransparency = true;
             randomSeed = RND_RANGE(1000, 2000);
             return this;
         }
 
         public void AddTileQuadwithID(CTRTexture2D t, int q, int ti)
         {
-            if (q == -1)
+            // If texture has no quads (e.g., background images), use full image dimensions
+            if (t.quadsCount == 0 || q == -1)
             {
                 tileWidth = t._realWidth;
                 tileHeight = t._realHeight;
@@ -92,10 +92,6 @@ namespace CutTheRope.Framework.Visual
             if (num == -1)
             {
                 Image image = Image.Image_create(t);
-                if (restoreTileTransparency)
-                {
-                    image.DoRestoreCutTransparency();
-                }
                 ImageMultiDrawer item = new ImageMultiDrawer().InitWithImageandCapacity(image, maxRowsOnScreen * maxColsOnScreen);
                 num = drawers.Count;
                 drawers.Add(item);
@@ -236,7 +232,7 @@ namespace CutTheRope.Framework.Visual
                         TileEntry tileEntry = tiles[num12];
                         ImageMultiDrawer imageMultiDrawer2 = drawers[tileEntry.drawerIndex];
                         CTRTexture2D texture = imageMultiDrawer2.image.texture;
-                        if (tileEntry.quad != -1)
+                        if (tileEntry.quad != -1 && texture.quadRects != null)
                         {
                             r.x += texture.quadRects[tileEntry.quad].x;
                             r.y += texture.quadRects[tileEntry.quad].y;
@@ -315,8 +311,6 @@ namespace CutTheRope.Framework.Visual
         private bool horizontalRandom;
 
         private bool verticalRandom;
-
-        private bool restoreTileTransparency;
 
         public enum Repeat
         {

@@ -1,0 +1,36 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 2048,
+                "h": 248
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 2048,
+                "h": 248
+            },
+            "sourceSize": {
+                "w": 2048,
+                "h": 304
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "menu_pause.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 2048,
+            "h": 248
+        },
+        "scale": "1"
+    }
+}
