@@ -1,0 +1,57 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 140,
+                "h": 144
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 69,
+                "y": 62,
+                "w": 140,
+                "h": 144
+            },
+            "sourceSize": {
+                "w": 275,
+                "h": 275
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 0,
+                "y": 144,
+                "w": 42,
+                "h": 37
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 117,
+                "y": 119,
+                "w": 42,
+                "h": 37
+            },
+            "sourceSize": {
+                "w": 275,
+                "h": 275
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "obj_hook_auto.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 140,
+            "h": 181
+        },
+        "scale": "1"
+    }
+}

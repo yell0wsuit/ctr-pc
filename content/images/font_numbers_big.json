@@ -1,0 +1,245 @@
+{
+    "frames": {
+        "0000_U+0030": {
+            "frame": {
+                "x": 5,
+                "y": 5,
+                "w": 49,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 49,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 49,
+                "h": 156
+            },
+            "unicode": 48,
+            "char": "0",
+            "index": 0
+        },
+        "0001_U+0031": {
+            "frame": {
+                "x": 59,
+                "y": 5,
+                "w": 16,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 16,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 16,
+                "h": 156
+            },
+            "unicode": 49,
+            "char": "1",
+            "index": 1
+        },
+        "0002_U+0032": {
+            "frame": {
+                "x": 80,
+                "y": 5,
+                "w": 48,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 48,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 48,
+                "h": 156
+            },
+            "unicode": 50,
+            "char": "2",
+            "index": 2
+        },
+        "0003_U+0033": {
+            "frame": {
+                "x": 133,
+                "y": 5,
+                "w": 38,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 38,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 38,
+                "h": 156
+            },
+            "unicode": 51,
+            "char": "3",
+            "index": 3
+        },
+        "0004_U+0034": {
+            "frame": {
+                "x": 176,
+                "y": 5,
+                "w": 41,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 41,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 41,
+                "h": 156
+            },
+            "unicode": 52,
+            "char": "4",
+            "index": 4
+        },
+        "0005_U+0035": {
+            "frame": {
+                "x": 222,
+                "y": 5,
+                "w": 45,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 45,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 45,
+                "h": 156
+            },
+            "unicode": 53,
+            "char": "5",
+            "index": 5
+        },
+        "0006_U+0036": {
+            "frame": {
+                "x": 272,
+                "y": 5,
+                "w": 43,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 43,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 43,
+                "h": 156
+            },
+            "unicode": 54,
+            "char": "6",
+            "index": 6
+        },
+        "0007_U+0037": {
+            "frame": {
+                "x": 320,
+                "y": 5,
+                "w": 47,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 47,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 47,
+                "h": 156
+            },
+            "unicode": 55,
+            "char": "7",
+            "index": 7
+        },
+        "0008_U+0038": {
+            "frame": {
+                "x": 372,
+                "y": 5,
+                "w": 49,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 49,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 49,
+                "h": 156
+            },
+            "unicode": 56,
+            "char": "8",
+            "index": 8
+        },
+        "0009_U+0039": {
+            "frame": {
+                "x": 426,
+                "y": 5,
+                "w": 35,
+                "h": 156
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 35,
+                "h": 156
+            },
+            "sourceSize": {
+                "w": 35,
+                "h": 156
+            },
+            "unicode": 57,
+            "char": "9",
+            "index": 9
+        }
+    },
+    "meta": {
+        "image": "font_numbers_big.png",
+        "size": {
+            "w": 461,
+            "h": 161
+        },
+        "app": "Cut the Rope Font Converter",
+        "version": "1.3",
+        "total_glyphs": 10,
+        "ordered": true
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 1, "w": 794, "h": 794 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 879, "y": 282, "w": 794, "h": 794 },
+            "sourceSize": { "w": 2560, "h": 1440 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 797, "y": 1, "w": 9, "h": 10 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 1288, "y": 402, "w": 9, "h": 10 },
+            "sourceSize": { "w": 2560, "h": 1440 }
+        },
+        {
+            "filename": "frame_0002.png",
+            "frame": { "x": 797, "y": 1, "w": 9, "h": 10 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 1288, "y": 664, "w": 9, "h": 10 },
+            "sourceSize": { "w": 2560, "h": 1440 }
+        },
+        {
+            "filename": "frame_0003.png",
+            "frame": { "x": 797, "y": 13, "w": 9, "h": 9 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 1288, "y": 769, "w": 9, "h": 9 },
+            "sourceSize": { "w": 2560, "h": 1440 }
+        },
+        {
+            "filename": "frame_0004.png",
+            "frame": { "x": 797, "y": 13, "w": 9, "h": 9 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 1288, "y": 1025, "w": 9, "h": 9 },
+            "sourceSize": { "w": 2560, "h": 1440 }
+        },
+        {
+            "filename": "frame_0005.png",
+            "frame": { "x": 797, "y": 1, "w": 9, "h": 10 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 1288, "y": 530, "w": 9, "h": 10 },
+            "sourceSize": { "w": 2560, "h": 1440 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_popup.png",
+        "format": "RGBA8888",
+        "size": { "w": 807, "h": 796 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:dcd7b7c06467a1e80aec9f312ba33cdb:13aac6dfaa0fa28c33e0370c2e7ab685:4368e08c5fda62ecc1afbf9ac8f50491$"
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 239,
+                "h": 239
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 811,
+                "y": 344,
+                "w": 239,
+                "h": 239
+            },
+            "sourceSize": {
+                "w": 2028,
+                "h": 1597
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "menu_result_en.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 239,
+            "h": 239
+        },
+        "scale": "1"
+    }
+}

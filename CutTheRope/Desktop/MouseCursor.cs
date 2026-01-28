@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Platform;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -25,8 +26,8 @@ namespace CutTheRope.Desktop
 
         public void Load(ContentManager cm)
         {
-            _cursor = cm.Load<Texture2D>("cursor");
-            _cursorActive = cm.Load<Texture2D>("cursor_active");
+            _cursor = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor"));
+            _cursorActive = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor_active"));
         }
 
         public void Draw()

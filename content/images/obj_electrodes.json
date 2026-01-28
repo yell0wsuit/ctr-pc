@@ -1,0 +1,120 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 507,
+                "h": 85
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 163,
+                "y": 82,
+                "w": 507,
+                "h": 85
+            },
+            "sourceSize": {
+                "w": 833,
+                "h": 250
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 0,
+                "y": 85,
+                "w": 507,
+                "h": 100
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 163,
+                "y": 73,
+                "w": 507,
+                "h": 100
+            },
+            "sourceSize": {
+                "w": 833,
+                "h": 250
+            }
+        },
+        {
+            "filename": "frame_0002",
+            "frame": {
+                "x": 0,
+                "y": 185,
+                "w": 507,
+                "h": 100
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 163,
+                "y": 71,
+                "w": 507,
+                "h": 100
+            },
+            "sourceSize": {
+                "w": 833,
+                "h": 250
+            }
+        },
+        {
+            "filename": "frame_0003",
+            "frame": {
+                "x": 0,
+                "y": 285,
+                "w": 507,
+                "h": 97
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 163,
+                "y": 70,
+                "w": 507,
+                "h": 97
+            },
+            "sourceSize": {
+                "w": 833,
+                "h": 250
+            }
+        },
+        {
+            "filename": "frame_0004",
+            "frame": {
+                "x": 0,
+                "y": 382,
+                "w": 507,
+                "h": 92
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 163,
+                "y": 75,
+                "w": 507,
+                "h": 92
+            },
+            "sourceSize": {
+                "w": 833,
+                "h": 250
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "obj_electrodes.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 507,
+            "h": 474
+        },
+        "scale": "1"
+    }
+}

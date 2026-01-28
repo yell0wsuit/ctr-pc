@@ -1,0 +1,99 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 101,
+                "h": 102
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 219,
+                "y": 29,
+                "w": 101,
+                "h": 102
+            },
+            "sourceSize": {
+                "w": 534,
+                "h": 160
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 0,
+                "y": 102,
+                "w": 101,
+                "h": 102
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 218,
+                "y": 29,
+                "w": 101,
+                "h": 102
+            },
+            "sourceSize": {
+                "w": 534,
+                "h": 160
+            }
+        },
+        {
+            "filename": "frame_0002",
+            "frame": {
+                "x": 0,
+                "y": 204,
+                "w": 101,
+                "h": 102
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 219,
+                "y": 29,
+                "w": 101,
+                "h": 102
+            },
+            "sourceSize": {
+                "w": 534,
+                "h": 160
+            }
+        },
+        {
+            "filename": "frame_0003",
+            "frame": {
+                "x": 0,
+                "y": 306,
+                "w": 101,
+                "h": 102
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 219,
+                "y": 29,
+                "w": 101,
+                "h": 102
+            },
+            "sourceSize": {
+                "w": 534,
+                "h": 160
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "obj_rotatable_spikes_button.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 101,
+            "h": 408
+        },
+        "scale": "1"
+    }
+}

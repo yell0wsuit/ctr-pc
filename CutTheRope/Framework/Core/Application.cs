@@ -140,7 +140,7 @@ namespace CutTheRope.Framework.Core
                     : $"{textureResourceName} (localized: {localizedName})";
 
             throw new InvalidOperationException(
-                $"Texture '{resolvedName}' could not be loaded. Ensure the resource name is correct and the asset is registered in TexturePackerRegistry.json.");
+                $"Texture '{resolvedName}' could not be loaded. Ensure the resource name is correct and the JSON+PNG pair exists in content/images/.");
         }
 
         /// <summary>

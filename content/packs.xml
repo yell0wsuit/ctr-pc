@@ -7,6 +7,7 @@
         boxCover="bgr_01_cover"
         boxHoleBgColor="70,37,0"
         levelCount="25"
+        boxBackgroundP2Y="896"
     />
     <pack
         index="1"
@@ -15,6 +16,7 @@
         boxCover="bgr_02_cover"
         boxHoleBgColor="39,52,0"
         levelCount="25"
+        boxBackgroundP2Y="835"
     />
     <pack
         index="2"
@@ -23,6 +25,7 @@
         boxCover="bgr_03_cover"
         boxHoleBgColor="44,45,54"
         levelCount="25"
+        boxBackgroundP2Y="756"
     />
     <pack
         index="3"
@@ -31,6 +34,7 @@
         boxCover="bgr_04_cover"
         boxHoleBgColor="31,42,84"
         levelCount="25"
+        boxBackgroundP2Y="768"
     />
     <pack
         index="4"
@@ -39,6 +43,7 @@
         boxCover="bgr_05_cover"
         boxHoleBgColor="69,31,50"
         levelCount="25"
+        boxBackgroundP2Y="624"
     />
     <pack
         index="5"
@@ -47,6 +52,7 @@
         boxCover="bgr_06_cover"
         boxHoleBgColor="75,33,0"
         levelCount="25"
+        boxBackgroundP2Y="760"
     />
     <pack
         index="6"
@@ -55,6 +61,7 @@
         boxCover="bgr_07_cover"
         boxHoleBgColor="84,22,0"
         levelCount="25"
+        boxBackgroundP2Y="881"
     />
     <pack
         index="7"
@@ -64,6 +71,8 @@
         boxHoleBgColor="0,51,78"
         levelCount="25"
         earthBg="true"
+        earthBgPosition="1027,581"
+        boxBackgroundP2Y="914"
     />
     <pack
         index="8"
@@ -72,6 +81,7 @@
         boxCover="bgr_09_cover"
         boxHoleBgColor="98,0,0"
         levelCount="25"
+        boxBackgroundP2Y="780"
     />
     <pack
         index="9"
@@ -80,6 +90,7 @@
         boxCover="bgr_10_cover"
         boxHoleBgColor="66,40,0"
         levelCount="25"
+        boxBackgroundP2Y="792"
     />
     <pack
         index="10"
@@ -88,6 +99,7 @@
         boxCover="bgr_11_cover"
         boxHoleBgColor="0,47,90"
         levelCount="25"
+        boxBackgroundP2Y="802"
     />
     <pack
         index="11"

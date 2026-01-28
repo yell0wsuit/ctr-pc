@@ -1,0 +1,53 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 182, "y": 201, "w": 3, "h": 3 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 3, "h": 3 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_01_obj_bee.png",
+            "frame": { "x": 1, "y": 1, "w": 90, "h": 118 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 92, "y": 74, "w": 90, "h": 118 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_02_wings_start.png",
+            "frame": { "x": 1, "y": 201, "w": 179, "h": 39 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 49, "y": 83, "w": 179, "h": 39 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_03_layer.png",
+            "frame": { "x": 1, "y": 121, "w": 188, "h": 78 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 44, "y": 38, "w": 188, "h": 78 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_04_wings_end.png",
+            "frame": { "x": 93, "y": 1, "w": 88, "h": 61 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 94, "y": 36, "w": 88, "h": 61 },
+            "sourceSize": { "w": 275, "h": 275 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_bee_hd.png",
+        "format": "RGBA8888",
+        "size": { "w": 190, "h": 241 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:70a72b54812424efe885ad3b87566aad:6fe8c2ab2be1b78ef3ff65d124e664f0:6649955e9c65e0c7806a951aabc1b908$"
+    }
+}

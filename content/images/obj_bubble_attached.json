@@ -1,0 +1,99 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 155,
+                "h": 154
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 47,
+                "y": 50,
+                "w": 155,
+                "h": 154
+            },
+            "sourceSize": {
+                "w": 250,
+                "h": 250
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 0,
+                "y": 155,
+                "w": 181,
+                "h": 209
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 32,
+                "y": 36,
+                "w": 181,
+                "h": 209
+            },
+            "sourceSize": {
+                "w": 250,
+                "h": 250
+            }
+        },
+        {
+            "filename": "frame_0002",
+            "frame": {
+                "x": 0,
+                "y": 364,
+                "w": 185,
+                "h": 180
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 35,
+                "y": 40,
+                "w": 185,
+                "h": 180
+            },
+            "sourceSize": {
+                "w": 250,
+                "h": 250
+            }
+        },
+        {
+            "filename": "frame_0003",
+            "frame": {
+                "x": 0,
+                "y": 544,
+                "w": 183,
+                "h": 178
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 35,
+                "y": 40,
+                "w": 183,
+                "h": 178
+            },
+            "sourceSize": {
+                "w": 250,
+                "h": 250
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "obj_bubble_attached.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 185,
+            "h": 722
+        },
+        "scale": "1"
+    }
+}

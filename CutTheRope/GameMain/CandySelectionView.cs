@@ -248,7 +248,7 @@ namespace CutTheRope.GameMain
                 height = (int)FrameworkTypes.SCREEN_HEIGHT
             }; // ensure child anchors use the full screen bounds instead of 0x0
 
-            Image bgImage = Image.Image_createWithResIDQuad(Resources.Img.SkinBackground, 0);
+            Image bgImage = Image.Image_createWithResID(Resources.BackgroundImg.SkinBackground);
             bgImage.anchor = bgImage.parentAnchor = 18; // center
 
             // Scale background to cover the whole screen (match other menu backgrounds)

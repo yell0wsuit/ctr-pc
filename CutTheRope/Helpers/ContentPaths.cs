@@ -45,19 +45,19 @@ namespace CutTheRope.Helpers
         public const string FontsDirectory = "fonts";
 
         /// <summary>
-        /// The classic XML resource data filename.
+        /// The subdirectory for texture images (JSON+PNG pairs).
         /// </summary>
-        public const string ResourceDataFile = "res_data_phone_full.xml";
+        public const string ImagesDirectory = "images";
+
+        /// <summary>
+        /// The subdirectory for background images without JSON atlas.
+        /// </summary>
+        public const string BackgroundsDirectory = $"{ImagesDirectory}/backgrounds";
 
         /// <summary>
         /// The menu strings JSON filename.
         /// </summary>
         public const string MenuStringsFile = "menu_strings.json";
-
-        /// <summary>
-        /// The Texture Packer registry JSON filename.
-        /// </summary>
-        public const string TexturePackerRegistryFile = "TexturePackerRegistry.json";
 
         /// <summary>
         /// The box packs configuration XML filename.
@@ -98,19 +98,37 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// Gets the full path to the Texture Packer registry file.
+        /// Gets the full path to a texture image resource (JSON or PNG).
+        /// Use for TitleContainer.OpenStream and direct file access.
         /// </summary>
-        public static string GetTexturePackerRegistryPath()
+        /// <param name="resourceName">The resource name (e.g., "obj_ghost" or "candies/obj_candy_02")</param>
+        /// <param name="extension">The file extension (e.g., ".json" or ".png")</param>
+        /// <returns>The full path to the image file (e.g., "content/images/obj_ghost.json")</returns>
+        public static string GetImagePath(string resourceName, string extension)
         {
-            return GetContentPath(TexturePackerRegistryFile);
+            return $"{RootDirectory}/{ImagesDirectory}/{resourceName}{extension}";
         }
 
         /// <summary>
-        /// Gets the full path to the classic XML resource data file.
+        /// Gets the ContentManager-relative path to a texture image resource.
+        /// Use for ContentManager.Load which already has "content" as root.
         /// </summary>
-        public static string GetResourceDataPath()
+        /// <param name="resourceName">The resource name (e.g., "obj_ghost" or "candies/obj_candy_02")</param>
+        /// <returns>The relative path from content root (e.g., "images/obj_ghost")</returns>
+        public static string GetImageContentPath(string resourceName)
         {
-            return GetContentPath(ResourceDataFile);
+            return $"{ImagesDirectory}/{resourceName}";
+        }
+
+        /// <summary>
+        /// Gets the ContentManager-relative path to a background image resource.
+        /// Use for ContentManager.Load which already has "content" as root.
+        /// </summary>
+        /// <param name="resourceName">The resource name (e.g., "bgr_01_p1")</param>
+        /// <returns>The relative path from content root (e.g., "backgrounds/bgr_01_p1")</returns>
+        public static string GetBackgroundImageContentPath(string resourceName)
+        {
+            return $"{BackgroundsDirectory}/{resourceName}";
         }
 
         /// <summary>

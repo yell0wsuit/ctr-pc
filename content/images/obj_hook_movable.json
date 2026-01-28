@@ -1,0 +1,120 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 84,
+                "h": 109
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 54,
+                "y": 83,
+                "w": 84,
+                "h": 109
+            },
+            "sourceSize": {
+                "w": 276,
+                "h": 276
+            }
+        },
+        {
+            "filename": "frame_0001",
+            "frame": {
+                "x": 84,
+                "y": 0,
+                "w": 60,
+                "h": 109
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 138,
+                "y": 83,
+                "w": 60,
+                "h": 109
+            },
+            "sourceSize": {
+                "w": 276,
+                "h": 276
+            }
+        },
+        {
+            "filename": "frame_0002",
+            "frame": {
+                "x": 153,
+                "y": 0,
+                "w": 48,
+                "h": 109
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 113,
+                "y": 83,
+                "w": 48,
+                "h": 109
+            },
+            "sourceSize": {
+                "w": 276,
+                "h": 276
+            }
+        },
+        {
+            "filename": "frame_0003",
+            "frame": {
+                "x": 0,
+                "y": 109,
+                "w": 140,
+                "h": 121
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 67,
+                "y": 77,
+                "w": 140,
+                "h": 121
+            },
+            "sourceSize": {
+                "w": 276,
+                "h": 276
+            }
+        },
+        {
+            "filename": "frame_0004",
+            "frame": {
+                "x": 0,
+                "y": 231,
+                "w": 148,
+                "h": 146
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 63,
+                "y": 63,
+                "w": 148,
+                "h": 146
+            },
+            "sourceSize": {
+                "w": 276,
+                "h": 276
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "obj_hook_movable.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 201,
+            "h": 377
+        },
+        "scale": "1"
+    }
+}

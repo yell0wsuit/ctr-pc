@@ -17,7 +17,9 @@ namespace CutTheRope.Framework.Visual
         public static Vector GetQuadSize(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
-            return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
+            return texture2D.quadRects != null
+                ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
+                : Vect(texture2D._realWidth, texture2D._realHeight);
         }
 
         /// <summary>
@@ -28,12 +30,15 @@ namespace CutTheRope.Framework.Visual
         public static Vector GetQuadSize(string textureResourceName, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
-            return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
+            return texture2D.quadRects != null
+                ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
+                : Vect(texture2D._realWidth, texture2D._realHeight);
         }
 
         public static Vector GetQuadOffset(int textureID, int quad)
         {
-            return Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID)).quadOffsets[quad];
+            CTRTexture2D texture = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
+            return texture.quadOffsets != null ? texture.quadOffsets[quad] : Vect(0, 0);
         }
 
         /// <summary>
@@ -43,13 +48,18 @@ namespace CutTheRope.Framework.Visual
         /// <param name="quad">Index of the quad.</param>
         public static Vector GetQuadOffset(string textureResourceName, int quad)
         {
-            return Application.GetTexture(textureResourceName).quadOffsets[quad];
+            CTRTexture2D texture = Application.GetTexture(textureResourceName);
+            return texture.quadOffsets != null ? texture.quadOffsets[quad] : Vect(0, 0);
         }
 
         public static Vector GetQuadCenter(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
-            return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
+            Vector offset = texture2D.quadOffsets != null ? texture2D.quadOffsets[quad] : Vect(0, 0);
+            Vector size = texture2D.quadRects != null
+                ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
+                : Vect(texture2D._realWidth, texture2D._realHeight);
+            return VectAdd(offset, Vect(Ceil(size.X / 2.0), Ceil(size.Y / 2.0)));
         }
 
         /// <summary>
@@ -60,7 +70,11 @@ namespace CutTheRope.Framework.Visual
         public static Vector GetQuadCenter(string textureResourceName, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
-            return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
+            Vector offset = texture2D.quadOffsets != null ? texture2D.quadOffsets[quad] : Vect(0, 0);
+            Vector size = texture2D.quadRects != null
+                ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
+                : Vect(texture2D._realWidth, texture2D._realHeight);
+            return VectAdd(offset, Vect(Ceil(size.X / 2.0), Ceil(size.Y / 2.0)));
         }
 
         public static Vector GetRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)

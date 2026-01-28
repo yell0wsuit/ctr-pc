@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
         private static HashSet<string> musicNames_;
         private static HashSet<string> fontNames_;
         private static HashSet<string> imageNames_;
+        private static HashSet<string> backgroundImgNames_;
 
         /// <summary>
         /// Checks if a resource name is valid (exists in Resources.cs).
@@ -26,6 +27,10 @@ namespace CutTheRope.GameMain
             if (imageNames_ == null)
             {
                 InitializeImageNames();
+            }
+            if (backgroundImgNames_ == null)
+            {
+                InitializeBackgroundImgNames();
             }
             if (soundNames_ == null)
             {
@@ -40,6 +45,7 @@ namespace CutTheRope.GameMain
                 InitializeFontNames();
             }
             return imageNames_.Contains(resourceName) ||
+                   backgroundImgNames_.Contains(resourceName) ||
                    soundNames_.Contains(resourceName) ||
                    musicNames_.Contains(resourceName) ||
                    fontNames_.Contains(resourceName);
@@ -90,7 +96,11 @@ namespace CutTheRope.GameMain
             {
                 InitializeImageNames();
             }
-            return imageNames_.Contains(resourceName);
+            if (backgroundImgNames_ == null)
+            {
+                InitializeBackgroundImgNames();
+            }
+            return imageNames_.Contains(resourceName) || backgroundImgNames_.Contains(resourceName);
         }
 
         /// <summary>
@@ -100,7 +110,7 @@ namespace CutTheRope.GameMain
         {
             imageNames_ =
             [
-                Img.ZeptolabNoLink, Img.LoaderbarFull, Img.MenuButtonDefault,
+                Img.LoaderbarFull, Img.MenuButtonDefault,
                 Img.MenuLoading, Img.MenuNotification, Img.MenuAchievement,
                 Img.MenuOptions, Img.MenuBgr, Img.MenuPopup, Img.MenuLogo,
                 Img.MenuLogoNew, Img.CandySelectionFx, Img.SkinSelection, Img.MenuLevelSelection,
@@ -119,25 +129,20 @@ namespace CutTheRope.GameMain
                 Img.ObjRotatableSpikes02, Img.ObjRotatableSpikes03, Img.ObjRotatableSpikes04,
                 Img.ObjRotatableSpikesButton, Img.ObjBeeHd, Img.ObjPollenHd,
                 Img.CharSupports, Img.CharAnimations2, Img.CharAnimations3, Img.ObjVinil,
-                Img.Bgr01P1, Img.Bgr01P2, Img.Bgr02P1, Img.Bgr02P2,
-                Img.Bgr03P1, Img.Bgr03P2, Img.Bgr04P1, Img.Bgr04P2,
-                Img.Bgr05P1, Img.Bgr05P2, Img.Bgr06P1, Img.Bgr06P2,
-                Img.Bgr07P1, Img.Bgr07P2, Img.Bgr08P1, Img.Bgr08P2,
-                Img.Bgr09P1, Img.Bgr09P2, Img.Bgr10P1, Img.Bgr10P2,
-                Img.Bgr11P1, Img.Bgr11P2, Img.Bgr01Cover, Img.Bgr02Cover,
+                Img.Bgr01Cover, Img.Bgr02Cover,
                 Img.Bgr03Cover, Img.Bgr04Cover, Img.Bgr05Cover, Img.Bgr06Cover,
                 Img.Bgr07Cover, Img.Bgr08Cover, Img.Bgr09Cover, Img.Bgr10Cover,
                 Img.Bgr11Cover, Img.MenuExtraButtonsFr, Img.MenuExtraButtonsGr,
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
-                Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
-                Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe, Img.XmasLights,
+                Img.MenuExtraButtonsEn, Img.Bgr12Cover,
+                Img.ObjGhost, Img.Bgr13Cover, Img.ObjPipe, Img.XmasLights,
                 Img.Snowflakes, Img.CharGreetingXmas, Img.ObjSock,
-                Img.Bgr14Cover, Img.Bgr14P1, Img.ObjLantern, Img.ObjLighter,
-                Img.Bgr15Cover, Img.Bgr15P1, Img.ObjGap,
-                Img.Bgr16Cover, Img.Bgr16P1, Img.ObjStarNight,
+                Img.Bgr14Cover, Img.ObjLantern, Img.ObjLighter,
+                Img.Bgr15Cover, Img.ObjGap,
+                Img.Bgr16Cover, Img.ObjStarNight,
                 Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuLogoXmasHat,
-                Img.Bgr17Cover, Img.Bgr17P1, Img.BoxLabel, Img.ObjTransporter,
+                Img.Bgr17Cover, Img.BoxLabel, Img.ObjTransporter,
                 Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
                 Img.ObjCandy07, Img.ObjCandy08, Img.ObjCandy09, Img.ObjCandy10, Img.ObjCandy11,
                 Img.ObjCandy12, Img.ObjCandy13, Img.ObjCandy14, Img.ObjCandy15, Img.ObjCandy16,
@@ -199,12 +204,80 @@ namespace CutTheRope.GameMain
                 Fnt.BigFont, Fnt.SmallFont, Fnt.FontNumbersBig
             ];
         }
+
+        /// <summary>
+        /// Checks if a resource name is a background image.
+        /// Background images are loaded without JSON atlas files.
+        /// </summary>
+        public static bool IsBackgroundImg(string resourceName)
+        {
+            if (backgroundImgNames_ == null)
+            {
+                InitializeBackgroundImgNames();
+            }
+            return backgroundImgNames_.Contains(resourceName);
+        }
+
+        /// <summary>
+        /// List all of background image resources.
+        /// </summary>
+        private static void InitializeBackgroundImgNames()
+        {
+            backgroundImgNames_ =
+            [
+                BackgroundImg.Bgr01P1, BackgroundImg.Bgr01P2, BackgroundImg.Bgr02P1, BackgroundImg.Bgr02P2,
+                BackgroundImg.Bgr03P1, BackgroundImg.Bgr03P2, BackgroundImg.Bgr04P1, BackgroundImg.Bgr04P2,
+                BackgroundImg.Bgr05P1, BackgroundImg.Bgr05P2, BackgroundImg.Bgr06P1, BackgroundImg.Bgr06P2,
+                BackgroundImg.Bgr07P1, BackgroundImg.Bgr07P2, BackgroundImg.Bgr08P1, BackgroundImg.Bgr08P2,
+                BackgroundImg.Bgr09P1, BackgroundImg.Bgr09P2, BackgroundImg.Bgr10P1, BackgroundImg.Bgr10P2,
+                BackgroundImg.Bgr11P1, BackgroundImg.Bgr11P2, BackgroundImg.Bgr12P1, BackgroundImg.Bgr13P1,
+                BackgroundImg.Bgr14P1, BackgroundImg.Bgr15P1, BackgroundImg.Bgr16P1, BackgroundImg.Bgr17P1,
+                BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground
+            ];
+        }
+
+        /// <summary>
+        /// Background images
+        /// </summary>
+        internal static class BackgroundImg
+        {
+            public const string Bgr01P1 = "bgr_01_p1";
+            public const string Bgr01P2 = "bgr_01_p2";
+            public const string Bgr02P1 = "bgr_02_p1";
+            public const string Bgr02P2 = "bgr_02_p2";
+            public const string Bgr03P1 = "bgr_03_p1";
+            public const string Bgr03P2 = "bgr_03_p2";
+            public const string Bgr04P1 = "bgr_04_p1";
+            public const string Bgr04P2 = "bgr_04_p2";
+            public const string Bgr05P1 = "bgr_05_p1";
+            public const string Bgr05P2 = "bgr_05_p2";
+            public const string Bgr06P1 = "bgr_06_p1";
+            public const string Bgr06P2 = "bgr_06_p2";
+            public const string Bgr07P1 = "bgr_07_p1";
+            public const string Bgr07P2 = "bgr_07_p2";
+            public const string Bgr08P1 = "bgr_08_p1";
+            public const string Bgr08P2 = "bgr_08_p2";
+            public const string Bgr09P1 = "bgr_09_p1";
+            public const string Bgr09P2 = "bgr_09_p2";
+            public const string Bgr10P1 = "bgr_10_p1";
+            public const string Bgr10P2 = "bgr_10_p2";
+            public const string Bgr11P1 = "bgr_11_p1";
+            public const string Bgr11P2 = "bgr_11_p2";
+            public const string Bgr12P1 = "bgr_12_p1";
+            public const string Bgr13P1 = "bgr_13_p1";
+            public const string Bgr14P1 = "bgr_14_p1";
+            public const string Bgr15P1 = "bgr_15_p1";
+            public const string Bgr16P1 = "bgr_16_p1";
+            public const string Bgr17P1 = "bgr_17_p1";
+            public const string ZeptolabNoLink = "zeptolab_no_link";
+            public const string SkinBackground = "skin_bg";
+        }
+
         /// <summary>
         /// Image and atlas resource names.
         /// </summary>
         internal static class Img
         {
-            public const string ZeptolabNoLink = "zeptolab_no_link";
             public const string LoaderbarFull = "loaderbar_full";
             public const string MenuButtonDefault = "menu_button_default";
             public const string MenuLoading = "menu_loading";
@@ -217,7 +290,6 @@ namespace CutTheRope.GameMain
             public const string MenuLogoNew = "menu_logo_new";
             public const string CandySelectionFx = "candy_selection_fx";
             public const string SkinSelection = "skin_selection";
-            public const string SkinBackground = "skin_bg";
             public const string MenuLevelSelection = "menu_level_selection";
             public const string MenuPackSelection = "menu_pack_selection";
             public const string MenuPackSelection2 = "menu_pack_selection2";
@@ -271,28 +343,6 @@ namespace CutTheRope.GameMain
             public const string CharAnimations2 = "char_animations2";
             public const string CharAnimations3 = "char_animations3";
             public const string ObjVinil = "obj_vinil";
-            public const string Bgr01P1 = "bgr_01_p1";
-            public const string Bgr01P2 = "bgr_01_p2";
-            public const string Bgr02P1 = "bgr_02_p1";
-            public const string Bgr02P2 = "bgr_02_p2";
-            public const string Bgr03P1 = "bgr_03_p1";
-            public const string Bgr03P2 = "bgr_03_p2";
-            public const string Bgr04P1 = "bgr_04_p1";
-            public const string Bgr04P2 = "bgr_04_p2";
-            public const string Bgr05P1 = "bgr_05_p1";
-            public const string Bgr05P2 = "bgr_05_p2";
-            public const string Bgr06P1 = "bgr_06_p1";
-            public const string Bgr06P2 = "bgr_06_p2";
-            public const string Bgr07P1 = "bgr_07_p1";
-            public const string Bgr07P2 = "bgr_07_p2";
-            public const string Bgr08P1 = "bgr_08_p1";
-            public const string Bgr08P2 = "bgr_08_p2";
-            public const string Bgr09P1 = "bgr_09_p1";
-            public const string Bgr09P2 = "bgr_09_p2";
-            public const string Bgr10P1 = "bgr_10_p1";
-            public const string Bgr10P2 = "bgr_10_p2";
-            public const string Bgr11P1 = "bgr_11_p1";
-            public const string Bgr11P2 = "bgr_11_p2";
             public const string Bgr01Cover = "bgr_01_cover";
             public const string Bgr02Cover = "bgr_02_cover";
             public const string Bgr03Cover = "bgr_03_cover";
@@ -314,8 +364,6 @@ namespace CutTheRope.GameMain
             public const string MenuResultGr = "menu_result_gr";
             public const string MenuExtraButtonsEn = "menu_extra_buttons_en";
             public const string Bgr12Cover = "bgr_12_cover";
-            public const string Bgr12P1 = "bgr_12_p1";
-            public const string Bgr12P2 = "bgr_12_p2";
             public const string ObjGhost = "obj_ghost";
             public const string XmasLights = "christmas_lights";
             public const string Snowflakes = "snowflakes";
@@ -325,19 +373,14 @@ namespace CutTheRope.GameMain
             public const string MenuBgrXmas = "menu_bgr_xmas";
             public const string MenuLogoXmasHat = "xmas_hat_logo";
             public const string Bgr13Cover = "bgr_13_cover";
-            public const string Bgr13P1 = "bgr_13_p1";
             public const string ObjPipe = "obj_pipe";
             public const string Bgr14Cover = "bgr_14_cover";
-            public const string Bgr14P1 = "bgr_14_p1";
             public const string ObjLantern = "obj_lantern";
             public const string Bgr15Cover = "bgr_15_cover";
-            public const string Bgr15P1 = "bgr_15_p1";
             public const string ObjGap = "obj_gap";
             public const string Bgr16Cover = "bgr_16_cover";
-            public const string Bgr16P1 = "bgr_16_p1";
             public const string ObjLighter = "obj_lighter";
             public const string Bgr17Cover = "bgr_17_cover";
-            public const string Bgr17P1 = "bgr_17_p1";
             public const string BoxLabel = "box_label";
             public const string ObjTransporter = "obj_transporter";
 

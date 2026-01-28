@@ -1,0 +1,36 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 444,
+                "h": 86
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 195,
+                "y": 81,
+                "w": 444,
+                "h": 86
+            },
+            "sourceSize": {
+                "w": 833,
+                "h": 250
+            }
+        }
+    ],
+    "meta": {
+        "app": "Converted from XML",
+        "version": "1.0",
+        "image": "obj_rotatable_spikes_03.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 444,
+            "h": 86
+        },
+        "scale": "1"
+    }
+}
