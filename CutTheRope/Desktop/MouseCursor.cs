@@ -73,14 +73,8 @@ namespace CutTheRope.Desktop
             _scaledCursor?.Dispose();
             _scaledCursorActive?.Dispose();
 
-<<<<<<< HEAD
             _cursor = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor"));
             _cursorActive = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor_active"));
-            _nativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_cursor, 0, 0);
-            _nativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_cursorActive, 0, 0);
-=======
-            _cursor = cm.Load<Texture2D>("cursor");
-            _cursorActive = cm.Load<Texture2D>("cursor_active");
 
             // Create initial native cursors (will be recreated with proper scale in Draw)
             _lastViewWidth = 0;
@@ -228,7 +222,6 @@ namespace CutTheRope.Desktop
             Texture2D result = new(Global.GraphicsDevice, squareSize, squareSize);
             result.SetData(destData);
             return result;
->>>>>>> a9dfbc5 (scale mouse cursor with game view size)
         }
 
         /// <summary>
