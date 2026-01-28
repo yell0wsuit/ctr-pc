@@ -142,7 +142,8 @@ namespace CutTheRope.Framework.Core
         public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
         {
             // Check if user prefers old font system for supported languages (en, de, fr, ru)
-            bool preferOldFontSystem = Preferences.GetBooleanForKey("PREFS_PREFER_OLD_FONT_SYSTEM");
+            // Disabled because new quad system doesn't support old sprite fonts well
+            bool preferOldFontSystem = false;
             bool isLanguageSupported = LanguageHelper.IsCurrentAny(
                 Language.LANGEN,
                 Language.LANGDE,
