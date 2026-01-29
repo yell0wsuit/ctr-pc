@@ -22,6 +22,9 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        /// <summary>
+        /// Initializes the game scene and the pack background layers.
+        /// </summary>
         public GameScene()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -48,9 +51,11 @@ namespace CutTheRope.GameMain
             back = new TileMap().InitWithRowsColumns(1, 1);
             back.SetRepeatHorizontally(TileMap.Repeat.NONE);
             back.SetRepeatVertically(TileMap.Repeat.ALL);
+            // Cache the background texture so we can keep scaling tied to internal width.
             backTexture = Application.GetTexture(boxBackground);
             back.AddTileQuadwithID(backTexture, 0, 0);
             back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
+            // Use internal-resolution scale rather than a fixed multiplier.
             UpdateBackgroundScale();
             for (int i = 0; i < 3; i++)
             {

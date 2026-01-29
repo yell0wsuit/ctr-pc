@@ -104,6 +104,10 @@ namespace CutTheRope.GameMain
             UpdateBackgroundScale();
         }
 
+        /// <summary>
+        /// Computes a width-based scale so a background texture matches the internal screen width.
+        /// </summary>
+        /// <param name="texture">Background texture to measure.</param>
         private static float GetBackgroundWidthScale(CTRTexture2D texture)
         {
             if (texture == null || texture._realWidth <= 0)
@@ -115,8 +119,12 @@ namespace CutTheRope.GameMain
             return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
         }
 
+        /// <summary>
+        /// Updates background scaling using the internal resolution.
+        /// </summary>
         private void UpdateBackgroundScale()
         {
+            // Keep backgrounds aligned to internal width
             backgroundScale = GetBackgroundWidthScale(backTexture);
             if (back != null)
             {
@@ -278,8 +286,10 @@ namespace CutTheRope.GameMain
 
         private TileMap back;
 
+        /// <summary>Primary background texture used for computing scale.</summary>
         private readonly CTRTexture2D backTexture;
 
+        /// <summary>Cached background scale derived from internal screen width.</summary>
         private float backgroundScale = 1f;
 
         private CharAnimations target;

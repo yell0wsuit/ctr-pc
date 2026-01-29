@@ -25,6 +25,9 @@ namespace CutTheRope.GameMain
             return s_stripVerticesCache;
         }
 
+        /// <summary>
+        /// Renders the scene, including background layers and all gameplay elements.
+        /// </summary>
         public override void Draw()
         {
             OpenGL.GlClear(0);
@@ -34,6 +37,7 @@ namespace CutTheRope.GameMain
             OpenGL.GlDisable(OpenGL.GL_BLEND);
             if (backTexture != null)
             {
+                // Recompute in case internal resolution or texture dimensions changed.
                 float desiredScale = GetBackgroundWidthScale(backTexture);
                 if (ABS(desiredScale - backgroundScale) > 0.0001f)
                 {
@@ -50,6 +54,7 @@ namespace CutTheRope.GameMain
             {
                 backScale = 1f;
             }
+            // Keep parallax math consistent with the background scale.
             Vector pos = VectDiv(camera.pos, backScale);
             back.UpdateWithCameraPos(pos);
             float num = Canvas.xOffsetScaled;
@@ -82,6 +87,7 @@ namespace CutTheRope.GameMain
                         float p2Scale = GetBackgroundWidthScale(p2Texture);
                         if (ABS(p2Scale - backScale) > 0.0001f)
                         {
+                            // Adjust p2 to match internal width while preserving its aspect ratio.
                             float scaleAdjust = backScale <= 0f ? 1f : p2Scale / backScale;
                             OpenGL.GlPushMatrix();
                             OpenGL.GlTranslatef((double)num, (double)num2, 0.0);
