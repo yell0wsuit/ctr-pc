@@ -230,10 +230,8 @@ namespace CutTheRope
             Texture2D texture = Application.SharedMovieMgr().GetTexture();
             if (texture == null)
             {
-                System.Diagnostics.Debug.WriteLine("[Game1] DrawMovie: texture is null");
                 return;
             }
-            System.Diagnostics.Debug.WriteLine($"[Game1] DrawMovie: texture {texture.Width}x{texture.Height}");
             if (_ignoreMouseClick > 0)
             {
                 _ignoreMouseClick--;
