@@ -252,7 +252,6 @@ namespace CutTheRope
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
             Global.SpriteBatch.Draw(texture, destinationRectangle, Color.White);
             Global.SpriteBatch.End();
-            System.Diagnostics.Debug.WriteLine($"[Game1] DrawMovie: drew to {destinationRectangle}");
         }
 
         protected override void Draw(GameTime gameTime)

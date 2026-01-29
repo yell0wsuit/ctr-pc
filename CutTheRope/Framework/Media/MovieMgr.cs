@@ -20,7 +20,6 @@ using System.Threading;
 #endif
 
 using System;
-using System.Diagnostics;
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -34,25 +33,19 @@ namespace CutTheRope.Framework.Media
             url = moviePath;
 
 #if DESKTOPGL_VLC
-            Debug.WriteLine($"[MovieMgr] PlayURL called: {moviePath}");
             EnsureVlc();
             if (vlcInitFailed)
             {
-                Debug.WriteLine("[MovieMgr] VLC init failed, skipping video");
                 delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
                 return;
             }
 
-            Debug.WriteLine("[MovieMgr] VLC initialized successfully");
             CleanupVlc();
             playbackFinished = false;
             string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}.mp4", Global.ScreenSizeManager.CurrentSize.Width);
             string fullPath = Path.Combine(AppContext.BaseDirectory, ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
-            Debug.WriteLine($"[MovieMgr] Video path: {fullPath}");
-            Debug.WriteLine($"[MovieMgr] File exists: {File.Exists(fullPath)}");
             if (!File.Exists(fullPath))
             {
-                Debug.WriteLine("[MovieMgr] Video file not found, skipping");
                 delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
                 return;
             }
@@ -64,7 +57,6 @@ namespace CutTheRope.Framework.Media
             mediaPlayer.EndReached += OnEndReached;
             mediaPlayer.Mute = mute;
             waitForStart = true;
-            Debug.WriteLine("[MovieMgr] Media player created, waiting for Start()");
 #elif MONOGAME_DESKTOPGL
             // Video playback not supported on DesktopGL - skip immediately
             delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
@@ -110,17 +102,6 @@ namespace CutTheRope.Framework.Media
                 {
                     if (frameReady)
                     {
-                        textureUpdateCount++;
-                        if (textureUpdateCount <= 5 || textureUpdateCount % 100 == 0)
-                        {
-                            // Check RGBA values of first pixel
-                            byte r = videoBuffer[0];
-                            byte g = videoBuffer[1];
-                            byte b = videoBuffer[2];
-                            byte a = videoBuffer[3];
-                            Debug.WriteLine($"[MovieMgr] Uploading frame {textureUpdateCount} - first pixel RGBA: ({r}, {g}, {b}, {a})");
-                        }
-
                         frameReady = false;
                         videoTexture.SetData(videoBuffer);
                     }
@@ -211,9 +192,7 @@ namespace CutTheRope.Framework.Media
             if (waitForStart && mediaPlayer != null && !mediaPlayer.IsPlaying)
             {
                 waitForStart = false;
-                Debug.WriteLine("[MovieMgr] Starting playback...");
-                bool playResult = mediaPlayer.Play();
-                Debug.WriteLine($"[MovieMgr] Play() returned: {playResult}");
+                mediaPlayer.Play();
             }
 #else
             if (waitForStart && player != null && player.State == MediaState.Stopped)
@@ -229,10 +208,8 @@ namespace CutTheRope.Framework.Media
 #if DESKTOPGL_VLC
             if (!waitForStart && mediaPlayer != null && playbackFinished)
             {
-                Debug.WriteLine("[MovieMgr] Playback finished, cleaning up...");
                 CleanupVlc();
                 paused = false;
-                Debug.WriteLine("[MovieMgr] Notifying delegate");
                 delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
             }
 #else
@@ -257,22 +234,17 @@ namespace CutTheRope.Framework.Media
 
             try
             {
-                Debug.WriteLine("[MovieMgr] Initializing LibVLC...");
                 LibVLCSharp.Shared.Core.Initialize();
-                libVlc = new LibVLC("--verbose=2");
-                Debug.WriteLine("[MovieMgr] LibVLC initialized");
+                libVlc = new LibVLC();
             }
-            catch (Exception ex)
+            catch
             {
-                Debug.WriteLine($"[MovieMgr] LibVLC init failed: {ex.Message}");
                 vlcInitFailed = true;
             }
         }
 
         private uint VideoFormatCallback(ref IntPtr opaque, IntPtr chroma, ref uint width, ref uint height, ref uint pitches, ref uint lines)
         {
-            Debug.WriteLine($"[MovieMgr] VideoFormatCallback: {width}x{height}");
-            // Use RGBA format to match MonoGame's SurfaceFormat.Color
             const string chromaCode = "RGBA";
             byte[] chromaBytes = Encoding.ASCII.GetBytes(chromaCode);
             Marshal.Copy(chromaBytes, 0, chroma, chromaBytes.Length);
@@ -292,8 +264,6 @@ namespace CutTheRope.Framework.Media
             videoBufferHandle = GCHandle.Alloc(videoBuffer, GCHandleType.Pinned);
             pendingTextureInit = true;
             frameReady = false;
-
-            Debug.WriteLine($"[MovieMgr] Buffer allocated: {bufferSize} bytes");
             return 1;
         }
 
@@ -320,38 +290,27 @@ namespace CutTheRope.Framework.Media
             lock (bufferLock)
             {
                 frameCount++;
-                if (frameCount <= 5 || frameCount % 100 == 0)
-                {
-                    Debug.WriteLine($"[MovieMgr] Frame {frameCount} ready");
-                }
-
                 frameReady = true;
             }
         }
 
         private int frameCount;
 
-        private int textureUpdateCount;
-
         private void OnEndReached(object sender, EventArgs args)
         {
-            Debug.WriteLine($"[MovieMgr] Playback ended after {frameCount} frames");
             playbackFinished = true;
         }
 
         private void InitializeTexture()
         {
-            Debug.WriteLine($"[MovieMgr] InitializeTexture: {videoWidth}x{videoHeight}");
             pendingTextureInit = false;
             if (videoWidth <= 0 || videoHeight <= 0)
             {
-                Debug.WriteLine("[MovieMgr] Invalid dimensions, skipping texture init");
                 return;
             }
 
             videoTexture?.Dispose();
             videoTexture = new Texture2D(Global.GraphicsDevice, videoWidth, videoHeight, false, SurfaceFormat.Color);
-            Debug.WriteLine("[MovieMgr] Texture created");
         }
 
         private void CleanupVlc()
@@ -383,7 +342,6 @@ namespace CutTheRope.Framework.Media
             frameReady = false;
             playbackFinished = false;
             frameCount = 0;
-            textureUpdateCount = 0;
             videoWidth = 0;
             videoHeight = 0;
         }
