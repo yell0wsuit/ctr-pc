@@ -136,7 +136,8 @@ namespace CutTheRope.Framework.Media
         public bool IsPlaying()
         {
 #if DESKTOPGL_VLC
-            return mediaPlayer != null && !playbackFinished;
+            // Return true while mediaPlayer exists so Update() can be called for cleanup
+            return mediaPlayer != null;
 #else
             return player != null;
 #endif
