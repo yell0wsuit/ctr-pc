@@ -48,14 +48,10 @@ namespace CutTheRope.GameMain
             back = new TileMap().InitWithRowsColumns(1, 1);
             back.SetRepeatHorizontally(TileMap.Repeat.NONE);
             back.SetRepeatVertically(TileMap.Repeat.ALL);
-            back.AddTileQuadwithID(Application.GetTexture(boxBackground), 0, 0);
+            backTexture = Application.GetTexture(boxBackground);
+            back.AddTileQuadwithID(backTexture, 0, 0);
             back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
-            if (Canvas.isFullscreen)
-            {
-                back.scaleX = Global.ScreenSizeManager.ScreenWidth / (float)Canvas.backingWidth;
-            }
-            back.scaleX *= 1.25f;
-            back.scaleY *= 1.25f;
+            UpdateBackgroundScale();
             for (int i = 0; i < 3; i++)
             {
                 hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudStar);
@@ -141,8 +137,8 @@ namespace CutTheRope.GameMain
             {
                 _ = Global.ScreenSizeManager.ScreenWidth;
             }
-            image.scaleX = 0.8f;
-            image.scaleY = 0.8f;
+            image.scaleX = 1f;
+            image.scaleY = 1f;
             image.x += xs;
             image.y += ys;
             _ = earthAnims.AddObject(image);

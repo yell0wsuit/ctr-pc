@@ -1,6 +1,5 @@
 using System.Xml.Linq;
 
-using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
@@ -92,6 +91,7 @@ namespace CutTheRope.GameMain
 
         public void FullscreenToggled(bool isFullscreen)
         {
+            _ = isFullscreen;
             BaseElement childWithName = staticAniPool.GetChildWithName("levelLabel");
             if (childWithName != null)
             {
@@ -101,13 +101,28 @@ namespace CutTheRope.GameMain
             {
                 hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
             }
-            if (isFullscreen)
+            UpdateBackgroundScale();
+        }
+
+        private static float GetBackgroundWidthScale(CTRTexture2D texture)
+        {
+            if (texture == null || texture._realWidth <= 0)
             {
-                float num = Global.ScreenSizeManager.ScreenWidth;
-                back.scaleX = num / Canvas.backingWidth * 1.25f;
-                return;
+                return 1f;
             }
-            back.scaleX = 1.25f;
+
+            float scale = SCREEN_WIDTH / texture._realWidth;
+            return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
+        }
+
+        private void UpdateBackgroundScale()
+        {
+            backgroundScale = GetBackgroundWidthScale(backTexture);
+            if (back != null)
+            {
+                back.scaleX = backgroundScale;
+                back.scaleY = backgroundScale;
+            }
         }
 
         private void Selector_gameLost(FrameworkTypes param)
@@ -262,6 +277,10 @@ namespace CutTheRope.GameMain
         private PollenDrawer pollenDrawer;
 
         private TileMap back;
+
+        private readonly CTRTexture2D backTexture;
+
+        private float backgroundScale = 1f;
 
         private CharAnimations target;
 

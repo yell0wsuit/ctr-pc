@@ -7,7 +7,7 @@
         boxCover="bgr_01_cover"
         boxHoleBgColor="70,37,0"
         levelCount="25"
-        boxBackgroundP2Y="896"
+        boxBackgroundP2Y="1120"
     />
     <pack
         index="1"
@@ -16,7 +16,7 @@
         boxCover="bgr_02_cover"
         boxHoleBgColor="39,52,0"
         levelCount="25"
-        boxBackgroundP2Y="835"
+        boxBackgroundP2Y="1044"
     />
     <pack
         index="2"
@@ -25,7 +25,7 @@
         boxCover="bgr_03_cover"
         boxHoleBgColor="44,45,54"
         levelCount="25"
-        boxBackgroundP2Y="756"
+        boxBackgroundP2Y="945"
     />
     <pack
         index="3"
@@ -34,7 +34,7 @@
         boxCover="bgr_04_cover"
         boxHoleBgColor="31,42,84"
         levelCount="25"
-        boxBackgroundP2Y="768"
+        boxBackgroundP2Y="960"
     />
     <pack
         index="4"
@@ -43,7 +43,7 @@
         boxCover="bgr_05_cover"
         boxHoleBgColor="69,31,50"
         levelCount="25"
-        boxBackgroundP2Y="624"
+        boxBackgroundP2Y="780"
     />
     <pack
         index="5"
@@ -52,7 +52,7 @@
         boxCover="bgr_06_cover"
         boxHoleBgColor="75,33,0"
         levelCount="25"
-        boxBackgroundP2Y="760"
+        boxBackgroundP2Y="951"
     />
     <pack
         index="6"
@@ -61,7 +61,7 @@
         boxCover="bgr_07_cover"
         boxHoleBgColor="84,22,0"
         levelCount="25"
-        boxBackgroundP2Y="881"
+        boxBackgroundP2Y="1102"
     />
     <pack
         index="7"
@@ -71,8 +71,8 @@
         boxHoleBgColor="0,51,78"
         levelCount="25"
         earthBg="true"
-        earthBgPosition="1027,581"
-        boxBackgroundP2Y="914"
+        earthBgPosition="1284,724"
+        boxBackgroundP2Y="1118"
     />
     <pack
         index="8"
@@ -81,7 +81,7 @@
         boxCover="bgr_09_cover"
         boxHoleBgColor="98,0,0"
         levelCount="25"
-        boxBackgroundP2Y="780"
+        boxBackgroundP2Y="975"
     />
     <pack
         index="9"
@@ -90,7 +90,7 @@
         boxCover="bgr_10_cover"
         boxHoleBgColor="66,40,0"
         levelCount="25"
-        boxBackgroundP2Y="792"
+        boxBackgroundP2Y="991"
     />
     <pack
         index="10"

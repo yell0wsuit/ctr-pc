@@ -32,7 +32,25 @@ namespace CutTheRope.GameMain
             camera.ApplyCameraTransformation();
             OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
             OpenGL.GlDisable(OpenGL.GL_BLEND);
-            Vector pos = VectDiv(camera.pos, 1.25f);
+            if (backTexture != null)
+            {
+                float desiredScale = GetBackgroundWidthScale(backTexture);
+                if (ABS(desiredScale - backgroundScale) > 0.0001f)
+                {
+                    backgroundScale = desiredScale;
+                    if (back != null)
+                    {
+                        back.scaleX = desiredScale;
+                        back.scaleY = desiredScale;
+                    }
+                }
+            }
+            float backScale = back?.scaleX ?? backgroundScale;
+            if (backScale <= 0f || float.IsNaN(backScale) || float.IsInfinity(backScale))
+            {
+                backScale = 1f;
+            }
+            Vector pos = VectDiv(camera.pos, backScale);
             back.UpdateWithCameraPos(pos);
             float num = Canvas.xOffsetScaled;
             float num2 = 0f;
@@ -61,7 +79,21 @@ namespace CutTheRope.GameMain
                         OpenGL.GlEnable(OpenGL.GL_BLEND);
                         OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         // Draw p2 at configured Y position (p1 is handled by TileMap)
-                        GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
+                        float p2Scale = GetBackgroundWidthScale(p2Texture);
+                        if (ABS(p2Scale - backScale) > 0.0001f)
+                        {
+                            float scaleAdjust = backScale <= 0f ? 1f : p2Scale / backScale;
+                            OpenGL.GlPushMatrix();
+                            OpenGL.GlTranslatef((double)num, (double)num2, 0.0);
+                            OpenGL.GlScalef(scaleAdjust, scaleAdjust, 1.0);
+                            OpenGL.GlTranslatef((double)(0f - num), (double)(0f - num2), 0.0);
+                            GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
+                            OpenGL.GlPopMatrix();
+                        }
+                        else
+                        {
+                            GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
+                        }
                         OpenGL.GlDisable(OpenGL.GL_BLEND);
                     }
                 }
