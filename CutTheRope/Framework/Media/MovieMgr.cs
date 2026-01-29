@@ -143,6 +143,16 @@ namespace CutTheRope.Framework.Media
 #endif
         }
 
+        public bool IsTextureReady()
+        {
+#if DESKTOPGL_VLC
+            // Check if VLC has delivered at least one frame
+            return frameCount > 0;
+#else
+            return player != null && player.State == MediaState.Playing;
+#endif
+        }
+
         public void Stop()
         {
 #if DESKTOPGL_VLC

@@ -223,6 +223,10 @@ namespace CutTheRope
         {
             _DrawMovie = true;
             GraphicsDevice.Clear(Color.Black);
+            if (!Application.SharedMovieMgr().IsTextureReady())
+            {
+                return;
+            }
             Texture2D texture = Application.SharedMovieMgr().GetTexture();
             if (texture == null)
             {
