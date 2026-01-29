@@ -88,6 +88,11 @@
     />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0' AND ( $(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) ) )">
+    <PackageReference Include="LibVLCSharp" Version="3.9.5" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
+  </ItemGroup>
+
   <!-- Compiler constants for WindowsDX builds. -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
     <DefineConstants>$(DefineConstants);MONOGAME_WINDOWSDX</DefineConstants>
@@ -96,6 +101,10 @@
   <!-- Compiler constants for DesktopGL builds. -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0' AND ( $(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) ) )">
+    <DefineConstants>$(DefineConstants);DESKTOPGL_VLC</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
