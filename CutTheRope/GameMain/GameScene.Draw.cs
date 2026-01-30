@@ -35,7 +35,22 @@ namespace CutTheRope.GameMain
             camera.ApplyCameraTransformation();
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
-            Vector pos = VectDiv(camera.pos, 1.25f);
+            if (backTexture != null)
+            {
+                // Recompute in case internal resolution or texture dimensions changed.
+                float desiredScale = GetBackgroundWidthScale(backTexture);
+                if (ABS(desiredScale - backgroundScale) > 0.0001f)
+                {
+                    UpdateBackgroundScale();
+                }
+            }
+            float backScale = back?.scaleX ?? backgroundScale;
+            if (backScale <= 0f || float.IsNaN(backScale) || float.IsInfinity(backScale))
+            {
+                backScale = 1f;
+            }
+            // Keep parallax math consistent with the background scale.
+            Vector pos = VectDiv(camera.pos, backScale);
             back.UpdateWithCameraPos(pos);
             float num = Canvas.xOffsetScaled;
             float num2 = 0f;
