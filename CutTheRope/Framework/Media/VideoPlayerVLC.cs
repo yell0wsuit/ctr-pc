@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 using CutTheRope.Desktop;
 using CutTheRope.Helpers;
@@ -19,15 +20,21 @@ namespace CutTheRope.Framework.Media
 {
     internal sealed class VideoPlayerVLC : IVideoPlayer
     {
+        public VideoPlayerVLC()
+        {
+            // Start VLC initialization in background to avoid freezing the game
+            vlcInitTask = Task.Run(InitializeVlc);
+        }
+
         public bool IsPaused => paused;
 
         public event Action PlaybackFinished;
 
         public void Play(string moviePath, bool mute)
         {
-            EnsureVlc();
-            if (vlcInitFailed)
+            if (!EnsureVlc())
             {
+                // VLC not ready yet or failed to initialize, skip video
                 PlaybackFinished?.Invoke();
                 return;
             }
@@ -156,7 +163,18 @@ namespace CutTheRope.Framework.Media
             libVlc = null;
         }
 
-        private void EnsureVlc()
+        private bool EnsureVlc()
+        {
+            // Check if background initialization is complete without blocking
+            if (vlcInitTask == null || !vlcInitTask.IsCompleted)
+            {
+                return false;
+            }
+
+            return !vlcInitFailed && libVlc != null;
+        }
+
+        private void InitializeVlc()
         {
             if (libVlc != null || vlcInitFailed)
             {
@@ -277,6 +295,8 @@ namespace CutTheRope.Framework.Media
         }
 
         private readonly Lock bufferLock = new();
+
+        private readonly Task vlcInitTask;
 
         private LibVLC libVlc;
 
