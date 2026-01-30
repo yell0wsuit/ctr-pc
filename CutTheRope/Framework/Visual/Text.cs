@@ -221,7 +221,7 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             // Capture inherited color before we apply this element's own modulation in PreDraw
-            Color inheritedColor = OpenGL.GetCurrentColor();
+            Color inheritedColor = OpenGLRenderer.GetCurrentColor();
 
             PreDraw();
 
@@ -233,7 +233,7 @@ namespace CutTheRope.Framework.Visual
             else if (stringLength > 0)
             {
                 // Legacy sprite font rendering
-                OpenGL.GlTranslatef(drawX, drawY, 0f);
+                OpenGLRenderer.GlTranslatef(drawX, drawY, 0f);
                 int i = 0;
                 int count = multiDrawers.Count;
                 while (i < count)
@@ -242,11 +242,11 @@ namespace CutTheRope.Framework.Visual
                     if (imageMultiDrawer != null)
                     {
                         imageMultiDrawer.DrawAllQuads();
-                        imageMultiDrawer.Optimize(OpenGL.GetLastVertices_PositionNormalTexture());
+                        imageMultiDrawer.Optimize(OpenGLRenderer.GetLastVertices_PositionNormalTexture());
                     }
                     i++;
                 }
-                OpenGL.GlTranslatef(0f - drawX, 0f - drawY, 0f);
+                OpenGLRenderer.GlTranslatef(0f - drawX, 0f - drawY, 0f);
             }
 
             PostDraw();
@@ -254,7 +254,7 @@ namespace CutTheRope.Framework.Visual
 
         private void DrawFontStashText(FontStashFont fontStashFont, Color parentColor)
         {
-            SpriteBatch spriteBatch = OpenGL.GetSpriteBatch();
+            SpriteBatch spriteBatch = OpenGLRenderer.GetSpriteBatch();
             if (spriteBatch == null)
             {
                 Debug.WriteLine("FontStash: SpriteBatch is null");
@@ -357,7 +357,7 @@ namespace CutTheRope.Framework.Visual
 
             // Respect the current OpenGL emulation transform (including parent timelines/animations)
             Matrix transformMatrix =
-                OpenGL.GetModelViewMatrix() *
+                OpenGLRenderer.GetModelViewMatrix() *
                 Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);
 
             // Begin SpriteBatch for text rendering with proper scaling

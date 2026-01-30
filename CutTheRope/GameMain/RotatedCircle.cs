@@ -121,16 +121,16 @@ namespace CutTheRope.GameMain
         {
             if (IsRightControllerActive() || IsLeftControllerActive())
             {
-                OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
-                OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 if (color.AlphaChannel != 1.0)
                 {
                     whiteRGBA.AlphaChannel = color.AlphaChannel;
                 }
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
-                OpenGL.GlColor4f(Color.White);
-                OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+                OpenGLRenderer.GlColor4f(Color.White);
+                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             }
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
@@ -138,8 +138,8 @@ namespace CutTheRope.GameMain
             vinilControllerR.color = color;
             vinil.color = color;
             vinil.Draw();
-            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
@@ -148,9 +148,9 @@ namespace CutTheRope.GameMain
                     GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlColor4f(Color.White);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             vinilHighlightL.Draw();
             vinilHighlightR.Draw();
             base.Draw();

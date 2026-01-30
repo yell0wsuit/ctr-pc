@@ -49,15 +49,15 @@ namespace CutTheRope.Framework.Platform
             {
                 string @string = fps.ToString("F1", CultureInfo.InvariantCulture);
                 fpsText.SetString(@string);
-                OpenGL.GlColor4f(Color.White);
-                OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-                OpenGL.GlEnable(OpenGL.GL_BLEND);
-                OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                OpenGLRenderer.GlColor4f(Color.White);
+                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 fpsText.x = 5f;
                 fpsText.y = 5f;
                 fpsText.Draw();
-                OpenGL.GlDisable(OpenGL.GL_BLEND);
-                OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
+                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
             }
         }
 
@@ -84,12 +84,12 @@ namespace CutTheRope.Framework.Platform
                 xOffsetScaled = 0;
                 isFullscreen = false;
             }
-            OpenGL.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
-            OpenGL.GlMatrixMode(15);
-            OpenGL.GlLoadIdentity();
-            OpenGL.GlOrthof(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
-            OpenGL.GlMatrixMode(14);
-            OpenGL.GlLoadIdentity();
+            OpenGLRenderer.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
+            OpenGLRenderer.GlMatrixMode(15);
+            OpenGLRenderer.GlLoadIdentity();
+            OpenGLRenderer.GlOrthof(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
+            OpenGLRenderer.GlMatrixMode(14);
+            OpenGLRenderer.GlLoadIdentity();
         }
 
         public static void DrawRect()
@@ -165,7 +165,7 @@ namespace CutTheRope.Framework.Platform
         public void BeforeRender()
         {
             SetDefaultProjection();
-            OpenGL.GlDisable(OpenGL.GL_BLEND);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
         }
 
         public static void AfterRender()

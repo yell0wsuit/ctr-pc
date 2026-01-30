@@ -181,20 +181,20 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void DrawBB()
         {
-            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
             if (rotatedBB)
             {
-                OpenGL.DrawSegment(drawX + rbb.tlX, drawY + rbb.tlY, drawX + rbb.trX, drawY + rbb.trY, RGBAColor.redRGBA);
-                OpenGL.DrawSegment(drawX + rbb.trX, drawY + rbb.trY, drawX + rbb.brX, drawY + rbb.brY, RGBAColor.redRGBA);
-                OpenGL.DrawSegment(drawX + rbb.brX, drawY + rbb.brY, drawX + rbb.blX, drawY + rbb.blY, RGBAColor.redRGBA);
-                OpenGL.DrawSegment(drawX + rbb.blX, drawY + rbb.blY, drawX + rbb.tlX, drawY + rbb.tlY, RGBAColor.redRGBA);
+                OpenGLRenderer.DrawSegment(drawX + rbb.tlX, drawY + rbb.tlY, drawX + rbb.trX, drawY + rbb.trY, RGBAColor.redRGBA);
+                OpenGLRenderer.DrawSegment(drawX + rbb.trX, drawY + rbb.trY, drawX + rbb.brX, drawY + rbb.brY, RGBAColor.redRGBA);
+                OpenGLRenderer.DrawSegment(drawX + rbb.brX, drawY + rbb.brY, drawX + rbb.blX, drawY + rbb.blY, RGBAColor.redRGBA);
+                OpenGLRenderer.DrawSegment(drawX + rbb.blX, drawY + rbb.blY, drawX + rbb.tlX, drawY + rbb.tlY, RGBAColor.redRGBA);
             }
             else
             {
                 GLDrawer.DrawRect(drawX + bb.x, drawY + bb.y, bb.w, bb.h, RGBAColor.redRGBA);
             }
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlColor4f(Color.White);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlColor4f(Color.White);
         }
 
         public static bool ObjectsIntersect(GameObject o1, GameObject o2)

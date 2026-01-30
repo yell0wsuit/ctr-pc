@@ -268,7 +268,7 @@ namespace CutTheRope.GameMain
             PreDraw(); // Apply transformations
             lightGlow.Draw();
             // Reset blend mode to premultiplied alpha after additive glow
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
         /// <summary>

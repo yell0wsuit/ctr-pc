@@ -14,7 +14,7 @@ namespace CutTheRope.Desktop
     /// This class translates legacy OpenGL-style API calls to modern MonoGame primitives,
     /// using vertex buffers for efficient GPU rendering.
     /// </summary>
-    internal sealed class OpenGL
+    internal sealed class OpenGLRenderer
     {
         #region OpenGL State Constants
         /// <summary>
