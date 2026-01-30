@@ -17,7 +17,8 @@
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ApplicationIcon Condition="$([MSBuild]::IsOsPlatform('Windows'))">../distribution/icons/CutTheRopeIcon.ico</ApplicationIcon>
-    <Version>1.0.0-dirty</Version>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>dirty</VersionSuffix>
     <Company>ZeptoLab</Company>
     <Product>Cut The Rope: DX</Product>
     <Description>Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope.</Description>
@@ -29,7 +30,8 @@
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <IsAotCompatible>true</IsAotCompatible>
     <TieredCompilation>false</TieredCompilation>
-    <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion Condition="'$(VersionSuffix)' != ''">true</IncludeSourceRevisionInInformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion Condition="'$(VersionSuffix)' == ''">false</IncludeSourceRevisionInInformationalVersion>
 
     <!-- Default: build content -->
     <RunMGCB>true</RunMGCB>

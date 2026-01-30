@@ -44,7 +44,7 @@ rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
     -r linux-x64 \
-    ${1:+-p:Version="$1"} \
+    ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
 
 # Step 2: Create AppDir structure
