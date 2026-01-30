@@ -89,7 +89,7 @@ namespace CutTheRope.Framework.Visual
         {
             if (t.pushM || t.rotation != 0.0 || t.scaleX != 1.0 || t.scaleY != 1.0 || t.translateX != 0.0 || t.translateY != 0.0)
             {
-                OpenGL.GlPopMatrix();
+                OpenGLRenderer.GlPopMatrix();
                 t.pushM = false;
             }
         }
@@ -98,7 +98,7 @@ namespace CutTheRope.Framework.Visual
         {
             if (!RGBAColor.RGBAEqual(t.color, RGBAColor.solidOpaqueRGBA))
             {
-                OpenGL.GlColor4f(RGBAColor.solidOpaqueRGBAXna);
+                OpenGLRenderer.GlColor4f(RGBAColor.solidOpaqueRGBAXna);
             }
         }
 
@@ -143,44 +143,44 @@ namespace CutTheRope.Framework.Visual
             bool flag3 = translateX != 0.0 || translateY != 0.0;
             if (flag || flag2 || flag3)
             {
-                OpenGL.GlPushMatrix();
+                OpenGLRenderer.GlPushMatrix();
                 pushM = true;
                 if (flag || flag2)
                 {
                     float num = drawX + (width >> 1) + rotationCenterX;
                     float num2 = drawY + (height >> 1) + rotationCenterY;
-                    OpenGL.GlTranslatef(num, num2, 0f);
+                    OpenGLRenderer.GlTranslatef(num, num2, 0f);
                     if (flag2)
                     {
-                        OpenGL.GlRotatef(rotation, 0f, 0f, 1f);
+                        OpenGLRenderer.GlRotatef(rotation, 0f, 0f, 1f);
                     }
                     if (flag)
                     {
-                        OpenGL.GlScalef(scaleX, scaleY, 1f);
+                        OpenGLRenderer.GlScalef(scaleX, scaleY, 1f);
                     }
-                    OpenGL.GlTranslatef(0f - num, 0f - num2, 0f);
+                    OpenGLRenderer.GlTranslatef(0f - num, 0f - num2, 0f);
                 }
                 if (flag3)
                 {
-                    OpenGL.GlTranslatef(translateX, translateY, 0f);
+                    OpenGLRenderer.GlTranslatef(translateX, translateY, 0f);
                 }
             }
             if (!RGBAColor.RGBAEqual(color, RGBAColor.solidOpaqueRGBA))
             {
-                OpenGL.GlColor4f(color.ToWhiteAlphaXNA());
+                OpenGLRenderer.GlColor4f(color.ToWhiteAlphaXNA());
             }
             if (blendingMode != -1)
             {
                 switch (blendingMode)
                 {
                     case 0:
-                        OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                        OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         return;
                     case 1:
-                        OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                        OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         return;
                     case 2:
-                        OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                        OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                         break;
                     default:
                         return;

@@ -30,35 +30,20 @@ namespace CutTheRope.GameMain
         /// </summary>
         public override void Draw()
         {
-            OpenGL.GlClear(0);
+            OpenGLRenderer.GlClear(0);
             PreDraw();
             camera.ApplyCameraTransformation();
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlDisable(OpenGL.GL_BLEND);
-            if (backTexture != null)
-            {
-                // Recompute in case internal resolution or texture dimensions changed.
-                float desiredScale = GetBackgroundWidthScale(backTexture);
-                if (ABS(desiredScale - backgroundScale) > 0.0001f)
-                {
-                    UpdateBackgroundScale();
-                }
-            }
-            float backScale = back?.scaleX ?? backgroundScale;
-            if (backScale <= 0f || float.IsNaN(backScale) || float.IsInfinity(backScale))
-            {
-                backScale = 1f;
-            }
-            // Keep parallax math consistent with the background scale.
-            Vector pos = VectDiv(camera.pos, backScale);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
+            Vector pos = VectDiv(camera.pos, 1.25f);
             back.UpdateWithCameraPos(pos);
             float num = Canvas.xOffsetScaled;
             float num2 = 0f;
-            OpenGL.GlPushMatrix();
-            OpenGL.GlTranslatef((double)num, (double)num2, 0.0);
-            OpenGL.GlScalef(back.scaleX, back.scaleY, 1.0);
-            OpenGL.GlTranslatef((double)(0f - num), (double)(0f - num2), 0.0);
-            OpenGL.GlTranslatef(Canvas.xOffsetScaled, 0.0, 0.0);
+            OpenGLRenderer.GlPushMatrix();
+            OpenGLRenderer.GlTranslatef((double)num, (double)num2, 0.0);
+            OpenGLRenderer.GlScalef(back.scaleX, back.scaleY, 1.0);
+            OpenGLRenderer.GlTranslatef((double)(0f - num), (double)(0f - num2), 0.0);
+            OpenGLRenderer.GlTranslatef(Canvas.xOffsetScaled, 0.0, 0.0);
             back.Draw();
             if (mapHeight > SCREEN_HEIGHT)
             {
@@ -76,31 +61,16 @@ namespace CutTheRope.GameMain
                             : new CTRRectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
 
                         // Enable blending for p2 to avoid dark seams where alpha overlaps p1.
-                        OpenGL.GlEnable(OpenGL.GL_BLEND);
-                        OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                        OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+                        OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         // Draw p2 at configured Y position (p1 is handled by TileMap)
-                        float p2Scale = GetBackgroundWidthScale(p2Texture);
-                        if (ABS(p2Scale - backScale) > 0.0001f)
-                        {
-                            // Adjust p2 to match internal width while preserving its aspect ratio.
-                            float scaleAdjust = backScale <= 0f ? 1f : p2Scale / backScale;
-                            OpenGL.GlPushMatrix();
-                            OpenGL.GlTranslatef((double)num, (double)num2, 0.0);
-                            OpenGL.GlScalef(scaleAdjust, scaleAdjust, 1.0);
-                            OpenGL.GlTranslatef((double)(0f - num), (double)(0f - num2), 0.0);
-                            GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
-                            OpenGL.GlPopMatrix();
-                        }
-                        else
-                        {
-                            GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
-                        }
-                        OpenGL.GlDisable(OpenGL.GL_BLEND);
+                        GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
+                        OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
                     }
                 }
             }
-            OpenGL.GlEnable(OpenGL.GL_BLEND);
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (earthAnims != null)
             {
                 foreach (object obj in earthAnims)
@@ -108,16 +78,16 @@ namespace CutTheRope.GameMain
                     ((Image)obj).Draw();
                 }
             }
-            OpenGL.GlTranslatef((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
-            OpenGL.GlPopMatrix();
-            OpenGL.GlEnable(OpenGL.GL_BLEND);
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlTranslatef((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
+            OpenGLRenderer.GlPopMatrix();
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
             gravityButton?.Draw();
             miceManager?.DrawHoles();
-            OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlColor4f(Color.White);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             support.Draw();
             target.Draw();
             if (sleepAnimPrimary?.visible == true)
@@ -179,7 +149,7 @@ namespace CutTheRope.GameMain
                 lantern.Draw();
             }
 
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (ghosts != null)
             {
                 foreach (object objGhost in ghosts)
@@ -189,7 +159,7 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj11 in bungees)
             {
                 ((Grab)obj11).DrawBack();
@@ -198,7 +168,7 @@ namespace CutTheRope.GameMain
             {
                 ((Grab)obj12).Draw();
             }
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (LightBulb bulb in lightBulbs)
             {
                 bulb?.DrawLight();
@@ -217,9 +187,9 @@ namespace CutTheRope.GameMain
                 candy.Draw();
                 if (candyBlink.GetCurrentTimeline() != null && !isCandyInLantern)
                 {
-                    OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                    OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     candyBlink.Draw();
-                    OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                    OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 }
             }
             if (twoParts != 2)
@@ -254,12 +224,12 @@ namespace CutTheRope.GameMain
                 }
             }
             aniPool.Draw();
-            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlColor4f(Color.White);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlColor4f(Color.White);
             DrawCuts();
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
             staticAniPool.Draw();
             PostDraw();
@@ -360,7 +330,7 @@ namespace CutTheRope.GameMain
                             array3[num4++] = vector6.Y;
                             num3 += num10;
                         }
-                        OpenGL.GlColor4f(Color.White);
+                        OpenGLRenderer.GlColor4f(Color.White);
                         int vertexCount = num4 / 2;
                         VertexPositionColor[] vertices = GetStripVertexCache(vertexCount);
                         int positionIndex = 0;
@@ -369,7 +339,7 @@ namespace CutTheRope.GameMain
                             Vector3 position = new(array3[positionIndex++], array3[positionIndex++], 0f);
                             vertices[vertex] = new VertexPositionColor(position, Color.White);
                         }
-                        OpenGL.DrawTriangleStrip(vertices, vertexCount);
+                        OpenGLRenderer.DrawTriangleStrip(vertices, vertexCount);
                     }
                 }
             }

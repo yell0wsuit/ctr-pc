@@ -69,15 +69,15 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             PreDraw();
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBindTexture(drawer.image.texture.Name());
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBindTexture(drawer.image.texture.Name());
             int quadCount = particleIdx;
             if (quadCount > 0)
             {
                 VertexPositionNormalTexture[] vertexBuffer = GetVertexBuffer(quadCount * 4);
-                OpenGL.FillTexturedVertices(drawer.vertices, drawer.texCoordinates, vertexBuffer, quadCount);
-                OpenGL.DrawTriangleList(vertexBuffer, drawer.indices, quadCount * 6);
+                OpenGLRenderer.FillTexturedVertices(drawer.vertices, drawer.texCoordinates, vertexBuffer, quadCount);
+                OpenGLRenderer.DrawTriangleList(vertexBuffer, drawer.indices, quadCount * 6);
             }
             PostDraw();
         }

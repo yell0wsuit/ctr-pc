@@ -47,12 +47,12 @@ namespace CutTheRope.Framework.Helpers
 
         public void ApplyCameraTransformation()
         {
-            OpenGL.GlTranslatef((double)(0f - pos.X), (double)(0f - pos.Y), 0.0);
+            OpenGLRenderer.GlTranslatef((double)(0f - pos.X), (double)(0f - pos.Y), 0.0);
         }
 
         public void CancelCameraTransformation()
         {
-            OpenGL.GlTranslatef(pos.X, pos.Y, 0.0);
+            OpenGLRenderer.GlTranslatef(pos.X, pos.Y, 0.0);
         }
 
         public CAMERATYPE type;

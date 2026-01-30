@@ -93,7 +93,7 @@ namespace CutTheRope.GameMain
             PostDraw();
 
             // Reset blend state after drawing to prevent affecting subsequent elements (like candy)
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
         public void CreateAnimations()

@@ -2028,9 +2028,9 @@ namespace CutTheRope.GameMain
                 {
                     num -= preCutSize.X + -20f;
                     float num2 = num - ((s + e) / 2f);
-                    OpenGL.SetScissorRectangle(250.0 - (double)num2, 0.0, 200.0, SCREEN_HEIGHT);
+                    OpenGLRenderer.SetScissorRectangle(250.0 - (double)num2, 0.0, 200.0, SCREEN_HEIGHT);
                     PostDraw();
-                    OpenGL.SetScissorRectangle(c.drawX, c.drawY, c.width, c.height);
+                    OpenGLRenderer.SetScissorRectangle(c.drawX, c.drawY, c.width, c.height);
                 }
             }
 
