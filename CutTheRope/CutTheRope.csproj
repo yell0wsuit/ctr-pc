@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
@@ -8,22 +8,15 @@
     <AssemblyName>CutTheRope-DX</AssemblyName>
 
     <!--
-      Multi-targeting setup:
-        - Without -r flag: Builds BOTH net9.0-windows (WindowsDX) AND net9.0 (DesktopGL)
-        - With -r win-x64: Builds ONLY net9.0-windows (WindowsDX)
-        - With -r linux-x64 or -r osx-x64: Builds ONLY net9.0 (DesktopGL)
-      
-      Note: TargetFrameworks (plural) is the input list you define.
-            TargetFramework (singular with `$()`) is the runtime value during each build pass.
-            MSBuild builds the project once for each framework in the list.
+      DesktopGL build for all platforms:
+        - Windows and Linux use LibVLC for video playback
+        - macOS will use AVFoundation (to be implemented)
     -->
 
-    <TargetFrameworks>net9.0</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">net9.0-windows;net9.0</TargetFrameworks>
+    <TargetFramework>net9.0</TargetFramework>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <ApplicationManifest Condition="'$(TargetFramework)' == 'net9.0-windows'">app.manifest</ApplicationManifest>
-    <ApplicationIcon Condition="'$(TargetFramework)' == 'net9.0-windows'">../distribution/icons/CutTheRopeIcon.ico</ApplicationIcon>
+    <ApplicationIcon Condition="$([MSBuild]::IsOsPlatform('Windows'))">../distribution/icons/CutTheRopeIcon.ico</ApplicationIcon>
     <AssemblyVersion>2.4.10.1</AssemblyVersion>
     <FileVersion>2.4.10.1</FileVersion>
     <InformationalVersion>2.4.10.1</InformationalVersion>
@@ -46,17 +39,10 @@
     <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
   </PropertyGroup>
 
-  <!-- DesktopGL publish defaults (macOS / Linux) -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0' AND '$(RuntimeIdentifier)' != ''">
+  <!-- DesktopGL publish defaults -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
-    <PublishReadyToRun>false</PublishReadyToRun>
-  </PropertyGroup>
-
-  <!-- WindowsDX build defaults -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <SelfContained>false</SelfContained>
-    <PublishSingleFile>false</PublishSingleFile>
     <PublishReadyToRun>false</PublishReadyToRun>
   </PropertyGroup>
 
@@ -70,32 +56,33 @@
       Include="MonoGame.Content.Builder.Task"
       Version="3.8.4.1"
     />
-  </ItemGroup>
-
-  <!-- When building net9.0-windows, use WindowsDX backend -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <PackageReference
-      Include="MonoGame.Framework.WindowsDX"
-      Version="3.8.4.1"
-    />
-  </ItemGroup>
-
-  <!-- When building net9.0, use DesktopGL backend (cross-platform) -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <PackageReference
       Include="MonoGame.Framework.DesktopGL"
       Version="3.8.4.1"
     />
   </ItemGroup>
 
-  <!-- Compiler constants for WindowsDX builds. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <DefineConstants>$(DefineConstants);MONOGAME_WINDOWSDX</DefineConstants>
-  </PropertyGroup>
+  <!-- VLC video player for Windows and Linux (macOS uses AVFoundation) -->
+  <ItemGroup
+    Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
+    <PackageReference Include="LibVLCSharp" Version="3.9.5" />
+  </ItemGroup>
+
+  <!-- Windows: bundled native VLC libraries -->
+  <ItemGroup
+    Condition="$(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
+  </ItemGroup>
 
   <!-- Compiler constants for DesktopGL builds. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
+  <PropertyGroup>
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+  </PropertyGroup>
+
+  <!-- VLC enabled on all platforms except macOS (which uses AVFoundation) -->
+  <PropertyGroup
+    Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
+    <DefineConstants>$(DefineConstants);DESKTOPGL_VLC</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -124,24 +111,9 @@
     <None Remove="..\content\sounds\sfx\*.wav" />
   </ItemGroup>
 
-  <!-- Windows DirectX build, include *_windows.xnb and *_windows.wav pairs. -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <None Include="..\content\sounds\*_windows.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-    <None Include="..\content\sounds\*_windows.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-  </ItemGroup>
-
-  <!-- OpenGL build (Linux/macOS), include *.xnb and *.ogg pairs (excluding *_windows.*). -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <None
-      Include="..\content\sounds\*.xnb"
-      Exclude="..\content\sounds\*_windows.xnb"
-    >
+  <!-- DesktopGL build: include *.xnb and *.ogg pairs. -->
+  <ItemGroup>
+    <None Include="..\content\sounds\*.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\sounds\%(Filename)%(Extension)</Link>
     </None>
@@ -151,8 +123,8 @@
     </None>
   </ItemGroup>
 
-  <!-- OpenGL build (Linux/macOS), include alsoft.ini to disable HTRF. -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+  <!-- Include alsoft.ini to disable HTRF. -->
+  <ItemGroup>
     <None Include="..\alsoft.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -162,13 +134,7 @@
     <MonoGameContentReference Include="..\content\content.mgcb" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
-    <EmbeddedResource Include="../distribution/icons/CutTheRopeIcon.ico">
-      <LogicalName>Icon.ico</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+  <ItemGroup>
     <EmbeddedResource Include="../distribution/icons/CutTheRopeIcon.bmp">
       <LogicalName>Icon.bmp</LogicalName>
     </EmbeddedResource>

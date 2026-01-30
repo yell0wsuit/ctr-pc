@@ -2,6 +2,10 @@
 
 # Build script for creating a .deb package for Cut The Rope: DX
 # Usage: `./build_deb.sh` or `bash build_deb.sh`
+#
+# Requirements:
+#   - .NET 9.0 SDK
+#   - sudo apt install libvlc-dev vlc libx11-dev
 
 set -e
 

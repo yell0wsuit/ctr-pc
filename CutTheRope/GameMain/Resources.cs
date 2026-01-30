@@ -566,19 +566,14 @@ namespace CutTheRope.GameMain
         /// </summary>
         internal static class Music
         {
-#if MONOGAME_WINDOWSDX
-            private const string Suffix = "_windows";
-#else
-            private const string Suffix = "";
-#endif
-            public const string MenuMusic = "menu_music" + Suffix;
-            public const string GameMusic = "game_music" + Suffix;
-            public const string GameMusic2 = "game_music2" + Suffix;
-            public const string GameMusic3 = "game_music3" + Suffix;
-            public const string GameMusic4 = "game_music4" + Suffix;
-            public const string GameMusic5 = "game_music5" + Suffix;
-            public const string MenuMusicXmas = "menu_music_xmas" + Suffix;
-            public const string GameMusicXmas = "game_music_xmas" + Suffix;
+            public const string MenuMusic = "menu_music";
+            public const string GameMusic = "game_music";
+            public const string GameMusic2 = "game_music2";
+            public const string GameMusic3 = "game_music3";
+            public const string GameMusic4 = "game_music4";
+            public const string GameMusic5 = "game_music5";
+            public const string MenuMusicXmas = "menu_music_xmas";
+            public const string GameMusicXmas = "game_music_xmas";
         }
 
         /// <summary>
