@@ -25,9 +25,9 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             Global.MouseCursor.Enable(false);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlEnable(OpenGL.GL_BLEND);
-            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(cTRRootController.GetPack());
@@ -59,31 +59,31 @@ namespace CutTheRope.GameMain
 
             float num2 = currentPercent;
             CTRTexture2D texture = Application.GetTexture(boxCover);
-            OpenGL.GlColor4f(s_Color1);
+            OpenGLRenderer.GlColor4f(s_Color1);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.X;
             GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
-            OpenGL.GlPushMatrix();
+            OpenGLRenderer.GlPushMatrix();
             float num4 = (SCREEN_WIDTH / 2f) + (quadSize.X / 2f);
-            OpenGL.GlTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
-            OpenGL.GlRotatef(180.0, 0.0, 0.0, 1.0);
-            OpenGL.GlTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
+            OpenGLRenderer.GlTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
+            OpenGLRenderer.GlRotatef(180.0, 0.0, 0.0, 1.0);
+            OpenGLRenderer.GlTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
             GLDrawer.DrawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
-            OpenGL.GlPopMatrix();
+            OpenGLRenderer.GlPopMatrix();
             CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);
             if (!game)
             {
-                OpenGL.GlEnable(OpenGL.GL_SCISSOR_TEST);
-                OpenGL.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
+                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_SCISSOR_TEST);
+                OpenGLRenderer.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
             }
-            OpenGL.GlColor4f(Color.White);
+            OpenGLRenderer.GlColor4f(Color.White);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;
             GLDrawer.DrawImageQuad(texture2, 0, (double)num3, 80.0);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).X;
             GLDrawer.DrawImageQuad(texture2, 1, (double)num3, 80.0);
             if (!game)
             {
-                OpenGL.GlDisable(OpenGL.GL_SCISSOR_TEST);
+                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_SCISSOR_TEST);
             }
             if (game)
             {
@@ -97,9 +97,9 @@ namespace CutTheRope.GameMain
                 GLDrawer.DrawImageQuad(texture2, 2, 1084.0, (double)num6 - 100.0);
             }
             PostDraw();
-            OpenGL.GlColor4f(Color.White);
-            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlDisable(OpenGL.GL_BLEND);
+            OpenGLRenderer.GlColor4f(Color.White);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
         }
 
         public bool game;

@@ -14,12 +14,12 @@ namespace CutTheRope.Framework.Visual
             float texTop = t._invHeight * rect.y;
             float texRight = texLeft + (t._invWidth * rect.w);
             float texBottom = texTop + (t._invHeight * rect.h);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBindTexture(t.Name());
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, rect.w, rect.h,
                 texLeft, texTop, texRight, texBottom);
-            OpenGL.DrawTriangleStrip(vertices);
+            OpenGLRenderer.DrawTriangleStrip(vertices);
         }
 
         public CTRTexture2D Name()
@@ -64,22 +64,22 @@ namespace CutTheRope.Framework.Visual
             Quad2D quad2D = t.quads[q];
             float w = t.quadRects[q].w;
             float h = t.quadRects[q].h;
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBindTexture(t.Name());
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, w, h,
                 quad2D.tlX, quad2D.tlY, quad2D.brX, quad2D.brY);
-            OpenGL.DrawTriangleStrip(vertices);
+            OpenGLRenderer.DrawTriangleStrip(vertices);
         }
 
         public static void DrawAtPoint(CTRTexture2D t, Vector point)
         {
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBindTexture(t.Name());
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, t._realWidth, t._realHeight,
                 0f, 0f, t._maxS, t._maxT);
-            OpenGL.DrawTriangleStrip(vertices);
+            OpenGLRenderer.DrawTriangleStrip(vertices);
         }
 
         public void CalculateForQuickDrawing()
@@ -218,7 +218,7 @@ namespace CutTheRope.Framework.Visual
             if (Global.ScreenSizeManager.IsFullScreen)
             {
                 CtrRenderer.OnDrawFrame();
-                renderTarget = OpenGL.DetachRenderTarget();
+                renderTarget = OpenGLRenderer.DetachRenderTarget();
             }
             else
             {

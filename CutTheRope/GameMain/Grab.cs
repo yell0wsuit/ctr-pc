@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
             }
             if (writeIndex > 0)
             {
-                OpenGL.DrawTriangleStrip(vertices, writeIndex);
+                OpenGLRenderer.DrawTriangleStrip(vertices, writeIndex);
             }
         }
 
@@ -221,14 +221,14 @@ namespace CutTheRope.GameMain
             {
                 back.Draw();
             }
-            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
-            OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGLRenderer.GlColor4f(Color.White);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
         }
 
         public void DrawBungee()
@@ -240,20 +240,20 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             PreDraw();
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             Bungee bungee = rope;
             if (wheel)
             {
                 wheelHighlight.visible = wheelOperating != -1;
                 wheelImage3.visible = wheelOperating == -1;
-                OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 wheelImage.Draw();
-                OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
-            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
             bungee?.Draw();
-            OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
+            OpenGLRenderer.GlColor4f(Color.White);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             if (moveLength <= 0.0)
             {
                 front.Draw();

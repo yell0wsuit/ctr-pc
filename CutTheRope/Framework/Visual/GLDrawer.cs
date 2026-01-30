@@ -250,7 +250,7 @@ namespace CutTheRope.Framework.Visual
             array6[((vertexCount - 1) * 6) + 1] = RGBAColor.transparentRGBA;
             int stripVertexCount = ((vertexCount - 1) * 6) + 2;
             VertexPositionColor[] vertices = BuildColoredVertices(array, array6, stripVertexCount);
-            OpenGL.DrawTriangleStrip(vertices, stripVertexCount);
+            OpenGLRenderer.DrawTriangleStrip(vertices, stripVertexCount);
         }
 
         private static void CalcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
@@ -350,7 +350,7 @@ namespace CutTheRope.Framework.Visual
             s_rectVertices[1] = new VertexPositionColor(new Vector3(x + w, y, 0f), color);
             s_rectVertices[2] = new VertexPositionColor(new Vector3(x, y + h, 0f), color);
             s_rectVertices[3] = new VertexPositionColor(new Vector3(x + w, y + h, 0f), color);
-            OpenGL.DrawTriangleStrip(s_rectVertices, 4);
+            OpenGLRenderer.DrawTriangleStrip(s_rectVertices, 4);
         }
 
         // Cached vertex array for rectangle drawing
@@ -359,21 +359,21 @@ namespace CutTheRope.Framework.Visual
         public static void DrawPolygon(float[] vertices, int vertexCount, RGBAColor color)
         {
             VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, color.ToXNA());
-            OpenGL.DrawLineStrip(lineVertices, vertexCount + 1);
+            OpenGLRenderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
         public static void DrawSolidPolygon(float[] vertices, int vertexCount, RGBAColor border, RGBAColor fill)
         {
             VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
-            OpenGL.DrawTriangleStrip(fillVertices, vertexCount);
+            OpenGLRenderer.DrawTriangleStrip(fillVertices, vertexCount);
             VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, border.ToXNA());
-            OpenGL.DrawLineStrip(lineVertices, vertexCount + 1);
+            OpenGLRenderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
         public static void DrawSolidPolygonWOBorder(float[] vertices, int vertexCount, RGBAColor fill)
         {
             VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
-            OpenGL.DrawTriangleStrip(fillVertices, vertexCount);
+            OpenGLRenderer.DrawTriangleStrip(fillVertices, vertexCount);
         }
 
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
