@@ -189,7 +189,7 @@ namespace CutTheRope.Framework.Media
                 {
                     try
                     {
-                        XInitThreads();
+                        _ = XInitThreads();
                     }
                     catch
                     {
