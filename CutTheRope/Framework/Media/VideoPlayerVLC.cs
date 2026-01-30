@@ -26,7 +26,7 @@ namespace CutTheRope.Framework.Media
             vlcInitTask = Task.Run(InitializeVlc);
         }
 
-        public bool IsPaused => paused;
+        public bool IsPaused { get; private set; }
 
         public event Action PlaybackFinished;
 
@@ -99,12 +99,7 @@ namespace CutTheRope.Framework.Media
             }
 
             // Timeout after 500ms to avoid long black screen delay
-            if (playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500)
-            {
-                return true;
-            }
-
-            return false;
+            return playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500;
         }
 
         public void Stop()
@@ -120,18 +115,18 @@ namespace CutTheRope.Framework.Media
 
         public void Pause()
         {
-            if (!paused)
+            if (!IsPaused)
             {
-                paused = true;
+                IsPaused = true;
                 mediaPlayer?.SetPause(true);
             }
         }
 
         public void Resume()
         {
-            if (paused)
+            if (IsPaused)
             {
-                paused = false;
+                IsPaused = false;
                 mediaPlayer?.SetPause(false);
             }
         }
@@ -142,7 +137,7 @@ namespace CutTheRope.Framework.Media
             {
                 waitForStart = false;
                 playStartTime = DateTime.UtcNow;
-                mediaPlayer.Play();
+                _ = mediaPlayer.Play();
             }
         }
 
@@ -151,7 +146,7 @@ namespace CutTheRope.Framework.Media
             if (!waitForStart && mediaPlayer != null && playbackFinished)
             {
                 Cleanup();
-                paused = false;
+                IsPaused = false;
                 PlaybackFinished?.Invoke();
             }
         }
@@ -166,12 +161,7 @@ namespace CutTheRope.Framework.Media
         private bool EnsureVlc()
         {
             // Check if background initialization is complete without blocking
-            if (vlcInitTask == null || !vlcInitTask.IsCompleted)
-            {
-                return false;
-            }
-
-            return !vlcInitFailed && libVlc != null;
+            return vlcInitTask != null && vlcInitTask.IsCompleted && !vlcInitFailed && libVlc != null;
         }
 
         private void InitializeVlc()
@@ -344,8 +334,6 @@ namespace CutTheRope.Framework.Media
         private DateTime? playStartTime;
 
         private bool waitForStart;
-
-        private bool paused;
     }
 }
 #endif
