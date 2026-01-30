@@ -183,6 +183,20 @@ namespace CutTheRope.Framework.Media
 
             try
             {
+                // On Linux X11, XInitThreads must be called before creating LibVLC
+                // to enable proper multithreading support
+                if (OperatingSystem.IsLinux())
+                {
+                    try
+                    {
+                        XInitThreads();
+                    }
+                    catch
+                    {
+                        // X11 may not be available (e.g., Wayland-only systems)
+                    }
+                }
+
                 LibVLCSharp.Shared.Core.Initialize();
                 libVlc = new LibVLC();
             }
@@ -191,6 +205,9 @@ namespace CutTheRope.Framework.Media
                 vlcInitFailed = true;
             }
         }
+
+        [DllImport("libX11.so.6", EntryPoint = "XInitThreads")]
+        private static extern int XInitThreads();
 
         private uint VideoFormatCallback(ref IntPtr opaque, IntPtr chroma, ref uint width, ref uint height, ref uint pitches, ref uint lines)
         {

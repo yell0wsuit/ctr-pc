@@ -88,8 +88,15 @@
     />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0' AND ( $(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) ) )">
+  <!-- VLC video player for Windows and Linux (macOS uses AVFoundation) -->
+  <ItemGroup
+    Condition="'$(TargetFramework)' == 'net9.0' AND !$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
     <PackageReference Include="LibVLCSharp" Version="3.9.5" />
+  </ItemGroup>
+
+  <!-- Windows: bundled native VLC libraries -->
+  <ItemGroup
+    Condition="'$(TargetFramework)' == 'net9.0' AND ( $(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) ) )">
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
   </ItemGroup>
 
@@ -103,7 +110,9 @@
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0' AND ( $(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) ) )">
+  <!-- VLC enabled on all platforms except macOS (which uses AVFoundation) -->
+  <PropertyGroup
+    Condition="'$(TargetFramework)' == 'net9.0' AND !$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
     <DefineConstants>$(DefineConstants);DESKTOPGL_VLC</DefineConstants>
   </PropertyGroup>
 
