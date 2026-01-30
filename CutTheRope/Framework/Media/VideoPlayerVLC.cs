@@ -73,7 +73,7 @@ namespace CutTheRope.Framework.Media
             Cleanup();
             playbackFinished = false;
             playStartTime = null;
-            string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}.mp4", Global.ScreenSizeManager.CurrentSize.Width);
+            string relativeVideoPath = ContentPaths.GetVideoPath(moviePath);
             string fullPath = Path.Combine(AppContext.BaseDirectory, ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
             if (!File.Exists(fullPath))
             {
