@@ -21,17 +21,32 @@ namespace CutTheRope.Framework.Media
             PlaybackFinished?.Invoke();
         }
 
-        public Texture2D GetTexture() => null;
+        public Texture2D GetTexture()
+        {
+            return null;
+        }
 
-        public bool IsPlaying() => false;
+        public bool IsPlaying()
+        {
+            return false;
+        }
 
-        public bool IsTextureReady() => false;
+        public bool IsTextureReady()
+        {
+            return false;
+        }
 
         public void Stop() { }
 
-        public void Pause() => IsPaused = true;
+        public void Pause()
+        {
+            IsPaused = true;
+        }
 
-        public void Resume() => IsPaused = false;
+        public void Resume()
+        {
+            IsPaused = false;
+        }
 
         public void Start() { }
 
