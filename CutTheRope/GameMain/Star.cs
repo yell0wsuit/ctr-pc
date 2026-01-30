@@ -190,7 +190,7 @@ namespace CutTheRope.GameMain
             foreach (KeyValuePair<int, BaseElement> kvp in childs)
             {
                 BaseElement child = kvp.Value;
-                child?.y = offset;
+                _ = (child?.y = offset);
             }
         }
 
@@ -227,10 +227,10 @@ namespace CutTheRope.GameMain
                 {
                     lightUpAnim.visible = true;
                     Timeline timeline = lightUpAnim.GetTimeline(0);
-                    timeline?.OnFinished = () =>
+                    _ = (timeline?.OnFinished = () =>
                         {
-                            lightUpAnim?.visible = false;
-                        };
+                            _ = (lightUpAnim?.visible = false);
+                        });
                     lightUpAnim.PlayTimeline(0);
 
                     // Play star light sound
@@ -241,16 +241,16 @@ namespace CutTheRope.GameMain
             {
                 lightDownAnim.visible = true;
                 Timeline timeline = lightDownAnim.GetTimeline(0);
-                timeline?.OnFinished = () =>
+                _ = (timeline?.OnFinished = () =>
                     {
-                        lightDownAnim?.visible = false;
-                    };
+                        _ = (lightDownAnim?.visible = false);
+                    });
                 lightDownAnim.PlayTimeline(0);
             }
             else if (isInitial)
             {
-                glowSprite?.color = RGBAColor.transparentRGBA;
-                idleSprite?.color = RGBAColor.transparentRGBA;
+                _ = (glowSprite?.color = RGBAColor.transparentRGBA);
+                _ = (idleSprite?.color = RGBAColor.transparentRGBA);
             }
 
             UpdateNightVisibility();
@@ -274,9 +274,9 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            glowSprite?.visible = true;
-            idleSprite?.visible = true;
-            dimmedIdleSprite?.visible = true;
+            _ = (glowSprite?.visible = true);
+            _ = (idleSprite?.visible = true);
+            _ = (dimmedIdleSprite?.visible = true);
         }
 
         public float time;

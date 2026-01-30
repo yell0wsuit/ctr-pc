@@ -1822,16 +1822,16 @@ namespace CutTheRope.GameMain
             DeleteView(5);
             CreatePackSelect();
             BaseElement childWithName = GetView(0).GetChild(0).GetChildWithName("container");
-            childWithName?.x = -(float)Canvas.xOffsetScaled;
+            _ = (childWithName?.x = -(float)Canvas.xOffsetScaled);
             BaseElement childWithName2 = GetView(5).GetChild(0).GetChildWithName("text");
-            childWithName2?.x = -20f - Canvas.xOffsetScaled;
+            _ = (childWithName2?.x = -20f - Canvas.xOffsetScaled);
             for (int i = 0; i < 10; i++)
             {
                 View view3 = GetView(i);
                 if (view3 != null)
                 {
                     BaseElement childWithName3 = view3.GetChildWithName("backb");
-                    childWithName3?.x = Canvas.xOffsetScaled;
+                    _ = (childWithName3?.x = Canvas.xOffsetScaled);
                 }
             }
             BaseElement view4 = GetView(6);

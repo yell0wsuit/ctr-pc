@@ -574,7 +574,7 @@ namespace CutTheRope.GameMain
             }
 
             Timeline timeline = sprites.Value.Body.GetTimeline((int)id);
-            timeline?.delegateTimelineDelegate = this;
+            _ = (timeline?.delegateTimelineDelegate = this);
             sprites.Value.Body.PlayTimeline((int)id);
         }
 
