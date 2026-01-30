@@ -38,7 +38,7 @@ namespace CutTheRope.Framework.Core
                 return;
             }
             Application.SharedCanvas().BeforeRender();
-            OpenGL.GlPushMatrix();
+            OpenGLRenderer.GlPushMatrix();
             ApplyLandscape();
             if (transitionTime == -1f)
             {
@@ -56,7 +56,7 @@ namespace CutTheRope.Framework.Core
                     nextScreenImage = null;
                 }
             }
-            OpenGL.GlPopMatrix();
+            OpenGLRenderer.GlPopMatrix();
             GLCanvas.AfterRender();
         }
 
@@ -71,10 +71,10 @@ namespace CutTheRope.Framework.Core
 
         private void DrawViewTransition()
         {
-            OpenGL.GlColor4f(Color.White);
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlEnable(OpenGL.GL_BLEND);
-            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGLRenderer.GlColor4f(Color.White);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Application.SharedCanvas().SetDefaultRealProjection();
             int num2 = viewTransition;
             if (num2 - 4 <= 1)
@@ -86,51 +86,51 @@ namespace CutTheRope.Framework.Core
                     {
                         RGBAColor fill = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
                         Grabber.DrawGrabbedImage(prevScreenImage, 0, 0);
-                        OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
-                        OpenGL.GlEnable(OpenGL.GL_BLEND);
-                        OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                        OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+                        OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+                        OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill);
-                        OpenGL.GlDisable(OpenGL.GL_BLEND);
+                        OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
                     }
                     else
                     {
                         if (viewTransition == 4)
                         {
-                            OpenGL.GlClearColor(Color.Black);
+                            OpenGLRenderer.GlClearColor(Color.Black);
                         }
                         else
                         {
-                            OpenGL.GlClearColor(Color.White);
+                            OpenGLRenderer.GlClearColor(Color.White);
                         }
-                        OpenGL.GlClear(0);
+                        OpenGLRenderer.GlClear(0);
                     }
                 }
                 else if (nextScreenImage != null)
                 {
                     RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - ((double)num * 2.0)) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - ((double)num * 2.0));
                     Grabber.DrawGrabbedImage(nextScreenImage, 0, 0);
-                    OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
-                    OpenGL.GlEnable(OpenGL.GL_BLEND);
-                    OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                    OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+                    OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
+                    OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                     GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill2);
-                    OpenGL.GlDisable(OpenGL.GL_BLEND);
+                    OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
                 }
                 else
                 {
                     if (viewTransition == 4)
                     {
-                        OpenGL.GlClearColor(Color.Black);
+                        OpenGLRenderer.GlClearColor(Color.Black);
                     }
                     else
                     {
-                        OpenGL.GlClearColor(Color.White);
+                        OpenGLRenderer.GlClearColor(Color.White);
                     }
-                    OpenGL.GlClear(0);
+                    OpenGLRenderer.GlClear(0);
                 }
             }
             ApplyLandscape();
-            OpenGL.GlDisable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlDisable(OpenGL.GL_BLEND);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
         }
 
         public override void Activate()
@@ -168,14 +168,14 @@ namespace CutTheRope.Framework.Core
             if (viewTransition != -1 && previousView != null)
             {
                 Application.SharedCanvas().SetDefaultProjection();
-                OpenGL.GlClearColor(Color.Black);
-                OpenGL.GlClear(0);
+                OpenGLRenderer.GlClearColor(Color.Black);
+                OpenGLRenderer.GlClear(0);
                 transitionTime = lastTime + transitionDelay;
                 ApplyLandscape();
                 currentController.ActiveView().Draw();
                 nextScreenImage?.xnaTexture_.Dispose();
                 nextScreenImage = Grabber.Grab();
-                OpenGL.GlLoadIdentity();
+                OpenGLRenderer.GlLoadIdentity();
             }
         }
 
@@ -185,13 +185,13 @@ namespace CutTheRope.Framework.Core
             if (viewTransition != -1 && previousView != null)
             {
                 Application.SharedCanvas().SetDefaultProjection();
-                OpenGL.GlClearColor(Color.Black);
-                OpenGL.GlClear(0);
+                OpenGLRenderer.GlClearColor(Color.Black);
+                OpenGLRenderer.GlClear(0);
                 ApplyLandscape();
                 previousView.Draw();
                 prevScreenImage?.xnaTexture_.Dispose();
                 prevScreenImage = Grabber.Grab();
-                OpenGL.GlLoadIdentity();
+                OpenGLRenderer.GlLoadIdentity();
             }
         }
 

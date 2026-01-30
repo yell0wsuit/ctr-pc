@@ -268,12 +268,12 @@ namespace CutTheRope.Framework.Visual
                 y += texture.quadOffsets[n].Y;
             }
             Quad2D quad = texture.quads[n];
-            OpenGL.GlEnable(OpenGL.GL_TEXTURE_2D);
-            OpenGL.GlBindTexture(texture.Name());
+            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            OpenGLRenderer.GlBindTexture(texture.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 x, y, w, h,
                 quad.tlX, quad.tlY, quad.brX, quad.brY);
-            OpenGL.DrawTriangleStrip(vertices);
+            OpenGLRenderer.DrawTriangleStrip(vertices);
         }
 
         public override bool HandleAction(ActionData a)

@@ -101,13 +101,13 @@ namespace CutTheRope.GameMain
                 ccolors2[7] = color;
                 if (highlighted)
                 {
-                    OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                    OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     VertexPositionColor[] highlightVertices = BuildColoredVertices(pointer, ccolors, 8);
-                    OpenGL.DrawTriangleStrip(highlightVertices, 8);
+                    OpenGLRenderer.DrawTriangleStrip(highlightVertices, 8);
                 }
-                OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 VertexPositionColor[] mainVertices = BuildColoredVertices(pointer2, ccolors2, 10);
-                OpenGL.DrawTriangleStrip(mainVertices, 10);
+                OpenGLRenderer.DrawTriangleStrip(mainVertices, 10);
             }
         }
 
@@ -243,7 +243,7 @@ namespace CutTheRope.GameMain
                 if (num8 >= 8 || (double)num7 == 1.0)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
-                    OpenGL.GlColor4f(color.ToXNA());
+                    OpenGLRenderer.GlColor4f(color.ToXNA());
                     int num17 = num8 >> 1;
                     for (int i = 0; i < num17 - 1; i++)
                     {
@@ -516,7 +516,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             int count = parts.Count;
-            OpenGL.GlColor4f(s_Color1);
+            OpenGLRenderer.GlColor4f(s_Color1);
             if (cut == -1)
             {
                 Vector[] array = new Vector[count];
@@ -632,7 +632,7 @@ namespace CutTheRope.GameMain
             {
                 color.AlphaChannel = alpha;
             }
-            OpenGL.GlColor4f(color.ToXNA());
+            OpenGLRenderer.GlColor4f(color.ToXNA());
 
             // Initialize random seed for consistent light color selection across frames
             // This seed remains the same for the lifetime of the rope
@@ -687,7 +687,7 @@ namespace CutTheRope.GameMain
             }
 
             // Reset drawing color to default
-            OpenGL.GlColor4f(RGBAColor.whiteRGBA.ToXNA());
+            OpenGLRenderer.GlColor4f(RGBAColor.whiteRGBA.ToXNA());
         }
 
         protected override void Dispose(bool disposing)
