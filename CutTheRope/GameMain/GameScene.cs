@@ -130,6 +130,15 @@ namespace CutTheRope.GameMain
             {
                 back.scaleX = backgroundScale;
                 back.scaleY = backgroundScale;
+                float viewWidth = SCREEN_WIDTH;
+                float viewHeight = SCREEN_HEIGHT;
+                if (backgroundScale > 0f && backgroundScale < 1f)
+                {
+                    // Expand the tilemap view when downscaling so we don't crop wide textures.
+                    viewWidth = SCREEN_WIDTH / backgroundScale;
+                    viewHeight = SCREEN_HEIGHT / backgroundScale;
+                }
+                back.SetCameraViewSize(viewWidth, viewHeight);
             }
         }
 

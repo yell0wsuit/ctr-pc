@@ -132,6 +132,19 @@ namespace CutTheRope.Framework.Visual
             UpdateVars();
         }
 
+        /// <summary>
+        /// Overrides the camera view size used to compute visible tiles.
+        /// </summary>
+        /// <param name="width">Visible width in world units.</param>
+        /// <param name="height">Visible height in world units.</param>
+        public void SetCameraViewSize(float width, float height)
+        {
+            // Ceiling ensures scaled-down backgrounds render fully without edge cut-off.
+            cameraViewWidth = (int)Math.Ceiling(width);
+            cameraViewHeight = (int)Math.Ceiling(height);
+            UpdateVars();
+        }
+
         public void UpdateWithCameraPos(Vector pos)
         {
             float num = (float)Math.Round((double)(pos.X / parallaxRatio));

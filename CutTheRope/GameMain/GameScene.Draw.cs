@@ -41,12 +41,7 @@ namespace CutTheRope.GameMain
                 float desiredScale = GetBackgroundWidthScale(backTexture);
                 if (ABS(desiredScale - backgroundScale) > 0.0001f)
                 {
-                    backgroundScale = desiredScale;
-                    if (back != null)
-                    {
-                        back.scaleX = desiredScale;
-                        back.scaleY = desiredScale;
-                    }
+                    UpdateBackgroundScale();
                 }
             }
             float backScale = back?.scaleX ?? backgroundScale;
