@@ -18,7 +18,7 @@ using VlcMediaPlayer = LibVLCSharp.Shared.MediaPlayer;
 
 namespace CutTheRope.Framework.Media
 {
-    internal sealed class VideoPlayerVLC : IVideoPlayer
+    internal sealed partial class VideoPlayerVLC : IVideoPlayer
     {
         public VideoPlayerVLC()
         {
@@ -196,8 +196,8 @@ namespace CutTheRope.Framework.Media
             }
         }
 
-        [DllImport("libX11.so.6", EntryPoint = "XInitThreads")]
-        private static extern int XInitThreads();
+        [LibraryImport("libX11.so.6", EntryPoint = "XInitThreads")]
+        private static partial int XInitThreads();
 
         private uint VideoFormatCallback(ref IntPtr opaque, IntPtr chroma, ref uint width, ref uint height, ref uint pitches, ref uint lines)
         {
