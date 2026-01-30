@@ -34,6 +34,7 @@ namespace CutTheRope.Framework.Media
 
             Cleanup();
             playbackFinished = false;
+            playStartTime = null;
             string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}.mp4", Global.ScreenSizeManager.CurrentSize.Width);
             string fullPath = Path.Combine(AppContext.BaseDirectory, ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
             if (!File.Exists(fullPath))
@@ -85,7 +86,18 @@ namespace CutTheRope.Framework.Media
 
         public bool IsTextureReady()
         {
-            return frameCount > 0;
+            if (frameCount > 0)
+            {
+                return true;
+            }
+
+            // Timeout after 500ms to avoid long black screen delay
+            if (playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Stop()
@@ -122,6 +134,7 @@ namespace CutTheRope.Framework.Media
             if (waitForStart && mediaPlayer != null && !mediaPlayer.IsPlaying)
             {
                 waitForStart = false;
+                playStartTime = DateTime.UtcNow;
                 mediaPlayer.Play();
             }
         }
@@ -258,6 +271,7 @@ namespace CutTheRope.Framework.Media
             frameReady = false;
             playbackFinished = false;
             frameCount = 0;
+            playStartTime = null;
             videoWidth = 0;
             videoHeight = 0;
         }
@@ -289,6 +303,8 @@ namespace CutTheRope.Framework.Media
         private int videoHeight;
 
         private int frameCount;
+
+        private DateTime? playStartTime;
 
         private bool waitForStart;
 
