@@ -1,405 +1,87 @@
-#if MONOGAME_WINDOWSDX
-using CutTheRope.Desktop;
-using CutTheRope.Helpers;
-#endif
-
-#if DESKTOPGL_VLC
-using CutTheRope.Desktop;
-using CutTheRope.Helpers;
-
-using LibVLCSharp.Shared;
-
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
-
-using VlcMedia = LibVLCSharp.Shared.Media;
-using VlcMediaPlayer = LibVLCSharp.Shared.MediaPlayer;
-
-using System.Threading;
-#endif
-
 using System;
 
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.Framework.Media
 {
     internal sealed class MovieMgr : FrameworkTypes, IDisposable
     {
+        public MovieMgr()
+        {
+#if DESKTOPGL_VLC
+            videoPlayer = new VideoPlayerVLC();
+#else
+            videoPlayer = new VideoPlayerMonoGame();
+#endif
+            videoPlayer.PlaybackFinished += OnPlaybackFinished;
+        }
+
         public void PlayURL(string moviePath, bool mute)
         {
             url = moviePath;
-
-#if DESKTOPGL_VLC
-            EnsureVlc();
-            if (vlcInitFailed)
-            {
-                delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
-                return;
-            }
-
-            CleanupVlc();
-            playbackFinished = false;
-            string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}.mp4", Global.ScreenSizeManager.CurrentSize.Width);
-            string fullPath = Path.Combine(AppContext.BaseDirectory, ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
-            if (!File.Exists(fullPath))
-            {
-                delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
-                return;
-            }
-
-            media = new VlcMedia(libVlc, new Uri(fullPath));
-            mediaPlayer = new VlcMediaPlayer(media);
-            mediaPlayer.SetVideoFormatCallbacks(VideoFormatCallback, CleanupVideoFormatCallback);
-            mediaPlayer.SetVideoCallbacks(LockVideoCallback, UnlockVideoCallback, DisplayVideoCallback);
-            mediaPlayer.EndReached += OnEndReached;
-            mediaPlayer.Mute = mute;
-            waitForStart = true;
-#elif MONOGAME_DESKTOPGL
-            // Video playback not supported on DesktopGL - skip immediately
-            delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
-#else
-            string videoPath = ContentPaths.GetVideoPath(moviePath, Global.ScreenSizeManager.CurrentSize.Width);
-
-            // Unload the video from ContentManager's cache before reloading
-            // Without this, ContentManager returns a disposed Video instance when playing
-            // the same video multiple times, causing InvalidOperationException in VideoPlayer.Play()
-            try
-            {
-                Global.XnaGame.Content.UnloadAsset(videoPath);
-            }
-            catch { }
-
-            video = Global.XnaGame.Content.Load<Video>(videoPath);
-
-            player = new VideoPlayer
-            {
-                IsLooped = false,
-                IsMuted = mute
-            };
-            waitForStart = true;
-#endif
+            videoPlayer.Play(moviePath, mute);
         }
 
         public Texture2D GetTexture()
         {
-#if DESKTOPGL_VLC
-            if (mediaPlayer == null || playbackFinished)
-            {
-                return null;
-            }
-
-            if (pendingTextureInit)
-            {
-                InitializeTexture();
-            }
-
-            if (videoTexture != null && videoBuffer != null)
-            {
-                lock (bufferLock)
-                {
-                    if (frameReady)
-                    {
-                        frameReady = false;
-                        videoTexture.SetData(videoBuffer);
-                    }
-                }
-            }
-
-            return videoTexture;
-#else
-            return player != null && player.State != MediaState.Stopped ? player.GetTexture() : null;
-#endif
+            return videoPlayer.GetTexture();
         }
 
         public bool IsPlaying()
         {
-#if DESKTOPGL_VLC
-            // Return true while mediaPlayer exists so Update() can be called for cleanup
-            return mediaPlayer != null;
-#else
-            return player != null;
-#endif
+            return videoPlayer.IsPlaying();
         }
 
         public bool IsTextureReady()
         {
-#if DESKTOPGL_VLC
-            // Check if VLC has delivered at least one frame
-            return frameCount > 0;
-#else
-            return player != null && player.State == MediaState.Playing;
-#endif
+            return videoPlayer.IsTextureReady();
         }
 
         public void Stop()
         {
-#if DESKTOPGL_VLC
-            if (mediaPlayer == null)
-            {
-                return;
-            }
-
-            mediaPlayer.Stop();
-            playbackFinished = true;
-#else
-            player?.Stop();
-#endif
+            videoPlayer.Stop();
         }
 
         public void Pause()
         {
-            if (!paused)
-            {
-                paused = true;
-#if DESKTOPGL_VLC
-                mediaPlayer?.SetPause(true);
-#else
-                if (player != null)
-                {
-                    player.IsMuted = true;
-                }
-#endif
-            }
+            videoPlayer.Pause();
         }
 
         public bool IsPaused()
         {
-            return paused;
+            return videoPlayer.IsPaused;
         }
 
         public void Resume()
         {
-            if (paused)
-            {
-                paused = false;
-#if DESKTOPGL_VLC
-                mediaPlayer?.SetPause(false);
-#else
-                if (player != null)
-                {
-                    player.IsMuted = false;
-                }
-#endif
-            }
+            videoPlayer.Resume();
         }
 
         public void Start()
         {
-#if DESKTOPGL_VLC
-            if (waitForStart && mediaPlayer != null && !mediaPlayer.IsPlaying)
-            {
-                waitForStart = false;
-                mediaPlayer.Play();
-            }
-#else
-            if (waitForStart && player != null && player.State == MediaState.Stopped)
-            {
-                waitForStart = false;
-                player.Play(video);
-            }
-#endif
+            videoPlayer.Start();
         }
 
         public void Update()
         {
-#if DESKTOPGL_VLC
-            if (!waitForStart && mediaPlayer != null && playbackFinished)
-            {
-                CleanupVlc();
-                paused = false;
-                delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
-            }
-#else
-            if (!waitForStart && player != null && player.State == MediaState.Stopped)
-            {
-                player.Dispose();
-                player = null;
-                video = null;
-                paused = false;
-                delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
-            }
-#endif
+            videoPlayer.Update();
         }
 
-#if DESKTOPGL_VLC
-        private void EnsureVlc()
+        private void OnPlaybackFinished()
         {
-            if (libVlc != null || vlcInitFailed)
-            {
-                return;
-            }
-
-            try
-            {
-                LibVLCSharp.Shared.Core.Initialize();
-                libVlc = new LibVLC();
-            }
-            catch
-            {
-                vlcInitFailed = true;
-            }
+            delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
         }
 
-        private uint VideoFormatCallback(ref IntPtr opaque, IntPtr chroma, ref uint width, ref uint height, ref uint pitches, ref uint lines)
+        public new void Dispose()
         {
-            const string chromaCode = "RGBA";
-            byte[] chromaBytes = Encoding.ASCII.GetBytes(chromaCode);
-            Marshal.Copy(chromaBytes, 0, chroma, chromaBytes.Length);
-
-            videoWidth = (int)width;
-            videoHeight = (int)height;
-            pitches = width * 4;
-            lines = height;
-
-            if (videoBufferHandle.IsAllocated)
-            {
-                videoBufferHandle.Free();
-            }
-
-            int bufferSize = checked(videoWidth * videoHeight * 4);
-            videoBuffer = new byte[bufferSize];
-            videoBufferHandle = GCHandle.Alloc(videoBuffer, GCHandleType.Pinned);
-            pendingTextureInit = true;
-            frameReady = false;
-            return 1;
+            videoPlayer.PlaybackFinished -= OnPlaybackFinished;
+            videoPlayer.Dispose();
         }
 
-        private void CleanupVideoFormatCallback(ref IntPtr opaque)
-        {
-        }
-
-        private IntPtr LockVideoCallback(IntPtr opaque, IntPtr planes)
-        {
-            if (videoBufferHandle.IsAllocated)
-            {
-                Marshal.WriteIntPtr(planes, videoBufferHandle.AddrOfPinnedObject());
-            }
-
-            return IntPtr.Zero;
-        }
-
-        private void UnlockVideoCallback(IntPtr opaque, IntPtr picture, IntPtr planes)
-        {
-        }
-
-        private void DisplayVideoCallback(IntPtr opaque, IntPtr picture)
-        {
-            lock (bufferLock)
-            {
-                frameCount++;
-                frameReady = true;
-            }
-        }
-
-        private int frameCount;
-
-        private void OnEndReached(object sender, EventArgs args)
-        {
-            playbackFinished = true;
-        }
-
-        private void InitializeTexture()
-        {
-            pendingTextureInit = false;
-            if (videoWidth <= 0 || videoHeight <= 0)
-            {
-                return;
-            }
-
-            videoTexture?.Dispose();
-            videoTexture = new Texture2D(Global.GraphicsDevice, videoWidth, videoHeight, false, SurfaceFormat.Color);
-        }
-
-        private void CleanupVlc()
-        {
-            if (mediaPlayer != null)
-            {
-                mediaPlayer.EndReached -= OnEndReached;
-                if (mediaPlayer.IsPlaying)
-                {
-                    mediaPlayer.Stop();
-                }
-
-                mediaPlayer.Dispose();
-                mediaPlayer = null;
-            }
-
-            media?.Dispose();
-            media = null;
-
-            if (videoBufferHandle.IsAllocated)
-            {
-                videoBufferHandle.Free();
-            }
-
-            videoTexture?.Dispose();
-            videoTexture = null;
-            videoBuffer = null;
-            pendingTextureInit = false;
-            frameReady = false;
-            playbackFinished = false;
-            frameCount = 0;
-            videoWidth = 0;
-            videoHeight = 0;
-        }
-#endif
-
-#if DESKTOPGL_VLC
-        private readonly Lock bufferLock = new();
-
-        private LibVLC libVlc;
-
-        private bool vlcInitFailed;
-
-        private VlcMedia media;
-
-        private VlcMediaPlayer mediaPlayer;
-
-        private Texture2D videoTexture;
-
-        private byte[] videoBuffer;
-
-        private GCHandle videoBufferHandle;
-
-        private bool pendingTextureInit;
-
-        private bool frameReady;
-
-        private volatile bool playbackFinished;
-
-        private int videoWidth;
-
-        private int videoHeight;
-#endif
-
-#if !DESKTOPGL_VLC
-        private VideoPlayer player;
-
-        private Video video;
-#endif
-
-        private bool waitForStart;
-
-        private bool paused;
+        private readonly IVideoPlayer videoPlayer;
 
         public string url;
 
         public IMovieMgrDelegate delegateMovieMgrDelegate;
-
-        public new void Dispose()
-        {
-#if DESKTOPGL_VLC
-            CleanupVlc();
-            libVlc?.Dispose();
-            libVlc = null;
-#else
-            player?.Dispose();
-            player = null;
-            video = null;
-#endif
-        }
     }
 }
