@@ -143,7 +143,7 @@ namespace CutTheRope.Helpers
                     return result;
                 }
 
-                result = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(json);
+                result = DeserializeLocalizationJson(json);
             }
             catch (Exception ex)
             {
@@ -151,6 +151,35 @@ namespace CutTheRope.Helpers
             }
 
             return result ?? [];
+        }
+
+        /// <summary>
+        /// Deserializes localization JSON using AOT-safe JsonDocument parsing.
+        /// </summary>
+        private static Dictionary<string, Dictionary<string, string>> DeserializeLocalizationJson(string json)
+        {
+            Dictionary<string, Dictionary<string, string>> result = [];
+
+            using JsonDocument doc = JsonDocument.Parse(json);
+            foreach (JsonProperty keyProp in doc.RootElement.EnumerateObject())
+            {
+                Dictionary<string, string> translations = [];
+
+                if (keyProp.Value.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (JsonProperty langProp in keyProp.Value.EnumerateObject())
+                    {
+                        if (langProp.Value.ValueKind == JsonValueKind.String)
+                        {
+                            translations[langProp.Name] = langProp.Value.GetString() ?? string.Empty;
+                        }
+                    }
+                }
+
+                result[keyProp.Name] = translations;
+            }
+
+            return result;
         }
 
         private static Stream OpenStream(string fileName)

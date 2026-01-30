@@ -11,7 +11,6 @@ namespace CutTheRope.Framework.Core
         private const string SaveFileName = "ctr_preferences.json";
         private const string LegacyBinaryFileName = "ctr_save.bin";
         private const string MigratedBinaryFileName = "ctr_bin_candeletethis.bin";
-        private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
         private const string SaveFolderName = "CutTheRopeDX_SaveData";
         private static string SaveFilePath => Path.Combine(SaveDirectory, SaveFileName);
         private static string LegacyBinaryFilePath => Path.Combine(SaveDirectory, LegacyBinaryFileName);
@@ -234,7 +233,6 @@ namespace CutTheRope.Framework.Core
                 {
                     int intVal => intVal,
                     long longVal => (int)longVal,
-                    JsonElement jsonElement => jsonElement.GetInt32(),
                     _ => 0
                 }
                 : 0;
@@ -253,14 +251,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public static string GetStringForKey(string key)
         {
-            return PreferencesData.TryGetValue(key, out object value)
-                ? value switch
-                {
-                    string strVal => strVal,
-                    JsonElement jsonElement => jsonElement.GetString() ?? "",
-                    _ => ""
-                }
-                : "";
+            return PreferencesData.TryGetValue(key, out object value) && value is string strVal ? strVal : "";
         }
 
         /// <summary>
@@ -270,6 +261,62 @@ namespace CutTheRope.Framework.Core
         protected static bool ContainsKey(string key)
         {
             return PreferencesData.ContainsKey(key);
+        }
+
+        /// <summary>
+        /// Serializes preferences dictionary to JSON string (AOT-safe).
+        /// </summary>
+        private static string SerializeToJson()
+        {
+            using MemoryStream stream = new();
+            using (Utf8JsonWriter writer = new(stream, new JsonWriterOptions { Indented = true }))
+            {
+                writer.WriteStartObject();
+                foreach (KeyValuePair<string, object> kvp in PreferencesData)
+                {
+                    writer.WritePropertyName(kvp.Key);
+                    switch (kvp.Value)
+                    {
+                        case int intVal:
+                            writer.WriteNumberValue(intVal);
+                            break;
+                        case long longVal:
+                            writer.WriteNumberValue(longVal);
+                            break;
+                        case string strVal:
+                            writer.WriteStringValue(strVal);
+                            break;
+                        default:
+                            writer.WriteNullValue();
+                            break;
+                    }
+                }
+                writer.WriteEndObject();
+            }
+            return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+        }
+
+        /// <summary>
+        /// Deserializes JSON string into PreferencesData dictionary (AOT-safe).
+        /// </summary>
+        private static void DeserializeFromJson(string json)
+        {
+            using JsonDocument doc = JsonDocument.Parse(json);
+            foreach (JsonProperty prop in doc.RootElement.EnumerateObject())
+            {
+                PreferencesData[prop.Name] = prop.Value.ValueKind switch
+                {
+                    JsonValueKind.Number => prop.Value.TryGetInt32(out int intVal) ? intVal : prop.Value.GetInt64(),
+                    JsonValueKind.String => prop.Value.GetString() ?? "",
+                    JsonValueKind.Undefined => throw new NotImplementedException(),
+                    JsonValueKind.Object => throw new NotImplementedException(),
+                    JsonValueKind.Array => throw new NotImplementedException(),
+                    JsonValueKind.True => throw new NotImplementedException(),
+                    JsonValueKind.False => throw new NotImplementedException(),
+                    JsonValueKind.Null => throw new NotImplementedException(),
+                    _ => null
+                };
+            }
         }
 
         /// <summary>
@@ -296,8 +343,7 @@ namespace CutTheRope.Framework.Core
 
             try
             {
-                string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
-                File.WriteAllText(SaveFilePath, json);
+                File.WriteAllText(SaveFilePath, SerializeToJson());
                 GameSaveRequested = false;
             }
             catch (Exception ex)
@@ -314,9 +360,8 @@ namespace CutTheRope.Framework.Core
         {
             try
             {
-                string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
                 using StreamWriter writer = new(stream);
-                writer.Write(json);
+                writer.Write(SerializeToJson());
                 return true;
             }
             catch (Exception ex)
@@ -335,16 +380,8 @@ namespace CutTheRope.Framework.Core
             {
                 using StreamReader reader = new(stream);
                 string json = reader.ReadToEnd();
-                Dictionary<string, object> data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
-
-                if (data != null)
-                {
-                    PreferencesData.Clear();
-                    foreach (KeyValuePair<string, object> kvp in data)
-                    {
-                        PreferencesData[kvp.Key] = kvp.Value;
-                    }
-                }
+                PreferencesData.Clear();
+                DeserializeFromJson(json);
                 return true;
             }
             catch (Exception ex)
@@ -368,15 +405,7 @@ namespace CutTheRope.Framework.Core
                 try
                 {
                     string json = File.ReadAllText(SaveFilePath);
-                    Dictionary<string, object> data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
-
-                    if (data != null)
-                    {
-                        foreach (KeyValuePair<string, object> kvp in data)
-                        {
-                            PreferencesData[kvp.Key] = kvp.Value;
-                        }
-                    }
+                    DeserializeFromJson(json);
                     return;
                 }
                 catch (Exception ex)
@@ -398,8 +427,7 @@ namespace CutTheRope.Framework.Core
                         // Save as JSON
                         try
                         {
-                            string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
-                            File.WriteAllText(SaveFilePath, json);
+                            File.WriteAllText(SaveFilePath, SerializeToJson());
                         }
                         catch (Exception ex)
                         {
