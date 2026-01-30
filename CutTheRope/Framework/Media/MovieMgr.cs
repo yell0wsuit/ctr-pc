@@ -78,7 +78,9 @@ namespace CutTheRope.Framework.Media
             videoPlayer.Dispose();
         }
 
+#pragma warning disable CA1859
         private readonly IVideoPlayer videoPlayer;
+#pragma warning restore CA1859
 
         public string url;
 
