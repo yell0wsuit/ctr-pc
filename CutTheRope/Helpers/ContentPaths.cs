@@ -168,15 +168,18 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// Gets the video directory path based on screen width (SD or HD).
+        /// The video file extension.
         /// </summary>
-        /// <param name="fileName">The video filename</param>
-        /// <param name="screenWidth">The screen width to determine whether to pick SD or HD files</param>
+        public const string VideoExtension = ".mp4";
+
+        /// <summary>
+        /// Gets the path to an HD video file.
+        /// </summary>
+        /// <param name="fileName">The video filename without extension</param>
         /// <returns>The relative path to the video file</returns>
-        public static string GetVideoPath(string fileName, int screenWidth)
+        public static string GetVideoPath(string fileName)
         {
-            string videoDir = screenWidth <= 1024 ? VideoDirectory : VideoHdDirectory;
-            return $"{videoDir}/{fileName}";
+            return $"{VideoHdDirectory}/{fileName}{VideoExtension}";
         }
 
         /// <summary>

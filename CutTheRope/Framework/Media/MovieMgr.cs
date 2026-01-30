@@ -1,127 +1,150 @@
-#if MONOGAME_WINDOWSDX
-using CutTheRope.Desktop;
-using CutTheRope.Helpers;
-#endif
-
 using System;
 
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.Framework.Media
 {
+    /// <summary>
+    /// Manages video playback and provides a unified interface for movie operations.
+    /// </summary>
+    /// <remarks>
+    /// This class wraps platform-specific video player implementations (VLC or MonoGame)
+    /// and notifies delegates when playback finishes.
+    /// </remarks>
     internal sealed class MovieMgr : FrameworkTypes, IDisposable
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MovieMgr"/> class.
+        /// </summary>
+        /// <remarks>
+        /// Creates a platform-specific video player (VLC for DesktopGL, MonoGame otherwise).
+        /// </remarks>
+        public MovieMgr()
+        {
+#if DESKTOPGL_VLC
+            videoPlayer = new VideoPlayerVLC();
+#else
+            videoPlayer = new VideoPlayerMonoGame();
+#endif
+            videoPlayer.PlaybackFinished += OnPlaybackFinished;
+        }
+
+        /// <summary>
+        /// Prepares and initiates video playback from the specified path.
+        /// </summary>
+        /// <param name="moviePath">The relative path to the video file without extension.</param>
+        /// <param name="mute">If <c>true</c>, audio will be muted during playback.</param>
         public void PlayURL(string moviePath, bool mute)
         {
             url = moviePath;
-
-#if MONOGAME_DESKTOPGL
-            // Video playback not supported on DesktopGL - skip immediately
-            delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
-#else
-            string videoPath = ContentPaths.GetVideoPath(moviePath, Global.ScreenSizeManager.CurrentSize.Width);
-
-            // Unload the video from ContentManager's cache before reloading
-            // Without this, ContentManager returns a disposed Video instance when playing
-            // the same video multiple times, causing InvalidOperationException in VideoPlayer.Play()
-            try
-            {
-                Global.XnaGame.Content.UnloadAsset(videoPath);
-            }
-            catch { }
-
-            video = Global.XnaGame.Content.Load<Video>(videoPath);
-
-            player = new VideoPlayer
-            {
-                IsLooped = false,
-                IsMuted = mute
-            };
-            waitForStart = true;
-#endif
+            videoPlayer.Play(moviePath, mute);
         }
 
+        /// <summary>
+        /// Gets the current video frame as a texture.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Texture2D"/> containing the current video frame, or <c>null</c>
+        /// if no video is playing or playback has finished.
+        /// </returns>
         public Texture2D GetTexture()
         {
-            return player != null && player.State != MediaState.Stopped ? player.GetTexture() : null;
+            return videoPlayer.GetTexture();
         }
 
+        /// <summary>
+        /// Determines whether a video is currently loaded and potentially playing.
+        /// </summary>
+        /// <returns><c>true</c> if a video is active; otherwise, <c>false</c>.</returns>
         public bool IsPlaying()
         {
-            return player != null;
+            return videoPlayer.IsPlaying();
         }
 
+        /// <summary>
+        /// Determines whether the video texture is ready for rendering.
+        /// </summary>
+        /// <returns><c>true</c> if the texture can be rendered; otherwise, <c>false</c>.</returns>
+        public bool IsTextureReady()
+        {
+            return videoPlayer.IsTextureReady();
+        }
+
+        /// <summary>
+        /// Stops the current video playback.
+        /// </summary>
         public void Stop()
         {
-            player?.Stop();
+            videoPlayer.Stop();
         }
 
+        /// <summary>
+        /// Pauses the current video playback.
+        /// </summary>
         public void Pause()
         {
-            if (!paused)
-            {
-                paused = true;
-                if (player != null)
-                {
-                    player.IsMuted = true;
-                }
-            }
+            videoPlayer.Pause();
         }
 
+        /// <summary>
+        /// Determines whether playback is currently paused.
+        /// </summary>
+        /// <returns><c>true</c> if playback is paused; otherwise, <c>false</c>.</returns>
         public bool IsPaused()
         {
-            return paused;
+            return videoPlayer.IsPaused;
         }
 
+        /// <summary>
+        /// Resumes video playback after being paused.
+        /// </summary>
         public void Resume()
         {
-            if (paused)
-            {
-                paused = false;
-                if (player != null)
-                {
-                    player.IsMuted = false;
-                }
-            }
+            videoPlayer.Resume();
         }
 
+        /// <summary>
+        /// Starts video playback after a video has been prepared with <see cref="PlayURL"/>.
+        /// </summary>
         public void Start()
         {
-            if (waitForStart && player != null && player.State == MediaState.Stopped)
-            {
-                waitForStart = false;
-                player.Play(video);
-            }
+            videoPlayer.Start();
         }
 
+        /// <summary>
+        /// Updates the video player state each frame.
+        /// </summary>
         public void Update()
         {
-            if (!waitForStart && player != null && player.State == MediaState.Stopped)
-            {
-                player.Dispose();
-                player = null;
-                video = null;
-                paused = false;
-                delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
-            }
+            videoPlayer.Update();
         }
 
-        private VideoPlayer player;
+        /// <summary>
+        /// Handles the video player's playback finished event and notifies the delegate.
+        /// </summary>
+        private void OnPlaybackFinished()
+        {
+            delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
+        }
 
-        public string url;
-
-        public IMovieMgrDelegate delegateMovieMgrDelegate;
-
-        private Video video;
-
-        private bool waitForStart;
-
-        private bool paused;
-
+        /// <summary>
+        /// Releases all resources used by the movie manager.
+        /// </summary>
         public new void Dispose()
         {
-            throw new NotImplementedException();
+            videoPlayer.PlaybackFinished -= OnPlaybackFinished;
+            videoPlayer.Dispose();
         }
+
+#pragma warning disable CA1859
+        /// <summary>The underlying video player implementation.</summary>
+        private readonly IVideoPlayer videoPlayer;
+#pragma warning restore CA1859
+
+        /// <summary>The URL or path of the currently playing video.</summary>
+        public string url;
+
+        /// <summary>Delegate to notify when movie playback events occur.</summary>
+        public IMovieMgrDelegate delegateMovieMgrDelegate;
     }
 }

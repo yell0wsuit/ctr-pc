@@ -6,6 +6,7 @@
 # Requirements:
 #   - .NET 9.0 SDK
 #   - wget (for downloading appimagetool if not present)
+#   - sudo apt install libvlc-dev vlc libx11-dev
 
 set -e
 
