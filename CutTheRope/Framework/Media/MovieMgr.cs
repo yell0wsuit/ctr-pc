@@ -21,7 +21,9 @@ namespace CutTheRope.Framework.Media
         /// </remarks>
         public MovieMgr()
         {
-#if DESKTOPGL_VLC
+#if MACOS_AVFOUNDATION
+            videoPlayer = new VideoPlayerAVFoundation();
+#elif DESKTOPGL_VLC
             videoPlayer = new VideoPlayerVLC();
 #else
             videoPlayer = new VideoPlayerMonoGame();
