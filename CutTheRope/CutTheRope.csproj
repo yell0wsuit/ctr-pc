@@ -2,18 +2,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
-    <OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
-    <OutputType Condition="'$(Configuration)' == 'Release'">WinExe</OutputType>
     <RootNamespace>CutTheRope</RootNamespace>
     <AssemblyName>CutTheRope-DX</AssemblyName>
 
-    <!--
-      DesktopGL build for all platforms:
-        - Windows and Linux use LibVLC for video playback
-        - macOS will use AVFoundation (to be implemented)
-    -->
-
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Default: cross-platform DesktopGL -->
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <!-- macOS: add net10.0-macos for AVFoundation -->
+    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+      net10.0;net10.0-macos
+    </TargetFrameworks>
     <LangVersion>preview</LangVersion>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -41,6 +38,19 @@
     <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
   </PropertyGroup>
 
+  <!-- Output type -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' AND $([MSBuild]::IsOsPlatform('Windows'))">
+    <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' AND !$([MSBuild]::IsOsPlatform('Windows'))">
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
   <!-- DesktopGL publish defaults -->
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <SelfContained>true</SelfContained>
@@ -49,6 +59,22 @@
     <StripSymbols>true</StripSymbols>
     <DebugType>none</DebugType>
   </PropertyGroup>
+
+  <!-- macOS app bundle doesn't support single-file publishing -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <ApplicationId>page.yell0wsuit.cuttherope.dx</ApplicationId>
+    <SupportedOSPlatformVersion>26.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <None Include="../distribution/macos/InfoCsproj.plist" Link="Info.plist" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
@@ -83,6 +109,11 @@
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
   </PropertyGroup>
 
+  <!-- Compiler constants for macOS builds. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <DefineConstants>$(DefineConstants);MACOS_AVFOUNDATION</DefineConstants>
+  </PropertyGroup>
+
   <!-- VLC enabled on all platforms except macOS (which uses AVFoundation) -->
   <PropertyGroup
     Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
@@ -96,8 +127,8 @@
     <None Include="app.manifest" />
   </ItemGroup>
 
-  <!-- Copy content files, but exclude sounds directory (we'll handle it separately). -->
-  <ItemGroup>
+  <!-- Copy content files for non-macOS builds, exclude sounds (handled separately). -->
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
     <None
       Include="..\content\**"
       Exclude="..\content\sounds\**;..\content\**\.DS_Store"
@@ -107,7 +138,7 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
     <None Remove="..\content\content.mgcb" />
     <None Remove="..\content\bin\**\*.*" />
     <None Remove="..\content\obj\**\*.*" />
@@ -115,8 +146,18 @@
     <None Remove="..\content\sounds\sfx\*.wav" />
   </ItemGroup>
 
-  <!-- DesktopGL build: include *.xnb and *.ogg pairs. -->
-  <ItemGroup>
+  <!-- macOS app bundle: use BundleResource for content files -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource
+      Include="..\content\**"
+      Exclude="..\content\sounds\**;..\content\content.mgcb;..\content\bin\**\*.*;..\content\obj\**\*.*;..\content\**\*.png;..\content\sounds\sfx\*.wav"
+    >
+      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </BundleResource>
+  </ItemGroup>
+
+  <!-- OpenGL build, include *.xnb and *.ogg pairs (excluding *_windows.*). -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <None
       Include="..\content\sounds\*.xnb"
       Exclude="..\content\sounds\*_windows.xnb"
@@ -130,11 +171,31 @@
     </None>
   </ItemGroup>
 
-  <!-- Include alsoft.ini to disable HTRF. -->
-  <ItemGroup>
+  <!-- macOS app bundle: sound files as BundleResource -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource
+      Include="..\content\sounds\*.xnb"
+      Exclude="..\content\sounds\*_windows.xnb"
+    >
+      <Link>content\sounds\%(Filename)%(Extension)</Link>
+    </BundleResource>
+    <BundleResource Include="..\content\sounds\*.ogg">
+      <Link>content\sounds\%(Filename)%(Extension)</Link>
+    </BundleResource>
+  </ItemGroup>
+
+  <!-- OpenGL build, include alsoft.ini to disable HTRF. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <None Include="..\alsoft.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <!-- macOS app bundle: alsoft.ini as BundleResource -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource Include="..\alsoft.ini">
+      <Link>alsoft.ini</Link>
+    </BundleResource>
   </ItemGroup>
 
   <ItemGroup Condition="'$(RunMGCB)' == 'true'">
@@ -147,12 +208,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('osx'))">
-    <None Include="../distribution/icons/CutTheRopeIcon.icns">
-      <Link>icons/CutTheRopeIcon.icns</Link>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </None>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource Include="../distribution/icons/CutTheRopeIcon.icns">
+      <Link>Resources/CutTheRopeIcon.icns</Link>
+    </BundleResource>
   </ItemGroup>
 
   <Target
@@ -164,5 +223,49 @@
       Importance="High"
     />
     <Exec Command="dotnet tool restore" />
+  </Target>
+
+  <!--
+    macOS: codesign dylibs and the app bundle after build.
+    This must be done to avoid app crashes when opening (thanks macOS).
+  -->
+  <Target
+    Name="CodesignMacOSBundle"
+    AfterTargets="Build"
+    Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))"
+  >
+    <PropertyGroup>
+      <AppBundlePath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(OutputPath)'))$(AssemblyName).app))</AppBundlePath>
+    </PropertyGroup>
+    
+    <Message Text="Codesigning dylibs in $(AppBundlePath)..." Importance="High" />
+    
+    <!-- Sign all dylibs - using bash to avoid escaping hell -->
+    <Exec
+      Command="/bin/bash -c &quot;find '$(AppBundlePath)' -name '*.dylib' -print0 | xargs -0 -I {} codesign --force --sign - '{}'&quot;" 
+      IgnoreExitCode="false"
+    />
+    
+    <!-- Sign the bundle itself -->
+    <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
+  </Target>
+
+  <Target
+    Name="MoveMacOSAppToPublish"
+    AfterTargets="Publish"
+    Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))"
+  >
+    <PropertyGroup>
+      <AppBundleName>$(AssemblyName).app</AppBundleName>
+      <AppSourcePath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(OutputPath)'))$(AppBundleName)))</AppSourcePath>
+      <AppPublishPath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(PublishDir)'))$(AppBundleName)))</AppPublishPath>
+    </PropertyGroup>
+
+    <Message Text="Relocating macOS .app to publish directory" Importance="High" />
+
+    <Exec
+      Condition="Exists('$(AppSourcePath)')"
+      Command="/bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;"
+    />
   </Target>
 </Project>

@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+#if MACOS_AVFOUNDATION
+using Foundation;
+#endif
 
 namespace CutTheRope.Framework.Core
 {
@@ -53,7 +56,21 @@ namespace CutTheRope.Framework.Core
         /// <returns>The path to the save directory.</returns>
         private static string DetermineSaveDirectory()
         {
-            // 1. Try executable directory first (excluding macOS .app bundle)
+#if MACOS_AVFOUNDATION
+            // On macOS, if not in .app bundle (dev mode), try executable directory
+            if (!IsInsideMacAppBundle())
+            {
+                string exeDir = AppContext.BaseDirectory;
+                string exeSaveDir = Path.Combine(exeDir, SaveFolderName);
+                if (TryCreateDirectory(exeSaveDir))
+                {
+                    MigrateOldSaveFiles(exeDir, exeSaveDir);
+                    return exeSaveDir;
+                }
+            }
+            // Otherwise fall through to Documents folder below
+#else
+            // On non-macOS, try executable directory first (excluding macOS .app bundle)
             string exeDir = AppContext.BaseDirectory;
             if (!IsInsideMacAppBundle(exeDir))
             {
@@ -64,8 +81,9 @@ namespace CutTheRope.Framework.Core
                     return exeSaveDir;
                 }
             }
+#endif
 
-            // 2. Fallback to Documents/{SaveFolderName}
+            // Fallback to Documents/{SaveFolderName}
             string documentsDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 SaveFolderName);
@@ -74,7 +92,7 @@ namespace CutTheRope.Framework.Core
                 return documentsDir;
             }
 
-            // 3. Final fallback to LocalApplicationData/{SaveFolderName}
+            // Final fallback to LocalApplicationData/{SaveFolderName}
             string localAppDataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 SaveFolderName);
@@ -159,6 +177,18 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+#if MACOS_AVFOUNDATION
+        /// <summary>
+        /// Determines whether the app is running from inside a macOS .app bundle using NSBundle.
+        /// </summary>
+        /// <returns><c>true</c> if running from a .app bundle; otherwise, <c>false</c>.</returns>
+        private static bool IsInsideMacAppBundle()
+        {
+            string bundlePath = NSBundle.MainBundle.BundlePath;
+            return bundlePath.EndsWith(".app", StringComparison.OrdinalIgnoreCase);
+        }
+
+#else
         /// <summary>
         /// Determines whether the given path is inside a macOS .app bundle.
         /// Checks for the standard bundle structure: *.app/Contents/MacOS/
@@ -183,6 +213,7 @@ namespace CutTheRope.Framework.Core
 
             return false;
         }
+#endif
 
         public Preferences()
         {
