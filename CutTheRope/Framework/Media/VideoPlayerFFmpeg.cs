@@ -122,7 +122,10 @@ namespace CutTheRope.Framework.Media
             }
 
             playbackFinished = true;
+            playbackStopwatch.Stop();
             audioInstance?.Stop();
+            Cleanup();
+            PlaybackFinished?.Invoke();
         }
 
         public void Pause()
@@ -178,7 +181,7 @@ namespace CutTheRope.Framework.Media
                 DrainAudioQueue();
             }
 
-            if (playbackFinished)
+            if (playbackFinished && formatContext != null)
             {
                 Cleanup();
                 IsPaused = false;
@@ -723,7 +726,6 @@ namespace CutTheRope.Framework.Media
             videoTexture = null;
             videoBuffer = null;
             frameReady = false;
-            playbackFinished = false;
             waitForStart = false;
             playbackStopwatch.Reset();
             videoStreamIndex = -1;
