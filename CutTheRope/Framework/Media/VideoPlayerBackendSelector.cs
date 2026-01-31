@@ -12,22 +12,9 @@ namespace CutTheRope.Framework.Media
     {
         public static VideoPlayerBackend Select(bool isMac, bool hasAvFoundation, bool hasFfmpeg, bool hasVlc)
         {
-            if (isMac && hasAvFoundation)
-            {
-                return VideoPlayerBackend.AVFoundation;
-            }
-
-            if (isMac && hasFfmpeg)
-            {
-                return VideoPlayerBackend.Ffmpeg;
-            }
-
-            if (!isMac && hasVlc)
-            {
-                return VideoPlayerBackend.Vlc;
-            }
-
-            return VideoPlayerBackend.MonoGame;
+            return isMac && hasAvFoundation
+                ? VideoPlayerBackend.AVFoundation
+                : isMac && hasFfmpeg ? VideoPlayerBackend.Ffmpeg : !isMac && hasVlc ? VideoPlayerBackend.Vlc : VideoPlayerBackend.MonoGame;
         }
     }
 }
