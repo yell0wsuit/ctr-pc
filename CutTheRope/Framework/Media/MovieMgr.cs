@@ -22,10 +22,7 @@ namespace CutTheRope.Framework.Media
         public MovieMgr()
         {
 #if MACOS_AVFOUNDATION
-            if (OperatingSystem.IsMacOSVersionAtLeast(26))
-                videoPlayer = new VideoPlayerAVFoundation();
-            else
-                videoPlayer = new VideoPlayerMonoGame();
+            videoPlayer = OperatingSystem.IsMacOSVersionAtLeast(26) ? new VideoPlayerAVFoundation() : new VideoPlayerMonoGame();
 #elif DESKTOPGL_VLC
             videoPlayer = new VideoPlayerVLC();
 #else
