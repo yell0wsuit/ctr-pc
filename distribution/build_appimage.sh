@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Build script for creating an AppImage for Cut The Rope: DX
-# Usage: `./build_appimage.sh` or `bash build_appimage.sh`
+# Usage: `./build_appimage.sh [version]` or `bash build_appimage.sh [version]`
 #
 # Requirements:
-#   - .NET 9.0 SDK
+#   - .NET 10.0 SDK
 #   - wget (for downloading appimagetool if not present)
 #   - sudo apt install libvlc-dev vlc libx11-dev
 
@@ -27,12 +27,14 @@ APPDIR="$BUILD_DIR/$APP_NAME.AppDir"
 TOOLS_DIR="$SCRIPT_DIR/tools"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
 
-# Resolve version from csproj
-VERSION=$(dotnet msbuild "$PROJECT" \
-  -nologo -v:q \
-  -getProperty:InformationalVersion \
-  -p:Configuration=Release \
-  -p:TargetFramework=net9.0)
+# Resolve version (from arg or csproj)
+VERSION="$1"
+if [ -z "$VERSION" ]; then
+    VERSION=$(dotnet msbuild "$PROJECT" \
+      -nologo -v:q \
+      -getProperty:InformationalVersion \
+      -p:Configuration=Release)
+fi
 
 echo "=== Building Cut The Rope: DX v$VERSION AppImage ==="
 
@@ -41,8 +43,8 @@ echo "[1/5] Building Linux x64 release..."
 rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
-    -f net9.0 \
     -r linux-x64 \
+    ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
 
 # Step 2: Create AppDir structure

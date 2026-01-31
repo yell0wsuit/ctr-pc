@@ -29,9 +29,9 @@ Please note that the game is only available on Windows 10 and later. More platfo
 - Support loading custom sprites and animations from [TexturePacker](https://www.codeandweb.com/texturepacker) in JSON array format. This allows easier modding and adding new assets.
 - Improved experience and bug fixes over the original PC version.
 - Better save file format. The save file (`ctr_preferences.json`) is stored in a `CutTheRopeDX_SaveData` folder, with the following fallback priority:
-  - Next to the game executable (preferred for portability)
-  - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
-  - `%LOCALAPPDATA%/CutTheRopeDX_SaveData` (Windows) or equivalent on other platforms
+    - Next to the game executable (preferred for portability)
+    - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
+    - `%LOCALAPPDATA%/CutTheRopeDX_SaveData` (Windows) or equivalent on other platforms
 
 ## Goals
 
@@ -41,7 +41,7 @@ Please see [issue #68](https://github.com/yell0wsuit/cuttherope-dx/issues/68) fo
 
 ### Long-term goals
 
-- [ ] **Cross-platform video support**: Enable video playback on Linux (and macOS).
+- [ ] **Video support for macOS**: Enable video playback on macOS with AVFoundation.
 - [ ] **Bug fixing and polish**: Fix bugs, and ensure everything works smoothly.
 - [ ] **Code optimization and modernization**: Optimize performance-critical code, and modernize codebase.
 
@@ -72,12 +72,16 @@ To test the game during the development process, follow these steps:
 
     ```bash
     # Windows
-    # Only applicable for Windows, cannot be used on macOS or Linux
-    dotnet build CutTheRope\CutTheRope.csproj -c Release -f net9.0-windows -o .\CutTheRope\bin\Publish\win-x64
+    dotnet build CutTheRope\CutTheRope.csproj -c Release -o .\CutTheRope\bin\Publish\win-x64
+
+      # Alternative Windows build with native AOT for potential performance improvement
+      # Only applicable for Windows 11 and later
+      dotnet build CutTheRope\CutTheRope.csproj -c Release -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
+
 
     # macOS
-    dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net9.0 -r osx-arm64 -o .\CutTheRope\bin\Publish\osx-arm64
+    dotnet publish CutTheRope\CutTheRope.csproj -c Release -r osx-arm64 -o .\CutTheRope\bin\Publish\osx-arm64
 
     # Linux
-    dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net9.0 -r linux-x64 -o .\CutTheRope\bin\Publish\linux-x64
+    dotnet publish CutTheRope\CutTheRope.csproj -c Release -r linux-x64 -o .\CutTheRope\bin\Publish\linux-x64
     ```

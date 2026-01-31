@@ -17,8 +17,6 @@ namespace CutTheRope.Framework.Core
         private static string MigratedBinaryFilePath => Path.Combine(SaveDirectory, MigratedBinaryFileName);
         public static bool GameSaveRequested { get; set; }
 
-        private static string _saveDirectory;
-
         /// <summary>
         /// Gets the save directory with the following fallback priority:
         /// <list type="bullet">
@@ -40,12 +38,12 @@ namespace CutTheRope.Framework.Core
         {
             get
             {
-                if (_saveDirectory == null)
+                if (field == null)
                 {
-                    _saveDirectory = DetermineSaveDirectory();
-                    Console.WriteLine($"[Preferences] Using save directory: {_saveDirectory}");
+                    field = DetermineSaveDirectory();
+                    Console.WriteLine($"[Preferences] Using save directory: {field}");
                 }
-                return _saveDirectory;
+                return field;
             }
         }
 

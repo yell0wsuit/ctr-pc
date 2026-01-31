@@ -190,10 +190,7 @@ namespace CutTheRope.GameMain
             foreach (KeyValuePair<int, BaseElement> kvp in childs)
             {
                 BaseElement child = kvp.Value;
-                if (child != null)
-                {
-                    child.y = offset;
-                }
+                _ = (child?.y = offset);
             }
         }
 
@@ -230,16 +227,10 @@ namespace CutTheRope.GameMain
                 {
                     lightUpAnim.visible = true;
                     Timeline timeline = lightUpAnim.GetTimeline(0);
-                    if (timeline != null)
-                    {
-                        timeline.OnFinished = () =>
+                    _ = (timeline?.OnFinished = () =>
                         {
-                            if (lightUpAnim != null)
-                            {
-                                lightUpAnim.visible = false;
-                            }
-                        };
-                    }
+                            _ = (lightUpAnim?.visible = false);
+                        });
                     lightUpAnim.PlayTimeline(0);
 
                     // Play star light sound
@@ -250,28 +241,16 @@ namespace CutTheRope.GameMain
             {
                 lightDownAnim.visible = true;
                 Timeline timeline = lightDownAnim.GetTimeline(0);
-                if (timeline != null)
-                {
-                    timeline.OnFinished = () =>
+                _ = (timeline?.OnFinished = () =>
                     {
-                        if (lightDownAnim != null)
-                        {
-                            lightDownAnim.visible = false;
-                        }
-                    };
-                }
+                        _ = (lightDownAnim?.visible = false);
+                    });
                 lightDownAnim.PlayTimeline(0);
             }
             else if (isInitial)
             {
-                if (glowSprite != null)
-                {
-                    glowSprite.color = RGBAColor.transparentRGBA;
-                }
-                if (idleSprite != null)
-                {
-                    idleSprite.color = RGBAColor.transparentRGBA;
-                }
+                _ = (glowSprite?.color = RGBAColor.transparentRGBA);
+                _ = (idleSprite?.color = RGBAColor.transparentRGBA);
             }
 
             UpdateNightVisibility();
@@ -295,18 +274,9 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            if (glowSprite != null)
-            {
-                glowSprite.visible = true;
-            }
-            if (idleSprite != null)
-            {
-                idleSprite.visible = true;
-            }
-            if (dimmedIdleSprite != null)
-            {
-                dimmedIdleSprite.visible = true;
-            }
+            _ = (glowSprite?.visible = true);
+            _ = (idleSprite?.visible = true);
+            _ = (dimmedIdleSprite?.visible = true);
         }
 
         public float time;

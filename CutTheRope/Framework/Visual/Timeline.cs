@@ -14,10 +14,7 @@ namespace CutTheRope.Framework.Visual
         {
             for (int i = 0; i < tracks.Length; i++)
             {
-                if (tracks[i] != null)
-                {
-                    tracks[i].state = Track.TrackState.TRACK_NOT_ACTIVE;
-                }
+                _ = (tracks[i]?.state = Track.TrackState.TRACK_NOT_ACTIVE);
             }
         }
 

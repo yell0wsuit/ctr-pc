@@ -93,10 +93,7 @@ namespace CutTheRope.GameMain
         {
             _ = isFullscreen;
             BaseElement childWithName = staticAniPool.GetChildWithName("levelLabel");
-            if (childWithName != null)
-            {
-                childWithName.x = 15f + Canvas.xOffsetScaled;
-            }
+            _ = (childWithName?.x = 15f + Canvas.xOffsetScaled);
             for (int i = 0; i < 3; i++)
             {
                 hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
