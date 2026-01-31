@@ -232,13 +232,21 @@
   <Target
     Name="CodesignMacOSBundle"
     AfterTargets="Build"
-    Condition="'$(TargetFramework)' == 'net10.0-macos' AND $([MSBuild]::IsOsPlatform('OSX'))"
+    Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))"
   >
     <PropertyGroup>
-      <AppBundlePath>$(OutputPath)$(AssemblyName).app</AppBundlePath>
+      <AppBundlePath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(OutputPath)'))$(AssemblyName).app))</AppBundlePath>
     </PropertyGroup>
+    
     <Message Text="Codesigning dylibs in $(AppBundlePath)..." Importance="High" />
-    <Exec Command="find &quot;$(AppBundlePath)&quot; -name &quot;*.dylib&quot; -exec codesign --force --sign - {} \;" />
-    <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" />
+    
+    <!-- Sign all dylibs - using bash to avoid escaping hell -->
+    <Exec
+      Command="/bin/bash -c &quot;find '$(AppBundlePath)' -name '*.dylib' -print0 | xargs -0 -I {} codesign --force --sign - '{}'&quot;" 
+      IgnoreExitCode="false"
+    />
+    
+    <!-- Sign the bundle itself -->
+    <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
   </Target>
 </Project>
