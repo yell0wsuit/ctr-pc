@@ -50,6 +50,18 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
 
+  <!-- macOS app bundle doesn't support single-file publishing -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <ApplicationId>page.yell0wsuit.cuttherope.dx</ApplicationId>
+    <SupportedOSPlatformVersion>26.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
     <PackageReference
