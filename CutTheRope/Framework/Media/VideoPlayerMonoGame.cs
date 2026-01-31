@@ -1,4 +1,3 @@
-#if !DESKTOPGL_VLC
 using System;
 
 using Microsoft.Xna.Framework.Graphics;
@@ -55,4 +54,3 @@ namespace CutTheRope.Framework.Media
         public void Dispose() { }
     }
 }
-#endif
