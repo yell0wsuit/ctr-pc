@@ -33,8 +33,20 @@ namespace CutTheRope.Framework.Media
             playStartTime = null;
             loggedFirstFrame = false;
 
+            string basePath;
+
+#if MACOS_AVFOUNDATION
+            basePath = NSBundle.MainBundle.ResourcePath;
+#else
+            basePath = AppContext.BaseDirectory;
+#endif
+
             string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}");
-            string fullPath = Path.Combine(ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
+            string fullPath = Path.Combine(
+                basePath,
+                ContentPaths.RootDirectory,
+                ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath)
+            );
 
             if (!File.Exists(fullPath))
             {
