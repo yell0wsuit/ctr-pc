@@ -1,7 +1,9 @@
 #if MACOS_FFMPEG
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 using CutTheRope.Desktop;
 using CutTheRope.Helpers;
@@ -16,8 +18,9 @@ namespace CutTheRope.Framework.Media
     internal sealed unsafe class VideoPlayerFFmpeg : IVideoPlayer
     {
         private const int TextureReadyTimeoutMs = 500;
-        private const int MaxQueuedAudioBuffers = 4;
-        private readonly object bufferLock = new();
+        private const int MaxQueuedAudioBuffers = 8;
+        private readonly Lock bufferLock = new();
+        private readonly Queue<byte[]> pendingAudioQueue = new();
         private readonly Func<string, bool> fileExists;
         private readonly Func<string, string> resolveRootPath;
 
@@ -106,12 +109,7 @@ namespace CutTheRope.Framework.Media
 
         public bool IsTextureReady()
         {
-            if (frameCount > 0)
-            {
-                return true;
-            }
-
-            return playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > TextureReadyTimeoutMs;
+            return frameCount > 0 || (playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > TextureReadyTimeoutMs);
         }
 
         public void Stop()
@@ -173,6 +171,7 @@ namespace CutTheRope.Framework.Media
             if (!playbackFinished)
             {
                 DecodeNextFrame();
+                DrainAudioQueue();
             }
 
             if (playbackFinished)
@@ -378,7 +377,7 @@ namespace CutTheRope.Framework.Media
                     nextFramePts = pts * videoTimeBase;
                 }
 
-                ffmpeg.sws_scale(
+                _ = ffmpeg.sws_scale(
                     swsContext,
                     videoFrame->data,
                     videoFrame->linesize,
@@ -613,18 +612,24 @@ namespace CutTheRope.Framework.Media
                 return;
             }
 
-            if (audioInstance.PendingBufferCount >= MaxQueuedAudioBuffers)
+            byte[] managedBuffer = new byte[size];
+            Marshal.Copy((IntPtr)audioBuffer, managedBuffer, 0, size);
+            pendingAudioQueue.Enqueue(managedBuffer);
+
+            DrainAudioQueue();
+        }
+
+        private void DrainAudioQueue()
+        {
+            if (audioInstance == null)
             {
                 return;
             }
 
-            byte[] managedBuffer = new byte[size];
-            Marshal.Copy((IntPtr)audioBuffer, managedBuffer, 0, size);
-            audioInstance.SubmitBuffer(managedBuffer, 0, size);
-
-            if (audioInstance.State == SoundState.Stopped)
+            while (pendingAudioQueue.Count > 0 && audioInstance.PendingBufferCount < MaxQueuedAudioBuffers)
             {
-                audioInstance.Play();
+                byte[] buffer = pendingAudioQueue.Dequeue();
+                audioInstance.SubmitBuffer(buffer, 0, buffer.Length);
             }
         }
 
@@ -720,6 +725,8 @@ namespace CutTheRope.Framework.Media
 
         private void CleanupAudio()
         {
+            pendingAudioQueue.Clear();
+
             if (audioInstance != null)
             {
                 audioInstance.Stop();
