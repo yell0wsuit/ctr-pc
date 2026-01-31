@@ -6,7 +6,10 @@ using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Media;
+
+using XnaMediaPlayer = Microsoft.Xna.Framework.Media.MediaPlayer;
+using XnaMediaState = Microsoft.Xna.Framework.Media.MediaState;
+using XnaSong = Microsoft.Xna.Framework.Media.Song;
 
 namespace CutTheRope.Framework.Media
 {
@@ -150,11 +153,11 @@ namespace CutTheRope.Framework.Media
 
             StopMusic();
             string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(resourceName));
-            Song song = _contentManager.Load<Song>(musicPath);
-            MediaPlayer.IsRepeating = true;
+            XnaSong song = _contentManager.Load<XnaSong>(musicPath);
+            XnaMediaPlayer.IsRepeating = true;
             try
             {
-                MediaPlayer.Play(song);
+                XnaMediaPlayer.Play(song);
             }
             catch (Exception)
             {
@@ -185,7 +188,7 @@ namespace CutTheRope.Framework.Media
         {
             try
             {
-                MediaPlayer.Stop();
+                XnaMediaPlayer.Stop();
             }
             catch (Exception)
             {
@@ -214,9 +217,9 @@ namespace CutTheRope.Framework.Media
             try
             {
                 ChangeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
-                if (MediaPlayer.State == MediaState.Playing)
+                if (XnaMediaPlayer.State == XnaMediaState.Playing)
                 {
-                    MediaPlayer.Pause();
+                    XnaMediaPlayer.Pause();
                 }
             }
             catch (Exception)
@@ -232,9 +235,9 @@ namespace CutTheRope.Framework.Media
             try
             {
                 ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
-                if (MediaPlayer.State == MediaState.Paused)
+                if (XnaMediaPlayer.State == XnaMediaState.Paused)
                 {
-                    MediaPlayer.Resume();
+                    XnaMediaPlayer.Resume();
                 }
             }
             catch (Exception)
