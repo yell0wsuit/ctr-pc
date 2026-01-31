@@ -44,11 +44,13 @@ namespace CutTheRope.Framework.Media
 
             VideoPlayerBackend backend = VideoPlayerBackendSelector.Select(
                 isMac: OperatingSystem.IsMacOS(),
+                isMac26OrLater: OperatingSystem.IsMacOSVersionAtLeast(26),
                 hasAvFoundation: hasAvFoundation,
                 hasFfmpeg: hasFfmpeg,
                 hasVlc: hasVlc
             );
 
+#pragma warning disable IDE0010
             switch (backend)
             {
 #if MACOS_AVFOUNDATION
@@ -70,6 +72,7 @@ namespace CutTheRope.Framework.Media
                     videoPlayer = new VideoPlayerMonoGame();
                     break;
             }
+#pragma warning restore IDE0010
             videoPlayer.PlaybackFinished += OnPlaybackFinished;
         }
 

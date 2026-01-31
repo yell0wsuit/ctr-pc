@@ -10,11 +10,22 @@ namespace CutTheRope.Framework.Media
 
     internal static class VideoPlayerBackendSelector
     {
-        public static VideoPlayerBackend Select(bool isMac, bool hasAvFoundation, bool hasFfmpeg, bool hasVlc)
+        public static VideoPlayerBackend Select(bool isMac, bool isMac26OrLater, bool hasAvFoundation, bool hasFfmpeg, bool hasVlc)
         {
-            return isMac && hasAvFoundation
-                ? VideoPlayerBackend.AVFoundation
-                : isMac && hasFfmpeg ? VideoPlayerBackend.Ffmpeg : !isMac && hasVlc ? VideoPlayerBackend.Vlc : VideoPlayerBackend.MonoGame;
+            if (isMac)
+            {
+                if (isMac26OrLater && hasAvFoundation)
+                {
+                    return VideoPlayerBackend.AVFoundation;
+                }
+
+                if (hasFfmpeg)
+                {
+                    return VideoPlayerBackend.Ffmpeg;
+                }
+            }
+
+            return hasVlc ? VideoPlayerBackend.Vlc : VideoPlayerBackend.MonoGame;
         }
     }
 }
