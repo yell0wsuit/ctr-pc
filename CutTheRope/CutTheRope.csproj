@@ -63,6 +63,10 @@
     <SupportedOSPlatformVersion>26.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <None Include="../distribution/macos/InfoCsproj.plist" Link="Info.plist" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
     <PackageReference
@@ -195,12 +199,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('osx'))">
-    <None Include="../distribution/icons/CutTheRopeIcon.icns">
-      <Link>icons/CutTheRopeIcon.icns</Link>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </None>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource Include="../distribution/icons/CutTheRopeIcon.icns">
+      <Link>Resources/CutTheRopeIcon.icns</Link>
+    </BundleResource>
   </ItemGroup>
 
   <Target
