@@ -76,7 +76,7 @@ To test the game during the development process, follow these steps:
 
       # Alternative Windows build with native AOT for potential performance improvement
       # Only applicable for Windows 11 and later
-      dotnet build CutTheRope\CutTheRope.csproj -c Release -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
+      dotnet publish CutTheRope\CutTheRope.csproj -c Release -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
 
 
     # macOS
