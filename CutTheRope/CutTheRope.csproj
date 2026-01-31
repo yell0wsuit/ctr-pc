@@ -92,7 +92,7 @@
     />
   </ItemGroup>
 
-  <!-- VLC video player for Windows and Linux (macOS uses AVFoundation) -->
+  <!-- VLC video player for Windows and Linux -->
   <ItemGroup
     Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
     <PackageReference Include="LibVLCSharp" Version="3.9.5" />
@@ -114,17 +114,17 @@
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
   </PropertyGroup>
 
-  <!-- Compiler constants for macOS builds. -->
+  <!-- Support for AVFoundation for macOS Tahoe (26) -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
     <DefineConstants>$(DefineConstants);MACOS_AVFOUNDATION</DefineConstants>
   </PropertyGroup>
 
-  <!-- Compiler constants for macOS DesktopGL builds (FFmpeg). -->
+  <!-- Use Ffmpeg for macOS below 26 and net10.0 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0' AND $([MSBuild]::IsOsPlatform('OSX'))">
     <DefineConstants>$(DefineConstants);MACOS_FFMPEG</DefineConstants>
   </PropertyGroup>
 
-  <!-- VLC enabled on all platforms except macOS (which uses AVFoundation) -->
+  <!-- VLC enabled on all platforms except macOS -->
   <PropertyGroup
     Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
     <DefineConstants>$(DefineConstants);DESKTOPGL_VLC</DefineConstants>

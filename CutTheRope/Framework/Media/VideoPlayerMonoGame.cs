@@ -6,8 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 namespace CutTheRope.Framework.Media
 {
     /// <summary>
-    /// Stub video player for platforms without VLC support (e.g., macOS).
-    /// Skips video playback immediately. Will be replaced with AVFoundation on macOS.
+    /// Stub video player when VLC, AVFoundation or FFmpeg is unavailable.
+    /// Skips video playback immediately.
     /// </summary>
     internal sealed class VideoPlayerMonoGame : IVideoPlayer
     {
