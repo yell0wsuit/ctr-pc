@@ -57,22 +57,9 @@ namespace CutTheRope.Framework.Core
         private static string DetermineSaveDirectory()
         {
 #if MACOS_AVFOUNDATION
-            // On macOS, check if running from .app bundle and save alongside it
-            if (IsInsideMacAppBundle())
+            // On macOS, if not in .app bundle (dev mode), try executable directory
+            if (!IsInsideMacAppBundle())
             {
-                string bundleParent = GetMacAppBundleParentDirectory();
-                if (bundleParent != null)
-                {
-                    string bundleSaveDir = Path.Combine(bundleParent, SaveFolderName);
-                    if (TryCreateDirectory(bundleSaveDir))
-                    {
-                        return bundleSaveDir;
-                    }
-                }
-            }
-            else
-            {
-                // Not in .app bundle, try executable directory
                 string exeDir = AppContext.BaseDirectory;
                 string exeSaveDir = Path.Combine(exeDir, SaveFolderName);
                 if (TryCreateDirectory(exeSaveDir))
@@ -81,6 +68,7 @@ namespace CutTheRope.Framework.Core
                     return exeSaveDir;
                 }
             }
+            // Otherwise fall through to Documents folder below
 #else
             // On non-macOS, try executable directory first (excluding macOS .app bundle)
             string exeDir = AppContext.BaseDirectory;
@@ -200,17 +188,6 @@ namespace CutTheRope.Framework.Core
             return bundlePath.EndsWith(".app", StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// Gets the directory containing the .app bundle.
-        /// </summary>
-        /// <returns>The parent directory of the .app bundle, or null if not in a bundle.</returns>
-        private static string GetMacAppBundleParentDirectory()
-        {
-            string bundlePath = NSBundle.MainBundle.BundlePath;
-            return bundlePath.EndsWith(".app", StringComparison.OrdinalIgnoreCase)
-                ? Path.GetDirectoryName(bundlePath)
-                : null;
-        }
 #else
         /// <summary>
         /// Determines whether the given path is inside a macOS .app bundle.
