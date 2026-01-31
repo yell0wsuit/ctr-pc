@@ -2,8 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
-    <OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
-    <OutputType Condition="'$(Configuration)' == 'Release'">WinExe</OutputType>
     <RootNamespace>CutTheRope</RootNamespace>
     <AssemblyName>CutTheRope-DX</AssemblyName>
 
@@ -13,8 +11,7 @@
         - macOS will use AVFoundation (to be implemented)
     -->
 
-    <TargetFramework Condition="!$([MSBuild]::IsOsPlatform('OSX'))">net10.0</TargetFramework>
-    <TargetFramework Condition="$([MSBuild]::IsOsPlatform('OSX'))">net10.0-macos</TargetFramework>
+    <TargetFrameworks>net10.0;net10.0-macos</TargetFrameworks>
     <LangVersion>preview</LangVersion>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -40,6 +37,19 @@
 
     <!-- Auto-disable in CI (GitHub Actions, GitLab, Azure, etc. set CI=true) -->
     <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
+  </PropertyGroup>
+
+  <!-- Output type -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' AND $([MSBuild]::IsOsPlatform('Windows'))">
+    <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' AND !$([MSBuild]::IsOsPlatform('Windows'))">
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <!-- DesktopGL publish defaults -->
