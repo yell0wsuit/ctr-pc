@@ -1,6 +1,7 @@
 #if MACOS_FFMPEG
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -19,8 +20,10 @@ namespace CutTheRope.Framework.Media
     {
         private const int TextureReadyTimeoutMs = 500;
         private const int MaxQueuedAudioBuffers = 8;
+        private const int BytesPerSample = 2; // 16-bit audio
         private readonly Lock bufferLock = new();
         private readonly Queue<byte[]> pendingAudioQueue = new();
+        private readonly Stopwatch playbackStopwatch = new();
         private readonly Func<string, bool> fileExists;
         private readonly Func<string, string> resolveRootPath;
 
@@ -44,7 +47,6 @@ namespace CutTheRope.Framework.Media
             Cleanup();
             playbackFinished = false;
             frameCount = 0;
-            playStartTime = null;
             this.mute = mute;
 
             string relativeVideoPath = ContentPaths.GetVideoPath(moviePath);
@@ -109,7 +111,7 @@ namespace CutTheRope.Framework.Media
 
         public bool IsTextureReady()
         {
-            return frameCount > 0 || (playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > TextureReadyTimeoutMs);
+            return frameCount > 0 || (playbackStopwatch.IsRunning && playbackStopwatch.ElapsedMilliseconds > TextureReadyTimeoutMs);
         }
 
         public void Stop()
@@ -128,6 +130,7 @@ namespace CutTheRope.Framework.Media
             if (!IsPaused)
             {
                 IsPaused = true;
+                playbackStopwatch.Stop();
                 audioInstance?.Pause();
             }
         }
@@ -137,6 +140,7 @@ namespace CutTheRope.Framework.Media
             if (IsPaused)
             {
                 IsPaused = false;
+                playbackStopwatch.Start();
                 audioInstance?.Resume();
             }
         }
@@ -149,7 +153,7 @@ namespace CutTheRope.Framework.Media
             }
 
             waitForStart = false;
-            playStartTime = DateTime.UtcNow;
+            playbackStopwatch.Restart();
             if (!mute)
             {
                 audioInstance?.Play();
@@ -312,12 +316,12 @@ namespace CutTheRope.Framework.Media
                 return;
             }
 
-            if (!playStartTime.HasValue)
+            if (!playbackStopwatch.IsRunning)
             {
                 return;
             }
 
-            double elapsedSeconds = (DateTime.UtcNow - playStartTime.Value).TotalSeconds;
+            double elapsedSeconds = GetPlaybackClock();
             if (elapsedSeconds < nextFramePts)
             {
                 return;
@@ -630,7 +634,16 @@ namespace CutTheRope.Framework.Media
             {
                 byte[] buffer = pendingAudioQueue.Dequeue();
                 audioInstance.SubmitBuffer(buffer, 0, buffer.Length);
+                audioBytesDrained += buffer.Length;
+                audioBuffersSubmitted++;
             }
+        }
+
+        private double GetPlaybackClock()
+        {
+            // Use stopwatch as primary clock - it pauses correctly and resumes properly
+            // Audio sync is handled by buffering; the stopwatch provides consistent timing
+            return playbackStopwatch.Elapsed.TotalSeconds;
         }
 
         private void EnsureTexture(int width, int height)
@@ -712,7 +725,7 @@ namespace CutTheRope.Framework.Media
             frameReady = false;
             playbackFinished = false;
             waitForStart = false;
-            playStartTime = null;
+            playbackStopwatch.Reset();
             videoStreamIndex = -1;
             videoWidth = 0;
             videoHeight = 0;
@@ -726,6 +739,8 @@ namespace CutTheRope.Framework.Media
         private void CleanupAudio()
         {
             pendingAudioQueue.Clear();
+            audioBytesDrained = 0;
+            audioBuffersSubmitted = 0;
 
             if (audioInstance != null)
             {
@@ -784,7 +799,6 @@ namespace CutTheRope.Framework.Media
         private bool playbackFinished;
         private bool waitForStart;
         private bool mute;
-        private DateTime? playStartTime;
         private double videoTimeBase;
         private double nextFramePts;
         private Texture2D videoTexture;
@@ -798,6 +812,8 @@ namespace CutTheRope.Framework.Media
         private DynamicSoundEffectInstance audioInstance;
         private byte* audioBuffer;
         private int audioBufferCapacity;
+        private long audioBytesDrained;
+        private int audioBuffersSubmitted;
     }
 }
 #endif
