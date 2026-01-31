@@ -249,4 +249,23 @@
     <!-- Sign the bundle itself -->
     <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
   </Target>
+
+  <Target
+    Name="MoveMacOSAppToPublish"
+    AfterTargets="Publish"
+    Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))"
+  >
+    <PropertyGroup>
+      <AppBundleName>$(AssemblyName).app</AppBundleName>
+      <AppSourcePath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(OutputPath)'))$(AppBundleName)))</AppSourcePath>
+      <AppPublishPath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(PublishDir)'))$(AppBundleName)))</AppPublishPath>
+    </PropertyGroup>
+
+    <Message Text="Relocating macOS .app to publish directory" Importance="High" />
+
+    <Exec
+      Condition="Exists('$(AppSourcePath)')"
+      Command="/bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;"
+    />
+  </Target>
 </Project>
