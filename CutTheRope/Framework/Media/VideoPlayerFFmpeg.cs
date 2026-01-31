@@ -16,32 +16,66 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Media
 {
+    /// <summary>
+    /// Video player implementation using FFmpeg for decoding and playback on macOS.
+    /// </summary>
+    /// <remarks>
+    /// This player uses FFmpeg libraries for video/audio decoding and converts frames
+    /// to RGBA format for MonoGame texture rendering. Audio is played through
+    /// <see cref="DynamicSoundEffectInstance"/> with resampling handled by libswresample.
+    /// </remarks>
     internal sealed unsafe class VideoPlayerFFmpeg : IVideoPlayer
     {
+        /// <summary>Timeout in milliseconds before considering texture ready even without frames.</summary>
         private const int TextureReadyTimeoutMs = 500;
+
+        /// <summary>Maximum number of audio buffers to queue for playback.</summary>
         private const int MaxQueuedAudioBuffers = 8;
-        private const int BytesPerSample = 2; // 16-bit audio
+
+        /// <summary>Bytes per audio sample (16-bit audio = 2 bytes).</summary>
+        private const int BytesPerSample = 2;
+
+        /// <summary>Lock for thread-safe frame buffer access.</summary>
         private readonly Lock bufferLock = new();
+
+        /// <summary>Queue of decoded audio buffers waiting to be submitted.</summary>
         private readonly Queue<byte[]> pendingAudioQueue = new();
+
+        /// <summary>Stopwatch for tracking playback time and synchronization.</summary>
         private readonly Stopwatch playbackStopwatch = new();
+
+        /// <summary>Function to check if a file exists.</summary>
         private readonly Func<string, bool> fileExists;
+
+        /// <summary>Function to resolve the FFmpeg library root path.</summary>
         private readonly Func<string, string> resolveRootPath;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VideoPlayerFFmpeg"/> class.
+        /// </summary>
         public VideoPlayerFFmpeg()
             : this(File.Exists, baseDir => FfmpegRootPathResolver.Resolve(baseDir, Directory.Exists, File.Exists))
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VideoPlayerFFmpeg"/> class with custom dependencies.
+        /// </summary>
+        /// <param name="fileExists">Function to check file existence.</param>
+        /// <param name="resolveRootPath">Function to resolve FFmpeg library path.</param>
         internal VideoPlayerFFmpeg(Func<string, bool> fileExists, Func<string, string> resolveRootPath)
         {
             this.fileExists = fileExists;
             this.resolveRootPath = resolveRootPath;
         }
 
+        /// <inheritdoc/>
         public bool IsPaused { get; private set; }
 
+        /// <inheritdoc/>
         public event Action PlaybackFinished;
 
+        /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
             Cleanup();
@@ -82,6 +116,7 @@ namespace CutTheRope.Framework.Media
             waitForStart = true;
         }
 
+        /// <inheritdoc/>
         public Texture2D GetTexture()
         {
             if (videoTexture == null || playbackFinished)
@@ -104,16 +139,19 @@ namespace CutTheRope.Framework.Media
             return videoTexture;
         }
 
+        /// <inheritdoc/>
         public bool IsPlaying()
         {
             return formatContext != null && !playbackFinished;
         }
 
+        /// <inheritdoc/>
         public bool IsTextureReady()
         {
             return frameCount > 0 || (playbackStopwatch.IsRunning && playbackStopwatch.ElapsedMilliseconds > TextureReadyTimeoutMs);
         }
 
+        /// <inheritdoc/>
         public void Stop()
         {
             if (playbackFinished)
@@ -128,6 +166,7 @@ namespace CutTheRope.Framework.Media
             PlaybackFinished?.Invoke();
         }
 
+        /// <inheritdoc/>
         public void Pause()
         {
             if (!IsPaused)
@@ -138,6 +177,7 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <inheritdoc/>
         public void Resume()
         {
             if (IsPaused)
@@ -148,6 +188,7 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <inheritdoc/>
         public void Start()
         {
             if (!waitForStart)
@@ -163,6 +204,7 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <inheritdoc/>
         public void Update()
         {
             if (waitForStart)
@@ -189,11 +231,17 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             Cleanup();
         }
 
+        /// <summary>
+        /// Initializes FFmpeg contexts and opens the video file for decoding.
+        /// </summary>
+        /// <param name="filePath">Full path to the video file.</param>
+        /// <returns><c>true</c> if initialization succeeded; otherwise, <c>false</c>.</returns>
         private bool InitializeFfmpeg(string filePath)
         {
             AVFormatContext* openedContext = null;
@@ -311,6 +359,13 @@ namespace CutTheRope.Framework.Media
             return true;
         }
 
+        /// <summary>
+        /// Decodes the next video frame and updates the frame buffer.
+        /// </summary>
+        /// <remarks>
+        /// Uses presentation timestamps for frame timing synchronization.
+        /// Also processes audio packets encountered during decoding.
+        /// </remarks>
         private void DecodeNextFrame()
         {
             if (formatContext == null || packet == null || videoCodecContext == null)
@@ -425,6 +480,10 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Initializes audio decoding and playback components.
+        /// </summary>
+        /// <returns><c>true</c> if audio initialization succeeded or no audio stream exists; otherwise, <c>false</c>.</returns>
         private bool InitializeAudio()
         {
             audioStreamIndex = -1;
@@ -517,6 +576,10 @@ namespace CutTheRope.Framework.Media
             return true;
         }
 
+        /// <summary>
+        /// Decodes an audio packet and queues the samples for playback.
+        /// </summary>
+        /// <param name="audioPacket">The FFmpeg audio packet to decode.</param>
         private void DecodeAudioPacket(AVPacket* audioPacket)
         {
             if (audioCodecContext == null || audioFrame == null || swrContext == null || audioInstance == null)
@@ -596,6 +659,10 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Ensures the audio buffer has sufficient capacity.
+        /// </summary>
+        /// <param name="requiredSize">The minimum required buffer size in bytes.</param>
         private void EnsureAudioBuffer(int requiredSize)
         {
             if (audioBuffer != null && audioBufferCapacity >= requiredSize)
@@ -612,6 +679,10 @@ namespace CutTheRope.Framework.Media
             audioBufferCapacity = requiredSize;
         }
 
+        /// <summary>
+        /// Copies audio data to managed memory and queues it for playback.
+        /// </summary>
+        /// <param name="size">The size of audio data in bytes.</param>
         private void SubmitAudioBuffer(int size)
         {
             if (audioInstance == null || audioBuffer == null)
@@ -626,6 +697,9 @@ namespace CutTheRope.Framework.Media
             DrainAudioQueue();
         }
 
+        /// <summary>
+        /// Submits queued audio buffers to the sound effect instance.
+        /// </summary>
         private void DrainAudioQueue()
         {
             if (audioInstance == null)
@@ -642,6 +716,10 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Gets the current playback position in seconds.
+        /// </summary>
+        /// <returns>The elapsed playback time in seconds.</returns>
         private double GetPlaybackClock()
         {
             // Use stopwatch as primary clock - it pauses correctly and resumes properly
@@ -649,6 +727,11 @@ namespace CutTheRope.Framework.Media
             return playbackStopwatch.Elapsed.TotalSeconds;
         }
 
+        /// <summary>
+        /// Ensures the video texture exists and matches the specified dimensions.
+        /// </summary>
+        /// <param name="width">Required texture width.</param>
+        /// <param name="height">Required texture height.</param>
         private void EnsureTexture(int width, int height)
         {
             if (videoTexture != null && width == textureWidth && height == textureHeight)
@@ -662,6 +745,11 @@ namespace CutTheRope.Framework.Media
             textureHeight = height;
         }
 
+        /// <summary>
+        /// Ensures the video buffer array has sufficient capacity for the frame data.
+        /// </summary>
+        /// <param name="width">Frame width in pixels.</param>
+        /// <param name="height">Frame height in pixels.</param>
         private void EnsureBuffer(int width, int height)
         {
             int bufferSize = checked(width * height * 4);
@@ -671,6 +759,9 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Releases all FFmpeg and video resources.
+        /// </summary>
         private void Cleanup()
         {
             if (packet != null)
@@ -738,6 +829,9 @@ namespace CutTheRope.Framework.Media
             nextFramePts = 0;
         }
 
+        /// <summary>
+        /// Releases all audio-related resources.
+        /// </summary>
         private void CleanupAudio()
         {
             pendingAudioQueue.Clear();
@@ -784,37 +878,100 @@ namespace CutTheRope.Framework.Media
             audioSampleRate = 0;
         }
 
+        /// <summary>FFmpeg format/demuxer context for the video file.</summary>
         private AVFormatContext* formatContext;
+
+        /// <summary>Video decoder context.</summary>
         private AVCodecContext* videoCodecContext;
+
+        /// <summary>Decoded video frame in native pixel format.</summary>
         private AVFrame* videoFrame;
+
+        /// <summary>Video frame converted to RGBA format.</summary>
         private AVFrame* rgbaFrame;
+
+        /// <summary>Pixel format conversion context.</summary>
         private SwsContext* swsContext;
+
+        /// <summary>Reusable packet for reading compressed data.</summary>
         private AVPacket* packet;
+
+        /// <summary>Native buffer for RGBA frame data.</summary>
         private byte* rgbaBuffer;
+
+        /// <summary>Index of the video stream in the container.</summary>
         private int videoStreamIndex;
+
+        /// <summary>Video width in pixels.</summary>
         private int videoWidth;
+
+        /// <summary>Video height in pixels.</summary>
         private int videoHeight;
+
+        /// <summary>Current texture width.</summary>
         private int textureWidth;
+
+        /// <summary>Current texture height.</summary>
         private int textureHeight;
+
+        /// <summary>Number of frames decoded so far.</summary>
         private int frameCount;
+
+        /// <summary>Indicates a new frame is ready to be uploaded to the texture.</summary>
         private bool frameReady;
+
+        /// <summary>Indicates playback has finished.</summary>
         private bool playbackFinished;
+
+        /// <summary>Indicates the player is waiting for Start() to be called.</summary>
         private bool waitForStart;
+
+        /// <summary>Indicates audio should be muted.</summary>
         private bool mute;
+
+        /// <summary>Time base for converting video timestamps to seconds.</summary>
         private double videoTimeBase;
+
+        /// <summary>Presentation timestamp of the next frame to display.</summary>
         private double nextFramePts;
+
+        /// <summary>MonoGame texture for rendering video frames.</summary>
         private Texture2D videoTexture;
+
+        /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;
+
+        /// <summary>Audio decoder context.</summary>
         private AVCodecContext* audioCodecContext;
+
+        /// <summary>Decoded audio frame.</summary>
         private AVFrame* audioFrame;
+
+        /// <summary>Audio resampling context.</summary>
         private SwrContext* swrContext;
+
+        /// <summary>Index of the audio stream in the container.</summary>
         private int audioStreamIndex;
+
+        /// <summary>Number of audio channels (1 for mono, 2 for stereo).</summary>
         private int audioChannels;
+
+        /// <summary>Audio sample rate in Hz.</summary>
         private int audioSampleRate;
+
+        /// <summary>MonoGame dynamic sound effect for audio playback.</summary>
         private DynamicSoundEffectInstance audioInstance;
+
+        /// <summary>Native buffer for resampled audio data.</summary>
         private byte* audioBuffer;
+
+        /// <summary>Current capacity of the audio buffer.</summary>
         private int audioBufferCapacity;
+
+        /// <summary>Total bytes of audio data drained to the sound instance.</summary>
         private long audioBytesDrained;
+
+        /// <summary>Number of audio buffers submitted to the sound instance.</summary>
         private int audioBuffersSubmitted;
     }
 }
