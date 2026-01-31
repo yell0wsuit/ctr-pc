@@ -263,7 +263,7 @@ namespace CutTheRope.Framework.Media
                 return false;
             }
 
-            rgbaFrame->format = (int)AVPixelFormat.AV_PIX_FMT_BGRA;
+            rgbaFrame->format = (int)AVPixelFormat.AV_PIX_FMT_RGBA;
             rgbaFrame->width = videoWidth;
             rgbaFrame->height = videoHeight;
             rgbaFrame->data[0] = rgbaBuffer;
@@ -275,11 +275,15 @@ namespace CutTheRope.Framework.Media
                 videoCodecContext->pix_fmt,
                 videoWidth,
                 videoHeight,
-                AVPixelFormat.AV_PIX_FMT_BGRA,
+                AVPixelFormat.AV_PIX_FMT_RGBA,
                 (int)SwsFlags.SWS_BILINEAR,
                 null,
                 null,
                 null);
+
+            AVRational timeBase = videoStream->time_base;
+            videoTimeBase = timeBase.num / (double)timeBase.den;
+            nextFramePts = 0;
 
             if (swsContext == null)
             {
@@ -306,6 +310,17 @@ namespace CutTheRope.Framework.Media
             if (formatContext == null || packet == null || videoCodecContext == null)
             {
                 playbackFinished = true;
+                return;
+            }
+
+            if (!playStartTime.HasValue)
+            {
+                return;
+            }
+
+            double elapsedSeconds = (DateTime.UtcNow - playStartTime.Value).TotalSeconds;
+            if (elapsedSeconds < nextFramePts)
+            {
                 return;
             }
 
@@ -355,6 +370,12 @@ namespace CutTheRope.Framework.Media
                 {
                     playbackFinished = true;
                     return;
+                }
+
+                long pts = videoFrame->best_effort_timestamp;
+                if (pts != ffmpeg.AV_NOPTS_VALUE)
+                {
+                    nextFramePts = pts * videoTimeBase;
                 }
 
                 ffmpeg.sws_scale(
@@ -693,6 +714,8 @@ namespace CutTheRope.Framework.Media
             textureWidth = 0;
             textureHeight = 0;
             frameCount = 0;
+            videoTimeBase = 0;
+            nextFramePts = 0;
         }
 
         private void CleanupAudio()
@@ -755,6 +778,8 @@ namespace CutTheRope.Framework.Media
         private bool waitForStart;
         private bool mute;
         private DateTime? playStartTime;
+        private double videoTimeBase;
+        private double nextFramePts;
         private Texture2D videoTexture;
         private byte[] videoBuffer;
         private AVCodecContext* audioCodecContext;
