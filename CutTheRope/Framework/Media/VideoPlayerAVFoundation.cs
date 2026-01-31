@@ -34,7 +34,7 @@ namespace CutTheRope.Framework.Media
             loggedFirstFrame = false;
 
             string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}");
-            string fullPath = Path.Combine(ContentPaths.ContentBaseDirectory, ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
+            string fullPath = Path.Combine(ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
 
             if (!File.Exists(fullPath))
             {
