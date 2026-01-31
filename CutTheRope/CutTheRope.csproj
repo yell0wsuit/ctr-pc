@@ -95,6 +95,11 @@
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
   </PropertyGroup>
 
+  <!-- Compiler constants for macOS builds. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <DefineConstants>$(DefineConstants);MACOS_AVFOUNDATION</DefineConstants>
+  </PropertyGroup>
+
   <!-- VLC enabled on all platforms except macOS (which uses AVFoundation) -->
   <PropertyGroup
     Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
@@ -108,8 +113,8 @@
     <None Include="app.manifest" />
   </ItemGroup>
 
-  <!-- Copy content files, but exclude sounds directory (we'll handle it separately). -->
-  <ItemGroup>
+  <!-- Copy content files for non-macOS builds, exclude sounds (handled separately). -->
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
     <None
       Include="..\content\**"
       Exclude="..\content\sounds\**;..\content\**\.DS_Store"
@@ -119,7 +124,7 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
     <None Remove="..\content\content.mgcb" />
     <None Remove="..\content\bin\**\*.*" />
     <None Remove="..\content\obj\**\*.*" />
@@ -127,8 +132,18 @@
     <None Remove="..\content\sounds\sfx\*.wav" />
   </ItemGroup>
 
-  <!-- DesktopGL build: include *.xnb and *.ogg pairs. -->
-  <ItemGroup>
+  <!-- macOS app bundle: use BundleResource for content files -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource
+      Include="..\content\**"
+      Exclude="..\content\sounds\**;..\content\content.mgcb;..\content\bin\**\*.*;..\content\obj\**\*.*;..\content\**\*.png;..\content\sounds\sfx\*.wav"
+    >
+      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </BundleResource>
+  </ItemGroup>
+
+  <!-- OpenGL build, include *.xnb and *.ogg pairs (excluding *_windows.*). -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <None
       Include="..\content\sounds\*.xnb"
       Exclude="..\content\sounds\*_windows.xnb"
@@ -142,11 +157,31 @@
     </None>
   </ItemGroup>
 
-  <!-- Include alsoft.ini to disable HTRF. -->
-  <ItemGroup>
+  <!-- macOS app bundle: sound files as BundleResource -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource
+      Include="..\content\sounds\*.xnb"
+      Exclude="..\content\sounds\*_windows.xnb"
+    >
+      <Link>content\sounds\%(Filename)%(Extension)</Link>
+    </BundleResource>
+    <BundleResource Include="..\content\sounds\*.ogg">
+      <Link>content\sounds\%(Filename)%(Extension)</Link>
+    </BundleResource>
+  </ItemGroup>
+
+  <!-- OpenGL build, include alsoft.ini to disable HTRF. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <None Include="..\alsoft.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <!-- macOS app bundle: alsoft.ini as BundleResource -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource Include="..\alsoft.ini">
+      <Link>alsoft.ini</Link>
+    </BundleResource>
   </ItemGroup>
 
   <ItemGroup Condition="'$(RunMGCB)' == 'true'">
