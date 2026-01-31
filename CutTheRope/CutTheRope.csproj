@@ -100,7 +100,7 @@
   <ItemGroup>
     <None
       Include="..\content\**"
-      Exclude="..\content\sounds\**"
+      Exclude="..\content\sounds\**;..\content\**\.DS_Store"
     >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
@@ -117,7 +117,10 @@
 
   <!-- DesktopGL build: include *.xnb and *.ogg pairs. -->
   <ItemGroup>
-    <None Include="..\content\sounds\*.xnb">
+    <None
+      Include="..\content\sounds\*.xnb"
+      Exclude="..\content\sounds\*_windows.xnb"
+    >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\sounds\%(Filename)%(Extension)</Link>
     </None>
