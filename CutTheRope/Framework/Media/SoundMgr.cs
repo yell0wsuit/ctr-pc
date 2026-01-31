@@ -6,7 +6,10 @@ using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+
+#if !MACOS_AVFOUNDATION
 using Microsoft.Xna.Framework.Media;
+#endif
 
 namespace CutTheRope.Framework.Media
 {
@@ -149,6 +152,7 @@ namespace CutTheRope.Framework.Media
             }
 
             StopMusic();
+#if !MACOS_AVFOUNDATION
             string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(resourceName));
             Song song = _contentManager.Load<Song>(musicPath);
             MediaPlayer.IsRepeating = true;
@@ -159,6 +163,7 @@ namespace CutTheRope.Framework.Media
             catch (Exception)
             {
             }
+#endif
         }
 
         /// <summary>
@@ -183,6 +188,7 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         public static void StopMusic()
         {
+#if !MACOS_AVFOUNDATION
             try
             {
                 MediaPlayer.Stop();
@@ -190,6 +196,7 @@ namespace CutTheRope.Framework.Media
             catch (Exception)
             {
             }
+#endif
         }
 
         /// <summary>
@@ -214,10 +221,12 @@ namespace CutTheRope.Framework.Media
             try
             {
                 ChangeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
+#if !MACOS_AVFOUNDATION
                 if (MediaPlayer.State == MediaState.Playing)
                 {
                     MediaPlayer.Pause();
                 }
+#endif
             }
             catch (Exception)
             {
@@ -232,10 +241,12 @@ namespace CutTheRope.Framework.Media
             try
             {
                 ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+#if !MACOS_AVFOUNDATION
                 if (MediaPlayer.State == MediaState.Paused)
                 {
                     MediaPlayer.Resume();
                 }
+#endif
             }
             catch (Exception)
             {
