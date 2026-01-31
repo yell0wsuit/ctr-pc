@@ -50,7 +50,7 @@ namespace CutTheRope.Framework.Media
                 hasVlc: hasVlc
             );
 
-#pragma warning disable IDE0010
+#pragma warning disable IDE0010, IDE0066
             switch (backend)
             {
 #if MACOS_AVFOUNDATION
@@ -72,7 +72,7 @@ namespace CutTheRope.Framework.Media
                     videoPlayer = new VideoPlayerMonoGame();
                     break;
             }
-#pragma warning restore IDE0010
+#pragma warning restore IDE0010, IDE0066
             videoPlayer.PlaybackFinished += OnPlaybackFinished;
         }
 
