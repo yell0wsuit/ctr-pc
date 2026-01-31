@@ -13,8 +13,8 @@
         - macOS will use AVFoundation (to be implemented)
     -->
 
-    <TargetFramework>net10.0</TargetFramework>
-    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX'))">net10.0-macos</TargetFrameworks>
+    <TargetFramework Condition="!$([MSBuild]::IsOsPlatform('OSX'))">net10.0</TargetFramework>
+    <TargetFramework Condition="$([MSBuild]::IsOsPlatform('OSX'))">net10.0-macos</TargetFramework>
     <LangVersion>preview</LangVersion>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
