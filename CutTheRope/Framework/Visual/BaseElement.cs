@@ -384,10 +384,7 @@ namespace CutTheRope.Framework.Visual
         {
             if (childs.TryGetValue(i, out BaseElement value))
             {
-                if (value != null)
-                {
-                    value.parent = null;
-                }
+                _ = (value?.parent = null);
                 _ = childs.Remove(i);
             }
         }

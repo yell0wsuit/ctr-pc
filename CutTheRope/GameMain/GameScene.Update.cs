@@ -1080,10 +1080,7 @@ namespace CutTheRope.GameMain
                             foreach (object objGhost in ghosts)
                             {
                                 Ghost ghost = (Ghost)objGhost;
-                                if (ghost != null)
-                                {
-                                    ghost.candyBreak = true;
-                                }
+                                _ = (ghost?.candyBreak = true);
                             }
                         }
                         return;
@@ -1402,10 +1399,7 @@ namespace CutTheRope.GameMain
                     Vector s = default;
                     Grab grab2 = null;
                     Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, slastTouch.X + camera.pos.X, slastTouch.Y + camera.pos.Y, ref grab2);
-                    if (nearestBungeeSegmentByBeziersPointsatXYgrab != null)
-                    {
-                        nearestBungeeSegmentByBeziersPointsatXYgrab.highlighted = true;
-                    }
+                    _ = (nearestBungeeSegmentByBeziersPointsatXYgrab?.highlighted = true);
                 }
             }
             if (Mover.MoveVariableToTarget(ref dimTime, 0.0, 1.0, (double)delta))

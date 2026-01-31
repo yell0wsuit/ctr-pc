@@ -163,10 +163,7 @@ namespace CutTheRope.Framework.Visual
             for (int i = 0; i < count; i++)
             {
                 ImageMultiDrawer imageMultiDrawer = drawers[i];
-                if (imageMultiDrawer != null)
-                {
-                    imageMultiDrawer.numberOfQuadsToDraw = 0;
-                }
+                _ = (imageMultiDrawer?.numberOfQuadsToDraw = 0);
             }
             int num8 = (int)(vector2.X + maxColsOnScreen - 1f);
             int num9 = (int)(vector2.Y + maxRowsOnScreen - 1f);

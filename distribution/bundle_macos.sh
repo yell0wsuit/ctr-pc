@@ -20,13 +20,15 @@ ICON_SOURCE="$PUBLISH_DIR/icons/CutTheRopeIcon.icns"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/macos"
 
 # =========================
-# Resolve version from csproj
+# Resolve version (from arg or csproj)
 # =========================
-VERSION=$(dotnet msbuild "$PROJECT" \
-  -nologo -v:q \
-  -getProperty:InformationalVersion \
-  -p:Configuration=Release \
-  -p:TargetFramework=net9.0)
+VERSION="$1"
+if [ -z "$VERSION" ]; then
+    VERSION=$(dotnet msbuild "$PROJECT" \
+      -nologo -v:q \
+      -getProperty:InformationalVersion \
+      -p:Configuration=Release)
+fi
 
 echo "=== Building Cut The Rope: DX v$VERSION for macOS ==="
 
@@ -37,8 +39,8 @@ echo "[1/3] Building macOS arm64 release..."
 rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
-    -f net9.0 \
     -r osx-arm64 \
+    ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
 
 # =========================

@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Build script for creating a .deb package for Cut The Rope: DX
-# Usage: `./build_deb.sh` or `bash build_deb.sh`
+# Usage: `./build_deb.sh [version]` or `bash build_deb.sh [version]`
 #
 # Requirements:
-#   - .NET 9.0 SDK
+#   - .NET 10.0 SDK
 #   - sudo apt install libvlc-dev vlc libx11-dev
 
 set -e
@@ -24,12 +24,14 @@ BUILD_DIR="$SCRIPT_DIR/deb_build"
 PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/linux-x64"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
 
-# Resolve version from csproj
-VERSION=$(dotnet msbuild "$PROJECT" \
-  -nologo -v:q \
-  -getProperty:InformationalVersion \
-  -p:Configuration=Release \
-  -p:TargetFramework=net9.0)
+# Resolve version (from arg or csproj)
+VERSION="$1"
+if [ -z "$VERSION" ]; then
+    VERSION=$(dotnet msbuild "$PROJECT" \
+      -nologo -v:q \
+      -getProperty:InformationalVersion \
+      -p:Configuration=Release)
+fi
 
 DEB_ROOT="$BUILD_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}"
 
@@ -40,8 +42,8 @@ echo "[1/5] Building Linux x64 release..."
 rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
-    -f net9.0 \
     -r linux-x64 \
+    ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
 
 # Step 2: Create directory structure
