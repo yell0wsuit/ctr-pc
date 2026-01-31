@@ -2,7 +2,7 @@
 
 ## About
 
-*Cut the Rope: DX (Decompiled Extra)* is a fan-made enhancement of the PC version of *Cut the Rope*, originally developed by ZeptoLab. This project aims to improve the original game's codebase, add new features, and enhance the overall gaming experience.
+_Cut the Rope: DX (Decompiled Extra)_ is a fan-made enhancement of the PC version of _Cut the Rope_, originally developed by ZeptoLab. This project aims to improve the original game's codebase, add new features, and enhance the overall gaming experience.
 
 The game's source code is decompiled from the PC version, which serves as the foundation for development and feature expansion.
 
@@ -46,7 +46,7 @@ Please see [issue #68](https://github.com/yell0wsuit/cuttherope-dx/issues/68) fo
 
 ## Development & contributing
 
-The development of *Cut the Rope: DX* is an ongoing process, and contributions are welcome! If you'd like to help out, please consider the following:
+The development of _Cut the Rope: DX_ is an ongoing process, and contributions are welcome! If you'd like to help out, please consider the following:
 
 - **Reporting issues**: If you encounter any bugs or issues, please report them on the [GitHub Issues page](https://github.com/yell0wsuit/cuttherope-dx/issues).
 - **Feature requests**: If you have ideas for new features or improvements, feel free to submit a feature request through Issues.
@@ -69,18 +69,38 @@ To test the game during the development process, follow these steps:
 
 3. For most cases, you can build the game using the following commands:
 
+    a. Windows
+
     ```bash
-    # Windows
-    dotnet build CutTheRope\CutTheRope.csproj -c Release -o .\CutTheRope\bin\Publish\win-x64
-
-      # Alternative Windows build with native AOT for potential performance improvement
-      # Only applicable for Windows 11 and later
-      dotnet publish CutTheRope\CutTheRope.csproj -c Release -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
-
-
-    # macOS
-    dotnet publish CutTheRope\CutTheRope.csproj -c Release -r osx-arm64 -o .\CutTheRope\bin\Publish\osx-arm64
-
-    # Linux
-    dotnet publish CutTheRope\CutTheRope.csproj -c Release -r linux-x64 -o .\CutTheRope\bin\Publish\linux-x64
+    dotnet publish CutTheRope\CutTheRope.csproj -c Release -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
     ```
+
+    b. macOS
+
+    _Without AVFoundation (will use FFmpeg for video playback):_
+
+    ```bash
+    dotnet publish CutTheRope/CutTheRope.csproj -c Release -f net10.0 -r osx-arm64 -o ./CutTheRope/bin/Publish/osx-arm64
+    ```
+
+    Make sure you have installed FFmpeg from [Homebrew](https://formulae.brew.sh/formula/ffmpeg).
+
+    _With AVFoundation (only for macOS 26.0 and later, requires Xcode installed):_
+
+    ```bash
+    dotnet publish CutTheRope/CutTheRope.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./CutTheRope/bin/Publish/osx-arm64
+    ```
+
+    > Note:  
+    > You can change `osx-arm64` to `osx-x64` for Intel-based version. However, we do not guarantee the game will work properly on Intel Macs.
+
+    c. Linux
+
+    ```bash
+    dotnet publish CutTheRope/CutTheRope.csproj -c Release -p:PublishAot=true -o ./CutTheRope/bin/Publish/win-x64
+    ```
+
+    > Warning:  
+    > A native AOT binary built on Linux is only guaranteed to run on the same or newer Linux distribution version.
+
+    If you encounter issues with native AOT, you can try removing the `-p:PublishAot=true` flag.
