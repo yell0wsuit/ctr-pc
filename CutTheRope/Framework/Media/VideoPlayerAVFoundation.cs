@@ -333,7 +333,7 @@ namespace CutTheRope.Framework.Media
 
         private bool waitForStart;
 
-        private bool playbackFinished;
+        private volatile bool playbackFinished;
 
         private bool loggedFirstFrame;
     }
