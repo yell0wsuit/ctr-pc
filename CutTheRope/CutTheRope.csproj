@@ -104,6 +104,11 @@
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
   </ItemGroup>
 
+  <!-- FFmpeg for macOS DesktopGL builds -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' AND $([MSBuild]::IsOsPlatform('OSX'))">
+    <PackageReference Include="FFmpeg.AutoGen" Version="8.0.0" />
+  </ItemGroup>
+
   <!-- Compiler constants for DesktopGL builds. -->
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
@@ -112,6 +117,11 @@
   <!-- Compiler constants for macOS builds. -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
     <DefineConstants>$(DefineConstants);MACOS_AVFOUNDATION</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Compiler constants for macOS DesktopGL builds (FFmpeg). -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0' AND $([MSBuild]::IsOsPlatform('OSX'))">
+    <DefineConstants>$(DefineConstants);MACOS_FFMPEG</DefineConstants>
   </PropertyGroup>
 
   <!-- VLC enabled on all platforms except macOS (which uses AVFoundation) -->
