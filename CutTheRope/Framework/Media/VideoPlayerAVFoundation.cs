@@ -5,6 +5,7 @@ using System.IO;
 using AVFoundation;
 
 using CoreMedia;
+
 using CoreVideo;
 
 using CutTheRope.Desktop;
@@ -32,7 +33,7 @@ namespace CutTheRope.Framework.Media
             playStartTime = null;
             loggedFirstFrame = false;
 
-            string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}.mp4", Global.ScreenSizeManager.CurrentSize.Width);
+            string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}");
             string fullPath = Path.Combine(ContentPaths.ContentBaseDirectory, ContentPaths.RootDirectory, ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath));
 
             if (!File.Exists(fullPath))
@@ -95,7 +96,7 @@ namespace CutTheRope.Framework.Media
                 return videoTexture;
             }
 
-            pixelBuffer.Lock(CVPixelBufferLock.ReadOnly);
+            _ = pixelBuffer.Lock(CVPixelBufferLock.ReadOnly);
             try
             {
                 int width = (int)pixelBuffer.Width;
@@ -106,7 +107,7 @@ namespace CutTheRope.Framework.Media
             }
             finally
             {
-                pixelBuffer.Unlock(CVPixelBufferLock.ReadOnly);
+                _ = pixelBuffer.Unlock(CVPixelBufferLock.ReadOnly);
             }
 
             if (videoTexture != null && videoBuffer != null)
@@ -131,17 +132,7 @@ namespace CutTheRope.Framework.Media
 
         public bool IsTextureReady()
         {
-            if (frameCount > 0)
-            {
-                return true;
-            }
-
-            if (playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500)
-            {
-                return true;
-            }
-
-            return false;
+            return frameCount > 0 || (playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500);
         }
 
         public void Stop()
