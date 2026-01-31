@@ -137,7 +137,21 @@ namespace CutTheRope.Framework.Media
 
         public bool IsTextureReady()
         {
-            return frameCount > 0 || (playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500);
+            if (frameCount > 0)
+            {
+                return true;
+            }
+
+            if (player != null && videoOutput != null)
+            {
+                CMTime itemTime = player.CurrentTime;
+                if (videoOutput.HasNewPixelBufferForItemTime(itemTime))
+                {
+                    return true;
+                }
+            }
+
+            return playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500;
         }
 
         public void Stop()
