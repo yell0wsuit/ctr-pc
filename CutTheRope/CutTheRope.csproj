@@ -165,4 +165,21 @@
     />
     <Exec Command="dotnet tool restore" />
   </Target>
+
+  <!--
+    macOS: codesign dylibs and the app bundle after build.
+    This must be done to avoid app crashes when opening (thanks macOS).
+  -->
+  <Target
+    Name="CodesignMacOSBundle"
+    AfterTargets="Build"
+    Condition="'$(TargetFramework)' == 'net10.0-macos' AND $([MSBuild]::IsOsPlatform('OSX'))"
+  >
+    <PropertyGroup>
+      <AppBundlePath>$(OutputPath)$(AssemblyName).app</AppBundlePath>
+    </PropertyGroup>
+    <Message Text="Codesigning dylibs in $(AppBundlePath)..." Importance="High" />
+    <Exec Command="find &quot;$(AppBundlePath)&quot; -name &quot;*.dylib&quot; -exec codesign --force --sign - {} \;" />
+    <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" />
+  </Target>
 </Project>
