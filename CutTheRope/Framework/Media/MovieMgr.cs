@@ -21,13 +21,58 @@ namespace CutTheRope.Framework.Media
         /// </remarks>
         public MovieMgr()
         {
+            bool hasAvFoundation =
 #if MACOS_AVFOUNDATION
-            videoPlayer = OperatingSystem.IsMacOSVersionAtLeast(26) ? new VideoPlayerAVFoundation() : new VideoPlayerMonoGame();
-#elif DESKTOPGL_VLC
-            videoPlayer = new VideoPlayerVLC();
+                true;
 #else
-            videoPlayer = new VideoPlayerMonoGame();
+                false;
 #endif
+
+            bool hasFfmpeg =
+#if MACOS_FFMPEG
+                true;
+#else
+                false;
+#endif
+
+            bool hasVlc =
+#if DESKTOPGL_VLC
+                true;
+#else
+                false;
+#endif
+
+            VideoPlayerBackend backend = VideoPlayerBackendSelector.Select(
+                isMac: OperatingSystem.IsMacOS(),
+                isMac26OrLater: OperatingSystem.IsMacOSVersionAtLeast(26),
+                hasAvFoundation: hasAvFoundation,
+                hasFfmpeg: hasFfmpeg,
+                hasVlc: hasVlc
+            );
+
+#pragma warning disable IDE0010, IDE0066
+            switch (backend)
+            {
+#if MACOS_AVFOUNDATION
+                case VideoPlayerBackend.AVFoundation:
+                    videoPlayer = new VideoPlayerAVFoundation();
+                    break;
+#endif
+#if MACOS_FFMPEG
+                case VideoPlayerBackend.Ffmpeg:
+                    videoPlayer = new VideoPlayerFFmpeg();
+                    break;
+#endif
+#if DESKTOPGL_VLC
+                case VideoPlayerBackend.Vlc:
+                    videoPlayer = new VideoPlayerVLC();
+                    break;
+#endif
+                default:
+                    videoPlayer = new VideoPlayerMonoGame();
+                    break;
+            }
+#pragma warning restore IDE0010, IDE0066
             videoPlayer.PlaybackFinished += OnPlaybackFinished;
         }
 

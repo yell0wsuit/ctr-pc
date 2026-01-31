@@ -41,7 +41,6 @@ Please see [issue #68](https://github.com/yell0wsuit/cuttherope-dx/issues/68) fo
 
 ### Long-term goals
 
-- [ ] **Video support for macOS**: Enable video playback on macOS with AVFoundation.
 - [ ] **Bug fixing and polish**: Fix bugs, and ensure everything works smoothly.
 - [ ] **Code optimization and modernization**: Optimize performance-critical code, and modernize codebase.
 

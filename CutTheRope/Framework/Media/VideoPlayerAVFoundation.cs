@@ -17,12 +17,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Media
 {
+    /// <summary>
+    /// Video player implementation using macOS AVFoundation framework.
+    /// </summary>
+    /// <remarks>
+    /// Uses <see cref="AVPlayer"/> for playback and <see cref="AVPlayerItemVideoOutput"/>
+    /// for extracting video frames as pixel buffers, which are then converted to
+    /// MonoGame textures. Requires macOS 26 or later.
+    /// </remarks>
     internal sealed class VideoPlayerAVFoundation : IVideoPlayer
     {
+        /// <inheritdoc/>
         public bool IsPaused { get; private set; }
 
+        /// <inheritdoc/>
         public event Action PlaybackFinished;
 
+        /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
             Console.WriteLine($"[AVFoundation] Play requested: {moviePath}, mute={mute}");
@@ -80,6 +91,7 @@ namespace CutTheRope.Framework.Media
             waitForStart = true;
         }
 
+        /// <inheritdoc/>
         public Texture2D GetTexture()
         {
             if (player == null || videoOutput == null || playbackFinished)
@@ -130,11 +142,13 @@ namespace CutTheRope.Framework.Media
             return videoTexture;
         }
 
+        /// <inheritdoc/>
         public bool IsPlaying()
         {
             return player != null;
         }
 
+        /// <inheritdoc/>
         public bool IsTextureReady()
         {
             if (frameCount > 0)
@@ -154,6 +168,7 @@ namespace CutTheRope.Framework.Media
             return playStartTime.HasValue && (DateTime.UtcNow - playStartTime.Value).TotalMilliseconds > 500;
         }
 
+        /// <inheritdoc/>
         public void Stop()
         {
             if (player == null || playbackFinished)
@@ -166,6 +181,7 @@ namespace CutTheRope.Framework.Media
             player.Pause();
         }
 
+        /// <inheritdoc/>
         public void Pause()
         {
             if (player == null || playbackFinished || IsPaused)
@@ -178,6 +194,7 @@ namespace CutTheRope.Framework.Media
             player.Pause();
         }
 
+        /// <inheritdoc/>
         public void Resume()
         {
             if (player == null || playbackFinished || !IsPaused)
@@ -190,6 +207,7 @@ namespace CutTheRope.Framework.Media
             player.Play();
         }
 
+        /// <inheritdoc/>
         public void Start()
         {
             if (!waitForStart || player == null)
@@ -203,6 +221,7 @@ namespace CutTheRope.Framework.Media
             player.Play();
         }
 
+        /// <inheritdoc/>
         public void Update()
         {
             if (!waitForStart && playbackFinished)
@@ -215,6 +234,7 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             Console.WriteLine("[AVFoundation] Dispose");
@@ -222,6 +242,11 @@ namespace CutTheRope.Framework.Media
             IsPaused = false;
         }
 
+        /// <summary>
+        /// Ensures the video texture exists and matches the specified dimensions.
+        /// </summary>
+        /// <param name="width">Required texture width.</param>
+        /// <param name="height">Required texture height.</param>
         private void EnsureTexture(int width, int height)
         {
             if (videoTexture != null && width == videoWidth && height == videoHeight)
@@ -241,6 +266,15 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Copies pixel data from a CoreVideo buffer to the managed video buffer.
+        /// </summary>
+        /// <param name="pixelBuffer">The source pixel buffer from AVFoundation.</param>
+        /// <param name="width">Frame width in pixels.</param>
+        /// <param name="height">Frame height in pixels.</param>
+        /// <remarks>
+        /// Converts BGRA pixel format to RGBA for MonoGame texture compatibility.
+        /// </remarks>
         private unsafe void CopyPixelBuffer(CVPixelBuffer pixelBuffer, int width, int height)
         {
             if (videoBuffer == null)
@@ -286,12 +320,18 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Handles the AVFoundation playback finished notification.
+        /// </summary>
         private void OnPlaybackFinished()
         {
             Console.WriteLine($"[AVFoundation] Playback finished, videoTexture={videoTexture != null}");
             playbackFinished = true;
         }
 
+        /// <summary>
+        /// Releases all AVFoundation and video resources.
+        /// </summary>
         private void Cleanup()
         {
             if (playbackObserver != null)
@@ -325,30 +365,43 @@ namespace CutTheRope.Framework.Media
             playbackFinished = false;
         }
 
+        /// <summary>The AVFoundation media player instance.</summary>
         private AVPlayer player;
 
+        /// <summary>The media item being played.</summary>
         private AVPlayerItem playerItem;
 
+        /// <summary>Video output for extracting pixel buffers from the player.</summary>
         private AVPlayerItemVideoOutput videoOutput;
 
+        /// <summary>Observer for playback finished notifications.</summary>
         private NSObject playbackObserver;
 
+        /// <summary>MonoGame texture for rendering video frames.</summary>
         private Texture2D videoTexture;
 
+        /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;
 
+        /// <summary>Current video width in pixels.</summary>
         private int videoWidth;
 
+        /// <summary>Current video height in pixels.</summary>
         private int videoHeight;
 
+        /// <summary>Number of frames decoded so far.</summary>
         private int frameCount;
 
+        /// <summary>Timestamp when playback started, used for texture ready timeout.</summary>
         private DateTime? playStartTime;
 
+        /// <summary>Indicates the player is waiting for Start() to be called.</summary>
         private bool waitForStart;
 
+        /// <summary>Indicates playback has finished.</summary>
         private volatile bool playbackFinished;
 
+        /// <summary>Whether the first frame has been logged for debugging.</summary>
         private bool loggedFirstFrame;
     }
 }
