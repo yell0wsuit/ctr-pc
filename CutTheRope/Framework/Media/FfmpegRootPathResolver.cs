@@ -6,13 +6,13 @@ namespace CutTheRope.Framework.Media
     internal static class FfmpegRootPathResolver
     {
         private static readonly string[] RequiredLibraries =
-        {
+        [
             "libavcodec.dylib",
             "libavformat.dylib",
             "libavutil.dylib",
             "libswscale.dylib",
             "libswresample.dylib"
-        };
+        ];
 
         public static string Resolve(
             string appBaseDirectory,
@@ -22,11 +22,11 @@ namespace CutTheRope.Framework.Media
             string frameworksPath = Path.GetFullPath(Path.Combine(appBaseDirectory, "..", "Frameworks"));
 
             string[] candidates =
-            {
+            [
                 "/opt/homebrew/opt/ffmpeg/lib",
                 "/usr/local/opt/ffmpeg/lib",
                 frameworksPath
-            };
+            ];
 
             foreach (string candidate in candidates)
             {
