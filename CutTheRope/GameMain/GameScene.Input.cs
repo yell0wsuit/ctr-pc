@@ -119,6 +119,37 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
+            // Handle gun tap
+            foreach (object obj in bungees)
+            {
+                Grab grab = (Grab)obj;
+                if (grab.gun && !grab.gunFired && grab.rope == null)
+                {
+                    float distance = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), Vect(grab.x, grab.y));
+                    if (distance <= Grab.GUN_TAP_RADIUS)
+                    {
+                        // Calculate direction to candy
+                        Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
+                        grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + 90f;
+                        grab.gunCandyInitialRotation = candy.rotation;
+                        grab.gunCup.rotation = grab.gunInitialRotation;
+
+                        // Change gunFront quad to fired state
+                        grab.gunFront.SetDrawQuad(3);
+
+                        // Fire the gun - create a rope to the candy
+                        float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos);
+                        float ropeLength = MAX(gunToCandyDistance - 30f, 30f);
+                        Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
+                        bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                        grab.SetRope(bungee);
+                        grab.gunFired = true;
+                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
+                        CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+                        return true;
+                    }
+                }
+            }
             foreach (SteamTube steamTube in tubes)
             {
                 if (steamTube != null && steamTube.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
