@@ -1,0 +1,101 @@
+{
+    "frames": [
+        {
+            "filename": "frame_00_GunBackQuad.png",
+            "frame": { "x": 1, "y": 1, "w": 254, "h": 258 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 145, "y": 142, "w": 254, "h": 258 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_01_GunArrowQuad.png",
+            "frame": { "x": 75, "y": 585, "w": 83, "h": 71 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 156, "y": 235, "w": 83, "h": 71 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_02_GunFrontQuad.png",
+            "frame": { "x": 1, "y": 261, "w": 166, "h": 161 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 187, "y": 189, "w": 166, "h": 161 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0003.png",
+            "frame": { "x": 1, "y": 424, "w": 161, "h": 159 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 190, "y": 190, "w": 161, "h": 159 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0004.png",
+            "frame": { "x": 75, "y": 658, "w": 71, "h": 64 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 235, "y": 180, "w": 71, "h": 64 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0005.png",
+            "frame": { "x": 169, "y": 261, "w": 73, "h": 92 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 235, "y": 153, "w": 73, "h": 92 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0006.png",
+            "frame": { "x": 160, "y": 613, "w": 72, "h": 76 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 235, "y": 169, "w": 72, "h": 76 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0007.png",
+            "frame": { "x": 169, "y": 355, "w": 72, "h": 84 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 234, "y": 161, "w": 72, "h": 84 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0008.png",
+            "frame": { "x": 164, "y": 441, "w": 72, "h": 84 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 235, "y": 161, "w": 72, "h": 84 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0009.png",
+            "frame": { "x": 1, "y": 585, "w": 72, "h": 83 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 235, "y": 161, "w": 72, "h": 83 },
+            "sourceSize": { "w": 552, "h": 552 }
+        },
+        {
+            "filename": "frame_0010.png",
+            "frame": { "x": 164, "y": 527, "w": 72, "h": 84 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 234, "y": 161, "w": 72, "h": 84 },
+            "sourceSize": { "w": 552, "h": 552 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_gun.png",
+        "format": "RGBA8888",
+        "size": { "w": 256, "h": 723 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:16baf47943471bf018c737d0fe1aa9eb:b5c3fea396bcd7f8ec10b7f89747035f:d54a2b843d5adca78e36153cecdc2cd1$"
+    }
+}
