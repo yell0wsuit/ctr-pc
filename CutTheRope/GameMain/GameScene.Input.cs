@@ -127,7 +127,8 @@ namespace CutTheRope.GameMain
                     Grab grab = (Grab)obj;
                     if (grab.gun && !grab.gunFired && grab.rope == null)
                     {
-                        if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - 35f, grab.y - 35f, 70f, 70f))
+                        float tapRadius = Grab.GUN_TAP_RADIUS;
+                        if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
                             // Calculate direction to candy
                             Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
