@@ -2736,3 +2736,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/obj_gun.png
+
+#begin sounds/sfx/gun.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/gun.wav
