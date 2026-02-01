@@ -183,6 +183,14 @@ namespace CutTheRope.GameMain
             {
                 ((Grab)obj12).Draw();
             }
+            foreach (object obj12a in bungees)
+            {
+                Grab grab = (Grab)obj12a;
+                if (grab.gun)
+                {
+                    grab.DrawGunCup();
+                }
+            }
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (LightBulb bulb in lightBulbs)
             {

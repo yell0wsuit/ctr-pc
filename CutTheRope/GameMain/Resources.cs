@@ -123,6 +123,7 @@ namespace CutTheRope.GameMain
                 Img.ObjBubbleFlight, Img.ObjBubblePop, Img.ObjHookAuto,
                 Img.ObjBubbleAttached, Img.ObjHook01, Img.ObjHook02, Img.ObjStarIdle,
                 Img.HudStar, Img.CharAnimations, Img.CharAnimationsSleeping, Img.ObjHookRegulated, Img.ObjHookMovable,
+                Img.ObjGun,
                 Img.ObjPump, Img.TutorialSigns, Img.ObjHat, Img.ObjBouncer01,
                 Img.ObjBouncer02, Img.ObjSpikes01, Img.ObjSpikes02, Img.ObjSpikes03,
                 Img.ObjSpikes04, Img.ObjElectrodes, Img.ObjRotatableSpikes01,
@@ -322,6 +323,7 @@ namespace CutTheRope.GameMain
             public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string ObjHookRegulated = "obj_hook_regulated";
             public const string ObjHookMovable = "obj_hook_movable";
+            public const string ObjGun = "obj_gun";
             public const string ObjPump = "obj_pump";
             public const string TutorialSigns = "tutorial_signs";
             public const string ObjHat = "obj_hat";

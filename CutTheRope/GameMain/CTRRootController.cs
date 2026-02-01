@@ -403,6 +403,7 @@ namespace CutTheRope.GameMain
             Resources.Img.CharAnimations,
             Resources.Img.ObjHookRegulated,
             Resources.Img.ObjHookMovable,
+            Resources.Img.ObjGun,
             Resources.Img.ObjPump,
             Resources.Img.TutorialSigns,
             Resources.Img.ObjHat,
