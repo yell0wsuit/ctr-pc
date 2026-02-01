@@ -43,6 +43,8 @@ namespace CutTheRope.GameMain
             wheelOperating = -1;
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             baloon = cTRRootController.IsSurvival();
+            gun = false;
+            gunFired = false;
         }
 
         public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
@@ -102,6 +104,10 @@ namespace CutTheRope.GameMain
         public override void Update(float delta)
         {
             base.Update(delta);
+            if (gunFired && gunCup != null)
+            {
+                gunCup.Update(delta);
+            }
             if (launcher && rope != null)
             {
                 rope.bungeeAnchor.pos = Vect(x, y);
@@ -213,6 +219,10 @@ namespace CutTheRope.GameMain
 
         public virtual void DrawBack()
         {
+            if (gun)
+            {
+                return;
+            }
             if (moveLength > 0.0)
             {
                 moveBackground.Draw();
@@ -250,10 +260,22 @@ namespace CutTheRope.GameMain
                 wheelImage.Draw();
                 OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
+            if (gunBack != null)
+            {
+                gunBack.Draw();
+                if (!gunFired && gunArrow != null)
+                {
+                    gunArrow.Draw();
+                }
+            }
             OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
             bungee?.Draw();
             OpenGLRenderer.GlColor4f(Color.White);
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            if (gunFront != null)
+            {
+                gunFront.Draw();
+            }
             if (moveLength <= 0.0)
             {
                 front.Draw();
@@ -276,6 +298,12 @@ namespace CutTheRope.GameMain
         public void DrawSpider()
         {
             spider.Draw();
+        }
+
+        public void DrawGunCup()
+        {
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            gunCup?.Draw();
         }
 
         public void SetRope(Bungee r)
@@ -307,6 +335,50 @@ namespace CutTheRope.GameMain
         public void SetRadius(float r)
         {
             radius = r;
+            if (gun)
+            {
+                gunBack = Image_createWithResIDQuad(Resources.Img.ObjGun, GunBackQuad);
+                gunBack.DoRestoreCutTransparency();
+                gunBack.anchor = gunBack.parentAnchor = 18;
+                _ = AddChild(gunBack);
+                gunBack.visible = false;
+
+                gunArrow = Image_createWithResIDQuad(Resources.Img.ObjGun, GunArrowQuad);
+                gunArrow.DoRestoreCutTransparency();
+                gunArrow.anchor = gunArrow.parentAnchor = 18;
+                _ = AddChild(gunArrow);
+                gunArrow.visible = false;
+
+                gunFront = Image_createWithResIDQuad(Resources.Img.ObjGun, GunFrontQuad);
+                gunFront.DoRestoreCutTransparency();
+                gunFront.anchor = gunFront.parentAnchor = 18;
+                _ = AddChild(gunFront);
+                gunFront.visible = false;
+
+                gunCup = Animation_createWithResID(Resources.Img.ObjGun);
+                gunCup.DoRestoreCutTransparency();
+                gunCup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
+                gunCup.anchor = 18;
+                gunCup.visible = false;
+                gunCup.updateable = false;
+                gunCup.blendingMode = 1;
+                _ = AddChild(gunCup);
+
+                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                gunCup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
+
+                Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                timeline2.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline2.AddKeyFrame(KeyFrame.MakePos(0.0, 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                gunCup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
+                Track track = timeline2.GetTrack(Track.TrackType.TRACK_POSITION);
+                track.relative = true;
+                return;
+            }
             if (radius == -1f)
             {
                 string hookTexture = RandomHookTexture();
@@ -481,6 +553,16 @@ namespace CutTheRope.GameMain
 
         public const float SPIDER_SPEED = 117f;
 
+        public const int GUN_CUP_SHOW = 0;
+
+        public const int GUN_CUP_HIDE = 1;
+
+        public const int GUN_CUP_DROP_AND_HIDE = 2;
+
+        public const int GUN_CUT_RADIUS = 15;
+
+        public const int GUN_TAP_RADIUS = 35;
+
         public Image back;
 
         public Image front;
@@ -568,6 +650,22 @@ namespace CutTheRope.GameMain
 
         public bool baloon;
 
+        public bool gun;
+
+        public bool gunFired;
+
+        private Image gunBack;
+
+        public Image gunArrow;
+
+        public Image gunFront;
+
+        public Animation gunCup;
+
+        public float gunInitialRotation;
+
+        public float gunCandyInitialRotation;
+
         public Image bee;
 
         private static readonly string[] HookTextures =
@@ -593,6 +691,12 @@ namespace CutTheRope.GameMain
         private const int MovableHookQuad = 4;
 
         private const int BeeQuad = 1;
+
+        private const int GunBackQuad = 0;
+
+        private const int GunArrowQuad = 1;
+
+        private const int GunFrontQuad = 2;
 
         private static string RandomHookTexture()
         {

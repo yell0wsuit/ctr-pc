@@ -31,11 +31,13 @@ namespace CutTheRope.GameMain
             bool flag2 = xmlNode.AttributeAsNSString("hidePath").IsEqualToString("true");
             bool bindBulb = xmlNode.AttributeAsNSString("bindBulb").IsEqualToString("true");
             string bulbNumber = xmlNode.AttributeAsNSString("bulbNumber");
+            bool gun = xmlNode.AttributeAsNSString("gun").IsEqualToString("true");
             Grab grab = new();
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
             grab.wheel = wheel;
+            grab.gun = gun;
             grab.SetSpider(spider);
             grab.ParseMover(xmlNode);
             if (grab.mover != null)
@@ -62,7 +64,7 @@ namespace CutTheRope.GameMain
             {
                 num12 *= scale;
             }
-            if (num12 == -1f)
+            if (num12 == -1f && !gun)
             {
                 ConstraintedPoint constraintedPoint = star;
                 if (bindBulb)
@@ -87,6 +89,16 @@ namespace CutTheRope.GameMain
             }
             grab.SetRadius(num12);
             grab.SetMoveLengthVerticalOffset(k, v, o);
+            if (grab.gun && grab.gunArrow != null)
+            {
+                ConstraintedPoint constraintedPoint = star;
+                if (twoParts != 2)
+                {
+                    constraintedPoint = flag ? starL : starR;
+                }
+                Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
+                grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+            }
             _ = bungees.AddObject(grab);
         }
 
