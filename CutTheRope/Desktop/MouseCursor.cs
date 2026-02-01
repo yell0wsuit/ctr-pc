@@ -12,13 +12,23 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.Desktop
 {
+    /// <summary>
+    /// Manages the desktop mouse cursor, including scaling and native cursor overrides.
+    /// </summary>
     internal sealed class MouseCursor : IDisposable
     {
+        /// <summary>
+        /// Enables or disables cursor rendering and native cursor overrides.
+        /// </summary>
+        /// <param name="b">True to enable the custom cursor, false to hide it.</param>
         public void Enable(bool b)
         {
             _enabled = b;
         }
 
+        /// <summary>
+        /// Releases cursor-related native and managed resources.
+        /// </summary>
         public void Dispose()
         {
             DisposeNativeCursors();
@@ -36,11 +46,18 @@ namespace CutTheRope.Desktop
             _nativeCursorActive = null;
         }
 
+        /// <summary>
+        /// Releases any pressed mouse buttons tracked by the cursor.
+        /// </summary>
         public void ReleaseButtons()
         {
             _mouseStateTranformed = new MouseState(_mouseStateTranformed.X, _mouseStateTranformed.Y, _mouseStateTranformed.ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
         }
 
+        /// <summary>
+        /// Loads cursor textures from content and resets scaled caches.
+        /// </summary>
+        /// <param name="cm">Content manager used to load cursor assets.</param>
         public void Load(ContentManager cm)
         {
             // Dispose old resources if reloading
@@ -136,6 +153,9 @@ namespace CutTheRope.Desktop
             return a + ((b - a) * t);
         }
 
+        /// <summary>
+        /// Updates the native cursor based on current mouse state and screen scale.
+        /// </summary>
         public void Draw()
         {
             if (!_enabled)
