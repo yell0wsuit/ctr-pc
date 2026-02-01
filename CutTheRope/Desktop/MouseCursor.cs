@@ -21,6 +21,15 @@ namespace CutTheRope.Desktop
 
         public void Dispose()
         {
+            DisposeNativeCursors();
+            _scaledCursor?.Dispose();
+            _scaledCursorActive?.Dispose();
+            _scaledCursor = null;
+            _scaledCursorActive = null;
+        }
+
+        private void DisposeNativeCursors()
+        {
             _nativeCursor?.Dispose();
             _nativeCursorActive?.Dispose();
             _nativeCursor = null;
@@ -34,14 +43,97 @@ namespace CutTheRope.Desktop
 
         public void Load(ContentManager cm)
         {
-            // Dispose old native cursors if reloading
-            _nativeCursor?.Dispose();
-            _nativeCursorActive?.Dispose();
+            // Dispose old resources if reloading
+            DisposeNativeCursors();
+            _scaledCursor?.Dispose();
+            _scaledCursorActive?.Dispose();
+            _scaledCursor = null;
+            _scaledCursorActive = null;
 
             _cursor = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor"));
             _cursorActive = cm.Load<Texture2D>(ContentPaths.GetImageContentPath("cursor_active"));
-            _nativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_cursor, 0, 0);
-            _nativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_cursorActive, 0, 0);
+
+            // Force recreation of scaled cursors on next draw
+            _currentScale = 0;
+        }
+
+        private void UpdateScaledCursors(double scale)
+        {
+            if (Math.Abs(_currentScale - scale) < 0.01)
+            {
+                return;
+            }
+
+            _currentScale = scale;
+
+            // Dispose old scaled resources
+            DisposeNativeCursors();
+            _scaledCursor?.Dispose();
+            _scaledCursorActive?.Dispose();
+
+            // Create scaled textures
+            _scaledCursor = ScaleTexture(_cursor, scale);
+            _scaledCursorActive = ScaleTexture(_cursorActive, scale);
+
+            // Create native cursors from scaled textures
+            _nativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursor, 0, 0);
+            _nativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursorActive, 0, 0);
+
+            // Force cursor update
+            _usingActiveCursor = !_usingActiveCursor;
+        }
+
+        private static Texture2D ScaleTexture(Texture2D source, double scale)
+        {
+            int newWidth = Math.Max(1, (int)(source.Width * scale));
+            int newHeight = Math.Max(1, (int)(source.Height * scale));
+
+            // Get source pixel data
+            Color[] sourceData = new Color[source.Width * source.Height];
+            source.GetData(sourceData);
+
+            // Create scaled pixel data using bilinear interpolation
+            Color[] scaledData = new Color[newWidth * newHeight];
+            for (int y = 0; y < newHeight; y++)
+            {
+                for (int x = 0; x < newWidth; x++)
+                {
+                    // Map to source coordinates
+                    float srcX = (float)x / newWidth * source.Width;
+                    float srcY = (float)y / newHeight * source.Height;
+
+                    // Bilinear interpolation
+                    int x0 = Math.Min((int)srcX, source.Width - 1);
+                    int y0 = Math.Min((int)srcY, source.Height - 1);
+                    int x1 = Math.Min(x0 + 1, source.Width - 1);
+                    int y1 = Math.Min(y0 + 1, source.Height - 1);
+
+                    float xFrac = srcX - x0;
+                    float yFrac = srcY - y0;
+
+                    Color c00 = sourceData[(y0 * source.Width) + x0];
+                    Color c10 = sourceData[(y0 * source.Width) + x1];
+                    Color c01 = sourceData[(y1 * source.Width) + x0];
+                    Color c11 = sourceData[(y1 * source.Width) + x1];
+
+                    // Interpolate
+                    float r = Lerp(Lerp(c00.R, c10.R, xFrac), Lerp(c01.R, c11.R, xFrac), yFrac);
+                    float g = Lerp(Lerp(c00.G, c10.G, xFrac), Lerp(c01.G, c11.G, xFrac), yFrac);
+                    float b = Lerp(Lerp(c00.B, c10.B, xFrac), Lerp(c01.B, c11.B, xFrac), yFrac);
+                    float a = Lerp(Lerp(c00.A, c10.A, xFrac), Lerp(c01.A, c11.A, xFrac), yFrac);
+
+                    scaledData[(y * newWidth) + x] = new Color((byte)r, (byte)g, (byte)b, (byte)a);
+                }
+            }
+
+            Texture2D scaledTexture = new(Global.GraphicsDevice, newWidth, newHeight);
+            scaledTexture.SetData(scaledData);
+            return scaledTexture;
+        }
+
+        private static float Lerp(float a, float b, float t)
+        {
+            return a + ((b - a) * t);
         }
 
         public void Draw()
@@ -62,6 +154,14 @@ namespace CutTheRope.Desktop
             {
                 return;
             }
+
+            if (_cursor == null || _cursorActive == null)
+            {
+                return;
+            }
+
+            // Update scaled cursors if game scale changed
+            UpdateScaledCursors(Global.ScreenSizeManager.WidthAspectRatio);
 
             if (_nativeCursor == null || _nativeCursorActive == null)
             {
@@ -138,6 +238,10 @@ namespace CutTheRope.Desktop
 
         private Texture2D _cursorActive;
 
+        private Texture2D _scaledCursor;
+
+        private Texture2D _scaledCursorActive;
+
         private Microsoft.Xna.Framework.Input.MouseCursor _nativeCursor;
 
         private Microsoft.Xna.Framework.Input.MouseCursor _nativeCursorActive;
@@ -147,6 +251,8 @@ namespace CutTheRope.Desktop
         private MouseState _mouseStateOriginal;
 
         private int _touchID;
+
+        private double _currentScale;
 
         private bool _enabled;
 
