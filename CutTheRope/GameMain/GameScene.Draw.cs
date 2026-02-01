@@ -188,7 +188,24 @@ namespace CutTheRope.GameMain
                 Grab grab = (Grab)obj12a;
                 if (grab.gun)
                 {
-                    grab.DrawGunCup();
+                    if (!grab.gunFired)
+                    {
+                        // Gun arrow tracks the candy position
+                        Vector vector = VectSub(Vect(grab.x, grab.y), star.pos);
+                        grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+                    }
+                    else
+                    {
+                        // Update gunCup position/rotation when fired
+                        int currentTimeline = grab.gunCup.GetCurrentTimelineIndex();
+                        if (currentTimeline != Grab.GUN_CUP_DROP_AND_HIDE)
+                        {
+                            grab.gunCup.x = star.pos.X;
+                            grab.gunCup.y = star.pos.Y;
+                            grab.gunCup.rotation = grab.gunInitialRotation + candy.rotation - grab.gunCandyInitialRotation;
+                        }
+                        grab.DrawGunCup();
+                    }
                 }
             }
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);

@@ -567,7 +567,7 @@ namespace CutTheRope.GameMain
 
         public const int GUN_CUT_RADIUS = 15;
 
-        public const int GUN_TAP_RADIUS = 35;
+        public const int GUN_TAP_RADIUS = 75;
 
         public Image back;
 
