@@ -359,10 +359,8 @@ namespace CutTheRope.GameMain
                 gunCup.DoRestoreCutTransparency();
                 gunCup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
                 gunCup.anchor = 18;
-                gunCup.visible = false;
-                gunCup.updateable = false;
-                gunCup.blendingMode = 1;
                 _ = AddChild(gunCup);
+                gunCup.visible = false;
 
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
