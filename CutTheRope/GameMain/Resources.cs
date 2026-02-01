@@ -180,7 +180,10 @@ namespace CutTheRope.GameMain
                 Snd.MouseTap, Snd.MonsterSleep1, Snd.MonsterSleep2, Snd.MonsterSleep3,
                 Snd.StarLight1, Snd.StarLight2,
                 Snd.Conv01, Snd.Conv02, Snd.Conv03, Snd.Conv04,
-                Snd.TransporterMove, Snd.TransporterDrop
+                Snd.TransporterMove, Snd.TransporterDrop,
+
+                // CTR Experiments sounds
+                Snd.ExpGun
             ];
         }
 
@@ -563,6 +566,9 @@ namespace CutTheRope.GameMain
             public const string Conv02 = "con02";
             public const string Conv03 = "con03";
             public const string Conv04 = "con04";
+
+            // CTR Experiments sounds
+            public const string ExpGun = "gun";
         }
 
         /// <summary>

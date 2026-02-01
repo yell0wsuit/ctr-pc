@@ -146,7 +146,7 @@ namespace CutTheRope.GameMain
                             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
                             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                             grab.SetRope(bungee);
-                            CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpGun);
 
                             // Track achievement
                             int ropesShoot = Preferences.GetIntForKey("PREFS_ROPES_SHOOT") + 1;
