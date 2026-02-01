@@ -36,6 +36,7 @@ namespace CutTheRope.Desktop
             _scaledCursorActive?.Dispose();
             _scaledCursor = null;
             _scaledCursorActive = null;
+            GC.SuppressFinalize(this);
         }
 
         private void DisposeNativeCursors()
@@ -51,7 +52,7 @@ namespace CutTheRope.Desktop
         /// </summary>
         public void ReleaseButtons()
         {
-            _mouseStateTranformed = new MouseState(_mouseStateTranformed.X, _mouseStateTranformed.Y, _mouseStateTranformed.ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
+            _mouseStateTransformed = new MouseState(_mouseStateTransformed.X, _mouseStateTransformed.Y, _mouseStateTransformed.ScrollWheelValue, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
         }
 
         /// <summary>
@@ -83,18 +84,24 @@ namespace CutTheRope.Desktop
 
             _currentScale = scale;
 
-            // Dispose old scaled resources
+            // Create new scaled textures first (before disposing old ones for exception safety)
+            Texture2D newScaledCursor = ScaleTexture(_cursor, scale);
+            Texture2D newScaledCursorActive = ScaleTexture(_cursorActive, scale);
+
+            // Create native cursors from scaled textures (hotspot at top-left corner: 0, 0)
+            Microsoft.Xna.Framework.Input.MouseCursor newNativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(newScaledCursor, 0, 0);
+            Microsoft.Xna.Framework.Input.MouseCursor newNativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(newScaledCursorActive, 0, 0);
+
+            // Now dispose old resources (safe since new ones are ready)
             DisposeNativeCursors();
             _scaledCursor?.Dispose();
             _scaledCursorActive?.Dispose();
 
-            // Create scaled textures
-            _scaledCursor = ScaleTexture(_cursor, scale);
-            _scaledCursorActive = ScaleTexture(_cursorActive, scale);
-
-            // Create native cursors from scaled textures
-            _nativeCursor = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursor, 0, 0);
-            _nativeCursorActive = Microsoft.Xna.Framework.Input.MouseCursor.FromTexture2D(_scaledCursorActive, 0, 0);
+            // Assign new resources
+            _scaledCursor = newScaledCursor;
+            _scaledCursorActive = newScaledCursorActive;
+            _nativeCursor = newNativeCursor;
+            _nativeCursorActive = newNativeCursorActive;
 
             // Force cursor update
             _usingActiveCursor = !_usingActiveCursor;
@@ -102,6 +109,8 @@ namespace CutTheRope.Desktop
 
         private static Texture2D ScaleTexture(Texture2D source, double scale)
         {
+            ArgumentNullException.ThrowIfNull(source);
+
             int newWidth = Math.Max(1, (int)(source.Width * scale));
             int newHeight = Math.Max(1, (int)(source.Height * scale));
 
@@ -160,9 +169,12 @@ namespace CutTheRope.Desktop
         {
             if (!_enabled)
             {
-                Global.XnaGame.IsMouseVisible = false;
-                _cursorOverrideActive = false;
-                _usingActiveCursor = false;
+                if (_cursorOverrideActive)
+                {
+                    Global.XnaGame.IsMouseVisible = false;
+                    _cursorOverrideActive = false;
+                    _usingActiveCursor = false;
+                }
                 return;
             }
 
@@ -220,7 +232,7 @@ namespace CutTheRope.Desktop
                 if (mouseStateTranformed.LeftButton == ButtonState.Pressed)
                 {
                     TouchLocation touchLocation;
-                    if (_mouseStateTranformed.LeftButton == ButtonState.Pressed)
+                    if (_mouseStateTransformed.LeftButton == ButtonState.Pressed)
                     {
                         touchLocation = new TouchLocation(_touchID, TouchLocationState.Moved, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
                     }
@@ -232,9 +244,9 @@ namespace CutTheRope.Desktop
                     }
                     item = touchLocation;
                 }
-                else if (_mouseStateTranformed.LeftButton == ButtonState.Pressed)
+                else if (_mouseStateTransformed.LeftButton == ButtonState.Pressed)
                 {
-                    item = new TouchLocation(_touchID, TouchLocationState.Released, new Vector2(_mouseStateTranformed.X, _mouseStateTranformed.Y));
+                    item = new TouchLocation(_touchID, TouchLocationState.Released, new Vector2(_mouseStateTransformed.X, _mouseStateTransformed.Y));
                 }
             }
             else if (mouseStateTranformed.LeftButton == ButtonState.Pressed)
@@ -247,7 +259,7 @@ namespace CutTheRope.Desktop
             {
                 list.Add(item);
             }
-            _mouseStateTranformed = mouseStateTranformed;
+            _mouseStateTransformed = mouseStateTranformed;
             return GLCanvas.ConvertTouches(list);
         }
 
@@ -263,7 +275,7 @@ namespace CutTheRope.Desktop
 
         private Microsoft.Xna.Framework.Input.MouseCursor _nativeCursorActive;
 
-        private MouseState _mouseStateTranformed;
+        private MouseState _mouseStateTransformed;
 
         private MouseState _mouseStateOriginal;
 

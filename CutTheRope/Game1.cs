@@ -42,7 +42,7 @@ namespace CutTheRope
             TargetElapsedTime = TimeSpan.FromTicks(166666L);
             IsFixedTimeStep = false;
             InactiveSleepTime = TimeSpan.FromTicks(500000L);
-            IsMouseVisible = true;
+            IsMouseVisible = false;
             Activated += Game1_Activated;
             Deactivated += Game1_Deactivated;
             Exiting += Game1_Exiting;
