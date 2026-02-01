@@ -140,12 +140,9 @@ namespace CutTheRope.Desktop
         {
             if (!_enabled)
             {
-                if (_cursorOverrideActive)
-                {
-                    Global.XnaGame.IsMouseVisible = false;
-                    _cursorOverrideActive = false;
-                    _usingActiveCursor = false;
-                }
+                Global.XnaGame.IsMouseVisible = false;
+                _cursorOverrideActive = false;
+                _usingActiveCursor = false;
                 return;
             }
 
