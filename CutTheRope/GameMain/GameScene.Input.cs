@@ -141,6 +141,7 @@ namespace CutTheRope.GameMain
                             grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
 
                             // Fire the gun - create a rope to the candy
+                            // BUNGEE_REST_LEN = 105
                             float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - 105f;
                             float ropeLength = MAX(gunToCandyDistance, 105f);
                             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
