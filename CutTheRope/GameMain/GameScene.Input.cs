@@ -120,33 +120,47 @@ namespace CutTheRope.GameMain
                 }
             }
             // Handle gun tap
-            foreach (object obj in bungees)
+            if (!noCandy)
             {
-                Grab grab = (Grab)obj;
-                if (grab.gun && !grab.gunFired && grab.rope == null)
+                foreach (object obj in bungees)
                 {
-                    float distance = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), Vect(grab.x, grab.y));
-                    if (distance <= Grab.GUN_TAP_RADIUS)
+                    Grab grab = (Grab)obj;
+                    if (grab.gun && !grab.gunFired && grab.rope == null)
                     {
-                        // Calculate direction to candy
-                        Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
-                        grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + 90f;
-                        grab.gunCandyInitialRotation = candy.rotation;
-                        grab.gunCup.rotation = grab.gunInitialRotation;
+                        if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - 35f, grab.y - 35f, 70f, 70f))
+                        {
+                            // Calculate direction to candy
+                            Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
+                            grab.gunFired = true;
+                            grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + 90f;
+                            grab.gunCandyInitialRotation = candyMain.rotation;
+                            grab.gunCup.rotation = grab.gunInitialRotation;
 
-                        // Change gunFront quad to fired state
-                        grab.gunFront.SetDrawQuad(3);
+                            // Change gunFront quad to fired state
+                            grab.gunFront.SetDrawQuad(3);
+                            grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
 
-                        // Fire the gun - create a rope to the candy
-                        float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos);
-                        float ropeLength = MAX(gunToCandyDistance - 30f, 30f);
-                        Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
-                        bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
-                        grab.SetRope(bungee);
-                        grab.gunFired = true;
-                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
-                        CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
-                        return true;
+                            // Fire the gun - create a rope to the candy
+                            float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - 30f;
+                            float ropeLength = MAX(gunToCandyDistance, 30f);
+                            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
+                            bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                            grab.SetRope(bungee);
+                            CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+
+                            // Track achievement
+                            int ropesShoot = Preferences.GetIntForKey("PREFS_ROPES_SHOOT") + 1;
+                            Preferences.SetIntForKey(ropesShoot, "PREFS_ROPES_SHOOT", false);
+                            if (ropesShoot >= 50)
+                            {
+                                CTRRootController.PostAchievementName("acRookieSniper", ACHIEVEMENT_STRING("\"Rookie Sniper\""));
+                            }
+                            if (ropesShoot >= 150)
+                            {
+                                CTRRootController.PostAchievementName("acSkilledSniper", ACHIEVEMENT_STRING("\"Skilled Sniper\""));
+                            }
+                            return true;
+                        }
                     }
                 }
             }
