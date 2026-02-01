@@ -302,6 +302,10 @@ namespace CutTheRope.GameMain
 
         public void DrawGunCup()
         {
+            if (!gunFired)
+            {
+                return;
+            }
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             gunCup?.Draw();
         }
