@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
 
         public override void Draw()
         {
-            Global.MouseCursor.Enable(false);
+            Global.MouseCursor.Enable(true);
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
