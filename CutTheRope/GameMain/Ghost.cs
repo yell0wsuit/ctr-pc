@@ -47,19 +47,6 @@ namespace CutTheRope.GameMain
 
             float random = RND_0_1;
 
-            ghostImageFace = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 1);
-            ghostImageFace.x = position.X;
-            ghostImageFace.y = position.Y;
-            ghostImageFace.anchor = 18;
-            _ = ghostImage.AddChild(ghostImageFace);
-
-            Timeline faceFloat = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            faceFloat.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            faceFloat.AddKeyFrame(KeyFrame.MakePos(x, y - 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random + 0.005));
-            faceFloat.delegateTimelineDelegate = this;
-            ghostImageFace.AddTimelinewithID(faceFloat, 13);
-            ghostImageFace.PlayTimeline(13);
-
             ghostImageBody = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 0);
             ghostImageBody.x = position.X;
             ghostImageBody.y = position.Y;
@@ -72,6 +59,19 @@ namespace CutTheRope.GameMain
             bodyFloat.delegateTimelineDelegate = this;
             ghostImageBody.AddTimelinewithID(bodyFloat, 13);
             ghostImageBody.PlayTimeline(13);
+
+            ghostImageFace = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 1);
+            ghostImageFace.x = position.X;
+            ghostImageFace.y = position.Y;
+            ghostImageFace.anchor = 18;
+            _ = ghostImage.AddChild(ghostImageFace);
+
+            Timeline faceFloat = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            faceFloat.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            faceFloat.AddKeyFrame(KeyFrame.MakePos(x, y - 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random + 0.005));
+            faceFloat.delegateTimelineDelegate = this;
+            ghostImageFace.AddTimelinewithID(faceFloat, 13);
+            ghostImageFace.PlayTimeline(13);
 
             bubble = null;
             grab = null;
