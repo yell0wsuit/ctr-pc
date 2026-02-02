@@ -124,7 +124,6 @@ namespace CutTheRope.GameMain
                 Img.ObjBubbleFlight, Img.ObjBubblePop, Img.ObjHookAuto,
                 Img.ObjBubbleAttached, Img.ObjHook01, Img.ObjHook02, Img.ObjStarIdle,
                 Img.HudStar, Img.CharAnimations, Img.CharAnimationsSleeping, Img.ObjHookRegulated, Img.ObjHookMovable,
-                Img.ObjGun,
                 Img.ObjPump, Img.TutorialSigns, Img.ObjHat, Img.ObjBouncer01,
                 Img.ObjBouncer02, Img.ObjSpikes01, Img.ObjSpikes02, Img.ObjSpikes03,
                 Img.ObjSpikes04, Img.ObjElectrodes, Img.ObjRotatableSpikes01,
@@ -155,7 +154,10 @@ namespace CutTheRope.GameMain
                 Img.ObjCandy37, Img.ObjCandy38, Img.ObjCandy39, Img.ObjCandy40, Img.ObjCandy41,
                 Img.ObjCandy42, Img.ObjCandy43, Img.ObjCandy44, Img.ObjCandy45, Img.ObjCandy46,
                 Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51,
-                Img.ObjCandy52
+                Img.ObjCandy52,
+
+                // CTR Experiments objects
+                Img.ObjGun, Img.ObjSticker
             ];
         }
 
@@ -183,7 +185,7 @@ namespace CutTheRope.GameMain
                 Snd.TransporterMove, Snd.TransporterDrop,
 
                 // CTR Experiments sounds
-                Snd.ExpGun
+                Snd.ExpGun, Snd.ExpSuckerDrop, Snd.ExpSuckerLand
             ];
         }
 
@@ -329,6 +331,7 @@ namespace CutTheRope.GameMain
             public const string ObjHookRegulated = "obj_hook_regulated";
             public const string ObjHookMovable = "obj_hook_movable";
             public const string ObjGun = "obj_gun";
+            public const string ObjSticker = "obj_sticker";
             public const string ObjPump = "obj_pump";
             public const string TutorialSigns = "tutorial_signs";
             public const string ObjHat = "obj_hat";
@@ -569,6 +572,8 @@ namespace CutTheRope.GameMain
 
             // CTR Experiments sounds
             public const string ExpGun = "gun";
+            public const string ExpSuckerDrop = "sucker_drop";
+            public const string ExpSuckerLand = "sucker_land";
         }
 
         /// <summary>
