@@ -45,6 +45,10 @@ namespace CutTheRope.GameMain
             baloon = cTRRootController.IsSurvival();
             gun = false;
             gunFired = false;
+            invisible = false;
+            kicked = false;
+            kickActive = false;
+            stickTimer = -1f;
         }
 
         public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
@@ -219,6 +223,15 @@ namespace CutTheRope.GameMain
 
         public virtual void DrawBack()
         {
+            if (invisible)
+            {
+                return;
+            }
+            if (kickable && kicked && rope != null)
+            {
+                x = (rope.bungeeAnchor.pos.X * 0.8f) + (x * 0.2f);
+                y = (rope.bungeeAnchor.pos.Y * 0.8f) + (y * 0.2f);
+            }
             if (gun)
             {
                 return;
@@ -249,6 +262,15 @@ namespace CutTheRope.GameMain
 
         public override void Draw()
         {
+            if (invisible)
+            {
+                return;
+            }
+            if (kickable && kicked && rope != null)
+            {
+                x = rope.bungeeAnchor.pos.X;
+                y = rope.bungeeAnchor.pos.Y;
+            }
             PreDraw();
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             Bungee bungee = rope;
@@ -385,7 +407,22 @@ namespace CutTheRope.GameMain
                 track.relative = true;
                 return;
             }
-            if (radius == -1f)
+            if (kickable)
+            {
+                stainCounter = MAX_STAINS;
+                back = Image_createWithResIDQuad(Resources.Img.ObjSticker, 3);
+                back.DoRestoreCutTransparency();
+                back.anchor = back.parentAnchor = 18;
+                front = Image_createWithResIDQuad(Resources.Img.ObjSticker, 4);
+                front.DoRestoreCutTransparency();
+                front.anchor = front.parentAnchor = 18;
+                _ = AddChild(back);
+                _ = AddChild(front);
+                back.visible = false;
+                front.visible = false;
+                UpdateKickState();
+            }
+            else if (radius == -1f)
             {
                 string hookTexture = RandomHookTexture();
                 back = Image_createWithResIDQuad(hookTexture, HookBackQuad);
@@ -482,6 +519,10 @@ namespace CutTheRope.GameMain
                 moveBackground.visible = false;
             }
             moverDragging = -1;
+            if (moveLength >= 0f)
+            {
+                kickable = false;
+            }
         }
 
         public void SetBee()
@@ -540,6 +581,25 @@ namespace CutTheRope.GameMain
             rope = null;
         }
 
+        public void UpdateKickState()
+        {
+            if (kicked)
+            {
+                back?.SetDrawQuad(1);
+                front?.SetDrawQuad(2);
+            }
+            else
+            {
+                back?.SetDrawQuad(3);
+                front?.SetDrawQuad(4);
+            }
+            if (rope != null)
+            {
+                x = rope.bungeeAnchor.pos.X;
+                y = rope.bungeeAnchor.pos.Y;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -565,13 +625,25 @@ namespace CutTheRope.GameMain
 
         public const int GUN_CUP_DROP_AND_HIDE = 2;
 
+        public const int KICK_MOVE_LENGTH = 10;
+
+        public const int KICK_CUT_RADIUS = 15;
+
         public const int GUN_CUT_RADIUS = 15;
 
+        public const int KICK_TAP_RADIUS = 70;
+
         public const int GUN_TAP_RADIUS = 75;
+
+        public const float STICK_DELAY = 0.05f;
+
+        public const int MAX_STAINS = 10;
 
         public Image back;
 
         public Image front;
+
+        public Image dot;
 
         public Bungee rope;
 
@@ -671,6 +743,20 @@ namespace CutTheRope.GameMain
         public float gunInitialRotation;
 
         public float gunCandyInitialRotation;
+
+        public int stainCounter;
+
+        public bool kickable;
+
+        public bool kicked;
+
+        public bool kickActive;
+
+        public bool invisible;
+
+        private Vector kickPrevPos;
+
+        public float stickTimer;
 
         public Image bee;
 

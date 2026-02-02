@@ -24,6 +24,9 @@ namespace CutTheRope.GameMain
             float len = xmlNode.AttributeAsNSString("length").IntValue() * scale;
             float num12 = xmlNode.AttributeAsNSString("radius").FloatValue();
             bool wheel = xmlNode.AttributeAsNSString("wheel").IsEqualToString("true");
+            bool kickable = xmlNode.AttributeAsNSString("kickable").IsEqualToString("true");
+            bool kicked = xmlNode.AttributeAsNSString("kicked").IsEqualToString("true");
+            bool invisible = xmlNode.AttributeAsNSString("invisible").IsEqualToString("true");
             float k = xmlNode.AttributeAsNSString("moveLength").FloatValue() * scale;
             bool v = xmlNode.AttributeAsNSString("moveVertical").IsEqualToString("true");
             float o = xmlNode.AttributeAsNSString("moveOffset").FloatValue() * scale;
@@ -39,6 +42,9 @@ namespace CutTheRope.GameMain
             grab.initial_rotation = 0f;
             grab.wheel = wheel;
             grab.gun = gun;
+            grab.kickable = kickable;
+            grab.kicked = kicked;
+            grab.invisible = invisible;
             grab.SetSpider(spider);
             grab.ParseMover(xmlNode);
             if (grab.mover != null)
@@ -87,6 +93,11 @@ namespace CutTheRope.GameMain
                 Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
                 bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                 grab.SetRope(bungee);
+                if (grab.kicked)
+                {
+                    bungee.bungeeAnchor.pin = Vect(-1f, -1f);
+                    bungee.bungeeAnchor.SetWeight(0.1f);
+                }
             }
             grab.SetRadius(num12);
             grab.SetMoveLengthVerticalOffset(k, v, o);

@@ -248,6 +248,31 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+            // Check if we touched a non-kicked kickable grab
+            bool touchedNonKickedKickable = false;
+            foreach (object obj4 in bungees)
+            {
+                Grab bungee = (Grab)obj4;
+                float tapRadius = Grab.KICK_TAP_RADIUS;
+                if (bungee.kickable && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                {
+                    if (!bungee.kicked)
+                    {
+                        touchedNonKickedKickable = true;
+                        break;
+                    }
+                    bungee.kickActive = true;
+                }
+            }
+            // Start stick timer for kicked kickable grabs if we didn't touch a non-kicked one
+            foreach (object obj4 in bungees)
+            {
+                Grab bungee = (Grab)obj4;
+                if (bungee.kickable && bungee.rope != null && !touchedNonKickedKickable && bungee.kicked)
+                {
+                    bungee.stickTimer = 0f;
+                }
+            }
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
@@ -497,6 +522,41 @@ namespace CutTheRope.GameMain
                             grab2.ReCalcCircle();
                         }
                         return true;
+                    }
+                    // Kickable grab handling
+                    if (grab2.kickable && grab2.rope != null)
+                    {
+                        float tapRadius = Grab.KICK_TAP_RADIUS;
+                        if (!grab2.kickActive && !grab2.kicked && grab2.rope.cut == -1 &&
+                            PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab2.x - tapRadius, grab2.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                        {
+                            if (grab2.stainCounter > 0)
+                            {
+                                grab2.stainCounter--;
+                            }
+                            grab2.rope.bungeeAnchor.pin = Vect(-1f, -1f);
+                            grab2.rope.bungeeAnchor.SetWeight(0.1f);
+                            grab2.kicked = true;
+                            grab2.stickTimer = -1f;
+                            grab2.UpdateKickState();
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
+                            int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
+                            Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
+                            if (wallClimberCount >= 50)
+                            {
+                                CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
+                            }
+                            if (wallClimberCount >= 400)
+                            {
+                                CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
+                            }
+                        }
+                        // Cancel stick timer if moved too much
+                        if (grab2.kicked && VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
+                        {
+                            grab2.stickTimer = -1f;
+                        }
+                        grab2.kickActive = false;
                     }
                 }
             }
