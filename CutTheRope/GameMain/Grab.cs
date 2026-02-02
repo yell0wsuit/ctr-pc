@@ -753,9 +753,6 @@ namespace CutTheRope.GameMain
         public bool kickActive;
 
         public bool invisible;
-
-        private Vector kickPrevPos;
-
         public float stickTimer;
 
         public Image bee;
