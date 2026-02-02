@@ -228,6 +228,14 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+            foreach (object bungee in bungees)
+            {
+                Grab grab = (Grab)bungee;
+                if (grab?.rope != null && grab.kickable && grab.kicked)
+                {
+                    HandlePumpFlowPtSkin(p, grab.rope.bungeeAnchor, grab);
+                }
+            }
         }
 
         /// <summary>
