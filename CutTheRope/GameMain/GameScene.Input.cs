@@ -368,6 +368,13 @@ namespace CutTheRope.GameMain
                     {
                         if (bungee.stainCounter > 0)
                         {
+                            Image stain = Image.Image_createWithResIDQuad(Resources.Img.ObjSticker, 0);
+                            stain.DoRestoreCutTransparency();
+                            stain.x = bungee.rope.bungeeAnchor.pos.X;
+                            stain.y = bungee.rope.bungeeAnchor.pos.Y;
+                            stain.anchor = 18;
+                            stain.color.AlphaChannel = bungee.stainCounter / 10f;
+                            _ = aniPool.AddChild(stain);
                             bungee.stainCounter--;
                         }
                         bungee.rope.bungeeAnchor.pin = Vect(-1f, -1f);
