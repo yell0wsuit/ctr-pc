@@ -27,6 +27,8 @@ namespace CutTheRope.GameMain
 
             // Load level metadata (map dimensions, game design settings, candy positions)
             LoadAllLevelMetadata(map, num, num2, out float num3, out int num4, out int num5);
+            mapOriginX = num3 + num4;
+            mapOriginY = num2 + num5;
 
             // Load all game objects from XML
             LoadObjectsFromMap(map, num, num3, num2, num4, num5);

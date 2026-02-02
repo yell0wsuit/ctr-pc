@@ -123,7 +123,7 @@ namespace CutTheRope.GameMain
                         grab.stickTimer += delta;
                         if (grab.stickTimer > Grab.STICK_DELAY)
                         {
-                            if (GameObject.RectInObject(0f, 0f, mapWidth, mapHeight, grab))
+                            if (GameObject.RectInObject(mapOriginX, mapOriginY, mapOriginX + mapWidth, mapOriginY + mapHeight, grab))
                             {
                                 rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
                                 grab.kicked = false;

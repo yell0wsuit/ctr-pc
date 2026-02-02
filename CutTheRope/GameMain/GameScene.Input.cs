@@ -360,6 +360,35 @@ namespace CutTheRope.GameMain
                 {
                     bungee.moverDragging = -1;
                 }
+                if (bungee.kickable && bungee.rope != null)
+                {
+                    float tapRadius = Grab.KICK_TAP_RADIUS;
+                    if (!bungee.kickActive && !bungee.kicked && bungee.rope.cut == -1 &&
+                        PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                    {
+                        if (bungee.stainCounter > 0)
+                        {
+                            bungee.stainCounter--;
+                        }
+                        bungee.rope.bungeeAnchor.pin = Vect(-1f, -1f);
+                        bungee.rope.bungeeAnchor.SetWeight(0.1f);
+                        bungee.kicked = true;
+                        bungee.stickTimer = -1f;
+                        bungee.UpdateKickState();
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
+                        int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
+                        Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
+                        if (wallClimberCount >= 50)
+                        {
+                            CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
+                        }
+                        if (wallClimberCount >= 400)
+                        {
+                            CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
+                        }
+                    }
+                    bungee.kickActive = false;
+                }
             }
             _ = conveyors.OnPointerUp(tx + camera.pos.X, ty + camera.pos.Y, ti);
             return true;
@@ -523,40 +552,11 @@ namespace CutTheRope.GameMain
                         }
                         return true;
                     }
-                    // Kickable grab handling
-                    if (grab2.kickable && grab2.rope != null)
+                    // Cancel stick timer if moved too much (kickable grabs)
+                    if (grab2.kickable && grab2.kicked && grab2.rope != null &&
+                        VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
                     {
-                        float tapRadius = Grab.KICK_TAP_RADIUS;
-                        if (!grab2.kickActive && !grab2.kicked && grab2.rope.cut == -1 &&
-                            PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab2.x - tapRadius, grab2.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
-                        {
-                            if (grab2.stainCounter > 0)
-                            {
-                                grab2.stainCounter--;
-                            }
-                            grab2.rope.bungeeAnchor.pin = Vect(-1f, -1f);
-                            grab2.rope.bungeeAnchor.SetWeight(0.1f);
-                            grab2.kicked = true;
-                            grab2.stickTimer = -1f;
-                            grab2.UpdateKickState();
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
-                            int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
-                            Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
-                            if (wallClimberCount >= 50)
-                            {
-                                CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
-                            }
-                            if (wallClimberCount >= 400)
-                            {
-                                CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
-                            }
-                        }
-                        // Cancel stick timer if moved too much
-                        if (grab2.kicked && VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
-                        {
-                            grab2.stickTimer = -1f;
-                        }
-                        grab2.kickActive = false;
+                        grab2.stickTimer = -1f;
                     }
                 }
             }
