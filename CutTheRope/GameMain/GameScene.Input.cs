@@ -44,6 +44,52 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        private bool TryGetNearestGunTarget(Vector gunPosition, out ConstraintedPoint targetConstraint, out GameObject targetVisual)
+        {
+            targetConstraint = null;
+            targetVisual = null;
+            float bestDistance = float.MaxValue;
+
+            void Consider(ConstraintedPoint candidate, GameObject visual, bool skip)
+            {
+                if (candidate == null || visual == null || skip)
+                {
+                    return;
+                }
+
+                float distance = VectDistance(gunPosition, candidate.pos);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    targetConstraint = candidate;
+                    targetVisual = visual;
+                }
+            }
+
+            if (!noCandy && star != null)
+            {
+                Consider(star, candyMain, false);
+            }
+            if (twoParts != 2)
+            {
+                Consider(starL, candyL, noCandyL);
+                Consider(starR, candyR, noCandyR);
+            }
+            if (lightBulbs.Count > 0)
+            {
+                foreach (LightBulb bulb in lightBulbs)
+                {
+                    if (bulb == null || bulb.attachedSock != null || bulb.constraint == null)
+                    {
+                        continue;
+                    }
+                    Consider(bulb.constraint, bulb, false);
+                }
+            }
+
+            return targetConstraint != null;
+        }
+
         public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
@@ -120,49 +166,52 @@ namespace CutTheRope.GameMain
                 }
             }
             // Handle gun tap
-            if (!noCandy)
+            foreach (object obj in bungees)
             {
-                foreach (object obj in bungees)
+                Grab grab = (Grab)obj;
+                if (grab.gun && !grab.gunFired && grab.rope == null)
                 {
-                    Grab grab = (Grab)obj;
-                    if (grab.gun && !grab.gunFired && grab.rope == null)
+                    float tapRadius = Grab.GUN_TAP_RADIUS;
+                    if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                     {
-                        float tapRadius = Grab.GUN_TAP_RADIUS;
-                        if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                        if (!TryGetNearestGunTarget(Vect(grab.x, grab.y), out ConstraintedPoint targetConstraint, out GameObject targetVisual))
                         {
-                            // Calculate direction to candy
-                            Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
-                            grab.gunFired = true;
-                            grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + 90f;
-                            grab.gunCandyInitialRotation = candyMain.rotation;
-                            grab.gunCup.rotation = grab.gunInitialRotation;
-
-                            // Change gunFront quad to fired state
-                            grab.gunFront.SetDrawQuad(3);
-                            grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
-
-                            // Fire the gun - create a rope to the candy
-                            // BUNGEE_REST_LEN = 105
-                            float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - 105f;
-                            float ropeLength = MAX(gunToCandyDistance, 105f);
-                            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
-                            bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
-                            grab.SetRope(bungee);
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpGun);
-
-                            // Track achievement
-                            int ropesShoot = Preferences.GetIntForKey("PREFS_ROPES_SHOOT") + 1;
-                            Preferences.SetIntForKey(ropesShoot, "PREFS_ROPES_SHOOT", false);
-                            if (ropesShoot >= 50)
-                            {
-                                CTRRootController.PostAchievementName("acRookieSniper", ACHIEVEMENT_STRING("\"Rookie Sniper\""));
-                            }
-                            if (ropesShoot >= 150)
-                            {
-                                CTRRootController.PostAchievementName("acSkilledSniper", ACHIEVEMENT_STRING("\"Skilled Sniper\""));
-                            }
-                            return true;
+                            continue;
                         }
+
+                        // Calculate direction to target
+                        Vector gunToCandy = VectSub(Vect(grab.x, grab.y), targetConstraint.pos);
+                        grab.gunFired = true;
+                        grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + 90f;
+                        grab.gunCandyInitialRotation = targetVisual.rotation;
+                        grab.gunTargetObject = targetVisual;
+                        grab.gunCup.rotation = grab.gunInitialRotation;
+
+                        // Change gunFront quad to fired state
+                        grab.gunFront.SetDrawQuad(3);
+                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
+
+                        // Fire the gun - create a rope to the candy
+                        // BUNGEE_REST_LEN = 105
+                        float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), targetConstraint.pos) - 105f;
+                        float ropeLength = MAX(gunToCandyDistance, 105f);
+                        Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, targetConstraint, targetConstraint.pos.X, targetConstraint.pos.Y, ropeLength);
+                        bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                        grab.SetRope(bungee);
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpGun);
+
+                        // Track achievement
+                        int ropesShoot = Preferences.GetIntForKey("PREFS_ROPES_SHOOT") + 1;
+                        Preferences.SetIntForKey(ropesShoot, "PREFS_ROPES_SHOOT", false);
+                        if (ropesShoot >= 50)
+                        {
+                            CTRRootController.PostAchievementName("acRookieSniper", ACHIEVEMENT_STRING("\"Rookie Sniper\""));
+                        }
+                        if (ropesShoot >= 150)
+                        {
+                            CTRRootController.PostAchievementName("acSkilledSniper", ACHIEVEMENT_STRING("\"Skilled Sniper\""));
+                        }
+                        return true;
                     }
                 }
             }

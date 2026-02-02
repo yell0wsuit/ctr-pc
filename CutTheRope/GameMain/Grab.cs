@@ -45,6 +45,7 @@ namespace CutTheRope.GameMain
             baloon = cTRRootController.IsSurvival();
             gun = false;
             gunFired = false;
+            gunTargetObject = null;
             invisible = false;
             kicked = false;
             kickActive = false;
@@ -743,6 +744,8 @@ namespace CutTheRope.GameMain
         public float gunInitialRotation;
 
         public float gunCandyInitialRotation;
+
+        public GameObject gunTargetObject;
 
         public int stainCounter;
 

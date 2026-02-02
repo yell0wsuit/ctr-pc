@@ -191,9 +191,12 @@ namespace CutTheRope.GameMain
                 {
                     if (!grab.gunFired)
                     {
-                        // Gun arrow tracks the candy position
-                        Vector vector = VectSub(Vect(grab.x, grab.y), star.pos);
-                        grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+                        // Gun arrow tracks the nearest target position
+                        if (TryGetNearestGunTarget(Vect(grab.x, grab.y), out ConstraintedPoint targetConstraint, out _))
+                        {
+                            Vector vector = VectSub(Vect(grab.x, grab.y), targetConstraint.pos);
+                            grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+                        }
                     }
                     else
                     {
@@ -201,9 +204,15 @@ namespace CutTheRope.GameMain
                         int currentTimeline = grab.gunCup.GetCurrentTimelineIndex();
                         if (currentTimeline != Grab.GUN_CUP_DROP_AND_HIDE)
                         {
-                            grab.gunCup.x = star.pos.X;
-                            grab.gunCup.y = star.pos.Y;
-                            grab.gunCup.rotation = grab.gunInitialRotation + candy.rotation - grab.gunCandyInitialRotation;
+                            ConstraintedPoint targetConstraint = grab.rope?.tail;
+                            if (targetConstraint != null)
+                            {
+                                grab.gunCup.x = targetConstraint.pos.X;
+                                grab.gunCup.y = targetConstraint.pos.Y;
+                            }
+                            GameObject targetVisual = grab.gunTargetObject;
+                            float targetRotation = targetVisual?.rotation ?? 0f;
+                            grab.gunCup.rotation = grab.gunInitialRotation + targetRotation - grab.gunCandyInitialRotation;
                         }
                         grab.DrawGunCup();
                     }
