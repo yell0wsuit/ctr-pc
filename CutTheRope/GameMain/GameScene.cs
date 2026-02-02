@@ -277,6 +277,8 @@ namespace CutTheRope.GameMain
 
         private readonly AnimationsPool aniPool;
 
+        private readonly AnimationsPool kickStainsPool;
+
         private readonly AnimationsPool staticAniPool;
 
         private PollenDrawer pollenDrawer;

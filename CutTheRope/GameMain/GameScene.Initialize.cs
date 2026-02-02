@@ -19,6 +19,7 @@ namespace CutTheRope.GameMain
         {
             CTRSoundMgr.EnableLoopedSounds(true);
             aniPool.RemoveAllChilds();
+            kickStainsPool.RemoveAllChilds();
             staticAniPool.RemoveAllChilds();
             Lantern.RemoveAllLanterns();
             isCandyInLantern = false;

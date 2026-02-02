@@ -175,6 +175,7 @@ namespace CutTheRope.GameMain
             }
 
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            kickStainsPool.Draw();
             foreach (object bungeeBack in bungees)
             {
                 ((Grab)bungeeBack).DrawBack();
