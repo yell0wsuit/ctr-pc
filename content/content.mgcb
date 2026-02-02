@@ -2742,3 +2742,27 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sounds/sfx/gun.wav
+
+#begin images/obj_sticker.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/obj_sticker.png
+
+#begin sounds/sfx/sucker_drop.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/sucker_drop.wav
+
+#begin sounds/sfx/sucker_land.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/sucker_land.wav
