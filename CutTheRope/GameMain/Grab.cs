@@ -643,7 +643,7 @@ namespace CutTheRope.GameMain
 
         public Image front;
 
-        public Image dot;
+        // public Image dot;
 
         public Bungee rope;
 
