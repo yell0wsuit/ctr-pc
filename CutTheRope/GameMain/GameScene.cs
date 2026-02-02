@@ -397,6 +397,10 @@ namespace CutTheRope.GameMain
 
         private float mapHeight;
 
+        private float mapOriginX;
+
+        private float mapOriginY;
+
         private bool mouthOpen;
 
         private bool noCandy;
