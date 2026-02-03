@@ -153,6 +153,7 @@ namespace CutTheRope.Desktop
             // Always use render target for proper scaling in both windowed and fullscreen modes
             if (s_RenderTarget == null || s_RenderTarget.Bounds.Width != s_Viewport.Bounds.Width || s_RenderTarget.Bounds.Height != s_Viewport.Bounds.Height)
             {
+                s_RenderTarget?.Dispose();
                 s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, s_Viewport.Width, s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
             Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
