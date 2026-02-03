@@ -88,6 +88,7 @@ namespace CutTheRope
             Preferences.Update();
             //Dispose of RPC
             RPC?.Dispose();
+            Global.MouseCursor?.Dispose();
         }
 
         private void Game1_Deactivated(object sender, EventArgs e)
