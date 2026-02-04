@@ -14,7 +14,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
-            float num = 624f;
+            float num = Pump.FlowLength;
             if (GameObject.RectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
             {
                 Vector v = Vect(c.x, c.y);
@@ -192,9 +192,10 @@ namespace CutTheRope.GameMain
             p.PlayTimeline(0);
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
-            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid);
+            float flowLength = MathF.Max(0f, Pump.FlowLength - Pump.MouthOffset);
+            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
-            Vector v = Vect(p.x + 80f, p.y);
+            Vector v = Vect(p.x + Pump.MouthOffset, p.y);
             v = VectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
             pumpDirt.x = v.X;
             pumpDirt.y = v.Y;

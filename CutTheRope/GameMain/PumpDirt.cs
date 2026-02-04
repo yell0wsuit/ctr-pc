@@ -1,11 +1,29 @@
+using System;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Particle system for the pump dirt/flow effect.
+    /// </summary>
     internal sealed class PumpDirt : MultiParticles
     {
+        /// <summary>
+        /// Per-frame drag applied to particle velocity (at 60 FPS).
+        /// </summary>
+        private const float FlowDragPerFrame = 0.9f;
+
+        /// <summary>
+        /// Target frame rate used to normalize drag and travel distance.
+        /// </summary>
+        private const float TargetFps = 60f;
+
+        /// <summary>
+        /// Initializes the pump dirt system with default parameters.
+        /// </summary>
         public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -28,7 +46,7 @@ namespace CutTheRope.GameMain
             life = 0.6f;
             lifeVar = 0f;
             size = 2f;
-            sizeVar = 0f;
+            sizeVar = 1f;
             emissionRate = 100f;
             startColor.RedColor = 1f;
             startColor.GreenColor = 1f;
@@ -50,6 +68,20 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Initializes the pump dirt system and configures the travel length.
+        /// </summary>
+        public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid, float flowLength)
+        {
+            PumpDirt result = InitWithTotalParticlesAngleandImageGrid(p, a, grid);
+            if (result == null)
+            {
+                return null;
+            }
+            ConfigureForFlowLength(flowLength);
+            return result;
+        }
+
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -66,7 +98,8 @@ namespace CutTheRope.GameMain
         {
             if (p.life > 0f)
             {
-                p.dir = VectMult(p.dir, 0.9);
+                float frameDrag = MathF.Pow(FlowDragPerFrame, delta * TargetFps);
+                p.dir = VectMult(p.dir, frameDrag);
                 Vector v = VectMult(p.dir, delta);
                 v = VectAdd(v, gravity);
                 p.pos = VectAdd(p.pos, v);
@@ -92,6 +125,35 @@ namespace CutTheRope.GameMain
             particleCount--;
         }
 
+        /// <summary>
+        /// Adjusts speed so particles travel approximately the requested flow length.
+        /// </summary>
+        private void ConfigureForFlowLength(float flowLength)
+        {
+            if (life <= 0f)
+            {
+                return;
+            }
+            float travel = MathF.Max(0f, flowLength);
+            float frames = life * TargetFps;
+            if (frames <= 0f)
+            {
+                return;
+            }
+            float denom = 1f - FlowDragPerFrame;
+            float sum = MathF.Abs(denom) < 0.0001f
+                ? frames
+                : FlowDragPerFrame * (1f - MathF.Pow(FlowDragPerFrame, frames)) / denom;
+            if (sum <= 0f)
+            {
+                return;
+            }
+            speed = travel * TargetFps / sum;
+        }
+
+        /// <summary>
+        /// Updates the particle system and emits new particles while active.
+        /// </summary>
         public override void Update(float delta)
         {
             base.Update(delta);
