@@ -281,8 +281,8 @@ namespace CutTheRope.GameMain
                 wheelImage3.visible = wheelOperating == -1;
                 OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 wheelImage.Draw();
+                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
 
             if (gunBack != null)
             {
