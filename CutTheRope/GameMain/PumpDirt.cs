@@ -46,7 +46,7 @@ namespace CutTheRope.GameMain
             life = 0.6f;
             lifeVar = 0f;
             size = 2f;
-            sizeVar = 0f;
+            sizeVar = 1f;
             emissionRate = 100f;
             startColor.RedColor = 1f;
             startColor.GreenColor = 1f;
