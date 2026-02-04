@@ -6,6 +6,9 @@ namespace CutTheRope.GameMain
 {
     internal sealed class Pump : GameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionProvider, IConveyorPositionSetter
     {
+        public const float FlowLength = 624f;
+        public const float MouthOffset = 80f;
+
         private static readonly Vector ConveyorOffset = Vect(0.8f, -1.2f);
 
         public static Pump Pump_create(CTRTexture2D t)

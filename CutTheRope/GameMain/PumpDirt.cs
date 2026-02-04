@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
@@ -6,6 +8,9 @@ namespace CutTheRope.GameMain
 {
     internal sealed class PumpDirt : MultiParticles
     {
+        private const float FlowDragPerFrame = 0.9f;
+        private const float TargetFps = 60f;
+
         public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -50,6 +55,17 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid, float flowLength)
+        {
+            PumpDirt result = InitWithTotalParticlesAngleandImageGrid(p, a, grid);
+            if (result == null)
+            {
+                return null;
+            }
+            ConfigureForFlowLength(flowLength);
+            return result;
+        }
+
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -66,7 +82,8 @@ namespace CutTheRope.GameMain
         {
             if (p.life > 0f)
             {
-                p.dir = VectMult(p.dir, 0.9);
+                float frameDrag = MathF.Pow(FlowDragPerFrame, delta * TargetFps);
+                p.dir = VectMult(p.dir, frameDrag);
                 Vector v = VectMult(p.dir, delta);
                 v = VectAdd(v, gravity);
                 p.pos = VectAdd(p.pos, v);
@@ -90,6 +107,29 @@ namespace CutTheRope.GameMain
                 drawer.texCoordinates[particleIdx] = drawer.texCoordinates[particleCount - 1];
             }
             particleCount--;
+        }
+
+        private void ConfigureForFlowLength(float flowLength)
+        {
+            if (life <= 0f)
+            {
+                return;
+            }
+            float travel = MathF.Max(0f, flowLength);
+            float frames = life * TargetFps;
+            if (frames <= 0f)
+            {
+                return;
+            }
+            float denom = 1f - FlowDragPerFrame;
+            float sum = MathF.Abs(denom) < 0.0001f
+                ? frames
+                : (FlowDragPerFrame * (1f - MathF.Pow(FlowDragPerFrame, frames))) / denom;
+            if (sum <= 0f)
+            {
+                return;
+            }
+            speed = (travel * TargetFps) / sum;
         }
 
         public override void Update(float delta)
