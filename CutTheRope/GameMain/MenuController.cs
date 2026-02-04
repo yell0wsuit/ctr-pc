@@ -217,8 +217,8 @@ namespace CutTheRope.GameMain
                 candyButton.SetName("logoCandyButton");
                 candyButton.delegateButtonDelegate = this;
                 candyButton.anchor = candyButton.parentAnchor = 10;  // Top-center of logo
-                candyButton.x = 147f;  // Offset right from center
-                candyButton.y = 510f;  // Offset down from top of logo
+                candyButton.x = 143f;  // Offset right from center
+                candyButton.y = 490f;  // Offset down from top of logo
                 candyButton.SetTouchIncreaseLeftRightTopBottom(40f, 40f, 40f, 40f);
                 _ = image3.AddChild(candyButton);
 
