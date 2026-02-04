@@ -70,6 +70,7 @@ namespace CutTheRope.GameMain
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             DeleteChild(1);
+            Application.SharedMovieMgr().delegateMovieMgrDelegate = null;
             resourceMgr.FreePack(PackMenu);
             GC.Collect();
         }

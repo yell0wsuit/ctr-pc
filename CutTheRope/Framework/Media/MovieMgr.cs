@@ -122,6 +122,10 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         public void Stop()
         {
+            if (!videoPlayer.IsPlaying())
+            {
+                return;
+            }
             videoPlayer.Stop();
         }
 
