@@ -85,8 +85,7 @@ namespace CutTheRope.Framework.Media
 
             string relativeVideoPath = ContentPaths.GetVideoPath(moviePath);
             string fullPath = Path.Combine(
-                AppContext.BaseDirectory,
-                ContentPaths.RootDirectory,
+                ContentPaths.GetContentRootAbsolute(),
                 ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath)
             );
 
