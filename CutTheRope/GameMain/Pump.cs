@@ -4,20 +4,34 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Represents a pump object that can apply a directional flow and be placed on conveyors.
+    /// </summary>
     internal sealed class Pump : GameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionProvider, IConveyorPositionSetter
     {
+        /// <summary>
+        /// Length of the pump flow influence area in world units.
+        /// </summary>
+        public const float FlowLength = 624f;
+
+        /// <summary>
+        /// Offset from the pump center to the mouth in local X before rotation.
+        /// </summary>
+        public const float MouthOffset = 80f;
+
         private static readonly Vector ConveyorOffset = Vect(0.8f, -1.2f);
 
+        /// <summary>
+        /// Creates a pump from a texture.
+        /// </summary>
         public static Pump Pump_create(CTRTexture2D t)
         {
             return (Pump)new Pump().InitWithTexture(t);
         }
 
-        public static Pump Pump_createWithResID(int r)
-        {
-            return Pump_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
+        /// <summary>
+        /// Creates a pump from a texture resource name.
+        /// </summary>
         public static Pump Pump_createWithResID(string resourceName)
         {
             return Pump_create(Application.GetTexture(resourceName));
@@ -35,6 +49,9 @@ namespace CutTheRope.GameMain
             return pump;
         }
 
+        /// <summary>
+        /// Updates the internal endpoints and angle based on the current rotation.
+        /// </summary>
         public void UpdateRotation()
         {
             t1.X = x - (bb.w / 2f);
@@ -71,20 +88,38 @@ namespace CutTheRope.GameMain
             y = adjusted.Y;
         }
 
+        /// <summary>
+        /// Current pump angle in radians.
+        /// </summary>
         public double angle;
 
         public Vector t1;
 
         public Vector t2;
 
+        /// <summary>
+        /// Timer used for touch feedback.
+        /// </summary>
         public float pumpTouchTimer;
 
+        /// <summary>
+        /// Touch state flag.
+        /// </summary>
         public int pumpTouch;
 
+        /// <summary>
+        /// Initial rotation at placement time.
+        /// </summary>
         public float initial_rotation;
 
+        /// <summary>
+        /// Initial X position at placement time.
+        /// </summary>
         public float initial_x;
 
+        /// <summary>
+        /// Initial Y position at placement time.
+        /// </summary>
         public float initial_y;
 
         public RotatedCircle initial_rotatedCircle;
