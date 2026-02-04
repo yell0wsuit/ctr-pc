@@ -73,7 +73,13 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <None Include="../distribution/macos/InfoCsproj.plist" Link="Info.plist" />
+    <PartialAppManifest Include="../distribution/macos/InfoCsproj.plist" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource Include="../distribution/icons/CutTheRopeDXIcon.icns">
+      <Link>CutTheRopeDXIcon.icns</Link>
+    </BundleResource>
   </ItemGroup>
 
   <ItemGroup>
