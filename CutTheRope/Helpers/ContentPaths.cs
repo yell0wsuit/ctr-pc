@@ -1,6 +1,10 @@
+using System;
 using System.IO;
 
 using CutTheRope.GameMain;
+#if MACOS_AVFOUNDATION
+using Foundation;
+#endif
 
 namespace CutTheRope.Helpers
 {
@@ -165,6 +169,34 @@ namespace CutTheRope.Helpers
             return string.IsNullOrEmpty(ResDataPhoneFull.ContentFolder)
                 ? relativePath
                 : $"{ResDataPhoneFull.ContentFolder}{relativePath}";
+        }
+
+        /// <summary>
+        /// Gets the absolute path to the content root directory for the current runtime context.
+        /// </summary>
+        public static string GetContentRootAbsolute()
+        {
+#if MACOS_AVFOUNDATION
+            string basePath = NSBundle.MainBundle.ResourcePath;
+            return Path.Combine(basePath, RootDirectory);
+#else
+            string basePath = AppContext.BaseDirectory;
+            DirectoryInfo dir = new(basePath);
+
+            while (dir != null)
+            {
+                if (dir.Name.Equals("MacOS", StringComparison.OrdinalIgnoreCase) &&
+                    dir.Parent?.Name.Equals("Contents", StringComparison.OrdinalIgnoreCase) == true &&
+                    dir.Parent.Parent?.Name.EndsWith(".app", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    return Path.Combine(dir.Parent.FullName, "Resources", RootDirectory);
+                }
+
+                dir = dir.Parent;
+            }
+
+            return Path.Combine(basePath, RootDirectory);
+#endif
         }
 
         /// <summary>
