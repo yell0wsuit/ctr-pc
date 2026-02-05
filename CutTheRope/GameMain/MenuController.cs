@@ -1481,13 +1481,13 @@ namespace CutTheRope.GameMain
                     ((Popup)ActiveView().GetChildWithName("popup")).HidePopup();
                     return;
                 case var id when id == MenuButtonId.OpenTwitter:
-                    AndroidAPI.OpenUrl("http://twitter.com/zeptolab");
+                    OpenUrl("http://twitter.com/zeptolab");
                     return;
                 case var id when id == MenuButtonId.OpenFacebook:
-                    AndroidAPI.OpenUrl("http://www.facebook.com/cuttherope");
+                    OpenUrl("http://www.facebook.com/cuttherope");
                     return;
                 case var id when id == MenuButtonId.FanworkProjectWebsite:
-                    AndroidAPI.OpenUrl(Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE").ToString());
+                    OpenUrl(Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE").ToString());
                     return;
                 case var id when id == MenuButtonId.NextPack:
                     {
