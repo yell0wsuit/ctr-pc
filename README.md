@@ -1,12 +1,18 @@
 # Cut the Rope: DX
 
+<p align="center">
+  <img alt="Logo of Cut the Rope: DX" src="./images/CutTheRopeDXLogo.svg"/>
+</p>
+
 ## About
 
 _Cut the Rope: DX (Decompiled Extra)_ is a fan-made enhancement of the PC version of _Cut the Rope_, originally developed by ZeptoLab. This project aims to improve the original game's codebase, add new features, and enhance the overall gaming experience.
 
 The game's source code is decompiled from the PC version, which serves as the foundation for development and feature expansion.
 
-The project is currently led by [yell0wsuit](https://github.com/yell0wsuit), with help from [contributors](https://github.com/yell0wsuit/cuttherope-dx/graphs/contributors).
+This project is a part of the [_Cut the Rope Home_](https://ctrhome.github.io/fan-projects/) fan project, and is currently led by [yell0wsuit](https://github.com/yell0wsuit), with help from [contributors](https://github.com/yell0wsuit/cuttherope-dx/graphs/contributors).
+
+The logo is designed by Bingies24 and darealmrcatz.
 
 > [!NOTE]
 > This project is not, and will never be affiliated with or endorsed by ZeptoLab. All rights to the original game and its assets belong to ZeptoLab.
@@ -19,19 +25,17 @@ The project is currently led by [yell0wsuit](https://github.com/yell0wsuit), wit
 
 Download the latest release from the [Releases page](https://github.com/yell0wsuit/cuttherope-dx/releases).
 
-Please note that the game is only available on Windows 10 and later. More platforms are planned in the future.
-
 ## Features
 
 - More boxes beyond DJ Box, from Spooky Box to Mechanical Box.
 - Seasonal Christmas theme and decorations, available during December and January.
-- **Dynamic level UI**, supports variable numbers of levels. Currently, the code only supports fewer than 25 levels.
+- Dynamic level UI, supports variable numbers of levels. Currently, the code only supports fewer than 25 levels.
 - Support loading custom sprites and animations from [TexturePacker](https://www.codeandweb.com/texturepacker) in JSON array format. This allows easier modding and adding new assets.
 - Improved experience and bug fixes over the original PC version.
 - Better save file format. The save file (`ctr_preferences.json`) is stored in a `CutTheRopeDX_SaveData` folder, with the following fallback priority:
-    - Next to the game executable (preferred for portability)
-    - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
-    - `%LOCALAPPDATA%/CutTheRopeDX_SaveData` (Windows) or equivalent on other platforms
+  - Next to the game executable (preferred for portability)
+  - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
+  - `%LOCALAPPDATA%/CutTheRopeDX_SaveData` (Windows) or equivalent on other platforms
 
 ## Goals
 

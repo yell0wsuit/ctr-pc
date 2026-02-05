@@ -88,13 +88,13 @@ sed -e "s/{{APP_DISPLAY_NAME}}/$APP_DISPLAY_NAME/g" \
 cp "$APPDIR/$APP_NAME.desktop" "$APPDIR/usr/share/applications/"
 
 # Copy icon to root of AppDir (required by appimagetool)
-if [ -f "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" ]; then
-    cp "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" "$APPDIR/$APP_NAME.png"
-    cp "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" "$APPDIR/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
+if [ -f "$SCRIPT_DIR/icons/CutTheRopeDXIcon_512.png" ]; then
+    cp "$SCRIPT_DIR/icons/CutTheRopeDXIcon_512.png" "$APPDIR/$APP_NAME.png"
+    cp "$SCRIPT_DIR/icons/CutTheRopeDXIcon_512.png" "$APPDIR/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
     # Create .DirIcon symlink (optional but nice for file managers)
     ln -sf "$APP_NAME.png" "$APPDIR/.DirIcon"
 else
-    echo "Warning: Icon not found at icons/CutTheRopeIcon_512.png"
+    echo "Warning: Icon not found at icons/CutTheRopeDXIcon_512.png"
 fi
 
 # Create AppStream metadata

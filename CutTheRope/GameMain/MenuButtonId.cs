@@ -30,6 +30,8 @@ namespace CutTheRope.GameMain
         public static readonly MenuButtonId PopupOk;
         public static readonly MenuButtonId OpenTwitter;
         public static readonly MenuButtonId OpenFacebook;
+        public static readonly MenuButtonId FanworkProjectWebsite;
+        public static readonly MenuButtonId FanworkCtrhWebsite;
         public static readonly MenuButtonId LeaderboardsAchievementsUnused;
         public static readonly MenuButtonId MoreGamesUnused;
         public static readonly MenuButtonId NextPack;
@@ -71,6 +73,8 @@ namespace CutTheRope.GameMain
             PopupOk = FromName(nameof(PopupOk));
             OpenTwitter = FromName(nameof(OpenTwitter));
             OpenFacebook = FromName(nameof(OpenFacebook));
+            FanworkProjectWebsite = FromName(nameof(FanworkProjectWebsite));
+            FanworkCtrhWebsite = FromName(nameof(FanworkCtrhWebsite));
             LeaderboardsAchievementsUnused = FromName(nameof(LeaderboardsAchievementsUnused));
             MoreGamesUnused = FromName(nameof(MoreGamesUnused));
             NextPack = FromName(nameof(NextPack));

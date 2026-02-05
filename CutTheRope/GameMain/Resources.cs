@@ -113,6 +113,7 @@ namespace CutTheRope.GameMain
                 Img.LoaderbarFull, Img.MenuButtonDefault,
                 Img.MenuLoading, Img.MenuNotification, Img.MenuAchievement,
                 Img.MenuOptions, Img.MenuBgr, Img.MenuPopup, Img.MenuLogo,
+                Img.CutTheRopeDXLogo,
                 Img.MenuLogoNew, Img.CandySelectionFx, Img.SkinSelection, Img.MenuLevelSelection,
                 Img.MenuPackSelection, Img.MenuPackSelection2,
                 Img.MenuExtraButtons, Img.MenuScrollbar, Img.MenuLeaderboard,
@@ -288,6 +289,7 @@ namespace CutTheRope.GameMain
             public const string MenuPopup = "menu_popup";
             public const string MenuLogo = "menu_logo";
             public const string MenuLogoNew = "menu_logo_new";
+            public const string CutTheRopeDXLogo = "CutTheRopeDXLogo";
             public const string CandySelectionFx = "candy_selection_fx";
             public const string SkinSelection = "skin_selection";
             public const string MenuLevelSelection = "menu_level_selection";

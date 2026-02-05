@@ -86,8 +86,8 @@ sed -e "s/{{APP_DISPLAY_NAME}}/$APP_DISPLAY_NAME/g" \
     "$TEMPLATES_DIR/deb.desktop" > "$DEB_ROOT/usr/share/applications/$APP_NAME.desktop"
 
 # Copy icon
-if [ -f "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" ]; then
-    cp "$SCRIPT_DIR/icons/CutTheRopeIcon_512.png" "$DEB_ROOT/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
+if [ -f "$SCRIPT_DIR/icons/CutTheRopeDXIcon_512.png" ]; then
+    cp "$SCRIPT_DIR/icons/CutTheRopeDXIcon_512.png" "$DEB_ROOT/usr/share/icons/hicolor/512x512/apps/$APP_NAME.png"
 fi
 
 # Post-install script (optional - update icon cache)

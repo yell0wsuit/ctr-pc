@@ -171,6 +171,7 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuBgr,
             Resources.Img.MenuPopup,
             Resources.Img.MenuLogo,
+            Resources.Img.CutTheRopeDXLogo,
             Resources.Img.MenuLevelSelection,
             Resources.Img.MenuPackSelection,
             Resources.Img.MenuPackSelection2,

@@ -225,23 +225,28 @@ namespace CutTheRope.Framework
             }
         }
 
+        public static void OpenUrl(string url)
+        {
+            try
+            {
+                ProcessStartInfo psi = new()
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                _ = Process.Start(psi);
+            }
+            catch (Win32Exception ex)
+            {
+                int errorCode = ex.ErrorCode;
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         public sealed class AndroidAPI
         {
-            public static void OpenUrl(string url)
-            {
-                try
-                {
-                    _ = Process.Start(url);
-                }
-                catch (Win32Exception ex)
-                {
-                    int errorCode = ex.ErrorCode;
-                }
-                catch (Exception)
-                {
-                }
-            }
-
             public static void ShowBanner()
             {
             }

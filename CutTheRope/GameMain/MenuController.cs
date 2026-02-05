@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
 
 using CutTheRope.Commons;
 using CutTheRope.Desktop;
@@ -217,8 +215,8 @@ namespace CutTheRope.GameMain
                 candyButton.SetName("logoCandyButton");
                 candyButton.delegateButtonDelegate = this;
                 candyButton.anchor = candyButton.parentAnchor = 10;  // Top-center of logo
-                candyButton.x = 147f;  // Offset right from center
-                candyButton.y = 510f;  // Offset down from top of logo
+                candyButton.x = 143f;  // Offset right from center
+                candyButton.y = 490f;  // Offset down from top of logo
                 candyButton.SetTouchIncreaseLeftRightTopBottom(40f, 40f, 40f, 40f);
                 _ = image3.AddChild(candyButton);
 
@@ -624,55 +622,9 @@ namespace CutTheRope.GameMain
 
         public void CreateAbout()
         {
-            MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogo(false);
-            string text = Application.GetString("ABOUT_TEXT").ToString();
-            string[] separator = ["%@"];
-            string[] array = text.Split(separator, StringSplitOptions.None);
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (i == 0)
-                {
-                    text = "";
-                }
-                if (i == array.Length - 1)
-                {
-                    string fullName = Assembly.GetExecutingAssembly().FullName;
-                    text += fullName.Split('=', StringSplitOptions.None)[1].Split(',', StringSplitOptions.None)[0];
-                    text += " ";
-                }
-                text += array[i];
-            }
-            float num = 1300f;
-            float h = 1100f;
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(0f, 2, num);
-            BaseElement baseElement2 = new()
-            {
-                width = (int)num,
-                height = 100
-            };
-            _ = vBox.AddChild(baseElement2);
-            Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 1);
-            _ = vBox.AddChild(c);
-            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-            text2.SetAlignment(2);
-            text2.SetStringandWidth(text, (int)num);
-            aboutContainer = new ScrollableContainer().InitWithWidthHeightContainer(num, h, vBox);
-            aboutContainer.anchor = aboutContainer.parentAnchor = 18;
-            _ = vBox.AddChild(text2);
-            Image c2 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 2);
-            _ = vBox.AddChild(c2);
-            string @string = Application.GetString("ABOUT_SPECIAL_THANKS");
-            Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-            text3.SetAlignment(2);
-            text3.SetStringandWidth(@string, num);
-            _ = vBox.AddChild(text3);
-            _ = baseElement.AddChild(aboutContainer);
-            _ = menuView.AddChild(baseElement);
-            Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackToOptions);
-            button.SetName("backb");
-            button.x = Canvas.xOffsetScaled;
-            _ = menuView.AddChild(button);
+            BaseElement background = CreateBackgroundWithLogo(false);
+            aboutView = new AboutView();
+            MenuView menuView = aboutView.CreateAbout(background, this);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 3);
         }
@@ -1491,8 +1443,7 @@ namespace CutTheRope.GameMain
                         return;
                     }
                 case var id when id == MenuButtonId.ShowCredits:
-                    aboutContainer.SetScroll(Vect(0f, 0f));
-                    aboutAutoScroll = true;
+                    aboutView?.ResetAndEnableAutoScroll();
                     ShowView(3);
                     return;
                 case var id when id == MenuButtonId.ShowReset:
@@ -1530,10 +1481,16 @@ namespace CutTheRope.GameMain
                     ((Popup)ActiveView().GetChildWithName("popup")).HidePopup();
                     return;
                 case var id when id == MenuButtonId.OpenTwitter:
-                    AndroidAPI.OpenUrl("http://twitter.com/zeptolab");
+                    OpenUrl("http://twitter.com/zeptolab");
                     return;
                 case var id when id == MenuButtonId.OpenFacebook:
-                    AndroidAPI.OpenUrl("http://www.facebook.com/cuttherope");
+                    OpenUrl("http://www.facebook.com/cuttherope");
+                    return;
+                case var id when id == MenuButtonId.FanworkProjectWebsite:
+                    OpenUrl(Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE").ToString());
+                    return;
+                case var id when id == MenuButtonId.FanworkCtrhWebsite:
+                    OpenUrl(Application.GetString("ABOUT_FANWORK_CTRH_WEBSITE").ToString());
                     return;
                 case var id when id == MenuButtonId.NextPack:
                     {
@@ -1715,13 +1672,8 @@ namespace CutTheRope.GameMain
                 movieMgr.Update();
                 return;
             }
-            if (activeViewID == 3 && aboutAutoScroll)
+            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
             {
-                Vector scroll = aboutContainer.GetScroll();
-                Vector maxScroll = aboutContainer.GetMaxScroll();
-                scroll.Y += 0.5f;
-                scroll.Y = FIT_TO_BOUNDARIES(scroll.Y, 0.0, maxScroll.Y);
-                aboutContainer.SetScroll(scroll);
                 return;
             }
             if (activeViewID == 5 && ddPackSelect != null)
@@ -1766,7 +1718,7 @@ namespace CutTheRope.GameMain
         /// Currently handles scrolling for:
         /// <list type="bullet">
         /// <item>
-        ///      <description>About/Credits view (activeViewID == 3): Forwards to aboutContainer and disables auto-scroll</description>
+        ///      <description>About/Credits view (activeViewID == VIEW_ABOUT): Forwards to <see cref="AboutView"/> and disables auto-scroll</description>
         /// </item>
         /// </list>
         /// To add scrolling support for additional views:
@@ -1791,11 +1743,9 @@ namespace CutTheRope.GameMain
                 return true;
             }
 
-            // Handle scroll wheel for about/credits view (activeViewID == 3)
-            if (activeViewID == 3 && aboutContainer != null)
+            // Handle scroll wheel for about/credits view (activeViewID == VIEW_ABOUT)
+            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.HandleMouseWheel(scrollDelta))
             {
-                aboutAutoScroll = false; // Disable auto-scroll when user manually scrolls
-                aboutContainer.HandleMouseWheel(scrollDelta);
                 return true;
             }
 
@@ -1806,9 +1756,9 @@ namespace CutTheRope.GameMain
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             bool flag = base.TouchesBeganwithEvent(touches);
-            if (activeViewID == 3 && aboutAutoScroll)
+            if (activeViewID == VIEW_ABOUT)
             {
-                aboutAutoScroll = false;
+                aboutView?.DisableAutoScroll();
             }
             return flag;
         }
@@ -1911,8 +1861,6 @@ namespace CutTheRope.GameMain
         public DelayedDispatcher ddPackSelect;
 
         private readonly PopUpMenu popUpMenu;
-        private ScrollableContainer aboutContainer;
-
         private ScrollableContainer candyContainer;
 
         private ScrollableContainer packContainer;
@@ -1920,8 +1868,6 @@ namespace CutTheRope.GameMain
         private readonly BaseElement[] boxes = new BaseElement[CTRPreferences.GetPacksCount() + 1];
 
         private bool showNextPackStatus;
-
-        private bool aboutAutoScroll;
 
         private bool replayingIntroMovie;
 
@@ -1946,6 +1892,8 @@ namespace CutTheRope.GameMain
         private Popup ep;
 
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
+
+        private AboutView aboutView;
 
         public sealed class TouchBaseElement : BaseElement
         {
