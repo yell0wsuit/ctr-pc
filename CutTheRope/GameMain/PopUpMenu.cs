@@ -8,6 +8,9 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Creates and displays menu popups using reusable templates and layout helpers.
+    /// </summary>
     internal sealed class PopUpMenu(MenuController controller)
     {
         private const float LargeScale = 1.2f;
@@ -17,6 +20,9 @@ namespace CutTheRope.GameMain
 
         private readonly MenuController menuController = controller;
 
+        /// <summary>
+        /// Shows the "can't unlock" popup with required stars and explanatory text.
+        /// </summary>
         public void ShowCantUnlockPopup()
         {
             const int textOffset = 20;
@@ -68,6 +74,9 @@ namespace CutTheRope.GameMain
             _ = ShowTemplatePopup(template);
         }
 
+        /// <summary>
+        /// Shows the "game finished" popup with completion text and an OK button.
+        /// </summary>
         public void ShowGameFinishedPopup()
         {
             PopupTemplate template = new(PopupSize.Normal)
@@ -98,6 +107,13 @@ namespace CutTheRope.GameMain
             _ = ShowTemplatePopup(template);
         }
 
+        /// <summary>
+        /// Shows a confirmation popup with Yes/No buttons.
+        /// </summary>
+        /// <param name="str">Main message to display.</param>
+        /// <param name="buttonYesId">Menu button id for the "Yes" action.</param>
+        /// <param name="buttonNoId">Menu button id for the "No" action.</param>
+        /// <returns>The created popup instance.</returns>
         public Popup ShowYesNoPopup(string str, MenuButtonId buttonYesId, MenuButtonId buttonNoId)
         {
             PopupTemplate template = new(PopupSize.Normal)
@@ -125,6 +141,11 @@ namespace CutTheRope.GameMain
             return ShowTemplatePopup(template);
         }
 
+        /// <summary>
+        /// Builds and shows a popup from the provided template definition.
+        /// </summary>
+        /// <param name="template">Template describing the popup's content and layout.</param>
+        /// <returns>The created popup instance.</returns>
         public Popup ShowTemplatePopup(PopupTemplate template)
         {
             Popup popup = new();
@@ -167,6 +188,9 @@ namespace CutTheRope.GameMain
             return popup;
         }
 
+        /// <summary>
+        /// Applies template scaling to the popup content.
+        /// </summary>
         private static void ApplyTemplateScale(Popup popup, PopupTemplate template)
         {
             float scaleX = 1f;
@@ -189,6 +213,9 @@ namespace CutTheRope.GameMain
             popup.SetContentScale(scaleX, scaleY);
         }
 
+        /// <summary>
+        /// Creates a text element from a text block definition.
+        /// </summary>
         private static Text CreateText(PopupTextBlock textBlock)
         {
             Text text = new Text().InitWithFont(Application.GetFont(textBlock.FontResourceName));
@@ -205,6 +232,9 @@ namespace CutTheRope.GameMain
             return text;
         }
 
+        /// <summary>
+        /// Creates a scrollable text container for long content.
+        /// </summary>
         private static ScrollableContainer CreateScrollableText(Popup popup, PopupTextBlock textBlock)
         {
             float width = textBlock.WrapWidth > 0f ? textBlock.WrapWidth : DefaultScrollableWidth;
@@ -239,6 +269,9 @@ namespace CutTheRope.GameMain
             return scroll;
         }
 
+        /// <summary>
+        /// Adds buttons to the popup based on the template layout rules.
+        /// </summary>
         private void AddButtons(BaseElement contentRoot, PopupTemplate template)
         {
             int buttonCount = template.Buttons.Count;
@@ -293,6 +326,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Positions an element relative to a popup anchor quad with optional offsets.
+        /// </summary>
         private static void PositionAtAnchor(BaseElement element, PopupAnchor anchor, float offsetX, float offsetY)
         {
             Image.SetElementPositionWithQuadOffset(element, Resources.Img.MenuPopup, (int)anchor);
@@ -300,11 +336,17 @@ namespace CutTheRope.GameMain
             element.y += offsetY;
         }
 
+        /// <summary>
+        /// Gets the quad offset used for a given popup anchor.
+        /// </summary>
         private static Vector GetAnchorOffset(PopupAnchor anchor)
         {
             return Image.GetQuadOffset(Resources.Img.MenuPopup, (int)anchor);
         }
 
+        /// <summary>
+        /// Named anchor points based on the popup texture quad offsets.
+        /// </summary>
         internal enum PopupAnchor
         {
             Text1 = 1,
@@ -314,18 +356,27 @@ namespace CutTheRope.GameMain
             StarsValue = 5
         }
 
+        /// <summary>
+        /// Supported popup sizing modes.
+        /// </summary>
         internal enum PopupSize
         {
             Normal,
             Large
         }
 
+        /// <summary>
+        /// Button layout direction.
+        /// </summary>
         internal enum PopupButtonLayout
         {
             Vertical,
             Horizontal
         }
 
+        /// <summary>
+        /// Defines all content and layout rules for building a popup.
+        /// </summary>
         internal sealed class PopupTemplate(PopupSize size)
         {
             public PopupSize Size = size;
@@ -341,6 +392,9 @@ namespace CutTheRope.GameMain
             public readonly List<PopupButtonSpec> Buttons = [];
         }
 
+        /// <summary>
+        /// Defines a text block to be placed inside a popup.
+        /// </summary>
         internal sealed class PopupTextBlock(
             string text,
             string fontResourceName,
@@ -361,6 +415,9 @@ namespace CutTheRope.GameMain
             public float ScrollHeight;
         }
 
+        /// <summary>
+        /// Defines a non-text element to be placed inside a popup.
+        /// </summary>
         internal sealed class PopupElementBlock(BaseElement element, PopupAnchor anchor, float offsetX, float offsetY)
         {
             public BaseElement Element = element;
@@ -370,6 +427,9 @@ namespace CutTheRope.GameMain
             public sbyte ElementAnchor = FrameworkTypes.CENTER;
         }
 
+        /// <summary>
+        /// Defines a popup button label and its associated menu button id.
+        /// </summary>
         internal sealed class PopupButtonSpec(string label, MenuButtonId buttonId)
         {
             public string Label = label;

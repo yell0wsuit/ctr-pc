@@ -8,13 +8,16 @@ using Microsoft.Xna.Framework;
 namespace CutTheRope.Commons
 {
     /// <summary>
-    /// Represents a modal popup dialog with animated show/hide effects and text fade animations.
+    /// Represents a modal popup dialog with animated show/hide effects and an optional scrollable content area.
     /// </summary>
     internal sealed class Popup : BaseElement, ITimelineDelegate
     {
+        /// <summary>
+        /// Initializes a popup with default show/hide timelines and a centered content root.
+        /// </summary>
         public Popup()
         {
-            contentRoot = new BaseElement
+            ContentRoot = new BaseElement
             {
                 width = (int)SCREEN_WIDTH,
                 height = (int)SCREEN_HEIGHT,
@@ -38,13 +41,16 @@ namespace CutTheRope.Commons
             _ = AddTimeline(timeline);
             timeline.delegateTimelineDelegate = this;
 
-            _ = AddChild(contentRoot);
+            _ = AddChild(ContentRoot);
         }
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <summary>
+        /// Called when a popup timeline finishes; removes the popup from its parent view.
+        /// </summary>
         public void TimelineFinished(Timeline t)
         {
             View view = (View)parent;
@@ -70,19 +76,36 @@ namespace CutTheRope.Commons
             PlayTimeline(1);
         }
 
-        public BaseElement ContentRoot => contentRoot;
+        /// <summary>
+        /// Gets the root element that hosts popup content (background, text, buttons, etc.).
+        /// </summary>
+        public BaseElement ContentRoot { get; }
 
+        /// <summary>
+        /// Applies a uniform or non-uniform scale to the popup content root.
+        /// </summary>
+        /// <param name="sx">Horizontal scale factor.</param>
+        /// <param name="sy">Vertical scale factor.</param>
         public void SetContentScale(float sx, float sy)
         {
-            contentRoot.scaleX = sx;
-            contentRoot.scaleY = sy;
+            ContentRoot.scaleX = sx;
+            ContentRoot.scaleY = sy;
         }
 
+        /// <summary>
+        /// Registers a scrollable container to receive mouse-wheel scrolling while the popup is shown.
+        /// </summary>
+        /// <param name="container">Scrollable container hosting long text or content.</param>
         public void RegisterScrollableContainer(ScrollableContainer container)
         {
             scrollContainer = container;
         }
 
+        /// <summary>
+        /// Forwards mouse wheel input to the registered scroll container, if present.
+        /// </summary>
+        /// <param name="scrollDelta">Mouse wheel delta.</param>
+        /// <returns><c>true</c> if the popup consumed the scroll input; otherwise <c>false</c>.</returns>
         public bool HandleMouseWheel(int scrollDelta)
         {
             if (!isShow || scrollContainer == null)
@@ -135,7 +158,6 @@ namespace CutTheRope.Commons
         }
 
         private bool isShow;
-        private readonly BaseElement contentRoot;
         private ScrollableContainer scrollContainer;
 
         private enum POPUP
