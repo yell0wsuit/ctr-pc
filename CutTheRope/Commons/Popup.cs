@@ -14,6 +14,14 @@ namespace CutTheRope.Commons
     {
         public Popup()
         {
+            contentRoot = new BaseElement
+            {
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT,
+                anchor = CENTER,
+                parentAnchor = CENTER
+            };
+
             // Timeline 0: Show animation - bounce effect (scale 0 → 1.1 → 0.9 → 1.0)
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
@@ -29,6 +37,8 @@ namespace CutTheRope.Commons
             height = (int)SCREEN_HEIGHT;
             _ = AddTimeline(timeline);
             timeline.delegateTimelineDelegate = this;
+
+            _ = AddChild(contentRoot);
         }
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
@@ -58,6 +68,30 @@ namespace CutTheRope.Commons
         {
             isShow = false;
             PlayTimeline(1);
+        }
+
+        public BaseElement ContentRoot => contentRoot;
+
+        public void SetContentScale(float sx, float sy)
+        {
+            contentRoot.scaleX = sx;
+            contentRoot.scaleY = sy;
+        }
+
+        public void RegisterScrollableContainer(ScrollableContainer container)
+        {
+            scrollContainer = container;
+        }
+
+        public bool HandleMouseWheel(int scrollDelta)
+        {
+            if (!isShow || scrollContainer == null)
+            {
+                return false;
+            }
+
+            scrollContainer.HandleMouseWheel(scrollDelta);
+            return true;
         }
 
         public override bool OnTouchDownXY(float tx, float ty)
@@ -101,6 +135,8 @@ namespace CutTheRope.Commons
         }
 
         private bool isShow;
+        private readonly BaseElement contentRoot;
+        private ScrollableContainer scrollContainer;
 
         private enum POPUP
         {
