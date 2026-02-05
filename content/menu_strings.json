@@ -434,10 +434,13 @@
         "en": "Cut the Rope: DX ver. %versionNo%\n\nA fan-made enhancement of the PC version of Cut the Rope.\n"
     },
     "ABOUT_FANWORK_PROJECT_WEBSITE": {
-        "en": "https://github.com/yell0wsuit/cuttherope-dx"
+        "en": "https://github.com/yell0wsuit/cuttherope-dx/"
     },
     "ABOUT_FANWORK_PROJECT_NOTE": {
         "en": "\nOriginally developed and published by ZeptoLab.\n\nA Cut the Rope Home fan project."
+    },
+    "ABOUT_FANWORK_CTRH_WEBSITE": {
+        "en": "https://ctrhome.github.io/"
     },
     "ABOUT_FANWORK_LEAD": {
         "en": "\nProject lead:\nyell0wsuit\n"
@@ -449,7 +452,7 @@
         "en": "8 Second Rocket\naidrum\nBingies24\ncv\nGenji\nMatheus Lopes\nMrCatz\nsaulfabreg\nTheAwesomeBlue\nyell0wsuit\n\n"
     },
     "ABOUT_TEXT": {
-        "en": "Copyright 2012 by ZeptoLab.\n\nAdditional Design:\nNataliya Omelyanchuk\n\nMusic and Sounds:\nAlexander Falinski",
+        "en": "Cut the Rope PC version. Copyright 2012 by ZeptoLab.\n\nAdditional Design:\nNataliya Omelyanchuk\n\nMusic and Sounds:\nAlexander Falinski",
         "ru": "2012 ZeptoLab.\n\nИгра разработана и издается ZeptoLab.\n\nДополнительный гейм-дизайн:\nНаталья Омельянчук\n\nМузыка и звуки:\nАлександр Фалинский",
         "fr": "Copyright 2012 ZeptoLab.\n\nJeu développé et édité par ZeptoLab.\n\nConception de niveaux supplémentaires :\nNataliya Omelyanchuk\n\nMusique et bruitages :\nAlexander Falinski",
         "de": "Copyright 2012 von ZeptoLab.\n\nDas Spiel wurde von ZeptoLab entwickelt und veröffentlicht.\n\nZusätzliches Design:\nNataliya Omelyanchuk\n\nMusik und Sound:\nAlexander Falinski"

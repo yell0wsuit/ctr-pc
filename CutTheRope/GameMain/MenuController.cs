@@ -1489,6 +1489,9 @@ namespace CutTheRope.GameMain
                 case var id when id == MenuButtonId.FanworkProjectWebsite:
                     OpenUrl(Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE").ToString());
                     return;
+                case var id when id == MenuButtonId.FanworkCtrhWebsite:
+                    OpenUrl(Application.GetString("ABOUT_FANWORK_CTRH_WEBSITE").ToString());
+                    return;
                 case var id when id == MenuButtonId.NextPack:
                     {
                         int num2 = currentPack;

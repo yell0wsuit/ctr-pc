@@ -136,6 +136,13 @@ namespace CutTheRope.GameMain
             Text fanworkProjectNote = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_PROJECT_NOTE"), containerWidth);
             _ = vBox.AddChild(fanworkProjectNote);
 
+            Button fanworkCtrhWebsite = CreateCenteredLinkButton(
+                Application.GetString("ABOUT_FANWORK_CTRH_WEBSITE"),
+                MenuButtonId.FanworkCtrhWebsite,
+                buttonDelegate,
+                containerWidth);
+            _ = vBox.AddChild(fanworkCtrhWebsite);
+
             Text fanworkLead = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_LEAD"), containerWidth);
             _ = vBox.AddChild(fanworkLead);
 
