@@ -142,7 +142,7 @@ namespace CutTheRope.GameMain
         private static string BuildAboutText()
         {
             string text = Application.GetString("ABOUT_TEXT").ToString();
-            string[] separator = ["%@"];
+            string[] separator = ["%versionNo%"];
             string[] array = text.Split(separator, StringSplitOptions.None);
             for (int i = 0; i < array.Length; i++)
             {
