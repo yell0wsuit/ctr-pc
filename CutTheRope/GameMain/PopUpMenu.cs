@@ -238,7 +238,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            List<Button> buttons = new(buttonCount);
+            List<Button> buttons = [];
             foreach (PopupButtonSpec spec in template.Buttons)
             {
                 Button button = spec.UseShortButton
