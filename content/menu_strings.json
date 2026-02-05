@@ -431,7 +431,13 @@
         "de": "Bald gibt es neue Levels!"
     },
     "ABOUT_FANWORK_MAIN": {
-        "en": "Cut the Rope: DX ver. %versionNo%\n\nA fan-made enhancement of the PC version of Cut the Rope.\n\nhttps://github.com/yell0wsuit/cuttherope-dx\n\nOriginally developed and published by ZeptoLab.\n\nA Cut the Rope Home fan project."
+        "en": "Cut the Rope: DX ver. %versionNo%\n\nA fan-made enhancement of the PC version of Cut the Rope.\n"
+    },
+    "ABOUT_FANWORK_PROJECT_WEBSITE": {
+        "en": "https://github.com/yell0wsuit/cuttherope-dx"
+    },
+    "ABOUT_FANWORK_PROJECT_NOTE": {
+        "en": "\nOriginally developed and published by ZeptoLab.\n\nA Cut the Rope Home fan project."
     },
     "ABOUT_FANWORK_LEAD": {
         "en": "\nProject lead:\nyell0wsuit\n"

@@ -1486,6 +1486,9 @@ namespace CutTheRope.GameMain
                 case var id when id == MenuButtonId.OpenFacebook:
                     AndroidAPI.OpenUrl("http://www.facebook.com/cuttherope");
                     return;
+                case var id when id == MenuButtonId.FanworkProjectWebsite:
+                    AndroidAPI.OpenUrl(Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE").ToString());
+                    return;
                 case var id when id == MenuButtonId.NextPack:
                     {
                         int num2 = currentPack;

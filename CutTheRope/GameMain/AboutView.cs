@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
             IButtonDelegation buttonDelegate)
         {
             MenuView menuView = new();
-            currentContainer = BuildAboutContainer();
+            currentContainer = BuildAboutContainer(buttonDelegate);
             autoScrollEnabled = false;
             _ = background.AddChild(currentContainer);
             _ = menuView.AddChild(background);
@@ -98,7 +98,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
-        private static ScrollableContainer BuildAboutContainer()
+        private static ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate)
         {
             float containerWidth = 1300f;
             float containerHeight = 1100f;
@@ -125,6 +125,16 @@ namespace CutTheRope.GameMain
 
             Text fanworkMain = CreateCenteredTextBlock(BuildFanworkMainText(), containerWidth);
             _ = vBox.AddChild(fanworkMain);
+
+            Button fanworkProjectWebsite = CreateCenteredLinkButton(
+                Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE"),
+                MenuButtonId.FanworkProjectWebsite,
+                buttonDelegate,
+                containerWidth);
+            _ = vBox.AddChild(fanworkProjectWebsite);
+
+            Text fanworkProjectNote = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_PROJECT_NOTE"), containerWidth);
+            _ = vBox.AddChild(fanworkProjectNote);
 
             Text fanworkLead = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_LEAD"), containerWidth);
             _ = vBox.AddChild(fanworkLead);
@@ -165,6 +175,25 @@ namespace CutTheRope.GameMain
             block.SetAlignment(2);
             block.SetStringandWidth(text, (int)width);
             return block;
+        }
+
+        /// <summary>
+        /// Creates a centered, clickable text button for URLs or actions.
+        /// </summary>
+        private static Button CreateCenteredLinkButton(
+            string text,
+            MenuButtonId buttonId,
+            IButtonDelegation buttonDelegate,
+            float width)
+        {
+            Text upText = CreateCenteredTextBlock(text, width);
+            Text downText = CreateCenteredTextBlock(text, width);
+            downText.color = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.6f);
+
+            Button button = new Button().InitWithUpElementDownElementandID(upText, downText, buttonId);
+            button.delegateButtonDelegate = buttonDelegate;
+            button.SetTouchIncreaseLeftRightTopBottom(10f, 10f, 10f, 10f);
+            return button;
         }
 
         /// <summary>
