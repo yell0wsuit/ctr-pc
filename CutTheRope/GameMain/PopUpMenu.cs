@@ -149,14 +149,14 @@ namespace CutTheRope.GameMain
                     break;
             }
 
-            if (template.ScaleXOverride > 0f)
-            {
-                scaleX = template.ScaleXOverride;
-            }
-            if (template.ScaleYOverride > 0f)
-            {
-                scaleY = template.ScaleYOverride;
-            }
+            // if (template.ScaleXOverride > 0f)
+            // {
+            //     scaleX = template.ScaleXOverride;
+            // }
+            // if (template.ScaleYOverride > 0f)
+            // {
+            //     scaleY = template.ScaleYOverride;
+            // }
 
             if (template.ScaleMode == PopupScaleMode.Background)
             {
@@ -248,7 +248,7 @@ namespace CutTheRope.GameMain
                 buttons.Add(button);
             }
 
-            Vector anchor = layout.GetScaledPosition(template.ButtonAnchor, template.ButtonOffsetX, template.ButtonOffsetY);
+            Vector anchor = layout.GetScaledPosition(template.ButtonAnchor);
             float anchorX = anchor.X;
             float anchorY = anchor.Y;
 
@@ -331,13 +331,13 @@ namespace CutTheRope.GameMain
         {
             public PopupSize Size = size;
             public PopupScaleMode ScaleMode = PopupScaleMode.Content;
-            public float ScaleXOverride;
-            public float ScaleYOverride;
+            // public float ScaleXOverride;
+            // public float ScaleYOverride;
             public PopupButtonLayout ButtonLayout = PopupButtonLayout.Vertical;
             public float ButtonSpacing = DefaultButtonSpacing;
             public PopupAnchor ButtonAnchor = PopupAnchor.Button;
-            public float ButtonOffsetX;
-            public float ButtonOffsetY;
+            // public float ButtonOffsetX;
+            // public float ButtonOffsetY;
             public readonly List<PopupTextBlock> TextBlocks = [];
             public readonly List<PopupElementBlock> Elements = [];
             public readonly List<PopupButtonSpec> Buttons = [];
