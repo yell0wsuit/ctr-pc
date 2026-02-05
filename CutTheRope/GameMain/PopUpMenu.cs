@@ -32,46 +32,13 @@ namespace CutTheRope.GameMain
             string requiredStars = (CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars)
                 .ToString(CultureInfo.InvariantCulture);
 
-            PopupTemplate template = new(PopupSize.Large)
-            {
-                ScaleMode = PopupScaleMode.Background,
-                TextBlocks =
-                {
-                    new PopupTextBlock(
-                        Application.GetString("CANT_UNLOCK_TEXT1"),
-                        Resources.Fnt.BigFont,
-                        -1f,
-                        PopupAnchor.Text1,
-                        0f,
-                        -textOffset),
-                    new PopupTextBlock(
-                        Application.GetString("CANT_UNLOCK_TEXT2"),
-                        Resources.Fnt.BigFont,
-                        -1f,
-                        PopupAnchor.Text2,
-                        0f,
-                        -textOffset),
-                    new PopupTextBlock(
-                        Application.GetString("CANT_UNLOCK_TEXT3"),
-                        Resources.Fnt.SmallFont,
-                        600f,
-                        PopupAnchor.Text3,
-                        0f,
-                        50f),
-                },
-                Elements =
-                {
-                    new PopupElementBlock(
-                        MenuController.CreateTextWithStar(requiredStars),
-                        PopupAnchor.StarsValue,
-                        0f,
-                        -textOffset),
-                },
-                Buttons =
-                {
-                    new PopupButtonSpec(Application.GetString("OK"), MenuButtonId.PopupOk),
-                }
-            };
+            PopupTemplate template = PopupTemplate.Create(PopupSize.Large)
+                .WithScaleMode(PopupScaleMode.Background)
+                .AddText(Application.GetString("CANT_UNLOCK_TEXT1"), Resources.Fnt.BigFont, PopupAnchor.Text1, offsetY: -textOffset)
+                .AddText(Application.GetString("CANT_UNLOCK_TEXT2"), Resources.Fnt.BigFont, PopupAnchor.Text2, offsetY: -textOffset)
+                .AddText(Application.GetString("CANT_UNLOCK_TEXT3"), Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 600f, offsetY: 50f)
+                .AddElement(MenuController.CreateTextWithStar(requiredStars), PopupAnchor.StarsValue, offsetY: -textOffset)
+                .AddButton(Application.GetString("OK"), MenuButtonId.PopupOk);
 
             _ = ShowTemplatePopup(template);
         }
@@ -81,31 +48,11 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void ShowGameFinishedPopup()
         {
-            PopupTemplate template = new(PopupSize.Normal)
-            {
-                ScaleMode = PopupScaleMode.Background,
-                TextBlocks =
-                {
-                    new PopupTextBlock(
-                        Application.GetString("GAME_FINISHED_TEXT"),
-                        Resources.Fnt.BigFont,
-                        600f,
-                        PopupAnchor.Text2,
-                        0f,
-                        -170f),
-                    new PopupTextBlock(
-                        Application.GetString("GAME_FINISHED_TEXT2"),
-                        Resources.Fnt.SmallFont,
-                        700f,
-                        PopupAnchor.Text3,
-                        0f,
-                        30f),
-                },
-                Buttons =
-                {
-                    new PopupButtonSpec(Application.GetString("OK"), MenuButtonId.PopupOk),
-                }
-            };
+            PopupTemplate template = PopupTemplate.Create()
+                .WithScaleMode(PopupScaleMode.Background)
+                .AddText(Application.GetString("GAME_FINISHED_TEXT"), Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 600f, offsetY: -170f)
+                .AddText(Application.GetString("GAME_FINISHED_TEXT2"), Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 700f, offsetY: 30f)
+                .AddButton(Application.GetString("OK"), MenuButtonId.PopupOk);
 
             _ = ShowTemplatePopup(template);
         }
@@ -119,28 +66,11 @@ namespace CutTheRope.GameMain
         /// <returns>The created popup instance.</returns>
         public Popup ShowYesNoPopup(string str, MenuButtonId buttonYesId, MenuButtonId buttonNoId)
         {
-            PopupTemplate template = new(PopupSize.Normal)
-            {
-                ScaleMode = PopupScaleMode.Background,
-                TextBlocks =
-                {
-                    new PopupTextBlock(
-                        str,
-                        Resources.Fnt.BigFont,
-                        680f,
-                        PopupAnchor.Text2,
-                        0f,
-                        -120f)
-                    {
-                        Scrollable = false
-                    },
-                },
-                Buttons =
-                {
-                    new PopupButtonSpec(Application.GetString("YES"), buttonYesId),
-                    new PopupButtonSpec(Application.GetString("NO"), buttonNoId),
-                }
-            };
+            PopupTemplate template = PopupTemplate.Create()
+                .WithScaleMode(PopupScaleMode.Background)
+                .AddText(str, Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 680f, offsetY: -120f)
+                .AddButton(Application.GetString("YES"), buttonYesId)
+                .AddButton(Application.GetString("NO"), buttonNoId);
 
             return ShowTemplatePopup(template);
         }
@@ -164,34 +94,19 @@ namespace CutTheRope.GameMain
             background.scaleY = backgroundScaleY;
             _ = contentRoot.AddChild(background);
 
-            float backgroundWidth = background.width;
-            float backgroundHeight = background.height;
+            PopupLayout layout = new(background.width, background.height, backgroundScaleX, backgroundScaleY);
 
             foreach (PopupTextBlock textBlock in template.TextBlocks)
             {
                 if (textBlock.Scrollable)
                 {
-                    ScrollableContainer scroll = CreateScrollableText(
-                        popup,
-                        textBlock,
-                        backgroundWidth,
-                        backgroundHeight,
-                        backgroundScaleX,
-                        backgroundScaleY);
+                    ScrollableContainer scroll = CreateScrollableText(popup, textBlock, layout);
                     _ = contentRoot.AddChild(scroll);
                 }
                 else
                 {
                     Text text = CreateText(textBlock);
-                    PositionAtAnchor(
-                        text,
-                        textBlock.Anchor,
-                        textBlock.OffsetX,
-                        textBlock.OffsetY,
-                        backgroundWidth,
-                        backgroundHeight,
-                        backgroundScaleX,
-                        backgroundScaleY);
+                    layout.PositionElement(text, textBlock.Anchor, textBlock.OffsetX, textBlock.OffsetY);
                     _ = contentRoot.AddChild(text);
                 }
             }
@@ -200,25 +115,11 @@ namespace CutTheRope.GameMain
             {
                 BaseElement element = elementBlock.Element;
                 element.anchor = elementBlock.ElementAnchor;
-                PositionAtAnchor(
-                    element,
-                    elementBlock.Anchor,
-                    elementBlock.OffsetX,
-                    elementBlock.OffsetY,
-                    backgroundWidth,
-                    backgroundHeight,
-                    backgroundScaleX,
-                    backgroundScaleY);
+                layout.PositionElement(element, elementBlock.Anchor, elementBlock.OffsetX, elementBlock.OffsetY);
                 _ = contentRoot.AddChild(element);
             }
 
-            AddButtons(
-                contentRoot,
-                template,
-                backgroundWidth,
-                backgroundHeight,
-                backgroundScaleX,
-                backgroundScaleY);
+            AddButtons(contentRoot, template, layout);
 
             popup.ShowPopup();
             _ = menuController.ActiveView().AddChild(popup);
@@ -292,13 +193,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a scrollable text container for long content.
         /// </summary>
-        private static ScrollableContainer CreateScrollableText(
-            Popup popup,
-            PopupTextBlock textBlock,
-            float backgroundWidth,
-            float backgroundHeight,
-            float backgroundScaleX,
-            float backgroundScaleY)
+        private static ScrollableContainer CreateScrollableText(Popup popup, PopupTextBlock textBlock, PopupLayout layout)
         {
             float width = textBlock.WrapWidth > 0f ? textBlock.WrapWidth : DefaultScrollableWidth;
             float height = textBlock.ScrollHeight > 0f ? textBlock.ScrollHeight : DefaultScrollableHeight;
@@ -327,15 +222,7 @@ namespace CutTheRope.GameMain
             scroll.shouldBounceHorizontally = false;
             scroll.touchMoveIgnoreLength = 5f;
             scroll.resetScrollOnShow = true;
-            PositionAtAnchor(
-                scroll,
-                textBlock.Anchor,
-                textBlock.OffsetX,
-                textBlock.OffsetY,
-                backgroundWidth,
-                backgroundHeight,
-                backgroundScaleX,
-                backgroundScaleY);
+            layout.PositionElement(scroll, textBlock.Anchor, textBlock.OffsetX, textBlock.OffsetY);
             popup.RegisterScrollableContainer(scroll);
             return scroll;
         }
@@ -343,13 +230,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Adds buttons to the popup based on the template layout rules.
         /// </summary>
-        private void AddButtons(
-            BaseElement contentRoot,
-            PopupTemplate template,
-            float backgroundWidth,
-            float backgroundHeight,
-            float backgroundScaleX,
-            float backgroundScaleY)
+        private void AddButtons(BaseElement contentRoot, PopupTemplate template, PopupLayout layout)
         {
             int buttonCount = template.Buttons.Count;
             if (buttonCount == 0)
@@ -357,8 +238,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            List<Button> buttons = [];
-            _ = buttons.EnsureCapacity(buttonCount);
+            List<Button> buttons = new(buttonCount);
             foreach (PopupButtonSpec spec in template.Buttons)
             {
                 Button button = spec.UseShortButton
@@ -368,14 +248,9 @@ namespace CutTheRope.GameMain
                 buttons.Add(button);
             }
 
-            Vector anchor = GetAnchorOffset(
-                template.ButtonAnchor,
-                backgroundWidth,
-                backgroundHeight,
-                backgroundScaleX,
-                backgroundScaleY);
-            float anchorX = anchor.X + template.ButtonOffsetX;
-            float anchorY = anchor.Y + template.ButtonOffsetY;
+            Vector anchor = layout.GetScaledPosition(template.ButtonAnchor, template.ButtonOffsetX, template.ButtonOffsetY);
+            float anchorX = anchor.X;
+            float anchorY = anchor.Y;
 
             if (template.ButtonLayout == PopupButtonLayout.Horizontal)
             {
@@ -407,52 +282,6 @@ namespace CutTheRope.GameMain
                 _ = contentRoot.AddChild(button);
                 y -= button.height + template.ButtonSpacing;
             }
-        }
-
-        /// <summary>
-        /// Positions an element relative to a popup anchor quad with optional offsets.
-        /// </summary>
-        private static void PositionAtAnchor(
-            BaseElement element,
-            PopupAnchor anchor,
-            float offsetX,
-            float offsetY,
-            float backgroundWidth,
-            float backgroundHeight,
-            float backgroundScaleX,
-            float backgroundScaleY)
-        {
-            Vector position = GetAnchorOffset(
-                anchor,
-                backgroundWidth,
-                backgroundHeight,
-                backgroundScaleX,
-                backgroundScaleY);
-            element.x = position.X + offsetX;
-            element.y = position.Y + offsetY;
-        }
-
-        /// <summary>
-        /// Gets the quad offset used for a given popup anchor.
-        /// </summary>
-        private static Vector GetAnchorOffset(
-            PopupAnchor anchor,
-            float backgroundWidth,
-            float backgroundHeight,
-            float backgroundScaleX,
-            float backgroundScaleY)
-        {
-            Vector offset = Image.GetQuadOffset(Resources.Img.MenuPopup, (int)anchor);
-            if (backgroundScaleX == 1f && backgroundScaleY == 1f)
-            {
-                return offset;
-            }
-
-            float centerX = backgroundWidth / 2f;
-            float centerY = backgroundHeight / 2f;
-            return new Vector(
-                centerX + ((offset.X - centerX) * backgroundScaleX),
-                centerY + ((offset.Y - centerY) * backgroundScaleY));
         }
 
         /// <summary>
@@ -512,6 +341,86 @@ namespace CutTheRope.GameMain
             public readonly List<PopupTextBlock> TextBlocks = [];
             public readonly List<PopupElementBlock> Elements = [];
             public readonly List<PopupButtonSpec> Buttons = [];
+
+            /// <summary>
+            /// Creates a new popup template with the specified size.
+            /// </summary>
+            public static PopupTemplate Create(PopupSize size = PopupSize.Normal)
+            {
+                return new(size);
+            }
+
+            /// <summary>
+            /// Sets the scale mode for this popup.
+            /// </summary>
+            public PopupTemplate WithScaleMode(PopupScaleMode mode)
+            {
+                ScaleMode = mode;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the button layout direction.
+            /// </summary>
+            public PopupTemplate WithButtonLayout(PopupButtonLayout layout, float spacing = DefaultButtonSpacing)
+            {
+                ButtonLayout = layout;
+                ButtonSpacing = spacing;
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a text block to the popup.
+            /// </summary>
+            public PopupTemplate AddText(
+                string text,
+                string font,
+                PopupAnchor anchor,
+                float wrapWidth = -1f,
+                float offsetX = 0f,
+                float offsetY = 0f)
+            {
+                TextBlocks.Add(new PopupTextBlock(text, font, wrapWidth, anchor, offsetX, offsetY));
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a scrollable text block to the popup.
+            /// </summary>
+            public PopupTemplate AddScrollableText(
+                string text,
+                string font,
+                PopupAnchor anchor,
+                float wrapWidth = -1f,
+                float scrollHeight = 0f,
+                float offsetX = 0f,
+                float offsetY = 0f)
+            {
+                TextBlocks.Add(new PopupTextBlock(text, font, wrapWidth, anchor, offsetX, offsetY)
+                {
+                    Scrollable = true,
+                    ScrollHeight = scrollHeight
+                });
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a custom element to the popup.
+            /// </summary>
+            public PopupTemplate AddElement(BaseElement element, PopupAnchor anchor, float offsetX = 0f, float offsetY = 0f)
+            {
+                Elements.Add(new PopupElementBlock(element, anchor, offsetX, offsetY));
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a button to the popup.
+            /// </summary>
+            public PopupTemplate AddButton(string label, MenuButtonId buttonId, bool useShortButton = false)
+            {
+                Buttons.Add(new PopupButtonSpec(label, buttonId) { UseShortButton = useShortButton });
+                return this;
+            }
         }
 
         /// <summary>
@@ -557,6 +466,45 @@ namespace CutTheRope.GameMain
             public string Label = label;
             public MenuButtonId ButtonId = buttonId;
             public bool UseShortButton;
+        }
+
+        /// <summary>
+        /// Encapsulates popup background dimensions and scale factors for layout calculations.
+        /// </summary>
+        internal readonly struct PopupLayout(float width, float height, float scaleX, float scaleY)
+        {
+            public readonly float Width = width;
+            public readonly float Height = height;
+            public readonly float ScaleX = scaleX;
+            public readonly float ScaleY = scaleY;
+
+            /// <summary>
+            /// Gets a scaled anchor position with optional offsets applied.
+            /// </summary>
+            public readonly Vector GetScaledPosition(PopupAnchor anchor, float offsetX = 0f, float offsetY = 0f)
+            {
+                Vector offset = Image.GetQuadOffset(Resources.Img.MenuPopup, (int)anchor);
+                if (ScaleX == 1f && ScaleY == 1f)
+                {
+                    return new Vector(offset.X + offsetX, offset.Y + offsetY);
+                }
+
+                float centerX = Width / 2f;
+                float centerY = Height / 2f;
+                return new Vector(
+                    centerX + ((offset.X - centerX) * ScaleX) + offsetX,
+                    centerY + ((offset.Y - centerY) * ScaleY) + offsetY);
+            }
+
+            /// <summary>
+            /// Positions an element at the specified anchor with offsets.
+            /// </summary>
+            public readonly void PositionElement(BaseElement element, PopupAnchor anchor, float offsetX, float offsetY)
+            {
+                Vector position = GetScaledPosition(anchor, offsetX, offsetY);
+                element.x = position.X;
+                element.y = position.Y;
+            }
         }
     }
 }
