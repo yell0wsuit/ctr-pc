@@ -7,8 +7,17 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Builds and manages the Credits menu view and its scrolling behavior.
+    /// </summary>
     internal sealed class AboutView
     {
+        /// <summary>
+        /// Creates the Credits view and attaches it to the provided background element.
+        /// </summary>
+        /// <param name="background">Background element that will host the about content.</param>
+        /// <param name="buttonDelegate">Delegate used for handling the back button.</param>
+        /// <returns>A fully constructed <see cref="MenuView"/> for the Credits screen.</returns>
         public MenuView CreateAbout(
             BaseElement background,
             IButtonDelegation buttonDelegate)
@@ -27,6 +36,9 @@ namespace CutTheRope.GameMain
             return menuView;
         }
 
+        /// <summary>
+        /// Resets scroll position to the top and enables auto-scrolling.
+        /// </summary>
         public void ResetAndEnableAutoScroll()
         {
             if (currentContainer == null)
@@ -38,11 +50,20 @@ namespace CutTheRope.GameMain
             autoScrollEnabled = true;
         }
 
+        /// <summary>
+        /// Disables auto-scrolling for the Credits view.
+        /// </summary>
         public void DisableAutoScroll()
         {
             autoScrollEnabled = false;
         }
 
+        /// <summary>
+        /// Advances auto-scroll if enabled.
+        /// </summary>
+        /// <returns>
+        /// True if auto-scroll was applied this frame; otherwise false.
+        /// </returns>
         public bool UpdateAutoScroll()
         {
             if (!autoScrollEnabled || currentContainer == null)
@@ -58,6 +79,13 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <summary>
+        /// Handles mouse wheel scrolling for the Credits content.
+        /// </summary>
+        /// <param name="scrollDelta">Mouse wheel delta value.</param>
+        /// <returns>
+        /// True if the scroll was handled by the about container; otherwise false.
+        /// </returns>
         public bool HandleMouseWheel(int scrollDelta)
         {
             if (currentContainer == null)
@@ -108,6 +136,9 @@ namespace CutTheRope.GameMain
             return container;
         }
 
+        /// <summary>
+        /// Builds the localized about text, including the current assembly version.
+        /// </summary>
         private static string BuildAboutText()
         {
             string text = Application.GetString("ABOUT_TEXT").ToString();
@@ -130,8 +161,14 @@ namespace CutTheRope.GameMain
             return text;
         }
 
+        /// <summary>
+        /// Scroll container holding the Credits content.
+        /// </summary>
         private ScrollableContainer currentContainer;
 
+        /// <summary>
+        /// Whether auto-scroll is currently enabled.
+        /// </summary>
         private bool autoScrollEnabled;
     }
 }
