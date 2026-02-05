@@ -231,7 +231,12 @@ namespace CutTheRope.Framework
             {
                 try
                 {
-                    _ = Process.Start(url);
+                    ProcessStartInfo psi = new()
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    };
+                    _ = Process.Start(psi);
                 }
                 catch (Win32Exception ex)
                 {
