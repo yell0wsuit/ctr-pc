@@ -7,9 +7,9 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal static class AboutView
+    internal sealed class AboutView
     {
-        public static MenuView CreateAbout(
+        public MenuView CreateAbout(
             BaseElement background,
             IButtonDelegation buttonDelegate)
         {
@@ -27,7 +27,7 @@ namespace CutTheRope.GameMain
             return menuView;
         }
 
-        public static void ResetAndEnableAutoScroll()
+        public void ResetAndEnableAutoScroll()
         {
             if (currentContainer == null)
             {
@@ -38,12 +38,12 @@ namespace CutTheRope.GameMain
             autoScrollEnabled = true;
         }
 
-        public static void DisableAutoScroll()
+        public void DisableAutoScroll()
         {
             autoScrollEnabled = false;
         }
 
-        public static bool UpdateAutoScroll()
+        public bool UpdateAutoScroll()
         {
             if (!autoScrollEnabled || currentContainer == null)
             {
@@ -58,7 +58,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
-        public static bool HandleMouseWheel(int scrollDelta)
+        public bool HandleMouseWheel(int scrollDelta)
         {
             if (currentContainer == null)
             {
@@ -130,8 +130,8 @@ namespace CutTheRope.GameMain
             return text;
         }
 
-        private static ScrollableContainer currentContainer;
+        private ScrollableContainer currentContainer;
 
-        private static bool autoScrollEnabled;
+        private bool autoScrollEnabled;
     }
 }

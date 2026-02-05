@@ -623,7 +623,8 @@ namespace CutTheRope.GameMain
         public void CreateAbout()
         {
             BaseElement background = CreateBackgroundWithLogo(false);
-            MenuView menuView = AboutView.CreateAbout(background, this);
+            aboutView = new AboutView();
+            MenuView menuView = aboutView.CreateAbout(background, this);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 3);
         }
@@ -1442,7 +1443,7 @@ namespace CutTheRope.GameMain
                         return;
                     }
                 case var id when id == MenuButtonId.ShowCredits:
-                    AboutView.ResetAndEnableAutoScroll();
+                    aboutView?.ResetAndEnableAutoScroll();
                     ShowView(3);
                     return;
                 case var id when id == MenuButtonId.ShowReset:
@@ -1665,7 +1666,7 @@ namespace CutTheRope.GameMain
                 movieMgr.Update();
                 return;
             }
-            if (activeViewID == VIEW_ABOUT && AboutView.UpdateAutoScroll())
+            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
             {
                 return;
             }
@@ -1737,7 +1738,7 @@ namespace CutTheRope.GameMain
             }
 
             // Handle scroll wheel for about/credits view (activeViewID == VIEW_ABOUT)
-            if (activeViewID == VIEW_ABOUT && AboutView.HandleMouseWheel(scrollDelta))
+            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.HandleMouseWheel(scrollDelta))
             {
                 return true;
             }
@@ -1751,7 +1752,7 @@ namespace CutTheRope.GameMain
             bool flag = base.TouchesBeganwithEvent(touches);
             if (activeViewID == VIEW_ABOUT)
             {
-                AboutView.DisableAutoScroll();
+                aboutView?.DisableAutoScroll();
             }
             return flag;
         }
@@ -1885,6 +1886,8 @@ namespace CutTheRope.GameMain
         private Popup ep;
 
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
+
+        private AboutView aboutView;
 
         public sealed class TouchBaseElement : BaseElement
         {
