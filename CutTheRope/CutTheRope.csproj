@@ -14,7 +14,7 @@
     <LangVersion>preview</LangVersion>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <ApplicationIcon Condition="$([MSBuild]::IsOsPlatform('Windows'))">../distribution/icons/CutTheRopeIcon.ico</ApplicationIcon>
+    <ApplicationIcon Condition="$([MSBuild]::IsOsPlatform('Windows'))">../distribution/icons/CutTheRopeDXIcon.ico</ApplicationIcon>
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>dirty</VersionSuffix>
     <Company>ZeptoLab</Company>
@@ -73,7 +73,13 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <None Include="../distribution/macos/InfoCsproj.plist" Link="Info.plist" />
+    <PartialAppManifest Include="../distribution/macos/InfoCsproj.plist" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource Include="../distribution/icons/CutTheRopeDXIcon.icns">
+      <Link>CutTheRopeDXIcon.icns</Link>
+    </BundleResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -213,15 +219,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="../distribution/icons/CutTheRopeIcon.bmp">
+    <EmbeddedResource Include="../distribution/icons/CutTheRopeDXIcon.bmp">
       <LogicalName>Icon.bmp</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource Include="../distribution/icons/CutTheRopeIcon.icns">
-      <Link>Resources/CutTheRopeIcon.icns</Link>
-    </BundleResource>
+  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.StartsWith('osx'))">
+    <None Include="../distribution/icons/CutTheRopeDXIcon.icns">
+      <Link>Resources/CutTheRopeDXIcon.icns</Link>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 
   <Target

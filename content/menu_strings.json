@@ -430,11 +430,32 @@
         "fr": "Nouveaux niveaux bientôt disponibles !",
         "de": "Bald gibt es neue Levels!"
     },
+    "ABOUT_FANWORK_MAIN": {
+        "en": "Cut the Rope: DX ver. %versionNo%\n\nA fan-made enhancement of the PC version of Cut the Rope.\n"
+    },
+    "ABOUT_FANWORK_PROJECT_WEBSITE": {
+        "en": "https://github.com/yell0wsuit/cuttherope-dx/"
+    },
+    "ABOUT_FANWORK_PROJECT_NOTE": {
+        "en": "\nOriginally developed and published by ZeptoLab.\n\nA Cut the Rope Home fan project."
+    },
+    "ABOUT_FANWORK_CTRH_WEBSITE": {
+        "en": "https://ctrhome.github.io/"
+    },
+    "ABOUT_FANWORK_LEAD": {
+        "en": "\nProject lead:\nyell0wsuit\n"
+    },
+    "ABOUT_FANWORK_TEAM": {
+        "en": "Cut the Rope Home team members:\n"
+    },
+    "ABOUT_FANWORK_MEMBERS": {
+        "en": "8 Second Rocket\naidrum\nBingies24\ncv\nGenji\nMlopsFunny\nMrCatz\nsaulfabreg\nTheAwesomeBlue\nyell0wsuit\n\n"
+    },
     "ABOUT_TEXT": {
-        "en": "Cut the Rope: DX ver. %@\n\nA fan-made enhancement of the PC version of Cut the Rope.\n\nhttps://github.com/yell0wsuit/cuttherope-dx\n\nOriginally developed and published by ZeptoLab. Copyright 2012 by ZeptoLab.\n\nAdditional Design:\nNataliya Omelyanchuk\n\nMusic and Sounds:\nAlexander Falinski",
-        "ru": "Cut the Rope: DX версия %@\n2012 ZeptoLab.\n\nИгра разработана и издается ZeptoLab.\n\nДополнительный гейм-дизайн:\nНаталья Омельянчук\n\nМузыка и звуки:\nАлександр Фалинский",
-        "fr": "Cut the Rope: DX ver. %@\nCopyright 2012 ZeptoLab.\n\nJeu développé et édité par ZeptoLab.\n\nConception de niveaux supplémentaires :\nNataliya Omelyanchuk\n\nMusique et bruitages :\nAlexander Falinski",
-        "de": "Cut the Rope: DX Version: %@\nCopyright 2012 von ZeptoLab.\n\nDas Spiel wurde von ZeptoLab entwickelt und veröffentlicht.\n\nZusätzliches Design:\nNataliya Omelyanchuk\n\nMusik und Sound:\nAlexander Falinski"
+        "en": "Cut the Rope PC version. Copyright 2012 by ZeptoLab.\n\nAdditional Design:\nNataliya Omelyanchuk\n\nMusic and Sounds:\nAlexander Falinski",
+        "ru": "2012 ZeptoLab.\n\nИгра разработана и издается ZeptoLab.\n\nДополнительный гейм-дизайн:\nНаталья Омельянчук\n\nМузыка и звуки:\nАлександр Фалинский",
+        "fr": "Copyright 2012 ZeptoLab.\n\nJeu développé et édité par ZeptoLab.\n\nConception de niveaux supplémentaires :\nNataliya Omelyanchuk\n\nMusique et bruitages :\nAlexander Falinski",
+        "de": "Copyright 2012 von ZeptoLab.\n\nDas Spiel wurde von ZeptoLab entwickelt und veröffentlicht.\n\nZusätzliches Design:\nNataliya Omelyanchuk\n\nMusik und Sound:\nAlexander Falinski"
     },
     "ABOUT_SPECIAL_THANKS": {
         "en": "Quality assurance:\nSPL\nUniversally Speaking\n\nSpecial Thanks:\nVladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra Dubovitskaya, Grigory Kireev, Viktor Kuzmin, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\nVery Special Thanks: 1C Wireless\n\n(c) ZeptoLab UK Ltd.  All rights reserved. ZeptoLab, Cut the Rope, Om Nom and Feed with Candy are the trademarks of ZeptoLab.\n\nLegal: Hughes Media Law Group",

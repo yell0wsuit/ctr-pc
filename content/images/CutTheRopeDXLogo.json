@@ -1,0 +1,21 @@
+{
+    "frames": [
+        {
+            "filename": "CutTheRopeDXLogo.png",
+            "frame": { "x": 0, "y": 0, "w": 346, "h": 302 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 346, "h": 302 },
+            "sourceSize": { "w": 346, "h": 302 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "CutTheRopeDXLogo.png",
+        "format": "RGBA8888",
+        "size": { "w": 346, "h": 302 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:48ba193150dc8484d4afdbf7262a85d1:2c6979fc0ab4aac2cc9590eeb6fbc846:f0881351291bdd97914bea7f72e0c24f$"
+    }
+}
