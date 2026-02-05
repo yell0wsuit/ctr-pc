@@ -102,11 +102,15 @@ namespace CutTheRope.GameMain
         {
             float containerWidth = 1300f;
             float containerHeight = 1100f;
+
+            // VBox stacks all credit elements vertically within a fixed width.
             VBox vBox = new VBox().InitWithOffsetAlignWidth(0f, 2, containerWidth);
 
+            // Scrollable container clips and scrolls the VBox content.
             ScrollableContainer container = new ScrollableContainer().InitWithWidthHeightContainer(containerWidth, containerHeight, vBox);
             container.anchor = container.parentAnchor = 18;
 
+            // Top spacer to offset the first elements from the container's top edge.
             BaseElement spacer = new()
             {
                 width = (int)containerWidth,
