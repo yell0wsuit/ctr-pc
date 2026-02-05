@@ -244,7 +244,6 @@ namespace CutTheRope.GameMain
                     scaleY = XLargeScale;
                     break;
                 case PopupSize.Normal:
-                    break;
                 default:
                     break;
             }
@@ -305,8 +304,8 @@ namespace CutTheRope.GameMain
             float height = textBlock.ScrollHeight > 0f ? textBlock.ScrollHeight : DefaultScrollableHeight;
 
             Text text = CreateText(textBlock);
-            text.anchor = 9;
-            text.parentAnchor = 9;
+            text.anchor = 9; // top left
+            text.parentAnchor = 9; // top left
             text.x = 0f;
             text.y = 0f;
 
