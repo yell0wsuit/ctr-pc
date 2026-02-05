@@ -120,6 +120,9 @@ namespace CutTheRope.GameMain
 
             // Fan work credit section
 
+            Image topLogo = Image.Image_createWithResID(Resources.Img.CutTheRopeDXLogo);
+            _ = vBox.AddChild(topLogo);
+
             Text fanworkMain = CreateCenteredTextBlock(BuildFanworkMainText(), containerWidth);
             _ = vBox.AddChild(fanworkMain);
 
@@ -134,8 +137,8 @@ namespace CutTheRope.GameMain
 
             // Original Zeptolab credit section
 
-            Image topLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 1);
-            _ = vBox.AddChild(topLogo);
+            Image ZeptolabLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 1);
+            _ = vBox.AddChild(ZeptolabLogo);
 
             Text aboutBody = CreateCenteredTextBlock(Application.GetString("ABOUT_TEXT").ToString(), containerWidth);
             _ = vBox.AddChild(aboutBody);
