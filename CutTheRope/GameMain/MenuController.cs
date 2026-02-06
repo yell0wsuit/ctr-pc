@@ -1736,6 +1736,16 @@ namespace CutTheRope.GameMain
         /// </remarks>
         public override bool HandleMouseWheel(int scrollDelta)
         {
+            // Give popup scrollable content first chance to handle mouse wheel.
+            if (ActiveView() != null)
+            {
+                BaseElement popupElement = ActiveView().GetChildWithName("popup");
+                if (popupElement is Popup popup && popup.HandleMouseWheel(scrollDelta))
+                {
+                    return true;
+                }
+            }
+
             // Handle scroll wheel for candy selection view
             if (activeViewID == VIEW_CANDY_SELECT && candyContainer != null)
             {

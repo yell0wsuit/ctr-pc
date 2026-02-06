@@ -673,7 +673,7 @@ namespace CutTheRope.Framework.Visual
 
         public bool shouldBounceHorizontally;
 
-        private bool shouldBounceVertically;
+        public bool shouldBounceVertically;
 
         public float touchMoveIgnoreLength;
 
