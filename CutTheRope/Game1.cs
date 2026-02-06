@@ -84,6 +84,7 @@ namespace CutTheRope
 
         private void Game1_Exiting(object sender, EventArgs e)
         {
+            UpdateChecker.Cancel();
             Preferences.RequestSave();
             Preferences.Update();
             //Dispose of RPC

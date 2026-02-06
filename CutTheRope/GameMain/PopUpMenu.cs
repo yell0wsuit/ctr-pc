@@ -67,5 +67,28 @@ namespace CutTheRope.GameMain
 
             return builder.Show(template);
         }
+
+        /// <summary>
+        /// Shows the update-available popup with current/latest versions and action buttons.
+        /// </summary>
+        /// <param name="currentVersion">The currently installed version string.</param>
+        /// <param name="latestVersion">The latest available version string.</param>
+        /// <param name="buttonDownload">Menu button id for the download action.</param>
+        /// <param name="buttonCancel">Menu button id for the cancel/close action.</param>
+        public Popup ShowUpdateAvailablePopup(string currentVersion, string latestVersion, MenuButtonId buttonDownload, MenuButtonId buttonCancel)
+        {
+            string bodyText = Application.GetString("UPDATE_AVAILABLE_TEXT")
+                .Replace("%currentVersion%", currentVersion, System.StringComparison.Ordinal)
+                .Replace("%latestVersion%", latestVersion, System.StringComparison.Ordinal);
+
+            PopupTemplate template = PopupTemplate.Create(PopupSize.XLarge)
+                .WithScaleMode(PopupScaleMode.Background)
+                .AddText(Application.GetString("UPDATE_AVAILABLE_TITLE"), Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 900f, offsetY: -300f)
+                .AddScrollableText(bodyText, Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 900f, scrollHeight: 400f, offsetY: -100f)
+                .AddButton(Application.GetString("UPDATE_AVAILABLE_DOWNLOAD_BUTTON"), buttonDownload)
+                .AddButton(Application.GetString("UPDATE_AVAILABLE_LATER_BUTTON"), buttonCancel);
+
+            return builder.Show(template);
+        }
     }
 }

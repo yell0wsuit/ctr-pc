@@ -1566,9 +1566,22 @@ namespace CutTheRope.GameMain
                     {
                         ep.HidePopup();
                         ep = null;
+                        updateReleaseUrl = null;
                         return;
                     }
                     break;
+                case var id when id == MenuButtonId.UpdateDownload:
+                    if (!string.IsNullOrWhiteSpace(updateReleaseUrl))
+                    {
+                        OpenUrl(updateReleaseUrl);
+                    }
+                    if (ep != null)
+                    {
+                        ep.HidePopup();
+                        ep = null;
+                        updateReleaseUrl = null;
+                    }
+                    return;
                 case var id when id == MenuButtonId.ShowQuitPopup:
                     ShowYesNoPopup(Application.GetString("QUIT"), MenuButtonId.QuitGame, MenuButtonId.ClosePopup);
                     return;
@@ -1672,6 +1685,7 @@ namespace CutTheRope.GameMain
                 movieMgr.Update();
                 return;
             }
+            TryShowUpdatePopup();
             if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
             {
                 return;
@@ -1845,6 +1859,33 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        private void TryShowUpdatePopup()
+        {
+            if (updatePopupShown)
+            {
+                return;
+            }
+
+            if (activeViewID != VIEW_MAIN_MENU)
+            {
+                return;
+            }
+
+            if (!CTRPreferences.IsUpdateCheckEnabled())
+            {
+                return;
+            }
+
+            if (!UpdateChecker.TryConsumeUpdate(out UpdateChecker.UpdateInfo info))
+            {
+                return;
+            }
+
+            updatePopupShown = true;
+            updateReleaseUrl = info.ReleaseUrl;
+            ep = popUpMenu.ShowUpdateAvailablePopup(info.CurrentVersion, info.LatestVersion, MenuButtonId.UpdateDownload, MenuButtonId.ClosePopup);
+        }
+
         public const int VIEW_MAIN_MENU = 0;
 
         public const int VIEW_OPTIONS = 1;
@@ -1900,6 +1941,9 @@ namespace CutTheRope.GameMain
         public int viewToShow;
 
         private Popup ep;
+        private string updateReleaseUrl;
+
+        private bool updatePopupShown;
 
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
 

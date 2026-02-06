@@ -1,6 +1,7 @@
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Media;
 using CutTheRope.Framework.Visual;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -68,6 +69,7 @@ namespace CutTheRope.GameMain
             base.Activate();
             resourcesLoaded = false; // Reset flag when activating
             ShowView(1);
+            UpdateChecker.StartIfNeeded();
             MoviePlaybackFinished(null);
         }
 
