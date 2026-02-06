@@ -74,7 +74,7 @@ namespace CutTheRope.Framework.Platform
         {
             // Always calculate offsets for proper letterboxing in both windowed and fullscreen modes
             xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
-            xOffsetScaled = (int)((double)((float)-(float)xOffset * 1f) / Global.ScreenSizeManager.WidthAspectRatio);
+            xOffsetScaled = (int)(-xOffset / Global.ScreenSizeManager.WidthAspectRatio);
             isFullscreen = Global.ScreenSizeManager.IsFullScreen;
             OpenGLRenderer.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
             OpenGLRenderer.GlMatrixMode(15);
