@@ -41,7 +41,7 @@ namespace CutTheRope.Helpers
             {
                 try
                 {
-                    UpdateInfo info = await FetchLatestReleaseAsync(currentVersion).ConfigureAwait(false);
+                    UpdateInfo info = await FetchLatestReleaseAsync(currentVersion, cts.Token).ConfigureAwait(false);
                     if (info != null)
                     {
                         updateInfo = info;
@@ -49,9 +49,14 @@ namespace CutTheRope.Helpers
                 }
                 catch (Exception)
                 {
-                    // Ignore network or parsing failures to avoid blocking startup.
+                    // Ignore network, cancellation, or parsing failures.
                 }
             });
+        }
+
+        public static void Cancel()
+        {
+            cts.Cancel();
         }
 
         public static bool TryConsumeUpdate(out UpdateInfo info)
@@ -89,7 +94,7 @@ namespace CutTheRope.Helpers
             return version;
         }
 
-        private static async Task<UpdateInfo> FetchLatestReleaseAsync(string currentVersionString)
+        private static async Task<UpdateInfo> FetchLatestReleaseAsync(string currentVersionString, CancellationToken cancellationToken)
         {
             if (!TryParseVersion(currentVersionString, out Version currentVersion))
             {
@@ -98,13 +103,15 @@ namespace CutTheRope.Helpers
 
             using HttpRequestMessage request = new(HttpMethod.Get, LatestReleaseUrl);
             request.Headers.UserAgent.ParseAdd("CutTheRopeDX-UpdateChecker/1.0");
-            using HttpResponseMessage response = await Http.SendAsync(request).ConfigureAwait(false);
+            request.Headers.Add("Accept", "application/vnd.github+json");
+            request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
+            using HttpResponseMessage response = await Http.SendAsync(request, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 return null;
             }
 
-            string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            string json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(json))
             {
                 return null;
@@ -194,6 +201,7 @@ namespace CutTheRope.Helpers
             Timeout = TimeSpan.FromSeconds(6)
         };
 
+        private static readonly CancellationTokenSource cts = new();
         private static int started;
         private static int consumed;
         private static volatile UpdateInfo updateInfo;
