@@ -87,12 +87,7 @@ namespace CutTheRope.GameMain
 
         public static bool IsUpdateCheckEnabled()
         {
-            if (ContainsKey("pref_update_check"))
-            {
-                return GetIntForKey("pref_update_check") != 0;
-            }
-
-            return GetIntForKey(PREFS_UPDATE_CHECK) != 0;
+            return ContainsKey("PREFS_UPDATE_CHECK") ? GetIntForKey("PREFS_UPDATE_CHECK") != 0 : GetIntForKey(PREFS_UPDATE_CHECK) != 0;
         }
 
         private static bool IsShareware()
