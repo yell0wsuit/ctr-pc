@@ -68,6 +68,9 @@ namespace CutTheRope.GameMain
             return builder.Show(template);
         }
 
+        /// <summary>
+        /// Shows the update-available popup with current/latest versions and action buttons.
+        /// </summary>
         public Popup ShowUpdateAvailablePopup(string currentVersion, string latestVersion, MenuButtonId buttonDownload, MenuButtonId buttonCancel)
         {
             string bodyText = Application.GetString("UPDATE_AVAILABLE_TEXT")
