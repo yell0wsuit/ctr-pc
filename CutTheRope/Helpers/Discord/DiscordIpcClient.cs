@@ -24,9 +24,9 @@ namespace CutTheRope.Helpers.Discord
         public bool IsConnected { get; private set; }
 
         /// <summary>
-        /// 
+        /// Connects to the local Discord client and performs the IPC handshake.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see langword="true"/> if the handshake succeeded; otherwise <see langword="false"/>.</returns>
         public bool TryConnect()
         {
             try
@@ -72,13 +72,13 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Sends a SET_ACTIVITY command to update the Rich Presence shown on Discord.
         /// </summary>
-        /// <param name="details"></param>
-        /// <param name="state"></param>
-        /// <param name="startTimestamp"></param>
-        /// <param name="smallImageKey"></param>
-        /// <param name="smallImageText"></param>
+        /// <param name="details">Top line of the presence (e.g. level name).</param>
+        /// <param name="state">Second line of the presence (e.g. star count).</param>
+        /// <param name="startTimestamp">Unix epoch seconds for the elapsed-time counter.</param>
+        /// <param name="smallImageKey">Asset key for the small image.</param>
+        /// <param name="smallImageText">Tooltip text for the small image.</param>
         public void SetActivity(
             string details = null,
             string state = null,
@@ -103,7 +103,7 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Clears the current Rich Presence from Discord.
         /// </summary>
         public void ClearActivity()
         {
@@ -147,10 +147,10 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Writes a single IPC frame: 8-byte header (opcode + length) followed by the payload.
         /// </summary>
-        /// <param name="opcode"></param>
-        /// <param name="payload"></param>
+        /// <param name="opcode">The IPC opcode (handshake, frame, or close).</param>
+        /// <param name="payload">The UTF-8 JSON payload bytes.</param>
         private void WriteFrame(int opcode, byte[] payload)
         {
             Span<byte> header = stackalloc byte[8];
@@ -164,11 +164,11 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Reads a single IPC response frame from Discord.
         /// </summary>
-        /// <param name="opcode"></param>
-        /// <param name="payload"></param>
-        /// <returns></returns>
+        /// <param name="opcode">The opcode of the received frame.</param>
+        /// <param name="payload">The JSON payload of the received frame.</param>
+        /// <returns><see langword="true"/> if a frame was successfully read; otherwise <see langword="false"/>.</returns>
         private bool TryReadFrame(out int opcode, out string payload)
         {
             opcode = 0;
@@ -201,11 +201,11 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Reads exactly <paramref name="buffer"/>.Length bytes from the stream.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="buffer"></param>
-        /// <exception cref="EndOfStreamException"></exception>
+        /// <param name="stream">The stream to read from.</param>
+        /// <param name="buffer">The buffer to fill.</param>
+        /// <exception cref="EndOfStreamException">Thrown if the stream ends before the buffer is filled.</exception>
         private static void ReadExactly(Stream stream, Span<byte> buffer)
         {
             int totalRead = 0;
@@ -222,9 +222,9 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Builds the JSON payload for the initial handshake: <c>{"v":1,"client_id":"..."}</c>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>UTF-8 encoded JSON bytes.</returns>
         private byte[] BuildHandshakePayload()
         {
             using MemoryStream ms = new();
@@ -239,14 +239,14 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Builds the JSON-RPC payload for the SET_ACTIVITY command.
         /// </summary>
-        /// <param name="details"></param>
-        /// <param name="state"></param>
-        /// <param name="startTimestamp"></param>
-        /// <param name="smallImageKey"></param>
-        /// <param name="smallImageText"></param>
-        /// <returns></returns>
+        /// <param name="details">Top line of the presence.</param>
+        /// <param name="state">Second line of the presence.</param>
+        /// <param name="startTimestamp">Unix epoch seconds for elapsed time.</param>
+        /// <param name="smallImageKey">Asset key for the small image.</param>
+        /// <param name="smallImageText">Tooltip text for the small image.</param>
+        /// <returns>UTF-8 encoded JSON bytes.</returns>
         private byte[] BuildSetActivityPayload(
             string details, string state, long? startTimestamp,
             string smallImageKey, string smallImageText)

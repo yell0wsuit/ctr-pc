@@ -24,7 +24,7 @@ namespace CutTheRope.Helpers
         private readonly string DISCORD_APP_ID = "1457063659724603457";
 
         /// <summary>
-        /// 
+        /// Updates Discord Rich Presence to show the user is browsing the menu.
         /// </summary>
         public void MenuPresence()
         {
@@ -47,7 +47,7 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// 
+        /// Initializes the Discord IPC connection and sets the initial presence.
         /// </summary>
         public void Setup()
         {
@@ -75,9 +75,9 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// 
+        /// Returns the session start time as Unix epoch seconds, creating it on first call.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Unix epoch seconds of the session start.</returns>
         private long GetOrCreateEpochSeconds()
         {
             startTimestamp ??= DateTime.UtcNow;
@@ -102,14 +102,14 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// 
+        /// Updates Discord Rich Presence with the current level information.
         /// </summary>
-        /// <param name="pack"></param>
-        /// <param name="level"></param>
-        /// <param name="stars"></param>
-        /// <param name="isWon"></param>
-        /// <param name="score"></param>
-        /// <param name="time"></param>
+        /// <param name="pack">Zero-based pack index.</param>
+        /// <param name="level">Zero-based level index within the pack.</param>
+        /// <param name="stars">Number of stars collected (0-3).</param>
+        /// <param name="isWon">Whether the level has been completed.</param>
+        /// <param name="score">Final score if the level was won.</param>
+        /// <param name="time">Elapsed time in seconds if the level was won.</param>
         public void SetLevelPresence(int pack, int level, int stars, bool isWon = false, int? score = null, int? time = null)
         {
             if (_client == null || !IsRpcEnabled || !_isConnected || (Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null))
