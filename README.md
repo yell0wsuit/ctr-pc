@@ -76,7 +76,7 @@ To test the game during the development process, follow these steps:
     a. Windows
 
     ```bash
-    dotnet publish CutTheRope\CutTheRope.csproj -c Release -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
+    dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net10.0 -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
     ```
 
     b. macOS
@@ -101,7 +101,7 @@ To test the game during the development process, follow these steps:
     c. Linux
 
     ```bash
-    dotnet publish CutTheRope/CutTheRope.csproj -c Release -p:PublishAot=true -o ./CutTheRope/bin/Publish/linux-x64
+    dotnet publish CutTheRope/CutTheRope.csproj -c Release -f net10.0 -p:PublishAot=true -o ./CutTheRope/bin/Publish/linux-x64
     ```
 
     > Warning:  
