@@ -10,15 +10,33 @@ using CutTheRope.GameMain;
 
 namespace CutTheRope.Helpers
 {
+    /// <summary>
+    /// Handles background checks for newer releases on GitHub.
+    /// </summary>
     internal static class UpdateChecker
     {
+        /// <summary>
+        /// Holds resolved version and release metadata for a newer update.
+        /// </summary>
         public sealed class UpdateInfo
         {
+            /// <summary>
+            /// The currently running version string.
+            /// </summary>
             public string CurrentVersion { get; init; }
+            /// <summary>
+            /// The latest available version string.
+            /// </summary>
             public string LatestVersion { get; init; }
+            /// <summary>
+            /// URL to the release page for the latest version.
+            /// </summary>
             public string ReleaseUrl { get; init; }
         }
 
+        /// <summary>
+        /// Starts the update check in the background if enabled and not already started.
+        /// </summary>
         public static void StartIfNeeded()
         {
             if (Interlocked.Exchange(ref started, 1) == 1)
@@ -54,11 +72,19 @@ namespace CutTheRope.Helpers
             });
         }
 
+        /// <summary>
+        /// Cancels any in-flight update check requests.
+        /// </summary>
         public static void Cancel()
         {
             cts.Cancel();
         }
 
+        /// <summary>
+        /// Attempts to consume the latest update info once.
+        /// </summary>
+        /// <param name="info">Receives the update info if available.</param>
+        /// <returns>True if update info was available and consumed; otherwise false.</returns>
         public static bool TryConsumeUpdate(out UpdateInfo info)
         {
             info = null;
@@ -77,12 +103,18 @@ namespace CutTheRope.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Determines if the version string represents a dirty/dev build.
+        /// </summary>
         public static bool IsDirtyVersion(string version)
         {
             return !string.IsNullOrWhiteSpace(version)
                 && version.Contains("dirty", StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Gets the current assembly informational version string.
+        /// </summary>
         private static string GetCurrentVersionString()
         {
             string version =
@@ -94,6 +126,9 @@ namespace CutTheRope.Helpers
             return version;
         }
 
+        /// <summary>
+        /// Fetches the latest GitHub release and returns update info when newer than current.
+        /// </summary>
         private static async Task<UpdateInfo> FetchLatestReleaseAsync(string currentVersionString, CancellationToken cancellationToken)
         {
             if (!TryParseVersion(currentVersionString, out Version currentVersion))
@@ -152,6 +187,9 @@ namespace CutTheRope.Helpers
             };
         }
 
+        /// <summary>
+        /// Attempts to parse a semantic version from a tag or version string.
+        /// </summary>
         private static bool TryParseVersion(string input, out Version version)
         {
             version = null;
@@ -193,17 +231,38 @@ namespace CutTheRope.Helpers
             return Version.TryParse(numeric, out version);
         }
 
+        /// <summary>
+        /// GitHub API endpoint for the latest release.
+        /// </summary>
         private const string LatestReleaseUrl = "https://api.github.com/repos/yell0wsuit/cuttherope-dx/releases/latest";
+        /// <summary>
+        /// Fallback release page when API url is missing.
+        /// </summary>
         private const string ReleasesPageUrl = "https://github.com/yell0wsuit/cuttherope-dx/releases";
 
+        /// <summary>
+        /// Shared HTTP client for update checks.
+        /// </summary>
         private static readonly HttpClient Http = new()
         {
             Timeout = TimeSpan.FromSeconds(6)
         };
 
+        /// <summary>
+        /// Cancellation token source for the update request.
+        /// </summary>
         private static readonly CancellationTokenSource cts = new();
+        /// <summary>
+        /// Ensures the update check only starts once per session.
+        /// </summary>
         private static int started;
+        /// <summary>
+        /// Ensures update info is consumed at most once.
+        /// </summary>
         private static int consumed;
+        /// <summary>
+        /// Latest update info fetched from the server.
+        /// </summary>
         private static volatile UpdateInfo updateInfo;
     }
 }
