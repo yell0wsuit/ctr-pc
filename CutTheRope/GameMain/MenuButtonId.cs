@@ -51,6 +51,7 @@ namespace CutTheRope.GameMain
         public static readonly MenuButtonId BackFromCandySelect;
         public static readonly MenuButtonId CandySlotBase;
         public static readonly MenuButtonId RopeSlotBase;
+        public static readonly MenuButtonId UpdateDownload;
 
         static MenuButtonId()
         {
@@ -94,6 +95,7 @@ namespace CutTheRope.GameMain
             BackFromCandySelect = FromName(nameof(BackFromCandySelect));
             CandySlotBase = FromName(nameof(CandySlotBase));
             RopeSlotBase = FromName(nameof(RopeSlotBase));
+            UpdateDownload = FromName(nameof(UpdateDownload));
         }
 
         /// <summary>
