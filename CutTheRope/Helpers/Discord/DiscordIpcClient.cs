@@ -114,7 +114,7 @@ namespace CutTheRope.Helpers.Discord
 
             try
             {
-                byte[] payload = BuildSetActivityPayload(null, null, null, null, null);
+                byte[] payload = BuildClearActivityPayload();
                 WriteFrame(OP_FRAME, payload);
             }
             catch
@@ -233,6 +233,30 @@ namespace CutTheRope.Helpers.Discord
                 w.WriteStartObject();
                 w.WriteNumber("v", 1);
                 w.WriteString("client_id", _clientId);
+                w.WriteEndObject();
+            }
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Builds a SET_ACTIVITY payload with <c>"activity": null</c> to clear the presence.
+        /// </summary>
+        /// <returns>UTF-8 encoded JSON bytes.</returns>
+        private byte[] BuildClearActivityPayload()
+        {
+            using MemoryStream ms = new();
+            using (Utf8JsonWriter w = new(ms))
+            {
+                w.WriteStartObject();
+                w.WriteString("cmd", "SET_ACTIVITY");
+
+                w.WritePropertyName("args");
+                w.WriteStartObject();
+                w.WriteNumber("pid", Environment.ProcessId);
+                w.WriteNull("activity");
+                w.WriteEndObject(); // args
+
+                w.WriteString("nonce", Interlocked.Increment(ref _nonce).ToString(CultureInfo.InvariantCulture));
                 w.WriteEndObject();
             }
             return ms.ToArray();
