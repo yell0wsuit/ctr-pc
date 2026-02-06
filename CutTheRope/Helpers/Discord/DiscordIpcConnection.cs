@@ -27,9 +27,14 @@ namespace CutTheRope.Helpers.Discord
             {
                 try
                 {
-                    return OperatingSystem.IsWindows()
+                    bool connected = OperatingSystem.IsWindows()
                         ? TryConnectWindows(i)
                         : TryConnectUnix(i);
+
+                    if (connected)
+                    {
+                        return true;
+                    }
                 }
                 catch (Exception) when (
                     !System.Diagnostics.Debugger.IsAttached)
