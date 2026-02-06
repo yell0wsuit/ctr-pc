@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.GameMain;
-
-using DiscordRPC;
+using CutTheRope.Helpers.Discord;
 
 
 namespace CutTheRope.Helpers
 {
     public class RPCHelpers : IDisposable
     {
-        public DiscordRpcClient Client { get; private set; }
+        private DiscordIpcClient _client;
         private DateTime? startTimestamp;
+        private bool _isConnected;
 
         // Check if RPC is enabled in the save file
         // By default, RPC is enabled
@@ -20,27 +20,35 @@ namespace CutTheRope.Helpers
         private static bool IsRpcEnabled =>
             Preferences.GetBooleanForKey(CTRPreferences.PREFS_RPC_ENABLED);
 
-        //replace with your own Discord Application ID if needed
+        // Replace with your own Discord Application ID if needed
         private readonly string DISCORD_APP_ID = "1457063659724603457";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void MenuPresence()
         {
-            if (Client == null || !IsRpcEnabled || !Client.IsInitialized)
+            if (_client == null || !IsRpcEnabled || !_isConnected)
             {
                 return;
             }
-            Client.SetPresence(new RichPresence()
-            {
-                Details = "Browsing Menu",
-                State = $"⭐ Total: {CTRPreferences.GetTotalStars()}",
-                Timestamps = new Timestamps()
-                {
-                    Start = GetOrCreateStartTime()
-                }
-            });
 
+            try
+            {
+                _client.SetActivity(
+                    details: "Browsing Menu",
+                    state: $"⭐ Total: {CTRPreferences.GetTotalStars()}",
+                    startTimestamp: GetOrCreateEpochSeconds());
+            }
+            catch
+            {
+                _isConnected = false;
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Setup()
         {
             if (!IsRpcEnabled)
@@ -48,39 +56,63 @@ namespace CutTheRope.Helpers
                 return;
             }
 
-            Client = new DiscordRpcClient(DISCORD_APP_ID);
-            _ = Client.Initialize();
+            try
+            {
+                _client = new DiscordIpcClient(DISCORD_APP_ID);
+                _isConnected = _client.TryConnect();
 
-            if (!Client.IsInitialized)
-            {
-                return;
-            }
-            Client.SetPresence(new RichPresence()
-            {
-                Timestamps = new Timestamps()
+                if (!_isConnected)
                 {
-                    Start = GetOrCreateStartTime()
+                    return;
                 }
-            });
+
+                _client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
+            }
+            catch
+            {
+                _isConnected = false;
+            }
         }
 
-        private DateTime GetOrCreateStartTime()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private long GetOrCreateEpochSeconds()
         {
             startTimestamp ??= DateTime.UtcNow;
-            return startTimestamp.Value;
+            return new DateTimeOffset(startTimestamp.Value, TimeSpan.Zero).ToUnixTimeSeconds();
         }
 
         public void Dispose()
         {
-            Client?.ClearPresence();
-            Client?.Dispose();
-            Client = null;
+            try
+            {
+                _client?.ClearActivity();
+            }
+            catch
+            {
+                // Best effort
+            }
+
+            _client?.Dispose();
+            _client = null;
+            _isConnected = false;
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pack"></param>
+        /// <param name="level"></param>
+        /// <param name="stars"></param>
+        /// <param name="isWon"></param>
+        /// <param name="score"></param>
+        /// <param name="time"></param>
         public void SetLevelPresence(int pack, int level, int stars, bool isWon = false, int? score = null, int? time = null)
         {
-            if (Client == null || !IsRpcEnabled || !Client.IsInitialized || (Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null))
+            if (_client == null || !IsRpcEnabled || !_isConnected || (Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null))
             {
                 return;
             }
@@ -108,20 +140,19 @@ namespace CutTheRope.Helpers
                 }
             }
 
-            Client.SetPresence(new RichPresence()
+            try
             {
-                Details = $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
-                State = state,
-                Assets = new Assets()
-                {
-                    SmallImageKey = $"pack_{pack + 1}",
-                    SmallImageText = $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}"
-                },
-                Timestamps = new Timestamps()
-                {
-                    Start = GetOrCreateStartTime()
-                }
-            });
+                _client.SetActivity(
+                    details: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
+                    state: state,
+                    startTimestamp: GetOrCreateEpochSeconds(),
+                    smallImageKey: $"pack_{pack + 1}",
+                    smallImageText: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}");
+            }
+            catch
+            {
+                _isConnected = false;
+            }
         }
     }
 }
