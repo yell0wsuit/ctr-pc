@@ -42,6 +42,7 @@ echo "[1/5] Building Linux x64 release..."
 rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
+    -f net10.0 \
     -r linux-x64 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
