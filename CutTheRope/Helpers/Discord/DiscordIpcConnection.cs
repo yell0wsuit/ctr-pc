@@ -18,9 +18,9 @@ namespace CutTheRope.Helpers.Discord
         public Stream Stream { get; private set; }
 
         /// <summary>
-        /// 
+        /// Attempts to connect to Discord IPC pipe indices 0 through 9.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see langword="true"/> on the first successful connection; otherwise <see langword="false"/>.</returns>
         public bool TryConnect()
         {
             for (int i = 0; i < 10; i++)
@@ -42,10 +42,10 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Connects via Windows named pipe (<c>\\.\pipe\discord-ipc-{pipeIndex}</c>).
         /// </summary>
-        /// <param name="pipeIndex"></param>
-        /// <returns></returns>
+        /// <param name="pipeIndex">The pipe index to try (0-9).</param>
+        /// <returns><see langword="true"/> if the connection succeeded.</returns>
         private bool TryConnectWindows(int pipeIndex)
         {
             NamedPipeClientStream pipe = new(
@@ -66,10 +66,10 @@ namespace CutTheRope.Helpers.Discord
         }
 
         /// <summary>
-        /// 
+        /// Connects via Unix domain socket at standard paths (XDG_RUNTIME_DIR, TMPDIR, /tmp).
         /// </summary>
-        /// <param name="pipeIndex"></param>
-        /// <returns></returns>
+        /// <param name="pipeIndex">The pipe index to try (0-9).</param>
+        /// <returns><see langword="true"/> if the connection succeeded.</returns>
         private bool TryConnectUnix(int pipeIndex)
         {
             string pipeName = $"discord-ipc-{pipeIndex}";
