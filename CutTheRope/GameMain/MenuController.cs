@@ -1241,7 +1241,6 @@ namespace CutTheRope.GameMain
                 PreLevelSelect();
             }
             ShowView(viewToShow);
-            UpdateChecker.StartIfNeeded();
             CTRSoundMgr.StopMusic();
             if (SpecialEvents.IsXmas)
             {
