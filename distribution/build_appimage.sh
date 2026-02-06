@@ -44,6 +44,7 @@ rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
     -r linux-x64 \
+    -f net10.0 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
 
