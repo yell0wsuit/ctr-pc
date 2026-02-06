@@ -58,6 +58,7 @@ namespace CutTheRope.GameMain
             }
             SetIntForKey(2, "PREFS_VERSION", true);
             SetRpcPreferenceInJson(); // temporary hack, remove after setting UI is implemented
+            SetUpdateCheckPreferenceInJson(); // temporary hack, remove after setting UI is implemented
         }
 
         private static void ResetMusicSound()
@@ -73,6 +74,20 @@ namespace CutTheRope.GameMain
             {
                 SetBooleanForKey(true, PREFS_RPC_ENABLED, true);
             }
+        }
+
+        // temporary hack, remove after setting UI is implemented
+        private static void SetUpdateCheckPreferenceInJson()
+        {
+            if (!ContainsKey(PREFS_UPDATE_CHECK))
+            {
+                SetIntForKey(1, PREFS_UPDATE_CHECK, true);
+            }
+        }
+
+        public static bool IsUpdateCheckEnabled()
+        {
+            return ContainsKey("PREFS_UPDATE_CHECK") ? GetIntForKey("PREFS_UPDATE_CHECK") != 0 : GetIntForKey(PREFS_UPDATE_CHECK) != 0;
         }
 
         private static bool IsShareware()
@@ -269,6 +284,7 @@ namespace CutTheRope.GameMain
             SetIntForKey(0, "PREFS_LAST_PACK", true);
             SetBooleanForKey(true, "PREFS_WINDOW_FULLSCREEN", true);
             SetBooleanForKey(true, PREFS_RPC_ENABLED, true);
+            SetIntForKey(1, PREFS_UPDATE_CHECK, true);
             CheckForUnlockIAP();
             RequestSave();
             SetScoreHash();
@@ -375,6 +391,8 @@ namespace CutTheRope.GameMain
         public const string PREFS_IS_EXIST = "PREFS_EXIST";
 
         public const string PREFS_RPC_ENABLED = "PREFS_RPC_ENABLED";
+
+        public const string PREFS_UPDATE_CHECK = "PREFS_UPDATE_CHECK";
 
         public const string PREFS_SOUND_ON = "SOUND_ON";
 

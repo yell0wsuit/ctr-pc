@@ -215,6 +215,18 @@
         "fr": "Reviens plus tard pour découvrir les nouveaux niveaux contenus dans les mises à jour",
         "de": "Verpass nicht die neuen Levels in den kommenden Updates!"
     },
+    "UPDATE_AVAILABLE_TITLE": {
+        "en": "A new update is available!"
+    },
+    "UPDATE_AVAILABLE_TEXT": {
+        "en": "A new version of Cut the Rope: DX is available.\nCurrent: %currentVersion%\nLatest: %latestVersion%\n\nVisit the GitHub releases page to download."
+    },
+    "UPDATE_AVAILABLE_DOWNLOAD_BUTTON": {
+        "en": "Download"
+    },
+    "UPDATE_AVAILABLE_LATER_BUTTON": {
+        "en": "Later"
+    },
     "ACHIEVEMENT_GAINED": {
         "en": "achievement gained!",
         "ru": "разлочено!",
