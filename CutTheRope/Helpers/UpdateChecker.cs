@@ -106,10 +106,24 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Determines if the version string represents a dirty/dev build.
         /// </summary>
+        /// <param name="version">The version to check.</param>
         public static bool IsDirtyVersion(string version)
         {
-            return !string.IsNullOrWhiteSpace(version)
-                && version.Contains("dirty", StringComparison.OrdinalIgnoreCase);
+            // Avoids treating missing/blank version strings as "dirty" version
+            if (string.IsNullOrWhiteSpace(version))
+            {
+                return false;
+            }
+
+            // Check if there is "dirty" in the version build
+            if (version.Contains("dirty", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // When IncludeSourceRevisionInInformationalVersion is enabled,
+            // a build metadata suffix like "+githash" is appended.
+            return version.Contains('+', StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -129,6 +143,8 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Fetches the latest GitHub release and returns update info when newer than current.
         /// </summary>
+        /// <param name="currentVersionString">The current version string used for comparison.</param>
+        /// <param name="cancellationToken">Token used to cancel the HTTP request.</param>
         private static async Task<UpdateInfo> FetchLatestReleaseAsync(string currentVersionString, CancellationToken cancellationToken)
         {
             if (!TryParseVersion(currentVersionString, out Version currentVersion))
@@ -190,6 +206,9 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Attempts to parse a semantic version from a tag or version string.
         /// </summary>
+        /// <param name="input">The input tag or version string.</param>
+        /// <param name="version">The parsed version when successful.</param>
+        /// <returns>True when parsing succeeded; otherwise false.</returns>
         private static bool TryParseVersion(string input, out Version version)
         {
             version = null;
