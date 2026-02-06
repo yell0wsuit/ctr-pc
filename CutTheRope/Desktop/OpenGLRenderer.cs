@@ -146,6 +146,11 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void GlViewport(int x, int y, int width, int height)
         {
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
+
             s_Viewport.X = x;
             s_Viewport.Y = y;
             s_Viewport.Width = width;
