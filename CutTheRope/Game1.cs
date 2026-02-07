@@ -115,8 +115,6 @@ namespace CutTheRope
                 ?? "Unknown";
             Window.Title = $"Cut The Rope: DX v{version}";
             base.Initialize();
-            //Initialize RPC
-            RPC.Setup();
         }
 
         protected override void LoadContent()
