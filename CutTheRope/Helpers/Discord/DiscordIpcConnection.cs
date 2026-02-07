@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Net.Sockets;
@@ -37,7 +38,7 @@ namespace CutTheRope.Helpers.Discord
                     }
                 }
                 catch (Exception) when (
-                    !System.Diagnostics.Debugger.IsAttached)
+                    !Debugger.IsAttached)
                 {
                     // Try next pipe index
                 }
@@ -66,7 +67,12 @@ namespace CutTheRope.Helpers.Discord
             catch
             {
                 pipe.Dispose();
-                throw;
+                if (Debugger.IsAttached)
+                {
+                    throw;
+                }
+
+                return false;
             }
         }
 
