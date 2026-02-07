@@ -70,6 +70,7 @@ namespace CutTheRope.GameMain
             resourcesLoaded = false; // Reset flag when activating
             ShowView(1);
             UpdateChecker.StartIfNeeded();
+            Game1.RPC.Setup();
             MoviePlaybackFinished(null);
         }
 
