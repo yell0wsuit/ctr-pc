@@ -16,7 +16,7 @@ BUNDLE_ID="page.yell0wsuit.cuttherope.dx"
 PROJECT="$PROJECT_ROOT/CutTheRope/CutTheRope.csproj"
 PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/osx-arm64"
 APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
-ICON_SOURCE="$PUBLISH_DIR/icons/CutTheRopeDXIcon.icns"
+ICON_SOURCE="$PUBLISH_DIR/Resources/CutTheRopeDXIcon.icns"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/macos"
 
 # =========================
