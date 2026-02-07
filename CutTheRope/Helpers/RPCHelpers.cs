@@ -3,14 +3,15 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.GameMain;
-using CutTheRope.Helpers.Discord;
+
+using DiscordRPC;
 
 
 namespace CutTheRope.Helpers
 {
     public class RPCHelpers : IDisposable
     {
-        private DiscordIpcClient _client;
+        public DiscordRpcClient Client { get; private set; }
         private DateTime? startTimestamp;
 
         // Check if RPC is enabled in the save file
@@ -19,48 +20,27 @@ namespace CutTheRope.Helpers
         private static bool IsRpcEnabled =>
             Preferences.GetBooleanForKey(CTRPreferences.PREFS_RPC_ENABLED);
 
-        // Replace with your own Discord Application ID if needed
+        //replace with your own Discord Application ID if needed
         private readonly string DISCORD_APP_ID = "1457063659724603457";
 
-        /// <summary>
-        /// Checks if the client is connected, attempting a reconnect if not.
-        /// </summary>
-        /// <returns><see langword="true"/> if the client is connected and ready.</returns>
-        private bool EnsureConnected()
-        {
-            if (_client == null || !IsRpcEnabled)
-            {
-                return false;
-            }
-
-            if (_client.IsConnected)
-            {
-                return true;
-            }
-
-            // Attempt reconnection (e.g. Discord was restarted)
-            return _client.TryConnect();
-        }
-
-        /// <summary>
-        /// Updates Discord Rich Presence to show the user is browsing the menu.
-        /// </summary>
         public void MenuPresence()
         {
-            if (!EnsureConnected())
+            if (Client == null || !IsRpcEnabled || !Client.IsInitialized)
             {
                 return;
             }
+            Client.SetPresence(new RichPresence()
+            {
+                Details = "Browsing Menu",
+                State = $"⭐ Total: {CTRPreferences.GetTotalStars()}",
+                Timestamps = new Timestamps()
+                {
+                    Start = GetOrCreateStartTime()
+                }
+            });
 
-            _client.SetActivity(
-                details: "Browsing Menu",
-                state: $"⭐ Total: {CTRPreferences.GetTotalStars()}",
-                startTimestamp: GetOrCreateEpochSeconds());
         }
 
-        /// <summary>
-        /// Initializes the Discord IPC connection and sets the initial presence.
-        /// </summary>
         public void Setup()
         {
             if (!IsRpcEnabled)
@@ -68,45 +48,39 @@ namespace CutTheRope.Helpers
                 return;
             }
 
-            _client = new DiscordIpcClient(DISCORD_APP_ID);
-            if (!_client.TryConnect())
+            Client = new DiscordRpcClient(DISCORD_APP_ID);
+            _ = Client.Initialize();
+
+            if (!Client.IsInitialized)
             {
                 return;
             }
-
-            _client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
+            Client.SetPresence(new RichPresence()
+            {
+                Timestamps = new Timestamps()
+                {
+                    Start = GetOrCreateStartTime()
+                }
+            });
         }
 
-        /// <summary>
-        /// Returns the session start time as Unix epoch seconds, creating it on first call.
-        /// </summary>
-        /// <returns>Unix epoch seconds of the session start.</returns>
-        private long GetOrCreateEpochSeconds()
+        private DateTime GetOrCreateStartTime()
         {
             startTimestamp ??= DateTime.UtcNow;
-            return new DateTimeOffset(startTimestamp.Value, TimeSpan.Zero).ToUnixTimeSeconds();
+            return startTimestamp.Value;
         }
 
         public void Dispose()
         {
-            _client?.ClearActivity();
-            _client?.Dispose();
-            _client = null;
+            Client?.ClearPresence();
+            Client?.Dispose();
+            Client = null;
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Updates Discord Rich Presence with the current level information.
-        /// </summary>
-        /// <param name="pack">Zero-based pack index.</param>
-        /// <param name="level">Zero-based level index within the pack.</param>
-        /// <param name="stars">Number of stars collected (0-3).</param>
-        /// <param name="isWon">Whether the level has been completed.</param>
-        /// <param name="score">Final score if the level was won.</param>
-        /// <param name="time">Elapsed time in seconds if the level was won.</param>
         public void SetLevelPresence(int pack, int level, int stars, bool isWon = false, int? score = null, int? time = null)
         {
-            if (!EnsureConnected() || Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null)
+            if (Client == null || !IsRpcEnabled || !Client.IsInitialized || (Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null))
             {
                 return;
             }
@@ -134,12 +108,20 @@ namespace CutTheRope.Helpers
                 }
             }
 
-            _client.SetActivity(
-                details: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
-                state: state,
-                startTimestamp: GetOrCreateEpochSeconds(),
-                smallImageKey: $"pack_{pack + 1}",
-                smallImageText: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}");
+            Client.SetPresence(new RichPresence()
+            {
+                Details = $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
+                State = state,
+                Assets = new Assets()
+                {
+                    SmallImageKey = $"pack_{pack + 1}",
+                    SmallImageText = $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}"
+                },
+                Timestamps = new Timestamps()
+                {
+                    Start = GetOrCreateStartTime()
+                }
+            });
         }
     }
 }
