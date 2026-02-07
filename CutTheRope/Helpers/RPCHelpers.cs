@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.GameMain;
@@ -27,19 +29,20 @@ namespace CutTheRope.Helpers
         /// </summary>
         public void MenuPresence()
         {
-            if (_client == null || !IsRpcEnabled || !_client.IsConnected)
+            DiscordIpcClient client = Volatile.Read(ref _client);
+            if (client == null || !IsRpcEnabled || !client.IsConnected)
             {
                 return;
             }
 
-            _client.SetActivity(
+            client.SetActivity(
                 details: "Browsing Menu",
                 state: $"⭐ Total: {CTRPreferences.GetTotalStars()}",
                 startTimestamp: GetOrCreateEpochSeconds());
         }
 
         /// <summary>
-        /// Initializes the Discord IPC connection and sets the initial presence.
+        /// Starts the Discord IPC connection on a background thread.
         /// </summary>
         public void Setup()
         {
@@ -48,13 +51,25 @@ namespace CutTheRope.Helpers
                 return;
             }
 
-            _client = new DiscordIpcClient(DISCORD_APP_ID);
-            if (!_client.TryConnect())
+            _ = Task.Run(() =>
             {
-                return;
-            }
+                try
+                {
+                    DiscordIpcClient client = new(DISCORD_APP_ID);
+                    if (!client.TryConnect())
+                    {
+                        client.Dispose();
+                        return;
+                    }
 
-            _client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
+                    client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
+                    Volatile.Write(ref _client, client);
+                }
+                catch
+                {
+                    // Ignore connection failures
+                }
+            });
         }
 
         /// <summary>
@@ -69,17 +84,21 @@ namespace CutTheRope.Helpers
 
         public void Dispose()
         {
-            try
+            DiscordIpcClient client = Interlocked.Exchange(ref _client, null);
+            if (client != null)
             {
-                _client?.ClearActivity();
-            }
-            catch
-            {
-                // Best effort
+                try
+                {
+                    client.ClearActivity();
+                }
+                catch
+                {
+                    // Best effort
+                }
+
+                client.Dispose();
             }
 
-            _client?.Dispose();
-            _client = null;
             GC.SuppressFinalize(this);
         }
 
@@ -94,7 +113,8 @@ namespace CutTheRope.Helpers
         /// <param name="time">Elapsed time in seconds if the level was won.</param>
         public void SetLevelPresence(int pack, int level, int stars, bool isWon = false, int? score = null, int? time = null)
         {
-            if (_client == null || !IsRpcEnabled || !_client.IsConnected || Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null)
+            DiscordIpcClient client = Volatile.Read(ref _client);
+            if (client == null || !IsRpcEnabled || !client.IsConnected || Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null)
             {
                 return;
             }
@@ -122,7 +142,7 @@ namespace CutTheRope.Helpers
                 }
             }
 
-            _client.SetActivity(
+            client.SetActivity(
                 details: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
                 state: state,
                 startTimestamp: GetOrCreateEpochSeconds(),
