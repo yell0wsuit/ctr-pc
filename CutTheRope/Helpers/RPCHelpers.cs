@@ -12,7 +12,6 @@ namespace CutTheRope.Helpers
     {
         private DiscordIpcClient _client;
         private DateTime? startTimestamp;
-        private bool _isConnected;
 
         // Check if RPC is enabled in the save file
         // By default, RPC is enabled
@@ -24,26 +23,39 @@ namespace CutTheRope.Helpers
         private readonly string DISCORD_APP_ID = "1457063659724603457";
 
         /// <summary>
+        /// Checks if the client is connected, attempting a reconnect if not.
+        /// </summary>
+        /// <returns><see langword="true"/> if the client is connected and ready.</returns>
+        private bool EnsureConnected()
+        {
+            if (_client == null || !IsRpcEnabled)
+            {
+                return false;
+            }
+
+            if (_client.IsConnected)
+            {
+                return true;
+            }
+
+            // Attempt reconnection (e.g. Discord was restarted)
+            return _client.TryConnect();
+        }
+
+        /// <summary>
         /// Updates Discord Rich Presence to show the user is browsing the menu.
         /// </summary>
         public void MenuPresence()
         {
-            if (_client == null || !IsRpcEnabled || !_isConnected)
+            if (!EnsureConnected())
             {
                 return;
             }
 
-            try
-            {
-                _client.SetActivity(
-                    details: "Browsing Menu",
-                    state: $"⭐ Total: {CTRPreferences.GetTotalStars()}",
-                    startTimestamp: GetOrCreateEpochSeconds());
-            }
-            catch
-            {
-                _isConnected = false;
-            }
+            _client.SetActivity(
+                details: "Browsing Menu",
+                state: $"⭐ Total: {CTRPreferences.GetTotalStars()}",
+                startTimestamp: GetOrCreateEpochSeconds());
         }
 
         /// <summary>
@@ -56,22 +68,13 @@ namespace CutTheRope.Helpers
                 return;
             }
 
-            try
+            _client = new DiscordIpcClient(DISCORD_APP_ID);
+            if (!_client.TryConnect())
             {
-                _client = new DiscordIpcClient(DISCORD_APP_ID);
-                _isConnected = _client.TryConnect();
-
-                if (!_isConnected)
-                {
-                    return;
-                }
-
-                _client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
+                return;
             }
-            catch
-            {
-                _isConnected = false;
-            }
+
+            _client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
         }
 
         /// <summary>
@@ -86,18 +89,9 @@ namespace CutTheRope.Helpers
 
         public void Dispose()
         {
-            try
-            {
-                _client?.ClearActivity();
-            }
-            catch
-            {
-                // Best effort
-            }
-
+            _client?.ClearActivity();
             _client?.Dispose();
             _client = null;
-            _isConnected = false;
             GC.SuppressFinalize(this);
         }
 
@@ -112,7 +106,7 @@ namespace CutTheRope.Helpers
         /// <param name="time">Elapsed time in seconds if the level was won.</param>
         public void SetLevelPresence(int pack, int level, int stars, bool isWon = false, int? score = null, int? time = null)
         {
-            if (_client == null || !IsRpcEnabled || !_isConnected || (Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null))
+            if (!EnsureConnected() || Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null)
             {
                 return;
             }
@@ -140,19 +134,12 @@ namespace CutTheRope.Helpers
                 }
             }
 
-            try
-            {
-                _client.SetActivity(
-                    details: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
-                    state: state,
-                    startTimestamp: GetOrCreateEpochSeconds(),
-                    smallImageKey: $"pack_{pack + 1}",
-                    smallImageText: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}");
-            }
-            catch
-            {
-                _isConnected = false;
-            }
+            _client.SetActivity(
+                details: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
+                state: state,
+                startTimestamp: GetOrCreateEpochSeconds(),
+                smallImageKey: $"pack_{pack + 1}",
+                smallImageText: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}");
         }
     }
 }

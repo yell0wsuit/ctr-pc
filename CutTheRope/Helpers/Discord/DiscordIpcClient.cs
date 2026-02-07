@@ -31,6 +31,7 @@ namespace CutTheRope.Helpers.Discord
         {
             try
             {
+                _connection?.Dispose();
                 _connection = new DiscordIpcConnection();
                 if (!_connection.TryConnect())
                 {
