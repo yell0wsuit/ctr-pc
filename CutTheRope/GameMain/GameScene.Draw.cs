@@ -176,13 +176,11 @@ namespace CutTheRope.GameMain
 
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             kickStainsPool.Draw();
-            foreach (object bungeeBack in bungees)
+            foreach (object bungeeObj in bungees)
             {
-                ((Grab)bungeeBack).DrawBack();
-            }
-            foreach (object bungeeMain in bungees)
-            {
-                ((Grab)bungeeMain).Draw();
+                Grab grab = (Grab)bungeeObj;
+                grab.DrawBack();
+                grab.Draw();
             }
             foreach (object bungeeGun in bungees)
             {
