@@ -352,8 +352,7 @@ namespace CutTheRope.GameMain
                     }
                     else
                     {
-                        Vector world = Vect(tx + camera.pos.X, ty + camera.pos.Y);
-                        rocket.HandleRotateFinal(world);
+                        rocket.HandleRotateFinal();
                     }
                     rocket.rotateHandled = false;
                     rocket.isOperating = -1;

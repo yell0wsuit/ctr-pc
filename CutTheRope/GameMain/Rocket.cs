@@ -199,7 +199,7 @@ namespace CutTheRope.GameMain
             RotateWithBB(rotation);
         }
 
-        public void HandleRotateFinal(Vector v)
+        public void HandleRotateFinal()
         {
             rotation = AngleTo0_360(rotation);
             float num = Round(rotation / 45f);
@@ -258,12 +258,9 @@ namespace CutTheRope.GameMain
         public bool rotateHandled;
         public float anglePercent;
         public float additionalAngle;
-        public bool perp;
         public bool perpSetted;
-        public Bungee activeBungee;
         public Animation sparks;
         public BaseElement container;
-        public AnimationsPool aniPool;
         public RocketSparks particles;
         public RocketClouds cloudParticles;
         public IRocketDelegate delegateRocketDelegate;
