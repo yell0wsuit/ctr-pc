@@ -8,13 +8,28 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Represents a rocket game object that can be rotated by touch input, fly along a path,
+    /// and produce spark and cloud particle effects from its exhaust.
+    /// </summary>
     internal sealed class Rocket : CTRGameObject, ITimelineDelegate
     {
+        /// <summary>
+        /// Creates a new <see cref="Rocket"/> instance initialized with the specified texture.
+        /// </summary>
+        /// <param name="t">The texture to apply to the rocket.</param>
+        /// <returns>A new <see cref="Rocket"/> initialized with the given texture.</returns>
         private static Rocket Rocket_create(CTRTexture2D t)
         {
             return (Rocket)new Rocket().InitWithTexture(t);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="Rocket"/> from a named texture resource and assigns it a draw quad.
+        /// </summary>
+        /// <param name="resourceName">The resource name used to look up the texture.</param>
+        /// <param name="q">The draw quad index to assign to the rocket.</param>
+        /// <returns>A new <see cref="Rocket"/> configured with the specified resource and quad.</returns>
         public static Rocket Rocket_createWithResIDQuad(string resourceName, int q)
         {
             Rocket rocket = Rocket_create(Application.GetTexture(resourceName));
@@ -22,6 +37,12 @@ namespace CutTheRope.GameMain
             return rocket;
         }
 
+        /// <summary>
+        /// Initializes the rocket with a texture, setting up rotation timelines, the scale-down
+        /// (exhaust) timeline, the physics point, the container element, and the spark animation.
+        /// </summary>
+        /// <param name="tx">The texture to initialize the rocket with.</param>
+        /// <returns>This <see cref="Rocket"/> instance after initialization.</returns>
         public override Image InitWithTexture(CTRTexture2D tx)
         {
             if (base.InitWithTexture(tx) != null)
@@ -77,6 +98,11 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Updates the rocket each frame: synchronizes position with the physics point,
+        /// updates the container, and repositions the exhaust particle emitters.
+        /// </summary>
+        /// <param name="delta">The elapsed time since the last frame, in seconds.</param>
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -119,6 +145,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Parses a mover definition from XML, creating a <see cref="CTRMover"/> that follows the
+        /// specified path with the given move and rotate speeds.
+        /// </summary>
+        /// <param name="xml">The XML element containing <c>path</c>, <c>moveSpeed</c>, and <c>rotateSpeed</c> attributes.</param>
         public override void ParseMover(XElement xml)
         {
             string path = xml.AttributeAsNSString("path");
@@ -143,16 +174,26 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Draws the rocket by first rendering the container (which holds the spark animation),
+        /// then rendering the rocket sprite itself.
+        /// </summary>
         public override void Draw()
         {
             container.Draw();
             base.Draw();
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc />
+        /// <remarks>
+        /// When the scale-down timeline (ID 2) finishes, notifies the <see cref="delegateRocketDelegate"/>
+        /// that the rocket has been exhausted.
+        /// </remarks>
         public void TimelineFinished(Timeline t)
         {
             RotateWithBB(rotation);
@@ -162,6 +203,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Recalculates the bounding box corner vectors (<see cref="t1"/> and <see cref="t2"/>)
+        /// based on the current rotation and position.
+        /// </summary>
         public void UpdateRotation()
         {
             t1.X = x - (bb.w / 2f);
@@ -172,6 +217,13 @@ namespace CutTheRope.GameMain
             t2 = VectRotateAround(t2, angle, x, y);
         }
 
+        /// <summary>
+        /// Computes the rotation angle (in degrees) between two points relative to a center point.
+        /// </summary>
+        /// <param name="v1">The starting point.</param>
+        /// <param name="v2">The ending point.</param>
+        /// <param name="c">The center of rotation.</param>
+        /// <returns>The signed rotation angle in degrees from <paramref name="v1"/> to <paramref name="v2"/>.</returns>
         private static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
             Vector vector = VectSub(v1, c);
@@ -180,12 +232,22 @@ namespace CutTheRope.GameMain
             return RADIANS_TO_DEGREES(num);
         }
 
+        /// <summary>
+        /// Records the initial touch position for a rotation gesture.
+        /// </summary>
+        /// <param name="v">The touch position.</param>
         public void HandleTouch(Vector v)
         {
             lastTouch = v;
             firstTouch = v;
         }
 
+        /// <summary>
+        /// Processes a rotation gesture update. Ignores movement below a 10-unit dead zone
+        /// from the initial touch, then applies incremental rotation based on the angle change
+        /// around the rocket's center.
+        /// </summary>
+        /// <param name="v">The current touch position.</param>
         public void HandleRotate(Vector v)
         {
             if (!rotateHandled && VectLength(VectSub(v, firstTouch)) <= 10f)
@@ -200,6 +262,10 @@ namespace CutTheRope.GameMain
             RotateWithBB(rotation);
         }
 
+        /// <summary>
+        /// Finalizes a rotation gesture by snapping the rocket's rotation to the nearest 45-degree
+        /// increment via an animated timeline.
+        /// </summary>
         public void HandleRotateFinal()
         {
             rotation = AngleTo0_360(rotation);
@@ -214,12 +280,19 @@ namespace CutTheRope.GameMain
             PlayTimeline(1);
         }
 
+        /// <summary>
+        /// Enables the spark animation and begins playing it.
+        /// </summary>
         public void StartAnimation()
         {
             sparks.SetEnabled(true);
             sparks.PlayTimeline(0);
         }
 
+        /// <summary>
+        /// Stops the rocket animation by playing the scale-down timeline, stopping the spark
+        /// animation, stopping and releasing both particle systems, and stopping all sounds.
+        /// </summary>
         public void StopAnimation()
         {
             PlayTimeline(2);
@@ -236,16 +309,33 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.StopSounds();
         }
 
+        /// <summary>The rocket is idle and not in use.</summary>
         public const int STATE_ROCKET_IDLE = 0;
+
+        /// <summary>The rocket is in the distance/approach phase.</summary>
         public const int STATE_ROCKET_DIST = 1;
+
+        /// <summary>The rocket is actively flying.</summary>
         public const int STATE_ROCKET_FLY = 2;
+
+        /// <summary>The rocket has exhausted its fuel and is winding down.</summary>
         public const int STATE_ROCKET_EXAUST = 3;
 
+        /// <summary>
+        /// Calculates the offset from the rocket's center to the exhaust emission point,
+        /// based on the rocket quad's half-length and current scale.
+        /// </summary>
+        /// <returns>The exhaust offset distance.</returns>
         private float GetExhaustOffset()
         {
             return GetRocketQuadHalfLength() * Math.Abs(scaleX);
         }
 
+        /// <summary>
+        /// Returns the cached half-length of the rocket body quad, computing it from the
+        /// quad size on first access.
+        /// </summary>
+        /// <returns>Half the width of the rocket body quad.</returns>
         private static float GetRocketQuadHalfLength()
         {
             if (rocketQuadHalfLength < 0f)
@@ -257,30 +347,77 @@ namespace CutTheRope.GameMain
         }
 
         // private const int MIN_CICRLE_POINTS = 10;
+
+        /// <summary>The quad index for the rocket body sprite.</summary>
         private const int RocketBodyQuad = 10;
+
+        /// <summary>Cached half-length of the rocket body quad; -1 indicates not yet computed.</summary>
         private static float rocketQuadHalfLength = -1f;
 
+        /// <summary>The most recent touch position during a rotation gesture.</summary>
         private Vector lastTouch;
+
+        /// <summary>The initial touch position when a rotation gesture started.</summary>
         private Vector firstTouch;
+
+        /// <summary>The physics constraint point controlling the rocket's position.</summary>
         public ConstraintedPoint point;
+
+        /// <summary>The rocket's current facing angle in radians.</summary>
         public float angle;
+
+        /// <summary>Left edge vector of the rotated bounding box.</summary>
         private Vector t1;
+
+        /// <summary>Right edge vector of the rotated bounding box.</summary>
         private Vector t2;
+
+        /// <summary>Elapsed time tracker used during flight.</summary>
         public float time;
+
+        /// <summary>The impulse force applied to the rocket when launched.</summary>
         public float impulse;
+
+        /// <summary>Multiplier applied to the impulse force.</summary>
         public float impulseFactor;
+
+        /// <summary>The candy's rotation at the time the rocket was activated.</summary>
         public float startCandyRotation;
+
+        /// <summary>The rocket's rotation at the time it was activated.</summary>
         public float startRotation;
+
+        /// <summary>Current operating state (-1 = uninitialized, see <c>STATE_ROCKET_*</c> constants).</summary>
         public int isOperating;
+
+        /// <summary>Whether the rocket can be rotated by touch input.</summary>
         public bool isRotatable;
+
+        /// <summary>Whether a rotation gesture has been recognized (past the dead zone).</summary>
         public bool rotateHandled;
+
+        /// <summary>The percentage of the rotation angle used for interpolation.</summary>
         public float anglePercent;
+
+        /// <summary>An additional angle offset applied on top of the base rotation.</summary>
         public float additionalAngle;
+
+        /// <summary>Whether the perpendicular direction has been set.</summary>
         public bool perpSetted;
+
+        /// <summary>The spark animation displayed at the rocket's exhaust.</summary>
         public Animation sparks;
+
+        /// <summary>Container element that holds the spark animation and matches the rocket's transform.</summary>
         public BaseElement container;
+
+        /// <summary>Particle system for the rocket's spark exhaust trail.</summary>
         public RocketSparks particles;
+
+        /// <summary>Particle system for the rocket's cloud exhaust trail.</summary>
         public RocketClouds cloudParticles;
+
+        /// <summary>Delegate that receives rocket lifecycle callbacks (e.g., exhaustion).</summary>
         public IRocketDelegate delegateRocketDelegate;
     }
 }
