@@ -190,6 +190,7 @@ namespace CutTheRope.GameMain
             if (activeRocket == r)
             {
                 activeRocket = null;
+                star.disableGravity = false;
             }
         }
 
@@ -308,6 +309,8 @@ namespace CutTheRope.GameMain
         public IGameSceneDelegate gameSceneDelegate;
 
         private readonly AnimationsPool aniPool;
+
+        private readonly AnimationsPool particlesAniPool;
 
         private readonly AnimationsPool kickStainsPool;
 

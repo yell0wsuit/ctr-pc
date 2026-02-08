@@ -36,6 +36,11 @@ namespace CutTheRope.GameMain
                 visible = false
             };
             _ = AddChild(aniPool);
+            particlesAniPool = new AnimationsPool
+            {
+                visible = false
+            };
+            _ = AddChild(particlesAniPool);
             kickStainsPool = new AnimationsPool
             {
                 visible = false
