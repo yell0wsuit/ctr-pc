@@ -50,7 +50,7 @@ namespace CutTheRope.GameMain
                 marker.DoRestoreCutTransparency();
                 marker.x = rocket.x;
                 marker.y = rocket.y;
-                _ = aniPool.AddChild(marker);
+                _ = particlesAniPool.AddChild(marker);
             }
         }
     }
