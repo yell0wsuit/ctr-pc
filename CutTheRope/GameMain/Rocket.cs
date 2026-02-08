@@ -54,7 +54,7 @@ namespace CutTheRope.GameMain
                 {
                     disableGravity = true
                 };
-                point.SetWeight(0.5f);
+                point.SetWeight(2.5f);
 
                 container = new BaseElement
                 {
