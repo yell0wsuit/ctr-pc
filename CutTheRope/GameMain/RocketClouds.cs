@@ -4,7 +4,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class RocketClouds : RocketSparks
+    internal sealed class RocketClouds : RocketSparks
     {
         public override Particles InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
