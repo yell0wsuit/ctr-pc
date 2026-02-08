@@ -28,7 +28,7 @@ namespace CutTheRope.Framework.Helpers
                     moveSpeed[j] = num;
                 }
             }
-            paused = false;
+            IsPaused = false;
         }
 
         public virtual void SetMoveSpeed(float ms)
@@ -100,15 +100,15 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void Pause()
         {
-            paused = true;
+            IsPaused = true;
         }
 
         public virtual void Unpause()
         {
-            paused = false;
+            IsPaused = false;
         }
 
-        public bool IsPaused => paused;
+        public bool IsPaused { get; private set; }
 
         public virtual void SetRotateSpeed(float rs)
         {
@@ -140,7 +140,7 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void Update(float delta)
         {
-            if (paused)
+            if (IsPaused)
             {
                 return;
             }
@@ -283,9 +283,6 @@ namespace CutTheRope.Framework.Helpers
         public double angle_initial;
 
         public bool use_angle_initial;
-
-        private bool paused;
-
         public int targetPoint;
 
         private bool reverse;

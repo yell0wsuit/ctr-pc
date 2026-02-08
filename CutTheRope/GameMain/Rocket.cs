@@ -8,7 +8,7 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
-    internal class Rocket : CTRGameObject, ITimelineDelegate
+    internal sealed class Rocket : CTRGameObject, ITimelineDelegate
     {
         private static Rocket Rocket_create(CTRTexture2D t)
         {
