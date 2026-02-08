@@ -16,6 +16,11 @@ namespace CutTheRope.GameMain
                 int num = (int)RTD(p.SubstringFromIndex(2).IntValue());
                 num *= 3;
                 int num2 = num / 2;
+                if (num2 <= 0)
+                {
+                    AddPathPoint(s);
+                    return;
+                }
                 float num3 = (float)(6.283185307179586 / num2);
                 if (!flag)
                 {
