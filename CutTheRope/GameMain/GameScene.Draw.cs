@@ -179,6 +179,8 @@ namespace CutTheRope.GameMain
             foreach (object bungeeObj in bungees)
             {
                 Grab grab = (Grab)bungeeObj;
+                // Reset blend mode per grab to avoid state leakage from child draws.
+                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 grab.DrawBack();
                 grab.Draw();
             }
