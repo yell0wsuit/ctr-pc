@@ -46,6 +46,11 @@ namespace CutTheRope.Framework.Helpers
                 bool flag = p.CharacterAtIndex(1) == 'C';
                 int num = p.SubstringFromIndex(2).IntValue();
                 int num2 = num / 2;
+                if (num2 <= 0)
+                {
+                    AddPathPoint(s);
+                    return;
+                }
                 float num3 = (float)(6.283185307179586 / num2);
                 if (!flag)
                 {
@@ -88,7 +93,7 @@ namespace CutTheRope.Framework.Helpers
             if (pathLen > 0)
             {
                 pos = path[0];
-                targetPoint = 1;
+                targetPoint = pathLen > 1 ? 1 : 0;
                 // CalculateOffset();
             }
         }
