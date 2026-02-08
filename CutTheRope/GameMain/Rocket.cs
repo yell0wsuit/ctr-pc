@@ -182,10 +182,15 @@ namespace CutTheRope.GameMain
         public void HandleTouch(Vector v)
         {
             lastTouch = v;
+            firstTouch = v;
         }
 
         public void HandleRotate(Vector v)
         {
+            if (!rotateHandled && VectLength(VectSub(v, firstTouch)) <= 10f)
+            {
+                return;
+            }
             float num = GetRotateAngleForStartEndCenter(lastTouch, v, Vect(x, y));
             num = AngleTo0_360(num);
             rotation += num;
@@ -238,6 +243,7 @@ namespace CutTheRope.GameMain
         // private const int MIN_CICRLE_POINTS = 10;
 
         private Vector lastTouch;
+        private Vector firstTouch;
         public ConstraintedPoint point;
         public float angle;
         private Vector t1;
