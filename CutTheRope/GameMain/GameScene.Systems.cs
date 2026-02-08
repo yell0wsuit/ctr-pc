@@ -402,6 +402,11 @@ namespace CutTheRope.GameMain
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
+            if (activeRocket != null)
+            {
+                activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                activeRocket.StopAnimation();
+            }
             if (restartState != 0)
             {
                 dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2.0);

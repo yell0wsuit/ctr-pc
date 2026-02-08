@@ -218,6 +218,13 @@ namespace CutTheRope.GameMain
             {
                 ((GameObject)starObj).Draw();
             }
+            if (rockets != null)
+            {
+                foreach (Rocket rocket in rockets)
+                {
+                    rocket?.Draw();
+                }
+            }
             if (!noCandy && targetSock == null)
             {
                 if (!isCandyInLantern)
