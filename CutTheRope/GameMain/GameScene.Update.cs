@@ -117,6 +117,34 @@ namespace CutTheRope.GameMain
                         }
                     }
 
+                    // Process stickTimer for kickable grabs
+                    if (rope != null && grab.stickTimer != -1f)
+                    {
+                        grab.stickTimer += delta;
+                        if (grab.stickTimer > Grab.STICK_DELAY)
+                        {
+                            if (GameObject.RectInObject(mapOriginX, mapOriginY, mapOriginX + mapWidth, mapOriginY + mapHeight, grab))
+                            {
+                                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
+                                grab.kicked = false;
+                                rope.bungeeAnchor.SetWeight(0.02f);
+                                grab.UpdateKickState();
+                                CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerLand);
+                                int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
+                                Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
+                                if (wallClimberCount >= 50)
+                                {
+                                    CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
+                                }
+                                if (wallClimberCount >= 400)
+                                {
+                                    CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
+                                }
+                            }
+                            grab.stickTimer = -1f;
+                        }
+                    }
+
                     bool shouldProcessGrabRadius = true;
 
                     if (rope != null)

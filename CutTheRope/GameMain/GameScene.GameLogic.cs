@@ -114,6 +114,10 @@ namespace CutTheRope.GameMain
                     {
                         SpiderBusted(grab);
                     }
+                    if (grab.gun && grab.gunCup != null && RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, grab.gunCup.color))
+                    {
+                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_DROP_AND_HIDE);
+                    }
                 }
             }
         }

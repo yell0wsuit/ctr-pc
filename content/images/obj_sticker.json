@@ -1,0 +1,53 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 360, "w": 131, "h": 133 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 72, "y": 67, "w": 131, "h": 133 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 1, "y": 1, "w": 200, "h": 195 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 49, "y": 52, "w": 200, "h": 195 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_0002.png",
+            "frame": { "x": 134, "y": 360, "w": 81, "h": 80 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 99, "y": 95, "w": 81, "h": 80 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_0003.png",
+            "frame": { "x": 1, "y": 198, "w": 159, "h": 160 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 63, "y": 60, "w": 159, "h": 160 },
+            "sourceSize": { "w": 275, "h": 275 }
+        },
+        {
+            "filename": "frame_0004.png",
+            "frame": { "x": 134, "y": 442, "w": 63, "h": 63 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 106, "y": 109, "w": 63, "h": 63 },
+            "sourceSize": { "w": 275, "h": 275 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_sticker.png",
+        "format": "RGBA8888",
+        "size": { "w": 216, "h": 506 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:60634025fc7ff1aac98120654a4ac5d5:370a741426544a7bb1b4f2bb0d6a71c3:318666df40388c55fdb497bf1b0ef40d$"
+    }
+}

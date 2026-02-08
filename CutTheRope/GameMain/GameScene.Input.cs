@@ -119,6 +119,53 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
+            // Handle gun tap
+            if (!noCandy)
+            {
+                foreach (object obj in bungees)
+                {
+                    Grab grab = (Grab)obj;
+                    if (grab.gun && !grab.gunFired && grab.rope == null)
+                    {
+                        float tapRadius = Grab.GUN_TAP_RADIUS;
+                        if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                        {
+                            // Calculate direction to candy
+                            Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
+                            grab.gunFired = true;
+                            grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + 90f;
+                            grab.gunCandyInitialRotation = candyMain.rotation;
+                            grab.gunCup.rotation = grab.gunInitialRotation;
+
+                            // Change gunFront quad to fired state
+                            grab.gunFront.SetDrawQuad(3);
+                            grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
+
+                            // Fire the gun - create a rope to the candy
+                            // BUNGEE_REST_LEN = 105
+                            float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - 105f;
+                            float ropeLength = MAX(gunToCandyDistance, 105f);
+                            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
+                            bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                            grab.SetRope(bungee);
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpGun);
+
+                            // Track achievement
+                            int ropesShoot = Preferences.GetIntForKey("PREFS_ROPES_SHOOT") + 1;
+                            Preferences.SetIntForKey(ropesShoot, "PREFS_ROPES_SHOOT", false);
+                            if (ropesShoot >= 50)
+                            {
+                                CTRRootController.PostAchievementName("acRookieSniper", ACHIEVEMENT_STRING("\"Rookie Sniper\""));
+                            }
+                            if (ropesShoot >= 150)
+                            {
+                                CTRRootController.PostAchievementName("acSkilledSniper", ACHIEVEMENT_STRING("\"Skilled Sniper\""));
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
             foreach (SteamTube steamTube in tubes)
             {
                 if (steamTube != null && steamTube.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
@@ -199,6 +246,31 @@ namespace CutTheRope.GameMain
                     {
                         return true;
                     }
+                }
+            }
+            // Check if we touched a non-kicked kickable grab
+            bool touchedNonKickedKickable = false;
+            foreach (object obj4 in bungees)
+            {
+                Grab bungee = (Grab)obj4;
+                float tapRadius = Grab.KICK_TAP_RADIUS;
+                if (bungee.kickable && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                {
+                    if (!bungee.kicked)
+                    {
+                        touchedNonKickedKickable = true;
+                        break;
+                    }
+                    bungee.kickActive = true;
+                }
+            }
+            // Start stick timer for kicked kickable grabs if we didn't touch a non-kicked one
+            foreach (object obj4 in bungees)
+            {
+                Grab bungee = (Grab)obj4;
+                if (bungee.kickable && bungee.rope != null && !touchedNonKickedKickable && bungee.kicked)
+                {
+                    bungee.stickTimer = 0f;
                 }
             }
             foreach (object obj4 in bungees)
@@ -287,6 +359,42 @@ namespace CutTheRope.GameMain
                 if (bungee.moveLength > 0.0 && bungee.moverDragging == ti)
                 {
                     bungee.moverDragging = -1;
+                }
+                if (bungee.kickable && bungee.rope != null)
+                {
+                    float tapRadius = Grab.KICK_TAP_RADIUS;
+                    if (!bungee.kickActive && !bungee.kicked && bungee.rope.cut == -1 &&
+                        PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                    {
+                        if (bungee.stainCounter > 0)
+                        {
+                            Image stain = Image.Image_createWithResIDQuad(Resources.Img.ObjSticker, 0);
+                            stain.DoRestoreCutTransparency();
+                            stain.x = bungee.rope.bungeeAnchor.pos.X;
+                            stain.y = bungee.rope.bungeeAnchor.pos.Y;
+                            stain.anchor = 18;
+                            stain.color.AlphaChannel = bungee.stainCounter / 10f;
+                            _ = kickStainsPool.AddChild(stain);
+                            bungee.stainCounter--;
+                        }
+                        bungee.rope.bungeeAnchor.pin = Vect(-1f, -1f);
+                        bungee.rope.bungeeAnchor.SetWeight(0.1f);
+                        bungee.kicked = true;
+                        bungee.stickTimer = -1f;
+                        bungee.UpdateKickState();
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
+                        int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
+                        Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
+                        if (wallClimberCount >= 50)
+                        {
+                            CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
+                        }
+                        if (wallClimberCount >= 400)
+                        {
+                            CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
+                        }
+                    }
+                    bungee.kickActive = false;
                 }
             }
             _ = conveyors.OnPointerUp(tx + camera.pos.X, ty + camera.pos.Y, ti);
@@ -450,6 +558,12 @@ namespace CutTheRope.GameMain
                             grab2.ReCalcCircle();
                         }
                         return true;
+                    }
+                    // Cancel stick timer if moved too much (kickable grabs)
+                    if (grab2.kickable && grab2.kicked && grab2.rope != null &&
+                        VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
+                    {
+                        grab2.stickTimer = -1f;
                     }
                 }
             }

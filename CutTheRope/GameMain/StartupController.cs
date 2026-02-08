@@ -154,6 +154,11 @@ namespace CutTheRope.GameMain
             Resources.Snd.Conv02,
             Resources.Snd.Conv03,
             Resources.Snd.Conv04,
+
+            // CTR Experiments sounds
+            Resources.Snd.ExpGun,
+            Resources.Snd.ExpSuckerDrop,
+            Resources.Snd.ExpSuckerLand,
             null,
         ];
 

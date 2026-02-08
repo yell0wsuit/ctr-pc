@@ -154,7 +154,10 @@ namespace CutTheRope.GameMain
                 Img.ObjCandy37, Img.ObjCandy38, Img.ObjCandy39, Img.ObjCandy40, Img.ObjCandy41,
                 Img.ObjCandy42, Img.ObjCandy43, Img.ObjCandy44, Img.ObjCandy45, Img.ObjCandy46,
                 Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51,
-                Img.ObjCandy52
+                Img.ObjCandy52,
+
+                // CTR Experiments objects
+                Img.ObjGun, Img.ObjSticker
             ];
         }
 
@@ -179,7 +182,10 @@ namespace CutTheRope.GameMain
                 Snd.MouseTap, Snd.MonsterSleep1, Snd.MonsterSleep2, Snd.MonsterSleep3,
                 Snd.StarLight1, Snd.StarLight2,
                 Snd.Conv01, Snd.Conv02, Snd.Conv03, Snd.Conv04,
-                Snd.TransporterMove, Snd.TransporterDrop
+                Snd.TransporterMove, Snd.TransporterDrop,
+
+                // CTR Experiments sounds
+                Snd.ExpGun, Snd.ExpSuckerDrop, Snd.ExpSuckerLand
             ];
         }
 
@@ -324,6 +330,8 @@ namespace CutTheRope.GameMain
             public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string ObjHookRegulated = "obj_hook_regulated";
             public const string ObjHookMovable = "obj_hook_movable";
+            public const string ObjGun = "obj_gun";
+            public const string ObjSticker = "obj_sticker";
             public const string ObjPump = "obj_pump";
             public const string TutorialSigns = "tutorial_signs";
             public const string ObjHat = "obj_hat";
@@ -561,6 +569,11 @@ namespace CutTheRope.GameMain
             public const string Conv02 = "con02";
             public const string Conv03 = "con03";
             public const string Conv04 = "con04";
+
+            // CTR Experiments sounds
+            public const string ExpGun = "gun";
+            public const string ExpSuckerDrop = "sucker_drop";
+            public const string ExpSuckerLand = "sucker_land";
         }
 
         /// <summary>

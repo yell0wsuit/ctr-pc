@@ -43,6 +43,12 @@ namespace CutTheRope.GameMain
             wheelOperating = -1;
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             baloon = cTRRootController.IsSurvival();
+            gun = false;
+            gunFired = false;
+            invisible = false;
+            kicked = false;
+            kickActive = false;
+            stickTimer = -1f;
         }
 
         public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
@@ -102,6 +108,10 @@ namespace CutTheRope.GameMain
         public override void Update(float delta)
         {
             base.Update(delta);
+            if (gunFired && gunCup != null)
+            {
+                gunCup.Update(delta);
+            }
             if (launcher && rope != null)
             {
                 rope.bungeeAnchor.pos = Vect(x, y);
@@ -213,6 +223,19 @@ namespace CutTheRope.GameMain
 
         public virtual void DrawBack()
         {
+            if (invisible)
+            {
+                return;
+            }
+            if (kickable && kicked && rope != null)
+            {
+                x = (rope.bungeeAnchor.pos.X * 0.8f) + (x * 0.2f);
+                y = (rope.bungeeAnchor.pos.Y * 0.8f) + (y * 0.2f);
+            }
+            if (gun)
+            {
+                return;
+            }
             if (moveLength > 0.0)
             {
                 moveBackground.Draw();
@@ -239,9 +262,19 @@ namespace CutTheRope.GameMain
 
         public override void Draw()
         {
+            if (invisible)
+            {
+                return;
+            }
+            if (kickable && kicked && rope != null)
+            {
+                x = rope.bungeeAnchor.pos.X;
+                y = rope.bungeeAnchor.pos.Y;
+            }
             PreDraw();
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             Bungee bungee = rope;
+
             if (wheel)
             {
                 wheelHighlight.visible = wheelOperating != -1;
@@ -250,21 +283,36 @@ namespace CutTheRope.GameMain
                 wheelImage.Draw();
                 OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
+
+            if (gunBack != null)
+            {
+                gunBack.Draw();
+                if (!gunFired && gunArrow != null)
+                {
+                    gunArrow.Draw();
+                }
+            }
+
             OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+
             bungee?.Draw();
             OpenGLRenderer.GlColor4f(Color.White);
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+
+            // Draw front gun
+            gunFront?.Draw();
+
             if (moveLength <= 0.0)
             {
-                front.Draw();
+                front?.Draw();
             }
             else if (moverDragging != -1)
             {
-                grabMoverHighlight.Draw();
+                grabMoverHighlight?.Draw();
             }
             else
             {
-                grabMover.Draw();
+                grabMover?.Draw();
             }
             if (wheel)
             {
@@ -276,6 +324,16 @@ namespace CutTheRope.GameMain
         public void DrawSpider()
         {
             spider.Draw();
+        }
+
+        public void DrawGunCup()
+        {
+            if (!gunFired)
+            {
+                return;
+            }
+            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            gunCup?.Draw();
         }
 
         public void SetRope(Bungee r)
@@ -307,7 +365,64 @@ namespace CutTheRope.GameMain
         public void SetRadius(float r)
         {
             radius = r;
-            if (radius == -1f)
+            if (gun)
+            {
+                gunBack = Image_createWithResIDQuad(Resources.Img.ObjGun, GunBackQuad);
+                gunBack.DoRestoreCutTransparency();
+                gunBack.anchor = gunBack.parentAnchor = 18;
+                _ = AddChild(gunBack);
+                gunBack.visible = false;
+
+                gunArrow = Image_createWithResIDQuad(Resources.Img.ObjGun, GunArrowQuad);
+                gunArrow.DoRestoreCutTransparency();
+                gunArrow.anchor = gunArrow.parentAnchor = 18;
+                _ = AddChild(gunArrow);
+                gunArrow.visible = false;
+
+                gunFront = Image_createWithResIDQuad(Resources.Img.ObjGun, GunFrontQuad);
+                gunFront.DoRestoreCutTransparency();
+                gunFront.anchor = gunFront.parentAnchor = 18;
+                _ = AddChild(gunFront);
+                gunFront.visible = false;
+
+                gunCup = Animation_createWithResID(Resources.Img.ObjGun);
+                gunCup.DoRestoreCutTransparency();
+                gunCup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
+                gunCup.anchor = 18;
+                _ = AddChild(gunCup);
+                gunCup.visible = false;
+
+                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                gunCup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
+
+                Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                timeline2.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline2.AddKeyFrame(KeyFrame.MakePos(0.0, 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                gunCup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
+                Track track = timeline2.GetTrack(Track.TrackType.TRACK_POSITION);
+                track.relative = true;
+                return;
+            }
+            if (kickable)
+            {
+                stainCounter = MAX_STAINS;
+                back = Image_createWithResIDQuad(Resources.Img.ObjSticker, 3);
+                back.DoRestoreCutTransparency();
+                back.anchor = back.parentAnchor = 18;
+                front = Image_createWithResIDQuad(Resources.Img.ObjSticker, 4);
+                front.DoRestoreCutTransparency();
+                front.anchor = front.parentAnchor = 18;
+                _ = AddChild(back);
+                _ = AddChild(front);
+                back.visible = false;
+                front.visible = false;
+                UpdateKickState();
+            }
+            else if (radius == -1f)
             {
                 string hookTexture = RandomHookTexture();
                 back = Image_createWithResIDQuad(hookTexture, HookBackQuad);
@@ -404,6 +519,10 @@ namespace CutTheRope.GameMain
                 moveBackground.visible = false;
             }
             moverDragging = -1;
+            if (moveLength >= 0f)
+            {
+                kickable = false;
+            }
         }
 
         public void SetBee()
@@ -462,6 +581,25 @@ namespace CutTheRope.GameMain
             rope = null;
         }
 
+        public void UpdateKickState()
+        {
+            if (kicked)
+            {
+                back?.SetDrawQuad(1);
+                front?.SetDrawQuad(2);
+            }
+            else
+            {
+                back?.SetDrawQuad(3);
+                front?.SetDrawQuad(4);
+            }
+            if (rope != null)
+            {
+                x = rope.bungeeAnchor.pos.X;
+                y = rope.bungeeAnchor.pos.Y;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -481,9 +619,31 @@ namespace CutTheRope.GameMain
 
         public const float SPIDER_SPEED = 117f;
 
+        public const int GUN_CUP_SHOW = 0;
+
+        public const int GUN_CUP_HIDE = 1;
+
+        public const int GUN_CUP_DROP_AND_HIDE = 2;
+
+        public const int KICK_MOVE_LENGTH = 10;
+
+        public const int KICK_CUT_RADIUS = 15;
+
+        public const int GUN_CUT_RADIUS = 15;
+
+        public const int KICK_TAP_RADIUS = 70;
+
+        public const int GUN_TAP_RADIUS = 75;
+
+        public const float STICK_DELAY = 0.05f;
+
+        public const int MAX_STAINS = 10;
+
         public Image back;
 
         public Image front;
+
+        // public Image dot;
 
         public Bungee rope;
 
@@ -568,6 +728,33 @@ namespace CutTheRope.GameMain
 
         public bool baloon;
 
+        public bool gun;
+
+        public bool gunFired;
+
+        private Image gunBack;
+
+        public Image gunArrow;
+
+        public Image gunFront;
+
+        public Animation gunCup;
+
+        public float gunInitialRotation;
+
+        public float gunCandyInitialRotation;
+
+        public int stainCounter;
+
+        public bool kickable;
+
+        public bool kicked;
+
+        public bool kickActive;
+
+        public bool invisible;
+        public float stickTimer;
+
         public Image bee;
 
         private static readonly string[] HookTextures =
@@ -593,6 +780,12 @@ namespace CutTheRope.GameMain
         private const int MovableHookQuad = 4;
 
         private const int BeeQuad = 1;
+
+        private const int GunBackQuad = 0;
+
+        private const int GunArrowQuad = 1;
+
+        private const int GunFrontQuad = 2;
 
         private static string RandomHookTexture()
         {
