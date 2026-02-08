@@ -1124,21 +1124,21 @@ namespace CutTheRope.GameMain
 
                         if (new RocketSparks().InitWithTotalParticlesAngleandImageGrid(40, rocket.rotation, grid) is RocketSparks rocketSparks)
                         {
-                            rocketSparks.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
+                            rocketSparks.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
                             rocketSparks.x = rocket.x;
                             rocketSparks.y = rocket.y;
                             rocketSparks.StartSystem(0);
-                            _ = aniPool.AddChild(rocketSparks);
+                            _ = particlesAniPool.AddChild(rocketSparks);
                             rocket.particles = rocketSparks;
                         }
 
                         if (new RocketClouds().InitWithTotalParticlesAngleandImageGrid(20, rocket.rotation, grid) is RocketClouds rocketClouds)
                         {
-                            rocketClouds.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
+                            rocketClouds.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
                             rocketClouds.x = rocket.x;
                             rocketClouds.y = rocket.y;
                             rocketClouds.StartSystem(0);
-                            _ = aniPool.AddChild(rocketClouds);
+                            _ = particlesAniPool.AddChild(rocketClouds);
                             rocket.cloudParticles = rocketClouds;
                         }
 
@@ -1380,6 +1380,10 @@ namespace CutTheRope.GameMain
                 {
                     star.ApplyImpulseDelta(Vect((0f - star.v.X) / num18, ((0f - star.v.Y) / num18) + num17), delta);
                 }
+            }
+            if (activeRocket != null)
+            {
+                star.ApplyImpulseDelta(Vect(-star.v.X / 40f, -star.v.Y / 40f), delta);
             }
             if (lightBulbs.Count > 0)
             {

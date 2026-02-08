@@ -218,6 +218,7 @@ namespace CutTheRope.GameMain
             {
                 ((GameObject)starObj).Draw();
             }
+            particlesAniPool.Draw();
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)
