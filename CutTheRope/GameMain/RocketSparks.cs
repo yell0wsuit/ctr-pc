@@ -4,8 +4,20 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Particle system that emits small spark particles from the rocket's exhaust.
+    /// Particles are randomly selected from quad indices 6–9 of the rocket sprite sheet.
+    /// </summary>
     internal class RocketSparks : RotatableScalableMultiParticles
     {
+        /// <summary>
+        /// Initializes the spark particle system with the given particle count, emission angle,
+        /// and image grid. Configures particle lifetime, speed, color fade, and additive blending.
+        /// </summary>
+        /// <param name="p">The maximum number of particles.</param>
+        /// <param name="a">The base emission angle in radians.</param>
+        /// <param name="grid">The image grid containing spark particle quads.</param>
+        /// <returns>This instance if initialization succeeds; otherwise, <c>null</c>.</returns>
         public virtual Particles InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -51,6 +63,11 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Initializes an individual spark particle by assigning it a random quad (indices 6–9)
+        /// from the rocket sprite sheet and setting its dimensions accordingly.
+        /// </summary>
+        /// <param name="particle">The particle to initialize.</param>
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
