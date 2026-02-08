@@ -159,6 +159,9 @@ namespace CutTheRope.GameMain
             Resources.Snd.ExpGun,
             Resources.Snd.ExpSuckerDrop,
             Resources.Snd.ExpSuckerLand,
+            Resources.Snd.ExpRocketFlyLooped,
+            Resources.Snd.ExpRocketInWater,
+            Resources.Snd.ExpRocketStart,
             null,
         ];
 
