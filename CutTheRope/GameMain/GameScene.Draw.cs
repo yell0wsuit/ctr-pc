@@ -103,6 +103,7 @@ namespace CutTheRope.GameMain
             OpenGLRenderer.GlColor4f(Color.White);
             OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            decalsLayer?.Draw();
             support.Draw();
             target.Draw();
             if (sleepAnimPrimary?.visible == true)

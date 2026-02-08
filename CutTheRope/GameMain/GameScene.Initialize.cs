@@ -22,6 +22,7 @@ namespace CutTheRope.GameMain
             particlesAniPool.RemoveAllChilds();
             kickStainsPool.RemoveAllChilds();
             staticAniPool.RemoveAllChilds();
+            decalsLayer?.RemoveAllChilds();
             Lantern.RemoveAllLanterns();
             isCandyInLantern = false;
             gravityButton = null;
