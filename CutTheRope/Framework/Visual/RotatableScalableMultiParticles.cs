@@ -8,7 +8,7 @@ namespace CutTheRope.Framework.Visual
         {
             base.InitParticle(ref particle);
             particle.angle = initialAngle;
-            particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
+            // particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
             particle.deltaSize = (endSize - size) / particle.life;
         }
 
@@ -104,8 +104,8 @@ namespace CutTheRope.Framework.Visual
         }
 
         public float initialAngle;
-        public float rotateSpeed;
-        public float rotateSpeedVar;
+        // public float rotateSpeed;
+        // public float rotateSpeedVar;
         public float endSize;
     }
 }
