@@ -42,6 +42,7 @@ namespace CutTheRope.GameMain
                     ((Image)obj).Update(delta);
                 }
             }
+            decalsLayer?.Update(delta);
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0.0, 1.0, (double)delta);
             ConstraintedPoint constraintedPoint4 = twoParts != 2 ? starL : star;
             float num = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);

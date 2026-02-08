@@ -312,6 +312,8 @@ namespace CutTheRope.GameMain
 
         private readonly AnimationsPool particlesAniPool;
 
+        private BaseElement decalsLayer;
+
         private readonly AnimationsPool kickStainsPool;
 
         private readonly AnimationsPool staticAniPool;
