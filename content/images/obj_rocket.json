@@ -95,7 +95,7 @@
         "image": "obj_rocket.png",
         "format": "RGBA8888",
         "size": { "w": 1244, "h": 253 },
-        "scale": "0.78",
+        "scale": "1",
         "smartupdate": "$TexturePacker:SmartUpdate:ee75a76425f2f0efc44ac4f7b00a21ad:c69933d4e80b37b21608170075860758:082300f02281ad9aa722382cf02a2733$"
     }
 }
