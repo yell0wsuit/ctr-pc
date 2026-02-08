@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 
 using CutTheRope.Framework;
@@ -9,7 +10,7 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
+    internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation, IRocketDelegate
     {
         private static float MaxOf4(float v1, float v2, float v3, float v4)
         {
@@ -184,6 +185,37 @@ namespace CutTheRope.GameMain
             return (float)((double)a > 3.141592653589793 ? (double)a - 6.283185307179586 : (double)a < -3.141592653589793 ? (double)a + 6.283185307179586 : (double)a);
         }
 
+        public void Exhausted(Rocket r)
+        {
+            if (activeRocket == r)
+            {
+                activeRocket = null;
+            }
+        }
+
+        private static float NearestAngleTofrom(float ta, float fa)
+        {
+            float num = fa - 360f;
+            float num2 = fa + 360f;
+            return Math.Abs(fa - ta) < Math.Abs(num - ta) && Math.Abs(fa - ta) < Math.Abs(num2 - ta)
+                ? fa
+                : Math.Abs(num - ta) < Math.Abs(num2 - ta) ? num : NearestAngleTofrom(ta, num2);
+        }
+
+        private static float MinAngleBetweenAandB(float a, float b)
+        {
+            float num;
+            for (num = Math.Abs(a - b); num > 360f; num -= 360f)
+            {
+            }
+            num = Math.Abs(num);
+            if (num > 180f)
+            {
+                num -= 360f;
+            }
+            return Math.Abs(num);
+        }
+
         public const int MAX_TOUCHES = 5;
 
         public const float DIM_TIMEOUT = 0.15f;
@@ -339,6 +371,8 @@ namespace CutTheRope.GameMain
 
         private DynamicArray<RotatedCircle> rotatedCircles;
 
+        private DynamicArray<Rocket> rockets;
+
         private DynamicArray<CTRGameObject> tutorialImages;
 
         private DynamicArray<Text> tutorials;
@@ -346,6 +380,8 @@ namespace CutTheRope.GameMain
         private DynamicArray<Ghost> ghosts;
 
         private DynamicArray<Mouse> mice;
+
+        private Rocket activeRocket;
 
         private MiceObject miceManager;
 

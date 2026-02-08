@@ -108,6 +108,8 @@ namespace CutTheRope.Framework.Helpers
             paused = false;
         }
 
+        public bool IsPaused => paused;
+
         public virtual void SetRotateSpeed(float rs)
         {
             rotateSpeed = rs;
