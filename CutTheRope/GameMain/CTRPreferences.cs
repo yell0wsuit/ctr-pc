@@ -271,6 +271,7 @@ namespace CutTheRope.GameMain
                 i++;
             }
             SetIntForKey(0, "PREFS_ROPES_CUT", true);
+            SetIntForKey(0, "PREFS_ROPES_SHOOT", true);
             SetIntForKey(0, "PREFS_BUBBLES_POPPED", true);
             SetIntForKey(0, "PREFS_SPIDERS_BUSTED", true);
             SetIntForKey(0, "PREFS_CANDIES_LOST", true);
@@ -409,6 +410,8 @@ namespace CutTheRope.GameMain
         public const string PREFS_NEW_DRAWINGS_COUNTER = "PREFS_NEW_DRAWINGS_COUNTER";
 
         public const string PREFS_ROPES_CUT = "PREFS_ROPES_CUT";
+
+        public const string PREFS_ROPES_SHOOT = "PREFS_ROPES_SHOOT";
 
         public const string PREFS_BUBBLES_POPPED = "PREFS_BUBBLES_POPPED";
 

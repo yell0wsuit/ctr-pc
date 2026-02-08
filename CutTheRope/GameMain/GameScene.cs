@@ -277,6 +277,8 @@ namespace CutTheRope.GameMain
 
         private readonly AnimationsPool aniPool;
 
+        private readonly AnimationsPool kickStainsPool;
+
         private readonly AnimationsPool staticAniPool;
 
         private PollenDrawer pollenDrawer;
@@ -396,6 +398,10 @@ namespace CutTheRope.GameMain
         private float mapWidth;
 
         private float mapHeight;
+
+        private float mapOriginX;
+
+        private float mapOriginY;
 
         private bool mouthOpen;
 

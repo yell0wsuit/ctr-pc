@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Sfe;
@@ -227,6 +228,14 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+            foreach (object bungee in bungees)
+            {
+                Grab grab = (Grab)bungee;
+                if (grab?.rope != null && grab.kickable && grab.kicked)
+                {
+                    HandlePumpFlowPtSkin(p, grab.rope.bungeeAnchor, grab);
+                }
+            }
         }
 
         /// <summary>
@@ -248,7 +257,9 @@ namespace CutTheRope.GameMain
                         bool flag = false;
                         if (r == null)
                         {
-                            flag = (!grab.wheel || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - 110f, grab.y - 110f, 220f, 220f)) && LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
+                            flag = (!grab.wheel || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - 110f, grab.y - 110f, 220f, 220f)) &&
+                                   (!grab.gun || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - Grab.GUN_CUT_RADIUS, grab.y - Grab.GUN_CUT_RADIUS, Grab.GUN_CUT_RADIUS * 2f, Grab.GUN_CUT_RADIUS * 2f)) &&
+                                   LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
                         }
                         else if (constraintedPoint.prevPos.X != 2.1474836E+09f)
                         {
@@ -278,6 +289,10 @@ namespace CutTheRope.GameMain
                             {
                                 rope.cutTime = 0f;
                                 rope.RemovePart(j);
+                            }
+                            if (grab.gun && grab.gunCup != null)
+                            {
+                                grab.gunCup.PlayTimeline(Grab.GUN_CUP_HIDE);
                             }
                             return num;
                         }
@@ -351,6 +366,10 @@ namespace CutTheRope.GameMain
                     if (grab.hasSpider && grab.spiderActive && sg != grab)
                     {
                         SpiderBusted(grab);
+                    }
+                    if (grab.gun && grab.gunCup != null && RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, grab.gunCup.color))
+                    {
+                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_DROP_AND_HIDE);
                     }
                 }
             }

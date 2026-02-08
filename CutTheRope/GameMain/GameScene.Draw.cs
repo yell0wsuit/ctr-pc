@@ -113,43 +113,43 @@ namespace CutTheRope.GameMain
             {
                 sleepAnimSecondary.Draw();
             }
-            foreach (object obj2 in tutorials)
+            foreach (object tutorialText in tutorials)
             {
-                ((Text)obj2).Draw();
+                ((Text)tutorialText).Draw();
             }
-            foreach (object obj3 in tutorialImages)
+            foreach (object tutorialImage in tutorialImages)
             {
-                ((GameObject)obj3).Draw();
+                ((GameObject)tutorialImage).Draw();
             }
-            foreach (object obj4 in razors)
+            foreach (object razor in razors)
             {
-                ((Razor)obj4).Draw();
+                ((Razor)razor).Draw();
             }
-            foreach (object obj5 in rotatedCircles)
+            foreach (object rotatedCircle in rotatedCircles)
             {
-                ((RotatedCircle)obj5).Draw();
+                ((RotatedCircle)rotatedCircle).Draw();
             }
             conveyors.Draw();
-            foreach (object obj6 in bubbles)
+            foreach (object bubble in bubbles)
             {
-                ((GameObject)obj6).Draw();
+                ((GameObject)bubble).Draw();
             }
-            foreach (object obj7 in pumps)
+            foreach (object pump in pumps)
             {
-                ((GameObject)obj7).Draw();
+                ((GameObject)pump).Draw();
             }
-            foreach (object obj8 in spikes)
+            foreach (object spike in spikes)
             {
-                ((Spikes)obj8).Draw();
+                ((Spikes)spike).Draw();
             }
-            foreach (object obj9 in bouncers)
+            foreach (object bouncer in bouncers)
             {
-                ((Bouncer)obj9).Draw();
+                ((Bouncer)bouncer).Draw();
             }
             miceManager?.DrawMice();
-            foreach (object obj10 in socks)
+            foreach (object sockObj in socks)
             {
-                Sock sock = (Sock)obj10;
+                Sock sock = (Sock)sockObj;
                 sock.y -= 85f;
                 sock.Draw();
                 sock.y += 85f;
@@ -175,22 +175,46 @@ namespace CutTheRope.GameMain
             }
 
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            foreach (object obj11 in bungees)
+            kickStainsPool.Draw();
+            foreach (object bungeeObj in bungees)
             {
-                ((Grab)obj11).DrawBack();
+                Grab grab = (Grab)bungeeObj;
+                grab.DrawBack();
+                grab.Draw();
             }
-            foreach (object obj12 in bungees)
+            foreach (object bungeeGun in bungees)
             {
-                ((Grab)obj12).Draw();
+                Grab grab = (Grab)bungeeGun;
+                if (grab.gun)
+                {
+                    if (!grab.gunFired)
+                    {
+                        // Gun arrow tracks the candy position
+                        Vector vector = VectSub(Vect(grab.x, grab.y), star.pos);
+                        grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+                    }
+                    else
+                    {
+                        // Update gunCup position/rotation when fired
+                        int currentTimeline = grab.gunCup.GetCurrentTimelineIndex();
+                        if (currentTimeline != Grab.GUN_CUP_DROP_AND_HIDE)
+                        {
+                            grab.gunCup.x = star.pos.X;
+                            grab.gunCup.y = star.pos.Y;
+                            grab.gunCup.rotation = grab.gunInitialRotation + candy.rotation - grab.gunCandyInitialRotation;
+                        }
+                        grab.DrawGunCup();
+                    }
+                }
             }
             OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (LightBulb bulb in lightBulbs)
             {
                 bulb?.DrawLight();
             }
-            foreach (object obj13 in stars)
+            foreach (object starObj in stars)
             {
-                ((GameObject)obj13).Draw();
+                ((GameObject)starObj).Draw();
             }
             if (!noCandy && targetSock == null)
             {
@@ -230,9 +254,9 @@ namespace CutTheRope.GameMain
             {
                 steamTube2?.DrawFront();
             }
-            foreach (object obj14 in bungees)
+            foreach (object bungeeSpider in bungees)
             {
-                Grab bungee3 = (Grab)obj14;
+                Grab bungee3 = (Grab)bungeeSpider;
                 if (bungee3.hasSpider)
                 {
                     bungee3.DrawSpider();

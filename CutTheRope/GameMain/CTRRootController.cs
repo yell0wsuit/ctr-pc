@@ -437,6 +437,10 @@ namespace CutTheRope.GameMain
             Resources.Img.CharAnimationsSleeping,
             Resources.Img.ObjStarNight,
             Resources.Img.ObjTransporter,
+
+            // CTR Experiments objects
+            Resources.Img.ObjGun,
+            Resources.Img.ObjSticker,
             null
         ];
     }
