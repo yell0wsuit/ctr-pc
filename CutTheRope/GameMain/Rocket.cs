@@ -98,8 +98,9 @@ namespace CutTheRope.GameMain
             float num = VectLength(VectSub(point.prevPos, point.pos));
             num = MAX(num, 1f);
             float num2 = angle - (float)Math.PI;
+            float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
-            vector = VectAdd(vector, VectMult(VectForAngle(angle), 35f));
+            vector = VectAdd(vector, VectMult(VectForAngle(angle), exhaustOffset));
             if (particles != null)
             {
                 particles.x = vector.X;
@@ -240,7 +241,24 @@ namespace CutTheRope.GameMain
         public const int STATE_ROCKET_FLY = 2;
         public const int STATE_ROCKET_EXAUST = 3;
 
+        private float GetExhaustOffset()
+        {
+            return GetRocketQuadHalfLength() * Math.Abs(scaleX);
+        }
+
+        private static float GetRocketQuadHalfLength()
+        {
+            if (rocketQuadHalfLength < 0f)
+            {
+                Vector quadSize = GetQuadSize(Resources.Img.ObjRocket, RocketBodyQuad);
+                rocketQuadHalfLength = quadSize.X * 0.5f;
+            }
+            return rocketQuadHalfLength;
+        }
+
         // private const int MIN_CICRLE_POINTS = 10;
+        private const int RocketBodyQuad = 10;
+        private static float rocketQuadHalfLength = -1f;
 
         private Vector lastTouch;
         private Vector firstTouch;
