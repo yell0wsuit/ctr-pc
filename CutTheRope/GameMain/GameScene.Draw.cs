@@ -224,7 +224,10 @@ namespace CutTheRope.GameMain
             {
                 foreach (Rocket rocket in rockets)
                 {
-                    rocket?.Draw();
+                    if (rocket != null && !(rocket == activeRocket && targetSock != null))
+                    {
+                        rocket.Draw();
+                    }
                 }
             }
             if (!noCandy && targetSock == null)
