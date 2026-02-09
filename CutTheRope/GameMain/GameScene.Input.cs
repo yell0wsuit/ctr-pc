@@ -75,7 +75,7 @@ namespace CutTheRope.GameMain
                 foreach (Rocket rocket in rockets)
                 {
                     if (rocket != null && rocket.state == Rocket.STATE_ROCKET_IDLE && rocket.isRotatable && rocket.isOperating == -1 &&
-                        VectLength(VectSub(world, Vect(rocket.x, rocket.y))) < 60f)
+                        VectLength(VectSub(world, Vect(rocket.x, rocket.y))) < 90f)
                     {
                         rocket.HandleTouch(world);
                         rocket.isOperating = ti;
