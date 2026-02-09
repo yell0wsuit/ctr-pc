@@ -46,7 +46,7 @@ namespace CutTheRope.GameMain
         {
             if (!b.skip)
             {
-                b.skip = true;
+                // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
                 int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
                 float s2 = MAX((double)(VectLength(vector) * 40f), 840.0) * num;
