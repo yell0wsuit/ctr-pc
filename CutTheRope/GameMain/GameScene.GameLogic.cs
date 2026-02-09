@@ -24,6 +24,19 @@ namespace CutTheRope.GameMain
                 star.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
                 star.posDelta = VectDiv(star.v, 60f);
                 star.prevPos = VectSub(star.pos, star.posDelta);
+
+                // Reset rocket direction when candy teleports through sock
+                if (activeRocket != null)
+                {
+                    activeRocket.point.pos = star.pos;
+                    activeRocket.point.prevPos = star.pos;
+                    activeRocket.rotation = targetSock.rotation + 90f;
+                    activeRocket.startRotation = targetSock.rotation + 90f;
+                    activeRocket.startCandyRotation = candyMain.rotation;
+                    activeRocket.additionalAngle = 0f;
+                    activeRocket.UpdateRotation();
+                }
+
                 targetSock = null;
             }
         }
