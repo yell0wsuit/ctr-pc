@@ -104,7 +104,7 @@
   <!-- Windows: bundled native FFmpeg libraries -->
   <ItemGroup
     Condition="$(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
-    <PackageReference Include="FFmpeg.GPL" Version="20260128.1.0" />
+    <PackageReference Include="FFmpeg.LGPL" Version="20260210.1.0" />
   </ItemGroup>
 
   <!-- Compiler constants for DesktopGL builds. -->
