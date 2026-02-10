@@ -69,6 +69,7 @@ namespace CutTheRope.GameMain
             base.Activate();
             resourcesLoaded = false; // Reset flag when activating
             ShowView(1);
+            _ = Application.SharedMovieMgr();
             UpdateChecker.StartIfNeeded();
             Game1.RPC.Setup();
             MoviePlaybackFinished(null);
