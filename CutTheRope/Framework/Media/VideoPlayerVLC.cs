@@ -65,11 +65,17 @@ namespace CutTheRope.Framework.Media
         {
             if (!EnsureVlc())
             {
-                // VLC not ready yet or failed to initialize, skip video
-                PlaybackFinished?.Invoke();
+                pendingMoviePath = moviePath;
+                pendingMute = mute;
                 return;
             }
 
+            pendingMoviePath = null;
+            StartPlayback(moviePath, mute);
+        }
+
+        private void StartPlayback(string moviePath, bool mute)
+        {
             Cleanup();
             playbackFinished = false;
             playStartTime = null;
@@ -221,6 +227,21 @@ namespace CutTheRope.Framework.Media
         /// </remarks>
         public void Update()
         {
+            if (pendingMoviePath != null)
+            {
+                if (EnsureVlc())
+                {
+                    string moviePath = pendingMoviePath;
+                    pendingMoviePath = null;
+                    StartPlayback(moviePath, pendingMute);
+                }
+                else if (vlcInitTask != null && vlcInitTask.IsCompleted && (vlcInitFailed || libVlc == null))
+                {
+                    pendingMoviePath = null;
+                    PlaybackFinished?.Invoke();
+                }
+            }
+
             if (!waitForStart && mediaPlayer != null && playbackFinished)
             {
                 Cleanup();
@@ -484,6 +505,12 @@ namespace CutTheRope.Framework.Media
 
         /// <summary>Indicates that playback is prepared but waiting for Start() to be called.</summary>
         private bool waitForStart;
+
+        /// <summary>Movie path queued while VLC is still initializing.</summary>
+        private string pendingMoviePath;
+
+        /// <summary>Mute flag paired with <see cref="pendingMoviePath"/>.</summary>
+        private bool pendingMute;
     }
 }
 #endif
