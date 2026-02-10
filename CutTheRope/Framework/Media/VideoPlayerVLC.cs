@@ -142,7 +142,7 @@ namespace CutTheRope.Framework.Media
         /// </returns>
         public bool IsPlaying()
         {
-            return mediaPlayer != null;
+            return mediaPlayer != null || pendingMoviePath != null;
         }
 
         /// <summary>
@@ -172,6 +172,8 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         public void Stop()
         {
+            pendingMoviePath = null;
+
             if (mediaPlayer == null)
             {
                 return;
