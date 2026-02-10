@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# Linux build requirements:
-#   sudo apt install libvlc-dev vlc libx11-dev
+# Requirements:
+#   wget, tar, xz-utils (for downloading FFmpeg on Linux)
 
 VERSION="$1"
 if [ -z "$VERSION" ]; then

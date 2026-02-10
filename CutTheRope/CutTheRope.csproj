@@ -97,21 +97,14 @@
     />
   </ItemGroup>
 
-  <!-- VLC video player for Windows and Linux -->
-  <ItemGroup
-    Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
-    <PackageReference Include="LibVLCSharp" Version="3.9.5" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="FFmpeg.AutoGen" Version="8.0.0" />
   </ItemGroup>
 
-  <!-- Windows: bundled native VLC libraries -->
+  <!-- Windows: bundled native FFmpeg libraries -->
   <ItemGroup
     Condition="$(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
-    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
-  </ItemGroup>
-
-  <!-- FFmpeg for macOS DesktopGL builds -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' AND $([MSBuild]::IsOsPlatform('OSX'))">
-    <PackageReference Include="FFmpeg.AutoGen" Version="8.0.0" />
+    <PackageReference Include="FFmpeg.LGPL" Version="20260210.1.0" />
   </ItemGroup>
 
   <!-- Compiler constants for DesktopGL builds. -->
@@ -119,20 +112,14 @@
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
   </PropertyGroup>
 
-  <!-- Support for AVFoundation for macOS Tahoe (26) -->
+  <!-- AVFoundation for macOS Tahoe (26) -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
     <DefineConstants>$(DefineConstants);MACOS_AVFOUNDATION</DefineConstants>
   </PropertyGroup>
 
-  <!-- Use Ffmpeg for macOS below 26 and net10.0 -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0' AND $([MSBuild]::IsOsPlatform('OSX'))">
-    <DefineConstants>$(DefineConstants);MACOS_FFMPEG</DefineConstants>
-  </PropertyGroup>
-
-  <!-- VLC enabled on all platforms except macOS -->
-  <PropertyGroup
-    Condition="!$(RuntimeIdentifier.StartsWith('osx')) AND ( '$(RuntimeIdentifier)' != '' OR !$([MSBuild]::IsOsPlatform('OSX')) )">
-    <DefineConstants>$(DefineConstants);DESKTOPGL_VLC</DefineConstants>
+  <!-- FFmpeg for cross-platform -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <DefineConstants>$(DefineConstants);DESKTOPGL_FFMPEG</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -264,6 +251,20 @@
     
     <!-- Sign the bundle itself -->
     <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
+  </Target>
+
+  <!-- Windows: move FFmpeg DLLs into ffmpeg/ subfolder after publish -->
+  <Target
+    Name="MoveFfmpegToSubfolder"
+    AfterTargets="Publish"
+    Condition="$(RuntimeIdentifier.StartsWith('win'))"
+  >
+    <ItemGroup>
+      <FfmpegDlls Include="$(PublishDir)avcodec-*.dll;$(PublishDir)avformat-*.dll;$(PublishDir)avutil-*.dll;$(PublishDir)swresample-*.dll;$(PublishDir)swscale-*.dll;$(PublishDir)avdevice-*.dll;$(PublishDir)avfilter-*.dll;$(PublishDir)postproc-*.dll" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
+    <Move SourceFiles="@(FfmpegDlls)" DestinationFolder="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
   </Target>
 
   <Target

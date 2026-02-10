@@ -5,8 +5,8 @@
 #
 # Requirements:
 #   - .NET 10.0 SDK
-#   - wget (for downloading appimagetool if not present)
-#   - sudo apt install libvlc-dev vlc libx11-dev
+#   - wget (for downloading appimagetool and FFmpeg if not present)
+#   - tar, xz-utils (for extracting FFmpeg archive)
 
 set -e
 
@@ -47,6 +47,10 @@ dotnet publish "$PROJECT" \
     -f net10.0 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
+
+# Step 1b: Download bundled FFmpeg shared libraries
+echo "[1b/5] Downloading FFmpeg shared libraries..."
+"$SCRIPT_DIR/download_ffmpeg_linux.sh" "$PUBLISH_DIR"
 
 # Step 2: Create AppDir structure
 echo "[2/5] Creating AppDir structure..."

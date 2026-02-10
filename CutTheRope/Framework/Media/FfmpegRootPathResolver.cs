@@ -4,52 +4,29 @@ using System.IO;
 namespace CutTheRope.Framework.Media
 {
     /// <summary>
-    /// Resolves the root path where FFmpeg libraries are located on macOS.
+    /// Resolves the root path where FFmpeg libraries are located.
     /// </summary>
+    /// <remarks>
+    /// On Windows, FFmpeg DLLs are bundled via the FFmpeg.GPL NuGet package and placed
+    /// next to the executable. On Linux, system-installed libraries are used. On macOS,
+    /// Homebrew or bundled Frameworks are searched.
+    /// </remarks>
     internal static class FfmpegRootPathResolver
     {
-        /// <summary>
-        /// FFmpeg library files required for video playback.
-        /// </summary>
-        private static readonly string[] RequiredLibraries =
-        [
-            "libavcodec.dylib",
-            "libavformat.dylib",
-            "libavutil.dylib",
-            "libswscale.dylib",
-            "libswresample.dylib"
-        ];
-
         /// <summary>
         /// Searches for FFmpeg libraries in known locations and returns the first valid path.
         /// </summary>
         /// <param name="appBaseDirectory">The application's base directory.</param>
         /// <param name="directoryExists">Function to check if a directory exists.</param>
-        /// <param name="fileExists">Function to check if a file exists.</param>
         /// <returns>
         /// The path to the directory containing FFmpeg libraries, or <c>null</c> if not found.
         /// </returns>
-        /// <remarks>
-        /// Searches the following locations in order:
-        /// <list type="number">
-        ///   <item><description>Homebrew ARM path: /opt/homebrew/opt/ffmpeg/lib</description></item>
-        ///   <item><description>Homebrew Intel path: /usr/local/opt/ffmpeg/lib</description></item>
-        ///   <item><description>App bundle Frameworks folder: ../Frameworks relative to app base</description></item>
-        /// </list>
-        /// </remarks>
         public static string Resolve(
             string appBaseDirectory,
-            Func<string, bool> directoryExists,
-            Func<string, bool> fileExists)
+            Func<string, bool> directoryExists)
         {
-            string frameworksPath = Path.GetFullPath(Path.Combine(appBaseDirectory, "..", "Frameworks"));
-
-            string[] candidates =
-            [
-                "/opt/homebrew/opt/ffmpeg/lib",
-                "/usr/local/opt/ffmpeg/lib",
-                frameworksPath
-            ];
+            string[] candidates = GetCandidatePaths(appBaseDirectory);
+            string probeLibrary = GetProbeLibrary();
 
             foreach (string candidate in candidates)
             {
@@ -58,23 +35,59 @@ namespace CutTheRope.Framework.Media
                     continue;
                 }
 
-                bool hasAllLibraries = true;
-                foreach (string lib in RequiredLibraries)
-                {
-                    if (!fileExists(Path.Combine(candidate, lib)))
-                    {
-                        hasAllLibraries = false;
-                        break;
-                    }
-                }
-
-                if (hasAllLibraries)
+                if (Directory.GetFiles(candidate, probeLibrary).Length > 0)
                 {
                     return candidate;
                 }
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the platform-specific candidate directories to search for FFmpeg libraries.
+        /// </summary>
+        private static string[] GetCandidatePaths(string appBaseDirectory)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                return
+                [
+                    appBaseDirectory,
+                    Path.Combine(appBaseDirectory, "ffmpeg"),
+                    Path.Combine(appBaseDirectory, "runtimes", "win-x64", "native")
+                ];
+            }
+
+            if (OperatingSystem.IsLinux())
+            {
+                return
+                [
+                    appBaseDirectory,
+                    Path.Combine(appBaseDirectory, "ffmpeg"),
+                    "/usr/lib/x86_64-linux-gnu",
+                    "/usr/lib64",
+                    "/usr/lib",
+                    "/usr/local/lib"
+                ];
+            }
+
+            // macOS
+            string frameworksPath = Path.GetFullPath(Path.Combine(appBaseDirectory, "..", "Frameworks"));
+            return
+            [
+                "/opt/homebrew/opt/ffmpeg/lib",
+                "/usr/local/opt/ffmpeg/lib",
+                frameworksPath
+            ];
+        }
+
+        /// <summary>
+        /// Gets a library name pattern to probe for FFmpeg presence.
+        /// </summary>
+        private static string GetProbeLibrary()
+        {
+            return OperatingSystem.IsWindows() ? "avcodec-*.dll" : OperatingSystem.IsLinux() ? "libavcodec.so*" : "libavcodec*.dylib";
         }
     }
 }
