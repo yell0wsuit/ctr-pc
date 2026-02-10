@@ -1,4 +1,4 @@
-#if MACOS_FFMPEG
+#if DESKTOPGL_FFMPEG
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,14 +47,14 @@ namespace CutTheRope.Framework.Media
         /// <summary>Function to check if a file exists.</summary>
         private readonly Func<string, bool> fileExists;
 
-        /// <summary>Function to resolve the FFmpeg library root path.</summary>
-        private readonly Func<string, string> resolveRootPath;
+        /// <summary>Whether FFmpeg native libraries were found and loaded.</summary>
+        private readonly bool librariesLoaded;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VideoPlayerFFmpeg"/> class.
         /// </summary>
         public VideoPlayerFFmpeg()
-            : this(File.Exists, baseDir => FfmpegRootPathResolver.Resolve(baseDir, Directory.Exists, File.Exists))
+            : this(File.Exists, baseDir => FfmpegRootPathResolver.Resolve(baseDir, Directory.Exists))
         {
         }
 
@@ -66,7 +66,14 @@ namespace CutTheRope.Framework.Media
         internal VideoPlayerFFmpeg(Func<string, bool> fileExists, Func<string, string> resolveRootPath)
         {
             this.fileExists = fileExists;
-            this.resolveRootPath = resolveRootPath;
+
+            string ffmpegRoot = resolveRootPath(AppContext.BaseDirectory);
+            if (!string.IsNullOrEmpty(ffmpegRoot))
+            {
+                ffmpeg.RootPath = ffmpegRoot;
+                ffmpeg.av_log_set_level(ffmpeg.AV_LOG_WARNING);
+                librariesLoaded = true;
+            }
         }
 
         /// <inheritdoc/>
@@ -89,21 +96,11 @@ namespace CutTheRope.Framework.Media
                 ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath)
             );
 
-            if (!fileExists(fullPath))
+            if (!fileExists(fullPath) || !librariesLoaded)
             {
                 PlaybackFinished?.Invoke();
                 return;
             }
-
-            string ffmpegRoot = resolveRootPath(AppContext.BaseDirectory);
-            if (string.IsNullOrEmpty(ffmpegRoot))
-            {
-                PlaybackFinished?.Invoke();
-                return;
-            }
-
-            ffmpeg.RootPath = ffmpegRoot;
-            ffmpeg.av_log_set_level(ffmpeg.AV_LOG_WARNING);
 
             if (!InitializeFfmpeg(fullPath))
             {

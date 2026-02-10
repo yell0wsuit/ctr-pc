@@ -5,7 +5,8 @@
 #
 # Requirements:
 #   - .NET 10.0 SDK
-#   - sudo apt install libvlc-dev vlc libx11-dev
+#   - wget (for downloading FFmpeg)
+#   - tar, xz-utils (for extracting FFmpeg archive)
 
 set -e
 
@@ -46,6 +47,10 @@ dotnet publish "$PROJECT" \
     -r linux-x64 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
+
+# Step 1b: Download bundled FFmpeg shared libraries
+echo "[1b/5] Downloading FFmpeg shared libraries..."
+"$SCRIPT_DIR/download_ffmpeg_linux.sh" "$PUBLISH_DIR"
 
 # Step 2: Create directory structure
 echo "[2/5] Creating .deb directory structure..."
