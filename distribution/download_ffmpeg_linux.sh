@@ -3,9 +3,8 @@
 # Downloads prebuilt FFmpeg 8.0 LGPL shared libraries for Linux x64 from BtbN/FFmpeg-Builds.
 # Usage: ./download_ffmpeg_linux.sh <output_dir>
 #
-# The shared libraries (.so files) and LICENSE are copied into <output_dir>.
-# The resolver already checks the app base directory first, so placing the
-# libraries next to the executable is sufficient.
+# The shared libraries (.so files) and LICENSE are copied into <output_dir>/ffmpeg/.
+# The resolver checks the ffmpeg/ subfolder relative to the app base directory.
 #
 # Source: https://github.com/BtbN/FFmpeg-Builds
 
@@ -39,17 +38,18 @@ if [ -z "$EXTRACTED_DIR" ]; then
     exit 1
 fi
 
-mkdir -p "$OUTPUT_DIR"
+FFMPEG_SUBDIR="$OUTPUT_DIR/ffmpeg"
+mkdir -p "$FFMPEG_SUBDIR"
 
 # Copy all shared libraries (follow symlinks to get the actual files)
-cp -L "$EXTRACTED_DIR"/lib/lib*.so* "$OUTPUT_DIR/"
+cp -L "$EXTRACTED_DIR"/lib/lib*.so* "$FFMPEG_SUBDIR/"
 # Remove pkgconfig files if they got included
-rm -f "$OUTPUT_DIR"/*.pc 2>/dev/null || true
+rm -f "$FFMPEG_SUBDIR"/*.pc 2>/dev/null || true
 
 # Copy license for LGPL compliance
 if [ -f "$EXTRACTED_DIR/LICENSE.txt" ]; then
-    cp "$EXTRACTED_DIR/LICENSE.txt" "$OUTPUT_DIR/FFmpeg-LICENSE.txt"
+    cp "$EXTRACTED_DIR/LICENSE.txt" "$FFMPEG_SUBDIR/FFmpeg-LICENSE.txt"
 fi
 
-echo "FFmpeg shared libraries copied to $OUTPUT_DIR"
-ls -lh "$OUTPUT_DIR"/lib*.so* 2>/dev/null || true
+echo "FFmpeg shared libraries copied to $FFMPEG_SUBDIR"
+ls -lh "$FFMPEG_SUBDIR"/lib*.so* 2>/dev/null || true

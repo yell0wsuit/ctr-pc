@@ -267,20 +267,6 @@
     <Move SourceFiles="@(FfmpegDlls)" DestinationFolder="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
   </Target>
 
-  <!-- Linux: move FFmpeg .so files into ffmpeg/ subfolder after publish -->
-  <Target
-    Name="MoveFfmpegToSubfolderLinux"
-    AfterTargets="Publish"
-    Condition="$(RuntimeIdentifier.StartsWith('linux'))"
-  >
-    <ItemGroup>
-      <FfmpegSoFiles Include="$(PublishDir)libavcodec.so*;$(PublishDir)libavformat.so*;$(PublishDir)libavutil.so*;$(PublishDir)libswresample.so*;$(PublishDir)libswscale.so*;$(PublishDir)libavdevice.so*;$(PublishDir)libavfilter.so*;$(PublishDir)libpostproc.so*" />
-    </ItemGroup>
-
-    <MakeDir Directories="$(PublishDir)ffmpeg" Condition="@(FfmpegSoFiles) != ''" />
-    <Move SourceFiles="@(FfmpegSoFiles)" DestinationFolder="$(PublishDir)ffmpeg" Condition="@(FfmpegSoFiles) != ''" />
-  </Target>
-
   <Target
     Name="MoveMacOSAppToPublish"
     AfterTargets="Publish"
