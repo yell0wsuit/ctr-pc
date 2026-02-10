@@ -19,20 +19,6 @@ jobs:
               with:
                   dotnet-version: "10.x"
 
-            - name: Cache NuGet packages
-              uses: actions/cache@main
-              with:
-                  path: ~/.nuget/packages
-                  key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-                  restore-keys: |
-                      ${{ runner.os }}-nuget-
-
-            - name: Cache .NET tools
-              uses: actions/cache@main
-              with:
-                  path: ~/.dotnet/tools
-                  key: ${{ runner.os }}-dotnet-tools-roslynator
-
             - name: Restore dependencies
               run: dotnet restore
 
@@ -42,7 +28,7 @@ jobs:
             - name: Install Roslynator
               run: |
                   if ! command -v roslynator &> /dev/null; then
-                      dotnet tool install -g roslynator.dotnet.cli
+                    dotnet tool install -g roslynator.dotnet.cli
                   fi
 
             - name: Run Roslynator analysis
