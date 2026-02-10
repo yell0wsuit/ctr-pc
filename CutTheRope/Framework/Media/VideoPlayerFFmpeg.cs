@@ -140,7 +140,7 @@ namespace CutTheRope.Framework.Media
         /// <inheritdoc/>
         public Texture2D GetTexture()
         {
-            if (videoTexture == null || HasPlaybackFinished)
+            if (videoTexture == null)
             {
                 return null;
             }
@@ -163,7 +163,9 @@ namespace CutTheRope.Framework.Media
         /// <inheritdoc/>
         public bool IsPlaying()
         {
-            return formatContext != null && !HasPlaybackFinished;
+            // Report active until cleanup runs so callers keep invoking Update(),
+            // which performs final cleanup and fires PlaybackFinished.
+            return formatContext != null;
         }
 
         /// <inheritdoc/>
