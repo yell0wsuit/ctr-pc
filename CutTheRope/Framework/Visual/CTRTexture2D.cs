@@ -214,18 +214,9 @@ namespace CutTheRope.Framework.Visual
             int num2 = CalcRealSize(h);
             float transitionTime = Application.SharedRootController().transitionTime;
             Application.SharedRootController().transitionTime = -1f;
-            RenderTarget2D renderTarget;
-            if (Global.ScreenSizeManager.IsFullScreen)
-            {
-                CtrRenderer.OnDrawFrame();
-                renderTarget = OpenGLRenderer.DetachRenderTarget();
-            }
-            else
-            {
-                renderTarget = new RenderTarget2D(Global.GraphicsDevice, Global.GraphicsDevice.PresentationParameters.BackBufferWidth, Global.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
-                Global.GraphicsDevice.SetRenderTarget(renderTarget);
-                CtrRenderer.OnDrawFrame();
-            }
+            // Always use the render target since we now use fullscreen-style scaling in all modes
+            CtrRenderer.OnDrawFrame();
+            RenderTarget2D renderTarget = OpenGLRenderer.DetachRenderTarget();
             Global.GraphicsDevice.SetRenderTarget(null);
             Application.SharedRootController().transitionTime = transitionTime;
             xnaTexture_ = renderTarget;
