@@ -253,6 +253,34 @@
     <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
   </Target>
 
+  <!-- Windows: move FFmpeg DLLs into ffmpeg/ subfolder after publish -->
+  <Target
+    Name="MoveFfmpegToSubfolder"
+    AfterTargets="Publish"
+    Condition="$(RuntimeIdentifier.StartsWith('win'))"
+  >
+    <ItemGroup>
+      <FfmpegDlls Include="$(PublishDir)avcodec-*.dll;$(PublishDir)avformat-*.dll;$(PublishDir)avutil-*.dll;$(PublishDir)swresample-*.dll;$(PublishDir)swscale-*.dll;$(PublishDir)avdevice-*.dll;$(PublishDir)avfilter-*.dll;$(PublishDir)postproc-*.dll" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
+    <Move SourceFiles="@(FfmpegDlls)" DestinationFolder="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
+  </Target>
+
+  <!-- Linux: move FFmpeg .so files into ffmpeg/ subfolder after publish -->
+  <Target
+    Name="MoveFfmpegToSubfolderLinux"
+    AfterTargets="Publish"
+    Condition="$(RuntimeIdentifier.StartsWith('linux'))"
+  >
+    <ItemGroup>
+      <FfmpegSoFiles Include="$(PublishDir)libavcodec.so*;$(PublishDir)libavformat.so*;$(PublishDir)libavutil.so*;$(PublishDir)libswresample.so*;$(PublishDir)libswscale.so*;$(PublishDir)libavdevice.so*;$(PublishDir)libavfilter.so*;$(PublishDir)libpostproc.so*" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(PublishDir)ffmpeg" Condition="@(FfmpegSoFiles) != ''" />
+    <Move SourceFiles="@(FfmpegSoFiles)" DestinationFolder="$(PublishDir)ffmpeg" Condition="@(FfmpegSoFiles) != ''" />
+  </Target>
+
   <Target
     Name="MoveMacOSAppToPublish"
     AfterTargets="Publish"

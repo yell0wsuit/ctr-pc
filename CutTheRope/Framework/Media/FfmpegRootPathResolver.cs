@@ -54,6 +54,7 @@ namespace CutTheRope.Framework.Media
                 return
                 [
                     appBaseDirectory,
+                    Path.Combine(appBaseDirectory, "ffmpeg"),
                     Path.Combine(appBaseDirectory, "runtimes", "win-x64", "native")
                 ];
             }
@@ -63,6 +64,7 @@ namespace CutTheRope.Framework.Media
                 return
                 [
                     appBaseDirectory,
+                    Path.Combine(appBaseDirectory, "ffmpeg"),
                     "/usr/lib/x86_64-linux-gnu",
                     "/usr/lib64",
                     "/usr/lib",
