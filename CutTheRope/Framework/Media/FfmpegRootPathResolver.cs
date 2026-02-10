@@ -37,18 +37,17 @@ namespace CutTheRope.Framework.Media
                     continue;
                 }
 
-                if (OperatingSystem.IsWindows())
+                if (OperatingSystem.IsMacOS())
                 {
-                    // FFmpeg.GPL uses versioned DLL names (e.g., avcodec-61.dll).
-                    // Check for any file matching the probe prefix.
-                    if (Directory.GetFiles(candidate, probeLibrary).Length > 0)
+                    if (fileExists(Path.Combine(candidate, probeLibrary)))
                     {
                         return candidate;
                     }
                 }
                 else
                 {
-                    if (fileExists(Path.Combine(candidate, probeLibrary)))
+                    // Windows: avcodec-*.dll, Linux: libavcodec.so* (versioned, e.g. libavcodec.so.62)
+                    if (Directory.GetFiles(candidate, probeLibrary).Length > 0)
                     {
                         return candidate;
                     }
@@ -76,6 +75,7 @@ namespace CutTheRope.Framework.Media
             {
                 return
                 [
+                    appBaseDirectory,
                     "/usr/lib/x86_64-linux-gnu",
                     "/usr/lib64",
                     "/usr/lib",
@@ -98,7 +98,7 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         private static string GetProbeLibrary()
         {
-            return OperatingSystem.IsWindows() ? "avcodec-*.dll" : OperatingSystem.IsLinux() ? "libavcodec.so" : "libavcodec.dylib";
+            return OperatingSystem.IsWindows() ? "avcodec-*.dll" : OperatingSystem.IsLinux() ? "libavcodec.so*" : "libavcodec.dylib";
         }
     }
 }
