@@ -35,7 +35,7 @@ echo "=== Building Cut The Rope: DX v$VERSION for macOS ==="
 # =========================
 # Step 1: Build the application
 # =========================
-echo "[1/3] Building macOS arm64 release..."
+echo "[1/4] Building macOS arm64 release..."
 rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
@@ -47,7 +47,7 @@ dotnet publish "$PROJECT" \
 # =========================
 # Step 2: Create .app bundle
 # =========================
-echo "[2/3] Creating .app bundle structure..."
+echo "[2/4] Creating .app bundle structure..."
 mkdir -p "$APP_DIR/Contents/MacOS"
 mkdir -p "$APP_DIR/Contents/Resources"
 
@@ -85,9 +85,21 @@ sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
     "$TEMPLATES_DIR/Info.plist" > "$APP_DIR/Contents/Info.plist"
 
 # =========================
-# Step 3: Finalize
+# Step 3: Bundle FFmpeg
 # =========================
-echo "[3/3] Finalizing..."
+echo "[3/4] Bundling FFmpeg dylibs into Frameworks..."
+"$SCRIPT_DIR/bundle_ffmpeg_macos.sh" "$APP_DIR/Contents/Frameworks"
+
+# Codesign the bundled dylibs (required on macOS to avoid crashes)
+echo "Codesigning bundled dylibs..."
+for dylib in "$APP_DIR/Contents/Frameworks"/*.dylib; do
+    codesign --force --sign - "$dylib"
+done
+
+# =========================
+# Step 4: Finalize
+# =========================
+echo "[4/4] Finalizing..."
 
 # Dev convenience: remove quarantine attribute
 xattr -dr com.apple.quarantine "$APP_DIR" || true

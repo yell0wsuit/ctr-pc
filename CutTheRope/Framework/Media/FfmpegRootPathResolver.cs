@@ -18,14 +18,12 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         /// <param name="appBaseDirectory">The application's base directory.</param>
         /// <param name="directoryExists">Function to check if a directory exists.</param>
-        /// <param name="fileExists">Function to check if a file exists.</param>
         /// <returns>
         /// The path to the directory containing FFmpeg libraries, or <c>null</c> if not found.
         /// </returns>
         public static string Resolve(
             string appBaseDirectory,
-            Func<string, bool> directoryExists,
-            Func<string, bool> fileExists)
+            Func<string, bool> directoryExists)
         {
             string[] candidates = GetCandidatePaths(appBaseDirectory);
             string probeLibrary = GetProbeLibrary();
@@ -37,20 +35,9 @@ namespace CutTheRope.Framework.Media
                     continue;
                 }
 
-                if (OperatingSystem.IsMacOS())
+                if (Directory.GetFiles(candidate, probeLibrary).Length > 0)
                 {
-                    if (fileExists(Path.Combine(candidate, probeLibrary)))
-                    {
-                        return candidate;
-                    }
-                }
-                else
-                {
-                    // Windows: avcodec-*.dll, Linux: libavcodec.so* (versioned, e.g. libavcodec.so.62)
-                    if (Directory.GetFiles(candidate, probeLibrary).Length > 0)
-                    {
-                        return candidate;
-                    }
+                    return candidate;
                 }
             }
 
@@ -98,7 +85,7 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         private static string GetProbeLibrary()
         {
-            return OperatingSystem.IsWindows() ? "avcodec-*.dll" : OperatingSystem.IsLinux() ? "libavcodec.so*" : "libavcodec.dylib";
+            return OperatingSystem.IsWindows() ? "avcodec-*.dll" : OperatingSystem.IsLinux() ? "libavcodec.so*" : "libavcodec*.dylib";
         }
     }
 }

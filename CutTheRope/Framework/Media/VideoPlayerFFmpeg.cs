@@ -54,7 +54,7 @@ namespace CutTheRope.Framework.Media
         /// Initializes a new instance of the <see cref="VideoPlayerFFmpeg"/> class.
         /// </summary>
         public VideoPlayerFFmpeg()
-            : this(File.Exists, baseDir => FfmpegRootPathResolver.Resolve(baseDir, Directory.Exists, File.Exists))
+            : this(File.Exists, baseDir => FfmpegRootPathResolver.Resolve(baseDir, Directory.Exists))
         {
         }
 
