@@ -119,21 +119,18 @@ namespace CutTheRope.Desktop
             {
                 return;
             }
-            if (!IsFullScreen)
+            // Always use fullscreen-style letterboxing/pillarboxing for both modes
+            Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
+            if (sourceRect.Width >= sourceRect.Height)
             {
-                _scaledViewRect = _windowRect;
+                int num = _fullScreenCropWidth ? sourceRect.Height : ScaledGameHeight(sourceRect.Width);
+                int num2 = _fullScreenCropWidth ? ScaledGameWidth(num) : sourceRect.Width;
+                _scaledViewRect = new Rectangle((sourceRect.Width - num2) / 2, (sourceRect.Height - num) / 2, num2, num);
                 return;
             }
-            if (_fullScreenRect.Width >= _fullScreenRect.Height)
-            {
-                int num = _fullScreenCropWidth ? _fullScreenRect.Height : ScaledGameHeight(_fullScreenRect.Width);
-                int num2 = _fullScreenCropWidth ? ScaledGameWidth(num) : _fullScreenRect.Width;
-                _scaledViewRect = new Rectangle((_fullScreenRect.Width - num2) / 2, (_fullScreenRect.Height - num) / 2, num2, num);
-                return;
-            }
-            int num3 = _fullScreenCropWidth ? (int)(_fullScreenRect.Width / 5f * 4f) : ScaledGameHeight(_fullScreenRect.Width);
-            int num4 = _fullScreenCropWidth ? ScaledGameWidth(num3) : _fullScreenRect.Width;
-            _scaledViewRect = new Rectangle((_fullScreenRect.Width - num4) / 2, (_fullScreenRect.Height - num3) / 2, num4, num3);
+            int num3 = _fullScreenCropWidth ? (int)(sourceRect.Width / 5f * 4f) : ScaledGameHeight(sourceRect.Width);
+            int num4 = _fullScreenCropWidth ? ScaledGameWidth(num3) : sourceRect.Width;
+            _scaledViewRect = new Rectangle((sourceRect.Width - num4) / 2, (sourceRect.Height - num3) / 2, num4, num3);
         }
 
         public void ApplyWindowSize(int width)

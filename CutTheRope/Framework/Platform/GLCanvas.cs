@@ -72,18 +72,10 @@ namespace CutTheRope.Framework.Platform
 
         public void SetDefaultProjection()
         {
-            if (Global.ScreenSizeManager.IsFullScreen)
-            {
-                xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
-                xOffsetScaled = (int)((double)((float)-(float)xOffset * 1f) / Global.ScreenSizeManager.WidthAspectRatio);
-                isFullscreen = true;
-            }
-            else
-            {
-                xOffset = 0;
-                xOffsetScaled = 0;
-                isFullscreen = false;
-            }
+            // Always calculate offsets for proper letterboxing in both windowed and fullscreen modes
+            xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
+            xOffsetScaled = (int)(-xOffset / Global.ScreenSizeManager.WidthAspectRatio);
+            isFullscreen = Global.ScreenSizeManager.IsFullScreen;
             OpenGLRenderer.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
             OpenGLRenderer.GlMatrixMode(15);
             OpenGLRenderer.GlLoadIdentity();

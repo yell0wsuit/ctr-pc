@@ -141,26 +141,28 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Sets the viewport dimensions and manages render target for fullscreen mode.
-        /// In fullscreen mode, creates a render target matching the viewport size.
+        /// Sets the viewport dimensions and manages render target.
+        /// Always creates a render target matching the viewport size for proper scaling.
         /// </summary>
         public static void GlViewport(int x, int y, int width, int height)
         {
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
+
             s_Viewport.X = x;
             s_Viewport.Y = y;
             s_Viewport.Width = width;
             s_Viewport.Height = height;
-            if (Global.ScreenSizeManager.IsFullScreen)
+            // Always use render target for proper scaling in both windowed and fullscreen modes
+            if (s_RenderTarget == null || s_RenderTarget.Bounds.Width != s_Viewport.Bounds.Width || s_RenderTarget.Bounds.Height != s_Viewport.Bounds.Height)
             {
-                if (s_RenderTarget == null || s_RenderTarget.Bounds.Width != s_Viewport.Bounds.Width || s_RenderTarget.Bounds.Height != s_Viewport.Bounds.Height)
-                {
-                    s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, s_Viewport.Width, s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None);
-                }
-                Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
-                Global.GraphicsDevice.Clear(Color.Black);
-                return;
+                s_RenderTarget?.Dispose();
+                s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, s_Viewport.Width, s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
-            s_RenderTarget = null;
+            Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
+            Global.GraphicsDevice.Clear(Color.Black);
         }
 
         /// <summary>
@@ -175,12 +177,12 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Copies the render target contents to the screen in fullscreen mode.
-        /// Applies scaling to fit the display.
+        /// Copies the render target contents to the screen.
+        /// Applies scaling to fit the display in both windowed and fullscreen modes.
         /// </summary>
         public static void CopyFromRenderTargetToScreen()
         {
-            if (Global.ScreenSizeManager.IsFullScreen && s_RenderTarget != null)
+            if (s_RenderTarget != null)
             {
                 Global.GraphicsDevice.Clear(Color.Black);
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
