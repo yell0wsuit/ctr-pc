@@ -8,11 +8,8 @@ namespace CutTheRope.Framework.Media
         /// <summary>macOS AVFoundation framework (requires macOS 26+).</summary>
         AVFoundation,
 
-        /// <summary>FFmpeg libraries for cross-platform decoding (used for macOS below 26).</summary>
+        /// <summary>FFmpeg libraries for cross-platform video decoding.</summary>
         Ffmpeg,
-
-        /// <summary>VLC media player library.</summary>
-        Vlc,
 
         /// <summary>Stub implementation that skips video playback.</summary>
         MonoGame
@@ -30,28 +27,16 @@ namespace CutTheRope.Framework.Media
         /// <param name="isMac26OrLater">Whether the macOS version is 26 or later.</param>
         /// <param name="hasAvFoundation">Whether AVFoundation support is compiled in.</param>
         /// <param name="hasFfmpeg">Whether FFmpeg support is compiled in.</param>
-        /// <param name="hasVlc">Whether VLC support is compiled in.</param>
         /// <returns>The selected <see cref="VideoPlayerBackend"/> to use.</returns>
         /// <remarks>
-        /// Selection priority on macOS: AVFoundation (if macOS 26+) → FFmpeg → VLC → MonoGame stub.
-        /// Selection priority on other platforms: VLC → MonoGame stub.
+        /// Selection priority on macOS 26+: AVFoundation → FFmpeg → MonoGame stub.
+        /// Selection priority on other platforms: FFmpeg → MonoGame stub.
         /// </remarks>
-        public static VideoPlayerBackend Select(bool isMac, bool isMac26OrLater, bool hasAvFoundation, bool hasFfmpeg, bool hasVlc)
+        public static VideoPlayerBackend Select(bool isMac, bool isMac26OrLater, bool hasAvFoundation, bool hasFfmpeg)
         {
-            if (isMac)
-            {
-                if (isMac26OrLater && hasAvFoundation)
-                {
-                    return VideoPlayerBackend.AVFoundation;
-                }
-
-                if (hasFfmpeg)
-                {
-                    return VideoPlayerBackend.Ffmpeg;
-                }
-            }
-
-            return hasVlc ? VideoPlayerBackend.Vlc : VideoPlayerBackend.MonoGame;
+            return isMac && isMac26OrLater && hasAvFoundation
+                ? VideoPlayerBackend.AVFoundation
+                : hasFfmpeg ? VideoPlayerBackend.Ffmpeg : VideoPlayerBackend.MonoGame;
         }
     }
 }

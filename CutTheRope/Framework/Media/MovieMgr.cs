@@ -8,8 +8,8 @@ namespace CutTheRope.Framework.Media
     /// Manages video playback and provides a unified interface for movie operations.
     /// </summary>
     /// <remarks>
-    /// This class wraps platform-specific video player implementations (VLC or MonoGame)
-    /// and notifies delegates when playback finishes.
+    /// This class wraps platform-specific video player implementations (FFmpeg, AVFoundation,
+    /// or MonoGame stub) and notifies delegates when playback finishes.
     /// </remarks>
     internal sealed class MovieMgr : FrameworkTypes, IDisposable
     {
@@ -17,7 +17,8 @@ namespace CutTheRope.Framework.Media
         /// Initializes a new instance of the <see cref="MovieMgr"/> class.
         /// </summary>
         /// <remarks>
-        /// Creates a platform-specific video player (VLC for DesktopGL, MonoGame otherwise).
+        /// Creates a platform-specific video player (FFmpeg for DesktopGL, AVFoundation
+        /// for macOS 26+, MonoGame stub otherwise).
         /// </remarks>
         public MovieMgr()
         {
@@ -29,14 +30,7 @@ namespace CutTheRope.Framework.Media
 #endif
 
             bool hasFfmpeg =
-#if MACOS_FFMPEG
-                true;
-#else
-                false;
-#endif
-
-            bool hasVlc =
-#if DESKTOPGL_VLC
+#if DESKTOPGL_FFMPEG
                 true;
 #else
                 false;
@@ -46,8 +40,7 @@ namespace CutTheRope.Framework.Media
                 isMac: OperatingSystem.IsMacOS(),
                 isMac26OrLater: OperatingSystem.IsMacOSVersionAtLeast(26),
                 hasAvFoundation: hasAvFoundation,
-                hasFfmpeg: hasFfmpeg,
-                hasVlc: hasVlc
+                hasFfmpeg: hasFfmpeg
             );
 
 #pragma warning disable IDE0010, IDE0066
@@ -58,14 +51,9 @@ namespace CutTheRope.Framework.Media
                     videoPlayer = new VideoPlayerAVFoundation();
                     break;
 #endif
-#if MACOS_FFMPEG
+#if DESKTOPGL_FFMPEG
                 case VideoPlayerBackend.Ffmpeg:
                     videoPlayer = new VideoPlayerFFmpeg();
-                    break;
-#endif
-#if DESKTOPGL_VLC
-                case VideoPlayerBackend.Vlc:
-                    videoPlayer = new VideoPlayerVLC();
                     break;
 #endif
                 default:
