@@ -247,12 +247,12 @@ namespace CutTheRope.Framework.Media
                 return;
             }
 
-            if (!HasPlaybackFinished)
+            if (!HasPlaybackFinished || !IsAudioPlaybackDrained())
             {
                 DrainAudioQueue();
             }
 
-            if (HasPlaybackFinished && formatContext != null)
+            if (HasPlaybackFinished && formatContext != null && IsAudioPlaybackDrained())
             {
                 Cleanup();
                 IsPaused = false;
@@ -796,6 +796,23 @@ namespace CutTheRope.Framework.Media
             // Use stopwatch as primary clock - it pauses correctly and resumes properly
             // Audio sync is handled by buffering; the stopwatch provides consistent timing
             return playbackStopwatch.Elapsed.TotalSeconds;
+        }
+
+        /// <summary>
+        /// Checks whether all decoded audio has fully finished playing.
+        /// </summary>
+        /// <returns><c>true</c> when no queued or pending audio buffers remain.</returns>
+        private bool IsAudioPlaybackDrained()
+        {
+            if (mute || audioInstance == null)
+            {
+                return true;
+            }
+
+            lock (audioLock)
+            {
+                return pendingAudioQueue.Count == 0 && audioInstance.PendingBufferCount == 0;
+            }
         }
 
         /// <summary>
