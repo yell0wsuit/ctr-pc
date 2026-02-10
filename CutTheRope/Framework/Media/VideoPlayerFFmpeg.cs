@@ -17,11 +17,12 @@ using Microsoft.Xna.Framework.Graphics;
 namespace CutTheRope.Framework.Media
 {
     /// <summary>
-    /// Video player implementation using FFmpeg for decoding and playback on macOS.
+    /// Video player implementation using FFmpeg for decoding and playback.
     /// </summary>
     /// <remarks>
     /// This player uses FFmpeg libraries for video/audio decoding and converts frames
-    /// to RGBA format for MonoGame texture rendering. Audio is played through
+    /// to RGBA format for MonoGame texture rendering. Decoding runs on a background
+    /// thread to keep the main game loop responsive. Audio is played through
     /// <see cref="DynamicSoundEffectInstance"/> with resampling handled by libswresample.
     /// </remarks>
     internal sealed unsafe class VideoPlayerFFmpeg : IVideoPlayer
@@ -37,6 +38,12 @@ namespace CutTheRope.Framework.Media
 
         /// <summary>Lock for thread-safe frame buffer access.</summary>
         private readonly Lock bufferLock = new();
+
+        /// <summary>Lock for thread-safe audio queue access.</summary>
+        private readonly Lock audioLock = new();
+
+        /// <summary>Gate that blocks the decode thread when playback is paused.</summary>
+        private readonly ManualResetEventSlim pauseGate = new(true);
 
         /// <summary>Queue of decoded audio buffers waiting to be submitted.</summary>
         private readonly Queue<byte[]> pendingAudioQueue = new();
@@ -82,11 +89,26 @@ namespace CutTheRope.Framework.Media
         /// <inheritdoc/>
         public event Action PlaybackFinished;
 
+        /// <summary>Thread-safe accessor for the playback-finished flag.</summary>
+        private bool HasPlaybackFinished
+        {
+            get => Volatile.Read(ref field);
+            set => Volatile.Write(ref field, value);
+        }
+
+        /// <summary>Thread-safe accessor for the stop-requested flag.</summary>
+        private bool HasStopRequested
+        {
+            get => Volatile.Read(ref field);
+            set => Volatile.Write(ref field, value);
+        }
+
         /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
             Cleanup();
-            playbackFinished = false;
+            HasPlaybackFinished = false;
+            HasStopRequested = false;
             frameCount = 0;
             this.mute = mute;
 
@@ -109,13 +131,16 @@ namespace CutTheRope.Framework.Media
                 return;
             }
 
+            EnsureTexture(videoWidth, videoHeight);
+            EnsureBuffer(videoWidth, videoHeight);
+
             waitForStart = true;
         }
 
         /// <inheritdoc/>
         public Texture2D GetTexture()
         {
-            if (videoTexture == null || playbackFinished)
+            if (videoTexture == null || HasPlaybackFinished)
             {
                 return null;
             }
@@ -138,7 +163,7 @@ namespace CutTheRope.Framework.Media
         /// <inheritdoc/>
         public bool IsPlaying()
         {
-            return formatContext != null && !playbackFinished;
+            return formatContext != null && !HasPlaybackFinished;
         }
 
         /// <inheritdoc/>
@@ -150,12 +175,12 @@ namespace CutTheRope.Framework.Media
         /// <inheritdoc/>
         public void Stop()
         {
-            if (playbackFinished)
+            if (HasPlaybackFinished)
             {
                 return;
             }
 
-            playbackFinished = true;
+            HasPlaybackFinished = true;
             playbackStopwatch.Stop();
             audioInstance?.Stop();
             Cleanup();
@@ -169,6 +194,7 @@ namespace CutTheRope.Framework.Media
             {
                 IsPaused = true;
                 playbackStopwatch.Stop();
+                pauseGate.Reset();
                 audioInstance?.Pause();
             }
         }
@@ -180,6 +206,7 @@ namespace CutTheRope.Framework.Media
             {
                 IsPaused = false;
                 playbackStopwatch.Start();
+                pauseGate.Set();
                 audioInstance?.Resume();
             }
         }
@@ -194,10 +221,15 @@ namespace CutTheRope.Framework.Media
 
             waitForStart = false;
             playbackStopwatch.Restart();
+            pauseGate.Set();
+
             if (!mute)
             {
                 audioInstance?.Play();
             }
+
+            decodeThread = new Thread(DecodeLoop) { IsBackground = true, Name = "FFmpegDecode" };
+            decodeThread.Start();
         }
 
         /// <inheritdoc/>
@@ -213,13 +245,12 @@ namespace CutTheRope.Framework.Media
                 return;
             }
 
-            if (!playbackFinished)
+            if (!HasPlaybackFinished)
             {
-                DecodeNextFrame();
                 DrainAudioQueue();
             }
 
-            if (playbackFinished && formatContext != null)
+            if (HasPlaybackFinished && formatContext != null)
             {
                 Cleanup();
                 IsPaused = false;
@@ -231,6 +262,36 @@ namespace CutTheRope.Framework.Media
         public void Dispose()
         {
             Cleanup();
+            pauseGate.Dispose();
+        }
+
+        /// <summary>
+        /// Background decode loop that runs on the decode thread.
+        /// </summary>
+        private void DecodeLoop()
+        {
+            try
+            {
+                while (!HasStopRequested && !HasPlaybackFinished)
+                {
+                    pauseGate.Wait();
+                    if (HasStopRequested)
+                    {
+                        break;
+                    }
+
+                    DecodeNextFrame();
+
+                    if (!HasPlaybackFinished && !HasStopRequested)
+                    {
+                        Thread.Sleep(1);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                HasPlaybackFinished = true;
+            }
         }
 
         /// <summary>
@@ -359,14 +420,15 @@ namespace CutTheRope.Framework.Media
         /// Decodes the next video frame and updates the frame buffer.
         /// </summary>
         /// <remarks>
-        /// Uses presentation timestamps for frame timing synchronization.
-        /// Also processes audio packets encountered during decoding.
+        /// Runs on the background decode thread. Uses presentation timestamps for
+        /// frame timing synchronization. Also processes audio packets encountered
+        /// during decoding.
         /// </remarks>
         private void DecodeNextFrame()
         {
             if (formatContext == null || packet == null || videoCodecContext == null)
             {
-                playbackFinished = true;
+                HasPlaybackFinished = true;
                 return;
             }
 
@@ -386,7 +448,7 @@ namespace CutTheRope.Framework.Media
                 int readResult = ffmpeg.av_read_frame(formatContext, packet);
                 if (readResult < 0)
                 {
-                    playbackFinished = true;
+                    HasPlaybackFinished = true;
                     return;
                 }
 
@@ -407,7 +469,7 @@ namespace CutTheRope.Framework.Media
                 ffmpeg.av_packet_unref(packet);
                 if (sendResult < 0)
                 {
-                    playbackFinished = true;
+                    HasPlaybackFinished = true;
                     return;
                 }
 
@@ -419,13 +481,13 @@ namespace CutTheRope.Framework.Media
 
                 if (receiveResult == ffmpeg.AVERROR_EOF)
                 {
-                    playbackFinished = true;
+                    HasPlaybackFinished = true;
                     return;
                 }
 
                 if (receiveResult < 0)
                 {
-                    playbackFinished = true;
+                    HasPlaybackFinished = true;
                     return;
                 }
 
@@ -444,34 +506,31 @@ namespace CutTheRope.Framework.Media
                     rgbaFrame->data,
                     rgbaFrame->linesize);
 
-                EnsureTexture(videoWidth, videoHeight);
-                EnsureBuffer(videoWidth, videoHeight);
-
                 int srcStride = rgbaFrame->linesize[0];
                 int dstStride = videoWidth * 4;
                 byte* srcBase = rgbaFrame->data[0];
                 if (srcBase == null)
                 {
-                    playbackFinished = true;
+                    HasPlaybackFinished = true;
                     return;
-                }
-
-                fixed (byte* dstBase = videoBuffer)
-                {
-                    for (int y = 0; y < videoHeight; y++)
-                    {
-                        byte* srcRow = srcBase + (y * srcStride);
-                        byte* dstRow = dstBase + (y * dstStride);
-                        Buffer.MemoryCopy(srcRow, dstRow, dstStride, dstStride);
-                    }
                 }
 
                 lock (bufferLock)
                 {
+                    fixed (byte* dstBase = videoBuffer)
+                    {
+                        for (int y = 0; y < videoHeight; y++)
+                        {
+                            byte* srcRow = srcBase + (y * srcStride);
+                            byte* dstRow = dstBase + (y * dstStride);
+                            Buffer.MemoryCopy(srcRow, dstRow, dstStride, dstStride);
+                        }
+                    }
+
                     frameReady = true;
                 }
 
-                frameCount++;
+                _ = Interlocked.Increment(ref frameCount);
                 return;
             }
         }
@@ -600,7 +659,7 @@ namespace CutTheRope.Framework.Media
 
                 if (receiveResult < 0)
                 {
-                    playbackFinished = true;
+                    HasPlaybackFinished = true;
                     return;
                 }
 
@@ -651,7 +710,7 @@ namespace CutTheRope.Framework.Media
                     continue;
                 }
 
-                SubmitAudioBuffer(convertedSize);
+                EnqueueAudioBuffer(convertedSize);
             }
         }
 
@@ -676,10 +735,11 @@ namespace CutTheRope.Framework.Media
         }
 
         /// <summary>
-        /// Copies audio data to managed memory and queues it for playback.
+        /// Copies audio data to managed memory and enqueues it for playback.
+        /// Called from the decode thread.
         /// </summary>
         /// <param name="size">The size of audio data in bytes.</param>
-        private void SubmitAudioBuffer(int size)
+        private void EnqueueAudioBuffer(int size)
         {
             if (audioInstance == null || audioBuffer == null)
             {
@@ -688,13 +748,16 @@ namespace CutTheRope.Framework.Media
 
             byte[] managedBuffer = new byte[size];
             Marshal.Copy((IntPtr)audioBuffer, managedBuffer, 0, size);
-            pendingAudioQueue.Enqueue(managedBuffer);
 
-            DrainAudioQueue();
+            lock (audioLock)
+            {
+                pendingAudioQueue.Enqueue(managedBuffer);
+            }
         }
 
         /// <summary>
         /// Submits queued audio buffers to the sound effect instance.
+        /// Called from the main thread.
         /// </summary>
         private void DrainAudioQueue()
         {
@@ -703,9 +766,19 @@ namespace CutTheRope.Framework.Media
                 return;
             }
 
-            while (pendingAudioQueue.Count > 0 && audioInstance.PendingBufferCount < MaxQueuedAudioBuffers)
+            while (audioInstance.PendingBufferCount < MaxQueuedAudioBuffers)
             {
-                byte[] buffer = pendingAudioQueue.Dequeue();
+                byte[] buffer;
+                lock (audioLock)
+                {
+                    if (pendingAudioQueue.Count == 0)
+                    {
+                        break;
+                    }
+
+                    buffer = pendingAudioQueue.Dequeue();
+                }
+
                 audioInstance.SubmitBuffer(buffer, 0, buffer.Length);
                 audioBytesDrained += buffer.Length;
                 audioBuffersSubmitted++;
@@ -760,6 +833,11 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         private void Cleanup()
         {
+            HasStopRequested = true;
+            pauseGate.Set();
+            _ = decodeThread?.Join(2000);
+            decodeThread = null;
+
             if (packet != null)
             {
                 AVPacket* packetToFree = packet;
@@ -895,6 +973,9 @@ namespace CutTheRope.Framework.Media
         /// <summary>Native buffer for RGBA frame data.</summary>
         private byte* rgbaBuffer;
 
+        /// <summary>Background thread for decoding video/audio frames.</summary>
+        private Thread decodeThread;
+
         /// <summary>Index of the video stream in the container.</summary>
         private int videoStreamIndex;
 
@@ -915,9 +996,6 @@ namespace CutTheRope.Framework.Media
 
         /// <summary>Indicates a new frame is ready to be uploaded to the texture.</summary>
         private bool frameReady;
-
-        /// <summary>Indicates playback has finished.</summary>
-        private bool playbackFinished;
 
         /// <summary>Indicates the player is waiting for Start() to be called.</summary>
         private bool waitForStart;
