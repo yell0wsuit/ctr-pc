@@ -79,7 +79,7 @@ namespace CutTheRope.GameMain
                         Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         // Draw p2 at configured Y position (p1 is handled by TileMap)
-                        GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
+                        GLDrawer.DrawImagePart(p2Texture, p2Rect, 0f, p2Y);
                         Renderer.Disable(Renderer.GL_BLEND);
                     }
                 }

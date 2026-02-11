@@ -62,13 +62,13 @@ namespace CutTheRope.GameMain
             Renderer.SetColor(s_Color1);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.X;
-            GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
+            GLDrawer.DrawImageQuad(texture, 0, num3, 0f);
             Renderer.PushMatrix();
             float num4 = (SCREEN_WIDTH / 2f) + (quadSize.X / 2f);
             Renderer.Translate(num4, SCREEN_HEIGHT / 2f, 0f);
             Renderer.Rotate(180f, 0f, 0f, 1f);
             Renderer.Translate(-num4, -SCREEN_HEIGHT / 2f, 0f);
-            GLDrawer.DrawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
+            GLDrawer.DrawImageQuad(texture, 0, SCREEN_WIDTH / 2f, 0.5f);
             Renderer.PopMatrix();
             CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);
             if (!game)
@@ -78,9 +78,9 @@ namespace CutTheRope.GameMain
             }
             Renderer.SetColor(Color.White);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;
-            GLDrawer.DrawImageQuad(texture2, 0, (double)num3, 80.0);
+            GLDrawer.DrawImageQuad(texture2, 0, num3, 80f);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).X;
-            GLDrawer.DrawImageQuad(texture2, 1, (double)num3, 80.0);
+            GLDrawer.DrawImageQuad(texture2, 1, num3, 80f);
             if (!game)
             {
                 Renderer.Disable(Renderer.GL_SCISSOR_TEST);
@@ -88,13 +88,13 @@ namespace CutTheRope.GameMain
             if (game)
             {
                 Vector quadOffset = Image.GetQuadOffset(Resources.Img.MenuLoading, 3);
-                float num5 = (float)(1250.0 * (double)num2 / 100.0);
+                float num5 = 1250f * num2 / 100f;
                 GLDrawer.DrawImageQuad(texture2, 3, quadOffset.X, 700f - num5);
             }
             else
             {
-                float num6 = (float)(1120.0 * (double)num2 / 100.0);
-                GLDrawer.DrawImageQuad(texture2, 2, 1084.0, (double)num6 - 100.0);
+                float num6 = 1120f * num2 / 100f;
+                GLDrawer.DrawImageQuad(texture2, 2, 1084f, num6 - 100f);
             }
             PostDraw();
             Renderer.SetColor(Color.White);

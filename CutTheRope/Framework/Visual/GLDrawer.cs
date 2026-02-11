@@ -13,19 +13,9 @@ namespace CutTheRope.Framework.Visual
             CTRTexture2D.DrawAtPoint(image, Vect(x, y));
         }
 
-        public static void DrawImagePart(CTRTexture2D image, CTRRectangle r, double x, double y)
-        {
-            DrawImagePart(image, r, (float)x, (float)y);
-        }
-
         public static void DrawImagePart(CTRTexture2D image, CTRRectangle r, float x, float y)
         {
             CTRTexture2D.DrawRectAtPoint(image, r, Vect(x, y));
-        }
-
-        public static void DrawImageQuad(CTRTexture2D image, int q, double x, double y)
-        {
-            DrawImageQuad(image, q, (float)x, (float)y);
         }
 
         public static void DrawImageQuad(CTRTexture2D image, int q, float x, float y)
@@ -104,8 +94,8 @@ namespace CutTheRope.Framework.Visual
                 DrawImageQuad(image, q, x, y);
                 return;
             }
-            int num3 = (int)Ceil((double)(width / num));
-            int num12 = (int)Ceil((double)(height / num2));
+            int num3 = (int)Ceil(width / num);
+            int num12 = (int)Ceil(height / num2);
             int num4 = (int)width % (int)num;
             int num5 = (int)height % (int)num2;
             int num6 = (int)(num4 == 0 ? num : num4);
