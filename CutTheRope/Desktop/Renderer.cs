@@ -120,7 +120,7 @@ namespace CutTheRope.Desktop
         {
             if (cap == GL_SCISSOR_TEST)
             {
-                GlScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+                SetScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
             }
             if (cap == GL_BLEND)
             {
@@ -386,7 +386,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the scissor rectangle for clipping.
         /// </summary>
-        public static void GlScissor(double x, double y, double width, double height)
+        public static void SetScissor(double x, double y, double width, double height)
         {
             GlScissor((int)x, (int)y, (int)width, (int)height);
         }
@@ -414,7 +414,7 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void SetScissorRectangle(double x, double y, double w, double h)
         {
-            GlScissor(x, y, w, h);
+            SetScissor(x, y, w, h);
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void SetScissorRectangle(float x, float y, float w, float h)
         {
-            GlScissor(x, y, w, h);
+            SetScissor(x, y, w, h);
         }
 
         #endregion
