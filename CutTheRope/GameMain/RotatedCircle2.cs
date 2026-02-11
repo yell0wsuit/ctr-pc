@@ -184,7 +184,7 @@ namespace CutTheRope.GameMain
             }
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
@@ -199,7 +199,7 @@ namespace CutTheRope.GameMain
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             GLDrawer.DrawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
             GLDrawer.DrawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             vinilControllerL.color = color;
             vinilControllerR.color = color;

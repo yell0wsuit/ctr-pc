@@ -243,7 +243,7 @@ namespace CutTheRope.GameMain
                 if (num8 >= 8 || (double)num7 == 1.0)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
-                    Renderer.GlColor4f(color.ToXNA());
+                    Renderer.SetColor(color.ToXNA());
                     int num17 = num8 >> 1;
                     for (int i = 0; i < num17 - 1; i++)
                     {
@@ -516,7 +516,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             int count = parts.Count;
-            Renderer.GlColor4f(s_Color1);
+            Renderer.SetColor(s_Color1);
             if (cut == -1)
             {
                 Vector[] array = new Vector[count];
@@ -632,7 +632,7 @@ namespace CutTheRope.GameMain
             {
                 color.AlphaChannel = alpha;
             }
-            Renderer.GlColor4f(color.ToXNA());
+            Renderer.SetColor(color.ToXNA());
 
             // Initialize random seed for consistent light color selection across frames
             // This seed remains the same for the lifetime of the rope
@@ -687,7 +687,7 @@ namespace CutTheRope.GameMain
             }
 
             // Reset drawing color to default
-            Renderer.GlColor4f(RGBAColor.whiteRGBA.ToXNA());
+            Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
         }
 
         protected override void Dispose(bool disposing)

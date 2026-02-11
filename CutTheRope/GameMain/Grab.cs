@@ -250,7 +250,7 @@ namespace CutTheRope.GameMain
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
         }
 
@@ -296,7 +296,7 @@ namespace CutTheRope.GameMain
             Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
 
             bungee?.Draw();
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
 
             // Draw front gun

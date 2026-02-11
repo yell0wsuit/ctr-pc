@@ -59,7 +59,7 @@ namespace CutTheRope.GameMain
 
             float num2 = currentPercent;
             CTRTexture2D texture = Application.GetTexture(boxCover);
-            Renderer.GlColor4f(s_Color1);
+            Renderer.SetColor(s_Color1);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.X;
             GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
@@ -76,7 +76,7 @@ namespace CutTheRope.GameMain
                 Renderer.OpenGLEnable(Renderer.GL_SCISSOR_TEST);
                 Renderer.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
             }
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;
             GLDrawer.DrawImageQuad(texture2, 0, (double)num3, 80.0);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).X;
@@ -97,7 +97,7 @@ namespace CutTheRope.GameMain
                 GLDrawer.DrawImageQuad(texture2, 2, 1084.0, (double)num6 - 100.0);
             }
             PostDraw();
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             Renderer.OpenGLDisable(Renderer.GL_BLEND);
         }

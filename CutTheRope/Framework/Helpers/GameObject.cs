@@ -194,7 +194,7 @@ namespace CutTheRope.Framework.Helpers
                 GLDrawer.DrawRect(drawX + bb.x, drawY + bb.y, bb.w, bb.h, RGBAColor.redRGBA);
             }
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
         }
 
         public static bool ObjectsIntersect(GameObject o1, GameObject o2)

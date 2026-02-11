@@ -71,7 +71,7 @@ namespace CutTheRope.Framework.Core
 
         private void DrawViewTransition()
         {
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.OpenGLEnable(Renderer.GL_BLEND);
             Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);

@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Visual
             Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             _ = MIN(width, height);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             PostDraw();
         }
 

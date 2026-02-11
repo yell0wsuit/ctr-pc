@@ -320,7 +320,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the current drawing color.
         /// </summary>
-        public static void GlColor4f(Color c)
+        public static void SetColor(Color c)
         {
             s_Color = c;
         }

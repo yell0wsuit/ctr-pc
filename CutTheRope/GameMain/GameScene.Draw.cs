@@ -100,7 +100,7 @@ namespace CutTheRope.GameMain
             pollenDrawer.Draw();
             gravityButton?.Draw();
             miceManager?.DrawHoles();
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             support.Draw();
@@ -267,7 +267,7 @@ namespace CutTheRope.GameMain
             aniPool.Draw();
             Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             DrawCuts();
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
@@ -371,7 +371,7 @@ namespace CutTheRope.GameMain
                             array3[num4++] = vector6.Y;
                             num3 += num10;
                         }
-                        Renderer.GlColor4f(Color.White);
+                        Renderer.SetColor(Color.White);
                         int vertexCount = num4 / 2;
                         VertexPositionColor[] vertices = GetStripVertexCache(vertexCount);
                         int positionIndex = 0;

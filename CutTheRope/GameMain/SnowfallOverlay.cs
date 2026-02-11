@@ -213,7 +213,7 @@ namespace CutTheRope.GameMain
                 RGBAColor final = new(1f, 1f, 1f, finalAlpha);
 
                 // Draw snowflake with transformation matrix
-                Renderer.GlColor4f(final.ToXNA());
+                Renderer.SetColor(final.ToXNA());
                 Renderer.GlPushMatrix();
                 Renderer.GlTranslatef(drawX, drawY, 0f);
                 Renderer.GlScalef(flake.Scale, flake.Scale, 1f);
@@ -222,7 +222,7 @@ namespace CutTheRope.GameMain
             }
 
             // Restore default GL state
-            Renderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             Renderer.OpenGLDisable(Renderer.GL_BLEND);
             Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
 
