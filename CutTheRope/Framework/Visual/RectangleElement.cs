@@ -17,11 +17,11 @@ namespace CutTheRope.Framework.Visual
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (solid)
             {
-                GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, color);
+                DrawHelper.DrawSolidRectWOBorder(drawX, drawY, width, height, color);
             }
             else
             {
-                GLDrawer.DrawRect(drawX, drawY, width, height, color);
+                DrawHelper.DrawRect(drawX, drawY, width, height, color);
             }
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetColor(Color.White);

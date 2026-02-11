@@ -2007,7 +2007,7 @@ namespace CutTheRope.GameMain
             {
                 PreDraw();
                 // Draw the colored rectangle at the quad offset position
-                GLDrawer.DrawSolidRectWOBorder(
+                DrawHelper.DrawSolidRectWOBorder(
                     drawX + quadOffset.X,
                     drawY + quadOffset.Y,
                     quadSize.X,

@@ -191,7 +191,7 @@ namespace CutTheRope.Framework.Helpers
             }
             else
             {
-                GLDrawer.DrawRect(drawX + bb.x, drawY + bb.y, bb.w, bb.h, RGBAColor.redRGBA);
+                DrawHelper.DrawRect(drawX + bb.x, drawY + bb.y, bb.w, bb.h, RGBAColor.redRGBA);
             }
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetColor(Color.White);

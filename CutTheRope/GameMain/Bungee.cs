@@ -235,7 +235,7 @@ namespace CutTheRope.GameMain
                 {
                     break;
                 }
-                Vector vector = GLDrawer.CalcPathBezier(pts, count, num7);
+                Vector vector = DrawHelper.CalcPathBezier(pts, count, num7);
                 array[num8++] = vector.X;
                 array[num8++] = vector.Y;
                 b.drawPts[num9++] = vector.X;
@@ -678,7 +678,7 @@ namespace CutTheRope.GameMain
                     CTRRectangle rect = rects[rectIndex];
 
                     // Draw the light sprite centered on the calculated position
-                    GLDrawer.DrawImagePart(texture, rect, x - (rect.w / 2f), y - (rect.h / 2f));
+                    DrawHelper.DrawImagePart(texture, rect, x - (rect.w / 2f), y - (rect.h / 2f));
                     break;
                 }
 

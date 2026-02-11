@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
             int writeIndex = 0;
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                VertexPositionColor[] lineVertices = GLDrawer.BuildAntialiasedLineVertices(
+                VertexPositionColor[] lineVertices = DrawHelper.BuildAntialiasedLineVertices(
                     s.vertices[i * 2],
                     s.vertices[(i * 2) + 1],
                     s.vertices[(i * 2) + 2],
@@ -359,7 +359,7 @@ namespace CutTheRope.GameMain
 
         public void ReCalcCircle()
         {
-            GLDrawer.CalcCircle(x, y, radius, vertexCount, vertices);
+            DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
         }
 
         public void SetRadius(float r)
@@ -455,7 +455,7 @@ namespace CutTheRope.GameMain
                     vertexCount++;
                 }
                 vertices = new float[vertexCount * 2];
-                GLDrawer.CalcCircle(x, y, radius, vertexCount, vertices);
+                DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
             }
             if (wheel)
             {

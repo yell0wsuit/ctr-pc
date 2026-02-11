@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
-    internal sealed class GLDrawer : FrameworkTypes
+    internal sealed class DrawHelper : FrameworkTypes
     {
         public static void DrawImage(CTRTexture2D image, float x, float y)
         {

@@ -42,7 +42,7 @@ namespace CutTheRope.Framework.Visual
 
         public void SetQuadAt(CTRRectangle rect, int n)
         {
-            quads[n] = GLDrawer.GetTextureCoordinates(this, rect);
+            quads[n] = DrawHelper.GetTextureCoordinates(this, rect);
             quadRects[n] = rect;
             quadOffsets[n] = vectZero;
         }

@@ -128,7 +128,7 @@ namespace CutTheRope.GameMain
                 {
                     whiteRGBA.AlphaChannel = color.AlphaChannel;
                 }
-                GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
                 Renderer.SetColor(Color.White);
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
             }
@@ -145,7 +145,7 @@ namespace CutTheRope.GameMain
                 RotatedCircle item = (RotatedCircle)obj;
                 if (item != this && item.ContainsSameObjectWithAnotherCircle() && circlesArray.GetObjectIndex(item) < circlesArray.GetObjectIndex(this))
                 {
-                    GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
+                    DrawHelper.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
