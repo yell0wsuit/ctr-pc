@@ -96,11 +96,11 @@ namespace CutTheRope.Framework.Core
                     {
                         if (viewTransition == 4)
                         {
-                            Renderer.GlClearColor(Color.Black);
+                            Renderer.SetClearColor(Color.Black);
                         }
                         else
                         {
-                            Renderer.GlClearColor(Color.White);
+                            Renderer.SetClearColor(Color.White);
                         }
                         Renderer.GlClear(0);
                     }
@@ -119,11 +119,11 @@ namespace CutTheRope.Framework.Core
                 {
                     if (viewTransition == 4)
                     {
-                        Renderer.GlClearColor(Color.Black);
+                        Renderer.SetClearColor(Color.Black);
                     }
                     else
                     {
-                        Renderer.GlClearColor(Color.White);
+                        Renderer.SetClearColor(Color.White);
                     }
                     Renderer.GlClear(0);
                 }
@@ -168,7 +168,7 @@ namespace CutTheRope.Framework.Core
             if (viewTransition != -1 && previousView != null)
             {
                 Application.SharedCanvas().SetDefaultProjection();
-                Renderer.GlClearColor(Color.Black);
+                Renderer.SetClearColor(Color.Black);
                 Renderer.GlClear(0);
                 transitionTime = lastTime + transitionDelay;
                 ApplyLandscape();
@@ -185,7 +185,7 @@ namespace CutTheRope.Framework.Core
             if (viewTransition != -1 && previousView != null)
             {
                 Application.SharedCanvas().SetDefaultProjection();
-                Renderer.GlClearColor(Color.Black);
+                Renderer.SetClearColor(Color.Black);
                 Renderer.GlClear(0);
                 ApplyLandscape();
                 previousView.Draw();

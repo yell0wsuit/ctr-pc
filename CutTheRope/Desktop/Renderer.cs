@@ -336,7 +336,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the clear color for GlClear operations.
         /// </summary>
-        public static void GlClearColor(Color c)
+        public static void SetClearColor(Color c)
         {
             s_glClearColor = c;
         }
