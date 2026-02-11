@@ -274,18 +274,9 @@ namespace CutTheRope.Desktop
         /// Applies a rotation transformation around the Z axis (2D rotation).
         /// </summary>
         /// <param name="angle">Rotation angle in degrees.</param>
-        public static void GlRotatef(double angle, double x, double y, double z)
+        public static void Rotate(double angle, double _, double _1, double _2)
         {
-            GlRotatef((float)angle, (float)x, (float)y, (float)z);
-        }
-
-        /// <summary>
-        /// Applies a rotation transformation around the Z axis (2D rotation).
-        /// </summary>
-        /// <param name="angle">Rotation angle in degrees.</param>
-        public static void GlRotatef(float angle, float _, float _1, float _2)
-        {
-            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
+            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians((float)angle)) * s_matrixModelView;
         }
 
         /// <summary>

@@ -152,7 +152,7 @@ namespace CutTheRope.Framework.Visual
                     Renderer.Translate(num, num2, 0f);
                     if (flag2)
                     {
-                        Renderer.GlRotatef(rotation, 0f, 0f, 1f);
+                        Renderer.Rotate(rotation, 0f, 0f, 1f);
                     }
                     if (flag)
                     {
