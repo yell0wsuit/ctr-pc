@@ -118,7 +118,7 @@ namespace CutTheRope.Framework.Visual
             {
                 Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             }
-            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.BindTexture(drawer.image.texture.Name());
             int quadCount = particleIdx;
             if (quadCount > 0)

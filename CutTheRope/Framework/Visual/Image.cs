@@ -268,7 +268,7 @@ namespace CutTheRope.Framework.Visual
                 y += texture.quadOffsets[n].Y;
             }
             Quad2D quad = texture.quads[n];
-            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.BindTexture(texture.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 x, y, w, h,

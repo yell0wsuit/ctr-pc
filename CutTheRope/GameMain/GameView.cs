@@ -31,11 +31,11 @@ namespace CutTheRope.GameMain
                     if (i == 3)
                     {
                         Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
-                        Renderer.OpenGLEnable(Renderer.GL_BLEND);
+                        Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.1, 0.1, 0.1, 0.5));
                         Renderer.SetColor(Color.White);
-                        Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+                        Renderer.Enable(Renderer.GL_TEXTURE_2D);
                     }
                     child.Draw();
                 }
@@ -49,11 +49,11 @@ namespace CutTheRope.GameMain
                     num2 = 1f - num2;
                 }
                 Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
-                Renderer.OpenGLEnable(Renderer.GL_BLEND);
+                Renderer.Enable(Renderer.GL_BLEND);
                 Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num2));
                 Renderer.SetColor(Color.White);
-                Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+                Renderer.Enable(Renderer.GL_TEXTURE_2D);
             }
         }
 

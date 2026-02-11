@@ -16,8 +16,8 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             Renderer.SetColor(Color.White);
-            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.OpenGLEnable(Renderer.GL_BLEND);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_BLEND);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             base.PreDraw();
             base.PostDraw();

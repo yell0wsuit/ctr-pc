@@ -102,11 +102,11 @@ namespace CutTheRope.GameMain
                 DrawGrabCircle(this, grabColor);
             }
             Renderer.SetColor(Color.White);
-            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             rope?.Draw();
             Renderer.SetColor(Color.White);
-            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             front.color = color;
             front.Draw();

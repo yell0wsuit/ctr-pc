@@ -50,8 +50,8 @@ namespace CutTheRope.Framework.Platform
                 string @string = fps.ToString("F1", CultureInfo.InvariantCulture);
                 fpsText.SetString(@string);
                 Renderer.SetColor(Color.White);
-                Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
-                Renderer.OpenGLEnable(Renderer.GL_BLEND);
+                Renderer.Enable(Renderer.GL_TEXTURE_2D);
+                Renderer.Enable(Renderer.GL_BLEND);
                 Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 fpsText.x = 5f;
                 fpsText.y = 5f;

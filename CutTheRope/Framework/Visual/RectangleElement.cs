@@ -23,7 +23,7 @@ namespace CutTheRope.Framework.Visual
             {
                 GLDrawer.DrawRect(drawX, drawY, width, height, color);
             }
-            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetColor(Color.White);
             base.PostDraw();
         }

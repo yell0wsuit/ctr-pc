@@ -130,7 +130,7 @@ namespace CutTheRope.GameMain
                 }
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
                 Renderer.SetColor(Color.White);
-                Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+                Renderer.Enable(Renderer.GL_TEXTURE_2D);
             }
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
@@ -150,7 +150,7 @@ namespace CutTheRope.GameMain
             }
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.SetColor(Color.White);
-            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             vinilHighlightL.Draw();
             vinilHighlightR.Draw();
             base.Draw();
