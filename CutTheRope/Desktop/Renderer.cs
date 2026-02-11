@@ -344,7 +344,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the clear color using RGBA float components (0.0-1.0).
         /// </summary>
-        public static void GlClearColorf(double red, double green, double blue, double alpha)
+        public static void SetClearColorFloat(double red, double green, double blue, double alpha)
         {
             s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
         }
