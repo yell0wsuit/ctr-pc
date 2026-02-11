@@ -7,9 +7,8 @@ namespace CutTheRope.Framework.Media
     /// Resolves the root path where FFmpeg libraries are located.
     /// </summary>
     /// <remarks>
-    /// On Windows, FFmpeg DLLs are bundled via the FFmpeg.GPL NuGet package and placed
-    /// next to the executable. On Linux, system-installed libraries are used. On macOS,
-    /// Homebrew or bundled Frameworks are searched.
+    /// On Windows and Linux, FFmpeg libraries are bundled in the "ffmpeg" subfolder.
+    /// On macOS, they are bundled in the "Frameworks" folder inside the app bundle.
     /// </remarks>
     internal static class FfmpegRootPathResolver
     {
@@ -49,37 +48,24 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         private static string[] GetCandidatePaths(string appBaseDirectory)
         {
+            if (OperatingSystem.IsMacOS())
+            {
+                return [Path.GetFullPath(Path.Combine(appBaseDirectory, "..", "Frameworks"))];
+            }
+
+            string ffmpegDir = Path.Combine(appBaseDirectory, "ffmpeg");
+
             if (OperatingSystem.IsWindows())
             {
                 return
                 [
-                    appBaseDirectory,
-                    Path.Combine(appBaseDirectory, "ffmpeg"),
+                    ffmpegDir,
                     Path.Combine(appBaseDirectory, "runtimes", "win-x64", "native")
                 ];
             }
 
-            if (OperatingSystem.IsLinux())
-            {
-                return
-                [
-                    appBaseDirectory,
-                    Path.Combine(appBaseDirectory, "ffmpeg"),
-                    "/usr/lib/x86_64-linux-gnu",
-                    "/usr/lib64",
-                    "/usr/lib",
-                    "/usr/local/lib"
-                ];
-            }
-
-            // macOS
-            string frameworksPath = Path.GetFullPath(Path.Combine(appBaseDirectory, "..", "Frameworks"));
-            return
-            [
-                "/opt/homebrew/opt/ffmpeg/lib",
-                "/usr/local/opt/ffmpeg/lib",
-                frameworksPath
-            ];
+            // Linux
+            return [ffmpegDir];
         }
 
         /// <summary>

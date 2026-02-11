@@ -1,7 +1,8 @@
+#if !MACOS_AVFOUNDATION
 using System;
+#endif
 using System.IO;
 
-using CutTheRope.GameMain;
 #if MACOS_AVFOUNDATION
 using Foundation;
 #endif
@@ -56,7 +57,7 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// The subdirectory for background images without JSON atlas.
         /// </summary>
-        public const string BackgroundsDirectory = $"{ImagesDirectory}/backgrounds";
+        public static readonly string BackgroundsDirectory = Path.Combine(ImagesDirectory, "backgrounds");
 
         /// <summary>
         /// The menu strings JSON filename.
@@ -69,26 +70,13 @@ namespace CutTheRope.Helpers
         public const string PacksConfigFile = "packs.xml";
 
         /// <summary>
-        /// Gets the full path to a content file, including the root directory and optional content folder.
+        /// Gets the full path to a content file, including the root directory.
         /// </summary>
         /// <param name="relativePath">The relative path from the content root (e.g., "maps/1_1.xml")</param>
         /// <returns>The full content path (e.g., "content/maps/1_1.xml")</returns>
         public static string GetContentPath(string relativePath)
         {
-            if (string.IsNullOrWhiteSpace(relativePath))
-            {
-                return RootDirectory;
-            }
-
-            // Normalize path separators to forward slashes for consistency
-            relativePath = relativePath.Replace('\\', '/');
-
-            // Combine with content folder if configured
-            string pathWithFolder = string.IsNullOrEmpty(ResDataPhoneFull.ContentFolder)
-                ? relativePath
-                : Path.Combine(ResDataPhoneFull.ContentFolder, relativePath).Replace('\\', '/');
-
-            return $"{RootDirectory}/{pathWithFolder}";
+            return string.IsNullOrWhiteSpace(relativePath) ? RootDirectory : Path.Combine(RootDirectory, relativePath);
         }
 
         /// <summary>
@@ -98,7 +86,7 @@ namespace CutTheRope.Helpers
         /// <returns>The full path to the level file</returns>
         public static string GetMapPath(string mapFileName)
         {
-            return GetContentPath($"{MapsDirectory}/{mapFileName}");
+            return GetContentPath(Path.Combine(MapsDirectory, mapFileName));
         }
 
         /// <summary>
@@ -110,7 +98,7 @@ namespace CutTheRope.Helpers
         /// <returns>The full path to the image file (e.g., "content/images/obj_ghost.json")</returns>
         public static string GetImagePath(string resourceName, string extension)
         {
-            return $"{RootDirectory}/{ImagesDirectory}/{resourceName}{extension}";
+            return Path.Combine(RootDirectory, ImagesDirectory, resourceName + extension);
         }
 
         /// <summary>
@@ -121,7 +109,7 @@ namespace CutTheRope.Helpers
         /// <returns>The relative path from content root (e.g., "images/obj_ghost")</returns>
         public static string GetImageContentPath(string resourceName)
         {
-            return $"{ImagesDirectory}/{resourceName}";
+            return Path.Combine(ImagesDirectory, resourceName);
         }
 
         /// <summary>
@@ -132,7 +120,7 @@ namespace CutTheRope.Helpers
         /// <returns>The relative path from content root (e.g., "backgrounds/bgr_01_p1")</returns>
         public static string GetBackgroundImageContentPath(string resourceName)
         {
-            return $"{BackgroundsDirectory}/{resourceName}";
+            return Path.Combine(BackgroundsDirectory, resourceName);
         }
 
         /// <summary>
@@ -149,26 +137,6 @@ namespace CutTheRope.Helpers
         public static string GetPacksConfigPath()
         {
             return GetContentPath(PacksConfigFile);
-        }
-
-        /// <summary>
-        /// Gets a relative path with the content folder prefix applied (for use with TitleContainer.OpenStream).
-        /// </summary>
-        /// <param name="relativePath">The relative path from the content root</param>
-        /// <returns>The path with content folder prefix</returns>
-        public static string GetRelativePathWithContentFolder(string relativePath)
-        {
-            if (string.IsNullOrWhiteSpace(relativePath))
-            {
-                return string.Empty;
-            }
-
-            // Normalize path separators
-            relativePath = relativePath.Replace('\\', '/');
-
-            return string.IsNullOrEmpty(ResDataPhoneFull.ContentFolder)
-                ? relativePath
-                : $"{ResDataPhoneFull.ContentFolder}{relativePath}";
         }
 
         /// <summary>
@@ -211,7 +179,7 @@ namespace CutTheRope.Helpers
         /// <returns>The relative path to the video file</returns>
         public static string GetVideoPath(string fileName)
         {
-            return $"{VideoHdDirectory}/{fileName}{VideoExtension}";
+            return Path.Combine(VideoHdDirectory, fileName + VideoExtension);
         }
 
         /// <summary>
@@ -221,7 +189,7 @@ namespace CutTheRope.Helpers
         /// <returns>The relative path to the sound effect file (e.g., "sounds/sfx/tap")</returns>
         public static string GetSoundEffectPath(string fileName)
         {
-            return $"{SoundsDirectory}/{SoundsSfxDirectory}/{fileName}";
+            return Path.Combine(SoundsDirectory, SoundsSfxDirectory, fileName);
         }
 
         /// <summary>
@@ -231,7 +199,7 @@ namespace CutTheRope.Helpers
         /// <returns>The relative path to the music file (e.g., "sounds/menu_music")</returns>
         public static string GetMusicPath(string fileName)
         {
-            return $"{SoundsDirectory}/{fileName}";
+            return Path.Combine(SoundsDirectory, fileName);
         }
 
         /// <summary>
@@ -241,7 +209,7 @@ namespace CutTheRope.Helpers
         /// <returns>The full path to the font file (e.g., "content/fonts/fontname.ttf")</returns>
         public static string GetFontPath(string fileName)
         {
-            return $"{RootDirectory}/{FontsDirectory}/{fileName}";
+            return Path.Combine(RootDirectory, FontsDirectory, fileName);
         }
     }
 }
