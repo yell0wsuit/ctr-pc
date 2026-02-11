@@ -175,7 +175,7 @@ namespace CutTheRope.Framework.Core
                 currentController.ActiveView().Draw();
                 nextScreenImage?.xnaTexture_.Dispose();
                 nextScreenImage = Grabber.Grab();
-                Renderer.GlLoadIdentity();
+                Renderer.LoadIdentity();
             }
         }
 
@@ -191,7 +191,7 @@ namespace CutTheRope.Framework.Core
                 previousView.Draw();
                 prevScreenImage?.xnaTexture_.Dispose();
                 prevScreenImage = Grabber.Grab();
-                Renderer.GlLoadIdentity();
+                Renderer.LoadIdentity();
             }
         }
 

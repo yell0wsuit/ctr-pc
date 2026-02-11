@@ -207,7 +207,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Resets the current matrix to identity based on the active matrix mode.
         /// </summary>
-        public static void GlLoadIdentity()
+        public static void LoadIdentity()
         {
             if (s_glMatrixMode == MODE_MODELVIEW)
             {
