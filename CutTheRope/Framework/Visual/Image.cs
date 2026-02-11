@@ -247,7 +247,7 @@ namespace CutTheRope.Framework.Visual
             PreDraw();
             if (quadToDraw == -1)
             {
-                GLDrawer.DrawImage(texture, drawX, drawY);
+                DrawHelper.DrawImage(texture, drawX, drawY);
             }
             else
             {
@@ -268,12 +268,12 @@ namespace CutTheRope.Framework.Visual
                 y += texture.quadOffsets[n].Y;
             }
             Quad2D quad = texture.quads[n];
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlBindTexture(texture.Name());
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(texture.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 x, y, w, h,
                 quad.tlX, quad.tlY, quad.brX, quad.brY);
-            OpenGLRenderer.DrawTriangleStrip(vertices);
+            Renderer.DrawTriangleStrip(vertices);
         }
 
         public override bool HandleAction(ActionData a)

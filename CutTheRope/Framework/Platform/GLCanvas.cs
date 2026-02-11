@@ -49,15 +49,15 @@ namespace CutTheRope.Framework.Platform
             {
                 string @string = fps.ToString("F1", CultureInfo.InvariantCulture);
                 fpsText.SetString(@string);
-                OpenGLRenderer.GlColor4f(Color.White);
-                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetColor(Color.White);
+                Renderer.Enable(Renderer.GL_TEXTURE_2D);
+                Renderer.Enable(Renderer.GL_BLEND);
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 fpsText.x = 5f;
                 fpsText.y = 5f;
                 fpsText.Draw();
-                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
-                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+                Renderer.Disable(Renderer.GL_BLEND);
+                Renderer.Disable(Renderer.GL_TEXTURE_2D);
             }
         }
 
@@ -76,12 +76,12 @@ namespace CutTheRope.Framework.Platform
             xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
             xOffsetScaled = (int)(-xOffset / Global.ScreenSizeManager.WidthAspectRatio);
             isFullscreen = Global.ScreenSizeManager.IsFullScreen;
-            OpenGLRenderer.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
-            OpenGLRenderer.GlMatrixMode(15);
-            OpenGLRenderer.GlLoadIdentity();
-            OpenGLRenderer.GlOrthof(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
-            OpenGLRenderer.GlMatrixMode(14);
-            OpenGLRenderer.GlLoadIdentity();
+            Renderer.SetViewport(xOffset, yOffset, backingWidth, backingHeight);
+            Renderer.SetMatrixMode(15);
+            Renderer.LoadIdentity();
+            Renderer.SetOrthographic(0f, origWidth, origHeight, 0f, -1f, 1f);
+            Renderer.SetMatrixMode(14);
+            Renderer.LoadIdentity();
         }
 
         public static void DrawRect()
@@ -157,7 +157,7 @@ namespace CutTheRope.Framework.Platform
         public void BeforeRender()
         {
             SetDefaultProjection();
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
+            Renderer.Disable(Renderer.GL_BLEND);
         }
 
         public static void AfterRender()

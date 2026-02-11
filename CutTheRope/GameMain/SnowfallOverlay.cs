@@ -175,9 +175,9 @@ namespace CutTheRope.GameMain
             PreDraw();
 
             // Enable blending with additive mode for soft glow effect
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_BLEND);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
 
             Vector[] offsets = texture.quadOffsets;
             CTRRectangle[] rects = texture.quadRects;
@@ -213,18 +213,18 @@ namespace CutTheRope.GameMain
                 RGBAColor final = new(1f, 1f, 1f, finalAlpha);
 
                 // Draw snowflake with transformation matrix
-                OpenGLRenderer.GlColor4f(final.ToXNA());
-                OpenGLRenderer.GlPushMatrix();
-                OpenGLRenderer.GlTranslatef(drawX, drawY, 0f);
-                OpenGLRenderer.GlScalef(flake.Scale, flake.Scale, 1f);
+                Renderer.SetColor(final.ToXNA());
+                Renderer.PushMatrix();
+                Renderer.Translate(drawX, drawY, 0f);
+                Renderer.Scale(flake.Scale, flake.Scale, 1f);
                 CTRTexture2D.DrawQuadAtPoint(texture, flake.FrameIndex, vectZero);
-                OpenGLRenderer.GlPopMatrix();
+                Renderer.PopMatrix();
             }
 
             // Restore default GL state
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.SetColor(Color.White);
+            Renderer.Disable(Renderer.GL_BLEND);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
 
             PostDraw();
         }

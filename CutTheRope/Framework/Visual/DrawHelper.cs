@@ -6,26 +6,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
-    internal sealed class GLDrawer : FrameworkTypes
+    internal sealed class DrawHelper : FrameworkTypes
     {
         public static void DrawImage(CTRTexture2D image, float x, float y)
         {
             CTRTexture2D.DrawAtPoint(image, Vect(x, y));
         }
 
-        public static void DrawImagePart(CTRTexture2D image, CTRRectangle r, double x, double y)
-        {
-            DrawImagePart(image, r, (float)x, (float)y);
-        }
-
         public static void DrawImagePart(CTRTexture2D image, CTRRectangle r, float x, float y)
         {
             CTRTexture2D.DrawRectAtPoint(image, r, Vect(x, y));
-        }
-
-        public static void DrawImageQuad(CTRTexture2D image, int q, double x, double y)
-        {
-            DrawImageQuad(image, q, (float)x, (float)y);
         }
 
         public static void DrawImageQuad(CTRTexture2D image, int q, float x, float y)
@@ -104,8 +94,8 @@ namespace CutTheRope.Framework.Visual
                 DrawImageQuad(image, q, x, y);
                 return;
             }
-            int num3 = (int)Ceil((double)(width / num));
-            int num12 = (int)Ceil((double)(height / num2));
+            int num3 = (int)Ceil(width / num);
+            int num12 = (int)Ceil(height / num2);
             int num4 = (int)width % (int)num;
             int num5 = (int)height % (int)num2;
             int num6 = (int)(num4 == 0 ? num : num4);
@@ -250,7 +240,7 @@ namespace CutTheRope.Framework.Visual
             array6[((vertexCount - 1) * 6) + 1] = RGBAColor.transparentRGBA;
             int stripVertexCount = ((vertexCount - 1) * 6) + 2;
             VertexPositionColor[] vertices = BuildColoredVertices(array, array6, stripVertexCount);
-            OpenGLRenderer.DrawTriangleStrip(vertices, stripVertexCount);
+            Renderer.DrawTriangleStrip(vertices, stripVertexCount);
         }
 
         private static void CalcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
@@ -350,7 +340,7 @@ namespace CutTheRope.Framework.Visual
             s_rectVertices[1] = new VertexPositionColor(new Vector3(x + w, y, 0f), color);
             s_rectVertices[2] = new VertexPositionColor(new Vector3(x, y + h, 0f), color);
             s_rectVertices[3] = new VertexPositionColor(new Vector3(x + w, y + h, 0f), color);
-            OpenGLRenderer.DrawTriangleStrip(s_rectVertices, 4);
+            Renderer.DrawTriangleStrip(s_rectVertices, 4);
         }
 
         // Cached vertex array for rectangle drawing
@@ -359,21 +349,21 @@ namespace CutTheRope.Framework.Visual
         public static void DrawPolygon(float[] vertices, int vertexCount, RGBAColor color)
         {
             VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, color.ToXNA());
-            OpenGLRenderer.DrawLineStrip(lineVertices, vertexCount + 1);
+            Renderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
         public static void DrawSolidPolygon(float[] vertices, int vertexCount, RGBAColor border, RGBAColor fill)
         {
             VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
-            OpenGLRenderer.DrawTriangleStrip(fillVertices, vertexCount);
+            Renderer.DrawTriangleStrip(fillVertices, vertexCount);
             VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, border.ToXNA());
-            OpenGLRenderer.DrawLineStrip(lineVertices, vertexCount + 1);
+            Renderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
         public static void DrawSolidPolygonWOBorder(float[] vertices, int vertexCount, RGBAColor fill)
         {
             VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
-            OpenGLRenderer.DrawTriangleStrip(fillVertices, vertexCount);
+            Renderer.DrawTriangleStrip(fillVertices, vertexCount);
         }
 
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
