@@ -56,7 +56,7 @@ namespace CutTheRope.Framework.Core
                     nextScreenImage = null;
                 }
             }
-            Renderer.GlPopMatrix();
+            Renderer.PopMatrix();
             GLCanvas.AfterRender();
         }
 

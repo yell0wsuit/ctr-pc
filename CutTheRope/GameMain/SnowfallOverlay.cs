@@ -218,7 +218,7 @@ namespace CutTheRope.GameMain
                 Renderer.GlTranslatef(drawX, drawY, 0f);
                 Renderer.GlScalef(flake.Scale, flake.Scale, 1f);
                 CTRTexture2D.DrawQuadAtPoint(texture, flake.FrameIndex, vectZero);
-                Renderer.GlPopMatrix();
+                Renderer.PopMatrix();
             }
 
             // Restore default GL state

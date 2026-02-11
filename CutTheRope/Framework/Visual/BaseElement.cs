@@ -89,7 +89,7 @@ namespace CutTheRope.Framework.Visual
         {
             if (t.pushM || t.rotation != 0.0 || t.scaleX != 1.0 || t.scaleY != 1.0 || t.translateX != 0.0 || t.translateY != 0.0)
             {
-                Renderer.GlPopMatrix();
+                Renderer.PopMatrix();
                 t.pushM = false;
             }
         }

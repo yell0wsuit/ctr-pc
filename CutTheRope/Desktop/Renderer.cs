@@ -244,7 +244,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Pops and restores the model-view matrix from the stack.
         /// </summary>
-        public static void GlPopMatrix()
+        public static void PopMatrix()
         {
             if (s_matrixModelViewStack.Count > 0)
             {

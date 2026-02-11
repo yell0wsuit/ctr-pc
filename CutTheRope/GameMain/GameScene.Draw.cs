@@ -94,7 +94,7 @@ namespace CutTheRope.GameMain
                 }
             }
             Renderer.GlTranslatef((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
-            Renderer.GlPopMatrix();
+            Renderer.PopMatrix();
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
