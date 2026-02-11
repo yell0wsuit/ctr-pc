@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 
-using CutTheRope.GameMain;
-
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.Helpers
@@ -21,20 +19,11 @@ namespace CutTheRope.Helpers
 
             try
             {
-                using Stream stream = TitleContainer.OpenStream($"content/{ResDataPhoneFull.ContentFolder}{fileName}");
+                using Stream stream = TitleContainer.OpenStream(Path.Combine(ContentPaths.RootDirectory, fileName));
                 document = XDocument.Load(stream);
             }
             catch (Exception)
             {
-            }
-
-            if (document == null)
-            {
-                string inlineXml = ResDataPhoneFull.GetXml(fileName);
-                if (!string.IsNullOrEmpty(inlineXml))
-                {
-                    document = XDocument.Parse(inlineXml);
-                }
             }
 
             return document?.Root;

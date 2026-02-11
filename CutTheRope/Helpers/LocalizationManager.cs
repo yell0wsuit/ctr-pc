@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Threading;
 
 using CutTheRope.Framework;
-using CutTheRope.GameMain;
 
 using Microsoft.Xna.Framework;
 
@@ -184,23 +183,15 @@ namespace CutTheRope.Helpers
 
         private static Stream OpenStream(string fileName)
         {
-            string[] candidates = string.IsNullOrEmpty(ResDataPhoneFull.ContentFolder)
-                ? [fileName]
-                : [$"{ResDataPhoneFull.ContentFolder}{fileName}", fileName];
-
-            foreach (string candidate in candidates)
+            try
             {
-                try
-                {
-                    string contentPath = $"{ContentPaths.RootDirectory}/{candidate}";
-                    return TitleContainer.OpenStream(contentPath);
-                }
-                catch (Exception)
-                {
-                }
+                string contentPath = Path.Combine(ContentPaths.RootDirectory, fileName);
+                return TitleContainer.OpenStream(contentPath);
             }
-
-            return null;
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

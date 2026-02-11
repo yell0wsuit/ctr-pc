@@ -90,7 +90,7 @@ namespace CutTheRope.GameMain
             }
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
-            string mapPath = $"{ContentPaths.MapsDirectory}/{LevelsList.LEVEL_NAMES[pack, level]}";
+            string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
             XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml(mapPath), mapPath, true);
         }
 
@@ -111,7 +111,7 @@ namespace CutTheRope.GameMain
             {
                 cTRRootController.SetLevel(++level);
                 cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
-                string mapPath = $"{ContentPaths.MapsDirectory}/{LevelsList.LEVEL_NAMES[pack, level]}";
+                string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
                 XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml(mapPath), mapPath, true);
             }
         }

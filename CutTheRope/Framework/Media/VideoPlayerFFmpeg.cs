@@ -116,10 +116,7 @@ namespace CutTheRope.Framework.Media
             this.mute = mute;
 
             string relativeVideoPath = ContentPaths.GetVideoPath(moviePath);
-            string fullPath = Path.Combine(
-                ContentPaths.GetContentRootAbsolute(),
-                ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath)
-            );
+            string fullPath = Path.Combine(ContentPaths.GetContentRootAbsolute(), relativeVideoPath);
 
             if (!fileExists(fullPath) || !librariesLoaded)
             {

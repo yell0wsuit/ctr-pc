@@ -1,129 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
-using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
     internal class ResDataPhoneFull
     {
-        // Legacy: this file has been removed, kept for backwards compatibility
-        private const string ResourceDataFileName = "res_data_phone_full.xml";
-
-        public static string GetXml(string resName)
-        {
-            if (string.IsNullOrEmpty(resName))
-            {
-                return null;
-            }
-
-            LoadResourceXml();
-
-            _ = allResources_.TryGetValue(resName, out string value);
-            return value;
-        }
-
-        private static void LoadResourceXml()
-        {
-            if (allResources_ != null)
-            {
-                return;
-            }
-
-            lock (resourcesLock_)
-            {
-                allResources_ ??= LoadAllResources();
-            }
-        }
-
-        private static Dictionary<string, string> LoadAllResources()
-        {
-            Dictionary<string, string> result = [];
-
-            // Legacy: was used to load assets from res_data_phone_full.xml (now removed)
-            Dictionary<string, string> resourceData = LoadXmlFile(ResourceDataFileName, "resource");
-            foreach (KeyValuePair<string, string> kvp in resourceData)
-            {
-                result[kvp.Key] = kvp.Value;
-            }
-
-            return result;
-        }
-
-        private static Dictionary<string, string> LoadXmlFile(string fileName, string elementName)
-        {
-            Dictionary<string, string> result = [];
-
-            try
-            {
-                using Stream stream = OpenStream(fileName);
-                if (stream == null)
-                {
-                    return result;
-                }
-
-                XDocument document = XDocument.Load(stream);
-                XElement root = document.Root;
-                if (root == null)
-                {
-                    return result;
-                }
-
-                foreach (XElement element in root.Elements(elementName))
-                {
-                    string name = element.Attribute("name")?.Value;
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        continue;
-                    }
-
-                    XElement[] childNodes = [.. element.Elements()];
-                    if (childNodes.Length == 0)
-                    {
-                        continue;
-                    }
-
-                    string xml = string.Concat(childNodes.Select(node => node.ToString(SaveOptions.DisableFormatting)));
-                    if (!string.IsNullOrEmpty(xml))
-                    {
-                        result[name] = xml;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            return result;
-        }
-
-        private static Stream OpenStream(string fileName)
-        {
-            string[] candidates = string.IsNullOrEmpty(ContentFolder)
-                ? [fileName]
-                : [$"{ContentFolder}{fileName}", fileName];
-
-            foreach (string candidate in candidates)
-            {
-                try
-                {
-                    string contentPath = $"{ContentPaths.RootDirectory}/{candidate}";
-                    return TitleContainer.OpenStream(contentPath);
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            return null;
-        }
-
         internal const int IMG_MENU_BUTTON_DEFAULT_default_idle = 0;
 
         internal const int IMG_MENU_BUTTON_DEFAULT_default_pressed = 1;
@@ -1202,8 +1084,6 @@ namespace CutTheRope.GameMain
 
         internal const int IMG_MENU_EXTRA_BUTTONS_EN_en = 0;
 
-        public static string ContentFolder = "";
-
         internal static int[] PACK_STARTUP = [0, 1, -1];
 
         internal static int[] PACK_COMMON_IMAGES = [2, 3, 4, 5, 6, 7, 8, -1];
@@ -1289,10 +1169,6 @@ namespace CutTheRope.GameMain
         internal static int[] PACK_MUSIC = [145, 146, 147, 148, 150, -1];
 
         internal static int[] PACK_LOCALIZATION_MENU = [149, -1];
-
-        private static readonly Lock resourcesLock_ = new();
-
-        private static Dictionary<string, string> allResources_;
 
         // String-based resource ID system with auto-assignment
         private static readonly Lock resourceIdLock_ = new();

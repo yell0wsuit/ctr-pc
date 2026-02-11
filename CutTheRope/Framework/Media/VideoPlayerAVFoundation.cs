@@ -45,12 +45,8 @@ namespace CutTheRope.Framework.Media
             loggedFirstFrame = false;
 
             string basePath = NSBundle.MainBundle.ResourcePath;
-            string relativeVideoPath = ContentPaths.GetVideoPath($"{moviePath}");
-            string fullPath = Path.Combine(
-                basePath,
-                ContentPaths.RootDirectory,
-                ContentPaths.GetRelativePathWithContentFolder(relativeVideoPath)
-            );
+            string relativeVideoPath = ContentPaths.GetVideoPath(moviePath);
+            string fullPath = Path.Combine(basePath, ContentPaths.RootDirectory, relativeVideoPath);
 
             if (!File.Exists(fullPath))
             {
