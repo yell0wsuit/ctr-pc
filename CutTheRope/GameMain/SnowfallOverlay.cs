@@ -175,8 +175,8 @@ namespace CutTheRope.GameMain
             PreDraw();
 
             // Enable blending with additive mode for soft glow effect
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlEnable(Renderer.GL_BLEND);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_BLEND);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
 
             Vector[] offsets = texture.quadOffsets;

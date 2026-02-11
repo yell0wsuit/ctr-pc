@@ -104,7 +104,7 @@ namespace CutTheRope.Desktop
         /// Enables an OpenGL capability.
         /// </summary>
         /// <param name="cap">Capability constant: 1 = GL_BLEND</param>
-        public static void GlEnable(int cap)
+        public static void OpenGLEnable(int cap)
         {
             if (cap == GL_BLEND)
             {

@@ -25,8 +25,8 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             Global.MouseCursor.Enable(true);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlEnable(Renderer.GL_BLEND);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_BLEND);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -73,7 +73,7 @@ namespace CutTheRope.GameMain
             CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);
             if (!game)
             {
-                Renderer.GlEnable(Renderer.GL_SCISSOR_TEST);
+                Renderer.OpenGLEnable(Renderer.GL_SCISSOR_TEST);
                 Renderer.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
             }
             Renderer.GlColor4f(Color.White);

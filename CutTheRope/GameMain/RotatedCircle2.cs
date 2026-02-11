@@ -159,7 +159,7 @@ namespace CutTheRope.GameMain
                 Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             vinilTL.color = vinilTR.color = vinilBL.color = vinilBR.color = RGBAColor.solidOpaqueRGBA;
             vinilTL.Draw();
@@ -182,10 +182,10 @@ namespace CutTheRope.GameMain
                     GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, rotatedCircle.x, rotatedCircle.y, rotatedCircle.sizeInPixels, 51, 7f * rotatedCircle.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.GlColor4f(Color.White);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
             vinilHighlightL.Draw();
@@ -200,7 +200,7 @@ namespace CutTheRope.GameMain
             GLDrawer.DrawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
             GLDrawer.DrawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
             Renderer.GlColor4f(Color.White);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             vinilControllerL.color = color;
             vinilControllerR.color = color;
             base.Draw();

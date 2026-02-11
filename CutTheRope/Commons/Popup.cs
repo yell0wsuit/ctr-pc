@@ -146,11 +146,11 @@ namespace CutTheRope.Commons
 
         public override void Draw()
         {
-            Renderer.GlEnable(Renderer.GL_BLEND);
+            Renderer.OpenGLEnable(Renderer.GL_BLEND);
             Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlColor4f(Color.White);
             PreDraw();
             PostDraw();

@@ -70,7 +70,7 @@ namespace CutTheRope.GameMain
         {
             PreDraw();
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBindTexture(drawer.image.texture.Name());
             int quadCount = particleIdx;
             if (quadCount > 0)

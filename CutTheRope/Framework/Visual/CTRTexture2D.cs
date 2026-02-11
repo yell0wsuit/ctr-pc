@@ -14,7 +14,7 @@ namespace CutTheRope.Framework.Visual
             float texTop = t._invHeight * rect.y;
             float texRight = texLeft + (t._invWidth * rect.w);
             float texBottom = texTop + (t._invHeight * rect.h);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, rect.w, rect.h,
@@ -64,7 +64,7 @@ namespace CutTheRope.Framework.Visual
             Quad2D quad2D = t.quads[q];
             float w = t.quadRects[q].w;
             float h = t.quadRects[q].h;
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, w, h,
@@ -74,7 +74,7 @@ namespace CutTheRope.Framework.Visual
 
         public static void DrawAtPoint(CTRTexture2D t, Vector point)
         {
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, t._realWidth, t._realHeight,

@@ -251,7 +251,7 @@ namespace CutTheRope.GameMain
                 DrawGrabCircle(this, rgbaColor);
             }
             Renderer.GlColor4f(Color.White);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
         }
 
         public void DrawBungee()
@@ -272,7 +272,7 @@ namespace CutTheRope.GameMain
                 y = rope.bungeeAnchor.pos.Y;
             }
             PreDraw();
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Bungee bungee = rope;
 
             if (wheel)
@@ -297,7 +297,7 @@ namespace CutTheRope.GameMain
 
             bungee?.Draw();
             Renderer.GlColor4f(Color.White);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
 
             // Draw front gun
             gunFront?.Draw();

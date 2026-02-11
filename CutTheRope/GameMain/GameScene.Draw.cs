@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
             Renderer.GlClear(0);
             PreDraw();
             camera.ApplyCameraTransformation();
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlDisable(Renderer.GL_BLEND);
             if (backTexture != null)
             {
@@ -76,7 +76,7 @@ namespace CutTheRope.GameMain
                             : new CTRRectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
 
                         // Enable blending for p2 to avoid dark seams where alpha overlaps p1.
-                        Renderer.GlEnable(Renderer.GL_BLEND);
+                        Renderer.OpenGLEnable(Renderer.GL_BLEND);
                         Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         // Draw p2 at configured Y position (p1 is handled by TileMap)
                         GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
@@ -84,7 +84,7 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            Renderer.GlEnable(Renderer.GL_BLEND);
+            Renderer.OpenGLEnable(Renderer.GL_BLEND);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (earthAnims != null)
             {
@@ -95,13 +95,13 @@ namespace CutTheRope.GameMain
             }
             Renderer.GlTranslatef((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
             Renderer.GlPopMatrix();
-            Renderer.GlEnable(Renderer.GL_BLEND);
+            Renderer.OpenGLEnable(Renderer.GL_BLEND);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
             gravityButton?.Draw();
             miceManager?.DrawHoles();
             Renderer.GlColor4f(Color.White);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             support.Draw();
             target.Draw();
@@ -269,7 +269,7 @@ namespace CutTheRope.GameMain
             Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
             Renderer.GlColor4f(Color.White);
             DrawCuts();
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
             staticAniPool.Draw();

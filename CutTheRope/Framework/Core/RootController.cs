@@ -72,8 +72,8 @@ namespace CutTheRope.Framework.Core
         private void DrawViewTransition()
         {
             Renderer.GlColor4f(Color.White);
-            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlEnable(Renderer.GL_BLEND);
+            Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLEnable(Renderer.GL_BLEND);
             Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Application.SharedCanvas().SetDefaultRealProjection();
             int num2 = viewTransition;
@@ -87,7 +87,7 @@ namespace CutTheRope.Framework.Core
                         RGBAColor fill = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
                         Grabber.DrawGrabbedImage(prevScreenImage, 0, 0);
                         Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
-                        Renderer.GlEnable(Renderer.GL_BLEND);
+                        Renderer.OpenGLEnable(Renderer.GL_BLEND);
                         Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill);
                         Renderer.GlDisable(Renderer.GL_BLEND);
@@ -110,7 +110,7 @@ namespace CutTheRope.Framework.Core
                     RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - ((double)num * 2.0)) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - ((double)num * 2.0));
                     Grabber.DrawGrabbedImage(nextScreenImage, 0, 0);
                     Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
-                    Renderer.GlEnable(Renderer.GL_BLEND);
+                    Renderer.OpenGLEnable(Renderer.GL_BLEND);
                     Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                     GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill2);
                     Renderer.GlDisable(Renderer.GL_BLEND);
