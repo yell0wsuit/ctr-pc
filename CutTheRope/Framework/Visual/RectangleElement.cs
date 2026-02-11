@@ -14,17 +14,17 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             base.PreDraw();
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (solid)
             {
-                GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, color);
+                DrawHelper.DrawSolidRectWOBorder(drawX, drawY, width, height, color);
             }
             else
             {
-                GLDrawer.DrawRect(drawX, drawY, width, height, color);
+                DrawHelper.DrawRect(drawX, drawY, width, height, color);
             }
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlColor4f(Color.White);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.SetColor(Color.White);
             base.PostDraw();
         }
 

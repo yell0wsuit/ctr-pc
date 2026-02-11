@@ -25,9 +25,9 @@ namespace CutTheRope.Framework.Visual
             float num = height - (h + h2);
             if (num >= 0f)
             {
-                GLDrawer.DrawImageQuad(texture, tiles[0], drawX + offsets[0], drawY);
-                GLDrawer.DrawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, width, num);
-                GLDrawer.DrawImageQuad(texture, tiles[2], drawX + offsets[2], drawY + h + num);
+                DrawHelper.DrawImageQuad(texture, tiles[0], drawX + offsets[0], drawY);
+                DrawHelper.DrawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, width, num);
+                DrawHelper.DrawImageQuad(texture, tiles[2], drawX + offsets[2], drawY + h + num);
             }
             else
             {
@@ -36,8 +36,8 @@ namespace CutTheRope.Framework.Visual
                 r.h = Math.Min(r.h, height / 2f);
                 r2.h = Math.Min(r2.h, height - r.h);
                 r2.y += texture.quadRects[tiles[2]].h - r2.h;
-                GLDrawer.DrawImagePart(texture, r, drawX + offsets[0], drawY);
-                GLDrawer.DrawImagePart(texture, r2, drawX + offsets[2], drawY + r.h);
+                DrawHelper.DrawImagePart(texture, r, drawX + offsets[0], drawY);
+                DrawHelper.DrawImagePart(texture, r2, drawX + offsets[2], drawY + r.h);
             }
             PostDraw();
         }

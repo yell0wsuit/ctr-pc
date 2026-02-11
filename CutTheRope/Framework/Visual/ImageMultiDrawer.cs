@@ -71,11 +71,11 @@ namespace CutTheRope.Framework.Visual
 
         private void DrawNumberOfQuads(int n)
         {
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlBindTexture(image.texture.Name());
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(image.texture.Name());
             VertexPositionNormalTexture[] quadVertices = GetVertexBuffer(n * 4);
-            OpenGLRenderer.FillTexturedVertices(vertices, texCoordinates, quadVertices, n);
-            OpenGLRenderer.DrawTriangleList(quadVertices, indices, n * 6);
+            Renderer.FillTexturedVertices(vertices, texCoordinates, quadVertices, n);
+            Renderer.DrawTriangleList(quadVertices, indices, n * 6);
         }
 
         public void Optimize(VertexPositionNormalTexture[] v)
@@ -93,15 +93,15 @@ namespace CutTheRope.Framework.Visual
                 DrawNumberOfQuads(totalQuads);
                 return;
             }
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlBindTexture(image.texture.Name());
-            OpenGLRenderer.DrawTriangleList(verticesOptimized, indices);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(image.texture.Name());
+            Renderer.DrawTriangleList(verticesOptimized, indices);
         }
 
         public override void Draw()
         {
             PreDraw();
-            OpenGLRenderer.GlTranslatef(drawX, drawY, 0f);
+            Renderer.Translate(drawX, drawY, 0f);
             if (numberOfQuadsToDraw == -1)
             {
                 DrawAllQuads();
@@ -110,7 +110,7 @@ namespace CutTheRope.Framework.Visual
             {
                 DrawNumberOfQuads(numberOfQuadsToDraw);
             }
-            OpenGLRenderer.GlTranslatef(0f - drawX, 0f - drawY, 0f);
+            Renderer.Translate(0f - drawX, 0f - drawY, 0f);
             PostDraw();
         }
 

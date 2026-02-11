@@ -54,10 +54,10 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             PreDraw();
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_SCISSOR_TEST);
-            OpenGLRenderer.SetScissorRectangle(drawX, drawY, width, height);
+            Renderer.Enable(Renderer.GL_SCISSOR_TEST);
+            Renderer.SetScissor(drawX, drawY, width, height);
             PostDraw();
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_SCISSOR_TEST);
+            Renderer.Disable(Renderer.GL_SCISSOR_TEST);
         }
 
         public override void PostDraw()
