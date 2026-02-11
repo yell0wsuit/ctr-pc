@@ -228,9 +228,9 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets up an orthographic projection matrix.
         /// </summary>
-        public static void SetOrthographic(double left, double right, double bottom, double top, double near, double far)
+        public static void SetOrthographic(float left, float right, float bottom, float top, float near, float far)
         {
-            s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
+            s_matrixProjection = Matrix.CreateOrthographicOffCenter(left, right, bottom, top, near, far);
         }
 
         /// <summary>
@@ -257,27 +257,27 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Applies a scale transformation to the current model-view matrix.
         /// </summary>
-        public static void Scale(double x, double y, double z)
+        public static void Scale(float x, float y, float z)
         {
-            s_matrixModelView = Matrix.CreateScale((float)x, (float)y, (float)z) * s_matrixModelView;
+            s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
         }
 
         /// <summary>
         /// Applies a rotation transformation around the Z axis (2D rotation).
         /// </summary>
         /// <param name="angle">Rotation angle in degrees.</param>
-        public static void Rotate(double angle, double _, double _1, double _2)
+        public static void Rotate(float angle, float _, float _1, float _2)
         {
-            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians((float)angle)) * s_matrixModelView;
+            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
         }
 
         /// <summary>
         /// Applies a translation transformation to the current model-view matrix.
         /// Z component is ignored for 2D rendering.
         /// </summary>
-        public static void Translate(double x, double y, double _)
+        public static void Translate(float x, float y, float _)
         {
-            s_matrixModelView = Matrix.CreateTranslation((float)x, (float)y, 0f) * s_matrixModelView;
+            s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
         }
 
         /// <summary>

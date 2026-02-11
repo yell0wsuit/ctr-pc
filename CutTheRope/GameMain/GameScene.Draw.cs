@@ -55,10 +55,10 @@ namespace CutTheRope.GameMain
             float num = Canvas.xOffsetScaled;
             float num2 = 0f;
             Renderer.PushMatrix();
-            Renderer.Translate((double)num, (double)num2, 0.0);
-            Renderer.Scale(back.scaleX, back.scaleY, 1.0);
-            Renderer.Translate((double)(0f - num), (double)(0f - num2), 0.0);
-            Renderer.Translate(Canvas.xOffsetScaled, 0.0, 0.0);
+            Renderer.Translate(num, num2, 0f);
+            Renderer.Scale(back.scaleX, back.scaleY, 1f);
+            Renderer.Translate(-num, -num2, 0f);
+            Renderer.Translate(Canvas.xOffsetScaled, 0f, 0f);
             back.Draw();
             if (mapHeight > SCREEN_HEIGHT)
             {
@@ -93,7 +93,7 @@ namespace CutTheRope.GameMain
                     ((Image)obj).Draw();
                 }
             }
-            Renderer.Translate((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
+            Renderer.Translate(-Canvas.xOffsetScaled, 0f, 0f);
             Renderer.PopMatrix();
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
