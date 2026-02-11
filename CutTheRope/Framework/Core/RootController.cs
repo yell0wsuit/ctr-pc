@@ -102,7 +102,7 @@ namespace CutTheRope.Framework.Core
                         {
                             Renderer.SetClearColor(Color.White);
                         }
-                        Renderer.GlClear(0);
+                        Renderer.Clear(0);
                     }
                 }
                 else if (nextScreenImage != null)
@@ -125,7 +125,7 @@ namespace CutTheRope.Framework.Core
                     {
                         Renderer.SetClearColor(Color.White);
                     }
-                    Renderer.GlClear(0);
+                    Renderer.Clear(0);
                 }
             }
             ApplyLandscape();
@@ -169,7 +169,7 @@ namespace CutTheRope.Framework.Core
             {
                 Application.SharedCanvas().SetDefaultProjection();
                 Renderer.SetClearColor(Color.Black);
-                Renderer.GlClear(0);
+                Renderer.Clear(0);
                 transitionTime = lastTime + transitionDelay;
                 ApplyLandscape();
                 currentController.ActiveView().Draw();
@@ -186,7 +186,7 @@ namespace CutTheRope.Framework.Core
             {
                 Application.SharedCanvas().SetDefaultProjection();
                 Renderer.SetClearColor(Color.Black);
-                Renderer.GlClear(0);
+                Renderer.Clear(0);
                 ApplyLandscape();
                 previousView.Draw();
                 prevScreenImage?.xnaTexture_.Dispose();

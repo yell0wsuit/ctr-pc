@@ -30,7 +30,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public override void Draw()
         {
-            Renderer.GlClear(0);
+            Renderer.Clear(0);
             PreDraw();
             camera.ApplyCameraTransformation();
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);

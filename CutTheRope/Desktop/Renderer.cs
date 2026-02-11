@@ -353,7 +353,7 @@ namespace CutTheRope.Desktop
         /// Clears the screen with the current clear color.
         /// </summary>
         /// <param name="mask_NotUsedParam">OpenGL clear mask (ignored, always clears color buffer).</param>
-        public static void GlClear(int _)
+        public static void Clear(int _)
         {
             BlendParams.ApplyDefault();
             Global.GraphicsDevice.Clear(s_glClearColor);
