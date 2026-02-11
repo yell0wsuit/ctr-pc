@@ -374,7 +374,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Binds a texture for subsequent rendering operations.
         /// </summary>
-        public static void GlBindTexture(CTRTexture2D t)
+        public static void BindTexture(CTRTexture2D t)
         {
             s_Texture = t;
         }
