@@ -57,6 +57,9 @@ namespace CutTheRope.Framework.Media
         /// <summary>Whether FFmpeg native libraries were found and loaded.</summary>
         private readonly bool librariesLoaded;
 
+        /// <summary>Tracks whether this instance has been disposed.</summary>
+        private bool disposed;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="VideoPlayerFFmpeg"/> class.
         /// </summary>
@@ -263,6 +266,12 @@ namespace CutTheRope.Framework.Media
         /// <inheritdoc/>
         public void Dispose()
         {
+            if (disposed)
+            {
+                return;
+            }
+
+            disposed = true;
             Cleanup();
             pauseGate.Dispose();
         }
@@ -290,8 +299,9 @@ namespace CutTheRope.Framework.Media
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"[FFmpeg] Decode thread exception: {ex}");
                 HasPlaybackFinished = true;
             }
         }
