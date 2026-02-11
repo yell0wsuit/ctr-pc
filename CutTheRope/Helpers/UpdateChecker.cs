@@ -62,7 +62,7 @@ namespace CutTheRope.Helpers
                     UpdateInfo info = await FetchLatestReleaseAsync(currentVersion, cts.Token).ConfigureAwait(false);
                     if (info != null)
                     {
-                        updateInfo = info;
+                        _ = Interlocked.Exchange(ref updateInfo, info);
                     }
                 }
                 catch (Exception)
@@ -88,7 +88,7 @@ namespace CutTheRope.Helpers
         public static bool TryConsumeUpdate(out UpdateInfo info)
         {
             info = null;
-            UpdateInfo current = updateInfo;
+            UpdateInfo current = Interlocked.CompareExchange(ref updateInfo, null, null);
             if (current == null)
             {
                 return false;
@@ -282,6 +282,6 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Latest update info fetched from the server.
         /// </summary>
-        private static volatile UpdateInfo updateInfo;
+        private static UpdateInfo updateInfo;
     }
 }
