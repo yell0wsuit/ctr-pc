@@ -15,14 +15,14 @@ namespace CutTheRope.Framework.Core
 
         public override void Draw()
         {
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.GlColor4f(Color.White);
+            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+            Renderer.GlEnable(Renderer.GL_BLEND);
+            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             base.PreDraw();
             base.PostDraw();
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
+            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.GlDisable(Renderer.GL_BLEND);
         }
     }
 }

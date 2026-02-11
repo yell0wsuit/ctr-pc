@@ -15,12 +15,12 @@ namespace CutTheRope.Framework.Visual
         {
             if (t != null)
             {
-                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-                OpenGLRenderer.GlBindTexture(t.Name());
+                Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+                Renderer.GlBindTexture(t.Name());
                 VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                     x, y, t._realWidth, t._realHeight,
                     0f, 0f, t._maxS, t._maxT);
-                OpenGLRenderer.DrawTriangleStrip(vertices);
+                Renderer.DrawTriangleStrip(vertices);
             }
         }
     }

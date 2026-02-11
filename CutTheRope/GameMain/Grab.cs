@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
             }
             if (writeIndex > 0)
             {
-                OpenGLRenderer.DrawTriangleStrip(vertices, writeIndex);
+                Renderer.DrawTriangleStrip(vertices, writeIndex);
             }
         }
 
@@ -244,14 +244,14 @@ namespace CutTheRope.GameMain
             {
                 back.Draw();
             }
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.GlColor4f(Color.White);
+            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
         }
 
         public void DrawBungee()
@@ -272,16 +272,16 @@ namespace CutTheRope.GameMain
                 y = rope.bungeeAnchor.pos.Y;
             }
             PreDraw();
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
             Bungee bungee = rope;
 
             if (wheel)
             {
                 wheelHighlight.visible = wheelOperating != -1;
                 wheelImage3.visible = wheelOperating == -1;
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 wheelImage.Draw();
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
 
             if (gunBack != null)
@@ -293,11 +293,11 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
 
             bungee?.Draw();
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.GlColor4f(Color.White);
+            Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
 
             // Draw front gun
             gunFront?.Draw();
@@ -332,7 +332,7 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             gunCup?.Draw();
         }
 

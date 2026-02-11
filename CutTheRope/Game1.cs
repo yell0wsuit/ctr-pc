@@ -126,7 +126,7 @@ namespace CutTheRope
             // Initialize FontManager for FontStashSharp fonts
             Framework.Visual.FontManager.Initialize(GraphicsDevice);
 
-            OpenGLRenderer.Init();
+            Renderer.Init();
             Global.MouseCursor.Load(Content);
             Window.AllowUserResizing = UseWindowMode_TODO_ChangeFullScreenResolution || true;
             Preferences.LoadPreferences();
@@ -270,7 +270,7 @@ namespace CutTheRope
             }
             else if (!_DrawMovie)
             {
-                OpenGLRenderer.CopyFromRenderTargetToScreen();
+                Renderer.CopyFromRenderTargetToScreen();
             }
             base.Draw(gameTime);
             bFirstFrame = false;

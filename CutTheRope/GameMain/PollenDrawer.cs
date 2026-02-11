@@ -140,17 +140,17 @@ namespace CutTheRope.GameMain
             if (pollenCount >= 2)
             {
                 PreDraw();
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-                OpenGLRenderer.GlBindTexture(drawer.image.texture.Name());
+                Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                Renderer.GlEnable(Renderer.GL_TEXTURE_2D);
+                Renderer.GlBindTexture(drawer.image.texture.Name());
                 int quadCount = pollenCount - 1;
                 if (quadCount > 0)
                 {
                     VertexPositionColorTexture[] vertexBuffer = GetVertexBuffer(quadCount * 4);
-                    OpenGLRenderer.FillTexturedColoredVertices(drawer.vertices, drawer.texCoordinates, colors, vertexBuffer, quadCount);
-                    OpenGLRenderer.DrawTriangleList(vertexBuffer, drawer.indices, quadCount * 6);
+                    Renderer.FillTexturedColoredVertices(drawer.vertices, drawer.texCoordinates, colors, vertexBuffer, quadCount);
+                    Renderer.DrawTriangleList(vertexBuffer, drawer.indices, quadCount * 6);
                 }
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 PostDraw();
             }
         }
