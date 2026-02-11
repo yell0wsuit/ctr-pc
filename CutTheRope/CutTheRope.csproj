@@ -83,18 +83,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference
-      Include="FontStashSharp.MonoGame"
-      Version="1.5.2"
-    />
-    <PackageReference
-      Include="MonoGame.Content.Builder.Task"
-      Version="3.8.4.1"
-    />
-    <PackageReference
-      Include="MonoGame.Framework.DesktopGL"
-      Version="3.8.4.1"
-    />
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.3" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4.1" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
@@ -102,8 +93,7 @@
   </ItemGroup>
 
   <!-- Windows: bundled native FFmpeg libraries -->
-  <ItemGroup
-    Condition="$(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
+  <ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
     <PackageReference Include="FFmpeg.LGPL" Version="20260210.1.0" />
   </ItemGroup>
 
@@ -131,10 +121,7 @@
 
   <!-- Copy content files for non-macOS builds, exclude sounds (handled separately). -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
-    <None
-      Include="..\content\**"
-      Exclude="..\content\sounds\**;..\content\**\.DS_Store"
-    >
+    <None Include="..\content\**" Exclude="..\content\sounds\**;..\content\**\.DS_Store">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
@@ -150,20 +137,14 @@
 
   <!-- macOS app bundle: use BundleResource for content files -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource
-      Include="..\content\**"
-      Exclude="..\content\sounds\**;..\content\content.mgcb;..\content\bin\**\*.*;..\content\obj\**\*.*;..\content\**\*.png;..\content\sounds\sfx\*.wav"
-    >
+    <BundleResource Include="..\content\**" Exclude="..\content\sounds\**;..\content\content.mgcb;..\content\bin\**\*.*;..\content\obj\**\*.*;..\content\**\*.png;..\content\sounds\sfx\*.wav">
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </BundleResource>
   </ItemGroup>
 
   <!-- OpenGL build, include *.xnb and *.ogg pairs (excluding *_windows.*). -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <None
-      Include="..\content\sounds\*.xnb"
-      Exclude="..\content\sounds\*_windows.xnb"
-    >
+    <None Include="..\content\sounds\*.xnb" Exclude="..\content\sounds\*_windows.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>content\sounds\%(Filename)%(Extension)</Link>
     </None>
@@ -175,10 +156,7 @@
 
   <!-- macOS app bundle: sound files as BundleResource -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource
-      Include="..\content\sounds\*.xnb"
-      Exclude="..\content\sounds\*_windows.xnb"
-    >
+    <BundleResource Include="..\content\sounds\*.xnb" Exclude="..\content\sounds\*_windows.xnb">
       <Link>content\sounds\%(Filename)%(Extension)</Link>
     </BundleResource>
     <BundleResource Include="..\content\sounds\*.ogg">
@@ -217,14 +195,8 @@
     </None>
   </ItemGroup>
 
-  <Target
-    Name="RestoreDotnetTools"
-    BeforeTargets="CollectPackageReferences"
-  >
-    <Message
-      Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)"
-      Importance="High"
-    />
+  <Target Name="RestoreDotnetTools" BeforeTargets="CollectPackageReferences">
+    <Message Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)" Importance="High" />
     <Exec Command="dotnet tool restore" />
   </Target>
 
@@ -232,11 +204,7 @@
     macOS: codesign dylibs and the app bundle after build.
     This must be done to avoid app crashes when opening (thanks macOS).
   -->
-  <Target
-    Name="CodesignMacOSBundle"
-    AfterTargets="Build"
-    Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))"
-  >
+  <Target Name="CodesignMacOSBundle" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))">
     <PropertyGroup>
       <AppBundlePath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(OutputPath)'))$(AssemblyName).app))</AppBundlePath>
     </PropertyGroup>
@@ -244,21 +212,14 @@
     <Message Text="Codesigning dylibs in $(AppBundlePath)..." Importance="High" />
     
     <!-- Sign all dylibs - using bash to avoid escaping hell -->
-    <Exec
-      Command="/bin/bash -c &quot;find '$(AppBundlePath)' -name '*.dylib' -print0 | xargs -0 -I {} codesign --force --sign - '{}'&quot;" 
-      IgnoreExitCode="false"
-    />
+    <Exec Command="/bin/bash -c &quot;find '$(AppBundlePath)' -name '*.dylib' -print0 | xargs -0 -I {} codesign --force --sign - '{}'&quot;" IgnoreExitCode="false" />
     
     <!-- Sign the bundle itself -->
     <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
   </Target>
 
   <!-- Windows: move FFmpeg DLLs into ffmpeg/ subfolder after publish -->
-  <Target
-    Name="MoveFfmpegToSubfolder"
-    AfterTargets="Publish"
-    Condition="$(RuntimeIdentifier.StartsWith('win'))"
-  >
+  <Target Name="MoveFfmpegToSubfolder" AfterTargets="Publish" Condition="$(RuntimeIdentifier.StartsWith('win'))">
     <ItemGroup>
       <FfmpegDlls Include="$(PublishDir)avcodec-*.dll;$(PublishDir)avformat-*.dll;$(PublishDir)avutil-*.dll;$(PublishDir)swresample-*.dll;$(PublishDir)swscale-*.dll;$(PublishDir)avdevice-*.dll;$(PublishDir)avfilter-*.dll;$(PublishDir)postproc-*.dll" />
     </ItemGroup>
@@ -267,11 +228,7 @@
     <Move SourceFiles="@(FfmpegDlls)" DestinationFolder="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
   </Target>
 
-  <Target
-    Name="MoveMacOSAppToPublish"
-    AfterTargets="Publish"
-    Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))"
-  >
+  <Target Name="MoveMacOSAppToPublish" AfterTargets="Publish" Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))">
     <PropertyGroup>
       <AppBundleName>$(AssemblyName).app</AppBundleName>
       <AppSourcePath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(OutputPath)'))$(AppBundleName)))</AppSourcePath>
@@ -280,9 +237,6 @@
 
     <Message Text="Relocating macOS .app to publish directory" Importance="High" />
 
-    <Exec
-      Condition="Exists('$(AppSourcePath)')"
-      Command="/bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;"
-    />
+    <Exec Condition="Exists('$(AppSourcePath)')" Command="/bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;" />
   </Target>
 </Project>
