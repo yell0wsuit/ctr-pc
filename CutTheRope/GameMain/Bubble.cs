@@ -35,7 +35,7 @@ namespace CutTheRope.GameMain
             {
                 if (quadToDraw == -1)
                 {
-                    GLDrawer.DrawImage(texture, drawX, drawY);
+                    DrawHelper.DrawImage(texture, drawX, drawY);
                 }
                 else
                 {

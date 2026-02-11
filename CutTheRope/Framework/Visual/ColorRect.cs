@@ -32,7 +32,7 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             PreDraw();
-            GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, FillColor);
+            DrawHelper.DrawSolidRectWOBorder(drawX, drawY, width, height, FillColor);
             PostDraw();
         }
     }

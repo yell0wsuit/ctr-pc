@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
             int writeIndex = 0;
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                VertexPositionColor[] lineVertices = GLDrawer.BuildAntialiasedLineVertices(
+                VertexPositionColor[] lineVertices = DrawHelper.BuildAntialiasedLineVertices(
                     s.vertices[i * 2],
                     s.vertices[(i * 2) + 1],
                     s.vertices[(i * 2) + 2],
@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
             }
             if (writeIndex > 0)
             {
-                OpenGLRenderer.DrawTriangleStrip(vertices, writeIndex);
+                Renderer.DrawTriangleStrip(vertices, writeIndex);
             }
         }
 
@@ -244,14 +244,14 @@ namespace CutTheRope.GameMain
             {
                 back.Draw();
             }
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.SetColor(Color.White);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
         }
 
         public void DrawBungee()
@@ -272,16 +272,16 @@ namespace CutTheRope.GameMain
                 y = rope.bungeeAnchor.pos.Y;
             }
             PreDraw();
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Bungee bungee = rope;
 
             if (wheel)
             {
                 wheelHighlight.visible = wheelOperating != -1;
                 wheelImage3.visible = wheelOperating == -1;
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 wheelImage.Draw();
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
 
             if (gunBack != null)
@@ -293,11 +293,11 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
 
             bungee?.Draw();
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.SetColor(Color.White);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
 
             // Draw front gun
             gunFront?.Draw();
@@ -332,7 +332,7 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             gunCup?.Draw();
         }
 
@@ -359,7 +359,7 @@ namespace CutTheRope.GameMain
 
         public void ReCalcCircle()
         {
-            GLDrawer.CalcCircle(x, y, radius, vertexCount, vertices);
+            DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
         }
 
         public void SetRadius(float r)
@@ -455,7 +455,7 @@ namespace CutTheRope.GameMain
                     vertexCount++;
                 }
                 vertices = new float[vertexCount * 2];
-                GLDrawer.CalcCircle(x, y, radius, vertexCount, vertices);
+                DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
             }
             if (wheel)
             {

@@ -25,9 +25,9 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             Global.MouseCursor.Enable(true);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_BLEND);
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_BLEND);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(cTRRootController.GetPack());
@@ -59,47 +59,47 @@ namespace CutTheRope.GameMain
 
             float num2 = currentPercent;
             CTRTexture2D texture = Application.GetTexture(boxCover);
-            OpenGLRenderer.GlColor4f(s_Color1);
+            Renderer.SetColor(s_Color1);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.X;
-            GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
-            OpenGLRenderer.GlPushMatrix();
+            DrawHelper.DrawImageQuad(texture, 0, num3, 0f);
+            Renderer.PushMatrix();
             float num4 = (SCREEN_WIDTH / 2f) + (quadSize.X / 2f);
-            OpenGLRenderer.GlTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
-            OpenGLRenderer.GlRotatef(180.0, 0.0, 0.0, 1.0);
-            OpenGLRenderer.GlTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
-            GLDrawer.DrawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
-            OpenGLRenderer.GlPopMatrix();
+            Renderer.Translate(num4, SCREEN_HEIGHT / 2f, 0f);
+            Renderer.Rotate(180f, 0f, 0f, 1f);
+            Renderer.Translate(-num4, -SCREEN_HEIGHT / 2f, 0f);
+            DrawHelper.DrawImageQuad(texture, 0, SCREEN_WIDTH / 2f, 0.5f);
+            Renderer.PopMatrix();
             CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);
             if (!game)
             {
-                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_SCISSOR_TEST);
-                OpenGLRenderer.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
+                Renderer.Enable(Renderer.GL_SCISSOR_TEST);
+                Renderer.SetScissor(0f, 0f, SCREEN_WIDTH, 1200f * num2 / 100f);
             }
-            OpenGLRenderer.GlColor4f(Color.White);
+            Renderer.SetColor(Color.White);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;
-            GLDrawer.DrawImageQuad(texture2, 0, (double)num3, 80.0);
+            DrawHelper.DrawImageQuad(texture2, 0, num3, 80f);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).X;
-            GLDrawer.DrawImageQuad(texture2, 1, (double)num3, 80.0);
+            DrawHelper.DrawImageQuad(texture2, 1, num3, 80f);
             if (!game)
             {
-                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_SCISSOR_TEST);
+                Renderer.Disable(Renderer.GL_SCISSOR_TEST);
             }
             if (game)
             {
                 Vector quadOffset = Image.GetQuadOffset(Resources.Img.MenuLoading, 3);
-                float num5 = (float)(1250.0 * (double)num2 / 100.0);
-                GLDrawer.DrawImageQuad(texture2, 3, quadOffset.X, 700f - num5);
+                float num5 = 1250f * num2 / 100f;
+                DrawHelper.DrawImageQuad(texture2, 3, quadOffset.X, 700f - num5);
             }
             else
             {
-                float num6 = (float)(1120.0 * (double)num2 / 100.0);
-                GLDrawer.DrawImageQuad(texture2, 2, 1084.0, (double)num6 - 100.0);
+                float num6 = 1120f * num2 / 100f;
+                DrawHelper.DrawImageQuad(texture2, 2, 1084f, num6 - 100f);
             }
             PostDraw();
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_BLEND);
+            Renderer.SetColor(Color.White);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_BLEND);
         }
 
         public bool game;

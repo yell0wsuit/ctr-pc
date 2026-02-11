@@ -121,16 +121,16 @@ namespace CutTheRope.GameMain
         {
             if (IsRightControllerActive() || IsLeftControllerActive())
             {
-                OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
-                OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.Disable(Renderer.GL_TEXTURE_2D);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 if (color.AlphaChannel != 1.0)
                 {
                     whiteRGBA.AlphaChannel = color.AlphaChannel;
                 }
-                GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
-                OpenGLRenderer.GlColor4f(Color.White);
-                OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, 6.2831855f, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
+                Renderer.SetColor(Color.White);
+                Renderer.Enable(Renderer.GL_TEXTURE_2D);
             }
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
@@ -138,19 +138,19 @@ namespace CutTheRope.GameMain
             vinilControllerR.color = color;
             vinil.color = color;
             vinil.Draw();
-            OpenGLRenderer.GlDisable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
                 if (item != this && item.ContainsSameObjectWithAnotherCircle() && circlesArray.GetObjectIndex(item) < circlesArray.GetObjectIndex(this))
                 {
-                    GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
+                    DrawHelper.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            OpenGLRenderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGLRenderer.GlColor4f(Color.White);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetColor(Color.White);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
             vinilHighlightL.Draw();
             vinilHighlightR.Draw();
             base.Draw();

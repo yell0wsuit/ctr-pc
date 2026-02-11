@@ -14,7 +14,7 @@ namespace CutTheRope.Desktop
     /// This class translates legacy OpenGL-style API calls to modern MonoGame primitives,
     /// using vertex buffers for efficient GPU rendering.
     /// </summary>
-    internal sealed class OpenGLRenderer
+    internal sealed class Renderer
     {
         #region OpenGL State Constants
         /// <summary>
@@ -25,14 +25,14 @@ namespace CutTheRope.Desktop
 
         /// <summary>
         /// Enables/disables alpha blending. When enabled, fragments are blended with the framebuffer
-        /// using the blend function set by <see cref="GlBlendFunc"/>.
+        /// using the blend function set by <see cref="SetBlendFunc"/>.
         /// OpenGL equivalent: GL_BLEND (0x0BE2)
         /// </summary>
         public const int GL_BLEND = 1;
 
         /// <summary>
         /// Enables/disables scissor test. When enabled, fragments outside the scissor rectangle
-        /// set by <see cref="GlScissor"/> are discarded.
+        /// set by <see cref="SetScissor"/> are discarded.
         /// OpenGL equivalent: GL_SCISSOR_TEST (0x0C11)
         /// </summary>
         public const int GL_SCISSOR_TEST = 4;
@@ -41,13 +41,13 @@ namespace CutTheRope.Desktop
         /// Selects the modelview matrix stack for subsequent matrix operations.
         /// OpenGL equivalent: GL_MODELVIEW (0x1700)
         /// </summary>
-        private const int GL_MODELVIEW = 14;
+        private const int MODE_MODELVIEW = 14;
 
         /// <summary>
         /// Selects the projection matrix stack for subsequent matrix operations.
         /// OpenGL equivalent: GL_PROJECTION (0x1701)
         /// </summary>
-        private const int GL_PROJECTION = 15;
+        private const int MODE_PROJECTION = 15;
         #endregion
 
         #region Initialization
@@ -104,7 +104,7 @@ namespace CutTheRope.Desktop
         /// Enables an OpenGL capability.
         /// </summary>
         /// <param name="cap">Capability constant: 1 = GL_BLEND</param>
-        public static void GlEnable(int cap)
+        public static void Enable(int cap)
         {
             if (cap == GL_BLEND)
             {
@@ -116,11 +116,11 @@ namespace CutTheRope.Desktop
         /// Disables an OpenGL capability.
         /// </summary>
         /// <param name="cap">Capability constant: 1 = GL_BLEND, 4 = GL_SCISSOR_TEST</param>
-        public static void GlDisable(int cap)
+        public static void Disable(int cap)
         {
             if (cap == GL_SCISSOR_TEST)
             {
-                GlScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+                SetScissor(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
             }
             if (cap == GL_BLEND)
             {
@@ -131,20 +131,11 @@ namespace CutTheRope.Desktop
         #endregion
 
         #region Viewport and Render Target
-
-        /// <summary>
-        /// Sets the viewport dimensions.
-        /// </summary>
-        public static void GlViewport(double x, double y, double width, double height)
-        {
-            GlViewport((int)x, (int)y, (int)width, (int)height);
-        }
-
         /// <summary>
         /// Sets the viewport dimensions and manages render target.
         /// Always creates a render target matching the viewport size for proper scaling.
         /// </summary>
-        public static void GlViewport(int x, int y, int width, int height)
+        public static void SetViewport(int x, int y, int width, int height)
         {
             if (width <= 0 || height <= 0)
             {
@@ -199,7 +190,7 @@ namespace CutTheRope.Desktop
         /// Sets the current matrix mode for subsequent matrix operations.
         /// </summary>
         /// <param name="mode">Matrix mode: 14 = GL_MODELVIEW, 15 = GL_PROJECTION</param>
-        public static void GlMatrixMode(int mode)
+        public static void SetMatrixMode(int mode)
         {
             s_glMatrixMode = mode;
         }
@@ -207,14 +198,14 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Resets the current matrix to identity based on the active matrix mode.
         /// </summary>
-        public static void GlLoadIdentity()
+        public static void LoadIdentity()
         {
-            if (s_glMatrixMode == GL_MODELVIEW)
+            if (s_glMatrixMode == MODE_MODELVIEW)
             {
                 s_matrixModelView = Matrix.Identity;
                 return;
             }
-            if (s_glMatrixMode == GL_PROJECTION)
+            if (s_glMatrixMode == MODE_PROJECTION)
             {
                 s_matrixProjection = Matrix.Identity;
                 return;
@@ -228,15 +219,15 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets up an orthographic projection matrix.
         /// </summary>
-        public static void GlOrthof(double left, double right, double bottom, double top, double near, double far)
+        public static void SetOrthographic(float left, float right, float bottom, float top, float near, float far)
         {
-            s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
+            s_matrixProjection = Matrix.CreateOrthographicOffCenter(left, right, bottom, top, near, far);
         }
 
         /// <summary>
         /// Pushes the current model-view matrix onto the stack.
         /// </summary>
-        public static void GlPushMatrix()
+        public static void PushMatrix()
         {
             s_matrixModelViewStack.Add(s_matrixModelView);
         }
@@ -244,7 +235,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Pops and restores the model-view matrix from the stack.
         /// </summary>
-        public static void GlPopMatrix()
+        public static void PopMatrix()
         {
             if (s_matrixModelViewStack.Count > 0)
             {
@@ -257,15 +248,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Applies a scale transformation to the current model-view matrix.
         /// </summary>
-        public static void GlScalef(double x, double y, double z)
-        {
-            GlScalef((float)x, (float)y, (float)z);
-        }
-
-        /// <summary>
-        /// Applies a scale transformation to the current model-view matrix.
-        /// </summary>
-        public static void GlScalef(float x, float y, float z)
+        public static void Scale(float x, float y, float z)
         {
             s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
         }
@@ -274,33 +257,16 @@ namespace CutTheRope.Desktop
         /// Applies a rotation transformation around the Z axis (2D rotation).
         /// </summary>
         /// <param name="angle">Rotation angle in degrees.</param>
-        public static void GlRotatef(double angle, double x, double y, double z)
-        {
-            GlRotatef((float)angle, (float)x, (float)y, (float)z);
-        }
-
-        /// <summary>
-        /// Applies a rotation transformation around the Z axis (2D rotation).
-        /// </summary>
-        /// <param name="angle">Rotation angle in degrees.</param>
-        public static void GlRotatef(float angle, float _, float _1, float _2)
+        public static void Rotate(float angle, float _, float _1, float _2)
         {
             s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
         }
 
         /// <summary>
         /// Applies a translation transformation to the current model-view matrix.
+        /// Z component is ignored for 2D rendering.
         /// </summary>
-        public static void GlTranslatef(double x, double y, double z)
-        {
-            GlTranslatef((float)x, (float)y, (float)z);
-        }
-
-        /// <summary>
-        /// Applies a translation transformation to the current model-view matrix.
-        /// Note: Z component is ignored for 2D rendering.
-        /// </summary>
-        public static void GlTranslatef(float x, float y, float _)
+        public static void Translate(float x, float y, float _)
         {
             s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
         }
@@ -320,7 +286,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the current drawing color.
         /// </summary>
-        public static void GlColor4f(Color c)
+        public static void SetColor(Color c)
         {
             s_Color = c;
         }
@@ -336,24 +302,16 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the clear color for GlClear operations.
         /// </summary>
-        public static void GlClearColor(Color c)
+        public static void SetClearColor(Color c)
         {
             s_glClearColor = c;
-        }
-
-        /// <summary>
-        /// Sets the clear color using RGBA float components (0.0-1.0).
-        /// </summary>
-        public static void GlClearColorf(double red, double green, double blue, double alpha)
-        {
-            s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
         }
 
         /// <summary>
         /// Clears the screen with the current clear color.
         /// </summary>
         /// <param name="mask_NotUsedParam">OpenGL clear mask (ignored, always clears color buffer).</param>
-        public static void GlClear(int _)
+        public static void Clear(int _)
         {
             BlendParams.ApplyDefault();
             Global.GraphicsDevice.Clear(s_glClearColor);
@@ -362,7 +320,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the blending function for alpha blending operations.
         /// </summary>
-        public static void GlBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
+        public static void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
             s_Blend = new BlendParams(sfactor, dfactor);
         }
@@ -374,7 +332,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Binds a texture for subsequent rendering operations.
         /// </summary>
-        public static void GlBindTexture(CTRTexture2D t)
+        public static void BindTexture(CTRTexture2D t)
         {
             s_Texture = t;
         }
@@ -384,17 +342,9 @@ namespace CutTheRope.Desktop
         #region Scissor (Clipping)
 
         /// <summary>
-        /// Sets the scissor rectangle for clipping.
-        /// </summary>
-        public static void GlScissor(double x, double y, double width, double height)
-        {
-            GlScissor((int)x, (int)y, (int)width, (int)height);
-        }
-
-        /// <summary>
         /// Sets the scissor rectangle for clipping, scaled to match the current viewport.
         /// </summary>
-        public static void GlScissor(int x, int y, int width, int height)
+        public static void SetScissor(float x, float y, float width, float height)
         {
             try
             {
@@ -407,22 +357,6 @@ namespace CutTheRope.Desktop
             catch (Exception)
             {
             }
-        }
-
-        /// <summary>
-        /// Sets the scissor rectangle (alias for GlScissor).
-        /// </summary>
-        public static void SetScissorRectangle(double x, double y, double w, double h)
-        {
-            GlScissor(x, y, w, h);
-        }
-
-        /// <summary>
-        /// Sets the scissor rectangle (alias for GlScissor).
-        /// </summary>
-        public static void SetScissorRectangle(float x, float y, float w, float h)
-        {
-            GlScissor(x, y, w, h);
         }
 
         #endregion

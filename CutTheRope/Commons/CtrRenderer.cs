@@ -147,8 +147,8 @@ namespace CutTheRope.Commons
             {
                 try
                 {
-                    OpenGLRenderer.GlClearColor(Color.Black);
-                    OpenGLRenderer.GlClear(0);
+                    Renderer.SetClearColor(Color.Black);
+                    Renderer.Clear(0);
                 }
                 catch (Exception)
                 {
@@ -245,8 +245,8 @@ namespace CutTheRope.Commons
 
         public static void Java_com_zeptolab_ctr_CtrRenderer_nativeRender()
         {
-            OpenGLRenderer.GlClearColor(Color.Black);
-            OpenGLRenderer.GlClear(0);
+            Renderer.SetClearColor(Color.Black);
+            Renderer.Clear(0);
             if (gApp != null)
             {
                 Application.SharedRootController().PerformDraw();

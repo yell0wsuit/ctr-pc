@@ -13,7 +13,7 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             PreDraw();
-            GLDrawer.DrawImageTiled(texture, q, drawX, drawY, width, height);
+            DrawHelper.DrawImageTiled(texture, q, drawX, drawY, width, height);
             PostDraw();
         }
 

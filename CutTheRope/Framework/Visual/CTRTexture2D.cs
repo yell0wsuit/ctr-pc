@@ -14,12 +14,12 @@ namespace CutTheRope.Framework.Visual
             float texTop = t._invHeight * rect.y;
             float texRight = texLeft + (t._invWidth * rect.w);
             float texBottom = texTop + (t._invHeight * rect.h);
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlBindTexture(t.Name());
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, rect.w, rect.h,
                 texLeft, texTop, texRight, texBottom);
-            OpenGLRenderer.DrawTriangleStrip(vertices);
+            Renderer.DrawTriangleStrip(vertices);
         }
 
         public CTRTexture2D Name()
@@ -42,7 +42,7 @@ namespace CutTheRope.Framework.Visual
 
         public void SetQuadAt(CTRRectangle rect, int n)
         {
-            quads[n] = GLDrawer.GetTextureCoordinates(this, rect);
+            quads[n] = DrawHelper.GetTextureCoordinates(this, rect);
             quadRects[n] = rect;
             quadOffsets[n] = vectZero;
         }
@@ -64,22 +64,22 @@ namespace CutTheRope.Framework.Visual
             Quad2D quad2D = t.quads[q];
             float w = t.quadRects[q].w;
             float h = t.quadRects[q].h;
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlBindTexture(t.Name());
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, w, h,
                 quad2D.tlX, quad2D.tlY, quad2D.brX, quad2D.brY);
-            OpenGLRenderer.DrawTriangleStrip(vertices);
+            Renderer.DrawTriangleStrip(vertices);
         }
 
         public static void DrawAtPoint(CTRTexture2D t, Vector point)
         {
-            OpenGLRenderer.GlEnable(OpenGLRenderer.GL_TEXTURE_2D);
-            OpenGLRenderer.GlBindTexture(t.Name());
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(t.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, t._realWidth, t._realHeight,
                 0f, 0f, t._maxS, t._maxT);
-            OpenGLRenderer.DrawTriangleStrip(vertices);
+            Renderer.DrawTriangleStrip(vertices);
         }
 
         public void CalculateForQuickDrawing()
@@ -216,7 +216,7 @@ namespace CutTheRope.Framework.Visual
             Application.SharedRootController().transitionTime = -1f;
             // Always use the render target since we now use fullscreen-style scaling in all modes
             CtrRenderer.OnDrawFrame();
-            RenderTarget2D renderTarget = OpenGLRenderer.DetachRenderTarget();
+            RenderTarget2D renderTarget = Renderer.DetachRenderTarget();
             Global.GraphicsDevice.SetRenderTarget(null);
             Application.SharedRootController().transitionTime = transitionTime;
             xnaTexture_ = renderTarget;
