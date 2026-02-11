@@ -228,7 +228,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets up an orthographic projection matrix.
         /// </summary>
-        public static void GlOrthof(double left, double right, double bottom, double top, double near, double far)
+        public static void SetOrthographic(double left, double right, double bottom, double top, double near, double far)
         {
             s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
         }

@@ -79,7 +79,7 @@ namespace CutTheRope.Framework.Platform
             Renderer.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
             Renderer.GlMatrixMode(15);
             Renderer.GlLoadIdentity();
-            Renderer.GlOrthof(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
+            Renderer.SetOrthographic(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
             Renderer.GlMatrixMode(14);
             Renderer.GlLoadIdentity();
         }
