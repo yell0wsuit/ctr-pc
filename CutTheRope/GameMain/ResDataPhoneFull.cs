@@ -113,7 +113,7 @@ namespace CutTheRope.GameMain
             {
                 try
                 {
-                    string contentPath = $"{ContentPaths.RootDirectory}/{candidate}";
+                    string contentPath = Path.Combine(ContentPaths.RootDirectory, candidate);
                     return TitleContainer.OpenStream(contentPath);
                 }
                 catch (Exception)

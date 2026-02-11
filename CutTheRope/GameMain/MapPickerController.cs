@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Linq;
 
 using CutTheRope.Framework;
@@ -61,7 +62,7 @@ namespace CutTheRope.GameMain
             base.Activate();
             if (autoLoad)
             {
-                string mapPath = $"{ContentPaths.MapsDirectory}/{selectedMap}";
+                string mapPath = Path.Combine(ContentPaths.MapsDirectory, selectedMap);
                 XElement mapElement = XElementExtensions.LoadContentXml(mapPath);
                 XmlLoaderFinishedWithfromwithSuccess(mapElement, mapPath, mapElement != null);
                 return;
