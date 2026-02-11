@@ -86,11 +86,11 @@ namespace CutTheRope.Framework.Core
                     {
                         RGBAColor fill = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
                         Grabber.DrawGrabbedImage(prevScreenImage, 0, 0);
-                        Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+                        Renderer.Disable(Renderer.GL_TEXTURE_2D);
                         Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill);
-                        Renderer.OpenGLDisable(Renderer.GL_BLEND);
+                        Renderer.Disable(Renderer.GL_BLEND);
                     }
                     else
                     {
@@ -109,11 +109,11 @@ namespace CutTheRope.Framework.Core
                 {
                     RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - ((double)num * 2.0)) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - ((double)num * 2.0));
                     Grabber.DrawGrabbedImage(nextScreenImage, 0, 0);
-                    Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+                    Renderer.Disable(Renderer.GL_TEXTURE_2D);
                     Renderer.Enable(Renderer.GL_BLEND);
                     Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                     GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill2);
-                    Renderer.OpenGLDisable(Renderer.GL_BLEND);
+                    Renderer.Disable(Renderer.GL_BLEND);
                 }
                 else
                 {
@@ -129,8 +129,8 @@ namespace CutTheRope.Framework.Core
                 }
             }
             ApplyLandscape();
-            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
-            Renderer.OpenGLDisable(Renderer.GL_BLEND);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_BLEND);
         }
 
         public override void Activate()

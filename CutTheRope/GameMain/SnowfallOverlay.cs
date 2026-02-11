@@ -223,8 +223,8 @@ namespace CutTheRope.GameMain
 
             // Restore default GL state
             Renderer.SetColor(Color.White);
-            Renderer.OpenGLDisable(Renderer.GL_BLEND);
-            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_BLEND);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
 
             PostDraw();
         }

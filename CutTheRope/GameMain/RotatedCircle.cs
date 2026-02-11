@@ -121,7 +121,7 @@ namespace CutTheRope.GameMain
         {
             if (IsRightControllerActive() || IsLeftControllerActive())
             {
-                Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+                Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 if (color.AlphaChannel != 1.0)
@@ -138,7 +138,7 @@ namespace CutTheRope.GameMain
             vinilControllerR.color = color;
             vinil.color = color;
             vinil.Draw();
-            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj in circlesArray)
             {

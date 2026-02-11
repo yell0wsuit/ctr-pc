@@ -181,7 +181,7 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void DrawBB()
         {
-            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (rotatedBB)
             {
                 Renderer.DrawSegment(drawX + rbb.tlX, drawY + rbb.tlY, drawX + rbb.trX, drawY + rbb.trY, RGBAColor.redRGBA);

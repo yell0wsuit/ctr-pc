@@ -83,7 +83,7 @@ namespace CutTheRope.GameMain
             GLDrawer.DrawImageQuad(texture2, 1, (double)num3, 80.0);
             if (!game)
             {
-                Renderer.OpenGLDisable(Renderer.GL_SCISSOR_TEST);
+                Renderer.Disable(Renderer.GL_SCISSOR_TEST);
             }
             if (game)
             {
@@ -98,8 +98,8 @@ namespace CutTheRope.GameMain
             }
             PostDraw();
             Renderer.SetColor(Color.White);
-            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
-            Renderer.OpenGLDisable(Renderer.GL_BLEND);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
+            Renderer.Disable(Renderer.GL_BLEND);
         }
 
         public bool game;

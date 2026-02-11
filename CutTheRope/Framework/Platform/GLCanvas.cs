@@ -56,8 +56,8 @@ namespace CutTheRope.Framework.Platform
                 fpsText.x = 5f;
                 fpsText.y = 5f;
                 fpsText.Draw();
-                Renderer.OpenGLDisable(Renderer.GL_BLEND);
-                Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+                Renderer.Disable(Renderer.GL_BLEND);
+                Renderer.Disable(Renderer.GL_TEXTURE_2D);
             }
         }
 
@@ -157,7 +157,7 @@ namespace CutTheRope.Framework.Platform
         public void BeforeRender()
         {
             SetDefaultProjection();
-            Renderer.OpenGLDisable(Renderer.GL_BLEND);
+            Renderer.Disable(Renderer.GL_BLEND);
         }
 
         public static void AfterRender()
