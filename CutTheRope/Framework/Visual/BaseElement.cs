@@ -149,7 +149,7 @@ namespace CutTheRope.Framework.Visual
                 {
                     float num = drawX + (width >> 1) + rotationCenterX;
                     float num2 = drawY + (height >> 1) + rotationCenterY;
-                    Renderer.GlTranslatef(num, num2, 0f);
+                    Renderer.Translate(num, num2, 0f);
                     if (flag2)
                     {
                         Renderer.GlRotatef(rotation, 0f, 0f, 1f);
@@ -158,11 +158,11 @@ namespace CutTheRope.Framework.Visual
                     {
                         Renderer.GlScalef(scaleX, scaleY, 1f);
                     }
-                    Renderer.GlTranslatef(0f - num, 0f - num2, 0f);
+                    Renderer.Translate(0f - num, 0f - num2, 0f);
                 }
                 if (flag3)
                 {
-                    Renderer.GlTranslatef(translateX, translateY, 0f);
+                    Renderer.Translate(translateX, translateY, 0f);
                 }
             }
             if (!RGBAColor.RGBAEqual(color, RGBAColor.solidOpaqueRGBA))

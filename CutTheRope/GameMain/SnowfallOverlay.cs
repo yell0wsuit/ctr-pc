@@ -215,7 +215,7 @@ namespace CutTheRope.GameMain
                 // Draw snowflake with transformation matrix
                 Renderer.SetColor(final.ToXNA());
                 Renderer.PushMatrix();
-                Renderer.GlTranslatef(drawX, drawY, 0f);
+                Renderer.Translate(drawX, drawY, 0f);
                 Renderer.GlScalef(flake.Scale, flake.Scale, 1f);
                 CTRTexture2D.DrawQuadAtPoint(texture, flake.FrameIndex, vectZero);
                 Renderer.PopMatrix();

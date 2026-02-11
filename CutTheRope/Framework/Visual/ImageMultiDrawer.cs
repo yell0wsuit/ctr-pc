@@ -101,7 +101,7 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             PreDraw();
-            Renderer.GlTranslatef(drawX, drawY, 0f);
+            Renderer.Translate(drawX, drawY, 0f);
             if (numberOfQuadsToDraw == -1)
             {
                 DrawAllQuads();
@@ -110,7 +110,7 @@ namespace CutTheRope.Framework.Visual
             {
                 DrawNumberOfQuads(numberOfQuadsToDraw);
             }
-            Renderer.GlTranslatef(0f - drawX, 0f - drawY, 0f);
+            Renderer.Translate(0f - drawX, 0f - drawY, 0f);
             PostDraw();
         }
 

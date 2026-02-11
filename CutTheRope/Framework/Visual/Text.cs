@@ -233,7 +233,7 @@ namespace CutTheRope.Framework.Visual
             else if (stringLength > 0)
             {
                 // Legacy sprite font rendering
-                Renderer.GlTranslatef(drawX, drawY, 0f);
+                Renderer.Translate(drawX, drawY, 0f);
                 int i = 0;
                 int count = multiDrawers.Count;
                 while (i < count)
@@ -246,7 +246,7 @@ namespace CutTheRope.Framework.Visual
                     }
                     i++;
                 }
-                Renderer.GlTranslatef(0f - drawX, 0f - drawY, 0f);
+                Renderer.Translate(0f - drawX, 0f - drawY, 0f);
             }
 
             PostDraw();

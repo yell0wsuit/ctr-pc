@@ -65,9 +65,9 @@ namespace CutTheRope.GameMain
             GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
             Renderer.PushMatrix();
             float num4 = (SCREEN_WIDTH / 2f) + (quadSize.X / 2f);
-            Renderer.GlTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
+            Renderer.Translate((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
             Renderer.GlRotatef(180.0, 0.0, 0.0, 1.0);
-            Renderer.GlTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
+            Renderer.Translate((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
             GLDrawer.DrawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
             Renderer.PopMatrix();
             CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);

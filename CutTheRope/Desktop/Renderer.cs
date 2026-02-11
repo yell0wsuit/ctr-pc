@@ -290,19 +290,11 @@ namespace CutTheRope.Desktop
 
         /// <summary>
         /// Applies a translation transformation to the current model-view matrix.
+        /// Z component is ignored for 2D rendering.
         /// </summary>
-        public static void GlTranslatef(double x, double y, double z)
+        public static void Translate(double x, double y, double _)
         {
-            GlTranslatef((float)x, (float)y, (float)z);
-        }
-
-        /// <summary>
-        /// Applies a translation transformation to the current model-view matrix.
-        /// Note: Z component is ignored for 2D rendering.
-        /// </summary>
-        public static void GlTranslatef(float x, float y, float _)
-        {
-            s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
+            s_matrixModelView = Matrix.CreateTranslation((float)x, (float)y, 0f) * s_matrixModelView;
         }
 
         /// <summary>
