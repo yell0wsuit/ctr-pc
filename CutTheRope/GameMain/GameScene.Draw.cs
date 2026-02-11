@@ -34,7 +34,7 @@ namespace CutTheRope.GameMain
             PreDraw();
             camera.ApplyCameraTransformation();
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlDisable(Renderer.GL_BLEND);
+            Renderer.OpenGLDisable(Renderer.GL_BLEND);
             if (backTexture != null)
             {
                 // Recompute in case internal resolution or texture dimensions changed.
@@ -80,7 +80,7 @@ namespace CutTheRope.GameMain
                         Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         // Draw p2 at configured Y position (p1 is handled by TileMap)
                         GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
-                        Renderer.GlDisable(Renderer.GL_BLEND);
+                        Renderer.OpenGLDisable(Renderer.GL_BLEND);
                     }
                 }
             }
@@ -266,7 +266,7 @@ namespace CutTheRope.GameMain
             }
             aniPool.Draw();
             Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             Renderer.GlColor4f(Color.White);
             DrawCuts();
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);

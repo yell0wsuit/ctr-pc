@@ -244,7 +244,7 @@ namespace CutTheRope.GameMain
             {
                 back.Draw();
             }
-            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
@@ -293,7 +293,7 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
 
             bungee?.Draw();
             Renderer.GlColor4f(Color.White);

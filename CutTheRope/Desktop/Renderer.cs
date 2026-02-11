@@ -116,7 +116,7 @@ namespace CutTheRope.Desktop
         /// Disables an OpenGL capability.
         /// </summary>
         /// <param name="cap">Capability constant: 1 = GL_BLEND, 4 = GL_SCISSOR_TEST</param>
-        public static void GlDisable(int cap)
+        public static void OpenGLDisable(int cap)
         {
             if (cap == GL_SCISSOR_TEST)
             {

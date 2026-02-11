@@ -93,7 +93,7 @@ namespace CutTheRope.GameMain
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             back.Draw();
             Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
                 CTRRootController rootController = (CTRRootController)Application.SharedRootController();
@@ -103,7 +103,7 @@ namespace CutTheRope.GameMain
             }
             Renderer.GlColor4f(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             rope?.Draw();
             Renderer.GlColor4f(Color.White);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);

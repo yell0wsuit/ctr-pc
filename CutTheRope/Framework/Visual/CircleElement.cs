@@ -15,7 +15,7 @@ namespace CutTheRope.Framework.Visual
         public override void Draw()
         {
             PreDraw();
-            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
             _ = MIN(width, height);
             Renderer.OpenGLEnable(Renderer.GL_TEXTURE_2D);
             Renderer.GlColor4f(Color.White);

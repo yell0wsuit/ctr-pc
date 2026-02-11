@@ -21,8 +21,8 @@ namespace CutTheRope.GameMain
             Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             base.PreDraw();
             base.PostDraw();
-            Renderer.GlDisable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlDisable(Renderer.GL_BLEND);
+            Renderer.OpenGLDisable(Renderer.GL_TEXTURE_2D);
+            Renderer.OpenGLDisable(Renderer.GL_BLEND);
         }
     }
 }
