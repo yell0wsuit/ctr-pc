@@ -32,7 +32,7 @@ namespace CutTheRope.Desktop
 
         /// <summary>
         /// Enables/disables scissor test. When enabled, fragments outside the scissor rectangle
-        /// set by <see cref="GlScissor"/> are discarded.
+        /// set by <see cref="SetScissor"/> are discarded.
         /// OpenGL equivalent: GL_SCISSOR_TEST (0x0C11)
         /// </summary>
         public const int GL_SCISSOR_TEST = 4;
@@ -120,7 +120,7 @@ namespace CutTheRope.Desktop
         {
             if (cap == GL_SCISSOR_TEST)
             {
-                SetScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+                SetScissor(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
             }
             if (cap == GL_BLEND)
             {
@@ -342,17 +342,9 @@ namespace CutTheRope.Desktop
         #region Scissor (Clipping)
 
         /// <summary>
-        /// Sets the scissor rectangle for clipping.
-        /// </summary>
-        public static void SetScissor(double x, double y, double width, double height)
-        {
-            GlScissor((int)x, (int)y, (int)width, (int)height);
-        }
-
-        /// <summary>
         /// Sets the scissor rectangle for clipping, scaled to match the current viewport.
         /// </summary>
-        public static void GlScissor(int x, int y, int width, int height)
+        public static void SetScissor(float x, float y, float width, float height)
         {
             try
             {
@@ -365,22 +357,6 @@ namespace CutTheRope.Desktop
             catch (Exception)
             {
             }
-        }
-
-        /// <summary>
-        /// Sets the scissor rectangle (alias for GlScissor).
-        /// </summary>
-        public static void SetScissorRectangle(double x, double y, double w, double h)
-        {
-            SetScissor(x, y, w, h);
-        }
-
-        /// <summary>
-        /// Sets the scissor rectangle (alias for GlScissor).
-        /// </summary>
-        public static void SetScissorRectangle(float x, float y, float w, float h)
-        {
-            SetScissor(x, y, w, h);
         }
 
         #endregion

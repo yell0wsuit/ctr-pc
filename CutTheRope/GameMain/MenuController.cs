@@ -2021,9 +2021,9 @@ namespace CutTheRope.GameMain
                 {
                     num -= preCutSize.X + -20f;
                     float num2 = num - ((s + e) / 2f);
-                    Renderer.SetScissorRectangle(250.0 - (double)num2, 0.0, 200.0, SCREEN_HEIGHT);
+                    Renderer.SetScissor(250f - num2, 0f, 200f, SCREEN_HEIGHT);
                     PostDraw();
-                    Renderer.SetScissorRectangle(c.drawX, c.drawY, c.width, c.height);
+                    Renderer.SetScissor(c.drawX, c.drawY, c.width, c.height);
                 }
             }
 

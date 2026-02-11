@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
             if (!game)
             {
                 Renderer.Enable(Renderer.GL_SCISSOR_TEST);
-                Renderer.SetScissorRectangle(0.0, 0.0, SCREEN_WIDTH, (double)(1200f * num2) / 100.0);
+                Renderer.SetScissor(0f, 0f, SCREEN_WIDTH, 1200f * num2 / 100f);
             }
             Renderer.SetColor(Color.White);
             num3 = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;

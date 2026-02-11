@@ -55,7 +55,7 @@ namespace CutTheRope.Framework.Visual
         {
             PreDraw();
             Renderer.Enable(Renderer.GL_SCISSOR_TEST);
-            Renderer.SetScissorRectangle(drawX, drawY, width, height);
+            Renderer.SetScissor(drawX, drawY, width, height);
             PostDraw();
             Renderer.Disable(Renderer.GL_SCISSOR_TEST);
         }
