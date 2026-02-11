@@ -236,7 +236,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Pushes the current model-view matrix onto the stack.
         /// </summary>
-        public static void GlPushMatrix()
+        public static void PushMatrix()
         {
             s_matrixModelViewStack.Add(s_matrixModelView);
         }

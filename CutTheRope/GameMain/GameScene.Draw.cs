@@ -54,7 +54,7 @@ namespace CutTheRope.GameMain
             back.UpdateWithCameraPos(pos);
             float num = Canvas.xOffsetScaled;
             float num2 = 0f;
-            Renderer.GlPushMatrix();
+            Renderer.PushMatrix();
             Renderer.GlTranslatef((double)num, (double)num2, 0.0);
             Renderer.GlScalef(back.scaleX, back.scaleY, 1.0);
             Renderer.GlTranslatef((double)(0f - num), (double)(0f - num2), 0.0);

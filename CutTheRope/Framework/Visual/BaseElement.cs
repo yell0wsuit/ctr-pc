@@ -143,7 +143,7 @@ namespace CutTheRope.Framework.Visual
             bool flag3 = translateX != 0.0 || translateY != 0.0;
             if (flag || flag2 || flag3)
             {
-                Renderer.GlPushMatrix();
+                Renderer.PushMatrix();
                 pushM = true;
                 if (flag || flag2)
                 {

@@ -38,7 +38,7 @@ namespace CutTheRope.Framework.Core
                 return;
             }
             Application.SharedCanvas().BeforeRender();
-            Renderer.GlPushMatrix();
+            Renderer.PushMatrix();
             ApplyLandscape();
             if (transitionTime == -1f)
             {

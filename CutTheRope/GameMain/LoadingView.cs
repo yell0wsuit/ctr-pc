@@ -63,7 +63,7 @@ namespace CutTheRope.GameMain
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float num3 = (SCREEN_WIDTH / 2f) - quadSize.X;
             GLDrawer.DrawImageQuad(texture, 0, (double)num3, 0.0);
-            Renderer.GlPushMatrix();
+            Renderer.PushMatrix();
             float num4 = (SCREEN_WIDTH / 2f) + (quadSize.X / 2f);
             Renderer.GlTranslatef((double)num4, (double)(SCREEN_HEIGHT / 2f), 0.0);
             Renderer.GlRotatef(180.0, 0.0, 0.0, 1.0);
