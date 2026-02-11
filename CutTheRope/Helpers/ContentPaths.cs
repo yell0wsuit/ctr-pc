@@ -3,7 +3,6 @@ using System;
 #endif
 using System.IO;
 
-using CutTheRope.GameMain;
 #if MACOS_AVFOUNDATION
 using Foundation;
 #endif
@@ -71,22 +70,13 @@ namespace CutTheRope.Helpers
         public const string PacksConfigFile = "packs.xml";
 
         /// <summary>
-        /// Gets the full path to a content file, including the root directory and optional content folder.
+        /// Gets the full path to a content file, including the root directory.
         /// </summary>
         /// <param name="relativePath">The relative path from the content root (e.g., "maps/1_1.xml")</param>
         /// <returns>The full content path (e.g., "content/maps/1_1.xml")</returns>
         public static string GetContentPath(string relativePath)
         {
-            if (string.IsNullOrWhiteSpace(relativePath))
-            {
-                return RootDirectory;
-            }
-
-            string pathWithFolder = string.IsNullOrEmpty(ResDataPhoneFull.ContentFolder)
-                ? relativePath
-                : Path.Combine(ResDataPhoneFull.ContentFolder, relativePath);
-
-            return Path.Combine(RootDirectory, pathWithFolder);
+            return string.IsNullOrWhiteSpace(relativePath) ? RootDirectory : Path.Combine(RootDirectory, relativePath);
         }
 
         /// <summary>
@@ -147,20 +137,6 @@ namespace CutTheRope.Helpers
         public static string GetPacksConfigPath()
         {
             return GetContentPath(PacksConfigFile);
-        }
-
-        /// <summary>
-        /// Gets a relative path with the content folder prefix applied (for use with TitleContainer.OpenStream).
-        /// </summary>
-        /// <param name="relativePath">The relative path from the content root</param>
-        /// <returns>The path with content folder prefix</returns>
-        public static string GetRelativePathWithContentFolder(string relativePath)
-        {
-            return string.IsNullOrWhiteSpace(relativePath)
-                ? string.Empty
-                : string.IsNullOrEmpty(ResDataPhoneFull.ContentFolder)
-                ? relativePath
-                : Path.Combine(ResDataPhoneFull.ContentFolder, relativePath);
         }
 
         /// <summary>
