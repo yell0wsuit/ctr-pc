@@ -41,13 +41,13 @@ namespace CutTheRope.Desktop
         /// Selects the modelview matrix stack for subsequent matrix operations.
         /// OpenGL equivalent: GL_MODELVIEW (0x1700)
         /// </summary>
-        private const int GL_MODELVIEW = 14;
+        private const int MODE_MODELVIEW = 14;
 
         /// <summary>
         /// Selects the projection matrix stack for subsequent matrix operations.
         /// OpenGL equivalent: GL_PROJECTION (0x1701)
         /// </summary>
-        private const int GL_PROJECTION = 15;
+        private const int MODE_PROJECTION = 15;
         #endregion
 
         #region Initialization
@@ -209,12 +209,12 @@ namespace CutTheRope.Desktop
         /// </summary>
         public static void GlLoadIdentity()
         {
-            if (s_glMatrixMode == GL_MODELVIEW)
+            if (s_glMatrixMode == MODE_MODELVIEW)
             {
                 s_matrixModelView = Matrix.Identity;
                 return;
             }
-            if (s_glMatrixMode == GL_PROJECTION)
+            if (s_glMatrixMode == MODE_PROJECTION)
             {
                 s_matrixProjection = Matrix.Identity;
                 return;
