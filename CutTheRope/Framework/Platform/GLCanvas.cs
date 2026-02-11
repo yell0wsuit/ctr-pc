@@ -76,7 +76,7 @@ namespace CutTheRope.Framework.Platform
             xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
             xOffsetScaled = (int)(-xOffset / Global.ScreenSizeManager.WidthAspectRatio);
             isFullscreen = Global.ScreenSizeManager.IsFullScreen;
-            Renderer.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
+            Renderer.SetViewport(xOffset, yOffset, backingWidth, backingHeight);
             Renderer.SetMatrixMode(15);
             Renderer.LoadIdentity();
             Renderer.SetOrthographic(0f, origWidth, origHeight, 0f, -1f, 1f);

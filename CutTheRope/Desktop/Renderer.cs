@@ -131,20 +131,11 @@ namespace CutTheRope.Desktop
         #endregion
 
         #region Viewport and Render Target
-
-        /// <summary>
-        /// Sets the viewport dimensions.
-        /// </summary>
-        public static void GlViewport(double x, double y, double width, double height)
-        {
-            GlViewport((int)x, (int)y, (int)width, (int)height);
-        }
-
         /// <summary>
         /// Sets the viewport dimensions and manages render target.
         /// Always creates a render target matching the viewport size for proper scaling.
         /// </summary>
-        public static void GlViewport(int x, int y, int width, int height)
+        public static void SetViewport(int x, int y, int width, int height)
         {
             if (width <= 0 || height <= 0)
             {
