@@ -156,7 +156,7 @@ namespace CutTheRope.Framework.Visual
                     }
                     if (flag)
                     {
-                        Renderer.GlScalef(scaleX, scaleY, 1f);
+                        Renderer.Scale(scaleX, scaleY, 1f);
                     }
                     Renderer.Translate(0f - num, 0f - num2, 0f);
                 }

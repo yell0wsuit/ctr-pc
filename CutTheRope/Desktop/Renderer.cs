@@ -257,17 +257,9 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Applies a scale transformation to the current model-view matrix.
         /// </summary>
-        public static void GlScalef(double x, double y, double z)
+        public static void Scale(double x, double y, double z)
         {
-            GlScalef((float)x, (float)y, (float)z);
-        }
-
-        /// <summary>
-        /// Applies a scale transformation to the current model-view matrix.
-        /// </summary>
-        public static void GlScalef(float x, float y, float z)
-        {
-            s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
+            s_matrixModelView = Matrix.CreateScale((float)x, (float)y, (float)z) * s_matrixModelView;
         }
 
         /// <summary>

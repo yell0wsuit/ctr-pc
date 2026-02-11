@@ -56,7 +56,7 @@ namespace CutTheRope.GameMain
             float num2 = 0f;
             Renderer.PushMatrix();
             Renderer.Translate((double)num, (double)num2, 0.0);
-            Renderer.GlScalef(back.scaleX, back.scaleY, 1.0);
+            Renderer.Scale(back.scaleX, back.scaleY, 1.0);
             Renderer.Translate((double)(0f - num), (double)(0f - num2), 0.0);
             Renderer.Translate(Canvas.xOffsetScaled, 0.0, 0.0);
             back.Draw();

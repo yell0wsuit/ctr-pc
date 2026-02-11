@@ -216,7 +216,7 @@ namespace CutTheRope.GameMain
                 Renderer.SetColor(final.ToXNA());
                 Renderer.PushMatrix();
                 Renderer.Translate(drawX, drawY, 0f);
-                Renderer.GlScalef(flake.Scale, flake.Scale, 1f);
+                Renderer.Scale(flake.Scale, flake.Scale, 1f);
                 CTRTexture2D.DrawQuadAtPoint(texture, flake.FrameIndex, vectZero);
                 Renderer.PopMatrix();
             }
