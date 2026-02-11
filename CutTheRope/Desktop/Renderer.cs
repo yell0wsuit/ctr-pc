@@ -317,14 +317,6 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Sets the clear color using RGBA float components (0.0-1.0).
-        /// </summary>
-        public static void SetClearColorFloat(double red, double green, double blue, double alpha)
-        {
-            s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
-        }
-
-        /// <summary>
         /// Clears the screen with the current clear color.
         /// </summary>
         /// <param name="mask_NotUsedParam">OpenGL clear mask (ignored, always clears color buffer).</param>
