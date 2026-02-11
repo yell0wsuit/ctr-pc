@@ -90,9 +90,9 @@ namespace CutTheRope.GameMain
             }
             PreDraw();
             back.color = color;
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             back.Draw();
-            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
@@ -107,7 +107,7 @@ namespace CutTheRope.GameMain
             rope?.Draw();
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             front.color = color;
             front.Draw();
             PostDraw();

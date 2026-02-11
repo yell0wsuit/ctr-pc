@@ -32,7 +32,7 @@ namespace CutTheRope.GameMain
                     {
                         Renderer.Disable(Renderer.GL_TEXTURE_2D);
                         Renderer.Enable(Renderer.GL_BLEND);
-                        Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                        Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.1, 0.1, 0.1, 0.5));
                         Renderer.SetColor(Color.White);
                         Renderer.Enable(Renderer.GL_TEXTURE_2D);
@@ -50,7 +50,7 @@ namespace CutTheRope.GameMain
                 }
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.Enable(Renderer.GL_BLEND);
-                Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num2));
                 Renderer.SetColor(Color.White);
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);

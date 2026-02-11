@@ -74,7 +74,7 @@ namespace CutTheRope.Framework.Core
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Enable(Renderer.GL_BLEND);
-            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Application.SharedCanvas().SetDefaultRealProjection();
             int num2 = viewTransition;
             if (num2 - 4 <= 1)
@@ -88,7 +88,7 @@ namespace CutTheRope.Framework.Core
                         Grabber.DrawGrabbedImage(prevScreenImage, 0, 0);
                         Renderer.Disable(Renderer.GL_TEXTURE_2D);
                         Renderer.Enable(Renderer.GL_BLEND);
-                        Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                        Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill);
                         Renderer.Disable(Renderer.GL_BLEND);
                     }
@@ -111,7 +111,7 @@ namespace CutTheRope.Framework.Core
                     Grabber.DrawGrabbedImage(nextScreenImage, 0, 0);
                     Renderer.Disable(Renderer.GL_TEXTURE_2D);
                     Renderer.Enable(Renderer.GL_BLEND);
-                    Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                    Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                     GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill2);
                     Renderer.Disable(Renderer.GL_BLEND);
                 }

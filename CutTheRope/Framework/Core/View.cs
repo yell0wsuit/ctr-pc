@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Core
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Enable(Renderer.GL_BLEND);
-            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             base.PreDraw();
             base.PostDraw();
             Renderer.Disable(Renderer.GL_TEXTURE_2D);

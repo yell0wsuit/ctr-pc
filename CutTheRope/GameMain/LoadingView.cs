@@ -27,7 +27,7 @@ namespace CutTheRope.GameMain
             Global.MouseCursor.Enable(true);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Enable(Renderer.GL_BLEND);
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(cTRRootController.GetPack());

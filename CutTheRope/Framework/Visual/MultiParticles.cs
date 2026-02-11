@@ -112,11 +112,11 @@ namespace CutTheRope.Framework.Visual
             PreDraw();
             if (blendAdditive)
             {
-                Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
             }
             else
             {
-                Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             }
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.BindTexture(drawer.image.texture.Name());
@@ -127,7 +127,7 @@ namespace CutTheRope.Framework.Visual
                 Renderer.FillTexturedColoredVertices(drawer.vertices, drawer.texCoordinates, colors, vertexBuffer, quadCount);
                 Renderer.DrawTriangleList(vertexBuffer, drawer.indices, quadCount * 6);
             }
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PostDraw();
         }
 

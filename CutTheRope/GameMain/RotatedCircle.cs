@@ -122,7 +122,7 @@ namespace CutTheRope.GameMain
             if (IsRightControllerActive() || IsLeftControllerActive())
             {
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
-                Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 if (color.AlphaChannel != 1.0)
                 {
@@ -139,7 +139,7 @@ namespace CutTheRope.GameMain
             vinil.color = color;
             vinil.Draw();
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
@@ -148,7 +148,7 @@ namespace CutTheRope.GameMain
                     GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             vinilHighlightL.Draw();

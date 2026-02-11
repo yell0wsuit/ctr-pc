@@ -77,7 +77,7 @@ namespace CutTheRope.GameMain
 
                         // Enable blending for p2 to avoid dark seams where alpha overlaps p1.
                         Renderer.Enable(Renderer.GL_BLEND);
-                        Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                        Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         // Draw p2 at configured Y position (p1 is handled by TileMap)
                         GLDrawer.DrawImagePart(p2Texture, p2Rect, 0.0, p2Y);
                         Renderer.Disable(Renderer.GL_BLEND);
@@ -85,7 +85,7 @@ namespace CutTheRope.GameMain
                 }
             }
             Renderer.Enable(Renderer.GL_BLEND);
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (earthAnims != null)
             {
                 foreach (object obj in earthAnims)
@@ -96,13 +96,13 @@ namespace CutTheRope.GameMain
             Renderer.GlTranslatef((double)-(double)Canvas.xOffsetScaled, 0.0, 0.0);
             Renderer.GlPopMatrix();
             Renderer.Enable(Renderer.GL_BLEND);
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
             gravityButton?.Draw();
             miceManager?.DrawHoles();
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             support.Draw();
             target.Draw();
             if (sleepAnimPrimary?.visible == true)
@@ -164,7 +164,7 @@ namespace CutTheRope.GameMain
                 lantern.Draw();
             }
 
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (ghosts != null)
             {
                 foreach (object objGhost in ghosts)
@@ -174,13 +174,13 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             kickStainsPool.Draw();
             foreach (object bungeeObj in bungees)
             {
                 Grab grab = (Grab)bungeeObj;
                 // Reset blend mode per grab to avoid state leakage from child draws.
-                Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 grab.DrawBack();
                 grab.Draw();
             }
@@ -209,7 +209,7 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (LightBulb bulb in lightBulbs)
             {
                 bulb?.DrawLight();
@@ -228,9 +228,9 @@ namespace CutTheRope.GameMain
                 candy.Draw();
                 if (candyBlink.GetCurrentTimeline() != null && !isCandyInLantern)
                 {
-                    Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                    Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     candyBlink.Draw();
-                    Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                    Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 }
             }
             if (twoParts != 2)
@@ -265,12 +265,12 @@ namespace CutTheRope.GameMain
                 }
             }
             aniPool.Draw();
-            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.SetColor(Color.White);
             DrawCuts();
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
             staticAniPool.Draw();
             PostDraw();

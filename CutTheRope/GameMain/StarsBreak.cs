@@ -58,7 +58,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             PreDraw();
-            Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.BindTexture(drawer.image.texture.Name());
             int quadCount = particleIdx;

@@ -25,7 +25,7 @@ namespace CutTheRope.Desktop
 
         /// <summary>
         /// Enables/disables alpha blending. When enabled, fragments are blended with the framebuffer
-        /// using the blend function set by <see cref="GlBlendFunc"/>.
+        /// using the blend function set by <see cref="SetBlendFunc"/>.
         /// OpenGL equivalent: GL_BLEND (0x0BE2)
         /// </summary>
         public const int GL_BLEND = 1;
@@ -362,7 +362,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the blending function for alpha blending operations.
         /// </summary>
-        public static void GlBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
+        public static void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
             s_Blend = new BlendParams(sfactor, dfactor);
         }

@@ -279,9 +279,9 @@ namespace CutTheRope.GameMain
             {
                 wheelHighlight.visible = wheelOperating != -1;
                 wheelImage3.visible = wheelOperating == -1;
-                Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 wheelImage.Draw();
-                Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
 
             if (gunBack != null)
@@ -332,7 +332,7 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             gunCup?.Draw();
         }
 

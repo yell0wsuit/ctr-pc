@@ -101,11 +101,11 @@ namespace CutTheRope.GameMain
                 ccolors2[7] = color;
                 if (highlighted)
                 {
-                    Renderer.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                    Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     VertexPositionColor[] highlightVertices = BuildColoredVertices(pointer, ccolors, 8);
                     Renderer.DrawTriangleStrip(highlightVertices, 8);
                 }
-                Renderer.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 VertexPositionColor[] mainVertices = BuildColoredVertices(pointer2, ccolors2, 10);
                 Renderer.DrawTriangleStrip(mainVertices, 10);
             }
