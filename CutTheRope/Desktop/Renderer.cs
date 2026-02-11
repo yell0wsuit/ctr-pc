@@ -199,7 +199,7 @@ namespace CutTheRope.Desktop
         /// Sets the current matrix mode for subsequent matrix operations.
         /// </summary>
         /// <param name="mode">Matrix mode: 14 = GL_MODELVIEW, 15 = GL_PROJECTION</param>
-        public static void GlMatrixMode(int mode)
+        public static void SetMatrixMode(int mode)
         {
             s_glMatrixMode = mode;
         }
