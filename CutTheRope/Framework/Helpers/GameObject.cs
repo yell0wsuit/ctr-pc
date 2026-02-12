@@ -206,6 +206,19 @@ namespace CutTheRope.Framework.Helpers
             return RectInRect(num, num2, num + o1.bb.w, num2 + o1.bb.h, num3, num4, num3 + o2.bb.w, num4 + o2.bb.h);
         }
 
+        public static bool ObjectsIntersectRotatedWithUnrotated(GameObject o1, GameObject o2)
+        {
+            Vector vector = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
+            Vector vector2 = Vect(o1.drawX + o1.rbb.trX, o1.drawY + o1.rbb.trY);
+            Vector vector3 = Vect(o1.drawX + o1.rbb.brX, o1.drawY + o1.rbb.brY);
+            Vector vector4 = Vect(o1.drawX + o1.rbb.blX, o1.drawY + o1.rbb.blY);
+            Vector vector5 = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y);
+            Vector vector6 = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y);
+            Vector vector7 = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y + o2.bb.h);
+            Vector vector8 = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y + o2.bb.h);
+            return ObbInOBB(vector, vector2, vector3, vector4, vector5, vector6, vector7, vector8);
+        }
+
         public static bool PointInObject(Vector p, GameObject o)
         {
             float checkX = o.drawX + o.bb.x;

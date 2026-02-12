@@ -19,8 +19,10 @@ namespace CutTheRope.GameMain
         {
             CTRSoundMgr.EnableLoopedSounds(true);
             aniPool.RemoveAllChilds();
+            particlesAniPool.RemoveAllChilds();
             kickStainsPool.RemoveAllChilds();
             staticAniPool.RemoveAllChilds();
+            decalsLayer?.RemoveAllChilds();
             Lantern.RemoveAllLanterns();
             isCandyInLantern = false;
             gravityButton = null;
@@ -44,6 +46,8 @@ namespace CutTheRope.GameMain
             tutorials = new DynamicArray<Text>();
             bouncers = new DynamicArray<Bouncer>();
             rotatedCircles = new DynamicArray<RotatedCircle>();
+            rockets = new DynamicArray<Rocket>();
+            activeRocket = null;
             ghosts = new DynamicArray<Ghost>();
             conveyors = new ConveyorBeltObject();
 

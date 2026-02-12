@@ -42,6 +42,7 @@ namespace CutTheRope.GameMain
                     ((Image)obj).Update(delta);
                 }
             }
+            decalsLayer?.Update(delta);
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0.0, 1.0, (double)delta);
             ConstraintedPoint constraintedPoint4 = twoParts != 2 ? starL : star;
             float num = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
@@ -222,6 +223,13 @@ namespace CutTheRope.GameMain
                                 bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee3);
+                                if (activeRocket != null)
+                                {
+                                    activeRocket.anglePercent = 0f;
+                                    activeRocket.perpSetted = false;
+                                    activeRocket.startRotation += activeRocket.additionalAngle;
+                                    activeRocket.additionalAngle = 0f;
+                                }
 
                                 // If mouse already has this candy, immediately cut the rope
                                 if (miceManager?.ActiveMouseHasCandy() ?? false)
@@ -1007,6 +1015,144 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+            if (rockets != null)
+            {
+                foreach (Rocket rocket in rockets)
+                {
+                    if (rocket == null)
+                    {
+                        continue;
+                    }
+                    rocket.Update(delta);
+                    rocket.UpdateRotation();
+                    float dist = VectLength(VectSub(star.pos, rocket.point.pos));
+                    if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    {
+                        for (int i = 0; i < 30; i++)
+                        {
+                            ConstraintedPoint.SatisfyConstraints(star);
+                            ConstraintedPoint.SatisfyConstraints(rocket.point);
+                        }
+                        rocket.rotation = AngleTo0_360(rocket.startRotation + candyMain.rotation - rocket.startCandyRotation);
+                    }
+                    if (rocket.state == Rocket.STATE_ROCKET_FLY)
+                    {
+                        lastCandyRotateDelta = 0f;
+                        bool ropeRelaxed = false;
+                        if (bungees != null)
+                        {
+                            foreach (Grab bungee in bungees)
+                            {
+                                if (bungee != null)
+                                {
+                                    Bungee rope = bungee.rope;
+                                    if (rope != null && rope.tail == star && rope.cut == -1 && rope.relaxed > 0)
+                                    {
+                                        ropeRelaxed = true;
+                                        ConstraintedPoint anchor = rope.bungeeAnchor;
+                                        ConstraintedPoint tail = rope.parts[^1];
+                                        Vector ropeVector = VectSub(anchor.pos, tail.pos);
+                                        Vector v1 = VectPerp(ropeVector);
+                                        Vector v2 = VectRperp(ropeVector);
+                                        float fa = RADIANS_TO_DEGREES(VectAngleNormalized(v1) - DEGREES_TO_RADIANS(rocket.rotation));
+                                        float fb = RADIANS_TO_DEGREES(VectAngleNormalized(v2) - DEGREES_TO_RADIANS(rocket.rotation));
+                                        rocket.additionalAngle = AngleTo0_360(rocket.additionalAngle);
+                                        fa = NearestAngleTofrom(rocket.additionalAngle, fa);
+                                        fb = NearestAngleTofrom(rocket.additionalAngle, fb);
+                                        float da = MinAngleBetweenAandB(rocket.additionalAngle, fa);
+                                        float db = MinAngleBetweenAandB(rocket.additionalAngle, fb);
+                                        float target = da < db ? fa : fb;
+                                        _ = Mover.MoveVariableToTarget(ref rocket.additionalAngle, target, 90f, delta);
+                                    }
+                                }
+                            }
+                        }
+                        rocket.rotation += rocket.additionalAngle;
+                        rocket.UpdateRotation();
+                        float ang = rocket.angle;
+                        Vector impulse = VectRotate(Vect(-1f, 0f), ang);
+                        impulse = VectMult(impulse, rocket.impulse);
+                        if (ropeRelaxed)
+                        {
+                            impulse = VectMult(impulse, rocket.impulseFactor);
+                        }
+                        star.ApplyImpulseDelta(impulse, delta);
+                        star.gravity = vectZero;
+                        rocket.point.pos.X = star.pos.X;
+                        rocket.point.pos.Y = star.pos.Y;
+                        if (rocket.time != -1f && Mover.MoveVariableToTarget(ref rocket.time, 0f, 1f, delta))
+                        {
+                            activeRocket = null;
+                            rocket.state = Rocket.STATE_ROCKET_EXAUST;
+                            star.disableGravity = false;
+                            rocket.StopAnimation();
+                        }
+                    }
+                    if (rocket.state == Rocket.STATE_ROCKET_DIST)
+                    {
+                        if (Mover.MoveVariableToTarget(ref dist, 0f, 200f, delta))
+                        {
+                            rocket.state = Rocket.STATE_ROCKET_FLY;
+                        }
+                        else
+                        {
+                            rocket.point.ChangeRestLengthToFor(dist, star);
+                        }
+                    }
+                    if (rocket.state == Rocket.STATE_ROCKET_IDLE && GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) && !noCandy)
+                    {
+                        rocket.mover?.Pause();
+                        rocket.startRotation = rocket.rotation;
+                        rocket.point.AddConstraintwithRestLengthofType(star, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                        rocket.state = Rocket.STATE_ROCKET_DIST;
+                        lastCandyRotateDelta = 0f;
+                        Vector deltaPos = VectSub(star.pos, star.prevPos);
+                        star.prevPos = VectAdd(star.prevPos, VectDiv(deltaPos, star.disableGravity ? 2f : 1.25f));
+                        star.disableGravity = true;
+                        if (activeRocket != null)
+                        {
+                            activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                            activeRocket.StopAnimation();
+                        }
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketStart);
+                        _ = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
+                        activeRocket = rocket;
+                        rocket.isOperating = -1;
+                        rocket.startCandyRotation = candyMain.rotation;
+
+                        Image grid = Image.Image_createWithResID(Resources.Img.ObjRocket);
+                        grid.DoRestoreCutTransparency();
+
+                        if (new RocketSparks().InitWithTotalParticlesAngleandImageGrid(40, rocket.rotation, grid) is RocketSparks rocketSparks)
+                        {
+                            rocketSparks.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
+                            rocketSparks.x = rocket.x;
+                            rocketSparks.y = rocket.y;
+                            rocketSparks.StartSystem(0);
+                            _ = particlesAniPool.AddChild(rocketSparks);
+                            rocket.particles = rocketSparks;
+                        }
+
+                        if (new RocketClouds().InitWithTotalParticlesAngleandImageGrid(20, rocket.rotation, grid) is RocketClouds rocketClouds)
+                        {
+                            rocketClouds.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
+                            rocketClouds.x = rocket.x;
+                            rocketClouds.y = rocket.y;
+                            rocketClouds.StartSystem(0);
+                            _ = particlesAniPool.AddChild(rocketClouds);
+                            rocket.cloudParticles = rocketClouds;
+                        }
+
+                        rocket.StartAnimation();
+                        int count = Preferences.GetIntForKey("PREFS_ROCKETS") + 1;
+                        Preferences.SetIntForKey(count, "PREFS_ROCKETS", false);
+                        if (count >= 100)
+                        {
+                            CTRRootController.PostAchievementName("acPartyAnimal", ACHIEVEMENT_STRING("\"Party Animal\""));
+                        }
+                    }
+                }
+            }
             foreach (object obj13 in razors)
             {
                 Razor razor = (Razor)obj13;
@@ -1094,6 +1240,11 @@ namespace CutTheRope.GameMain
                             candyBreak.x = candy.x;
                             candyBreak.y = candy.y;
                             noCandy = true;
+                        }
+                        if (activeRocket != null)
+                        {
+                            activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                            activeRocket.StopAnimation();
                         }
                         candyBreak.StartSystem(5);
                         _ = aniPool.AddChild(candyBreak);
@@ -1231,6 +1382,10 @@ namespace CutTheRope.GameMain
                     star.ApplyImpulseDelta(Vect((0f - star.v.X) / num18, ((0f - star.v.Y) / num18) + num17), delta);
                 }
             }
+            if (activeRocket != null)
+            {
+                star.ApplyImpulseDelta(Vect(-star.v.X / 40f, -star.v.Y / 40f), delta);
+            }
             if (lightBulbs.Count > 0)
             {
                 foreach (LightBulb bulb in lightBulbs)
@@ -1306,6 +1461,11 @@ namespace CutTheRope.GameMain
                 if (flag11)
                 {
                     noCandyR = true;
+                }
+                if (activeRocket != null)
+                {
+                    activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                    activeRocket.StopAnimation();
                 }
                 if (restartState != 0)
                 {

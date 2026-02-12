@@ -2,13 +2,13 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Visual
 {
-    internal sealed class RotatableScalableMultiParticles : ScalableMultiParticles
+    internal class RotatableScalableMultiParticles : ScalableMultiParticles
     {
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
             particle.angle = initialAngle;
-            particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
+            // particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
             particle.deltaSize = (endSize - size) / particle.life;
         }
 
@@ -103,20 +103,9 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-#pragma warning disable CS0649
         public float initialAngle;
-#pragma warning restore CS0649
-
-#pragma warning disable CS0649
-        public float rotateSpeed;
-#pragma warning restore CS0649
-
-#pragma warning disable CS0649
-        public float rotateSpeedVar;
-#pragma warning restore CS0649
-
-#pragma warning disable CS0649
-        private readonly float endSize;
-#pragma warning restore CS0649
+        // public float rotateSpeed;
+        // public float rotateSpeedVar;
+        public float endSize;
     }
 }

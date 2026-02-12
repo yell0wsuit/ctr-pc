@@ -441,6 +441,7 @@ namespace CutTheRope.GameMain
             // CTR Experiments objects
             Resources.Img.ObjGun,
             Resources.Img.ObjSticker,
+            Resources.Img.ObjRocket,
             null
         ];
     }
