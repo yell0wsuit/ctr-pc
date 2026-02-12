@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 
 using CutTheRope.Commons;
 using CutTheRope.Desktop;
@@ -56,10 +55,6 @@ namespace CutTheRope
         private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.DepthStencilFormat = DepthFormat.None;
-            if (e.GraphicsDeviceInformation.Adapter.CurrentDisplayMode.Width > ScreenSizeManager.MAX_WINDOW_WIDTH || e.GraphicsDeviceInformation.Adapter.CurrentDisplayMode.Height > ScreenSizeManager.MAX_WINDOW_WIDTH)
-            {
-                UseWindowMode_TODO_ChangeFullScreenResolution = true;
-            }
         }
 
         private void Window_ClientSizeChanged(object sender, EventArgs e)
@@ -128,10 +123,10 @@ namespace CutTheRope
 
             Renderer.Init();
             Global.MouseCursor.Load(Content);
-            Window.AllowUserResizing = UseWindowMode_TODO_ChangeFullScreenResolution || true;
+            Window.AllowUserResizing = true;
             Preferences.LoadPreferences();
             int num = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
-            bool isFullScreen = !UseWindowMode_TODO_ChangeFullScreenResolution && (num <= 0 || Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
+            bool isFullScreen = num <= 0 || Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN");
             Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, num, isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
@@ -164,20 +159,7 @@ namespace CutTheRope
         protected override void Update(GameTime gameTime)
         {
             KeyboardState keyboardState = Keyboard.GetState();
-            bool flag = keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt);
-            bool enterPressed = keyboardState.IsKeyDown(Keys.Enter);
-            if (flag && enterPressed)
-            {
-                if (!_altEnterPressed)
-                {
-                    Global.ScreenSizeManager.ToggleFullScreen();
-                    _altEnterPressed = true;
-                }
-            }
-            else
-            {
-                _altEnterPressed = false;
-            }
+            HandleFullscreenToggle(keyboardState);
             elapsedTime += gameTime.ElapsedGameTime;
             if (elapsedTime > TimeSpan.FromSeconds(1.0))
             {
@@ -188,12 +170,6 @@ namespace CutTheRope
             }
             IsFixedTimeStep = (frameRate > 0 && frameRate < 50) || true;
             keyboardStateXna = Keyboard.GetState();
-            if ((IsKeyPressed(Keys.F11) || ((IsKeyDown(Keys.LeftAlt) || IsKeyDown(Keys.RightAlt)) && IsKeyPressed(Keys.Enter))) && !UseWindowMode_TODO_ChangeFullScreenResolution)
-            {
-                Global.ScreenSizeManager.ToggleFullScreen();
-                Thread.Sleep(500);
-                return;
-            }
 
             if (IsKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
@@ -217,6 +193,23 @@ namespace CutTheRope
             _ = Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(mouseState.X), CtrRenderer.TransformY(mouseState.Y));
             CtrRenderer.Update();
             base.Update(gameTime);
+        }
+
+        private void HandleFullscreenToggle(KeyboardState keyboardState)
+        {
+            bool altDown = keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt);
+            bool enterDown = keyboardState.IsKeyDown(Keys.Enter);
+            bool f11Down = keyboardState.IsKeyDown(Keys.F11);
+            bool altEnterDown = altDown && enterDown;
+
+            bool shouldToggleFullscreen = (altEnterDown && !_altEnterPressed) || (f11Down && !_f11Pressed);
+            _altEnterPressed = altEnterDown;
+            _f11Pressed = f11Down;
+
+            if (shouldToggleFullscreen)
+            {
+                Global.ScreenSizeManager.ToggleFullScreen();
+            }
         }
 
         public void DrawMovie()
@@ -278,9 +271,9 @@ namespace CutTheRope
 
         private bool _altEnterPressed;
 
-        private MouseState _currentMouseState;
+        private bool _f11Pressed;
 
-        private bool UseWindowMode_TODO_ChangeFullScreenResolution = true;
+        private MouseState _currentMouseState;
 
         private readonly Dictionary<Keys, bool> keyState = [];
 
