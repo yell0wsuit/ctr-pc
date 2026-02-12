@@ -64,6 +64,7 @@ namespace CutTheRope.GameMain
             }
             float worldX = tx + camera.pos.X;
             float worldY = ty + camera.pos.Y;
+            waterLayer?.AddParticlesAtXY(worldX, worldY);
             if (miceManager != null && miceManager.HandleClick(worldX, worldY))
             {
                 return true;
@@ -141,8 +142,10 @@ namespace CutTheRope.GameMain
                     Grab grab = (Grab)obj;
                     if (grab.gun && !grab.gunFired && grab.rope == null)
                     {
+                        bool candyInMapBounds = GameObject.RectInObject(0f, 0f, mapWidth, mapHeight, candy);
+                        bool canFireFromWaterState = waterLayer == null || candyInMapBounds || mapHeight - waterLevel > star.pos.Y;
                         float tapRadius = Grab.GUN_TAP_RADIUS;
-                        if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                        if (canFireFromWaterState && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
                             // Calculate direction to candy
                             Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);

@@ -60,6 +60,26 @@ namespace CutTheRope.GameMain
                         ropePhysicsSpeed = item2.AttributeAsNSString("ropePhysicsSpeed").FloatValue();
                         nightLevel = item2.AttributeAsNSString("nightLevel").IsEqualToString("true");
                         twoParts = !item2.AttributeAsNSString("twoParts").IsEqualToString("true") ? 2 : 0;
+                        waterLevel = item2.AttributeAsNSString("water").FloatValue();
+                        if (waterLevel != 0f)
+                        {
+                            waterLevel *= scale;
+                        }
+                        waterSpeed = item2.AttributeAsNSString("waterSpeed").FloatValue() * scale;
+                        if (waterLevel > 0f)
+                        {
+                            waterLayer = WaterElement.CreateWithWidthHeight(mapWidth, waterLevel);
+                            if (waterLayer != null)
+                            {
+                                waterLayer.y = mapHeight - waterLevel;
+                            }
+                            else
+                            {
+                                // Disable water behavior when the texture atlas is not available.
+                                waterLevel = 0f;
+                                waterSpeed = 0f;
+                            }
+                        }
                         ropePhysicsSpeed *= 1.4f;
                     }
                     else if (item2.Name.LocalName == "candyL")

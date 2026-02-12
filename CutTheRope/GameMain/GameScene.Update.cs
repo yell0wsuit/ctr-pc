@@ -43,6 +43,42 @@ namespace CutTheRope.GameMain
                 }
             }
             decalsLayer?.Update(delta);
+            if (waterLayer != null)
+            {
+                waterLayer.Update(delta);
+                float waterSurfaceY = mapHeight - waterLevel;
+                if (GameObject.RectInObject(0f, waterSurfaceY - 2f, mapWidth, waterSurfaceY + 2f, candy))
+                {
+                    if (!splashes)
+                    {
+                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + 3f);
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
+                    }
+                    splashes = true;
+                }
+                else
+                {
+                    splashes = false;
+                }
+
+                if (candy.y - (candy.texture.quadRects[0].h / 2f) > waterSurfaceY)
+                {
+                    if (!underwater)
+                    {
+                        int underwaterCount = Preferences.GetIntForKey("PREFS_UNDERWATER") + 1;
+                        Preferences.SetIntForKey(underwaterCount, "PREFS_UNDERWATER", false);
+                        if (underwaterCount >= 150)
+                        {
+                            CTRRootController.PostAchievementName("acDeepDiver");
+                        }
+                    }
+                    underwater = true;
+                }
+                else
+                {
+                    underwater = false;
+                }
+            }
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0.0, 1.0, (double)delta);
             ConstraintedPoint constraintedPoint4 = twoParts != 2 ? starL : star;
             float num = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
@@ -1326,6 +1362,45 @@ namespace CutTheRope.GameMain
                 if (!flag8 && !bulbHit)
                 {
                     bouncer.skip = false;
+                }
+            }
+            if (waterLayer != null && waterLevel > -SCREEN_HEIGHT && waterSpeed > 0f)
+            {
+                _ = Mover.MoveVariableToTarget(ref waterLevel, -SCREEN_HEIGHT, waterSpeed, delta);
+                waterLayer.y = mapHeight - waterLevel;
+                waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
+            }
+            float candyRadius = 15f;
+            if (waterLevel > 0f
+                && star.pos.Y > mapHeight - waterLevel
+                && star.pos.X + candyRadius >= 0f
+                && star.pos.X - candyRadius <= mapWidth)
+            {
+                float damping = 20f;
+                float verticalWaterImpulse = -25f / star.weight;
+                if (activeRocket != null)
+                {
+                    verticalWaterImpulse /= 45f;
+                    damping *= 15f;
+                    if (activeRocket.state == Rocket.STATE_ROCKET_FLY)
+                    {
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
+                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                        activeRocket.StopAnimation();
+                    }
+                }
+                star.ApplyImpulseDelta(Vect(-star.v.X / damping, (-star.v.Y / damping) + verticalWaterImpulse), delta);
+            }
+            if (waterLayer != null && bungees != null)
+            {
+                foreach (Grab grab in bungees)
+                {
+                    if (grab != null && grab.kickable && grab.kicked && grab.y > mapHeight - waterLevel && grab.rope != null)
+                    {
+                        const float damping = 20f;
+                        ConstraintedPoint anchor = grab.rope.bungeeAnchor;
+                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) - 20f), delta);
+                    }
                 }
             }
             float num17 = -40f;

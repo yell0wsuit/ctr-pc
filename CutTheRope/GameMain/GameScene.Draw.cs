@@ -105,6 +105,7 @@ namespace CutTheRope.GameMain
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             decalsLayer?.Draw();
             support.Draw();
+            waterLayer?.DrawBack();
             target.Draw();
             if (sleepAnimPrimary?.visible == true)
             {
@@ -259,6 +260,7 @@ namespace CutTheRope.GameMain
                     candyR.Draw();
                 }
             }
+            waterLayer?.DrawFront(camera.pos.Y);
             foreach (LightBulb bulb in lightBulbs)
             {
                 bulb?.DrawBottleAndFirefly();
