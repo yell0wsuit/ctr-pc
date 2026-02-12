@@ -84,6 +84,27 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+            if (snailobjects != null
+                && twoParts == 2
+                && PointInRect(worldX, worldY, star.pos.X - 30f, star.pos.Y - 30f, 60f, 60f)
+                && star.weight > 1f)
+            {
+                star.SetWeight(star.weight - 3f);
+                if (star.weight <= 1f)
+                {
+                    star.SetWeight(1f);
+                    for (int i = 0; i < snailobjects.Count; i++)
+                    {
+                        Snail snail = snailobjects.ObjectAtIndex(i);
+                        if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
+                        {
+                            snail.Detach();
+                            break;
+                        }
+                    }
+                }
+                return true;
+            }
             if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
             {
                 return true;

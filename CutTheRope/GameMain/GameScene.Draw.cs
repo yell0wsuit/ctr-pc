@@ -245,6 +245,13 @@ namespace CutTheRope.GameMain
                     Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 }
             }
+            if (snailobjects != null)
+            {
+                foreach (Snail snail in snailobjects)
+                {
+                    snail?.Draw();
+                }
+            }
             if (twoParts != 2)
             {
                 if (!noCandyL)

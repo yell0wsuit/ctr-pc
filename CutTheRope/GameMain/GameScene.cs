@@ -385,6 +385,8 @@ namespace CutTheRope.GameMain
 
         private DynamicArray<Rocket> rockets;
 
+        private DynamicArray<Snail> snailobjects;
+
         private DynamicArray<CTRGameObject> tutorialImages;
 
         private DynamicArray<Text> tutorials;

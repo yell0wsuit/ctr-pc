@@ -1288,6 +1288,7 @@ namespace CutTheRope.GameMain
                         _ = aniPool.AddChild(candyBreak);
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
                         ReleaseAllRopes(flag5);
+                        DetachActiveSnails();
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3);
@@ -1403,6 +1404,38 @@ namespace CutTheRope.GameMain
                         const float damping = 20f;
                         ConstraintedPoint anchor = grab.rope.bungeeAnchor;
                         anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) - 20f), delta);
+                    }
+                }
+            }
+            if (snailobjects != null && twoParts == 2 && snailobjects.Count > 0)
+            {
+                for (int i = snailobjects.Count - 1; i >= 0; i--)
+                {
+                    Snail snail = snailobjects.ObjectAtIndex(i);
+                    if (snail == null)
+                    {
+                        snailobjects.RemoveObjectAtIndex(i);
+                        continue;
+                    }
+
+                    snail.Update(delta);
+
+                    if (snail.state == Snail.SNAIL_STATE_ACTIVE)
+                    {
+                        snail.rotation = candyMain.rotation - snail.startRotation;
+                    }
+
+                    if (snail.state == Snail.SNAIL_STATE_INACTIVE && !noCandy && GameObject.ObjectsIntersect(candy, snail))
+                    {
+                        DetachActiveSnails();
+                        snail.startRotation += candyMain.rotation;
+                        snail.AttachToPoint(star);
+                        star.SetWeight(star.weight + 2f);
+                    }
+
+                    if (snail.state == Snail.SNAIL_STATE_VANISHED)
+                    {
+                        snailobjects.RemoveObjectAtIndex(i);
                     }
                 }
             }

@@ -407,6 +407,7 @@ namespace CutTheRope.GameMain
                 activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
                 activeRocket.StopAnimation();
             }
+            DetachActiveSnails();
             if (restartState != 0)
             {
                 dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2.0);

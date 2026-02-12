@@ -191,6 +191,7 @@ namespace CutTheRope.GameMain
                 activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
                 activeRocket.StopAnimation();
             }
+            DetachActiveSnails();
 
             // Make the mouse retreat and lock it from advancing to next mouse
             if (miceManager != null && mice != null)
@@ -367,6 +368,23 @@ namespace CutTheRope.GameMain
                 if (rope != null && rope.cut == -1)
                 {
                     rope.highlighted = false;
+                }
+            }
+        }
+
+        public void DetachActiveSnails()
+        {
+            if (snailobjects == null || snailobjects.Count <= 0)
+            {
+                return;
+            }
+
+            for (int i = snailobjects.Count - 1; i >= 0; i--)
+            {
+                Snail snail = snailobjects.ObjectAtIndex(i);
+                if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
+                {
+                    snail.Detach();
                 }
             }
         }
