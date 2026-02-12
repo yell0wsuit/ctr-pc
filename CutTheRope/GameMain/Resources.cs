@@ -157,7 +157,7 @@ namespace CutTheRope.GameMain
                 Img.ObjCandy52,
 
                 // CTR Experiments objects
-                Img.ObjGun, Img.ObjSticker, Img.ObjRocket
+                Img.ObjGun, Img.ObjSticker, Img.ObjRocket, Img.WaterTile
             ];
         }
 
@@ -186,7 +186,7 @@ namespace CutTheRope.GameMain
 
                 // CTR Experiments sounds
                 Snd.ExpGun, Snd.ExpSuckerDrop, Snd.ExpSuckerLand, Snd.ExpRocketStart,
-                Snd.ExpRocketFlyLooped, Snd.ExpRocketInWater
+                Snd.ExpRocketFlyLooped, Snd.ExpRocketInWater, Snd.ExpWaterSplash
             ];
         }
 
@@ -395,6 +395,7 @@ namespace CutTheRope.GameMain
             public const string BoxLabel = "box_label";
             public const string ObjTransporter = "obj_transporter";
             public const string ObjRocket = "obj_rocket";
+            public const string WaterTile = "water_tile";
 
             // Candies
             public const string ObjCandyFx = "candies/obj_candy_fx";
@@ -579,6 +580,7 @@ namespace CutTheRope.GameMain
             public const string ExpRocketStart = "rocket_start";
             public const string ExpRocketFlyLooped = "rocket_fly_looped";
             public const string ExpRocketInWater = "rocket_in_water";
+            public const string ExpWaterSplash = "water_splash";
         }
 
         /// <summary>
