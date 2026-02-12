@@ -24,6 +24,7 @@ namespace CutTheRope.GameMain
         private DelayedDispatcher dd;
         private Image spotLight;
         private bool isReleasing;
+        private static bool s_waterQuadsFixed;
 
         public static bool IsWaterTextureAvailable()
         {
@@ -79,6 +80,21 @@ namespace CutTheRope.GameMain
             if (InitWithTexture(Application.GetTexture(Resources.Img.WaterTile)) == null)
             {
                 return null;
+            }
+
+            // Trim 2px transparent edges on left/right of quads 0-4 to prevent tiling seams
+            if (!s_waterQuadsFixed)
+            {
+                for (int q = 0; q <= 4; q++)
+                {
+                    CTRRectangle rect = texture.quadRects[q];
+                    rect.x += 2;
+                    rect.w -= 4;
+                    texture.quadRects[q] = rect;
+                    texture.quads[q] = DrawHelper.GetTextureCoordinates(texture, rect);
+                    texture.quadOffsets[q] = new Vector(texture.quadOffsets[q].X + 2, texture.quadOffsets[q].Y);
+                }
+                s_waterQuadsFixed = true;
             }
 
             width = (int)w;
