@@ -29,7 +29,12 @@ namespace CutTheRope.GameMain
                 if (activeRocket != null)
                 {
                     activeRocket.point.pos = star.pos;
-                    activeRocket.point.prevPos = star.pos;
+
+                    // Maintain rocket momentum
+                    activeRocket.point.prevPos = star.prevPos;
+                    activeRocket.point.v = star.v;
+                    activeRocket.point.posDelta = star.posDelta;
+
                     activeRocket.rotation = targetSock.rotation + 90f;
                     activeRocket.startRotation = targetSock.rotation + 90f;
                     activeRocket.startCandyRotation = candyMain.rotation;
