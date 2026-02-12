@@ -140,9 +140,9 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         public void Reshape()
         {
-            Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-            backingWidth = scaledViewRect.Width;
-            backingHeight = scaledViewRect.Height;
+            Rectangle scaledViewRectPixels = Global.ScreenSizeManager.ScaledViewRectPixels;
+            backingWidth = scaledViewRectPixels.Width;
+            backingHeight = scaledViewRectPixels.Height;
             SetDefaultProjection();
         }
 

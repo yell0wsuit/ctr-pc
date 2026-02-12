@@ -183,9 +183,21 @@ namespace CutTheRopeDX.Desktop
         {
             if (s_RenderTarget != null)
             {
+                Rectangle logicalRect = Global.ScreenSizeManager.ScaledViewRect;
+                Rectangle pixelRect = Global.ScreenSizeManager.ScaledViewRectPixels;
+                PresentationParameters presentationParameters = Global.GraphicsDevice.PresentationParameters;
+                Rectangle destinationRect = BackingScaleMath.ResolvePresentDestinationRect(
+                    logicalRect,
+                    pixelRect,
+                    presentationParameters.BackBufferWidth,
+                    presentationParameters.BackBufferHeight,
+                    Global.ScreenSizeManager.BackingScale);
+
+                // GraphicsDevice resets viewport to backbuffer size when render target is detached.
+                Global.ScreenSizeManager.ApplyViewportToDevice();
                 Global.GraphicsDevice.Clear(Color.Black);
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
+                Global.SpriteBatch.Draw(s_RenderTarget, destinationRect, Color.White);
                 Global.SpriteBatch.End();
             }
         }

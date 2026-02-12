@@ -89,8 +89,8 @@
 
   <ItemGroup>
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.4" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4.1" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.5-preview.3" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5-preview.3-hidpi.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
