@@ -277,13 +277,7 @@ namespace CutTheRope.Framework.Core
 
         public override void FullscreenToggled(bool isFullscreen)
         {
-            try
-            {
-                currentController.FullscreenToggled(isFullscreen);
-            }
-            catch (Exception)
-            {
-            }
+            currentController?.FullscreenToggled(isFullscreen);
         }
 
         public const int TRANSITION_SLIDE_HORIZONTAL_RIGHT = 0;
