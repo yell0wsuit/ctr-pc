@@ -176,7 +176,6 @@ namespace CutTheRope.GameMain
             }
 
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            kickStainsPool.Draw();
             foreach (object bungeeObj in bungees)
             {
                 Grab grab = (Grab)bungeeObj;
