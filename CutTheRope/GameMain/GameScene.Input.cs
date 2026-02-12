@@ -416,7 +416,7 @@ namespace CutTheRope.GameMain
                             stain.y = bungee.rope.bungeeAnchor.pos.Y;
                             stain.anchor = 18;
                             stain.color.AlphaChannel = bungee.stainCounter / 10f;
-                            _ = kickStainsPool.AddChild(stain);
+                            _ = decalsLayer.AddChild(stain);
                             bungee.stainCounter--;
                         }
                         bungee.rope.bungeeAnchor.pin = Vect(-1f, -1f);

@@ -20,7 +20,6 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.EnableLoopedSounds(true);
             aniPool.RemoveAllChilds();
             particlesAniPool.RemoveAllChilds();
-            kickStainsPool.RemoveAllChilds();
             staticAniPool.RemoveAllChilds();
             decalsLayer?.RemoveAllChilds();
             Lantern.RemoveAllLanterns();
