@@ -1379,8 +1379,8 @@ namespace CutTheRope.GameMain
                 && star.pos.X + candyRadius >= waterLayer.x
                 && star.pos.X - candyRadius <= waterLayer.x + waterLayer.width)
             {
-                float damping = 20f;
-                float verticalWaterImpulse = -25f / star.weight;
+                float damping = 40f;
+                float verticalWaterImpulse = -50f / star.weight;
                 if (activeRocket != null)
                 {
                     verticalWaterImpulse /= 45f;
