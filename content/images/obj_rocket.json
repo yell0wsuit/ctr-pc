@@ -1,0 +1,101 @@
+{
+    "frames": [
+        {
+            "filename": "frame_00_launcher.png",
+            "frame": { "x": 361, "y": 1, "w": 250, "h": 249 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 184, "y": 84, "w": 250, "h": 249 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_01_rocket_start.png",
+            "frame": { "x": 613, "y": 1, "w": 258, "h": 123 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 358, "y": 148, "w": 258, "h": 123 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_02_rocket_1.png",
+            "frame": { "x": 1087, "y": 109, "w": 145, "h": 126 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 405, "y": 148, "w": 145, "h": 126 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_03_rocket_2.png",
+            "frame": { "x": 613, "y": 126, "w": 242, "h": 126 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 377, "y": 148, "w": 242, "h": 126 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_04_rocket_end.png",
+            "frame": { "x": 857, "y": 126, "w": 228, "h": 126 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 391, "y": 145, "w": 228, "h": 126 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_05_smoke_particle_1.png",
+            "frame": { "x": 1118, "y": 1, "w": 125, "h": 106 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 293, "y": 156, "w": 125, "h": 106 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_06_sparkles_particle_4.png",
+            "frame": { "x": 873, "y": 49, "w": 116, "h": 38 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 183, "y": 190, "w": 116, "h": 38 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_07_sparkles_particle_3.png",
+            "frame": { "x": 991, "y": 49, "w": 120, "h": 23 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 230, "y": 198, "w": 120, "h": 23 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_08_sparkles_particle_2.png",
+            "frame": { "x": 1, "y": 182, "w": 305, "h": 55 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 163, "y": 182, "w": 305, "h": 55 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_09_sparkles_particle_1.png",
+            "frame": { "x": 873, "y": 1, "w": 243, "h": 46 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 199, "y": 186, "w": 243, "h": 46 },
+            "sourceSize": { "w": 619, "h": 418 }
+        },
+        {
+            "filename": "frame_10_rocket.png",
+            "frame": { "x": 1, "y": 1, "w": 358, "h": 179 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 109, "y": 119, "w": 358, "h": 179 },
+            "sourceSize": { "w": 619, "h": 418 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_rocket.png",
+        "format": "RGBA8888",
+        "size": { "w": 1244, "h": 253 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:ee75a76425f2f0efc44ac4f7b00a21ad:c69933d4e80b37b21608170075860758:082300f02281ad9aa722382cf02a2733$"
+    }
+}

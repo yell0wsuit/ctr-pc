@@ -69,6 +69,20 @@ namespace CutTheRope.GameMain
                 return true;
             }
             Vector vector = Vect(tx, ty);
+            Vector world = Vect(worldX, worldY);
+            if (rockets != null)
+            {
+                foreach (Rocket rocket in rockets)
+                {
+                    if (rocket != null && rocket.state == Rocket.STATE_ROCKET_IDLE && rocket.isRotatable && rocket.isOperating == -1 &&
+                        VectLength(VectSub(world, Vect(rocket.x, rocket.y))) < 90f)
+                    {
+                        rocket.HandleTouch(world);
+                        rocket.isOperating = ti;
+                        return true;
+                    }
+                }
+            }
             if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
             {
                 return true;
@@ -317,6 +331,34 @@ namespace CutTheRope.GameMain
             {
                 return true;
             }
+            if (rockets != null)
+            {
+                foreach (Rocket rocket in rockets)
+                {
+                    if (rocket == null || rocket.isOperating != ti)
+                    {
+                        continue;
+                    }
+                    if (!rocket.rotateHandled)
+                    {
+                        Timeline timeline = rocket.GetCurrentTimeline();
+                        if (timeline != null && timeline.state == Timeline.TimelineState.TIMELINE_PLAYING)
+                        {
+                            timeline.JumpToTrackKeyFrame(2, 1);
+                            timeline.StopTimeline();
+                        }
+                        rocket.PlayTimeline(0);
+                        rocket.startRotation += 45f;
+                    }
+                    else
+                    {
+                        rocket.HandleRotateFinal();
+                    }
+                    rocket.rotateHandled = false;
+                    rocket.isOperating = -1;
+                    return true;
+                }
+            }
             if (gravityButton != null && gravityTouchDown == ti)
             {
                 if (((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.X, ty + camera.pos.Y, true))
@@ -412,6 +454,18 @@ namespace CutTheRope.GameMain
             if (ti >= 5)
             {
                 return true;
+            }
+            Vector world = Vect(tx + camera.pos.X, ty + camera.pos.Y);
+            if (rockets != null)
+            {
+                foreach (Rocket rocket in rockets)
+                {
+                    if (rocket != null && rocket.isOperating == ti)
+                    {
+                        rocket.HandleRotate(world);
+                        return true;
+                    }
+                }
             }
             foreach (object obj in pumps)
             {

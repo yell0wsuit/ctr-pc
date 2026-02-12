@@ -24,6 +24,24 @@ namespace CutTheRope.GameMain
                 star.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
                 star.posDelta = VectDiv(star.v, 60f);
                 star.prevPos = VectSub(star.pos, star.posDelta);
+
+                // Reset rocket direction when candy teleports through sock
+                if (activeRocket != null)
+                {
+                    activeRocket.point.pos = star.pos;
+
+                    // Maintain rocket momentum
+                    activeRocket.point.prevPos = star.prevPos;
+                    activeRocket.point.v = star.v;
+                    activeRocket.point.posDelta = star.posDelta;
+
+                    activeRocket.rotation = targetSock.rotation + 90f;
+                    activeRocket.startRotation = targetSock.rotation + 90f;
+                    activeRocket.startCandyRotation = candyMain.rotation;
+                    activeRocket.additionalAngle = 0f;
+                    activeRocket.UpdateRotation();
+                }
+
                 targetSock = null;
             }
         }
@@ -168,6 +186,11 @@ namespace CutTheRope.GameMain
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2.0);
             CalculateScore();
             ReleaseAllRopes(false);
+            if (activeRocket != null)
+            {
+                activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                activeRocket.StopAnimation();
+            }
 
             // Make the mouse retreat and lock it from advancing to next mouse
             if (miceManager != null && mice != null)
@@ -207,6 +230,11 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
             gameSceneDelegate.GameLost();
+            if (activeRocket != null)
+            {
+                activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                activeRocket.StopAnimation();
+            }
 
             // Make the mouse retreat and lock it from advancing to next mouse
             if (miceManager != null && mice != null)

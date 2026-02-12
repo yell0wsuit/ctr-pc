@@ -95,6 +95,9 @@ namespace CutTheRope.GameMain
                         case "ghost":
                             LoadGhost(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
+                        case "rocket":
+                            LoadRocket(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
                         case "conveyorBelt":
                         case "transporter":
                             LoadConveyorBelt(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);

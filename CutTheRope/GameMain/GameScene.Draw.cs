@@ -103,6 +103,7 @@ namespace CutTheRope.GameMain
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            decalsLayer?.Draw();
             support.Draw();
             target.Draw();
             if (sleepAnimPrimary?.visible == true)
@@ -217,6 +218,17 @@ namespace CutTheRope.GameMain
             foreach (object starObj in stars)
             {
                 ((GameObject)starObj).Draw();
+            }
+            particlesAniPool.Draw();
+            if (rockets != null)
+            {
+                foreach (Rocket rocket in rockets)
+                {
+                    if (rocket != null && !(rocket == activeRocket && targetSock != null))
+                    {
+                        rocket.Draw();
+                    }
+                }
             }
             if (!noCandy && targetSock == null)
             {
