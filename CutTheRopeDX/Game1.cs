@@ -96,6 +96,7 @@ namespace CutTheRopeDX
 
             Window.ClientSizeChanged -= Window_ClientSizeChanged;
             Global.ScreenSizeManager.FixWindowSize(Window.ClientBounds);
+            CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.SurfaceWidthPixels, Global.ScreenSizeManager.SurfaceHeightPixels);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
@@ -170,7 +171,7 @@ namespace CutTheRopeDX
             Window.ClientSizeChanged += Window_ClientSizeChanged;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
             CtrRenderer.OnSurfaceCreated();
-            CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
+            CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.SurfaceWidthPixels, Global.ScreenSizeManager.SurfaceHeightPixels);
         }
 
         /// <inheritdoc />
@@ -213,6 +214,12 @@ namespace CutTheRopeDX
         /// <inheritdoc />
         protected override void Update(GameTime gameTime)
         {
+            if (Global.ScreenSizeManager.RefreshBackingScaleIfChanged())
+            {
+                CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.SurfaceWidthPixels, Global.ScreenSizeManager.SurfaceHeightPixels);
+                Application.SharedCanvas().Reshape();
+            }
+
             KeyboardState keyboardState = Keyboard.GetState();
             HandleFullscreenToggle(keyboardState);
             elapsedTime += gameTime.ElapsedGameTime;
@@ -268,6 +275,7 @@ namespace CutTheRopeDX
             if (shouldToggleFullscreen)
             {
                 Global.ScreenSizeManager.ToggleFullScreen();
+                CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.SurfaceWidthPixels, Global.ScreenSizeManager.SurfaceHeightPixels);
             }
         }
 

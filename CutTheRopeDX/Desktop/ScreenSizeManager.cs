@@ -66,6 +66,38 @@ namespace CutTheRopeDX.Desktop
         public Rectangle ScaledViewRect => _scaledViewRect;
 
         /// <summary>
+        /// Gets the scaled render rectangle in physical pixels for the current backing scale.
+        /// </summary>
+        public Rectangle ScaledViewRectPixels => _scaledViewRectPixels;
+
+        /// <summary>
+        /// Gets the current backing scale reported by the platform.
+        /// </summary>
+        public double BackingScale => _backingScaleState.CurrentScale;
+
+        /// <summary>
+        /// Gets the effective display scale after logical scaling and backing-scale conversion.
+        /// </summary>
+        public double EffectiveDisplayScale
+        {
+            get
+            {
+                double logicalScale = _scaledViewRect.Width > 0 ? _scaledViewRect.Width / (double)GameWidth : 1d;
+                return logicalScale * BackingScale;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current output surface width in physical pixels.
+        /// </summary>
+        public int SurfaceWidthPixels => Math.Max(1, (int)Math.Round(CurrentSize.Width * BackingScale, MidpointRounding.AwayFromZero));
+
+        /// <summary>
+        /// Gets the current output surface height in physical pixels.
+        /// </summary>
+        public int SurfaceHeightPixels => Math.Max(1, (int)Math.Round(CurrentSize.Height * BackingScale, MidpointRounding.AwayFromZero));
+
+        /// <summary>
         /// Gets a value indicating whether size-change reactions are temporarily disabled.
         /// </summary>
         public bool SkipSizeChanges { get; private set; }
@@ -138,6 +170,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="isFullScreen"><see langword="true" /> to start in fullscreen mode.</param>
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
+            _ = TryUpdateBackingScale();
             FullScreenRectChanged(displayMode);
             int targetWindowWidth = windowWidth > 0 ? windowWidth : displayMode.Width - 100;
             if (targetWindowWidth < 800)
@@ -159,6 +192,21 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
             ApplyWindowSize(WindowWidth);
+        }
+
+        /// <summary>
+        /// Refreshes the backing scale and reapplies the viewport if the reported scale changed.
+        /// </summary>
+        /// <returns><see langword="true" /> when the scale changed and the viewport was updated.</returns>
+        public bool RefreshBackingScaleIfChanged()
+        {
+            if (!TryUpdateBackingScale())
+            {
+                return false;
+            }
+
+            ApplyViewportToDevice();
+            return true;
         }
 
         /// <summary>
@@ -197,11 +245,13 @@ namespace CutTheRopeDX.Desktop
                 int scaledHeight = _fullScreenCropWidth ? sourceRect.Height : ScaledGameHeight(sourceRect.Width);
                 int scaledWidth = _fullScreenCropWidth ? ScaledGameWidth(scaledHeight) : sourceRect.Width;
                 _scaledViewRect = new Rectangle((sourceRect.Width - scaledWidth) / 2, (sourceRect.Height - scaledHeight) / 2, scaledWidth, scaledHeight);
+                _scaledViewRectPixels = BackingScaleMath.LogicalToPixelRect(_scaledViewRect, BackingScale);
                 return;
             }
             int portraitScaledHeight = _fullScreenCropWidth ? (int)(sourceRect.Width / 5f * 4f) : ScaledGameHeight(sourceRect.Width);
             int portraitScaledWidth = _fullScreenCropWidth ? ScaledGameWidth(portraitScaledHeight) : sourceRect.Width;
             _scaledViewRect = new Rectangle((sourceRect.Width - portraitScaledWidth) / 2, (sourceRect.Height - portraitScaledHeight) / 2, portraitScaledWidth, portraitScaledHeight);
+            _scaledViewRectPixels = BackingScaleMath.LogicalToPixelRect(_scaledViewRect, BackingScale);
         }
 
         /// <summary>
@@ -301,9 +351,23 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         public void ApplyViewportToDevice()
         {
-            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(_scaledViewRect, _windowRect) : Rectangle.Intersect(_scaledViewRect, _fullScreenRect);
+            Rectangle boundsLogical = !IsFullScreen ? Rectangle.Intersect(_scaledViewRect, _windowRect) : Rectangle.Intersect(_scaledViewRect, _fullScreenRect);
+            Rectangle boundsPixels = BackingScaleMath.LogicalToPixelRect(boundsLogical, BackingScale);
             try
             {
+                if (Global.GraphicsDevice == null)
+                {
+                    return;
+                }
+
+                PresentationParameters presentationParameters = Global.GraphicsDevice.PresentationParameters;
+                Rectangle bounds = BackingScaleMath.ResolvePresentDestinationRect(
+                    boundsLogical,
+                    boundsPixels,
+                    presentationParameters.BackBufferWidth,
+                    presentationParameters.BackBufferHeight,
+                    BackingScale);
+
                 Global.GraphicsDevice.Viewport = new Viewport(bounds);
             }
             catch (Exception)
@@ -372,6 +436,86 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
+        /// Refreshes the cached backing scale from the current platform provider.
+        /// </summary>
+        /// <returns><see langword="true" /> when the scale changed.</returns>
+        private bool TryUpdateBackingScale()
+        {
+            double candidateScale;
+            try
+            {
+                if (!_backingScaleProvider.TryGetCurrentScale(out double reportedScale))
+                {
+                    return false;
+                }
+
+                candidateScale = reportedScale;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            if (ShouldIgnoreFullscreenDownscaleToOne(
+                    isFullScreen: IsFullScreen,
+                    isDesktopGLProvider: _backingScaleProvider is DesktopGLBackingScaleProvider,
+                    currentScale: _backingScaleState.CurrentScale,
+                    candidateScale: candidateScale))
+            {
+                return false;
+            }
+
+            if (!_backingScaleState.TryUpdate(candidateScale))
+            {
+                return false;
+            }
+
+            UpdateScaledView();
+            return true;
+        }
+
+        /// <summary>
+        /// Ignores transient fullscreen DesktopGL reports that briefly drop from HiDPI to a scale of 1.
+        /// </summary>
+        internal static bool ShouldIgnoreFullscreenDownscaleToOne(
+            bool isFullScreen,
+            bool isDesktopGLProvider,
+            double currentScale,
+            double candidateScale)
+        {
+            const double epsilon = 0.01d;
+            if (!isFullScreen || !isDesktopGLProvider)
+            {
+                return false;
+            }
+
+            if (currentScale <= (1d + epsilon))
+            {
+                return false;
+            }
+
+            double normalizedCandidate = BackingScaleMath.NormalizeScale(candidateScale);
+            return Math.Abs(normalizedCandidate - 1d) <= epsilon;
+        }
+
+        /// <summary>
+        /// Creates the platform-specific backing-scale provider for the current runtime.
+        /// </summary>
+        private static IBackingScaleProvider CreateBackingScaleProvider()
+        {
+            if (!OperatingSystem.IsMacOS())
+            {
+                return new FallbackBackingScaleProvider();
+            }
+
+#if MACOS_AVFOUNDATION
+            return new MacBackingScaleProvider();
+#else
+            return new DesktopGLBackingScaleProvider();
+#endif
+        }
+
+        /// <summary>
         /// Minimum allowed window width.
         /// </summary>
         public const int MIN_WINDOW_WIDTH = 800;
@@ -391,10 +535,18 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         private readonly double _gameAspectRatio = gameHeight / (double)gameWidth;
 
+        private readonly IBackingScaleProvider _backingScaleProvider = CreateBackingScaleProvider();
+        private readonly BackingScaleState _backingScaleState = new(1d, epsilon: 0.01d, downscaleToOneConfirmationReadings: 3);
+
         /// <summary>
         /// Current scaled render rectangle after aspect-ratio fitting or cropping.
         /// </summary>
         private Rectangle _scaledViewRect;
+
+        /// <summary>
+        /// Current scaled render rectangle in physical pixels.
+        /// </summary>
+        private Rectangle _scaledViewRectPixels;
 
         /// <summary>
         /// Whether fullscreen scaling should crop width.
