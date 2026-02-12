@@ -18,11 +18,13 @@ namespace CutTheRope.GameMain
             vinilStickerL.anchor = 20;
             vinilStickerL.parentAnchor = 18;
             vinilStickerL.rotationCenterX = vinilStickerL.width / 2f;
+            vinilStickerL.x = 1f;
             vinilStickerR = Image.Image_createWithResIDQuad(VinylTexture, 2);
             vinilStickerR.scaleX = -1f;
             vinilStickerR.anchor = 20;
             vinilStickerR.parentAnchor = 18;
             vinilStickerR.rotationCenterX = vinilStickerR.width / 2f;
+            vinilStickerR.x = -1f;
             vinilCenter = Image.Image_createWithResIDQuad(VinylTexture, 3);
             vinilCenter.anchor = 18;
             vinilHighlightL = Image.Image_createWithResIDQuad(VinylTexture, 1);
