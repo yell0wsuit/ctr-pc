@@ -68,9 +68,18 @@ namespace CutTheRope.GameMain
                         waterSpeed = item2.AttributeAsNSString("waterSpeed").FloatValue() * scale;
                         if (waterLevel > 0f)
                         {
-                            waterLayer = WaterElement.CreateWithWidthHeight(mapWidth, waterLevel);
+                            float waterWorldX = offsetX + mapOffsetX;
+                            float waterWorldWidth = mapWidth;
+                            if (waterWorldWidth < SCREEN_WIDTH)
+                            {
+                                waterWorldX = 0f;
+                                waterWorldWidth = SCREEN_WIDTH;
+                            }
+
+                            waterLayer = WaterElement.CreateWithWidthHeight(waterWorldWidth, waterLevel);
                             if (waterLayer != null)
                             {
+                                waterLayer.x = waterWorldX;
                                 waterLayer.y = mapHeight - waterLevel;
                             }
                             else

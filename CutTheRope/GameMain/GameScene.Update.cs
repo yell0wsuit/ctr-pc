@@ -46,8 +46,10 @@ namespace CutTheRope.GameMain
             if (waterLayer != null)
             {
                 waterLayer.Update(delta);
-                float waterSurfaceY = mapHeight - waterLevel;
-                if (GameObject.RectInObject(0f, waterSurfaceY - 2f, mapWidth, waterSurfaceY + 2f, candy))
+                float waterSurfaceY = waterLayer.y;
+                float waterLeftX = waterLayer.x;
+                float waterRightX = waterLeftX + waterLayer.width;
+                if (GameObject.RectInObject(waterLeftX, waterSurfaceY - 2f, waterRightX, waterSurfaceY + 2f, candy))
                 {
                     if (!splashes)
                     {
@@ -1371,10 +1373,11 @@ namespace CutTheRope.GameMain
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
             float candyRadius = 15f;
-            if (waterLevel > 0f
-                && star.pos.Y > mapHeight - waterLevel
-                && star.pos.X + candyRadius >= 0f
-                && star.pos.X - candyRadius <= mapWidth)
+            if (waterLayer != null
+                && waterLevel > 0f
+                && star.pos.Y > waterLayer.y
+                && star.pos.X + candyRadius >= waterLayer.x
+                && star.pos.X - candyRadius <= waterLayer.x + waterLayer.width)
             {
                 float damping = 20f;
                 float verticalWaterImpulse = -25f / star.weight;
@@ -1395,7 +1398,7 @@ namespace CutTheRope.GameMain
             {
                 foreach (Grab grab in bungees)
                 {
-                    if (grab != null && grab.kickable && grab.kicked && grab.y > mapHeight - waterLevel && grab.rope != null)
+                    if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.rope != null)
                     {
                         const float damping = 20f;
                         ConstraintedPoint anchor = grab.rope.bungeeAnchor;

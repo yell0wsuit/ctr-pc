@@ -142,8 +142,10 @@ namespace CutTheRope.GameMain
                     Grab grab = (Grab)obj;
                     if (grab.gun && !grab.gunFired && grab.rope == null)
                     {
-                        bool candyInMapBounds = GameObject.RectInObject(0f, 0f, mapWidth, mapHeight, candy);
-                        bool canFireFromWaterState = waterLayer == null || candyInMapBounds || mapHeight - waterLevel > star.pos.Y;
+                        float mapLeftX = waterLayer?.x ?? 0f;
+                        float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
+                        bool candyInMapBounds = GameObject.RectInObject(mapLeftX, 0f, mapRightX, mapHeight, candy);
+                        bool canFireFromWaterState = waterLayer == null || candyInMapBounds || waterLayer.y > star.pos.Y;
                         float tapRadius = Grab.GUN_TAP_RADIUS;
                         if (canFireFromWaterState && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
