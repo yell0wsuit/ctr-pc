@@ -1369,7 +1369,7 @@ namespace CutTheRope.GameMain
             if (waterLayer != null && waterLevel > -SCREEN_HEIGHT && waterSpeed > 0f)
             {
                 _ = Mover.MoveVariableToTarget(ref waterLevel, -SCREEN_HEIGHT, waterSpeed, delta);
-                waterLayer.y = mapHeight - waterLevel;
+                waterLayer.y = mapOriginY + mapHeight - waterLevel;
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
             float candyRadius = 15f;

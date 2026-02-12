@@ -80,7 +80,7 @@ namespace CutTheRope.GameMain
                             if (waterLayer != null)
                             {
                                 waterLayer.x = waterWorldX;
-                                waterLayer.y = mapHeight - waterLevel;
+                                waterLayer.y = offsetY + mapOffsetY + mapHeight - waterLevel;
                             }
                             else
                             {
