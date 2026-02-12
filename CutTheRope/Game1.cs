@@ -126,7 +126,7 @@ namespace CutTheRope
             Window.AllowUserResizing = true;
             Preferences.LoadPreferences();
             int num = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
-            bool isFullScreen = num <= 0 || Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN");
+            bool isFullScreen = Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN");
             Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, num, isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
