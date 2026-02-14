@@ -22,7 +22,8 @@ namespace CutTheRope.GameMain
         string supportResourceName,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
-        string[] boxMusic,
+        string[] musicPack,
+        string[] musicList,
         bool earthBg,
         Vector? earthBgPosition,
         string boxLabelText)
@@ -46,7 +47,10 @@ namespace CutTheRope.GameMain
         public RGBAColor BoxHoleBgColor { get; } = boxHoleBgColor;
 
         /// <summary>String resource names for the music to play in this pack.</summary>
-        public string[] BoxMusic { get; } = boxMusic;
+        public string[] MusicPack { get; } = musicPack;
+
+        /// <summary>String resource names for the music to play in this pack.</summary>
+        public string[] MusicList { get; } = musicList;
 
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
@@ -126,17 +130,31 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].SupportResourceName : null;
         }
 
-        public static string[] GetBoxMusic(int pack)
+        public static string[] GetMusicPack(int pack)
         {
-            return pack >= 0 && pack < packs.Count ? packs[pack].BoxMusic : EmptyResourceNames;
+            return pack >= 0 && pack < packs.Count ? packs[pack].MusicPack : EmptyResourceNames;
         }
 
-        public static string[] GetBoxMusicOrDefault(int pack)
+        public static string GetMusicPackOrDefault(int pack)
         {
-            string[] musicResourceNames = GetBoxMusic(pack);
+            string musicPackResourceName = GetMusicPack(pack).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+
+            return string.IsNullOrWhiteSpace(musicPackResourceName) && GetMusicListOrDefault(pack).Length == 0
+                ? throw new InvalidDataException($"packs.xml is missing musicPack and musicList for pack {pack}.")
+                : musicPackResourceName;
+        }
+
+        public static string[] GetMusicList(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].MusicList : EmptyResourceNames;
+        }
+
+        public static string[] GetMusicListOrDefault(int pack)
+        {
+            string[] musicResourceNames = GetMusicList(pack);
 
             return musicResourceNames.Length == 0
-                ? throw new InvalidDataException($"packs.xml is missing boxMusic for pack {pack}.")
+                ? throw new InvalidDataException($"packs.xml is missing musicList for pack {pack}.")
                 : musicResourceNames;
         }
 
@@ -196,8 +214,11 @@ namespace CutTheRope.GameMain
 
                 RGBAColor boxHoleBgColor = ParseColorAttribute(packElement, "boxHoleBgColor");
 
-                string[] boxMusic = ParseResourceNames(packElement, "boxMusic");
-                ValidateResourceNames(boxMusic, "boxMusic");
+                string[] musicPack = ParseResourceNames(packElement, "musicPack");
+                ValidateResourceNames(musicPack, "musicPack");
+
+                string[] musicList = ParseResourceNames(packElement, "musicList");
+                ValidateResourceNames(musicList, "musicList");
 
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
@@ -213,7 +234,8 @@ namespace CutTheRope.GameMain
                     supportResourceName,
                     boxCovers,
                     boxHoleBgColor,
-                    boxMusic,
+                    musicPack,
+                    musicList,
                     earthBg,
                     earthBgPosition,
                     boxLabelText));

@@ -7,7 +7,7 @@
         boxBackgroundP2Y="1120"
         boxCover="bgr_01_cover"
         boxHoleBgColor="70,37,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -17,7 +17,7 @@
         boxBackgroundP2Y="1044"
         boxCover="bgr_02_cover"
         boxHoleBgColor="39,52,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -27,7 +27,7 @@
         boxBackgroundP2Y="945"
         boxCover="bgr_03_cover"
         boxHoleBgColor="44,45,54"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -37,7 +37,7 @@
         boxBackgroundP2Y="960"
         boxCover="bgr_04_cover"
         boxHoleBgColor="31,42,84"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -47,7 +47,7 @@
         boxBackgroundP2Y="780"
         boxCover="bgr_05_cover"
         boxHoleBgColor="69,31,50"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -57,7 +57,7 @@
         boxBackgroundP2Y="951"
         boxCover="bgr_06_cover"
         boxHoleBgColor="75,33,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -67,7 +67,7 @@
         boxBackgroundP2Y="1102"
         boxCover="bgr_07_cover"
         boxHoleBgColor="84,22,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -77,7 +77,7 @@
         boxBackgroundP2Y="1118"
         boxCover="bgr_08_cover"
         boxHoleBgColor="0,51,78"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
         earthBg="true"
         earthBgPosition="1284,724"
@@ -89,7 +89,7 @@
         boxBackgroundP2Y="975"
         boxCover="bgr_09_cover"
         boxHoleBgColor="98,0,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -99,7 +99,7 @@
         boxBackgroundP2Y="991"
         boxCover="bgr_10_cover"
         boxHoleBgColor="66,40,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -109,7 +109,7 @@
         boxBackgroundP2Y="802"
         boxCover="bgr_11_cover"
         boxHoleBgColor="0,47,90"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -118,7 +118,7 @@
         boxBackground="bgr_12_p1"
         boxCover="bgr_12_cover"
         boxHoleBgColor="0,58,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -127,7 +127,7 @@
         boxBackground="bgr_13_p1"
         boxCover="bgr_13_cover"
         boxHoleBgColor="63,42,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -136,7 +136,7 @@
         boxBackground="bgr_14_p1"
         boxCover="bgr_14_cover"
         boxHoleBgColor="89,12,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -145,7 +145,7 @@
         boxBackground="bgr_15_p1"
         boxCover="bgr_15_cover"
         boxHoleBgColor="56,45,0"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -154,7 +154,7 @@
         boxBackground="bgr_16_p1"
         boxCover="bgr_16_cover"
         boxHoleBgColor="37,32,104"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
     />
     <pack
@@ -163,7 +163,7 @@
         boxBackground="bgr_17_p1"
         boxCover="bgr_17_cover"
         boxHoleBgColor="55,38,62"
-        boxMusic="game_music,game_music2,game_music3,game_music4"
+        musicPack="ctr_original"
         levelCount="25"
         boxLabelText="HARDEST_LABEL"
     />

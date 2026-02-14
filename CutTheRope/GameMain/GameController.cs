@@ -31,20 +31,10 @@ namespace CutTheRope.GameMain
         public override void Activate()
         {
             PostFlurryLevelEvent("LEVEL_STARTED");
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            cTRRootController.SetViewTransition(-1);
+            Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             CTRSoundMgr.StopMusic();
-            if (SpecialEvents.IsXmas)
-            {
-                CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
-            }
-            else
-            {
-                CTRSoundMgr.PlayRandomMusic(
-                    PackConfig.GetBoxMusicOrDefault(cTRRootController.GetPack())
-                );
-            }
+            PlayMusic();
             InitGameView();
             ShowView(0);
         }
@@ -437,16 +427,7 @@ namespace CutTheRope.GameMain
                             return;
                         }
                         CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        if (SpecialEvents.IsXmas)
-                        {
-                            CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
-                        }
-                        else
-                        {
-                            CTRSoundMgr.PlayRandomMusic(
-                                PackConfig.GetBoxMusicOrDefault(cTRRootController.GetPack())
-                            );
-                        }
+                        PlayMusic();
                         return;
                     }
                 case var id when id == GameControllerButtonId.ToggleSound:
@@ -704,6 +685,31 @@ namespace CutTheRope.GameMain
             mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
             GameScene gameScene = (GameScene)view.GetChild(0);
             gameScene?.FullscreenToggled(isFullscreen);
+        }
+
+        private static void PlayMusic()
+        {
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (SpecialEvents.IsXmas)
+            {
+                CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
+            }
+            else
+            {
+                string musicPack = PackConfig.GetMusicPackOrDefault(cTRRootController.GetPack());
+                string[] musicList = PackConfig.GetMusicListOrDefault(cTRRootController.GetPack());
+                if (!string.IsNullOrWhiteSpace(musicPack))
+                {
+                    if (musicPack == Resources.MusicPackNames.CtROriginal)
+                    {
+                        CTRSoundMgr.PlayRandomMusic(Resources.MusicPacks.CtROriginal);
+                    }
+                }
+                else
+                {
+                    CTRSoundMgr.PlayRandomMusic(musicList);
+                }
+            }
         }
 
         public const int BUTTON_WIN_EXIT = 5;
