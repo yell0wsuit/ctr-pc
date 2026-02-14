@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
             duration = -1f;
             gravity.X = 0f;
             gravity.Y = 0f;
-            speed = 50f;
+            speed = 150f;
             speedVar = 0f;
             angle = -90f;
             posVar.X = width / 2f;
