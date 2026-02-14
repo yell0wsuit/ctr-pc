@@ -80,9 +80,17 @@ namespace CutTheRope.Framework.Media
             string ffmpegRoot = resolveRootPath(AppContext.BaseDirectory);
             if (!string.IsNullOrEmpty(ffmpegRoot))
             {
-                ffmpeg.RootPath = ffmpegRoot;
-                ffmpeg.av_log_set_level(ffmpeg.AV_LOG_WARNING);
-                librariesLoaded = true;
+                try
+                {
+                    ffmpeg.RootPath = ffmpegRoot;
+                    DynamicallyLoadedBindings.Initialize();
+                    ffmpeg.av_log_set_level(ffmpeg.AV_LOG_WARNING);
+                    librariesLoaded = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to initialize FFmpeg: {ex.Message}");
+                }
             }
         }
 
