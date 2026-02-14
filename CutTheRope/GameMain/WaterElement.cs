@@ -57,7 +57,7 @@ namespace CutTheRope.GameMain
             light.anchor = 9;
             light.x = x;
             light.color = RGBAColor.transparentRGBA;
-            light.DoRestoreCutTransparency();
+            // light.DoRestoreCutTransparency();
 
             Timeline pulse = new Timeline().InitWithMaxKeyFramesOnTrack(5);
             pulse.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
@@ -189,7 +189,7 @@ namespace CutTheRope.GameMain
             }
 
             Image image = Image_createWithResID(Resources.Img.WaterTile);
-            image.DoRestoreCutTransparency();
+            // image.DoRestoreCutTransparency();
             if (new WaterDrops().InitWithTotalParticlesandImageGrid(10, image) is WaterDrops drops)
             {
                 drops.color = RGBAColor.blackRGBA;
