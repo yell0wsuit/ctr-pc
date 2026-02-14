@@ -1380,8 +1380,8 @@ namespace CutTheRope.GameMain
                 && star.pos.X + candyRadius >= waterLayer.x
                 && star.pos.X - candyRadius <= waterLayer.x + waterLayer.width)
             {
-                float damping = 40f;
-                float verticalWaterImpulse = -50f / star.weight;
+                float damping = 20f;
+                float verticalWaterImpulse = -75f / star.weight;
                 if (activeRocket != null)
                 {
                     verticalWaterImpulse /= 45f;
@@ -1430,7 +1430,7 @@ namespace CutTheRope.GameMain
                         DetachActiveSnails();
                         snail.startRotation += candyMain.rotation;
                         snail.AttachToPoint(star);
-                        star.SetWeight(star.weight + 2f);
+                        star.SetWeight(star.weight + 3f);
                     }
 
                     if (snail.state == Snail.SNAIL_STATE_VANISHED)
