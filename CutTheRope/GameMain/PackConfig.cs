@@ -22,6 +22,7 @@ namespace CutTheRope.GameMain
         string supportResourceName,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
+        string[] boxMusic,
         bool earthBg,
         Vector? earthBgPosition,
         string boxLabelText)
@@ -43,6 +44,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Box background color for pack selection menu.</summary>
         public RGBAColor BoxHoleBgColor { get; } = boxHoleBgColor;
+
+        /// <summary>String resource names for the music to play in this pack.</summary>
+        public string[] BoxMusic { get; } = boxMusic;
 
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
@@ -122,6 +126,20 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].SupportResourceName : null;
         }
 
+        public static string[] GetBoxMusic(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].BoxMusic : EmptyResourceNames;
+        }
+
+        public static string[] GetBoxMusicOrDefault(int pack)
+        {
+            string[] musicResourceNames = GetBoxMusic(pack);
+
+            return musicResourceNames.Length == 0
+                ? throw new InvalidDataException($"packs.xml is missing boxMusic for pack {pack}.")
+                : musicResourceNames;
+        }
+
         public static int GetUnlockStars(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].UnlockStars : 0;
@@ -178,6 +196,9 @@ namespace CutTheRope.GameMain
 
                 RGBAColor boxHoleBgColor = ParseColorAttribute(packElement, "boxHoleBgColor");
 
+                string[] boxMusic = ParseResourceNames(packElement, "boxMusic");
+                ValidateResourceNames(boxMusic, "boxMusic");
+
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
                 Vector? earthBgPosition = ParseVectorAttribute(packElement, "earthBgPosition");
@@ -192,6 +213,7 @@ namespace CutTheRope.GameMain
                     supportResourceName,
                     boxCovers,
                     boxHoleBgColor,
+                    boxMusic,
                     earthBg,
                     earthBgPosition,
                     boxLabelText));

@@ -31,7 +31,8 @@ namespace CutTheRope.GameMain
         public override void Activate()
         {
             PostFlurryLevelEvent("LEVEL_STARTED");
-            Application.SharedRootController().SetViewTransition(-1);
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            cTRRootController.SetViewTransition(-1);
             base.Activate();
             CTRSoundMgr.StopMusic();
             if (SpecialEvents.IsXmas)
@@ -41,10 +42,7 @@ namespace CutTheRope.GameMain
             else
             {
                 CTRSoundMgr.PlayRandomMusic(
-                    Resources.Music.GameMusic,
-                    Resources.Music.GameMusic2,
-                    Resources.Music.GameMusic3,
-                    Resources.Music.GameMusic4
+                    PackConfig.GetBoxMusicOrDefault(cTRRootController.GetPack())
                 );
             }
             InitGameView();
@@ -446,10 +444,7 @@ namespace CutTheRope.GameMain
                         else
                         {
                             CTRSoundMgr.PlayRandomMusic(
-                                Resources.Music.GameMusic,
-                                Resources.Music.GameMusic2,
-                                Resources.Music.GameMusic3,
-                                Resources.Music.GameMusic4
+                                PackConfig.GetBoxMusicOrDefault(cTRRootController.GetPack())
                             );
                         }
                         return;
