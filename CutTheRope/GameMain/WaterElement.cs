@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// The main water body element
+    /// </summary>
     internal sealed class WaterElement : Image, ITimelineDelegate
     {
         private Vector topShadowSize;
@@ -25,6 +28,10 @@ namespace CutTheRope.GameMain
         private Image spotLight;
         private bool isReleasing;
 
+        /// <summary>
+        /// Checks whether the water texture resource is available.
+        /// </summary>
+        /// <returns><see langword="true"/> if the water texture can be loaded; otherwise, <see langword="false"/>.</returns>
         public static bool IsWaterTextureAvailable()
         {
             try
@@ -38,6 +45,12 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Creates a new <see cref="WaterElement"/> with the specified dimensions.
+        /// </summary>
+        /// <param name="w">The width of the water element.</param>
+        /// <param name="h">The height of the water element.</param>
+        /// <returns>A new <see cref="WaterElement"/>, or <see langword="null"/> if texture loading fails.</returns>
         public static WaterElement CreateWithWidthHeight(float w, float h)
         {
             try
@@ -50,6 +63,14 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// The water light effect that shines through water
+        /// </summary>
+        /// <param name="x">The X axis position</param>
+        /// <param name="quad">The quad number of the water light (water_tile.json)</param>
+        /// <param name="color">Color to use</param>
+        /// <param name="d">The timeline delegate that receives animation callbacks.</param>
+        /// <returns>The configured light <see cref="Image"/> with pulse and delayed-start timelines.</returns>
         private static Image CreateLightWithXPosquadalphaColordelegate(float x, int quad, RGBAColor color, ITimelineDelegate d)
         {
             Image light = Image_createWithResIDQuad(Resources.Img.WaterTile, quad);
@@ -74,6 +95,12 @@ namespace CutTheRope.GameMain
             return light;
         }
 
+        /// <summary>
+        /// Initializes the water element with the specified dimensions, setting up tiles, lights, bubbles, and reveal animation.
+        /// </summary>
+        /// <param name="w">The width of the water element.</param>
+        /// <param name="h">The height of the water element.</param>
+        /// <returns>This instance if initialization succeeds; otherwise, <see langword="null"/>.</returns>
         public WaterElement InitWithWidthHeight(float w, float h)
         {
             if (InitWithTexture(Application.GetTexture(Resources.Img.WaterTile)) == null)
@@ -143,6 +170,9 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Draws the back layer of the water (bottom shadow and back tile).
+        /// </summary>
         public void DrawBack()
         {
             if (isReleasing)
@@ -157,6 +187,11 @@ namespace CutTheRope.GameMain
             Renderer.SetColor(Color.White);
         }
 
+        /// <summary>
+        /// Emits bubble particles at the specified position.
+        /// </summary>
+        /// <param name="tx">The X position to spawn particles at.</param>
+        /// <param name="ty">The Y position to spawn particles at.</param>
         public void AddParticlesAtXY(float tx, float ty)
         {
             if (isReleasing || bubbles == null)
@@ -181,6 +216,11 @@ namespace CutTheRope.GameMain
             bubbles.posVar.Y = 0f;
         }
 
+        /// <summary>
+        /// Emits water drop particles at the specified position.
+        /// </summary>
+        /// <param name="tx">The X position to spawn water drops at.</param>
+        /// <param name="ty">The Y position to spawn water drops at.</param>
         public void AddWaterParticlesAtXY(float tx, float ty)
         {
             if (isReleasing || aniPool == null)
@@ -201,6 +241,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Draws the front layer of the water (top shadow, bubbles with additive blending, and top tile).
+        /// </summary>
+        /// <param name="cameraY">The camera Y offset used to adjust the scissor region.</param>
         public void DrawFront(float cameraY)
         {
             if (isReleasing)
@@ -225,11 +269,13 @@ namespace CutTheRope.GameMain
             Renderer.SetColor(Color.White);
         }
 
+        /// <inheritdoc/>
         public override void Draw()
         {
             DrawFront(0f);
         }
 
+        /// <inheritdoc/>
         public override void Update(float delta)
         {
             if (isReleasing)
@@ -250,16 +296,21 @@ namespace CutTheRope.GameMain
             dd?.Update(delta);
         }
 
+        /// <summary>
+        /// Marks this water element for release, cancelling all pending dispatches and suppressing further drawing/updating.
+        /// </summary>
         public void PrepareToRelease()
         {
             isReleasing = true;
             dd?.CancelAllDispatches();
         }
 
+        /// <inheritdoc/>
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc/>
         public void TimelineFinished(Timeline t)
         {
             if (isReleasing)
@@ -276,6 +327,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Callback that plays the first timeline on the given element, used as a delayed dispatch selector.
+        /// </summary>
+        /// <param name="param">The element to play the timeline on.</param>
         private static void Selector_playFirstTimeline(FrameworkTypes param)
         {
             if (param is BaseElement element)
@@ -284,6 +339,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             if (disposing)

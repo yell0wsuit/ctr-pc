@@ -3,6 +3,9 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// The water drops visual effect when candy drops into water
+    /// </summary>
     internal sealed class WaterDrops : RotateableMultiParticles
     {
         public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)

@@ -5,6 +5,9 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// The water bubble visual effects
+    /// </summary>
     internal sealed class WaterBubbles : MultiParticles
     {
         private static readonly int[] s_bubbleQuads = [5, 4];
