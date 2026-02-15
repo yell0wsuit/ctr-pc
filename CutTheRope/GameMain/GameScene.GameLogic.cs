@@ -405,6 +405,7 @@ namespace CutTheRope.GameMain
                     hand.cPoint.RemoveConstraint(star);
                     hand.state = MechanicalHand.STATE_HAND_RELEASE;
                     hand.doRotateCandy = false;
+                    hand.releaseSoundPlayed = false;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
                 }
             }

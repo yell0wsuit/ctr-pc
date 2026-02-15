@@ -1789,6 +1789,7 @@ namespace CutTheRope.GameMain
                             {
                                 otherHand.cPoint.RemoveConstraint(star);
                                 otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
+                                otherHand.releaseSoundPlayed = false;
                                 reorderHands = true;
                                 break;
                             }
@@ -1797,6 +1798,7 @@ namespace CutTheRope.GameMain
 
                     hand.cPoint.AddConstraintwithRestLengthofType(star, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                     hand.state = MechanicalHand.STATE_HAND_CANDY;
+                    hand.releaseSoundPlayed = false;
                     selectedHandIndex = hands.GetObjectIndex(hand);
 
                     if (candyBubble != null)
@@ -1825,7 +1827,11 @@ namespace CutTheRope.GameMain
                 if (hand.state == MechanicalHand.STATE_HAND_RELEASE && distance > MechanicalHand.MH_RELEASE_DISTANCE)
                 {
                     hand.state = MechanicalHand.STATE_HAND_IDLE;
-                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+                    if (!hand.releaseSoundPlayed)
+                    {
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+                    }
+                    hand.releaseSoundPlayed = false;
                 }
             }
 

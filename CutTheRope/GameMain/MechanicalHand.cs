@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
                 disableGravity = true
             };
             cPoint.SetWeight(0.0001f);
+            releaseSoundPlayed = false;
 
             Vector jointCenter = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 2);
             Vector candyAnchor = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 8);
@@ -231,6 +232,8 @@ namespace CutTheRope.GameMain
         public int state;
 
         public bool doRotateCandy;
+
+        public bool releaseSoundPlayed;
 
         private Vector clawOffset;
 

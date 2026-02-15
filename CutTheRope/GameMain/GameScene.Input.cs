@@ -228,6 +228,7 @@ namespace CutTheRope.GameMain
                         hand.cPoint.RemoveConstraint(star);
                         hand.state = MechanicalHand.STATE_HAND_RELEASE;
                         hand.doRotateCandy = false;
+                        hand.releaseSoundPlayed = true;
                         hand.AnimateReleaseWithAnimationsPool(aniPool);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                         return true;
