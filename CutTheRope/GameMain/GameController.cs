@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRope.Commons;
@@ -697,17 +698,25 @@ namespace CutTheRope.GameMain
             else
             {
                 string musicPack = PackConfig.GetMusicPackOrDefault(cTRRootController.GetPack());
-                string[] musicList = PackConfig.GetMusicListOrDefault(cTRRootController.GetPack());
-                if (!string.IsNullOrWhiteSpace(musicPack))
+                switch (musicPack)
                 {
-                    if (musicPack == Resources.MusicPackNames.CtROriginal)
-                    {
+                    case null:
+                        string[] musicList = PackConfig.GetMusicListOrDefault(cTRRootController.GetPack());
+                        if (musicList.Length > 0)
+                        {
+                            CTRSoundMgr.PlayRandomMusic(musicList);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[Game music] missing both musicPack and musicList for pack {cTRRootController.GetPack()}.");
+                        }
+                        break;
+                    case var p when p == Resources.MusicPackNames.CtROriginal:
                         CTRSoundMgr.PlayRandomMusic(Resources.MusicPacks.CtROriginal);
-                    }
-                }
-                else
-                {
-                    CTRSoundMgr.PlayRandomMusic(musicList);
+                        break;
+                    default:
+                        Console.WriteLine($"[Game music] Unknown musicPack '{musicPack}'");
+                        break;
                 }
             }
         }

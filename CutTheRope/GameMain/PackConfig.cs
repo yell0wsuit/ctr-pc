@@ -137,11 +137,8 @@ namespace CutTheRope.GameMain
 
         public static string GetMusicPackOrDefault(int pack)
         {
-            string musicPackResourceName = GetMusicPack(pack).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
-
-            return string.IsNullOrWhiteSpace(musicPackResourceName) && GetMusicListOrDefault(pack).Length == 0
-                ? throw new InvalidDataException($"packs.xml is missing musicPack and musicList for pack {pack}.")
-                : musicPackResourceName;
+            string[] musicPack = GetMusicPack(pack);
+            return musicPack.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
         }
 
         public static string[] GetMusicList(int pack)
@@ -151,11 +148,8 @@ namespace CutTheRope.GameMain
 
         public static string[] GetMusicListOrDefault(int pack)
         {
-            string[] musicResourceNames = GetMusicList(pack);
-
-            return musicResourceNames.Length == 0
-                ? throw new InvalidDataException($"packs.xml is missing musicList for pack {pack}.")
-                : musicResourceNames;
+            string[] musicList = GetMusicList(pack);
+            return [.. musicList.Where(name => !string.IsNullOrWhiteSpace(name))];
         }
 
         public static int GetUnlockStars(int pack)
