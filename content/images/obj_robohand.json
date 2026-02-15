@@ -26,10 +26,10 @@
         },
         {
             "filename": "frame_03_bone_tile.png",
-            "frame": { "x": 241, "y": 339, "w": 26, "h": 53 },
+            "frame": { "x": 242, "y": 339, "w": 24, "h": 53 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 136, "y": 122, "w": 26, "h": 53 },
+            "spriteSourceSize": { "x": 136, "y": 122, "w": 24, "h": 53 },
             "sourceSize": { "w": 298, "h": 298 }
         },
         {
