@@ -1,0 +1,101 @@
+{
+    "frames": [
+        {
+            "filename": "frame_00_water_shadow_down.png",
+            "frame": { "x": 566, "y": 120, "w": 56, "h": 115 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 56, "h": 115 },
+            "sourceSize": { "w": 56, "h": 115 }
+        },
+        {
+            "filename": "frame_01_water_shadow_up.png",
+            "frame": { "x": 293, "y": 50, "w": 47, "h": 323 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 47, "h": 323 },
+            "sourceSize": { "w": 47, "h": 323 }
+        },
+        {
+            "filename": "frame_02_water_back.png",
+            "frame": { "x": 342, "y": 50, "w": 434, "h": 68 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 1, "w": 434, "h": 68 },
+            "sourceSize": { "w": 434, "h": 69 }
+        },
+        {
+            "filename": "frame_03_water_top.png",
+            "frame": { "x": 293, "y": 1, "w": 521, "h": 47 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 521, "h": 47 },
+            "sourceSize": { "w": 521, "h": 47 }
+        },
+        {
+            "filename": "frame_04_bubble_big.png",
+            "frame": { "x": 566, "y": 237, "w": 51, "h": 48 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 48 },
+            "sourceSize": { "w": 51, "h": 48 }
+        },
+        {
+            "filename": "frame_05_bubble_small.png",
+            "frame": { "x": 293, "y": 398, "w": 16, "h": 16 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
+            "sourceSize": { "w": 16, "h": 16 }
+        },
+        {
+            "filename": "frame_06_light_spoted.png",
+            "frame": { "x": 1, "y": 1, "w": 290, "h": 413 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 290, "h": 413 },
+            "sourceSize": { "w": 290, "h": 413 }
+        },
+        {
+            "filename": "frame_07_light_ambient.png",
+            "frame": { "x": 342, "y": 120, "w": 222, "h": 281 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 222, "h": 281 },
+            "sourceSize": { "w": 222, "h": 281 }
+        },
+        {
+            "filename": "frame_08_drop_1.png",
+            "frame": { "x": 293, "y": 375, "w": 21, "h": 21 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 21, "h": 21 },
+            "sourceSize": { "w": 21, "h": 21 }
+        },
+        {
+            "filename": "frame_09_drop_2.png",
+            "frame": { "x": 316, "y": 375, "w": 12, "h": 12 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 12, "h": 12 },
+            "sourceSize": { "w": 12, "h": 12 }
+        },
+        {
+            "filename": "frame_10_drop_3.png",
+            "frame": { "x": 311, "y": 398, "w": 24, "h": 15 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 15 },
+            "sourceSize": { "w": 24, "h": 15 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "water_tile.png",
+        "format": "RGBA8888",
+        "size": { "w": 815, "h": 415 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:3dbe1dd603bfb485434514902516dc0d:10161c8b3485d94e7605950a813e883e:7e6fe37d0a6342f55c92a951f1d0fdb8$"
+    }
+}

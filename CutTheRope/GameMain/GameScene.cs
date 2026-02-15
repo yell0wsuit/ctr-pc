@@ -69,6 +69,14 @@ namespace CutTheRope.GameMain
             {
                 RemoveChild(gravityButton);
             }
+            if (waterLayer != null)
+            {
+                waterLayer.PrepareToRelease();
+                waterLayer.Dispose();
+                waterLayer = null;
+            }
+            splashes = false;
+            underwater = false;
             candyL = null;
             candyR = null;
             starL = null;
@@ -377,6 +385,8 @@ namespace CutTheRope.GameMain
 
         private DynamicArray<Rocket> rockets;
 
+        private DynamicArray<Snail> snailobjects;
+
         private DynamicArray<CTRGameObject> tutorialImages;
 
         private DynamicArray<Text> tutorials;
@@ -424,6 +434,12 @@ namespace CutTheRope.GameMain
         private readonly Vector[] prevStartPos = new Vector[5];
 
         private float ropePhysicsSpeed;
+
+        private float waterLevel;
+
+        private float waterSpeed;
+
+        private WaterElement waterLayer;
 
         private GameObject candyBubble;
 
@@ -518,6 +534,10 @@ namespace CutTheRope.GameMain
         public int gravityTouchDown;
 
         private bool isCandyInLantern;
+
+        private bool splashes;
+
+        private bool underwater;
 
         public int twoParts;
 

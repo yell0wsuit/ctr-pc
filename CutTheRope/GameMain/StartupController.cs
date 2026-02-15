@@ -162,6 +162,9 @@ namespace CutTheRope.GameMain
             Resources.Snd.ExpRocketFlyLooped,
             Resources.Snd.ExpRocketInWater,
             Resources.Snd.ExpRocketStart,
+            Resources.Snd.ExpWaterSplash,
+            Resources.Snd.ExpSnailIn,
+            Resources.Snd.ExpSnailOut,
             null,
         ];
 
