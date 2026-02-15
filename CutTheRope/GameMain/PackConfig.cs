@@ -22,6 +22,8 @@ namespace CutTheRope.GameMain
         string supportResourceName,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
+        string[] musicPack,
+        string[] musicList,
         bool earthBg,
         Vector? earthBgPosition,
         string boxLabelText)
@@ -43,6 +45,12 @@ namespace CutTheRope.GameMain
 
         /// <summary>Box background color for pack selection menu.</summary>
         public RGBAColor BoxHoleBgColor { get; } = boxHoleBgColor;
+
+        /// <summary>String resource names for the music to play in this pack.</summary>
+        public string[] MusicPack { get; } = musicPack;
+
+        /// <summary>String resource names for the music to play in this pack.</summary>
+        public string[] MusicList { get; } = musicList;
 
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
@@ -122,6 +130,28 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].SupportResourceName : null;
         }
 
+        public static string[] GetMusicPack(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].MusicPack : EmptyResourceNames;
+        }
+
+        public static string GetMusicPackOrDefault(int pack)
+        {
+            string[] musicPack = GetMusicPack(pack);
+            return musicPack.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+        }
+
+        public static string[] GetMusicList(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].MusicList : EmptyResourceNames;
+        }
+
+        public static string[] GetMusicListOrDefault(int pack)
+        {
+            string[] musicList = GetMusicList(pack);
+            return [.. musicList.Where(name => !string.IsNullOrWhiteSpace(name))];
+        }
+
         public static int GetUnlockStars(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].UnlockStars : 0;
@@ -178,6 +208,11 @@ namespace CutTheRope.GameMain
 
                 RGBAColor boxHoleBgColor = ParseColorAttribute(packElement, "boxHoleBgColor");
 
+                string[] musicPack = ParseResourceNames(packElement, "musicPack");
+
+                string[] musicList = ParseResourceNames(packElement, "musicList");
+                ValidateResourceNames(musicList, "musicList");
+
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
                 Vector? earthBgPosition = ParseVectorAttribute(packElement, "earthBgPosition");
@@ -192,6 +227,8 @@ namespace CutTheRope.GameMain
                     supportResourceName,
                     boxCovers,
                     boxHoleBgColor,
+                    musicPack,
+                    musicList,
                     earthBg,
                     earthBgPosition,
                     boxLabelText));

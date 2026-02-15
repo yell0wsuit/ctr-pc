@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRope.Commons;
@@ -34,19 +35,7 @@ namespace CutTheRope.GameMain
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             CTRSoundMgr.StopMusic();
-            if (SpecialEvents.IsXmas)
-            {
-                CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
-            }
-            else
-            {
-                CTRSoundMgr.PlayRandomMusic(
-                    Resources.Music.GameMusic,
-                    Resources.Music.GameMusic2,
-                    Resources.Music.GameMusic3,
-                    Resources.Music.GameMusic4
-                );
-            }
+            PlayMusic();
             InitGameView();
             ShowView(0);
         }
@@ -439,19 +428,7 @@ namespace CutTheRope.GameMain
                             return;
                         }
                         CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        if (SpecialEvents.IsXmas)
-                        {
-                            CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
-                        }
-                        else
-                        {
-                            CTRSoundMgr.PlayRandomMusic(
-                                Resources.Music.GameMusic,
-                                Resources.Music.GameMusic2,
-                                Resources.Music.GameMusic3,
-                                Resources.Music.GameMusic4
-                            );
-                        }
+                        PlayMusic();
                         return;
                     }
                 case var id when id == GameControllerButtonId.ToggleSound:
@@ -709,6 +686,39 @@ namespace CutTheRope.GameMain
             mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
             GameScene gameScene = (GameScene)view.GetChild(0);
             gameScene?.FullscreenToggled(isFullscreen);
+        }
+
+        private static void PlayMusic()
+        {
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            if (SpecialEvents.IsXmas)
+            {
+                CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
+            }
+            else
+            {
+                string musicPack = PackConfig.GetMusicPackOrDefault(cTRRootController.GetPack());
+                switch (musicPack)
+                {
+                    case null:
+                        string[] musicList = PackConfig.GetMusicListOrDefault(cTRRootController.GetPack());
+                        if (musicList.Length > 0)
+                        {
+                            CTRSoundMgr.PlayRandomMusic(musicList);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[Game music] missing either musicPack or musicList for pack {cTRRootController.GetPack()}.");
+                        }
+                        break;
+                    case var p when p == MusicPackNames.CtROriginal:
+                        CTRSoundMgr.PlayRandomMusic(MusicPacks.CtROriginal);
+                        break;
+                    default:
+                        Console.WriteLine($"[Game music] Unknown musicPack '{musicPack}'");
+                        break;
+                }
+            }
         }
 
         public const int BUTTON_WIN_EXIT = 5;
