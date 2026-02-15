@@ -56,6 +56,7 @@ namespace CutTheRope.GameMain
             bouncers = new DynamicArray<Bouncer>();
             rotatedCircles = new DynamicArray<RotatedCircle>();
             rockets = new DynamicArray<Rocket>();
+            hands = new DynamicArray<MechanicalHand>();
             snailobjects = new DynamicArray<Snail>();
             activeRocket = null;
             ghosts = new DynamicArray<Ghost>();

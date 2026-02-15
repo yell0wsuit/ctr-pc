@@ -148,6 +148,22 @@ namespace CutTheRope.GameMain
             {
                 ((Bouncer)bouncer).Draw();
             }
+            MechanicalHand activeHand = null;
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand != null)
+                    {
+                        hand.Draw();
+                        if (hand.state == MechanicalHand.STATE_HAND_CANDY)
+                        {
+                            activeHand = hand;
+                        }
+                    }
+                }
+            }
+            activeHand?.TheClaw().DrawActiveHand();
             miceManager?.DrawMice();
             foreach (object sockObj in socks)
             {
@@ -243,6 +259,16 @@ namespace CutTheRope.GameMain
                     Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     candyBlink.Draw();
                     Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                }
+            }
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                    {
+                        hand.TheClaw().DrawFingers();
+                    }
                 }
             }
             if (snailobjects != null)
