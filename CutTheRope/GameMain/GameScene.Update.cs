@@ -1781,6 +1781,7 @@ namespace CutTheRope.GameMain
 
                 if (hand.state == MechanicalHand.STATE_HAND_IDLE && distance < MechanicalHand.MH_GRAB_DISTANCE && !noCandy)
                 {
+                    MechanicalHand releasedHand = null;
                     if (hands.Count > 1)
                     {
                         foreach (MechanicalHand otherHand in hands)
@@ -1790,6 +1791,7 @@ namespace CutTheRope.GameMain
                                 otherHand.cPoint.RemoveConstraint(star);
                                 otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
                                 otherHand.releaseSoundPlayed = false;
+                                releasedHand = otherHand;
                                 reorderHands = true;
                                 break;
                             }
@@ -1819,6 +1821,12 @@ namespace CutTheRope.GameMain
                         }
                     }
 
+                    if (releasedHand != null)
+                    {
+                        Vector clapPosition = VectMult(VectAdd(releasedHand.ClawPosition(), hand.ClawPosition()), 0.5f);
+                        PlayMechanicalHandClapEffectAt(clapPosition);
+                    }
+
                     DetachActiveSnails();
                     hand.AnimateCatchWithCandyPartsandAnimationsPool([candy, candyMain, candyTop], aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
@@ -1844,6 +1852,28 @@ namespace CutTheRope.GameMain
                     _ = hands.AddObject(selectedHand);
                 }
             }
+        }
+
+        private void PlayMechanicalHandClapEffectAt(Vector position)
+        {
+            Image clapEffect = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 9);
+            clapEffect.DoRestoreCutTransparency();
+            clapEffect.anchor = 18;
+            clapEffect.parentAnchor = 18;
+            clapEffect.x = position.X;
+            clapEffect.y = position.Y;
+
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.8, 0.8, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.12, 1.12, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.05));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.06));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.12));
+            timeline.delegateTimelineDelegate = aniPool;
+
+            int timelineId = clapEffect.AddTimeline(timeline);
+            clapEffect.PlayTimeline(timelineId);
+            _ = aniPool.AddChild(clapEffect);
         }
 
         /// <summary>
