@@ -15,7 +15,6 @@ namespace CutTheRope.GameMain
     {
         private static HashSet<string> soundNames_;
         private static HashSet<string> musicNames_;
-
         private static HashSet<string> fontNames_;
         private static HashSet<string> imageNames_;
         private static HashSet<string> backgroundImgNames_;
@@ -41,7 +40,6 @@ namespace CutTheRope.GameMain
             {
                 InitializeMusicNames();
             }
-
             if (fontNames_ == null)
             {
                 InitializeFontNames();
@@ -50,7 +48,6 @@ namespace CutTheRope.GameMain
                    backgroundImgNames_.Contains(resourceName) ||
                    soundNames_.Contains(resourceName) ||
                    musicNames_.Contains(resourceName) ||
-
                    fontNames_.Contains(resourceName);
         }
 
@@ -205,7 +202,6 @@ namespace CutTheRope.GameMain
                 Music.GameMusic2, Music.GameMusic3, Music.GameMusic4, Music.GameMusic5
             ];
         }
-
 
         /// <summary>
         /// List all of font resources.
