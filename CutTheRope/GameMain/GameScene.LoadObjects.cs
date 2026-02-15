@@ -83,6 +83,9 @@ namespace CutTheRope.GameMain
                         case "bouncer2":
                             LoadBouncer(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
+                        case "load":
+                            LoadSnail(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
                         case "grab":
                             LoadGrab(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;

@@ -64,6 +64,7 @@ namespace CutTheRope.GameMain
             }
             float worldX = tx + camera.pos.X;
             float worldY = ty + camera.pos.Y;
+            waterLayer?.AddParticlesAtXY(worldX, worldY);
             if (miceManager != null && miceManager.HandleClick(worldX, worldY))
             {
                 return true;
@@ -82,6 +83,27 @@ namespace CutTheRope.GameMain
                         return true;
                     }
                 }
+            }
+            if (snailobjects != null
+                && twoParts == 2
+                && PointInRect(worldX, worldY, star.pos.X - 30f, star.pos.Y - 30f, 60f, 60f)
+                && star.weight > 1f)
+            {
+                star.SetWeight(star.weight - 3f);
+                if (star.weight <= 1f)
+                {
+                    star.SetWeight(1f);
+                    for (int i = 0; i < snailobjects.Count; i++)
+                    {
+                        Snail snail = snailobjects.ObjectAtIndex(i);
+                        if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
+                        {
+                            snail.Detach();
+                            break;
+                        }
+                    }
+                }
+                return true;
             }
             if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
             {
@@ -141,8 +163,12 @@ namespace CutTheRope.GameMain
                     Grab grab = (Grab)obj;
                     if (grab.gun && !grab.gunFired && grab.rope == null)
                     {
+                        float mapLeftX = waterLayer?.x ?? 0f;
+                        float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
+                        bool candyInMapBounds = GameObject.RectInObject(mapLeftX, 0f, mapRightX, mapHeight, candy);
+                        bool canFireFromWaterState = waterLayer == null || candyInMapBounds || waterLayer.y > star.pos.Y;
                         float tapRadius = Grab.GUN_TAP_RADIUS;
-                        if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                        if (canFireFromWaterState && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
                             // Calculate direction to candy
                             Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);

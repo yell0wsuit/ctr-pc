@@ -26,6 +26,16 @@ namespace CutTheRope.GameMain
             isCandyInLantern = false;
             gravityButton = null;
             gravityTouchDown = -1;
+            if (waterLayer != null)
+            {
+                waterLayer.PrepareToRelease();
+                waterLayer.Dispose();
+                waterLayer = null;
+            }
+            waterLevel = 0f;
+            waterSpeed = 0f;
+            splashes = false;
+            underwater = false;
             twoParts = 2;
             partsDist = 0f;
             targetSock = null;
@@ -46,6 +56,7 @@ namespace CutTheRope.GameMain
             bouncers = new DynamicArray<Bouncer>();
             rotatedCircles = new DynamicArray<RotatedCircle>();
             rockets = new DynamicArray<Rocket>();
+            snailobjects = new DynamicArray<Snail>();
             activeRocket = null;
             ghosts = new DynamicArray<Ghost>();
             conveyors = new ConveyorBeltObject();
