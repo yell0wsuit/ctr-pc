@@ -157,7 +157,8 @@ namespace CutTheRope.GameMain
                 Img.ObjCandy52,
 
                 // CTR Experiments objects
-                Img.ObjGun, Img.ObjSticker, Img.ObjRocket, Img.WaterTile, Img.ObjSnail
+                Img.ObjGun, Img.ObjSticker, Img.ObjRocket, Img.WaterTile, Img.ObjSnail,
+                Img.ObjRoboHand
             ];
         }
 
@@ -187,7 +188,8 @@ namespace CutTheRope.GameMain
                 // CTR Experiments sounds
                 Snd.ExpGun, Snd.ExpSuckerDrop, Snd.ExpSuckerLand, Snd.ExpRocketStart,
                 Snd.ExpRocketFlyLooped, Snd.ExpRocketInWater, Snd.ExpWaterSplash,
-                Snd.ExpSnailIn, Snd.ExpSnailOut
+                Snd.ExpSnailIn, Snd.ExpSnailOut, Snd.ExpHandCatch, Snd.ExpHandDrop,
+                Snd.ExpHandRotate
             ];
         }
 
@@ -398,6 +400,7 @@ namespace CutTheRope.GameMain
             public const string ObjRocket = "obj_rocket";
             public const string WaterTile = "water_tile";
             public const string ObjSnail = "obj_snail";
+            public const string ObjRoboHand = "obj_robohand";
 
             // Candies
             public const string ObjCandyFx = "candies/obj_candy_fx";
@@ -585,6 +588,9 @@ namespace CutTheRope.GameMain
             public const string ExpWaterSplash = "water_splash";
             public const string ExpSnailIn = "snail_in";
             public const string ExpSnailOut = "snail_out";
+            public const string ExpHandCatch = "hand_catch";
+            public const string ExpHandDrop = "hand_drop";
+            public const string ExpHandRotate = "hand_rotate";
         }
 
         /// <summary>

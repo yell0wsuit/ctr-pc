@@ -444,6 +444,7 @@ namespace CutTheRope.GameMain
             Resources.Img.ObjRocket,
             Resources.Img.WaterTile,
             Resources.Img.ObjSnail,
+            Resources.Img.ObjRoboHand,
             null
         ];
     }
