@@ -708,7 +708,7 @@ namespace CutTheRope.GameMain
                         }
                         else
                         {
-                            Console.WriteLine($"[Game music] missing both musicPack and musicList for pack {cTRRootController.GetPack()}.");
+                            Console.WriteLine($"[Game music] missing either musicPack or musicList for pack {cTRRootController.GetPack()}.");
                         }
                         break;
                     case var p when p == MusicPackNames.CtROriginal:
