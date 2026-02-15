@@ -209,7 +209,6 @@ namespace CutTheRope.GameMain
                 RGBAColor boxHoleBgColor = ParseColorAttribute(packElement, "boxHoleBgColor");
 
                 string[] musicPack = ParseResourceNames(packElement, "musicPack");
-                ValidateResourceNames(musicPack, "musicPack");
 
                 string[] musicList = ParseResourceNames(packElement, "musicList");
                 ValidateResourceNames(musicList, "musicList");

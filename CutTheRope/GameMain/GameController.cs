@@ -711,8 +711,8 @@ namespace CutTheRope.GameMain
                             Console.WriteLine($"[Game music] missing both musicPack and musicList for pack {cTRRootController.GetPack()}.");
                         }
                         break;
-                    case var p when p == Resources.MusicPackNames.CtROriginal:
-                        CTRSoundMgr.PlayRandomMusic(Resources.MusicPacks.CtROriginal);
+                    case var p when p == MusicPackNames.CtROriginal:
+                        CTRSoundMgr.PlayRandomMusic(MusicPacks.CtROriginal);
                         break;
                     default:
                         Console.WriteLine($"[Game music] Unknown musicPack '{musicPack}'");

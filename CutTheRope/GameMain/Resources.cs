@@ -15,7 +15,7 @@ namespace CutTheRope.GameMain
     {
         private static HashSet<string> soundNames_;
         private static HashSet<string> musicNames_;
-        private static HashSet<string> musicPackNames_;
+
         private static HashSet<string> fontNames_;
         private static HashSet<string> imageNames_;
         private static HashSet<string> backgroundImgNames_;
@@ -41,10 +41,7 @@ namespace CutTheRope.GameMain
             {
                 InitializeMusicNames();
             }
-            if (musicPackNames_ == null)
-            {
-                InitializeMusicPackNames();
-            }
+
             if (fontNames_ == null)
             {
                 InitializeFontNames();
@@ -53,7 +50,7 @@ namespace CutTheRope.GameMain
                    backgroundImgNames_.Contains(resourceName) ||
                    soundNames_.Contains(resourceName) ||
                    musicNames_.Contains(resourceName) ||
-                   musicPackNames_.Contains(resourceName) ||
+
                    fontNames_.Contains(resourceName);
         }
 
@@ -209,16 +206,6 @@ namespace CutTheRope.GameMain
             ];
         }
 
-        /// <summary>
-        /// List all music pack names.
-        /// </summary>
-        private static void InitializeMusicPackNames()
-        {
-            musicPackNames_ =
-            [
-                MusicPackNames.CtROriginal
-            ];
-        }
 
         /// <summary>
         /// List all of font resources.
@@ -617,16 +604,6 @@ namespace CutTheRope.GameMain
             public const string GameMusic5 = "game_music5";
             public const string MenuMusicXmas = "menu_music_xmas";
             public const string GameMusicXmas = "game_music_xmas";
-        }
-
-        internal static class MusicPackNames
-        {
-            public const string CtROriginal = "ctr_original";
-        }
-
-        internal static class MusicPacks
-        {
-            public static string[] CtROriginal = [Music.GameMusic, Music.GameMusic2, Music.GameMusic3, Music.GameMusic4];
         }
 
         /// <summary>
