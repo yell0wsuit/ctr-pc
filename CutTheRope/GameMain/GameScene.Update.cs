@@ -1854,6 +1854,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Spawns a short-lived clap effect for hand handoff moments.
+        /// </summary>
+        /// <param name="position">World position where the effect should appear.</param>
         private void PlayMechanicalHandClapEffectAt(Vector position)
         {
             Image clapEffect = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 9);

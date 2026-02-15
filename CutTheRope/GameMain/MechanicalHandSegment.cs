@@ -4,8 +4,20 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Single articulated segment of a mechanical hand.
+    /// Owns segment visuals, optional rotate button, and rotation timeline behavior.
+    /// </summary>
     internal sealed class MechanicalHandSegment : BaseElement, ITimelineDelegate
     {
+        /// <summary>
+        /// Initializes a segment with placement, geometry, and rotation capability.
+        /// </summary>
+        /// <param name="pos">Local segment origin.</param>
+        /// <param name="segmentLength">Segment length in world units.</param>
+        /// <param name="angleDegrees">Initial segment angle in degrees.</param>
+        /// <param name="isRotatable">Whether the segment exposes a rotate button.</param>
+        /// <returns>The initialized segment instance.</returns>
         public MechanicalHandSegment InitWithPositionLengthAngleRotatable(Vector pos, float segmentLength, float angleDegrees, bool isRotatable)
         {
             x = pos.X;
@@ -52,6 +64,10 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Starts a 90-degree rotation animation when the segment can rotate.
+        /// Queues one extra rotation if tapped again during cooldown.
+        /// </summary>
         public void Rotate()
         {
             if (canRotateOnceAgain)
@@ -77,15 +93,25 @@ namespace CutTheRope.GameMain
             targetRotation = rotation + 90f;
         }
 
+        /// <summary>
+        /// Gets the per-frame rotation delta used to rotate attached candy visuals.
+        /// </summary>
+        /// <returns>Rotation delta in degrees.</returns>
         public float RotationDelta()
         {
             return rotation - prevRotation;
         }
 
+        /// <summary>
+        /// Timeline callback invoked when a key frame is reached.
+        /// </summary>
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <summary>
+        /// Timeline callback invoked after segment rotation animation completes.
+        /// </summary>
         public void TimelineFinished(Timeline t)
         {
             RemoveTimeline(0);

@@ -6,8 +6,15 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Composite mechanical hand element made of articulated segments and a claw.
+    /// Handles segment hierarchy, claw position tracking, and catch/release animations.
+    /// </summary>
     internal sealed class MechanicalHand : BaseElement
     {
+        /// <summary>
+        /// Initializes a hand with a lightweight constrained point used for candy attachment.
+        /// </summary>
         public MechanicalHand()
         {
             rotatingSegment = null;
@@ -39,6 +46,12 @@ namespace CutTheRope.GameMain
             clawOffset = offset;
         }
 
+        /// <summary>
+        /// Appends a segment to the hand chain.
+        /// </summary>
+        /// <param name="segmentLength">Segment length in world units.</param>
+        /// <param name="segmentAngle">Initial segment angle in degrees.</param>
+        /// <param name="rotatable">Whether the segment can be rotated by player input.</param>
         public void AddSegmentWithLengthAngleRotatable(float segmentLength, float segmentAngle, bool rotatable)
         {
             Vector start = Vect(0f, 0f);
@@ -77,6 +90,11 @@ namespace CutTheRope.GameMain
             TheClaw().prevSegments = segments.Count - 1;
         }
 
+        /// <summary>
+        /// Gets the world position of a segment joint by index.
+        /// </summary>
+        /// <param name="index">Joint index where 0 is the hand base.</param>
+        /// <returns>Joint world position.</returns>
         public Vector JointAtIndexPosition(int index)
         {
             if (index == 0)
@@ -94,6 +112,10 @@ namespace CutTheRope.GameMain
             return position;
         }
 
+        /// <summary>
+        /// Computes the world position of the claw candy anchor.
+        /// </summary>
+        /// <returns>Claw anchor world position.</returns>
         public Vector ClawPosition()
         {
             BaseElement element = GetChild(0);
@@ -109,6 +131,10 @@ namespace CutTheRope.GameMain
             return VectAdd(position, VectRotate(clawOffset, DEGREES_TO_RADIANS(angle)));
         }
 
+        /// <summary>
+        /// Indicates whether any segment is currently playing a rotation timeline.
+        /// </summary>
+        /// <returns><c>true</c> when at least one segment is animating.</returns>
         public bool IsRotating()
         {
             if (segments == null)
@@ -127,6 +153,10 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Plays the claw release bounce animation.
+        /// </summary>
+        /// <param name="animationPool">Animation pool responsible for timeline lifecycle.</param>
         public void AnimateReleaseWithAnimationsPool(AnimationsPool animationPool)
         {
             Timeline timeline = CatchBounceTimelineWithInitialScaleandAmplitude(TheClaw().clawIdle.scaleX, 0.25f);
@@ -135,6 +165,11 @@ namespace CutTheRope.GameMain
             TheClaw().clawIdle.PlayTimeline(timelineId);
         }
 
+        /// <summary>
+        /// Plays catch bounce animation on the claw and optional candy visuals.
+        /// </summary>
+        /// <param name="candyParts">Candy parts to animate alongside the claw.</param>
+        /// <param name="animationPool">Animation pool responsible for timeline lifecycle.</param>
         public void AnimateCatchWithCandyPartsandAnimationsPool(List<BaseElement> candyParts, AnimationsPool animationPool)
         {
             const float amplitude = 0.1f;
@@ -168,16 +203,29 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Gets a segment by index.
+        /// </summary>
+        /// <param name="index">Segment index.</param>
+        /// <returns>The requested segment.</returns>
         public MechanicalHandSegment SegmentAtIndex(int index)
         {
             return segments[index];
         }
 
+        /// <summary>
+        /// Gets the terminal segment in the chain.
+        /// </summary>
+        /// <returns>The last segment.</returns>
         public MechanicalHandSegment LastSegment()
         {
             return segments[^1];
         }
 
+        /// <summary>
+        /// Gets the claw attached to the terminal segment.
+        /// </summary>
+        /// <returns>Current claw instance.</returns>
         public MechanicalHandClaw TheClaw()
         {
             return (MechanicalHandClaw)LastSegment().GetChild(0);

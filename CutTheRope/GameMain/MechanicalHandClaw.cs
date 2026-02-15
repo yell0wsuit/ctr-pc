@@ -4,8 +4,15 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Visual claw node attached to the end of a mechanical hand segment chain.
+    /// Draws idle/active body and active fingers in separate passes.
+    /// </summary>
     internal sealed class MechanicalHandClaw : BaseElement
     {
+        /// <summary>
+        /// Initializes claw sprites for idle, active body, and active fingers.
+        /// </summary>
         public MechanicalHandClaw()
         {
             clawIdle = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 5);
@@ -21,6 +28,10 @@ namespace CutTheRope.GameMain
             clawActiveFingers.DoRestoreCutTransparency();
         }
 
+        /// <summary>
+        /// Resolves the owning mechanical hand by walking up the segment chain.
+        /// </summary>
+        /// <returns>Owning hand instance, or <c>null</c> when detached.</returns>
         public MechanicalHand TheHand()
         {
             BaseElement element = parent;
@@ -46,6 +57,9 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <summary>
+        /// Draws the active fingers overlay pass with inherited segment transforms.
+        /// </summary>
         public void DrawFingers()
         {
             EnsureHandReference();
@@ -85,6 +99,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Draws the active claw body pass for the currently grabbing hand.
+        /// </summary>
         public void DrawActiveHand()
         {
             EnsureHandReference();
