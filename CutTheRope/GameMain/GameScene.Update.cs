@@ -1779,7 +1779,7 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                if (hand.state == MechanicalHand.STATE_HAND_IDLE && distance < 25.2f && !noCandy)
+                if (hand.state == MechanicalHand.STATE_HAND_IDLE && distance < MechanicalHand.MH_GRAB_DISTANCE && !noCandy)
                 {
                     if (hands.Count > 1)
                     {
@@ -1822,7 +1822,7 @@ namespace CutTheRope.GameMain
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
                 }
 
-                if (hand.state == MechanicalHand.STATE_HAND_RELEASE && distance > 34f)
+                if (hand.state == MechanicalHand.STATE_HAND_RELEASE && distance > MechanicalHand.MH_RELEASE_DISTANCE)
                 {
                     hand.state = MechanicalHand.STATE_HAND_IDLE;
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);

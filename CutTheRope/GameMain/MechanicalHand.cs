@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
@@ -20,7 +21,22 @@ namespace CutTheRope.GameMain
 
             Vector jointCenter = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 2);
             Vector candyAnchor = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 8);
-            clawOffset = VectSub(candyAnchor, jointCenter);
+            Vector offset = VectSub(candyAnchor, jointCenter);
+
+            // Some atlases carry a broken marker frame offset for quad 8 (0,0),
+            // which puts the candy anchor far away and prevents hand grabs.
+            if (VectLength(offset) > 80f)
+            {
+                CTRTexture2D texture = Application.GetTexture(Resources.Img.ObjRoboHand);
+                if (texture != null && texture.preCutSize.X > 0f && texture.preCutSize.Y > 0f)
+                {
+                    const float legacyAnchorX = 51f / 96f;
+                    const float legacyAnchorY = 49f / 96f;
+                    candyAnchor = Vect(texture.preCutSize.X * legacyAnchorX, texture.preCutSize.Y * legacyAnchorY);
+                    offset = VectSub(candyAnchor, jointCenter);
+                }
+            }
+            clawOffset = offset;
         }
 
         public void AddSegmentWithLengthAngleRotatable(float segmentLength, float segmentAngle, bool rotatable)
@@ -196,6 +212,16 @@ namespace CutTheRope.GameMain
         public const int MH_CLAW_RADIUS = 17;
 
         public const int MH_JOINT_RADIUS = 12;
+
+        public const float MH_WORLD_SCALE = 3f;
+
+        public const float MH_CLAW_TOUCH_RADIUS = MH_CLAW_RADIUS * MH_WORLD_SCALE;
+
+        public const float MH_BUTTON_TOUCH_RADIUS = 30f * MH_WORLD_SCALE;
+
+        public const float MH_GRAB_DISTANCE = 25.2f * MH_WORLD_SCALE;
+
+        public const float MH_RELEASE_DISTANCE = 34f * MH_WORLD_SCALE;
 
         public const int STATE_HAND_IDLE = 0;
 

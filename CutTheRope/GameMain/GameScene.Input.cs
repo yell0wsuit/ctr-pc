@@ -223,7 +223,7 @@ namespace CutTheRope.GameMain
                         continue;
                     }
 
-                    if (hand.state == MechanicalHand.STATE_HAND_CANDY && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_RADIUS)
+                    if (hand.state == MechanicalHand.STATE_HAND_CANDY && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_TOUCH_RADIUS)
                     {
                         hand.cPoint.RemoveConstraint(star);
                         hand.state = MechanicalHand.STATE_HAND_RELEASE;

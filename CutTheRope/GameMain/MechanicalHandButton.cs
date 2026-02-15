@@ -13,7 +13,7 @@ namespace CutTheRope.GameMain
 
             MechanicalHand hand = segment.theHand;
             int segmentIndex = hand.segments.IndexOf(segment);
-            return segmentIndex >= 0 && VectDistance(Vect(tx, ty), hand.JointAtIndexPosition(segmentIndex)) < 30f;
+            return segmentIndex >= 0 && VectDistance(Vect(tx, ty), hand.JointAtIndexPosition(segmentIndex)) < MechanicalHand.MH_BUTTON_TOUCH_RADIUS;
         }
 
         public MechanicalHandSegment segment;
