@@ -131,6 +131,18 @@ namespace CutTheRope.GameMain
             {
                 time += delta;
             }
+            bool handHoldingCandy = false;
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                    {
+                        handHoldingCandy = true;
+                        break;
+                    }
+                }
+            }
             if (bungees.Count > 0)
             {
                 bool flag = false;
@@ -388,7 +400,7 @@ namespace CutTheRope.GameMain
                         lastCandyRotateDeltaR *= 0.98f;
                     }
                 }
-                else if (!flag && !noCandy)
+                else if (!flag && !noCandy && !handHoldingCandy)
                 {
                     candyMain.rotation += MIN(5.0, lastCandyRotateDelta);
                     lastCandyRotateDelta *= 0.98f;
@@ -1100,7 +1112,7 @@ namespace CutTheRope.GameMain
                                 if (bungee != null)
                                 {
                                     Bungee rope = bungee.rope;
-                                    if (rope != null && rope.tail == star && rope.cut == -1 && rope.relaxed > 0)
+                                    if (rope != null && rope.tail == star && rope.cut == -1 && rope.relaxed > 0 && !handHoldingCandy)
                                     {
                                         ropeRelaxed = true;
                                         ConstraintedPoint anchor = rope.bungeeAnchor;
