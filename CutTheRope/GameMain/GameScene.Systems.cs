@@ -351,12 +351,13 @@ namespace CutTheRope.GameMain
         public void SpiderWon(Grab sg)
         {
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
+            ConstraintedPoint capturedStar = sg.rope?.tail;
             int num = bungees.Count;
             for (int i = 0; i < num; i++)
             {
                 Grab grab = bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
-                if (rope != null && rope.tail == star)
+                if (rope != null && rope.tail == capturedStar)
                 {
                     if (rope.cut == -1)
                     {
@@ -375,13 +376,28 @@ namespace CutTheRope.GameMain
             }
             sg.hasSpider = false;
             // spiderTookCandy = true;
-            noCandy = true;
+            GameObject capturedCandy;
+            if (capturedStar == starL)
+            {
+                noCandyL = true;
+                capturedCandy = candyL;
+            }
+            else if (capturedStar == starR)
+            {
+                noCandyR = true;
+                capturedCandy = candyR;
+            }
+            else
+            {
+                noCandy = true;
+                capturedCandy = candy;
+            }
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);
             image.DoRestoreCutTransparency();
-            candy.anchor = candy.parentAnchor = 18;
-            candy.x = 0f;
-            candy.y = -5f;
-            _ = image.AddChild(candy);
+            capturedCandy.anchor = capturedCandy.parentAnchor = 18;
+            capturedCandy.x = 0f;
+            capturedCandy.y = -5f;
+            _ = image.AddChild(capturedCandy);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
