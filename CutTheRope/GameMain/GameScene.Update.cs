@@ -412,7 +412,14 @@ namespace CutTheRope.GameMain
                 }
                 if (partsDist > 0.0)
                 {
-                    if (Mover.MoveVariableToTarget(ref partsDist, 0.0, 200.0, (double)delta))
+                    // Abort merge if one half was destroyed to prevent
+                    // reviving the broken half into a full candy
+                    if (noCandyL || noCandyR)
+                    {
+                        partsDist = 0f;
+                        twoParts = 0;
+                    }
+                    else if (Mover.MoveVariableToTarget(ref partsDist, 0.0, 200.0, (double)delta))
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyLink);
                         twoParts = 2;
