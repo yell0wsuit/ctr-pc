@@ -184,6 +184,12 @@ namespace CutTheRope.GameMain
                         }
                     }
 
+                    if (grab.hasSpider && !grab.spiderActive)
+                    {
+                        grab.spider.x = grab.x;
+                        grab.spider.y = grab.y;
+                    }
+
                     bool shouldProcessGrabRadius = true;
 
                     if (rope != null)
