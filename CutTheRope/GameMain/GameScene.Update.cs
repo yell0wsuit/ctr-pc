@@ -1850,6 +1850,7 @@ namespace CutTheRope.GameMain
                     }
 
                     DetachActiveSnails();
+                    miceManager?.ForceDropCandy();
                     hand.AnimateCatchWithCandyPartsandAnimationsPool([candy, candyMain, candyTop], aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
                 }

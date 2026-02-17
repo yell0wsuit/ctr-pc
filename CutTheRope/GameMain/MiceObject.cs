@@ -119,6 +119,21 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Forces the active mouse to drop candy and retreat back into its hole.
+        /// </summary>
+        public void ForceDropCandy()
+        {
+            if (activeMouse == null || !activeMouse.HasCandy)
+            {
+                return;
+            }
+
+            activeMouse.DropCandyAndRetreat();
+            carriedStar = null;
+            carriedCandy = null;
+        }
+
+        /// <summary>
         /// Handles click interaction for dropping candy from the active mouse.
         /// </summary>
         /// <param name="x">X coordinate of the click.</param>
