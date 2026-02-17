@@ -1156,7 +1156,7 @@ namespace CutTheRope.GameMain
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
-                        if (Mover.MoveVariableToTarget(ref dist, 0f, 200f, delta))
+                        if (handHoldingCandy || Mover.MoveVariableToTarget(ref dist, 0f, 200f, delta))
                         {
                             rocket.state = Rocket.STATE_ROCKET_FLY;
                         }
