@@ -103,6 +103,7 @@ namespace CutTheRope.GameMain
             }
 
             scene.ReleaseAllRopes(isLeft);
+            scene.DetachActiveHands();
             carriedStar = star;
             carriedCandy = candy;
             activeMouse.GrabCandy(star, candy);
