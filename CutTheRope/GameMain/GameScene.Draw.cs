@@ -322,113 +322,138 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <summary>
+        /// Renders finger cut trails as triangle strips with Bézier-smoothed paths
+        /// that grow in width from start to end.
+        /// </summary>
         public void DrawCuts()
         {
+            const float maxSize = 12f;
+
             for (int i = 0; i < 5; i++)
             {
-                int num = fingerCuts[i].Count;
-                if (num > 0)
+                int cutCount = fingerCuts[i].Count;
+                if (cutCount <= 0)
                 {
-                    float num2 = RTD(6.0);
-                    float num3 = 1f;
-                    int num4 = 0;
-                    int j = 0;
-                    Vector[] array = new Vector[num + 1];
-                    int num5 = 0;
-                    while (j < num)
-                    {
-                        FingerCut fingerCut = fingerCuts[i].ObjectAtIndex(j);
-                        if (j == 0)
-                        {
-                            array[num5++] = fingerCut.start;
-                        }
-                        array[num5++] = fingerCut.end;
-                        j++;
-                    }
-                    List<Vector> list = [];
-                    Vector vector = default;
-                    bool flag = true;
-                    for (int k = 0; k < array.Length; k++)
-                    {
-                        if (k == 0)
-                        {
-                            list.Add(array[k]);
-                        }
-                        else if (array[k].X != vector.X || array[k].Y != vector.Y)
-                        {
-                            list.Add(array[k]);
-                            flag = false;
-                        }
-                        vector = array[k];
-                    }
-                    if (!flag)
-                    {
-                        array = [.. list];
-                        num = array.Length - 1;
-                        int num6 = num * 2;
-                        float[] array2 = new float[num6 * 2];
-                        float num7 = 1f / num6;
-                        float num8 = 0f;
-                        int num9 = 0;
-                        for (; ; )
-                        {
-                            if ((double)num8 > 1.0)
-                            {
-                                num8 = 1f;
-                            }
-                            Vector vector2 = DrawHelper.CalcPathBezier(array, num + 1, num8);
-                            if (num9 > array2.Length - 2)
-                            {
-                                break;
-                            }
-                            array2[num9++] = vector2.X;
-                            array2[num9++] = vector2.Y;
-                            if ((double)num8 == 1.0)
-                            {
-                                break;
-                            }
-                            num8 += num7;
-                        }
-                        float num10 = num2 / num6;
-                        float[] array3 = new float[num6 * 4];
-                        for (int l = 0; l < num6 - 1; l++)
-                        {
-                            float s = num3;
-                            float s2 = l == num6 - 2 ? 1f : num3 + num10;
-                            Vector vector3 = Vect(array2[l * 2], array2[(l * 2) + 1]);
-                            Vector vector8 = Vect(array2[(l + 1) * 2], array2[((l + 1) * 2) + 1]);
-                            Vector vector9 = VectNormalize(VectSub(vector8, vector3));
-                            Vector v4 = VectRperp(vector9);
-                            Vector v5 = VectPerp(vector9);
-                            if (num4 == 0)
-                            {
-                                Vector vector4 = VectAdd(vector3, VectMult(v4, s));
-                                Vector vector5 = VectAdd(vector3, VectMult(v5, s));
-                                array3[num4++] = vector5.X;
-                                array3[num4++] = vector5.Y;
-                                array3[num4++] = vector4.X;
-                                array3[num4++] = vector4.Y;
-                            }
-                            Vector vector6 = VectAdd(vector8, VectMult(v4, s2));
-                            Vector vector7 = VectAdd(vector8, VectMult(v5, s2));
-                            array3[num4++] = vector7.X;
-                            array3[num4++] = vector7.Y;
-                            array3[num4++] = vector6.X;
-                            array3[num4++] = vector6.Y;
-                            num3 += num10;
-                        }
-                        Renderer.SetColor(Color.White);
-                        int vertexCount = num4 / 2;
-                        VertexPositionColor[] vertices = GetStripVertexCache(vertexCount);
-                        int positionIndex = 0;
-                        for (int vertex = 0; vertex < vertexCount; vertex++)
-                        {
-                            Vector3 position = new(array3[positionIndex++], array3[positionIndex++], 0f);
-                            vertices[vertex] = new VertexPositionColor(position, Color.White);
-                        }
-                        Renderer.DrawTriangleStrip(vertices, vertexCount);
-                    }
+                    continue;
                 }
+
+                // Collect control points from finger cut segments
+                Vector[] pts = new Vector[cutCount + 1];
+                int ptCount = 0;
+                for (int j = 0; j < cutCount; j++)
+                {
+                    FingerCut cut = fingerCuts[i].ObjectAtIndex(j);
+                    if (j == 0)
+                    {
+                        pts[ptCount++] = cut.start;
+                    }
+
+                    pts[ptCount++] = cut.end;
+                }
+
+                // Deduplicate consecutive identical points
+                List<Vector> dedupedPts = [];
+                Vector prev = default;
+                bool allSame = true;
+                for (int k = 0; k < pts.Length; k++)
+                {
+                    if (k == 0)
+                    {
+                        dedupedPts.Add(pts[k]);
+                    }
+                    else if (pts[k].X != prev.X || pts[k].Y != prev.Y)
+                    {
+                        dedupedPts.Add(pts[k]);
+                        allSame = false;
+                    }
+                    prev = pts[k];
+                }
+
+                if (allSame)
+                {
+                    continue;
+                }
+
+                pts = [.. dedupedPts];
+                int numSegments = pts.Length - 1;
+                int pointsPerSegment = 2;
+                int numVertices = numSegments * pointsPerSegment;
+                float bstep = 1f / numVertices;
+
+                // Sample points along the Bézier curve
+                float[] curveXY = new float[numVertices * 2];
+                float a = 0f;
+                int curveIdx = 0;
+                for (; ; )
+                {
+                    if (a > 1f)
+                    {
+                        a = 1f;
+                    }
+
+                    Vector pointOnCurve = DrawHelper.CalcPathBezier(pts, numSegments + 1, a);
+                    if (curveIdx > curveXY.Length - 2)
+                    {
+                        break;
+                    }
+
+                    curveXY[curveIdx++] = pointOnCurve.X;
+                    curveXY[curveIdx++] = pointOnCurve.Y;
+
+                    if (a == 1f)
+                    {
+                        break;
+                    }
+
+                    a += bstep;
+                }
+
+                // Build triangle strip vertices with growing perpendicular width
+                float step = maxSize / numVertices;
+                float perpSize = 1f;
+                float[] stripXY = new float[numVertices * 4];
+                int stripIdx = 0;
+                for (int k = 0; k < numVertices - 1; k++)
+                {
+                    float startSize = perpSize;
+                    float endSize = k == numVertices - 2 ? 1f : perpSize + step;
+                    Vector start = Vect(curveXY[k * 2], curveXY[(k * 2) + 1]);
+                    Vector end = Vect(curveXY[(k + 1) * 2], curveXY[((k + 1) * 2) + 1]);
+                    Vector normalized = VectNormalize(VectSub(end, start));
+                    Vector rPerp = VectRperp(normalized);
+                    Vector lPerp = VectPerp(normalized);
+
+                    if (stripIdx == 0)
+                    {
+                        Vector startRight = VectAdd(start, VectMult(rPerp, startSize));
+                        Vector startLeft = VectAdd(start, VectMult(lPerp, startSize));
+                        stripXY[stripIdx++] = startLeft.X;
+                        stripXY[stripIdx++] = startLeft.Y;
+                        stripXY[stripIdx++] = startRight.X;
+                        stripXY[stripIdx++] = startRight.Y;
+                    }
+
+                    Vector endRight = VectAdd(end, VectMult(rPerp, endSize));
+                    Vector endLeft = VectAdd(end, VectMult(lPerp, endSize));
+                    stripXY[stripIdx++] = endLeft.X;
+                    stripXY[stripIdx++] = endLeft.Y;
+                    stripXY[stripIdx++] = endRight.X;
+                    stripXY[stripIdx++] = endRight.Y;
+                    perpSize += step;
+                }
+
+                // Render the triangle strip
+                Renderer.SetColor(Color.White);
+                int vertexCount = stripIdx / 2;
+                VertexPositionColor[] vertices = GetStripVertexCache(vertexCount);
+                int positionIndex = 0;
+                for (int v = 0; v < vertexCount; v++)
+                {
+                    Vector3 position = new(stripXY[positionIndex++], stripXY[positionIndex++], 0f);
+                    vertices[v] = new VertexPositionColor(position, Color.White);
+                }
+                Renderer.DrawTriangleStrip(vertices, vertexCount);
             }
         }
     }
