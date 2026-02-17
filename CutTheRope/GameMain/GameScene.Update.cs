@@ -1801,7 +1801,7 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                if (hand.state == MechanicalHand.STATE_HAND_IDLE && distance < MechanicalHand.MH_GRAB_DISTANCE && !noCandy)
+                if (hand.state == MechanicalHand.STATE_HAND_IDLE && distance < MechanicalHand.MH_GRAB_DISTANCE && !noCandy && !isCandyInLantern)
                 {
                     MechanicalHand releasedHand = null;
                     if (hands.Count > 1)
