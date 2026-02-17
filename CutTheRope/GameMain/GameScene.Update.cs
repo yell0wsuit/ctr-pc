@@ -847,6 +847,7 @@ namespace CutTheRope.GameMain
                     candy.AddTimelinewithID(timeline, 0);
                     candy.PlayTimeline(0);
                     ReleaseAllRopes(false);
+                    DetachActiveHands();
                     if (candyBubble != null)
                     {
                         PopCandyBubble(false);
