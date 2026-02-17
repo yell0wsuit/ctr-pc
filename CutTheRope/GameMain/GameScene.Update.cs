@@ -1169,8 +1169,17 @@ namespace CutTheRope.GameMain
                     {
                         rocket.mover?.Pause();
                         rocket.startRotation = rocket.rotation;
-                        rocket.point.AddConstraintwithRestLengthofType(star, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
-                        rocket.state = Rocket.STATE_ROCKET_DIST;
+                        if (handHoldingCandy)
+                        {
+                            rocket.point.pos = star.pos;
+                            rocket.point.AddConstraintwithRestLengthofType(star, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            rocket.state = Rocket.STATE_ROCKET_FLY;
+                        }
+                        else
+                        {
+                            rocket.point.AddConstraintwithRestLengthofType(star, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            rocket.state = Rocket.STATE_ROCKET_DIST;
+                        }
                         lastCandyRotateDelta = 0f;
                         Vector deltaPos = VectSub(star.pos, star.prevPos);
                         star.prevPos = VectAdd(star.prevPos, VectDiv(deltaPos, star.disableGravity ? 2f : 1.25f));
