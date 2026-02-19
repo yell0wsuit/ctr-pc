@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
             pollen.startAlpha = 1f;
             pollen.alpha = (0.7f * rND_0_) + 0.3f;
             Quad2D qt = drawer.image.texture.quads[0];
-            Quad3D qv = Quad3D.MakeQuad3D((double)(v.X - (num6 / 2)), (double)(v.Y - (num7 / 2)), 0.0, num6, num7);
+            Quad3D qv = Quad3D.MakeQuad3D(v.X - (num6 / 2), v.Y - (num7 / 2), 0f, num6, num7);
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
             if (pollenCount >= totalCapacity)
             {
@@ -122,7 +122,7 @@ namespace CutTheRope.GameMain
                 }
                 float num = qw * pollens[i].scaleX;
                 float num2 = qh * pollens[i].scaleY;
-                drawer.vertices[i] = Quad3D.MakeQuad3D((double)(pollens[i].x - (num / 2f)), (double)(pollens[i].y - (num2 / 2f)), 0.0, (double)num, (double)num2);
+                drawer.vertices[i] = Quad3D.MakeQuad3D(pollens[i].x - (num / 2f), pollens[i].y - (num2 / 2f), 0f, num, num2);
                 if (Mover.MoveVariableToTarget(ref pollens[i].alpha, pollens[i].endAlpha, 1f, delta))
                 {
                     (pollens[i].endAlpha, pollens[i].startAlpha) = (pollens[i].startAlpha, pollens[i].endAlpha);

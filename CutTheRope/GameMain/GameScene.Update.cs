@@ -84,9 +84,9 @@ namespace CutTheRope.GameMain
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0.0, 1.0, (double)delta);
             ConstraintedPoint constraintedPoint4 = twoParts != 2 ? starL : star;
             float num = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
-            double num19 = (double)(constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f));
-            float num2 = FIT_TO_BOUNDARIES((double)num, 0.0, (double)(mapWidth - SCREEN_WIDTH));
-            float num3 = FIT_TO_BOUNDARIES(num19, 0.0, (double)(mapHeight - SCREEN_HEIGHT));
+            float num19 = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
+            float num2 = FIT_TO_BOUNDARIES(num, 0f, mapWidth - SCREEN_WIDTH);
+            float num3 = FIT_TO_BOUNDARIES(num19, 0f, mapHeight - SCREEN_HEIGHT);
             camera.MoveToXYImmediate(num2, num3, false);
             if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
             {

@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
             Vector vector = VectSub(v2, v);
             if (!VectEqual(vector, vectZero))
             {
-                Vector v3 = highlighted ? vector : VectMult(vector, color.AlphaChannel == 1.0 ? 1.02 : 1.0);
+                Vector v3 = highlighted ? vector : VectMult(vector, color.AlphaChannel == 1f ? 1.02f : 1f);
                 Vector v4 = VectPerp(vector);
                 Vector vector2 = VectNormalize(v4);
                 v4 = VectMult(vector2, size);

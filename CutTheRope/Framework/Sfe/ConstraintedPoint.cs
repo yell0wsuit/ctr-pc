@@ -143,7 +143,7 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             totalForce = VectMult(totalForce, invWeight);
-            a = VectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
+            a = VectMult(totalForce, delta * delta);
             if (prevPos.X == 2.1474836E+09f)
             {
                 prevPos = pos;

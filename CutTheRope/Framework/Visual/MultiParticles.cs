@@ -65,7 +65,7 @@ namespace CutTheRope.Framework.Visual
                 p.color.BlueColor += p.deltaColor.BlueColor * delta;
                 p.color.AlphaChannel += p.deltaColor.AlphaChannel * delta;
                 p.life -= delta;
-                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D((double)(p.pos.X - (p.width / 2f)), (double)(p.pos.Y - (p.height / 2f)), 0.0, p.width, p.height);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3D(p.pos.X - (p.width / 2f), p.pos.Y - (p.height / 2f), 0f, p.width, p.height);
                 for (int i = 0; i < 4; i++)
                 {
                     colors[(particleIdx * 4) + i] = p.color;

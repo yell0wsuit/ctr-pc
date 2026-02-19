@@ -18,7 +18,7 @@ namespace CutTheRope.GameMain
             int q2 = RND_RANGE(1, 3);
             Bubble bubble = Bubble.Bubble_createWithResIDQuad(Resources.Img.ObjBubbleAttached, q2);
             bubble.DoRestoreCutTransparency();
-            bubble.bb = MakeRectangle(48.0, 48.0, 152.0, 152.0);
+            bubble.bb = MakeRectangle(48f, 48f, 152f, 152f);
             bubble.initial_x = bubble.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
             bubble.initial_y = bubble.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
             bubble.initial_rotation = 0f;

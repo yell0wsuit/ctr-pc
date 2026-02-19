@@ -1048,7 +1048,7 @@ namespace CutTheRope.GameMain
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = new()
             {
-                bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0),
+                bbc = MakeRectangle(5f, 0f, -10f, 0f),
                 delegateValue = this
             };
             Image image;
@@ -1936,7 +1936,7 @@ namespace CutTheRope.GameMain
             {
                 _ = base.OnTouchDownXY(tx, ty);
                 CTRRectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
-                CTRRectangle rectangle = RectInRectIntersection(MakeRectangle(0.0, 0.0, SCREEN_WIDTH, SCREEN_HEIGHT), r);
+                CTRRectangle rectangle = RectInRectIntersection(MakeRectangle(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT), r);
                 if (PointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2.0)
                 {
                     delegateValue.OnButtonPressed(bid);

@@ -105,7 +105,7 @@ namespace CutTheRope.GameMain
                             candyL.anchor = 18;
                             candyL.x = starL.pos.X;
                             candyL.y = starL.pos.Y;
-                            candyL.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
+                            candyL.bb = MakeRectangle(155f, 176f, 88f, 76f);
                             break;
                         case "candyR":
                             starR.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
@@ -121,7 +121,7 @@ namespace CutTheRope.GameMain
                             candyR.anchor = 18;
                             candyR.x = starR.pos.X;
                             candyR.y = starR.pos.Y;
-                            candyR.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
+                            candyR.bb = MakeRectangle(155f, 176f, 88f, 76f);
                             break;
                         case "candy":
                             star.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;

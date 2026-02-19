@@ -49,11 +49,6 @@ namespace CutTheRope.Framework
             return array;
         }
 
-        public static CTRRectangle MakeRectangle(double xParam, double yParam, double width, double height)
-        {
-            return MakeRectangle((float)xParam, (float)yParam, (float)width, (float)height);
-        }
-
         public static CTRRectangle MakeRectangle(float xParam, float yParam, float width, float height)
         {
             return new CTRRectangle(xParam, yParam, width, height);

@@ -75,11 +75,6 @@ namespace CutTheRope.Framework.Helpers
             return (uint)random_.Next(int.MinValue, int.MaxValue);
         }
 
-        public static float FIT_TO_BOUNDARIES(double V, double MINV, double MAXV)
-        {
-            return FIT_TO_BOUNDARIES((float)V, (float)MINV, (float)MAXV);
-        }
-
         public static float FIT_TO_BOUNDARIES(float V, float MINV, float MAXV)
         {
             return Math.Max(Math.Min(V, MAXV), MINV);
@@ -288,11 +283,6 @@ namespace CutTheRope.Framework.Helpers
         public static Vector VectSub(Vector v1, Vector v2)
         {
             return new Vector(v1.X - v2.X, v1.Y - v2.Y);
-        }
-
-        public static Vector VectMult(Vector v, double s)
-        {
-            return VectMult(v, (float)s);
         }
 
         public static Vector VectMult(Vector v, float s)

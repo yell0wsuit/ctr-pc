@@ -56,7 +56,7 @@ namespace CutTheRope.GameMain
                         particle.deltaColor.BlueColor = (endColor.BlueColor - startColor.BlueColor) / fadeThreshold;
                         particle.deltaColor.AlphaChannel = (endColor.AlphaChannel - startColor.AlphaChannel) / fadeThreshold;
                     }
-                    particle.dir = VectMult(particle.dir, 0.83);
+                    particle.dir = VectMult(particle.dir, 0.83f);
                     particle.width *= 1.015f;
                     particle.height *= 1.015f;
                 }
