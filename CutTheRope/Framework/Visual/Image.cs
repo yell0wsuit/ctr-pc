@@ -3,7 +3,6 @@ using System.Xml.Linq;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
-using CutTheRope.GameMain;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,7 +25,7 @@ namespace CutTheRope.Framework.Visual
 
         public static Vector GetQuadOffset(int textureID, int quad)
         {
-            CTRTexture2D texture = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
+            CTRTexture2D texture = Application.GetTexture(GetResourceName(textureID));
             return texture.quadOffsets != null ? texture.quadOffsets[quad] : Vect(0, 0);
         }
 
@@ -124,7 +123,7 @@ namespace CutTheRope.Framework.Visual
 
         public static Image Image_createWithResIDQuad(int r, int q)
         {
-            Image image = Image_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
+            Image image = Image_create(Application.GetTexture(GetResourceName(r)));
             image.SetDrawQuad(q);
             return image;
         }

@@ -365,7 +365,7 @@ namespace CutTheRope.GameMain
 
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(string resourceName, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
-            int res = ResourceNameTranslator.ToResourceId(resourceName);
+            int res = GetResourceId(resourceName);
             BaseElement baseElement = CreateElementWithResIdquad(res, quad);
             BaseElement baseElement2 = CreateElementWithResIdquad(res, quad);
             BaseElement baseElement3 = CreateElementWithResIdquad(res, quad2);

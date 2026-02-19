@@ -1,20 +1,18 @@
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
-using CutTheRope.GameMain;
 
 namespace CutTheRope.Commons
 {
     internal sealed class HLiftScrollbar : Image
     {
-        public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
+        public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(string resourceName, int bq, int lq, int lqp)
         {
-            string resourceName = ResourceNameTranslator.TranslateLegacyId(resID);
             if (InitWithTexture(Application.GetTexture(resourceName)) != null)
             {
                 SetDrawQuad(bq);
-                Image up = Image_createWithResIDQuad(resID, lq);
-                Image image = Image_createWithResIDQuad(resID, lqp);
-                Vector relativeQuadOffset = GetRelativeQuadOffset(resID, lq, lqp);
+                Image up = Image_createWithResIDQuad(resourceName, lq);
+                Image image = Image_createWithResIDQuad(resourceName, lqp);
+                Vector relativeQuadOffset = GetRelativeQuadOffset(resourceName, lq, lqp);
                 image.x += relativeQuadOffset.X;
                 image.y += relativeQuadOffset.Y;
                 lift = (Lift)new Lift().InitWithUpElementDownElementandID(up, image, 0);
@@ -31,6 +29,11 @@ namespace CutTheRope.Commons
                 activeSpoint = 0;
             }
             return this;
+        }
+
+        public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
+        {
+            return InitWithResIDBackQuadLiftQuadLiftQuadPressed(GetResourceName(resID), bq, lq, lqp);
         }
 
         public Vector GetScrollPoint(int i)
