@@ -1,0 +1,93 @@
+{
+    "frames": [
+        {
+            "filename": "frame_00_button_active.png",
+            "frame": { "x": 293, "y": 169, "w": 120, "h": 124 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 90, "y": 88, "w": 120, "h": 124 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_01_button_idle.png",
+            "frame": { "x": 293, "y": 295, "w": 120, "h": 124 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 90, "y": 88, "w": 120, "h": 124 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_02_button_none.png",
+            "frame": { "x": 137, "y": 358, "w": 102, "h": 106 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 101, "y": 98, "w": 102, "h": 106 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_03_bone_tile.png",
+            "frame": { "x": 242, "y": 339, "w": 24, "h": 53 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 136, "y": 122, "w": 24, "h": 53 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_04_base.png",
+            "frame": { "x": 1, "y": 191, "w": 160, "h": 165 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 71, "y": 72, "w": 160, "h": 165 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_05_hand_idle.png",
+            "frame": { "x": 216, "y": 1, "w": 200, "h": 166 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 33, "y": 59, "w": 200, "h": 166 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_06_hand_body_active.png",
+            "frame": { "x": 1, "y": 358, "w": 134, "h": 117 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 60, "y": 94, "w": 134, "h": 117 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_07_fingers_hand_active.png",
+            "frame": { "x": 163, "y": 191, "w": 128, "h": 146 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 104, "y": 72, "w": 128, "h": 146 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_08_put_candy_here.png",
+            "frame": { "x": 216, "y": 169, "w": 3, "h": 3 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 3, "h": 3 },
+            "sourceSize": { "w": 298, "h": 298 }
+        },
+        {
+            "filename": "frame_09_clap_effect.png",
+            "frame": { "x": 1, "y": 1, "w": 213, "h": 188 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 53, "y": 55, "w": 213, "h": 188 },
+            "sourceSize": { "w": 298, "h": 298 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_robohand.png",
+        "format": "RGBA8888",
+        "size": { "w": 417, "h": 476 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:df85bb69cd245216af2d7d1a85d68326:3bb8395c45a2984c08eb34b8166b4420:dfde81b0ab45e85ccca07c743a767f09$"
+    }
+}

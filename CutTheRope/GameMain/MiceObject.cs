@@ -103,6 +103,7 @@ namespace CutTheRope.GameMain
             }
 
             scene.ReleaseAllRopes(isLeft);
+            scene.DetachActiveHands();
             carriedStar = star;
             carriedCandy = candy;
             activeMouse.GrabCandy(star, candy);
@@ -115,6 +116,21 @@ namespace CutTheRope.GameMain
         public bool ActiveMouseHasCandy()
         {
             return activeMouse?.HasCandy ?? false;
+        }
+
+        /// <summary>
+        /// Forces the active mouse to drop candy and retreat back into its hole.
+        /// </summary>
+        public void ForceDropCandy()
+        {
+            if (activeMouse == null || !activeMouse.HasCandy)
+            {
+                return;
+            }
+
+            activeMouse.DropCandyAndRetreat();
+            carriedStar = null;
+            carriedCandy = null;
         }
 
         /// <summary>

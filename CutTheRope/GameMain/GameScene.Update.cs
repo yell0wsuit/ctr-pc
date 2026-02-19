@@ -131,6 +131,18 @@ namespace CutTheRope.GameMain
             {
                 time += delta;
             }
+            bool handHoldingCandy = false;
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                    {
+                        handHoldingCandy = true;
+                        break;
+                    }
+                }
+            }
             if (bungees.Count > 0)
             {
                 bool flag = false;
@@ -388,7 +400,7 @@ namespace CutTheRope.GameMain
                         lastCandyRotateDeltaR *= 0.98f;
                     }
                 }
-                else if (!flag && !noCandy)
+                else if (!flag && !noCandy && !handHoldingCandy)
                 {
                     candyMain.rotation += MIN(5.0, lastCandyRotateDelta);
                     lastCandyRotateDelta *= 0.98f;
@@ -800,6 +812,9 @@ namespace CutTheRope.GameMain
                     OperatePump(pump);
                 }
             }
+
+            UpdateHands(delta);
+
             foreach (SteamTube steamTube in tubes)
             {
                 if (steamTube != null)
@@ -832,6 +847,7 @@ namespace CutTheRope.GameMain
                     candy.AddTimelinewithID(timeline, 0);
                     candy.PlayTimeline(0);
                     ReleaseAllRopes(false);
+                    DetachActiveHands();
                     if (candyBubble != null)
                     {
                         PopCandyBubble(false);
@@ -989,6 +1005,7 @@ namespace CutTheRope.GameMain
                             sock4.state = Sock.SOCK_THROWING;
                             sock4.idleTimeout = 0.8f;
                             ReleaseAllRopes(false);
+                            DetachActiveHands();
                             savedSockSpeed = 0.9f * VectLength(star.v);
                             savedSockSpeed *= 1.4f;
                             targetSock = sock4;
@@ -1097,7 +1114,7 @@ namespace CutTheRope.GameMain
                                 if (bungee != null)
                                 {
                                     Bungee rope = bungee.rope;
-                                    if (rope != null && rope.tail == star && rope.cut == -1 && rope.relaxed > 0)
+                                    if (rope != null && rope.tail == star && rope.cut == -1 && rope.relaxed > 0 && !handHoldingCandy)
                                     {
                                         ropeRelaxed = true;
                                         ConstraintedPoint anchor = rope.bungeeAnchor;
@@ -1141,7 +1158,7 @@ namespace CutTheRope.GameMain
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
-                        if (Mover.MoveVariableToTarget(ref dist, 0f, 200f, delta))
+                        if (handHoldingCandy || Mover.MoveVariableToTarget(ref dist, 0f, 200f, delta))
                         {
                             rocket.state = Rocket.STATE_ROCKET_FLY;
                         }
@@ -1154,8 +1171,17 @@ namespace CutTheRope.GameMain
                     {
                         rocket.mover?.Pause();
                         rocket.startRotation = rocket.rotation;
-                        rocket.point.AddConstraintwithRestLengthofType(star, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
-                        rocket.state = Rocket.STATE_ROCKET_DIST;
+                        if (handHoldingCandy)
+                        {
+                            rocket.point.pos = star.pos;
+                            rocket.point.AddConstraintwithRestLengthofType(star, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            rocket.state = Rocket.STATE_ROCKET_FLY;
+                        }
+                        else
+                        {
+                            rocket.point.AddConstraintwithRestLengthofType(star, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            rocket.state = Rocket.STATE_ROCKET_DIST;
+                        }
                         lastCandyRotateDelta = 0f;
                         Vector deltaPos = VectSub(star.pos, star.prevPos);
                         star.prevPos = VectAdd(star.prevPos, VectDiv(deltaPos, star.disableGravity ? 2f : 1.25f));
@@ -1301,6 +1327,7 @@ namespace CutTheRope.GameMain
                         _ = aniPool.AddChild(candyBreak);
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
                         ReleaseAllRopes(flag5);
+                        DetachActiveHands();
                         DetachActiveSnails();
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
@@ -1343,6 +1370,7 @@ namespace CutTheRope.GameMain
                 }
                 if (flag8)
                 {
+                    DetachActiveHands();
                     if (twoParts != 2)
                     {
                         if (flag7)
@@ -1726,6 +1754,155 @@ namespace CutTheRope.GameMain
                 }
                 restartState = -1;
             }
+        }
+
+        private void UpdateHands(float delta)
+        {
+            if (hands == null || hands.Count <= 0)
+            {
+                return;
+            }
+
+            int selectedHandIndex = hands.Count - 1;
+            bool reorderHands = false;
+
+            foreach (MechanicalHand hand in hands)
+            {
+                if (hand == null)
+                {
+                    continue;
+                }
+
+                hand.Update(delta);
+                if (hand.state == MechanicalHand.STATE_HAND_CANDY)
+                {
+                    candy.drawX += hand.cPoint.pos.X - star.pos.X;
+                    candy.drawY += hand.cPoint.pos.Y - star.pos.Y;
+                    star.pos = hand.cPoint.pos;
+
+                    if (hand.doRotateCandy)
+                    {
+                        if (hand.rotatingSegment != null)
+                        {
+                            candyMain.rotation += hand.rotatingSegment.RotationDelta();
+                        }
+                    }
+                    else if (activeRocket != null)
+                    {
+                        _ = hand.IsRotating();
+                        hand.doRotateCandy = true;
+                    }
+                }
+
+                float distance = VectDistance(hand.cPoint.pos, star.pos);
+                foreach (MechanicalHand otherHand in hands)
+                {
+                    if (otherHand != null && otherHand != hand && otherHand.state == MechanicalHand.STATE_HAND_CANDY)
+                    {
+                        distance = VectDistance(hand.cPoint.pos, otherHand.cPoint.pos);
+                    }
+                }
+
+                if (hand.state == MechanicalHand.STATE_HAND_IDLE && distance < MechanicalHand.MH_GRAB_DISTANCE && !noCandy && !isCandyInLantern && targetSock == null)
+                {
+                    MechanicalHand releasedHand = null;
+                    if (hands.Count > 1)
+                    {
+                        foreach (MechanicalHand otherHand in hands)
+                        {
+                            if (otherHand != null && otherHand != hand && otherHand.state == MechanicalHand.STATE_HAND_CANDY)
+                            {
+                                otherHand.cPoint.RemoveConstraint(star);
+                                otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
+                                otherHand.releaseSoundPlayed = false;
+                                releasedHand = otherHand;
+                                reorderHands = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    hand.cPoint.AddConstraintwithRestLengthofType(star, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    hand.state = MechanicalHand.STATE_HAND_CANDY;
+                    hand.releaseSoundPlayed = false;
+                    selectedHandIndex = hands.GetObjectIndex(hand);
+
+                    if (candyBubble != null)
+                    {
+                        candyBubble = null;
+                        candyBubbleAnimation.visible = false;
+                        Vector clawPosition = hand.ClawPosition();
+                        PopBubbleAtXY(clawPosition.X, clawPosition.Y);
+                    }
+
+                    if (activeRocket != null)
+                    {
+                        int count = Preferences.GetIntForKey("PREFS_GRAB_ROCKET") + 1;
+                        Preferences.SetIntForKey(count, "PREFS_GRAB_ROCKET", false);
+                        if (count >= 50)
+                        {
+                            CTRRootController.PostAchievementName("acRoboMaster", ACHIEVEMENT_STRING("\"Robo Master\""));
+                        }
+                    }
+
+                    if (releasedHand != null)
+                    {
+                        Vector clapPosition = VectMult(VectAdd(releasedHand.ClawPosition(), hand.ClawPosition()), 0.5f);
+                        PlayMechanicalHandClapEffectAt(clapPosition);
+                    }
+
+                    DetachActiveSnails();
+                    miceManager?.ForceDropCandy();
+                    hand.AnimateCatchWithCandyPartsandAnimationsPool([candy, candyMain, candyTop], aniPool);
+                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
+                }
+
+                if (hand.state == MechanicalHand.STATE_HAND_RELEASE && distance > MechanicalHand.MH_RELEASE_DISTANCE)
+                {
+                    hand.state = MechanicalHand.STATE_HAND_IDLE;
+                    if (!hand.releaseSoundPlayed)
+                    {
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+                    }
+                    hand.releaseSoundPlayed = false;
+                }
+            }
+
+            if (reorderHands && selectedHandIndex >= 0 && selectedHandIndex != hands.Count - 1)
+            {
+                MechanicalHand selectedHand = hands.ObjectAtIndex(selectedHandIndex);
+                if (selectedHand != null)
+                {
+                    hands.RemoveObject(selectedHand);
+                    _ = hands.AddObject(selectedHand);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Spawns a short-lived clap effect for hand handoff moments.
+        /// </summary>
+        /// <param name="position">World position where the effect should appear.</param>
+        private void PlayMechanicalHandClapEffectAt(Vector position)
+        {
+            Image clapEffect = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 9);
+            clapEffect.DoRestoreCutTransparency();
+            clapEffect.anchor = 18;
+            clapEffect.parentAnchor = 18;
+            clapEffect.x = position.X;
+            clapEffect.y = position.Y;
+
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.8, 0.8, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.12, 1.12, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.05));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.06));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.12));
+            timeline.delegateTimelineDelegate = aniPool;
+
+            int timelineId = clapEffect.AddTimeline(timeline);
+            clapEffect.PlayTimeline(timelineId);
+            _ = aniPool.AddChild(clapEffect);
         }
 
         /// <summary>

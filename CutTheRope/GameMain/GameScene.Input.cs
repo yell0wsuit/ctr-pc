@@ -213,6 +213,50 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
+            bool handledHandInput = false;
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand == null)
+                    {
+                        continue;
+                    }
+
+                    if (hand.state == MechanicalHand.STATE_HAND_CANDY && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_TOUCH_RADIUS)
+                    {
+                        hand.cPoint.RemoveConstraint(star);
+                        hand.state = MechanicalHand.STATE_HAND_RELEASE;
+                        hand.doRotateCandy = false;
+                        hand.releaseSoundPlayed = true;
+                        hand.AnimateReleaseWithAnimationsPool(aniPool);
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+                        return true;
+                    }
+
+                    if (hand.segments == null)
+                    {
+                        continue;
+                    }
+
+                    for (int i = hand.segments.Count - 1; i >= 0; i--)
+                    {
+                        MechanicalHandSegment segment = hand.SegmentAtIndex(i);
+                        if (segment?.button != null && segment.button.OnTouchDownXY(world.X, world.Y))
+                        {
+                            segment.Rotate();
+                            hand.rotatingSegment = segment;
+                            handledHandInput = true;
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpHandRotate);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (handledHandInput)
+            {
+                return true;
+            }
             foreach (Lantern lantern in Lantern.GetAllLanterns())
             {
                 if (lantern != null && lantern.OnTouchDown(tx + camera.pos.X, ty + camera.pos.Y))
@@ -394,6 +438,21 @@ namespace CutTheRope.GameMain
                 }
                 gravityTouchDown = -1;
             }
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand?.segments == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (MechanicalHandSegment segment in hand.segments)
+                    {
+                        _ = (segment?.button?.OnTouchUpXY(tx + camera.pos.X, ty + camera.pos.Y));
+                    }
+                }
+            }
             foreach (object obj in spikes)
             {
                 Spikes spike = (Spikes)obj;
@@ -499,6 +558,21 @@ namespace CutTheRope.GameMain
                 if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0.0 && (double)VectDistance(startPos[ti], vector) > 10.0)
                 {
                     pump3.pumpTouchTimer = 0f;
+                }
+            }
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand?.segments == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (MechanicalHandSegment segment in hand.segments)
+                    {
+                        _ = (segment?.button?.OnTouchMoveXY(world.X, world.Y));
+                    }
                 }
             }
             if (rotatedCircles != null)
