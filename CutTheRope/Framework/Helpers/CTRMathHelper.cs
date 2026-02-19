@@ -176,12 +176,12 @@ namespace CutTheRope.Framework.Helpers
 
         public static float DEGREES_TO_RADIANS(float D)
         {
-            return (float)((double)D * 3.141592653589793 / 180.0);
+            return (float)(D * 3.141592653589793 / 180.0);
         }
 
         public static float RADIANS_TO_DEGREES(float R)
         {
-            return (float)((double)(R * 180f) / 3.141592653589793);
+            return (float)(R * 180f / 3.141592653589793);
         }
 
         private static bool Overlaps1Way(Vector[] corner, Vector[] other)
