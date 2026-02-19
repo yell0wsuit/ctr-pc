@@ -23,108 +23,112 @@ namespace CutTheRope.GameMain
             mapOffsetX = 0;
             mapOffsetY = 0;
 
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            CTRRootController rc = (CTRRootController)Application.SharedRootController();
 
             // Single pass through XML metadata nodes
             foreach (XElement xmlnode in mapNode.Elements())
             {
                 foreach (XElement item2 in xmlnode.Elements())
                 {
-                    if (item2.Name.LocalName == "map")
+                    switch (item2.Name.LocalName)
                     {
-                        mapWidth = item2.AttributeAsNSString("width").FloatValue();
-                        mapHeight = item2.AttributeAsNSString("height").FloatValue();
-                        offsetX = (2560f - (mapWidth * scale)) / 2f;
-                        mapWidth *= scale;
-                        mapHeight *= scale;
+                        case "map":
+                            mapWidth = item2.AttributeAsNSString("width").FloatValue();
+                            mapHeight = item2.AttributeAsNSString("height").FloatValue();
+                            offsetX = (2560f - (mapWidth * scale)) / 2f;
+                            mapWidth *= scale;
+                            mapHeight *= scale;
 
-                        if (PackConfig.GetEarthBg(cTRRootController.GetPack()))
-                        {
-                            earthAnims = new DynamicArray<Image>();
-                            if (mapWidth > SCREEN_WIDTH)
+                            if (PackConfig.GetEarthBg(rc.GetPack()))
                             {
-                                CreateEarthImageWithOffsetXY(back.width, 0f);
+                                earthAnims = new DynamicArray<Image>();
+                                if (mapWidth > SCREEN_WIDTH)
+                                {
+                                    CreateEarthImageWithOffsetXY(back.width, 0f);
+                                }
+                                if (mapHeight > SCREEN_HEIGHT)
+                                {
+                                    CreateEarthImageWithOffsetXY(0f, back.height);
+                                }
+                                CreateEarthImageWithOffsetXY(0f, 0f);
                             }
-                            if (mapHeight > SCREEN_HEIGHT)
+                            break;
+                        case "gameDesign":
+                            mapOffsetX = item2.AttributeAsNSString("mapOffsetX").IntValue();
+                            mapOffsetY = item2.AttributeAsNSString("mapOffsetY").IntValue();
+                            special = item2.AttributeAsNSString("special").IntValue();
+                            ropePhysicsSpeed = item2.AttributeAsNSString("ropePhysicsSpeed").FloatValue();
+                            nightLevel = item2.AttributeAsNSString("nightLevel").IsEqualToString("true");
+                            twoParts = !item2.AttributeAsNSString("twoParts").IsEqualToString("true") ? 2 : 0;
+                            waterLevel = item2.AttributeAsNSString("water").FloatValue();
+                            if (waterLevel != 0f)
                             {
-                                CreateEarthImageWithOffsetXY(0f, back.height);
+                                waterLevel *= scale;
                             }
-                            CreateEarthImageWithOffsetXY(0f, 0f);
-                        }
-                    }
-                    else if (item2.Name.LocalName == "gameDesign")
-                    {
-                        mapOffsetX = item2.AttributeAsNSString("mapOffsetX").IntValue();
-                        mapOffsetY = item2.AttributeAsNSString("mapOffsetY").IntValue();
-                        special = item2.AttributeAsNSString("special").IntValue();
-                        ropePhysicsSpeed = item2.AttributeAsNSString("ropePhysicsSpeed").FloatValue();
-                        nightLevel = item2.AttributeAsNSString("nightLevel").IsEqualToString("true");
-                        twoParts = !item2.AttributeAsNSString("twoParts").IsEqualToString("true") ? 2 : 0;
-                        waterLevel = item2.AttributeAsNSString("water").FloatValue();
-                        if (waterLevel != 0f)
-                        {
-                            waterLevel *= scale;
-                        }
-                        waterSpeed = item2.AttributeAsNSString("waterSpeed").FloatValue() * scale;
-                        if (waterLevel > 0f)
-                        {
-                            float waterWorldX = offsetX + mapOffsetX;
-                            float waterWorldWidth = mapWidth;
-                            if (waterWorldWidth < SCREEN_WIDTH)
+                            waterSpeed = item2.AttributeAsNSString("waterSpeed").FloatValue() * scale;
+                            if (waterLevel > 0f)
                             {
-                                waterWorldX = 0f;
-                                waterWorldWidth = SCREEN_WIDTH;
-                            }
+                                float waterWorldX = offsetX + mapOffsetX;
+                                float waterWorldWidth = mapWidth;
+                                if (waterWorldWidth < SCREEN_WIDTH)
+                                {
+                                    waterWorldX = 0f;
+                                    waterWorldWidth = SCREEN_WIDTH;
+                                }
 
-                            waterLayer = WaterElement.CreateWithWidthHeight(waterWorldWidth, waterLevel);
-                            if (waterLayer != null)
-                            {
-                                waterLayer.x = waterWorldX;
-                                waterLayer.y = offsetY + mapOffsetY + mapHeight - waterLevel;
+                                waterLayer = WaterElement.CreateWithWidthHeight(waterWorldWidth, waterLevel);
+                                if (waterLayer != null)
+                                {
+                                    waterLayer.x = waterWorldX;
+                                    waterLayer.y = offsetY + mapOffsetY + mapHeight - waterLevel;
+                                }
+                                else
+                                {
+                                    // Disable water behavior when the texture atlas is not available.
+                                    waterLevel = 0f;
+                                    waterSpeed = 0f;
+                                }
                             }
-                            else
+                            ropePhysicsSpeed *= 1.4f;
+                            break;
+                        case "candyL":
+                            starL.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                            starL.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                             {
-                                // Disable water behavior when the texture atlas is not available.
-                                waterLevel = 0f;
-                                waterSpeed = 0f;
+                                int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                                string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+                                candyL = GameObject.GameObject_createWithResIDQuad(candyResource, 8);
                             }
-                        }
-                        ropePhysicsSpeed *= 1.4f;
-                    }
-                    else if (item2.Name.LocalName == "candyL")
-                    {
-                        starL.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                        starL.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                        int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
-                        string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-                        candyL = GameObject.GameObject_createWithResIDQuad(candyResource, 8);
-                        candyL.scaleX = candyL.scaleY = 0.71f;
-                        candyL.passTransformationsToChilds = false;
-                        candyL.DoRestoreCutTransparency();
-                        candyL.anchor = 18;
-                        candyL.x = starL.pos.X;
-                        candyL.y = starL.pos.Y;
-                        candyL.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
-                    }
-                    else if (item2.Name.LocalName == "candyR")
-                    {
-                        starR.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                        starR.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                        int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
-                        string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-                        candyR = GameObject.GameObject_createWithResIDQuad(candyResource, 9);
-                        candyR.scaleX = candyR.scaleY = 0.71f;
-                        candyR.passTransformationsToChilds = false;
-                        candyR.DoRestoreCutTransparency();
-                        candyR.anchor = 18;
-                        candyR.x = starR.pos.X;
-                        candyR.y = starR.pos.Y;
-                        candyR.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
-                    }
-                    else if (item2.Name.LocalName == "candy")
-                    {
-                        star.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                        star.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                            candyL.scaleX = candyL.scaleY = 0.71f;
+                            candyL.passTransformationsToChilds = false;
+                            candyL.DoRestoreCutTransparency();
+                            candyL.anchor = 18;
+                            candyL.x = starL.pos.X;
+                            candyL.y = starL.pos.Y;
+                            candyL.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
+                            break;
+                        case "candyR":
+                            starR.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                            starR.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                            {
+                                int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                                string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+                                candyR = GameObject.GameObject_createWithResIDQuad(candyResource, 9);
+                            }
+                            candyR.scaleX = candyR.scaleY = 0.71f;
+                            candyR.passTransformationsToChilds = false;
+                            candyR.DoRestoreCutTransparency();
+                            candyR.anchor = 18;
+                            candyR.x = starR.pos.X;
+                            candyR.y = starR.pos.Y;
+                            candyR.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
+                            break;
+                        case "candy":
+                            star.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+                            star.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
