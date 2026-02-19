@@ -1177,7 +1177,13 @@ namespace CutTheRope.GameMain
                             rocket.point.ChangeRestLengthToFor(dist, star);
                         }
                     }
-                    if (rocket.state == Rocket.STATE_ROCKET_IDLE && GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) && !noCandy && !(miceManager?.ActiveMouseHasCandy() ?? false))
+                    if (
+                        rocket.state == Rocket.STATE_ROCKET_IDLE &&
+                        GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) &&
+                        !noCandy &&
+                        !isCandyInLantern &&
+                        !(miceManager?.ActiveMouseHasCandy() ?? false)
+                    )
                     {
                         rocket.mover?.Pause();
                         rocket.startRotation = rocket.rotation;
