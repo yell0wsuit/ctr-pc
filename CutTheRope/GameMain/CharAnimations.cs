@@ -38,12 +38,6 @@ namespace CutTheRope.GameMain
             charAnimation.SetEnabled(false);
         }
 
-        public void AddImage(int resId)
-        {
-            string resourceName = ResourceNameTranslator.TranslateLegacyId(resId);
-            AddImage(resourceName);
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -168,22 +162,6 @@ namespace CutTheRope.GameMain
                 _ = dynamicArray.AddObject(CTRAction.CreateAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
             }
             timeline.AddKeyFrame(KeyFrame.MakeAction(dynamicArray, d));
-        }
-
-        public void PlayAnimationtimeline(int resID, int t)
-        {
-            if (GetCurrentTimeline() != null)
-            {
-                StopCurrentTimeline();
-            }
-            foreach (Animation anim in animations)
-            {
-                anim.SetEnabled(false);
-            }
-            Animation animation = GetAnimation(resID);
-            animation.SetEnabled(true);
-            color = animation == this ? RGBAColor.solidOpaqueRGBA : RGBAColor.transparentRGBA;
-            animation.PlayTimeline(t);
         }
 
         public void PlayAnimationtimeline(string resourceName, int t)

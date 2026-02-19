@@ -6,11 +6,6 @@ namespace CutTheRope.Commons
 {
     internal sealed class HLiftScrollbar : Image
     {
-        public static HLiftScrollbar CreateWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
-        {
-            return new HLiftScrollbar().InitWithResIDBackQuadLiftQuadLiftQuadPressed(resID, bq, lq, lqp);
-        }
-
         public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
             string resourceName = ResourceNameTranslator.TranslateLegacyId(resID);

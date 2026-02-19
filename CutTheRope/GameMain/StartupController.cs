@@ -74,10 +74,6 @@ namespace CutTheRope.GameMain
             MoviePlaybackFinished(null);
         }
 
-        public void ResourceLoaded(int resName)
-        {
-        }
-
         public void AllResourcesLoaded()
         {
             // Just set flag - Update() will handle transition after animation completes
