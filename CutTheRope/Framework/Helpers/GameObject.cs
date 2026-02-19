@@ -14,22 +14,10 @@ namespace CutTheRope.Framework.Helpers
 {
     internal class GameObject : Animation
     {
-        public static GameObject GameObject_createWithResID(int r)
-        {
-            return GameObject_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         private static GameObject GameObject_create(CTRTexture2D t)
         {
             GameObject gameObject = new();
             _ = gameObject.InitWithTexture(t);
-            return gameObject;
-        }
-
-        public static GameObject GameObject_createWithResIDQuad(int r, int q)
-        {
-            GameObject gameObject = GameObject_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-            gameObject.SetDrawQuad(q);
             return gameObject;
         }
 

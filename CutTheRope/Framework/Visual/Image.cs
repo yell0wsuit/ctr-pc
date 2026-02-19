@@ -172,11 +172,6 @@ namespace CutTheRope.Framework.Visual
             return Image_create(Application.GetTexture(resourceName));
         }
 
-        public static Image Image_createWithResID(int r)
-        {
-            return Image_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         public static Image Image_createWithResIDQuad(int r, int q)
         {
             Image image = Image_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));

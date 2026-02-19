@@ -29,21 +29,9 @@ namespace CutTheRope.GameMain
             return (Star)new Star().InitWithTexture(t);
         }
 
-        public static Star Star_createWithResID(int r)
-        {
-            return Star_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         public static Star Star_createWithResID(string resourceName)
         {
             return Star_create(Application.GetTexture(resourceName));
-        }
-
-        public static Star Star_createWithResIDQuad(int r, int q)
-        {
-            Star star = Star_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-            star.SetDrawQuad(q);
-            return star;
         }
 
         public Star()

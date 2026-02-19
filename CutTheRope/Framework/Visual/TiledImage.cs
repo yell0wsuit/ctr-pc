@@ -1,5 +1,4 @@
 using CutTheRope.Framework.Core;
-using CutTheRope.GameMain;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -25,11 +24,6 @@ namespace CutTheRope.Framework.Visual
         public static TiledImage TiledImage_createWithResID(string resourceName)
         {
             return TiledImage_create(Application.GetTexture(resourceName));
-        }
-
-        public static TiledImage TiledImage_createWithResID(int r)
-        {
-            return TiledImage_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         private int q;

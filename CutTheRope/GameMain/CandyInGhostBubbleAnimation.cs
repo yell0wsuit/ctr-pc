@@ -5,11 +5,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CandyInGhostBubbleAnimation : Animation
     {
-        public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(int resId)
-        {
-            return CIGBAnimation_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(resId)));
-        }
-
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(string resourceName)
         {
             return CIGBAnimation_create(Application.GetTexture(resourceName));
@@ -18,13 +13,6 @@ namespace CutTheRope.GameMain
         public static CandyInGhostBubbleAnimation CIGBAnimation_create(CTRTexture2D texture)
         {
             return (CandyInGhostBubbleAnimation)new CandyInGhostBubbleAnimation().InitWithTexture(texture);
-        }
-
-        public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResIDQuad(int resId, int quad)
-        {
-            CandyInGhostBubbleAnimation animation = CIGBAnimation_createWithResID(resId);
-            animation?.SetDrawQuad(quad);
-            return animation;
         }
 
         public void AddSupportingCloudsTimelines()
