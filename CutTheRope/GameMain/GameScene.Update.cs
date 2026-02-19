@@ -833,6 +833,11 @@ namespace CutTheRope.GameMain
                 if (!noCandy && !isCandyInLantern && lantern.lanternState == Lantern.LanternStateInactive && VectDistance(star.pos, Vect(lantern.x, lantern.y)) < 82f)
                 {
                     isCandyInLantern = true;
+                    if (activeRocket != null)
+                    {
+                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                        activeRocket.StopAnimation();
+                    }
                     candy.passTransformationsToChilds = true;
                     candyMain.scaleX = candyMain.scaleY = 1f;
                     candyTop.scaleX = candyTop.scaleY = 1f;
@@ -933,6 +938,11 @@ namespace CutTheRope.GameMain
                 if (targetStar != null && targetCandy != null && !miceManager.ActiveMouseHasCandy() && miceManager.IsActiveMouseInRange(targetStar))
                 {
                     miceManager.GrabWithActiveMouse(targetStar, targetCandy, isLeft);
+                    if (activeRocket != null)
+                    {
+                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                        activeRocket.StopAnimation();
+                    }
                     TriggerSpecialTutorial(4);
                 }
             }
@@ -1167,7 +1177,13 @@ namespace CutTheRope.GameMain
                             rocket.point.ChangeRestLengthToFor(dist, star);
                         }
                     }
-                    if (rocket.state == Rocket.STATE_ROCKET_IDLE && GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) && !noCandy)
+                    if (
+                        rocket.state == Rocket.STATE_ROCKET_IDLE &&
+                        GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) &&
+                        !noCandy &&
+                        !isCandyInLantern &&
+                        !(miceManager?.ActiveMouseHasCandy() ?? false)
+                    )
                     {
                         rocket.mover?.Pause();
                         rocket.startRotation = rocket.rotation;
