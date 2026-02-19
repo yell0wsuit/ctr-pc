@@ -1219,8 +1219,7 @@ namespace CutTheRope.GameMain
                         rocket.state == Rocket.STATE_ROCKET_IDLE &&
                         GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) &&
                         !noCandy &&
-                        !isCandyInLantern &&
-                        !(miceManager?.ActiveMouseHasCandy() ?? false)
+                        !isCandyInLantern
                     )
                     {
                         rocket.mover?.Pause();
