@@ -1224,7 +1224,7 @@ namespace CutTheRope.GameMain
                     {
                         rocket.mover?.Pause();
                         rocket.startRotation = rocket.rotation;
-                        if(miceManager != null && miceManager.ActiveMouseHasCandy())
+                        if (miceManager != null && miceManager.ActiveMouseHasCandy())
                         {
                             rocket.point.pos = star.pos;
                             rocket.point.AddConstraintwithRestLengthofType(star, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
