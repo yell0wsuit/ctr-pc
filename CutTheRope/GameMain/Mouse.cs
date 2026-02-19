@@ -13,6 +13,8 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class Mouse : BaseElement, ITimelineDelegate
     {
+        private Rocket carriedRocket;
+        private float carriedRocketAngleOffset;
         /// <summary>
         /// Plays mouth movement animations along a predefined path to simulate
         /// candy entry and exit movements.
@@ -237,11 +239,13 @@ namespace CutTheRope.GameMain
         /// <param name="sprites">Shared sprite resources for rendering.</param>
         /// <param name="carriedCandy">Optional candy object to carry from spawn.</param>
         /// <param name="carriedStar">Optional star point constraint for the candy.</param>
-        public void Spawn(SharedMouseSprites sprites, GameObject carriedCandy, ConstraintedPoint carriedStar)
+        public void Spawn(SharedMouseSprites sprites, GameObject carriedCandy, ConstraintedPoint carriedStar, Rocket carriedRocket, float rocketOffset)
         {
             sharedSprites = sprites;
             this.carriedCandy = carriedCandy;
             this.carriedStar = carriedStar;
+            this.carriedRocket = carriedRocket;
+            carriedRocketAngleOffset = rocketOffset;
 
             mouseGroup.RemoveAllChilds();
             _ = mouseGroup.AddChild(sprites.Container);
@@ -293,10 +297,12 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="star">The constrained star point to attach.</param>
         /// <param name="candy">The candy game object being grabbed.</param>
-        public void GrabCandy(ConstraintedPoint star, GameObject candy)
+        public void GrabCandy(ConstraintedPoint star, GameObject candy, Rocket activeRocket, float rocketOffset)
         {
             carriedStar = star;
             carriedCandy = candy;
+            carriedRocket = activeRocket;
+            carriedRocketAngleOffset = rocketOffset;
 
             star.disableGravity = true;
             star.v = default;
@@ -325,11 +331,15 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-
-            carriedStar.disableGravity = false;
+            if (carriedRocket == null)
+            {
+                carriedStar.disableGravity = false;
+            }
             carriedStar.prevPos = carriedStar.pos;
             carriedStar = null;
             carriedCandy = null;
+            carriedRocket = null;
+            carriedRocketAngleOffset = 0f;
             grabAnimating = false;
             CTRSoundMgr.PlaySound(Resources.Snd.MouseTap);
         }
@@ -419,6 +429,21 @@ namespace CutTheRope.GameMain
 
             mouseGroup.x = x;
             mouseGroup.y = y;
+
+            if (carriedStar != null && carriedRocket != null)
+            {
+                Rocket rocket = carriedRocket;
+                Vector starPos = carriedStar.pos;
+
+                rocket.point.pos = starPos;
+                rocket.point.prevPos = starPos;
+                rocket.x = starPos.X;
+                rocket.y = starPos.Y;
+                float newRot = angleDeg + carriedRocketAngleOffset;
+                rocket.startRotation = newRot;
+                rocket.rotation = newRot;
+                rocket.UpdateRotation();
+            }
         }
 
         /// <summary>
@@ -519,13 +544,17 @@ namespace CutTheRope.GameMain
         /// <returns>
         /// A tuple containing the carried star point and candy object, both may be null.
         /// </returns>
-        public (ConstraintedPoint star, GameObject candy) DetachCarriedCandy()
+        public (ConstraintedPoint star, GameObject candy, Rocket rocket, float rocketOffset) DetachCarriedCandy()
         {
             ConstraintedPoint star = carriedStar;
             GameObject candy = carriedCandy;
+            Rocket rocket = carriedRocket;
+            float rocketOffset = carriedRocketAngleOffset;
             carriedStar = null;
             carriedCandy = null;
-            return (star, candy);
+            carriedRocket = null;
+            carriedRocketAngleOffset = 0f;
+            return (star, candy, rocket, rocketOffset);
         }
 
         /// <summary>

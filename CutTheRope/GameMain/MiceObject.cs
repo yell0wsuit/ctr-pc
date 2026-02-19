@@ -68,7 +68,7 @@ namespace CutTheRope.GameMain
             {
                 activeMouse = mouse;
                 activeIndex = index;
-                mouse.Spawn(sharedSpriteContainer.Value, carriedCandy, carriedStar);
+                mouse.Spawn(sharedSpriteContainer.Value, carriedCandy, carriedStar, carriedRocket, rocketOffset);
             }
         }
 
@@ -95,7 +95,7 @@ namespace CutTheRope.GameMain
         /// Indicates whether the interaction originates from the left side
         /// (used for rope release logic).
         /// </param>
-        public void GrabWithActiveMouse(ConstraintedPoint star, GameObject candy, bool isLeft)
+        public void GrabWithActiveMouse(ConstraintedPoint star, GameObject candy, bool isLeft, Rocket activeRocket)
         {
             if (activeMouse == null || activeMouse.HasCandy)
             {
@@ -106,7 +106,9 @@ namespace CutTheRope.GameMain
             scene.DetachActiveHands();
             carriedStar = star;
             carriedCandy = candy;
-            activeMouse.GrabCandy(star, candy);
+            carriedRocket = activeRocket;
+            rocketOffset = activeRocket != null ? activeRocket.rotation - activeMouse.angleDeg : 0;
+            activeMouse.GrabCandy(star, candy, activeRocket, rocketOffset);
         }
 
         /// <summary>
@@ -131,6 +133,8 @@ namespace CutTheRope.GameMain
             activeMouse.DropCandyAndRetreat();
             carriedStar = null;
             carriedCandy = null;
+            carriedRocket = null;
+            rocketOffset = 0f;
         }
 
         /// <summary>
@@ -154,6 +158,8 @@ namespace CutTheRope.GameMain
                 activeMouse.DropCandyAndRetreat();
                 carriedStar = null;
                 carriedCandy = null;
+                carriedRocket = null;
+                rocketOffset = 0f;
                 return true;
             }
 
@@ -182,13 +188,13 @@ namespace CutTheRope.GameMain
             int nextIdx = (currentIdx + 1) % ordered.Count;
             Mouse nextMouse = ordered[nextIdx];
 
-            (ConstraintedPoint star, GameObject candy) = currentMouse.DetachCarriedCandy();
+            (ConstraintedPoint star, GameObject candy, Rocket rocket, float rocketOffset) = currentMouse.DetachCarriedCandy();
             carriedStar = star;
             carriedCandy = candy;
 
             activeIndex = nextMouse.index;
             activeMouse = nextMouse;
-            nextMouse.Spawn(sharedSpriteContainer.Value, carriedCandy, carriedStar);
+            nextMouse.Spawn(sharedSpriteContainer.Value, carriedCandy, carriedStar, rocket, rocketOffset);
         }
 
         /// <summary>
@@ -310,5 +316,7 @@ namespace CutTheRope.GameMain
         private bool advanceLocked;
         private ConstraintedPoint carriedStar;
         private GameObject carriedCandy;
+        private Rocket carriedRocket;
+        private float rocketOffset;
     }
 }
