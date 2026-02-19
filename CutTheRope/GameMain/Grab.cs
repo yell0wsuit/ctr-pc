@@ -70,18 +70,18 @@ namespace CutTheRope.GameMain
             }
             CTRSoundMgr.PlaySound(Resources.Snd.Wheel);
             float num = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
-            if ((double)num > 180.0)
+            if (num > 180)
             {
                 num -= 360f;
             }
-            else if ((double)num < -180.0)
+            else if (num < -180)
             {
                 num += 360f;
             }
             wheelImage2.rotation += num;
             wheelImage3.rotation += num;
             wheelHighlight.rotation += num;
-            num = num > 0f ? MIN((double)MAX(1.0, (double)num), 4.5) : MAX((double)MIN(-1.0, (double)num), -4.5);
+            num = num > 0f ? MIN(MAX(1, num), 4.5f) : MAX(MIN(-1, num), -4.5f);
             float num2 = 0f;
             if (rope != null)
             {
@@ -159,7 +159,7 @@ namespace CutTheRope.GameMain
                     wheelImage2.scaleX = wheelImage2.scaleY = 0f;
                     return;
                 }
-                wheelImage2.scaleX = wheelImage2.scaleY = MAX(0f, MIN(1.2, 1.0 - (double)RT((double)(num2 / 1400f), (double)num2 / 700.0)));
+                wheelImage2.scaleX = wheelImage2.scaleY = MAX(0f, MIN(1.2f, 1 - RT(num2 / 1400f, num2 / 700)));
             }
         }
 

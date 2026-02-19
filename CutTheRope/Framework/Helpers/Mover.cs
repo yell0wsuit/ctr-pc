@@ -51,7 +51,7 @@ namespace CutTheRope.Framework.Helpers
                     AddPathPoint(s);
                     return;
                 }
-                float num3 = (float)(6.283185307179586 / num2);
+                float num3 = (float)(Math.PI * 2.0 / num2);
                 if (!flag)
                 {
                     num3 = 0f - num3;

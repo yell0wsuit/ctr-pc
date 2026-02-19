@@ -197,7 +197,7 @@ namespace CutTheRope.GameMain
             PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + Pump.MouthOffset, p.y);
-            v = VectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
+            v = VectRotateAround(v, p.angle - (Math.PI / 2.0), p.x, p.y);
             pumpDirt.x = v.X;
             pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);

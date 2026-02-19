@@ -391,18 +391,18 @@ namespace CutTheRope.GameMain
                 {
                     if (!flag2 && !noCandyL)
                     {
-                        candyL.rotation += MIN(5.0, lastCandyRotateDeltaL);
+                        candyL.rotation += MIN(5, lastCandyRotateDeltaL);
                         lastCandyRotateDeltaL *= 0.98f;
                     }
                     if (!flag3 && !noCandyR)
                     {
-                        candyR.rotation += MIN(5.0, lastCandyRotateDeltaR);
+                        candyR.rotation += MIN(5, lastCandyRotateDeltaR);
                         lastCandyRotateDeltaR *= 0.98f;
                     }
                 }
                 else if (!flag && !noCandy && !handHoldingCandy)
                 {
-                    candyMain.rotation += MIN(5.0, lastCandyRotateDelta);
+                    candyMain.rotation += MIN(5, lastCandyRotateDelta);
                     lastCandyRotateDelta *= 0.98f;
                 }
             }

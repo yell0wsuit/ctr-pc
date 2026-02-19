@@ -10,10 +10,10 @@ namespace CutTheRope.Framework.Helpers
     internal class CTRMathHelper
     {
         // (get) Token: 0x0600034D RID: 845 RVA: 0x000137FA File Offset: 0x000119FA
-        public static float RND_MINUS1_1 => (float)((Arc4random() / (double)ARC4RANDOM_MAX * 2.0) - 1.0);
+        public static float RND_MINUS1_1 => (Arc4random() / ARC4RANDOM_MAX * 2) - 1;
 
         // (get) Token: 0x0600034E RID: 846 RVA: 0x0001381F File Offset: 0x00011A1F
-        public static float RND_0_1 => (float)(Arc4random() / (double)ARC4RANDOM_MAX);
+        public static float RND_0_1 => Arc4random() / ARC4RANDOM_MAX;
 
         public static int MIN(int a, int b)
         {
@@ -23,11 +23,6 @@ namespace CutTheRope.Framework.Helpers
         public static float MIN(float a, float b)
         {
             return Math.Min(a, b);
-        }
-
-        public static float MIN(double a, double b)
-        {
-            return (float)Math.Min(a, b);
         }
 
         public static int MAX(int a, int b)
@@ -45,19 +40,9 @@ namespace CutTheRope.Framework.Helpers
             return (float)Math.Max(a, b);
         }
 
-        public static int ABS(int a)
-        {
-            return Math.Abs(a);
-        }
-
         public static float ABS(float a)
         {
             return Math.Abs(a);
-        }
-
-        public static float ABS(double a)
-        {
-            return (float)Math.Abs(a);
         }
 
         public static int RND(int n)
@@ -117,7 +102,7 @@ namespace CutTheRope.Framework.Helpers
                 fmSins = new float[1024];
                 for (int i = 0; i < 1024; i++)
                 {
-                    fmSins[i] = (float)Math.Sin(i * 2 * 3.141592653589793 / 1024.0);
+                    fmSins[i] = MathF.Sin(i * 2 * MathF.PI / 1024);
                 }
             }
             if (fmCoss == null)
@@ -125,21 +110,21 @@ namespace CutTheRope.Framework.Helpers
                 fmCoss = new float[1024];
                 for (int j = 0; j < 1024; j++)
                 {
-                    fmCoss[j] = (float)Math.Cos(j * 2 * 3.141592653589793 / 1024.0);
+                    fmCoss[j] = MathF.Cos(j * 2 * MathF.PI / 1024);
                 }
             }
         }
 
         public static float FmSin(float angle)
         {
-            int num = (int)((double)(angle * 1024f) / 3.141592653589793 / 2.0);
+            int num = (int)(angle * 1024 / (Math.PI * 2));
             num &= 1023;
             return fmSins[num];
         }
 
         public static float FmCos(float angle)
         {
-            int num = (int)((double)(angle * 1024f) / 3.141592653589793 / 2.0);
+            int num = (int)(angle * 1024 / (Math.PI * 2));
             num &= 1023;
             return fmCoss[num];
         }
@@ -176,12 +161,12 @@ namespace CutTheRope.Framework.Helpers
 
         public static float DEGREES_TO_RADIANS(float D)
         {
-            return (float)(D * 3.141592653589793 / 180.0);
+            return D * MathF.PI / 180;
         }
 
         public static float RADIANS_TO_DEGREES(float R)
         {
-            return (float)(R * 180f / 3.141592653589793);
+            return R * 180 / MathF.PI;
         }
 
         private static bool Overlaps1Way(Vector[] corner, Vector[] other)
@@ -312,17 +297,17 @@ namespace CutTheRope.Framework.Helpers
 
         public static float VectAngle(Vector v)
         {
-            return (float)Math.Atan((double)(v.Y / v.X));
+            return MathF.Atan(v.Y / v.X);
         }
 
         public static float VectAngleNormalized(Vector v)
         {
-            return (float)Math.Atan2(v.Y, v.X);
+            return MathF.Atan2(v.Y, v.X);
         }
 
         public static float VectLength(Vector v)
         {
-            return (float)Math.Sqrt((double)VectDot(v, v));
+            return MathF.Sqrt(VectDot(v, v));
         }
 
         public static float VectLengthsq(Vector v)
@@ -475,7 +460,7 @@ namespace CutTheRope.Framework.Helpers
             return new string(Convert.ToHexString(hash).ToLower(CultureInfo.InvariantCulture));
         }
 
-        public const double M_PI = 3.141592653589793;
+        public const double M_PI = Math.PI;
         private static readonly Random random_ = new();
 
         private static readonly long ARC4RANDOM_MAX = 4294967296L;
