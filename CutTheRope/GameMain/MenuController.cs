@@ -924,7 +924,7 @@ namespace CutTheRope.GameMain
                 _ = hBox2.AddChild(touchBaseElement);
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
-                _ = packContainer.AddScrollPointAtXY((double)num3, 0.0);
+                _ = packContainer.AddScrollPointAtXY(num3, 0f);
                 touchBaseElement.bbc = MakeRectangle(0f, 0f, -20f, 0f);
                 num3 += touchBaseElement.width + -20f;
             }
@@ -1240,7 +1240,7 @@ namespace CutTheRope.GameMain
             if (num < CTRPreferences.GetPacksCount() - 1)
             {
                 packContainer.delegateScrollableContainerProtocol = this;
-                packContainer.MoveToScrollPointmoveMultiplier(num + 1, 0.8);
+                packContainer.MoveToScrollPointmoveMultiplier(num + 1, 0.8f);
                 showNextPackStatus = true;
                 return;
             }
@@ -1280,7 +1280,7 @@ namespace CutTheRope.GameMain
             if (CTRPreferences.ShouldPlayLevelScroll())
             {
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
-                packContainer.MoveToScrollPointmoveMultiplier(0, 0.6);
+                packContainer.MoveToScrollPointmoveMultiplier(0, 0.6f);
                 CTRPreferences.DisablePlayLevelScroll();
             }
             else
@@ -1290,7 +1290,7 @@ namespace CutTheRope.GameMain
             ShowView(5);
             if (url != null && url.HasSuffix("outro"))
             {
-                packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8);
+                packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8f);
                 ShowGameFinishedPopup();
             }
         }
@@ -1443,7 +1443,7 @@ namespace CutTheRope.GameMain
                     }
                 case var id when id == MenuButtonId.PackSelect:
                     ShowView(5);
-                    packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8);
+                    packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8f);
                     return;
                 case var id when id == MenuButtonId.ConfirmResetYes:
                     {
@@ -1479,7 +1479,7 @@ namespace CutTheRope.GameMain
                         int num3 = scrollPacksLeft + 1;
                         scrollPacksLeft = num3;
                         int sp2 = FixScrollPoint(num2 + num3 - scrollPacksRight);
-                        packContainer.MoveToScrollPointmoveMultiplier(sp2, 0.8);
+                        packContainer.MoveToScrollPointmoveMultiplier(sp2, 0.8f);
                         bScrolling = true;
                         return;
                     }
@@ -1489,7 +1489,7 @@ namespace CutTheRope.GameMain
                         int num3 = scrollPacksRight + 1;
                         scrollPacksRight = num3;
                         int sp3 = FixScrollPoint(num4 - num3 + scrollPacksLeft);
-                        packContainer.MoveToScrollPointmoveMultiplier(sp3, 0.8);
+                        packContainer.MoveToScrollPointmoveMultiplier(sp3, 0.8f);
                         bScrolling = true;
                         break;
                     }
@@ -1623,7 +1623,7 @@ namespace CutTheRope.GameMain
                         int targetPack = n.GetPackIndex();
                         if (pack != targetPack)
                         {
-                            packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8);
+                            packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8f);
                             return;
                         }
                         CTRPreferences.SetLastPack(pack);
