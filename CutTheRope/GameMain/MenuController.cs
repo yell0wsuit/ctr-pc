@@ -1449,7 +1449,7 @@ namespace CutTheRope.GameMain
                 case var id when id == MenuButtonId.ShowReset:
                     ShowView(4);
                     return;
-                case var id when id == MenuButtonId.Leaderboards || id == MenuButtonId.LeaderboardsAchievementsUnused || id == MenuButtonId.MoreGamesUnused:
+                case var id when id == MenuButtonId.Leaderboards:
                     break;
                 case var id when id == MenuButtonId.BackToOptions:
                     ShowView(1);
