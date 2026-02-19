@@ -233,11 +233,6 @@ namespace CutTheRope.Framework.Helpers
             base.Dispose(disposing);
         }
 
-        public static bool MoveVariableToTarget(ref float v, double t, double speed, double delta)
-        {
-            return MoveVariableToTarget(ref v, (float)t, (float)speed, (float)delta);
-        }
-
         public static bool MoveVariableToTarget(ref float v, float t, float speed, float delta)
         {
             if (t != v)

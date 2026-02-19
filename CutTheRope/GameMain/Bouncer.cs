@@ -40,10 +40,10 @@ namespace CutTheRope.GameMain
         {
             t1.X = x - (width / 2);
             t2.X = x + (width / 2);
-            t1.Y = t2.Y = (float)(y - 5.0);
+            t1.Y = t2.Y = y - 5;
             b1.X = t1.X;
             b2.X = t2.X;
-            b1.Y = b2.Y = (float)(y + 5.0);
+            b1.Y = b2.Y = y + 5;
             angle = DEGREES_TO_RADIANS(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);

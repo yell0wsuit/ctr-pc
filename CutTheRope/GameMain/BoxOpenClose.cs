@@ -18,7 +18,7 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            bool flag = Mover.MoveVariableToTarget(ref raDelay, 0.0, 1.0, (double)delta);
+            bool flag = Mover.MoveVariableToTarget(ref raDelay, 0, 1, delta);
             switch (raState)
             {
                 case -1:

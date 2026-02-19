@@ -118,12 +118,12 @@ namespace CutTheRope.GameMain
                 rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
                 if (launcherIncreaseSpeed)
                 {
-                    if (Mover.MoveVariableToTarget(ref launcherSpeed, 200.0, 30.0, (double)delta))
+                    if (Mover.MoveVariableToTarget(ref launcherSpeed, 200, 30, delta))
                     {
                         launcherIncreaseSpeed = false;
                     }
                 }
-                else if (Mover.MoveVariableToTarget(ref launcherSpeed, 130.0, 30.0, (double)delta))
+                else if (Mover.MoveVariableToTarget(ref launcherSpeed, 130, 30, delta))
                 {
                     launcherIncreaseSpeed = true;
                 }
