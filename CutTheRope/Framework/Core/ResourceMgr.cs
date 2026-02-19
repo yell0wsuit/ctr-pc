@@ -14,37 +14,15 @@ namespace CutTheRope.Framework.Core
 {
     internal class ResourceMgr : FrameworkTypes
     {
-
-        public virtual bool HasResource(int resID)
-        {
-            return TryResolveResource(resID, out int localizedResId, out _) && s_Resources.TryGetValue(localizedResId, out _);
-        }
-
         /// <summary>
-        /// Checks whether a cached resource exists using its string identifier.
-        /// </summary>
-        public bool HasResource(string resourceName)
-        {
-            return TryResolveResource(resourceName, out int resID, out _) && HasResource(resID);
-        }
-
-        public virtual void AddResourceToLoadQueue(int resID)
-        {
-            if (TryResolveResource(resID, out int localizedResId, out _))
-            {
-                loadQueue.Add(localizedResId);
-                loadCount++;
-            }
-        }
-
-        /// <summary>
-        /// Adds a resource to the load queue by resolving its string identifier to the legacy numeric ID.
+        /// Adds a resource to the load queue by resource name.
         /// </summary>
         public void AddResourceToLoadQueue(string resourceName)
         {
-            if (TryResolveResource(resourceName, out int resID, out _))
+            if (TryResolveResource(resourceName, out string localizedName))
             {
-                AddResourceToLoadQueue(resID);
+                loadQueue.Add(localizedName);
+                loadCount++;
             }
         }
 
@@ -53,47 +31,34 @@ namespace CutTheRope.Framework.Core
             s_Resources.Clear();
         }
 
-        public virtual object LoadResource(int resID, ResourceType resType)
-        {
-            return !TryResolveResource(resID, out int localizedResId, out string resourceName)
-                ? null
-                : LoadResourceInternal(localizedResId, resourceName, resType);
-        }
-
         /// <summary>
         /// Loads a resource using its string identifier while preserving caching semantics.
         /// </summary>
         public virtual object LoadResource(string resourceName, ResourceType resType)
         {
-            return !TryResolveResource(resourceName, out int resId, out string localizedName)
+            return !TryResolveResource(resourceName, out string localizedName)
                 ? null
-                : LoadResourceInternal(resId, localizedName, resType);
+                : LoadResourceInternal(localizedName, resType);
         }
 
-        private object LoadResourceInternal(int resId, string resourceName, ResourceType resType)
+        private object LoadResourceInternal(string resourceName, ResourceType resType)
         {
-            if (s_Resources.TryGetValue(resId, out object value))
+            if (s_Resources.TryGetValue(resourceName, out object value))
             {
                 return value;
             }
 
             string path = CTRResourceMgr.XNA_ResName(resourceName);
-            bool flag = false;
-            float scaleX = GetNormalScaleX(resId);
-            float scaleY = GetNormalScaleY(resId);
-            if (flag)
-            {
-                scaleX = GetWvgaScaleX(resId);
-                scaleY = GetWvgaScaleY(resId);
-            }
+            float scaleX = GetNormalScaleX(resourceName);
+            float scaleY = GetNormalScaleY(resourceName);
             switch (resType)
             {
                 case ResourceType.IMAGE:
-                    value = LoadTextureImageInfo(resId, resourceName, path, null, flag, scaleX, scaleY);
+                    value = LoadTextureImageInfo(resourceName, path, null, false, scaleX, scaleY);
                     break;
                 case ResourceType.FONT:
-                    value = LoadVariableFontInfo(path, resId, flag);
-                    _ = s_Resources.Remove(resId);
+                    value = LoadVariableFontInfo(path, resourceName, false);
+                    _ = s_Resources.Remove(resourceName);
                     break;
                 case ResourceType.SOUND:
                     value = LoadSoundInfo(path);
@@ -107,31 +72,18 @@ namespace CutTheRope.Framework.Core
             }
             if (value != null)
             {
-                s_Resources.Add(resId, value);
+                s_Resources[resourceName] = value;
             }
             return value;
         }
 
-        private static bool TryResolveResource(int resId, out int localizedResId, out string localizedName)
-        {
-            localizedName = ResourceNameTranslator.TranslateLegacyId(resId);
-            if (string.IsNullOrEmpty(localizedName))
-            {
-                localizedResId = -1;
-                return false;
-            }
-
-            return TryResolveResource(localizedName, out localizedResId, out localizedName);
-        }
-
-        private static bool TryResolveResource(string resourceName, out int resId, out string localizedName)
+        private static bool TryResolveResource(string resourceName, out string localizedName)
         {
             localizedName = string.IsNullOrEmpty(resourceName)
                 ? resourceName
                 : CTRResourceMgr.HandleLocalizedResource(resourceName);
 
-            resId = ResolveResourceId(localizedName);
-            return resId >= 0;
+            return !string.IsNullOrEmpty(localizedName) && Resources.IsValidResourceName(localizedName);
         }
 
         public virtual FrameworkTypes LoadSoundInfo(string path)
@@ -139,7 +91,7 @@ namespace CutTheRope.Framework.Core
             return new FrameworkTypes();
         }
 
-        public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
+        public virtual FontGeneric LoadVariableFontInfo(string path, string resourceName, bool isWvga)
         {
             // Check if user prefers old font system for supported languages (en, de, fr, ru)
             // Disabled because new quad system doesn't support old sprite fonts well
@@ -154,15 +106,13 @@ namespace CutTheRope.Framework.Core
             if (preferOldFontSystem && isLanguageSupported)
             {
                 // Use old sprite-based font system
-                return LoadSpriteFontInfo(path, resID);
+                return LoadSpriteFontInfo(path, resourceName);
             }
 
-            // Get font configuration based on the resource name
-            string resourceName = ResourceNameTranslator.TranslateLegacyId(resID);
             if (string.IsNullOrEmpty(resourceName))
             {
                 // Fallback to old sprite font loading if no resource name found
-                return LoadSpriteFontInfo(path, resID);
+                return LoadSpriteFontInfo(path, resourceName);
             }
 
             // Load FontStashSharp font using the new system
@@ -182,7 +132,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Legacy sprite font loading (kept for backward compatibility).
         /// </summary>
-        private Font LoadSpriteFontInfo(string path, int resID)
+        private static Font LoadSpriteFontInfo(string path, string resourceName)
         {
             XElement xmlnode = XElementExtensions.LoadContentXml(path);
             int num = xmlnode.AttributeAsNSString("charoff").IntValue();
@@ -195,12 +145,12 @@ namespace CutTheRope.Framework.Core
             {
                 _ = xMLNode3.ValueAsNSString();
             }
-            Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)LoadResource(resID, ResourceType.IMAGE));
+            Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(data, Application.GetTexture(resourceName));
             font.SetCharOffsetLineOffsetSpaceWidth(num, num2, num3);
             return font;
         }
 
-        public virtual CTRTexture2D LoadTextureImageInfo(int resId, string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
+        public virtual CTRTexture2D LoadTextureImageInfo(string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
             TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
             ParsedTexturePackerAtlas parsedAtlas = LoadTexturePackerAtlas(atlasConfig, resourceName);
@@ -373,29 +323,14 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        public virtual bool IsWvgaResource(int r)
-        {
-            return r - 126 > 10;
-        }
-
-        public virtual float GetNormalScaleX(int r)
+        public virtual float GetNormalScaleX(string resourceName)
         {
             return 1f;
         }
 
-        public virtual float GetNormalScaleY(int r)
+        public virtual float GetNormalScaleY(string resourceName)
         {
             return 1f;
-        }
-
-        public virtual float GetWvgaScaleX(int r)
-        {
-            return 1.5f;
-        }
-
-        public virtual float GetWvgaScaleY(int r)
-        {
-            return 1.5f;
         }
 
         public virtual void InitLoading()
@@ -410,16 +345,6 @@ namespace CutTheRope.Framework.Core
             return loadCount == 0 ? 100 : 100 * loaded / GetLoadCount();
         }
 
-        public virtual void LoadPack(int[] pack)
-        {
-            int i = 0;
-            while (pack[i] != -1)
-            {
-                AddResourceToLoadQueue(pack[i]);
-                i++;
-            }
-        }
-
         public virtual void LoadPack(string[] pack)
         {
             if (pack == null)
@@ -431,16 +356,6 @@ namespace CutTheRope.Framework.Core
             while (i < pack.Length && !string.IsNullOrEmpty(pack[i]))
             {
                 AddResourceToLoadQueue(pack[i]);
-                i++;
-            }
-        }
-
-        public virtual void FreePack(int[] pack)
-        {
-            int i = 0;
-            while (pack[i] != -1)
-            {
-                FreeResource(pack[i]);
                 i++;
             }
         }
@@ -464,9 +379,9 @@ namespace CutTheRope.Framework.Core
         {
             while (loadQueue.Count != 0)
             {
-                int resId = loadQueue[0];
+                string resourceName = loadQueue[0];
                 loadQueue.RemoveAt(0);
-                LoadResource(resId);
+                LoadResource(resourceName);
                 loaded++;
             }
         }
@@ -489,9 +404,9 @@ namespace CutTheRope.Framework.Core
         {
             if (loadQueue.Count > 0)
             {
-                int resId = loadQueue[0];
+                string resourceName = loadQueue[0];
                 loadQueue.RemoveAt(0);
-                LoadResource(resId);
+                LoadResource(resourceName);
             }
             loaded++;
             if (loaded >= GetLoadCount())
@@ -510,9 +425,9 @@ namespace CutTheRope.Framework.Core
             ((ResourceMgr)obj).Update();
         }
 
-        private static void LoadResource(int resId)
+        private static void LoadResource(string resourceName)
         {
-            if (!TryResolveResource(resId, out int localizedResId, out string localizedName))
+            if (!TryResolveResource(resourceName, out string localizedName))
             {
                 return;
             }
@@ -524,7 +439,7 @@ namespace CutTheRope.Framework.Core
             }
             if (Resources.IsSound(localizedName))
             {
-                _ = Application.SharedSoundMgr().GetSound(localizedResId);
+                _ = Application.SharedSoundMgr().GetSound(localizedName);
                 return;
             }
             if (Resources.IsFont(localizedName))
@@ -541,9 +456,12 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        public virtual void FreeResource(int resId)
+        /// <summary>
+        /// Frees a cached resource by its string identifier if it has been loaded.
+        /// </summary>
+        public void FreeResource(string resourceName)
         {
-            if (!TryResolveResource(resId, out int localizedResId, out string localizedName))
+            if (!TryResolveResource(resourceName, out string localizedName))
             {
                 return;
             }
@@ -555,48 +473,29 @@ namespace CutTheRope.Framework.Core
             }
             if (Resources.IsSound(localizedName))
             {
-                Application.SharedSoundMgr().FreeSound(localizedResId);
+                Application.SharedSoundMgr().FreeSound(localizedName);
                 return;
             }
-            if (s_Resources.TryGetValue(localizedResId, out object value))
+            if (s_Resources.TryGetValue(localizedName, out object value))
             {
                 if (value is IDisposable disposable)
                 {
                     disposable.Dispose();
                 }
-                _ = s_Resources.Remove(localizedResId);
+                _ = s_Resources.Remove(localizedName);
             }
-        }
-
-        /// <summary>
-        /// Frees a cached resource by its string identifier if it has been loaded.
-        /// </summary>
-        public void FreeResource(string resourceName)
-        {
-            if (TryResolveResource(resourceName, out int resId, out _))
-            {
-                FreeResource(resId);
-            }
-        }
-
-        /// <summary>
-        /// Resolves the legacy numeric identifier for a string-based resource name.
-        /// </summary>
-        protected static int ResolveResourceId(string resourceName)
-        {
-            return ResourceNameTranslator.ToResourceId(resourceName);
         }
 
         public IResourceMgrDelegate resourcesDelegate;
 
         /// <summary>Stores all cached resources (textures, fonts, sounds, strings)</summary>
-        private readonly Dictionary<int, object> s_Resources = [];
+        private readonly Dictionary<string, object> s_Resources = [];
 
         private int loaded;
 
         private int loadCount;
 
-        private readonly List<int> loadQueue = [];
+        private readonly List<string> loadQueue = [];
 
         private int Timer;
 
