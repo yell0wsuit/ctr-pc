@@ -135,9 +135,9 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         public static float FmSin(float angle)
         {
-            int num = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
-            num &= FM_TRIG_TABLE_MASK;
-            return fmSins[num];
+            int index = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
+            index &= FM_TRIG_TABLE_MASK;
+            return fmSins[index];
         }
 
         /// <summary>
@@ -146,9 +146,9 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         public static float FmCos(float angle)
         {
-            int num = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
-            num &= FM_TRIG_TABLE_MASK;
-            return fmCoss[num];
+            int index = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
+            index &= FM_TRIG_TABLE_MASK;
+            return fmCoss[index];
         }
 
         /// <summary>Returns <see langword="true"/> if <paramref name="a"/> and <paramref name="b"/> have the same sign (both ≥ 0 or both &lt; 0).</summary>
@@ -212,33 +212,33 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         private static bool Overlaps1Way(Vector[] corner, Vector[] other)
         {
-            Vector[] array = new Vector[2];
-            float[] array2 = new float[2];
-            array[0] = VectSub(corner[1], corner[0]);
-            array[1] = VectSub(corner[3], corner[0]);
+            Vector[] axes = new Vector[2];
+            float[] origins = new float[2];
+            axes[0] = VectSub(corner[1], corner[0]);
+            axes[1] = VectSub(corner[3], corner[0]);
             for (int i = 0; i < 2; i++)
             {
-                array[i] = VectDiv(array[i], VectLengthsq(array[i]));
-                array2[i] = VectDot(corner[0], array[i]);
+                axes[i] = VectDiv(axes[i], VectLengthsq(axes[i]));
+                origins[i] = VectDot(corner[0], axes[i]);
             }
             for (int j = 0; j < 2; j++)
             {
-                float num = VectDot(other[0], array[j]);
-                float num2 = num;
-                float num3 = num;
+                float proj = VectDot(other[0], axes[j]);
+                float projMin = proj;
+                float projMax = proj;
                 for (int k = 1; k < 4; k++)
                 {
-                    num = VectDot(other[k], array[j]);
-                    if (num < num2)
+                    proj = VectDot(other[k], axes[j]);
+                    if (proj < projMin)
                     {
-                        num2 = num;
+                        projMin = proj;
                     }
-                    else if (num > num3)
+                    else if (proj > projMax)
                     {
-                        num3 = num;
+                        projMax = proj;
                     }
                 }
-                if (num2 > 1f + array2[j] || num3 < array2[j])
+                if (projMin > 1f + origins[j] || projMax < origins[j])
                 {
                     return false;
                 }
@@ -279,16 +279,16 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>Normalizes an angle in degrees to the range [0, 360).</summary>
         public static float AngleTo0_360(float angle)
         {
-            float num = angle;
-            while (Math.Abs(num) > DEG_360)
+            float result = angle;
+            while (Math.Abs(result) > DEG_360)
             {
-                num -= num > 0f ? DEG_360 : -DEG_360;
+                result -= result > 0f ? DEG_360 : -DEG_360;
             }
-            if (num < 0f)
+            if (result < 0f)
             {
-                num += DEG_360;
+                result += DEG_360;
             }
-            return num;
+            return result;
         }
 
         /// <summary>Creates a <see cref="Vector"/> from the given x and y components.</summary>
@@ -399,11 +399,11 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the origin.</summary>
         public static Vector VectRotate(Vector v, double rad)
         {
-            float num = FmCos((float)rad);
-            float num2 = FmSin((float)rad);
-            float num3 = (v.X * num) - (v.Y * num2);
-            float yParam = (v.X * num2) + (v.Y * num);
-            return new Vector(num3, yParam);
+            float cosA = FmCos((float)rad);
+            float sinA = FmSin((float)rad);
+            float nx = (v.X * cosA) - (v.Y * sinA);
+            float ny = (v.X * sinA) + (v.Y * cosA);
+            return new Vector(nx, ny);
         }
 
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the point (<paramref name="cx"/>, <paramref name="cy"/>).</summary>
@@ -424,7 +424,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         private static int Vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
         {
-            return (p.X < x_min ? 1 : 0) + (p.X > x_max ? 2 : 0) + (p.Y < y_min ? 4 : 0) + (p.Y > y_max ? 8 : 0);
+            return (p.X < x_min ? COHEN_LEFT : 0) + (p.X > x_max ? COHEN_RIGHT : 0) + (p.Y < y_min ? COHEN_BOT : 0) + (p.Y > y_max ? COHEN_TOP : 0);
         }
 
         /// <summary>
@@ -435,65 +435,65 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         public static bool LineInRect(float x1, float y1, float x2, float y2, float rx, float ry, float w, float h)
         {
-            VectorClass vectorClass = new(new Vector(x1, y1));
-            VectorClass vectorClass2 = new(new Vector(x2, y2));
-            float num = rx + w;
-            float num2 = ry + h;
-            int num3 = Vcode(rx, ry, num, num2, vectorClass.VectorPoint);
-            int num4 = Vcode(rx, ry, num, num2, vectorClass2.VectorPoint);
-            while (num3 != 0 || num4 != 0)
+            VectorClass a = new(new Vector(x1, y1));
+            VectorClass b = new(new Vector(x2, y2));
+            float xMax = rx + w;
+            float yMax = ry + h;
+            int codeA = Vcode(rx, ry, xMax, yMax, a.VectorPoint);
+            int codeB = Vcode(rx, ry, xMax, yMax, b.VectorPoint);
+            while (codeA != 0 || codeB != 0)
             {
-                if ((num3 & num4) != 0)
+                if ((codeA & codeB) != 0)
                 {
                     return false;
                 }
-                int num5;
-                VectorClass vectorClass3;
-                if (num3 != 0)
+                int code;
+                VectorClass current;
+                if (codeA != 0)
                 {
-                    num5 = num3;
-                    vectorClass3 = vectorClass;
+                    code = codeA;
+                    current = a;
                 }
                 else
                 {
-                    num5 = num4;
-                    vectorClass3 = vectorClass2;
+                    code = codeB;
+                    current = b;
                 }
-                if ((num5 & 1) != 0)
+                if ((code & COHEN_LEFT) != 0)
                 {
-                    Vector temp = vectorClass3.VectorPoint;
+                    Vector temp = current.VectorPoint;
                     temp.Y += (y1 - y2) * (rx - temp.X) / (x1 - x2);
                     temp.X = rx;
-                    vectorClass3.VectorPoint = temp;
+                    current.VectorPoint = temp;
                 }
-                else if ((num5 & 2) != 0)
+                else if ((code & COHEN_RIGHT) != 0)
                 {
-                    Vector temp = vectorClass3.VectorPoint;
-                    temp.Y += (y1 - y2) * (num - temp.X) / (x1 - x2);
-                    temp.X = num;
-                    vectorClass3.VectorPoint = temp;
+                    Vector temp = current.VectorPoint;
+                    temp.Y += (y1 - y2) * (xMax - temp.X) / (x1 - x2);
+                    temp.X = xMax;
+                    current.VectorPoint = temp;
                 }
-                if ((num5 & 4) != 0)
+                if ((code & COHEN_BOT) != 0)
                 {
-                    Vector temp = vectorClass3.VectorPoint;
+                    Vector temp = current.VectorPoint;
                     temp.X += (x1 - x2) * (ry - temp.Y) / (y1 - y2);
                     temp.Y = ry;
-                    vectorClass3.VectorPoint = temp;
+                    current.VectorPoint = temp;
                 }
-                else if ((num5 & 8) != 0)
+                else if ((code & COHEN_TOP) != 0)
                 {
-                    Vector temp = vectorClass3.VectorPoint;
-                    temp.X += (x1 - x2) * (num2 - temp.Y) / (y1 - y2);
-                    temp.Y = num2;
-                    vectorClass3.VectorPoint = temp;
+                    Vector temp = current.VectorPoint;
+                    temp.X += (x1 - x2) * (yMax - temp.Y) / (y1 - y2);
+                    temp.Y = yMax;
+                    current.VectorPoint = temp;
                 }
-                if (num5 == num3)
+                if (code == codeA)
                 {
-                    num3 = Vcode(rx, ry, num, num2, vectorClass.VectorPoint);
+                    codeA = Vcode(rx, ry, xMax, yMax, a.VectorPoint);
                 }
                 else
                 {
-                    num4 = Vcode(rx, ry, num, num2, vectorClass2.VectorPoint);
+                    codeB = Vcode(rx, ry, xMax, yMax, b.VectorPoint);
                 }
             }
             return true;
@@ -506,19 +506,19 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         public static bool LineInLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
-            Vector vector = default;
-            vector.X = x3 - x1 + x4 - x2;
-            vector.Y = y3 - y1 + y4 - y2;
-            Vector vector2 = default;
-            vector2.X = x2 - x1;
-            vector2.Y = y2 - y1;
-            Vector vector3 = default;
-            vector3.X = x4 - x3;
-            vector3.Y = y4 - y3;
-            float value = (vector2.Y * vector3.X) - (vector3.Y * vector2.X);
-            float num = (vector3.X * vector.Y) - (vector3.Y * vector.X);
-            float value2 = (vector2.X * vector.Y) - (vector2.Y * vector.X);
-            return Math.Abs(num) <= Math.Abs(value) && Math.Abs(value2) <= Math.Abs(value);
+            Vector dp = default;
+            dp.X = x3 - x1 + x4 - x2;
+            dp.Y = y3 - y1 + y4 - y2;
+            Vector qa = default;
+            qa.X = x2 - x1;
+            qa.Y = y2 - y1;
+            Vector qb = default;
+            qb.X = x4 - x3;
+            qb.Y = y4 - y3;
+            float d = (qa.Y * qb.X) - (qb.Y * qa.X);
+            float la = (qb.X * dp.Y) - (qb.Y * dp.X);
+            float lb = (qa.X * dp.Y) - (qa.Y * dp.X);
+            return Math.Abs(la) <= Math.Abs(d) && Math.Abs(lb) <= Math.Abs(d);
         }
 
         /// <summary>
@@ -567,6 +567,11 @@ namespace CutTheRope.Framework.Helpers
         private const int FM_TRIG_TABLE_SIZE = 1024;
         private const int FM_TRIG_TABLE_MASK = FM_TRIG_TABLE_SIZE - 1;
         private const int FLOAT_RANDOM_SCALE = 1000;
+
+        private const int COHEN_LEFT = 1;
+        private const int COHEN_RIGHT = 2;
+        private const int COHEN_BOT = 4;
+        private const int COHEN_TOP = 8;
 
         public static readonly Vector vectZero = new(0f, 0f);
 
