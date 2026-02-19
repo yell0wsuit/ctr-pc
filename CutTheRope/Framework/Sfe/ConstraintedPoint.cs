@@ -237,7 +237,7 @@ namespace CutTheRope.Framework.Sfe
             }
             p.posDelta.X = p.pos.X - p.prevPos.X + p.a.X;
             p.posDelta.Y = p.pos.Y - p.prevPos.Y + p.a.Y;
-            p.v = VectMult(p.posDelta, (float)(1.0 / (double)delta));
+            p.v = VectMult(p.posDelta, 1 / delta);
             p.prevPos = p.pos;
             p.pos = VectAdd(p.pos, p.posDelta);
         }
