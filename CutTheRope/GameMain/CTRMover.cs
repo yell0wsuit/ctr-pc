@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
                     AddPathPoint(s);
                     return;
                 }
-                float num3 = (float)(6.283185307179586 / num2);
+                float num3 = 6.283185307179586f / num2;
                 if (!flag)
                 {
                     num3 = 0f - num3;

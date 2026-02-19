@@ -1744,7 +1744,7 @@ namespace CutTheRope.GameMain
                         flag12 = true;
                         break;
                     }
-                    if (bungee5.moveLength > 0.0 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
+                    if (bungee5.moveLength > 0 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
                     {
                         flag12 = true;
                         break;
