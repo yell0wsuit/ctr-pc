@@ -12,12 +12,6 @@ namespace CutTheRope.Framework.Core
             Y = v.Y;
         }
 
-        public Vector(double xParam, double yParam)
-        {
-            X = (float)xParam;
-            Y = (float)yParam;
-        }
-
         public Vector(float xParam, float yParam)
         {
             X = xParam;

@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
             Vector scroll = currentContainer.GetScroll();
             Vector maxScroll = currentContainer.GetMaxScroll();
             scroll.Y += 0.5f;
-            scroll.Y = Framework.Helpers.CTRMathHelper.FIT_TO_BOUNDARIES(scroll.Y, 0.0, maxScroll.Y);
+            scroll.Y = Framework.Helpers.CTRMathHelper.FIT_TO_BOUNDARIES(scroll.Y, 0f, maxScroll.Y);
             currentContainer.SetScroll(scroll);
             return true;
         }

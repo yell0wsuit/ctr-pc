@@ -23,11 +23,6 @@ namespace CutTheRope.Framework.Visual
             return num;
         }
 
-        public HBox InitWithOffsetAlignHeight(double of, int a, double h)
-        {
-            return InitWithOffsetAlignHeight((float)of, a, (float)h);
-        }
-
         public HBox InitWithOffsetAlignHeight(float of, int a, float h)
         {
             offset = of;

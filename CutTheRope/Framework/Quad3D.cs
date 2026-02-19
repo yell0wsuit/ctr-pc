@@ -2,11 +2,6 @@ namespace CutTheRope.Framework
 {
     internal struct Quad3D
     {
-        public static Quad3D MakeQuad3D(double x, double y, double z, double w, double h)
-        {
-            return MakeQuad3D((float)x, (float)y, (float)z, (float)w, (float)h);
-        }
-
         public static Quad3D MakeQuad3D(float x, float y, float z, float w, float h)
         {
             return new Quad3D

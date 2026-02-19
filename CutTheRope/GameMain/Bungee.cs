@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
             Vector vector = VectSub(v2, v);
             if (!VectEqual(vector, vectZero))
             {
-                Vector v3 = highlighted ? vector : VectMult(vector, color.AlphaChannel == 1.0 ? 1.02 : 1.0);
+                Vector v3 = highlighted ? vector : VectMult(vector, color.AlphaChannel == 1f ? 1.02f : 1f);
                 Vector v4 = VectPerp(vector);
                 Vector vector2 = VectNormalize(v4);
                 v4 = VectMult(vector2, size);
@@ -160,24 +160,28 @@ namespace CutTheRope.GameMain
                 ropeColors.Color1.RedColor * num,
                 ropeColors.Color1.GreenColor * num,
                 ropeColors.Color1.BlueColor * num,
-                (double)num);
+                num
+            );
             RGBAColor rgbaColor2 = RGBAColor.MakeRGBA(
                 ropeColors.Color2.RedColor * num,
                 ropeColors.Color2.GreenColor * num,
                 ropeColors.Color2.BlueColor * num,
-                (double)num);
+                num
+            );
 
             // Create darker variants for shading (40% of base color)
             RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * 0.4 * num,
-                ropeColors.Color1.GreenColor * 0.4 * num,
-                ropeColors.Color1.BlueColor * 0.4 * num,
-                (double)num);
+                ropeColors.Color1.RedColor * 0.4f * num,
+                ropeColors.Color1.GreenColor * 0.4f * num,
+                ropeColors.Color1.BlueColor * 0.4f * num,
+                num
+            );
             RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * 0.45 * num,
-                ropeColors.Color2.GreenColor * 0.45 * num,
-                ropeColors.Color2.BlueColor * 0.45 * num,
-                (double)num);
+                ropeColors.Color2.RedColor * 0.45f * num,
+                ropeColors.Color2.GreenColor * 0.45f * num,
+                ropeColors.Color2.BlueColor * 0.45f * num,
+                num
+            );
             if (b.highlighted)
             {
                 float num2 = 3f;

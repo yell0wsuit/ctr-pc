@@ -235,7 +235,7 @@ namespace CutTheRope.Framework.Visual
                             r.y += texture.quadRects[tileEntry.quad].y;
                         }
                         Quad2D textureCoordinates = DrawHelper.GetTextureCoordinates(imageMultiDrawer2.image.texture, r);
-                        Quad3D qv = Quad3D.MakeQuad3D((double)(pos.X + rectangle2.x), (double)(pos.Y + rectangle2.y), 0.0, rectangle2.w, rectangle2.h);
+                        Quad3D qv = Quad3D.MakeQuad3D(pos.X + rectangle2.x, pos.Y + rectangle2.y, 0f, rectangle2.w, rectangle2.h);
                         ImageMultiDrawer imageMultiDrawer3 = imageMultiDrawer2;
                         Quad2D quad2D = textureCoordinates;
                         Quad3D quad3D = qv;

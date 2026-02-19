@@ -118,12 +118,12 @@ namespace CutTheRope.GameMain
                 rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
                 if (launcherIncreaseSpeed)
                 {
-                    if (Mover.MoveVariableToTarget(ref launcherSpeed, 200.0, 30.0, (double)delta))
+                    if (Mover.MoveVariableToTarget(ref launcherSpeed, 200, 30, delta))
                     {
                         launcherIncreaseSpeed = false;
                     }
                 }
-                else if (Mover.MoveVariableToTarget(ref launcherSpeed, 130.0, 30.0, (double)delta))
+                else if (Mover.MoveVariableToTarget(ref launcherSpeed, 130, 30, delta))
                 {
                     launcherIncreaseSpeed = true;
                 }
@@ -247,7 +247,7 @@ namespace CutTheRope.GameMain
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
-                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
+                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, radiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
             Renderer.SetColor(Color.White);

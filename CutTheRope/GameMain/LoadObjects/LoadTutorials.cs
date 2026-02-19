@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
                 TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-                tutorialText.color = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.9);
+                tutorialText.color = RGBAColor.MakeRGBA(1, 1, 1, 0.9f);
                 tutorialText.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                 tutorialText.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
                 tutorialText.special = xmlNode.AttributeAsNSString("special").IntValue();

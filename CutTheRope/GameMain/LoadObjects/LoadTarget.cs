@@ -50,7 +50,7 @@ namespace CutTheRope.GameMain
                 target.AddImage(Resources.Img.CharGreetingXmas);
                 target.AddImage(Resources.Img.CharIdleXmas);
             }
-            target.bb = MakeRectangle(264.0, 350.0, 108.0, 2.0);
+            target.bb = MakeRectangle(264f, 350f, 108f, 2f);
 
             // Setup main animation
             target.AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 18);

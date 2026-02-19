@@ -203,7 +203,7 @@ namespace CutTheRope.GameMain
                     {
                         GhostBubble ghostBubble = GhostBubble.CreateWithResIDQuad(Resources.Img.ObjBubbleAttached, RND_RANGE(1, 3));
                         ghostBubble.DoRestoreCutTransparency();
-                        ghostBubble.bb = MakeRectangle(0.0, 0.0, 57.0, 57.0);
+                        ghostBubble.bb = MakeRectangle(0f, 0f, 57f, 57f);
                         ghostBubble.x = x;
                         ghostBubble.y = y;
                         ghostBubble.anchor = 18;

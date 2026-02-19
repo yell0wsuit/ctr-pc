@@ -27,11 +27,6 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
-        public void SetTouchIncreaseLeftRightTopBottom(double l, double r, double t, double b)
-        {
-            SetTouchIncreaseLeftRightTopBottom((float)l, (float)r, (float)t, (float)b);
-        }
-
         public void SetTouchIncreaseLeftRightTopBottom(float l, float r, float t, float b)
         {
             b1.SetTouchIncreaseLeftRightTopBottom(l, r, t, b);

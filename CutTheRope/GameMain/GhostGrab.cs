@@ -98,7 +98,7 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController rootController = (CTRRootController)Application.SharedRootController();
                 int pack = rootController.GetPack();
-                RGBAColor grabColor = pack == 6 ? RGBAColor.MakeRGBA(0.4, 0.7, 1.0, radiusAlpha * color.AlphaChannel) : RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha * color.AlphaChannel);
+                RGBAColor grabColor = pack == 6 ? RGBAColor.MakeRGBA(0.4f, 0.7f, 1, radiusAlpha * color.AlphaChannel) : RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, radiusAlpha * color.AlphaChannel);
                 DrawGrabCircle(this, grabColor);
             }
             Renderer.SetColor(Color.White);

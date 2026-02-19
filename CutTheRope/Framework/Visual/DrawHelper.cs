@@ -152,7 +152,7 @@ namespace CutTheRope.Framework.Visual
 
         public static void CalcCircle(float x, float y, float radius, int vertexCount, float[] glVertices)
         {
-            float num = (float)(6.283185307179586 / vertexCount);
+            float num = 6.283185307179586f / vertexCount;
             float num2 = 0f;
             for (int i = 0; i < vertexCount; i++)
             {

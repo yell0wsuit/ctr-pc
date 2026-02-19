@@ -143,14 +143,14 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             totalForce = VectMult(totalForce, invWeight);
-            a = VectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
+            a = VectMult(totalForce, delta * delta);
             if (prevPos.X == 2.1474836E+09f)
             {
                 prevPos = pos;
             }
             posDelta.X = pos.X - prevPos.X + a.X;
             posDelta.Y = pos.Y - prevPos.Y + a.Y;
-            v = VectMult(posDelta, (float)(1.0 / (double)delta));
+            v = VectMult(posDelta, 1 / delta);
             prevPos = pos;
             pos = VectAdd(pos, posDelta);
         }
@@ -230,14 +230,14 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             p.totalForce = VectMult(p.totalForce, p.invWeight);
-            p.a = VectMult(p.totalForce, (float)((double)delta / 1.0 * 0.01600000075995922 * (double)koeff));
+            p.a = VectMult(p.totalForce, delta / 1 * 0.01600000075995922f * koeff);
             if (p.prevPos.X == 2.1474836E+09f)
             {
                 p.prevPos = p.pos;
             }
             p.posDelta.X = p.pos.X - p.prevPos.X + p.a.X;
             p.posDelta.Y = p.pos.Y - p.prevPos.Y + p.a.Y;
-            p.v = VectMult(p.posDelta, (float)(1.0 / (double)delta));
+            p.v = VectMult(p.posDelta, 1 / delta);
             p.prevPos = p.pos;
             p.pos = VectAdd(p.pos, p.posDelta);
         }

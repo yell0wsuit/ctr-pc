@@ -191,7 +191,7 @@ namespace CutTheRope.GameMain
 
         public static float FBOUND_PI(float a)
         {
-            return (float)((double)a > 3.141592653589793 ? (double)a - 6.283185307179586 : (double)a < -3.141592653589793 ? (double)a + 6.283185307179586 : (double)a);
+            return a > 3.141592653589793f ? a - 6.283185307179586f : a < -3.141592653589793f ? a + 6.283185307179586f : a;
         }
 
         public void Exhausted(Rocket r)
