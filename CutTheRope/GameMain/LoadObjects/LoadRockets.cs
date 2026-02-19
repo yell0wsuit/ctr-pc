@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
 
             rocket.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
             rocket.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            rocket.rotation = xmlNode.AttributeAsNSString("angle").FloatValue() - 180f;
+            rocket.rotation = xmlNode.AttributeAsNSString("angle").FloatValue() - DEG_180;
             rocket.impulse = xmlNode.AttributeAsNSString("impulse").FloatValue();
             rocket.impulseFactor = xmlNode.AttributeAsNSString("impulseFactor").FloatValue();
             if (rocket.impulseFactor == 0f)

@@ -70,13 +70,13 @@ namespace CutTheRope.GameMain
             }
             CTRSoundMgr.PlaySound(Resources.Snd.Wheel);
             float num = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
-            if (num > 180)
+            if (num > DEG_180)
             {
-                num -= 360f;
+                num -= DEG_360;
             }
-            else if (num < -180)
+            else if (num < -DEG_180)
             {
-                num += 360f;
+                num += DEG_360;
             }
             wheelImage2.rotation += num;
             wheelImage3.rotation += num;
@@ -203,7 +203,7 @@ namespace CutTheRope.GameMain
                         }
                         if (spider.GetCurrentTimelineIndex() != 0)
                         {
-                            spider.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(v)) + 270f;
+                            spider.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(v)) + DEG_270;
                             break;
                         }
                         break;
@@ -500,12 +500,12 @@ namespace CutTheRope.GameMain
                 _ = grabMover.AddChild(moveBackground);
                 if (moveVertical)
                 {
-                    moveBackground.rotation = 90f;
+                    moveBackground.rotation = DEG_90;
                     moveBackground.y = 0f - moveOffset;
                     minMoveValue = y - moveOffset;
                     maxMoveValue = y + (moveLength - moveOffset);
-                    grabMover.rotation = 90f;
-                    grabMoverHighlight.rotation = 90f;
+                    grabMover.rotation = DEG_90;
+                    grabMoverHighlight.rotation = DEG_90;
                 }
                 else
                 {

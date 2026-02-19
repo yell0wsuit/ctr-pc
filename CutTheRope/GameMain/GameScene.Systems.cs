@@ -112,7 +112,7 @@ namespace CutTheRope.GameMain
                 float horizontalImpulse = 0f;
                 bool applyHorizontalCentering =
                     (tube.rotation == 0f && !gravityInverted) ||
-                    (tube.rotation == 180f && gravityInverted);
+                    (tube.rotation == DEG_180 && gravityInverted);
                 if (applyHorizontalCentering)
                 {
                     float deltaX = tube.x - position.X;
@@ -123,14 +123,14 @@ namespace CutTheRope.GameMain
 
                 bool alignedWithGravity =
                     (tube.rotation == 0f && !gravityInverted) ||
-                    (tube.rotation == 180f && gravityInverted);
+                    (tube.rotation == DEG_180 && gravityInverted);
                 float localDamping = damping;
                 // Gravity compensation force. sqrt(tubeScale) accounts for increased flow area.
                 float gravityCompensation = -32f / pt.weight * MathF.Sqrt(tubeScale);
                 if (!alignedWithGravity)
                 {
                     localDamping *= 15f;
-                    if (tube.rotation is 90f or 270f)
+                    if (tube.rotation is DEG_90 or DEG_270)
                     {
                         gravityCompensation /= 4f;
                     }
@@ -194,7 +194,7 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, Pump.FlowLength - Pump.MouthOffset);
-            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid, flowLength);
+            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - DEG_90, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + Pump.MouthOffset, p.y);
             v = VectRotateAround(v, p.angle - (Math.PI / 2.0), p.x, p.y);

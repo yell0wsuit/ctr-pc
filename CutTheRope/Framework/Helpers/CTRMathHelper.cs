@@ -161,12 +161,12 @@ namespace CutTheRope.Framework.Helpers
 
         public static float DEGREES_TO_RADIANS(float D)
         {
-            return D * MathF.PI / 180;
+            return D * MathF.PI / DEG_180;
         }
 
         public static float RADIANS_TO_DEGREES(float R)
         {
-            return R * 180 / MathF.PI;
+            return R * DEG_180 / MathF.PI;
         }
 
         private static bool Overlaps1Way(Vector[] corner, Vector[] other)
@@ -234,13 +234,13 @@ namespace CutTheRope.Framework.Helpers
         public static float AngleTo0_360(float angle)
         {
             float num = angle;
-            while (Math.Abs(num) > 360f)
+            while (Math.Abs(num) > DEG_360)
             {
-                num -= num > 0f ? 360f : -360f;
+                num -= num > 0f ? DEG_360 : -DEG_360;
             }
             if (num < 0f)
             {
-                num += 360f;
+                num += DEG_360;
             }
             return num;
         }
@@ -459,6 +459,12 @@ namespace CutTheRope.Framework.Helpers
             byte[] hash = SHA256.HashData(array);
             return new string(Convert.ToHexString(hash).ToLower(CultureInfo.InvariantCulture));
         }
+
+        public const float DEG_45 = 45f;
+        public const float DEG_90 = 90f;
+        public const float DEG_180 = 180f;
+        public const float DEG_270 = 270f;
+        public const float DEG_360 = 360f;
 
         public const double M_PI = Math.PI;
         private static readonly Random random_ = new();

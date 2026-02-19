@@ -52,7 +52,7 @@ namespace CutTheRope.GameMain
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 AddTimelinewithID(timeline, 0);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(DEG_45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
                 timeline.delegateTimelineDelegate = this;
                 Track track = timeline.GetTrack(Track.TrackType.TRACK_ROTATION);
                 track.relative = true;
@@ -60,7 +60,7 @@ namespace CutTheRope.GameMain
                 timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 AddTimelinewithID(timeline, 1);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(-45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(-DEG_45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
                 timeline.delegateTimelineDelegate = this;
                 track = timeline.GetTrack(Track.TrackType.TRACK_ROTATION);
                 track.relative = true;
@@ -278,8 +278,8 @@ namespace CutTheRope.GameMain
         public void HandleRotateFinal()
         {
             rotation = AngleTo0_360(rotation);
-            float num = Round(rotation / 45f);
-            float num2 = 45f * num;
+            float num = Round(rotation / DEG_45);
+            float num2 = DEG_45 * num;
             RemoveTimeline(1);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));

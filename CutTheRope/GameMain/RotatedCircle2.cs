@@ -99,10 +99,10 @@ namespace CutTheRope.GameMain
             vinilHighlightR.anchor = 9;
             vinilControllerL = Image.Image_createWithResIDQuad(VinylTexture, 5);
             vinilControllerL.anchor = 18;
-            vinilControllerL.rotation = 90f;
+            vinilControllerL.rotation = DEG_90;
             vinilControllerR = Image.Image_createWithResIDQuad(VinylTexture, 5);
             vinilControllerR.anchor = 18;
-            vinilControllerR.rotation = -90f;
+            vinilControllerR.rotation = -DEG_90;
             vinilActiveControllerL = Image.Image_createWithResIDQuad(VinylTexture, 4);
             vinilActiveControllerL.anchor = vinilControllerL.anchor;
             vinilActiveControllerL.rotation = vinilControllerL.rotation;

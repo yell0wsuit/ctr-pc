@@ -35,8 +35,8 @@ namespace CutTheRope.GameMain
                     activeRocket.point.v = star.v;
                     activeRocket.point.posDelta = star.posDelta;
 
-                    activeRocket.rotation = targetSock.rotation + 90f;
-                    activeRocket.startRotation = targetSock.rotation + 90f;
+                    activeRocket.rotation = targetSock.rotation + DEG_90;
+                    activeRocket.startRotation = targetSock.rotation + DEG_90;
                     activeRocket.startCandyRotation = candyMain.rotation;
                     activeRocket.additionalAngle = 0f;
                     activeRocket.UpdateRotation();
