@@ -75,11 +75,6 @@ namespace CutTheRope.Framework.Helpers
             return (uint)random_.Next(int.MinValue, int.MaxValue);
         }
 
-        public static float FIT_TO_BOUNDARIES(double V, double MINV, double MAXV)
-        {
-            return FIT_TO_BOUNDARIES((float)V, (float)MINV, (float)MAXV);
-        }
-
         public static float FIT_TO_BOUNDARIES(float V, float MINV, float MAXV)
         {
             return Math.Max(Math.Min(V, MAXV), MINV);
@@ -181,12 +176,12 @@ namespace CutTheRope.Framework.Helpers
 
         public static float DEGREES_TO_RADIANS(float D)
         {
-            return (float)((double)D * 3.141592653589793 / 180.0);
+            return (float)(D * 3.141592653589793 / 180.0);
         }
 
         public static float RADIANS_TO_DEGREES(float R)
         {
-            return (float)((double)(R * 180f) / 3.141592653589793);
+            return (float)(R * 180f / 3.141592653589793);
         }
 
         private static bool Overlaps1Way(Vector[] corner, Vector[] other)
@@ -288,11 +283,6 @@ namespace CutTheRope.Framework.Helpers
         public static Vector VectSub(Vector v1, Vector v2)
         {
             return new Vector(v1.X - v2.X, v1.Y - v2.Y);
-        }
-
-        public static Vector VectMult(Vector v, double s)
-        {
-            return VectMult(v, (float)s);
         }
 
         public static Vector VectMult(Vector v, float s)

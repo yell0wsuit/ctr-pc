@@ -23,11 +23,6 @@ namespace CutTheRope.Framework.Visual
             return num;
         }
 
-        public VBox InitWithOffsetAlignWidth(double of, int a, double w)
-        {
-            return InitWithOffsetAlignWidth((float)of, a, (float)w);
-        }
-
         public VBox InitWithOffsetAlignWidth(float of, int a, float w)
         {
             offset = of;

@@ -81,12 +81,12 @@ namespace CutTheRope.GameMain
                     underwater = false;
                 }
             }
-            _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0.0, 1.0, (double)delta);
+            _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0, 1, delta);
             ConstraintedPoint constraintedPoint4 = twoParts != 2 ? starL : star;
             float num = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
-            double num19 = (double)(constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f));
-            float num2 = FIT_TO_BOUNDARIES((double)num, 0.0, (double)(mapWidth - SCREEN_WIDTH));
-            float num3 = FIT_TO_BOUNDARIES(num19, 0.0, (double)(mapHeight - SCREEN_HEIGHT));
+            float num19 = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
+            float num2 = FIT_TO_BOUNDARIES(num, 0f, mapWidth - SCREEN_WIDTH);
+            float num3 = FIT_TO_BOUNDARIES(num19, 0f, mapHeight - SCREEN_HEIGHT);
             camera.MoveToXYImmediate(num2, num3, false);
             if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
             {
@@ -428,7 +428,7 @@ namespace CutTheRope.GameMain
                         ConstraintedPoint.SatisfyConstraints(starR);
                     }
                 }
-                if (partsDist > 0.0)
+                if (partsDist > 0)
                 {
                     // Abort merge if one half was destroyed to prevent
                     // reviving the broken half into a full candy
@@ -437,7 +437,7 @@ namespace CutTheRope.GameMain
                         partsDist = 0f;
                         twoParts = 0;
                     }
-                    else if (Mover.MoveVariableToTarget(ref partsDist, 0.0, 200.0, (double)delta))
+                    else if (Mover.MoveVariableToTarget(ref partsDist, 0, 200, delta))
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyLink);
                         twoParts = 2;
@@ -807,7 +807,7 @@ namespace CutTheRope.GameMain
             {
                 Pump pump = (Pump)obj7;
                 pump.Update(delta);
-                if (Mover.MoveVariableToTarget(ref pump.pumpTouchTimer, 0.0, 1.0, (double)delta))
+                if (Mover.MoveVariableToTarget(ref pump.pumpTouchTimer, 0, 1, delta))
                 {
                     OperatePump(pump);
                 }
@@ -951,7 +951,7 @@ namespace CutTheRope.GameMain
             {
                 Sock sock3 = (Sock)obj11;
                 sock3.Update(delta);
-                if (Mover.MoveVariableToTarget(ref sock3.idleTimeout, 0.0, 1.0, (double)delta))
+                if (Mover.MoveVariableToTarget(ref sock3.idleTimeout, 0, 1, delta))
                 {
                     sock3.state = Sock.SOCK_IDLE;
                 }
@@ -1585,10 +1585,10 @@ namespace CutTheRope.GameMain
                         mouthCloseTimer = 1f;
                     }
                 }
-                else if (mouthCloseTimer > 0.0 && canInteractWithTarget)
+                else if (mouthCloseTimer > 0 && canInteractWithTarget)
                 {
-                    _ = Mover.MoveVariableToTarget(ref mouthCloseTimer, 0.0, 1.0, (double)delta);
-                    if (mouthCloseTimer <= 0.0)
+                    _ = Mover.MoveVariableToTarget(ref mouthCloseTimer, 0, 1, delta);
+                    if (mouthCloseTimer <= 0)
                     {
                         if (isCandyInLantern || VectDistance(star.pos, Vect(target.x, target.y)) > 200f)
                         {
@@ -1744,7 +1744,7 @@ namespace CutTheRope.GameMain
                         flag12 = true;
                         break;
                     }
-                    if (bungee5.moveLength > 0.0 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
+                    if (bungee5.moveLength > 0 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
                     {
                         flag12 = true;
                         break;
@@ -1758,7 +1758,7 @@ namespace CutTheRope.GameMain
                     _ = (nearestBungeeSegmentByBeziersPointsatXYgrab?.highlighted = true);
                 }
             }
-            if (Mover.MoveVariableToTarget(ref dimTime, 0.0, 1.0, (double)delta))
+            if (Mover.MoveVariableToTarget(ref dimTime, 0, 1, delta))
             {
                 if (restartState == 0)
                 {

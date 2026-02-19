@@ -14,7 +14,7 @@ namespace CutTheRope.Framework.Sfe
         public virtual void SetWeight(float w)
         {
             weight = w;
-            invWeight = (float)(1.0 / weight);
+            invWeight = 1 / weight;
             gravity = Vect(0f, 784f * weight);
         }
 
@@ -66,7 +66,7 @@ namespace CutTheRope.Framework.Sfe
         {
             if (!VectEqual(impulse, vectZero))
             {
-                Vector v = VectMult(impulse, (float)((double)delta / 1.0));
+                Vector v = VectMult(impulse, delta / 1);
                 pos = VectAdd(pos, v);
             }
         }
@@ -99,9 +99,9 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             totalForce = VectMult(totalForce, invWeight);
-            a = VectMult(totalForce, (float)((double)delta / 1.0));
+            a = VectMult(totalForce, delta / 1);
             v = VectAdd(v, a);
-            posDelta = VectMult(v, (float)((double)delta / 1.0));
+            posDelta = VectMult(v, delta / 1);
             pos = VectAdd(pos, posDelta);
         }
 

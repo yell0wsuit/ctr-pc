@@ -79,7 +79,7 @@ namespace CutTheRope.GameMain
             _ = image3.AddChild(text3);
             _ = image4.AddChild(text4);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(image, image2, image3, image4, bid);
-            toggleButton.SetTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
+            toggleButton.SetTouchIncreaseLeftRightTopBottom(10, 10, 10, 10);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
         }
@@ -409,7 +409,7 @@ namespace CutTheRope.GameMain
                 Image.SetElementPositionWithRelativeQuadOffset(toggleButton, Resources.Img.MenuOptions, q, 8);
                 _ = image.AddChild(toggleButton);
                 int num = (image.width / 2) - (toggleButton.width / 2);
-                toggleButton.SetTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85, 0.0);
+                toggleButton.SetTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85f, 0);
             }
             else
             {
@@ -445,7 +445,7 @@ namespace CutTheRope.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(true);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
             Button c = CreateButtonWithTextIDDelegate(Application.GetString("PLAY"), MenuButtonId.Play, this);
@@ -619,11 +619,11 @@ namespace CutTheRope.GameMain
 
         public static HBox CreateTextWithStar(string t)
         {
-            HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
+            HBox hbox = new HBox().InitWithOffsetAlignHeight(0, 16, RTD(50));
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(t);
             text.scaleX = text.scaleY = 0.7f;
-            text.rotationCenterX = -(float)text.width / 2;
+            text.rotationCenterX = -text.width / 2;
             text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
             Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 3);
@@ -924,7 +924,7 @@ namespace CutTheRope.GameMain
                 _ = hBox2.AddChild(touchBaseElement);
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
-                _ = packContainer.AddScrollPointAtXY((double)num3, 0.0);
+                _ = packContainer.AddScrollPointAtXY(num3, 0f);
                 touchBaseElement.bbc = MakeRectangle(0f, 0f, -20f, 0f);
                 num3 += touchBaseElement.width + -20f;
             }
@@ -1048,7 +1048,7 @@ namespace CutTheRope.GameMain
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = new()
             {
-                bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0),
+                bbc = MakeRectangle(5f, 0f, -10f, 0f),
                 delegateValue = this
             };
             Image image;
@@ -1095,7 +1095,7 @@ namespace CutTheRope.GameMain
             image2.y -= 0.5f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85, 0.85, 0.85, 1.0), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
             _ = image.AddTimeline(timeline);
             image.SetName("levelsBack");
             _ = image.AddChild(image2);
@@ -1240,7 +1240,7 @@ namespace CutTheRope.GameMain
             if (num < CTRPreferences.GetPacksCount() - 1)
             {
                 packContainer.delegateScrollableContainerProtocol = this;
-                packContainer.MoveToScrollPointmoveMultiplier(num + 1, 0.8);
+                packContainer.MoveToScrollPointmoveMultiplier(num + 1, 0.8f);
                 showNextPackStatus = true;
                 return;
             }
@@ -1280,7 +1280,7 @@ namespace CutTheRope.GameMain
             if (CTRPreferences.ShouldPlayLevelScroll())
             {
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
-                packContainer.MoveToScrollPointmoveMultiplier(0, 0.6);
+                packContainer.MoveToScrollPointmoveMultiplier(0, 0.6f);
                 CTRPreferences.DisablePlayLevelScroll();
             }
             else
@@ -1290,7 +1290,7 @@ namespace CutTheRope.GameMain
             ShowView(5);
             if (url != null && url.HasSuffix("outro"))
             {
-                packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8);
+                packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8f);
                 ShowGameFinishedPopup();
             }
         }
@@ -1443,7 +1443,7 @@ namespace CutTheRope.GameMain
                     }
                 case var id when id == MenuButtonId.PackSelect:
                     ShowView(5);
-                    packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8);
+                    packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8f);
                     return;
                 case var id when id == MenuButtonId.ConfirmResetYes:
                     {
@@ -1479,7 +1479,7 @@ namespace CutTheRope.GameMain
                         int num3 = scrollPacksLeft + 1;
                         scrollPacksLeft = num3;
                         int sp2 = FixScrollPoint(num2 + num3 - scrollPacksRight);
-                        packContainer.MoveToScrollPointmoveMultiplier(sp2, 0.8);
+                        packContainer.MoveToScrollPointmoveMultiplier(sp2, 0.8f);
                         bScrolling = true;
                         return;
                     }
@@ -1489,7 +1489,7 @@ namespace CutTheRope.GameMain
                         int num3 = scrollPacksRight + 1;
                         scrollPacksRight = num3;
                         int sp3 = FixScrollPoint(num4 - num3 + scrollPacksLeft);
-                        packContainer.MoveToScrollPointmoveMultiplier(sp3, 0.8);
+                        packContainer.MoveToScrollPointmoveMultiplier(sp3, 0.8f);
                         bScrolling = true;
                         break;
                     }
@@ -1623,7 +1623,7 @@ namespace CutTheRope.GameMain
                         int targetPack = n.GetPackIndex();
                         if (pack != targetPack)
                         {
-                            packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8);
+                            packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8f);
                             return;
                         }
                         CTRPreferences.SetLastPack(pack);
@@ -1936,7 +1936,7 @@ namespace CutTheRope.GameMain
             {
                 _ = base.OnTouchDownXY(tx, ty);
                 CTRRectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
-                CTRRectangle rectangle = RectInRectIntersection(MakeRectangle(0.0, 0.0, SCREEN_WIDTH, SCREEN_HEIGHT), r);
+                CTRRectangle rectangle = RectInRectIntersection(MakeRectangle(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT), r);
                 if (PointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2.0)
                 {
                     delegateValue.OnButtonPressed(bid);

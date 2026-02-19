@@ -141,10 +141,10 @@ namespace CutTheRope.GameMain
                     num = 0f;
                     num2 = mapHeight - SCREEN_HEIGHT;
                 }
-                double num6 = (double)(constraintedPoint.pos.X - (SCREEN_WIDTH / 2f));
+                float num6 = constraintedPoint.pos.X - (SCREEN_WIDTH / 2f);
                 float num3 = constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f);
-                float num4 = FIT_TO_BOUNDARIES(num6, 0.0, (double)(mapWidth - SCREEN_WIDTH));
-                float num5 = FIT_TO_BOUNDARIES((double)num3, 0.0, (double)(mapHeight - SCREEN_HEIGHT));
+                float num4 = FIT_TO_BOUNDARIES(num6, 0f, mapWidth - SCREEN_WIDTH);
+                float num5 = FIT_TO_BOUNDARIES(num3, 0f, mapHeight - SCREEN_HEIGHT);
                 camera.MoveToXYImmediate(num, num2, true);
                 initialCameraToStarDistance = VectDistance(camera.pos, Vect(num4, num5));
                 return;

@@ -71,7 +71,7 @@ namespace CutTheRope.GameMain
             mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
             mapNameLabel.y = RTD(-5.0);
             _ = image.AddChild(mapNameLabel);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
             Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
             _ = vBox.AddChild(c);
             Button c2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("SKIP_LEVEL"), GameControllerButtonId.SkipLevel, this);

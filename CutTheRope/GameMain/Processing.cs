@@ -31,11 +31,11 @@ namespace CutTheRope.GameMain
             }
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0, 0, 0, 0.4f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             _ = AddTimeline(timeline2);
             timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline2.delegateTimelineDelegate = this;
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0, 0, 0, 0.4f), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
             _ = AddTimeline(timeline2);
             PlayTimeline(0);

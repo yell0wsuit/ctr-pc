@@ -83,7 +83,7 @@ namespace CutTheRope.Framework.Core
                 {
                     if (prevScreenImage != null)
                     {
-                        RGBAColor fill = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, (double)num * 2.0);
+                        RGBAColor fill = viewTransition == 4 ? RGBAColor.MakeRGBA(0, 0, 0, num * 2) : RGBAColor.MakeRGBA(1, 1, 1, num * 2);
                         Grabber.DrawGrabbedImage(prevScreenImage, 0, 0);
                         Renderer.Disable(Renderer.GL_TEXTURE_2D);
                         Renderer.Enable(Renderer.GL_BLEND);
@@ -106,7 +106,7 @@ namespace CutTheRope.Framework.Core
                 }
                 else if (nextScreenImage != null)
                 {
-                    RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - ((double)num * 2.0)) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - ((double)num * 2.0));
+                    RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0, 0, 0, 2 - (num * 2)) : RGBAColor.MakeRGBA(1, 1, 1, 2 - (num * 2));
                     Grabber.DrawGrabbedImage(nextScreenImage, 0, 0);
                     Renderer.Disable(Renderer.GL_TEXTURE_2D);
                     Renderer.Enable(Renderer.GL_BLEND);

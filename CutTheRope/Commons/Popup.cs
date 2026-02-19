@@ -149,7 +149,7 @@ namespace CutTheRope.Commons
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
+            DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0, 0, 0, 0.5f));
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetColor(Color.White);
             PreDraw();

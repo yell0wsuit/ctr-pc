@@ -126,10 +126,10 @@ namespace CutTheRope.Framework.Helpers
             Vector v2 = Vect(bb.x + bb.w, bb.y);
             Vector v3 = Vect(bb.x + bb.w, bb.y + bb.h);
             Vector v4 = Vect(bb.x, bb.y + bb.h);
-            v = VectRotateAround(v, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
-            v2 = VectRotateAround(v2, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
-            v3 = VectRotateAround(v3, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
-            v4 = VectRotateAround(v4, (double)DEGREES_TO_RADIANS(a), (float)((width / 2.0) + rotationCenterX), (float)((height / 2.0) + rotationCenterY));
+            v = VectRotateAround(v, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            v2 = VectRotateAround(v2, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            v3 = VectRotateAround(v3, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (float)((height / 2) + rotationCenterY));
+            v4 = VectRotateAround(v4, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
             rbb.tlX = v.X;
             rbb.tlY = v.Y;
             rbb.trX = v2.X;

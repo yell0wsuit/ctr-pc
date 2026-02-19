@@ -39,9 +39,9 @@ namespace CutTheRope.Framework.Visual
             spaceWidth = sw;
             if (_isWvga)
             {
-                charOffset = (int)(charOffset / 1.5);
-                lineOffset = (int)(lineOffset / 1.5);
-                spaceWidth = (int)(spaceWidth / 1.5);
+                charOffset /= 1.5f;
+                lineOffset /= 1.5f;
+                spaceWidth /= 1.5f;
             }
         }
 
