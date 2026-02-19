@@ -1,278 +1,175 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    internal enum MenuButton
+    {
+        Play,
+        Options,
+        PlayPack0,
+        SurvivalMode,
+        OpenFullVersion,
+        ToggleSound,
+        ToggleMusic,
+        ShowCredits,
+        ShowReset,
+        Leaderboards,
+        BackToOptions,
+        ToggleClickToCut,
+        PackSelect,
+        ConfirmResetYes,
+        ConfirmResetNo,
+        PopupOk,
+        OpenTwitter,
+        OpenFacebook,
+        FanworkProjectWebsite,
+        FanworkCtrhWebsite,
+        NextPack,
+        PreviousPack,
+        Language,
+        BackFromPackSelect,
+        BackFromOptions,
+        BackFromLeaderboards,
+        BackFromAchievements,
+        QuitGame,
+        ClosePopup,
+        ShowQuitPopup,
+        CandySelect,
+        RopeSelect,
+        BackFromCandySelect,
+        UpdateDownload,
+    }
+
     /// <summary>
     /// Identifier set for menu-related buttons.
     /// </summary>
     internal readonly record struct MenuButtonId(int Value) : IButtonIdentifier
     {
-        // String-based button identifiers with auto-assigned numeric IDs
-        public static readonly MenuButtonId Play;
-        public static readonly MenuButtonId Options;
-        public static readonly MenuButtonId PlayPack0;
-        public static readonly MenuButtonId SurvivalMode;
-        public static readonly MenuButtonId OpenFullVersion;
-        public static readonly MenuButtonId ToggleSound;
-        public static readonly MenuButtonId ToggleMusic;
-        public static readonly MenuButtonId ShowCredits;
-        public static readonly MenuButtonId ShowReset;
-        public static readonly MenuButtonId Leaderboards;
-        public static readonly MenuButtonId BackToOptions;
-        public static readonly MenuButtonId ToggleClickToCut;
-        public static readonly MenuButtonId PackSelect;
-        public static readonly MenuButtonId ConfirmResetYes;
-        public static readonly MenuButtonId ConfirmResetNo;
-        public static readonly MenuButtonId PopupOk;
-        public static readonly MenuButtonId OpenTwitter;
-        public static readonly MenuButtonId OpenFacebook;
-        public static readonly MenuButtonId FanworkProjectWebsite;
-        public static readonly MenuButtonId FanworkCtrhWebsite;
-        public static readonly MenuButtonId LeaderboardsAchievementsUnused;
-        public static readonly MenuButtonId MoreGamesUnused;
-        public static readonly MenuButtonId NextPack;
-        public static readonly MenuButtonId PreviousPack;
-        public static readonly MenuButtonId Language;
-        public static readonly MenuButtonId PackSelectBase;
-        public static readonly MenuButtonId BackFromPackSelect;
-        public static readonly MenuButtonId BackFromOptions;
-        public static readonly MenuButtonId BackFromLeaderboards;
-        public static readonly MenuButtonId BackFromAchievements;
-        public static readonly MenuButtonId QuitGame;
-        public static readonly MenuButtonId ClosePopup;
-        public static readonly MenuButtonId ShowQuitPopup;
-        public static readonly MenuButtonId LevelButtonBase;
-        public static readonly MenuButtonId CandySelect;
-        public static readonly MenuButtonId RopeSelect;
-        public static readonly MenuButtonId BackFromCandySelect;
-        public static readonly MenuButtonId CandySlotBase;
-        public static readonly MenuButtonId RopeSlotBase;
-        public static readonly MenuButtonId UpdateDownload;
+        public static readonly MenuButtonId Play = MenuButton.Play;
+        public static readonly MenuButtonId Options = MenuButton.Options;
+        public static readonly MenuButtonId PlayPack0 = MenuButton.PlayPack0;
+        public static readonly MenuButtonId SurvivalMode = MenuButton.SurvivalMode;
+        public static readonly MenuButtonId OpenFullVersion = MenuButton.OpenFullVersion;
+        public static readonly MenuButtonId ToggleSound = MenuButton.ToggleSound;
+        public static readonly MenuButtonId ToggleMusic = MenuButton.ToggleMusic;
+        public static readonly MenuButtonId ShowCredits = MenuButton.ShowCredits;
+        public static readonly MenuButtonId ShowReset = MenuButton.ShowReset;
+        public static readonly MenuButtonId Leaderboards = MenuButton.Leaderboards;
+        public static readonly MenuButtonId BackToOptions = MenuButton.BackToOptions;
+        public static readonly MenuButtonId ToggleClickToCut = MenuButton.ToggleClickToCut;
+        public static readonly MenuButtonId PackSelect = MenuButton.PackSelect;
+        public static readonly MenuButtonId ConfirmResetYes = MenuButton.ConfirmResetYes;
+        public static readonly MenuButtonId ConfirmResetNo = MenuButton.ConfirmResetNo;
+        public static readonly MenuButtonId PopupOk = MenuButton.PopupOk;
+        public static readonly MenuButtonId OpenTwitter = MenuButton.OpenTwitter;
+        public static readonly MenuButtonId OpenFacebook = MenuButton.OpenFacebook;
+        public static readonly MenuButtonId FanworkProjectWebsite = MenuButton.FanworkProjectWebsite;
+        public static readonly MenuButtonId FanworkCtrhWebsite = MenuButton.FanworkCtrhWebsite;
+        public static readonly MenuButtonId NextPack = MenuButton.NextPack;
+        public static readonly MenuButtonId PreviousPack = MenuButton.PreviousPack;
+        public static readonly MenuButtonId Language = MenuButton.Language;
+        public static readonly MenuButtonId BackFromPackSelect = MenuButton.BackFromPackSelect;
+        public static readonly MenuButtonId BackFromOptions = MenuButton.BackFromOptions;
+        public static readonly MenuButtonId BackFromLeaderboards = MenuButton.BackFromLeaderboards;
+        public static readonly MenuButtonId BackFromAchievements = MenuButton.BackFromAchievements;
+        public static readonly MenuButtonId QuitGame = MenuButton.QuitGame;
+        public static readonly MenuButtonId ClosePopup = MenuButton.ClosePopup;
+        public static readonly MenuButtonId ShowQuitPopup = MenuButton.ShowQuitPopup;
+        public static readonly MenuButtonId CandySelect = MenuButton.CandySelect;
+        public static readonly MenuButtonId RopeSelect = MenuButton.RopeSelect;
+        public static readonly MenuButtonId BackFromCandySelect = MenuButton.BackFromCandySelect;
+        public static readonly MenuButtonId UpdateDownload = MenuButton.UpdateDownload;
 
-        static MenuButtonId()
-        {
-            // Initialize all IDs in a predictable order to ensure consistent auto-assignment
-            Play = FromName(nameof(Play));
-            Options = FromName(nameof(Options));
-            PlayPack0 = FromName(nameof(PlayPack0));
-            SurvivalMode = FromName(nameof(SurvivalMode));
-            OpenFullVersion = FromName(nameof(OpenFullVersion));
-            ToggleSound = FromName(nameof(ToggleSound));
-            ToggleMusic = FromName(nameof(ToggleMusic));
-            ShowCredits = FromName(nameof(ShowCredits));
-            ShowReset = FromName(nameof(ShowReset));
-            Leaderboards = FromName(nameof(Leaderboards));
-            BackToOptions = FromName(nameof(BackToOptions));
-            ToggleClickToCut = FromName(nameof(ToggleClickToCut));
-            PackSelect = FromName(nameof(PackSelect));
-            ConfirmResetYes = FromName(nameof(ConfirmResetYes));
-            ConfirmResetNo = FromName(nameof(ConfirmResetNo));
-            PopupOk = FromName(nameof(PopupOk));
-            OpenTwitter = FromName(nameof(OpenTwitter));
-            OpenFacebook = FromName(nameof(OpenFacebook));
-            FanworkProjectWebsite = FromName(nameof(FanworkProjectWebsite));
-            FanworkCtrhWebsite = FromName(nameof(FanworkCtrhWebsite));
-            LeaderboardsAchievementsUnused = FromName(nameof(LeaderboardsAchievementsUnused));
-            MoreGamesUnused = FromName(nameof(MoreGamesUnused));
-            NextPack = FromName(nameof(NextPack));
-            PreviousPack = FromName(nameof(PreviousPack));
-            Language = FromName(nameof(Language));
-            PackSelectBase = FromName(nameof(PackSelectBase));
-            BackFromPackSelect = FromName(nameof(BackFromPackSelect));
-            BackFromOptions = FromName(nameof(BackFromOptions));
-            BackFromLeaderboards = FromName(nameof(BackFromLeaderboards));
-            BackFromAchievements = FromName(nameof(BackFromAchievements));
-            QuitGame = FromName(nameof(QuitGame));
-            ClosePopup = FromName(nameof(ClosePopup));
-            ShowQuitPopup = FromName(nameof(ShowQuitPopup));
-            LevelButtonBase = FromName(nameof(LevelButtonBase));
-            CandySelect = FromName(nameof(CandySelect));
-            RopeSelect = FromName(nameof(RopeSelect));
-            BackFromCandySelect = FromName(nameof(BackFromCandySelect));
-            CandySlotBase = FromName(nameof(CandySlotBase));
-            RopeSlotBase = FromName(nameof(RopeSlotBase));
-            UpdateDownload = FromName(nameof(UpdateDownload));
-        }
+        // Dynamic button IDs encode their type in the high byte and index in the low 24 bits.
+        private const int LevelTag = 1 << 24;
+        private const int PackTag = 2 << 24;
+        private const int CandySlotTag = 3 << 24;
+        private const int RopeSlotTag = 4 << 24;
+        private const int IndexMask = 0x00FFFFFF;
 
-        /// <summary>
-        /// Creates a dynamic level button ID by combining the base with a level index.
-        /// </summary>
         public static MenuButtonId ForLevel(int levelIndex)
         {
-            return FromName($"Level_{levelIndex}");
+            return new(LevelTag | levelIndex);
         }
 
-        /// <summary>
-        /// Creates a dynamic pack button ID by combining the base with a pack index.
-        /// </summary>
         public static MenuButtonId ForPack(int packIndex)
         {
-            return FromName($"Pack_{packIndex}");
+            return new(PackTag | packIndex);
         }
 
-        /// <summary>
-        /// Checks if this button ID represents a level button.
-        /// </summary>
-        public bool IsLevelButton()
-        {
-            string name = GetName(this);
-            return name?.StartsWith("Level_", StringComparison.Ordinal) ?? false;
-        }
-
-        /// <summary>
-        /// Checks if this button ID represents a pack button.
-        /// </summary>
-        public bool IsPackButton()
-        {
-            string name = GetName(this);
-            return name?.StartsWith("Pack_", StringComparison.Ordinal) ?? false;
-        }
-
-        /// <summary>
-        /// Gets the level index from a level button ID.
-        /// </summary>
-        public int GetLevelIndex()
-        {
-            string name = GetName(this);
-            return name?.StartsWith("Level_", StringComparison.Ordinal) ?? false ? int.Parse(name[6..], CultureInfo.InvariantCulture) : -1;
-        }
-
-        /// <summary>
-        /// Gets the pack index from a pack button ID.
-        /// </summary>
-        public int GetPackIndex()
-        {
-            string name = GetName(this);
-            return name?.StartsWith("Pack_", StringComparison.Ordinal) ?? false ? int.Parse(name[5..], CultureInfo.InvariantCulture) : -1;
-        }
-
-        /// <summary>
-        /// Creates a dynamic candy slot button ID by combining the base with a candy index.
-        /// </summary>
         public static MenuButtonId ForCandySlot(int candyIndex)
         {
-            return FromName($"CandySlot_{candyIndex}");
+            return new(CandySlotTag | candyIndex);
         }
 
-        /// <summary>
-        /// Checks if this button ID represents a candy slot button.
-        /// </summary>
-        public bool IsCandySlotButton()
-        {
-            string name = GetName(this);
-            return name?.StartsWith("CandySlot_", StringComparison.Ordinal) ?? false;
-        }
-
-        /// <summary>
-        /// Gets the candy index from a candy slot button ID.
-        /// </summary>
-        public int GetCandyIndex()
-        {
-            string name = GetName(this);
-            return name?.StartsWith("CandySlot_", StringComparison.Ordinal) ?? false ? int.Parse(name[10..], CultureInfo.InvariantCulture) : -1;
-        }
-
-        /// <summary>
-        /// Creates a dynamic rope slot button ID by combining the base with a rope index.
-        /// </summary>
         public static MenuButtonId ForRopeSlot(int ropeIndex)
         {
-            return FromName($"RopeSlot_{ropeIndex}");
+            return new(RopeSlotTag | ropeIndex);
         }
 
-        /// <summary>
-        /// Checks if this button ID represents a rope slot button.
-        /// </summary>
+        public bool IsLevelButton()
+        {
+            return (Value >> 24) == 1;
+        }
+
+        public bool IsPackButton()
+        {
+            return (Value >> 24) == 2;
+        }
+
+        public bool IsCandySlotButton()
+        {
+            return (Value >> 24) == 3;
+        }
+
         public bool IsRopeSlotButton()
         {
-            string name = GetName(this);
-            return name?.StartsWith("RopeSlot_", StringComparison.Ordinal) ?? false;
+            return (Value >> 24) == 4;
         }
 
-        /// <summary>
-        /// Gets the rope index from a rope slot button ID.
-        /// </summary>
+        public int GetLevelIndex()
+        {
+            return IsLevelButton() ? Value & IndexMask : -1;
+        }
+
+        public int GetPackIndex()
+        {
+            return IsPackButton() ? Value & IndexMask : -1;
+        }
+
+        public int GetCandyIndex()
+        {
+            return IsCandySlotButton() ? Value & IndexMask : -1;
+        }
+
         public int GetRopeIndex()
         {
-            string name = GetName(this);
-            return name?.StartsWith("RopeSlot_", StringComparison.Ordinal) ?? false ? int.Parse(name[9..], CultureInfo.InvariantCulture) : -1;
+            return IsRopeSlotButton() ? Value & IndexMask : -1;
         }
 
-        /// <summary>
-        /// Creates a MenuButtonId from a string name, auto-assigning a numeric ID if needed.
-        /// </summary>
-        private static MenuButtonId FromName(string name)
+        public static implicit operator MenuButtonId(MenuButton button)
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                return new(-1);
-            }
-
-            if (stringToIntMap_.TryGetValue(name, out int existingId))
-            {
-                return new(existingId);
-            }
-
-            // Auto-assign a new ID for this button
-            int newId = nextAutoId_++;
-            stringToIntMap_[name] = newId;
-            intToStringMap_[newId] = name;
-            return new(newId);
+            return new((int)button);
         }
 
-        /// <summary>
-        /// Gets the string name for a MenuButtonId. Returns null if not found.
-        /// </summary>
-        public static string GetName(MenuButtonId buttonId)
-        {
-            _ = intToStringMap_.TryGetValue(buttonId.Value, out string name);
-            return name;
-        }
-
-        /// <summary>
-        /// Implicitly wraps a raw value into a typed <see cref="MenuButtonId"/>.
-        /// </summary>
-        /// <param name="value">Numeric identifier previously represented as an <see cref="int"/>.</param>
         public static implicit operator MenuButtonId(int value)
         {
             return new(value);
         }
 
-        /// <summary>
-        /// Converts the typed identifier into a generic <see cref="ButtonId"/>.
-        /// </summary>
-        /// <param name="buttonId">Typed identifier to wrap.</param>
         public static implicit operator ButtonId(MenuButtonId buttonId)
         {
             return ButtonId.From(buttonId);
         }
 
-        /// <summary>
-        /// Extracts the raw numeric value.
-        /// </summary>
-        /// <param name="buttonId">Typed identifier to unwrap.</param>
         public static implicit operator int(MenuButtonId buttonId)
         {
             return buttonId.Value;
         }
 
-        /// <summary>
-        /// Constructs a typed identifier from a shared <see cref="ButtonId"/>.
-        /// </summary>
-        /// <param name="buttonId">Identifier emitted by the button infrastructure.</param>
-        /// <returns>Typed menu identifier.</returns>
         public static MenuButtonId FromButtonId(ButtonId buttonId)
         {
             return new(buttonId.Value);
         }
-
-        // Auto-assignment tracking
-        private static readonly Dictionary<string, int> stringToIntMap_ = [];
-        private static readonly Dictionary<int, string> intToStringMap_ = [];
-        private static int nextAutoId_;
     }
 }
