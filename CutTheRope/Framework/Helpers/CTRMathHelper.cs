@@ -3,12 +3,11 @@ using System.Globalization;
 using System.Security.Cryptography;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
 namespace CutTheRope.Framework.Helpers
 {
-    internal class CTRMathHelper : ResDataPhoneFull
+    internal class CTRMathHelper
     {
         // (get) Token: 0x0600034D RID: 845 RVA: 0x000137FA File Offset: 0x000119FA
         public static float RND_MINUS1_1 => (float)((Arc4random() / (double)ARC4RANDOM_MAX * 2.0) - 1.0);

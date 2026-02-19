@@ -23,12 +23,6 @@ namespace CutTheRope.Framework.Visual
                 : Vect(texture2D._realWidth, texture2D._realHeight);
         }
 
-        public static Vector GetQuadOffset(int textureID, int quad)
-        {
-            CTRTexture2D texture = Application.GetTexture(GetResourceName(textureID));
-            return texture.quadOffsets != null ? texture.quadOffsets[quad] : Vect(0, 0);
-        }
-
         /// <summary>
         /// Gets the quad offset for the specified texture name.
         /// </summary>
@@ -55,12 +49,6 @@ namespace CutTheRope.Framework.Visual
             return VectAdd(offset, Vect(Ceil(size.X / 2.0), Ceil(size.Y / 2.0)));
         }
 
-        public static Vector GetRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)
-        {
-            Vector quadOffset = GetQuadOffset(textureID, quadToCountFrom);
-            return VectSub(GetQuadOffset(textureID, quad), quadOffset);
-        }
-
         /// <summary>
         /// Gets the quad offset relative to another quad for the specified texture name.
         /// </summary>
@@ -84,13 +72,6 @@ namespace CutTheRope.Framework.Visual
             Vector quadOffset = GetQuadOffset(textureResourceName, quad);
             e.x = quadOffset.X;
             e.y = quadOffset.Y;
-        }
-
-        public static void SetElementPositionWithRelativeQuadOffset(BaseElement e, int textureID, int quadToCountFrom, int quad)
-        {
-            Vector relativeQuadOffset = GetRelativeQuadOffset(textureID, quadToCountFrom, quad);
-            e.x = relativeQuadOffset.X;
-            e.y = relativeQuadOffset.Y;
         }
 
         /// <summary>
@@ -119,13 +100,6 @@ namespace CutTheRope.Framework.Visual
         public static Image Image_createWithResID(string resourceName)
         {
             return Image_create(Application.GetTexture(resourceName));
-        }
-
-        public static Image Image_createWithResIDQuad(int r, int q)
-        {
-            Image image = Image_create(Application.GetTexture(GetResourceName(r)));
-            image.SetDrawQuad(q);
-            return image;
         }
 
         /// <summary>

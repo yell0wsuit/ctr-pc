@@ -31,11 +31,6 @@ namespace CutTheRope.Commons
             return this;
         }
 
-        public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
-        {
-            return InitWithResIDBackQuadLiftQuadLiftQuadPressed(GetResourceName(resID), bq, lq, lqp);
-        }
-
         public Vector GetScrollPoint(int i)
         {
             return spoints[i];
