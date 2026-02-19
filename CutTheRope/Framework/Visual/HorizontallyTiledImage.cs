@@ -1,7 +1,6 @@
 using System;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.GameMain;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -64,11 +63,6 @@ namespace CutTheRope.Framework.Visual
             return (HorizontallyTiledImage)new HorizontallyTiledImage().InitWithTexture(t);
         }
 
-        public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(int r)
-        {
-            return HorizontallyTiledImage_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         /// <summary>
         /// Creates a tiled image from the specified texture resource name.
         /// </summary>
@@ -76,13 +70,6 @@ namespace CutTheRope.Framework.Visual
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(string resourceName)
         {
             return HorizontallyTiledImage_create(Application.GetTexture(resourceName));
-        }
-
-        public static HorizontallyTiledImage HorizontallyTiledImage_createWithResIDQuad(int r, int q)
-        {
-            HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-            horizontallyTiledImage.SetDrawQuad(q);
-            return horizontallyTiledImage;
         }
 
         public int[] tiles = new int[3];

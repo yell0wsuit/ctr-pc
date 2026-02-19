@@ -11,11 +11,6 @@ namespace CutTheRope.GameMain
             return (Bubble)new Bubble().InitWithTexture(t);
         }
 
-        public static Bubble Bubble_createWithResID(int r)
-        {
-            return Bubble_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         /// <summary>
         /// Creates a bubble using a texture resource name and applies the specified quad.
         /// </summary>

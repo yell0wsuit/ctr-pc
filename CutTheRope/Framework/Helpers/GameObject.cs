@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
-using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
@@ -14,22 +12,10 @@ namespace CutTheRope.Framework.Helpers
 {
     internal class GameObject : Animation
     {
-        public static GameObject GameObject_createWithResID(int r)
-        {
-            return GameObject_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         private static GameObject GameObject_create(CTRTexture2D t)
         {
             GameObject gameObject = new();
             _ = gameObject.InitWithTexture(t);
-            return gameObject;
-        }
-
-        public static GameObject GameObject_createWithResIDQuad(int r, int q)
-        {
-            GameObject gameObject = GameObject_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-            gameObject.SetDrawQuad(q);
             return gameObject;
         }
 
@@ -92,31 +78,6 @@ namespace CutTheRope.Framework.Helpers
                 mover = null;
             }
             base.Dispose(disposing);
-        }
-
-        public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XElement xml)
-        {
-            if (base.InitWithTexture(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(t))) != null)
-            {
-                float num = xml.AttributeAsNSString("x").IntValue();
-                float num2 = xml.AttributeAsNSString("y").IntValue();
-                x = tx + num;
-                y = ty + num2;
-                type = t;
-                string nSString = xml.AttributeAsNSString("bb");
-                if (nSString.Length() != 0)
-                {
-                    List<string> list = nSString.ComponentsSeparatedByString(',');
-                    bb = new CTRRectangle(list[0].IntValue(), list[1].IntValue(), list[2].IntValue(), list[3].IntValue());
-                }
-                else
-                {
-                    bb = new CTRRectangle(0f, 0f, width, height);
-                }
-                rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
-                ParseMover(xml);
-            }
-            return this;
         }
 
         public virtual void ParseMover(XElement xml)
@@ -236,8 +197,6 @@ namespace CutTheRope.Framework.Helpers
         public const int MAX_MOVER_CAPACITY = 100;
 
         public int state;
-
-        public int type;
 
         public Mover mover;
 

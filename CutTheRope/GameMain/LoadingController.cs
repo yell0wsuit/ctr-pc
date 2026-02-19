@@ -52,10 +52,6 @@ namespace CutTheRope.GameMain
             base.DeactivateImmediately();
         }
 
-        public void ResourceLoaded(int res)
-        {
-        }
-
         public void AllResourcesLoaded()
         {
             // Just set flag - Update() will handle transition after animation completes

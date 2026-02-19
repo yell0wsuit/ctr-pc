@@ -358,36 +358,17 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static BaseElement CreateElementWithResIdquad(int resId, int quad)
+        public static BaseElement CreateElementWithResIdquad(string resourceName, int quad)
         {
-            return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : new BaseElement();
+            return !string.IsNullOrEmpty(resourceName) && quad != -1 ? Image.Image_createWithResIDQuad(resourceName, quad) : new BaseElement();
         }
 
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(string resourceName, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
-            int res = ResourceNameTranslator.ToResourceId(resourceName);
-            BaseElement baseElement = CreateElementWithResIdquad(res, quad);
-            BaseElement baseElement2 = CreateElementWithResIdquad(res, quad);
-            BaseElement baseElement3 = CreateElementWithResIdquad(res, quad2);
-            BaseElement baseElement4 = CreateElementWithResIdquad(res, quad2);
-            int width = MAX(baseElement.width, baseElement3.width);
-            int height = MAX(baseElement.height, baseElement3.height);
-            baseElement.width = baseElement2.width = width;
-            baseElement.height = baseElement2.height = height;
-            baseElement3.width = baseElement4.width = width;
-            baseElement3.height = baseElement4.height = height;
-            baseElement2.scaleX = baseElement2.scaleY = baseElement4.scaleX = baseElement4.scaleY = 1.2f;
-            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(baseElement, baseElement2, baseElement3, baseElement4, bId);
-            toggleButton.delegateButtonDelegate = delegateValue;
-            return toggleButton;
-        }
-
-        public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
-        {
-            BaseElement baseElement = CreateElementWithResIdquad(res, quad);
-            BaseElement baseElement2 = CreateElementWithResIdquad(res, quad);
-            BaseElement baseElement3 = CreateElementWithResIdquad(res, quad2);
-            BaseElement baseElement4 = CreateElementWithResIdquad(res, quad2);
+            BaseElement baseElement = CreateElementWithResIdquad(resourceName, quad);
+            BaseElement baseElement2 = CreateElementWithResIdquad(resourceName, quad);
+            BaseElement baseElement3 = CreateElementWithResIdquad(resourceName, quad2);
+            BaseElement baseElement4 = CreateElementWithResIdquad(resourceName, quad2);
             int width = MAX(baseElement.width, baseElement3.width);
             int height = MAX(baseElement.height, baseElement3.height);
             baseElement.width = baseElement2.width = width;
@@ -446,7 +427,7 @@ namespace CutTheRope.GameMain
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonAchivCup, quad);
             _ = image3.AddChild(image2);
             image2.parentAnchor = 9;
-            Image.SetElementPositionWithRelativeQuadOffset(image2, 59, 0, quad);
+            Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuButtonAchivCup, 0, quad);
             return image3;
         }
 
@@ -454,7 +435,7 @@ namespace CutTheRope.GameMain
         {
             Image up = CreateBlankScoresButtonWithIconpressed(quad, false);
             Image image = CreateBlankScoresButtonWithIconpressed(quad, true);
-            Image.SetElementPositionWithRelativeQuadOffset(image, 59, 0, 1);
+            Image.SetElementPositionWithRelativeQuadOffset(image, Resources.Img.MenuButtonAchivCup, 0, 1);
             Button button = new Button().InitWithUpElementDownElementandID(up, image, bId);
             button.delegateButtonDelegate = delegateValue;
             return button;
