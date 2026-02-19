@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.GameMain;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -12,24 +11,12 @@ namespace CutTheRope.Framework.Visual
             return (Animation)new Animation().InitWithTexture(t);
         }
 
-        public static Animation Animation_createWithResID(int r)
-        {
-            return Animation_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         /// <summary>
         /// Creates an animation using a texture resource name.
         /// </summary>
         public static Animation Animation_createWithResID(string resourceName)
         {
             return Animation_create(Application.GetTexture(resourceName));
-        }
-
-        public static Animation Animation_createWithResIDQuad(int r, int q)
-        {
-            Animation animation = Animation_createWithResID(r);
-            animation?.SetDrawQuad(q);
-            return animation;
         }
 
         public virtual void AddAnimationWithIDDelayLoopFirstLast(int aid, float d, Timeline.LoopType l, int s, int e)

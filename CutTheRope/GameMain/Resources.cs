@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Visual;
@@ -103,118 +106,17 @@ namespace CutTheRope.GameMain
             return imageNames_.Contains(resourceName) || backgroundImgNames_.Contains(resourceName);
         }
 
-        /// <summary>
-        /// List all of texture resources.
-        /// </summary>
-        private static void InitializeImageNames()
+        private static HashSet<string> NamesFrom([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type)
         {
-            imageNames_ =
-            [
-                Img.LoaderbarFull, Img.MenuButtonDefault,
-                Img.MenuLoading, Img.MenuNotification, Img.MenuAchievement,
-                Img.MenuOptions, Img.MenuBgr, Img.MenuPopup, Img.MenuLogo,
-                Img.CutTheRopeDXLogo,
-                Img.MenuLogoNew, Img.CandySelectionFx, Img.SkinSelection, Img.MenuLevelSelection,
-                Img.MenuPackSelection, Img.MenuPackSelection2,
-                Img.MenuExtraButtons, Img.MenuScrollbar, Img.MenuLeaderboard,
-                Img.MenuProcessingHd, Img.MenuScrollbarChangename, Img.MenuButtonAchivCup,
-                Img.MenuBgrShadow, Img.MenuButtonShort, Img.HudButtons, Img.ObjCandy01New,
-                Img.ObjCandyFx, Img.ObjSpider, Img.ConfettiParticles, Img.MenuPause, Img.MenuResult,
-                Img.HudButtonsEn, Img.MenuResultEn, Img.ObjStarDisappear,
-                Img.ObjBubbleFlight, Img.ObjBubblePop, Img.ObjHookAuto,
-                Img.ObjBubbleAttached, Img.ObjHook01, Img.ObjHook02, Img.ObjStarIdle,
-                Img.HudStar, Img.CharAnimations, Img.CharAnimationsSleeping, Img.ObjHookRegulated, Img.ObjHookMovable,
-                Img.ObjPump, Img.TutorialSigns, Img.ObjHat, Img.ObjBouncer01,
-                Img.ObjBouncer02, Img.ObjSpikes01, Img.ObjSpikes02, Img.ObjSpikes03,
-                Img.ObjSpikes04, Img.ObjElectrodes, Img.ObjRotatableSpikes01,
-                Img.ObjRotatableSpikes02, Img.ObjRotatableSpikes03, Img.ObjRotatableSpikes04,
-                Img.ObjRotatableSpikesButton, Img.ObjBeeHd, Img.ObjPollenHd,
-                Img.CharSupports, Img.CharAnimations2, Img.CharAnimations3, Img.ObjVinil,
-                Img.Bgr01Cover, Img.Bgr02Cover,
-                Img.Bgr03Cover, Img.Bgr04Cover, Img.Bgr05Cover, Img.Bgr06Cover,
-                Img.Bgr07Cover, Img.Bgr08Cover, Img.Bgr09Cover, Img.Bgr10Cover,
-                Img.Bgr11Cover, Img.MenuExtraButtonsFr, Img.MenuExtraButtonsGr,
-                Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
-                Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
-                Img.MenuExtraButtonsEn, Img.Bgr12Cover,
-                Img.ObjGhost, Img.Bgr13Cover, Img.ObjPipe, Img.XmasLights,
-                Img.Snowflakes, Img.CharGreetingXmas, Img.ObjSock,
-                Img.Bgr14Cover, Img.ObjLantern, Img.ObjLighter,
-                Img.Bgr15Cover, Img.ObjGap,
-                Img.Bgr16Cover, Img.ObjStarNight,
-                Img.CharIdleXmas, Img.MenuBgrXmas, Img.MenuLogoXmasHat,
-                Img.Bgr17Cover, Img.BoxLabel, Img.ObjTransporter,
-                Img.ObjCandy02, Img.ObjCandy03, Img.ObjCandy04, Img.ObjCandy05, Img.ObjCandy06,
-                Img.ObjCandy07, Img.ObjCandy08, Img.ObjCandy09, Img.ObjCandy10, Img.ObjCandy11,
-                Img.ObjCandy12, Img.ObjCandy13, Img.ObjCandy14, Img.ObjCandy15, Img.ObjCandy16,
-                Img.ObjCandy17, Img.ObjCandy18, Img.ObjCandy19, Img.ObjCandy20, Img.ObjCandy21,
-                Img.ObjCandy22, Img.ObjCandy23, Img.ObjCandy24, Img.ObjCandy25, Img.ObjCandy26,
-                Img.ObjCandy27, Img.ObjCandy28, Img.ObjCandy29, Img.ObjCandy30, Img.ObjCandy31,
-                Img.ObjCandy32, Img.ObjCandy33, Img.ObjCandy34, Img.ObjCandy35, Img.ObjCandy36,
-                Img.ObjCandy37, Img.ObjCandy38, Img.ObjCandy39, Img.ObjCandy40, Img.ObjCandy41,
-                Img.ObjCandy42, Img.ObjCandy43, Img.ObjCandy44, Img.ObjCandy45, Img.ObjCandy46,
-                Img.ObjCandy47, Img.ObjCandy48, Img.ObjCandy49, Img.ObjCandy50, Img.ObjCandy51,
-                Img.ObjCandy52,
-
-                // CTR Experiments objects
-                Img.ObjGun, Img.ObjSticker, Img.ObjRocket, Img.WaterTile, Img.ObjSnail,
-                Img.ObjRoboHand
-            ];
+            return [.. type.GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Where(f => f.IsLiteral)
+                .Select(f => (string)f.GetValue(null))];
         }
 
-        /// <summary>
-        /// List all of audio resources.
-        /// </summary>
-        private static void InitializeSoundNames()
-        {
-            soundNames_ =
-            [
-                Snd.Tap, Snd.Button, Snd.BubbleBreak, Snd.Bubble, Snd.CandyBreak,
-                Snd.MonsterChewing, Snd.MonsterClose, Snd.MonsterOpen, Snd.MonsterSad,
-                Snd.Ring, Snd.RopeBleak1, Snd.RopeBleak2, Snd.RopeBleak3, Snd.RopeBleak4,
-                Snd.RopeGet, Snd.Star1, Snd.Star2, Snd.Star3, Snd.Electric,
-                Snd.Pump1, Snd.Pump2, Snd.Pump3, Snd.Pump4, Snd.SpiderActivate,
-                Snd.SpiderFall, Snd.SpiderWin, Snd.Wheel, Snd.Win, Snd.GravityOff,
-                Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
-                Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
-                Snd.ScratchOut, Snd.GhostPuff, Snd.XmasBell, Snd.SteamStart,
-                Snd.SteamStart2, Snd.SteamEnd, Snd.LanternTeleportIn,
-                Snd.LanternTeleportOut, Snd.TeleportXmas, Snd.MouseIdle, Snd.MouseRustle,
-                Snd.MouseTap, Snd.MonsterSleep1, Snd.MonsterSleep2, Snd.MonsterSleep3,
-                Snd.StarLight1, Snd.StarLight2,
-                Snd.Conv01, Snd.Conv02, Snd.Conv03, Snd.Conv04,
-                Snd.TransporterMove, Snd.TransporterDrop,
-
-                // CTR Experiments sounds
-                Snd.ExpGun, Snd.ExpSuckerDrop, Snd.ExpSuckerLand, Snd.ExpRocketStart,
-                Snd.ExpRocketFlyLooped, Snd.ExpRocketInWater, Snd.ExpWaterSplash,
-                Snd.ExpSnailIn, Snd.ExpSnailOut, Snd.ExpHandCatch, Snd.ExpHandDrop,
-                Snd.ExpHandRotate
-            ];
-        }
-
-        /// <summary>
-        /// List all of audio resources.
-        /// </summary>
-        private static void InitializeMusicNames()
-        {
-            musicNames_ =
-            [
-                Music.MenuMusic, Music.MenuMusicXmas, Music.GameMusic, Music.GameMusicXmas,
-                Music.GameMusic2, Music.GameMusic3, Music.GameMusic4, Music.GameMusic5
-            ];
-        }
-
-        /// <summary>
-        /// List all of font resources.
-        /// </summary>
-        private static void InitializeFontNames()
-        {
-            fontNames_ =
-            [
-                Fnt.BigFont, Fnt.SmallFont, Fnt.FontNumbersBig
-            ];
-        }
+        private static void InitializeImageNames() { imageNames_ = NamesFrom(typeof(Img)); }
+        private static void InitializeSoundNames() { soundNames_ = NamesFrom(typeof(Snd)); }
+        private static void InitializeMusicNames() { musicNames_ = NamesFrom(typeof(Music)); }
+        private static void InitializeFontNames() { fontNames_ = NamesFrom(typeof(Fnt)); }
 
         /// <summary>
         /// Checks if a resource name is a background image.

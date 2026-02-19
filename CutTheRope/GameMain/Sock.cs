@@ -14,11 +14,6 @@ namespace CutTheRope.GameMain
             return (Sock)new Sock().InitWithTexture(t);
         }
 
-        public static Sock Sock_createWithResID(int r)
-        {
-            return Sock_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
-        }
-
         public static Sock Sock_createWithResID(string resourceName)
         {
             return Sock_create(Application.GetTexture(resourceName));
