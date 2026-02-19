@@ -1095,7 +1095,7 @@ namespace CutTheRope.GameMain
             image2.y -= 0.5f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85, 0.85, 0.85, 1.0), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
             _ = image.AddTimeline(timeline);
             image.SetName("levelsBack");
             _ = image.AddChild(image2);

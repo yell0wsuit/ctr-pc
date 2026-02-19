@@ -31,11 +31,6 @@ namespace CutTheRope.Framework
             return result;
         }
 
-        public static RGBAColor MakeRGBA(double r, double g, double b, double a)
-        {
-            return MakeRGBA((float)r, (float)g, (float)b, (float)a);
-        }
-
         public static RGBAColor MakeRGBA(float r, float g, float b, float a)
         {
             return new RGBAColor(r, g, b, a);

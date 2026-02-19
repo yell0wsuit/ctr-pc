@@ -35,7 +35,7 @@ namespace CutTheRope.GameMain
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.4, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.05, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.7, 0.7, 0.7, 0.7), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.7f, 0.7f, 0.7f, 0.7f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_PING_PONG);
             fire.AddTimelinewithID(timeline, (int)LanternActivation.FireBounce);
@@ -106,7 +106,7 @@ namespace CutTheRope.GameMain
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.6, 0.6, 0.6, 0.6), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.6f, 0.6f, 0.6f, 0.6f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 0.8, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06));
@@ -149,7 +149,7 @@ namespace CutTheRope.GameMain
                 lantern.innerCandy.PlayTimeline(InnerCandyAppearTimelineId);
                 lantern.fire.scaleX = 1.4f;
                 lantern.fire.scaleY = 1f;
-                lantern.fire.color = RGBAColor.MakeRGBA(0.7, 0.7, 0.7, 0.7);
+                lantern.fire.color = RGBAColor.MakeRGBA(0.7f, 0.7f, 0.7f, 0.7f);
                 lantern.delayedDispatcher.CancelAllDispatches();
                 lantern.delayedDispatcher.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.PlayFireBounceTimeline), null, 0.4 * RND_0_1);
                 lantern.delayedDispatcher.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.PlayInnerCandyIdleTimeline), null, 0.2 + (0.2 * RND_0_1));

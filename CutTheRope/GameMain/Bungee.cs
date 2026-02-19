@@ -160,24 +160,28 @@ namespace CutTheRope.GameMain
                 ropeColors.Color1.RedColor * num,
                 ropeColors.Color1.GreenColor * num,
                 ropeColors.Color1.BlueColor * num,
-                (double)num);
+                num
+            );
             RGBAColor rgbaColor2 = RGBAColor.MakeRGBA(
                 ropeColors.Color2.RedColor * num,
                 ropeColors.Color2.GreenColor * num,
                 ropeColors.Color2.BlueColor * num,
-                (double)num);
+                num
+            );
 
             // Create darker variants for shading (40% of base color)
             RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * 0.4 * num,
-                ropeColors.Color1.GreenColor * 0.4 * num,
-                ropeColors.Color1.BlueColor * 0.4 * num,
-                (double)num);
+                ropeColors.Color1.RedColor * 0.4f * num,
+                ropeColors.Color1.GreenColor * 0.4f * num,
+                ropeColors.Color1.BlueColor * 0.4f * num,
+                num
+            );
             RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * 0.45 * num,
-                ropeColors.Color2.GreenColor * 0.45 * num,
-                ropeColors.Color2.BlueColor * 0.45 * num,
-                (double)num);
+                ropeColors.Color2.RedColor * 0.45f * num,
+                ropeColors.Color2.GreenColor * 0.45f * num,
+                ropeColors.Color2.BlueColor * 0.45f * num,
+                num
+            );
             if (b.highlighted)
             {
                 float num2 = 3f;

@@ -247,7 +247,7 @@ namespace CutTheRope.GameMain
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (radius != -1f || hideRadius)
             {
-                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
+                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, radiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
             Renderer.SetColor(Color.White);

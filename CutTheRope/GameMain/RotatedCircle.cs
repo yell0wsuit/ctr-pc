@@ -303,7 +303,7 @@ namespace CutTheRope.GameMain
 
         private const string VinylTexture = Resources.Img.ObjVinil;
 
-        private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.2);
+        private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1, 1, 1, 0.2f);
 
         // private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
 

@@ -23,44 +23,44 @@ namespace CutTheRope.GameMain
             return ropeIndex switch
             {
                 0 => new RopeColors(
-                    RGBAColor.MakeRGBA(0.475, 0.305, 0.185, 1.0),  // Original brown (default)
-                    RGBAColor.MakeRGBA(0.6755555555555556, 0.44, 0.27555555555555555, 1.0)
+                    RGBAColor.MakeRGBA(0.475f, 0.305f, 0.185f, 1),  // Original brown (default)
+                    RGBAColor.MakeRGBA(0.6755555555555556f, 0.44f, 0.27555555555555555f, 1)
                 ),
                 1 => new RopeColors(
-                    RGBAColor.MakeRGBA(0.624, 0.294, 0.114, 1.0),  // Brown
-                    RGBAColor.MakeRGBA(1.000, 0.627, 0.463, 1.0)   // Light brown
+                    RGBAColor.MakeRGBA(0.624f, 0.294f, 0.114f, 1),  // Brown
+                    RGBAColor.MakeRGBA(1, 0.627f, 0.463f, 1)   // Light brown
                 ),
                 2 => new RopeColors(
-                    RGBAColor.MakeRGBA(0.404, 0.612, 0.635, 1.0),  // Teal
-                    RGBAColor.MakeRGBA(0.773, 0.898, 0.902, 1.0)   // Light teal
+                    RGBAColor.MakeRGBA(0.404f, 0.612f, 0.635f, 1),  // Teal
+                    RGBAColor.MakeRGBA(0.773f, 0.898f, 0.902f, 1)   // Light teal
                 ),
                 3 => new RopeColors(
-                    RGBAColor.MakeRGBA(0.757, 0.533, 0.000, 1.0),  // Gold
-                    RGBAColor.MakeRGBA(0.980, 0.843, 0.200, 1.0)   // Light gold
+                    RGBAColor.MakeRGBA(0.757f, 0.533f, 0, 1),  // Gold
+                    RGBAColor.MakeRGBA(0.98f, 0.843f, 0.2f, 1)   // Light gold
                 ),
                 4 => new RopeColors(
-                    RGBAColor.MakeRGBA(0.980, 0.243, 0.243, 1.0),  // Red
-                    RGBAColor.MakeRGBA(0.282, 0.525, 0.153, 1.0)   // Green
+                    RGBAColor.MakeRGBA(0.980f, 0.243f, 0.243f, 1),  // Red
+                    RGBAColor.MakeRGBA(0.282f, 0.525f, 0.153f, 1)   // Green
                 ),
                 5 => new RopeColors(
-                    RGBAColor.MakeRGBA(0.176, 0.318, 0.659, 1.0),  // Blue
-                    RGBAColor.MakeRGBA(1.000, 1.000, 1.000, 1.0)   // White
+                    RGBAColor.MakeRGBA(0.176f, 0.318f, 0.659f, 1),  // Blue
+                    RGBAColor.MakeRGBA(1, 1, 1, 1)   // White
                 ),
                 6 => new RopeColors(
-                    RGBAColor.MakeRGBA(0.631, 0.957, 1.000, 1.0),  // Cyan
-                    RGBAColor.MakeRGBA(0.996, 0.631, 0.953, 1.0)   // Pink
+                    RGBAColor.MakeRGBA(0.631f, 0.957f, 1, 1),  // Cyan
+                    RGBAColor.MakeRGBA(0.996f, 0.631f, 0.953f, 1)   // Pink
                 ),
                 7 => new RopeColors(
-                    RGBAColor.MakeRGBA(1.000, 0.329, 0.318, 1.0),  // Red-orange
-                    RGBAColor.MakeRGBA(1.000, 0.992, 0.941, 1.0)   // Cream
+                    RGBAColor.MakeRGBA(1, 0.329f, 0.318f, 1),  // Red-orange
+                    RGBAColor.MakeRGBA(1, 0.992f, 0.941f, 1)   // Cream
                 ),
                 8 => new RopeColors(
-                    RGBAColor.MakeRGBA(1.000, 0.831, 0.404, 1.0),  // Orange
-                    RGBAColor.MakeRGBA(0.251, 0.239, 0.278, 1.0)   // Dark purple
+                    RGBAColor.MakeRGBA(1, 0.831f, 0.404f, 1),  // Orange
+                    RGBAColor.MakeRGBA(0.251f, 0.239f, 0.278f, 1)   // Dark purple
                 ),
                 _ => new RopeColors(
-                    RGBAColor.MakeRGBA(0.475, 0.305, 0.185, 1.0),  // Default to original
-                    RGBAColor.MakeRGBA(0.6755555555555556, 0.44, 0.27555555555555555, 1.0)
+                    RGBAColor.MakeRGBA(0.475f, 0.305f, 0.185f, 1),  // Default to original
+                    RGBAColor.MakeRGBA(0.6755555555555556f, 0.44f, 0.27555555555555555f, 1)
                 )
             };
         }
