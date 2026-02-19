@@ -9,9 +9,9 @@ namespace CutTheRope.Framework.Helpers
 {
     internal class CTRMathHelper
     {
-        public static float RND_MINUS1_1 => (Arc4random() / ARC4RANDOM_MAX * 2) - 1;
+        public static float RND_MINUS1_1 => ((float)Arc4random() / ARC4RANDOM_MAX * 2f) - 1f;
 
-        public static float RND_0_1 => Arc4random() / ARC4RANDOM_MAX;
+        public static float RND_0_1 => (float)Arc4random() / ARC4RANDOM_MAX;
 
         public static int MIN(int a, int b)
         {
