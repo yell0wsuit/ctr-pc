@@ -192,6 +192,7 @@ namespace CutTheRope.GameMain
                 activeRocket.StopAnimation();
             }
             DetachActiveSnails();
+            DetachActiveHands();
 
             // Make the mouse retreat and lock it from advancing to next mouse
             if (miceManager != null && mice != null)
@@ -236,6 +237,7 @@ namespace CutTheRope.GameMain
                 activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
                 activeRocket.StopAnimation();
             }
+            DetachActiveHands();
 
             // Make the mouse retreat and lock it from advancing to next mouse
             if (miceManager != null && mice != null)
@@ -385,6 +387,26 @@ namespace CutTheRope.GameMain
                 if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
                 {
                     snail.Detach();
+                }
+            }
+        }
+
+        public void DetachActiveHands()
+        {
+            if (hands == null || hands.Count <= 0)
+            {
+                return;
+            }
+
+            foreach (MechanicalHand hand in hands)
+            {
+                if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                {
+                    hand.cPoint.RemoveConstraint(star);
+                    hand.state = MechanicalHand.STATE_HAND_RELEASE;
+                    hand.doRotateCandy = false;
+                    hand.releaseSoundPlayed = false;
+                    hand.AnimateReleaseWithAnimationsPool(aniPool);
                 }
             }
         }

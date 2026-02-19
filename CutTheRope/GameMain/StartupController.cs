@@ -165,6 +165,9 @@ namespace CutTheRope.GameMain
             Resources.Snd.ExpWaterSplash,
             Resources.Snd.ExpSnailIn,
             Resources.Snd.ExpSnailOut,
+            Resources.Snd.ExpHandCatch,
+            Resources.Snd.ExpHandDrop,
+            Resources.Snd.ExpHandRotate,
             null,
         ];
 
