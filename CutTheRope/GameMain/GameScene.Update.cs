@@ -1005,6 +1005,7 @@ namespace CutTheRope.GameMain
                             sock4.state = Sock.SOCK_THROWING;
                             sock4.idleTimeout = 0.8f;
                             ReleaseAllRopes(false);
+                            DetachActiveHands();
                             savedSockSpeed = 0.9f * VectLength(star.v);
                             savedSockSpeed *= 1.4f;
                             targetSock = sock4;
