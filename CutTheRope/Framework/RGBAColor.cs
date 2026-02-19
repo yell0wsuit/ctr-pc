@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.Framework
 {
-    public struct RGBAColor
+    public struct RGBAColor(float R, float G, float B, float A)
     {
         public readonly Color ToXNA()
         {
@@ -41,22 +41,6 @@ namespace CutTheRope.Framework
             return a.RedColor == b.RedColor && a.GreenColor == b.GreenColor && a.BlueColor == b.BlueColor && a.AlphaChannel == b.AlphaChannel;
         }
 
-        public RGBAColor(double R, double G, double B, double A)
-        {
-            RedColor = (float)R;
-            GreenColor = (float)G;
-            BlueColor = (float)B;
-            AlphaChannel = (float)A;
-        }
-
-        public RGBAColor(float R, float G, float B, float A)
-        {
-            RedColor = R;
-            GreenColor = G;
-            BlueColor = B;
-            AlphaChannel = A;
-        }
-
         public readonly float[] ToFloatArray()
         {
             return [RedColor, GreenColor, BlueColor, AlphaChannel];
@@ -78,22 +62,22 @@ namespace CutTheRope.Framework
 
         public static readonly Color solidOpaqueRGBAXna = Color.White;
 
-        public static readonly RGBAColor redRGBA = new(1.0, 0.0, 0.0, 1.0);
+        public static readonly RGBAColor redRGBA = new(1, 0, 0, 1);
 
-        public static readonly RGBAColor blueRGBA = new(0.0, 0.0, 1.0, 1.0);
+        public static readonly RGBAColor blueRGBA = new(0, 0, 1, 1);
 
-        public static readonly RGBAColor greenRGBA = new(0.0, 1.0, 0.0, 1.0);
+        public static readonly RGBAColor greenRGBA = new(0, 1, 0, 1);
 
-        public static readonly RGBAColor blackRGBA = new(0.0, 0.0, 0.0, 1.0);
+        public static readonly RGBAColor blackRGBA = new(0, 0, 0, 1);
 
-        public static readonly RGBAColor whiteRGBA = new(1.0, 1.0, 1.0, 1.0);
+        public static readonly RGBAColor whiteRGBA = new(1, 1, 1, 1);
 
-        public float RedColor { get; set; }
+        public float RedColor { get; set; } = R;
 
-        public float GreenColor { get; set; }
+        public float GreenColor { get; set; } = G;
 
-        public float BlueColor { get; set; }
+        public float BlueColor { get; set; } = B;
 
-        public float AlphaChannel { get; set; }
+        public float AlphaChannel { get; set; } = A;
     }
 }
