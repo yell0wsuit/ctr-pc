@@ -157,7 +157,7 @@ namespace CutTheRope.GameMain
             {
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, MathF.PI * 2f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, MathF.Tau, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
@@ -172,7 +172,7 @@ namespace CutTheRope.GameMain
             {
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.AlphaChannel = 1f - color.AlphaChannel;
-                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, MathF.PI * 2f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, MathF.Tau, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
             }
             for (int i = 0; i < circlesArray.Count; i++)
             {
@@ -197,8 +197,8 @@ namespace CutTheRope.GameMain
             vinilStickerR.Draw();
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            DrawHelper.DrawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, MathF.PI * 2f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
-            DrawHelper.DrawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, MathF.PI * 2f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
+            DrawHelper.DrawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, MathF.Tau, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
+            DrawHelper.DrawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, MathF.Tau, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             vinilControllerL.color = color;

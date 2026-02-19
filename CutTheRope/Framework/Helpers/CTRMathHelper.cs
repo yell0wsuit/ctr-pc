@@ -117,14 +117,14 @@ namespace CutTheRope.Framework.Helpers
 
         public static float FmSin(float angle)
         {
-            int num = (int)(angle * 1024 / (Math.PI * 2));
+            int num = (int)(angle * 1024 / Math.Tau);
             num &= 1023;
             return fmSins[num];
         }
 
         public static float FmCos(float angle)
         {
-            int num = (int)(angle * 1024 / (Math.PI * 2));
+            int num = (int)(angle * 1024 / Math.Tau);
             num &= 1023;
             return fmCoss[num];
         }

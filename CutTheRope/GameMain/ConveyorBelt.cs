@@ -604,7 +604,7 @@ namespace CutTheRope.GameMain
         /// <returns>The point in belt-local coordinates.</returns>
         public Vector ToLocalSpace(Vector worldPoint)
         {
-            float perpAngle = rotationRad - (0.5f * (float)Math.PI);
+            float perpAngle = rotationRad - (MathF.PI / 2f);
             Vector perp = Vect(Cosf(perpAngle), Sinf(perpAngle));
             float dx = worldPoint.X - x;
             float dy = worldPoint.Y - y;

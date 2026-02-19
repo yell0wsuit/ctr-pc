@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
                     AddPathPoint(s);
                     return;
                 }
-                float num3 = MathF.PI * 2f / num2;
+                float num3 = MathF.Tau / num2;
                 if (!flag)
                 {
                     num3 = 0f - num3;
