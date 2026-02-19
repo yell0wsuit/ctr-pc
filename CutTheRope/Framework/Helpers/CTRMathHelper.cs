@@ -460,7 +460,6 @@ namespace CutTheRope.Framework.Helpers
         public const float DEG_360 = 360f;
         public const float UNDEFINED_COORDINATE = int.MaxValue;
 
-        public const double M_PI = Math.PI;
         private static readonly Random random_ = new();
 
         private static readonly long ARC4RANDOM_MAX = 4294967296L;
