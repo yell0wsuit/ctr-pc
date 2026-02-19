@@ -9,85 +9,106 @@ namespace CutTheRope.Framework.Helpers
 {
     internal class CTRMathHelper
     {
+        /// <summary>Random float in the range [-1, 1].</summary>
         public static float RND_MINUS1_1 => ((float)Arc4random() / ARC4RANDOM_MAX * 2f) - 1f;
 
+        /// <summary>Random float in the range [0, 1].</summary>
         public static float RND_0_1 => (float)Arc4random() / ARC4RANDOM_MAX;
 
+        /// <summary>Returns the smaller of two integers.</summary>
         public static int MIN(int a, int b)
         {
             return Math.Min(a, b);
         }
 
+        /// <summary>Returns the smaller of two floats.</summary>
         public static float MIN(float a, float b)
         {
             return Math.Min(a, b);
         }
 
+        /// <summary>Returns the larger of two integers.</summary>
         public static int MAX(int a, int b)
         {
             return Math.Max(a, b);
         }
 
+        /// <summary>Returns the larger of two floats.</summary>
         public static float MAX(float a, float b)
         {
             return Math.Max(a, b);
         }
 
+        /// <summary>Returns the absolute value of a float.</summary>
         public static float ABS(float a)
         {
             return Math.Abs(a);
         }
 
+        /// <summary>Returns a random integer in the range [0, n].</summary>
         public static int RND(int n)
         {
             return RND_RANGE(0, n);
         }
 
+        /// <summary>Returns a random integer in the range [n, m].</summary>
         public static int RND_RANGE(int n, int m)
         {
             return random_.Next(n, m + 1);
         }
 
+        /// <summary>Returns a random uint, wrapping <see cref="Random"/>.</summary>
         public static uint Arc4random()
         {
             return (uint)random_.Next(int.MinValue, int.MaxValue);
         }
 
+        /// <summary>Clamps <paramref name="V"/> to the range [<paramref name="MINV"/>, <paramref name="MAXV"/>].</summary>
         public static float FIT_TO_BOUNDARIES(float V, float MINV, float MAXV)
         {
             return Math.Max(Math.Min(V, MAXV), MINV);
         }
 
+        /// <summary>Returns the ceiling of <paramref name="value"/> as a float.</summary>
         public static float Ceil(double value)
         {
             return (float)Math.Ceiling(value);
         }
 
+        /// <summary>Returns <paramref name="value"/> rounded to the nearest integer as a float.</summary>
         public static float Round(double value)
         {
             return (float)Math.Round(value);
         }
 
+        /// <summary>Returns the cosine of <paramref name="x"/> (radians) as a float.</summary>
         public static float Cosf(float x)
         {
             return (float)Math.Cos((double)x);
         }
 
+        /// <summary>Returns the sine of <paramref name="x"/> (radians) as a float.</summary>
         public static float Sinf(float x)
         {
             return (float)Math.Sin((double)x);
         }
 
+        /// <summary>Returns the tangent of <paramref name="x"/> (radians) as a float.</summary>
         public static float Tanf(float x)
         {
             return (float)Math.Tan((double)x);
         }
 
+        /// <summary>Returns the arccosine of <paramref name="x"/> in radians as a float.</summary>
         public static float Acosf(float x)
         {
             return (float)Math.Acos((double)x);
         }
 
+        /// <summary>
+        /// Initializes the fast-math sine and cosine lookup tables.
+        /// Must be called before using <see cref="FmSin"/> or <see cref="FmCos"/>.
+        /// </summary>
         public static void FmInit()
         {
             if (fmSins == null)
@@ -108,6 +129,10 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <summary>
+        /// Fast table-based sine. Quantizes <paramref name="angle"/> (radians) to
+        /// <see cref="FM_TRIG_TABLE_SIZE"/> steps.
+        /// </summary>
         public static float FmSin(float angle)
         {
             int num = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
@@ -115,6 +140,10 @@ namespace CutTheRope.Framework.Helpers
             return fmSins[num];
         }
 
+        /// <summary>
+        /// Fast table-based cosine. Quantizes <paramref name="angle"/> (radians) to
+        /// <see cref="FM_TRIG_TABLE_SIZE"/> steps.
+        /// </summary>
         public static float FmCos(float angle)
         {
             int num = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
@@ -122,21 +151,34 @@ namespace CutTheRope.Framework.Helpers
             return fmCoss[num];
         }
 
+        /// <summary>Returns <see langword="true"/> if <paramref name="a"/> and <paramref name="b"/> have the same sign (both ≥ 0 or both &lt; 0).</summary>
         public static bool SameSign(float a, float b)
         {
             return (a >= 0f && b >= 0f) || (a < 0f && b < 0f);
         }
 
+        /// <summary>
+        /// Returns <see langword="true"/> if the point (<paramref name="x"/>, <paramref name="y"/>) lies
+        /// within the axis-aligned rectangle defined by its top-left corner, width, and height.
+        /// </summary>
         public static bool PointInRect(float x, float y, float checkX, float checkY, float checkWidth, float checkHeight)
         {
             return x >= checkX && x < checkX + checkWidth && y >= checkY && y < checkY + checkHeight;
         }
 
+        /// <summary>
+        /// Returns <see langword="true"/> if two axis-aligned rectangles overlap.
+        /// Each rectangle is supplied as its left, top, right, and bottom edges.
+        /// </summary>
         public static bool RectInRect(float x1l, float y1t, float x1r, float y1b, float x2l, float y2t, float x2r, float y2b)
         {
             return x1l <= x2r && x1r >= x2l && y1t <= y2b && y1b >= y2t;
         }
 
+        /// <summary>
+        /// Tests whether two oriented bounding boxes (OBBs) overlap using the separating axis theorem.
+        /// Each OBB is described by its four corner vertices in order: top-left, top-right, bottom-right, bottom-left.
+        /// </summary>
         public static bool ObbInOBB(Vector tl1, Vector tr1, Vector br1, Vector bl1, Vector tl2, Vector tr2, Vector br2, Vector bl2)
         {
             Vector[] array = new Vector[4];
@@ -152,16 +194,22 @@ namespace CutTheRope.Framework.Helpers
             return Overlaps1Way(array, array2) && Overlaps1Way(array2, array);
         }
 
+        /// <summary>Converts degrees to radians.</summary>
         public static float DEGREES_TO_RADIANS(float D)
         {
             return D * MathF.PI / DEG_180;
         }
 
+        /// <summary>Converts radians to degrees.</summary>
         public static float RADIANS_TO_DEGREES(float R)
         {
             return R * DEG_180 / MathF.PI;
         }
 
+        /// <summary>
+        /// Returns <see langword="true"/> if all corners of <paramref name="other"/> project onto
+        /// the axes of <paramref name="corner"/> within the box's own extents (one-way SAT overlap test).
+        /// </summary>
         private static bool Overlaps1Way(Vector[] corner, Vector[] other)
         {
             Vector[] array = new Vector[2];
@@ -198,6 +246,10 @@ namespace CutTheRope.Framework.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Returns the intersection of <paramref name="r2"/> clipped to <paramref name="r1"/>,
+        /// with coordinates expressed relative to <paramref name="r1"/>'s origin.
+        /// </summary>
         public static CTRRectangle RectInRectIntersection(CTRRectangle r1, CTRRectangle r2)
         {
             CTRRectangle result = r2;
@@ -224,6 +276,7 @@ namespace CutTheRope.Framework.Helpers
             return result;
         }
 
+        /// <summary>Normalizes an angle in degrees to the range [0, 360).</summary>
         public static float AngleTo0_360(float angle)
         {
             float num = angle;
@@ -238,91 +291,112 @@ namespace CutTheRope.Framework.Helpers
             return num;
         }
 
+        /// <summary>Creates a <see cref="Vector"/> from the given x and y components.</summary>
         public static Vector Vect(float x, float y)
         {
             return new Vector(x, y);
         }
 
+        /// <summary>Returns <see langword="true"/> if both components of <paramref name="v1"/> and <paramref name="v2"/> are equal.</summary>
         public static bool VectEqual(Vector v1, Vector v2)
         {
             return v1.X == v2.X && v1.Y == v2.Y;
         }
 
+        /// <summary>Returns the component-wise sum of <paramref name="v1"/> and <paramref name="v2"/>.</summary>
         public static Vector VectAdd(Vector v1, Vector v2)
         {
             return new Vector(v1.X + v2.X, v1.Y + v2.Y);
         }
 
+        /// <summary>Returns the negation of <paramref name="v"/>.</summary>
         public static Vector VectNeg(Vector v)
         {
             return new Vector(0f - v.X, 0f - v.Y);
         }
 
+        /// <summary>Returns the component-wise difference <paramref name="v1"/> − <paramref name="v2"/>.</summary>
         public static Vector VectSub(Vector v1, Vector v2)
         {
             return new Vector(v1.X - v2.X, v1.Y - v2.Y);
         }
 
+        /// <summary>Returns <paramref name="v"/> scaled by scalar <paramref name="s"/>.</summary>
         public static Vector VectMult(Vector v, float s)
         {
             return new Vector(v.X * s, v.Y * s);
         }
 
+        /// <summary>Returns <paramref name="v"/> divided by scalar <paramref name="s"/>.</summary>
         public static Vector VectDiv(Vector v, float s)
         {
             return new Vector(v.X / s, v.Y / s);
         }
 
+        /// <summary>Returns the dot product of <paramref name="v1"/> and <paramref name="v2"/>.</summary>
         public static float VectDot(Vector v1, Vector v2)
         {
             return (v1.X * v2.X) + (v1.Y * v2.Y);
         }
 
+        /// <summary>Returns the left perpendicular of <paramref name="v"/>: (-y, x).</summary>
         public static Vector VectPerp(Vector v)
         {
             return new Vector(0f - v.Y, v.X);
         }
 
+        /// <summary>Returns the right perpendicular of <paramref name="v"/>: (y, -x).</summary>
         public static Vector VectRperp(Vector v)
         {
             return new Vector(v.Y, 0f - v.X);
         }
 
+        /// <summary>
+        /// Returns the angle of <paramref name="v"/> in radians using <c>atan(y/x)</c>.
+        /// Prefer <see cref="VectAngleNormalized"/> to handle all quadrants correctly.
+        /// </summary>
         public static float VectAngle(Vector v)
         {
             return MathF.Atan(v.Y / v.X);
         }
 
+        /// <summary>Returns the angle of <paramref name="v"/> in radians using <c>atan2(y, x)</c>, covering all quadrants.</summary>
         public static float VectAngleNormalized(Vector v)
         {
             return MathF.Atan2(v.Y, v.X);
         }
 
+        /// <summary>Returns the magnitude (Euclidean length) of <paramref name="v"/>.</summary>
         public static float VectLength(Vector v)
         {
             return MathF.Sqrt(VectDot(v, v));
         }
 
+        /// <summary>Returns the squared magnitude of <paramref name="v"/>. Cheaper than <see cref="VectLength"/> when only relative comparisons are needed.</summary>
         public static float VectLengthsq(Vector v)
         {
             return VectDot(v, v);
         }
 
+        /// <summary>Returns a unit vector in the same direction as <paramref name="v"/>.</summary>
         public static Vector VectNormalize(Vector v)
         {
             return VectMult(v, 1f / VectLength(v));
         }
 
+        /// <summary>Returns a unit vector pointing in the direction of angle <paramref name="a"/> (radians).</summary>
         public static Vector VectForAngle(float a)
         {
             return new Vector(FmCos(a), FmSin(a));
         }
 
+        /// <summary>Returns the Euclidean distance between <paramref name="v1"/> and <paramref name="v2"/>.</summary>
         public static float VectDistance(Vector v1, Vector v2)
         {
             return VectLength(VectSub(v1, v2));
         }
 
+        /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the origin.</summary>
         public static Vector VectRotate(Vector v, double rad)
         {
             float num = FmCos((float)rad);
@@ -332,6 +406,7 @@ namespace CutTheRope.Framework.Helpers
             return new Vector(num3, yParam);
         }
 
+        /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the point (<paramref name="cx"/>, <paramref name="cy"/>).</summary>
         public static Vector VectRotateAround(Vector v, double rad, float cx, float cy)
         {
             Vector v2 = v;
@@ -343,11 +418,21 @@ namespace CutTheRope.Framework.Helpers
             return v2;
         }
 
+        /// <summary>
+        /// Computes the Cohen–Sutherland outcode for point <paramref name="p"/> relative to
+        /// the axis-aligned rectangle [<paramref name="x_min"/>, <paramref name="x_max"/>] × [<paramref name="y_min"/>, <paramref name="y_max"/>].
+        /// </summary>
         private static int Vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
         {
             return (p.X < x_min ? 1 : 0) + (p.X > x_max ? 2 : 0) + (p.Y < y_min ? 4 : 0) + (p.Y > y_max ? 8 : 0);
         }
 
+        /// <summary>
+        /// Tests whether the line segment from (<paramref name="x1"/>, <paramref name="y1"/>) to
+        /// (<paramref name="x2"/>, <paramref name="y2"/>) intersects the axis-aligned rectangle
+        /// at (<paramref name="rx"/>, <paramref name="ry"/>) with dimensions <paramref name="w"/> × <paramref name="h"/>,
+        /// using the Cohen–Sutherland clipping algorithm.
+        /// </summary>
         public static bool LineInRect(float x1, float y1, float x2, float y2, float rx, float ry, float w, float h)
         {
             VectorClass vectorClass = new(new Vector(x1, y1));
@@ -414,6 +499,11 @@ namespace CutTheRope.Framework.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Tests whether two line segments intersect: segment 1 from
+        /// (<paramref name="x1"/>, <paramref name="y1"/>) to (<paramref name="x2"/>, <paramref name="y2"/>) and
+        /// segment 2 from (<paramref name="x3"/>, <paramref name="y3"/>) to (<paramref name="x4"/>, <paramref name="y4"/>).
+        /// </summary>
         public static bool LineInLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
             Vector vector = default;
@@ -431,16 +521,22 @@ namespace CutTheRope.Framework.Helpers
             return Math.Abs(num) <= Math.Abs(value) && Math.Abs(value2) <= Math.Abs(value);
         }
 
+        /// <summary>
+        /// Returns a random float in the range [<paramref name="S"/>, <paramref name="F"/>],
+        /// with precision to three decimal places.
+        /// </summary>
         public static float FLOAT_RND_RANGE(int S, int F)
         {
             return RND_RANGE(S * FLOAT_RANDOM_SCALE, F * FLOAT_RANDOM_SCALE) / FLOAT_RANDOM_SCALE;
         }
 
+        /// <summary>Returns the lowercase hex SHA-256 hash of <paramref name="input"/>.</summary>
         public static string GetSHA256Str(string input)
         {
             return GetSHA256(input.GetCharacters());
         }
 
+        /// <summary>Returns the lowercase hex SHA-256 hash of a UTF-16 char array.</summary>
         public static string GetSHA256(char[] data)
         {
             byte[] array = new byte[data.Length * 2];
