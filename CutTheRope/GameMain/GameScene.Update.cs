@@ -1370,6 +1370,7 @@ namespace CutTheRope.GameMain
                 }
                 if (flag8)
                 {
+                    DetachActiveHands();
                     if (twoParts != 2)
                     {
                         if (flag7)
