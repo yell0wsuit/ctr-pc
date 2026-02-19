@@ -322,6 +322,13 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlaySound(Resources.Snd.MouseIdle);
         }
 
+        public void AttachRocket(Rocket activeRocket, float rocketOffset)
+        {
+            carriedRocket = activeRocket;
+            carriedRocketAngleOffset = rocketOffset;
+            carriedRocket.point.prevPos = carriedRocket.point.pos;
+        }
+
         /// <summary>
         /// Releases the currently carried candy, re-enabling gravity and clearing references.
         /// </summary>

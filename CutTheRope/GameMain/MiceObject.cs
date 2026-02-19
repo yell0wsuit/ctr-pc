@@ -111,6 +111,17 @@ namespace CutTheRope.GameMain
             activeMouse.GrabCandy(star, candy, activeRocket, rocketOffset);
         }
 
+        public void AttachRocketToActiveMouse(Rocket rocket)
+        {
+            if (activeMouse == null)
+            {
+                return;
+            }
+            carriedRocket = rocket;
+            rocketOffset = rocket != null ? rocket.rotation - activeMouse.angleDeg : 0;
+            activeMouse.AttachRocket(rocket, rocketOffset);
+        }
+
         /// <summary>
         /// Indicates whether the active mouse is currently holding candy.
         /// </summary>

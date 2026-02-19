@@ -1224,6 +1224,13 @@ namespace CutTheRope.GameMain
                     {
                         rocket.mover?.Pause();
                         rocket.startRotation = rocket.rotation;
+                        if(miceManager != null && miceManager.ActiveMouseHasCandy())
+                        {
+                            rocket.point.pos = star.pos;
+                            rocket.point.AddConstraintwithRestLengthofType(star, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            rocket.state = Rocket.STATE_ROCKET_FLY;
+                            miceManager.AttachRocketToActiveMouse(rocket);
+                        }
                         if (handHoldingCandy)
                         {
                             rocket.point.pos = star.pos;
