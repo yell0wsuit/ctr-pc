@@ -979,12 +979,7 @@ namespace CutTheRope.GameMain
 
                 if (targetStar != null && targetCandy != null && !miceManager.ActiveMouseHasCandy() && miceManager.IsActiveMouseInRange(targetStar))
                 {
-                    miceManager.GrabWithActiveMouse(targetStar, targetCandy, isLeft);
-                    if (activeRocket != null)
-                    {
-                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                        activeRocket.StopAnimation();
-                    }
+                    miceManager.GrabWithActiveMouse(targetStar, targetCandy, isLeft, activeRocket);
                     TriggerSpecialTutorial(4);
                 }
             }
