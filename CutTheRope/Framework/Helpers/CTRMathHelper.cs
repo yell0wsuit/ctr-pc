@@ -33,11 +33,6 @@ namespace CutTheRope.Framework.Helpers
             return Math.Max(a, b);
         }
 
-        public static float MAX(double a, double b)
-        {
-            return (float)Math.Max(a, b);
-        }
-
         public static float ABS(float a)
         {
             return Math.Abs(a);

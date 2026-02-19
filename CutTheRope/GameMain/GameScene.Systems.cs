@@ -49,7 +49,7 @@ namespace CutTheRope.GameMain
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
                 int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
-                float s2 = MAX((double)(VectLength(vector) * 40f), 840.0) * num;
+                float s2 = MAX(VectLength(vector) * 40, 840) * num;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
                 s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
