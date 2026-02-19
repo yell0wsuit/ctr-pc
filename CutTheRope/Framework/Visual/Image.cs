@@ -198,11 +198,7 @@ namespace CutTheRope.Framework.Visual
 
         public virtual Image InitWithTexture(CTRTexture2D t)
         {
-            texture = t;
-            if (texture == null)
-            {
-                throw new InvalidOperationException("Failed to initialize Image: texture is null. The texture resource may not exist or failed to load.");
-            }
+            texture = t ?? throw new InvalidOperationException("Failed to initialize Image: texture is null. The texture resource may not exist or failed to load.");
             restoreCutTransparency = false;
             if (texture.quadsCount > 0)
             {
