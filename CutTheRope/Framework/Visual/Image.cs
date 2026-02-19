@@ -11,17 +11,6 @@ namespace CutTheRope.Framework.Visual
 {
     internal class Image : BaseElement
     {
-        // (get) Token: 0x060001E5 RID: 485 RVA: 0x00009A46 File Offset: 0x00007C46
-        public string ResName => texture != null ? texture._resName : "ERROR: texture == null";
-
-        public static Vector GetQuadSize(int textureID, int quad)
-        {
-            CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
-            return texture2D.quadRects != null
-                ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
-                : Vect(texture2D._realWidth, texture2D._realHeight);
-        }
-
         /// <summary>
         /// Gets the quad size for the specified texture name.
         /// </summary>
@@ -50,16 +39,6 @@ namespace CutTheRope.Framework.Visual
         {
             CTRTexture2D texture = Application.GetTexture(textureResourceName);
             return texture.quadOffsets != null ? texture.quadOffsets[quad] : Vect(0, 0);
-        }
-
-        public static Vector GetQuadCenter(int textureID, int quad)
-        {
-            CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
-            Vector offset = texture2D.quadOffsets != null ? texture2D.quadOffsets[quad] : Vect(0, 0);
-            Vector size = texture2D.quadRects != null
-                ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
-                : Vect(texture2D._realWidth, texture2D._realHeight);
-            return VectAdd(offset, Vect(Ceil(size.X / 2.0), Ceil(size.Y / 2.0)));
         }
 
         /// <summary>
@@ -93,35 +72,6 @@ namespace CutTheRope.Framework.Visual
         {
             Vector quadOffset = GetQuadOffset(textureResourceName, quadToCountFrom);
             return VectSub(GetQuadOffset(textureResourceName, quad), quadOffset);
-        }
-
-        public static void SetElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
-        {
-            Vector quadCenter = GetQuadCenter(textureID, quad);
-            e.x = quadCenter.X;
-            e.y = quadCenter.Y;
-            e.anchor = 18;
-        }
-
-        /// <summary>
-        /// Positions an element using the center of the specified quad and texture name.
-        /// </summary>
-        /// <param name="e">Element to position.</param>
-        /// <param name="textureResourceName">Texture resource name.</param>
-        /// <param name="quad">Target quad.</param>
-        public static void SetElementPositionWithQuadCenter(BaseElement e, string textureResourceName, int quad)
-        {
-            Vector quadCenter = GetQuadCenter(textureResourceName, quad);
-            e.x = quadCenter.X;
-            e.y = quadCenter.Y;
-            e.anchor = 18;
-        }
-
-        public static void SetElementPositionWithQuadOffset(BaseElement e, int textureID, int quad)
-        {
-            Vector quadOffset = GetQuadOffset(textureID, quad);
-            e.x = quadOffset.X;
-            e.y = quadOffset.Y;
         }
 
         /// <summary>
