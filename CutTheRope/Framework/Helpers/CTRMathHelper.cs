@@ -9,10 +9,8 @@ namespace CutTheRope.Framework.Helpers
 {
     internal class CTRMathHelper
     {
-        // (get) Token: 0x0600034D RID: 845 RVA: 0x000137FA File Offset: 0x000119FA
         public static float RND_MINUS1_1 => (Arc4random() / ARC4RANDOM_MAX * 2) - 1;
 
-        // (get) Token: 0x0600034E RID: 846 RVA: 0x0001381F File Offset: 0x00011A1F
         public static float RND_0_1 => Arc4random() / ARC4RANDOM_MAX;
 
         public static int MIN(int a, int b)
@@ -99,33 +97,33 @@ namespace CutTheRope.Framework.Helpers
         {
             if (fmSins == null)
             {
-                fmSins = new float[1024];
-                for (int i = 0; i < 1024; i++)
+                fmSins = new float[FM_TRIG_TABLE_SIZE];
+                for (int i = 0; i < FM_TRIG_TABLE_SIZE; i++)
                 {
-                    fmSins[i] = MathF.Sin(i * 2 * MathF.PI / 1024);
+                    fmSins[i] = MathF.Sin(i * 2 * MathF.PI / FM_TRIG_TABLE_SIZE);
                 }
             }
             if (fmCoss == null)
             {
-                fmCoss = new float[1024];
-                for (int j = 0; j < 1024; j++)
+                fmCoss = new float[FM_TRIG_TABLE_SIZE];
+                for (int j = 0; j < FM_TRIG_TABLE_SIZE; j++)
                 {
-                    fmCoss[j] = MathF.Cos(j * 2 * MathF.PI / 1024);
+                    fmCoss[j] = MathF.Cos(j * 2 * MathF.PI / FM_TRIG_TABLE_SIZE);
                 }
             }
         }
 
         public static float FmSin(float angle)
         {
-            int num = (int)(angle * 1024 / Math.Tau);
-            num &= 1023;
+            int num = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
+            num &= FM_TRIG_TABLE_MASK;
             return fmSins[num];
         }
 
         public static float FmCos(float angle)
         {
-            int num = (int)(angle * 1024 / Math.Tau);
-            num &= 1023;
+            int num = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
+            num &= FM_TRIG_TABLE_MASK;
             return fmCoss[num];
         }
 
@@ -440,7 +438,7 @@ namespace CutTheRope.Framework.Helpers
 
         public static float FLOAT_RND_RANGE(int S, int F)
         {
-            return RND_RANGE(S * 1000, F * 1000) / 1000f;
+            return RND_RANGE(S * FLOAT_RANDOM_SCALE, F * FLOAT_RANDOM_SCALE) / FLOAT_RANDOM_SCALE;
         }
 
         public static string GetSHA256Str(string input)
@@ -465,6 +463,7 @@ namespace CutTheRope.Framework.Helpers
         public const float DEG_180 = 180f;
         public const float DEG_270 = 270f;
         public const float DEG_360 = 360f;
+        public const float UNDEFINED_COORDINATE = int.MaxValue;
 
         public const double M_PI = Math.PI;
         private static readonly Random random_ = new();
@@ -475,8 +474,12 @@ namespace CutTheRope.Framework.Helpers
 
         private static float[] fmCoss;
 
+        private const int FM_TRIG_TABLE_SIZE = 1024;
+        private const int FM_TRIG_TABLE_MASK = FM_TRIG_TABLE_SIZE - 1;
+        private const int FLOAT_RANDOM_SCALE = 1000;
+
         public static readonly Vector vectZero = new(0f, 0f);
 
-        public static readonly Vector vectUndefined = new(2.1474836E+09f, 2.1474836E+09f);
+        public static readonly Vector vectUndefined = new(UNDEFINED_COORDINATE, UNDEFINED_COORDINATE);
     }
 }
