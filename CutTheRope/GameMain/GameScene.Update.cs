@@ -938,6 +938,11 @@ namespace CutTheRope.GameMain
                 if (targetStar != null && targetCandy != null && !miceManager.ActiveMouseHasCandy() && miceManager.IsActiveMouseInRange(targetStar))
                 {
                     miceManager.GrabWithActiveMouse(targetStar, targetCandy, isLeft);
+                    if (activeRocket != null)
+                    {
+                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                        activeRocket.StopAnimation();
+                    }
                     TriggerSpecialTutorial(4);
                 }
             }
@@ -1172,7 +1177,7 @@ namespace CutTheRope.GameMain
                             rocket.point.ChangeRestLengthToFor(dist, star);
                         }
                     }
-                    if (rocket.state == Rocket.STATE_ROCKET_IDLE && GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) && !noCandy)
+                    if (rocket.state == Rocket.STATE_ROCKET_IDLE && GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) && !noCandy && !(miceManager?.ActiveMouseHasCandy() ?? false))
                     {
                         rocket.mover?.Pause();
                         rocket.startRotation = rocket.rotation;
