@@ -833,6 +833,11 @@ namespace CutTheRope.GameMain
                 if (!noCandy && !isCandyInLantern && lantern.lanternState == Lantern.LanternStateInactive && VectDistance(star.pos, Vect(lantern.x, lantern.y)) < 82f)
                 {
                     isCandyInLantern = true;
+                    if (activeRocket != null)
+                    {
+                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                        activeRocket.StopAnimation();
+                    }
                     candy.passTransformationsToChilds = true;
                     candyMain.scaleX = candyMain.scaleY = 1f;
                     candyTop.scaleX = candyTop.scaleY = 1f;
