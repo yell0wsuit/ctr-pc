@@ -79,7 +79,7 @@ namespace CutTheRope.GameMain
             _ = image3.AddChild(text3);
             _ = image4.AddChild(text4);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(image, image2, image3, image4, bid);
-            toggleButton.SetTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
+            toggleButton.SetTouchIncreaseLeftRightTopBottom(10, 10, 10, 10);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
         }
@@ -409,7 +409,7 @@ namespace CutTheRope.GameMain
                 Image.SetElementPositionWithRelativeQuadOffset(toggleButton, Resources.Img.MenuOptions, q, 8);
                 _ = image.AddChild(toggleButton);
                 int num = (image.width / 2) - (toggleButton.width / 2);
-                toggleButton.SetTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85, 0.0);
+                toggleButton.SetTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85f, 0);
             }
             else
             {
@@ -445,7 +445,7 @@ namespace CutTheRope.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(true);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
             Button c = CreateButtonWithTextIDDelegate(Application.GetString("PLAY"), MenuButtonId.Play, this);
@@ -619,11 +619,11 @@ namespace CutTheRope.GameMain
 
         public static HBox CreateTextWithStar(string t)
         {
-            HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
+            HBox hbox = new HBox().InitWithOffsetAlignHeight(0, 16, RTD(50));
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(t);
             text.scaleX = text.scaleY = 0.7f;
-            text.rotationCenterX = -(float)text.width / 2;
+            text.rotationCenterX = -text.width / 2;
             text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
             Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 3);
