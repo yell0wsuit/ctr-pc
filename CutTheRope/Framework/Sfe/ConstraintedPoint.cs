@@ -17,8 +17,8 @@ namespace CutTheRope.Framework.Sfe
 
         public ConstraintedPoint()
         {
-            prevPos = Vect(2.1474836E+09f, 2.1474836E+09f);
-            pin = Vect(-1f, -1f);
+            prevPos = vectUndefined;
+            pin = Vect(PIN_UNSET_COORDINATE, PIN_UNSET_COORDINATE);
             constraints = [];
         }
 
@@ -118,13 +118,13 @@ namespace CutTheRope.Framework.Sfe
                     return constraint.restLength;
                 }
             }
-            return -1f;
+            return MISSING_REST_LENGTH;
         }
 
         public override void ResetAll()
         {
             base.ResetAll();
-            prevPos = Vect(2.1474836E+09f, 2.1474836E+09f);
+            prevPos = vectUndefined;
             RemoveConstraints();
         }
 
@@ -144,13 +144,13 @@ namespace CutTheRope.Framework.Sfe
             }
             totalForce = VectMult(totalForce, invWeight);
             a = VectMult(totalForce, delta * delta);
-            if (prevPos.X == 2.1474836E+09f)
+            if (prevPos.X == UNDEFINED_COORDINATE)
             {
                 prevPos = pos;
             }
             posDelta.X = pos.X - prevPos.X + a.X;
             posDelta.Y = pos.Y - prevPos.Y + a.Y;
-            v = VectMult(posDelta, 1 / delta);
+            v = VectMult(posDelta, 1f / delta);
             prevPos = pos;
             pos = VectAdd(pos, posDelta);
         }
@@ -165,7 +165,7 @@ namespace CutTheRope.Framework.Sfe
             {
                 return;
             }
-            if (p.pin.X != -1f)
+            if (p.pin.X != PIN_UNSET_COORDINATE)
             {
                 p.pos = p.pin;
                 return;
@@ -179,7 +179,7 @@ namespace CutTheRope.Framework.Sfe
                     constraint.cp.pos.Y - p.pos.Y);
                 if (vector.X == 0f && vector.Y == 0f)
                 {
-                    vector = Vect(1f, 1f);
+                    vector = DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION;
                 }
                 float num = VectLength(vector);
                 float restLength = constraint.restLength;
@@ -196,7 +196,7 @@ namespace CutTheRope.Framework.Sfe
 
                 Vector vector2 = vector;
                 float num2 = constraint.cp.invWeight;
-                float num3 = num > 1f ? num : 1f;
+                float num3 = num > MIN_CONSTRAINT_DISTANCE ? num : MIN_CONSTRAINT_DISTANCE;
                 float num4 = (num - restLength) / (num3 * (p.invWeight + num2));
                 float num5 = p.invWeight * num4;
                 vector.X *= num5;
@@ -206,7 +206,7 @@ namespace CutTheRope.Framework.Sfe
                 vector2.Y *= num5;
                 p.pos.X += vector.X;
                 p.pos.Y += vector.Y;
-                if (constraint.cp.pin.X == -1f)
+                if (constraint.cp.pin.X == PIN_UNSET_COORDINATE)
                 {
                     constraint.cp.pos = VectSub(constraint.cp.pos, vector2);
                 }
@@ -230,17 +230,23 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             p.totalForce = VectMult(p.totalForce, p.invWeight);
-            p.a = VectMult(p.totalForce, delta / 1 * 0.01600000075995922f * koeff);
-            if (p.prevPos.X == 2.1474836E+09f)
+            p.a = VectMult(p.totalForce, delta * QCP_FIXED_TIMESTEP * koeff);
+            if (p.prevPos.X == UNDEFINED_COORDINATE)
             {
                 p.prevPos = p.pos;
             }
             p.posDelta.X = p.pos.X - p.prevPos.X + p.a.X;
             p.posDelta.Y = p.pos.Y - p.prevPos.Y + p.a.Y;
-            p.v = VectMult(p.posDelta, 1 / delta);
+            p.v = VectMult(p.posDelta, 1f / delta);
             p.prevPos = p.pos;
             p.pos = VectAdd(p.pos, p.posDelta);
         }
+
+        private const float PIN_UNSET_COORDINATE = -1f;
+        private const float MISSING_REST_LENGTH = -1f;
+        private const float MIN_CONSTRAINT_DISTANCE = 1f;
+        private const float QCP_FIXED_TIMESTEP = 0.016f;
+        private static readonly Vector DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION = new(1f, 1f);
 
         public Vector prevPos;
 

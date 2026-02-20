@@ -495,7 +495,7 @@ namespace CutTheRope.Framework.Visual
                 if (spoints[i].X <= 0f && (spoints[i].X >= (-container.width + width) || spoints[i].X >= 0f) && spoints[i].Y <= 0f && (spoints[i].Y >= (-container.height + height) || spoints[i].Y >= 0f))
                 {
                     float num4 = VectDistance(spoints[i], v);
-                    if ((VectEqual(d, vectZero) || Math.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - num3) <= 90f) && num4 < num2)
+                    if ((VectEqual(d, vectZero) || Math.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - num3) <= DEG_90) && num4 < num2)
                     {
                         num = i;
                         num2 = num4;
@@ -518,7 +518,7 @@ namespace CutTheRope.Framework.Visual
             }
             float num6 = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(move)));
             float num5 = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[targetSpoint], v))));
-            spointMoveMultiplier = Math.Abs(AngleTo0_360(num6 - num5)) < 90f ? Math.Max(1f, VectLength(move) / 500f) : 0.5f;
+            spointMoveMultiplier = Math.Abs(AngleTo0_360(num6 - num5)) < DEG_90 ? Math.Max(1f, VectLength(move) / 500f) : 0.5f;
             lastTargetSpoint = targetSpoint;
         }
 

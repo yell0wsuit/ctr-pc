@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
@@ -21,7 +22,7 @@ namespace CutTheRope.GameMain
                     AddPathPoint(s);
                     return;
                 }
-                float num3 = 6.283185307179586f / num2;
+                float num3 = MathF.Tau / num2;
                 if (!flag)
                 {
                     num3 = 0f - num3;

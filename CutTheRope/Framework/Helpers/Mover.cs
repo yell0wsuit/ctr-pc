@@ -51,7 +51,7 @@ namespace CutTheRope.Framework.Helpers
                     AddPathPoint(s);
                     return;
                 }
-                float num3 = (float)(6.283185307179586 / num2);
+                float num3 = MathF.Tau / num2;
                 if (!flag)
                 {
                     num3 = 0f - num3;
@@ -59,8 +59,8 @@ namespace CutTheRope.Framework.Helpers
                 float num4 = 0f;
                 for (int i = 0; i < num2; i++)
                 {
-                    float x = s.X + (num * (float)Math.Cos((double)num4));
-                    float y = s.Y + (num * (float)Math.Sin((double)num4));
+                    float x = s.X + (num * MathF.Cos(num4));
+                    float y = s.Y + (num * MathF.Sin(num4));
                     AddPathPoint(Vect(x, y));
                     num4 += num3;
                 }

@@ -359,10 +359,10 @@ namespace CutTheRope.GameMain
                 SpeedX = speedX,
                 SwingAmplitude = swingAmplitude,
                 SwingSpeed = swingSpeed,
-                SwingPhase = (float)(random_.NextDouble() * Math.PI * 2),
+                SwingPhase = (float)(random_.NextDouble() * Math.Tau),
                 AlphaBase = alphaBase,
                 AlphaRange = alphaRange,
-                TwinklePhase = (float)(random_.NextDouble() * Math.PI * 2),
+                TwinklePhase = (float)(random_.NextDouble() * Math.Tau),
                 TwinkleSpeed = RandomRange(TwinkleSpeedMin, TwinkleSpeedMax),
                 BaseX = xStart,
                 Y = populateScreen ? -(float)random_.NextDouble() * height : -EdgeBuffer

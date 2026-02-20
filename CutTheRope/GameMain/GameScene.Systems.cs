@@ -49,7 +49,7 @@ namespace CutTheRope.GameMain
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
                 int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
-                float s2 = MAX((double)(VectLength(vector) * 40f), 840.0) * num;
+                float s2 = MAX(VectLength(vector) * 40, 840) * num;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
                 s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
@@ -112,7 +112,7 @@ namespace CutTheRope.GameMain
                 float horizontalImpulse = 0f;
                 bool applyHorizontalCentering =
                     (tube.rotation == 0f && !gravityInverted) ||
-                    (tube.rotation == 180f && gravityInverted);
+                    (tube.rotation == DEG_180 && gravityInverted);
                 if (applyHorizontalCentering)
                 {
                     float deltaX = tube.x - position.X;
@@ -123,14 +123,14 @@ namespace CutTheRope.GameMain
 
                 bool alignedWithGravity =
                     (tube.rotation == 0f && !gravityInverted) ||
-                    (tube.rotation == 180f && gravityInverted);
+                    (tube.rotation == DEG_180 && gravityInverted);
                 float localDamping = damping;
                 // Gravity compensation force. sqrt(tubeScale) accounts for increased flow area.
                 float gravityCompensation = -32f / pt.weight * MathF.Sqrt(tubeScale);
                 if (!alignedWithGravity)
                 {
                     localDamping *= 15f;
-                    if (tube.rotation is 90f or 270f)
+                    if (tube.rotation is DEG_90 or DEG_270)
                     {
                         gravityCompensation /= 4f;
                     }
@@ -194,10 +194,10 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, Pump.FlowLength - Pump.MouthOffset);
-            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid, flowLength);
+            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - DEG_90, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + Pump.MouthOffset, p.y);
-            v = VectRotateAround(v, p.angle - 1.5707963267948966, p.x, p.y);
+            v = VectRotateAround(v, p.angle - (Math.PI / 2), p.x, p.y);
             pumpDirt.x = v.X;
             pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);
@@ -261,7 +261,7 @@ namespace CutTheRope.GameMain
                                    (!grab.gun || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - Grab.GUN_CUT_RADIUS, grab.y - Grab.GUN_CUT_RADIUS, Grab.GUN_CUT_RADIUS * 2f, Grab.GUN_CUT_RADIUS * 2f)) &&
                                    LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
                         }
-                        else if (constraintedPoint.prevPos.X != 2.1474836E+09f)
+                        else if (constraintedPoint.prevPos.X != UNDEFINED_COORDINATE)
                         {
                             float num2 = MinOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
                             float y1t = MinOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
@@ -467,7 +467,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static Bungee GetNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
         {
-            float num4 = 2.1474836E+09f;
+            float num4 = UNDEFINED_COORDINATE;
             Bungee result = null;
             float num2 = num4;
             Vector v = s;

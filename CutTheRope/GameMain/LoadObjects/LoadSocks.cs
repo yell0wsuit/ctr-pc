@@ -39,10 +39,10 @@ namespace CutTheRope.GameMain
             }
             sock.state = Sock.SOCK_IDLE;
             sock.ParseMover(xmlNode);
-            sock.rotation += 90f;
+            sock.rotation += DEG_90;
             if (sock.mover != null)
             {
-                sock.mover.angle_ += 90.0;
+                sock.mover.angle_ += DEG_90;
                 sock.mover.angle_initial = sock.mover.angle_;
                 if (cTRRootController.GetPack() == 3 && cTRRootController.GetLevel() == 24)
                 {

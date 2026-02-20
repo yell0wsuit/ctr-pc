@@ -78,8 +78,8 @@ namespace CutTheRope.Framework.Core
             int num2 = viewTransition;
             if (num2 - 4 <= 1)
             {
-                float num = MIN(1.0, (double)((transitionDelay - (transitionTime - lastTime)) / transitionDelay));
-                if ((double)num < 0.5)
+                float num = MIN(1, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
+                if (num < 0.5f)
                 {
                     if (prevScreenImage != null)
                     {

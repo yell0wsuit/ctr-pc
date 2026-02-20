@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 
@@ -152,7 +154,7 @@ namespace CutTheRope.Framework.Visual
 
         public static void CalcCircle(float x, float y, float radius, int vertexCount, float[] glVertices)
         {
-            float num = 6.283185307179586f / vertexCount;
+            float num = MathF.Tau / vertexCount;
             float num2 = 0f;
             for (int i = 0; i < vertexCount; i++)
             {
@@ -174,8 +176,8 @@ namespace CutTheRope.Framework.Visual
                 float num5 = num6 + num3;
                 if (cx2 > cx1)
                 {
-                    num4 += 3.1415927f;
-                    num5 += 3.1415927f;
+                    num4 += MathF.PI;
+                    num5 += MathF.PI;
                 }
                 DrawAntialiasedCurve2(cx2, cy2, radius2, num4, num5, vertexCount, width, 1f, fill);
             }
