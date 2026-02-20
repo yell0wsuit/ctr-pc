@@ -261,7 +261,7 @@ namespace CutTheRope.GameMain
                                    (!grab.gun || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - Grab.GUN_CUT_RADIUS, grab.y - Grab.GUN_CUT_RADIUS, Grab.GUN_CUT_RADIUS * 2f, Grab.GUN_CUT_RADIUS * 2f)) &&
                                    LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
                         }
-                        else if (constraintedPoint.prevPos.X != 2.1474836E+09f)
+                        else if (constraintedPoint.prevPos.X != UNDEFINED_COORDINATE)
                         {
                             float num2 = MinOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
                             float y1t = MinOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
@@ -467,7 +467,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static Bungee GetNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
         {
-            float num4 = 2.1474836E+09f;
+            float num4 = UNDEFINED_COORDINATE;
             Bungee result = null;
             float num2 = num4;
             Vector v = s;
