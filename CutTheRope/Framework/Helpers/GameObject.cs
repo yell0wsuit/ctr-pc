@@ -12,23 +12,23 @@ namespace CutTheRope.Framework.Helpers
 {
     internal class GameObject : Animation
     {
-        private static GameObject GameObject_create(CTRTexture2D t)
+        private static GameObject GameObject_create(CTRTexture2D texture)
         {
             GameObject gameObject = new();
-            _ = gameObject.InitWithTexture(t);
+            _ = gameObject.InitWithTexture(texture);
             return gameObject;
         }
 
-        public static GameObject GameObject_createWithResIDQuad(string resourceName, int q)
+        public static GameObject GameObject_createWithResIDQuad(string resourceName, int quadIndex)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));
-            gameObject.SetDrawQuad(q);
+            gameObject.SetDrawQuad(quadIndex);
             return gameObject;
         }
 
-        public override Image InitWithTexture(CTRTexture2D t)
+        public override Image InitWithTexture(CTRTexture2D texture)
         {
-            if (base.InitWithTexture(t) != null)
+            if (base.InitWithTexture(texture) != null)
             {
                 bb = new CTRRectangle(0f, 0f, width, height);
                 rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
@@ -83,30 +83,30 @@ namespace CutTheRope.Framework.Helpers
         public virtual void ParseMover(XElement xml)
         {
             rotation = xml.AttributeAsNSString("angle").FloatValue();
-            string nSString = xml.AttributeAsNSString("path");
-            if (nSString != null && nSString.Length() != 0)
+            string pathString = xml.AttributeAsNSString("path");
+            if (pathString != null && pathString.Length() != 0)
             {
-                int i = 100;
-                if (nSString.CharacterAtIndex(0) == 'R')
+                int moverCapacity = 100;
+                if (pathString.CharacterAtIndex(0) == 'R')
                 {
-                    i = (nSString.SubstringFromIndex(2).IntValue() / 2) + 1;
+                    moverCapacity = (pathString.SubstringFromIndex(2).IntValue() / 2) + 1;
                 }
-                float m_ = xml.AttributeAsNSString("moveSpeed").FloatValue();
-                float r_ = xml.AttributeAsNSString("rotateSpeed").FloatValue();
-                Mover mover = new(i, m_, r_)
+                float moveSpeed = xml.AttributeAsNSString("moveSpeed").FloatValue();
+                float rotateSpeed = xml.AttributeAsNSString("rotateSpeed").FloatValue();
+                Mover parsedMover = new(moverCapacity, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation
                 };
-                mover.angle_initial = mover.angle_;
-                mover.SetPathFromStringandStart(nSString, Vect(x, y));
-                SetMover(mover);
-                mover.Start();
+                parsedMover.angle_initial = parsedMover.angle_;
+                parsedMover.SetPathFromStringandStart(pathString, Vect(x, y));
+                SetMover(parsedMover);
+                parsedMover.Start();
             }
         }
 
-        public virtual void SetMover(Mover m)
+        public virtual void SetMover(Mover moverValue)
         {
-            mover = m;
+            mover = moverValue;
         }
 
         public virtual void SetBBFromFirstQuad()
@@ -115,29 +115,29 @@ namespace CutTheRope.Framework.Helpers
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
-        public virtual void RotateWithBB(float a)
+        public virtual void RotateWithBB(float angle)
         {
             if (!rotatedBB)
             {
                 rotatedBB = true;
             }
-            rotation = a;
-            Vector v = Vect(bb.x, bb.y);
-            Vector v2 = Vect(bb.x + bb.w, bb.y);
-            Vector v3 = Vect(bb.x + bb.w, bb.y + bb.h);
-            Vector v4 = Vect(bb.x, bb.y + bb.h);
-            v = VectRotateAround(v, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
-            v2 = VectRotateAround(v2, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
-            v3 = VectRotateAround(v3, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (float)((height / 2) + rotationCenterY));
-            v4 = VectRotateAround(v4, DEGREES_TO_RADIANS(a), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
-            rbb.tlX = v.X;
-            rbb.tlY = v.Y;
-            rbb.trX = v2.X;
-            rbb.trY = v2.Y;
-            rbb.brX = v3.X;
-            rbb.brY = v3.Y;
-            rbb.blX = v4.X;
-            rbb.blY = v4.Y;
+            rotation = angle;
+            Vector topLeft = Vect(bb.x, bb.y);
+            Vector topRight = Vect(bb.x + bb.w, bb.y);
+            Vector bottomRight = Vect(bb.x + bb.w, bb.y + bb.h);
+            Vector bottomLeft = Vect(bb.x, bb.y + bb.h);
+            topLeft = VectRotateAround(topLeft, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            topRight = VectRotateAround(topRight, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            bottomRight = VectRotateAround(bottomRight, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (float)((height / 2) + rotationCenterY));
+            bottomLeft = VectRotateAround(bottomLeft, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            rbb.tlX = topLeft.X;
+            rbb.tlY = topLeft.Y;
+            rbb.trX = topRight.X;
+            rbb.trY = topRight.Y;
+            rbb.brX = bottomRight.X;
+            rbb.brY = bottomRight.Y;
+            rbb.blX = bottomLeft.X;
+            rbb.blY = bottomLeft.Y;
         }
 
         public virtual void DrawBB()
@@ -160,24 +160,24 @@ namespace CutTheRope.Framework.Helpers
 
         public static bool ObjectsIntersect(GameObject o1, GameObject o2)
         {
-            float num = o1.drawX + o1.bb.x;
-            float num2 = o1.drawY + o1.bb.y;
-            float num3 = o2.drawX + o2.bb.x;
-            float num4 = o2.drawY + o2.bb.y;
-            return RectInRect(num, num2, num + o1.bb.w, num2 + o1.bb.h, num3, num4, num3 + o2.bb.w, num4 + o2.bb.h);
+            float o1x = o1.drawX + o1.bb.x;
+            float o1y = o1.drawY + o1.bb.y;
+            float o2x = o2.drawX + o2.bb.x;
+            float o2y = o2.drawY + o2.bb.y;
+            return RectInRect(o1x, o1y, o1x + o1.bb.w, o1y + o1.bb.h, o2x, o2y, o2x + o2.bb.w, o2y + o2.bb.h);
         }
 
         public static bool ObjectsIntersectRotatedWithUnrotated(GameObject o1, GameObject o2)
         {
-            Vector vector = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
-            Vector vector2 = Vect(o1.drawX + o1.rbb.trX, o1.drawY + o1.rbb.trY);
-            Vector vector3 = Vect(o1.drawX + o1.rbb.brX, o1.drawY + o1.rbb.brY);
-            Vector vector4 = Vect(o1.drawX + o1.rbb.blX, o1.drawY + o1.rbb.blY);
-            Vector vector5 = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y);
-            Vector vector6 = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y);
-            Vector vector7 = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y + o2.bb.h);
-            Vector vector8 = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y + o2.bb.h);
-            return ObbInOBB(vector, vector2, vector3, vector4, vector5, vector6, vector7, vector8);
+            Vector o1TopLeft = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
+            Vector o1TopRight = Vect(o1.drawX + o1.rbb.trX, o1.drawY + o1.rbb.trY);
+            Vector o1BottomRight = Vect(o1.drawX + o1.rbb.brX, o1.drawY + o1.rbb.brY);
+            Vector o1BottomLeft = Vect(o1.drawX + o1.rbb.blX, o1.drawY + o1.rbb.blY);
+            Vector o2TopLeft = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y);
+            Vector o2TopRight = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y);
+            Vector o2BottomRight = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y + o2.bb.h);
+            Vector o2BottomLeft = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y + o2.bb.h);
+            return ObbInOBB(o1TopLeft, o1TopRight, o1BottomRight, o1BottomLeft, o2TopLeft, o2TopRight, o2BottomRight, o2BottomLeft);
         }
 
         public static bool PointInObject(Vector p, GameObject o)
@@ -189,9 +189,9 @@ namespace CutTheRope.Framework.Helpers
 
         public static bool RectInObject(float r1x, float r1y, float r2x, float r2y, GameObject o)
         {
-            float num = o.drawX + o.bb.x;
-            float num2 = o.drawY + o.bb.y;
-            return RectInRect(r1x, r1y, r2x, r2y, num, num2, num + o.bb.w, num2 + o.bb.h);
+            float objectX = o.drawX + o.bb.x;
+            float objectY = o.drawY + o.bb.y;
+            return RectInRect(r1x, r1y, r2x, r2y, objectX, objectY, objectX + o.bb.w, objectY + o.bb.h);
         }
 
         public const int MAX_MOVER_CAPACITY = 100;
