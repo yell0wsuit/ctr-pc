@@ -46,9 +46,9 @@ namespace CutTheRope.GameMain
                     float num = 0.2f * life;
                     if (particle.life > life - num)
                     {
-                        float num2 = 1.025f;
-                        particle.width *= num2;
-                        particle.height *= num2;
+                        float growthScale = 1.025f;
+                        particle.width *= growthScale;
+                        particle.height *= growthScale;
                     }
                     else
                     {
@@ -56,9 +56,9 @@ namespace CutTheRope.GameMain
                         particle.deltaColor.GreenColor = (endColor.GreenColor - startColor.GreenColor) / num;
                         particle.deltaColor.BlueColor = (endColor.BlueColor - startColor.BlueColor) / num;
                         particle.deltaColor.AlphaChannel = (endColor.AlphaChannel - startColor.AlphaChannel) / num;
-                        float num3 = 0.98f;
-                        particle.width *= num3;
-                        particle.height *= num3;
+                        float shrinkScale = 0.98f;
+                        particle.width *= shrinkScale;
+                        particle.height *= shrinkScale;
                     }
                 }
             }

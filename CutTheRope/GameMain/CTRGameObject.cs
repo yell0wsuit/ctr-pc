@@ -10,18 +10,18 @@ namespace CutTheRope.GameMain
         public override void ParseMover(XElement xml)
         {
             rotation = 0f;
-            string nSString = xml.AttributeAsNSString("angle");
-            if (nSString.Length() != 0)
+            string angleString = xml.AttributeAsNSString("angle");
+            if (angleString.Length() != 0)
             {
-                rotation = nSString.FloatValue();
+                rotation = angleString.FloatValue();
             }
-            string nSString2 = xml.AttributeAsNSString("path");
-            if (nSString2 != null && nSString2.Length() != 0)
+            string pathString = xml.AttributeAsNSString("path");
+            if (pathString != null && pathString.Length() != 0)
             {
                 int i = 100;
-                if (nSString2.CharacterAtIndex(0) == 'R')
+                if (pathString.CharacterAtIndex(0) == 'R')
                 {
-                    i = ((int)((int)RTD(nSString2.SubstringFromIndex(2).IntValue()) * 3.3f) / 2) + 1;
+                    i = ((int)((int)RTD(pathString.SubstringFromIndex(2).IntValue()) * 3.3f) / 2) + 1;
                 }
                 float m_ = xml.AttributeAsNSString("moveSpeed").FloatValue() * 3.3f;
                 float r_ = xml.AttributeAsNSString("rotateSpeed").FloatValue();
@@ -30,7 +30,7 @@ namespace CutTheRope.GameMain
                     angle_ = rotation
                 };
                 cTRMover.angle_initial = cTRMover.angle_;
-                cTRMover.SetPathFromStringandStart(nSString2, Vect(x, y));
+                cTRMover.SetPathFromStringandStart(pathString, Vect(x, y));
                 SetMover(cTRMover);
                 cTRMover.Start();
             }

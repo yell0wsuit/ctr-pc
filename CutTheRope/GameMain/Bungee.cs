@@ -184,96 +184,94 @@ namespace CutTheRope.GameMain
             );
             if (b.highlighted)
             {
-                float num2 = 3f;
-                rgbaColor.RedColor *= num2;
-                rgbaColor.GreenColor *= num2;
-                rgbaColor.BlueColor *= num2;
-                rgbaColor2.RedColor *= num2;
-                rgbaColor2.GreenColor *= num2;
-                rgbaColor2.BlueColor *= num2;
-                rgbaColor3.RedColor *= num2;
-                rgbaColor3.GreenColor *= num2;
-                rgbaColor3.BlueColor *= num2;
-                rgbaColor4.RedColor *= num2;
-                rgbaColor4.GreenColor *= num2;
-                rgbaColor4.BlueColor *= num2;
+                float highlightMultiplier = 3f;
+                rgbaColor.RedColor *= highlightMultiplier;
+                rgbaColor.GreenColor *= highlightMultiplier;
+                rgbaColor.BlueColor *= highlightMultiplier;
+                rgbaColor2.RedColor *= highlightMultiplier;
+                rgbaColor2.GreenColor *= highlightMultiplier;
+                rgbaColor2.BlueColor *= highlightMultiplier;
+                rgbaColor3.RedColor *= highlightMultiplier;
+                rgbaColor3.GreenColor *= highlightMultiplier;
+                rgbaColor3.BlueColor *= highlightMultiplier;
+                rgbaColor4.RedColor *= highlightMultiplier;
+                rgbaColor4.GreenColor *= highlightMultiplier;
+                rgbaColor4.BlueColor *= highlightMultiplier;
             }
-            float num3 = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
-            b.relaxed = (double)num3 <= BUNGEE_REST_LEN + 0.3
+            float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
+            b.relaxed = (double)segmentLength <= BUNGEE_REST_LEN + 0.3
                 ? 0
-                : (double)num3 <= BUNGEE_REST_LEN + 1.0 ? 1 : (double)num3 <= BUNGEE_REST_LEN + 4.0 ? 2 : 3;
-            if ((double)num3 > BUNGEE_REST_LEN + 7.0)
+                : (double)segmentLength <= BUNGEE_REST_LEN + 1.0 ? 1 : (double)segmentLength <= BUNGEE_REST_LEN + 4.0 ? 2 : 3;
+            if ((double)segmentLength > BUNGEE_REST_LEN + 7.0)
             {
-                float num4 = num3 / BUNGEE_REST_LEN * 2f;
-                rgbaColor3.RedColor *= num4;
-                rgbaColor4.RedColor *= num4;
+                float stretchRedScale = segmentLength / BUNGEE_REST_LEN * 2f;
+                rgbaColor3.RedColor *= stretchRedScale;
+                rgbaColor4.RedColor *= stretchRedScale;
             }
             bool flag = false;
-            int num5 = (count - 1) * points;
-            float[] array = new float[num5 * 2];
-            b.drawPtsCount = num5 * 2;
-            float num6 = 1f / num5;
-            float num7 = 0f;
-            int num8 = 0;
-            int num9 = 0;
-            int num10 = 0;
+            int sampleCount = (count - 1) * points;
+            float[] array = new float[sampleCount * 2];
+            b.drawPtsCount = sampleCount * 2;
+            float sampleStep = 1f / sampleCount;
+            float bezierT = 0f;
+            int cachedPointCount = 0;
+            int drawPointCount = 0;
             RGBAColor rgbaColor5 = rgbaColor3;
             RGBAColor rgbaColor6 = rgbaColor4;
-            float num11 = (rgbaColor.RedColor - rgbaColor3.RedColor) / (num5 - 1);
-            float num12 = (rgbaColor.GreenColor - rgbaColor3.GreenColor) / (num5 - 1);
-            float num13 = (rgbaColor.BlueColor - rgbaColor3.BlueColor) / (num5 - 1);
-            float num14 = (rgbaColor2.RedColor - rgbaColor4.RedColor) / (num5 - 1);
-            float num15 = (rgbaColor2.GreenColor - rgbaColor4.GreenColor) / (num5 - 1);
-            float num16 = (rgbaColor2.BlueColor - rgbaColor4.BlueColor) / (num5 - 1);
+            float redStep = (rgbaColor.RedColor - rgbaColor3.RedColor) / (sampleCount - 1);
+            float greenStep = (rgbaColor.GreenColor - rgbaColor3.GreenColor) / (sampleCount - 1);
+            float blueStep = (rgbaColor.BlueColor - rgbaColor3.BlueColor) / (sampleCount - 1);
+            float redStepAlt = (rgbaColor2.RedColor - rgbaColor4.RedColor) / (sampleCount - 1);
+            float greenStepAlt = (rgbaColor2.GreenColor - rgbaColor4.GreenColor) / (sampleCount - 1);
+            float blueStepAlt = (rgbaColor2.BlueColor - rgbaColor4.BlueColor) / (sampleCount - 1);
             float lx = -1f;
             float ly = -1f;
             float rx = -1f;
             float ry = -1f;
             for (; ; )
             {
-                if ((double)num7 > 1.0)
+                if ((double)bezierT > 1.0)
                 {
-                    num7 = 1f;
+                    bezierT = 1f;
                 }
                 if (count < 3)
                 {
                     break;
                 }
-                Vector vector = DrawHelper.CalcPathBezier(pts, count, num7);
-                array[num8++] = vector.X;
-                array[num8++] = vector.Y;
-                b.drawPts[num9++] = vector.X;
-                b.drawPts[num9++] = vector.Y;
-                if (num8 >= 8 || (double)num7 == 1.0)
+                Vector vector = DrawHelper.CalcPathBezier(pts, count, bezierT);
+                array[cachedPointCount++] = vector.X;
+                array[cachedPointCount++] = vector.Y;
+                b.drawPts[drawPointCount++] = vector.X;
+                b.drawPts[drawPointCount++] = vector.Y;
+                if (cachedPointCount >= 8 || (double)bezierT == 1.0)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
                     Renderer.SetColor(color.ToXNA());
-                    int num17 = num8 >> 1;
-                    for (int i = 0; i < num17 - 1; i++)
+                    int segmentCount = cachedPointCount >> 1;
+                    for (int i = 0; i < segmentCount - 1; i++)
                     {
                         DrawAntialiasedLineContinued(array[i * 2], array[(i * 2) + 1], array[(i * 2) + 2], array[(i * 2) + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
                     }
-                    array[0] = array[num8 - 2];
-                    array[1] = array[num8 - 1];
-                    num8 = 2;
+                    array[0] = array[cachedPointCount - 2];
+                    array[1] = array[cachedPointCount - 1];
+                    cachedPointCount = 2;
                     flag = !flag;
-                    num10++;
-                    rgbaColor5.RedColor += num11 * (num17 - 1);
-                    rgbaColor5.GreenColor += num12 * (num17 - 1);
-                    rgbaColor5.BlueColor += num13 * (num17 - 1);
-                    rgbaColor6.RedColor += num14 * (num17 - 1);
-                    rgbaColor6.GreenColor += num15 * (num17 - 1);
-                    rgbaColor6.BlueColor += num16 * (num17 - 1);
+                    rgbaColor5.RedColor += redStep * (segmentCount - 1);
+                    rgbaColor5.GreenColor += greenStep * (segmentCount - 1);
+                    rgbaColor5.BlueColor += blueStep * (segmentCount - 1);
+                    rgbaColor6.RedColor += redStepAlt * (segmentCount - 1);
+                    rgbaColor6.GreenColor += greenStepAlt * (segmentCount - 1);
+                    rgbaColor6.BlueColor += blueStepAlt * (segmentCount - 1);
                 }
-                if ((double)num7 == 1.0)
+                if ((double)bezierT == 1.0)
                 {
                     break;
                 }
-                num7 += num6;
+                bezierT += sampleStep;
             }
 
-            b.drawPtsCount = num9;
-            b.DrawChristmasLights(num9 / 2, num, segmentStartIndex);
+            b.drawPtsCount = drawPointCount;
+            b.DrawChristmasLights(drawPointCount / 2, num, segmentStartIndex);
         }
 
         public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
@@ -354,16 +352,16 @@ namespace CutTheRope.GameMain
                 }
                 else
                 {
-                    int num2 = (int)(rollLen + num);
-                    if (num2 > BUNGEE_REST_LEN)
+                    int newRestLength = (int)(rollLen + num);
+                    if (newRestLength > BUNGEE_REST_LEN)
                     {
                         rollLen = BUNGEE_REST_LEN;
-                        num = (int)(num2 - BUNGEE_REST_LEN);
+                        num = (int)(newRestLength - BUNGEE_REST_LEN);
                     }
                     else
                     {
                         ConstraintedPoint n2 = parts[^2];
-                        tail.ChangeRestLengthToFor(num2, n2);
+                        tail.ChangeRestLengthToFor(newRestLength, n2);
                         rollLen = 0f;
                     }
                 }
@@ -374,31 +372,31 @@ namespace CutTheRope.GameMain
         {
             float num = amount;
             ConstraintedPoint i = parts[^2];
-            int num2 = (int)tail.RestLengthFor(i);
-            int num3 = parts.Count;
+            int currentRestLength = (int)tail.RestLengthFor(i);
+            int partCount = parts.Count;
             while (num > 0f)
             {
                 if (num >= BUNGEE_REST_LEN)
                 {
-                    ConstraintedPoint o = parts[num3 - 2];
-                    ConstraintedPoint n2 = parts[num3 - 3];
-                    tail.ChangeConstraintFromTowithRestLength(o, n2, num2);
+                    ConstraintedPoint o = parts[partCount - 2];
+                    ConstraintedPoint n2 = parts[partCount - 3];
+                    tail.ChangeConstraintFromTowithRestLength(o, n2, currentRestLength);
                     parts.RemoveAt(parts.Count - 2);
-                    num3--;
+                    partCount--;
                     num -= BUNGEE_REST_LEN;
                 }
                 else
                 {
-                    int num4 = (int)(num2 - num);
-                    if (num4 < 1)
+                    int nextRestLength = (int)(currentRestLength - num);
+                    if (nextRestLength < 1)
                     {
                         num = BUNGEE_REST_LEN;
-                        num2 = (int)(BUNGEE_REST_LEN + num4 + 1f);
+                        currentRestLength = (int)(BUNGEE_REST_LEN + nextRestLength + 1f);
                     }
                     else
                     {
-                        ConstraintedPoint n3 = parts[num3 - 2];
-                        tail.ChangeRestLengthToFor(num4, n3);
+                        ConstraintedPoint n3 = parts[partCount - 2];
+                        tail.ChangeRestLengthToFor(nextRestLength, n3);
                         num = 0f;
                     }
                 }
@@ -409,7 +407,7 @@ namespace CutTheRope.GameMain
                 Constraint constraint = tail.constraints[j];
                 if (constraint != null && constraint.type == Constraint.CONSTRAINT.NOT_MORE_THAN)
                 {
-                    constraint.restLength = (num3 - 1) * (BUNGEE_REST_LEN + 3f);
+                    constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + 3f);
                 }
             }
             return num;
@@ -565,10 +563,10 @@ namespace CutTheRope.GameMain
                     num++;
                 }
             }
-            int num2 = count - num;
-            if (num2 > 0)
+            int headPartCount = count - num;
+            if (headPartCount > 0)
             {
-                DrawBungee(this, array2, num2, 4, 0);
+                DrawBungee(this, array2, headPartCount, 4, 0);
             }
             if (num > 0 && !hideTailParts)
             {

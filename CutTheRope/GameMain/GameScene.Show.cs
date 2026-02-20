@@ -22,16 +22,16 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             XElement map = cTRRootController.GetMap();
 
-            float num = 3f;
-            float num2 = 0f;
+            float mapScale = 3f;
+            float mapOffsetY = 0f;
 
             // Load level metadata (map dimensions, game design settings, candy positions)
-            LoadAllLevelMetadata(map, num, num2, out float num3, out int num4, out int num5);
-            mapOriginX = num3 + num4;
-            mapOriginY = num2 + num5;
+            LoadAllLevelMetadata(map, mapScale, mapOffsetY, out float mapOffsetX, out int mapGridOffsetX, out int mapGridOffsetY);
+            mapOriginX = mapOffsetX + mapGridOffsetX;
+            mapOriginY = mapOffsetY + mapGridOffsetY;
 
             // Load all game objects from XML
-            LoadObjectsFromMap(map, num, num3, num2, num4, num5);
+            LoadObjectsFromMap(map, mapScale, mapOffsetX, mapOffsetY, mapGridOffsetX, mapGridOffsetY);
 
             conveyors.AttachItems(stars);
             conveyors.AttachItems(socks);
@@ -116,37 +116,37 @@ namespace CutTheRope.GameMain
                 camera.speed = 20f;
                 cameraMoveMode = 0;
                 ConstraintedPoint constraintedPoint = twoParts != 2 ? starL : star;
-                float num;
-                float num2;
+                float cameraStartX;
+                float cameraStartY;
                 if (mapWidth > SCREEN_WIDTH)
                 {
                     if (constraintedPoint.pos.X > mapWidth / 2.0)
                     {
-                        num = 0f;
-                        num2 = 0f;
+                        cameraStartX = 0f;
+                        cameraStartY = 0f;
                     }
                     else
                     {
-                        num = mapWidth - SCREEN_WIDTH;
-                        num2 = 0f;
+                        cameraStartX = mapWidth - SCREEN_WIDTH;
+                        cameraStartY = 0f;
                     }
                 }
                 else if (constraintedPoint.pos.Y > mapHeight / 2.0)
                 {
-                    num = 0f;
-                    num2 = 0f;
+                    cameraStartX = 0f;
+                    cameraStartY = 0f;
                 }
                 else
                 {
-                    num = 0f;
-                    num2 = mapHeight - SCREEN_HEIGHT;
+                    cameraStartX = 0f;
+                    cameraStartY = mapHeight - SCREEN_HEIGHT;
                 }
-                float num6 = constraintedPoint.pos.X - (SCREEN_WIDTH / 2f);
-                float num3 = constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f);
-                float num4 = FIT_TO_BOUNDARIES(num6, 0f, mapWidth - SCREEN_WIDTH);
-                float num5 = FIT_TO_BOUNDARIES(num3, 0f, mapHeight - SCREEN_HEIGHT);
-                camera.MoveToXYImmediate(num, num2, true);
-                initialCameraToStarDistance = VectDistance(camera.pos, Vect(num4, num5));
+                float targetCameraX = constraintedPoint.pos.X - (SCREEN_WIDTH / 2f);
+                float targetCameraY = constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f);
+                float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
+                float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
+                camera.MoveToXYImmediate(cameraStartX, cameraStartY, true);
+                initialCameraToStarDistance = VectDistance(camera.pos, Vect(boundedCameraX, boundedCameraY));
                 return;
             }
             ignoreTouches = false;

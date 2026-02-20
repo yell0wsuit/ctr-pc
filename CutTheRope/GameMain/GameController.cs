@@ -192,10 +192,10 @@ namespace CutTheRope.GameMain
                 CTRRootController.PostAchievementName("681473653", ACHIEVEMENT_STRING("\"Golden Scissors\""));
             }
             Preferences.RequestSave();
-            int num2 = 0;
+            int totalPackScore = 0;
             for (int i = 0; i < CTRPreferences.GetLevelsInPackCount(pack); i++)
             {
-                num2 += CTRPreferences.GetScoreForPackLevel(pack, i);
+                totalPackScore += CTRPreferences.GetScoreForPackLevel(pack, i);
             }
             //if (!CTRRootController.IsHacked())
             //{

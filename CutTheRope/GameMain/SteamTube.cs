@@ -122,25 +122,25 @@ namespace CutTheRope.GameMain
             Vector vector = onConveyor
                 ? Vect(x, y)
                 : VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
-            float num = VectLength(VectSub(Vect(tx, ty), vector));
-            if (num < 40f)
+            float touchZone = VectLength(VectSub(Vect(tx, ty), vector));
+            if (touchZone < 40f)
             {
-                int num2 = 0;
+                int valveTimelineIndex = 0;
                 switch (steamState)
                 {
                     case 0:
                         steamState++;
-                        num2 = 0;
+                        valveTimelineIndex = 0;
                         CTRSoundMgr.PlaySound(Resources.Snd.SteamStart2);
                         break;
                     case 1:
                         steamState++;
-                        num2 = 0;
+                        valveTimelineIndex = 0;
                         CTRSoundMgr.PlaySound(Resources.Snd.SteamStart);
                         break;
                     case 2:
                         steamState = 0;
-                        num2 = 1;
+                        valveTimelineIndex = 1;
                         CTRSoundMgr.PlaySound(Resources.Snd.SteamEnd);
                         break;
                     default:
@@ -149,7 +149,7 @@ namespace CutTheRope.GameMain
                 AdjustSteam();
                 if (valve.GetTimeline(0).state != Timeline.TimelineState.TIMELINE_PLAYING && valve.GetTimeline(1).state != Timeline.TimelineState.TIMELINE_PLAYING)
                 {
-                    valve.PlayTimeline(num2);
+                    valve.PlayTimeline(valveTimelineIndex);
                 }
                 return true;
             }
@@ -229,75 +229,75 @@ namespace CutTheRope.GameMain
             {
                 steamBack.anchor = steamBack.parentAnchor = 18;
                 steamFront.anchor = steamFront.parentAnchor = 18;
-                int num = 7;
+                int puffCount = 7;
                 if (steamState == 1)
                 {
-                    num = 14;
+                    puffCount = 14;
                 }
                 if (steamState == 2)
                 {
-                    num = 20;
+                    puffCount = 20;
                 }
-                for (int i = 0; i < num; i++)
+                for (int i = 0; i < puffCount; i++)
                 {
-                    int num2 = 0;
-                    int num3 = 0;
+                    int animationStartFrame = 0;
+                    int animationEndFrame = 0;
                     switch (i % 3)
                     {
                         case 0:
-                            num2 = 24;
-                            num3 = 34;
+                            animationStartFrame = 24;
+                            animationEndFrame = 34;
                             break;
                         case 1:
-                            num2 = 13;
-                            num3 = 23;
+                            animationStartFrame = 13;
+                            animationEndFrame = 23;
                             break;
                         case 2:
-                            num2 = 2;
-                            num3 = 12;
+                            animationStartFrame = 2;
+                            animationEndFrame = 12;
                             break;
                         default:
                             break;
                     }
-                    float num4 = 0.6f;
-                    float num5 = num4 / (num3 - num2 + 1);
-                    float num6 = -GetCurrentHeight();
-                    num6 *= 1f + (0.1f * RND_MINUS1_1);
+                    float puffDuration = 0.6f;
+                    float frameDelay = puffDuration / (animationEndFrame - animationStartFrame + 1);
+                    float puffHeight = -GetCurrentHeight();
+                    puffHeight *= 1f + (0.1f * RND_MINUS1_1);
                     if (steamState == 1 && (i % 3 == 1 || i % 3 == 2))
                     {
-                        num6 *= 0.95f;
+                        puffHeight *= 0.95f;
                     }
                     if (steamState == 2 && (i % 3 == 1 || i % 3 == 2))
                     {
-                        num6 *= 0.94f;
+                        puffHeight *= 0.94f;
                     }
-                    float num7 = 1f;
+                    float horizontalOffset = 1f;
                     if (i % 3 == 0)
                     {
-                        num7 = 0f;
+                        horizontalOffset = 0f;
                     }
                     else if (i % 3 == 1)
                     {
-                        num7 *= steamState;
+                        horizontalOffset *= steamState;
                     }
                     else if (i % 3 == 2)
                     {
-                        num7 *= -steamState;
+                        horizontalOffset *= -steamState;
                     }
                     Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjPipe);
                     animation.DoRestoreCutTransparency();
-                    _ = animation.AddAnimationDelayLoopFirstLast(num5, Timeline.LoopType.TIMELINE_REPLAY, num2, num3);
+                    _ = animation.AddAnimationDelayLoopFirstLast(frameDelay, Timeline.LoopType.TIMELINE_REPLAY, animationStartFrame, animationEndFrame);
                     animation.anchor = animation.parentAnchor = 18;
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                     timeline.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakePos(num7, num6, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, num4));
+                    timeline.AddKeyFrame(KeyFrame.MakePos(horizontalOffset, puffHeight, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, puffDuration));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.5, 1.5, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num4));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.5, 1.5, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, puffDuration));
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     timeline.delegateTimelineDelegate = this;
                     BaseElement baseElement = new();
                     baseElement.AddTimelinewithID(timeline, 0);
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(StartPuffFloatingAndAnimation), baseElement, num4 * i / num);
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(StartPuffFloatingAndAnimation), baseElement, puffDuration * i / puffCount);
                     _ = baseElement.AddChild(animation);
                     baseElement.anchor = baseElement.parentAnchor = 18;
                     baseElement.SetEnabled(false);

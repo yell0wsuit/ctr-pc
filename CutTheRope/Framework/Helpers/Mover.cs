@@ -74,9 +74,9 @@ namespace CutTheRope.Framework.Helpers
             List<string> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)
             {
-                string nSString2 = list[j];
-                string nSString3 = list[j + 1];
-                AddPathPoint(Vect(s.X + nSString2.FloatValue(), s.Y + nSString3.FloatValue()));
+                string xOffsetString = list[j];
+                string yOffsetString = list[j + 1];
+                AddPathPoint(Vect(s.X + xOffsetString.FloatValue(), s.Y + yOffsetString.FloatValue()));
             }
         }
 

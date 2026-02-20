@@ -31,8 +31,8 @@ namespace CutTheRope.GameMain
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
                 if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2.0)), (float)(v.Y - (p.bb.h / 2.0)), (float)(v.X + (p.bb.w / 2.0)), (float)(v.Y + (p.bb.h / 2.0)), vector.X, vector.Y - num, vector2.X, vector2.Y))
                 {
-                    float num2 = num * 2f * (num - (vector.Y - v.Y)) / num;
-                    Vector v2 = Vect(0f, 0f - num2);
+                    float verticalImpulse = num * 2f * (num - (vector.Y - v.Y)) / num;
+                    Vector v2 = Vect(0f, 0f - verticalImpulse);
                     v2 = VectRotate(v2, p.angle);
                     s.ApplyImpulseDelta(v2, 0.016f);
                 }
@@ -65,9 +65,9 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Applies steam tube forces and interacts with candy pieces inside the flow area.
         /// PC vs WP7 differences:
-        /// - num3 (tube width): 10f * tubeScale (WP7: 10f unscaled)
-        /// - num4 (vertical offset): 1f * tubeScale (WP7: 1f unscaled)
-        /// - num5 (collision radius): 17.5f * tubeScale (WP7: 17.5f unscaled)
+        /// - tubeWidth: 10f * tubeScale (WP7: 10f unscaled)
+        /// - verticalOffset: 1f * tubeScale (WP7: 1f unscaled)
+        /// - collisionRadius: 17.5f * tubeScale (WP7: 17.5f unscaled)
         /// - Gravity force: -32f/weight * sqrt(tubeScale) (WP7: no sqrt scaling)
         /// - Damping factor (num): Always 5f (same in both)
         /// </summary>
@@ -263,11 +263,11 @@ namespace CutTheRope.GameMain
                         }
                         else if (constraintedPoint.prevPos.X != UNDEFINED_COORDINATE)
                         {
-                            float num2 = MinOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
+                            float minX = MinOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
                             float y1t = MinOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
                             float x1r = MaxOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
                             float y1b = MaxOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
-                            flag = RectInRect(num2, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
+                            flag = RectInRect(minX, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
                         }
                         if (flag)
                         {
@@ -437,7 +437,7 @@ namespace CutTheRope.GameMain
         {
             float num = 60f;
             Bungee result = null;
-            float num2 = num;
+            float nearestDistance = num;
             Vector v = Vect(tx, ty);
             for (int i = 0; i < bungees.Count; i++)
             {
@@ -448,10 +448,10 @@ namespace CutTheRope.GameMain
                     for (int j = 0; j < rope.drawPtsCount; j += 2)
                     {
                         Vector vector = Vect(rope.drawPts[j], rope.drawPts[j + 1]);
-                        float num3 = VectDistance(vector, v);
-                        if (num3 < num && num3 < num2)
+                        float distanceToPoint = VectDistance(vector, v);
+                        if (distanceToPoint < num && distanceToPoint < nearestDistance)
                         {
-                            num2 = num3;
+                            nearestDistance = distanceToPoint;
                             result = rope;
                             s = vector;
                             grab = grab2;
@@ -467,9 +467,9 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static Bungee GetNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
         {
-            float num4 = UNDEFINED_COORDINATE;
+            float initialDistance = UNDEFINED_COORDINATE;
             Bungee result = null;
-            float num2 = num4;
+            float closestDistance = initialDistance;
             Vector v = s;
             Bungee rope = g.rope;
             if (rope == null || rope.cut != -1)
@@ -479,10 +479,10 @@ namespace CutTheRope.GameMain
             for (int i = 0; i < rope.parts.Count - 1; i++)
             {
                 ConstraintedPoint constraintedPoint = rope.parts[i];
-                float num3 = VectDistance(constraintedPoint.pos, v);
-                if (num3 < num2 && (!g.wheel || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - 110f, g.y - 110f, 220f, 220f)))
+                float distanceToConstraint = VectDistance(constraintedPoint.pos, v);
+                if (distanceToConstraint < closestDistance && (!g.wheel || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - 110f, g.y - 110f, 220f, 220f)))
                 {
-                    num2 = num3;
+                    closestDistance = distanceToConstraint;
                     result = rope;
                     s = constraintedPoint.pos;
                 }

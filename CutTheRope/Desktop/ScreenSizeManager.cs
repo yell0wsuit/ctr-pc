@@ -123,14 +123,14 @@ namespace CutTheRope.Desktop
             Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
             if (sourceRect.Width >= sourceRect.Height)
             {
-                int num = _fullScreenCropWidth ? sourceRect.Height : ScaledGameHeight(sourceRect.Width);
-                int num2 = _fullScreenCropWidth ? ScaledGameWidth(num) : sourceRect.Width;
-                _scaledViewRect = new Rectangle((sourceRect.Width - num2) / 2, (sourceRect.Height - num) / 2, num2, num);
+                int scaledHeight = _fullScreenCropWidth ? sourceRect.Height : ScaledGameHeight(sourceRect.Width);
+                int scaledWidth = _fullScreenCropWidth ? ScaledGameWidth(scaledHeight) : sourceRect.Width;
+                _scaledViewRect = new Rectangle((sourceRect.Width - scaledWidth) / 2, (sourceRect.Height - scaledHeight) / 2, scaledWidth, scaledHeight);
                 return;
             }
-            int num3 = _fullScreenCropWidth ? (int)(sourceRect.Width / 5f * 4f) : ScaledGameHeight(sourceRect.Width);
-            int num4 = _fullScreenCropWidth ? ScaledGameWidth(num3) : sourceRect.Width;
-            _scaledViewRect = new Rectangle((sourceRect.Width - num4) / 2, (sourceRect.Height - num3) / 2, num4, num3);
+            int portraitScaledHeight = _fullScreenCropWidth ? (int)(sourceRect.Width / 5f * 4f) : ScaledGameHeight(sourceRect.Width);
+            int portraitScaledWidth = _fullScreenCropWidth ? ScaledGameWidth(portraitScaledHeight) : sourceRect.Width;
+            _scaledViewRect = new Rectangle((sourceRect.Width - portraitScaledWidth) / 2, (sourceRect.Height - portraitScaledHeight) / 2, portraitScaledWidth, portraitScaledHeight);
         }
 
         public void ApplyWindowSize(int width)

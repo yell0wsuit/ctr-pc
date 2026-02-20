@@ -157,8 +157,8 @@ namespace CutTheRope.Commons
                 {
                     _ = vector.Y / maxScroll.Y;
                 }
-                float num3 = ((lift.maxX - lift.minX) * num) + lift.minX;
-                spoints[i] = Vect(num3, 0f);
+                float liftX = ((lift.maxX - lift.minX) * num) + lift.minX;
+                spoints[i] = Vect(liftX, 0f);
             }
             for (int j = 0; j < spointsNum; j++)
             {
@@ -184,8 +184,8 @@ namespace CutTheRope.Commons
                 Vector vector3 = spointsLimits[l];
                 Vector vector4 = spointsLimits[l + 1];
                 Vector[] array = spointsLimits;
-                int num6 = l;
-                array[num6].X = array[num6].X + ((vector4.X - vector3.X) / 2f);
+                int limitIndex = l;
+                array[limitIndex].X = array[limitIndex].X + ((vector4.X - vector3.X) / 2f);
             }
         }
 

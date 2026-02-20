@@ -754,7 +754,7 @@ namespace CutTheRope.GameMain
                 string @string = Application.GetString(boxLabelId);
                 nsstring = text3 + text4 + (@string?.ToString());
             }
-            string nSString = nsstring;
+            string packTitle = nsstring;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
             touchBaseElement.bid = n != CTRPreferences.GetPacksCount() ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
@@ -860,11 +860,11 @@ namespace CutTheRope.GameMain
             text2.SetAlignment(2);
             if (n != CTRPreferences.GetPacksCount())
             {
-                text2.SetString(nSString);
+                text2.SetString(packTitle);
             }
             else
             {
-                text2.SetStringandWidth(nSString, 656.0);
+                text2.SetStringandWidth(packTitle, 656.0);
             }
             text2.y = 140f;
             _ = image.AddChild(text2);
@@ -892,12 +892,12 @@ namespace CutTheRope.GameMain
             HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-20f, 16, SCREEN_HEIGHT);
             float num = SCREEN_WIDTH + (Canvas.xOffset * 2);
             float boxWidth = GetBoxWidth();
-            float num2 = boxWidth * 3f;
-            if (num2 > num - 200f)
+            float containerWidth = boxWidth * 3f;
+            if (containerWidth > num - 200f)
             {
-                num2 = boxWidth * 2f;
+                containerWidth = boxWidth * 2f;
             }
-            packContainer = new ScrollableContainer().InitWithWidthHeightContainer(num2, SCREEN_HEIGHT, hBox2);
+            packContainer = new ScrollableContainer().InitWithWidthHeightContainer(containerWidth, SCREEN_HEIGHT, hBox2);
             packContainer.minAutoScrollToSpointLength = RTD(5.0);
             packContainer.shouldBounceHorizontally = true;
             packContainer.resetScrollOnShow = false;
@@ -916,7 +916,7 @@ namespace CutTheRope.GameMain
                 height = (int)texture.preCutSize.Y
             };
             _ = hBox2.AddChild(baseElement2);
-            float num3 = 0f + GetPackOffset();
+            float scrollPointX = 0f + GetPackOffset();
             for (int i = 0; i < CTRPreferences.GetPacksCount() + 1; i++)
             {
                 TouchBaseElement touchBaseElement = (TouchBaseElement)CreatePackElementforContainer(i, packContainer);
@@ -924,9 +924,9 @@ namespace CutTheRope.GameMain
                 _ = hBox2.AddChild(touchBaseElement);
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
-                _ = packContainer.AddScrollPointAtXY(num3, 0f);
+                _ = packContainer.AddScrollPointAtXY(scrollPointX, 0f);
                 touchBaseElement.bbc = MakeRectangle(0f, 0f, -20f, 0f);
-                num3 += touchBaseElement.width + -20f;
+                scrollPointX += touchBaseElement.width + -20f;
             }
             hBox2.width += 1000;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 11);
@@ -1136,13 +1136,13 @@ namespace CutTheRope.GameMain
             vBox.y = 110f;
             int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
             int columnsPerRow = 5;
-            int num3 = 0;
+            int levelIndex = 0;
             for (int i = 0; i < levelsInPack; i += columnsPerRow)
             {
                 HBox hBox2 = new HBox().InitWithOffsetAlignHeight(of2, 16, h);
-                for (int j = 0; j < columnsPerRow && num3 < levelsInPack; j++)
+                for (int j = 0; j < columnsPerRow && levelIndex < levelsInPack; j++)
                 {
-                    _ = hBox2.AddChild(CreateButtonForLevelPack(num3++, pack));
+                    _ = hBox2.AddChild(CreateButtonForLevelPack(levelIndex++, pack));
                 }
                 _ = vBox.AddChild(hBox2);
             }
@@ -1475,20 +1475,20 @@ namespace CutTheRope.GameMain
                     return;
                 case var id when id == MenuButtonId.NextPack:
                     {
-                        int num2 = currentPack;
-                        int num3 = scrollPacksLeft + 1;
-                        scrollPacksLeft = num3;
-                        int sp2 = FixScrollPoint(num2 + num3 - scrollPacksRight);
+                        int currentPackIndex = currentPack;
+                        int leftScrollCount = scrollPacksLeft + 1;
+                        scrollPacksLeft = leftScrollCount;
+                        int sp2 = FixScrollPoint(currentPackIndex + leftScrollCount - scrollPacksRight);
                         packContainer.MoveToScrollPointmoveMultiplier(sp2, 0.8f);
                         bScrolling = true;
                         return;
                     }
                 case var id when id == MenuButtonId.PreviousPack:
                     {
-                        int num4 = currentPack;
-                        int num3 = scrollPacksRight + 1;
-                        scrollPacksRight = num3;
-                        int sp3 = FixScrollPoint(num4 - num3 + scrollPacksLeft);
+                        int currentPackIndex = currentPack;
+                        int rightScrollCount = scrollPacksRight + 1;
+                        scrollPacksRight = rightScrollCount;
+                        int sp3 = FixScrollPoint(currentPackIndex - rightScrollCount + scrollPacksLeft);
                         packContainer.MoveToScrollPointmoveMultiplier(sp3, 0.8f);
                         bScrolling = true;
                         break;
@@ -2001,8 +2001,8 @@ namespace CutTheRope.GameMain
                 if (num >= s && num < e)
                 {
                     num -= preCutSize.X + -20f;
-                    float num2 = num - ((s + e) / 2f);
-                    Renderer.SetScissor(250f - num2, 0f, 200f, SCREEN_HEIGHT);
+                    float clipOffsetX = num - ((s + e) / 2f);
+                    Renderer.SetScissor(250f - clipOffsetX, 0f, 200f, SCREEN_HEIGHT);
                     PostDraw();
                     Renderer.SetScissor(c.drawX, c.drawY, c.width, c.height);
                 }

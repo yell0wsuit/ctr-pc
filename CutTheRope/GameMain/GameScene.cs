@@ -206,10 +206,10 @@ namespace CutTheRope.GameMain
         private static float NearestAngleTofrom(float ta, float fa)
         {
             float num = fa - DEG_360;
-            float num2 = fa + DEG_360;
-            return Math.Abs(fa - ta) < Math.Abs(num - ta) && Math.Abs(fa - ta) < Math.Abs(num2 - ta)
+            float plus360 = fa + DEG_360;
+            return Math.Abs(fa - ta) < Math.Abs(num - ta) && Math.Abs(fa - ta) < Math.Abs(plus360 - ta)
                 ? fa
-                : Math.Abs(num - ta) < Math.Abs(num2 - ta) ? num : NearestAngleTofrom(ta, num2);
+                : Math.Abs(num - ta) < Math.Abs(plus360 - ta) ? num : NearestAngleTofrom(ta, plus360);
         }
 
         private static float MinAngleBetweenAandB(float a, float b)

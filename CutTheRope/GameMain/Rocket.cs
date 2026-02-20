@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
             container.y = y;
             float num = VectLength(VectSub(point.prevPos, point.pos));
             num = MAX(num, 1f);
-            float num2 = angle - (float)Math.PI;
+            float exhaustAngle = angle - (float)Math.PI;
             float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
             vector = VectAdd(vector, VectMult(VectForAngle(angle), exhaustOffset));
@@ -141,7 +141,7 @@ namespace CutTheRope.GameMain
                 particles.x = vector.X;
                 particles.y = vector.Y;
                 particles.angle = rotation;
-                particles.initialAngle = num2;
+                particles.initialAngle = exhaustAngle;
                 particles.speed = num * 50f;
             }
             if (cloudParticles != null)
@@ -149,7 +149,7 @@ namespace CutTheRope.GameMain
                 cloudParticles.x = vector.X;
                 cloudParticles.y = vector.Y;
                 cloudParticles.angle = rotation;
-                cloudParticles.initialAngle = num2;
+                cloudParticles.initialAngle = exhaustAngle;
                 cloudParticles.speed = num * 40f;
             }
         }
@@ -167,8 +167,8 @@ namespace CutTheRope.GameMain
                 int num = 100;
                 if (path.CharacterAtIndex(0) == 'R')
                 {
-                    int num2 = path.SubstringFromIndex(2).IntValue();
-                    num = MAX(11, (num2 / 2) + 1);
+                    int pathRadius = path.SubstringFromIndex(2).IntValue();
+                    num = MAX(11, (pathRadius / 2) + 1);
                 }
                 float moveSpeed = xml.AttributeAsNSString("moveSpeed").FloatValue();
                 float rotateSpeed = xml.AttributeAsNSString("rotateSpeed").FloatValue();
@@ -278,12 +278,12 @@ namespace CutTheRope.GameMain
         public void HandleRotateFinal()
         {
             rotation = AngleTo0_360(rotation);
-            float num = Round(rotation / DEG_45);
-            float num2 = DEG_45 * num;
+            float snappedStep = Round(rotation / DEG_45);
+            float snappedRotation = DEG_45 * snappedStep;
             RemoveTimeline(1);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((double)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((double)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 1);
             PlayTimeline(1);

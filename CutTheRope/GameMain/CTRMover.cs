@@ -14,26 +14,26 @@ namespace CutTheRope.GameMain
             if (p.CharacterAtIndex(0) == 'R')
             {
                 bool flag = p.CharacterAtIndex(1) == 'C';
-                int num = (int)RTD(p.SubstringFromIndex(2).IntValue());
-                num *= 3;
-                int num2 = num / 2;
-                if (num2 <= 0)
+                int radius = (int)RTD(p.SubstringFromIndex(2).IntValue());
+                radius *= 3;
+                int pointCount = radius / 2;
+                if (pointCount <= 0)
                 {
                     AddPathPoint(s);
                     return;
                 }
-                float num3 = MathF.Tau / num2;
+                float angleStep = MathF.Tau / pointCount;
                 if (!flag)
                 {
-                    num3 = 0f - num3;
+                    angleStep = 0f - angleStep;
                 }
-                float num4 = 0f;
-                for (int i = 0; i < num2; i++)
+                float theta = 0f;
+                for (int i = 0; i < pointCount; i++)
                 {
-                    float x = s.X + (num * Cosf(num4));
-                    float y = s.Y + (num * Sinf(num4));
+                    float x = s.X + (radius * Cosf(theta));
+                    float y = s.Y + (radius * Sinf(theta));
                     AddPathPoint(Vect(x, y));
-                    num4 += num3;
+                    theta += angleStep;
                 }
                 return;
             }
@@ -45,9 +45,9 @@ namespace CutTheRope.GameMain
             List<string> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)
             {
-                string nSString2 = list[j];
-                string nSString3 = list[j + 1];
-                AddPathPoint(Vect(s.X + (nSString2.FloatValue() * 3f), s.Y + (nSString3.FloatValue() * 3f)));
+                string xOffsetString = list[j];
+                string yOffsetString = list[j + 1];
+                AddPathPoint(Vect(s.X + (xOffsetString.FloatValue() * 3f), s.Y + (yOffsetString.FloatValue() * 3f)));
             }
         }
     }

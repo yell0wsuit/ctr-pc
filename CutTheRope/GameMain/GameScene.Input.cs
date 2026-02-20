@@ -271,21 +271,21 @@ namespace CutTheRope.GameMain
             foreach (object obj2 in rotatedCircles)
             {
                 RotatedCircle rotatedCircle2 = (RotatedCircle)obj2;
-                float num2 = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle1);
-                float num3 = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle2);
-                if ((num2 < 90f && !rotatedCircle2.HasOneHandle()) || num3 < 90f)
+                float distanceToLeftHandle = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle1);
+                float distanceToRightHandle = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle2);
+                if ((distanceToLeftHandle < 90f && !rotatedCircle2.HasOneHandle()) || distanceToRightHandle < 90f)
                 {
                     foreach (object obj3 in rotatedCircles)
                     {
                         RotatedCircle rotatedCircle3 = (RotatedCircle)obj3;
                         if (rotatedCircles.GetObjectIndex(rotatedCircle3) > rotatedCircles.GetObjectIndex(rotatedCircle2))
                         {
-                            float num4 = VectDistance(Vect(rotatedCircle3.x, rotatedCircle3.y), Vect(rotatedCircle2.x, rotatedCircle2.y));
-                            if (num4 + rotatedCircle3.sizeInPixels <= rotatedCircle2.sizeInPixels)
+                            float circleDistance = VectDistance(Vect(rotatedCircle3.x, rotatedCircle3.y), Vect(rotatedCircle2.x, rotatedCircle2.y));
+                            if (circleDistance + rotatedCircle3.sizeInPixels <= rotatedCircle2.sizeInPixels)
                             {
                                 flag = true;
                             }
-                            if (num4 <= rotatedCircle2.sizeInPixels + rotatedCircle3.sizeInPixels)
+                            if (circleDistance <= rotatedCircle2.sizeInPixels + rotatedCircle3.sizeInPixels)
                             {
                                 flag2 = true;
                             }
@@ -293,11 +293,11 @@ namespace CutTheRope.GameMain
                     }
                     rotatedCircle2.lastTouch = Vect(tx + camera.pos.X, ty + camera.pos.Y);
                     rotatedCircle2.operating = ti;
-                    if (num2 < 90f)
+                    if (distanceToLeftHandle < 90f)
                     {
                         rotatedCircle2.SetIsLeftControllerActive(true);
                     }
-                    if (num3 < 90f)
+                    if (distanceToRightHandle < 90f)
                     {
                         rotatedCircle2.SetIsRightControllerActive(true);
                     }
@@ -592,15 +592,15 @@ namespace CutTheRope.GameMain
                         a = FBOUND_PI(a);
                         rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        int num2 = num > 0f ? 1 : 2;
+                        int scratchSoundState = num > 0f ? 1 : 2;
                         if ((double)Math.Abs(num) < 0.07)
                         {
-                            num2 = -1;
+                            scratchSoundState = -1;
                         }
-                        if (rotatedCircle.soundPlaying != num2 && num2 != -1)
+                        if (rotatedCircle.soundPlaying != scratchSoundState && scratchSoundState != -1)
                         {
-                            CTRSoundMgr.PlaySound(num2 == 1 ? Resources.Snd.ScratchOut : Resources.Snd.ScratchIn);
-                            rotatedCircle.soundPlaying = num2;
+                            CTRSoundMgr.PlaySound(scratchSoundState == 1 ? Resources.Snd.ScratchOut : Resources.Snd.ScratchIn);
+                            rotatedCircle.soundPlaying = scratchSoundState;
                         }
                         for (int j = 0; j < bungees.Count; j++)
                         {
@@ -681,8 +681,8 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            int num3 = bungees.Count;
-            for (int m = 0; m < num3; m++)
+            int grabCount = bungees.Count;
+            for (int m = 0; m < grabCount; m++)
             {
                 Grab grab2 = bungees.ObjectAtIndex(m);
                 if (grab2 != null)
@@ -738,27 +738,27 @@ namespace CutTheRope.GameMain
                     c = RGBAColor.whiteRGBA
                 };
                 _ = fingerCuts[ti].AddObject(fingerCut);
-                int num4 = 0;
+                int ropesCutThisFrame = 0;
                 foreach (object obj2 in fingerCuts[ti])
                 {
                     FingerCut item = (FingerCut)obj2;
-                    num4 += CutWithRazorOrLine1Line2Immediate(null, item.start, item.end, false);
+                    ropesCutThisFrame += CutWithRazorOrLine1Line2Immediate(null, item.start, item.end, false);
                 }
-                if (num4 > 0)
+                if (ropesCutThisFrame > 0)
                 {
                     freezeCamera = false;
                     if (ropesCutAtOnce > 0 && ropeAtOnceTimer > 0.0)
                     {
-                        ropesCutAtOnce += num4;
+                        ropesCutAtOnce += ropesCutThisFrame;
                     }
                     else
                     {
-                        ropesCutAtOnce = num4;
+                        ropesCutAtOnce = ropesCutThisFrame;
                     }
                     ropeAtOnceTimer = 0.1f;
-                    int num5 = Preferences.GetIntForKey("PREFS_ROPES_CUT") + 1;
-                    Preferences.SetIntForKey(num5, "PREFS_ROPES_CUT", false);
-                    if (num5 == 100)
+                    int ropesCutTotal = Preferences.GetIntForKey("PREFS_ROPES_CUT") + 1;
+                    Preferences.SetIntForKey(ropesCutTotal, "PREFS_ROPES_CUT", false);
+                    if (ropesCutTotal == 100)
                     {
                         CTRRootController.PostAchievementName("681461850", ACHIEVEMENT_STRING("\"Rope Cutter\""));
                     }
@@ -770,11 +770,11 @@ namespace CutTheRope.GameMain
                     {
                         CTRRootController.PostAchievementName("681508316", ACHIEVEMENT_STRING("\"Master Finger\""));
                     }
-                    if (num5 == 800)
+                    if (ropesCutTotal == 800)
                     {
                         CTRRootController.PostAchievementName("681457931", ACHIEVEMENT_STRING("\"Rope Cutter Maniac\""));
                     }
-                    if (num5 == 2000)
+                    if (ropesCutTotal == 2000)
                     {
                         CTRRootController.PostAchievementName("1058248892", ACHIEVEMENT_STRING("\"Ultimate Rope Cutter\""));
                     }
