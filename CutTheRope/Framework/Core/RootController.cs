@@ -75,20 +75,22 @@ namespace CutTheRope.Framework.Core
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Application.SharedCanvas().SetDefaultRealProjection();
-            int num2 = viewTransition;
-            if (num2 - 4 <= 1)
+            int transitionType = viewTransition;
+            if (transitionType - 4 <= 1)
             {
-                float num = MIN(1, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
-                if (num < 0.5f)
+                float transitionProgress = MIN(1, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
+                if (transitionProgress < 0.5f)
                 {
                     if (prevScreenImage != null)
                     {
-                        RGBAColor fill = viewTransition == 4 ? RGBAColor.MakeRGBA(0, 0, 0, num * 2) : RGBAColor.MakeRGBA(1, 1, 1, num * 2);
+                        RGBAColor fadeOverlayColor = viewTransition == 4
+                            ? RGBAColor.MakeRGBA(0, 0, 0, transitionProgress * 2)
+                            : RGBAColor.MakeRGBA(1, 1, 1, transitionProgress * 2);
                         Grabber.DrawGrabbedImage(prevScreenImage, 0, 0);
                         Renderer.Disable(Renderer.GL_TEXTURE_2D);
                         Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                        DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill);
+                        DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fadeOverlayColor);
                         Renderer.Disable(Renderer.GL_BLEND);
                     }
                     else
@@ -106,12 +108,14 @@ namespace CutTheRope.Framework.Core
                 }
                 else if (nextScreenImage != null)
                 {
-                    RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0, 0, 0, 2 - (num * 2)) : RGBAColor.MakeRGBA(1, 1, 1, 2 - (num * 2));
+                    RGBAColor revealOverlayColor = viewTransition == 4
+                        ? RGBAColor.MakeRGBA(0, 0, 0, 2 - (transitionProgress * 2))
+                        : RGBAColor.MakeRGBA(1, 1, 1, 2 - (transitionProgress * 2));
                     Grabber.DrawGrabbedImage(nextScreenImage, 0, 0);
                     Renderer.Disable(Renderer.GL_TEXTURE_2D);
                     Renderer.Enable(Renderer.GL_BLEND);
                     Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                    DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill2);
+                    DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, revealOverlayColor);
                     Renderer.Disable(Renderer.GL_BLEND);
                 }
                 else
@@ -137,32 +141,32 @@ namespace CutTheRope.Framework.Core
             base.Activate();
         }
 
-        public virtual void OnControllerActivated(ViewController c)
+        public virtual void OnControllerActivated(ViewController controller)
         {
-            SetCurrentController(c);
+            SetCurrentController(controller);
         }
 
-        public virtual void OnControllerDeactivated(ViewController c)
-        {
-            SetCurrentController(null);
-        }
-
-        public virtual void OnControllerPaused(ViewController c)
+        public virtual void OnControllerDeactivated(ViewController controller)
         {
             SetCurrentController(null);
         }
 
-        public virtual void OnControllerUnpaused(ViewController c)
+        public virtual void OnControllerPaused(ViewController controller)
         {
-            SetCurrentController(c);
+            SetCurrentController(null);
         }
 
-        public virtual void OnControllerDeactivationRequest(ViewController c)
+        public virtual void OnControllerUnpaused(ViewController controller)
+        {
+            SetCurrentController(controller);
+        }
+
+        public virtual void OnControllerDeactivationRequest(ViewController controller)
         {
             deactivateCurrentController = true;
         }
 
-        public virtual void OnControllerViewShow(View v)
+        public virtual void OnControllerViewShow(View view)
         {
             if (viewTransition != -1 && previousView != null)
             {
@@ -178,9 +182,9 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        public virtual void OnControllerViewHide(View v)
+        public virtual void OnControllerViewHide(View view)
         {
-            previousView = v;
+            previousView = view;
             if (viewTransition != -1 && previousView != null)
             {
                 Application.SharedCanvas().SetDefaultProjection();
@@ -264,9 +268,9 @@ namespace CutTheRope.Framework.Core
             return currentController.TouchesCancelledwithEvent(touches);
         }
 
-        public virtual void SetCurrentController(ViewController c)
+        public virtual void SetCurrentController(ViewController controller)
         {
-            currentController = c;
+            currentController = controller;
         }
 
         public virtual ViewController GetCurrentController()
