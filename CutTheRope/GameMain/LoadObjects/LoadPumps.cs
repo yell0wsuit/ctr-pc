@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
             pump.initial_y = pump.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
             pump.initial_rotation = 0f;
             pump.initial_rotatedCircle = null;
-            pump.rotation = xmlNode.AttributeAsNSString("angle").FloatValue() + 90f;
+            pump.rotation = xmlNode.AttributeAsNSString("angle").FloatValue() + DEG_90;
             pump.UpdateRotation();
             pump.anchor = 18;
             _ = pumps.AddObject(pump);

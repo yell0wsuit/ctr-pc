@@ -173,7 +173,7 @@ namespace CutTheRope.GameMain
                             // Calculate direction to candy
                             Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
                             grab.gunFired = true;
-                            grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + 90f;
+                            grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + DEG_90;
                             grab.gunCandyInitialRotation = candyMain.rotation;
                             grab.gunCup.rotation = grab.gunInitialRotation;
 
@@ -418,7 +418,7 @@ namespace CutTheRope.GameMain
                             timeline.StopTimeline();
                         }
                         rocket.PlayTimeline(0);
-                        rocket.startRotation += 45f;
+                        rocket.startRotation += DEG_45;
                     }
                     else
                     {

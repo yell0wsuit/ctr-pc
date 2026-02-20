@@ -90,11 +90,11 @@ namespace CutTheRope.GameMain
         {
             spikesNormal = !spikesNormal;
             RemoveTimeline(2);
-            float num = spikesNormal ? 90 : 0;
+            float num = spikesNormal ? DEG_90 : 0;
             float num2 = origRotation + num;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(num2 - rotation) / 90f * 0.3f));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(num2 - rotation) / DEG_90 * 0.3f));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 2);
             PlayTimeline(2);
