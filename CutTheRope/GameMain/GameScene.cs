@@ -191,9 +191,7 @@ namespace CutTheRope.GameMain
 
         public static float FBOUND_PI(float a)
         {
-            float pi = MathF.PI;
-            float fullCircle = pi * 2f;
-            return a > pi ? a - fullCircle : a < -pi ? a + fullCircle : a;
+            return a > MathF.PI ? a - MathF.Tau : a < -MathF.PI ? a + MathF.Tau : a;
         }
 
         public void Exhausted(Rocket r)
