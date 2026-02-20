@@ -47,9 +47,9 @@ namespace CutTheRope.GameMain
 
         public void UpdateRotation()
         {
-            float num = 140f;
-            t1.X = x - (num / 2f) - 20f;
-            t2.X = x + (num / 2f) - 20f;
+            float sockWidth = 140f;
+            t1.X = x - (sockWidth / 2f) - 20f;
+            t2.X = x + (sockWidth / 2f) - 20f;
             t1.Y = t2.Y = y;
             b1.X = t1.X;
             b2.X = t2.X;

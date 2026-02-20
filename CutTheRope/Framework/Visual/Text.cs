@@ -59,8 +59,8 @@ namespace CutTheRope.Framework.Visual
             font.NotifyTextChanged(this);
             if (w == -1f)
             {
-                float num = 0.1f;
-                wrapWidth = font.StringWidth(string_) + num;
+                float widthPadding = 0.1f;
+                wrapWidth = font.StringWidth(string_) + widthPadding;
             }
             else
             {
@@ -102,10 +102,10 @@ namespace CutTheRope.Framework.Visual
         public virtual void UpdateDrawerValues()
         {
             multiDrawers.Clear();
-            int num = font.TotalCharmaps();
+            int totalCharmaps = font.TotalCharmaps();
             int textLength = string_.Length();
             char[] characters = string_.GetCharacters();
-            int[] array = new int[num];
+            int[] array = new int[totalCharmaps];
             for (int i = 0; i < textLength; i++)
             {
                 if (characters[i] is not ' ' and not '*' and not '\n')
@@ -113,7 +113,7 @@ namespace CutTheRope.Framework.Visual
                     array[font.GetCharmapIndex(characters[i])]++;
                 }
             }
-            for (int j = 0; j < num; j++)
+            for (int j = 0; j < totalCharmaps; j++)
             {
                 int charCount = array[j];
                 if (charCount > 0)
@@ -129,7 +129,7 @@ namespace CutTheRope.Framework.Visual
             int dotSpacing = (int)font.GetCharOffset(characters2, 0, 2);
             int visibleLineCount = (int)(maxHeight == -1f ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (fontHeight + font.GetLineOffset())));
             bool isTruncated = visibleLineCount != formattedStrings.Count;
-            int[] array2 = new int[num];
+            int[] array2 = new int[totalCharmaps];
             for (int k = 0; k < visibleLineCount; k++)
             {
                 FormattedString formattedString = formattedStrings[k];
@@ -479,7 +479,7 @@ namespace CutTheRope.Framework.Visual
         {
             short[] array = new short[512];
             char[] characters = string_.GetCharacters();
-            int num = string_.Length();
+            int textLength = string_.Length();
             int rangesLength = 0;
             int wordStart = 0;
             float wordWidth = 0f;
@@ -487,7 +487,7 @@ namespace CutTheRope.Framework.Visual
             int lineEnd = 0;
             float lineWidth = 0f;
             int cursor = 0;
-            while (cursor < num)
+            while (cursor < textLength)
             {
                 char c = characters[cursor++];
                 if (c is ' ' or '\n' or '*')
@@ -499,12 +499,12 @@ namespace CutTheRope.Framework.Visual
                     if (c == ' ')
                     {
                         wordStart--;
-                        wordWidth = font.GetCharWidth(' ') + font.GetCharOffset(characters, cursor - 1, num);
+                        wordWidth = font.GetCharWidth(' ') + font.GetCharOffset(characters, cursor - 1, textLength);
                     }
                 }
                 else
                 {
-                    wordWidth += font.GetCharWidth(c) + font.GetCharOffset(characters, cursor - 1, num);
+                    wordWidth += font.GetCharWidth(c) + font.GetCharOffset(characters, cursor - 1, textLength);
                 }
                 bool exceedsWrap = lineWidth + wordWidth > wrapWidth;
                 if (wrapLongWords && exceedsWrap && lineEnd == lineStart)
@@ -518,7 +518,7 @@ namespace CutTheRope.Framework.Visual
                 {
                     array[rangesLength++] = (short)lineStart;
                     array[rangesLength++] = (short)lineEnd;
-                    while (wordStart < num && characters[wordStart] == ' ')
+                    while (wordStart < textLength && characters[wordStart] == ' ')
                     {
                         wordStart++;
                         wordWidth -= font.GetCharWidth(' ');

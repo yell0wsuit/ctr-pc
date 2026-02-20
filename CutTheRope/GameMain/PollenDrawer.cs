@@ -120,9 +120,9 @@ namespace CutTheRope.GameMain
                 {
                     (pollens[i].endScaleY, pollens[i].startScaleY) = (pollens[i].startScaleY, pollens[i].endScaleY);
                 }
-                float num = qw * pollens[i].scaleX;
+                float pollenWidth = qw * pollens[i].scaleX;
                 float pollenHeight = qh * pollens[i].scaleY;
-                drawer.vertices[i] = Quad3D.MakeQuad3D(pollens[i].x - (num / 2f), pollens[i].y - (pollenHeight / 2f), 0f, num, pollenHeight);
+                drawer.vertices[i] = Quad3D.MakeQuad3D(pollens[i].x - (pollenWidth / 2f), pollens[i].y - (pollenHeight / 2f), 0f, pollenWidth, pollenHeight);
                 if (Mover.MoveVariableToTarget(ref pollens[i].alpha, pollens[i].endAlpha, 1f, delta))
                 {
                     (pollens[i].endAlpha, pollens[i].startAlpha) = (pollens[i].startAlpha, pollens[i].endAlpha);

@@ -5,10 +5,10 @@ namespace CutTheRope.Framework.Visual
         public override void InitParticle(ref Particle particle)
         {
             Image imageGrid = this.imageGrid;
-            int num = RND(imageGrid.texture.quadsCount - 1);
-            Quad2D qt = imageGrid.texture.quads[num];
+            int quadIndex = RND(imageGrid.texture.quadsCount - 1);
+            Quad2D qt = imageGrid.texture.quads[quadIndex];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            CTRRectangle rectangle = imageGrid.texture.quadRects[num];
+            CTRRectangle rectangle = imageGrid.texture.quadRects[quadIndex];
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
             base.InitParticle(ref particle);
             particle.width = rectangle.w;

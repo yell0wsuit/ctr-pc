@@ -62,14 +62,14 @@ namespace CutTheRope.GameMain
         public void SetSize(float value)
         {
             size = value;
-            float num = size / 167f;
-            vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = num;
-            vinilHighlightR.scaleX = 0f - num;
-            vinil.scaleX = vinil.scaleY = num;
-            float stickerScale = num >= 0.4f ? num : 0.4f;
+            float baseScale = size / 167f;
+            vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = baseScale;
+            vinilHighlightR.scaleX = 0f - baseScale;
+            vinil.scaleX = vinil.scaleY = baseScale;
+            float stickerScale = baseScale >= 0.4f ? baseScale : 0.4f;
             vinilStickerL.scaleX = vinilStickerL.scaleY = vinilStickerR.scaleY = stickerScale;
             vinilStickerR.scaleX = 0f - stickerScale;
-            float controllerScale = num >= 0.75f ? num : 0.75f;
+            float controllerScale = baseScale >= 0.75f ? baseScale : 0.75f;
             vinilControllerL.scaleX = vinilControllerL.scaleY = vinilControllerR.scaleX = vinilControllerR.scaleY = controllerScale;
             vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = controllerScale;
             vinilCenter.scaleX = 1f - ((1f - vinilStickerL.scaleX) * 0.5f);
@@ -165,11 +165,11 @@ namespace CutTheRope.GameMain
         {
             vinil.x = vinilCenter.x = x;
             vinil.y = vinilCenter.y = y;
-            float num = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
+            float highlightXOffset = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
             float highlightYOffset = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
             float controllerXOffset = sizeInPixels - RTPD((double)(CONTROLLER_SHIFT_PARAM1 - (CONTROLLER_SHIFT_PARAM2 * size))) + ((1f - vinilControllerL.scaleX) * (vinilControllerL.width / 2));
-            vinilHighlightL.x = x + num;
-            vinilHighlightR.x = x - num;
+            vinilHighlightL.x = x + highlightXOffset;
+            vinilHighlightR.x = x - highlightXOffset;
             vinilHighlightL.y = vinilHighlightR.y = y - highlightYOffset;
             vinilControllerL.x = x - controllerXOffset;
             vinilControllerR.x = x + controllerXOffset;

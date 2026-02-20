@@ -88,8 +88,8 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            int num = bungees.Count;
-            for (int i = 0; i < num; i++)
+            int grabCount = bungees.Count;
+            for (int i = 0; i < grabCount; i++)
             {
                 Grab grab = bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
@@ -113,8 +113,8 @@ namespace CutTheRope.GameMain
 
         public void ReleaseAllRopes(bool left)
         {
-            int num = bungees.Count;
-            for (int i = 0; i < num; i++)
+            int grabCount = bungees.Count;
+            for (int i = 0; i < grabCount; i++)
             {
                 Grab grab = bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;

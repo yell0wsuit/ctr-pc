@@ -76,29 +76,29 @@ namespace CutTheRope.Framework.Visual
                 tileHeight = (int)t.quadRects[q].h;
             }
             UpdateVars();
-            int num = -1;
+            int drawerIndex = -1;
             for (int i = 0; i < drawers.Count; i++)
             {
                 ImageMultiDrawer imageMultiDrawer = drawers[i];
                 if (imageMultiDrawer.image.texture == t)
                 {
-                    num = i;
+                    drawerIndex = i;
                 }
                 if (imageMultiDrawer.image.texture._realWidth == tileWidth)
                 {
                     _ = imageMultiDrawer.image.texture._realHeight;
                 }
             }
-            if (num == -1)
+            if (drawerIndex == -1)
             {
                 Image image = Image.Image_create(t);
                 ImageMultiDrawer item = new ImageMultiDrawer().InitWithImageandCapacity(image, maxRowsOnScreen * maxColsOnScreen);
-                num = drawers.Count;
+                drawerIndex = drawers.Count;
                 drawers.Add(item);
             }
             TileEntry tileEntry = new()
             {
-                drawerIndex = num,
+                drawerIndex = drawerIndex,
                 quad = q
             };
             tiles[ti] = tileEntry;

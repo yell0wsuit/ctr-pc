@@ -54,12 +54,12 @@ namespace CutTheRope.Framework.Visual
 
         public float GetFrameTime(int f)
         {
-            float num = 0f;
+            float totalTime = 0f;
             for (int i = 0; i <= f; i++)
             {
-                num += keyFrames[i].timeOffset;
+                totalTime += keyFrames[i].timeOffset;
             }
-            return num;
+            return totalTime;
         }
 
         public void UpdateRange()

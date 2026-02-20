@@ -89,10 +89,10 @@ namespace CutTheRope.GameMain
                 WritePair(pointer2, ref pointer2Index, v5);
                 WritePair(pointer2, ref pointer2Index, v9);
                 RGBAColor rgbaColor = color;
-                float num = 0.15f * color.AlphaChannel;
-                color.RedColor += num;
-                color.GreenColor += num;
-                color.BlueColor += num;
+                float highlightAdditive = 0.15f * color.AlphaChannel;
+                color.RedColor += highlightAdditive;
+                color.GreenColor += highlightAdditive;
+                color.BlueColor += highlightAdditive;
                 ccolors2[2] = color;
                 ccolors2[3] = color;
                 ccolors2[4] = rgbaColor;
@@ -149,7 +149,7 @@ namespace CutTheRope.GameMain
 
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)
         {
-            float num = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
+            float alphaMultiplier = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
 
             // Get selected rope colors from preferences
             int selectedRopeIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
@@ -157,30 +157,30 @@ namespace CutTheRope.GameMain
 
             // Apply alpha multiplier to base colors
             RGBAColor rgbaColor = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * num,
-                ropeColors.Color1.GreenColor * num,
-                ropeColors.Color1.BlueColor * num,
-                num
+                ropeColors.Color1.RedColor * alphaMultiplier,
+                ropeColors.Color1.GreenColor * alphaMultiplier,
+                ropeColors.Color1.BlueColor * alphaMultiplier,
+                alphaMultiplier
             );
             RGBAColor rgbaColor2 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * num,
-                ropeColors.Color2.GreenColor * num,
-                ropeColors.Color2.BlueColor * num,
-                num
+                ropeColors.Color2.RedColor * alphaMultiplier,
+                ropeColors.Color2.GreenColor * alphaMultiplier,
+                ropeColors.Color2.BlueColor * alphaMultiplier,
+                alphaMultiplier
             );
 
             // Create darker variants for shading (40% of base color)
             RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * 0.4f * num,
-                ropeColors.Color1.GreenColor * 0.4f * num,
-                ropeColors.Color1.BlueColor * 0.4f * num,
-                num
+                ropeColors.Color1.RedColor * 0.4f * alphaMultiplier,
+                ropeColors.Color1.GreenColor * 0.4f * alphaMultiplier,
+                ropeColors.Color1.BlueColor * 0.4f * alphaMultiplier,
+                alphaMultiplier
             );
             RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * 0.45f * num,
-                ropeColors.Color2.GreenColor * 0.45f * num,
-                ropeColors.Color2.BlueColor * 0.45f * num,
-                num
+                ropeColors.Color2.RedColor * 0.45f * alphaMultiplier,
+                ropeColors.Color2.GreenColor * 0.45f * alphaMultiplier,
+                ropeColors.Color2.BlueColor * 0.45f * alphaMultiplier,
+                alphaMultiplier
             );
             if (b.highlighted)
             {
@@ -271,7 +271,7 @@ namespace CutTheRope.GameMain
             }
 
             b.drawPtsCount = drawPointCount;
-            b.DrawChristmasLights(drawPointCount / 2, num, segmentStartIndex);
+            b.DrawChristmasLights(drawPointCount / 2, alphaMultiplier, segmentStartIndex);
         }
 
         public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
@@ -301,8 +301,8 @@ namespace CutTheRope.GameMain
             AddPart(tail);
             tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
             Vector v = VectSub(tail.pos, bungeeAnchor.pos);
-            int num = (int)((len / BUNGEE_REST_LEN) + 2f);
-            v = VectDiv(v, num);
+            int subdivisionCount = (int)((len / BUNGEE_REST_LEN) + 2f);
+            v = VectDiv(v, subdivisionCount);
             RollplacingWithOffset(len, v);
             forceWhite = false;
             initialCandleAngle = -1f;
@@ -313,7 +313,7 @@ namespace CutTheRope.GameMain
 
         public int GetLength()
         {
-            int num = 0;
+            int totalLength = 0;
             Vector pos = vectZero;
             int count = parts.Count;
             for (int i = 0; i < count; i++)
@@ -321,11 +321,11 @@ namespace CutTheRope.GameMain
                 ConstraintedPoint constraintedPoint = parts[i];
                 if (i > 0)
                 {
-                    num += (int)VectDistance(pos, constraintedPoint.pos);
+                    totalLength += (int)VectDistance(pos, constraintedPoint.pos);
                 }
                 pos = constraintedPoint.pos;
             }
-            return num;
+            return totalLength;
         }
 
         public void Roll(float rollLen)
@@ -336,7 +336,7 @@ namespace CutTheRope.GameMain
         public void RollplacingWithOffset(float rollLen, Vector off)
         {
             ConstraintedPoint i = parts[^2];
-            int num = (int)tail.RestLengthFor(i);
+            int tailRestLength = (int)tail.RestLengthFor(i);
             while (rollLen > 0f)
             {
                 if (rollLen >= BUNGEE_REST_LEN)
@@ -346,17 +346,17 @@ namespace CutTheRope.GameMain
                     constraintedPoint2.SetWeight(0.02f);
                     constraintedPoint2.pos = VectAdd(constraintedPoint.pos, off);
                     AddPartAt(constraintedPoint2, parts.Count - 1);
-                    tail.ChangeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, num);
+                    tail.ChangeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, tailRestLength);
                     constraintedPoint2.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
                     rollLen -= BUNGEE_REST_LEN;
                 }
                 else
                 {
-                    int newRestLength = (int)(rollLen + num);
+                    int newRestLength = (int)(rollLen + tailRestLength);
                     if (newRestLength > BUNGEE_REST_LEN)
                     {
                         rollLen = BUNGEE_REST_LEN;
-                        num = (int)(newRestLength - BUNGEE_REST_LEN);
+                        tailRestLength = (int)(newRestLength - BUNGEE_REST_LEN);
                     }
                     else
                     {
@@ -370,34 +370,34 @@ namespace CutTheRope.GameMain
 
         public float RollBack(float amount)
         {
-            float num = amount;
+            float remainingAmount = amount;
             ConstraintedPoint i = parts[^2];
             int currentRestLength = (int)tail.RestLengthFor(i);
             int partCount = parts.Count;
-            while (num > 0f)
+            while (remainingAmount > 0f)
             {
-                if (num >= BUNGEE_REST_LEN)
+                if (remainingAmount >= BUNGEE_REST_LEN)
                 {
                     ConstraintedPoint o = parts[partCount - 2];
                     ConstraintedPoint n2 = parts[partCount - 3];
                     tail.ChangeConstraintFromTowithRestLength(o, n2, currentRestLength);
                     parts.RemoveAt(parts.Count - 2);
                     partCount--;
-                    num -= BUNGEE_REST_LEN;
+                    remainingAmount -= BUNGEE_REST_LEN;
                 }
                 else
                 {
-                    int nextRestLength = (int)(currentRestLength - num);
+                    int nextRestLength = (int)(currentRestLength - remainingAmount);
                     if (nextRestLength < 1)
                     {
-                        num = BUNGEE_REST_LEN;
+                        remainingAmount = BUNGEE_REST_LEN;
                         currentRestLength = (int)(BUNGEE_REST_LEN + nextRestLength + 1f);
                     }
                     else
                     {
                         ConstraintedPoint n3 = parts[partCount - 2];
                         tail.ChangeRestLengthToFor(nextRestLength, n3);
-                        num = 0f;
+                        remainingAmount = 0f;
                     }
                 }
             }
@@ -410,7 +410,7 @@ namespace CutTheRope.GameMain
                     constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + 3f);
                 }
             }
-            return num;
+            return remainingAmount;
         }
 
         public void RemovePart(int part)
@@ -533,7 +533,7 @@ namespace CutTheRope.GameMain
             Vector[] array2 = new Vector[count];
             Vector[] array3 = new Vector[count];
             bool flag = false;
-            int num = 0;
+            int tailPartCount = 0;
             int cutIndex = 0;
             for (int j = 0; j < count; j++)
             {
@@ -559,18 +559,18 @@ namespace CutTheRope.GameMain
                 }
                 else
                 {
-                    array3[num] = constraintedPoint2.pos;
-                    num++;
+                    array3[tailPartCount] = constraintedPoint2.pos;
+                    tailPartCount++;
                 }
             }
-            int headPartCount = count - num;
+            int headPartCount = count - tailPartCount;
             if (headPartCount > 0)
             {
                 DrawBungee(this, array2, headPartCount, 4, 0);
             }
-            if (num > 0 && !hideTailParts)
+            if (tailPartCount > 0 && !hideTailParts)
             {
-                DrawBungee(this, array3, num, 4, cutIndex);
+                DrawBungee(this, array3, tailPartCount, 4, cutIndex);
             }
         }
 

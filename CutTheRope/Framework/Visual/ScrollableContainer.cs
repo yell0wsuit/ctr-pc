@@ -20,9 +20,9 @@ namespace CutTheRope.Framework.Visual
 
         public override int AddChildwithID(BaseElement c, int i)
         {
-            int num = container.AddChildwithID(c, i);
+            int childId = container.AddChildwithID(c, i);
             c.parentAnchor = 9;
-            return num;
+            return childId;
         }
 
         public override int AddChild(BaseElement c)
@@ -326,8 +326,8 @@ namespace CutTheRope.Framework.Visual
             touchState = TOUCH_STATE.UP;
             if (inertiaTimeoutLeft > 0f)
             {
-                float num = inertiaTimeoutLeft / inertiaTimeout;
-                move = VectMult(staticMove, num * 50f);
+                float inertiaRatio = inertiaTimeoutLeft / inertiaTimeout;
+                move = VectMult(staticMove, inertiaRatio * 50f);
                 // movingByInertion = true;
             }
             if (spointsNum > 0)
@@ -363,8 +363,8 @@ namespace CutTheRope.Framework.Visual
 
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
-            // float num = ApplicationSettings.GetInt(5);
-            // fixedDelta = (float)(1.0 / (double)num);
+            // float fixedDeltaSetting = ApplicationSettings.GetInt(5);
+            // fixedDelta = (float)(1.0 / (double)fixedDeltaSetting);
             spoints = null;
             spointsNum = -1;
             spointsCapacity = -1;

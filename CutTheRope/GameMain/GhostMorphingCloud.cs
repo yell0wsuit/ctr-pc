@@ -9,11 +9,11 @@ namespace CutTheRope.GameMain
         {
             angle += 360f / totalParticles;
             base.InitParticle(ref particle);
-            int num = RND_RANGE(4, 6);
-            Quad2D quad = imageGrid.texture.quads[num];
+            int quadIndex = RND_RANGE(4, 6);
+            Quad2D quad = imageGrid.texture.quads[quadIndex];
             Quad3D quad3D = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             drawer.SetTextureQuadatVertexQuadatIndex(quad, quad3D, particleCount);
-            CTRRectangle rect = imageGrid.texture.quadRects[num];
+            CTRRectangle rect = imageGrid.texture.quadRects[quadIndex];
             particle.width = rect.w * size;
             particle.height = rect.h * size;
             particle.deltaColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0f);
@@ -43,8 +43,8 @@ namespace CutTheRope.GameMain
                 Particle particle = particles[i];
                 if (particle.life > 0f)
                 {
-                    float num = 0.2f * life;
-                    if (particle.life > life - num)
+                    float fadeWindow = 0.2f * life;
+                    if (particle.life > life - fadeWindow)
                     {
                         float growthScale = 1.025f;
                         particle.width *= growthScale;
@@ -52,10 +52,10 @@ namespace CutTheRope.GameMain
                     }
                     else
                     {
-                        particle.deltaColor.RedColor = (endColor.RedColor - startColor.RedColor) / num;
-                        particle.deltaColor.GreenColor = (endColor.GreenColor - startColor.GreenColor) / num;
-                        particle.deltaColor.BlueColor = (endColor.BlueColor - startColor.BlueColor) / num;
-                        particle.deltaColor.AlphaChannel = (endColor.AlphaChannel - startColor.AlphaChannel) / num;
+                        particle.deltaColor.RedColor = (endColor.RedColor - startColor.RedColor) / fadeWindow;
+                        particle.deltaColor.GreenColor = (endColor.GreenColor - startColor.GreenColor) / fadeWindow;
+                        particle.deltaColor.BlueColor = (endColor.BlueColor - startColor.BlueColor) / fadeWindow;
+                        particle.deltaColor.AlphaChannel = (endColor.AlphaChannel - startColor.AlphaChannel) / fadeWindow;
                         float shrinkScale = 0.98f;
                         particle.width *= shrinkScale;
                         particle.height *= shrinkScale;

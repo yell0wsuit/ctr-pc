@@ -15,13 +15,13 @@ namespace CutTheRope.GameMain
             if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, s.pos.X - 60f, s.pos.Y - 60f, 120f, 120f))
             {
                 PopCandyBubble(s == starL);
-                int num = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
-                Preferences.SetIntForKey(num, "PREFS_BUBBLES_POPPED", false);
-                if (num == 50)
+                int bubblesPoppedCount = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
+                Preferences.SetIntForKey(bubblesPoppedCount, "PREFS_BUBBLES_POPPED", false);
+                if (bubblesPoppedCount == 50)
                 {
                     CTRRootController.PostAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
                 }
-                if (num == 300)
+                if (bubblesPoppedCount == 300)
                 {
                     CTRRootController.PostAchievementName("1058345234", ACHIEVEMENT_STRING("\"Bubble Master\""));
                 }
@@ -144,8 +144,8 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
-            int num = pumps.Count;
-            for (int i = 0; i < num; i++)
+            int pumpCount = pumps.Count;
+            for (int i = 0; i < pumpCount; i++)
             {
                 Pump pump = pumps.ObjectAtIndex(i);
                 if (GameObject.PointInObject(Vect(tx + camera.pos.X, ty + camera.pos.Y), pump))
@@ -585,15 +585,15 @@ namespace CutTheRope.GameMain
                         Vector v = Vect(rotatedCircle.x, rotatedCircle.y);
                         Vector vector2 = Vect(tx + camera.pos.X, ty + camera.pos.Y);
                         Vector v2 = VectSub(rotatedCircle.lastTouch, v);
-                        float num = VectAngleNormalized(VectSub(vector2, v)) - VectAngleNormalized(v2);
+                        float rotationDelta = VectAngleNormalized(VectSub(vector2, v)) - VectAngleNormalized(v2);
                         float initial_rotation = DEGREES_TO_RADIANS(rotatedCircle.rotation);
-                        rotatedCircle.rotation += RADIANS_TO_DEGREES(num);
+                        rotatedCircle.rotation += RADIANS_TO_DEGREES(rotationDelta);
                         float a = DEGREES_TO_RADIANS(rotatedCircle.rotation);
                         a = FBOUND_PI(a);
                         rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        int scratchSoundState = num > 0f ? 1 : 2;
-                        if ((double)Math.Abs(num) < 0.07)
+                        int scratchSoundState = rotationDelta > 0f ? 1 : 2;
+                        if ((double)Math.Abs(rotationDelta) < 0.07)
                         {
                             scratchSoundState = -1;
                         }
@@ -647,7 +647,7 @@ namespace CutTheRope.GameMain
                                 Vector vector4 = VectRotateAround(Vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
                                 pump4.x = vector4.X;
                                 pump4.y = vector4.Y;
-                                pump4.rotation += RADIANS_TO_DEGREES(num);
+                                pump4.rotation += RADIANS_TO_DEGREES(rotationDelta);
                                 pump4.UpdateRotation();
                             }
                         }
@@ -672,7 +672,7 @@ namespace CutTheRope.GameMain
                         }
                         if (PointInRect(target.x, target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
                         {
-                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), (double)num, rotatedCircle.x, rotatedCircle.y);
+                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), (double)rotationDelta, rotatedCircle.x, rotatedCircle.y);
                             target.x = vector6.X;
                             target.y = vector6.Y;
                         }

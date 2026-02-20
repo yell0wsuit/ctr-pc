@@ -250,12 +250,12 @@ namespace CutTheRope.GameMain
         {
             Confetti confetti = Confetti.Confetti_createWithResID(Resources.Img.ConfettiParticles);
             confetti.DoRestoreCutTransparency();
-            int num = RND_RANGE(0, 2);
+            int confettiVariant = RND_RANGE(0, 2);
             int firstFrame = 18;
             int lastFrame = 26;
-            if (num != 1)
+            if (confettiVariant != 1)
             {
-                if (num == 2)
+                if (confettiVariant == 2)
                 {
                     firstFrame = 0;
                     lastFrame = 8;

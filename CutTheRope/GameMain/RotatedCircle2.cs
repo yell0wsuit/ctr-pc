@@ -16,18 +16,18 @@ namespace CutTheRope.GameMain
         public void SetSize(float value)
         {
             size = value;
-            float num = size / (vinilTL.width + (vinilTR.width * (1f - vinilTL.scaleX)));
-            vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = num;
-            vinilHighlightR.scaleX = 0f - num;
-            vinilBL.scaleX = vinilBL.scaleY = vinilBR.scaleY = num;
-            vinilBR.scaleX = 0f - num;
-            vinilTL.scaleX = num;
-            vinilTL.scaleY = 0f - num;
-            vinilTR.scaleX = vinilTR.scaleY = 0f - num;
-            float stickerScale = num >= 0.4f ? num : 0.4f;
+            float baseScale = size / (vinilTL.width + (vinilTR.width * (1f - vinilTL.scaleX)));
+            vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = baseScale;
+            vinilHighlightR.scaleX = 0f - baseScale;
+            vinilBL.scaleX = vinilBL.scaleY = vinilBR.scaleY = baseScale;
+            vinilBR.scaleX = 0f - baseScale;
+            vinilTL.scaleX = baseScale;
+            vinilTL.scaleY = 0f - baseScale;
+            vinilTR.scaleX = vinilTR.scaleY = 0f - baseScale;
+            float stickerScale = baseScale >= 0.4f ? baseScale : 0.4f;
             vinilStickerL.scaleX = vinilStickerL.scaleY = vinilStickerR.scaleY = stickerScale;
             vinilStickerR.scaleX = 0f - stickerScale;
-            float controllerScale = num >= 0.75f ? num : 0.75f;
+            float controllerScale = baseScale >= 0.75f ? baseScale : 0.75f;
             vinilControllerL.scaleX = vinilControllerL.scaleY = vinilControllerR.scaleX = vinilControllerR.scaleY = controllerScale;
             vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = controllerScale;
             vinilCenter.scaleX = 1f - ((1f - vinilStickerL.scaleX) * 0.5f);
@@ -239,15 +239,15 @@ namespace CutTheRope.GameMain
         {
             vinilCenter.x = x;
             vinilCenter.y = y;
-            float num = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
+            float highlightXOffset = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
             float highlightYOffset = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
             float cornerXOffset = (vinilBL.width + 4) / 2f * (1f - vinilBL.scaleX);
             float cornerYOffset = (vinilBL.height + 4) / 2f * (1f - vinilBL.scaleY);
             float rightControllerInset = Math.Abs(vinilControllerR.scaleX) < 1f ? (1f - Math.Abs(vinilControllerR.scaleX)) * 10f : 0f;
             float topLeftInset = Math.Abs(vinilTL.scaleX) < 0.45f ? ((0.45f - Math.Abs(vinilTL.scaleX)) * 10f) + 1f : 0f;
             float controllerXOffset = Math.Abs(vinilBL.height * vinilBL.scaleY) - Math.Abs(vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - rightControllerInset - topLeftInset;
-            vinilHighlightL.x = x + num;
-            vinilHighlightR.x = x - num;
+            vinilHighlightL.x = x + highlightXOffset;
+            vinilHighlightR.x = x - highlightXOffset;
             vinilHighlightL.y = vinilHighlightR.y = y - highlightYOffset;
             vinilBL.x = vinilTL.x = x + cornerXOffset;
             vinilBL.y = vinilBR.y = y - cornerYOffset;

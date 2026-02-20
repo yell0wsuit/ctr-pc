@@ -22,8 +22,8 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             Global.MouseCursor.Enable(true);
-            int num = ChildsCount();
-            for (int i = 0; i < num; i++)
+            int childCount = ChildsCount();
+            for (int i = 0; i < childCount; i++)
             {
                 BaseElement child = GetChild(i);
                 if (child != null && child.visible)

@@ -15,8 +15,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
-            float num = Pump.FlowLength;
-            if (GameObject.RectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
+            float flowLength = Pump.FlowLength;
+            if (GameObject.RectInObject(p.x - flowLength, p.y - flowLength, p.x + flowLength, p.y + flowLength, c))
             {
                 Vector v = Vect(c.x, c.y);
                 Vector vector = default;
@@ -29,9 +29,9 @@ namespace CutTheRope.GameMain
                     v = VectRotateAround(v, 0.0 - p.angle, p.x, p.y);
                 }
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
-                if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2.0)), (float)(v.Y - (p.bb.h / 2.0)), (float)(v.X + (p.bb.w / 2.0)), (float)(v.Y + (p.bb.h / 2.0)), vector.X, vector.Y - num, vector2.X, vector2.Y))
+                if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2.0)), (float)(v.Y - (p.bb.h / 2.0)), (float)(v.X + (p.bb.w / 2.0)), (float)(v.Y + (p.bb.h / 2.0)), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
                 {
-                    float verticalImpulse = num * 2f * (num - (vector.Y - v.Y)) / num;
+                    float verticalImpulse = flowLength * 2f * (flowLength - (vector.Y - v.Y)) / flowLength;
                     Vector v2 = Vect(0f, 0f - verticalImpulse);
                     v2 = VectRotate(v2, p.angle);
                     s.ApplyImpulseDelta(v2, 0.016f);
@@ -48,8 +48,8 @@ namespace CutTheRope.GameMain
             {
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
-                int num = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
-                float s2 = MAX(VectLength(vector) * 40, 840) * num;
+                int directionSign = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
+                float s2 = MAX(VectLength(vector) * 40, 840) * directionSign;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
                 s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
@@ -69,7 +69,7 @@ namespace CutTheRope.GameMain
         /// - verticalOffset: 1f * tubeScale (WP7: 1f unscaled)
         /// - collisionRadius: 17.5f * tubeScale (WP7: 17.5f unscaled)
         /// - Gravity force: -32f/weight * sqrt(tubeScale) (WP7: no sqrt scaling)
-        /// - Damping factor (num): Always 5f (same in both)
+        /// - Damping factor: Always 5f (same in both)
         /// </summary>
         public void OperateSteamTube(SteamTube tube, float delta)
         {
@@ -243,7 +243,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
-            int num = 0;
+            int ropesCutCount = 0;
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab = bungees.ObjectAtIndex(i);
@@ -271,7 +271,7 @@ namespace CutTheRope.GameMain
                         }
                         if (flag)
                         {
-                            num++;
+                            ropesCutCount++;
                             if (grab.hasSpider && grab.spiderActive)
                             {
                                 SpiderBusted(grab);
@@ -294,12 +294,12 @@ namespace CutTheRope.GameMain
                             {
                                 grab.gunCup.PlayTimeline(Grab.GUN_CUP_HIDE);
                             }
-                            return num;
+                            return ropesCutCount;
                         }
                     }
                 }
             }
-            return num;
+            return ropesCutCount;
         }
 
         /// <summary>
@@ -307,13 +307,13 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void SpiderBusted(Grab g)
         {
-            int num = Preferences.GetIntForKey("PREFS_SPIDERS_BUSTED") + 1;
-            Preferences.SetIntForKey(num, "PREFS_SPIDERS_BUSTED", false);
-            if (num == 40)
+            int spidersBustedCount = Preferences.GetIntForKey("PREFS_SPIDERS_BUSTED") + 1;
+            Preferences.SetIntForKey(spidersBustedCount, "PREFS_SPIDERS_BUSTED", false);
+            if (spidersBustedCount == 40)
             {
                 CTRRootController.PostAchievementName("681486608", ACHIEVEMENT_STRING("\"Spider Busted\""));
             }
-            if (num == 200)
+            if (spidersBustedCount == 200)
             {
                 CTRRootController.PostAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
             }
@@ -352,8 +352,8 @@ namespace CutTheRope.GameMain
         {
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
             ConstraintedPoint capturedStar = sg.rope?.tail;
-            int num = bungees.Count;
-            for (int i = 0; i < num; i++)
+            int grabCount = bungees.Count;
+            for (int i = 0; i < grabCount; i++)
             {
                 Grab grab = bungees.ObjectAtIndex(i);
                 Bungee rope = grab.rope;
@@ -435,9 +435,9 @@ namespace CutTheRope.GameMain
         /// </summary>
         public Bungee GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref Vector s, float tx, float ty, ref Grab grab)
         {
-            float num = 60f;
+            float maxDistance = 60f;
             Bungee result = null;
-            float nearestDistance = num;
+            float nearestDistance = maxDistance;
             Vector v = Vect(tx, ty);
             for (int i = 0; i < bungees.Count; i++)
             {
@@ -449,7 +449,7 @@ namespace CutTheRope.GameMain
                     {
                         Vector vector = Vect(rope.drawPts[j], rope.drawPts[j + 1]);
                         float distanceToPoint = VectDistance(vector, v);
-                        if (distanceToPoint < num && distanceToPoint < nearestDistance)
+                        if (distanceToPoint < maxDistance && distanceToPoint < nearestDistance)
                         {
                             nearestDistance = distanceToPoint;
                             result = rope;

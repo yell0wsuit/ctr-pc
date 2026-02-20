@@ -130,8 +130,8 @@ namespace CutTheRope.GameMain
             container.rotation = rotation;
             container.x = x;
             container.y = y;
-            float num = VectLength(VectSub(point.prevPos, point.pos));
-            num = MAX(num, 1f);
+            float movementSpeed = VectLength(VectSub(point.prevPos, point.pos));
+            movementSpeed = MAX(movementSpeed, 1f);
             float exhaustAngle = angle - (float)Math.PI;
             float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
@@ -142,7 +142,7 @@ namespace CutTheRope.GameMain
                 particles.y = vector.Y;
                 particles.angle = rotation;
                 particles.initialAngle = exhaustAngle;
-                particles.speed = num * 50f;
+                particles.speed = movementSpeed * 50f;
             }
             if (cloudParticles != null)
             {
@@ -150,7 +150,7 @@ namespace CutTheRope.GameMain
                 cloudParticles.y = vector.Y;
                 cloudParticles.angle = rotation;
                 cloudParticles.initialAngle = exhaustAngle;
-                cloudParticles.speed = num * 40f;
+                cloudParticles.speed = movementSpeed * 40f;
             }
         }
 
@@ -164,15 +164,15 @@ namespace CutTheRope.GameMain
             string path = xml.AttributeAsNSString("path");
             if (!string.IsNullOrEmpty(path))
             {
-                int num = 100;
+                int pathPoints = 100;
                 if (path.CharacterAtIndex(0) == 'R')
                 {
                     int pathRadius = path.SubstringFromIndex(2).IntValue();
-                    num = MAX(11, (pathRadius / 2) + 1);
+                    pathPoints = MAX(11, (pathRadius / 2) + 1);
                 }
                 float moveSpeed = xml.AttributeAsNSString("moveSpeed").FloatValue();
                 float rotateSpeed = xml.AttributeAsNSString("rotateSpeed").FloatValue();
-                CTRMover ctrMover = new(num, moveSpeed, rotateSpeed)
+                CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation
                 };
@@ -237,8 +237,8 @@ namespace CutTheRope.GameMain
         {
             Vector vector = VectSub(v1, c);
             Vector vector2 = VectSub(v2, c);
-            float num = VectAngleNormalized(vector2) - VectAngleNormalized(vector);
-            return RADIANS_TO_DEGREES(num);
+            float angleDelta = VectAngleNormalized(vector2) - VectAngleNormalized(vector);
+            return RADIANS_TO_DEGREES(angleDelta);
         }
 
         /// <summary>
@@ -263,9 +263,9 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            float num = GetRotateAngleForStartEndCenter(lastTouch, v, Vect(x, y));
-            num = AngleTo0_360(num);
-            rotation += num;
+            float rotationDelta = GetRotateAngleForStartEndCenter(lastTouch, v, Vect(x, y));
+            rotationDelta = AngleTo0_360(rotationDelta);
+            rotation += rotationDelta;
             lastTouch = v;
             rotateHandled = true;
             RotateWithBB(rotation);

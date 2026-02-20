@@ -81,20 +81,20 @@ namespace CutTheRope.Desktop
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
             FullScreenRectChanged(displayMode);
-            int num = windowWidth > 0 ? windowWidth : displayMode.Width - 100;
-            if (num < 800)
+            int targetWindowWidth = windowWidth > 0 ? windowWidth : displayMode.Width - 100;
+            if (targetWindowWidth < 800)
             {
-                num = 800;
+                targetWindowWidth = 800;
             }
-            if (num > MAX_WINDOW_WIDTH)
+            if (targetWindowWidth > MAX_WINDOW_WIDTH)
             {
-                num = MAX_WINDOW_WIDTH;
+                targetWindowWidth = MAX_WINDOW_WIDTH;
             }
-            if (num > displayMode.Width)
+            if (targetWindowWidth > displayMode.Width)
             {
-                num = displayMode.Width;
+                targetWindowWidth = displayMode.Width;
             }
-            WindowRectChanged(new Rectangle(0, 0, num, ScaledGameHeight(num)));
+            WindowRectChanged(new Rectangle(0, 0, targetWindowWidth, ScaledGameHeight(targetWindowWidth)));
             if (isFullScreen)
             {
                 ToggleFullScreen();
@@ -182,28 +182,28 @@ namespace CutTheRope.Desktop
             {
                 try
                 {
-                    int num = graphicsDeviceManager.PreferredBackBufferWidth;
+                    int targetWidth = graphicsDeviceManager.PreferredBackBufferWidth;
                     if (newWindowRect.Width != WindowWidth)
                     {
-                        num = newWindowRect.Width;
+                        targetWidth = newWindowRect.Width;
                     }
                     else if (newWindowRect.Height != WindowHeight)
                     {
-                        num = ScaledGameWidth(newWindowRect.Height);
+                        targetWidth = ScaledGameWidth(newWindowRect.Height);
                     }
-                    if (num < 800 || ScaledGameHeight(num) < ScaledGameHeight(800))
+                    if (targetWidth < 800 || ScaledGameHeight(targetWidth) < ScaledGameHeight(800))
                     {
-                        num = 800;
+                        targetWidth = 800;
                     }
-                    if (num > MAX_WINDOW_WIDTH)
+                    if (targetWidth > MAX_WINDOW_WIDTH)
                     {
-                        num = MAX_WINDOW_WIDTH;
+                        targetWidth = MAX_WINDOW_WIDTH;
                     }
-                    if (num > ScreenWidth)
+                    if (targetWidth > ScreenWidth)
                     {
-                        num = ScreenWidth;
+                        targetWidth = ScreenWidth;
                     }
-                    ApplyWindowSize(num);
+                    ApplyWindowSize(targetWidth);
                 }
                 catch (Exception)
                 {
