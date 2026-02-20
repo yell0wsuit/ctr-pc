@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
                 {
                     whiteRGBA.AlphaChannel = color.AlphaChannel;
                 }
-                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, MathF.Tau, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1.0) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (ACTIVE_CIRCLE_WIDTH * vinilControllerL.scaleX), 0f, MathF.Tau, 81, (ACTIVE_CIRCLE_WIDTH + (RTPD(1) * 3f)) * vinilControllerL.scaleX, 5f, whiteRGBA);
                 Renderer.SetColor(Color.White);
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
             }
