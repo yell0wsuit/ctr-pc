@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
             star.bb = MakeRectangle(70f, 64f, 82f, 82f);
             star.ParseMover(xmlNode);
             star.Update(0f);
-            _ = stars.AddObject(star);
+            stars.Add(star);
         }
     }
 }

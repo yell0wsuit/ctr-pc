@@ -9,12 +9,6 @@ namespace CutTheRope.Framework.Visual
             value = new KeyFrameValue();
         }
 
-        public static KeyFrame MakeAction(DynamicArray<CTRAction> actions, float time)
-        {
-            List<CTRAction> list = [.. actions];
-            return MakeAction(list, time);
-        }
-
         public static KeyFrame MakeAction(List<CTRAction> actions, float time)
         {
             KeyFrameValue keyFrameValue = new();

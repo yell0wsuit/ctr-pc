@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
             rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.SetSize(circleSize);
             rotatedCircle.SetHasOneHandle(hasOneHandle);
-            _ = rotatedCircles.AddObject(rotatedCircle);
+            rotatedCircles.Add(rotatedCircle);
         }
     }
 }

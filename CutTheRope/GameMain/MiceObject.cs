@@ -59,7 +59,7 @@ namespace CutTheRope.GameMain
         public void RegisterMouse(Mouse mouse, int index)
         {
             mouse.index = index;
-            _ = mice.AddObject(mouse);
+            mice.Add(mouse);
 
             sharedSpriteContainer ??= CreateSharedSprites();
 
@@ -306,7 +306,7 @@ namespace CutTheRope.GameMain
         }
 
         private readonly GameScene scene = scene;
-        private readonly DynamicArray<Mouse> mice = new();
+        private readonly List<Mouse> mice = [];
         private Mouse activeMouse;
         private int activeIndex = -1;
         private Mouse.SharedMouseSprites? sharedSpriteContainer;

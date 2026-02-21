@@ -50,7 +50,7 @@ namespace CutTheRope.GameMain
                 }
             }
             sock.UpdateRotation();
-            _ = socks.AddObject(sock);
+            socks.Add(sock);
         }
     }
 }

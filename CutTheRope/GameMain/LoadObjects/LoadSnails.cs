@@ -15,7 +15,7 @@ namespace CutTheRope.GameMain
             snail.anchor = 18;
             snail.x = x;
             snail.y = y;
-            _ = snailobjects.AddObject(snail);
+            snailobjects.Add(snail);
         }
     }
 }

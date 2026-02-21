@@ -111,7 +111,7 @@ namespace CutTheRope.GameMain
                 Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
                 grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
             }
-            _ = bungees.AddObject(grab);
+            bungees.Add(grab);
         }
 
         private LightBulb FindLightBulbForBinding(string bulbNumber)
@@ -124,14 +124,14 @@ namespace CutTheRope.GameMain
             {
                 for (int i = 0; i < lightBulbs.Count; i++)
                 {
-                    LightBulb bulb = lightBulbs.ObjectAtIndex(i);
+                    LightBulb bulb = lightBulbs[i];
                     if (bulb != null && string.Equals(bulb.bulbNumber, bulbNumber, StringComparison.OrdinalIgnoreCase))
                     {
                         return bulb;
                     }
                 }
             }
-            return lightBulbs.ObjectAtIndex(lightBulbs.Count - 1);
+            return lightBulbs[^1];
         }
     }
 }

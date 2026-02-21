@@ -39,7 +39,7 @@ namespace CutTheRope.GameMain
             rocket.anchor = 18;
             rocket.state = Rocket.STATE_ROCKET_IDLE;
 
-            _ = rockets.AddObject(rocket);
+            rockets.Add(rocket);
             rocket.point.pos.X = rocket.x;
             rocket.point.pos.Y = rocket.y;
 

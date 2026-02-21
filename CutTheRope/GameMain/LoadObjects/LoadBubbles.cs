@@ -29,7 +29,7 @@ namespace CutTheRope.GameMain
             image.DoRestoreCutTransparency();
             image.parentAnchor = image.anchor = 18;
             _ = bubble.AddChild(image);
-            _ = bubbles.AddObject(bubble);
+            bubbles.Add(bubble);
         }
     }
 }

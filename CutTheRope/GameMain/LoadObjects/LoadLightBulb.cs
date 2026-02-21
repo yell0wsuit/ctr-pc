@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
             constraint.pos = Vect(x, y);
 
             LightBulb bulb = new(litRadius, constraint, bulbNumber);
-            _ = lightBulbs.AddObject(bulb);
+            lightBulbs.Add(bulb);
         }
     }
 }
