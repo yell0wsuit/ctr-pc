@@ -199,10 +199,10 @@ namespace CutTheRope.GameMain
                 rgbaColor4.BlueColor *= highlightMultiplier;
             }
             float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
-            b.relaxed = (double)segmentLength <= BUNGEE_REST_LEN + 0.3
+            b.relaxed = segmentLength <= BUNGEE_REST_LEN + 0.3
                 ? 0
-                : (double)segmentLength <= BUNGEE_REST_LEN + 1 ? 1 : (double)segmentLength <= BUNGEE_REST_LEN + 4 ? 2 : 3;
-            if ((double)segmentLength > BUNGEE_REST_LEN + 7)
+                : segmentLength <= BUNGEE_REST_LEN + 1 ? 1 : segmentLength <= BUNGEE_REST_LEN + 4 ? 2 : 3;
+            if (segmentLength > BUNGEE_REST_LEN + 7)
             {
                 float stretchRedScale = segmentLength / BUNGEE_REST_LEN * 2f;
                 rgbaColor3.RedColor *= stretchRedScale;
@@ -230,7 +230,7 @@ namespace CutTheRope.GameMain
             float ry = -1f;
             for (; ; )
             {
-                if ((double)bezierT > 1)
+                if (bezierT > 1)
                 {
                     bezierT = 1f;
                 }
@@ -243,7 +243,7 @@ namespace CutTheRope.GameMain
                 array[cachedPointCount++] = vector.Y;
                 b.drawPts[drawPointCount++] = vector.X;
                 b.drawPts[drawPointCount++] = vector.Y;
-                if (cachedPointCount >= 8 || (double)bezierT == 1)
+                if (cachedPointCount >= 8 || bezierT == 1)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
                     Renderer.SetColor(color.ToXNA());
@@ -263,7 +263,7 @@ namespace CutTheRope.GameMain
                     rgbaColor6.GreenColor += greenStepAlt * (segmentCount - 1);
                     rgbaColor6.BlueColor += blueStepAlt * (segmentCount - 1);
                 }
-                if ((double)bezierT == 1)
+                if (bezierT == 1)
                 {
                     break;
                 }

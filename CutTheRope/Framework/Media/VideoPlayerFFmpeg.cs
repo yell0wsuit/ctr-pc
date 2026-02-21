@@ -410,7 +410,7 @@ namespace CutTheRope.Framework.Media
                 null);
 
             AVRational timeBase = videoStream->time_base;
-            videoTimeBase = timeBase.num / (double)timeBase.den;
+            videoTimeBase = timeBase.num / timeBase.den;
             nextFramePts = 0;
 
             if (swsContext == null)

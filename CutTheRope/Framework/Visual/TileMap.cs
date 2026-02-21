@@ -257,8 +257,8 @@ namespace CutTheRope.Framework.Visual
 
         public void UpdateVars()
         {
-            maxColsOnScreen = 2 + (int)Math.Floor((double)(cameraViewWidth / (tileWidth + 1)));
-            maxRowsOnScreen = 2 + (int)Math.Floor((double)(cameraViewHeight / (tileHeight + 1)));
+            maxColsOnScreen = 2 + (int)MathF.Floor(cameraViewWidth / (tileWidth + 1));
+            maxRowsOnScreen = 2 + (int)MathF.Floor(cameraViewHeight / (tileHeight + 1));
             if (repeatedVertically == Repeat.NONE)
             {
                 maxRowsOnScreen = Math.Min(maxRowsOnScreen, rows);

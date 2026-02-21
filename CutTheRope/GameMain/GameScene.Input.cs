@@ -555,7 +555,7 @@ namespace CutTheRope.GameMain
             foreach (object obj in pumps)
             {
                 Pump pump3 = (Pump)obj;
-                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && (double)VectDistance(startPos[ti], vector) > 10)
+                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && VectDistance(startPos[ti], vector) > 10)
                 {
                     pump3.pumpTouchTimer = 0f;
                 }
@@ -593,7 +593,7 @@ namespace CutTheRope.GameMain
                         rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, a, rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, a, rotatedCircle.x, rotatedCircle.y);
                         int scratchSoundState = rotationDelta > 0f ? 1 : 2;
-                        if ((double)Math.Abs(rotationDelta) < 0.07)
+                        if (Math.Abs(rotationDelta) < 0.07)
                         {
                             scratchSoundState = -1;
                         }

@@ -111,7 +111,7 @@ namespace CutTheRope.GameMain
                         camera.speed *= 1.5f;
                     }
                 }
-                else if ((double)cameraTargetDistance > initialCameraToStarDistance / 2)
+                else if (cameraTargetDistance > initialCameraToStarDistance / 2)
                 {
                     camera.speed += delta * cameraAcceleration;
                     camera.speed = MIN(maxCameraSpeed, camera.speed);
@@ -121,7 +121,7 @@ namespace CutTheRope.GameMain
                     camera.speed -= delta * cameraDeceleration;
                     camera.speed = MAX(minCameraSpeed, camera.speed);
                 }
-                if ((double)Math.Abs(camera.pos.X - boundedCameraX) < 1 && (double)Math.Abs(camera.pos.Y - boundedCameraY) < 1)
+                if (Math.Abs(camera.pos.X - boundedCameraX) < 1 && Math.Abs(camera.pos.Y - boundedCameraY) < 1)
                 {
                     camera.type = CAMERATYPE.CAMERASPEEDDELAY;
                     camera.speed = 14f;
