@@ -108,7 +108,7 @@ namespace CutTheRope.GameMain
                 AddTimelinewithID(timeline2, 1);
             }
             bb = new CTRRectangle(22f, 20f, 30f, 30f);
-            bobTime = RND_RANGE(0, 20) / 10;
+            bobTime = RND_RANGE(0, 20) / 10f;
 
             // Add glow sprite
             if (!nightMode)
@@ -131,7 +131,7 @@ namespace CutTheRope.GameMain
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.PlayTimeline(0);
-            Timeline.UpdateTimeline(animation.GetTimeline(0), RND_RANGE(0, 20) / 10);
+            Timeline.UpdateTimeline(animation.GetTimeline(0), RND_RANGE(0, 20) / 10f);
             animation.anchor = animation.parentAnchor = 18;
             idleSprite = animation;
             _ = AddChild(animation);
