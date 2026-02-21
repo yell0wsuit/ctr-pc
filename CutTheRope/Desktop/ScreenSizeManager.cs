@@ -56,7 +56,7 @@ namespace CutTheRope.Desktop
         }
 
         // (get) Token: 0x060000BB RID: 187 RVA: 0x00004C1D File Offset: 0x00002E1D
-        public double WidthAspectRatio => _scaledViewRect.Width / GameWidth;
+        public double WidthAspectRatio => _scaledViewRect.Width / (double)GameWidth;
 
         public int TransformWindowToViewX(int x)
         {
@@ -270,7 +270,7 @@ namespace CutTheRope.Desktop
         private Rectangle _windowRect;
 
         private Rectangle _fullScreenRect;
-        private readonly double _gameAspectRatio = gameHeight / gameWidth;
+        private readonly double _gameAspectRatio = gameHeight / (double)gameWidth;
 
         private Rectangle _scaledViewRect;
         private bool _fullScreenCropWidth = true;
