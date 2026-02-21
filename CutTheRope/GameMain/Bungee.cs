@@ -89,10 +89,10 @@ namespace CutTheRope.GameMain
                 WritePair(pointer2, ref pointer2Index, v5);
                 WritePair(pointer2, ref pointer2Index, v9);
                 RGBAColor rgbaColor = color;
-                float num = 0.15f * color.AlphaChannel;
-                color.RedColor += num;
-                color.GreenColor += num;
-                color.BlueColor += num;
+                float highlightAdditive = 0.15f * color.AlphaChannel;
+                color.RedColor += highlightAdditive;
+                color.GreenColor += highlightAdditive;
+                color.BlueColor += highlightAdditive;
                 ccolors2[2] = color;
                 ccolors2[3] = color;
                 ccolors2[4] = rgbaColor;
@@ -149,7 +149,7 @@ namespace CutTheRope.GameMain
 
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)
         {
-            float num = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
+            float alphaMultiplier = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
 
             // Get selected rope colors from preferences
             int selectedRopeIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
@@ -157,123 +157,121 @@ namespace CutTheRope.GameMain
 
             // Apply alpha multiplier to base colors
             RGBAColor rgbaColor = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * num,
-                ropeColors.Color1.GreenColor * num,
-                ropeColors.Color1.BlueColor * num,
-                num
+                ropeColors.Color1.RedColor * alphaMultiplier,
+                ropeColors.Color1.GreenColor * alphaMultiplier,
+                ropeColors.Color1.BlueColor * alphaMultiplier,
+                alphaMultiplier
             );
             RGBAColor rgbaColor2 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * num,
-                ropeColors.Color2.GreenColor * num,
-                ropeColors.Color2.BlueColor * num,
-                num
+                ropeColors.Color2.RedColor * alphaMultiplier,
+                ropeColors.Color2.GreenColor * alphaMultiplier,
+                ropeColors.Color2.BlueColor * alphaMultiplier,
+                alphaMultiplier
             );
 
             // Create darker variants for shading (40% of base color)
             RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * 0.4f * num,
-                ropeColors.Color1.GreenColor * 0.4f * num,
-                ropeColors.Color1.BlueColor * 0.4f * num,
-                num
+                ropeColors.Color1.RedColor * 0.4f * alphaMultiplier,
+                ropeColors.Color1.GreenColor * 0.4f * alphaMultiplier,
+                ropeColors.Color1.BlueColor * 0.4f * alphaMultiplier,
+                alphaMultiplier
             );
             RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * 0.45f * num,
-                ropeColors.Color2.GreenColor * 0.45f * num,
-                ropeColors.Color2.BlueColor * 0.45f * num,
-                num
+                ropeColors.Color2.RedColor * 0.45f * alphaMultiplier,
+                ropeColors.Color2.GreenColor * 0.45f * alphaMultiplier,
+                ropeColors.Color2.BlueColor * 0.45f * alphaMultiplier,
+                alphaMultiplier
             );
             if (b.highlighted)
             {
-                float num2 = 3f;
-                rgbaColor.RedColor *= num2;
-                rgbaColor.GreenColor *= num2;
-                rgbaColor.BlueColor *= num2;
-                rgbaColor2.RedColor *= num2;
-                rgbaColor2.GreenColor *= num2;
-                rgbaColor2.BlueColor *= num2;
-                rgbaColor3.RedColor *= num2;
-                rgbaColor3.GreenColor *= num2;
-                rgbaColor3.BlueColor *= num2;
-                rgbaColor4.RedColor *= num2;
-                rgbaColor4.GreenColor *= num2;
-                rgbaColor4.BlueColor *= num2;
+                float highlightMultiplier = 3f;
+                rgbaColor.RedColor *= highlightMultiplier;
+                rgbaColor.GreenColor *= highlightMultiplier;
+                rgbaColor.BlueColor *= highlightMultiplier;
+                rgbaColor2.RedColor *= highlightMultiplier;
+                rgbaColor2.GreenColor *= highlightMultiplier;
+                rgbaColor2.BlueColor *= highlightMultiplier;
+                rgbaColor3.RedColor *= highlightMultiplier;
+                rgbaColor3.GreenColor *= highlightMultiplier;
+                rgbaColor3.BlueColor *= highlightMultiplier;
+                rgbaColor4.RedColor *= highlightMultiplier;
+                rgbaColor4.GreenColor *= highlightMultiplier;
+                rgbaColor4.BlueColor *= highlightMultiplier;
             }
-            float num3 = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
-            b.relaxed = (double)num3 <= BUNGEE_REST_LEN + 0.3
+            float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
+            b.relaxed = (double)segmentLength <= BUNGEE_REST_LEN + 0.3
                 ? 0
-                : (double)num3 <= BUNGEE_REST_LEN + 1.0 ? 1 : (double)num3 <= BUNGEE_REST_LEN + 4.0 ? 2 : 3;
-            if ((double)num3 > BUNGEE_REST_LEN + 7.0)
+                : (double)segmentLength <= BUNGEE_REST_LEN + 1.0 ? 1 : (double)segmentLength <= BUNGEE_REST_LEN + 4.0 ? 2 : 3;
+            if ((double)segmentLength > BUNGEE_REST_LEN + 7.0)
             {
-                float num4 = num3 / BUNGEE_REST_LEN * 2f;
-                rgbaColor3.RedColor *= num4;
-                rgbaColor4.RedColor *= num4;
+                float stretchRedScale = segmentLength / BUNGEE_REST_LEN * 2f;
+                rgbaColor3.RedColor *= stretchRedScale;
+                rgbaColor4.RedColor *= stretchRedScale;
             }
             bool flag = false;
-            int num5 = (count - 1) * points;
-            float[] array = new float[num5 * 2];
-            b.drawPtsCount = num5 * 2;
-            float num6 = 1f / num5;
-            float num7 = 0f;
-            int num8 = 0;
-            int num9 = 0;
-            int num10 = 0;
+            int sampleCount = (count - 1) * points;
+            float[] array = new float[sampleCount * 2];
+            b.drawPtsCount = sampleCount * 2;
+            float sampleStep = 1f / sampleCount;
+            float bezierT = 0f;
+            int cachedPointCount = 0;
+            int drawPointCount = 0;
             RGBAColor rgbaColor5 = rgbaColor3;
             RGBAColor rgbaColor6 = rgbaColor4;
-            float num11 = (rgbaColor.RedColor - rgbaColor3.RedColor) / (num5 - 1);
-            float num12 = (rgbaColor.GreenColor - rgbaColor3.GreenColor) / (num5 - 1);
-            float num13 = (rgbaColor.BlueColor - rgbaColor3.BlueColor) / (num5 - 1);
-            float num14 = (rgbaColor2.RedColor - rgbaColor4.RedColor) / (num5 - 1);
-            float num15 = (rgbaColor2.GreenColor - rgbaColor4.GreenColor) / (num5 - 1);
-            float num16 = (rgbaColor2.BlueColor - rgbaColor4.BlueColor) / (num5 - 1);
+            float redStep = (rgbaColor.RedColor - rgbaColor3.RedColor) / (sampleCount - 1);
+            float greenStep = (rgbaColor.GreenColor - rgbaColor3.GreenColor) / (sampleCount - 1);
+            float blueStep = (rgbaColor.BlueColor - rgbaColor3.BlueColor) / (sampleCount - 1);
+            float redStepAlt = (rgbaColor2.RedColor - rgbaColor4.RedColor) / (sampleCount - 1);
+            float greenStepAlt = (rgbaColor2.GreenColor - rgbaColor4.GreenColor) / (sampleCount - 1);
+            float blueStepAlt = (rgbaColor2.BlueColor - rgbaColor4.BlueColor) / (sampleCount - 1);
             float lx = -1f;
             float ly = -1f;
             float rx = -1f;
             float ry = -1f;
             for (; ; )
             {
-                if ((double)num7 > 1.0)
+                if ((double)bezierT > 1.0)
                 {
-                    num7 = 1f;
+                    bezierT = 1f;
                 }
                 if (count < 3)
                 {
                     break;
                 }
-                Vector vector = DrawHelper.CalcPathBezier(pts, count, num7);
-                array[num8++] = vector.X;
-                array[num8++] = vector.Y;
-                b.drawPts[num9++] = vector.X;
-                b.drawPts[num9++] = vector.Y;
-                if (num8 >= 8 || (double)num7 == 1.0)
+                Vector vector = DrawHelper.CalcPathBezier(pts, count, bezierT);
+                array[cachedPointCount++] = vector.X;
+                array[cachedPointCount++] = vector.Y;
+                b.drawPts[drawPointCount++] = vector.X;
+                b.drawPts[drawPointCount++] = vector.Y;
+                if (cachedPointCount >= 8 || (double)bezierT == 1.0)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
                     Renderer.SetColor(color.ToXNA());
-                    int num17 = num8 >> 1;
-                    for (int i = 0; i < num17 - 1; i++)
+                    int segmentCount = cachedPointCount >> 1;
+                    for (int i = 0; i < segmentCount - 1; i++)
                     {
                         DrawAntialiasedLineContinued(array[i * 2], array[(i * 2) + 1], array[(i * 2) + 2], array[(i * 2) + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
                     }
-                    array[0] = array[num8 - 2];
-                    array[1] = array[num8 - 1];
-                    num8 = 2;
+                    array[0] = array[cachedPointCount - 2];
+                    array[1] = array[cachedPointCount - 1];
+                    cachedPointCount = 2;
                     flag = !flag;
-                    num10++;
-                    rgbaColor5.RedColor += num11 * (num17 - 1);
-                    rgbaColor5.GreenColor += num12 * (num17 - 1);
-                    rgbaColor5.BlueColor += num13 * (num17 - 1);
-                    rgbaColor6.RedColor += num14 * (num17 - 1);
-                    rgbaColor6.GreenColor += num15 * (num17 - 1);
-                    rgbaColor6.BlueColor += num16 * (num17 - 1);
+                    rgbaColor5.RedColor += redStep * (segmentCount - 1);
+                    rgbaColor5.GreenColor += greenStep * (segmentCount - 1);
+                    rgbaColor5.BlueColor += blueStep * (segmentCount - 1);
+                    rgbaColor6.RedColor += redStepAlt * (segmentCount - 1);
+                    rgbaColor6.GreenColor += greenStepAlt * (segmentCount - 1);
+                    rgbaColor6.BlueColor += blueStepAlt * (segmentCount - 1);
                 }
-                if ((double)num7 == 1.0)
+                if ((double)bezierT == 1.0)
                 {
                     break;
                 }
-                num7 += num6;
+                bezierT += sampleStep;
             }
 
-            b.drawPtsCount = num9;
-            b.DrawChristmasLights(num9 / 2, num, segmentStartIndex);
+            b.drawPtsCount = drawPointCount;
+            b.DrawChristmasLights(drawPointCount / 2, alphaMultiplier, segmentStartIndex);
         }
 
         public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
@@ -303,8 +301,8 @@ namespace CutTheRope.GameMain
             AddPart(tail);
             tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
             Vector v = VectSub(tail.pos, bungeeAnchor.pos);
-            int num = (int)((len / BUNGEE_REST_LEN) + 2f);
-            v = VectDiv(v, num);
+            int subdivisionCount = (int)((len / BUNGEE_REST_LEN) + 2f);
+            v = VectDiv(v, subdivisionCount);
             RollplacingWithOffset(len, v);
             forceWhite = false;
             initialCandleAngle = -1f;
@@ -315,7 +313,7 @@ namespace CutTheRope.GameMain
 
         public int GetLength()
         {
-            int num = 0;
+            int totalLength = 0;
             Vector pos = vectZero;
             int count = parts.Count;
             for (int i = 0; i < count; i++)
@@ -323,11 +321,11 @@ namespace CutTheRope.GameMain
                 ConstraintedPoint constraintedPoint = parts[i];
                 if (i > 0)
                 {
-                    num += (int)VectDistance(pos, constraintedPoint.pos);
+                    totalLength += (int)VectDistance(pos, constraintedPoint.pos);
                 }
                 pos = constraintedPoint.pos;
             }
-            return num;
+            return totalLength;
         }
 
         public void Roll(float rollLen)
@@ -338,7 +336,7 @@ namespace CutTheRope.GameMain
         public void RollplacingWithOffset(float rollLen, Vector off)
         {
             ConstraintedPoint i = parts[^2];
-            int num = (int)tail.RestLengthFor(i);
+            int tailRestLength = (int)tail.RestLengthFor(i);
             while (rollLen > 0f)
             {
                 if (rollLen >= BUNGEE_REST_LEN)
@@ -348,22 +346,22 @@ namespace CutTheRope.GameMain
                     constraintedPoint2.SetWeight(0.02f);
                     constraintedPoint2.pos = VectAdd(constraintedPoint.pos, off);
                     AddPartAt(constraintedPoint2, parts.Count - 1);
-                    tail.ChangeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, num);
+                    tail.ChangeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, tailRestLength);
                     constraintedPoint2.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
                     rollLen -= BUNGEE_REST_LEN;
                 }
                 else
                 {
-                    int num2 = (int)(rollLen + num);
-                    if (num2 > BUNGEE_REST_LEN)
+                    int newRestLength = (int)(rollLen + tailRestLength);
+                    if (newRestLength > BUNGEE_REST_LEN)
                     {
                         rollLen = BUNGEE_REST_LEN;
-                        num = (int)(num2 - BUNGEE_REST_LEN);
+                        tailRestLength = (int)(newRestLength - BUNGEE_REST_LEN);
                     }
                     else
                     {
                         ConstraintedPoint n2 = parts[^2];
-                        tail.ChangeRestLengthToFor(num2, n2);
+                        tail.ChangeRestLengthToFor(newRestLength, n2);
                         rollLen = 0f;
                     }
                 }
@@ -372,34 +370,34 @@ namespace CutTheRope.GameMain
 
         public float RollBack(float amount)
         {
-            float num = amount;
+            float remainingAmount = amount;
             ConstraintedPoint i = parts[^2];
-            int num2 = (int)tail.RestLengthFor(i);
-            int num3 = parts.Count;
-            while (num > 0f)
+            int currentRestLength = (int)tail.RestLengthFor(i);
+            int partCount = parts.Count;
+            while (remainingAmount > 0f)
             {
-                if (num >= BUNGEE_REST_LEN)
+                if (remainingAmount >= BUNGEE_REST_LEN)
                 {
-                    ConstraintedPoint o = parts[num3 - 2];
-                    ConstraintedPoint n2 = parts[num3 - 3];
-                    tail.ChangeConstraintFromTowithRestLength(o, n2, num2);
+                    ConstraintedPoint o = parts[partCount - 2];
+                    ConstraintedPoint n2 = parts[partCount - 3];
+                    tail.ChangeConstraintFromTowithRestLength(o, n2, currentRestLength);
                     parts.RemoveAt(parts.Count - 2);
-                    num3--;
-                    num -= BUNGEE_REST_LEN;
+                    partCount--;
+                    remainingAmount -= BUNGEE_REST_LEN;
                 }
                 else
                 {
-                    int num4 = (int)(num2 - num);
-                    if (num4 < 1)
+                    int nextRestLength = (int)(currentRestLength - remainingAmount);
+                    if (nextRestLength < 1)
                     {
-                        num = BUNGEE_REST_LEN;
-                        num2 = (int)(BUNGEE_REST_LEN + num4 + 1f);
+                        remainingAmount = BUNGEE_REST_LEN;
+                        currentRestLength = (int)(BUNGEE_REST_LEN + nextRestLength + 1f);
                     }
                     else
                     {
-                        ConstraintedPoint n3 = parts[num3 - 2];
-                        tail.ChangeRestLengthToFor(num4, n3);
-                        num = 0f;
+                        ConstraintedPoint n3 = parts[partCount - 2];
+                        tail.ChangeRestLengthToFor(nextRestLength, n3);
+                        remainingAmount = 0f;
                     }
                 }
             }
@@ -409,10 +407,10 @@ namespace CutTheRope.GameMain
                 Constraint constraint = tail.constraints[j];
                 if (constraint != null && constraint.type == Constraint.CONSTRAINT.NOT_MORE_THAN)
                 {
-                    constraint.restLength = (num3 - 1) * (BUNGEE_REST_LEN + 3f);
+                    constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + 3f);
                 }
             }
-            return num;
+            return remainingAmount;
         }
 
         public void RemovePart(int part)
@@ -535,7 +533,7 @@ namespace CutTheRope.GameMain
             Vector[] array2 = new Vector[count];
             Vector[] array3 = new Vector[count];
             bool flag = false;
-            int num = 0;
+            int tailPartCount = 0;
             int cutIndex = 0;
             for (int j = 0; j < count; j++)
             {
@@ -561,18 +559,18 @@ namespace CutTheRope.GameMain
                 }
                 else
                 {
-                    array3[num] = constraintedPoint2.pos;
-                    num++;
+                    array3[tailPartCount] = constraintedPoint2.pos;
+                    tailPartCount++;
                 }
             }
-            int num2 = count - num;
-            if (num2 > 0)
+            int headPartCount = count - tailPartCount;
+            if (headPartCount > 0)
             {
-                DrawBungee(this, array2, num2, 4, 0);
+                DrawBungee(this, array2, headPartCount, 4, 0);
             }
-            if (num > 0 && !hideTailParts)
+            if (tailPartCount > 0 && !hideTailParts)
             {
-                DrawBungee(this, array3, num, 4, cutIndex);
+                DrawBungee(this, array3, tailPartCount, 4, cutIndex);
             }
         }
 

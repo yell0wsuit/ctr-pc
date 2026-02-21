@@ -69,36 +69,36 @@ namespace CutTheRope.GameMain
                 return;
             }
             CTRSoundMgr.PlaySound(Resources.Snd.Wheel);
-            float num = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
-            if (num > DEG_180)
+            float rotateDelta = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
+            if (rotateDelta > DEG_180)
             {
-                num -= DEG_360;
+                rotateDelta -= DEG_360;
             }
-            else if (num < -DEG_180)
+            else if (rotateDelta < -DEG_180)
             {
-                num += DEG_360;
+                rotateDelta += DEG_360;
             }
-            wheelImage2.rotation += num;
-            wheelImage3.rotation += num;
-            wheelHighlight.rotation += num;
-            num = num > 0f ? MIN(MAX(1, num), 4.5f) : MAX(MIN(-1, num), -4.5f);
-            float num2 = 0f;
+            wheelImage2.rotation += rotateDelta;
+            wheelImage3.rotation += rotateDelta;
+            wheelHighlight.rotation += rotateDelta;
+            rotateDelta = rotateDelta > 0f ? MIN(MAX(1, rotateDelta), 4.5f) : MAX(MIN(-1, rotateDelta), -4.5f);
+            float ropeLength = 0f;
             if (rope != null)
             {
-                num2 = rope.GetLength();
+                ropeLength = rope.GetLength();
             }
             if (rope != null)
             {
-                if (num > 0f)
+                if (rotateDelta > 0f)
                 {
-                    if (num2 < 1650f)
+                    if (ropeLength < 1650f)
                     {
-                        rope.Roll(num);
+                        rope.Roll(rotateDelta);
                     }
                 }
-                else if (num != 0f && rope.parts.Count > 3)
+                else if (rotateDelta != 0f && rope.parts.Count > 3)
                 {
-                    _ = rope.RollBack(0f - num);
+                    _ = rope.RollBack(0f - rotateDelta);
                 }
                 wheelDirty = true;
             }
@@ -146,20 +146,20 @@ namespace CutTheRope.GameMain
                 float t = 0f;
                 if (ABS(vector.X) > 15f)
                 {
-                    float num = 10f;
-                    t = vector.X > 0f ? num : 0f - num;
+                    float rotationTarget = 10f;
+                    t = vector.X > 0f ? rotationTarget : 0f - rotationTarget;
                 }
                 _ = Mover.MoveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
             if (wheel && wheelDirty)
             {
-                float num2 = rope == null ? 0f : rope.GetLength() * 0.7f;
-                if (num2 == 0f)
+                float wheelScaleLength = rope == null ? 0f : rope.GetLength() * 0.7f;
+                if (wheelScaleLength == 0f)
                 {
                     wheelImage2.scaleX = wheelImage2.scaleY = 0f;
                     return;
                 }
-                wheelImage2.scaleX = wheelImage2.scaleY = MAX(0f, MIN(1.2f, 1 - RT(num2 / 1400f, num2 / 700)));
+                wheelImage2.scaleX = wheelImage2.scaleY = MAX(0f, MIN(1.2f, 1 - RT(wheelScaleLength / 1400f, wheelScaleLength / 700)));
             }
         }
 
@@ -180,7 +180,7 @@ namespace CutTheRope.GameMain
             {
                 spiderPos += delta * 117f;
             }
-            float num = 0f;
+            float traversedLength = 0f;
             bool flag = false;
             if (rope != null)
             {
@@ -189,12 +189,12 @@ namespace CutTheRope.GameMain
                 {
                     Vector vector = Vect(rope.drawPts[i], rope.drawPts[i + 1]);
                     Vector vector2 = Vect(rope.drawPts[i + 2], rope.drawPts[i + 3]);
-                    float num2 = MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, VectDistance(vector, vector2));
-                    if (spiderPos >= num && (spiderPos < num + num2 || i > rope.drawPtsCount - 3))
+                    float segmentLength = MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, VectDistance(vector, vector2));
+                    if (spiderPos >= traversedLength && (spiderPos < traversedLength + segmentLength || i > rope.drawPtsCount - 3))
                     {
-                        float num3 = spiderPos - num;
+                        float segmentProgress = spiderPos - traversedLength;
                         Vector v = VectSub(vector2, vector);
-                        v = VectMult(v, num3 / num2);
+                        v = VectMult(v, segmentProgress / segmentLength);
                         spider.x = vector.X + v.X;
                         spider.y = vector.Y + v.Y;
                         if (i > rope.drawPtsCount - 3)
@@ -210,7 +210,7 @@ namespace CutTheRope.GameMain
                     }
                     else
                     {
-                        num += num2;
+                        traversedLength += segmentLength;
                         i += 2;
                     }
                 }

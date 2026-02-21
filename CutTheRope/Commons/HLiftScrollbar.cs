@@ -21,8 +21,8 @@ namespace CutTheRope.Commons
                 lift.minX = 1f;
                 lift.maxX = width - lift.minX;
                 lift.liftDelegate = new Lift.PercentXY(PercentXY);
-                int num = 45;
-                lift.SetTouchIncreaseLeftRightTopBottom(num, num, -5f, 10f);
+                int touchExpandX = 45;
+                lift.SetTouchIncreaseLeftRightTopBottom(touchExpandX, touchExpandX, -5f, 10f);
                 _ = AddChild(lift);
                 spointsNum = 0;
                 spoints = null;
@@ -71,11 +71,11 @@ namespace CutTheRope.Commons
             {
                 if (lift.x <= spointsLimits[i].X)
                 {
-                    int num = limitPoints[i];
-                    if (activeSpoint != num)
+                    int candidateSpoint = limitPoints[i];
+                    if (activeSpoint != candidateSpoint)
                     {
-                        delegateLiftScrollbarDelegate?.ChangedActiveSpointFromTo(activeSpoint, num);
-                        activeSpoint = num;
+                        delegateLiftScrollbarDelegate?.ChangedActiveSpointFromTo(activeSpoint, candidateSpoint);
+                        activeSpoint = candidateSpoint;
                     }
                     return;
                 }
@@ -122,16 +122,16 @@ namespace CutTheRope.Commons
         {
             Vector scroll = container.GetScroll();
             Vector maxScroll = container.GetMaxScroll();
-            float num = 0f;
+            float scrollRatioX = 0f;
             if (maxScroll.X != 0f)
             {
-                num = scroll.X / maxScroll.X;
+                scrollRatioX = scroll.X / maxScroll.X;
             }
             if (maxScroll.Y != 0f)
             {
                 _ = scroll.Y / maxScroll.Y;
             }
-            lift.x = ((lift.maxX - lift.minX) * num) + lift.minX;
+            lift.x = ((lift.maxX - lift.minX) * scrollRatioX) + lift.minX;
             lift.y = 0f;
         }
 
@@ -148,17 +148,17 @@ namespace CutTheRope.Commons
             for (int i = 0; i < spointsNum; i++)
             {
                 Vector vector = VectNeg(container.GetScrollPoint(i));
-                float num = 0f;
+                float scrollRatioX = 0f;
                 if (maxScroll.X != 0f)
                 {
-                    num = vector.X / maxScroll.X;
+                    scrollRatioX = vector.X / maxScroll.X;
                 }
                 if (maxScroll.Y != 0f)
                 {
                     _ = vector.Y / maxScroll.Y;
                 }
-                float num3 = ((lift.maxX - lift.minX) * num) + lift.minX;
-                spoints[i] = Vect(num3, 0f);
+                float liftX = ((lift.maxX - lift.minX) * scrollRatioX) + lift.minX;
+                spoints[i] = Vect(liftX, 0f);
             }
             for (int j = 0; j < spointsNum; j++)
             {
@@ -184,8 +184,8 @@ namespace CutTheRope.Commons
                 Vector vector3 = spointsLimits[l];
                 Vector vector4 = spointsLimits[l + 1];
                 Vector[] array = spointsLimits;
-                int num6 = l;
-                array[num6].X = array[num6].X + ((vector4.X - vector3.X) / 2f);
+                int limitIndex = l;
+                array[limitIndex].X = array[limitIndex].X + ((vector4.X - vector3.X) / 2f);
             }
         }
 

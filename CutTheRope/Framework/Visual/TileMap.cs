@@ -76,29 +76,29 @@ namespace CutTheRope.Framework.Visual
                 tileHeight = (int)t.quadRects[q].h;
             }
             UpdateVars();
-            int num = -1;
+            int drawerIndex = -1;
             for (int i = 0; i < drawers.Count; i++)
             {
                 ImageMultiDrawer imageMultiDrawer = drawers[i];
                 if (imageMultiDrawer.image.texture == t)
                 {
-                    num = i;
+                    drawerIndex = i;
                 }
                 if (imageMultiDrawer.image.texture._realWidth == tileWidth)
                 {
                     _ = imageMultiDrawer.image.texture._realHeight;
                 }
             }
-            if (num == -1)
+            if (drawerIndex == -1)
             {
                 Image image = Image.Image_create(t);
                 ImageMultiDrawer item = new ImageMultiDrawer().InitWithImageandCapacity(image, maxRowsOnScreen * maxColsOnScreen);
-                num = drawers.Count;
+                drawerIndex = drawers.Count;
                 drawers.Add(item);
             }
             TileEntry tileEntry = new()
             {
-                drawerIndex = num,
+                drawerIndex = drawerIndex,
                 quad = q
             };
             tiles[ti] = tileEntry;
@@ -134,99 +134,99 @@ namespace CutTheRope.Framework.Visual
 
         public void UpdateWithCameraPos(Vector pos)
         {
-            float num = (float)Math.Round((double)(pos.X / parallaxRatio));
-            float num2 = (float)Math.Round((double)(pos.Y / parallaxRatio));
-            float num3 = x;
-            float num4 = y;
+            float cameraX = (float)Math.Round((double)(pos.X / parallaxRatio));
+            float cameraY = (float)Math.Round((double)(pos.Y / parallaxRatio));
+            float mapX = x;
+            float mapY = y;
             if (repeatedVertically != Repeat.NONE)
             {
-                float num13 = num4 - num2;
-                int num5 = (int)num13 % tileMapHeight;
-                num4 = num13 >= 0f ? num5 - tileMapHeight + num2 : num5 + num2;
+                float verticalDelta = mapY - cameraY;
+                int verticalWrapOffset = (int)verticalDelta % tileMapHeight;
+                mapY = verticalDelta >= 0f ? verticalWrapOffset - tileMapHeight + cameraY : verticalWrapOffset + cameraY;
             }
             if (repeatedHorizontally != Repeat.NONE)
             {
-                float num14 = num3 - num;
-                int num6 = (int)num14 % tileMapWidth;
-                num3 = num14 >= 0f ? num6 - tileMapWidth + num : num6 + num;
+                float horizontalDelta = mapX - cameraX;
+                int horizontalWrapOffset = (int)horizontalDelta % tileMapWidth;
+                mapX = horizontalDelta >= 0f ? horizontalWrapOffset - tileMapWidth + cameraX : horizontalWrapOffset + cameraX;
             }
-            if (!RectInRect(num, num2, num + cameraViewWidth, num2 + cameraViewHeight, num3, num4, num3 + tileMapWidth, num4 + tileMapHeight))
+            if (!RectInRect(cameraX, cameraY, cameraX + cameraViewWidth, cameraY + cameraViewHeight, mapX, mapY, mapX + tileMapWidth, mapY + tileMapHeight))
             {
                 return;
             }
-            CTRRectangle rectangle = RectInRectIntersection(new CTRRectangle(num3, num4, tileMapWidth, tileMapHeight), new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight));
+            CTRRectangle rectangle = RectInRectIntersection(new CTRRectangle(mapX, mapY, tileMapWidth, tileMapHeight), new CTRRectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight));
             Vector vector = Vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
             Vector vector2 = Vect((int)vector.X / tileWidth, (int)vector.Y / tileHeight);
-            float num7 = num4 + (vector2.Y * tileHeight);
-            Vector vector3 = Vect(num3 + (vector2.X * tileWidth), num7);
+            float rowStartY = mapY + (vector2.Y * tileHeight);
+            Vector vector3 = Vect(mapX + (vector2.X * tileWidth), rowStartY);
             int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {
                 ImageMultiDrawer imageMultiDrawer = drawers[i];
                 _ = (imageMultiDrawer?.numberOfQuadsToDraw = 0);
             }
-            int num8 = (int)(vector2.X + maxColsOnScreen - 1f);
-            int num9 = (int)(vector2.Y + maxRowsOnScreen - 1f);
+            int maxVisibleColumn = (int)(vector2.X + maxColsOnScreen - 1f);
+            int maxVisibleRow = (int)(vector2.Y + maxRowsOnScreen - 1f);
             if (repeatedVertically == Repeat.NONE)
             {
-                num9 = Math.Min(rows - 1, num9);
+                maxVisibleRow = Math.Min(rows - 1, maxVisibleRow);
             }
             if (repeatedHorizontally == Repeat.NONE)
             {
-                num8 = Math.Min(columns - 1, num8);
+                maxVisibleColumn = Math.Min(columns - 1, maxVisibleColumn);
             }
-            for (int j = (int)vector2.X; j <= num8; j++)
+            for (int j = (int)vector2.X; j <= maxVisibleColumn; j++)
             {
-                vector3.Y = num7;
+                vector3.Y = rowStartY;
                 int k = (int)vector2.Y;
-                while (k <= num9 && vector3.Y < num2 + cameraViewHeight)
+                while (k <= maxVisibleRow && vector3.Y < cameraY + cameraViewHeight)
                 {
-                    CTRRectangle rectangle2 = RectInRectIntersection(new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight), new CTRRectangle(vector3.X, vector3.Y, tileWidth, tileHeight));
-                    CTRRectangle r = new(num - vector3.X + rectangle2.x, num2 - vector3.Y + rectangle2.y, rectangle2.w, rectangle2.h);
-                    int num10 = j;
-                    int num11 = k;
+                    CTRRectangle rectangle2 = RectInRectIntersection(new CTRRectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight), new CTRRectangle(vector3.X, vector3.Y, tileWidth, tileHeight));
+                    CTRRectangle r = new(cameraX - vector3.X + rectangle2.x, cameraY - vector3.Y + rectangle2.y, rectangle2.w, rectangle2.h);
+                    int tileColumn = j;
+                    int tileRow = k;
                     if (repeatedVertically == Repeat.EDGES)
                     {
                         if (vector3.Y < y)
                         {
-                            num11 = 0;
+                            tileRow = 0;
                         }
                         else if (vector3.Y >= y + tileMapHeight)
                         {
-                            num11 = rows - 1;
+                            tileRow = rows - 1;
                         }
                     }
                     if (repeatedHorizontally == Repeat.EDGES)
                     {
                         if (vector3.X < x)
                         {
-                            num10 = 0;
+                            tileColumn = 0;
                         }
                         else if (vector3.X >= x + tileMapWidth)
                         {
-                            num10 = columns - 1;
+                            tileColumn = columns - 1;
                         }
                     }
                     if (horizontalRandom)
                     {
-                        num10 = Math.Abs((int)(FmSin(vector3.X) * randomSeed) % columns);
+                        tileColumn = Math.Abs((int)(FmSin(vector3.X) * randomSeed) % columns);
                     }
                     if (verticalRandom)
                     {
-                        num11 = Math.Abs((int)(FmSin(vector3.Y) * randomSeed) % rows);
+                        tileRow = Math.Abs((int)(FmSin(vector3.Y) * randomSeed) % rows);
                     }
-                    if (num10 >= columns)
+                    if (tileColumn >= columns)
                     {
-                        num10 %= columns;
+                        tileColumn %= columns;
                     }
-                    if (num11 >= rows)
+                    if (tileRow >= rows)
                     {
-                        num11 %= rows;
+                        tileRow %= rows;
                     }
-                    int num12 = matrix[num10, num11];
-                    if (num12 >= 0)
+                    int tileIndex = matrix[tileColumn, tileRow];
+                    if (tileIndex >= 0)
                     {
-                        TileEntry tileEntry = tiles[num12];
+                        TileEntry tileEntry = tiles[tileIndex];
                         ImageMultiDrawer imageMultiDrawer2 = drawers[tileEntry.drawerIndex];
                         CTRTexture2D texture = imageMultiDrawer2.image.texture;
                         if (tileEntry.quad != -1 && texture.quadRects != null)
@@ -248,7 +248,7 @@ namespace CutTheRope.Framework.Visual
                     k++;
                 }
                 vector3.X += tileWidth;
-                if (vector3.X >= num + cameraViewWidth)
+                if (vector3.X >= cameraX + cameraViewWidth)
                 {
                     break;
                 }

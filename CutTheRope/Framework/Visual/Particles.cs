@@ -11,10 +11,10 @@ namespace CutTheRope.Framework.Visual
             Vector result = v;
             result.X -= cx;
             result.Y -= cy;
-            float num = (result.X * cosA) - (result.Y * sinA);
-            float num2 = (result.X * sinA) + (result.Y * cosA);
-            result.X = num + cx;
-            result.Y = num2 + cy;
+            float rotatedX = (result.X * cosA) - (result.Y * sinA);
+            float rotatedY = (result.X * sinA) + (result.Y * cosA);
+            result.X = rotatedX + cx;
+            result.Y = rotatedY + cy;
             return result;
         }
 
@@ -29,9 +29,9 @@ namespace CutTheRope.Framework.Visual
                 }
                 Vector v = vector;
                 vector = VectMult(vector, p.radialAccel);
-                float num = v.X;
+                float tangentX = v.X;
                 v.X = 0f - v.Y;
-                v.Y = num;
+                v.Y = tangentX;
                 v = VectMult(v, p.tangentialAccel);
                 Vector v2 = VectAdd(VectAdd(vector, v), gravity);
                 v2 = VectMult(v2, delta);
@@ -71,12 +71,12 @@ namespace CutTheRope.Framework.Visual
             }
             if (active && emissionRate != 0f)
             {
-                float num = 1f / emissionRate;
+                float rate = 1f / emissionRate;
                 emitCounter += delta;
-                while (particleCount < totalParticles && emitCounter > num)
+                while (particleCount < totalParticles && emitCounter > rate)
                 {
                     _ = AddParticle();
-                    emitCounter -= num;
+                    emitCounter -= rate;
                 }
                 elapsed += delta;
                 if (duration != -1f && duration < elapsed)
@@ -145,10 +145,10 @@ namespace CutTheRope.Framework.Visual
             particle.pos.X = x + (posVar.X * RND_MINUS1_1);
             particle.pos.Y = y + (posVar.Y * RND_MINUS1_1);
             particle.startPos = particle.pos;
-            float num = DEGREES_TO_RADIANS(angle + (angleVar * RND_MINUS1_1));
+            float angleRad = DEGREES_TO_RADIANS(angle + (angleVar * RND_MINUS1_1));
             Vector v = default;
-            v.Y = Sinf(num);
-            v.X = Cosf(num);
+            v.Y = Sinf(angleRad);
+            v.X = Cosf(angleRad);
             float s = speed + (speedVar * RND_MINUS1_1);
             particle.dir = VectMult(v, s);
             particle.radialAccel = radialAccel + (radialAccelVar * RND_MINUS1_1);

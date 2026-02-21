@@ -54,12 +54,12 @@ namespace CutTheRope.Framework.Visual
 
         public float GetFrameTime(int f)
         {
-            float num = 0f;
+            float totalTime = 0f;
             for (int i = 0; i <= f; i++)
             {
-                num += keyFrames[i].timeOffset;
+                totalTime += keyFrames[i].timeOffset;
             }
-            return num;
+            return totalTime;
         }
 
         public void UpdateRange()
@@ -386,29 +386,29 @@ namespace CutTheRope.Framework.Visual
                 {
                     case TrackType.TRACK_POSITION:
                         {
-                            float num8 = thiss.currentStepAcceleration.value.pos.x * delta;
-                            float num9 = thiss.currentStepAcceleration.value.pos.y * delta;
-                            thiss.currentStepPerSecond.value.pos.x += num8;
-                            thiss.currentStepPerSecond.value.pos.y += num9;
-                            timeline.element.x += (keyFrame.value.pos.x + (num8 / 2f)) * delta;
-                            timeline.element.y += (keyFrame.value.pos.y + (num9 / 2f)) * delta;
+                            float accelDeltaX = thiss.currentStepAcceleration.value.pos.x * delta;
+                            float accelDeltaY = thiss.currentStepAcceleration.value.pos.y * delta;
+                            thiss.currentStepPerSecond.value.pos.x += accelDeltaX;
+                            thiss.currentStepPerSecond.value.pos.y += accelDeltaY;
+                            timeline.element.x += (keyFrame.value.pos.x + (accelDeltaX / 2f)) * delta;
+                            timeline.element.y += (keyFrame.value.pos.y + (accelDeltaY / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_SCALE:
                         {
-                            float num10 = thiss.currentStepAcceleration.value.scale.scaleX * delta;
-                            float num11 = thiss.currentStepAcceleration.value.scale.scaleY * delta;
-                            thiss.currentStepPerSecond.value.scale.scaleX += num10;
-                            thiss.currentStepPerSecond.value.scale.scaleY += num11;
-                            timeline.element.scaleX += (keyFrame.value.scale.scaleX + (num10 / 2f)) * delta;
-                            timeline.element.scaleY += (keyFrame.value.scale.scaleY + (num11 / 2f)) * delta;
+                            float accelDeltaScaleX = thiss.currentStepAcceleration.value.scale.scaleX * delta;
+                            float accelDeltaScaleY = thiss.currentStepAcceleration.value.scale.scaleY * delta;
+                            thiss.currentStepPerSecond.value.scale.scaleX += accelDeltaScaleX;
+                            thiss.currentStepPerSecond.value.scale.scaleY += accelDeltaScaleY;
+                            timeline.element.scaleX += (keyFrame.value.scale.scaleX + (accelDeltaScaleX / 2f)) * delta;
+                            timeline.element.scaleY += (keyFrame.value.scale.scaleY + (accelDeltaScaleY / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_ROTATION:
                         {
-                            float num12 = thiss.currentStepAcceleration.value.rotation.angle * delta;
-                            thiss.currentStepPerSecond.value.rotation.angle += num12;
-                            timeline.element.rotation += (keyFrame.value.rotation.angle + (num12 / 2f)) * delta;
+                            float accelDeltaRotation = thiss.currentStepAcceleration.value.rotation.angle * delta;
+                            thiss.currentStepPerSecond.value.rotation.angle += accelDeltaRotation;
+                            timeline.element.rotation += (keyFrame.value.rotation.angle + (accelDeltaRotation / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_COLOR:
@@ -421,26 +421,26 @@ namespace CutTheRope.Framework.Visual
                             color3.rgba.BlueColor += thiss.currentStepAcceleration.value.color.rgba.BlueColor * delta;
                             ColorParams color4 = thiss.currentStepPerSecond.value.color;
                             color4.rgba.AlphaChannel += thiss.currentStepAcceleration.value.color.rgba.AlphaChannel * delta;
-                            float num13 = thiss.currentStepAcceleration.value.color.rgba.RedColor * delta;
-                            float num14 = thiss.currentStepAcceleration.value.color.rgba.GreenColor * delta;
-                            float num15 = thiss.currentStepAcceleration.value.color.rgba.BlueColor * delta;
-                            float num16 = thiss.currentStepAcceleration.value.color.rgba.AlphaChannel * delta;
+                            float accelDeltaRed = thiss.currentStepAcceleration.value.color.rgba.RedColor * delta;
+                            float accelDeltaGreen = thiss.currentStepAcceleration.value.color.rgba.GreenColor * delta;
+                            float accelDeltaBlue = thiss.currentStepAcceleration.value.color.rgba.BlueColor * delta;
+                            float accelDeltaAlpha = thiss.currentStepAcceleration.value.color.rgba.AlphaChannel * delta;
                             ColorParams color5 = thiss.currentStepPerSecond.value.color;
-                            color5.rgba.RedColor += num13;
+                            color5.rgba.RedColor += accelDeltaRed;
                             ColorParams color6 = thiss.currentStepPerSecond.value.color;
-                            color6.rgba.GreenColor += num14;
+                            color6.rgba.GreenColor += accelDeltaGreen;
                             ColorParams color7 = thiss.currentStepPerSecond.value.color;
-                            color7.rgba.BlueColor += num15;
+                            color7.rgba.BlueColor += accelDeltaBlue;
                             ColorParams color8 = thiss.currentStepPerSecond.value.color;
-                            color8.rgba.AlphaChannel += num16;
+                            color8.rgba.AlphaChannel += accelDeltaAlpha;
                             BaseElement element = timeline.element;
-                            element.color.RedColor += (keyFrame.value.color.rgba.RedColor + (num13 / 2f)) * delta;
+                            element.color.RedColor += (keyFrame.value.color.rgba.RedColor + (accelDeltaRed / 2f)) * delta;
                             BaseElement element2 = timeline.element;
-                            element2.color.GreenColor += (keyFrame.value.color.rgba.GreenColor + (num14 / 2f)) * delta;
+                            element2.color.GreenColor += (keyFrame.value.color.rgba.GreenColor + (accelDeltaGreen / 2f)) * delta;
                             BaseElement element3 = timeline.element;
-                            element3.color.BlueColor += (keyFrame.value.color.rgba.BlueColor + (num15 / 2f)) * delta;
+                            element3.color.BlueColor += (keyFrame.value.color.rgba.BlueColor + (accelDeltaBlue / 2f)) * delta;
                             BaseElement element4 = timeline.element;
-                            element4.color.AlphaChannel += (keyFrame.value.color.rgba.AlphaChannel + (num16 / 2f)) * delta;
+                            element4.color.AlphaChannel += (keyFrame.value.color.rgba.AlphaChannel + (accelDeltaAlpha / 2f)) * delta;
                             break;
                         }
 

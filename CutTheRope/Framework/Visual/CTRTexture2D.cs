@@ -8,14 +8,14 @@ namespace CutTheRope.Framework.Visual
 {
     internal sealed class CTRTexture2D : FrameworkTypes
     {
-        public static void DrawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
+        public static void DrawRectAtPoint(CTRTexture2D texture, CTRRectangle rect, Vector point)
         {
-            float texLeft = t._invWidth * rect.x;
-            float texTop = t._invHeight * rect.y;
-            float texRight = texLeft + (t._invWidth * rect.w);
-            float texBottom = texTop + (t._invHeight * rect.h);
+            float texLeft = texture._invWidth * rect.x;
+            float texTop = texture._invHeight * rect.y;
+            float texRight = texLeft + (texture._invWidth * rect.w);
+            float texBottom = texTop + (texture._invHeight * rect.h);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(t.Name());
+            Renderer.BindTexture(texture.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, rect.w, rect.h,
                 texLeft, texTop, texRight, texBottom);
@@ -32,19 +32,19 @@ namespace CutTheRope.Framework.Visual
             return _isWvga;
         }
 
-        public void SetQuadsCapacity(int n)
+        public void SetQuadsCapacity(int capacity)
         {
-            quadsCount = n;
+            quadsCount = capacity;
             quads = new Quad2D[quadsCount];
             quadRects = new CTRRectangle[quadsCount];
             quadOffsets = new Vector[quadsCount];
         }
 
-        public void SetQuadAt(CTRRectangle rect, int n)
+        public void SetQuadAt(CTRRectangle rect, int quadIndex)
         {
-            quads[n] = DrawHelper.GetTextureCoordinates(this, rect);
-            quadRects[n] = rect;
-            quadOffsets[n] = vectZero;
+            quads[quadIndex] = DrawHelper.GetTextureCoordinates(this, rect);
+            quadRects[quadIndex] = rect;
+            quadOffsets[quadIndex] = vectZero;
         }
 
         public void SetWvga()
@@ -59,26 +59,26 @@ namespace CutTheRope.Framework.Visual
             CalculateForQuickDrawing();
         }
 
-        public static void DrawQuadAtPoint(CTRTexture2D t, int q, Vector point)
+        public static void DrawQuadAtPoint(CTRTexture2D texture, int quadIndex, Vector point)
         {
-            Quad2D quad2D = t.quads[q];
-            float w = t.quadRects[q].w;
-            float h = t.quadRects[q].h;
+            Quad2D quad2D = texture.quads[quadIndex];
+            float w = texture.quadRects[quadIndex].w;
+            float h = texture.quadRects[quadIndex].h;
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(t.Name());
+            Renderer.BindTexture(texture.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, w, h,
                 quad2D.tlX, quad2D.tlY, quad2D.brX, quad2D.brY);
             Renderer.DrawTriangleStrip(vertices);
         }
 
-        public static void DrawAtPoint(CTRTexture2D t, Vector point)
+        public static void DrawAtPoint(CTRTexture2D texture, Vector point)
         {
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(t.Name());
+            Renderer.BindTexture(texture.Name());
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
-                point.X, point.Y, t._realWidth, t._realHeight,
-                0f, 0f, t._maxS, t._maxT);
+                point.X, point.Y, texture._realWidth, texture._realHeight,
+                0f, 0f, texture._maxS, texture._maxT);
             Renderer.DrawTriangleStrip(vertices);
         }
 
@@ -167,14 +167,14 @@ namespace CutTheRope.Framework.Visual
         private void ImageLoaded(int w, int h)
         {
             _lowypoint = h;
-            int num = CalcRealSize(w);
-            int num2 = CalcRealSize(h);
-            //_size = new Vector(num, num2);
-            _width = (uint)num;
-            _height = (uint)num2;
+            int realWidth = CalcRealSize(w);
+            int realHeight = CalcRealSize(h);
+            //_size = new Vector(realWidth, realHeight);
+            _width = (uint)realWidth;
+            _height = (uint)realHeight;
             //_format = _defaultAlphaPixelFormat;
-            _maxS = w / (float)num;
-            _maxT = h / (float)num2;
+            _maxS = w / (float)realWidth;
+            _maxT = h / (float)realHeight;
         }
 
         private static void Resume()
@@ -210,8 +210,8 @@ namespace CutTheRope.Framework.Visual
             _lowypoint = -1;
             // _localTexParams = _defaultTexParams;
             Reg();
-            int num = CalcRealSize(w);
-            int num2 = CalcRealSize(h);
+            int realWidth = CalcRealSize(w);
+            int realHeight = CalcRealSize(h);
             float transitionTime = Application.SharedRootController().transitionTime;
             Application.SharedRootController().transitionTime = -1f;
             // Always use the render target since we now use fullscreen-style scaling in all modes
@@ -221,11 +221,11 @@ namespace CutTheRope.Framework.Visual
             Application.SharedRootController().transitionTime = transitionTime;
             xnaTexture_ = renderTarget;
             //_format = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
-            //_size = new Vector(num, num2);
-            _width = (uint)num;
-            _height = (uint)num2;
-            _maxS = w / (float)num;
-            _maxT = h / (float)num2;
+            //_size = new Vector(realWidth, realHeight);
+            _width = (uint)realWidth;
+            _height = (uint)realHeight;
+            _maxS = w / (float)realWidth;
+            _maxT = h / (float)realHeight;
             quadsCount = 0;
             CalculateForQuickDrawing();
             Resume();

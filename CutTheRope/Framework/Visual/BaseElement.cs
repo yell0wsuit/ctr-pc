@@ -24,35 +24,35 @@ namespace CutTheRope.Framework.Visual
 
         public static void CalculateTopLeft(BaseElement e)
         {
-            float num = e.HasParent ? e.parent.drawX : 0f;
-            float num2 = e.HasParent ? e.parent.drawY : 0f;
-            int num3 = e.HasParent ? e.parent.width : 0;
-            int num4 = e.HasParent ? e.parent.height : 0;
+            float parentDrawX = e.HasParent ? e.parent.drawX : 0f;
+            float parentDrawY = e.HasParent ? e.parent.drawY : 0f;
+            int parentWidth = e.HasParent ? e.parent.width : 0;
+            int parentHeight = e.HasParent ? e.parent.height : 0;
             if (e.parentAnchor != -1)
             {
                 if ((e.parentAnchor & 1) != 0)
                 {
-                    e.drawX = num + e.x;
+                    e.drawX = parentDrawX + e.x;
                 }
                 else if ((e.parentAnchor & 2) != 0)
                 {
-                    e.drawX = num + e.x + (num3 >> 1);
+                    e.drawX = parentDrawX + e.x + (parentWidth >> 1);
                 }
                 else if ((e.parentAnchor & 4) != 0)
                 {
-                    e.drawX = num + e.x + num3;
+                    e.drawX = parentDrawX + e.x + parentWidth;
                 }
                 if ((e.parentAnchor & 8) != 0)
                 {
-                    e.drawY = num2 + e.y;
+                    e.drawY = parentDrawY + e.y;
                 }
                 else if ((e.parentAnchor & 16) != 0)
                 {
-                    e.drawY = num2 + e.y + (num4 >> 1);
+                    e.drawY = parentDrawY + e.y + (parentHeight >> 1);
                 }
                 else if ((e.parentAnchor & 32) != 0)
                 {
-                    e.drawY = num2 + e.y + num4;
+                    e.drawY = parentDrawY + e.y + parentHeight;
                 }
             }
             else
@@ -138,29 +138,29 @@ namespace CutTheRope.Framework.Visual
         public virtual void PreDraw()
         {
             CalculateTopLeft(this);
-            bool flag = scaleX != 1.0 || scaleY != 1.0;
-            bool flag2 = rotation != 0.0;
-            bool flag3 = translateX != 0.0 || translateY != 0.0;
-            if (flag || flag2 || flag3)
+            bool changeScale = scaleX != 1.0 || scaleY != 1.0;
+            bool changeRotation = rotation != 0.0;
+            bool changeTranslate = translateX != 0.0 || translateY != 0.0;
+            if (changeScale || changeRotation || changeTranslate)
             {
                 Renderer.PushMatrix();
                 pushM = true;
-                if (flag || flag2)
+                if (changeScale || changeRotation)
                 {
-                    float num = drawX + (width >> 1) + rotationCenterX;
-                    float num2 = drawY + (height >> 1) + rotationCenterY;
-                    Renderer.Translate(num, num2, 0f);
-                    if (flag2)
+                    float rotationOffsetX = drawX + (width >> 1) + rotationCenterX;
+                    float rotationOffsetY = drawY + (height >> 1) + rotationCenterY;
+                    Renderer.Translate(rotationOffsetX, rotationOffsetY, 0f);
+                    if (changeRotation)
                     {
                         Renderer.Rotate(rotation, 0f, 0f, 1f);
                     }
-                    if (flag)
+                    if (changeScale)
                     {
                         Renderer.Scale(scaleX, scaleY, 1f);
                     }
-                    Renderer.Translate(0f - num, 0f - num2, 0f);
+                    Renderer.Translate(0f - rotationOffsetX, 0f - rotationOffsetY, 0f);
                 }
-                if (flag3)
+                if (changeTranslate)
                 {
                     Renderer.Translate(translateX, translateY, 0f);
                 }
@@ -204,19 +204,19 @@ namespace CutTheRope.Framework.Visual
             {
                 RestoreColor(this);
             }
-            int num = 0;
-            int num2 = 0;
-            while (num < childs.Count)
+            int processedChildren = 0;
+            int childId = 0;
+            while (processedChildren < childs.Count)
             {
-                if (childs.TryGetValue(num2, out BaseElement value))
+                if (childs.TryGetValue(childId, out BaseElement value))
                 {
                     if (value != null && value.visible)
                     {
                         value.Draw();
                     }
-                    num++;
+                    processedChildren++;
                 }
-                num2++;
+                childId++;
             }
             if (passTransformationsToChilds)
             {
@@ -230,19 +230,19 @@ namespace CutTheRope.Framework.Visual
 
         public virtual void Update(float delta)
         {
-            int num = 0;
-            int num2 = 0;
-            while (num < childs.Count)
+            int processedChildren = 0;
+            int childId = 0;
+            while (processedChildren < childs.Count)
             {
-                if (childs.TryGetValue(num2, out BaseElement value))
+                if (childs.TryGetValue(childId, out BaseElement value))
                 {
                     if (value != null && value.updateable)
                     {
                         value.Update(delta);
                     }
-                    num++;
+                    processedChildren++;
                 }
-                num2++;
+                childId++;
             }
             if (currentTimeline != null)
             {
@@ -274,36 +274,36 @@ namespace CutTheRope.Framework.Visual
         public void SetSizeToChildsBounds()
         {
             CalculateTopLeft(this);
-            float num = drawX;
-            float num2 = drawY;
-            float num3 = drawX + width;
-            float num4 = drawY + height;
+            float minX = drawX;
+            float minY = drawY;
+            float maxX = drawX + width;
+            float maxY = drawY + height;
             foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 BaseElement value = child.Value;
                 if (value != null)
                 {
                     CalculateTopLeft(value);
-                    if (value.drawX < num)
+                    if (value.drawX < minX)
                     {
-                        num = value.drawX;
+                        minX = value.drawX;
                     }
-                    if (value.drawY < num2)
+                    if (value.drawY < minY)
                     {
-                        num2 = value.drawY;
+                        minY = value.drawY;
                     }
-                    if (value.drawX + value.width > num3)
+                    if (value.drawX + value.width > maxX)
                     {
-                        num3 = value.drawX + value.width;
+                        maxX = value.drawX + value.width;
                     }
-                    if (value.drawX + value.height > num4)
+                    if (value.drawX + value.height > maxY)
                     {
-                        num4 = value.drawY + value.height;
+                        maxY = value.drawY + value.height;
                     }
                 }
             }
-            width = (int)(num3 - num);
-            height = (int)(num4 - num2);
+            width = (int)(maxX - minX);
+            height = (int)(maxY - minY);
         }
 
         public virtual bool HandleAction(ActionData a)
@@ -502,56 +502,56 @@ namespace CutTheRope.Framework.Visual
 
         public virtual bool OnTouchDownXY(float tx, float ty)
         {
-            bool flag = false;
+            bool handled = false;
             foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
-                if (value != null && value.touchable && value.OnTouchDownXY(tx, ty) && !flag)
+                if (value != null && value.touchable && value.OnTouchDownXY(tx, ty) && !handled)
                 {
-                    flag = true;
+                    handled = true;
                     if (!passTouchEventsToAllChilds)
                     {
-                        return flag;
+                        return handled;
                     }
                 }
             }
-            return flag;
+            return handled;
         }
 
         public virtual bool OnTouchUpXY(float tx, float ty)
         {
-            bool flag = false;
+            bool handled = false;
             foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
-                if (value != null && value.touchable && value.OnTouchUpXY(tx, ty) && !flag)
+                if (value != null && value.touchable && value.OnTouchUpXY(tx, ty) && !handled)
                 {
-                    flag = true;
+                    handled = true;
                     if (!passTouchEventsToAllChilds)
                     {
-                        return flag;
+                        return handled;
                     }
                 }
             }
-            return flag;
+            return handled;
         }
 
         public virtual bool OnTouchMoveXY(float tx, float ty)
         {
-            bool flag = false;
+            bool handled = false;
             foreach (KeyValuePair<int, BaseElement> item in childs.Reverse())
             {
                 BaseElement value = item.Value;
-                if (value != null && value.touchable && value.OnTouchMoveXY(tx, ty) && !flag)
+                if (value != null && value.touchable && value.OnTouchMoveXY(tx, ty) && !handled)
                 {
-                    flag = true;
+                    handled = true;
                     if (!passTouchEventsToAllChilds)
                     {
-                        return flag;
+                        return handled;
                     }
                 }
             }
-            return flag;
+            return handled;
         }
 
         public void SetEnabled(bool e)

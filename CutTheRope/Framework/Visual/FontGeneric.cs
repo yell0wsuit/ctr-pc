@@ -6,16 +6,16 @@ namespace CutTheRope.Framework.Visual
     {
         public virtual float StringWidth(string str)
         {
-            float num = 0f;
-            int num2 = str.Length();
+            float totalWidth = 0f;
+            int length = str.Length();
             char[] characters = str.GetCharacters();
-            float num3 = 0f;
-            for (int i = 0; i < num2; i++)
+            float spacing = 0f;
+            for (int i = 0; i < length; i++)
             {
-                num3 = GetCharOffset(characters, i, num2);
-                num += GetCharWidth(characters[i]) + num3;
+                spacing = GetCharOffset(characters, i, length);
+                totalWidth += GetCharWidth(characters[i]) + spacing;
             }
-            return num - num3;
+            return totalWidth - spacing;
         }
 
         public abstract void SetCharOffsetLineOffsetSpaceWidth(float co, float lo, float sw);

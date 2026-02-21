@@ -205,25 +205,25 @@ namespace CutTheRope.GameMain
 
         private static float NearestAngleTofrom(float ta, float fa)
         {
-            float num = fa - DEG_360;
-            float num2 = fa + DEG_360;
-            return Math.Abs(fa - ta) < Math.Abs(num - ta) && Math.Abs(fa - ta) < Math.Abs(num2 - ta)
+            float minus360 = fa - DEG_360;
+            float plus360 = fa + DEG_360;
+            return Math.Abs(fa - ta) < Math.Abs(minus360 - ta) && Math.Abs(fa - ta) < Math.Abs(plus360 - ta)
                 ? fa
-                : Math.Abs(num - ta) < Math.Abs(num2 - ta) ? num : NearestAngleTofrom(ta, num2);
+                : Math.Abs(minus360 - ta) < Math.Abs(plus360 - ta) ? minus360 : NearestAngleTofrom(ta, plus360);
         }
 
         private static float MinAngleBetweenAandB(float a, float b)
         {
-            float num;
-            for (num = Math.Abs(a - b); num > DEG_360; num -= DEG_360)
+            float normalizedDelta;
+            for (normalizedDelta = Math.Abs(a - b); normalizedDelta > DEG_360; normalizedDelta -= DEG_360)
             {
             }
-            num = Math.Abs(num);
-            if (num > DEG_180)
+            normalizedDelta = Math.Abs(normalizedDelta);
+            if (normalizedDelta > DEG_180)
             {
-                num -= DEG_360;
+                normalizedDelta -= DEG_360;
             }
-            return Math.Abs(num);
+            return Math.Abs(normalizedDelta);
         }
 
         public const int MAX_TOUCHES = 5;

@@ -22,9 +22,9 @@ namespace CutTheRope.Framework.Visual
                 }
                 Vector v = vector;
                 vector = VectMult(vector, p.radialAccel);
-                float num = v.X;
+                float tangentX = v.X;
                 v.X = 0f - v.Y;
-                v.Y = num;
+                v.Y = tangentX;
                 v = VectMult(v, p.tangentialAccel);
                 Vector v2 = VectAdd(VectAdd(vector, v), gravity);
                 v2 = VectMult(v2, delta);
@@ -36,28 +36,30 @@ namespace CutTheRope.Framework.Visual
                 p.color.BlueColor += p.deltaColor.BlueColor * delta;
                 p.color.AlphaChannel += p.deltaColor.AlphaChannel * delta;
                 p.life -= delta;
-                float num2 = p.pos.X - (p.width / 2f);
-                float num3 = p.pos.Y - (p.height / 2f);
-                float num4 = p.pos.X + (p.width / 2f);
-                float num5 = p.pos.Y - (p.height / 2f);
-                float num6 = p.pos.X - (p.width / 2f);
-                float num7 = p.pos.Y + (p.height / 2f);
-                float num9 = p.pos.X + (p.width / 2f);
-                float num8 = p.pos.Y + (p.height / 2f);
+                float halfWidth = p.width / 2f;
+                float halfHeight = p.height / 2f;
                 float cx = p.pos.X;
                 float cy = p.pos.Y;
-                Vector v3 = Vect(num2, num3);
-                Vector v4 = Vect(num4, num5);
-                Vector v5 = Vect(num6, num7);
-                Vector v6 = Vect(num9, num8);
+                Vector topLeft = Vect(p.pos.X - halfWidth, p.pos.Y - halfHeight);
+                Vector topRight = Vect(p.pos.X + halfWidth, p.pos.Y - halfHeight);
+                Vector bottomLeft = Vect(p.pos.X - halfWidth, p.pos.Y + halfHeight);
+                Vector bottomRight = Vect(p.pos.X + halfWidth, p.pos.Y + halfHeight);
                 p.angle += p.deltaAngle * delta;
                 float cosA = Cosf(p.angle);
                 float sinA = Sinf(p.angle);
-                v3 = RotatePreCalc(v3, cosA, sinA, cx, cy);
-                v4 = RotatePreCalc(v4, cosA, sinA, cx, cy);
-                v5 = RotatePreCalc(v5, cosA, sinA, cx, cy);
-                v6 = RotatePreCalc(v6, cosA, sinA, cx, cy);
-                drawer.vertices[particleIdx] = Quad3D.MakeQuad3DEx(v3.X, v3.Y, v4.X, v4.Y, v5.X, v5.Y, v6.X, v6.Y);
+                topLeft = RotatePreCalc(topLeft, cosA, sinA, cx, cy);
+                topRight = RotatePreCalc(topRight, cosA, sinA, cx, cy);
+                bottomLeft = RotatePreCalc(bottomLeft, cosA, sinA, cx, cy);
+                bottomRight = RotatePreCalc(bottomRight, cosA, sinA, cx, cy);
+                drawer.vertices[particleIdx] = Quad3D.MakeQuad3DEx(
+                    topLeft.X,
+                    topLeft.Y,
+                    topRight.X,
+                    topRight.Y,
+                    bottomLeft.X,
+                    bottomLeft.Y,
+                    bottomRight.X,
+                    bottomRight.Y);
                 for (int i = 0; i < 4; i++)
                 {
                     colors[(particleIdx * 4) + i] = p.color;
@@ -79,12 +81,12 @@ namespace CutTheRope.Framework.Visual
             base.Update(delta);
             if (active && emissionRate != 0f)
             {
-                float num = 1f / emissionRate;
+                float rate = 1f / emissionRate;
                 emitCounter += delta;
-                while (particleCount < totalParticles && emitCounter > num)
+                while (particleCount < totalParticles && emitCounter > rate)
                 {
                     _ = AddParticle();
-                    emitCounter -= num;
+                    emitCounter -= rate;
                 }
                 elapsed += delta;
                 if (duration != -1f && duration < elapsed)

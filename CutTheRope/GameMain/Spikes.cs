@@ -20,9 +20,9 @@ namespace CutTheRope.GameMain
             if (t > 0)
             {
                 DoRestoreCutTransparency();
-                int num = (t - 1) * ButtonFramesPerToggle;
+                int buttonQuad = (t - 1) * ButtonFramesPerToggle;
                 int q = ButtonPressedQuadOffset + ((t - 1) * ButtonFramesPerToggle);
-                Image image = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, num);
+                Image image = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, buttonQuad);
                 Image image2 = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, q);
                 image.DoRestoreCutTransparency();
                 image2.DoRestoreCutTransparency();
@@ -30,8 +30,8 @@ namespace CutTheRope.GameMain
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
                 _ = AddChild(rotateButton);
-                Vector quadOffset = GetQuadOffset(Resources.Img.ObjRotatableSpikesButton, num);
-                Vector quadSize = GetQuadSize(Resources.Img.ObjRotatableSpikesButton, num);
+                Vector quadOffset = GetQuadOffset(Resources.Img.ObjRotatableSpikesButton, buttonQuad);
+                Vector quadSize = GetQuadSize(Resources.Img.ObjRotatableSpikesButton, buttonQuad);
                 Vector vector = VectSub(Vect(image.texture.preCutSize.X, image.texture.preCutSize.Y), VectAdd(quadSize, quadOffset));
                 rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.X + (quadSize.X / 2f), 0f - vector.X + (quadSize.X / 2f), 0f - quadOffset.Y + (quadSize.Y / 2f), 0f - vector.Y + (quadSize.Y / 2f));
             }
@@ -54,10 +54,10 @@ namespace CutTheRope.GameMain
 
         public void UpdateRotation()
         {
-            float num = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
-            num /= 2f;
-            t1.X = x - num;
-            t2.X = x + num;
+            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
+            halfWidth /= 2f;
+            t1.X = x - halfWidth;
+            t2.X = x + halfWidth;
             t1.Y = t2.Y = y - 5f;
             b1.X = t1.X;
             b2.X = t2.X;
@@ -90,11 +90,11 @@ namespace CutTheRope.GameMain
         {
             spikesNormal = !spikesNormal;
             RemoveTimeline(2);
-            float num = spikesNormal ? DEG_90 : 0;
-            float num2 = origRotation + num;
+            float rotationOffset = spikesNormal ? DEG_90 : 0;
+            float targetRotation = origRotation + rotationOffset;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(num2 - rotation) / DEG_90 * 0.3f));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)targetRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(targetRotation - rotation) / DEG_90 * 0.3f));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 2);
             PlayTimeline(2);

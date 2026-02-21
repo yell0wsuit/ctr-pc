@@ -83,24 +83,24 @@ namespace CutTheRope.GameMain
             }
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0, 1, delta);
             ConstraintedPoint constraintedPoint4 = twoParts != 2 ? starL : star;
-            float num = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
-            float num19 = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
-            float num2 = FIT_TO_BOUNDARIES(num, 0f, mapWidth - SCREEN_WIDTH);
-            float num3 = FIT_TO_BOUNDARIES(num19, 0f, mapHeight - SCREEN_HEIGHT);
-            camera.MoveToXYImmediate(num2, num3, false);
+            float targetCameraX = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
+            float targetCameraY = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
+            float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
+            float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
+            camera.MoveToXYImmediate(boundedCameraX, boundedCameraY, false);
             if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
             {
                 camera.Update(delta);
             }
             if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
             {
-                float num4 = 100f;
-                float num5 = 800f;
-                float num6 = 400f;
-                float a = 1000f;
-                float a2 = 300f;
-                float num7 = VectDistance(camera.pos, Vect(num2, num3));
-                if (num7 < num4)
+                float touchEnableDistance = 100f;
+                float cameraAcceleration = 800f;
+                float cameraDeceleration = 400f;
+                float maxCameraSpeed = 1000f;
+                float minCameraSpeed = 300f;
+                float cameraTargetDistance = VectDistance(camera.pos, Vect(boundedCameraX, boundedCameraY));
+                if (cameraTargetDistance < touchEnableDistance)
                 {
                     ignoreTouches = false;
                 }
@@ -111,17 +111,17 @@ namespace CutTheRope.GameMain
                         camera.speed *= 1.5f;
                     }
                 }
-                else if ((double)num7 > initialCameraToStarDistance / 2.0)
+                else if ((double)cameraTargetDistance > initialCameraToStarDistance / 2.0)
                 {
-                    camera.speed += delta * num5;
-                    camera.speed = MIN(a, camera.speed);
+                    camera.speed += delta * cameraAcceleration;
+                    camera.speed = MIN(maxCameraSpeed, camera.speed);
                 }
                 else
                 {
-                    camera.speed -= delta * num6;
-                    camera.speed = MAX(a2, camera.speed);
+                    camera.speed -= delta * cameraDeceleration;
+                    camera.speed = MAX(minCameraSpeed, camera.speed);
                 }
-                if ((double)Math.Abs(camera.pos.X - num2) < 1.0 && (double)Math.Abs(camera.pos.Y - num3) < 1.0)
+                if ((double)Math.Abs(camera.pos.X - boundedCameraX) < 1.0 && (double)Math.Abs(camera.pos.Y - boundedCameraY) < 1.0)
                 {
                     camera.type = CAMERATYPE.CAMERASPEEDDELAY;
                     camera.speed = 14f;
@@ -148,9 +148,9 @@ namespace CutTheRope.GameMain
                 bool flag = false;
                 bool flag2 = false;
                 bool flag3 = false;
-                int num8 = bungees.Count;
+                int grabCount = bungees.Count;
                 int k = 0;
-                while (k < num8)
+                while (k < grabCount)
                 {
                     Grab grab = bungees.ObjectAtIndex(k);
                     grab.Update(delta);
@@ -346,34 +346,34 @@ namespace CutTheRope.GameMain
                             }
                             if (rope.relaxed != 0 && rope.cut == -1 && flag4)
                             {
-                                float num9 = RADIANS_TO_DEGREES(VectAngleNormalized(v));
+                                float ropeAngle = RADIANS_TO_DEGREES(VectAngleNormalized(v));
                                 if (twoParts != 2)
                                 {
                                     GameObject gameObject = constraintedPoint2 == starL ? candyL : candyR;
                                     if (!rope.chosenOne)
                                     {
-                                        rope.initialCandleAngle = gameObject.rotation - num9;
+                                        rope.initialCandleAngle = gameObject.rotation - ropeAngle;
                                     }
                                     if (constraintedPoint2 == starL)
                                     {
-                                        lastCandyRotateDeltaL = num9 + rope.initialCandleAngle - gameObject.rotation;
+                                        lastCandyRotateDeltaL = ropeAngle + rope.initialCandleAngle - gameObject.rotation;
                                         flag2 = true;
                                     }
                                     else
                                     {
-                                        lastCandyRotateDeltaR = num9 + rope.initialCandleAngle - gameObject.rotation;
+                                        lastCandyRotateDeltaR = ropeAngle + rope.initialCandleAngle - gameObject.rotation;
                                         flag3 = true;
                                     }
-                                    gameObject.rotation = num9 + rope.initialCandleAngle;
+                                    gameObject.rotation = ropeAngle + rope.initialCandleAngle;
                                 }
                                 else if (!noCandy && constraintedPoint2 == star)
                                 {
                                     if (!rope.chosenOne)
                                     {
-                                        rope.initialCandleAngle = candyMain.rotation - num9;
+                                        rope.initialCandleAngle = candyMain.rotation - ropeAngle;
                                     }
-                                    lastCandyRotateDelta = num9 + rope.initialCandleAngle - candyMain.rotation;
-                                    candyMain.rotation = num9 + rope.initialCandleAngle;
+                                    lastCandyRotateDelta = ropeAngle + rope.initialCandleAngle - candyMain.rotation;
+                                    candyMain.rotation = ropeAngle + rope.initialCandleAngle;
                                     flag = true;
                                 }
                                 rope.chosenOne = true;
@@ -444,9 +444,9 @@ namespace CutTheRope.GameMain
                         noCandy = false;
                         noCandyL = true;
                         noCandyR = true;
-                        int num20 = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
-                        Preferences.SetIntForKey(num20, "PREFS_CANDIES_UNITED", false);
-                        if (num20 == 100)
+                        int candiesUnitedCount = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
+                        Preferences.SetIntForKey(candiesUnitedCount, "PREFS_CANDIES_UNITED", false);
+                        if (candiesUnitedCount == 100)
                         {
                             CTRRootController.PostAchievementName("1432722351", ACHIEVEMENT_STRING("\"Romantic Soul\""));
                         }
@@ -529,15 +529,15 @@ namespace CutTheRope.GameMain
                         Vector vector2 = VectSub(starR.pos, starR.prevPos);
                         Vector v2 = Vect((vector.X + vector2.X) / 2f, (vector.Y + vector2.Y) / 2f);
                         star.prevPos = VectSub(star.pos, v2);
-                        int num10 = bungees.Count;
-                        for (int m = 0; m < num10; m++)
+                        int bungeeCount = bungees.Count;
+                        for (int m = 0; m < bungeeCount; m++)
                         {
                             Bungee rope2 = bungees.ObjectAtIndex(m).rope;
                             if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == starL || rope2.tail == starR))
                             {
                                 ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
-                                int num11 = (int)rope2.tail.RestLengthFor(constraintedPoint3);
-                                star.AddConstraintwithRestLengthofType(constraintedPoint3, num11, Constraint.CONSTRAINT.DISTANCE);
+                                int restLength = (int)rope2.tail.RestLengthFor(constraintedPoint3);
+                                star.AddConstraintwithRestLengthofType(constraintedPoint3, restLength, Constraint.CONSTRAINT.DISTANCE);
                                 rope2.tail = star;
                                 rope2.parts[^1] = star;
                                 rope2.initialCandleAngle = 0f;
@@ -645,10 +645,10 @@ namespace CutTheRope.GameMain
             {
                 Bubble bubble3 = (Bubble)obj3;
                 bubble3.Update(delta);
-                float num12 = 85f;
+                float bubbleCaptureRadius = 85f;
                 if (twoParts != 2)
                 {
-                    if (!noCandyL && !bubble3.popped && PointInRect(candyL.x, candyL.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                    if (!noCandyL && !bubble3.popped && PointInRect(candyL.x, candyL.y, bubble3.x - bubbleCaptureRadius, bubble3.y - bubbleCaptureRadius, bubbleCaptureRadius * 2f, bubbleCaptureRadius * 2f))
                     {
                         if (candyBubbleL != null)
                         {
@@ -679,7 +679,7 @@ namespace CutTheRope.GameMain
                         conveyors.Remove(bubble3);
                         break;
                     }
-                    if (!noCandyR && !bubble3.popped && PointInRect(candyR.x, candyR.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                    if (!noCandyR && !bubble3.popped && PointInRect(candyR.x, candyR.y, bubble3.x - bubbleCaptureRadius, bubble3.y - bubbleCaptureRadius, bubbleCaptureRadius * 2f, bubbleCaptureRadius * 2f))
                     {
                         if (candyBubbleR != null)
                         {
@@ -711,7 +711,7 @@ namespace CutTheRope.GameMain
                         break;
                     }
                 }
-                else if (!noCandy && !bubble3.popped && PointInRect(candy.x, candy.y, bubble3.x - num12, bubble3.y - num12, num12 * 2f, num12 * 2f))
+                else if (!noCandy && !bubble3.popped && PointInRect(candy.x, candy.y, bubble3.x - bubbleCaptureRadius, bubble3.y - bubbleCaptureRadius, bubbleCaptureRadius * 2f, bubbleCaptureRadius * 2f))
                 {
                     if (candyBubble != null)
                     {
@@ -946,7 +946,7 @@ namespace CutTheRope.GameMain
                     TriggerSpecialTutorial(4);
                 }
             }
-            float num13 = RTPD(20.0);
+            float collisionHalfSize = RTPD(20.0);
             foreach (object obj11 in socks)
             {
                 Sock sock3 = (Sock)obj11;
@@ -958,17 +958,17 @@ namespace CutTheRope.GameMain
 
                 bool wasIdle = sock3.state == Sock.SOCK_IDLE;
 
-                float num14 = sock3.rotation;
+                float originalSockRotation = sock3.rotation;
                 sock3.rotation = 0f;
                 sock3.UpdateRotation();
-                float invRotation = DEGREES_TO_RADIANS(0f - num14);
+                float invRotation = DEGREES_TO_RADIANS(0f - originalSockRotation);
                 Vector ptr = VectRotate(star.posDelta, invRotation);
-                sock3.rotation = num14;
+                sock3.rotation = originalSockRotation;
                 sock3.UpdateRotation();
 
-                float bbX = star.pos.X - num13;
-                float bbY = star.pos.Y - num13;
-                float bbSize = num13 * 2f;
+                float bbX = star.pos.X - collisionHalfSize;
+                float bbY = star.pos.Y - collisionHalfSize;
+                float bbSize = collisionHalfSize * 2f;
 
                 bool candyHits = ptr.Y >= 0.0 &&
                     (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bbX, bbY, bbSize, bbSize) ||
@@ -984,8 +984,8 @@ namespace CutTheRope.GameMain
                             continue;
                         }
                         Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
-                        float bulbX = bulb.constraint.pos.X - num13;
-                        float bulbY = bulb.constraint.pos.Y - num13;
+                        float bulbX = bulb.constraint.pos.X - collisionHalfSize;
+                        float bulbY = bulb.constraint.pos.Y - collisionHalfSize;
                         bool bulbHit = bulbDelta.Y >= 0.0 &&
                             (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bulbX, bulbY, bbSize, bbSize) ||
                              LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bulbX, bulbY, bbSize, bbSize));
@@ -1047,8 +1047,8 @@ namespace CutTheRope.GameMain
                             continue;
                         }
                         Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
-                        float bulbX = bulb.constraint.pos.X - num13;
-                        float bulbY = bulb.constraint.pos.Y - num13;
+                        float bulbX = bulb.constraint.pos.X - collisionHalfSize;
+                        float bulbY = bulb.constraint.pos.Y - collisionHalfSize;
                         bool bulbHit = bulbDelta.Y >= 0.0 &&
                             (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bulbX, bulbY, bbSize, bbSize) ||
                              LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bulbX, bulbY, bbSize, bbSize));
@@ -1260,26 +1260,26 @@ namespace CutTheRope.GameMain
                 {
                     continue;
                 }
-                float num15 = 15f;
+                float spikeCollisionRadius = 15f;
                 if (!spike.electro || (spike.electro && spike.electroOn))
                 {
                     bool flag5 = false;
                     bool flag6;
                     if (twoParts != 2)
                     {
-                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starL.pos.X - num15, starL.pos.Y - num15, num15 * 2f, num15 * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starL.pos.X - num15, starL.pos.Y - num15, num15 * 2f, num15 * 2f)) && !noCandyL;
+                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f)) && !noCandyL;
                         if (flag6)
                         {
                             flag5 = true;
                         }
                         else
                         {
-                            flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starR.pos.X - num15, starR.pos.Y - num15, num15 * 2f, num15 * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starR.pos.X - num15, starR.pos.Y - num15, num15 * 2f, num15 * 2f)) && !noCandyR;
+                            flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f)) && !noCandyR;
                         }
                     }
                     else
                     {
-                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, star.pos.X - num15, star.pos.Y - num15, num15 * 2f, num15 * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, star.pos.X - num15, star.pos.Y - num15, num15 * 2f, num15 * 2f)) && !noCandy;
+                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f)) && !noCandy;
                     }
                     if (flag6)
                     {
@@ -1365,24 +1365,24 @@ namespace CutTheRope.GameMain
             {
                 Bouncer bouncer = (Bouncer)obj15;
                 bouncer.Update(delta);
-                float num16 = 40f;
+                float bouncerCollisionRadius = 40f;
                 bool flag7 = false;
                 bool flag8;
                 if (twoParts != 2)
                 {
-                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starL.pos.X - num16, starL.pos.Y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starL.pos.X - num16, starL.pos.Y - num16, num16 * 2f, num16 * 2f)) && !noCandyL;
+                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f)) && !noCandyL;
                     if (flag8)
                     {
                         flag7 = true;
                     }
                     else
                     {
-                        flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starR.pos.X - num16, starR.pos.Y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starR.pos.X - num16, starR.pos.Y - num16, num16 * 2f, num16 * 2f)) && !noCandyR;
+                        flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f)) && !noCandyR;
                     }
                 }
                 else
                 {
-                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, star.pos.X - num16, star.pos.Y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, star.pos.X - num16, star.pos.Y - num16, num16 * 2f, num16 * 2f)) && !noCandy;
+                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f)) && !noCandy;
                 }
                 if (flag8)
                 {
@@ -1412,7 +1412,7 @@ namespace CutTheRope.GameMain
                         {
                             continue;
                         }
-                        if (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, bulb.constraint.pos.X - num16, bulb.constraint.pos.Y - num16, num16 * 2f, num16 * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, bulb.constraint.pos.X - num16, bulb.constraint.pos.Y - num16, num16 * 2f, num16 * 2f))
+                        if (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f))
                         {
                             HandleBouncePtDelta(bouncer, bulb.constraint, delta);
                             bulbHit = true;
@@ -1496,30 +1496,30 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            float num17 = -40f;
-            float num18 = 14f;
+            float bubbleLift = -40f;
+            float bubbleDamping = 14f;
             if (twoParts == 0)
             {
                 if (candyBubbleL != null)
                 {
                     if (gravityButton != null && !gravityNormal)
                     {
-                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / num18, ((0f - starL.v.Y) / num18) - num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / bubbleDamping, ((0f - starL.v.Y) / bubbleDamping) - bubbleLift), delta);
                     }
                     else
                     {
-                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / num18, ((0f - starL.v.Y) / num18) + num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / bubbleDamping, ((0f - starL.v.Y) / bubbleDamping) + bubbleLift), delta);
                     }
                 }
                 if (candyBubbleR != null)
                 {
                     if (gravityButton != null && !gravityNormal)
                     {
-                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / num18, ((0f - starR.v.Y) / num18) - num17), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / bubbleDamping, ((0f - starR.v.Y) / bubbleDamping) - bubbleLift), delta);
                     }
                     else
                     {
-                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / num18, ((0f - starR.v.Y) / num18) + num17), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / bubbleDamping, ((0f - starR.v.Y) / bubbleDamping) + bubbleLift), delta);
                     }
                 }
             }
@@ -1529,13 +1529,13 @@ namespace CutTheRope.GameMain
                 {
                     if (gravityButton != null && !gravityNormal)
                     {
-                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / num18, ((0f - starL.v.Y) / num18) - num17), delta);
-                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / num18, ((0f - starR.v.Y) / num18) - num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / bubbleDamping, ((0f - starL.v.Y) / bubbleDamping) - bubbleLift), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / bubbleDamping, ((0f - starR.v.Y) / bubbleDamping) - bubbleLift), delta);
                     }
                     else
                     {
-                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / num18, ((0f - starL.v.Y) / num18) + num17), delta);
-                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / num18, ((0f - starR.v.Y) / num18) + num17), delta);
+                        starL.ApplyImpulseDelta(Vect((0f - starL.v.X) / bubbleDamping, ((0f - starL.v.Y) / bubbleDamping) + bubbleLift), delta);
+                        starR.ApplyImpulseDelta(Vect((0f - starR.v.X) / bubbleDamping, ((0f - starR.v.Y) / bubbleDamping) + bubbleLift), delta);
                     }
                 }
             }
@@ -1543,11 +1543,11 @@ namespace CutTheRope.GameMain
             {
                 if (gravityButton != null && !gravityNormal)
                 {
-                    star.ApplyImpulseDelta(Vect((0f - star.v.X) / num18, ((0f - star.v.Y) / num18) - num17), delta);
+                    star.ApplyImpulseDelta(Vect((0f - star.v.X) / bubbleDamping, ((0f - star.v.Y) / bubbleDamping) - bubbleLift), delta);
                 }
                 else
                 {
-                    star.ApplyImpulseDelta(Vect((0f - star.v.X) / num18, ((0f - star.v.Y) / num18) + num17), delta);
+                    star.ApplyImpulseDelta(Vect((0f - star.v.X) / bubbleDamping, ((0f - star.v.Y) / bubbleDamping) + bubbleLift), delta);
                 }
             }
             if (activeRocket != null)
@@ -1564,11 +1564,11 @@ namespace CutTheRope.GameMain
                     }
                     if (gravityButton != null && !gravityNormal)
                     {
-                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.X) / num18, ((0f - bulb.constraint.v.Y) / num18) - num17), delta);
+                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.X) / bubbleDamping, ((0f - bulb.constraint.v.Y) / bubbleDamping) - bubbleLift), delta);
                     }
                     else
                     {
-                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.X) / num18, ((0f - bulb.constraint.v.Y) / num18) + num17), delta);
+                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.X) / bubbleDamping, ((0f - bulb.constraint.v.Y) / bubbleDamping) + bubbleLift), delta);
                     }
                 }
             }
@@ -1637,13 +1637,13 @@ namespace CutTheRope.GameMain
                 }
                 if (restartState != 0)
                 {
-                    int num21 = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;
-                    Preferences.SetIntForKey(num21, "PREFS_CANDIES_LOST", false);
-                    if (num21 == 50)
+                    int candiesLostCount = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;
+                    Preferences.SetIntForKey(candiesLostCount, "PREFS_CANDIES_LOST", false);
+                    if (candiesLostCount == 50)
                     {
                         CTRRootController.PostAchievementName("681497443", ACHIEVEMENT_STRING("\"Weight Loser\""));
                     }
-                    if (num21 == 200)
+                    if (candiesLostCount == 200)
                     {
                         CTRRootController.PostAchievementName("1058341297", ACHIEVEMENT_STRING("\"Calorie Minimizer\""));
                     }

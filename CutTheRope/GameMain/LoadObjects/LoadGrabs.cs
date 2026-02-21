@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
             float hx = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
             float hy = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
             float len = xmlNode.AttributeAsNSString("length").IntValue() * scale;
-            float num12 = xmlNode.AttributeAsNSString("radius").FloatValue();
+            float grabRadius = xmlNode.AttributeAsNSString("radius").FloatValue();
             bool wheel = xmlNode.AttributeAsNSString("wheel").IsEqualToString("true");
             bool kickable = xmlNode.AttributeAsNSString("kickable").IsEqualToString("true");
             bool kicked = xmlNode.AttributeAsNSString("kicked").IsEqualToString("true");
@@ -52,11 +52,11 @@ namespace CutTheRope.GameMain
                 grab.SetBee();
                 if (!flag2)
                 {
-                    int num13 = 3;
+                    int pollenPathStep = 3;
                     bool flag3 = xmlNode.AttributeAsNSString("path").HasPrefix("R");
                     for (int l = 0; l < grab.mover.pathLen - 1; l++)
                     {
-                        if (!flag3 || l % num13 == 0)
+                        if (!flag3 || l % pollenPathStep == 0)
                         {
                             pollenDrawer.FillWithPolenFromPathIndexToPathIndexGrab(l, l + 1, grab);
                         }
@@ -67,11 +67,11 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            if (num12 != -1f)
+            if (grabRadius != -1f)
             {
-                num12 *= scale;
+                grabRadius *= scale;
             }
-            if (num12 == -1f && !gun)
+            if (grabRadius == -1f && !gun)
             {
                 ConstraintedPoint constraintedPoint = star;
                 if (bindBulb)
@@ -99,7 +99,7 @@ namespace CutTheRope.GameMain
                     bungee.bungeeAnchor.SetWeight(0.1f);
                 }
             }
-            grab.SetRadius(num12);
+            grab.SetRadius(grabRadius);
             grab.SetMoveLengthVerticalOffset(k, v, o);
             if (grab.gun && grab.gunArrow != null)
             {

@@ -238,9 +238,9 @@ namespace CutTheRope.Desktop
                     }
                     else
                     {
-                        int num = _touchID + 1;
-                        _touchID = num;
-                        touchLocation = new TouchLocation(num, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
+                        int nextTouchId = _touchID + 1;
+                        _touchID = nextTouchId;
+                        touchLocation = new TouchLocation(nextTouchId, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
                     }
                     item = touchLocation;
                 }
@@ -251,9 +251,9 @@ namespace CutTheRope.Desktop
             }
             else if (mouseStateTranformed.LeftButton == ButtonState.Pressed)
             {
-                int num = _touchID + 1;
-                _touchID = num;
-                item = new TouchLocation(num, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
+                int nextTouchId = _touchID + 1;
+                _touchID = nextTouchId;
+                item = new TouchLocation(nextTouchId, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
             }
             if (item.State != TouchLocationState.Invalid)
             {

@@ -11,9 +11,9 @@ namespace CutTheRope.Framework.Sfe
             ResetAll();
         }
 
-        public virtual void SetWeight(float w)
+        public virtual void SetWeight(float weightValue)
         {
-            weight = w;
+            weight = weightValue;
             invWeight = 1 / weight;
             gravity = Vect(0f, 784f * weight);
         }
@@ -43,42 +43,42 @@ namespace CutTheRope.Framework.Sfe
             totalForce = vectZero;
         }
 
-        public virtual void SetForcewithID(Vector force, int n)
+        public virtual void SetForcewithID(Vector force, int index)
         {
-            forces[n] = force;
-            if (n > highestForceIndex)
+            forces[index] = force;
+            if (index > highestForceIndex)
             {
-                highestForceIndex = n;
+                highestForceIndex = index;
             }
         }
 
-        public virtual void DeleteForce(int n)
+        public virtual void DeleteForce(int index)
         {
-            forces[n] = vectZero;
+            forces[index] = vectZero;
         }
 
-        public virtual Vector GetForce(int n)
+        public virtual Vector GetForce(int index)
         {
-            return forces[n];
+            return forces[index];
         }
 
         public virtual void ApplyImpulseDelta(Vector impulse, float delta)
         {
             if (!VectEqual(impulse, vectZero))
             {
-                Vector v = VectMult(impulse, delta / 1);
-                pos = VectAdd(pos, v);
+                Vector impulseDelta = VectMult(impulse, delta / 1);
+                pos = VectAdd(pos, impulseDelta);
             }
         }
 
-        public virtual void UpdatewithPrecision(float delta, float p)
+        public virtual void UpdatewithPrecision(float delta, float precision)
         {
-            int num = (int)(delta / p) + 1;
-            if (num != 0)
+            int numIterations = (int)(delta / precision) + 1;
+            if (numIterations != 0)
             {
-                delta /= num;
+                delta /= numIterations;
             }
-            for (int i = 0; i < num; i++)
+            for (int i = 0; i < numIterations; i++)
             {
                 Update(delta);
             }

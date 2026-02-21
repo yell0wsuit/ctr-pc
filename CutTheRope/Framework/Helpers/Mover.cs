@@ -10,11 +10,11 @@ namespace CutTheRope.Framework.Helpers
     {
         public Mover(int l, float m_, float r_)
         {
-            int num = (int)m_;
-            int num2 = (int)r_;
+            int defaultMoveSpeed = (int)m_;
+            int defaultRotateSpeed = (int)r_;
             pathLen = 0;
             pathCapacity = l;
-            rotateSpeed = num2;
+            rotateSpeed = defaultRotateSpeed;
             if (pathCapacity > 0)
             {
                 path = new Vector[pathCapacity];
@@ -25,7 +25,7 @@ namespace CutTheRope.Framework.Helpers
                 moveSpeed = new float[pathCapacity];
                 for (int j = 0; j < moveSpeed.Length; j++)
                 {
-                    moveSpeed[j] = num;
+                    moveSpeed[j] = defaultMoveSpeed;
                 }
             }
             IsPaused = false;
@@ -43,26 +43,26 @@ namespace CutTheRope.Framework.Helpers
         {
             if (p.CharacterAtIndex(0) == 'R')
             {
-                bool flag = p.CharacterAtIndex(1) == 'C';
-                int num = p.SubstringFromIndex(2).IntValue();
-                int num2 = num / 2;
-                if (num2 <= 0)
+                bool clockwise = p.CharacterAtIndex(1) == 'C';
+                int radius = p.SubstringFromIndex(2).IntValue();
+                int pointsCount = radius / 2;
+                if (pointsCount <= 0)
                 {
                     AddPathPoint(s);
                     return;
                 }
-                float num3 = MathF.Tau / num2;
-                if (!flag)
+                float angleStep = MathF.Tau / pointsCount;
+                if (!clockwise)
                 {
-                    num3 = 0f - num3;
+                    angleStep = 0f - angleStep;
                 }
-                float num4 = 0f;
-                for (int i = 0; i < num2; i++)
+                float theta = 0f;
+                for (int i = 0; i < pointsCount; i++)
                 {
-                    float x = s.X + (num * MathF.Cos(num4));
-                    float y = s.Y + (num * MathF.Sin(num4));
+                    float x = s.X + (radius * MathF.Cos(theta));
+                    float y = s.Y + (radius * MathF.Sin(theta));
                     AddPathPoint(Vect(x, y));
-                    num4 += num3;
+                    theta += angleStep;
                 }
                 return;
             }
@@ -74,18 +74,18 @@ namespace CutTheRope.Framework.Helpers
             List<string> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)
             {
-                string nSString2 = list[j];
-                string nSString3 = list[j + 1];
-                AddPathPoint(Vect(s.X + nSString2.FloatValue(), s.Y + nSString3.FloatValue()));
+                string xOffsetString = list[j];
+                string yOffsetString = list[j + 1];
+                AddPathPoint(Vect(s.X + xOffsetString.FloatValue(), s.Y + yOffsetString.FloatValue()));
             }
         }
 
         public virtual void AddPathPoint(Vector v)
         {
             Vector[] array = path;
-            int num = pathLen;
-            pathLen = num + 1;
-            array[num] = v;
+            int insertIndex = pathLen;
+            pathLen = insertIndex + 1;
+            array[insertIndex] = v;
         }
 
         public virtual void Start()

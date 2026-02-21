@@ -34,10 +34,10 @@ namespace CutTheRope.GameMain
             target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
-            string nSString3 = xmlNode.AttributeAsNSString("x");
-            target.x = support.x = (nSString3.IntValue() * scale) + offsetX + mapOffsetX;
-            string nSString4 = xmlNode.AttributeAsNSString("y");
-            target.y = support.y = (nSString4.IntValue() * scale) + offsetY + mapOffsetY;
+            string xAttribute = xmlNode.AttributeAsNSString("x");
+            target.x = support.x = (xAttribute.IntValue() * scale) + offsetX + mapOffsetX;
+            string yAttribute = xmlNode.AttributeAsNSString("y");
+            target.y = support.y = (yAttribute.IntValue() * scale) + offsetY + mapOffsetY;
 
             target.AddImage(Resources.Img.CharAnimations2);
             target.AddImage(Resources.Img.CharAnimations3);
@@ -57,40 +57,40 @@ namespace CutTheRope.GameMain
             target.AddAnimationWithIDDelayLoopFirstLast(1, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 43, 67);
 
             // Setup complex looping animation sequence
-            int num14 = 68;
-            target.AddAnimationWithIDDelayLoopCountSequence(2, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 32, num14,
+            int loopStartFrame = 68;
+            target.AddAnimationWithIDDelayLoopCountSequence(2, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 32, loopStartFrame,
             [
-                num14 + 1,
-                num14 + 2,
-                num14 + 3,
-                num14 + 4,
-                num14 + 5,
-                num14 + 6,
-                num14 + 7,
-                num14 + 8,
-                num14 + 9,
-                num14 + 10,
-                num14 + 11,
-                num14 + 12,
-                num14 + 13,
-                num14 + 14,
-                num14 + 15,
-                num14,
-                num14 + 1,
-                num14 + 2,
-                num14 + 3,
-                num14 + 4,
-                num14 + 5,
-                num14 + 6,
-                num14 + 7,
-                num14 + 8,
-                num14 + 9,
-                num14 + 10,
-                num14 + 11,
-                num14 + 12,
-                num14 + 13,
-                num14 + 14,
-                num14 + 15
+                loopStartFrame + 1,
+                loopStartFrame + 2,
+                loopStartFrame + 3,
+                loopStartFrame + 4,
+                loopStartFrame + 5,
+                loopStartFrame + 6,
+                loopStartFrame + 7,
+                loopStartFrame + 8,
+                loopStartFrame + 9,
+                loopStartFrame + 10,
+                loopStartFrame + 11,
+                loopStartFrame + 12,
+                loopStartFrame + 13,
+                loopStartFrame + 14,
+                loopStartFrame + 15,
+                loopStartFrame,
+                loopStartFrame + 1,
+                loopStartFrame + 2,
+                loopStartFrame + 3,
+                loopStartFrame + 4,
+                loopStartFrame + 5,
+                loopStartFrame + 6,
+                loopStartFrame + 7,
+                loopStartFrame + 8,
+                loopStartFrame + 9,
+                loopStartFrame + 10,
+                loopStartFrame + 11,
+                loopStartFrame + 12,
+                loopStartFrame + 13,
+                loopStartFrame + 14,
+                loopStartFrame + 15
             ]);
 
             if (SpecialEvents.IsXmas)

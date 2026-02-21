@@ -13,16 +13,16 @@ namespace CutTheRope.Framework.Visual
         {
             sp = GetScroll();
             mp = GetMaxScroll();
-            float num = container.width / (float)width;
-            float num2 = container.height / (float)height;
-            sc = Vect(num, num2);
+            float scrollCoeffX = container.width / (float)width;
+            float scrollCoeffY = container.height / (float)height;
+            sc = Vect(scrollCoeffX, scrollCoeffY);
         }
 
         public override int AddChildwithID(BaseElement c, int i)
         {
-            int num = container.AddChildwithID(c, i);
+            int childId = container.AddChildwithID(c, i);
             c.parentAnchor = 9;
-            return num;
+            return childId;
         }
 
         public override int AddChild(BaseElement c)
@@ -77,9 +77,9 @@ namespace CutTheRope.Framework.Visual
             while (i < count)
             {
                 BaseElement baseElement = dictionary[i];
-                float num = baseElement.drawX;
-                float num2 = baseElement.drawY;
-                if (baseElement != null && baseElement.visible && RectInRect(num, num2, num + baseElement.width, num2 + baseElement.height, drawX, drawY, drawX + width, drawY + height))
+                float childDrawX = baseElement.drawX;
+                float childDrawY = baseElement.drawY;
+                if (baseElement != null && baseElement.visible && RectInRect(childDrawX, childDrawY, childDrawX + baseElement.width, childDrawY + baseElement.height, drawX, drawY, drawX + width, drawY + height))
                 {
                     baseElement.Draw();
                 }
@@ -326,8 +326,8 @@ namespace CutTheRope.Framework.Visual
             touchState = TOUCH_STATE.UP;
             if (inertiaTimeoutLeft > 0f)
             {
-                float num = inertiaTimeoutLeft / inertiaTimeout;
-                move = VectMult(staticMove, num * 50f);
+                float inertiaRatio = inertiaTimeoutLeft / inertiaTimeout;
+                move = VectMult(staticMove, inertiaRatio * 50f);
                 // movingByInertion = true;
             }
             if (spointsNum > 0)
@@ -363,8 +363,8 @@ namespace CutTheRope.Framework.Visual
 
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
-            // float num = ApplicationSettings.GetInt(5);
-            // fixedDelta = (float)(1.0 / (double)num);
+            // float fixedDeltaSetting = ApplicationSettings.GetInt(5);
+            // fixedDelta = (float)(1.0 / (double)fixedDeltaSetting);
             spoints = null;
             spointsNum = -1;
             spointsCapacity = -1;
@@ -486,28 +486,28 @@ namespace CutTheRope.Framework.Visual
         public void CalculateNearsetScrollPointInDirection(Vector d)
         {
             // spointMoveDirection = d;
-            int num = -1;
-            float num2 = 9999999f;
-            float num3 = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(d)));
+            int nearestScrollPoint = -1;
+            float nearestDistance = 9999999f;
+            float directionAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(d)));
             Vector v = Vect(container.x, container.y);
             for (int i = 0; i < spointsNum; i++)
             {
                 if (spoints[i].X <= 0f && (spoints[i].X >= (-container.width + width) || spoints[i].X >= 0f) && spoints[i].Y <= 0f && (spoints[i].Y >= (-container.height + height) || spoints[i].Y >= 0f))
                 {
-                    float num4 = VectDistance(spoints[i], v);
-                    if ((VectEqual(d, vectZero) || Math.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - num3) <= DEG_90) && num4 < num2)
+                    float candidateDistance = VectDistance(spoints[i], v);
+                    if ((VectEqual(d, vectZero) || Math.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - directionAngle) <= DEG_90) && candidateDistance < nearestDistance)
                     {
-                        num = i;
-                        num2 = num4;
+                        nearestScrollPoint = i;
+                        nearestDistance = candidateDistance;
                     }
                 }
             }
-            if (num == -1 && !VectEqual(d, vectZero))
+            if (nearestScrollPoint == -1 && !VectEqual(d, vectZero))
             {
                 CalculateNearsetScrollPointInDirection(vectZero);
                 return;
             }
-            targetSpoint = num;
+            targetSpoint = nearestScrollPoint;
             if (!canSkipScrollPoints && targetSpoint != lastTargetSpoint)
             {
                 //movingByInertion = false;
@@ -516,9 +516,9 @@ namespace CutTheRope.Framework.Visual
             {
                 delegateScrollableContainerProtocol.ScrollableContainerchangedTargetScrollPoint(this, targetSpoint);
             }
-            float num6 = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(move)));
-            float num5 = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[targetSpoint], v))));
-            spointMoveMultiplier = Math.Abs(AngleTo0_360(num6 - num5)) < DEG_90 ? Math.Max(1f, VectLength(move) / 500f) : 0.5f;
+            float moveAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(move)));
+            float targetAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[targetSpoint], v))));
+            spointMoveMultiplier = Math.Abs(AngleTo0_360(moveAngle - targetAngle)) < DEG_90 ? Math.Max(1f, VectLength(move) / 500f) : 0.5f;
             lastTargetSpoint = targetSpoint;
         }
 
