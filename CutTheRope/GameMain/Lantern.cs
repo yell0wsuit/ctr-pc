@@ -36,7 +36,7 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.4f, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.05f, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.7f, 0.7f, 0.7f, 0.7f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_PING_PONG);
             fire.AddTimelinewithID(timeline, (int)LanternActivation.FireBounce);
 
@@ -47,12 +47,12 @@ namespace CutTheRope.GameMain
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             idleForm.AddTimelinewithID(timeline, (int)LanternActivation.Activation);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             idleForm.AddTimelinewithID(timeline, (int)LanternActivation.Deactivation);
 
             activeForm = Image_createWithResIDQuad(Resources.Img.ObjLantern, LanternEndQuad);
@@ -64,12 +64,12 @@ namespace CutTheRope.GameMain
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             activeForm.AddTimelinewithID(timeline, (int)LanternActivation.Activation);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             activeForm.AddTimelinewithID(timeline, (int)LanternActivation.Deactivation);
 
             int candyVariant = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
@@ -94,7 +94,7 @@ namespace CutTheRope.GameMain
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1, 0.8f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.07f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.85f, 1.05f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
@@ -106,8 +106,8 @@ namespace CutTheRope.GameMain
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.6f, 0.6f, 0.6f, 0.6f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.6f, 0.6f, 0.6f, 0.6f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06f));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.15f, 0.8f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04f));

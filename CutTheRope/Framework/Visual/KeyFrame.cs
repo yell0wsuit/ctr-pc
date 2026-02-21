@@ -84,11 +84,6 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
-        public static KeyFrame MakeColor(RGBAColor c, TransitionType transition, double time)
-        {
-            return MakeColor(c, transition, (float)time);
-        }
-
         public static KeyFrame MakeColor(RGBAColor c, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
