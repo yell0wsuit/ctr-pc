@@ -343,7 +343,7 @@ namespace CutTheRope.GameMain
                 int ptCount = 0;
                 for (int j = 0; j < cutCount; j++)
                 {
-                    FingerCut cut = fingerCuts[i].ObjectAtIndex(j);
+                    FingerCut cut = fingerCuts[i][j];
                     if (j == 0)
                     {
                         pts[ptCount++] = cut.start;

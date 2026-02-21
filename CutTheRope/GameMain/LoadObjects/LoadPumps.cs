@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
             pump.rotation = xmlNode.AttributeAsNSString("angle").FloatValue() + DEG_90;
             pump.UpdateRotation();
             pump.anchor = 18;
-            _ = pumps.AddObject(pump);
+            pumps.Add(pump);
         }
     }
 }

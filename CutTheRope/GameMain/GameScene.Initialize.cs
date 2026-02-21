@@ -13,7 +13,7 @@ namespace CutTheRope.GameMain
     {
         /// <summary>
         /// Initializes core Game state and object collections
-        /// Resets all state variables and creates fresh DynamicArray collections
+        /// Resets all state variables and creates fresh collections
         /// </summary>
         private void InitializeGameState()
         {
@@ -42,24 +42,24 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.StopLoopedSounds();
 
             // Initialize object collections
-            bungees = new DynamicArray<Grab>();
-            razors = new DynamicArray<Razor>();
-            spikes = new DynamicArray<Spikes>();
-            stars = new DynamicArray<Star>();
-            bubbles = new DynamicArray<Bubble>();
-            pumps = new DynamicArray<Pump>();
-            tubes = new DynamicArray<SteamTube>();
-            lightBulbs = new DynamicArray<LightBulb>();
-            socks = new DynamicArray<Sock>();
-            tutorialImages = new DynamicArray<CTRGameObject>();
-            tutorials = new DynamicArray<Text>();
-            bouncers = new DynamicArray<Bouncer>();
-            rotatedCircles = new DynamicArray<RotatedCircle>();
-            rockets = new DynamicArray<Rocket>();
-            hands = new DynamicArray<MechanicalHand>();
-            snailobjects = new DynamicArray<Snail>();
+            bungees = [];
+            razors = [];
+            spikes = [];
+            stars = [];
+            bubbles = [];
+            pumps = [];
+            tubes = [];
+            lightBulbs = [];
+            socks = [];
+            tutorialImages = [];
+            tutorials = [];
+            bouncers = [];
+            rotatedCircles = [];
+            rockets = [];
+            hands = [];
+            snailobjects = [];
             activeRocket = null;
-            ghosts = new DynamicArray<Ghost>();
+            ghosts = [];
             conveyors = new ConveyorBeltObject();
 
             // Cleanup old mice before creating new arrays
@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            mice = new DynamicArray<Mouse>();
+            mice = [];
             miceManager = null;
             earthAnims = null;
             pollenDrawer = new PollenDrawer();

@@ -175,7 +175,7 @@ namespace CutTheRope.GameMain
             {
                 for (int i = 0; i < lightBulbs.Count; i++)
                 {
-                    LightBulb bulb = lightBulbs.ObjectAtIndex(i);
+                    LightBulb bulb = lightBulbs[i];
                     if (bulb == null || bulb.attachedSock != null)
                     {
                         continue;
@@ -221,7 +221,7 @@ namespace CutTheRope.GameMain
             {
                 for (int i = 0; i < lightBulbs.Count; i++)
                 {
-                    LightBulb bulb = lightBulbs.ObjectAtIndex(i);
+                    LightBulb bulb = lightBulbs[i];
                     if (bulb != null && bulb.attachedSock == null)
                     {
                         HandlePumpFlowPtSkin(p, bulb.constraint, bulb);
@@ -246,7 +246,7 @@ namespace CutTheRope.GameMain
             int ropesCutCount = 0;
             for (int i = 0; i < bungees.Count; i++)
             {
-                Grab grab = bungees.ObjectAtIndex(i);
+                Grab grab = bungees[i];
                 Bungee rope = grab.rope;
                 if (rope != null && rope.cut == -1)
                 {
@@ -355,7 +355,7 @@ namespace CutTheRope.GameMain
             int grabCount = bungees.Count;
             for (int i = 0; i < grabCount; i++)
             {
-                Grab grab = bungees.ObjectAtIndex(i);
+                Grab grab = bungees[i];
                 Bungee rope = grab.rope;
                 if (rope != null && rope.tail == capturedStar)
                 {
@@ -441,7 +441,7 @@ namespace CutTheRope.GameMain
             Vector v = Vect(tx, ty);
             for (int i = 0; i < bungees.Count; i++)
             {
-                Grab grab2 = bungees.ObjectAtIndex(i);
+                Grab grab2 = bungees[i];
                 Bungee rope = grab2.rope;
                 if (rope != null)
                 {

@@ -28,7 +28,7 @@ namespace CutTheRope.GameMain
 
             Mouse mouse = new(miceManager);
             mouse.Initialize(px, py, angle, radius, activeTime);
-            _ = mice.AddObject(mouse);
+            mice.Add(mouse);
             miceManager.RegisterMouse(mouse, index);
         }
     }

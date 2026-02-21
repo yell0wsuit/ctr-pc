@@ -47,7 +47,7 @@ namespace CutTheRope.GameMain
             {
                 spikes.electro = false;
             }
-            _ = this.spikes.AddObject(spikes);
+            this.spikes.Add(spikes);
         }
     }
 }

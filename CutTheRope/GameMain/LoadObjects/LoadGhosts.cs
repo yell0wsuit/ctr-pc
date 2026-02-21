@@ -29,7 +29,7 @@ namespace CutTheRope.GameMain
                 bungees,
                 bouncers,
                 this);
-            _ = ghosts.AddObject(ghost);
+            ghosts.Add(ghost);
             EnsureCandyGhostBubbleAnimations();
         }
     }

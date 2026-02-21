@@ -2,7 +2,6 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
@@ -41,7 +40,7 @@ namespace CutTheRope.GameMain
 
                             if (PackConfig.GetEarthBg(rc.GetPack()))
                             {
-                                earthAnims = new DynamicArray<Image>();
+                                earthAnims = [];
                                 if (mapWidth > SCREEN_WIDTH)
                                 {
                                     CreateEarthImageWithOffsetXY(back.width, 0f);

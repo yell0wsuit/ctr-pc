@@ -95,7 +95,7 @@ namespace CutTheRope.GameMain
                     star.SetWeight(1f);
                     for (int i = 0; i < snailobjects.Count; i++)
                     {
-                        Snail snail = snailobjects.ObjectAtIndex(i);
+                        Snail snail = snailobjects[i];
                         if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
                         {
                             snail.Detach();
@@ -147,7 +147,7 @@ namespace CutTheRope.GameMain
             int pumpCount = pumps.Count;
             for (int i = 0; i < pumpCount; i++)
             {
-                Pump pump = pumps.ObjectAtIndex(i);
+                Pump pump = pumps[i];
                 if (GameObject.PointInObject(Vect(tx + camera.pos.X, ty + camera.pos.Y), pump))
                 {
                     pump.pumpTouchTimer = 0.05f;
@@ -278,7 +278,7 @@ namespace CutTheRope.GameMain
                     foreach (object obj3 in rotatedCircles)
                     {
                         RotatedCircle rotatedCircle3 = (RotatedCircle)obj3;
-                        if (rotatedCircles.GetObjectIndex(rotatedCircle3) > rotatedCircles.GetObjectIndex(rotatedCircle2))
+                        if (rotatedCircles.IndexOf(rotatedCircle3) > rotatedCircles.IndexOf(rotatedCircle2))
                         {
                             float circleDistance = VectDistance(Vect(rotatedCircle3.x, rotatedCircle3.y), Vect(rotatedCircle2.x, rotatedCircle2.y));
                             if (circleDistance + rotatedCircle3.sizeInPixels <= rotatedCircle2.sizeInPixels)
@@ -305,7 +305,7 @@ namespace CutTheRope.GameMain
                     break;
                 }
             }
-            if (rotatedCircle != null && rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count - 1 && flag2 && !flag)
+            if (rotatedCircle != null && rotatedCircles.IndexOf(rotatedCircle) != rotatedCircles.Count - 1 && flag2 && !flag)
             {
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
@@ -318,8 +318,8 @@ namespace CutTheRope.GameMain
                 rotatedCircle4.PlayTimeline(0);
                 _ = rotatedCircle.AddTimeline(timeline);
                 rotatedCircle.PlayTimeline(0);
-                rotatedCircles.SetObjectAt(rotatedCircle4, rotatedCircles.GetObjectIndex(rotatedCircle));
-                _ = rotatedCircles.AddObject(rotatedCircle);
+                rotatedCircles[rotatedCircles.IndexOf(rotatedCircle)] = rotatedCircle4;
+                rotatedCircles.Add(rotatedCircle);
             }
             if (ghosts != null)
             {
@@ -684,7 +684,7 @@ namespace CutTheRope.GameMain
             int grabCount = bungees.Count;
             for (int m = 0; m < grabCount; m++)
             {
-                Grab grab2 = bungees.ObjectAtIndex(m);
+                Grab grab2 = bungees[m];
                 if (grab2 != null)
                 {
                     if (grab2.wheel && grab2.wheelOperating == ti)
@@ -737,7 +737,7 @@ namespace CutTheRope.GameMain
                     endSize = 5f,
                     c = RGBAColor.whiteRGBA
                 };
-                _ = fingerCuts[ti].AddObject(fingerCut);
+                fingerCuts[ti].Add(fingerCut);
                 int ropesCutThisFrame = 0;
                 foreach (object obj2 in fingerCuts[ti])
                 {

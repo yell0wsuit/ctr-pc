@@ -75,7 +75,7 @@ namespace CutTheRope.GameMain
             }
             for (int j = 0; j < 5; j++)
             {
-                fingerCuts[j] = new DynamicArray<FingerCut>();
+                fingerCuts[j] = [];
             }
             clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
         }
@@ -152,7 +152,7 @@ namespace CutTheRope.GameMain
             image.scaleY = 1f;
             image.x += xs;
             image.y += ys;
-            _ = earthAnims.AddObject(image);
+            earthAnims.Add(image);
         }
     }
 }

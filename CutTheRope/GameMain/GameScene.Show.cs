@@ -160,7 +160,7 @@ namespace CutTheRope.GameMain
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
-            if (t.element is RotatedCircle rotatedCircle && rotatedCircles.GetObjectIndex(rotatedCircle) != -1)
+            if (t.element is RotatedCircle rotatedCircle && rotatedCircles.IndexOf(rotatedCircle) != -1)
             {
                 return;
             }
@@ -211,7 +211,7 @@ namespace CutTheRope.GameMain
 
         public void TimelineFinished(Timeline t)
         {
-            if (t.element is RotatedCircle rotatedCircle && rotatedCircles.GetObjectIndex(rotatedCircle) != -1)
+            if (t.element is RotatedCircle rotatedCircle && rotatedCircles.IndexOf(rotatedCircle) != -1)
             {
                 ((RotatedCircle)t.element).removeOnNextUpdate = true;
             }
