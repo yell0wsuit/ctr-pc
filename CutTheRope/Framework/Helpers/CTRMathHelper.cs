@@ -76,9 +76,9 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>Returns <paramref name="value"/> rounded to the nearest integer as a float.</summary>
-        public static float Round(double value)
+        public static float Round(float value)
         {
-            return (float)Math.Round(value);
+            return MathF.Round(value);
         }
 
         /// <summary>Returns the cosine of <paramref name="x"/> (radians) as a float.</summary>
