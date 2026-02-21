@@ -81,13 +81,13 @@ namespace CutTheRope.GameMain
         {
             if (!ContainsKey(PREFS_UPDATE_CHECK))
             {
-                SetIntForKey(1, PREFS_UPDATE_CHECK, true);
+                SetBooleanForKey(true, PREFS_UPDATE_CHECK, true);
             }
         }
 
         public static bool IsUpdateCheckEnabled()
         {
-            return ContainsKey("PREFS_UPDATE_CHECK") ? GetIntForKey("PREFS_UPDATE_CHECK") != 0 : GetIntForKey(PREFS_UPDATE_CHECK) != 0;
+            return GetBooleanForKey(PREFS_UPDATE_CHECK);
         }
 
         private static bool IsShareware()
@@ -118,7 +118,21 @@ namespace CutTheRope.GameMain
 
         public static UNLOCKEDSTATE GetUnlockedForPackLevel(int p, int l)
         {
-            return (UNLOCKEDSTATE)GetIntForKey(GetPackLevelKey("UNLOCKED_", p, l));
+            string unlockedKey = GetPackLevelKey(PREFS_UNLOCKED_, p, l);
+            bool isUnlocked = GetBooleanForKey(unlockedKey);
+
+            if (!isUnlocked)
+            {
+                return UNLOCKEDSTATE.LOCKED;
+            }
+
+            string stateKey = GetPackLevelKey(PREFS_UNLOCKED_STATE_, p, l);
+            string stateValue = GetStringForKey(stateKey);
+            return Enum.TryParse(stateValue, ignoreCase: false, out UNLOCKEDSTATE parsedState) &&
+                parsedState != UNLOCKEDSTATE.LOCKED &&
+                parsedState != UNLOCKEDSTATE.UNLOCKED
+                ? parsedState
+                : UNLOCKEDSTATE.UNLOCKED;
         }
 
         public static int GetPacksCount()
@@ -169,7 +183,26 @@ namespace CutTheRope.GameMain
 
         public static void SetUnlockedForPackLevel(UNLOCKEDSTATE s, int p, int l)
         {
-            SetIntForKey((int)s, GetPackLevelKey("UNLOCKED_", p, l), true);
+            string unlockedKey = GetPackLevelKey(PREFS_UNLOCKED_, p, l);
+            string stateKey = GetPackLevelKey(PREFS_UNLOCKED_STATE_, p, l);
+
+            if (s == UNLOCKEDSTATE.LOCKED)
+            {
+                SetBooleanForKey(false, unlockedKey, false);
+                RemoveKey(stateKey);
+            }
+            else if (s == UNLOCKEDSTATE.UNLOCKED)
+            {
+                SetBooleanForKey(true, unlockedKey, false);
+                RemoveKey(stateKey);
+            }
+            else
+            {
+                SetBooleanForKey(true, unlockedKey, false);
+                SetStringForKey(s.ToString(), stateKey, false);
+            }
+
+            RequestSave();
         }
 
         public static int SharewareFreeLevels()
@@ -262,10 +295,11 @@ namespace CutTheRope.GameMain
                 int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
-                    int v = (i == 0 || (IsShareware() && i < SharewareFreePacks())) && j == 0 ? 1 : 0;
+                    bool isUnlocked = (i == 0 || (IsShareware() && i < SharewareFreePacks())) && j == 0;
                     SetIntForKey(0, GetPackLevelKey("SCORE_", i, j), false);
                     SetIntForKey(0, GetPackLevelKey("STARS_", i, j), false);
-                    SetIntForKey(v, GetPackLevelKey("UNLOCKED_", i, j), false);
+                    SetBooleanForKey(isUnlocked, GetPackLevelKey(PREFS_UNLOCKED_, i, j), false);
+                    RemoveKey(GetPackLevelKey(PREFS_UNLOCKED_STATE_, i, j));
                     j++;
                 }
                 i++;
@@ -285,7 +319,7 @@ namespace CutTheRope.GameMain
             SetIntForKey(0, "PREFS_LAST_PACK", true);
             SetBooleanForKey(true, "PREFS_WINDOW_FULLSCREEN", true);
             SetBooleanForKey(true, PREFS_RPC_ENABLED, true);
-            SetIntForKey(1, PREFS_UPDATE_CHECK, true);
+            SetBooleanForKey(true, PREFS_UPDATE_CHECK, true);
             CheckForUnlockIAP();
             RequestSave();
             SetScoreHash();
@@ -343,7 +377,8 @@ namespace CutTheRope.GameMain
                 int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
-                    SetIntForKey(1, GetPackLevelKey("UNLOCKED_", i, j), false);
+                    SetBooleanForKey(true, GetPackLevelKey(PREFS_UNLOCKED_, i, j), false);
+                    RemoveKey(GetPackLevelKey(PREFS_UNLOCKED_STATE_, i, j));
                     SetIntForKey(stars, GetPackLevelKey("STARS_", i, j), false);
                     j++;
                 }
@@ -404,6 +439,8 @@ namespace CutTheRope.GameMain
         public const string PREFS_STARS_ = "STARS_";
 
         public const string PREFS_UNLOCKED_ = "UNLOCKED_";
+
+        public const string PREFS_UNLOCKED_STATE_ = "UNLOCKED_STATE_";
 
         public const string PREFS_DRAWINGS_ = "DRAWINGS_";
 
