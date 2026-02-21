@@ -33,11 +33,6 @@ namespace CutTheRope.Framework.Visual
             return MakeAction([CTRAction.CreateAction(target, action, p, sp)], time);
         }
 
-        public static KeyFrame MakePos(double x, double y, TransitionType transition, double time)
-        {
-            return MakePos((int)x, (int)y, transition, (float)time);
-        }
-
         public static KeyFrame MakePos(int x, int y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();

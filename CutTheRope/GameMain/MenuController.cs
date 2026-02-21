@@ -250,8 +250,8 @@ namespace CutTheRope.GameMain
                     // Keep y constant for horizontal movement only
                     Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
                     handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6));  // Move LEFT (toward candy)
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6));
+                    handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6f));  // Move LEFT (toward candy)
+                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6f));
                     handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     _ = handImage.AddTimeline(handTimeline);
                     handImage.PlayTimeline(0);

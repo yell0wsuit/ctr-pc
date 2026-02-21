@@ -26,11 +26,11 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.5f, 0.5f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.65f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.465f, 0.465f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.65f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.43f, 0.43f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.65f));
-            timeline.AddKeyFrame(KeyFrame.MakePos(image.x - 1f, image.y + 1f, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(image.x, image.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.65f));
-            timeline.AddKeyFrame(KeyFrame.MakePos(image.x + 1f, image.y - 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.65f));
-            timeline.AddKeyFrame(KeyFrame.MakePos(image.x, image.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.65f));
-            timeline.AddKeyFrame(KeyFrame.MakePos(image.x - 1f, image.y + 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.65f));
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)(image.x - 1f), (int)(image.y + 1f), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)image.x, (int)image.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.65f));
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)(image.x + 1f), (int)(image.y - 1f), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.65f));
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)image.x, (int)image.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.65f));
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)(image.x - 1f), (int)(image.y + 1f), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.65f));
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
 
@@ -47,11 +47,11 @@ namespace CutTheRope.GameMain
             timeline2.AddKeyFrame(KeyFrame.MakeScale(0.7f, 0.7f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.45f));
             timeline2.AddKeyFrame(KeyFrame.MakeScale(0.8f, 0.8f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.45f));
             timeline2.AddKeyFrame(KeyFrame.MakeScale(0.9f, 0.9f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.45f));
-            timeline2.AddKeyFrame(KeyFrame.MakePos(image2.x + 1f, image2.y + 1f, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
-            timeline2.AddKeyFrame(KeyFrame.MakePos(image2.x, image2.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.45f));
-            timeline2.AddKeyFrame(KeyFrame.MakePos(image2.x - 1f, image2.y - 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.45f));
-            timeline2.AddKeyFrame(KeyFrame.MakePos(image2.x, image2.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.45f));
-            timeline2.AddKeyFrame(KeyFrame.MakePos(image2.x + 1f, image2.y + 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.45f));
+            timeline2.AddKeyFrame(KeyFrame.MakePos((int)(image2.x + 1f), (int)(image2.y + 1f), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline2.AddKeyFrame(KeyFrame.MakePos((int)image2.x, (int)image2.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.45f));
+            timeline2.AddKeyFrame(KeyFrame.MakePos((int)(image2.x - 1f), (int)(image2.y - 1f), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.45f));
+            timeline2.AddKeyFrame(KeyFrame.MakePos((int)image2.x, (int)image2.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.45f));
+            timeline2.AddKeyFrame(KeyFrame.MakePos((int)(image2.x + 1f), (int)(image2.y + 1f), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.45f));
             image2.AddTimelinewithID(timeline2, 0);
             image2.PlayTimeline(0);
 
@@ -68,11 +68,11 @@ namespace CutTheRope.GameMain
             timeline3.AddKeyFrame(KeyFrame.MakeScale(0.9f, 0.9f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
             timeline3.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
             timeline3.AddKeyFrame(KeyFrame.MakeScale(1.1f, 1.1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
-            timeline3.AddKeyFrame(KeyFrame.MakePos(image3.x - 1f, image3.y + 1f, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
-            timeline3.AddKeyFrame(KeyFrame.MakePos(image3.x, image3.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-            timeline3.AddKeyFrame(KeyFrame.MakePos(image3.x + 1f, image3.y - 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
-            timeline3.AddKeyFrame(KeyFrame.MakePos(image3.x, image3.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-            timeline3.AddKeyFrame(KeyFrame.MakePos(image3.x - 1f, image3.y + 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)(image3.x - 1f), (int)(image3.y + 1f), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)image3.x, (int)image3.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)(image3.x + 1f), (int)(image3.y - 1f), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)image3.x, (int)image3.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)(image3.x - 1f), (int)(image3.y + 1f), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
             image3.AddTimelinewithID(timeline3, 0);
             image3.PlayTimeline(0);
             return this;

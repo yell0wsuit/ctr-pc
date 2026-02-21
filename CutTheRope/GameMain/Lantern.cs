@@ -100,8 +100,8 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.85f, 1.05f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
             timeline.AddKeyFrame(KeyFrame.MakePos(0, -4, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0, -1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, -1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
             innerCandy.AddTimelinewithID(timeline, InnerCandyAppearTimelineId);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -112,8 +112,8 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.15f, 0.8f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04f));
             timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0, -4, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.06));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0, 4, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.04));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, -4, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.06f));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, 4, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.04f));
             innerCandy.AddTimelinewithID(timeline, InnerCandyHideTimelineId);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(5);

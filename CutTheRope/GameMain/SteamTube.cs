@@ -290,7 +290,7 @@ namespace CutTheRope.GameMain
                     animation.anchor = animation.parentAnchor = 18;
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                     timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
-                    timeline.AddKeyFrame(KeyFrame.MakePos(horizontalOffset, puffHeight, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, puffDuration));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)horizontalOffset, (int)puffHeight, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, puffDuration));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(1.5f, 1.5f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, puffDuration));
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);

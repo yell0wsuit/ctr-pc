@@ -858,8 +858,8 @@ namespace CutTheRope.GameMain
                     candyMain.scaleX = candyMain.scaleY = 1f;
                     candyTop.scaleX = candyTop.scaleY = 1f;
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                    timeline.AddKeyFrame(KeyFrame.MakePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                    timeline.AddKeyFrame(KeyFrame.MakePos(lantern.x, lantern.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)lantern.x, (int)lantern.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(0.71f, 0.71f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(0.3f, 0.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
