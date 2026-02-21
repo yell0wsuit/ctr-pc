@@ -121,7 +121,7 @@ namespace CutTheRope.GameMain
                     camera.speed -= delta * cameraDeceleration;
                     camera.speed = MAX(minCameraSpeed, camera.speed);
                 }
-                if (Math.Abs(camera.pos.X - boundedCameraX) < 1 && Math.Abs(camera.pos.Y - boundedCameraY) < 1)
+                if (MathF.Abs(camera.pos.X - boundedCameraX) < 1 && MathF.Abs(camera.pos.Y - boundedCameraY) < 1)
                 {
                     camera.type = CAMERATYPE.CAMERASPEEDDELAY;
                     camera.speed = 14f;
@@ -591,7 +591,7 @@ namespace CutTheRope.GameMain
                 float remaining = delta;
                 while (remaining > 0f)
                 {
-                    float step = Math.Min(0.01f, remaining);
+                    float step = MathF.Min(0.01f, remaining);
                     conveyors.Update(step);
                     conveyors.ProcessItems(bubbles);
                     conveyors.ProcessItems(stars);

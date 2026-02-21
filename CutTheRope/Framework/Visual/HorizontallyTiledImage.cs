@@ -35,8 +35,8 @@ namespace CutTheRope.Framework.Visual
             {
                 CTRRectangle r = texture.quadRects[tiles[0]];
                 CTRRectangle r2 = texture.quadRects[tiles[2]];
-                r.w = Math.Min(r.w, width / 2f);
-                r2.w = Math.Min(r2.w, width - r.w);
+                r.w = MathF.Min(r.w, width / 2f);
+                r2.w = MathF.Min(r2.w, width - r.w);
                 r2.x += texture.quadRects[tiles[2]].w - r2.w;
                 DrawHelper.DrawImagePart(texture, r, drawX, drawY + offsets[0]);
                 DrawHelper.DrawImagePart(texture, r2, drawX + r.w, drawY + offsets[2]);

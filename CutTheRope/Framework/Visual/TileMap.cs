@@ -155,7 +155,7 @@ namespace CutTheRope.Framework.Visual
                 return;
             }
             CTRRectangle rectangle = RectInRectIntersection(new CTRRectangle(mapX, mapY, tileMapWidth, tileMapHeight), new CTRRectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight));
-            Vector vector = Vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
+            Vector vector = Vect(MathF.Max(0f, rectangle.x), MathF.Max(0f, rectangle.y));
             Vector vector2 = Vect((int)vector.X / tileWidth, (int)vector.Y / tileHeight);
             float rowStartY = mapY + (vector2.Y * tileHeight);
             Vector vector3 = Vect(mapX + (vector2.X * tileWidth), rowStartY);

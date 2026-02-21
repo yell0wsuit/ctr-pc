@@ -62,7 +62,7 @@ namespace CutTheRope.GameMain
             pollen.x = v.X;
             pollen.y = v.Y;
             float fullScale = 1f;
-            float scaleOffset = Math.Min(fullScale - scaleX, fullScale - scaleY);
+            float scaleOffset = MathF.Min(fullScale - scaleX, fullScale - scaleY);
             float rND_0_ = RND_0_1;
             pollen.startScaleX = scaleOffset + scaleX;
             pollen.startScaleY = scaleOffset + scaleY;

@@ -337,7 +337,7 @@ namespace CutTheRope.GameMain
         /// <returns>The exhaust offset distance.</returns>
         private float GetExhaustOffset()
         {
-            return GetRocketQuadHalfLength() * Math.Abs(scaleX);
+            return GetRocketQuadHalfLength() * MathF.Abs(scaleX);
         }
 
         /// <summary>

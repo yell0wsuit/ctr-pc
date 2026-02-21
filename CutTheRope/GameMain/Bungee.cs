@@ -664,7 +664,7 @@ namespace CutTheRope.GameMain
                     }
 
                     // Interpolate position within the segment using linear interpolation
-                    float segmentDelta = Math.Max(segmentEnd - segmentStart, 0.0001f);
+                    float segmentDelta = MathF.Max(segmentEnd - segmentStart, 0.0001f);
                     float t = (currentDistance - segmentStart) / segmentDelta;
 
                     // Calculate the actual x,y position along the bezier curve

@@ -157,7 +157,7 @@ namespace CutTheRope.GameMain
             {
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, MathF.Tau, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * MathF.Abs(vinilTR.scaleX)), 0f, MathF.Tau, 51, 2f, 1f * MathF.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
@@ -172,7 +172,7 @@ namespace CutTheRope.GameMain
             {
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.AlphaChannel = 1f - color.AlphaChannel;
-                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, MathF.Tau, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, MathF.Tau, 51, 2f, 1f * MathF.Abs(vinilTR.scaleX), whiteRGBA);
             }
             for (int i = 0; i < circlesArray.Count; i++)
             {
@@ -243,9 +243,9 @@ namespace CutTheRope.GameMain
             float highlightYOffset = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
             float cornerXOffset = (vinilBL.width + 4) / 2f * (1f - vinilBL.scaleX);
             float cornerYOffset = (vinilBL.height + 4) / 2f * (1f - vinilBL.scaleY);
-            float rightControllerInset = Math.Abs(vinilControllerR.scaleX) < 1f ? (1f - Math.Abs(vinilControllerR.scaleX)) * 10f : 0f;
-            float topLeftInset = Math.Abs(vinilTL.scaleX) < 0.45f ? ((0.45f - Math.Abs(vinilTL.scaleX)) * 10f) + 1f : 0f;
-            float controllerXOffset = Math.Abs(vinilBL.height * vinilBL.scaleY) - Math.Abs(vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - rightControllerInset - topLeftInset;
+            float rightControllerInset = MathF.Abs(vinilControllerR.scaleX) < 1f ? (1f - MathF.Abs(vinilControllerR.scaleX)) * 10f : 0f;
+            float topLeftInset = MathF.Abs(vinilTL.scaleX) < 0.45f ? ((0.45f - MathF.Abs(vinilTL.scaleX)) * 10f) + 1f : 0f;
+            float controllerXOffset = MathF.Abs(vinilBL.height * vinilBL.scaleY) - MathF.Abs(vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - rightControllerInset - topLeftInset;
             vinilHighlightL.x = x + highlightXOffset;
             vinilHighlightR.x = x - highlightXOffset;
             vinilHighlightL.y = vinilHighlightR.y = y - highlightYOffset;
