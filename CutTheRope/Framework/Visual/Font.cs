@@ -83,8 +83,8 @@ namespace CutTheRope.Framework.Visual
 
         public override int GetCharQuad(char c)
         {
-            int num = chars.IndexOf(c);
-            return num >= 0 ? num : -1;
+            int charIndex = chars.IndexOf(c);
+            return charIndex >= 0 ? charIndex : -1;
         }
 
         public override float GetCharOffset(char[] s, int c, int len)

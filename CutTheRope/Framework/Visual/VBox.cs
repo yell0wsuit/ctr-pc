@@ -4,7 +4,7 @@ namespace CutTheRope.Framework.Visual
     {
         public override int AddChildwithID(BaseElement c, int i)
         {
-            int num = base.AddChildwithID(c, i);
+            int childId = base.AddChildwithID(c, i);
             if (align == 1)
             {
                 c.anchor = c.parentAnchor = 9;
@@ -20,7 +20,7 @@ namespace CutTheRope.Framework.Visual
             c.y = nextElementY;
             nextElementY += c.height + offset;
             height = (int)(nextElementY - offset);
-            return num;
+            return childId;
         }
 
         public VBox InitWithOffsetAlignWidth(float of, int a, float w)

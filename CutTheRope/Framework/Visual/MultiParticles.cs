@@ -30,14 +30,14 @@ namespace CutTheRope.Framework.Visual
         public override void InitParticle(ref Particle particle)
         {
             Image image = imageGrid;
-            int num = RND(image.texture.quadsCount - 1);
-            Quad2D qt = image.texture.quads[num];
-            Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            CTRRectangle rectangle = image.texture.quadRects[num];
-            drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
+            int quadIndex = RND(image.texture.quadsCount - 1);
+            Quad2D textureQuad = image.texture.quads[quadIndex];
+            Quad3D vertexQuad = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
+            CTRRectangle textureRect = image.texture.quadRects[quadIndex];
+            drawer.SetTextureQuadatVertexQuadatIndex(textureQuad, vertexQuad, particleCount);
             base.InitParticle(ref particle);
-            particle.width = rectangle.w * particle.size;
-            particle.height = rectangle.h * particle.size;
+            particle.width = textureRect.w * particle.size;
+            particle.height = textureRect.h * particle.size;
         }
 
         public override void UpdateParticle(ref Particle p, float delta)
@@ -51,9 +51,9 @@ namespace CutTheRope.Framework.Visual
                 }
                 Vector v = vector;
                 vector = VectMult(vector, p.radialAccel);
-                float num = v.X;
+                float tangentX = v.X;
                 v.X = 0f - v.Y;
-                v.Y = num;
+                v.Y = tangentX;
                 v = VectMult(v, p.tangentialAccel);
                 Vector v2 = VectAdd(VectAdd(vector, v), gravity);
                 v2 = VectMult(v2, delta);
@@ -87,12 +87,12 @@ namespace CutTheRope.Framework.Visual
             base.Update(delta);
             if (active && emissionRate != 0f)
             {
-                float num = 1f / emissionRate;
+                float rate = 1f / emissionRate;
                 emitCounter += delta;
-                while (particleCount < totalParticles && emitCounter > num)
+                while (particleCount < totalParticles && emitCounter > rate)
                 {
                     _ = AddParticle();
-                    emitCounter -= num;
+                    emitCounter -= rate;
                 }
                 elapsed += delta;
                 if (duration != -1f && duration < elapsed)

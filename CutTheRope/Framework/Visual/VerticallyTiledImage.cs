@@ -22,12 +22,12 @@ namespace CutTheRope.Framework.Visual
             PreDraw();
             float h = texture.quadRects[tiles[0]].h;
             float h2 = texture.quadRects[tiles[2]].h;
-            float num = height - (h + h2);
-            if (num >= 0f)
+            float middleHeight = height - (h + h2);
+            if (middleHeight >= 0f)
             {
                 DrawHelper.DrawImageQuad(texture, tiles[0], drawX + offsets[0], drawY);
-                DrawHelper.DrawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, width, num);
-                DrawHelper.DrawImageQuad(texture, tiles[2], drawX + offsets[2], drawY + h + num);
+                DrawHelper.DrawImageTiledCool(texture, tiles[1], drawX + offsets[1], drawY + h, width, middleHeight);
+                DrawHelper.DrawImageQuad(texture, tiles[2], drawX + offsets[2], drawY + h + middleHeight);
             }
             else
             {

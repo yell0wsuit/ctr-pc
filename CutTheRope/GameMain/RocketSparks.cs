@@ -71,11 +71,11 @@ namespace CutTheRope.GameMain
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
-            int num = RND_RANGE(6, 9);
-            Quad2D quad2D = imageGrid.texture.quads[num];
+            int sparklesParticle = RND_RANGE(6, 9);
+            Quad2D quad2D = imageGrid.texture.quads[sparklesParticle];
             Quad3D quad3D = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             drawer.SetTextureQuadatVertexQuadatIndex(quad2D, quad3D, particleCount);
-            Vector quadSize = Image.GetQuadSize(Resources.Img.ObjRocket, num);
+            Vector quadSize = Image.GetQuadSize(Resources.Img.ObjRocket, sparklesParticle);
             particle.width = quadSize.X;
             particle.height = quadSize.Y;
         }

@@ -57,11 +57,11 @@ namespace CutTheRope.GameMain
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
-            int num = RND_RANGE(3, 7);
-            Quad2D qt = imageGrid.texture.quads[num];
+            int quadIndex = RND_RANGE(3, 7);
+            Quad2D qt = imageGrid.texture.quads[quadIndex];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
-            CTRRectangle rectangle = imageGrid.texture.quadRects[num];
+            CTRRectangle rectangle = imageGrid.texture.quadRects[quadIndex];
             particle.width = rectangle.w * particle.size;
             particle.height = rectangle.h * particle.size;
         }

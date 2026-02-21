@@ -37,44 +37,44 @@ namespace CutTheRope.GameMain
 
         public void AddPollenAtparentIndex(Vector v, int pi)
         {
-            float num = 1f;
-            float num2 = 1f;
+            float scaleX = 1f;
+            float scaleY = 1f;
             float[] array = [0.3f, 0.3f, 0.5f, 0.5f, 0.6f];
-            int num3 = array.Length;
-            float num4 = array[RND_RANGE(0, num3 - 1)];
-            float num5 = num4;
+            int scaleOptionsCount = array.Length;
+            float randomScaleX = array[RND_RANGE(0, scaleOptionsCount - 1)];
+            float randomScaleY = randomScaleX;
             if (RND(1) == 1)
             {
-                num4 *= 1f + (RND(1) / 10f);
+                randomScaleX *= 1f + (RND(1) / 10f);
             }
             else
             {
-                num5 *= 1f + (RND(1) / 10f);
+                randomScaleY *= 1f + (RND(1) / 10f);
             }
-            num *= num4;
-            num2 *= num5;
-            int num6 = (int)qw;
-            int num7 = (int)qh;
-            num6 *= (int)num;
-            num7 *= (int)num2;
+            scaleX *= randomScaleX;
+            scaleY *= randomScaleY;
+            int quadWidth = (int)qw;
+            int quadHeight = (int)qh;
+            quadWidth *= (int)scaleX;
+            quadHeight *= (int)scaleY;
             Pollen pollen = default;
             pollen.parentIndex = pi;
             pollen.x = v.X;
             pollen.y = v.Y;
-            float num8 = 1f;
-            float num9 = Math.Min(num8 - num, num8 - num2);
+            float fullScale = 1f;
+            float scaleOffset = Math.Min(fullScale - scaleX, fullScale - scaleY);
             float rND_0_ = RND_0_1;
-            pollen.startScaleX = num9 + num;
-            pollen.startScaleY = num9 + num2;
+            pollen.startScaleX = scaleOffset + scaleX;
+            pollen.startScaleY = scaleOffset + scaleY;
             pollen.scaleX = pollen.startScaleX * rND_0_;
             pollen.scaleY = pollen.startScaleY * rND_0_;
-            pollen.endScaleX = num;
-            pollen.endScaleY = num2;
+            pollen.endScaleX = scaleX;
+            pollen.endScaleY = scaleY;
             pollen.endAlpha = 0.3f;
             pollen.startAlpha = 1f;
             pollen.alpha = (0.7f * rND_0_) + 0.3f;
             Quad2D qt = drawer.image.texture.quads[0];
-            Quad3D qv = Quad3D.MakeQuad3D(v.X - (num6 / 2), v.Y - (num7 / 2), 0f, num6, num7);
+            Quad3D qv = Quad3D.MakeQuad3D(v.X - (quadWidth / 2), v.Y - (quadHeight / 2), 0f, quadWidth, quadHeight);
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
             if (pollenCount >= totalCapacity)
             {
@@ -92,14 +92,14 @@ namespace CutTheRope.GameMain
 
         public void FillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
         {
-            int num = 44;
+            int segmentSpacing = 44;
             Vector vector = g.mover.path[p1];
             Vector vector2 = VectSub(g.mover.path[p2], vector);
-            int num2 = (int)(VectLength(vector2) / num);
+            int segmentCount = (int)(VectLength(vector2) / segmentSpacing);
             Vector v3 = VectNormalize(vector2);
-            for (int i = 0; i <= num2; i++)
+            for (int i = 0; i <= segmentCount; i++)
             {
-                Vector v4 = VectAdd(vector, VectMult(v3, i * num));
+                Vector v4 = VectAdd(vector, VectMult(v3, i * segmentSpacing));
                 v4.X += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
                 v4.Y += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
                 AddPollenAtparentIndex(v4, p1);
@@ -120,9 +120,9 @@ namespace CutTheRope.GameMain
                 {
                     (pollens[i].endScaleY, pollens[i].startScaleY) = (pollens[i].startScaleY, pollens[i].endScaleY);
                 }
-                float num = qw * pollens[i].scaleX;
-                float num2 = qh * pollens[i].scaleY;
-                drawer.vertices[i] = Quad3D.MakeQuad3D(pollens[i].x - (num / 2f), pollens[i].y - (num2 / 2f), 0f, num, num2);
+                float pollenWidth = qw * pollens[i].scaleX;
+                float pollenHeight = qh * pollens[i].scaleY;
+                drawer.vertices[i] = Quad3D.MakeQuad3D(pollens[i].x - (pollenWidth / 2f), pollens[i].y - (pollenHeight / 2f), 0f, pollenWidth, pollenHeight);
                 if (Mover.MoveVariableToTarget(ref pollens[i].alpha, pollens[i].endAlpha, 1f, delta))
                 {
                     (pollens[i].endAlpha, pollens[i].startAlpha) = (pollens[i].startAlpha, pollens[i].endAlpha);

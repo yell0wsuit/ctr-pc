@@ -81,20 +81,20 @@ namespace CutTheRope.Desktop
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
             FullScreenRectChanged(displayMode);
-            int num = windowWidth > 0 ? windowWidth : displayMode.Width - 100;
-            if (num < 800)
+            int targetWindowWidth = windowWidth > 0 ? windowWidth : displayMode.Width - 100;
+            if (targetWindowWidth < 800)
             {
-                num = 800;
+                targetWindowWidth = 800;
             }
-            if (num > MAX_WINDOW_WIDTH)
+            if (targetWindowWidth > MAX_WINDOW_WIDTH)
             {
-                num = MAX_WINDOW_WIDTH;
+                targetWindowWidth = MAX_WINDOW_WIDTH;
             }
-            if (num > displayMode.Width)
+            if (targetWindowWidth > displayMode.Width)
             {
-                num = displayMode.Width;
+                targetWindowWidth = displayMode.Width;
             }
-            WindowRectChanged(new Rectangle(0, 0, num, ScaledGameHeight(num)));
+            WindowRectChanged(new Rectangle(0, 0, targetWindowWidth, ScaledGameHeight(targetWindowWidth)));
             if (isFullScreen)
             {
                 ToggleFullScreen();
@@ -123,14 +123,14 @@ namespace CutTheRope.Desktop
             Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
             if (sourceRect.Width >= sourceRect.Height)
             {
-                int num = _fullScreenCropWidth ? sourceRect.Height : ScaledGameHeight(sourceRect.Width);
-                int num2 = _fullScreenCropWidth ? ScaledGameWidth(num) : sourceRect.Width;
-                _scaledViewRect = new Rectangle((sourceRect.Width - num2) / 2, (sourceRect.Height - num) / 2, num2, num);
+                int scaledHeight = _fullScreenCropWidth ? sourceRect.Height : ScaledGameHeight(sourceRect.Width);
+                int scaledWidth = _fullScreenCropWidth ? ScaledGameWidth(scaledHeight) : sourceRect.Width;
+                _scaledViewRect = new Rectangle((sourceRect.Width - scaledWidth) / 2, (sourceRect.Height - scaledHeight) / 2, scaledWidth, scaledHeight);
                 return;
             }
-            int num3 = _fullScreenCropWidth ? (int)(sourceRect.Width / 5f * 4f) : ScaledGameHeight(sourceRect.Width);
-            int num4 = _fullScreenCropWidth ? ScaledGameWidth(num3) : sourceRect.Width;
-            _scaledViewRect = new Rectangle((sourceRect.Width - num4) / 2, (sourceRect.Height - num3) / 2, num4, num3);
+            int portraitScaledHeight = _fullScreenCropWidth ? (int)(sourceRect.Width / 5f * 4f) : ScaledGameHeight(sourceRect.Width);
+            int portraitScaledWidth = _fullScreenCropWidth ? ScaledGameWidth(portraitScaledHeight) : sourceRect.Width;
+            _scaledViewRect = new Rectangle((sourceRect.Width - portraitScaledWidth) / 2, (sourceRect.Height - portraitScaledHeight) / 2, portraitScaledWidth, portraitScaledHeight);
         }
 
         public void ApplyWindowSize(int width)
@@ -182,28 +182,28 @@ namespace CutTheRope.Desktop
             {
                 try
                 {
-                    int num = graphicsDeviceManager.PreferredBackBufferWidth;
+                    int targetWidth = graphicsDeviceManager.PreferredBackBufferWidth;
                     if (newWindowRect.Width != WindowWidth)
                     {
-                        num = newWindowRect.Width;
+                        targetWidth = newWindowRect.Width;
                     }
                     else if (newWindowRect.Height != WindowHeight)
                     {
-                        num = ScaledGameWidth(newWindowRect.Height);
+                        targetWidth = ScaledGameWidth(newWindowRect.Height);
                     }
-                    if (num < 800 || ScaledGameHeight(num) < ScaledGameHeight(800))
+                    if (targetWidth < 800 || ScaledGameHeight(targetWidth) < ScaledGameHeight(800))
                     {
-                        num = 800;
+                        targetWidth = 800;
                     }
-                    if (num > MAX_WINDOW_WIDTH)
+                    if (targetWidth > MAX_WINDOW_WIDTH)
                     {
-                        num = MAX_WINDOW_WIDTH;
+                        targetWidth = MAX_WINDOW_WIDTH;
                     }
-                    if (num > ScreenWidth)
+                    if (targetWidth > ScreenWidth)
                     {
-                        num = ScreenWidth;
+                        targetWidth = ScreenWidth;
                     }
-                    ApplyWindowSize(num);
+                    ApplyWindowSize(targetWidth);
                 }
                 catch (Exception)
                 {

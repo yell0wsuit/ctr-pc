@@ -22,22 +22,25 @@ namespace CutTheRope.Framework.Sfe
             constraints = [];
         }
 
-        public void AddConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
+        public void AddConstraintwithRestLengthofType(
+            ConstraintedPoint constrainedPoint,
+            float restLength,
+            Constraint.CONSTRAINT constraintType)
         {
             Constraint constraint = new()
             {
-                cp = c,
-                restLength = r,
-                type = t
+                cp = constrainedPoint,
+                restLength = restLength,
+                type = constraintType
             };
             constraints.Add(constraint);
         }
 
-        public void RemoveConstraint(ConstraintedPoint o)
+        public void RemoveConstraint(ConstraintedPoint constrainedPoint)
         {
             for (int i = 0; i < constraints.Count; i++)
             {
-                if (constraints[i].cp == o)
+                if (constraints[i].cp == constrainedPoint)
                 {
                     constraints.RemoveAt(i);
                     return;
@@ -50,44 +53,44 @@ namespace CutTheRope.Framework.Sfe
             constraints = [];
         }
 
-        public void ChangeConstraintFromTo(ConstraintedPoint o, ConstraintedPoint n)
+        public void ChangeConstraintFromTo(ConstraintedPoint fromPoint, ConstraintedPoint toPoint)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
                 Constraint constraint = constraints[i];
-                if (constraint != null && constraint.cp == o)
+                if (constraint != null && constraint.cp == fromPoint)
                 {
-                    constraint.cp = n;
+                    constraint.cp = toPoint;
                     return;
                 }
             }
         }
 
-        public void ChangeConstraintFromTowithRestLength(ConstraintedPoint o, ConstraintedPoint n, float l)
+        public void ChangeConstraintFromTowithRestLength(ConstraintedPoint fromPoint, ConstraintedPoint toPoint, float restLength)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
                 Constraint constraint = constraints[i];
-                if (constraint != null && constraint.cp == o)
+                if (constraint != null && constraint.cp == fromPoint)
                 {
-                    constraint.cp = n;
-                    constraint.restLength = l;
+                    constraint.cp = toPoint;
+                    constraint.restLength = restLength;
                     return;
                 }
             }
         }
 
-        public void ChangeRestLengthToFor(float l, ConstraintedPoint n)
+        public void ChangeRestLengthToFor(float restLength, ConstraintedPoint constrainedPoint)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
                 Constraint constraint = constraints[i];
-                if (constraint != null && constraint.cp == n)
+                if (constraint != null && constraint.cp == constrainedPoint)
                 {
-                    constraint.restLength = l;
+                    constraint.restLength = restLength;
                     return;
                 }
             }
@@ -107,13 +110,13 @@ namespace CutTheRope.Framework.Sfe
             return false;
         }
 
-        public float RestLengthFor(ConstraintedPoint n)
+        public float RestLengthFor(ConstraintedPoint constrainedPoint)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
             {
                 Constraint constraint = constraints[i];
-                if (constraint != null && constraint.cp == n)
+                if (constraint != null && constraint.cp == constrainedPoint)
                 {
                     return constraint.restLength;
                 }
@@ -155,91 +158,91 @@ namespace CutTheRope.Framework.Sfe
             pos = VectAdd(pos, posDelta);
         }
 
-        public static void SatisfyConstraints(ConstraintedPoint p)
+        public static void SatisfyConstraints(ConstraintedPoint constrainedPoint)
         {
-            if (p == null)
+            if (constrainedPoint == null)
             {
                 return;
             }
-            if (p.constraints == null)
+            if (constrainedPoint.constraints == null)
             {
                 return;
             }
-            if (p.pin.X != PIN_UNSET_COORDINATE)
+            if (constrainedPoint.pin.X != PIN_UNSET_COORDINATE)
             {
-                p.pos = p.pin;
+                constrainedPoint.pos = constrainedPoint.pin;
                 return;
             }
-            int count = p.constraints.Count;
+            int count = constrainedPoint.constraints.Count;
             for (int i = 0; i < count; i++)
             {
-                Constraint constraint = p.constraints[i];
-                Vector vector = new(
-                    constraint.cp.pos.X - p.pos.X,
-                    constraint.cp.pos.Y - p.pos.Y);
-                if (vector.X == 0f && vector.Y == 0f)
+                Constraint constraint = constrainedPoint.constraints[i];
+                Vector deltaVector = new(
+                    constraint.cp.pos.X - constrainedPoint.pos.X,
+                    constraint.cp.pos.Y - constrainedPoint.pos.Y);
+                if (deltaVector.X == 0f && deltaVector.Y == 0f)
                 {
-                    vector = DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION;
+                    deltaVector = DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION;
                 }
-                float num = VectLength(vector);
+                float deltaLength = VectLength(deltaVector);
                 float restLength = constraint.restLength;
                 Constraint.CONSTRAINT type = constraint.type;
 
                 bool shouldApplyConstraint = (type == Constraint.CONSTRAINT.DISTANCE)
-                    || (type == Constraint.CONSTRAINT.NOT_MORE_THAN && num > restLength)
-                    || (type == Constraint.CONSTRAINT.NOT_LESS_THAN && num < restLength);
+                    || (type == Constraint.CONSTRAINT.NOT_MORE_THAN && deltaLength > restLength)
+                    || (type == Constraint.CONSTRAINT.NOT_LESS_THAN && deltaLength < restLength);
 
                 if (!shouldApplyConstraint)
                 {
                     continue;
                 }
 
-                Vector vector2 = vector;
-                float num2 = constraint.cp.invWeight;
-                float num3 = num > MIN_CONSTRAINT_DISTANCE ? num : MIN_CONSTRAINT_DISTANCE;
-                float num4 = (num - restLength) / (num3 * (p.invWeight + num2));
-                float num5 = p.invWeight * num4;
-                vector.X *= num5;
-                vector.Y *= num5;
-                num5 = num2 * num4;
-                vector2.X *= num5;
-                vector2.Y *= num5;
-                p.pos.X += vector.X;
-                p.pos.Y += vector.Y;
+                Vector otherDeltaVector = deltaVector;
+                float otherInvWeight = constraint.cp.invWeight;
+                float safeDeltaLength = deltaLength > MIN_CONSTRAINT_DISTANCE ? deltaLength : MIN_CONSTRAINT_DISTANCE;
+                float correctionFactor = (deltaLength - restLength) / (safeDeltaLength * (constrainedPoint.invWeight + otherInvWeight));
+                float correctionScale = constrainedPoint.invWeight * correctionFactor;
+                deltaVector.X *= correctionScale;
+                deltaVector.Y *= correctionScale;
+                correctionScale = otherInvWeight * correctionFactor;
+                otherDeltaVector.X *= correctionScale;
+                otherDeltaVector.Y *= correctionScale;
+                constrainedPoint.pos.X += deltaVector.X;
+                constrainedPoint.pos.Y += deltaVector.Y;
                 if (constraint.cp.pin.X == PIN_UNSET_COORDINATE)
                 {
-                    constraint.cp.pos = VectSub(constraint.cp.pos, vector2);
+                    constraint.cp.pos = VectSub(constraint.cp.pos, otherDeltaVector);
                 }
             }
         }
 
-        public static void Qcpupdate(ConstraintedPoint p, float delta, float koeff)
+        public static void Qcpupdate(ConstraintedPoint constrainedPoint, float delta, float coefficient)
         {
-            p.totalForce = vectZero;
-            if (!p.disableGravity)
+            constrainedPoint.totalForce = vectZero;
+            if (!constrainedPoint.disableGravity)
             {
-                p.totalForce = !VectEqual(globalGravity, vectZero)
-                    ? VectAdd(p.totalForce, VectMult(globalGravity, p.weight))
-                    : VectAdd(p.totalForce, p.gravity);
+                constrainedPoint.totalForce = !VectEqual(globalGravity, vectZero)
+                    ? VectAdd(constrainedPoint.totalForce, VectMult(globalGravity, constrainedPoint.weight))
+                    : VectAdd(constrainedPoint.totalForce, constrainedPoint.gravity);
             }
-            if (p.highestForceIndex != -1)
+            if (constrainedPoint.highestForceIndex != -1)
             {
-                for (int i = 0; i <= p.highestForceIndex; i++)
+                for (int i = 0; i <= constrainedPoint.highestForceIndex; i++)
                 {
-                    p.totalForce = VectAdd(p.totalForce, p.forces[i]);
+                    constrainedPoint.totalForce = VectAdd(constrainedPoint.totalForce, constrainedPoint.forces[i]);
                 }
             }
-            p.totalForce = VectMult(p.totalForce, p.invWeight);
-            p.a = VectMult(p.totalForce, delta * QCP_FIXED_TIMESTEP * koeff);
-            if (p.prevPos.X == UNDEFINED_COORDINATE)
+            constrainedPoint.totalForce = VectMult(constrainedPoint.totalForce, constrainedPoint.invWeight);
+            constrainedPoint.a = VectMult(constrainedPoint.totalForce, delta * QCP_FIXED_TIMESTEP * coefficient);
+            if (constrainedPoint.prevPos.X == UNDEFINED_COORDINATE)
             {
-                p.prevPos = p.pos;
+                constrainedPoint.prevPos = constrainedPoint.pos;
             }
-            p.posDelta.X = p.pos.X - p.prevPos.X + p.a.X;
-            p.posDelta.Y = p.pos.Y - p.prevPos.Y + p.a.Y;
-            p.v = VectMult(p.posDelta, 1f / delta);
-            p.prevPos = p.pos;
-            p.pos = VectAdd(p.pos, p.posDelta);
+            constrainedPoint.posDelta.X = constrainedPoint.pos.X - constrainedPoint.prevPos.X + constrainedPoint.a.X;
+            constrainedPoint.posDelta.Y = constrainedPoint.pos.Y - constrainedPoint.prevPos.Y + constrainedPoint.a.Y;
+            constrainedPoint.v = VectMult(constrainedPoint.posDelta, 1f / delta);
+            constrainedPoint.prevPos = constrainedPoint.pos;
+            constrainedPoint.pos = VectAdd(constrainedPoint.pos, constrainedPoint.posDelta);
         }
 
         private const float PIN_UNSET_COORDINATE = -1f;

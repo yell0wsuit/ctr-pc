@@ -9,25 +9,25 @@ namespace CutTheRope.Framework
         public readonly Color ToXNA()
         {
             Color result = default;
-            int num = (int)(RedColor * 255f);
-            int num2 = (int)(GreenColor * 255f);
-            int num3 = (int)(BlueColor * 255f);
-            int num4 = (int)(AlphaChannel * 255f);
-            result.R = (byte)(num >= 0 ? num > 255 ? 255 : num : 0);
-            result.G = (byte)(num2 >= 0 ? num2 > 255 ? 255 : num2 : 0);
-            result.B = (byte)(num3 >= 0 ? num3 > 255 ? 255 : num3 : 0);
-            result.A = (byte)(num4 >= 0 ? num4 > 255 ? 255 : num4 : 0);
+            int redByte = (int)(RedColor * 255f);
+            int greenByte = (int)(GreenColor * 255f);
+            int blueByte = (int)(BlueColor * 255f);
+            int alphaByte = (int)(AlphaChannel * 255f);
+            result.R = (byte)(redByte >= 0 ? redByte > 255 ? 255 : redByte : 0);
+            result.G = (byte)(greenByte >= 0 ? greenByte > 255 ? 255 : greenByte : 0);
+            result.B = (byte)(blueByte >= 0 ? blueByte > 255 ? 255 : blueByte : 0);
+            result.A = (byte)(alphaByte >= 0 ? alphaByte > 255 ? 255 : alphaByte : 0);
             return result;
         }
 
         public readonly Color ToWhiteAlphaXNA()
         {
             Color result = default;
-            int num = (int)(AlphaChannel * 255f);
+            int alphaByte = (int)(AlphaChannel * 255f);
             result.R = byte.MaxValue;
             result.G = byte.MaxValue;
             result.B = byte.MaxValue;
-            result.A = (byte)(num >= 0 ? num > 255 ? 255 : num : 0);
+            result.A = (byte)(alphaByte >= 0 ? alphaByte > 255 ? 255 : alphaByte : 0);
             return result;
         }
 

@@ -29,7 +29,7 @@ namespace CutTheRope.GameMain
                     int packsCount = GetPacksCount();
                     while (i < packsCount)
                     {
-                        int num = 0;
+                        int packScoreTotal = 0;
                         int j = 0;
                         int levelsInPackCount = GetLevelsInPackCount(i);
                         while (j < levelsInPackCount)
@@ -37,13 +37,13 @@ namespace CutTheRope.GameMain
                             int intForKey2 = GetIntForKey(GetPackLevelKey("SCORE_", i, j));
                             if (intForKey2 > 5999)
                             {
-                                num = 150000;
+                                packScoreTotal = 150000;
                                 break;
                             }
-                            num += intForKey2;
+                            packScoreTotal += intForKey2;
                             j++;
                         }
-                        if (num > 149999)
+                        if (packScoreTotal > 149999)
                         {
                             ResetToDefaults();
                             ResetMusicSound();
@@ -140,7 +140,7 @@ namespace CutTheRope.GameMain
 
         public static int GetTotalStars()
         {
-            int num = 0;
+            int totalStars = 0;
             int i = 0;
             int packsCount = GetPacksCount();
             while (i < packsCount)
@@ -149,12 +149,12 @@ namespace CutTheRope.GameMain
                 int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
-                    num += GetStarsForPackLevel(i, j);
+                    totalStars += GetStarsForPackLevel(i, j);
                     j++;
                 }
                 i++;
             }
-            return num;
+            return totalStars;
         }
 
         public static int PackUnlockStars(int n)
@@ -231,15 +231,15 @@ namespace CutTheRope.GameMain
 
         public static int GetTotalStarsInPack(int p)
         {
-            int num = 0;
+            int starsInPack = 0;
             int i = 0;
             int levelsInPackCount = GetLevelsInPackCount(p);
             while (i < levelsInPackCount)
             {
-                num += GetStarsForPackLevel(p, i);
+                starsInPack += GetStarsForPackLevel(p, i);
                 i++;
             }
-            return num;
+            return starsInPack;
         }
 
         public static void DisablePlayLevelScroll()
@@ -311,15 +311,15 @@ namespace CutTheRope.GameMain
 
         private static int GetTotalScore()
         {
-            int num = 0;
+            int totalScore = 0;
             for (int i = 0; i < GetPacksCount(); i++)
             {
                 for (int j = 0; j < GetLevelsInPackCount(i); j++)
                 {
-                    num += GetIntForKey(GetPackLevelKey("SCORE_", i, j));
+                    totalScore += GetIntForKey(GetPackLevelKey("SCORE_", i, j));
                 }
             }
-            return num;
+            return totalScore;
         }
 
         public static void SetScoreHash()

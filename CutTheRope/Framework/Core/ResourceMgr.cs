@@ -134,19 +134,19 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         private static Font LoadSpriteFontInfo(string path, string resourceName)
         {
-            XElement xmlnode = XElementExtensions.LoadContentXml(path);
-            int num = xmlnode.AttributeAsNSString("charoff").IntValue();
-            int num2 = xmlnode.AttributeAsNSString("lineoff").IntValue();
-            int num3 = xmlnode.AttributeAsNSString("space").IntValue();
-            XElement xMLNode2 = xmlnode.FindChildWithTagNameRecursively("chars", false);
-            XElement xMLNode3 = xmlnode.FindChildWithTagNameRecursively("kerning", false);
-            string data = xMLNode2.ValueAsNSString();
-            if (xMLNode3 != null)
+            XElement xmlNode = XElementExtensions.LoadContentXml(path);
+            int charOffset = xmlNode.AttributeAsNSString("charoff").IntValue();
+            int lineOffset = xmlNode.AttributeAsNSString("lineoff").IntValue();
+            int spaceWidth = xmlNode.AttributeAsNSString("space").IntValue();
+            XElement charsNode = xmlNode.FindChildWithTagNameRecursively("chars", false);
+            XElement kerningNode = xmlNode.FindChildWithTagNameRecursively("kerning", false);
+            string charsData = charsNode.ValueAsNSString();
+            if (kerningNode != null)
             {
-                _ = xMLNode3.ValueAsNSString();
+                _ = kerningNode.ValueAsNSString();
             }
-            Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(data, Application.GetTexture(resourceName));
-            font.SetCharOffsetLineOffsetSpaceWidth(num, num2, num3);
+            Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(charsData, Application.GetTexture(resourceName));
+            font.SetCharOffsetLineOffsetSpaceWidth(charOffset, lineOffset, spaceWidth);
             return font;
         }
 
@@ -280,46 +280,43 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        private static void SetQuadsInfo(CTRTexture2D t, float[] data, float scaleX, float scaleY)
+        private static void SetQuadsInfo(CTRTexture2D texture, float[] data, float scaleX, float scaleY)
         {
-            int num = data.Length / 4;
-            t.SetQuadsCapacity(num);
-            int num2 = -1;
-            for (int i = 0; i < num; i++)
+            int quadCount = data.Length / 4;
+            texture.SetQuadsCapacity(quadCount);
+            int lowestPoint = -1;
+            for (int i = 0; i < quadCount; i++)
             {
-                int num3 = i * 4;
-                CTRRectangle rect = MakeRectangle(data[num3], data[num3 + 1], data[num3 + 2], data[num3 + 3]);
-                if (num2 < rect.h + rect.y)
+                int quadDataIndex = i * 4;
+                CTRRectangle rect = MakeRectangle(data[quadDataIndex], data[quadDataIndex + 1], data[quadDataIndex + 2], data[quadDataIndex + 3]);
+                if (lowestPoint < rect.h + rect.y)
                 {
-                    num2 = (int)Ceil((double)(rect.h + rect.y));
+                    lowestPoint = (int)Ceil((double)(rect.h + rect.y));
                 }
                 rect.x /= scaleX;
                 rect.y /= scaleY;
                 rect.w /= scaleX;
                 rect.h /= scaleY;
-                t.SetQuadAt(rect, i);
+                texture.SetQuadAt(rect, i);
             }
-            if (num2 != -1)
+            if (lowestPoint != -1)
             {
-                t._lowypoint = num2;
+                texture._lowypoint = lowestPoint;
             }
             CTRTexture2D.OptimizeMemory();
         }
 
-        private static void SetOffsetsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
+        private static void SetOffsetsInfo(CTRTexture2D texture, float[] data, int offsetDataSize, float scaleX, float scaleY)
         {
-            int num = size / 2;
-            for (int i = 0; i < num; i++)
+            int offsetCount = offsetDataSize / 2;
+            for (int i = 0; i < offsetCount; i++)
             {
-                int num2 = i * 2;
-                t.quadOffsets[i].X = data[num2];
-                t.quadOffsets[i].Y = data[num2 + 1];
-                Vector[] quadOffsets = t.quadOffsets;
-                int num3 = i;
-                quadOffsets[num3].X = quadOffsets[num3].X / scaleX;
-                Vector[] quadOffsets2 = t.quadOffsets;
-                int num4 = i;
-                quadOffsets2[num4].Y = quadOffsets2[num4].Y / scaleY;
+                int offsetDataIndex = i * 2;
+                texture.quadOffsets[i].X = data[offsetDataIndex];
+                texture.quadOffsets[i].Y = data[offsetDataIndex + 1];
+                Vector[] quadOffsets = texture.quadOffsets;
+                quadOffsets[i].X = quadOffsets[i].X / scaleX;
+                quadOffsets[i].Y = quadOffsets[i].Y / scaleY;
             }
         }
 

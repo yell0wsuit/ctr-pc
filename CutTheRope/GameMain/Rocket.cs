@@ -130,9 +130,9 @@ namespace CutTheRope.GameMain
             container.rotation = rotation;
             container.x = x;
             container.y = y;
-            float num = VectLength(VectSub(point.prevPos, point.pos));
-            num = MAX(num, 1f);
-            float num2 = angle - (float)Math.PI;
+            float movementSpeed = VectLength(VectSub(point.prevPos, point.pos));
+            movementSpeed = MAX(movementSpeed, 1f);
+            float exhaustAngle = angle - (float)Math.PI;
             float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
             vector = VectAdd(vector, VectMult(VectForAngle(angle), exhaustOffset));
@@ -141,16 +141,16 @@ namespace CutTheRope.GameMain
                 particles.x = vector.X;
                 particles.y = vector.Y;
                 particles.angle = rotation;
-                particles.initialAngle = num2;
-                particles.speed = num * 50f;
+                particles.initialAngle = exhaustAngle;
+                particles.speed = movementSpeed * 50f;
             }
             if (cloudParticles != null)
             {
                 cloudParticles.x = vector.X;
                 cloudParticles.y = vector.Y;
                 cloudParticles.angle = rotation;
-                cloudParticles.initialAngle = num2;
-                cloudParticles.speed = num * 40f;
+                cloudParticles.initialAngle = exhaustAngle;
+                cloudParticles.speed = movementSpeed * 40f;
             }
         }
 
@@ -164,15 +164,15 @@ namespace CutTheRope.GameMain
             string path = xml.AttributeAsNSString("path");
             if (!string.IsNullOrEmpty(path))
             {
-                int num = 100;
+                int pathPoints = 100;
                 if (path.CharacterAtIndex(0) == 'R')
                 {
-                    int num2 = path.SubstringFromIndex(2).IntValue();
-                    num = MAX(11, (num2 / 2) + 1);
+                    int pathRadius = path.SubstringFromIndex(2).IntValue();
+                    pathPoints = MAX(11, (pathRadius / 2) + 1);
                 }
                 float moveSpeed = xml.AttributeAsNSString("moveSpeed").FloatValue();
                 float rotateSpeed = xml.AttributeAsNSString("rotateSpeed").FloatValue();
-                CTRMover ctrMover = new(num, moveSpeed, rotateSpeed)
+                CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation
                 };
@@ -237,8 +237,8 @@ namespace CutTheRope.GameMain
         {
             Vector vector = VectSub(v1, c);
             Vector vector2 = VectSub(v2, c);
-            float num = VectAngleNormalized(vector2) - VectAngleNormalized(vector);
-            return RADIANS_TO_DEGREES(num);
+            float angleDelta = VectAngleNormalized(vector2) - VectAngleNormalized(vector);
+            return RADIANS_TO_DEGREES(angleDelta);
         }
 
         /// <summary>
@@ -263,9 +263,9 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            float num = GetRotateAngleForStartEndCenter(lastTouch, v, Vect(x, y));
-            num = AngleTo0_360(num);
-            rotation += num;
+            float rotationDelta = GetRotateAngleForStartEndCenter(lastTouch, v, Vect(x, y));
+            rotationDelta = AngleTo0_360(rotationDelta);
+            rotation += rotationDelta;
             lastTouch = v;
             rotateHandled = true;
             RotateWithBB(rotation);
@@ -278,12 +278,12 @@ namespace CutTheRope.GameMain
         public void HandleRotateFinal()
         {
             rotation = AngleTo0_360(rotation);
-            float num = Round(rotation / DEG_45);
-            float num2 = DEG_45 * num;
+            float snappedStep = Round(rotation / DEG_45);
+            float snappedRotation = DEG_45 * snappedStep;
             RemoveTimeline(1);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((double)num2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((double)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 1);
             PlayTimeline(1);

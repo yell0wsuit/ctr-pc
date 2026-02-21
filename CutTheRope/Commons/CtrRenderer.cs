@@ -74,7 +74,7 @@ namespace CutTheRope.Commons
 
         public static void OnDrawFrame()
         {
-            bool flag = false;
+            bool didRenderFrame = false;
             if (!DRAW_NOTHING && state != 0)
             {
                 if (state == 1)
@@ -89,35 +89,35 @@ namespace CutTheRope.Commons
                         {
                             Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
                             Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
-                            flag = true;
+                            didRenderFrame = true;
                             state = 2;
                         }
                     }
                     else if (state == 2)
                     {
                         long timestamp = Stopwatch.GetTimestamp();
-                        long num2 = timestamp - prevTick;
+                        long frameDeltaNanos = timestamp - prevTick;
                         prevTick = timestamp;
-                        if (num2 < 1L)
+                        if (frameDeltaNanos < 1L)
                         {
-                            num2 = 1L;
+                            frameDeltaNanos = 1L;
                         }
-                        fpsDeltas[fpsDeltasPos++] = num2;
-                        int num3 = fpsDeltas.Length;
-                        if (fpsDeltasPos >= num3)
+                        fpsDeltas[fpsDeltasPos++] = frameDeltaNanos;
+                        int sampleCount = fpsDeltas.Length;
+                        if (fpsDeltasPos >= sampleCount)
                         {
                             fpsDeltasPos = 0;
                         }
-                        long num4 = 0L;
-                        for (int i = 0; i < num3; i++)
+                        long totalDeltaNanos = 0L;
+                        for (int i = 0; i < sampleCount; i++)
                         {
-                            num4 += fpsDeltas[i];
+                            totalDeltaNanos += fpsDeltas[i];
                         }
-                        if (num4 < 1L)
+                        if (totalDeltaNanos < 1L)
                         {
-                            num4 = 1L;
+                            totalDeltaNanos = 1L;
                         }
-                        int fps = (int)(1000000000L * num3 / num4);
+                        int fps = (int)(1000000000L * sampleCount / totalDeltaNanos);
                         playedTicks += DELTA_NANOS;
                         if (timestamp - playedTicks < DELTA_NANOS_THRES)
                         {
@@ -138,12 +138,12 @@ namespace CutTheRope.Commons
                         {
                             Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
                             Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(fps);
-                            flag = true;
+                            didRenderFrame = true;
                         }
                     }
                 }
             }
-            if (!flag)
+            if (!didRenderFrame)
             {
                 try
                 {
@@ -295,9 +295,9 @@ namespace CutTheRope.Commons
         {
             if (gApp != null && !gPaused)
             {
-                float delta2 = delta / 1000f;
-                TimerManager.Update(delta2);
-                Application.SharedRootController().PerformTick(delta2);
+                float deltaSeconds = delta / 1000f;
+                TimerManager.Update(deltaSeconds);
+                Application.SharedRootController().PerformTick(deltaSeconds);
             }
         }
 

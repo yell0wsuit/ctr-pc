@@ -20,15 +20,15 @@ namespace CutTheRope.GameMain
             float py = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
             int w = xmlNode.AttributeAsNSString("size").IntValue();
             double an = xmlNode.AttributeAsNSString("angle").IntValue();
-            string nSString2 = xmlNode.AttributeAsNSString("toggled");
-            int num8 = -1;
-            if (nSString2.Length() > 0)
+            string toggledAttribute = xmlNode.AttributeAsNSString("toggled");
+            int toggledState = -1;
+            if (toggledAttribute.Length() > 0)
             {
-                num8 = nSString2.IsEqualToString("false") ? -1 : nSString2.IntValue();
+                toggledState = toggledAttribute.IsEqualToString("false") ? -1 : toggledAttribute.IntValue();
             }
-            Spikes spikes = new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, num8);
+            Spikes spikes = new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, toggledState);
             spikes.ParseMover(xmlNode);
-            if (num8 != 0)
+            if (toggledState != 0)
             {
                 spikes.delegateRotateAllSpikesWithID = new Spikes.rotateAllSpikesWithID(RotateAllSpikesWithID);
             }

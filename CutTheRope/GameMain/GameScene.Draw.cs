@@ -52,12 +52,12 @@ namespace CutTheRope.GameMain
             // Keep parallax math consistent with the background scale.
             Vector pos = VectDiv(camera.pos, backScale);
             back.UpdateWithCameraPos(pos);
-            float num = Canvas.xOffsetScaled;
-            float num2 = 0f;
+            float offsetX = Canvas.xOffsetScaled;
+            float offsetY = 0f;
             Renderer.PushMatrix();
-            Renderer.Translate(num, num2, 0f);
+            Renderer.Translate(offsetX, offsetY, 0f);
             Renderer.Scale(back.scaleX, back.scaleY, 1f);
-            Renderer.Translate(-num, -num2, 0f);
+            Renderer.Translate(-offsetX, -offsetY, 0f);
             Renderer.Translate(Canvas.xOffsetScaled, 0f, 0f);
             back.Draw();
             if (mapHeight > SCREEN_HEIGHT)

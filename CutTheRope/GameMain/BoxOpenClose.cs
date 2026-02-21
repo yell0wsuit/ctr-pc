@@ -85,10 +85,10 @@ namespace CutTheRope.GameMain
                         {
                             raState = 4;
                             raDelay = 0.2f;
-                            int num = (int)Math.Floor((double)(Round(time) / 60f));
-                            int num2 = (int)(Round(time) - (num * 60f));
+                            int minutes = (int)Math.Floor(Round(time) / 60f);
+                            int seconds = (int)(Round(time) - (minutes * 60f));
                             ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString("TIME"));
-                            ((Text)result.GetChildWithName("dataValue")).SetString(num.ToString(CultureInfo.InvariantCulture) + ":" + num2.ToString("D2", CultureInfo.InvariantCulture));
+                            ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                             return;
                         }
                         break;
@@ -110,9 +110,9 @@ namespace CutTheRope.GameMain
                     {
                         ctime = time * raDelay;
                         cscore = (int)(starBonus + ((1f - raDelay) * timeBonus));
-                        int num3 = (int)Math.Floor((double)Round(ctime) / 60.0);
-                        int num4 = (int)((double)Round(ctime) - (num3 * 60.0));
-                        ((Text)result.GetChildWithName("dataValue")).SetString(num3.ToString(CultureInfo.InvariantCulture) + ":" + num4.ToString("D2", CultureInfo.InvariantCulture));
+                        int minutes = (int)Math.Floor(Round(ctime) / 60);
+                        int seconds = (int)(Round(ctime) - (minutes * 60));
+                        ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         if (flag)
                         {
@@ -250,38 +250,38 @@ namespace CutTheRope.GameMain
         {
             Confetti confetti = Confetti.Confetti_createWithResID(Resources.Img.ConfettiParticles);
             confetti.DoRestoreCutTransparency();
-            int num = RND_RANGE(0, 2);
-            int num2 = 18;
-            int num3 = 26;
-            if (num != 1)
+            int confettiVariant = RND_RANGE(0, 2);
+            int firstFrame = 18;
+            int lastFrame = 26;
+            if (confettiVariant != 1)
             {
-                if (num == 2)
+                if (confettiVariant == 2)
                 {
-                    num2 = 0;
-                    num3 = 8;
+                    firstFrame = 0;
+                    lastFrame = 8;
                 }
             }
             else
             {
-                num2 = 9;
-                num3 = 17;
+                firstFrame = 9;
+                lastFrame = 17;
             }
-            float num4 = RND_RANGE((int)RTPD(-100.0), (int)SCREEN_WIDTH);
-            float num5 = RND_RANGE((int)RTPD(-40.0), (int)RTPD(100.0));
-            float num6 = FLOAT_RND_RANGE(2, 5);
-            int i = confetti.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, num2, num3);
+            float spawnX = RND_RANGE((int)RTPD(-100.0), (int)SCREEN_WIDTH);
+            float spawnY = RND_RANGE((int)RTPD(-40.0), (int)RTPD(100.0));
+            float fadeDuration = FLOAT_RND_RANGE(2, 5);
+            int i = confetti.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, firstFrame, lastFrame);
             confetti.ani = confetti.GetTimeline(i);
             confetti.ani.PlayTimeline();
-            confetti.ani.JumpToTrackKeyFrame(4, RND_RANGE(0, num3 - num2 - 1));
+            confetti.ani.JumpToTrackKeyFrame(4, RND_RANGE(0, lastFrame - firstFrame - 1));
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
-            timeline.AddKeyFrame(KeyFrame.MakePos((double)num4, (double)num5, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakePos((double)num4, (double)(num5 + FLOAT_RND_RANGE((int)RTPD(150.0), (int)RTPD(400.0))), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)num6));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, fadeDuration));
+            timeline.AddKeyFrame(KeyFrame.MakePos(spawnX, spawnY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakePos(spawnX, spawnY + FLOAT_RND_RANGE((int)RTPD(150.0), (int)RTPD(400.0)), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, fadeDuration));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, fadeDuration));
             _ = confetti.AddTimeline(timeline);
             confetti.PlayTimeline(1);
             return confetti;
@@ -364,18 +364,18 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(cTRRootController.GetPack());
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuResult, 16);
-            image.rotationCenterX = ((float)-(float)image.width / 2f) + 1f;
-            image.rotationCenterY = ((float)-(float)image.height / 2f) + 1f;
+            image.rotationCenterX = (-image.width / 2f) + 1f;
+            image.rotationCenterY = (-image.height / 2f) + 1f;
             image.scaleX = image.scaleY = 4f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
                 timeline.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(-(double)image.width * 4), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakePos(-image.width * 4, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(-(double)image.width * 4), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(-image.width * 4, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             image.AddTimelinewithID(timeline, 0);
@@ -383,15 +383,15 @@ namespace CutTheRope.GameMain
             timeline.delegateTimelineDelegate = this;
             _ = openCloseAnims.AddChild(image);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
-            float num2 = (SCREEN_WIDTH / 2f) - quadSize.X;
-            Image image2 = Image.Image_createWithResIDQuad(boxCover, 0);
-            Image image3 = Image.Image_createWithResIDQuad(boxCover, 0);
-            image2.x = num2;
-            image2.rotationCenterX = (float)-(float)image2.width / 2f;
-            image3.rotationCenterX = image2.rotationCenterX;
-            image3.rotation = 180f;
-            image3.x = SCREEN_WIDTH - ((SCREEN_WIDTH / 2f) - image2.width);
-            image3.y = -0.5f;
+            float leftCoverX = (SCREEN_WIDTH / 2f) - quadSize.X;
+            Image coverBackgroundLeft = Image.Image_createWithResIDQuad(boxCover, 0);
+            Image coverBackgroundRight = Image.Image_createWithResIDQuad(boxCover, 0);
+            coverBackgroundLeft.x = leftCoverX;
+            coverBackgroundLeft.rotationCenterX = -coverBackgroundLeft.width / 2f;
+            coverBackgroundRight.rotationCenterX = coverBackgroundLeft.rotationCenterX;
+            coverBackgroundRight.rotation = 180f;
+            coverBackgroundRight.x = SCREEN_WIDTH - ((SCREEN_WIDTH / 2f) - coverBackgroundLeft.width);
+            coverBackgroundRight.y = -0.5f;
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
@@ -407,8 +407,8 @@ namespace CutTheRope.GameMain
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.whiteRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
-            image2.AddTimelinewithID(timeline, 0);
-            image2.PlayTimeline(0);
+            coverBackgroundLeft.AddTimelinewithID(timeline, 0);
+            coverBackgroundLeft.PlayTimeline(0);
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
@@ -424,28 +424,27 @@ namespace CutTheRope.GameMain
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.4f, 0.4f, 0.4f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
-            image3.AddTimelinewithID(timeline, 0);
-            image3.PlayTimeline(0);
+            coverBackgroundRight.AddTimelinewithID(timeline, 0);
+            coverBackgroundRight.PlayTimeline(0);
             Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 0);
             Image image5 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 1);
-            float num3 = 80f;
-            float num4 = 50f;
-            float num5 = 10f;
-            float num6 = 10f;
-            float num7 = -40f;
-            float num8 = 25f;
+            float loadingY = 80f;
+            float leftOpenOffset = 50f;
+            float rightRestInset = 10f;
+            float leftClosedX = -40f;
+            float rightClosedX = 25f;
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(image2.width - num4), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)num7, (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakePos(coverBackgroundLeft.width - leftOpenOffset, loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(leftClosedX, loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)RTD(-15.0), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(image2.width - num4), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakePos(RTD(-15.0), loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(coverBackgroundLeft.width - leftOpenOffset, loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
@@ -454,62 +453,62 @@ namespace CutTheRope.GameMain
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(SCREEN_WIDTH - image2.width + num5), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(SCREEN_WIDTH + num8), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH - coverBackgroundLeft.width + rightRestInset, loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH + rightClosedX, loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(SCREEN_WIDTH - RTD(9.0)), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(SCREEN_WIDTH - image2.width + num6), (double)num3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH - RTD(9.0), loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH - coverBackgroundLeft.width + rightRestInset, loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             image5.AddTimelinewithID(timeline, 0);
             image5.PlayTimeline(0);
-            Image image6 = Image.Image_createWithResIDQuad(boxCover, 1);
-            Image image7 = Image.Image_createWithResIDQuad(boxCover, 1);
-            image6.rotationCenterX = (float)-(float)image6.width / 2f;
-            image7.rotationCenterX = image6.rotationCenterX;
+            Image coverSideLeft = Image.Image_createWithResIDQuad(boxCover, 1);
+            Image coverSideRight = Image.Image_createWithResIDQuad(boxCover, 1);
+            coverSideLeft.rotationCenterX = -coverSideLeft.width / 2f;
+            coverSideRight.rotationCenterX = coverSideLeft.rotationCenterX;
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(image2.x + image2.width - RTD(6.0)), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(coverBackgroundLeft.x + coverBackgroundLeft.width - RTD(6.0), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakePos(-25.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(image2.x + 0f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(image2.width - 16f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakePos(coverBackgroundLeft.x, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(coverBackgroundLeft.width - 16f, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
-            image6.AddTimelinewithID(timeline, 0);
-            image6.PlayTimeline(0);
-            _ = openCloseAnims.AddChild(image6);
+            coverSideLeft.AddTimelinewithID(timeline, 0);
+            coverSideLeft.PlayTimeline(0);
+            _ = openCloseAnims.AddChild(coverSideLeft);
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(SCREEN_WIDTH - image2.width + RTD(7.0)), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH - coverBackgroundLeft.width + RTD(7.0), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(SCREEN_WIDTH - 40f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((double)(SCREEN_WIDTH - image2.width + 20f), 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH - 40f, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(SCREEN_WIDTH - coverBackgroundLeft.width + 20f, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             }
-            image7.AddTimelinewithID(timeline, 0);
-            image7.PlayTimeline(0);
-            _ = openCloseAnims.AddChild(image7);
-            _ = openCloseAnims.AddChild(image2);
-            _ = openCloseAnims.AddChild(image3);
+            coverSideRight.AddTimelinewithID(timeline, 0);
+            coverSideRight.PlayTimeline(0);
+            _ = openCloseAnims.AddChild(coverSideRight);
+            _ = openCloseAnims.AddChild(coverBackgroundLeft);
+            _ = openCloseAnims.AddChild(coverBackgroundRight);
             if (boxAnim == 0)
             {
                 _ = openCloseAnims.AddChild(image4);

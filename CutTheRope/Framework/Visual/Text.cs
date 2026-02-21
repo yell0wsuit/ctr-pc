@@ -59,8 +59,8 @@ namespace CutTheRope.Framework.Visual
             font.NotifyTextChanged(this);
             if (w == -1f)
             {
-                float num = 0.1f;
-                wrapWidth = font.StringWidth(string_) + num;
+                float widthPadding = 0.1f;
+                wrapWidth = font.StringWidth(string_) + widthPadding;
             }
             else
             {
@@ -102,47 +102,47 @@ namespace CutTheRope.Framework.Visual
         public virtual void UpdateDrawerValues()
         {
             multiDrawers.Clear();
-            int num = font.TotalCharmaps();
-            int num2 = string_.Length();
+            int totalCharmaps = font.TotalCharmaps();
+            int textLength = string_.Length();
             char[] characters = string_.GetCharacters();
-            int[] array = new int[num];
-            for (int i = 0; i < num2; i++)
+            int[] array = new int[totalCharmaps];
+            for (int i = 0; i < textLength; i++)
             {
                 if (characters[i] is not ' ' and not '*' and not '\n')
                 {
                     array[font.GetCharmapIndex(characters[i])]++;
                 }
             }
-            for (int j = 0; j < num; j++)
+            for (int j = 0; j < totalCharmaps; j++)
             {
-                int num3 = array[j];
-                if (num3 > 0)
+                int charCount = array[j];
+                if (charCount > 0)
                 {
-                    ImageMultiDrawer item = new ImageMultiDrawer().InitWithImageandCapacity(font.GetCharmap(j), num3);
+                    ImageMultiDrawer item = new ImageMultiDrawer().InitWithImageandCapacity(font.GetCharmap(j), charCount);
                     multiDrawers.Add(item);
                 }
             }
-            float num4 = 0f;
-            int num5 = (int)font.FontHeight();
-            int num6 = 0;
+            float lineY = 0f;
+            int fontHeight = (int)font.FontHeight();
+            int renderedCharCount = 0;
             char[] characters2 = "..".GetCharacters();
-            int num7 = (int)font.GetCharOffset(characters2, 0, 2);
-            int num8 = (int)(maxHeight == -1f ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (num5 + font.GetLineOffset())));
-            bool flag = num8 != formattedStrings.Count;
-            int[] array2 = new int[num];
-            for (int k = 0; k < num8; k++)
+            int dotSpacing = (int)font.GetCharOffset(characters2, 0, 2);
+            int visibleLineCount = (int)(maxHeight == -1f ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (fontHeight + font.GetLineOffset())));
+            bool isTruncated = visibleLineCount != formattedStrings.Count;
+            int[] array2 = new int[totalCharmaps];
+            for (int k = 0; k < visibleLineCount; k++)
             {
                 FormattedString formattedString = formattedStrings[k];
-                int num9 = formattedString.string_.Length();
+                int lineLength = formattedString.string_.Length();
                 char[] characters3 = formattedString.string_.GetCharacters();
-                float num10 = align == 1 ? 0f : align != 2 ? wrapWidth - formattedString.width : (wrapWidth - formattedString.width) / 2f;
-                for (int l = 0; l < num9; l++)
+                float lineX = align == 1 ? 0f : align != 2 ? wrapWidth - formattedString.width : (wrapWidth - formattedString.width) / 2f;
+                for (int l = 0; l < lineLength; l++)
                 {
                     if (characters3[l] != '*')
                     {
                         if (characters3[l] == ' ')
                         {
-                            num10 += font.GetCharWidth(' ') + font.GetCharOffset(characters3, l, num9);
+                            lineX += font.GetCharWidth(' ') + font.GetCharOffset(characters3, l, lineLength);
                         }
                         else
                         {
@@ -153,20 +153,20 @@ namespace CutTheRope.Framework.Visual
                             if (charQuad >= 0)
                             {
                                 ImageMultiDrawer imageMultiDrawer3 = multiDrawers[charmapIndex];
-                                int num12 = charQuad;
-                                float num13 = num10;
-                                float num14 = num4;
+                                int quadIndex = charQuad;
+                                float quadX = lineX;
+                                float quadY = lineY;
                                 int[] array3 = array2;
-                                int num15 = charmapIndex;
-                                int num16 = array3[num15];
-                                array3[num15] = num16 + 1;
-                                imageMultiDrawer3.MapTextureQuadAtXYatIndex(num12, num13, num14, num16);
-                                num6++;
+                                int mapIndex = charmapIndex;
+                                int drawIndex = array3[mapIndex];
+                                array3[mapIndex] = drawIndex + 1;
+                                imageMultiDrawer3.MapTextureQuadAtXYatIndex(quadIndex, quadX, quadY, drawIndex);
+                                renderedCharCount++;
                             }
 
-                            num10 += font.GetCharWidth(characters3[l]) + font.GetCharOffset(characters3, l, num9);
+                            lineX += font.GetCharWidth(characters3[l]) + font.GetCharOffset(characters3, l, lineLength);
                         }
-                        if (flag && k == num8 - 1)
+                        if (isTruncated && k == visibleLineCount - 1)
                         {
                             int charmapIndex2 = font.GetCharmapIndex('.');
                             int charQuad2 = font.GetCharQuad('.');
@@ -175,23 +175,23 @@ namespace CutTheRope.Framework.Visual
                             if (charQuad2 >= 0)
                             {
                                 ImageMultiDrawer imageMultiDrawer2 = multiDrawers[charmapIndex2];
-                                int num11 = (int)font.GetCharWidth('.');
-                                if (l == num9 - 1 || (l == num9 - 2 && num10 + (3 * (num11 + num7)) + font.GetCharWidth(' ') > wrapWidth))
+                                int dotWidth = (int)font.GetCharWidth('.');
+                                if (l == lineLength - 1 || (l == lineLength - 2 && lineX + (3 * (dotWidth + dotSpacing)) + font.GetCharWidth(' ') > wrapWidth))
                                 {
-                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
-                                    num10 += num11 + num7;
-                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
-                                    num10 += num11 + num7;
-                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
+                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    lineX += dotWidth + dotSpacing;
+                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    lineX += dotWidth + dotSpacing;
+                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
                                     break;
                                 }
                             }
                         }
                     }
                 }
-                num4 += num5 + font.GetLineOffset();
+                lineY += fontHeight + font.GetLineOffset();
             }
-            stringLength = num6;
+            stringLength = renderedCharCount;
             if (formattedStrings.Count <= 1)
             {
                 height = (int)(font.FontHeight() + font.GetTopSpacing());
@@ -479,68 +479,68 @@ namespace CutTheRope.Framework.Visual
         {
             short[] array = new short[512];
             char[] characters = string_.GetCharacters();
-            int num = string_.Length();
-            int num2 = 0;
-            int num3 = 0;
-            float num4 = 0f;
-            int num5 = 0;
-            int num6 = 0;
-            float num7 = 0f;
-            int num8 = 0;
-            while (num8 < num)
+            int textLength = string_.Length();
+            int rangesLength = 0;
+            int wordStart = 0;
+            float wordWidth = 0f;
+            int lineStart = 0;
+            int lineEnd = 0;
+            float lineWidth = 0f;
+            int cursor = 0;
+            while (cursor < textLength)
             {
-                char c = characters[num8++];
+                char c = characters[cursor++];
                 if (c is ' ' or '\n' or '*')
                 {
-                    num7 += num4;
-                    num6 = num8 - 1;
-                    num4 = 0f;
-                    num3 = num8;
+                    lineWidth += wordWidth;
+                    lineEnd = cursor - 1;
+                    wordWidth = 0f;
+                    wordStart = cursor;
                     if (c == ' ')
                     {
-                        num3--;
-                        num4 = font.GetCharWidth(' ') + font.GetCharOffset(characters, num8 - 1, num);
+                        wordStart--;
+                        wordWidth = font.GetCharWidth(' ') + font.GetCharOffset(characters, cursor - 1, textLength);
                     }
                 }
                 else
                 {
-                    num4 += font.GetCharWidth(c) + font.GetCharOffset(characters, num8 - 1, num);
+                    wordWidth += font.GetCharWidth(c) + font.GetCharOffset(characters, cursor - 1, textLength);
                 }
-                bool flag = num7 + num4 > wrapWidth;
-                if (wrapLongWords && flag && num6 == num5)
+                bool exceedsWrap = lineWidth + wordWidth > wrapWidth;
+                if (wrapLongWords && exceedsWrap && lineEnd == lineStart)
                 {
-                    num7 += num4;
-                    num6 = num8;
-                    num4 = 0f;
-                    num3 = num8;
+                    lineWidth += wordWidth;
+                    lineEnd = cursor;
+                    wordWidth = 0f;
+                    wordStart = cursor;
                 }
-                if ((num7 + num4 > wrapWidth && num6 != num5) || c == '\n')
+                if ((lineWidth + wordWidth > wrapWidth && lineEnd != lineStart) || c == '\n')
                 {
-                    array[num2++] = (short)num5;
-                    array[num2++] = (short)num6;
-                    while (num3 < num && characters[num3] == ' ')
+                    array[rangesLength++] = (short)lineStart;
+                    array[rangesLength++] = (short)lineEnd;
+                    while (wordStart < textLength && characters[wordStart] == ' ')
                     {
-                        num3++;
-                        num4 -= font.GetCharWidth(' ');
+                        wordStart++;
+                        wordWidth -= font.GetCharWidth(' ');
                     }
-                    num5 = num3;
-                    num6 = num5;
-                    num7 = 0f;
+                    lineStart = wordStart;
+                    lineEnd = lineStart;
+                    lineWidth = 0f;
                 }
             }
-            if (num4 != 0f)
+            if (wordWidth != 0f)
             {
-                array[num2++] = (short)num5;
-                array[num2++] = (short)num8;
+                array[rangesLength++] = (short)lineStart;
+                array[rangesLength++] = (short)cursor;
             }
-            int num9 = num2 >> 1;
+            int lineCount = rangesLength >> 1;
             formattedStrings.Clear();
-            for (int i = 0; i < num9; i++)
+            for (int i = 0; i < lineCount; i++)
             {
-                int num10 = array[i << 1];
-                int num11 = array[(i << 1) + 1];
-                int length = num11 - num10;
-                string str = string_.Substring(num10, length);
+                int rangeStart = array[i << 1];
+                int rangeEnd = array[(i << 1) + 1];
+                int length = rangeEnd - rangeStart;
+                string str = string_.Substring(rangeStart, length);
                 float w = font.StringWidth(str);
                 FormattedString item = new FormattedString().InitWithStringAndWidth(str, w);
                 formattedStrings.Add(item);

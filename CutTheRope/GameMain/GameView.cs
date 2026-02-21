@@ -22,8 +22,8 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             Global.MouseCursor.Enable(true);
-            int num = ChildsCount();
-            for (int i = 0; i < num; i++)
+            int childCount = ChildsCount();
+            for (int i = 0; i < childCount; i++)
             {
                 BaseElement child = GetChild(i);
                 if (child != null && child.visible)
@@ -43,15 +43,15 @@ namespace CutTheRope.GameMain
             GameScene gameScene = (GameScene)GetChild(0);
             if (gameScene.dimTime > 0.0)
             {
-                float num2 = gameScene.dimTime / 0.15f;
+                float dimAlpha = gameScene.dimTime / 0.15f;
                 if (gameScene.restartState == 0)
                 {
-                    num2 = 1f - num2;
+                    dimAlpha = 1f - dimAlpha;
                 }
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.Enable(Renderer.GL_BLEND);
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(1, 1, 1, num2));
+                DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(1, 1, 1, dimAlpha));
                 Renderer.SetColor(Color.White);
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
             }

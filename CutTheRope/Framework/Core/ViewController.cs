@@ -189,11 +189,11 @@ namespace CutTheRope.Framework.Core
                 return false;
             }
             View view = ActiveView();
-            int num = -1;
+            int processedTouches = -1;
             for (int i = 0; i < touches.Count; i++)
             {
-                num++;
-                if (num > 1)
+                processedTouches++;
+                if (processedTouches > 1)
                 {
                     break;
                 }
@@ -231,11 +231,11 @@ namespace CutTheRope.Framework.Core
                 return false;
             }
             View view = ActiveView();
-            int num = -1;
+            int processedTouches = -1;
             for (int i = 0; i < touches.Count; i++)
             {
-                num++;
-                if (num > 1)
+                processedTouches++;
+                if (processedTouches > 1)
                 {
                     break;
                 }
@@ -255,11 +255,11 @@ namespace CutTheRope.Framework.Core
                 return false;
             }
             View view = ActiveView();
-            int num = -1;
+            int processedTouches = -1;
             for (int i = 0; i < touches.Count; i++)
             {
-                num++;
-                if (num > 1)
+                processedTouches++;
+                if (processedTouches > 1)
                 {
                     break;
                 }

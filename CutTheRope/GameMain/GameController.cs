@@ -165,9 +165,9 @@ namespace CutTheRope.GameMain
             int pack = ctrrootController.GetPack();
             _ = ctrrootController.GetLevel();
             bool flag = true;
-            for (int num = CTRPreferences.GetLevelsInPackCount(pack) - 1; num >= 0; num--)
+            for (int levelIndex = CTRPreferences.GetLevelsInPackCount(pack) - 1; levelIndex >= 0; levelIndex--)
             {
-                if (CTRPreferences.GetScoreForPackLevel(pack, num) <= 0)
+                if (CTRPreferences.GetScoreForPackLevel(pack, levelIndex) <= 0)
                 {
                     flag = false;
                     break;
@@ -192,10 +192,10 @@ namespace CutTheRope.GameMain
                 CTRRootController.PostAchievementName("681473653", ACHIEVEMENT_STRING("\"Golden Scissors\""));
             }
             Preferences.RequestSave();
-            int num2 = 0;
+            int totalPackScore = 0;
             for (int i = 0; i < CTRPreferences.GetLevelsInPackCount(pack); i++)
             {
-                num2 += CTRPreferences.GetScoreForPackLevel(pack, i);
+                totalPackScore += CTRPreferences.GetScoreForPackLevel(pack, i);
             }
             //if (!CTRRootController.IsHacked())
             //{
@@ -507,19 +507,19 @@ namespace CutTheRope.GameMain
             {
                 if (touch.State == TouchLocationState.Pressed)
                 {
-                    int num = -1;
+                    int touchSlot = -1;
                     for (int i = 0; i < 5; i++)
                     {
                         if (touchAddressMap[i] == 0)
                         {
                             touchAddressMap[i] = touch.Id;
-                            num = i;
+                            touchSlot = i;
                             break;
                         }
                     }
-                    if (num != -1)
+                    if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchDownXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), num);
+                        _ = gameScene.TouchDownXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), touchSlot);
                     }
                 }
             }
@@ -541,19 +541,19 @@ namespace CutTheRope.GameMain
             {
                 if (touch.State == TouchLocationState.Released)
                 {
-                    int num = -1;
+                    int touchSlot = -1;
                     for (int i = 0; i < 5; i++)
                     {
                         if (touchAddressMap[i] == touch.Id)
                         {
                             touchAddressMap[i] = 0;
-                            num = i;
+                            touchSlot = i;
                             break;
                         }
                     }
-                    if (num != -1)
+                    if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchUpXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), num);
+                        _ = gameScene.TouchUpXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), touchSlot);
                     }
                     else
                     {
@@ -579,18 +579,18 @@ namespace CutTheRope.GameMain
             {
                 if (touch.State == TouchLocationState.Moved)
                 {
-                    int num = -1;
+                    int touchSlot = -1;
                     for (int i = 0; i < 5; i++)
                     {
                         if (touchAddressMap[i] == touch.Id)
                         {
-                            num = i;
+                            touchSlot = i;
                             break;
                         }
                     }
-                    if (num != -1)
+                    if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchMoveXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), num);
+                        _ = gameScene.TouchMoveXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), touchSlot);
                     }
                 }
             }

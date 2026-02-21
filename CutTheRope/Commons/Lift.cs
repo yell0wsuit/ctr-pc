@@ -26,10 +26,10 @@ namespace CutTheRope.Commons
                 y = 0f;
                 if (maxX != 0f)
                 {
-                    float num = (x - minX) / (maxX - minX);
-                    if (num != xPercent)
+                    float xRatio = (x - minX) / (maxX - minX);
+                    if (xRatio != xPercent)
                     {
-                        xPercent = num;
+                        xPercent = xRatio;
                         liftDelegate?.Invoke(xPercent, 0f);
                     }
                 }

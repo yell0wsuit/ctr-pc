@@ -15,117 +15,125 @@ namespace CutTheRope.Framework.Visual
             CTRTexture2D.DrawAtPoint(image, Vect(x, y));
         }
 
-        public static void DrawImagePart(CTRTexture2D image, CTRRectangle r, float x, float y)
+        public static void DrawImagePart(CTRTexture2D image, CTRRectangle rect, float x, float y)
         {
-            CTRTexture2D.DrawRectAtPoint(image, r, Vect(x, y));
+            CTRTexture2D.DrawRectAtPoint(image, rect, Vect(x, y));
         }
 
-        public static void DrawImageQuad(CTRTexture2D image, int q, float x, float y)
+        public static void DrawImageQuad(CTRTexture2D image, int quadIndex, float x, float y)
         {
-            if (q == -1)
+            if (quadIndex == -1)
             {
                 DrawImage(image, x, y);
                 return;
             }
-            CTRTexture2D.DrawQuadAtPoint(image, q, Vect(x, y));
+            CTRTexture2D.DrawQuadAtPoint(image, quadIndex, Vect(x, y));
         }
 
-        public static void DrawImageTiledCool(CTRTexture2D image, int q, float x, float y, float width, float height)
+        public static void DrawImageTiledCool(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
         {
             float xParam = 0f;
             float yParam = 0f;
-            float num;
-            float num2;
-            if (q == -1)
+            float tileWidth;
+            float tileHeight;
+            if (quadIndex == -1)
             {
-                num = image._realWidth;
-                num2 = image._realHeight;
+                tileWidth = image._realWidth;
+                tileHeight = image._realHeight;
             }
             else
             {
-                xParam = image.quadRects[q].x;
-                yParam = image.quadRects[q].y;
-                num = image.quadRects[q].w;
-                num2 = image.quadRects[q].h;
+                xParam = image.quadRects[quadIndex].x;
+                yParam = image.quadRects[quadIndex].y;
+                tileWidth = image.quadRects[quadIndex].w;
+                tileHeight = image.quadRects[quadIndex].h;
             }
-            for (float num3 = 0f; num3 < height; num3 += num2)
+            for (float currentY = 0f; currentY < height; currentY += tileHeight)
             {
-                for (float num4 = 0f; num4 < width; num4 += num)
+                for (float currentX = 0f; currentX < width; currentX += tileWidth)
                 {
-                    float num5 = width - num4;
-                    if (num5 > num)
+                    float remainingWidth = width - currentX;
+                    if (remainingWidth > tileWidth)
                     {
-                        num5 = num;
+                        remainingWidth = tileWidth;
                     }
-                    float num6 = height - num3;
-                    if (num6 > num2)
+                    float remainingHeight = height - currentY;
+                    if (remainingHeight > tileHeight)
                     {
-                        num6 = num2;
+                        remainingHeight = tileHeight;
                     }
-                    CTRRectangle r = MakeRectangle(xParam, yParam, num5, num6);
-                    DrawImagePart(image, r, x + num4, y + num3);
+                    CTRRectangle rect = MakeRectangle(xParam, yParam, remainingWidth, remainingHeight);
+                    DrawImagePart(image, rect, x + currentX, y + currentY);
                 }
             }
         }
 
-        public static void DrawImageTiled(CTRTexture2D image, int q, float x, float y, float width, float height)
+        public static void DrawImageTiled(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
         {
             if (IS_WVGA)
             {
-                DrawImageTiledCool(image, q, x, y, width, height);
+                DrawImageTiledCool(image, quadIndex, x, y, width, height);
                 return;
             }
             float xParam = 0f;
             float yParam = 0f;
-            float num;
-            float num2;
-            if (q == -1)
+            float tileWidth;
+            float tileHeight;
+            if (quadIndex == -1)
             {
-                num = image._realWidth;
-                num2 = image._realHeight;
+                tileWidth = image._realWidth;
+                tileHeight = image._realHeight;
             }
             else
             {
-                xParam = image.quadRects[q].x;
-                yParam = image.quadRects[q].y;
-                num = image.quadRects[q].w;
-                num2 = image.quadRects[q].h;
+                xParam = image.quadRects[quadIndex].x;
+                yParam = image.quadRects[quadIndex].y;
+                tileWidth = image.quadRects[quadIndex].w;
+                tileHeight = image.quadRects[quadIndex].h;
             }
-            if (width == num && height == num2)
+            if (width == tileWidth && height == tileHeight)
             {
-                DrawImageQuad(image, q, x, y);
+                DrawImageQuad(image, quadIndex, x, y);
                 return;
             }
-            int num3 = (int)Ceil(width / num);
-            int num12 = (int)Ceil(height / num2);
-            int num4 = (int)width % (int)num;
-            int num5 = (int)height % (int)num2;
-            int num6 = (int)(num4 == 0 ? num : num4);
-            int num7 = (int)(num5 == 0 ? num2 : num5);
-            int num9 = (int)y;
-            for (int num10 = num12 - 1; num10 >= 0; num10--)
+            int tileColumns = (int)Ceil(width / tileWidth);
+            int tileRows = (int)Ceil(height / tileHeight);
+            int widthRemainder = (int)width % (int)tileWidth;
+            int heightRemainder = (int)height % (int)tileHeight;
+            int edgeTileWidth = (int)(widthRemainder == 0 ? tileWidth : widthRemainder);
+            int edgeTileHeight = (int)(heightRemainder == 0 ? tileHeight : heightRemainder);
+            int drawY = (int)y;
+            for (int row = tileRows - 1; row >= 0; row--)
             {
-                int num8 = (int)x;
-                for (int num11 = num3 - 1; num11 >= 0; num11--)
+                int drawX = (int)x;
+                for (int column = tileColumns - 1; column >= 0; column--)
                 {
-                    if (num11 == 0 || num10 == 0)
+                    if (column == 0 || row == 0)
                     {
-                        CTRRectangle r = MakeRectangle(xParam, yParam, num11 == 0 ? num6 : num, num10 == 0 ? num7 : num2);
-                        DrawImagePart(image, r, num8, num9);
+                        CTRRectangle rect = MakeRectangle(
+                            xParam,
+                            yParam,
+                            column == 0 ? edgeTileWidth : tileWidth,
+                            row == 0 ? edgeTileHeight : tileHeight);
+                        DrawImagePart(image, rect, drawX, drawY);
                     }
                     else
                     {
-                        DrawImageQuad(image, q, num8, num9);
+                        DrawImageQuad(image, quadIndex, drawX, drawY);
                     }
-                    num8 += (int)num;
+                    drawX += (int)tileWidth;
                 }
-                num9 += (int)num2;
+                drawY += (int)tileHeight;
             }
         }
 
-        public static Quad2D GetTextureCoordinates(CTRTexture2D t, CTRRectangle r)
+        public static Quad2D GetTextureCoordinates(CTRTexture2D texture, CTRRectangle rect)
         {
-            return Quad2D.MakeQuad2D(t._invWidth * r.x, t._invHeight * r.y, t._invWidth * r.w, t._invHeight * r.h);
+            return Quad2D.MakeQuad2D(
+                texture._invWidth * rect.x,
+                texture._invHeight * rect.y,
+                texture._invWidth * rect.w,
+                texture._invHeight * rect.h);
         }
 
         public static Vector CalcPathBezier(Vector[] p, int count, float delta)
@@ -144,42 +152,43 @@ namespace CutTheRope.Framework.Visual
 
         public static Vector Calc2PointBezier(ref Vector a, ref Vector b, float delta)
         {
-            float num = 1f - delta;
+            float inverseDelta = 1f - delta;
             return new Vector
             {
-                X = (a.X * num) + (b.X * delta),
-                Y = (a.Y * num) + (b.Y * delta)
+                X = (a.X * inverseDelta) + (b.X * delta),
+                Y = (a.Y * inverseDelta) + (b.Y * delta)
             };
         }
 
         public static void CalcCircle(float x, float y, float radius, int vertexCount, float[] glVertices)
         {
-            float num = MathF.Tau / vertexCount;
-            float num2 = 0f;
+            float angleStep = MathF.Tau / vertexCount;
+            float angle = 0f;
             for (int i = 0; i < vertexCount; i++)
             {
-                glVertices[i * 2] = x + (radius * Cosf(num2));
-                glVertices[(i * 2) + 1] = y + (radius * Sinf(num2));
-                num2 += num;
+                glVertices[i * 2] = x + (radius * Cosf(angle));
+                glVertices[(i * 2) + 1] = y + (radius * Sinf(angle));
+                angle += angleStep;
             }
         }
 
         public static void DrawCircleIntersection(float cx1, float cy1, float radius1, float cx2, float cy2, float radius2, int vertexCount, float width, RGBAColor fill)
         {
-            float num = VectDistance(Vect(cx1, cy1), Vect(cx2, cy2));
-            if (num < radius1 + radius2 && radius1 < num + radius2)
+            float centerDistance = VectDistance(Vect(cx1, cy1), Vect(cx2, cy2));
+            if (centerDistance < radius1 + radius2 && radius1 < centerDistance + radius2)
             {
-                float num2 = ((radius1 * radius1) - (radius2 * radius2) + (num * num)) / (2f * num);
-                float num3 = Acosf((num - num2) / radius2);
-                float num6 = VectAngle(VectSub(Vect(cx1, cy1), Vect(cx2, cy2)));
-                float num4 = num6 - num3;
-                float num5 = num6 + num3;
+                float intersectionDistance = ((radius1 * radius1) - (radius2 * radius2) + (centerDistance * centerDistance))
+                    / (2f * centerDistance);
+                float angleOffset = Acosf((centerDistance - intersectionDistance) / radius2);
+                float baseAngle = VectAngle(VectSub(Vect(cx1, cy1), Vect(cx2, cy2)));
+                float startAngle = baseAngle - angleOffset;
+                float endAngle = baseAngle + angleOffset;
                 if (cx2 > cx1)
                 {
-                    num4 += MathF.PI;
-                    num5 += MathF.PI;
+                    startAngle += MathF.PI;
+                    endAngle += MathF.PI;
                 }
-                DrawAntialiasedCurve2(cx2, cy2, radius2, num4, num5, vertexCount, width, 1f, fill);
+                DrawAntialiasedCurve2(cx2, cy2, radius2, startAngle, endAngle, vertexCount, width, 1f, fill);
             }
         }
 
@@ -247,21 +256,21 @@ namespace CutTheRope.Framework.Visual
 
         private static void CalcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
-            float num7 = (endAngle - startAngle) / (vertexCount - 1);
-            float num = Tanf(num7);
-            float num2 = Cosf(num7);
-            float num3 = radius * Cosf(startAngle);
-            float num4 = radius * Sinf(startAngle);
+            float angleStep = (endAngle - startAngle) / (vertexCount - 1);
+            float tangentFactor = Tanf(angleStep);
+            float cosineFactor = Cosf(angleStep);
+            float currentX = radius * Cosf(startAngle);
+            float currentY = radius * Sinf(startAngle);
             for (int i = 0; i < vertexCount; i++)
             {
-                glVertices[i * 2] = num3 + cx;
-                glVertices[(i * 2) + 1] = num4 + cy;
-                float num5 = 0f - num4;
-                float num6 = num3;
-                num3 += num5 * num;
-                num4 += num6 * num;
-                num3 *= num2;
-                num4 *= num2;
+                glVertices[i * 2] = currentX + cx;
+                glVertices[(i * 2) + 1] = currentY + cy;
+                float rotatedX = 0f - currentY;
+                float rotatedY = currentX;
+                currentX += rotatedX * tangentFactor;
+                currentY += rotatedY * tangentFactor;
+                currentX *= cosineFactor;
+                currentY *= cosineFactor;
             }
         }
 
