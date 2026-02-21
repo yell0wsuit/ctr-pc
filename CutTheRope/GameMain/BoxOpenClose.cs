@@ -269,7 +269,7 @@ namespace CutTheRope.GameMain
             float spawnX = RND_RANGE((int)RTPD(-100), (int)SCREEN_WIDTH);
             float spawnY = RND_RANGE((int)RTPD(-40), (int)RTPD(100));
             float fadeDuration = FLOAT_RND_RANGE(2, 5);
-            int i = confetti.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, firstFrame, lastFrame);
+            int i = confetti.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, firstFrame, lastFrame);
             confetti.ani = confetti.GetTimeline(i);
             confetti.ani.PlayTimeline();
             confetti.ani.JumpToTrackKeyFrame(4, RND_RANGE(0, lastFrame - firstFrame - 1));

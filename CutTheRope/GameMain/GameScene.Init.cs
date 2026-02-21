@@ -67,7 +67,7 @@ namespace CutTheRope.GameMain
             {
                 hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudStar);
                 hudStar[i].DoRestoreCutTransparency();
-                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
+                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
                 hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
                 hudStar[i].y = 0f;

@@ -564,7 +564,7 @@ namespace CutTheRope.GameMain
                         animation.x = candy.x;
                         animation.y = candy.y;
                         animation.anchor = 18;
-                        int n = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 11, 15);
+                        int n = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 11, 15);
                         animation.GetTimeline(n).delegateTimelineDelegate = aniPool;
                         animation.PlayTimeline(0);
                         _ = aniPool.AddChild(animation);
@@ -635,7 +635,7 @@ namespace CutTheRope.GameMain
                         animation2.x = star.x;
                         animation2.y = star.y;
                         animation2.anchor = 18;
-                        int n2 = animation2.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
+                        int n2 = animation2.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
                         animation2.GetTimeline(n2).delegateTimelineDelegate = aniPool;
                         animation2.PlayTimeline(0);
                         _ = aniPool.AddChild(animation2);

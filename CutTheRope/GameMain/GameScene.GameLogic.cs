@@ -347,7 +347,7 @@ namespace CutTheRope.GameMain
             animation.x = bx;
             animation.y = by;
             animation.anchor = 18;
-            int i = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 11);
+            int i = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 11);
             animation.GetTimeline(i).delegateTimelineDelegate = aniPool;
             animation.PlayTimeline(0);
             _ = aniPool.AddChild(animation);

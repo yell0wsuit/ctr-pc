@@ -143,11 +143,6 @@ namespace CutTheRope.Framework.Visual
             GetTimeline(animationId).GetTrack(Track.TrackType.TRACK_ACTION).keyFrames[keyframeIndex].timeOffset = delay;
         }
 
-        public int AddAnimationDelayLoopFirstLast(double delay, Timeline.LoopType loopType, int start, int end)
-        {
-            return AddAnimationDelayLoopFirstLast((float)delay, loopType, start, end);
-        }
-
         public int AddAnimationDelayLoopFirstLast(float delay, Timeline.LoopType loopType, int start, int end)
         {
             int animationId = timelines.Count;

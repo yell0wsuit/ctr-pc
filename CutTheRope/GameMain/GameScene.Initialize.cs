@@ -150,7 +150,7 @@ namespace CutTheRope.GameMain
             candyBubbleAnimation.x = candy.x;
             candyBubbleAnimation.y = candy.y;
             candyBubbleAnimation.parentAnchor = candyBubbleAnimation.anchor = 18;
-            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
             candyBubbleAnimation.PlayTimeline(0);
             _ = candy.AddChild(candyBubbleAnimation);
             candyBubbleAnimation.visible = false;

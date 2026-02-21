@@ -534,7 +534,7 @@ namespace CutTheRope.GameMain
             Animation animation = Animation_createWithResID(Resources.Img.ObjBeeHd);
             animation.parentAnchor = animation.anchor = 9;
             animation.DoRestoreCutTransparency();
-            _ = animation.AddAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
+            _ = animation.AddAnimationDelayLoopFirstLast(0.03f, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.PlayTimeline(0);
             animation.JumpTo(RND_RANGE(0, 2));
             _ = bee.AddChild(animation);
