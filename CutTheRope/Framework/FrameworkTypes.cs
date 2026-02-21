@@ -113,14 +113,14 @@ namespace CutTheRope.Framework
             return (float)(IS_WVGA ? V * 2 : V);
         }
 
-        public static float RT(double H, double L)
+        public static float RT(float H, float L)
         {
-            return (float)(IS_RETINA ? H : L);
+            return IS_RETINA ? H : L;
         }
 
-        public static float RTD(double V)
+        public static float RTD(float V)
         {
-            return (float)(IS_RETINA ? V * 2 : V);
+            return IS_RETINA ? V * 2 : V;
         }
 
         public static float RTPD(double V)
