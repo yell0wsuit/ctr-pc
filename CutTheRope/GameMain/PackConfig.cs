@@ -70,20 +70,25 @@ namespace CutTheRope.GameMain
     }
 
     /// <summary>
-    /// Loads pack metadata from <c>packs.xml</c> and exposes string resource names.
+    /// Loads pack metadata from <c>ctroriginal_packs.xml</c> and save routing from <c>packlist.xml</c>.
     /// </summary>
     internal static class PackConfig
     {
+        private const string DefaultOriginalPacksConfigFile = "ctroriginal_packs.xml";
+        private const string PackListConfigFile = "packlist.xml";
         private static readonly string[] EmptyResourceNames = [null];
 
-        /// <summary>Default box color when not specified in packs.xml (dark gray: 45, 45, 53).</summary>
+        /// <summary>Default box color when not specified in pack config (dark gray: 45, 45, 53).</summary>
         private static readonly RGBAColor DefaultBoxHoleBgColor = RGBAColor.MakeRGBA(45 / 255f, 45 / 255f, 53 / 255f, 1f);
 
+        private static readonly string originalPacksConfigFile;
         private static readonly List<PackDefinition> packs;
 
         static PackConfig()
         {
-            packs = LoadFromXml();
+            (string PacksConfigFile, Dictionary<int, int> SaveSlotsByPackIndex) = LoadPackListConfiguration();
+            originalPacksConfigFile = PacksConfigFile;
+            packs = LoadFromXml(originalPacksConfigFile, SaveSlotsByPackIndex);
             MaxLevelsPerPack = packs.Count > 0 ? packs.Max(p => p.LevelCount) : 0;
         }
 
@@ -130,7 +135,7 @@ namespace CutTheRope.GameMain
             string coverResourceName = GetBoxCovers(pack).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
 
             return string.IsNullOrWhiteSpace(coverResourceName)
-                ? throw new InvalidDataException($"packs.xml is missing boxCover for pack {pack}.")
+                ? throw new InvalidDataException($"{originalPacksConfigFile} is missing boxCover for pack {pack}.")
                 : coverResourceName;
         }
 
@@ -186,42 +191,51 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxLabelText : null;
         }
 
-        private static List<PackDefinition> LoadFromXml()
+        private static List<PackDefinition> LoadFromXml(string packsConfigFile, Dictionary<int, int> saveSlotsByPackIndex)
         {
-            XElement root = XElementExtensions.LoadContentXml("packs.xml");
-            List<PackDefinition> results = [];
+            XElement root = XElementExtensions.LoadContentXml(packsConfigFile);
+            List<(int PackIndex, PackDefinition Definition)> results = [];
+            HashSet<int> seenPackIndices = [];
 
             if (root == null)
             {
-                return results;
+                return [];
             }
 
             foreach (XElement packElement in root.Elements("pack"))
             {
+                int packIndex = ParseIntAttribute(packElement, "index", results.Count);
+                if (!seenPackIndices.Add(packIndex))
+                {
+                    throw new InvalidDataException($"{packsConfigFile} contains duplicate pack index {packIndex}.");
+                }
+
                 int unlockStars = ParseIntAttribute(packElement, "unlockStars");
                 int levelCount = ParseLevelCount(packElement);
-                int saveSlot = ParseIntAttribute(packElement, "saveSlot", 0);
+                int saveSlot = saveSlotsByPackIndex.TryGetValue(packIndex, out int configuredSaveSlot)
+                    ? configuredSaveSlot
+                    : 0;
 
                 string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
-                RequireResourceNames(boxBackgrounds, "boxBackground");
-                ValidateResourceNames(boxBackgrounds, "boxBackground");
+                RequireResourceNames(boxBackgrounds, "boxBackground", packsConfigFile);
+                ValidateResourceNames(boxBackgrounds, "boxBackground", packsConfigFile);
 
                 int boxBackgroundP2Y = ParseIntAttribute(packElement, "boxBackgroundP2Y");
 
                 string supportResourceName = ParseResourceName(packElement, "supportResourceName");
                 supportResourceName ??= Resources.Img.CharSupports;
-                ValidateResourceName(supportResourceName, "supportResourceName");
+                ValidateResourceName(supportResourceName, "supportResourceName", packsConfigFile);
 
                 string[] boxCovers = ParseResourceNames(packElement, "boxCover");
-                RequireResourceNames(boxCovers, "boxCover");
-                ValidateResourceNames(boxCovers, "boxCover");
+                RequireResourceNames(boxCovers, "boxCover", packsConfigFile);
+                ValidateResourceNames(boxCovers, "boxCover", packsConfigFile);
 
                 RGBAColor boxHoleBgColor = ParseColorAttribute(packElement, "boxHoleBgColor");
 
                 string[] musicPack = ParseResourceNames(packElement, "musicPack");
 
                 string[] musicList = ParseResourceNames(packElement, "musicList");
-                ValidateResourceNames(musicList, "musicList");
+                ValidateResourceNames(musicList, "musicList", packsConfigFile);
 
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
@@ -229,7 +243,7 @@ namespace CutTheRope.GameMain
 
                 string boxLabelText = ParseResourceName(packElement, "boxLabelText");
 
-                results.Add(new PackDefinition(
+                results.Add((packIndex, new PackDefinition(
                     unlockStars,
                     levelCount,
                     saveSlot,
@@ -242,16 +256,61 @@ namespace CutTheRope.GameMain
                     musicList,
                     earthBg,
                     earthBgPosition,
-                    boxLabelText));
+                    boxLabelText)));
             }
 
-            return results;
+            return [.. results.OrderBy(item => item.PackIndex).Select(item => item.Definition)];
+        }
+
+        private static (string PacksConfigFile, Dictionary<int, int> SaveSlotsByPackIndex) LoadPackListConfiguration()
+        {
+            XElement root = XElementExtensions.LoadContentXml(PackListConfigFile);
+            Dictionary<int, int> saveSlotsByPackIndex = [];
+
+            if (root == null)
+            {
+                return (DefaultOriginalPacksConfigFile, saveSlotsByPackIndex);
+            }
+
+            string packsConfigName = ParseResourceName(root, "name");
+            if (string.IsNullOrWhiteSpace(packsConfigName))
+            {
+                packsConfigName = ParseResourceName(root.Elements("pack").FirstOrDefault(), "name");
+            }
+
+            foreach (XElement packElement in root.Elements("pack"))
+            {
+                int packIndex = ParseRequiredIntAttribute(packElement, "index", PackListConfigFile);
+                int saveSlot = ParseIntAttribute(packElement, "saveSlot", 0);
+                saveSlotsByPackIndex[packIndex] = saveSlot;
+            }
+
+            return (NormalizePacksConfigFileName(packsConfigName), saveSlotsByPackIndex);
+        }
+
+        private static string NormalizePacksConfigFileName(string packsConfigName)
+        {
+            if (string.IsNullOrWhiteSpace(packsConfigName))
+            {
+                return DefaultOriginalPacksConfigFile;
+            }
+
+            string normalized = packsConfigName.Trim();
+            return normalized.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) ? normalized : $"{normalized}.xml";
         }
 
         private static int ParseIntAttribute(XElement element, string attributeName, int defaultValue = 0)
         {
             string value = element.AttributeAsNSString(attributeName);
             return string.IsNullOrWhiteSpace(value) ? defaultValue : int.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        private static int ParseRequiredIntAttribute(XElement element, string attributeName, string fileName)
+        {
+            string value = element.AttributeAsNSString(attributeName);
+            return string.IsNullOrWhiteSpace(value)
+                ? throw new InvalidDataException($"{fileName} is missing required attribute '{attributeName}'.")
+                : int.Parse(value, CultureInfo.InvariantCulture);
         }
 
         private static bool ParseBoolAttribute(XElement element, string attributeName, bool defaultValue = false)
@@ -331,7 +390,7 @@ namespace CutTheRope.GameMain
             return [.. names];
         }
 
-        private static void ValidateResourceNames(IEnumerable<string> resourceNames, string context)
+        private static void ValidateResourceNames(IEnumerable<string> resourceNames, string context, string packsConfigFile)
         {
             foreach (string resourceName in resourceNames)
             {
@@ -340,23 +399,23 @@ namespace CutTheRope.GameMain
                     continue; // Preserve sentinel semantics
                 }
 
-                ValidateResourceName(resourceName, context);
+                ValidateResourceName(resourceName, context, packsConfigFile);
             }
         }
 
-        private static void RequireResourceNames(string[] resourceNames, string context)
+        private static void RequireResourceNames(string[] resourceNames, string context, string packsConfigFile)
         {
             if (resourceNames.Length == 0 || string.IsNullOrWhiteSpace(resourceNames[0]))
             {
-                throw new InvalidDataException($"packs.xml is missing required {context}.");
+                throw new InvalidDataException($"{packsConfigFile} is missing required {context}.");
             }
         }
 
-        private static void ValidateResourceName(string resourceName, string context)
+        private static void ValidateResourceName(string resourceName, string context, string packsConfigFile)
         {
             if (!Resources.IsValidResourceName(resourceName))
             {
-                throw new InvalidDataException($"packs.xml contains unknown resource name '{resourceName}' in '{context}'.");
+                throw new InvalidDataException($"{packsConfigFile} contains unknown resource name '{resourceName}' in '{context}'.");
             }
         }
     }

@@ -65,9 +65,14 @@ namespace CutTheRope.Helpers
         public const string MenuStringsFile = "menu_strings.json";
 
         /// <summary>
-        /// The box packs configuration XML filename.
+        /// The original packs configuration XML filename.
         /// </summary>
-        public const string PacksConfigFile = "packs.xml";
+        public const string CtrOriginalPacksConfigFile = "ctroriginal_packs.xml";
+
+        /// <summary>
+        /// The save-slot mapping XML filename.
+        /// </summary>
+        public const string PackListFile = "packlist.xml";
 
         /// <summary>
         /// Gets the full path to a content file, including the root directory.
@@ -136,7 +141,15 @@ namespace CutTheRope.Helpers
         /// </summary>
         public static string GetPacksConfigPath()
         {
-            return GetContentPath(PacksConfigFile);
+            return GetContentPath(CtrOriginalPacksConfigFile);
+        }
+
+        /// <summary>
+        /// Gets the full path to the pack save-slot configuration file.
+        /// </summary>
+        public static string GetPackListPath()
+        {
+            return GetContentPath(PackListFile);
         }
 
         /// <summary>

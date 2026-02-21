@@ -831,7 +831,7 @@ namespace CutTheRope.GameMain
                     _ = image4.AddTimeline(timeline);
                 }
             }
-            // Add box label if defined in packs.xml
+            // Add box label if defined in ctroriginal_packs.xml
             string boxLabelTextKey = PackConfig.GetBoxLabelText(n);
             if (!string.IsNullOrEmpty(boxLabelTextKey))
             {
