@@ -28,11 +28,6 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
-        public static KeyFrame MakeSingleAction(BaseElement target, string action, int p, int sp, double time)
-        {
-            return MakeSingleAction(target, action, p, sp, (float)time);
-        }
-
         public static KeyFrame MakeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
             return MakeAction([CTRAction.CreateAction(target, action, p, sp)], time);
