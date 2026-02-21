@@ -33,9 +33,9 @@ namespace CutTheRope.GameMain
             _ = AddChild(fire);
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.4, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.4, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.05, 1.3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.7f, 0.7f, 0.7f, 0.7f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.7f, 0.7f, 0.7f, 0.7f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
             timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_PING_PONG);
             fire.AddTimelinewithID(timeline, (int)LanternActivation.FireBounce);
@@ -46,12 +46,12 @@ namespace CutTheRope.GameMain
             _ = AddChild(idleForm);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             idleForm.AddTimelinewithID(timeline, (int)LanternActivation.Activation);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             idleForm.AddTimelinewithID(timeline, (int)LanternActivation.Deactivation);
 
@@ -63,12 +63,12 @@ namespace CutTheRope.GameMain
             _ = AddChild(activeForm);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             activeForm.AddTimelinewithID(timeline, (int)LanternActivation.Activation);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             activeForm.AddTimelinewithID(timeline, (int)LanternActivation.Deactivation);
 
@@ -93,35 +93,35 @@ namespace CutTheRope.GameMain
             _ = AddChild(innerCandy);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 0.8, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.07));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 0.8, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.07));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 1.05, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0.0, -4.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0.0, -1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, -4, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, -1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05));
             innerCandy.AddTimelinewithID(timeline, InnerCandyAppearTimelineId);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.6f, 0.6f, 0.6f, 0.6f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 0.8, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.06));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0.0, -4.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.06));
-            timeline.AddKeyFrame(KeyFrame.MakePos(0.0, 4.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.04));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.04));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, -4, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.06));
+            timeline.AddKeyFrame(KeyFrame.MakePos(0, 4, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.04));
             innerCandy.AddTimelinewithID(timeline, InnerCandyHideTimelineId);
 
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(5);
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.93, 0.93, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.35));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.87, 0.87, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.35));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.93, 0.93, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.35));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.35));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.35));
             timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             innerCandy.AddTimelinewithID(timeline, InnerCandyIdleTimelineId);
 

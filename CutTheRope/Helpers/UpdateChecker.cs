@@ -153,7 +153,7 @@ namespace CutTheRope.Helpers
             }
 
             using HttpRequestMessage request = new(HttpMethod.Get, LatestReleaseUrl);
-            request.Headers.UserAgent.ParseAdd("CutTheRopeDX-UpdateChecker/1.0");
+            request.Headers.UserAgent.ParseAdd("CutTheRopeDX-UpdateChecker/1");
             request.Headers.Add("Accept", "application/vnd.github+json");
             request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
             using HttpResponseMessage response = await Http.SendAsync(request, cancellationToken).ConfigureAwait(false);

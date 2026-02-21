@@ -38,7 +38,7 @@ namespace CutTheRope.Helpers
         {
             ArgumentNullException.ThrowIfNull(callback);
 
-            ArgumentOutOfRangeException.ThrowIfLessThan(interval, 0.0);
+            ArgumentOutOfRangeException.ThrowIfLessThan(interval, 0);
 
             EnsureInitialized();
             delayedDispatcher.CallObjectSelectorParamafterDelay(callback, parameter, interval);

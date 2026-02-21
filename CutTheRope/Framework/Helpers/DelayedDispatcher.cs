@@ -38,7 +38,7 @@ namespace CutTheRope.Framework.Helpers
             {
                 DispatchClass dispatch = dispatchers[i];
                 dispatch.delay -= d;
-                if (dispatch.delay <= 0.0)
+                if (dispatch.delay <= 0)
                 {
                     dispatch.Dispatch();
                     _ = dispatchers.Remove(dispatch);

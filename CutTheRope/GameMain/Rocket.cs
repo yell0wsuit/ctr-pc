@@ -66,8 +66,8 @@ namespace CutTheRope.GameMain
                 track.relative = true;
 
                 timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeScale(0.7, 0.7, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(0.7, 0.7, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
                 timeline.delegateTimelineDelegate = this;
                 AddTimelinewithID(timeline, 2);
 
@@ -78,7 +78,7 @@ namespace CutTheRope.GameMain
 
                 // Why 2.5 weight instead of 0.5?
                 // In the decompiled Windows Phone version, the rocket's weight
-                // is 0.5 (invWeight = 1 / 0.5 = 2.0). However, on PC the lower
+                // is 0.5 (invWeight = 1 / 0.5 = 2). However, on PC the lower
                 // weight makes the rocket too susceptible to constraint forces,
                 // causing it to drift from its intended position. A weight of
                 // 2.5 (invWeight = 0.4) keeps the rocket stable by reducing
@@ -282,7 +282,7 @@ namespace CutTheRope.GameMain
             float snappedRotation = DEG_45 * snappedStep;
             RemoveTimeline(1);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeRotation((double)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 1);

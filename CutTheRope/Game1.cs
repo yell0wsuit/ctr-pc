@@ -161,9 +161,9 @@ namespace CutTheRope
             KeyboardState keyboardState = Keyboard.GetState();
             HandleFullscreenToggle(keyboardState);
             elapsedTime += gameTime.ElapsedGameTime;
-            if (elapsedTime > TimeSpan.FromSeconds(1.0))
+            if (elapsedTime > TimeSpan.FromSeconds(1))
             {
-                elapsedTime -= TimeSpan.FromSeconds(1.0);
+                elapsedTime -= TimeSpan.FromSeconds(1);
                 frameRate = frameCounter;
                 frameCounter = 0;
                 Preferences.Update();

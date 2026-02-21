@@ -338,7 +338,7 @@ namespace CutTheRope.GameMain
             int frameIndex = frameCount > 0 ? random_.Next(0, frameCount) : 0;
 
             // Randomize visual properties
-            float scale = ((float)random_.NextDouble() * 0.5f) + 0.5f; // 0.5 to 1.0
+            float scale = ((float)random_.NextDouble() * 0.5f) + 0.5f; // 0.5 to 1
             float speedY = RandomRange(FallSpeedMin, FallSpeedMax);
             float speedX = RandomRange(-DriftSpeedMax, DriftSpeedMax);
             float swingAmplitude = RandomRange(SwingAmplitudeMin, SwingAmplitudeMax);
@@ -473,7 +473,7 @@ namespace CutTheRope.GameMain
             /// <summary>Texture frame index to render.</summary>
             public int FrameIndex;
 
-            /// <summary>Visual scale multiplier (0.5 to 1.0).</summary>
+            /// <summary>Visual scale multiplier (0.5 to 1).</summary>
             public float Scale;
 
             /// <summary>Vertical fall speed in pixels per second.</summary>

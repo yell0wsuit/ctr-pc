@@ -54,7 +54,7 @@ namespace CutTheRope.GameMain
 
         public void UpdateRotation()
         {
-            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
+            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400);
             halfWidth /= 2f;
             t1.X = x - halfWidth;
             t2.X = x + halfWidth;
@@ -126,7 +126,7 @@ namespace CutTheRope.GameMain
             if (electroOn)
             {
                 _ = Mover.MoveVariableToTarget(ref electroTimer, 0f, 1f, delta);
-                if (electroTimer == 0.0)
+                if (electroTimer == 0)
                 {
                     TurnElectroOff();
                     return;
@@ -135,7 +135,7 @@ namespace CutTheRope.GameMain
             else
             {
                 _ = Mover.MoveVariableToTarget(ref electroTimer, 0f, 1f, delta);
-                if (electroTimer == 0.0)
+                if (electroTimer == 0)
                 {
                     TurnElectroOn();
                 }

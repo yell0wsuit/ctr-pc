@@ -110,7 +110,7 @@ namespace CutTheRope.Framework
 
         public static float WVGAD(double V)
         {
-            return (float)(IS_WVGA ? V * 2.0 : V);
+            return (float)(IS_WVGA ? V * 2 : V);
         }
 
         public static float RT(double H, double L)
@@ -120,12 +120,12 @@ namespace CutTheRope.Framework
 
         public static float RTD(double V)
         {
-            return (float)(IS_RETINA ? V * 2.0 : V);
+            return (float)(IS_RETINA ? V * 2 : V);
         }
 
         public static float RTPD(double V)
         {
-            return (float)(IS_RETINA | IS_IPAD ? V * 2.0 : V);
+            return (float)(IS_RETINA | IS_IPAD ? V * 2 : V);
         }
 
         public static float CHOOSE3(double P1, double P2)

@@ -68,8 +68,8 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
-            mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
-            mapNameLabel.y = RTD(-5.0);
+            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + 256f;
+            mapNameLabel.y = RTD(-5);
             _ = image.AddChild(mapNameLabel);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
             Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
@@ -683,7 +683,7 @@ namespace CutTheRope.GameMain
             View view = GetView(0);
             view.GetChild(2).x = -(float)Canvas.xOffsetScaled;
             view.GetChild(1).x = -(float)Canvas.xOffsetScaled;
-            mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
+            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + 256f;
             GameScene gameScene = (GameScene)view.GetChild(0);
             gameScene?.FullscreenToggled(isFullscreen);
         }

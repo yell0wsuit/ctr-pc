@@ -24,12 +24,12 @@ namespace CutTheRope.GameMain
                 Vector vector2 = default;
                 vector2.X = p.x + (p.bb.w / 2f);
                 vector.Y = vector2.Y = p.y;
-                if (p.angle != 0.0)
+                if (p.angle != 0)
                 {
-                    v = VectRotateAround(v, 0.0 - p.angle, p.x, p.y);
+                    v = VectRotateAround(v, 0 - p.angle, p.x, p.y);
                 }
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
-                if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2.0)), (float)(v.Y - (p.bb.h / 2.0)), (float)(v.X + (p.bb.w / 2.0)), (float)(v.Y + (p.bb.h / 2.0)), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
+                if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2)), (float)(v.Y - (p.bb.h / 2)), (float)(v.X + (p.bb.w / 2)), (float)(v.Y + (p.bb.h / 2)), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
                 {
                     float verticalImpulse = flowLength * 2f * (flowLength - (vector.Y - v.Y)) / flowLength;
                     Vector v2 = Vect(0f, 0f - verticalImpulse);
@@ -91,8 +91,8 @@ namespace CutTheRope.GameMain
             {
                 Vector position = Vect(pt.pos.X, pt.pos.Y);
                 Vector velocity = Vect(pt.v.X, pt.v.Y);
-                position = VectRotateAround(position, 0.0 - angle, tube.x, tube.y);
-                velocity = VectRotate(velocity, 0.0 - angle);
+                position = VectRotateAround(position, 0 - angle, tube.x, tube.y);
+                velocity = VectRotate(velocity, 0 - angle);
 
                 bool insideTube = RectInRect(
                     position.X - collisionRadius, position.Y - (collisionRadius / 2f),
@@ -324,18 +324,18 @@ namespace CutTheRope.GameMain
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y + 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y + 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y - 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y - 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
             image.x = g.spider.x;
@@ -401,15 +401,15 @@ namespace CutTheRope.GameMain
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y + 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y + 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
@@ -426,7 +426,7 @@ namespace CutTheRope.GameMain
             DetachActiveSnails();
             if (restartState != 0)
             {
-                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2.0);
+                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2);
             }
         }
 

@@ -308,7 +308,7 @@ namespace CutTheRope.GameMain
             if (rotatedCircle != null && rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count - 1 && flag2 && !flag)
             {
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(1);
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
@@ -365,7 +365,7 @@ namespace CutTheRope.GameMain
                     bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                     bungee.wheelOperating = ti;
                 }
-                if (bungee.moveLength > 0.0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
+                if (bungee.moveLength > 0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
                     bungee.moverDragging = ti;
                     return true;
@@ -483,7 +483,7 @@ namespace CutTheRope.GameMain
                 {
                     bungee.wheelOperating = -1;
                 }
-                if (bungee.moveLength > 0.0 && bungee.moverDragging == ti)
+                if (bungee.moveLength > 0 && bungee.moverDragging == ti)
                 {
                     bungee.moverDragging = -1;
                 }
@@ -555,7 +555,7 @@ namespace CutTheRope.GameMain
             foreach (object obj in pumps)
             {
                 Pump pump3 = (Pump)obj;
-                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0.0 && (double)VectDistance(startPos[ti], vector) > 10.0)
+                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && (double)VectDistance(startPos[ti], vector) > 10)
                 {
                     pump3.pumpTouchTimer = 0f;
                 }
@@ -692,7 +692,7 @@ namespace CutTheRope.GameMain
                         grab2.HandleWheelRotate(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                         return true;
                     }
-                    if (grab2.moveLength > 0.0 && grab2.moverDragging == ti)
+                    if (grab2.moveLength > 0 && grab2.moverDragging == ti)
                     {
                         if (grab2.moveVertical)
                         {
@@ -747,7 +747,7 @@ namespace CutTheRope.GameMain
                 if (ropesCutThisFrame > 0)
                 {
                     freezeCamera = false;
-                    if (ropesCutAtOnce > 0 && ropeAtOnceTimer > 0.0)
+                    if (ropesCutAtOnce > 0 && ropeAtOnceTimer > 0)
                     {
                         ropesCutAtOnce += ropesCutThisFrame;
                     }

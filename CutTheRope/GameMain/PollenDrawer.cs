@@ -100,8 +100,8 @@ namespace CutTheRope.GameMain
             for (int i = 0; i <= segmentCount; i++)
             {
                 Vector v4 = VectAdd(vector, VectMult(v3, i * segmentSpacing));
-                v4.X += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
-                v4.Y += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
+                v4.X += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
+                v4.Y += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
                 AddPollenAtparentIndex(v4, p1);
             }
         }

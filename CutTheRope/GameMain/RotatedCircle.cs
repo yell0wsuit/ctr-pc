@@ -128,7 +128,7 @@ namespace CutTheRope.GameMain
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
-                if (color.AlphaChannel != 1.0)
+                if (color.AlphaChannel != 1)
                 {
                     whiteRGBA.AlphaChannel = color.AlphaChannel;
                 }
@@ -307,11 +307,11 @@ namespace CutTheRope.GameMain
 
         private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1, 1, 1, 0.2f);
 
-        // private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
+        // private readonly float INNER_CIRCLE_WIDTH = RTPD(15) * 3f;
 
-        private readonly float OUTER_CIRCLE_WIDTH = RTPD(7.0) * 3f;
+        private readonly float OUTER_CIRCLE_WIDTH = RTPD(7) * 3f;
 
-        private readonly float ACTIVE_CIRCLE_WIDTH = RTPD(3.0) * 3f;
+        private readonly float ACTIVE_CIRCLE_WIDTH = RTPD(3) * 3f;
 
         private readonly float CONTROLLER_SHIFT_PARAM1 = 67.5f;
 

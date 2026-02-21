@@ -70,10 +70,10 @@ namespace CutTheRope.GameMain
             wakeUp?.SetEnabled(false);
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(x, y - 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline.AddKeyFrame(KeyFrame.MakePos(x, y - 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
             timeline.AddKeyFrame(KeyFrame.MakePos(x, y + SCREEN_HEIGHT, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 2.1));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 2.4));
             timeline.AddKeyFrame(KeyFrame.MakeSingleAction(this, SnailActionDetach, 0, 0, 2.4f));
 
@@ -120,10 +120,10 @@ namespace CutTheRope.GameMain
 
             Timeline pulseTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(5);
             pulseTimeline.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            pulseTimeline.AddKeyFrame(KeyFrame.MakeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+            pulseTimeline.AddKeyFrame(KeyFrame.MakeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             pulseTimeline.AddKeyFrame(KeyFrame.MakeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
             pulseTimeline.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 1f));
-            pulseTimeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+            pulseTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
             pulseTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             _ = AddTimeline(pulseTimeline);
 

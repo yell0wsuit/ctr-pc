@@ -122,9 +122,9 @@ namespace CutTheRope.GameMain
             timeline5.AddKeyFrame(KeyFrame.MakePos(image2.x - 1f, image2.y + 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.47f));
             timeline5.AddKeyFrame(KeyFrame.MakePos(image2.x, image2.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.47f));
             timeline5.AddKeyFrame(KeyFrame.MakePos(image2.x + 1f, image2.y - 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.47f));
-            timeline5.AddKeyFrame(KeyFrame.MakeRotation(350.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            timeline5.AddKeyFrame(KeyFrame.MakeRotation(350.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            timeline5.AddKeyFrame(KeyFrame.MakeRotation(350.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            timeline5.AddKeyFrame(KeyFrame.MakeRotation(350, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline5.AddKeyFrame(KeyFrame.MakeRotation(350, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline5.AddKeyFrame(KeyFrame.MakeRotation(350, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
             image2.AddTimelinewithID(timeline5, 0);
             image2.PlayTimeline(0);
             passTransformationsToChilds = true;

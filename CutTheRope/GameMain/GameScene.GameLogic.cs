@@ -182,17 +182,17 @@ namespace CutTheRope.GameMain
             candyMain.scaleX = candyMain.scaleY = 1f;
             candyTop.scaleX = candyTop.scaleY = 1f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(target.x, target.y + 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(0.71, 0.71, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakePos(target.x, target.y + 10, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.71, 0.71, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
             candy.AddTimelinewithID(timeline, 0);
             candy.PlayTimeline(0);
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(candy);
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2.0);
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
             CalculateScore();
             ReleaseAllRopes(false);
             if (activeRocket != null)
@@ -239,7 +239,7 @@ namespace CutTheRope.GameMain
 
             target.PlayAnimationtimeline(Resources.Img.CharAnimations3, 5);
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
             if (activeRocket != null)
             {
@@ -422,7 +422,7 @@ namespace CutTheRope.GameMain
 
         public void OnButtonPressed(GameSceneButtonId _)
         {
-            if (MaterialPoint.globalGravity.Y == 784.0)
+            if (MaterialPoint.globalGravity.Y == 784)
             {
                 MaterialPoint.globalGravity.Y = -784f;
                 gravityNormal = false;
