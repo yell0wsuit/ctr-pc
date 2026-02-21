@@ -134,8 +134,8 @@ namespace CutTheRope.Framework.Visual
 
         public void UpdateWithCameraPos(Vector pos)
         {
-            float cameraX = (float)Math.Round((double)(pos.X / parallaxRatio));
-            float cameraY = (float)Math.Round((double)(pos.Y / parallaxRatio));
+            float cameraX = MathF.Round(pos.X / parallaxRatio);
+            float cameraY = MathF.Round(pos.Y / parallaxRatio);
             float mapX = x;
             float mapY = y;
             if (repeatedVertically != Repeat.NONE)
@@ -155,7 +155,7 @@ namespace CutTheRope.Framework.Visual
                 return;
             }
             CTRRectangle rectangle = RectInRectIntersection(new CTRRectangle(mapX, mapY, tileMapWidth, tileMapHeight), new CTRRectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight));
-            Vector vector = Vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
+            Vector vector = Vect(MathF.Max(0f, rectangle.x), MathF.Max(0f, rectangle.y));
             Vector vector2 = Vect((int)vector.X / tileWidth, (int)vector.Y / tileHeight);
             float rowStartY = mapY + (vector2.Y * tileHeight);
             Vector vector3 = Vect(mapX + (vector2.X * tileWidth), rowStartY);
@@ -257,8 +257,8 @@ namespace CutTheRope.Framework.Visual
 
         public void UpdateVars()
         {
-            maxColsOnScreen = 2 + (int)Math.Floor((double)(cameraViewWidth / (tileWidth + 1)));
-            maxRowsOnScreen = 2 + (int)Math.Floor((double)(cameraViewHeight / (tileHeight + 1)));
+            maxColsOnScreen = 2 + (int)MathF.Floor(cameraViewWidth / (tileWidth + 1));
+            maxRowsOnScreen = 2 + (int)MathF.Floor(cameraViewHeight / (tileHeight + 1));
             if (repeatedVertically == Repeat.NONE)
             {
                 maxRowsOnScreen = Math.Min(maxRowsOnScreen, rows);

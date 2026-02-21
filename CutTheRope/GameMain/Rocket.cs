@@ -52,7 +52,7 @@ namespace CutTheRope.GameMain
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 AddTimelinewithID(timeline, 0);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(DEG_45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                 timeline.delegateTimelineDelegate = this;
                 Track track = timeline.GetTrack(Track.TrackType.TRACK_ROTATION);
                 track.relative = true;
@@ -60,14 +60,14 @@ namespace CutTheRope.GameMain
                 timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 AddTimelinewithID(timeline, 1);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(-DEG_45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(-45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                 timeline.delegateTimelineDelegate = this;
                 track = timeline.GetTrack(Track.TrackType.TRACK_ROTATION);
                 track.relative = true;
 
                 timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeScale(0.7, 0.7, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(0.7f, 0.7f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
                 timeline.delegateTimelineDelegate = this;
                 AddTimelinewithID(timeline, 2);
 
@@ -78,7 +78,7 @@ namespace CutTheRope.GameMain
 
                 // Why 2.5 weight instead of 0.5?
                 // In the decompiled Windows Phone version, the rocket's weight
-                // is 0.5 (invWeight = 1 / 0.5 = 2.0). However, on PC the lower
+                // is 0.5 (invWeight = 1 / 0.5 = 2). However, on PC the lower
                 // weight makes the rocket too susceptible to constraint forces,
                 // causing it to drift from its intended position. A weight of
                 // 2.5 (invWeight = 0.4) keeps the rocket stable by reducing
@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
             container.y = y;
             float movementSpeed = VectLength(VectSub(point.prevPos, point.pos));
             movementSpeed = MAX(movementSpeed, 1f);
-            float exhaustAngle = angle - (float)Math.PI;
+            float exhaustAngle = angle - MathF.PI;
             float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
             vector = VectAdd(vector, VectMult(VectForAngle(angle), exhaustOffset));
@@ -282,8 +282,8 @@ namespace CutTheRope.GameMain
             float snappedRotation = DEG_45 * snappedStep;
             RemoveTimeline(1);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((double)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 1);
             PlayTimeline(1);
@@ -337,7 +337,7 @@ namespace CutTheRope.GameMain
         /// <returns>The exhaust offset distance.</returns>
         private float GetExhaustOffset()
         {
-            return GetRocketQuadHalfLength() * Math.Abs(scaleX);
+            return GetRocketQuadHalfLength() * MathF.Abs(scaleX);
         }
 
         /// <summary>

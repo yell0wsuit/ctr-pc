@@ -91,7 +91,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Current pump angle in radians.
         /// </summary>
-        public double angle;
+        public float angle;
 
         public Vector t1;
 

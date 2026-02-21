@@ -103,32 +103,32 @@ namespace CutTheRope.Framework
         {
         }
 
-        public static float WVGAH(double H, double L)
+        public static float WVGAH(float H, float L)
         {
-            return (float)(IS_WVGA ? H : L);
+            return IS_WVGA ? H : L;
         }
 
-        public static float WVGAD(double V)
+        public static float WVGAD(float V)
         {
-            return (float)(IS_WVGA ? V * 2.0 : V);
+            return IS_WVGA ? V * 2 : V;
         }
 
-        public static float RT(double H, double L)
+        public static float RT(float H, float L)
         {
-            return (float)(IS_RETINA ? H : L);
+            return IS_RETINA ? H : L;
         }
 
-        public static float RTD(double V)
+        public static float RTD(float V)
         {
-            return (float)(IS_RETINA ? V * 2.0 : V);
+            return IS_RETINA ? V * 2 : V;
         }
 
-        public static float RTPD(double V)
+        public static float RTPD(float V)
         {
-            return (float)(IS_RETINA | IS_IPAD ? V * 2.0 : V);
+            return IS_RETINA | IS_IPAD ? V * 2 : V;
         }
 
-        public static float CHOOSE3(double P1, double P2)
+        public static float CHOOSE3(float P1, float P2)
         {
             return WVGAH(P2, P1);
         }

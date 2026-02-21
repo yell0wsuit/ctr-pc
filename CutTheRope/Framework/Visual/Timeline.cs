@@ -109,7 +109,7 @@ namespace CutTheRope.Framework.Visual
                                 thiss.OnFinished?.Invoke();
                             }
                         }
-                        thiss.time = Math.Min(thiss.time - thiss.length, thiss.length);
+                        thiss.time = MathF.Min(thiss.time - thiss.length, thiss.length);
                         return;
                     }
                     break;
@@ -119,7 +119,7 @@ namespace CutTheRope.Framework.Visual
                         bool flag2 = thiss.timelineDirReverse && thiss.time <= 1E-06f;
                         if (flag3)
                         {
-                            thiss.time = Math.Max(0f, thiss.length - (thiss.time - thiss.length));
+                            thiss.time = MathF.Max(0f, thiss.length - (thiss.time - thiss.length));
                             thiss.timelineDirReverse = true;
                             return;
                         }
@@ -135,7 +135,7 @@ namespace CutTheRope.Framework.Visual
                                     thiss.OnFinished?.Invoke();
                                 }
                             }
-                            thiss.time = Math.Min(0f - thiss.time, thiss.length);
+                            thiss.time = MathF.Min(0f - thiss.time, thiss.length);
                             thiss.timelineDirReverse = false;
                             return;
                         }

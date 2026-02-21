@@ -198,13 +198,13 @@ namespace CutTheRope.GameMain
                 float scaledOffsetY = offset.Y * flake.Scale;
 
                 // Apply horizontal swinging motion
-                float swingOffset = (float)Math.Sin(flake.SwingPhase) * flake.SwingAmplitude;
+                float swingOffset = MathF.Sin(flake.SwingPhase) * flake.SwingAmplitude;
                 float currentX = flake.BaseX + swingOffset;
                 float drawX = currentX - (scaledPreWidth / 2f) + scaledOffsetX;
                 float drawY = flake.Y - (scaledPreHeight / 2f) + scaledOffsetY;
 
                 // Calculate twinkling alpha with global fade multiplier
-                float alpha = flake.AlphaBase + ((float)Math.Sin(flake.TwinklePhase) * flake.AlphaRange);
+                float alpha = flake.AlphaBase + (MathF.Sin(flake.TwinklePhase) * flake.AlphaRange);
                 float finalAlpha = Math.Clamp(alpha, 0f, 1f) * Math.Clamp(globalAlpha, 0f, 1f);
                 if (finalAlpha <= 0f)
                 {
@@ -323,7 +323,7 @@ namespace CutTheRope.GameMain
         private static int ComputeSnowflakeCount()
         {
             float scaleRatio = SCREEN_WIDTH * SCREEN_HEIGHT / BaseCanvasArea;
-            int scaled = (int)Math.Round(scaleRatio * MaxSnowflakes);
+            int scaled = (int)MathF.Round(scaleRatio * MaxSnowflakes);
             return Math.Clamp(scaled, MinSnowflakes, MaxSnowflakes);
         }
 
@@ -338,18 +338,18 @@ namespace CutTheRope.GameMain
             int frameIndex = frameCount > 0 ? random_.Next(0, frameCount) : 0;
 
             // Randomize visual properties
-            float scale = ((float)random_.NextDouble() * 0.5f) + 0.5f; // 0.5 to 1.0
+            float scale = (float)((random_.NextDouble() * 0.5f) + 0.5f); // 0.5 to 1
             float speedY = RandomRange(FallSpeedMin, FallSpeedMax);
             float speedX = RandomRange(-DriftSpeedMax, DriftSpeedMax);
             float swingAmplitude = RandomRange(SwingAmplitudeMin, SwingAmplitudeMax);
             float swingSpeed = RandomRange(SwingSpeedMin, SwingSpeedMax);
-            float alphaBase = ((float)random_.NextDouble() * 0.3f) + 0.5f; // 0.5 to 0.8
-            float alphaRange = ((float)random_.NextDouble() * 0.25f) + 0.15f; // 0.15 to 0.4
+            float alphaBase = (float)((random_.NextDouble() * 0.3f) + 0.5f); // 0.5 to 0.8
+            float alphaRange = (float)((random_.NextDouble() * 0.25f) + 0.15f); // 0.15 to 0.4
 
             // Position: spread across screen or spawn at top center
-            float xStart = populateScreen
-                ? ((float)random_.NextDouble() * (width + (EdgeBuffer * 2f))) - EdgeBuffer
-                : (float)random_.NextDouble() * width;
+            float xStart = (float)(populateScreen
+                ? (random_.NextDouble() * (width + (EdgeBuffer * 2f))) - EdgeBuffer
+                : random_.NextDouble() * width);
 
             return new Snowflake
             {
@@ -359,13 +359,13 @@ namespace CutTheRope.GameMain
                 SpeedX = speedX,
                 SwingAmplitude = swingAmplitude,
                 SwingSpeed = swingSpeed,
-                SwingPhase = (float)(random_.NextDouble() * Math.Tau),
+                SwingPhase = (float)(random_.NextDouble() * MathF.Tau),
                 AlphaBase = alphaBase,
                 AlphaRange = alphaRange,
-                TwinklePhase = (float)(random_.NextDouble() * Math.Tau),
+                TwinklePhase = (float)(random_.NextDouble() * MathF.Tau),
                 TwinkleSpeed = RandomRange(TwinkleSpeedMin, TwinkleSpeedMax),
                 BaseX = xStart,
-                Y = populateScreen ? -(float)random_.NextDouble() * height : -EdgeBuffer
+                Y = (float)(populateScreen ? -random_.NextDouble() * height : -EdgeBuffer)
             };
         }
 
@@ -401,7 +401,7 @@ namespace CutTheRope.GameMain
                 flake.TwinklePhase += flake.TwinkleSpeed * delta;
 
                 // Check if snowflake has moved off-screen
-                float swingOffset = (float)Math.Sin(flake.SwingPhase) * flake.SwingAmplitude;
+                float swingOffset = MathF.Sin(flake.SwingPhase) * flake.SwingAmplitude;
                 float currentX = flake.BaseX + swingOffset;
 
                 if (flake.Y > maxY || currentX < minX || currentX > maxX)
@@ -424,7 +424,7 @@ namespace CutTheRope.GameMain
                 // Fade out transition
                 fadeElapsed += delta;
                 float progress = Math.Clamp(fadeElapsed / FadeDuration, 0f, 1f);
-                globalAlpha = Math.Max(0f, 1f - progress);
+                globalAlpha = MathF.Max(0f, 1f - progress);
                 if (progress >= 1f)
                 {
                     Stop(immediate: true);
@@ -435,7 +435,7 @@ namespace CutTheRope.GameMain
                 // Fade in transition
                 fadeElapsed += delta;
                 float progress = Math.Clamp(fadeElapsed / FadeDuration, 0f, 1f);
-                globalAlpha = Math.Min(1f, progress);
+                globalAlpha = MathF.Min(1f, progress);
             }
         }
 
@@ -447,7 +447,7 @@ namespace CutTheRope.GameMain
         /// <returns>Random value between min and max.</returns>
         private static float RandomRange(float min, float max)
         {
-            return min + ((float)random_.NextDouble() * (max - min));
+            return (float)(min + (random_.NextDouble() * (max - min)));
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace CutTheRope.GameMain
             /// <summary>Texture frame index to render.</summary>
             public int FrameIndex;
 
-            /// <summary>Visual scale multiplier (0.5 to 1.0).</summary>
+            /// <summary>Visual scale multiplier (0.5 to 1).</summary>
             public float Scale;
 
             /// <summary>Vertical fall speed in pixels per second.</summary>

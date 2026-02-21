@@ -87,7 +87,7 @@ namespace CutTheRope.Framework.Visual
 
         protected static void RestoreTransformations(BaseElement t)
         {
-            if (t.pushM || t.rotation != 0.0 || t.scaleX != 1.0 || t.scaleY != 1.0 || t.translateX != 0.0 || t.translateY != 0.0)
+            if (t.pushM || t.rotation != 0 || t.scaleX != 1 || t.scaleY != 1 || t.translateX != 0 || t.translateY != 0)
             {
                 Renderer.PopMatrix();
                 t.pushM = false;
@@ -138,9 +138,9 @@ namespace CutTheRope.Framework.Visual
         public virtual void PreDraw()
         {
             CalculateTopLeft(this);
-            bool changeScale = scaleX != 1.0 || scaleY != 1.0;
-            bool changeRotation = rotation != 0.0;
-            bool changeTranslate = translateX != 0.0 || translateY != 0.0;
+            bool changeScale = scaleX != 1 || scaleY != 1;
+            bool changeRotation = rotation != 0;
+            bool changeTranslate = translateX != 0 || translateY != 0;
             if (changeScale || changeRotation || changeTranslate)
             {
                 Renderer.PushMatrix();

@@ -32,7 +32,7 @@ namespace CutTheRope.Framework.Platform
             yOffset = 0;
             origWidth = backingWidth = 2560;
             origHeight = backingHeight = 1440;
-            aspect = backingHeight / (float)backingWidth;
+            aspect = backingHeight / backingWidth;
             touchesCount = 0;
             return this;
         }

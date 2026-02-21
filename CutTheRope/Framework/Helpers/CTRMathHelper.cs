@@ -24,7 +24,7 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>Returns the smaller of two floats.</summary>
         public static float MIN(float a, float b)
         {
-            return Math.Min(a, b);
+            return MathF.Min(a, b);
         }
 
         /// <summary>Returns the larger of two integers.</summary>
@@ -36,13 +36,13 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>Returns the larger of two floats.</summary>
         public static float MAX(float a, float b)
         {
-            return Math.Max(a, b);
+            return MathF.Max(a, b);
         }
 
         /// <summary>Returns the absolute value of a float.</summary>
         public static float ABS(float a)
         {
-            return Math.Abs(a);
+            return MathF.Abs(a);
         }
 
         /// <summary>Returns a random integer in the range [0, n].</summary>
@@ -66,43 +66,43 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>Clamps <paramref name="V"/> to the range [<paramref name="MINV"/>, <paramref name="MAXV"/>].</summary>
         public static float FIT_TO_BOUNDARIES(float V, float MINV, float MAXV)
         {
-            return Math.Max(Math.Min(V, MAXV), MINV);
+            return MathF.Max(MathF.Min(V, MAXV), MINV);
         }
 
         /// <summary>Returns the ceiling of <paramref name="value"/> as a float.</summary>
-        public static float Ceil(double value)
+        public static float Ceil(float value)
         {
-            return (float)Math.Ceiling(value);
+            return MathF.Ceiling(value);
         }
 
         /// <summary>Returns <paramref name="value"/> rounded to the nearest integer as a float.</summary>
-        public static float Round(double value)
+        public static float Round(float value)
         {
-            return (float)Math.Round(value);
+            return MathF.Round(value);
         }
 
         /// <summary>Returns the cosine of <paramref name="x"/> (radians) as a float.</summary>
         public static float Cosf(float x)
         {
-            return (float)Math.Cos((double)x);
+            return MathF.Cos(x);
         }
 
         /// <summary>Returns the sine of <paramref name="x"/> (radians) as a float.</summary>
         public static float Sinf(float x)
         {
-            return (float)Math.Sin((double)x);
+            return MathF.Sin(x);
         }
 
         /// <summary>Returns the tangent of <paramref name="x"/> (radians) as a float.</summary>
         public static float Tanf(float x)
         {
-            return (float)Math.Tan((double)x);
+            return MathF.Tan(x);
         }
 
         /// <summary>Returns the arccosine of <paramref name="x"/> in radians as a float.</summary>
         public static float Acosf(float x)
         {
-            return (float)Math.Acos((double)x);
+            return MathF.Acos(x);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         public static float FmSin(float angle)
         {
-            int index = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
+            int index = (int)(angle * FM_TRIG_TABLE_SIZE / MathF.Tau);
             index &= FM_TRIG_TABLE_MASK;
             return fmSins[index];
         }
@@ -146,7 +146,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         public static float FmCos(float angle)
         {
-            int index = (int)(angle * FM_TRIG_TABLE_SIZE / Math.Tau);
+            int index = (int)(angle * FM_TRIG_TABLE_SIZE / MathF.Tau);
             index &= FM_TRIG_TABLE_MASK;
             return fmCoss[index];
         }
@@ -280,7 +280,7 @@ namespace CutTheRope.Framework.Helpers
         public static float AngleTo0_360(float angle)
         {
             float result = angle;
-            while (Math.Abs(result) > DEG_360)
+            while (MathF.Abs(result) > DEG_360)
             {
                 result -= result > 0f ? DEG_360 : -DEG_360;
             }
@@ -397,17 +397,17 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the origin.</summary>
-        public static Vector VectRotate(Vector v, double rad)
+        public static Vector VectRotate(Vector v, float rad)
         {
-            float cosA = FmCos((float)rad);
-            float sinA = FmSin((float)rad);
+            float cosA = FmCos(rad);
+            float sinA = FmSin(rad);
             float nx = (v.X * cosA) - (v.Y * sinA);
             float ny = (v.X * sinA) + (v.Y * cosA);
             return new Vector(nx, ny);
         }
 
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the point (<paramref name="cx"/>, <paramref name="cy"/>).</summary>
-        public static Vector VectRotateAround(Vector v, double rad, float cx, float cy)
+        public static Vector VectRotateAround(Vector v, float rad, float cx, float cy)
         {
             Vector v2 = v;
             v2.X -= cx;
@@ -518,7 +518,7 @@ namespace CutTheRope.Framework.Helpers
             float d = (qa.Y * qb.X) - (qb.Y * qa.X);
             float la = (qb.X * dp.Y) - (qb.Y * dp.X);
             float lb = (qa.X * dp.Y) - (qa.Y * dp.X);
-            return Math.Abs(la) <= Math.Abs(d) && Math.Abs(lb) <= Math.Abs(d);
+            return MathF.Abs(la) <= MathF.Abs(d) && MathF.Abs(lb) <= MathF.Abs(d);
         }
 
         /// <summary>

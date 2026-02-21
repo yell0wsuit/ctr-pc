@@ -19,7 +19,7 @@ namespace CutTheRope.GameMain
             float px = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
             float py = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
             int w = xmlNode.AttributeAsNSString("size").IntValue();
-            double an = xmlNode.AttributeAsNSString("angle").IntValue();
+            float an = xmlNode.AttributeAsNSString("angle").IntValue();
             string toggledAttribute = xmlNode.AttributeAsNSString("toggled");
             int toggledState = -1;
             if (toggledAttribute.Length() > 0)

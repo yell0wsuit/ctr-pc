@@ -31,7 +31,7 @@ namespace CutTheRope.GameMain
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
-            button.SetTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
+            button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
             button.delegateButtonDelegate = d;
             return button;
         }
@@ -50,7 +50,7 @@ namespace CutTheRope.GameMain
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
-            button.SetTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
+            button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
             button.delegateButtonDelegate = d;
             return button;
         }
@@ -99,7 +99,7 @@ namespace CutTheRope.GameMain
             image.scaleX = 1.2f;
             image.scaleY = 1.2f;
             Button button = new Button().InitWithUpElementDownElementandID(up, image, bid);
-            button.SetTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
+            button.SetTouchIncreaseLeftRightTopBottom(10, 10, 10, 10);
             button.delegateButtonDelegate = d;
             return button;
         }
@@ -232,12 +232,12 @@ namespace CutTheRope.GameMain
                     glowImage.y = -25f;
                     Timeline glowTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(6);
                     // Rapid pulse: normal -> shrink -> expand -> shrink -> normal, then pause
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
                     glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 1.15, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
                     glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));  // Pause
+                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
+                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));  // Pause
                     glowTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     _ = glowImage.AddTimeline(glowTimeline);
                     glowImage.PlayTimeline(0);
@@ -249,9 +249,9 @@ namespace CutTheRope.GameMain
                     // Hand pointing animation - horizontal jabbing/pointing motion
                     // Keep y constant for horizontal movement only
                     Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6));  // Move LEFT (toward candy)
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6));
+                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                    handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6f));  // Move LEFT (toward candy)
+                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6f));
                     handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     _ = handImage.AddTimeline(handTimeline);
                     handImage.PlayTimeline(0);
@@ -282,8 +282,8 @@ namespace CutTheRope.GameMain
                 image4.anchor = image4.parentAnchor = 18;
                 image4.scaleX = image4.scaleY = 2f;
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(405, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75));
                 timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                 _ = image4.AddTimeline(timeline);
                 image4.PlayTimeline(0);
@@ -350,10 +350,10 @@ namespace CutTheRope.GameMain
             image4.anchor = image3.anchor = 20;
             _ = text.AddChild(image3);
             _ = text2.AddChild(image4);
-            text.width += (int)(image3.width + RTPD(10.0));
-            text2.width += (int)(image4.width + RTPD(10.0));
+            text.width += (int)(image3.width + RTPD(10));
+            text2.width += (int)(image4.width + RTPD(10));
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
-            button.SetTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
+            button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
             button.delegateButtonDelegate = d;
             return button;
         }
@@ -503,7 +503,7 @@ namespace CutTheRope.GameMain
             _ = menuView.AddChild(baseElement);
             BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString("DRAG_TO_CUT"), -1, null);
             BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.GetString("CLICK_TO_CUT"), MenuButtonId.ToggleClickToCut, this);
-            HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80.0), 16, MAX(baseElement2.height, baseElement3.height));
+            HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80), 16, MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(baseElement2);
             _ = hBox.AddChild(baseElement3);
@@ -512,8 +512,8 @@ namespace CutTheRope.GameMain
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(405, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75));
             timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             _ = image.AddTimeline(timeline);
             image.PlayTimeline(0);
@@ -535,7 +535,7 @@ namespace CutTheRope.GameMain
             _ = vBox.AddChild(c3);
             _ = baseElement.AddChild(vBox);
             hBox.y = (vBox.height / 2) + 10;
-            vBox.y = -(float)hBox.height / 2;
+            vBox.y = -hBox.height / 2;
             bool flag4 = Preferences.GetBooleanForKey("SOUND_ON");
             bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
             bool flag3 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
@@ -566,7 +566,7 @@ namespace CutTheRope.GameMain
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString("RESET_TEXT"), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
+            text.SetStringandWidth(Application.GetString("RESET_TEXT"), Global.ScreenSizeManager.CurrentSize.Width * 0.95f);
             text.anchor = text.parentAnchor = 18;
             _ = baseElement.AddChild(text);
             text.y = -200f;
@@ -781,7 +781,7 @@ namespace CutTheRope.GameMain
                 text.SetStringandWidth(newString, 600f);
                 text.y = -60f;
                 text.scaleX = text.scaleY = 0.7f;
-                text.rotationCenterY = -(float)text.height / 2;
+                text.rotationCenterY = -text.height / 2;
                 _ = touchBaseElement.AddChild(text);
             }
             else
@@ -824,10 +824,10 @@ namespace CutTheRope.GameMain
                     image4.anchor = image4.parentAnchor = 9;
                     _ = baseElement.AddChild(image4);
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5f));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(2, 2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5f));
                     _ = image4.AddTimeline(timeline);
                 }
             }
@@ -864,15 +864,15 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                text2.SetStringandWidth(packTitle, 656.0);
+                text2.SetStringandWidth(packTitle, 656);
             }
             text2.y = 140f;
             _ = image.AddChild(text2);
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(0.95, 1.05, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.15));
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.05, 0.95, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.2));
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(0.95f, 1.05f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.15f));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(1.05f, 0.95f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.2f));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25f));
             _ = baseElement.AddTimeline(timeline2);
             baseElement.height = touchBaseElement.height = image.height;
             baseElement.width = touchBaseElement.width = image.width;
@@ -898,7 +898,7 @@ namespace CutTheRope.GameMain
                 containerWidth = boxWidth * 2f;
             }
             packContainer = new ScrollableContainer().InitWithWidthHeightContainer(containerWidth, SCREEN_HEIGHT, hBox2);
-            packContainer.minAutoScrollToSpointLength = RTD(5.0);
+            packContainer.minAutoScrollToSpointLength = RTD(5);
             packContainer.shouldBounceHorizontally = true;
             packContainer.resetScrollOnShow = false;
             packContainer.dontHandleTouchDownsHandledByChilds = true;
@@ -1094,7 +1094,7 @@ namespace CutTheRope.GameMain
             image2.rotation = 180f;
             image2.y -= 0.5f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = image.AddTimeline(timeline);
             image.SetName("levelsBack");
@@ -1113,13 +1113,13 @@ namespace CutTheRope.GameMain
             image5.anchor = image5.parentAnchor = 18;
             image5.scaleX = image5.scaleY = 2f;
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(5.0, 5.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)transitionDuration));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(2, 2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline2.AddKeyFrame(KeyFrame.MakeScale(5, 5, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             timeline2.delegateTimelineDelegate = this;
             _ = image5.AddTimeline(timeline2);
             Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline3.AddKeyFrame(KeyFrame.MakeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline3.AddKeyFrame(KeyFrame.MakeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
+            timeline3.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline3.AddKeyFrame(KeyFrame.MakeRotation(405, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75));
             timeline3.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             _ = image5.AddTimeline(timeline3);
             image5.PlayTimeline(1);
@@ -1147,14 +1147,14 @@ namespace CutTheRope.GameMain
                 _ = vBox.AddChild(hBox2);
             }
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = vBox.AddTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.SetName("starText");
-            hBox.x = -(float)Canvas.xOffsetScaled;
+            hBox.x = -Canvas.xOffsetScaled;
             Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = hBox.AddTimeline(timeline5);
             _ = menuView.AddChild(hBox);
@@ -1162,7 +1162,7 @@ namespace CutTheRope.GameMain
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.PackSelect);
             button.SetName("backButton");
             Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = button.AddTimeline(timeline6);
             button.x = Canvas.xOffsetScaled;
@@ -1518,7 +1518,7 @@ namespace CutTheRope.GameMain
                         DeleteView(VIEW_CANDY_SELECT);
                         CreateCandySelection();
                         CreateLeaderboards();
-                        ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01);
+                        ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01f);
                         ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
                         return;
                     }
@@ -1777,7 +1777,7 @@ namespace CutTheRope.GameMain
             DeleteView(5);
             CreatePackSelect();
             BaseElement childWithName = GetView(0).GetChild(0).GetChildWithName("container");
-            _ = (childWithName?.x = -(float)Canvas.xOffsetScaled);
+            _ = (childWithName?.x = -Canvas.xOffsetScaled);
             BaseElement childWithName2 = GetView(5).GetChild(0).GetChildWithName("text");
             _ = (childWithName2?.x = -20f - Canvas.xOffsetScaled);
             for (int i = 0; i < 10; i++)
@@ -1793,7 +1793,7 @@ namespace CutTheRope.GameMain
             if (view4 != null)
             {
                 view4.GetChildWithName("backButton").x = Canvas.xOffsetScaled;
-                view4.GetChildWithName("starText").x = -(float)Canvas.xOffsetScaled;
+                view4.GetChildWithName("starText").x = -Canvas.xOffsetScaled;
             }
         }
 
@@ -1937,7 +1937,7 @@ namespace CutTheRope.GameMain
                 _ = base.OnTouchDownXY(tx, ty);
                 CTRRectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
                 CTRRectangle rectangle = RectInRectIntersection(MakeRectangle(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT), r);
-                if (PointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2.0)
+                if (PointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2)
                 {
                     delegateValue.OnButtonPressed(bid);
                     return true;

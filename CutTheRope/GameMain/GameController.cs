@@ -53,23 +53,23 @@ namespace CutTheRope.GameMain
             };
             _ = gameView.AddChildwithID(gameScene, 0);
             Button button = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.HudButtonsEn, 0, 1, GameControllerButtonId.Pause, this);
-            button.x = -(float)Canvas.xOffsetScaled;
+            button.x = -Canvas.xOffsetScaled;
             _ = gameView.AddChildwithID(button, 1);
             Button button2 = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.HudButtons, 0, 1, GameControllerButtonId.Restart, this);
-            button2.x = -(float)Canvas.xOffsetScaled;
+            button2.x = -Canvas.xOffsetScaled;
             _ = gameView.AddChildwithID(button2, 2);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPause, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = 1.25f;
-            image.rotationCenterY = -(float)image.height / 2;
+            image.rotationCenterY = -image.height / 2;
             image.passTransformationsToChilds = false;
             mapNameLabel = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             mapNameLabel.SetName("mapNameLabel");
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
-            mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
-            mapNameLabel.y = RTD(-5.0);
+            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + 256f;
+            mapNameLabel.y = RTD(-5);
             _ = image.AddChild(mapNameLabel);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
             Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
@@ -276,7 +276,7 @@ namespace CutTheRope.GameMain
                         }
                     },
                     gameScene,
-                    0.5);
+                    0.5f);
             };
             boxOpenClose.LevelWon();
 
@@ -681,9 +681,9 @@ namespace CutTheRope.GameMain
         public override void FullscreenToggled(bool isFullscreen)
         {
             View view = GetView(0);
-            view.GetChild(2).x = -(float)Canvas.xOffsetScaled;
-            view.GetChild(1).x = -(float)Canvas.xOffsetScaled;
-            mapNameLabel.x = RTD(-10.0) - Canvas.xOffsetScaled + 256f;
+            view.GetChild(2).x = -Canvas.xOffsetScaled;
+            view.GetChild(1).x = -Canvas.xOffsetScaled;
+            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + 256f;
             GameScene gameScene = (GameScene)view.GetChild(0);
             gameScene?.FullscreenToggled(isFullscreen);
         }

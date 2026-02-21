@@ -13,8 +13,8 @@ namespace CutTheRope.Framework.Visual
         {
             sp = GetScroll();
             mp = GetMaxScroll();
-            float scrollCoeffX = container.width / (float)width;
-            float scrollCoeffY = container.height / (float)height;
+            float scrollCoeffX = container.width / width;
+            float scrollCoeffY = container.height / height;
             sc = Vect(scrollCoeffX, scrollCoeffY);
         }
 
@@ -134,12 +134,12 @@ namespace CutTheRope.Framework.Visual
                 {
                     if (container.x > 0)
                     {
-                        float speed = 50 + (Math.Abs(container.x) * 5);
+                        float speed = 50 + (MathF.Abs(container.x) * 5);
                         MoveToPointDeltaSpeed(Vect(0f, container.y), delta, speed);
                     }
                     else if (container.x < (-container.width + width) && container.x < 0)
                     {
-                        float speed2 = 50 + (Math.Abs(-container.width + width - container.x) * 5);
+                        float speed2 = 50 + (MathF.Abs(-container.width + width - container.x) * 5);
                         MoveToPointDeltaSpeed(Vect(-container.width + width, container.y), delta, speed2);
                     }
                 }
@@ -147,18 +147,18 @@ namespace CutTheRope.Framework.Visual
                 {
                     if (container.y > 0)
                     {
-                        MoveToPointDeltaSpeed(Vect(container.x, 0f), delta, 50f + (Math.Abs(container.y) * 5f));
+                        MoveToPointDeltaSpeed(Vect(container.x, 0f), delta, 50f + (MathF.Abs(container.y) * 5f));
                     }
                     else if (container.y < (-container.height + height) && container.y < 0f)
                     {
-                        MoveToPointDeltaSpeed(Vect(container.x, -container.height + height), delta, 50f + (Math.Abs(-container.height + height - container.y) * 5f));
+                        MoveToPointDeltaSpeed(Vect(container.x, -container.height + height), delta, 50f + (MathF.Abs(-container.height + height - container.y) * 5f));
                     }
                 }
             }
             if (movingToSpoint)
             {
                 Vector vector = spoints[targetSpoint];
-                MoveToPointDeltaSpeed(vector, delta, Math.Max(100f, VectDistance(vector, Vect(container.x, container.y)) * 4f * spointMoveMultiplier));
+                MoveToPointDeltaSpeed(vector, delta, MathF.Max(100f, VectDistance(vector, Vect(container.x, container.y)) * 4f * spointMoveMultiplier));
                 if (container.x == vector.X && container.y == vector.Y)
                 {
                     delegateScrollableContainerProtocol?.ScrollableContainerreachedScrollPoint(this, targetSpoint);
@@ -179,12 +179,12 @@ namespace CutTheRope.Framework.Visual
                 Vector v = VectMult(VectNeg(move), 7f); // Decelerate faster after scrolling
                 move = VectAdd(move, VectMult(v, delta));
                 Vector off = VectMult(move, delta);
-                if (Math.Abs(off.X) < 0.2f)
+                if (MathF.Abs(off.X) < 0.2f)
                 {
                     off.X = 0f;
                     move.X = 0f;
                 }
-                if (Math.Abs(off.Y) < 0.2f)
+                if (MathF.Abs(off.Y) < 0.2f)
                 {
                     off.Y = 0f;
                     move.Y = 0f;
@@ -364,7 +364,7 @@ namespace CutTheRope.Framework.Visual
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
             // float fixedDeltaSetting = ApplicationSettings.GetInt(5);
-            // fixedDelta = (float)(1.0 / (double)fixedDeltaSetting);
+            // fixedDelta = (1 / fixedDeltaSetting);
             spoints = null;
             spointsNum = -1;
             spointsCapacity = -1;
@@ -495,7 +495,7 @@ namespace CutTheRope.Framework.Visual
                 if (spoints[i].X <= 0f && (spoints[i].X >= (-container.width + width) || spoints[i].X >= 0f) && spoints[i].Y <= 0f && (spoints[i].Y >= (-container.height + height) || spoints[i].Y >= 0f))
                 {
                     float candidateDistance = VectDistance(spoints[i], v);
-                    if ((VectEqual(d, vectZero) || Math.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - directionAngle) <= DEG_90) && candidateDistance < nearestDistance)
+                    if ((VectEqual(d, vectZero) || MathF.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - directionAngle) <= DEG_90) && candidateDistance < nearestDistance)
                     {
                         nearestScrollPoint = i;
                         nearestDistance = candidateDistance;
@@ -518,7 +518,7 @@ namespace CutTheRope.Framework.Visual
             }
             float moveAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(move)));
             float targetAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[targetSpoint], v))));
-            spointMoveMultiplier = Math.Abs(AngleTo0_360(moveAngle - targetAngle)) < DEG_90 ? Math.Max(1f, VectLength(move) / 500f) : 0.5f;
+            spointMoveMultiplier = MathF.Abs(AngleTo0_360(moveAngle - targetAngle)) < DEG_90 ? MathF.Max(1f, VectLength(move) / 500f) : 0.5f;
             lastTargetSpoint = targetSpoint;
         }
 
@@ -528,11 +528,11 @@ namespace CutTheRope.Framework.Visual
             float val2 = container.y + off.Y;
             if (!shouldBounceHorizontally)
             {
-                val = Math.Min(Math.Max(-container.width + width, val), 0f);
+                val = MathF.Min(MathF.Max(-container.width + width, val), 0f);
             }
             if (!shouldBounceVertically)
             {
-                val2 = Math.Min(Math.Max(-container.height + height, val2), 0f);
+                val2 = MathF.Min(MathF.Max(-container.height + height, val2), 0f);
             }
             Vector vector = VectSub(Vect(val, val2), Vect(container.x, container.y));
             container.x = val;
@@ -545,8 +545,8 @@ namespace CutTheRope.Framework.Visual
             Vector v = VectSub(tsp, Vect(container.x, container.y));
             v = VectNormalize(v);
             v = VectMult(v, speed);
-            _ = Mover.MoveVariableToTarget(ref container.x, tsp.X, Math.Abs(v.X), delta);
-            _ = Mover.MoveVariableToTarget(ref container.y, tsp.Y, Math.Abs(v.Y), delta);
+            _ = Mover.MoveVariableToTarget(ref container.x, tsp.X, MathF.Abs(v.X), delta);
+            _ = Mover.MoveVariableToTarget(ref container.y, tsp.Y, MathF.Abs(v.Y), delta);
             targetPoint = tsp;
             move = vectZero;
         }

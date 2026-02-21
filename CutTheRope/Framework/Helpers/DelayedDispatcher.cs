@@ -20,11 +20,6 @@ namespace CutTheRope.Framework.Helpers
             base.Dispose(disposing);
         }
 
-        public void CallObjectSelectorParamafterDelay(DispatchFunc s, FrameworkTypes p, double d)
-        {
-            CallObjectSelectorParamafterDelay(s, p, (float)d);
-        }
-
         public void CallObjectSelectorParamafterDelay(DispatchFunc s, FrameworkTypes p, float d)
         {
             DispatchClass item = new DispatchClass().InitWithObjectSelectorParamafterDelay(s, p, d);
@@ -38,7 +33,7 @@ namespace CutTheRope.Framework.Helpers
             {
                 DispatchClass dispatch = dispatchers[i];
                 dispatch.delay -= d;
-                if (dispatch.delay <= 0.0)
+                if (dispatch.delay <= 0)
                 {
                     dispatch.Dispatch();
                     _ = dispatchers.Remove(dispatch);

@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
     {
-        public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
+        public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, float an, int t)
         {
             string textureResourceName = GetSpikeTexture(w, t != -1);
             if (textureResourceName == null || InitWithTexture(Application.GetTexture(textureResourceName)) == null)
@@ -37,7 +37,7 @@ namespace CutTheRope.GameMain
             }
             passColorToChilds = false;
             spikesNormal = false;
-            origRotation = rotation = (float)an;
+            origRotation = rotation = an;
             x = px;
             y = py;
             SetToggled(t);
@@ -54,7 +54,7 @@ namespace CutTheRope.GameMain
 
         public void UpdateRotation()
         {
-            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
+            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400);
             halfWidth /= 2f;
             t1.X = x - halfWidth;
             t2.X = x + halfWidth;
@@ -94,7 +94,7 @@ namespace CutTheRope.GameMain
             float targetRotation = origRotation + rotationOffset;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)targetRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, Math.Abs(targetRotation - rotation) / DEG_90 * 0.3f));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)targetRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, MathF.Abs(targetRotation - rotation) / DEG_90 * 0.3f));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 2);
             PlayTimeline(2);
@@ -126,7 +126,7 @@ namespace CutTheRope.GameMain
             if (electroOn)
             {
                 _ = Mover.MoveVariableToTarget(ref electroTimer, 0f, 1f, delta);
-                if (electroTimer == 0.0)
+                if (electroTimer == 0)
                 {
                     TurnElectroOff();
                     return;
@@ -135,7 +135,7 @@ namespace CutTheRope.GameMain
             else
             {
                 _ = Mover.MoveVariableToTarget(ref electroTimer, 0f, 1f, delta);
-                if (electroTimer == 0.0)
+                if (electroTimer == 0)
                 {
                     TurnElectroOn();
                 }
@@ -176,7 +176,7 @@ namespace CutTheRope.GameMain
 
         private int toggled;
 
-        public double angle;
+        public float angle;
 
         public Vector t1;
 

@@ -125,8 +125,8 @@ namespace CutTheRope.Desktop
                 for (int x = 0; x < newWidth; x++)
                 {
                     // Map to source coordinates
-                    float srcX = (float)x / newWidth * source.Width;
-                    float srcY = (float)y / newHeight * source.Height;
+                    float srcX = x / newWidth * source.Width;
+                    float srcY = y / newHeight * source.Height;
 
                     // Bilinear interpolation
                     int x0 = Math.Min((int)srcX, source.Width - 1);

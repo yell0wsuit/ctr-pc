@@ -54,10 +54,10 @@ namespace CutTheRope.Framework.Helpers
                 y = mover.pos.Y;
                 if (rotatedBB)
                 {
-                    RotateWithBB((float)mover.angle_);
+                    RotateWithBB(mover.angle_);
                     return;
                 }
-                rotation = (float)mover.angle_;
+                rotation = mover.angle_;
             }
         }
 
@@ -111,7 +111,7 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void SetBBFromFirstQuad()
         {
-            bb = new CTRRectangle((float)Math.Round(texture.quadOffsets[0].X), (float)Math.Round(texture.quadOffsets[0].Y), texture.quadRects[0].w, texture.quadRects[0].h);
+            bb = new CTRRectangle(MathF.Round(texture.quadOffsets[0].X), MathF.Round(texture.quadOffsets[0].Y), texture.quadRects[0].w, texture.quadRects[0].h);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
@@ -128,7 +128,7 @@ namespace CutTheRope.Framework.Helpers
             Vector bottomLeft = Vect(bb.x, bb.y + bb.h);
             topLeft = VectRotateAround(topLeft, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
             topRight = VectRotateAround(topRight, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
-            bottomRight = VectRotateAround(bottomRight, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (float)((height / 2) + rotationCenterY));
+            bottomRight = VectRotateAround(bottomRight, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
             bottomLeft = VectRotateAround(bottomLeft, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
             rbb.tlX = topLeft.X;
             rbb.tlY = topLeft.Y;

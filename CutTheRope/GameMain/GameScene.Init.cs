@@ -67,7 +67,7 @@ namespace CutTheRope.GameMain
             {
                 hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudStar);
                 hudStar[i].DoRestoreCutTransparency();
-                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
+                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
                 hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
                 hudStar[i].y = 0f;
@@ -128,12 +128,12 @@ namespace CutTheRope.GameMain
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 58);
             image.anchor = 18;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             image.AddTimelinewithID(timeline, 1);
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             image.AddTimelinewithID(timeline, 0);
 
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();

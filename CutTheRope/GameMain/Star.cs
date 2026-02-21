@@ -49,7 +49,7 @@ namespace CutTheRope.GameMain
 
         public override void Update(float delta)
         {
-            if (timeout > 0.0 && time > 0.0)
+            if (timeout > 0 && time > 0)
             {
                 _ = Mover.MoveVariableToTarget(ref time, 0f, 1f, delta);
             }
@@ -86,7 +86,7 @@ namespace CutTheRope.GameMain
 
         public void CreateAnimations()
         {
-            if (timeout > 0.0)
+            if (timeout > 0)
             {
                 timedAnim = Animation_createWithResID(Resources.Img.ObjStarIdle);
                 timedAnim.anchor = timedAnim.parentAnchor = 18;
@@ -97,18 +97,18 @@ namespace CutTheRope.GameMain
                 timedAnim.visible = false;
                 _ = AddChild(timedAnim);
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timedAnim.AddTimelinewithID(timeline, 1);
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline2.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25));
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25));
+                timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline2.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25f));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25f));
                 AddTimelinewithID(timeline2, 1);
             }
             bb = new CTRRectangle(22f, 20f, 30f, 30f);
-            bobTime = (float)(RND_RANGE(0, 20) / 10.0);
+            bobTime = RND_RANGE(0, 20) / 10;
 
             // Add glow sprite
             if (!nightMode)
@@ -131,7 +131,7 @@ namespace CutTheRope.GameMain
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.PlayTimeline(0);
-            Timeline.UpdateTimeline(animation.GetTimeline(0), (float)(RND_RANGE(0, 20) / 10.0));
+            Timeline.UpdateTimeline(animation.GetTimeline(0), RND_RANGE(0, 20) / 10);
             animation.anchor = animation.parentAnchor = 18;
             idleSprite = animation;
             _ = AddChild(animation);
@@ -173,7 +173,7 @@ namespace CutTheRope.GameMain
         {
             bobTime += delta;
             bool onConveyor = ConveyorId != -1;
-            float offset = onConveyor ? 0f : (float)(3.0 * Sinf(3f * bobTime));
+            float offset = onConveyor ? 0f : (3 * Sinf(3f * bobTime));
             Dictionary<int, BaseElement> childs = GetChilds();
             foreach (KeyValuePair<int, BaseElement> kvp in childs)
             {

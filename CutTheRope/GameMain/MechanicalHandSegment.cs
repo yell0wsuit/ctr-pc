@@ -85,8 +85,8 @@ namespace CutTheRope.GameMain
             rotationTime = 0f;
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation + DEG_90, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)(rotation + DEG_90), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25f));
             timeline.delegateTimelineDelegate = this;
             _ = AddTimeline(timeline);
             PlayTimeline(0);
