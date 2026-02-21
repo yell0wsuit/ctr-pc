@@ -7,7 +7,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class GhostBouncer : Bouncer
     {
-        public Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, float angle)
+        public override Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, float angle)
         {
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)
             {
