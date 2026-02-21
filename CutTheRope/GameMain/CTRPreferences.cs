@@ -34,7 +34,7 @@ namespace CutTheRope.GameMain
                         int levelsInPackCount = GetLevelsInPackCount(i);
                         while (j < levelsInPackCount)
                         {
-                            int intForKey2 = GetIntForKey(GetPackLevelKey("SCORE_", i, j));
+                            int intForKey2 = GetBoxIntForKey(GetBoxForPack(i), GetPackLevelKey(PREFS_SCORE_, i, j));
                             if (intForKey2 > 5999)
                             {
                                 packScoreTotal = 150000;
@@ -111,15 +111,20 @@ namespace CutTheRope.GameMain
             return false;
         }
 
-        public static int GetStarsForPackLevel(int p, int l)
+        public static int GetStarsForPackLevel(int box, int p, int l)
         {
-            return GetIntForKey(GetPackLevelKey("STARS_", p, l));
+            return GetBoxIntForKey(box, GetPackLevelKey(PREFS_STARS_, p, l));
         }
 
-        public static UNLOCKEDSTATE GetUnlockedForPackLevel(int p, int l)
+        public static int GetStarsForPackLevel(int p, int l)
+        {
+            return GetStarsForPackLevel(GetBoxForPack(p), p, l);
+        }
+
+        public static UNLOCKEDSTATE GetUnlockedForPackLevel(int box, int p, int l)
         {
             string unlockedKey = GetPackLevelKey(PREFS_UNLOCKED_, p, l);
-            bool isUnlocked = GetBooleanForKey(unlockedKey);
+            bool isUnlocked = GetBoxBoolForKey(box, unlockedKey);
 
             if (!isUnlocked)
             {
@@ -127,7 +132,7 @@ namespace CutTheRope.GameMain
             }
 
             string stateKey = GetPackLevelKey(PREFS_UNLOCKED_STATE_, p, l);
-            string stateValue = GetStringForKey(stateKey);
+            string stateValue = GetBoxStringForKey(box, stateKey);
             return Enum.TryParse(stateValue, ignoreCase: false, out UNLOCKEDSTATE parsedState) &&
                 parsedState != UNLOCKEDSTATE.LOCKED &&
                 parsedState != UNLOCKEDSTATE.UNLOCKED
@@ -135,10 +140,20 @@ namespace CutTheRope.GameMain
                 : UNLOCKEDSTATE.UNLOCKED;
         }
 
+        public static UNLOCKEDSTATE GetUnlockedForPackLevel(int p, int l)
+        {
+            return GetUnlockedForPackLevel(GetBoxForPack(p), p, l);
+        }
+
         public static int GetPacksCount()
         {
             int packs = PackConfig.GetPackCount();
             return IsLiteVersion() ? Math.Min(packs, SharewareFreePacks()) : packs;
+        }
+
+        public static int GetBoxForPack(int pack)
+        {
+            return PackConfig.GetSaveSlot(pack);
         }
 
         public static int GetLevelsInPackCount(int pack)
@@ -154,16 +169,33 @@ namespace CutTheRope.GameMain
 
         public static int GetTotalStars()
         {
+            if (Application.SharedRootController() is CTRRootController rootController)
+            {
+                int pack = rootController.GetPack();
+                return GetTotalStarsInBox(GetBoxForPack(pack));
+            }
+
+            return GetTotalStarsInBox(0);
+        }
+
+        public static int GetTotalStarsInBox(int box)
+        {
             int totalStars = 0;
             int i = 0;
             int packsCount = GetPacksCount();
             while (i < packsCount)
             {
+                if (GetBoxForPack(i) != box)
+                {
+                    i++;
+                    continue;
+                }
+
                 int j = 0;
                 int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
-                    totalStars += GetStarsForPackLevel(i, j);
+                    totalStars += GetStarsForPackLevel(box, i, j);
                     j++;
                 }
                 i++;
@@ -181,28 +213,33 @@ namespace CutTheRope.GameMain
             return prefs + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture);
         }
 
-        public static void SetUnlockedForPackLevel(UNLOCKEDSTATE s, int p, int l)
+        public static void SetUnlockedForPackLevel(int box, UNLOCKEDSTATE s, int p, int l)
         {
             string unlockedKey = GetPackLevelKey(PREFS_UNLOCKED_, p, l);
             string stateKey = GetPackLevelKey(PREFS_UNLOCKED_STATE_, p, l);
 
             if (s == UNLOCKEDSTATE.LOCKED)
             {
-                SetBooleanForKey(false, unlockedKey, false);
-                RemoveKey(stateKey);
+                SetBoxBoolForKey(box, false, unlockedKey, false);
+                RemoveBoxKey(box, stateKey);
             }
             else if (s == UNLOCKEDSTATE.UNLOCKED)
             {
-                SetBooleanForKey(true, unlockedKey, false);
-                RemoveKey(stateKey);
+                SetBoxBoolForKey(box, true, unlockedKey, false);
+                RemoveBoxKey(box, stateKey);
             }
             else
             {
-                SetBooleanForKey(true, unlockedKey, false);
-                SetStringForKey(s.ToString(), stateKey, false);
+                SetBoxBoolForKey(box, true, unlockedKey, false);
+                SetBoxStringForKey(box, s.ToString(), stateKey, false);
             }
 
             RequestSave();
+        }
+
+        public static void SetUnlockedForPackLevel(UNLOCKEDSTATE s, int p, int l)
+        {
+            SetUnlockedForPackLevel(GetBoxForPack(p), s, p, l);
         }
 
         public static int SharewareFreeLevels()
@@ -220,19 +257,34 @@ namespace CutTheRope.GameMain
             SetIntForKey(p, "PREFS_LAST_PACK", true);
         }
 
-        public static bool IsPackPerfect(int p)
+        public static void SetLastBox(int b)
+        {
+            SetIntForKey(b, "PREFS_LAST_BOX", true);
+        }
+
+        public static int GetLastBox()
+        {
+            return GetIntForKey("PREFS_LAST_BOX");
+        }
+
+        public static bool IsPackPerfect(int box, int p)
         {
             int i = 0;
             int levelsInPackCount = GetLevelsInPackCount(p);
             while (i < levelsInPackCount)
             {
-                if (GetStarsForPackLevel(p, i) < 3)
+                if (GetStarsForPackLevel(box, p, i) < 3)
                 {
                     return false;
                 }
                 i++;
             }
             return true;
+        }
+
+        public static bool IsPackPerfect(int p)
+        {
+            return IsPackPerfect(GetBoxForPack(p), p);
         }
 
         public static int GetLastPack()
@@ -247,32 +299,52 @@ namespace CutTheRope.GameMain
         {
         }
 
+        public static int GetScoreForPackLevel(int box, int p, int l)
+        {
+            return GetBoxIntForKey(box, GetPackLevelKey(PREFS_SCORE_, p, l));
+        }
+
         public static int GetScoreForPackLevel(int p, int l)
         {
-            return GetIntForKey("SCORE_" + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture));
+            return GetScoreForPackLevel(GetBoxForPack(p), p, l);
+        }
+
+        public static void SetScoreForPackLevel(int box, int s, int p, int l)
+        {
+            SetBoxIntForKey(box, s, GetPackLevelKey(PREFS_SCORE_, p, l), true);
         }
 
         public static void SetScoreForPackLevel(int s, int p, int l)
         {
-            SetIntForKey(s, "SCORE_" + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture), true);
+            SetScoreForPackLevel(GetBoxForPack(p), s, p, l);
+        }
+
+        public static void SetStarsForPackLevel(int box, int s, int p, int l)
+        {
+            SetBoxIntForKey(box, s, GetPackLevelKey(PREFS_STARS_, p, l), true);
         }
 
         public static void SetStarsForPackLevel(int s, int p, int l)
         {
-            SetIntForKey(s, "STARS_" + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture), true);
+            SetStarsForPackLevel(GetBoxForPack(p), s, p, l);
         }
 
-        public static int GetTotalStarsInPack(int p)
+        public static int GetTotalStarsInPack(int box, int p)
         {
             int starsInPack = 0;
             int i = 0;
             int levelsInPackCount = GetLevelsInPackCount(p);
             while (i < levelsInPackCount)
             {
-                starsInPack += GetStarsForPackLevel(p, i);
+                starsInPack += GetStarsForPackLevel(box, p, i);
                 i++;
             }
             return starsInPack;
+        }
+
+        public static int GetTotalStarsInPack(int p)
+        {
+            return GetTotalStarsInPack(GetBoxForPack(p), p);
         }
 
         public static void DisablePlayLevelScroll()
@@ -296,10 +368,11 @@ namespace CutTheRope.GameMain
                 while (j < levelsInPackCount)
                 {
                     bool isUnlocked = (i == 0 || (IsShareware() && i < SharewareFreePacks())) && j == 0;
-                    SetIntForKey(0, GetPackLevelKey("SCORE_", i, j), false);
-                    SetIntForKey(0, GetPackLevelKey("STARS_", i, j), false);
-                    SetBooleanForKey(isUnlocked, GetPackLevelKey(PREFS_UNLOCKED_, i, j), false);
-                    RemoveKey(GetPackLevelKey(PREFS_UNLOCKED_STATE_, i, j));
+                    int box = GetBoxForPack(i);
+                    SetBoxIntForKey(box, 0, GetPackLevelKey(PREFS_SCORE_, i, j), false);
+                    SetBoxIntForKey(box, 0, GetPackLevelKey(PREFS_STARS_, i, j), false);
+                    SetBoxBoolForKey(box, isUnlocked, GetPackLevelKey(PREFS_UNLOCKED_, i, j), false);
+                    RemoveBoxKey(box, GetPackLevelKey(PREFS_UNLOCKED_STATE_, i, j));
                     j++;
                 }
                 i++;
@@ -335,9 +408,10 @@ namespace CutTheRope.GameMain
             int packsCount = GetPacksCount();
             while (i < packsCount)
             {
-                if (GetUnlockedForPackLevel(i, 0) == UNLOCKEDSTATE.LOCKED)
+                int box = GetBoxForPack(i);
+                if (GetUnlockedForPackLevel(box, i, 0) == UNLOCKEDSTATE.LOCKED)
                 {
-                    SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, i, 0);
+                    SetUnlockedForPackLevel(box, UNLOCKEDSTATE.JUSTUNLOCKED, i, 0);
                 }
                 i++;
             }
@@ -350,7 +424,7 @@ namespace CutTheRope.GameMain
             {
                 for (int j = 0; j < GetLevelsInPackCount(i); j++)
                 {
-                    totalScore += GetIntForKey(GetPackLevelKey("SCORE_", i, j));
+                    totalScore += GetBoxIntForKey(GetBoxForPack(i), GetPackLevelKey(PREFS_SCORE_, i, j));
                 }
             }
             return totalScore;
@@ -377,9 +451,10 @@ namespace CutTheRope.GameMain
                 int levelsInPackCount = GetLevelsInPackCount(i);
                 while (j < levelsInPackCount)
                 {
-                    SetBooleanForKey(true, GetPackLevelKey(PREFS_UNLOCKED_, i, j), false);
-                    RemoveKey(GetPackLevelKey(PREFS_UNLOCKED_STATE_, i, j));
-                    SetIntForKey(stars, GetPackLevelKey("STARS_", i, j), false);
+                    int box = GetBoxForPack(i);
+                    SetBoxBoolForKey(box, true, GetPackLevelKey(PREFS_UNLOCKED_, i, j), false);
+                    RemoveBoxKey(box, GetPackLevelKey(PREFS_UNLOCKED_STATE_, i, j));
+                    SetBoxIntForKey(box, stars, GetPackLevelKey(PREFS_STARS_, i, j), false);
                     j++;
                 }
                 i++;
@@ -461,6 +536,8 @@ namespace CutTheRope.GameMain
         public const string PREFS_SOCKS_USED = "PREFS_SOCKS_USED";
 
         public const string PREFS_LAST_PACK = "PREFS_LAST_PACK";
+
+        public const string PREFS_LAST_BOX = "PREFS_LAST_BOX";
 
         public const string PREFS_CLICK_TO_CUT = "PREFS_CLICK_TO_CUT";
 

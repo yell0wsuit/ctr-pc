@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
     internal sealed class PackDefinition(
         int unlockStars,
         int levelCount,
+        int saveSlot,
         string[] boxBackgrounds,
         int boxBackgroundP2Y,
         string supportResourceName,
@@ -54,6 +55,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
+
+        /// <summary>Save slot index used to route this pack's progress file.</summary>
+        public int SaveSlot { get; } = saveSlot;
 
         /// <summary>Whether this pack uses earth background animations.</summary>
         public bool EarthBg { get; } = earthBg;
@@ -95,6 +99,11 @@ namespace CutTheRope.GameMain
         public static int GetLevelCount(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].LevelCount : 0;
+        }
+
+        public static int GetSaveSlot(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].SaveSlot : 0;
         }
 
         public static string[] GetBoxBackgrounds(int pack)
@@ -191,6 +200,7 @@ namespace CutTheRope.GameMain
             {
                 int unlockStars = ParseIntAttribute(packElement, "unlockStars");
                 int levelCount = ParseLevelCount(packElement);
+                int saveSlot = ParseIntAttribute(packElement, "saveSlot", 0);
 
                 string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
                 RequireResourceNames(boxBackgrounds, "boxBackground");
@@ -222,6 +232,7 @@ namespace CutTheRope.GameMain
                 results.Add(new PackDefinition(
                     unlockStars,
                     levelCount,
+                    saveSlot,
                     boxBackgrounds,
                     boxBackgroundP2Y,
                     supportResourceName,

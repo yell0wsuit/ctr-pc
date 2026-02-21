@@ -256,6 +256,16 @@ namespace CutTheRope.GameMain
         {
         }
 
+        public void SetBox(int b)
+        {
+            box = b;
+        }
+
+        public int GetBox()
+        {
+            return box;
+        }
+
         public void SetPack(int p)
         {
             pack = p;
@@ -334,6 +344,8 @@ namespace CutTheRope.GameMain
         public const int CHILD_LOADING = 2;
 
         public const int CHILD_GAME = 3;
+
+        public int box;
 
         public int pack;
 

@@ -682,7 +682,7 @@ namespace CutTheRope.GameMain
             baseElement.SetName("boxContainer");
             baseElement.anchor = baseElement.parentAnchor = 12;
             _ = touchBaseElement.AddChild(baseElement);
-            int totalStars = CTRPreferences.GetTotalStars();
+            int totalStars = CTRPreferences.GetTotalStarsInBox(CTRPreferences.GetBoxForPack(n));
             if (n > 0 && n < CTRPreferences.GetPacksCount() && CTRPreferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.LOCKED && totalStars >= CTRPreferences.PackUnlockStars(n))
             {
                 CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
@@ -1313,6 +1313,7 @@ namespace CutTheRope.GameMain
         {
             CTRSoundMgr.StopMusic();
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+            ctrrootController.SetBox(CTRPreferences.GetBoxForPack(pack));
             ctrrootController.SetPack(pack);
             ctrrootController.SetLevel(level);
             Application.SharedRootController().SetViewTransition(-1);
@@ -1377,6 +1378,7 @@ namespace CutTheRope.GameMain
                     ShowView(1);
                     return;
                 case var id when id == MenuButtonId.PlayPack0:
+                    ((CTRRootController)Application.SharedRootController()).SetBox(CTRPreferences.GetBoxForPack(0));
                     ((CTRRootController)Application.SharedRootController()).SetPack(0);
                     PreLevelSelect();
                     Application.SharedRootController().SetViewTransition(-1);
@@ -1394,6 +1396,7 @@ namespace CutTheRope.GameMain
                         ctrresourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
                         ctrresourceMgr.LoadImmediately();
                         ctrrootController.SetSurvival(true);
+                        ctrrootController.SetBox(CTRPreferences.GetBoxForPack(pack));
                         ctrrootController.SetPack(pack);
                         Deactivate();
                         return;
