@@ -50,6 +50,7 @@ namespace CutTheRope.GameMain
                     }
                     animations.Clear();
                     animations = null;
+                    nextAnimationIndex = 0;
                 }
                 animationNameToIndex?.Clear();
                 animationNameToIndex = null;
