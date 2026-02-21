@@ -142,8 +142,8 @@ namespace CutTheRope.GameMain
             };
             rotatedCircle.handle1 = new Vector(rotatedCircle.x - size, rotatedCircle.y);
             rotatedCircle.handle2 = new Vector(rotatedCircle.x + size, rotatedCircle.y);
-            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.SetSize(size);
             rotatedCircle.SetHasOneHandle(HasOneHandle());
             rotatedCircle.vinilControllerL.visible = false;
@@ -157,7 +157,7 @@ namespace CutTheRope.GameMain
             {
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, MathF.Tau, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * MathF.Abs(vinilTR.scaleX)), 0f, MathF.Tau, 51, 2f, 1f * MathF.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
@@ -168,11 +168,11 @@ namespace CutTheRope.GameMain
             vinilBR.Draw();
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            if (IsRightControllerActive() || IsLeftControllerActive() || color.AlphaChannel < 1.0)
+            if (IsRightControllerActive() || IsLeftControllerActive() || color.AlphaChannel < 1)
             {
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.AlphaChannel = 1f - color.AlphaChannel;
-                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, MathF.Tau, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
+                DrawHelper.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, MathF.Tau, 51, 2f, 1f * MathF.Abs(vinilTR.scaleX), whiteRGBA);
             }
             for (int i = 0; i < circlesArray.Count; i++)
             {
@@ -243,9 +243,9 @@ namespace CutTheRope.GameMain
             float highlightYOffset = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
             float cornerXOffset = (vinilBL.width + 4) / 2f * (1f - vinilBL.scaleX);
             float cornerYOffset = (vinilBL.height + 4) / 2f * (1f - vinilBL.scaleY);
-            float rightControllerInset = Math.Abs(vinilControllerR.scaleX) < 1f ? (1f - Math.Abs(vinilControllerR.scaleX)) * 10f : 0f;
-            float topLeftInset = Math.Abs(vinilTL.scaleX) < 0.45f ? ((0.45f - Math.Abs(vinilTL.scaleX)) * 10f) + 1f : 0f;
-            float controllerXOffset = Math.Abs(vinilBL.height * vinilBL.scaleY) - Math.Abs(vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - rightControllerInset - topLeftInset;
+            float rightControllerInset = MathF.Abs(vinilControllerR.scaleX) < 1f ? (1f - MathF.Abs(vinilControllerR.scaleX)) * 10f : 0f;
+            float topLeftInset = MathF.Abs(vinilTL.scaleX) < 0.45f ? ((0.45f - MathF.Abs(vinilTL.scaleX)) * 10f) + 1f : 0f;
+            float controllerXOffset = MathF.Abs(vinilBL.height * vinilBL.scaleY) - MathF.Abs(vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - rightControllerInset - topLeftInset;
             vinilHighlightL.x = x + highlightXOffset;
             vinilHighlightR.x = x - highlightXOffset;
             vinilHighlightL.y = vinilHighlightR.y = y - highlightYOffset;
@@ -279,11 +279,11 @@ namespace CutTheRope.GameMain
             return false;
         }
 
-        // private RGBAColor CIRCLE_COLOR1 = RGBAColor.MakeRGBA(0.306, 0.298, 0.454, 1.0);
+        // private RGBAColor CIRCLE_COLOR1 = RGBAColor.MakeRGBA(0.306, 0.298, 0.454, 1);
 
-        // private RGBAColor CIRCLE_COLOR2 = RGBAColor.MakeRGBA(0.239, 0.231, 0.356, 1.0);
+        // private RGBAColor CIRCLE_COLOR2 = RGBAColor.MakeRGBA(0.239, 0.231, 0.356, 1);
 
-        // private RGBAColor CIRCLE_COLOR3 = RGBAColor.MakeRGBA(0.29, 0.286, 0.419, 1.0);
+        // private RGBAColor CIRCLE_COLOR3 = RGBAColor.MakeRGBA(0.29, 0.286, 0.419, 1);
 
         private RGBAColor INNER_CIRCLE_COLOR1 = RGBAColor.MakeRGBA(0.6901960784313725f, 0.4196078431372549f, 0.07450980392156863f, 1);
 

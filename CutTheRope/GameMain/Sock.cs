@@ -38,7 +38,7 @@ namespace CutTheRope.GameMain
             light.anchor = 34;
             light.parentAnchor = 10;
             light.y = 270f;
-            light.x = RTD(0.0);
+            light.x = RTD(0);
             light.AddAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 2, [3, 4, 4]);
             light.DoRestoreCutTransparency();
             light.visible = false;
@@ -125,7 +125,7 @@ namespace CutTheRope.GameMain
 
         public int group;
 
-        public double angle;
+        public float angle;
 
         public Vector t1;
 

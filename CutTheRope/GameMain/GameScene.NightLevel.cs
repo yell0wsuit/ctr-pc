@@ -179,7 +179,7 @@ namespace CutTheRope.GameMain
                 // Apply breathing pulse effect using sine wave
                 if (sleepPulseActive)
                 {
-                    float sinValue = (float)Math.Sin(sleepPulseTime * 2f);
+                    float sinValue = MathF.Sin(sleepPulseTime * 2f);
                     float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
 
                     Animation sleepAnimation = target.GetAnimation(Resources.Img.CharAnimationsSleeping);

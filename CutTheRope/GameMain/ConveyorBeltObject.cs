@@ -200,7 +200,7 @@ namespace CutTheRope.GameMain
                     {
                         continue;
                     }
-                    float dot = Math.Abs((direction.X * belt.Direction.X) + (direction.Y * belt.Direction.Y));
+                    float dot = MathF.Abs((direction.X * belt.Direction.X) + (direction.Y * belt.Direction.Y));
                     if (dot >= bestDot)
                     {
                         bestDot = dot;

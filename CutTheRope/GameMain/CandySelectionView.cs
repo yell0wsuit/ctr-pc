@@ -252,7 +252,7 @@ namespace CutTheRope.GameMain
             bgImage.anchor = bgImage.parentAnchor = 18; // center
 
             // Scale background to cover the whole screen (match other menu backgrounds)
-            float bgScale = Math.Max(FrameworkTypes.SCREEN_WIDTH / bgImage.width, FrameworkTypes.SCREEN_HEIGHT / bgImage.height);
+            float bgScale = MathF.Max(FrameworkTypes.SCREEN_WIDTH / bgImage.width, FrameworkTypes.SCREEN_HEIGHT / bgImage.height);
             bgImage.scaleX = bgImage.scaleY = bgScale;
             _ = background.AddChild(bgImage);
 

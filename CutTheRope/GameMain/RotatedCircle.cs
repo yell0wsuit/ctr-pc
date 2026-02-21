@@ -128,7 +128,7 @@ namespace CutTheRope.GameMain
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
-                if (color.AlphaChannel != 1.0)
+                if (color.AlphaChannel != 1)
                 {
                     whiteRGBA.AlphaChannel = color.AlphaChannel;
                 }
@@ -167,7 +167,7 @@ namespace CutTheRope.GameMain
             vinil.y = vinilCenter.y = y;
             float highlightXOffset = vinilHighlightL.width / 2 * (1f - vinilHighlightL.scaleX);
             float highlightYOffset = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
-            float controllerXOffset = sizeInPixels - RTPD((double)(CONTROLLER_SHIFT_PARAM1 - (CONTROLLER_SHIFT_PARAM2 * size))) + ((1f - vinilControllerL.scaleX) * (vinilControllerL.width / 2));
+            float controllerXOffset = sizeInPixels - RTPD(CONTROLLER_SHIFT_PARAM1 - (CONTROLLER_SHIFT_PARAM2 * size)) + ((1f - vinilControllerL.scaleX) * (vinilControllerL.width / 2));
             vinilHighlightL.x = x + highlightXOffset;
             vinilHighlightR.x = x - highlightXOffset;
             vinilHighlightL.y = vinilHighlightR.y = y - highlightYOffset;
@@ -208,10 +208,10 @@ namespace CutTheRope.GameMain
                 containedObjects = containedObjects,
                 operating = -1
             };
-            rotatedCircle.handle1 = Vect(rotatedCircle.x - RTPD((double)(size * 3f)), rotatedCircle.y);
-            rotatedCircle.handle2 = Vect(rotatedCircle.x + RTPD((double)(size * 3f)), rotatedCircle.y);
-            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle1 = Vect(rotatedCircle.x - RTPD(size * 3f), rotatedCircle.y);
+            rotatedCircle.handle2 = Vect(rotatedCircle.x + RTPD(size * 3f), rotatedCircle.y);
+            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.SetSize(size);
             rotatedCircle.SetHasOneHandle(HasOneHandle());
             rotatedCircle.vinilControllerL.visible = false;
@@ -307,11 +307,11 @@ namespace CutTheRope.GameMain
 
         private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1, 1, 1, 0.2f);
 
-        // private readonly float INNER_CIRCLE_WIDTH = RTPD(15.0) * 3f;
+        // private readonly float INNER_CIRCLE_WIDTH = RTPD(15) * 3f;
 
-        private readonly float OUTER_CIRCLE_WIDTH = RTPD(7.0) * 3f;
+        private readonly float OUTER_CIRCLE_WIDTH = RTPD(7) * 3f;
 
-        private readonly float ACTIVE_CIRCLE_WIDTH = RTPD(3.0) * 3f;
+        private readonly float ACTIVE_CIRCLE_WIDTH = RTPD(3) * 3f;
 
         private readonly float CONTROLLER_SHIFT_PARAM1 = 67.5f;
 

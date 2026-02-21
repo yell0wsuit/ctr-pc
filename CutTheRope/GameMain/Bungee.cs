@@ -199,10 +199,10 @@ namespace CutTheRope.GameMain
                 rgbaColor4.BlueColor *= highlightMultiplier;
             }
             float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
-            b.relaxed = (double)segmentLength <= BUNGEE_REST_LEN + 0.3
+            b.relaxed = segmentLength <= BUNGEE_REST_LEN + 0.3
                 ? 0
-                : (double)segmentLength <= BUNGEE_REST_LEN + 1.0 ? 1 : (double)segmentLength <= BUNGEE_REST_LEN + 4.0 ? 2 : 3;
-            if ((double)segmentLength > BUNGEE_REST_LEN + 7.0)
+                : segmentLength <= BUNGEE_REST_LEN + 1 ? 1 : segmentLength <= BUNGEE_REST_LEN + 4 ? 2 : 3;
+            if (segmentLength > BUNGEE_REST_LEN + 7)
             {
                 float stretchRedScale = segmentLength / BUNGEE_REST_LEN * 2f;
                 rgbaColor3.RedColor *= stretchRedScale;
@@ -230,7 +230,7 @@ namespace CutTheRope.GameMain
             float ry = -1f;
             for (; ; )
             {
-                if ((double)bezierT > 1.0)
+                if (bezierT > 1)
                 {
                     bezierT = 1f;
                 }
@@ -243,7 +243,7 @@ namespace CutTheRope.GameMain
                 array[cachedPointCount++] = vector.Y;
                 b.drawPts[drawPointCount++] = vector.X;
                 b.drawPts[drawPointCount++] = vector.Y;
-                if (cachedPointCount >= 8 || (double)bezierT == 1.0)
+                if (cachedPointCount >= 8 || bezierT == 1)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
                     Renderer.SetColor(color.ToXNA());
@@ -263,7 +263,7 @@ namespace CutTheRope.GameMain
                     rgbaColor6.GreenColor += greenStepAlt * (segmentCount - 1);
                     rgbaColor6.BlueColor += blueStepAlt * (segmentCount - 1);
                 }
-                if ((double)bezierT == 1.0)
+                if (bezierT == 1)
                 {
                     break;
                 }
@@ -488,7 +488,7 @@ namespace CutTheRope.GameMain
 
         public void Update(float delta, float koeff)
         {
-            if (cutTime > 0.0)
+            if (cutTime > 0)
             {
                 _ = Mover.MoveVariableToTarget(ref cutTime, 0f, 1f, delta);
                 if (cutTime < 1.95f && forceWhite)
@@ -580,7 +580,7 @@ namespace CutTheRope.GameMain
         /// with colors that remain consistent even when the rope is cut.
         /// </summary>
         /// <param name="pointCount">Number of points in the bezier curve (drawPts array length / 2)</param>
-        /// <param name="alpha">Alpha transparency value for fading effects (0.0 to 1.0)</param>
+        /// <param name="alpha">Alpha transparency value for fading effects (0 to 1)</param>
         /// <param name="segmentStartIndex">Starting segment index for cut rope pieces, used to maintain color consistency</param>
         private void DrawChristmasLights(int pointCount, float alpha, int segmentStartIndex)
         {
@@ -664,7 +664,7 @@ namespace CutTheRope.GameMain
                     }
 
                     // Interpolate position within the segment using linear interpolation
-                    float segmentDelta = Math.Max(segmentEnd - segmentStart, 0.0001f);
+                    float segmentDelta = MathF.Max(segmentEnd - segmentStart, 0.0001f);
                     float t = (currentDistance - segmentStart) / segmentDelta;
 
                     // Calculate the actual x,y position along the bezier curve

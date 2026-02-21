@@ -235,7 +235,7 @@ namespace CutTheRope.Commons
             SCREEN_BG_SCALE_X = SCREEN_WIDTH_EXPANDED / SCREEN_WIDTH;
             if (IS_WVGA)
             {
-                SCREEN_WIDE_BG_SCALE_Y = (float)(SCREEN_HEIGHT_EXPANDED * 1.5 / 800.0);
+                SCREEN_WIDE_BG_SCALE_Y = SCREEN_HEIGHT_EXPANDED * 1.5f / 800;
                 SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
                 return;
             }

@@ -62,7 +62,7 @@ namespace CutTheRope.GameMain
             pollen.x = v.X;
             pollen.y = v.Y;
             float fullScale = 1f;
-            float scaleOffset = Math.Min(fullScale - scaleX, fullScale - scaleY);
+            float scaleOffset = MathF.Min(fullScale - scaleX, fullScale - scaleY);
             float rND_0_ = RND_0_1;
             pollen.startScaleX = scaleOffset + scaleX;
             pollen.startScaleY = scaleOffset + scaleY;
@@ -100,8 +100,8 @@ namespace CutTheRope.GameMain
             for (int i = 0; i <= segmentCount; i++)
             {
                 Vector v4 = VectAdd(vector, VectMult(v3, i * segmentSpacing));
-                v4.X += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
-                v4.Y += RND_RANGE((int)RTPD(-2.0), (int)RTPD(2.0));
+                v4.X += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
+                v4.Y += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
                 AddPollenAtparentIndex(v4, p1);
             }
         }

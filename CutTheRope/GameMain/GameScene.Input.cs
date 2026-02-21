@@ -308,10 +308,10 @@ namespace CutTheRope.GameMain
             if (rotatedCircle != null && rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count - 1 && flag2 && !flag)
             {
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(1);
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
                 timeline2.delegateTimelineDelegate = this;
                 RotatedCircle rotatedCircle4 = rotatedCircle.Copy();
                 _ = rotatedCircle4.AddTimeline(timeline2);
@@ -365,7 +365,7 @@ namespace CutTheRope.GameMain
                     bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                     bungee.wheelOperating = ti;
                 }
-                if (bungee.moveLength > 0.0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
+                if (bungee.moveLength > 0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
                     bungee.moverDragging = ti;
                     return true;
@@ -483,7 +483,7 @@ namespace CutTheRope.GameMain
                 {
                     bungee.wheelOperating = -1;
                 }
-                if (bungee.moveLength > 0.0 && bungee.moverDragging == ti)
+                if (bungee.moveLength > 0 && bungee.moverDragging == ti)
                 {
                     bungee.moverDragging = -1;
                 }
@@ -555,7 +555,7 @@ namespace CutTheRope.GameMain
             foreach (object obj in pumps)
             {
                 Pump pump3 = (Pump)obj;
-                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0.0 && (double)VectDistance(startPos[ti], vector) > 10.0)
+                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && VectDistance(startPos[ti], vector) > 10)
                 {
                     pump3.pumpTouchTimer = 0f;
                 }
@@ -590,10 +590,10 @@ namespace CutTheRope.GameMain
                         rotatedCircle.rotation += RADIANS_TO_DEGREES(rotationDelta);
                         float a = DEGREES_TO_RADIANS(rotatedCircle.rotation);
                         a = FBOUND_PI(a);
-                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, a, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, a, rotatedCircle.x, rotatedCircle.y);
                         int scratchSoundState = rotationDelta > 0f ? 1 : 2;
-                        if ((double)Math.Abs(rotationDelta) < 0.07)
+                        if (MathF.Abs(rotationDelta) < 0.07f)
                         {
                             scratchSoundState = -1;
                         }
@@ -616,7 +616,7 @@ namespace CutTheRope.GameMain
                                 }
                                 float a2 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - grab.initial_rotation;
                                 a2 = FBOUND_PI(a2);
-                                Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), (double)a2, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), a2, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = vector3.X;
                                 grab.y = vector3.Y;
                                 if (grab.rope != null)
@@ -644,7 +644,7 @@ namespace CutTheRope.GameMain
                                 }
                                 float a3 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - pump4.initial_rotation;
                                 a3 = FBOUND_PI(a3);
-                                Vector vector4 = VectRotateAround(Vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector4 = VectRotateAround(Vect(pump4.initial_x, pump4.initial_y), a3, rotatedCircle.x, rotatedCircle.y);
                                 pump4.x = vector4.X;
                                 pump4.y = vector4.Y;
                                 pump4.rotation += RADIANS_TO_DEGREES(rotationDelta);
@@ -665,14 +665,14 @@ namespace CutTheRope.GameMain
                                 }
                                 float a4 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - bubble.initial_rotation;
                                 a4 = FBOUND_PI(a4);
-                                Vector vector5 = VectRotateAround(Vect(bubble.initial_x, bubble.initial_y), (double)a4, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector5 = VectRotateAround(Vect(bubble.initial_x, bubble.initial_y), a4, rotatedCircle.x, rotatedCircle.y);
                                 bubble.x = vector5.X;
                                 bubble.y = vector5.Y;
                             }
                         }
                         if (PointInRect(target.x, target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
                         {
-                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), (double)rotationDelta, rotatedCircle.x, rotatedCircle.y);
+                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), rotationDelta, rotatedCircle.x, rotatedCircle.y);
                             target.x = vector6.X;
                             target.y = vector6.Y;
                         }
@@ -692,7 +692,7 @@ namespace CutTheRope.GameMain
                         grab2.HandleWheelRotate(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                         return true;
                     }
-                    if (grab2.moveLength > 0.0 && grab2.moverDragging == ti)
+                    if (grab2.moveLength > 0 && grab2.moverDragging == ti)
                     {
                         if (grab2.moveVertical)
                         {
@@ -747,7 +747,7 @@ namespace CutTheRope.GameMain
                 if (ropesCutThisFrame > 0)
                 {
                     freezeCamera = false;
-                    if (ropesCutAtOnce > 0 && ropeAtOnceTimer > 0.0)
+                    if (ropesCutAtOnce > 0 && ropeAtOnceTimer > 0)
                     {
                         ropesCutAtOnce += ropesCutThisFrame;
                     }

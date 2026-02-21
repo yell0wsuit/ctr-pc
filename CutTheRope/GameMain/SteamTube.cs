@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
         /// Initializes steam tube with position, rotation angle, and height scale.
         /// </summary>
         /// <param name="heightScale">
-        /// Scale factor for steam tube dimensions. Typically 3.0 for PC (vs 1.0 on WP7).
+        /// Scale factor for steam tube dimensions. Typically 3 for PC (vs 1 on WP7).
         /// Scales: tube width (10f), valve position (27f), touch offset (28f), collision radius (17.5f),
         /// base heights (32.9f/94f/141f), and vertical offset (1f).
         /// Does NOT scale: sine wave modulation amplitude (always 1f).
@@ -55,12 +55,12 @@ namespace CutTheRope.GameMain
             _ = AddChild(steamFront);
             AdjustSteam();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55f));
             valve.AddTimelinewithID(timeline, 0);
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(-180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(-180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55f));
             valve.AddTimelinewithID(timeline, 1);
             return this;
         }
@@ -289,10 +289,10 @@ namespace CutTheRope.GameMain
                     _ = animation.AddAnimationDelayLoopFirstLast(frameDelay, Timeline.LoopType.TIMELINE_REPLAY, animationStartFrame, animationEndFrame);
                     animation.anchor = animation.parentAnchor = 18;
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                    timeline.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakePos(horizontalOffset, puffHeight, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, puffDuration));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.5, 1.5, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, puffDuration));
+                    timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)horizontalOffset, (int)puffHeight, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, puffDuration));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.5f, 1.5f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, puffDuration));
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     timeline.delegateTimelineDelegate = this;
                     BaseElement baseElement = new();

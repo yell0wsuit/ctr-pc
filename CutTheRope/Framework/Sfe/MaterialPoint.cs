@@ -109,8 +109,8 @@ namespace CutTheRope.Framework.Sfe
         {
         }
 
-        protected const double TIME_SCALE = 1.0;
-        public const double GCONST = 784.0;
+        protected const double TIME_SCALE = 1;
+        public const double GCONST = 784;
         public static Vector globalGravity;
 
         public Vector pos;

@@ -195,7 +195,7 @@ namespace CutTheRope.GameMain
             carriedStar = null;
             carriedCandy = null;
 
-            double angleRad = DEGREES_TO_RADIANS(angleDeg);
+            float angleRad = DEGREES_TO_RADIANS(angleDeg);
             Vector origin = default;
             Vector Rotate(Vector v)
             {

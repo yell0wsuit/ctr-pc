@@ -68,8 +68,8 @@ namespace CutTheRope.GameMain
             /// <param name="direction">The movement direction indicator: negative for left arrow, positive for right arrow, zero for no arrow.</param>
             public ConveyorBeltVisual(float width, float height, int direction)
             {
-                this.width = (int)Math.Ceiling(width);
-                this.height = (int)Math.Ceiling(height);
+                this.width = (int)MathF.Ceiling(width);
+                this.height = (int)MathF.Ceiling(height);
                 anchor = 9;
                 parentAnchor = 9;
 
@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
                 }
 
                 float localOffset = offset;
-                localOffset -= (float)Math.Floor(localOffset / tileStep) * tileStep;
+                localOffset -= MathF.Floor(localOffset / tileStep) * tileStep;
                 if (localOffset < 0)
                 {
                     localOffset += tileStep;
@@ -148,7 +148,7 @@ namespace CutTheRope.GameMain
                     x += tileStep;
                 }
 
-                float remainingWidth = Math.Max(width - x, 0f);
+                float remainingWidth = MathF.Max(width - x, 0f);
                 segmentIndex = LayoutSegment(segmentIndex, x, remainingWidth);
 
                 for (int i = segmentIndex; i < segments.Count; i++)
@@ -176,8 +176,8 @@ namespace CutTheRope.GameMain
                 float scaleX = width / tileWidth;
                 segment.scaleX = scaleX;
                 segment.scaleY = tileScaleY;
-                float scaledWidth = tileWidth * Math.Abs(scaleX);
-                float scaledHeight = tileHeight * Math.Abs(tileScaleY);
+                float scaledWidth = tileWidth * MathF.Abs(scaleX);
+                float scaledHeight = tileHeight * MathF.Abs(tileScaleY);
                 segment.x = left + (scaledWidth / 2f);
                 segment.y = scaledHeight / 2f;
                 segment.visible = true;
@@ -269,8 +269,8 @@ namespace CutTheRope.GameMain
             this.y = y;
             beltWidth = length;
             beltHeight = height;
-            width = (int)Math.Ceiling(length);
-            this.height = (int)Math.Ceiling(height);
+            width = (int)MathF.Ceiling(length);
+            this.height = (int)MathF.Ceiling(height);
 
             float adjustedRotation = -rotation;
             this.rotation = adjustedRotation;
@@ -301,11 +301,11 @@ namespace CutTheRope.GameMain
                 offset = WrapOffset(offset, beltWidth);
             }
 
-            active = Math.Abs(offsetDelta) > 0.001f;
+            active = MathF.Abs(offsetDelta) > 0.001f;
 
             if (IsManual && active)
             {
-                manualTravelDistance += Math.Abs(offsetDelta);
+                manualTravelDistance += MathF.Abs(offsetDelta);
                 if (manualTravelDistance >= 15f)
                 {
                     PlayManualMoveSound();
@@ -379,14 +379,14 @@ namespace CutTheRope.GameMain
                     float combinedSq = (combined.X * combined.X) + (combined.Y * combined.Y);
                     if (0.25f * combinedSq > separation * separation)
                     {
-                        if (Math.Abs(separation) < 0.001f)
+                        if (MathF.Abs(separation) < 0.001f)
                         {
                             int deltaIndex = items.IndexOf(neighbor) - items.IndexOf(item);
                             separation = 600f * (deltaIndex > 0 ? 1f : deltaIndex < 0 ? -1f : 0f);
                         }
-                        else if (Math.Abs(separation) < 600f)
+                        else if (MathF.Abs(separation) < 600f)
                         {
-                            separation = Math.Sign(separation) * 600f;
+                            separation = MathF.Sign(separation) * 600f;
                         }
                         targetOffset -= separation * deltaTime;
                     }
@@ -408,7 +408,7 @@ namespace CutTheRope.GameMain
                     float slideLengthSq = (projectedSlide.X * projectedSlide.X) + (projectedSlide.Y * projectedSlide.Y);
                     if (slideLengthSq >= maxSlide * maxSlide)
                     {
-                        float slideLength = (float)Math.Sqrt(slideLengthSq);
+                        float slideLength = MathF.Sqrt(slideLengthSq);
                         float factor = (slideLength - maxSlide) / slideLength;
                         projectedSlide = Vect(projectedSlide.X * factor, projectedSlide.Y * factor);
                     }
@@ -710,7 +710,7 @@ namespace CutTheRope.GameMain
         {
             Vector position = GetItemPosition(item);
             Vector offsetVector = Vect(position.X - x, position.Y - y);
-            float initialOffset = Math.Max(Math.Min((offsetVector.X * direction.X) + (offsetVector.Y * direction.Y), beltWidth), 0f);
+            float initialOffset = MathF.Max(MathF.Min((offsetVector.X * direction.X) + (offsetVector.Y * direction.Y), beltWidth), 0f);
             itemStates[item] = new ConveyorItemState(initialOffset);
             items.Add(item);
             if (item is IConveyorItem conveyorItem)
@@ -730,12 +730,12 @@ namespace CutTheRope.GameMain
 
             float GetScaledHeight(Image element)
             {
-                return element.height * Math.Abs(element.scaleY);
+                return element.height * MathF.Abs(element.scaleY);
             }
 
             float GetScaledWidth(Image element)
             {
-                return element.width * Math.Abs(element.scaleX);
+                return element.width * MathF.Abs(element.scaleX);
             }
 
             Image pillarRef = CreatePiece(ImgObjTransporterEndSide);
@@ -990,8 +990,8 @@ namespace CutTheRope.GameMain
 
             if (item is IConveyorItem conveyorItem)
             {
-                float scaleX = Math.Abs(conveyorItem.ConveyorBaseScaleX ?? 1f);
-                float scaleY = Math.Abs(conveyorItem.ConveyorBaseScaleY ?? 1f);
+                float scaleX = MathF.Abs(conveyorItem.ConveyorBaseScaleX ?? 1f);
+                float scaleY = MathF.Abs(conveyorItem.ConveyorBaseScaleY ?? 1f);
                 return Vect(fallbackWidth * scaleX, fallbackHeight * scaleY);
             }
 

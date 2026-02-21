@@ -252,8 +252,8 @@ namespace CutTheRope.GameMain
         {
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             float bounceScale = startScale + (amplitude * startScale);
-            timeline.AddKeyFrame(KeyFrame.MakeScale(bounceScale, bounceScale, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.05));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(startScale, startScale, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(bounceScale, bounceScale, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.05f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(startScale, startScale, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.1f));
             return timeline;
         }
 

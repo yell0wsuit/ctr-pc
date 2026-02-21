@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
                 {
                     FingerCut fingerCut = fingerCuts[i].ObjectAtIndex(j);
                     float alpha = fingerCut.c.AlphaChannel;
-                    if (Mover.MoveVariableToTarget(ref alpha, 0.0f, 10.0f, (float)delta))
+                    if (Mover.MoveVariableToTarget(ref alpha, 0, 10, delta))
                     {
                         fingerCuts[i].RemoveObject(fingerCut);
                         j--;
@@ -111,7 +111,7 @@ namespace CutTheRope.GameMain
                         camera.speed *= 1.5f;
                     }
                 }
-                else if ((double)cameraTargetDistance > initialCameraToStarDistance / 2.0)
+                else if (cameraTargetDistance > initialCameraToStarDistance / 2)
                 {
                     camera.speed += delta * cameraAcceleration;
                     camera.speed = MIN(maxCameraSpeed, camera.speed);
@@ -121,7 +121,7 @@ namespace CutTheRope.GameMain
                     camera.speed -= delta * cameraDeceleration;
                     camera.speed = MAX(minCameraSpeed, camera.speed);
                 }
-                if ((double)Math.Abs(camera.pos.X - boundedCameraX) < 1.0 && (double)Math.Abs(camera.pos.Y - boundedCameraY) < 1.0)
+                if (MathF.Abs(camera.pos.X - boundedCameraX) < 1 && MathF.Abs(camera.pos.Y - boundedCameraY) < 1)
                 {
                     camera.type = CAMERATYPE.CAMERASPEEDDELAY;
                     camera.speed = 14f;
@@ -206,7 +206,7 @@ namespace CutTheRope.GameMain
 
                     if (rope != null)
                     {
-                        if (rope.cut == -1 || rope.cutTime != 0.0)
+                        if (rope.cut == -1 || rope.cutTime != 0)
                         {
                             rope?.Update(delta * ropePhysicsSpeed);
                             if (grab.hasSpider)
@@ -564,7 +564,7 @@ namespace CutTheRope.GameMain
                         animation.x = candy.x;
                         animation.y = candy.y;
                         animation.anchor = 18;
-                        int n = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 11, 15);
+                        int n = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 11, 15);
                         animation.GetTimeline(n).delegateTimelineDelegate = aniPool;
                         animation.PlayTimeline(0);
                         _ = aniPool.AddChild(animation);
@@ -591,7 +591,7 @@ namespace CutTheRope.GameMain
                 float remaining = delta;
                 while (remaining > 0f)
                 {
-                    float step = Math.Min(0.01f, remaining);
+                    float step = MathF.Min(0.01f, remaining);
                     conveyors.Update(step);
                     conveyors.ProcessItems(bubbles);
                     conveyors.ProcessItems(stars);
@@ -608,7 +608,7 @@ namespace CutTheRope.GameMain
                 {
                     Star star = (Star)obj2;
                     star.Update(delta);
-                    if (star.timeout > 0.0 && star.time == 0.0)
+                    if (star.timeout > 0 && star.time == 0)
                     {
                         star.GetTimeline(1).delegateTimelineDelegate = aniPool;
                         _ = aniPool.AddChild(star);
@@ -635,7 +635,7 @@ namespace CutTheRope.GameMain
                         animation2.x = star.x;
                         animation2.y = star.y;
                         animation2.anchor = 18;
-                        int n2 = animation2.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
+                        int n2 = animation2.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
                         animation2.GetTimeline(n2).delegateTimelineDelegate = aniPool;
                         animation2.PlayTimeline(0);
                         _ = aniPool.AddChild(animation2);
@@ -858,12 +858,12 @@ namespace CutTheRope.GameMain
                     candyMain.scaleX = candyMain.scaleY = 1f;
                     candyTop.scaleX = candyTop.scaleY = 1f;
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                    timeline.AddKeyFrame(KeyFrame.MakePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakePos(lantern.x, lantern.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(0.71, 0.71, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(0.3, 0.3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)lantern.x, (int)lantern.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(0.71f, 0.71f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(0.3f, 0.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                     candy.RemoveTimeline(0);
                     candy.AddTimelinewithID(timeline, 0);
                     candy.PlayTimeline(0);
@@ -873,7 +873,7 @@ namespace CutTheRope.GameMain
                     {
                         PopCandyBubble(false);
                     }
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), star, 0.05);
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), star, 0.05f);
 
                     // Trigger special tutorial for lantern
                     TriggerSpecialTutorial(3);
@@ -886,7 +886,7 @@ namespace CutTheRope.GameMain
                 foreach (object obj9 in bungees)
                 {
                     Grab bungee4 = (Grab)obj9;
-                    if (VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5.0) * 3f))
+                    if (VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
                         if (rotatedCircle7.containedObjects.GetObjectIndex(bungee4) == -1)
                         {
@@ -901,7 +901,7 @@ namespace CutTheRope.GameMain
                 foreach (object obj10 in bubbles)
                 {
                     Bubble bubble4 = (Bubble)obj10;
-                    if (VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10.0) * 3f))
+                    if (VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10) * 3f))
                     {
                         if (rotatedCircle7.containedObjects.GetObjectIndex(bubble4) == -1)
                         {
@@ -962,7 +962,7 @@ namespace CutTheRope.GameMain
                     TriggerSpecialTutorial(4);
                 }
             }
-            float collisionHalfSize = RTPD(20.0);
+            float collisionHalfSize = RTPD(20);
             foreach (object obj11 in socks)
             {
                 Sock sock3 = (Sock)obj11;
@@ -986,7 +986,7 @@ namespace CutTheRope.GameMain
                 float bbY = star.pos.Y - collisionHalfSize;
                 float bbSize = collisionHalfSize * 2f;
 
-                bool candyHits = ptr.Y >= 0.0 &&
+                bool candyHits = ptr.Y >= 0 &&
                     (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bbX, bbY, bbSize, bbSize) ||
                      LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bbX, bbY, bbSize, bbSize));
 
@@ -1002,7 +1002,7 @@ namespace CutTheRope.GameMain
                         Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
                         float bulbX = bulb.constraint.pos.X - collisionHalfSize;
                         float bulbY = bulb.constraint.pos.Y - collisionHalfSize;
-                        bool bulbHit = bulbDelta.Y >= 0.0 &&
+                        bool bulbHit = bulbDelta.Y >= 0 &&
                             (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bulbX, bulbY, bbSize, bbSize) ||
                              LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bulbX, bulbY, bbSize, bbSize));
                         if (bulbHit)
@@ -1047,7 +1047,7 @@ namespace CutTheRope.GameMain
                                 CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
                             }
 
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1f);
                             break;
                         }
                     }
@@ -1065,7 +1065,7 @@ namespace CutTheRope.GameMain
                         Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
                         float bulbX = bulb.constraint.pos.X - collisionHalfSize;
                         float bulbY = bulb.constraint.pos.Y - collisionHalfSize;
-                        bool bulbHit = bulbDelta.Y >= 0.0 &&
+                        bool bulbHit = bulbDelta.Y >= 0 &&
                             (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bulbX, bulbY, bbSize, bbSize) ||
                              LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bulbX, bulbY, bbSize, bbSize));
 
@@ -1096,7 +1096,7 @@ namespace CutTheRope.GameMain
                                     CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
                                 }
 
-                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_dropLightBulbFromSock), bulb, 0.1);
+                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_dropLightBulbFromSock), bulb, 0.1f);
                                 bulbTeleported = true;
                                 break;
                             }
@@ -1363,7 +1363,7 @@ namespace CutTheRope.GameMain
                         DetachActiveSnails();
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
                         }
                         if (ghosts != null)
                         {
@@ -1925,11 +1925,11 @@ namespace CutTheRope.GameMain
             clapEffect.y = position.Y;
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-            timeline.AddKeyFrame(KeyFrame.MakeScale(0.8, 0.8, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.12, 1.12, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.05));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.06));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.12));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.8f, 0.8f, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.12f, 1.12f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.05f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.06f));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.12f));
             timeline.delegateTimelineDelegate = aniPool;
 
             int timelineId = clapEffect.AddTimeline(timeline);

@@ -24,12 +24,12 @@ namespace CutTheRope.GameMain
                 Vector vector2 = default;
                 vector2.X = p.x + (p.bb.w / 2f);
                 vector.Y = vector2.Y = p.y;
-                if (p.angle != 0.0)
+                if (p.angle != 0)
                 {
-                    v = VectRotateAround(v, 0.0 - p.angle, p.x, p.y);
+                    v = VectRotateAround(v, 0 - p.angle, p.x, p.y);
                 }
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
-                if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2.0)), (float)(v.Y - (p.bb.h / 2.0)), (float)(v.X + (p.bb.w / 2.0)), (float)(v.Y + (p.bb.h / 2.0)), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
+                if (v.Y < vector.Y && RectInRect(v.X - (p.bb.w / 2), v.Y - (p.bb.h / 2), v.X + (p.bb.w / 2), v.Y + (p.bb.h / 2), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
                 {
                     float verticalImpulse = flowLength * 2f * (flowLength - (vector.Y - v.Y)) / flowLength;
                     Vector v2 = Vect(0f, 0f - verticalImpulse);
@@ -48,11 +48,11 @@ namespace CutTheRope.GameMain
             {
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
-                int directionSign = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
+                int directionSign = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y).Y >= b.y ? 1 : -1;
                 float s2 = MAX(VectLength(vector) * 40, 840) * directionSign;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
-                s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
-                s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
+                s.pos = VectRotateAround(s.pos, 0f - b.angle, b.x, b.y);
+                s.prevPos = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y);
                 s.prevPos.Y = s.pos.Y;
                 s.pos = VectRotateAround(s.pos, b.angle, b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, b.angle, b.x, b.y);
@@ -91,8 +91,8 @@ namespace CutTheRope.GameMain
             {
                 Vector position = Vect(pt.pos.X, pt.pos.Y);
                 Vector velocity = Vect(pt.v.X, pt.v.Y);
-                position = VectRotateAround(position, 0.0 - angle, tube.x, tube.y);
-                velocity = VectRotate(velocity, 0.0 - angle);
+                position = VectRotateAround(position, 0 - angle, tube.x, tube.y);
+                velocity = VectRotate(velocity, 0 - angle);
 
                 bool insideTube = RectInRect(
                     position.X - collisionRadius, position.Y - (collisionRadius / 2f),
@@ -144,7 +144,7 @@ namespace CutTheRope.GameMain
                 float distanceBelowValve = tube.y - position.Y;
                 if (distanceBelowValve > currentHeight + collisionRadius)
                 {
-                    float attenuation = (float)Math.Exp(-2f * (distanceBelowValve - (currentHeight + collisionRadius)));
+                    float attenuation = MathF.Exp(-2f * (distanceBelowValve - (currentHeight + collisionRadius)));
                     impulse = VectMult(impulse, attenuation);
                 }
                 impulse = VectRotate(impulse, angle);
@@ -194,10 +194,10 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, Pump.FlowLength - Pump.MouthOffset);
-            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - DEG_90, grid, flowLength);
+            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES(p.angle) - DEG_90, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + Pump.MouthOffset, p.y);
-            v = VectRotateAround(v, p.angle - (Math.PI / 2), p.x, p.y);
+            v = VectRotateAround(v, p.angle - (MathF.PI / 2), p.x, p.y);
             pumpDirt.x = v.X;
             pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);
@@ -324,18 +324,18 @@ namespace CutTheRope.GameMain
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y + 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y + 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, g.spider.y - 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(g.spider.x, (double)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y - 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
             image.x = g.spider.x;
@@ -401,15 +401,15 @@ namespace CutTheRope.GameMain
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y + 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y + 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, sg.spider.y - 70.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                timeline.AddKeyFrame(KeyFrame.MakePos(sg.spider.x, (double)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
@@ -426,7 +426,7 @@ namespace CutTheRope.GameMain
             DetachActiveSnails();
             if (restartState != 0)
             {
-                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2.0);
+                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2);
             }
         }
 

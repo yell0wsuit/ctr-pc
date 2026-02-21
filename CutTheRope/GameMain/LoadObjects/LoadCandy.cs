@@ -18,7 +18,7 @@ namespace CutTheRope.GameMain
                 // Setup left candy bubble animation
                 candyBubbleAnimationL = Animation.Animation_createWithResID(Resources.Img.ObjBubbleFlight);
                 candyBubbleAnimationL.parentAnchor = candyBubbleAnimationL.anchor = 18;
-                _ = candyBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
                 candyBubbleAnimationL.PlayTimeline(0);
                 _ = candyL.AddChild(candyBubbleAnimationL);
                 candyBubbleAnimationL.visible = false;
@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
                 // Setup right candy bubble animation
                 candyBubbleAnimationR = Animation.Animation_createWithResID(Resources.Img.ObjBubbleFlight);
                 candyBubbleAnimationR.parentAnchor = candyBubbleAnimationR.anchor = 18;
-                _ = candyBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
                 candyBubbleAnimationR.PlayTimeline(0);
                 _ = candyR.AddChild(candyBubbleAnimationR);
                 candyBubbleAnimationR.visible = false;

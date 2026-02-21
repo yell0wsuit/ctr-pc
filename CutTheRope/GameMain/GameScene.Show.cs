@@ -70,7 +70,7 @@ namespace CutTheRope.GameMain
             dimTime = 0f;
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1.0);
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1);
             Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture));
             text.anchor = 33;
             Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, Application.GetString("LEVEL"));
@@ -84,11 +84,11 @@ namespace CutTheRope.GameMain
             text2.scaleX = text2.scaleY = 0.7f;
             _ = text.AddChild(text2);
             Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
+            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             text.AddTimelinewithID(timeline6, 0);
             text.PlayTimeline(0);
             timeline6.delegateTimelineDelegate = staticAniPool;
@@ -120,7 +120,7 @@ namespace CutTheRope.GameMain
                 float cameraStartY;
                 if (mapWidth > SCREEN_WIDTH)
                 {
-                    if (constraintedPoint.pos.X > mapWidth / 2.0)
+                    if (constraintedPoint.pos.X > mapWidth / 2)
                     {
                         cameraStartX = 0f;
                         cameraStartY = 0f;
@@ -131,7 +131,7 @@ namespace CutTheRope.GameMain
                         cameraStartY = 0f;
                     }
                 }
-                else if (constraintedPoint.pos.Y > mapHeight / 2.0)
+                else if (constraintedPoint.pos.Y > mapHeight / 2)
                 {
                     cameraStartX = 0f;
                     cameraStartY = 0f;

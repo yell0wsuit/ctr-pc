@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
             if (hideRadius)
             {
                 radiusAlpha -= 1.5f * delta;
-                if (radiusAlpha <= 0.0)
+                if (radiusAlpha <= 0)
                 {
                     radius = -1f;
                     hideRadius = false;
@@ -236,7 +236,7 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            if (moveLength > 0.0)
+            if (moveLength > 0)
             {
                 moveBackground.Draw();
             }
@@ -302,7 +302,7 @@ namespace CutTheRope.GameMain
             // Draw front gun
             gunFront?.Draw();
 
-            if (moveLength <= 0.0)
+            if (moveLength <= 0)
             {
                 front?.Draw();
             }
@@ -393,15 +393,15 @@ namespace CutTheRope.GameMain
                 gunCup.visible = false;
 
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
                 gunCup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
 
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                timeline2.AddKeyFrame(KeyFrame.MakePos(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline2.AddKeyFrame(KeyFrame.MakePos(0.0, 50.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1.0));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
+                timeline2.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline2.AddKeyFrame(KeyFrame.MakePos(0, 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
                 gunCup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
                 Track track = timeline2.GetTrack(Track.TrackType.TRACK_POSITION);
                 track.relative = true;
@@ -482,12 +482,12 @@ namespace CutTheRope.GameMain
             moveLength = l;
             moveVertical = v;
             moveOffset = o;
-            if (moveLength > 0.0)
+            if (moveLength > 0)
             {
                 moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHookMovable);
                 moveBackground.SetTileHorizontallyLeftCenterRight(0, 2, 1);
                 moveBackground.width = (int)(l + 142f);
-                moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2.0) + 74f;
+                moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
                 moveBackground.x = -74f;
                 grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHookMovable, MovableHookHighlightQuad);
                 grabMoverHighlight.visible = false;
@@ -534,7 +534,7 @@ namespace CutTheRope.GameMain
             Animation animation = Animation_createWithResID(Resources.Img.ObjBeeHd);
             animation.parentAnchor = animation.anchor = 9;
             animation.DoRestoreCutTransparency();
-            _ = animation.AddAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
+            _ = animation.AddAnimationDelayLoopFirstLast(0.03f, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.PlayTimeline(0);
             animation.JumpTo(RND_RANGE(0, 2));
             _ = bee.AddChild(animation);

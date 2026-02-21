@@ -24,13 +24,13 @@ namespace CutTheRope.GameMain
                 targetSock.light.PlayTimeline(0);
                 targetSock.light.visible = true;
                 Vector v = Vect(0f, -16f);
-                v = VectRotate(v, (double)DEGREES_TO_RADIANS(targetSock.rotation));
+                v = VectRotate(v, DEGREES_TO_RADIANS(targetSock.rotation));
                 star.pos.X = targetSock.x;
                 star.pos.Y = targetSock.y;
                 star.pos = VectAdd(star.pos, v);
                 star.prevPos.X = star.pos.X;
                 star.prevPos.Y = star.pos.Y;
-                star.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
+                star.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
                 star.posDelta = VectDiv(star.v, 60f);
                 star.prevPos = VectSub(star.pos, star.posDelta);
 
@@ -70,13 +70,13 @@ namespace CutTheRope.GameMain
             }
 
             Vector v = Vect(0f, -16f);
-            v = VectRotate(v, (double)DEGREES_TO_RADIANS(sock.rotation));
+            v = VectRotate(v, DEGREES_TO_RADIANS(sock.rotation));
             bulb.constraint.pos.X = sock.x;
             bulb.constraint.pos.Y = sock.y;
             bulb.constraint.pos = VectAdd(bulb.constraint.pos, v);
             bulb.constraint.prevPos.X = bulb.constraint.pos.X;
             bulb.constraint.prevPos.Y = bulb.constraint.pos.Y;
-            bulb.constraint.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(sock.rotation)), bulb.sockSpeed);
+            bulb.constraint.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(sock.rotation)), bulb.sockSpeed);
             bulb.constraint.posDelta = VectDiv(bulb.constraint.v, 60f);
             bulb.constraint.prevPos = VectSub(bulb.constraint.pos, bulb.constraint.posDelta);
             bulb.attachedSock = null;
@@ -182,17 +182,17 @@ namespace CutTheRope.GameMain
             candyMain.scaleX = candyMain.scaleY = 1f;
             candyTop.scaleX = candyTop.scaleY = 1f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakePos(candy.x, candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakePos(target.x, target.y + 10.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(0.71, 0.71, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)target.x, (int)(target.y + 10), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.71f, 0.71f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             candy.AddTimelinewithID(timeline, 0);
             candy.PlayTimeline(0);
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(candy);
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2.0);
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
             CalculateScore();
             ReleaseAllRopes(false);
             if (activeRocket != null)
@@ -239,7 +239,7 @@ namespace CutTheRope.GameMain
 
             target.PlayAnimationtimeline(Resources.Img.CharAnimations3, 5);
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
             if (activeRocket != null)
             {
@@ -347,7 +347,7 @@ namespace CutTheRope.GameMain
             animation.x = bx;
             animation.y = by;
             animation.anchor = 18;
-            int i = animation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 11);
+            int i = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 11);
             animation.GetTimeline(i).delegateTimelineDelegate = aniPool;
             animation.PlayTimeline(0);
             _ = aniPool.AddChild(animation);
@@ -422,7 +422,7 @@ namespace CutTheRope.GameMain
 
         public void OnButtonPressed(GameSceneButtonId _)
         {
-            if (MaterialPoint.globalGravity.Y == 784.0)
+            if (MaterialPoint.globalGravity.Y == 784)
             {
                 MaterialPoint.globalGravity.Y = -784f;
                 gravityNormal = false;

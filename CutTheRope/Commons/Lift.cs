@@ -22,7 +22,7 @@ namespace CutTheRope.Commons
         {
             if (state == BUTTON_STATE.BUTTON_DOWN)
             {
-                x = Math.Max(Math.Min(tx - startX, maxX), minX);
+                x = MathF.Max(MathF.Min(tx - startX, maxX), minX);
                 y = 0f;
                 if (maxX != 0f)
                 {

@@ -138,8 +138,8 @@ namespace CutTheRope.GameMain
             candyBlink.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 9);
             candyBlink.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 10, [10]);
             Timeline timeline7 = candyBlink.GetTimeline(1);
-            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
             candyBlink.visible = false;
             candyBlink.anchor = candyBlink.parentAnchor = 18;
             candyBlink.scaleX = candyBlink.scaleY = 0.71f;
@@ -150,7 +150,7 @@ namespace CutTheRope.GameMain
             candyBubbleAnimation.x = candy.x;
             candyBubbleAnimation.y = candy.y;
             candyBubbleAnimation.parentAnchor = candyBubbleAnimation.anchor = 18;
-            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
             candyBubbleAnimation.PlayTimeline(0);
             _ = candy.AddChild(candyBubbleAnimation);
             candyBubbleAnimation.visible = false;

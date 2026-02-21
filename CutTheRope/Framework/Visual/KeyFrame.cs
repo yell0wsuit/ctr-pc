@@ -28,19 +28,9 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
-        public static KeyFrame MakeSingleAction(BaseElement target, string action, int p, int sp, double time)
-        {
-            return MakeSingleAction(target, action, p, sp, (float)time);
-        }
-
         public static KeyFrame MakeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
             return MakeAction([CTRAction.CreateAction(target, action, p, sp)], time);
-        }
-
-        public static KeyFrame MakePos(double x, double y, TransitionType transition, double time)
-        {
-            return MakePos((int)x, (int)y, transition, (float)time);
         }
 
         public static KeyFrame MakePos(int x, int y, TransitionType transition, float time)
@@ -57,11 +47,6 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
-        public static KeyFrame MakeScale(double x, double y, TransitionType transition, double time)
-        {
-            return MakeScale((float)x, (float)y, transition, (float)time);
-        }
-
         public static KeyFrame MakeScale(float x, float y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
@@ -76,11 +61,6 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
-        public static KeyFrame MakeRotation(double r, TransitionType transition, double time)
-        {
-            return MakeRotation((int)r, transition, (float)time);
-        }
-
         public static KeyFrame MakeRotation(int r, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
@@ -92,11 +72,6 @@ namespace CutTheRope.Framework.Visual
                 transitionType = transition,
                 value = keyFrameValue
             };
-        }
-
-        public static KeyFrame MakeColor(RGBAColor c, TransitionType transition, double time)
-        {
-            return MakeColor(c, transition, (float)time);
         }
 
         public static KeyFrame MakeColor(RGBAColor c, TransitionType transition, float time)

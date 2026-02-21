@@ -35,13 +35,13 @@ namespace CutTheRope.GameMain
             _ = AddChild(morphingBubbles);
 
             Timeline appearTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            appearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            appearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
             appearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, GHOST_MORPHING_APPEAR_TIME));
             ghostImage.AddTimelinewithID(appearTimeline, 10);
             ghostImage.PlayTimeline(10);
 
             Timeline disappearTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            disappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            disappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
             disappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, GHOST_MORPHING_DISAPPEAR_TIME));
             ghostImage.AddTimelinewithID(disappearTimeline, 11);
 
@@ -54,8 +54,8 @@ namespace CutTheRope.GameMain
             _ = ghostImage.AddChild(ghostImageBody);
 
             Timeline bodyFloat = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            bodyFloat.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            bodyFloat.AddKeyFrame(KeyFrame.MakePos(x, y - 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random));
+            bodyFloat.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            bodyFloat.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y - 3), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random));
             bodyFloat.delegateTimelineDelegate = this;
             ghostImageBody.AddTimelinewithID(bodyFloat, 13);
             ghostImageBody.PlayTimeline(13);
@@ -67,8 +67,8 @@ namespace CutTheRope.GameMain
             _ = ghostImage.AddChild(ghostImageFace);
 
             Timeline faceFloat = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            faceFloat.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-            faceFloat.AddKeyFrame(KeyFrame.MakePos(x, y - 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random + 0.005));
+            faceFloat.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+            faceFloat.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y - 2), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, random + 0.005f));
             faceFloat.delegateTimelineDelegate = this;
             ghostImageFace.AddTimelinewithID(faceFloat, 13);
             ghostImageFace.PlayTimeline(13);
@@ -131,7 +131,7 @@ namespace CutTheRope.GameMain
             }
             ghostState = newState;
             Timeline morphOut = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            morphOut.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            morphOut.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
             morphOut.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, GHOST_MORPHING_DISAPPEAR_TIME));
             morphOut.delegateTimelineDelegate = this;
             if (bubble != null)
@@ -191,7 +191,7 @@ namespace CutTheRope.GameMain
             }
 
             Timeline morphIn = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            morphIn.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
+            morphIn.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
             morphIn.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, GHOST_MORPHING_APPEAR_TIME));
 
             switch (ghostState)
@@ -304,11 +304,11 @@ namespace CutTheRope.GameMain
             {
                 Timeline faceLoop = new Timeline().InitWithMaxKeyFramesOnTrack(5);
                 faceLoop.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                faceLoop.AddKeyFrame(KeyFrame.MakePos(x, y - 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-                faceLoop.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38));
-                faceLoop.AddKeyFrame(KeyFrame.MakePos(x, y + 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38));
-                faceLoop.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38));
-                faceLoop.AddKeyFrame(KeyFrame.MakePos(x, y - 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38));
+                faceLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y - 2), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+                faceLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38f));
+                faceLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y + 2), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38f));
+                faceLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38f));
+                faceLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y - 2), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38f));
                 ghostImageFace.AddTimelinewithID(faceLoop, 12);
                 ghostImageFace.PlayTimeline(12);
             }
@@ -316,11 +316,11 @@ namespace CutTheRope.GameMain
             {
                 Timeline bodyLoop = new Timeline().InitWithMaxKeyFramesOnTrack(5);
                 bodyLoop.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                bodyLoop.AddKeyFrame(KeyFrame.MakePos(x, y - 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0.0));
-                bodyLoop.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38));
-                bodyLoop.AddKeyFrame(KeyFrame.MakePos(x, y + 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38));
-                bodyLoop.AddKeyFrame(KeyFrame.MakePos(x, y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38));
-                bodyLoop.AddKeyFrame(KeyFrame.MakePos(x, y - 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38));
+                bodyLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y - 3), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
+                bodyLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38f));
+                bodyLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y + 3), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38f));
+                bodyLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.38f));
+                bodyLoop.AddKeyFrame(KeyFrame.MakePos((int)x, (int)(y - 3), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.38f));
                 ghostImageBody.AddTimelinewithID(bodyLoop, 12);
                 ghostImageBody.PlayTimeline(12);
             }
