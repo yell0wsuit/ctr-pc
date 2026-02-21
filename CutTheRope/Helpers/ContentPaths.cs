@@ -65,14 +65,14 @@ namespace CutTheRope.Helpers
         public const string MenuStringsFile = "menu_strings.json";
 
         /// <summary>
-        /// The original packs configuration XML filename.
+        /// The original packs configuration JSON filename.
         /// </summary>
-        public const string CtrOriginalPacksConfigFile = "ctroriginal_packs.xml";
+        public const string CtrOriginalPacksConfigFile = "ctroriginal_packs.json";
 
         /// <summary>
-        /// The save-slot mapping XML filename.
+        /// The save-slot mapping JSON filename.
         /// </summary>
-        public const string PackListFile = "packlist.xml";
+        public const string PackListFile = "packlist.json";
 
         /// <summary>
         /// Gets the full path to a content file, including the root directory.
