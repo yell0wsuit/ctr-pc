@@ -85,7 +85,7 @@ namespace CutTheRope.GameMain
                         {
                             raState = 4;
                             raDelay = 0.2f;
-                            int minutes = (int)Math.Floor(Round(time) / 60f);
+                            int minutes = (int)MathF.Floor(Round(time) / 60f);
                             int seconds = (int)(Round(time) - (minutes * 60f));
                             ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString("TIME"));
                             ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
@@ -110,7 +110,7 @@ namespace CutTheRope.GameMain
                     {
                         ctime = time * raDelay;
                         cscore = (int)(starBonus + ((1f - raDelay) * timeBonus));
-                        int minutes = (int)Math.Floor(Round(ctime) / 60);
+                        int minutes = (int)MathF.Floor(Round(ctime) / 60);
                         int seconds = (int)(Round(ctime) - (minutes * 60));
                         ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));

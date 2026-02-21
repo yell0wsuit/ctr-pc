@@ -68,8 +68,8 @@ namespace CutTheRope.GameMain
             /// <param name="direction">The movement direction indicator: negative for left arrow, positive for right arrow, zero for no arrow.</param>
             public ConveyorBeltVisual(float width, float height, int direction)
             {
-                this.width = (int)Math.Ceiling(width);
-                this.height = (int)Math.Ceiling(height);
+                this.width = (int)MathF.Ceiling(width);
+                this.height = (int)MathF.Ceiling(height);
                 anchor = 9;
                 parentAnchor = 9;
 
@@ -269,8 +269,8 @@ namespace CutTheRope.GameMain
             this.y = y;
             beltWidth = length;
             beltHeight = height;
-            width = (int)Math.Ceiling(length);
-            this.height = (int)Math.Ceiling(height);
+            width = (int)MathF.Ceiling(length);
+            this.height = (int)MathF.Ceiling(height);
 
             float adjustedRotation = -rotation;
             this.rotation = adjustedRotation;
