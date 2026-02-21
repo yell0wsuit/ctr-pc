@@ -84,25 +84,25 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>Returns the cosine of <paramref name="x"/> (radians) as a float.</summary>
         public static float Cosf(float x)
         {
-            return (float)Math.Cos((double)x);
+            return MathF.Cos(x);
         }
 
         /// <summary>Returns the sine of <paramref name="x"/> (radians) as a float.</summary>
         public static float Sinf(float x)
         {
-            return (float)Math.Sin((double)x);
+            return MathF.Sin(x);
         }
 
         /// <summary>Returns the tangent of <paramref name="x"/> (radians) as a float.</summary>
         public static float Tanf(float x)
         {
-            return (float)Math.Tan((double)x);
+            return MathF.Tan(x);
         }
 
         /// <summary>Returns the arccosine of <paramref name="x"/> in radians as a float.</summary>
         public static float Acosf(float x)
         {
-            return (float)Math.Acos((double)x);
+            return MathF.Acos(x);
         }
 
         /// <summary>
