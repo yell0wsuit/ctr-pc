@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
                 }
 
                 float localOffset = offset;
-                localOffset -= (float)Math.Floor(localOffset / tileStep) * tileStep;
+                localOffset -= MathF.Floor(localOffset / tileStep) * tileStep;
                 if (localOffset < 0)
                 {
                     localOffset += tileStep;
@@ -408,7 +408,7 @@ namespace CutTheRope.GameMain
                     float slideLengthSq = (projectedSlide.X * projectedSlide.X) + (projectedSlide.Y * projectedSlide.Y);
                     if (slideLengthSq >= maxSlide * maxSlide)
                     {
-                        float slideLength = (float)Math.Sqrt(slideLengthSq);
+                        float slideLength = MathF.Sqrt(slideLengthSq);
                         float factor = (slideLength - maxSlide) / slideLength;
                         projectedSlide = Vect(projectedSlide.X * factor, projectedSlide.Y * factor);
                     }

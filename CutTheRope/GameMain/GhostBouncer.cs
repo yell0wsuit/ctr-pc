@@ -7,14 +7,14 @@ namespace CutTheRope.GameMain
 {
     internal sealed class GhostBouncer : Bouncer
     {
-        public override Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, double angle)
+        public Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, float angle)
         {
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)
             {
                 backCloud2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
-                float radius = (float)Math.Sqrt(9000);
-                backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS((float)(170 + angle))));
-                backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS((float)(170 + angle))));
+                float radius = MathF.Sqrt(9000);
+                backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS(170 + angle)));
+                backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS(170 + angle)));
                 backCloud2.anchor = 18;
                 backCloud2.visible = false;
                 _ = AddChild(backCloud2);
@@ -34,9 +34,9 @@ namespace CutTheRope.GameMain
                 backCloud2.PlayTimeline(0);
 
                 backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
-                float radius2 = (float)Math.Sqrt(9000);
-                backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS((float)(10 + angle))));
-                backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS((float)(10 + angle))));
+                float radius2 = MathF.Sqrt(9000);
+                backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS(10 + angle)));
+                backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS(10 + angle)));
                 backCloud.anchor = 18;
                 backCloud.visible = false;
                 _ = AddChild(backCloud);

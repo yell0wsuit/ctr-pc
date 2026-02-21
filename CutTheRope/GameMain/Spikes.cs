@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
     {
-        public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
+        public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, float an, int t)
         {
             string textureResourceName = GetSpikeTexture(w, t != -1);
             if (textureResourceName == null || InitWithTexture(Application.GetTexture(textureResourceName)) == null)
@@ -37,7 +37,7 @@ namespace CutTheRope.GameMain
             }
             passColorToChilds = false;
             spikesNormal = false;
-            origRotation = rotation = (float)an;
+            origRotation = rotation = an;
             x = px;
             y = py;
             SetToggled(t);
@@ -63,10 +63,10 @@ namespace CutTheRope.GameMain
             b2.X = t2.X;
             b1.Y = b2.Y = y + 5f;
             angle = DEGREES_TO_RADIANS(rotation);
-            t1 = VectRotateAround(t1, (float)angle, x, y);
-            t2 = VectRotateAround(t2, (float)angle, x, y);
-            b1 = VectRotateAround(b1, (float)angle, x, y);
-            b2 = VectRotateAround(b2, (float)angle, x, y);
+            t1 = VectRotateAround(t1, angle, x, y);
+            t2 = VectRotateAround(t2, angle, x, y);
+            b1 = VectRotateAround(b1, angle, x, y);
+            b2 = VectRotateAround(b2, angle, x, y);
         }
 
         public void TurnElectroOff()
@@ -176,7 +176,7 @@ namespace CutTheRope.GameMain
 
         private int toggled;
 
-        public double angle;
+        public float angle;
 
         public Vector t1;
 

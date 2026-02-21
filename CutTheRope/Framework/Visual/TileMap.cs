@@ -134,8 +134,8 @@ namespace CutTheRope.Framework.Visual
 
         public void UpdateWithCameraPos(Vector pos)
         {
-            float cameraX = (float)Math.Round((double)(pos.X / parallaxRatio));
-            float cameraY = (float)Math.Round((double)(pos.Y / parallaxRatio));
+            float cameraX = MathF.Round(pos.X / parallaxRatio);
+            float cameraY = MathF.Round(pos.Y / parallaxRatio);
             float mapX = x;
             float mapY = y;
             if (repeatedVertically != Repeat.NONE)

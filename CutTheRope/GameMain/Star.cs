@@ -173,7 +173,7 @@ namespace CutTheRope.GameMain
         {
             bobTime += delta;
             bool onConveyor = ConveyorId != -1;
-            float offset = onConveyor ? 0f : (float)(3 * Sinf(3f * bobTime));
+            float offset = onConveyor ? 0f : (3 * Sinf(3f * bobTime));
             Dictionary<int, BaseElement> childs = GetChilds();
             foreach (KeyValuePair<int, BaseElement> kvp in childs)
             {

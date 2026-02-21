@@ -535,7 +535,7 @@ namespace CutTheRope.GameMain
             _ = vBox.AddChild(c3);
             _ = baseElement.AddChild(vBox);
             hBox.y = (vBox.height / 2) + 10;
-            vBox.y = -(float)hBox.height / 2;
+            vBox.y = -hBox.height / 2;
             bool flag4 = Preferences.GetBooleanForKey("SOUND_ON");
             bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
             bool flag3 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
@@ -781,7 +781,7 @@ namespace CutTheRope.GameMain
                 text.SetStringandWidth(newString, 600f);
                 text.y = -60f;
                 text.scaleX = text.scaleY = 0.7f;
-                text.rotationCenterY = -(float)text.height / 2;
+                text.rotationCenterY = -text.height / 2;
                 _ = touchBaseElement.AddChild(text);
             }
             else
@@ -1152,7 +1152,7 @@ namespace CutTheRope.GameMain
             _ = vBox.AddTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.SetName("starText");
-            hBox.x = -(float)Canvas.xOffsetScaled;
+            hBox.x = -Canvas.xOffsetScaled;
             Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
@@ -1777,7 +1777,7 @@ namespace CutTheRope.GameMain
             DeleteView(5);
             CreatePackSelect();
             BaseElement childWithName = GetView(0).GetChild(0).GetChildWithName("container");
-            _ = (childWithName?.x = -(float)Canvas.xOffsetScaled);
+            _ = (childWithName?.x = -Canvas.xOffsetScaled);
             BaseElement childWithName2 = GetView(5).GetChild(0).GetChildWithName("text");
             _ = (childWithName2?.x = -20f - Canvas.xOffsetScaled);
             for (int i = 0; i < 10; i++)
@@ -1793,7 +1793,7 @@ namespace CutTheRope.GameMain
             if (view4 != null)
             {
                 view4.GetChildWithName("backButton").x = Canvas.xOffsetScaled;
-                view4.GetChildWithName("starText").x = -(float)Canvas.xOffsetScaled;
+                view4.GetChildWithName("starText").x = -Canvas.xOffsetScaled;
             }
         }
 

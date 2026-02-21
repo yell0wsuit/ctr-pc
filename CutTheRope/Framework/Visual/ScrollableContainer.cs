@@ -13,8 +13,8 @@ namespace CutTheRope.Framework.Visual
         {
             sp = GetScroll();
             mp = GetMaxScroll();
-            float scrollCoeffX = container.width / (float)width;
-            float scrollCoeffY = container.height / (float)height;
+            float scrollCoeffX = container.width / width;
+            float scrollCoeffY = container.height / height;
             sc = Vect(scrollCoeffX, scrollCoeffY);
         }
 
@@ -364,7 +364,7 @@ namespace CutTheRope.Framework.Visual
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
             // float fixedDeltaSetting = ApplicationSettings.GetInt(5);
-            // fixedDelta = (float)(1 / (double)fixedDeltaSetting);
+            // fixedDelta = (1 / fixedDeltaSetting);
             spoints = null;
             spointsNum = -1;
             spointsCapacity = -1;

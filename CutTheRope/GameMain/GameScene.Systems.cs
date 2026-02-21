@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
                 vector.Y = vector2.Y = p.y;
                 if (p.angle != 0)
                 {
-                    v = VectRotateAround(v, (float)(0 - p.angle), p.x, p.y);
+                    v = VectRotateAround(v, 0 - p.angle, p.x, p.y);
                 }
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
                 if (v.Y < vector.Y && RectInRect(v.X - (p.bb.w / 2), v.Y - (p.bb.h / 2), v.X + (p.bb.w / 2), v.Y + (p.bb.h / 2), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))

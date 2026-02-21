@@ -173,8 +173,8 @@ namespace CutTheRope.Framework.Visual
             _width = (uint)realWidth;
             _height = (uint)realHeight;
             //_format = _defaultAlphaPixelFormat;
-            _maxS = w / (float)realWidth;
-            _maxT = h / (float)realHeight;
+            _maxS = w / realWidth;
+            _maxT = h / realHeight;
         }
 
         private static void Resume()
@@ -224,8 +224,8 @@ namespace CutTheRope.Framework.Visual
             //_size = new Vector(realWidth, realHeight);
             _width = (uint)realWidth;
             _height = (uint)realHeight;
-            _maxS = w / (float)realWidth;
-            _maxT = h / (float)realHeight;
+            _maxS = w / realWidth;
+            _maxT = h / realHeight;
             quadsCount = 0;
             CalculateForQuickDrawing();
             Resume();

@@ -273,9 +273,9 @@ namespace CutTheRope.Framework.Helpers
 
         public Vector pos;
 
-        public double angle_;
+        public float angle_;
 
-        public double angle_initial;
+        public float angle_initial;
 
         public bool use_angle_initial;
         public int targetPoint;

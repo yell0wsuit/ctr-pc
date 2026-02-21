@@ -5,7 +5,7 @@ namespace CutTheRope.GameMain
 {
     internal class Bouncer : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionSetter
     {
-        public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
+        public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, float an)
         {
             string textureResourceName = w switch
             {
@@ -18,7 +18,7 @@ namespace CutTheRope.GameMain
             {
                 return null;
             }
-            rotation = (float)an;
+            rotation = an;
             x = px;
             y = py;
             UpdateRotation();
