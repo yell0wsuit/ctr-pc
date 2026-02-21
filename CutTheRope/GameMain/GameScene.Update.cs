@@ -213,12 +213,21 @@ namespace CutTheRope.GameMain
                             {
                                 if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                                 {
+                                    // Don't let spider activate if rope is not attached to candy
+                                    if (grab.shouldActivate && !IsCandyPoint(rope.tail))
+                                    {
+                                        grab.shouldActivate = false;
+                                    }
                                     grab.UpdateSpider(delta);
                                 }
                                 if (grab.spiderPos == -1f)
                                 {
-                                    SpiderWon(grab);
-                                    break;
+                                    // Only let spider win if rope is attached to candy
+                                    if (IsCandyPoint(rope.tail))
+                                    {
+                                        SpiderWon(grab);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -313,6 +322,13 @@ namespace CutTheRope.GameMain
                                         bungeeBulb.bungeeAnchor.pin = bungeeBulb.bungeeAnchor.pos;
                                         grab.hideRadius = true;
                                         grab.SetRope(bungeeBulb);
+
+                                        // Spider can't grab light bulbs - keep it idle
+                                        if (grab.hasSpider)
+                                        {
+                                            grab.shouldActivate = false;
+                                        }
+
                                         CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
                                         if (grab.mover != null)
                                         {
