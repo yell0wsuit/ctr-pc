@@ -873,7 +873,7 @@ namespace CutTheRope.GameMain
                     {
                         PopCandyBubble(false);
                     }
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), star, 0.05);
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), star, 0.05f);
 
                     // Trigger special tutorial for lantern
                     TriggerSpecialTutorial(3);
@@ -1047,7 +1047,7 @@ namespace CutTheRope.GameMain
                                 CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
                             }
 
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1f);
                             break;
                         }
                     }
@@ -1096,7 +1096,7 @@ namespace CutTheRope.GameMain
                                     CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
                                 }
 
-                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_dropLightBulbFromSock), bulb, 0.1);
+                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_dropLightBulbFromSock), bulb, 0.1f);
                                 bulbTeleported = true;
                                 break;
                             }
@@ -1363,7 +1363,7 @@ namespace CutTheRope.GameMain
                         DetachActiveSnails();
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
                         }
                         if (ghosts != null)
                         {

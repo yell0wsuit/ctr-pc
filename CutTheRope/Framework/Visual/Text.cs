@@ -47,11 +47,6 @@ namespace CutTheRope.Framework.Visual
             SetStringandWidth(newString, -1f);
         }
 
-        public virtual void SetStringandWidth(string newString, double w)
-        {
-            SetStringandWidth(newString, (float)w);
-        }
-
         public virtual void SetStringandWidth(string newString, float w)
         {
             string_ = newString;

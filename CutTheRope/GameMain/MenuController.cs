@@ -566,7 +566,7 @@ namespace CutTheRope.GameMain
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString("RESET_TEXT"), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
+            text.SetStringandWidth(Application.GetString("RESET_TEXT"), Global.ScreenSizeManager.CurrentSize.Width * 0.95f);
             text.anchor = text.parentAnchor = 18;
             _ = baseElement.AddChild(text);
             text.y = -200f;
@@ -1518,7 +1518,7 @@ namespace CutTheRope.GameMain
                         DeleteView(VIEW_CANDY_SELECT);
                         CreateCandySelection();
                         CreateLeaderboards();
-                        ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01);
+                        ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01f);
                         ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
                         return;
                     }

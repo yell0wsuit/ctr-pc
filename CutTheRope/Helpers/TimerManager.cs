@@ -34,7 +34,7 @@ namespace CutTheRope.Helpers
             _ = timers.Remove(timerId);
         }
 
-        public static void RegisterDelayedObjectCall(DelayedDispatcher.DispatchFunc callback, FrameworkTypes parameter, double interval)
+        public static void RegisterDelayedObjectCall(DelayedDispatcher.DispatchFunc callback, FrameworkTypes parameter, float interval)
         {
             ArgumentNullException.ThrowIfNull(callback);
 

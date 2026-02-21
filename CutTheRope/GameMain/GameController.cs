@@ -276,7 +276,7 @@ namespace CutTheRope.GameMain
                         }
                     },
                     gameScene,
-                    0.5);
+                    0.5f);
             };
             boxOpenClose.LevelWon();
 

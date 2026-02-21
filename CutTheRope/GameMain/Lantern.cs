@@ -151,8 +151,8 @@ namespace CutTheRope.GameMain
                 lantern.fire.scaleY = 1f;
                 lantern.fire.color = RGBAColor.MakeRGBA(0.7f, 0.7f, 0.7f, 0.7f);
                 lantern.delayedDispatcher.CancelAllDispatches();
-                lantern.delayedDispatcher.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.PlayFireBounceTimeline), null, 0.4 * RND_0_1);
-                lantern.delayedDispatcher.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.PlayInnerCandyIdleTimeline), null, 0.2 + (0.2 * RND_0_1));
+                lantern.delayedDispatcher.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.PlayFireBounceTimeline), null, 0.4f * RND_0_1);
+                lantern.delayedDispatcher.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.PlayInnerCandyIdleTimeline), null, 0.2f + (0.2f * RND_0_1));
             }
         }
 
