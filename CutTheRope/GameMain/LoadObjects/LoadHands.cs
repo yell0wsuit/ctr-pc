@@ -36,7 +36,7 @@ namespace CutTheRope.GameMain
 
             CalculateTopLeft(hand.TheClaw());
             hand.Update(0f);
-            _ = hands.AddObject(hand);
+            hands.Add(hand);
         }
     }
 }

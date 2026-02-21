@@ -177,7 +177,7 @@ namespace CutTheRope.GameMain
             for (int i = 0; i < circlesArray.Count; i++)
             {
                 RotatedCircle2 rotatedCircle = circlesArray[i];
-                if (rotatedCircle != this && rotatedCircle.ContainsSameObjectWithAnotherCircle() && circlesArray.GetObjectIndex(rotatedCircle) < circlesArray.GetObjectIndex(this))
+                if (rotatedCircle != this && rotatedCircle.ContainsSameObjectWithAnotherCircle() && circlesArray.IndexOf(rotatedCircle) < circlesArray.IndexOf(this))
                 {
                     DrawHelper.DrawCircleIntersection(x, y, sizeInPixels, rotatedCircle.x, rotatedCircle.y, rotatedCircle.sizeInPixels, 51, 7f * rotatedCircle.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
@@ -309,7 +309,7 @@ namespace CutTheRope.GameMain
 
         // public Vector inithanlde2;
 
-        public DynamicArray<RotatedCircle2> circlesArray;
+        public List<RotatedCircle2> circlesArray;
 
         public List<BaseElement> containedObjects;
 

@@ -22,11 +22,11 @@ namespace CutTheRope.GameMain
             {
                 for (int j = 0; j < fingerCuts[i].Count; j++)
                 {
-                    FingerCut fingerCut = fingerCuts[i].ObjectAtIndex(j);
+                    FingerCut fingerCut = fingerCuts[i][j];
                     float alpha = fingerCut.c.AlphaChannel;
                     if (Mover.MoveVariableToTarget(ref alpha, 0, 10, delta))
                     {
-                        fingerCuts[i].RemoveObject(fingerCut);
+                        _ = fingerCuts[i].Remove(fingerCut);
                         j--;
                     }
                     else
@@ -152,7 +152,7 @@ namespace CutTheRope.GameMain
                 int k = 0;
                 while (k < grabCount)
                 {
-                    Grab grab = bungees.ObjectAtIndex(k);
+                    Grab grab = bungees[k];
                     grab.Update(delta);
                     Bungee rope = grab.rope;
                     if (grab.mover != null)
@@ -548,7 +548,7 @@ namespace CutTheRope.GameMain
                         int bungeeCount = bungees.Count;
                         for (int m = 0; m < bungeeCount; m++)
                         {
-                            Bungee rope2 = bungees.ObjectAtIndex(m).rope;
+                            Bungee rope2 = bungees[m].rope;
                             if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == starL || rope2.tail == starR))
                             {
                                 ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
@@ -613,7 +613,7 @@ namespace CutTheRope.GameMain
                         star.GetTimeline(1).delegateTimelineDelegate = aniPool;
                         _ = aniPool.AddChild(star);
                         conveyors.Remove(star);
-                        stars.RemoveObject(star);
+                        _ = stars.Remove(star);
                         star.timedAnim.PlayTimeline(1);
                         star.PlayTimeline(1);
                         break;
@@ -640,7 +640,7 @@ namespace CutTheRope.GameMain
                         animation2.PlayTimeline(0);
                         _ = aniPool.AddChild(animation2);
                         conveyors.Remove(star);
-                        stars.RemoveObject(star);
+                        _ = stars.Remove(star);
                         CTRSoundMgr.PlaySound(starsCollected switch
                         {
                             1 => Resources.Snd.Star1,
@@ -888,14 +888,14 @@ namespace CutTheRope.GameMain
                     Grab bungee4 = (Grab)obj9;
                     if (VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
-                        if (rotatedCircle7.containedObjects.GetObjectIndex(bungee4) == -1)
+                        if (rotatedCircle7.containedObjects.IndexOf(bungee4) == -1)
                         {
-                            _ = rotatedCircle7.containedObjects.AddObject(bungee4);
+                            rotatedCircle7.containedObjects.Add(bungee4);
                         }
                     }
-                    else if (rotatedCircle7.containedObjects.GetObjectIndex(bungee4) != -1)
+                    else if (rotatedCircle7.containedObjects.IndexOf(bungee4) != -1)
                     {
-                        rotatedCircle7.containedObjects.RemoveObject(bungee4);
+                        _ = rotatedCircle7.containedObjects.Remove(bungee4);
                     }
                 }
                 foreach (object obj10 in bubbles)
@@ -903,14 +903,14 @@ namespace CutTheRope.GameMain
                     Bubble bubble4 = (Bubble)obj10;
                     if (VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10) * 3f))
                     {
-                        if (rotatedCircle7.containedObjects.GetObjectIndex(bubble4) == -1)
+                        if (rotatedCircle7.containedObjects.IndexOf(bubble4) == -1)
                         {
-                            _ = rotatedCircle7.containedObjects.AddObject(bubble4);
+                            rotatedCircle7.containedObjects.Add(bubble4);
                         }
                     }
-                    else if (rotatedCircle7.containedObjects.GetObjectIndex(bubble4) != -1)
+                    else if (rotatedCircle7.containedObjects.IndexOf(bubble4) != -1)
                     {
-                        rotatedCircle7.containedObjects.RemoveObject(bubble4);
+                        _ = rotatedCircle7.containedObjects.Remove(bubble4);
                     }
                 }
                 if (rotatedCircle7.removeOnNextUpdate)
@@ -921,7 +921,7 @@ namespace CutTheRope.GameMain
             }
             if (rotatedCircle6 != null)
             {
-                rotatedCircles.RemoveObject(rotatedCircle6);
+                _ = rotatedCircles.Remove(rotatedCircle6);
             }
             if (miceManager != null)
             {
@@ -1484,10 +1484,10 @@ namespace CutTheRope.GameMain
             {
                 for (int i = snailobjects.Count - 1; i >= 0; i--)
                 {
-                    Snail snail = snailobjects.ObjectAtIndex(i);
+                    Snail snail = snailobjects[i];
                     if (snail == null)
                     {
-                        snailobjects.RemoveObjectAtIndex(i);
+                        snailobjects.RemoveAt(i);
                         continue;
                     }
 
@@ -1508,7 +1508,7 @@ namespace CutTheRope.GameMain
 
                     if (snail.state == Snail.SNAIL_STATE_VANISHED)
                     {
-                        snailobjects.RemoveObjectAtIndex(i);
+                        snailobjects.RemoveAt(i);
                     }
                 }
             }
@@ -1857,7 +1857,7 @@ namespace CutTheRope.GameMain
                     hand.cPoint.AddConstraintwithRestLengthofType(star, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                     hand.state = MechanicalHand.STATE_HAND_CANDY;
                     hand.releaseSoundPlayed = false;
-                    selectedHandIndex = hands.GetObjectIndex(hand);
+                    selectedHandIndex = hands.IndexOf(hand);
 
                     if (candyBubble != null)
                     {
@@ -1902,11 +1902,11 @@ namespace CutTheRope.GameMain
 
             if (reorderHands && selectedHandIndex >= 0 && selectedHandIndex != hands.Count - 1)
             {
-                MechanicalHand selectedHand = hands.ObjectAtIndex(selectedHandIndex);
+                MechanicalHand selectedHand = hands[selectedHandIndex];
                 if (selectedHand != null)
                 {
-                    hands.RemoveObject(selectedHand);
-                    _ = hands.AddObject(selectedHand);
+                    _ = hands.Remove(selectedHand);
+                    hands.Add(selectedHand);
                 }
             }
         }

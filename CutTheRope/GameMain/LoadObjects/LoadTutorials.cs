@@ -48,7 +48,7 @@ namespace CutTheRope.GameMain
                 {
                     tutorialText.PlayTimeline(0);
                 }
-                _ = tutorials.AddObject(tutorialText);
+                tutorials.Add(tutorialText);
             }
         }
 
@@ -107,7 +107,7 @@ namespace CutTheRope.GameMain
                     gameObjectSpecial.PlayTimeline(1);
                     gameObjectSpecial.rotation = 10f;
                 }
-                _ = tutorialImages.AddObject(gameObjectSpecial);
+                tutorialImages.Add(gameObjectSpecial);
             }
         }
     }

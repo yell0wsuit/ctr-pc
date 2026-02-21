@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRope.Framework;
@@ -361,41 +362,41 @@ namespace CutTheRope.GameMain
 
         private ConstraintedPoint star;
 
-        private DynamicArray<Grab> bungees;
+        private List<Grab> bungees;
 
-        private DynamicArray<Razor> razors;
+        private List<Razor> razors;
 
-        private DynamicArray<Spikes> spikes;
+        private List<Spikes> spikes;
 
-        private DynamicArray<Star> stars;
+        private List<Star> stars;
 
-        private DynamicArray<Bubble> bubbles;
+        private List<Bubble> bubbles;
 
-        private DynamicArray<Pump> pumps;
+        private List<Pump> pumps;
 
-        private DynamicArray<SteamTube> tubes;
+        private List<SteamTube> tubes;
 
-        private DynamicArray<LightBulb> lightBulbs;
+        private List<LightBulb> lightBulbs;
 
-        private DynamicArray<Sock> socks;
+        private List<Sock> socks;
 
-        private DynamicArray<Bouncer> bouncers;
+        private List<Bouncer> bouncers;
 
-        private DynamicArray<RotatedCircle> rotatedCircles;
+        private List<RotatedCircle> rotatedCircles;
 
-        private DynamicArray<Rocket> rockets;
+        private List<Rocket> rockets;
 
-        private DynamicArray<MechanicalHand> hands;
+        private List<MechanicalHand> hands;
 
-        private DynamicArray<Snail> snailobjects;
+        private List<Snail> snailobjects;
 
-        private DynamicArray<CTRGameObject> tutorialImages;
+        private List<CTRGameObject> tutorialImages;
 
-        private DynamicArray<Text> tutorials;
+        private List<Text> tutorials;
 
-        private DynamicArray<Ghost> ghosts;
+        private List<Ghost> ghosts;
 
-        private DynamicArray<Mouse> mice;
+        private List<Mouse> mice;
 
         private Rocket activeRocket;
 
@@ -549,13 +550,13 @@ namespace CutTheRope.GameMain
 
         public float partsDist;
 
-        public DynamicArray<Image> earthAnims;
+        public List<Image> earthAnims;
 
         public int tummyTeasers;
 
         public Vector slastTouch;
 
-        public DynamicArray<FingerCut>[] fingerCuts = new DynamicArray<FingerCut>[5];
+        public List<FingerCut>[] fingerCuts = new List<FingerCut>[5];
 
         public sealed class FingerCut : FrameworkTypes
         {

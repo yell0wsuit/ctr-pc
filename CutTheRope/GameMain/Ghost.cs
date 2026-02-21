@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
@@ -12,9 +14,9 @@ namespace CutTheRope.GameMain
             int possibleStateMask,
             float grabRadius,
             float bouncerAngle,
-            DynamicArray<Bubble> bubbles,
-            DynamicArray<Grab> bungees,
-            DynamicArray<Bouncer> bouncers,
+            List<Bubble> bubbles,
+            List<Grab> bungees,
+            List<Bouncer> bouncers,
             GameScene owner)
         {
             hostScene = owner;
@@ -101,18 +103,18 @@ namespace CutTheRope.GameMain
         {
             if (bubble != null && bubble.GetCurrentTimelineIndex() == 11 && bubble.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
-                gsBubbles.RemoveObject(bubble);
+                _ = gsBubbles.Remove(bubble);
                 bubble = null;
             }
             if (bouncer != null && bouncer.GetCurrentTimelineIndex() == 11 && bouncer.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
-                gsBouncers.RemoveObject(bouncer);
+                _ = gsBouncers.Remove(bouncer);
                 bouncer = null;
             }
             if (grab != null && grab.GetCurrentTimelineIndex() == 11 && grab.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
                 grab.DestroyRope();
-                gsBungees.RemoveObject(grab);
+                _ = gsBungees.Remove(grab);
                 grab = null;
             }
             base.Update(delta);
@@ -138,7 +140,7 @@ namespace CutTheRope.GameMain
             {
                 if (bubble.GetCurrentTimelineIndex() == 11)
                 {
-                    gsBubbles.RemoveObject(bubble);
+                    _ = gsBubbles.Remove(bubble);
                     bubble = null;
                 }
                 else
@@ -163,7 +165,7 @@ namespace CutTheRope.GameMain
                 if (grab.GetCurrentTimelineIndex() == 11)
                 {
                     grab.DestroyRope();
-                    gsBungees.RemoveObject(grab);
+                    _ = gsBungees.Remove(grab);
                     grab = null;
                 }
                 else
@@ -176,7 +178,7 @@ namespace CutTheRope.GameMain
             {
                 if (bouncer.GetCurrentTimelineIndex() == 11)
                 {
-                    gsBouncers.RemoveObject(bouncer);
+                    _ = gsBouncers.Remove(bouncer);
                     bouncer = null;
                 }
                 else
@@ -213,7 +215,7 @@ namespace CutTheRope.GameMain
                         image.parentAnchor = image.anchor = 18;
                         _ = ghostBubble.AddChild(image);
                         bubble = ghostBubble;
-                        _ = gsBubbles.AddObject(ghostBubble);
+                        gsBubbles.Add(ghostBubble);
                         ghostBubble.passColorToChilds = true;
                         ghostBubble.AddTimelinewithID(morphIn, 10);
                         ghostBubble.PlayTimeline(10);
@@ -250,13 +252,13 @@ namespace CutTheRope.GameMain
                             grab.SetRope(autoRope);
                         }
                     }
-                    _ = gsBungees.AddObject(grab);
+                    gsBungees.Add(grab);
                     grab.AddTimelinewithID(morphIn, 10);
                     grab.PlayTimeline(10);
                     break;
                 case 8:
                     bouncer = new GhostBouncer().InitWithPosXYWidthAndAngle(x, y, 1, bouncerAngle);
-                    _ = gsBouncers.AddObject(bouncer);
+                    gsBouncers.Add(bouncer);
                     bouncer.AddTimelinewithID(morphIn, 10);
                     bouncer.PlayTimeline(10);
                     break;
@@ -343,9 +345,9 @@ namespace CutTheRope.GameMain
         public BaseElement ghostImage;
         public Image ghostImageBody;
         public Image ghostImageFace;
-        public DynamicArray<Bubble> gsBubbles;
-        public DynamicArray<Grab> gsBungees;
-        public DynamicArray<Bouncer> gsBouncers;
+        public List<Bubble> gsBubbles;
+        public List<Grab> gsBungees;
+        public List<Bouncer> gsBouncers;
         public GhostMorphingParticles morphingBubbles;
         public GhostMorphingCloud morphingCloud;
         private GameScene hostScene;

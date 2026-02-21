@@ -100,7 +100,7 @@ namespace CutTheRope.GameMain
             int grabCount = bungees.Count;
             for (int i = 0; i < grabCount; i++)
             {
-                Grab grab = bungees.ObjectAtIndex(i);
+                Grab grab = bungees[i];
                 Bungee rope = grab.rope;
                 if (rope != null && rope.tail == bulb.constraint)
                 {
@@ -125,7 +125,7 @@ namespace CutTheRope.GameMain
             int grabCount = bungees.Count;
             for (int i = 0; i < grabCount; i++)
             {
-                Grab grab = bungees.ObjectAtIndex(i);
+                Grab grab = bungees[i];
                 Bungee rope = grab.rope;
                 if (rope != null && (rope.tail == star || (rope.tail == starL && left) || (rope.tail == starR && !left)))
                 {
@@ -375,7 +375,7 @@ namespace CutTheRope.GameMain
         {
             for (int i = 0; i < bungees.Count; i++)
             {
-                Bungee rope = bungees.ObjectAtIndex(i).rope;
+                Bungee rope = bungees[i].rope;
                 if (rope != null && rope.cut == -1)
                 {
                     rope.highlighted = false;
@@ -392,7 +392,7 @@ namespace CutTheRope.GameMain
 
             for (int i = snailobjects.Count - 1; i >= 0; i--)
             {
-                Snail snail = snailobjects.ObjectAtIndex(i);
+                Snail snail = snailobjects[i];
                 if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
                 {
                     snail.Detach();

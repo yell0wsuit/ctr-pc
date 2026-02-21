@@ -62,7 +62,7 @@ namespace CutTheRope.GameMain
             float lightBulbCollisionDistance = 2.25f * STAR_RADIUS;
             for (int i = 0; i < lightBulbs.Count; i++)
             {
-                LightBulb bulb = lightBulbs.ObjectAtIndex(i);
+                LightBulb bulb = lightBulbs[i];
                 if (bulb == null || bulb.attachedSock != null)
                 {
                     continue;
@@ -90,7 +90,7 @@ namespace CutTheRope.GameMain
                 }
                 for (int j = i + 1; j < lightBulbs.Count; j++)
                 {
-                    LightBulb other = lightBulbs.ObjectAtIndex(j);
+                    LightBulb other = lightBulbs[j];
                     if (other == null || other.attachedSock != null)
                     {
                         continue;
@@ -107,10 +107,10 @@ namespace CutTheRope.GameMain
             // Remove light bulbs that fall off screen
             for (int i = lightBulbs.Count - 1; i >= 0; i--)
             {
-                LightBulb bulb = lightBulbs.ObjectAtIndex(i);
+                LightBulb bulb = lightBulbs[i];
                 if (bulb != null && PointOutOfScreen(bulb.constraint))
                 {
-                    lightBulbs.RemoveObject(bulb);
+                    _ = lightBulbs.Remove(bulb);
                 }
             }
 

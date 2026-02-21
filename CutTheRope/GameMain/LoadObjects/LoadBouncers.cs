@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
             float an2 = xmlNode.AttributeAsNSString("angle").IntValue();
             Bouncer bouncer = new Bouncer().InitWithPosXYWidthAndAngle(px2, py2, w2, an2);
             bouncer.ParseMover(xmlNode);
-            _ = bouncers.AddObject(bouncer);
+            bouncers.Add(bouncer);
         }
     }
 }

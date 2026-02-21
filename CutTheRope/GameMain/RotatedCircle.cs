@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
@@ -14,7 +15,7 @@ namespace CutTheRope.GameMain
     {
         public RotatedCircle()
         {
-            containedObjects = new DynamicArray<GameObject>();
+            containedObjects = [];
             soundPlaying = -1;
             vinilStickerL = Image.Image_createWithResIDQuad(VinylTexture, 2);
             vinilStickerL.anchor = 20;
@@ -147,7 +148,7 @@ namespace CutTheRope.GameMain
             foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
-                if (item != this && item.ContainsSameObjectWithAnotherCircle() && circlesArray.GetObjectIndex(item) < circlesArray.GetObjectIndex(this))
+                if (item != this && item.ContainsSameObjectWithAnotherCircle() && circlesArray.IndexOf(item) < circlesArray.IndexOf(this))
                 {
                     DrawHelper.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
@@ -189,7 +190,7 @@ namespace CutTheRope.GameMain
             foreach (object obj in containedObjects)
             {
                 GameObject containedObject = (GameObject)obj;
-                if (anotherCircle.containedObjects.GetObjectIndex(containedObject) != -1)
+                if (anotherCircle.containedObjects.IndexOf(containedObject) != -1)
                 {
                     return true;
                 }
@@ -277,9 +278,9 @@ namespace CutTheRope.GameMain
 
         public Vector inithanlde2;
 
-        public DynamicArray<RotatedCircle> circlesArray;
+        public List<RotatedCircle> circlesArray;
 
-        public DynamicArray<GameObject> containedObjects;
+        public List<GameObject> containedObjects;
 
         public bool removeOnNextUpdate;
 

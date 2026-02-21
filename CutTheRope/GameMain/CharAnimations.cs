@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
 
         public void AddImage(string resourceName)
         {
-            animations ??= new DynamicArray<Animation>();
+            animations ??= [];
             animationNameToIndex ??= [];
 
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resourceName);
@@ -32,7 +32,7 @@ namespace CutTheRope.GameMain
             charAnimation.DoRestoreCutTransparency();
 
             int index = nextAnimationIndex++;
-            animations.SetObjectAt(charAnimation, index);
+            animations.Add(charAnimation);
             animationNameToIndex[resourceName] = index;
             _ = AddChild(charAnimation);
             charAnimation.SetEnabled(false);
@@ -48,8 +48,9 @@ namespace CutTheRope.GameMain
                     {
                         animation?.Dispose();
                     }
-                    animations.RemoveAllObjects();
+                    animations.Clear();
                     animations = null;
+                    nextAnimationIndex = 0;
                 }
                 animationNameToIndex?.Clear();
                 animationNameToIndex = null;
@@ -65,7 +66,7 @@ namespace CutTheRope.GameMain
             }
             else if (animationNameToIndex != null && animationNameToIndex.TryGetValue(resourceName, out int index))
             {
-                ((CharAnimation)animations.ObjectAtIndex(index)).AddAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
+                ((CharAnimation)animations[index]).AddAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
             }
         }
 
@@ -74,7 +75,7 @@ namespace CutTheRope.GameMain
             return resourceName == Resources.Img.CharAnimations
                 ? this
                 : animationNameToIndex != null && animationNameToIndex.TryGetValue(resourceName, out int index)
-                ? animations.ObjectAtIndex(index)
+                ? animations[index]
                 : null;
         }
 
@@ -83,18 +84,18 @@ namespace CutTheRope.GameMain
             Animation animation = GetAnimation(resourceName1);
             Animation animation2 = GetAnimation(resourceName2);
             Timeline timeline = animation.GetTimeline(a1);
-            DynamicArray<CTRAction> dynamicArray = new();
+            List<CTRAction> dynamicArray = [];
             // Check if resourceName1 refers to the base animation (CharAnimations)
             bool isBaseAnimation = resourceName1 == Resources.Img.CharAnimations;
-            _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_PLAY_TIMELINE", isBaseAnimation ? 1 : 0, a2));
+            dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_PLAY_TIMELINE", isBaseAnimation ? 1 : 0, a2));
             if (animation != animation2)
             {
-                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
-                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
-                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
-                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
-                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation, "ACTION_SET_VISIBLE", 0, 0));
-                _ = dynamicArray.AddObject(CTRAction.CreateAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
+                dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
+                dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
+                dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
+                dynamicArray.Add(CTRAction.CreateAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
+                dynamicArray.Add(CTRAction.CreateAction(animation, "ACTION_SET_VISIBLE", 0, 0));
+                dynamicArray.Add(CTRAction.CreateAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
             }
             timeline.AddKeyFrame(KeyFrame.MakeAction(dynamicArray, d));
         }
@@ -125,7 +126,7 @@ namespace CutTheRope.GameMain
             base.PlayTimeline(t);
         }
 
-        private DynamicArray<Animation> animations;
+        private List<Animation> animations;
         private Dictionary<string, int> animationNameToIndex;
         private int nextAnimationIndex;
     }
