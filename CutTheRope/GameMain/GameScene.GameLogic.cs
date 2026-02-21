@@ -24,13 +24,13 @@ namespace CutTheRope.GameMain
                 targetSock.light.PlayTimeline(0);
                 targetSock.light.visible = true;
                 Vector v = Vect(0f, -16f);
-                v = VectRotate(v, (double)DEGREES_TO_RADIANS(targetSock.rotation));
+                v = VectRotate(v, DEGREES_TO_RADIANS(targetSock.rotation));
                 star.pos.X = targetSock.x;
                 star.pos.Y = targetSock.y;
                 star.pos = VectAdd(star.pos, v);
                 star.prevPos.X = star.pos.X;
                 star.prevPos.Y = star.pos.Y;
-                star.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
+                star.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
                 star.posDelta = VectDiv(star.v, 60f);
                 star.prevPos = VectSub(star.pos, star.posDelta);
 
@@ -70,13 +70,13 @@ namespace CutTheRope.GameMain
             }
 
             Vector v = Vect(0f, -16f);
-            v = VectRotate(v, (double)DEGREES_TO_RADIANS(sock.rotation));
+            v = VectRotate(v, DEGREES_TO_RADIANS(sock.rotation));
             bulb.constraint.pos.X = sock.x;
             bulb.constraint.pos.Y = sock.y;
             bulb.constraint.pos = VectAdd(bulb.constraint.pos, v);
             bulb.constraint.prevPos.X = bulb.constraint.pos.X;
             bulb.constraint.prevPos.Y = bulb.constraint.pos.Y;
-            bulb.constraint.v = VectMult(VectRotate(Vect(0f, -1f), (double)DEGREES_TO_RADIANS(sock.rotation)), bulb.sockSpeed);
+            bulb.constraint.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(sock.rotation)), bulb.sockSpeed);
             bulb.constraint.posDelta = VectDiv(bulb.constraint.v, 60f);
             bulb.constraint.prevPos = VectSub(bulb.constraint.pos, bulb.constraint.posDelta);
             bulb.attachedSock = null;

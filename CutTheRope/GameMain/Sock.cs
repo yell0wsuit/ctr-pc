@@ -55,10 +55,10 @@ namespace CutTheRope.GameMain
             b2.X = t2.X;
             b1.Y = b2.Y = y + 15f;
             angle = DEGREES_TO_RADIANS(rotation);
-            t1 = VectRotateAround(t1, angle, x, y);
-            t2 = VectRotateAround(t2, angle, x, y);
-            b1 = VectRotateAround(b1, angle, x, y);
-            b2 = VectRotateAround(b2, angle, x, y);
+            t1 = VectRotateAround(t1, (float)angle, x, y);
+            t2 = VectRotateAround(t2, (float)angle, x, y);
+            b1 = VectRotateAround(b1, (float)angle, x, y);
+            b2 = VectRotateAround(b2, (float)angle, x, y);
         }
 
         public override void Draw()
@@ -100,7 +100,7 @@ namespace CutTheRope.GameMain
             float pmScale = RotatedCircle.PM / ConveyorPm;
             Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
             // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
-            offset = VectRotate(offset, angle);
+            offset = VectRotate(offset, (float)angle);
             return VectAdd(Vect(x, y), offset);
         }
 
@@ -109,7 +109,7 @@ namespace CutTheRope.GameMain
             float pmScale = RotatedCircle.PM / ConveyorPm;
             Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
             // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
-            offset = VectRotate(offset, angle);
+            offset = VectRotate(offset, (float)angle);
             Vector adjusted = VectSub(position, offset);
             x = adjusted.X;
             y = adjusted.Y;

@@ -26,10 +26,10 @@ namespace CutTheRope.GameMain
                 vector.Y = vector2.Y = p.y;
                 if (p.angle != 0)
                 {
-                    v = VectRotateAround(v, 0 - p.angle, p.x, p.y);
+                    v = VectRotateAround(v, (float)(0 - p.angle), p.x, p.y);
                 }
                 // Use pump's bbox dimensions for all objects (not the object's bbox)
-                if (v.Y < vector.Y && RectInRect((float)(v.X - (p.bb.w / 2)), (float)(v.Y - (p.bb.h / 2)), (float)(v.X + (p.bb.w / 2)), (float)(v.Y + (p.bb.h / 2)), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
+                if (v.Y < vector.Y && RectInRect(v.X - (p.bb.w / 2), v.Y - (p.bb.h / 2), v.X + (p.bb.w / 2), v.Y + (p.bb.h / 2), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
                 {
                     float verticalImpulse = flowLength * 2f * (flowLength - (vector.Y - v.Y)) / flowLength;
                     Vector v2 = Vect(0f, 0f - verticalImpulse);
@@ -48,11 +48,11 @@ namespace CutTheRope.GameMain
             {
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
-                int directionSign = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y).Y >= b.y ? 1 : -1;
+                int directionSign = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y).Y >= b.y ? 1 : -1;
                 float s2 = MAX(VectLength(vector) * 40, 840) * directionSign;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
-                s.pos = VectRotateAround(s.pos, (double)(0f - b.angle), b.x, b.y);
-                s.prevPos = VectRotateAround(s.prevPos, (double)(0f - b.angle), b.x, b.y);
+                s.pos = VectRotateAround(s.pos, 0f - b.angle, b.x, b.y);
+                s.prevPos = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y);
                 s.prevPos.Y = s.pos.Y;
                 s.pos = VectRotateAround(s.pos, b.angle, b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, b.angle, b.x, b.y);
@@ -144,7 +144,7 @@ namespace CutTheRope.GameMain
                 float distanceBelowValve = tube.y - position.Y;
                 if (distanceBelowValve > currentHeight + collisionRadius)
                 {
-                    float attenuation = (float)Math.Exp(-2f * (distanceBelowValve - (currentHeight + collisionRadius)));
+                    float attenuation = MathF.Exp(-2f * (distanceBelowValve - (currentHeight + collisionRadius)));
                     impulse = VectMult(impulse, attenuation);
                 }
                 impulse = VectRotate(impulse, angle);
@@ -194,10 +194,10 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, Pump.FlowLength - Pump.MouthOffset);
-            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - DEG_90, grid, flowLength);
+            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES(p.angle) - DEG_90, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + Pump.MouthOffset, p.y);
-            v = VectRotateAround(v, p.angle - (Math.PI / 2), p.x, p.y);
+            v = VectRotateAround(v, p.angle - (MathF.PI / 2), p.x, p.y);
             pumpDirt.x = v.X;
             pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);

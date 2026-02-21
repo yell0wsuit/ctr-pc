@@ -63,10 +63,10 @@ namespace CutTheRope.GameMain
             b2.X = t2.X;
             b1.Y = b2.Y = y + 5f;
             angle = DEGREES_TO_RADIANS(rotation);
-            t1 = VectRotateAround(t1, angle, x, y);
-            t2 = VectRotateAround(t2, angle, x, y);
-            b1 = VectRotateAround(b1, angle, x, y);
-            b2 = VectRotateAround(b2, angle, x, y);
+            t1 = VectRotateAround(t1, (float)angle, x, y);
+            t2 = VectRotateAround(t2, (float)angle, x, y);
+            b1 = VectRotateAround(b1, (float)angle, x, y);
+            b2 = VectRotateAround(b2, (float)angle, x, y);
         }
 
         public void TurnElectroOff()

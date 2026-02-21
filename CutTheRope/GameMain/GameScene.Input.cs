@@ -590,8 +590,8 @@ namespace CutTheRope.GameMain
                         rotatedCircle.rotation += RADIANS_TO_DEGREES(rotationDelta);
                         float a = DEGREES_TO_RADIANS(rotatedCircle.rotation);
                         a = FBOUND_PI(a);
-                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, (double)a, rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, (double)a, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, a, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, a, rotatedCircle.x, rotatedCircle.y);
                         int scratchSoundState = rotationDelta > 0f ? 1 : 2;
                         if ((double)Math.Abs(rotationDelta) < 0.07)
                         {
@@ -616,7 +616,7 @@ namespace CutTheRope.GameMain
                                 }
                                 float a2 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - grab.initial_rotation;
                                 a2 = FBOUND_PI(a2);
-                                Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), (double)a2, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), a2, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = vector3.X;
                                 grab.y = vector3.Y;
                                 if (grab.rope != null)
@@ -644,7 +644,7 @@ namespace CutTheRope.GameMain
                                 }
                                 float a3 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - pump4.initial_rotation;
                                 a3 = FBOUND_PI(a3);
-                                Vector vector4 = VectRotateAround(Vect(pump4.initial_x, pump4.initial_y), (double)a3, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector4 = VectRotateAround(Vect(pump4.initial_x, pump4.initial_y), a3, rotatedCircle.x, rotatedCircle.y);
                                 pump4.x = vector4.X;
                                 pump4.y = vector4.Y;
                                 pump4.rotation += RADIANS_TO_DEGREES(rotationDelta);
@@ -665,14 +665,14 @@ namespace CutTheRope.GameMain
                                 }
                                 float a4 = DEGREES_TO_RADIANS(rotatedCircle.rotation) - bubble.initial_rotation;
                                 a4 = FBOUND_PI(a4);
-                                Vector vector5 = VectRotateAround(Vect(bubble.initial_x, bubble.initial_y), (double)a4, rotatedCircle.x, rotatedCircle.y);
+                                Vector vector5 = VectRotateAround(Vect(bubble.initial_x, bubble.initial_y), a4, rotatedCircle.x, rotatedCircle.y);
                                 bubble.x = vector5.X;
                                 bubble.y = vector5.Y;
                             }
                         }
                         if (PointInRect(target.x, target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
                         {
-                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), (double)rotationDelta, rotatedCircle.x, rotatedCircle.y);
+                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), rotationDelta, rotatedCircle.x, rotatedCircle.y);
                             target.x = vector6.X;
                             target.y = vector6.Y;
                         }

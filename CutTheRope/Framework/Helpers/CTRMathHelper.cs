@@ -397,17 +397,17 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the origin.</summary>
-        public static Vector VectRotate(Vector v, double rad)
+        public static Vector VectRotate(Vector v, float rad)
         {
-            float cosA = FmCos((float)rad);
-            float sinA = FmSin((float)rad);
+            float cosA = FmCos(rad);
+            float sinA = FmSin(rad);
             float nx = (v.X * cosA) - (v.Y * sinA);
             float ny = (v.X * sinA) + (v.Y * cosA);
             return new Vector(nx, ny);
         }
 
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the point (<paramref name="cx"/>, <paramref name="cy"/>).</summary>
-        public static Vector VectRotateAround(Vector v, double rad, float cx, float cy)
+        public static Vector VectRotateAround(Vector v, float rad, float cx, float cy)
         {
             Vector v2 = v;
             v2.X -= cx;
