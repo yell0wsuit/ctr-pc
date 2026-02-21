@@ -52,11 +52,6 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
-        public static KeyFrame MakeScale(double x, double y, TransitionType transition, double time)
-        {
-            return MakeScale((float)x, (float)y, transition, (float)time);
-        }
-
         public static KeyFrame MakeScale(float x, float y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();

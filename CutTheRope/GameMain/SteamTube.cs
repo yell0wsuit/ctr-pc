@@ -292,7 +292,7 @@ namespace CutTheRope.GameMain
                     timeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
                     timeline.AddKeyFrame(KeyFrame.MakePos(horizontalOffset, puffHeight, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, puffDuration));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
-                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.5, 1.5, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, puffDuration));
+                    timeline.AddKeyFrame(KeyFrame.MakeScale(1.5f, 1.5f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, puffDuration));
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                     timeline.delegateTimelineDelegate = this;
                     BaseElement baseElement = new();
