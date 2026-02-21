@@ -8,6 +8,15 @@ namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
+        /// <summary>
+        /// Checks if the given constraint point is a candy (star, starL, or starR).
+        /// Used to distinguish candy from other objects like light bulbs.
+        /// </summary>
+        private bool IsCandyPoint(ConstraintedPoint point)
+        {
+            return point == star || point == starL || point == starR;
+        }
+
         public void Teleport()
         {
             if (targetSock != null)
