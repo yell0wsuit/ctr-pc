@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
                 {
                     FingerCut fingerCut = fingerCuts[i].ObjectAtIndex(j);
                     float alpha = fingerCut.c.AlphaChannel;
-                    if (Mover.MoveVariableToTarget(ref alpha, 0.0f, 10.0f, (float)delta))
+                    if (Mover.MoveVariableToTarget(ref alpha, 0, 10, (float)delta))
                     {
                         fingerCuts[i].RemoveObject(fingerCut);
                         j--;
