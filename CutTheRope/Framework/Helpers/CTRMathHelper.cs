@@ -70,9 +70,9 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>Returns the ceiling of <paramref name="value"/> as a float.</summary>
-        public static float Ceil(double value)
+        public static float Ceil(float value)
         {
-            return (float)Math.Ceiling(value);
+            return MathF.Ceiling(value);
         }
 
         /// <summary>Returns <paramref name="value"/> rounded to the nearest integer as a float.</summary>
