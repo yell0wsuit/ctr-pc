@@ -66,11 +66,6 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
-        public static KeyFrame MakeRotation(double r, TransitionType transition, double time)
-        {
-            return MakeRotation((int)r, transition, (float)time);
-        }
-
         public static KeyFrame MakeRotation(int r, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();

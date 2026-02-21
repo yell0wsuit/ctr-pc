@@ -56,11 +56,11 @@ namespace CutTheRope.GameMain
             AdjustSteam();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55f));
             valve.AddTimelinewithID(timeline, 0);
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(-180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(-180, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.55f));
             valve.AddTimelinewithID(timeline, 1);
             return this;
         }

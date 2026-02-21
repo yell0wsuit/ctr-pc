@@ -52,7 +52,7 @@ namespace CutTheRope.GameMain
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 AddTimelinewithID(timeline, 0);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(DEG_45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                 timeline.delegateTimelineDelegate = this;
                 Track track = timeline.GetTrack(Track.TrackType.TRACK_ROTATION);
                 track.relative = true;
@@ -60,7 +60,7 @@ namespace CutTheRope.GameMain
                 timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 AddTimelinewithID(timeline, 1);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
-                timeline.AddKeyFrame(KeyFrame.MakeRotation(-DEG_45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(-45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                 timeline.delegateTimelineDelegate = this;
                 track = timeline.GetTrack(Track.TrackType.TRACK_ROTATION);
                 track.relative = true;
@@ -132,7 +132,7 @@ namespace CutTheRope.GameMain
             container.y = y;
             float movementSpeed = VectLength(VectSub(point.prevPos, point.pos));
             movementSpeed = MAX(movementSpeed, 1f);
-            float exhaustAngle = angle - (float)Math.PI;
+            float exhaustAngle = angle - MathF.PI;
             float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
             vector = VectAdd(vector, VectMult(VectForAngle(angle), exhaustOffset));
@@ -282,8 +282,8 @@ namespace CutTheRope.GameMain
             float snappedRotation = DEG_45 * snappedStep;
             RemoveTimeline(1);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((double)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 1);
             PlayTimeline(1);

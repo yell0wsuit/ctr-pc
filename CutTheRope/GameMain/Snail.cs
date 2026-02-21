@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakePos(x, y - 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
             timeline.AddKeyFrame(KeyFrame.MakePos(x, y + SCREEN_HEIGHT, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 2.1));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 2.4));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 2.4f));
             timeline.AddKeyFrame(KeyFrame.MakeSingleAction(this, SnailActionDetach, 0, 0, 2.4f));
 
             int timelineId = AddTimeline(timeline);
