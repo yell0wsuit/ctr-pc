@@ -123,9 +123,9 @@ namespace CutTheRope.Framework
             return IS_RETINA ? V * 2 : V;
         }
 
-        public static float RTPD(double V)
+        public static float RTPD(float V)
         {
-            return (float)(IS_RETINA | IS_IPAD ? V * 2 : V);
+            return IS_RETINA | IS_IPAD ? V * 2 : V;
         }
 
         public static float CHOOSE3(float P1, float P2)
