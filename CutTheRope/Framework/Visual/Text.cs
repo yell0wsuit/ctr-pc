@@ -99,7 +99,7 @@ namespace CutTheRope.Framework.Visual
             multiDrawers.Clear();
             int totalCharmaps = font.TotalCharmaps();
             int textLength = string_.Length;
-            char[] characters = string_.GetCharacters();
+            char[] characters = string_.ToCharArray();
             int[] array = new int[totalCharmaps];
             for (int i = 0; i < textLength; i++)
             {
@@ -120,7 +120,7 @@ namespace CutTheRope.Framework.Visual
             float lineY = 0f;
             int fontHeight = (int)font.FontHeight();
             int renderedCharCount = 0;
-            char[] characters2 = "..".GetCharacters();
+            char[] characters2 = "..".ToCharArray();
             int dotSpacing = (int)font.GetCharOffset(characters2, 0, 2);
             int visibleLineCount = (int)(maxHeight == -1f ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (fontHeight + font.GetLineOffset())));
             bool isTruncated = visibleLineCount != formattedStrings.Count;
@@ -129,7 +129,7 @@ namespace CutTheRope.Framework.Visual
             {
                 FormattedString formattedString = formattedStrings[k];
                 int lineLength = formattedString.string_.Length;
-                char[] characters3 = formattedString.string_.GetCharacters();
+                char[] characters3 = formattedString.string_.ToCharArray();
                 float lineX = align == 1 ? 0f : align != 2 ? wrapWidth - formattedString.width : (wrapWidth - formattedString.width) / 2f;
                 for (int l = 0; l < lineLength; l++)
                 {
@@ -473,7 +473,7 @@ namespace CutTheRope.Framework.Visual
         public virtual void FormatText()
         {
             short[] array = new short[512];
-            char[] characters = string_.GetCharacters();
+            char[] characters = string_.ToCharArray();
             int textLength = string_.Length;
             int rangesLength = 0;
             int wordStart = 0;

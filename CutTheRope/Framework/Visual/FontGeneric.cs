@@ -8,7 +8,7 @@ namespace CutTheRope.Framework.Visual
         {
             float totalWidth = 0f;
             int length = str.Length;
-            char[] characters = str.GetCharacters();
+            char[] characters = str.ToCharArray();
             float spacing = 0f;
             for (int i = 0; i < length; i++)
             {

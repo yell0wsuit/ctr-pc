@@ -1288,7 +1288,7 @@ namespace CutTheRope.GameMain
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetLastPack());
             }
             ShowView(5);
-            if (url != null && url.HasSuffix("outro"))
+            if (url != null && url.EndsWith("outro"))
             {
                 packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8f);
                 ShowGameFinishedPopup();

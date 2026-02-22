@@ -135,9 +135,9 @@ namespace CutTheRope.Framework.Core
         private static Font LoadSpriteFontInfo(string path, string resourceName)
         {
             XElement xmlNode = XElementExtensions.LoadContentXml(path);
-            int charOffset = xmlNode.AttributeAsNSString("charoff").IntValue();
-            int lineOffset = xmlNode.AttributeAsNSString("lineoff").IntValue();
-            int spaceWidth = xmlNode.AttributeAsNSString("space").IntValue();
+            int charOffset = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("charoff")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("charoff"));
+            int lineOffset = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("lineoff")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("lineoff"));
+            int spaceWidth = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("space")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("space"));
             XElement charsNode = xmlNode.FindChildWithTagNameRecursively("chars", false);
             XElement kerningNode = xmlNode.FindChildWithTagNameRecursively("kerning", false);
             string charsData = charsNode.ValueAsNSString();

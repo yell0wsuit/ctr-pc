@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
+using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -21,17 +22,17 @@ namespace CutTheRope.GameMain
             quadSize.Y *= 0.05f;
             rocket.bb = MakeRectangle(quadCenter.X - (quadSize.X / 2f), quadCenter.Y - (quadSize.Y / 2f), quadSize.X, quadSize.Y);
 
-            rocket.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            rocket.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            rocket.rotation = xmlNode.AttributeAsNSString("angle").FloatValue() - DEG_180;
-            rocket.impulse = xmlNode.AttributeAsNSString("impulse").FloatValue();
-            rocket.impulseFactor = xmlNode.AttributeAsNSString("impulseFactor").FloatValue();
+            rocket.x = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
+            rocket.y = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
+            rocket.rotation = (string.IsNullOrEmpty(xmlNode.AttributeAsNSString("angle")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("angle"), CultureInfo.InvariantCulture)) - DEG_180;
+            rocket.impulse = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("impulse")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("impulse"), CultureInfo.InvariantCulture);
+            rocket.impulseFactor = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("impulseFactor")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("impulseFactor"), CultureInfo.InvariantCulture);
             if (rocket.impulseFactor == 0f)
             {
                 rocket.impulseFactor = 0.6f;
             }
-            rocket.time = xmlNode.AttributeAsNSString("time").FloatValue();
-            rocket.isRotatable = xmlNode.AttributeAsNSString("isRotatable").IsEqualToString("true");
+            rocket.time = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("time")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("time"), CultureInfo.InvariantCulture);
+            rocket.isRotatable = xmlNode.AttributeAsNSString("isRotatable") == "true";
             rocket.startRotation = rocket.rotation;
             rocket.ParseMover(xmlNode);
             rocket.RotateWithBB(rocket.rotation);

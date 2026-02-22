@@ -2,6 +2,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Helpers;
+using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -15,9 +16,9 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadLightBulb(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            float y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            float litRadius = xmlNode.AttributeAsNSString("litRadius").FloatValue() * scale;
+            float x = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
+            float y = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
+            float litRadius = (string.IsNullOrEmpty(xmlNode.AttributeAsNSString("litRadius")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("litRadius"), CultureInfo.InvariantCulture)) * scale;
             string bulbNumber = xmlNode.AttributeAsNSString("bulbNumber");
 
             ConstraintedPoint constraint = new();

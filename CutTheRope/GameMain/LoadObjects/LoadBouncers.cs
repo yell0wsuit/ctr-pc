@@ -15,10 +15,10 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadBouncer(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px2 = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            float py2 = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            int w2 = xmlNode.AttributeAsNSString("size").IntValue();
-            float an2 = xmlNode.AttributeAsNSString("angle").IntValue();
+            float px2 = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
+            float py2 = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
+            int w2 = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("size")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("size"));
+            float an2 = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("angle")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("angle"));
             Bouncer bouncer = new Bouncer().InitWithPosXYWidthAndAngle(px2, py2, w2, an2);
             bouncer.ParseMover(xmlNode);
             bouncers.Add(bouncer);
