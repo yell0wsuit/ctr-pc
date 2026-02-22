@@ -78,7 +78,14 @@ namespace CutTheRope.GameMain
     {
         private readonly record struct PackListEntry(string ConfigFileName, int SaveSlot);
 
+        /// <summary>
+        /// The configuration file for original <em>Cut the Rope</em> game.
+        /// </summary>
         private const string DefaultPacksConfigFile = "ctroriginal_packs.json";
+
+        /// <summary>
+        /// The master configuration list for game pack.
+        /// </summary>
         private const string PackListConfigFile = "packlist.json";
         private static readonly string[] EmptyResourceNames = [null];
 
