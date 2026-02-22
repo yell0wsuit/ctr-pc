@@ -1,7 +1,5 @@
 using System;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.Framework.Visual
 {
     internal sealed class Font : FontGeneric
@@ -12,8 +10,8 @@ namespace CutTheRope.Framework.Visual
             charmap = new Image().InitWithTexture(charmapfile);
             // quadsCount = charmapfile.quadsCount;
             height = charmapfile.quadRects[0].h;
-            chars = strParam.Copy();
-            sortedChars = chars.GetCharacters();
+            chars = strParam;
+            sortedChars = chars.ToCharArray();
             Array.Sort(sortedChars);
             charOffset = 0f;
             lineOffset = 0f;

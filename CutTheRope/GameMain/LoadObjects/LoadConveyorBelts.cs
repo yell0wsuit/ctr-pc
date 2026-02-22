@@ -1,24 +1,22 @@
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
         private void LoadConveyorBelt(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            float y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            float length = xmlNode.AttributeAsNSString("length").FloatValue() * scale;
-            float height = xmlNode.AttributeAsNSString("width").FloatValue() * scale;
-            float rotation = xmlNode.AttributeAsNSString("angle").FloatValue();
-            float velocity = xmlNode.AttributeAsNSString("velocity").FloatValue();
-            string direction = xmlNode.AttributeAsNSString("direction");
-            string type = xmlNode.AttributeAsNSString("type");
+            float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            float length = ParseFloatOrZero(xmlNode.Attribute("length")?.Value) * scale;
+            float height = ParseFloatOrZero(xmlNode.Attribute("width")?.Value) * scale;
+            float rotation = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value);
+            float velocity = ParseFloatOrZero(xmlNode.Attribute("velocity")?.Value);
+            string direction = xmlNode.Attribute("direction")?.Value ?? string.Empty;
+            string type = xmlNode.Attribute("type")?.Value ?? string.Empty;
 
-            float adjustedVelocity = velocity * 0.4f * (direction.IsEqualToString("forward") ? 1f : -1f);
-            bool isManual = type.IsEqualToString("manual");
+            float adjustedVelocity = velocity * 0.4f * (direction == "forward" ? 1f : -1f);
+            bool isManual = type == "manual";
 
             ConveyorBelt belt = ConveyorBelt.Create(conveyors.Count(), x, y, length, height, rotation, isManual, adjustedVelocity);
             conveyors.Push(belt);

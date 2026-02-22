@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -19,11 +18,11 @@ namespace CutTheRope.GameMain
             pump.DoRestoreCutTransparency();
             _ = pump.AddAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
             pump.bb = MakeRectangle(300f, 300f, 175f, 175f);
-            pump.initial_x = pump.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            pump.initial_y = pump.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+            pump.initial_x = pump.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            pump.initial_y = pump.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             pump.initial_rotation = 0f;
             pump.initial_rotatedCircle = null;
-            pump.rotation = xmlNode.AttributeAsNSString("angle").FloatValue() + DEG_90;
+            pump.rotation = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value) + DEG_90;
             pump.UpdateRotation();
             pump.anchor = 18;
             pumps.Add(pump);

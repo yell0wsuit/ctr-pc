@@ -1,6 +1,5 @@
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -16,15 +15,15 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadSpike(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            float py = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            int w = xmlNode.AttributeAsNSString("size").IntValue();
-            float an = xmlNode.AttributeAsNSString("angle").IntValue();
-            string toggledAttribute = xmlNode.AttributeAsNSString("toggled");
+            float px = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float py = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            int w = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
+            float an = ParseIntOrZero(xmlNode.Attribute("angle")?.Value);
+            string toggledAttribute = xmlNode.Attribute("toggled")?.Value ?? string.Empty;
             int toggledState = -1;
-            if (toggledAttribute.Length() > 0)
+            if (toggledAttribute.Length > 0)
             {
-                toggledState = toggledAttribute.IsEqualToString("false") ? -1 : toggledAttribute.IntValue();
+                toggledState = toggledAttribute == "false" ? -1 : ParseIntOrZero(toggledAttribute);
             }
             Spikes spikes = new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, toggledState);
             spikes.ParseMover(xmlNode);
@@ -35,9 +34,9 @@ namespace CutTheRope.GameMain
             if (xmlNode.Name.LocalName == "electro")
             {
                 spikes.electro = true;
-                spikes.initialDelay = xmlNode.AttributeAsNSString("initialDelay").FloatValue();
-                spikes.onTime = xmlNode.AttributeAsNSString("onTime").FloatValue();
-                spikes.offTime = xmlNode.AttributeAsNSString("offTime").FloatValue();
+                spikes.initialDelay = ParseFloatOrZero(xmlNode.Attribute("initialDelay")?.Value);
+                spikes.onTime = ParseFloatOrZero(xmlNode.Attribute("onTime")?.Value);
+                spikes.offTime = ParseFloatOrZero(xmlNode.Attribute("offTime")?.Value);
                 spikes.electroTimer = 0f;
                 spikes.TurnElectroOff();
                 spikes.electroTimer += spikes.initialDelay;

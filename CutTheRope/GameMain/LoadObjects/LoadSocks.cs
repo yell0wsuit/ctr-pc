@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -24,9 +23,9 @@ namespace CutTheRope.GameMain
             sock.CreateAnimations();
             sock.scaleX = sock.scaleY = 0.7f;
             sock.DoRestoreCutTransparency();
-            sock.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            sock.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            sock.group = xmlNode.AttributeAsNSString("group").IntValue();
+            sock.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            sock.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            sock.group = ParseIntOrZero(xmlNode.Attribute("group")?.Value);
             sock.anchor = 10;
             sock.rotationCenterY -= (sock.height / 2f) - 85f;
             if (sock.group == 0)

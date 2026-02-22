@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using CutTheRope.Desktop;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -257,7 +256,7 @@ namespace CutTheRope.Framework.Visual
                 BaseElement value = child.Value;
                 if (value != null)
                 {
-                    if (value.name != null && value.name.IsEqualToString(n))
+                    if (value.name != null && value.name == n)
                     {
                         return value;
                     }

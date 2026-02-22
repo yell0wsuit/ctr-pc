@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Helpers;
@@ -134,16 +135,16 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         private static Font LoadSpriteFontInfo(string path, string resourceName)
         {
-            XElement xmlNode = XElementExtensions.LoadContentXml(path);
-            int charOffset = xmlNode.AttributeAsNSString("charoff").IntValue();
-            int lineOffset = xmlNode.AttributeAsNSString("lineoff").IntValue();
-            int spaceWidth = xmlNode.AttributeAsNSString("space").IntValue();
-            XElement charsNode = xmlNode.FindChildWithTagNameRecursively("chars", false);
-            XElement kerningNode = xmlNode.FindChildWithTagNameRecursively("kerning", false);
-            string charsData = charsNode.ValueAsNSString();
+            XElement xmlNode = ContentPaths.LoadXml(path);
+            int charOffset = ParseIntOrZero(xmlNode.Attribute("charoff")?.Value);
+            int lineOffset = ParseIntOrZero(xmlNode.Attribute("lineoff")?.Value);
+            int spaceWidth = ParseIntOrZero(xmlNode.Attribute("space")?.Value);
+            XElement charsNode = xmlNode.Elements().FirstOrDefault(e => e.Name.LocalName == "chars");
+            XElement kerningNode = xmlNode.Elements().FirstOrDefault(e => e.Name.LocalName == "kerning");
+            string charsData = charsNode.Value;
             if (kerningNode != null)
             {
-                _ = kerningNode.ValueAsNSString();
+                _ = kerningNode.Value;
             }
             Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(charsData, Application.GetTexture(resourceName));
             font.SetCharOffsetLineOffsetSpaceWidth(charOffset, lineOffset, spaceWidth);

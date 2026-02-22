@@ -1,5 +1,3 @@
-using CutTheRope.Helpers;
-
 namespace CutTheRope.Framework.Visual
 {
     internal abstract class FontGeneric : FrameworkTypes
@@ -7,8 +5,8 @@ namespace CutTheRope.Framework.Visual
         public virtual float StringWidth(string str)
         {
             float totalWidth = 0f;
-            int length = str.Length();
-            char[] characters = str.GetCharacters();
+            int length = str.Length;
+            char[] characters = str.ToCharArray();
             float spacing = 0f;
             for (int i = 0; i < length; i++)
             {

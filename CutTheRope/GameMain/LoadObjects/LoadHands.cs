@@ -1,7 +1,5 @@
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -11,26 +9,26 @@ namespace CutTheRope.GameMain
     {
         private void LoadHand(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            int segmentCount = xmlNode.AttributeAsNSString("segmentsCount").IntValue();
+            int segmentCount = ParseIntOrZero(xmlNode.Attribute("segmentsCount")?.Value);
 
             MechanicalHand hand = new()
             {
-                x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX,
-                y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY
+                x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
+                y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY
             };
 
             CalculateTopLeft(hand);
 
             for (int i = 1; i <= segmentCount; i++)
             {
-                float angle = xmlNode.AttributeAsNSString($"segment{i}Angle").FloatValue();
+                float angle = ParseFloatOrZero(xmlNode.Attribute($"segment{i}Angle")?.Value);
                 if (angle < 0f)
                 {
                     angle += 360f;
                 }
 
-                float length = xmlNode.AttributeAsNSString($"segment{i}Length").FloatValue() * scale;
-                bool rotatable = xmlNode.AttributeAsNSString($"segment{i}Rotatable").BoolValue();
+                float length = ParseFloatOrZero(xmlNode.Attribute($"segment{i}Length")?.Value) * scale;
+                _ = bool.TryParse(xmlNode.Attribute($"segment{i}Rotatable")?.Value, out bool rotatable);
                 hand.AddSegmentWithLengthAngleRotatable(length, angle, rotatable);
             }
 

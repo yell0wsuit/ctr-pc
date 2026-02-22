@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -34,10 +33,10 @@ namespace CutTheRope.GameMain
             target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
-            string xAttribute = xmlNode.AttributeAsNSString("x");
-            target.x = support.x = (xAttribute.IntValue() * scale) + offsetX + mapOffsetX;
-            string yAttribute = xmlNode.AttributeAsNSString("y");
-            target.y = support.y = (yAttribute.IntValue() * scale) + offsetY + mapOffsetY;
+            string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
+            target.x = support.x = (ParseIntOrZero(xAttribute) * scale) + offsetX + mapOffsetX;
+            string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
+            target.y = support.y = (ParseIntOrZero(yAttribute) * scale) + offsetY + mapOffsetY;
 
             target.AddImage(Resources.Img.CharAnimations2);
             target.AddImage(Resources.Img.CharAnimations3);
