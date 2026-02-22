@@ -970,7 +970,8 @@ namespace CutTheRope.GameMain
             _ = menuView.AddChild(button);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 5);
-            int lastPack = CTRPreferences.GetLastPack();
+            int lastPack = CTRPreferences.GetLastBox();
+            ((CTRRootController)Application.SharedRootController()).SetBox(CTRPreferences.GetLastGamePack());
             packContainer.PlaceToScrollPoint(lastPack);
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
@@ -1040,7 +1041,8 @@ namespace CutTheRope.GameMain
         {
             currentPack = i;
             pack = i;
-            CTRPreferences.SetLastPack(i);
+            CTRPreferences.SetLastBox(i);
+            CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(i));
         }
 
         public BaseElement CreateButtonForLevelPack(int l, int p)
@@ -1286,7 +1288,7 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                packContainer.PlaceToScrollPoint(CTRPreferences.GetLastPack());
+                packContainer.PlaceToScrollPoint(CTRPreferences.GetLastBox());
             }
             ShowView(5);
             if (url != null && url.EndsWith("outro", StringComparison.Ordinal))
@@ -1630,7 +1632,8 @@ namespace CutTheRope.GameMain
                             packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8f);
                             return;
                         }
-                        CTRPreferences.SetLastPack(pack);
+                        CTRPreferences.SetLastBox(pack);
+                        CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(pack));
                         bool flag5 = CTRPreferences.GetUnlockedForPackLevel(targetPack, 0) == UNLOCKEDSTATE.LOCKED && targetPack != CTRPreferences.GetPacksCount();
                         if (targetPack != CTRPreferences.GetPacksCount() && !flag5)
                         {

@@ -252,19 +252,20 @@ namespace CutTheRope.GameMain
             return 2;
         }
 
-        public static void SetLastPack(int p)
+        public static void SetLastBox(int p)
         {
-            SetIntForKey(p, "PREFS_LAST_PACK", true);
+            SetIntForKey(p, "PREFS_LAST_BOX", true);
         }
 
-        public static void SetLastBox(int b)
+        public static void SetLastGamePack(int b)
         {
-            SetIntForKey(b, "PREFS_LAST_BOX", true);
+            SetIntForKey(b, "PREFS_LAST_GAMEPACK", true);
         }
 
-        public static int GetLastBox()
+        public static int GetLastGamePack()
         {
-            return GetIntForKey("PREFS_LAST_BOX");
+            int val = GetIntForKey("PREFS_LAST_GAMEPACK");
+            return val >= 0 ? val : 0;
         }
 
         public static bool IsPackPerfect(int box, int p)
@@ -287,9 +288,9 @@ namespace CutTheRope.GameMain
             return IsPackPerfect(GetBoxForPack(p), p);
         }
 
-        public static int GetLastPack()
+        public static int GetLastBox()
         {
-            int val = GetIntForKey("PREFS_LAST_PACK");
+            int val = GetIntForKey("PREFS_LAST_BOX");
             int maxPack = GetPacksCount();
             // If saved pack is out of range, fall back to first pack
             return (val >= 0 && val <= maxPack) ? val : 0;
@@ -389,7 +390,7 @@ namespace CutTheRope.GameMain
             SetBooleanForKey(false, "PREFS_CANDY_WAS_CHANGED", true);
             SetBooleanForKey(true, "PREFS_GAME_CENTER_ENABLED", true);
             SetIntForKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
-            SetIntForKey(0, "PREFS_LAST_PACK", true);
+            SetIntForKey(0, "PREFS_LAST_BOX", true);
             SetBooleanForKey(true, "PREFS_WINDOW_FULLSCREEN", true);
             SetBooleanForKey(true, PREFS_RPC_ENABLED, true);
             SetBooleanForKey(true, PREFS_UPDATE_CHECK, true);
@@ -535,9 +536,9 @@ namespace CutTheRope.GameMain
 
         public const string PREFS_SOCKS_USED = "PREFS_SOCKS_USED";
 
-        public const string PREFS_LAST_PACK = "PREFS_LAST_PACK";
-
         public const string PREFS_LAST_BOX = "PREFS_LAST_BOX";
+
+        public const string PREFS_LAST_GAMEPACK = "PREFS_LAST_GAMEPACK";
 
         public const string PREFS_CLICK_TO_CUT = "PREFS_CLICK_TO_CUT";
 
