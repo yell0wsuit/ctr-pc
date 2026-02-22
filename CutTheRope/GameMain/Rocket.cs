@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -161,17 +160,17 @@ namespace CutTheRope.GameMain
         /// <param name="xml">The XML element containing <c>path</c>, <c>moveSpeed</c>, and <c>rotateSpeed</c> attributes.</param>
         public override void ParseMover(XElement xml)
         {
-            string path = xml.AttributeAsNSString("path");
+            string path = xml.Attribute("path")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(path))
             {
                 int pathPoints = 100;
-                if (path.CharacterAtIndex(0) == 'R')
+                if (path[0] == 'R')
                 {
-                    int pathRadius = path.SubstringFromIndex(2).IntValue();
+                    int pathRadius = ParseIntOrZero(path[2..]);
                     pathPoints = MAX(11, (pathRadius / 2) + 1);
                 }
-                float moveSpeed = xml.AttributeAsNSString("moveSpeed").FloatValue();
-                float rotateSpeed = xml.AttributeAsNSString("rotateSpeed").FloatValue();
+                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
+                float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation

@@ -1,7 +1,5 @@
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -15,10 +13,10 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadBouncer(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px2 = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            float py2 = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            int w2 = xmlNode.AttributeAsNSString("size").IntValue();
-            float an2 = xmlNode.AttributeAsNSString("angle").IntValue();
+            float px2 = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float py2 = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            int w2 = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
+            float an2 = ParseIntOrZero(xmlNode.Attribute("angle")?.Value);
             Bouncer bouncer = new Bouncer().InitWithPosXYWidthAndAngle(px2, py2, w2, an2);
             bouncer.ParseMover(xmlNode);
             bouncers.Add(bouncer);

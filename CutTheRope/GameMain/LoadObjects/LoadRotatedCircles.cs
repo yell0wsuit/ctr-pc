@@ -1,7 +1,5 @@
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -15,11 +13,11 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadRotatedCircle(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float centerX = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            float centerY = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            float circleSize = xmlNode.AttributeAsNSString("size").IntValue();
-            float d = xmlNode.AttributeAsNSString("handleAngle").IntValue();
-            bool hasOneHandle = xmlNode.AttributeAsNSString("oneHandle").BoolValue();
+            float centerX = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float centerY = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            float circleSize = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
+            float d = ParseIntOrZero(xmlNode.Attribute("handleAngle")?.Value);
+            _ = bool.TryParse(xmlNode.Attribute("oneHandle")?.Value, out bool hasOneHandle);
             RotatedCircle rotatedCircle = new()
             {
                 anchor = 18,

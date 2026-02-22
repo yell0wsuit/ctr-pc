@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Security.Cryptography;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.Framework.Helpers
 {
@@ -533,7 +532,7 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>Returns the lowercase hex SHA-256 hash of <paramref name="input"/>.</summary>
         public static string GetSHA256Str(string input)
         {
-            return GetSHA256(input.GetCharacters());
+            return GetSHA256(input.ToCharArray());
         }
 
         /// <summary>Returns the lowercase hex SHA-256 hash of a UTF-16 char array.</summary>

@@ -86,13 +86,13 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://reload"), "mappicker://reload", true);
+                XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml("mappicker://reload"), "mappicker://reload", true);
                 return;
             }
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
             string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
-            XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml(mapPath), mapPath, true);
+            XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml(mapPath), mapPath, true);
         }
 
         public void LoadNextMap()
@@ -103,7 +103,7 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://next"), "mappicker://next", true);
+                XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml("mappicker://next"), "mappicker://next", true);
                 return;
             }
             int pack = cTRRootController.GetPack();
@@ -113,7 +113,7 @@ namespace CutTheRope.GameMain
                 cTRRootController.SetLevel(++level);
                 cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
                 string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
-                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml(mapPath), mapPath, true);
+                XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml(mapPath), mapPath, true);
             }
         }
 

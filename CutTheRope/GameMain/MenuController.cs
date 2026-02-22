@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -455,7 +456,7 @@ namespace CutTheRope.GameMain
             Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup, this);
             _ = vBox.AddChild(c3);
             _ = baseElement.AddChild(vBox);
-            bool flag = Application.GetString("FACEBOOK_BUTTON").Length() > 0;
+            bool flag = Application.GetString("FACEBOOK_BUTTON").Length > 0;
             if (flag)
             {
                 BaseElement baseElement2 = new();
@@ -1288,7 +1289,7 @@ namespace CutTheRope.GameMain
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetLastPack());
             }
             ShowView(5);
-            if (url != null && url.HasSuffix("outro"))
+            if (url != null && url.EndsWith("outro", StringComparison.Ordinal))
             {
                 packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8f);
                 ShowGameFinishedPopup();

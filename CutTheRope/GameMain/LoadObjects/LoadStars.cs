@@ -1,7 +1,5 @@
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -19,9 +17,9 @@ namespace CutTheRope.GameMain
             {
                 star.EnableNightMode();
             }
-            star.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            star.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            star.timeout = xmlNode.AttributeAsNSString("timeout").FloatValue();
+            star.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            star.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            star.timeout = ParseFloatOrZero(xmlNode.Attribute("timeout")?.Value);
             star.CreateAnimations();
             star.bb = MakeRectangle(70f, 64f, 82f, 82f);
             star.ParseMover(xmlNode);

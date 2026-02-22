@@ -2,7 +2,6 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -32,8 +31,8 @@ namespace CutTheRope.GameMain
                     switch (item2.Name.LocalName)
                     {
                         case "map":
-                            mapWidth = item2.AttributeAsNSString("width").FloatValue();
-                            mapHeight = item2.AttributeAsNSString("height").FloatValue();
+                            mapWidth = ParseFloatOrZero(item2.Attribute("width")?.Value);
+                            mapHeight = ParseFloatOrZero(item2.Attribute("height")?.Value);
                             offsetX = (2560f - (mapWidth * scale)) / 2f;
                             mapWidth *= scale;
                             mapHeight *= scale;
@@ -53,18 +52,19 @@ namespace CutTheRope.GameMain
                             }
                             break;
                         case "gameDesign":
-                            mapOffsetX = item2.AttributeAsNSString("mapOffsetX").IntValue();
-                            mapOffsetY = item2.AttributeAsNSString("mapOffsetY").IntValue();
-                            special = item2.AttributeAsNSString("special").IntValue();
-                            ropePhysicsSpeed = item2.AttributeAsNSString("ropePhysicsSpeed").FloatValue();
-                            nightLevel = item2.AttributeAsNSString("nightLevel").IsEqualToString("true");
-                            twoParts = !item2.AttributeAsNSString("twoParts").IsEqualToString("true") ? 2 : 0;
-                            waterLevel = item2.AttributeAsNSString("water").FloatValue();
+                            mapOffsetX = ParseIntOrZero(item2.Attribute("mapOffsetX")?.Value);
+                            mapOffsetY = ParseIntOrZero(item2.Attribute("mapOffsetY")?.Value);
+                            special = ParseIntOrZero(item2.Attribute("special")?.Value);
+                            ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
+                            _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
+                            _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
+                            twoParts = twoPartsBool ? 0 : 2;
+                            waterLevel = ParseFloatOrZero(item2.Attribute("water")?.Value);
                             if (waterLevel != 0f)
                             {
                                 waterLevel *= scale;
                             }
-                            waterSpeed = item2.AttributeAsNSString("waterSpeed").FloatValue() * scale;
+                            waterSpeed = ParseFloatOrZero(item2.Attribute("waterSpeed")?.Value) * scale;
                             if (waterLevel > 0f)
                             {
                                 float waterWorldX = offsetX + mapOffsetX;
@@ -91,8 +91,8 @@ namespace CutTheRope.GameMain
                             ropePhysicsSpeed *= 1.4f;
                             break;
                         case "candyL":
-                            starL.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                            starL.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                            starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            starL.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
                                 int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
@@ -107,8 +107,8 @@ namespace CutTheRope.GameMain
                             candyL.bb = MakeRectangle(155f, 176f, 88f, 76f);
                             break;
                         case "candyR":
-                            starR.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                            starR.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                            starR.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            starR.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
                                 int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
@@ -123,8 +123,8 @@ namespace CutTheRope.GameMain
                             candyR.bb = MakeRectangle(155f, 176f, 88f, 76f);
                             break;
                         case "candy":
-                            star.pos.X = (item2.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                            star.pos.Y = (item2.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+                            star.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            star.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             break;
                         default:
                             break;

@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -24,12 +23,12 @@ namespace CutTheRope.GameMain
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
                 TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
                 tutorialText.color = RGBAColor.MakeRGBA(1, 1, 1, 0.9f);
-                tutorialText.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                tutorialText.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                tutorialText.special = xmlNode.AttributeAsNSString("special").IntValue();
+                tutorialText.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                tutorialText.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                tutorialText.special = ParseIntOrZero(xmlNode.Attribute("special")?.Value);
                 tutorialText.SetAlignment(2);
-                string newString = xmlNode.AttributeAsNSString("text");
-                tutorialText.SetStringandWidth(newString, (int)(xmlNode.AttributeAsNSString("width").IntValue() * scale));
+                string newString = xmlNode.Attribute("text")?.Value ?? string.Empty;
+                tutorialText.SetStringandWidth(newString, (int)(ParseIntOrZero(xmlNode.Attribute("width")?.Value) * scale));
                 tutorialText.color = RGBAColor.transparentRGBA;
                 Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
                 timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
@@ -60,13 +59,13 @@ namespace CutTheRope.GameMain
             if (!ShouldSkipTutorialElement(xmlNode))
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                int q = new string(xmlNode.Name.LocalName.AsSpan()[8..]).IntValue() - 1;
+                int q = ParseIntOrZero(new string(xmlNode.Name.LocalName.AsSpan()[8..])) - 1;
                 GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(Resources.Img.TutorialSigns, q);
                 gameObjectSpecial.color = RGBAColor.transparentRGBA;
-                gameObjectSpecial.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-                gameObjectSpecial.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-                gameObjectSpecial.rotation = xmlNode.AttributeAsNSString("angle").IntValue();
-                gameObjectSpecial.special = xmlNode.AttributeAsNSString("special").IntValue();
+                gameObjectSpecial.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                gameObjectSpecial.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                gameObjectSpecial.rotation = ParseIntOrZero(xmlNode.Attribute("angle")?.Value);
+                gameObjectSpecial.special = ParseIntOrZero(xmlNode.Attribute("special")?.Value);
                 gameObjectSpecial.ParseMover(xmlNode);
                 Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
                 timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));

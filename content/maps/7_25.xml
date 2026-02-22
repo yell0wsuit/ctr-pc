@@ -7,8 +7,8 @@
     <layer name="Objects">
         <target x="416" y="292" />
         <candy x="320" y="709" />
-        <electro x="248" y="811" initialDelay="-1,5" offTime="2,6" onTime="1" angle="-135" size="5" path="0,0" rotateSpeed="-30" />
-        <electro x="392" y="812" initialDelay="-1,5" offTime="2,6" onTime="1" angle="135" size="5" path="0,0" rotateSpeed="30" />
+        <electro x="248" y="811" initialDelay="-1.5" offTime="2.6" onTime="1" angle="-135" size="5" path="0,0" rotateSpeed="-30" />
+        <electro x="392" y="812" initialDelay="-1.5" offTime="2.6" onTime="1" angle="135" size="5" path="0,0" rotateSpeed="30" />
         <bubble x="321" y="909" />
         <grab x="324" y="516" length="100" wheel="false" gun="false" radius="65" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
         <spike3 x="413" y="380" angle="30" size="3" />

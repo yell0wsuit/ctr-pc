@@ -103,6 +103,27 @@ namespace CutTheRope.Framework
         {
         }
 
+        /// <summary>
+        /// Parses an integer from a string, returning 0 if the value is null, empty, or not a valid integer.
+        /// </summary>
+        /// <param name="value">The string to parse.</param>
+        /// <returns>The parsed integer, or 0 if parsing fails.</returns>
+        protected static int ParseIntOrZero(string value)
+        {
+            return int.TryParse(value, out int parsed) ? parsed : 0;
+        }
+
+        /// <summary>
+        /// Parses a floating-point number from a string using invariant culture, returning 0 if the value
+        /// is null, empty, or not a valid number.
+        /// </summary>
+        /// <param name="value">The string to parse.</param>
+        /// <returns>The parsed float, or 0 if parsing fails.</returns>
+        protected static float ParseFloatOrZero(string value)
+        {
+            return float.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float parsed) ? parsed : 0f;
+        }
+
         public static float WVGAH(float H, float L)
         {
             return IS_WVGA ? H : L;

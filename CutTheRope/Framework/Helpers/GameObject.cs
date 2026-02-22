@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 
@@ -82,17 +81,17 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void ParseMover(XElement xml)
         {
-            rotation = xml.AttributeAsNSString("angle").FloatValue();
-            string pathString = xml.AttributeAsNSString("path");
-            if (pathString != null && pathString.Length() != 0)
+            rotation = ParseFloatOrZero(xml.Attribute("angle")?.Value);
+            string pathString = xml.Attribute("path")?.Value ?? string.Empty;
+            if (pathString != null && pathString.Length != 0)
             {
                 int moverCapacity = 100;
-                if (pathString.CharacterAtIndex(0) == 'R')
+                if (pathString[0] == 'R')
                 {
-                    moverCapacity = (pathString.SubstringFromIndex(2).IntValue() / 2) + 1;
+                    moverCapacity = (ParseIntOrZero(pathString[2..]) / 2) + 1;
                 }
-                float moveSpeed = xml.AttributeAsNSString("moveSpeed").FloatValue();
-                float rotateSpeed = xml.AttributeAsNSString("rotateSpeed").FloatValue();
+                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
+                float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 Mover parsedMover = new(moverCapacity, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation
