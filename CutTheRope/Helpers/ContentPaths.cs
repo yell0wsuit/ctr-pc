@@ -1,11 +1,12 @@
-#if !MACOS_AVFOUNDATION
 using System;
-#endif
 using System.IO;
+using System.Xml.Linq;
 
 #if MACOS_AVFOUNDATION
 using Foundation;
 #endif
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.Helpers
 {
@@ -210,6 +211,31 @@ namespace CutTheRope.Helpers
         public static string GetFontPath(string fileName)
         {
             return Path.Combine(RootDirectory, FontsDirectory, fileName);
+        }
+
+        /// <summary>
+        /// Loads an XML file from the content directory and returns the root element.
+        /// Returns null on failure or if <paramref name="fileName"/> is empty.
+        /// </summary>
+        public static XElement LoadXml(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return null;
+            }
+
+            XDocument document = null;
+
+            try
+            {
+                using Stream stream = TitleContainer.OpenStream(Path.Combine(RootDirectory, fileName));
+                document = XDocument.Load(stream);
+            }
+            catch (Exception)
+            {
+            }
+
+            return document?.Root;
         }
     }
 }

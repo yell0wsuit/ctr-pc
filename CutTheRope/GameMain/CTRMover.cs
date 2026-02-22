@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -11,10 +10,10 @@ namespace CutTheRope.GameMain
     {
         public override void SetPathFromStringandStart(string p, Vector s)
         {
-            if (p.CharacterAtIndex(0) == 'R')
+            if (p[0] == 'R')
             {
-                bool flag = p.CharacterAtIndex(1) == 'C';
-                int radius = (int)RTD(p.SubstringFromIndex(2).IntValue());
+                bool flag = p[1] == 'C';
+                int radius = (int)RTD(ParseIntOrZero(p[2..]));
                 radius *= 3;
                 int pointCount = radius / 2;
                 if (pointCount <= 0)
@@ -38,16 +37,16 @@ namespace CutTheRope.GameMain
                 return;
             }
             AddPathPoint(s);
-            if (p.CharacterAtIndex(p.Length() - 1) == ',')
+            if (p[^1] == ',')
             {
-                p = p.SubstringToIndex(p.Length() - 1);
+                p = p[..(p.Length - 1)];
             }
-            List<string> list = p.ComponentsSeparatedByString(',');
-            for (int j = 0; j < list.Count; j += 2)
+            string[] list = p.Split(',');
+            for (int j = 0; j < list.Length; j += 2)
             {
                 string xOffsetString = list[j];
                 string yOffsetString = list[j + 1];
-                AddPathPoint(Vect(s.X + (xOffsetString.FloatValue() * 3f), s.Y + (yOffsetString.FloatValue() * 3f)));
+                AddPathPoint(Vect(s.X + ((string.IsNullOrEmpty(xOffsetString) ? 0f : float.Parse(xOffsetString, CultureInfo.InvariantCulture)) * 3f), s.Y + ((string.IsNullOrEmpty(yOffsetString) ? 0f : float.Parse(yOffsetString, CultureInfo.InvariantCulture)) * 3f)));
             }
         }
     }

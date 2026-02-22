@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Sfe;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -15,10 +14,10 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadLightBulb(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
-            float y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
-            float litRadius = xmlNode.AttributeAsNSString("litRadius").FloatValue() * scale;
-            string bulbNumber = xmlNode.AttributeAsNSString("bulbNumber");
+            float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            float litRadius = ParseFloatOrZero(xmlNode.Attribute("litRadius")?.Value) * scale;
+            string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
 
             ConstraintedPoint constraint = new();
             constraint.SetWeight(1f);
