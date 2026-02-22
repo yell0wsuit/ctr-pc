@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -15,7 +14,7 @@ namespace CutTheRope.GameMain
         {
             float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            float angle = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
+            float angle = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value);
             SteamTube steamTube = new SteamTube().InitWithPositionAngle(Vect(x, y), angle, scale);
             tubes.Add(steamTube);
         }

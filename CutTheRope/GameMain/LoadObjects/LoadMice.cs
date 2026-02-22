@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -7,12 +6,12 @@ namespace CutTheRope.GameMain
     {
         private void LoadMouse(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value) ? 0f : float.Parse(xmlNode.Attribute("x")?.Value, CultureInfo.InvariantCulture)) * scale) + offsetX + mapOffsetX;
-            float py = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value) ? 0f : float.Parse(xmlNode.Attribute("y")?.Value, CultureInfo.InvariantCulture)) * scale) + offsetY + mapOffsetY;
-            float angle = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
-            float radius = string.IsNullOrEmpty(xmlNode.Attribute("radius")?.Value) ? 0f : float.Parse(xmlNode.Attribute("radius")?.Value, CultureInfo.InvariantCulture);
+            float px = ((ParseFloatOrZero(xmlNode.Attribute("x")?.Value)) * scale) + offsetX + mapOffsetX;
+            float py = ((ParseFloatOrZero(xmlNode.Attribute("y")?.Value)) * scale) + offsetY + mapOffsetY;
+            float angle = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value);
+            float radius = ParseFloatOrZero(xmlNode.Attribute("radius")?.Value);
             radius = radius != 0f ? radius * scale : 80f * scale;
-            float activeTime = string.IsNullOrEmpty(xmlNode.Attribute("activeTime")?.Value) ? 0f : float.Parse(xmlNode.Attribute("activeTime")?.Value, CultureInfo.InvariantCulture);
+            float activeTime = ParseFloatOrZero(xmlNode.Attribute("activeTime")?.Value);
             if (activeTime == 0f)
             {
                 activeTime = 3f;

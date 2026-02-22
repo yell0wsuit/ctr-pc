@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -9,12 +8,12 @@ namespace CutTheRope.GameMain
         {
             float px = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float py = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            float grabRadius = string.IsNullOrEmpty(xmlNode.Attribute("radius")?.Value) ? 0f : float.Parse(xmlNode.Attribute("radius")?.Value, CultureInfo.InvariantCulture);
+            float grabRadius = ParseFloatOrZero(xmlNode.Attribute("radius")?.Value);
             if (grabRadius != -1f)
             {
                 grabRadius *= scale;
             }
-            float bouncerAngle = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
+            float bouncerAngle = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value);
             _ = bool.TryParse(xmlNode.Attribute("grab")?.Value, out bool useGrab);
             _ = bool.TryParse(xmlNode.Attribute("bubble")?.Value, out bool useBubble);
             _ = bool.TryParse(xmlNode.Attribute("bouncer")?.Value, out bool useBouncer);

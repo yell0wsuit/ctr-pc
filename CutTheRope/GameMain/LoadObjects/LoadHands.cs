@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -22,13 +21,13 @@ namespace CutTheRope.GameMain
 
             for (int i = 1; i <= segmentCount; i++)
             {
-                float angle = string.IsNullOrEmpty(xmlNode.Attribute($"segment{i}Angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute($"segment{i}Angle")?.Value, CultureInfo.InvariantCulture);
+                float angle = ParseFloatOrZero(xmlNode.Attribute($"segment{i}Angle")?.Value);
                 if (angle < 0f)
                 {
                     angle += 360f;
                 }
 
-                float length = (string.IsNullOrEmpty(xmlNode.Attribute($"segment{i}Length")?.Value) ? 0f : float.Parse(xmlNode.Attribute($"segment{i}Length")?.Value, CultureInfo.InvariantCulture)) * scale;
+                float length = (ParseFloatOrZero(xmlNode.Attribute($"segment{i}Length")?.Value)) * scale;
                 _ = bool.TryParse(xmlNode.Attribute($"segment{i}Rotatable")?.Value, out bool rotatable);
                 hand.AddSegmentWithLengthAngleRotatable(length, angle, rotatable);
             }

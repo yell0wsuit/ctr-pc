@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Sfe;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -17,7 +16,7 @@ namespace CutTheRope.GameMain
         {
             float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            float litRadius = (string.IsNullOrEmpty(xmlNode.Attribute("litRadius")?.Value) ? 0f : float.Parse(xmlNode.Attribute("litRadius")?.Value, CultureInfo.InvariantCulture)) * scale;
+            float litRadius = (ParseFloatOrZero(xmlNode.Attribute("litRadius")?.Value)) * scale;
             string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
 
             ConstraintedPoint constraint = new();

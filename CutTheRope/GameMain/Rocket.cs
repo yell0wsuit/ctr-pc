@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -170,8 +169,8 @@ namespace CutTheRope.GameMain
                     int pathRadius = ParseIntOrZero(path[2..]);
                     pathPoints = MAX(11, (pathRadius / 2) + 1);
                 }
-                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value, CultureInfo.InvariantCulture);
-                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value, CultureInfo.InvariantCulture);
+                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
+                float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation

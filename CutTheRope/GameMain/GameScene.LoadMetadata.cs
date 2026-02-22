@@ -2,7 +2,6 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -32,8 +31,8 @@ namespace CutTheRope.GameMain
                     switch (item2.Name.LocalName)
                     {
                         case "map":
-                            mapWidth = string.IsNullOrEmpty(item2.Attribute("width")?.Value) ? 0f : float.Parse(item2.Attribute("width")?.Value, CultureInfo.InvariantCulture);
-                            mapHeight = string.IsNullOrEmpty(item2.Attribute("height")?.Value) ? 0f : float.Parse(item2.Attribute("height")?.Value, CultureInfo.InvariantCulture);
+                            mapWidth = ParseFloatOrZero(item2.Attribute("width")?.Value);
+                            mapHeight = ParseFloatOrZero(item2.Attribute("height")?.Value);
                             offsetX = (2560f - (mapWidth * scale)) / 2f;
                             mapWidth *= scale;
                             mapHeight *= scale;
@@ -56,16 +55,16 @@ namespace CutTheRope.GameMain
                             mapOffsetX = ParseIntOrZero(item2.Attribute("mapOffsetX")?.Value);
                             mapOffsetY = ParseIntOrZero(item2.Attribute("mapOffsetY")?.Value);
                             special = ParseIntOrZero(item2.Attribute("special")?.Value);
-                            ropePhysicsSpeed = string.IsNullOrEmpty(item2.Attribute("ropePhysicsSpeed")?.Value) ? 0f : float.Parse(item2.Attribute("ropePhysicsSpeed")?.Value, CultureInfo.InvariantCulture);
+                            ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
                             twoParts = twoPartsBool ? 0 : 2;
-                            waterLevel = string.IsNullOrEmpty(item2.Attribute("water")?.Value) ? 0f : float.Parse(item2.Attribute("water")?.Value, CultureInfo.InvariantCulture);
+                            waterLevel = ParseFloatOrZero(item2.Attribute("water")?.Value);
                             if (waterLevel != 0f)
                             {
                                 waterLevel *= scale;
                             }
-                            waterSpeed = (string.IsNullOrEmpty(item2.Attribute("waterSpeed")?.Value) ? 0f : float.Parse(item2.Attribute("waterSpeed")?.Value, CultureInfo.InvariantCulture)) * scale;
+                            waterSpeed = (ParseFloatOrZero(item2.Attribute("waterSpeed")?.Value)) * scale;
                             if (waterLevel > 0f)
                             {
                                 float waterWorldX = offsetX + mapOffsetX;

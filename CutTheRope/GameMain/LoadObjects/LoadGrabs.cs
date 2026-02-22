@@ -3,7 +3,6 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -22,14 +21,14 @@ namespace CutTheRope.GameMain
             float hx = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float hy = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             float len = ParseIntOrZero(xmlNode.Attribute("length")?.Value) * scale;
-            float grabRadius = string.IsNullOrEmpty(xmlNode.Attribute("radius")?.Value) ? 0f : float.Parse(xmlNode.Attribute("radius")?.Value, CultureInfo.InvariantCulture);
+            float grabRadius = ParseFloatOrZero(xmlNode.Attribute("radius")?.Value);
             _ = bool.TryParse(xmlNode.Attribute("wheel")?.Value, out bool wheel);
             _ = bool.TryParse(xmlNode.Attribute("kickable")?.Value, out bool kickable);
             _ = bool.TryParse(xmlNode.Attribute("kicked")?.Value, out bool kicked);
             _ = bool.TryParse(xmlNode.Attribute("invisible")?.Value, out bool invisible);
-            float k = (string.IsNullOrEmpty(xmlNode.Attribute("moveLength")?.Value) ? 0f : float.Parse(xmlNode.Attribute("moveLength")?.Value, CultureInfo.InvariantCulture)) * scale;
+            float k = (ParseFloatOrZero(xmlNode.Attribute("moveLength")?.Value)) * scale;
             _ = bool.TryParse(xmlNode.Attribute("moveVertical")?.Value, out bool v);
-            float o = (string.IsNullOrEmpty(xmlNode.Attribute("moveOffset")?.Value) ? 0f : float.Parse(xmlNode.Attribute("moveOffset")?.Value, CultureInfo.InvariantCulture)) * scale;
+            float o = (ParseFloatOrZero(xmlNode.Attribute("moveOffset")?.Value)) * scale;
             _ = bool.TryParse(xmlNode.Attribute("spider")?.Value, out bool spider);
             bool flag = xmlNode.Attribute("part")?.Value == "L";
             _ = bool.TryParse(xmlNode.Attribute("hidePath")?.Value, out bool flag2);

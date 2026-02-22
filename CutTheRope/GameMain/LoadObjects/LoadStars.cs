@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -20,7 +19,7 @@ namespace CutTheRope.GameMain
             }
             star.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             star.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            star.timeout = string.IsNullOrEmpty(xmlNode.Attribute("timeout")?.Value) ? 0f : float.Parse(xmlNode.Attribute("timeout")?.Value, CultureInfo.InvariantCulture);
+            star.timeout = ParseFloatOrZero(xmlNode.Attribute("timeout")?.Value);
             star.CreateAnimations();
             star.bb = MakeRectangle(70f, 64f, 82f, 82f);
             star.ParseMover(xmlNode);

@@ -23,8 +23,8 @@ namespace CutTheRope.GameMain
                 {
                     i = ((int)((int)RTD(ParseIntOrZero(pathString[2..])) * 3.3f) / 2) + 1;
                 }
-                float m_ = (string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value, CultureInfo.InvariantCulture)) * 3.3f;
-                float r_ = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value, CultureInfo.InvariantCulture);
+                float m_ = (ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value)) * 3.3f;
+                float r_ = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 CTRMover cTRMover = new(i, m_, r_)
                 {
                     angle_ = rotation

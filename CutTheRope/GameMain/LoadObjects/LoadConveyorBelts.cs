@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -9,10 +8,10 @@ namespace CutTheRope.GameMain
         {
             float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            float length = (string.IsNullOrEmpty(xmlNode.Attribute("length")?.Value) ? 0f : float.Parse(xmlNode.Attribute("length")?.Value, CultureInfo.InvariantCulture)) * scale;
-            float height = (string.IsNullOrEmpty(xmlNode.Attribute("width")?.Value) ? 0f : float.Parse(xmlNode.Attribute("width")?.Value, CultureInfo.InvariantCulture)) * scale;
-            float rotation = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
-            float velocity = string.IsNullOrEmpty(xmlNode.Attribute("velocity")?.Value) ? 0f : float.Parse(xmlNode.Attribute("velocity")?.Value, CultureInfo.InvariantCulture);
+            float length = (ParseFloatOrZero(xmlNode.Attribute("length")?.Value)) * scale;
+            float height = (ParseFloatOrZero(xmlNode.Attribute("width")?.Value)) * scale;
+            float rotation = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value);
+            float velocity = ParseFloatOrZero(xmlNode.Attribute("velocity")?.Value);
             string direction = xmlNode.Attribute("direction")?.Value ?? string.Empty;
             string type = xmlNode.Attribute("type")?.Value ?? string.Empty;
 

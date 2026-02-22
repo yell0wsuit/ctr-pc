@@ -1,6 +1,5 @@
 using System.Xml.Linq;
 
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -35,9 +34,9 @@ namespace CutTheRope.GameMain
             if (xmlNode.Name.LocalName == "electro")
             {
                 spikes.electro = true;
-                spikes.initialDelay = string.IsNullOrEmpty(xmlNode.Attribute("initialDelay")?.Value) ? 0f : float.Parse(xmlNode.Attribute("initialDelay")?.Value, CultureInfo.InvariantCulture);
-                spikes.onTime = string.IsNullOrEmpty(xmlNode.Attribute("onTime")?.Value) ? 0f : float.Parse(xmlNode.Attribute("onTime")?.Value, CultureInfo.InvariantCulture);
-                spikes.offTime = string.IsNullOrEmpty(xmlNode.Attribute("offTime")?.Value) ? 0f : float.Parse(xmlNode.Attribute("offTime")?.Value, CultureInfo.InvariantCulture);
+                spikes.initialDelay = ParseFloatOrZero(xmlNode.Attribute("initialDelay")?.Value);
+                spikes.onTime = ParseFloatOrZero(xmlNode.Attribute("onTime")?.Value);
+                spikes.offTime = ParseFloatOrZero(xmlNode.Attribute("offTime")?.Value);
                 spikes.electroTimer = 0f;
                 spikes.TurnElectroOff();
                 spikes.electroTimer += spikes.initialDelay;

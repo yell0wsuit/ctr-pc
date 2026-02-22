@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Visual;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {
@@ -23,7 +22,7 @@ namespace CutTheRope.GameMain
             pump.initial_y = pump.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             pump.initial_rotation = 0f;
             pump.initial_rotatedCircle = null;
-            pump.rotation = (string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture)) + DEG_90;
+            pump.rotation = (ParseFloatOrZero(xmlNode.Attribute("angle")?.Value)) + DEG_90;
             pump.UpdateRotation();
             pump.anchor = 18;
             pumps.Add(pump);

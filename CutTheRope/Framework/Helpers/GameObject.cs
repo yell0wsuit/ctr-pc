@@ -6,7 +6,6 @@ using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
-using System.Globalization;
 
 namespace CutTheRope.Framework.Helpers
 {
@@ -82,7 +81,7 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void ParseMover(XElement xml)
         {
-            rotation = string.IsNullOrEmpty(xml.Attribute("angle")?.Value) ? 0f : float.Parse(xml.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
+            rotation = ParseFloatOrZero(xml.Attribute("angle")?.Value);
             string pathString = xml.Attribute("path")?.Value ?? string.Empty;
             if (pathString != null && pathString.Length != 0)
             {
@@ -91,8 +90,8 @@ namespace CutTheRope.Framework.Helpers
                 {
                     moverCapacity = (ParseIntOrZero(pathString[2..]) / 2) + 1;
                 }
-                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value, CultureInfo.InvariantCulture);
-                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value, CultureInfo.InvariantCulture);
+                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
+                float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 Mover parsedMover = new(moverCapacity, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation
