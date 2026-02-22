@@ -1,4 +1,3 @@
-using System;
 using System.Xml.Linq;
 
 namespace CutTheRope.GameMain
@@ -18,7 +17,7 @@ namespace CutTheRope.GameMain
             float centerY = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             float circleSize = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
             float d = ParseIntOrZero(xmlNode.Attribute("handleAngle")?.Value);
-            bool hasOneHandle = "true".Equals(xmlNode.Attribute("oneHandle")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+            _ = bool.TryParse(xmlNode.Attribute("oneHandle")?.Value, out bool hasOneHandle);
             RotatedCircle rotatedCircle = new()
             {
                 anchor = 18,

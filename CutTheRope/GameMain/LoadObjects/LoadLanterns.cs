@@ -1,4 +1,3 @@
-using System;
 using System.Xml.Linq;
 
 using CutTheRope.Framework;
@@ -14,7 +13,7 @@ namespace CutTheRope.GameMain
         {
             float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            bool isCandyCaptured = "true".Equals(xmlNode.Attribute("candyCaptured")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+            _ = bool.TryParse(xmlNode.Attribute("candyCaptured")?.Value, out bool isCandyCaptured);
 
             Lantern lantern = new Lantern().InitWithPosition(Vect(x, y));
             lantern.ParseMover(xmlNode);

@@ -57,8 +57,9 @@ namespace CutTheRope.GameMain
                             mapOffsetY = ParseIntOrZero(item2.Attribute("mapOffsetY")?.Value);
                             special = ParseIntOrZero(item2.Attribute("special")?.Value);
                             ropePhysicsSpeed = string.IsNullOrEmpty(item2.Attribute("ropePhysicsSpeed")?.Value) ? 0f : float.Parse(item2.Attribute("ropePhysicsSpeed")?.Value, CultureInfo.InvariantCulture);
-                            nightLevel = item2.Attribute("nightLevel")?.Value == "true";
-                            twoParts = item2.Attribute("twoParts")?.Value != "true" ? 2 : 0;
+                            _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
+                            _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
+                            twoParts = twoPartsBool ? 0 : 2;
                             waterLevel = string.IsNullOrEmpty(item2.Attribute("water")?.Value) ? 0f : float.Parse(item2.Attribute("water")?.Value, CultureInfo.InvariantCulture);
                             if (waterLevel != 0f)
                             {

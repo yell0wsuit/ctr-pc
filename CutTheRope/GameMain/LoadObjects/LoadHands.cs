@@ -1,4 +1,3 @@
-using System;
 using System.Xml.Linq;
 using System.Globalization;
 
@@ -30,7 +29,7 @@ namespace CutTheRope.GameMain
                 }
 
                 float length = (string.IsNullOrEmpty(xmlNode.Attribute($"segment{i}Length")?.Value) ? 0f : float.Parse(xmlNode.Attribute($"segment{i}Length")?.Value, CultureInfo.InvariantCulture)) * scale;
-                bool rotatable = "true".Equals(xmlNode.Attribute($"segment{i}Rotatable")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+                _ = bool.TryParse(xmlNode.Attribute($"segment{i}Rotatable")?.Value, out bool rotatable);
                 hand.AddSegmentWithLengthAngleRotatable(length, angle, rotatable);
             }
 

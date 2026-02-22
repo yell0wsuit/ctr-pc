@@ -31,7 +31,8 @@ namespace CutTheRope.GameMain
                 rocket.impulseFactor = 0.6f;
             }
             rocket.time = string.IsNullOrEmpty(xmlNode.Attribute("time")?.Value) ? 0f : float.Parse(xmlNode.Attribute("time")?.Value, CultureInfo.InvariantCulture);
-            rocket.isRotatable = xmlNode.Attribute("isRotatable")?.Value == "true";
+            _ = bool.TryParse(xmlNode.Attribute("isRotatable")?.Value, out bool isRotatable);
+            rocket.isRotatable = isRotatable;
             rocket.startRotation = rocket.rotation;
             rocket.ParseMover(xmlNode);
             rocket.RotateWithBB(rocket.rotation);

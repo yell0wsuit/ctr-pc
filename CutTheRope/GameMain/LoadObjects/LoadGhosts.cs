@@ -1,4 +1,3 @@
-using System;
 using System.Xml.Linq;
 using System.Globalization;
 
@@ -16,9 +15,9 @@ namespace CutTheRope.GameMain
                 grabRadius *= scale;
             }
             float bouncerAngle = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
-            bool useGrab = "true".Equals(xmlNode.Attribute("grab")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
-            bool useBubble = "true".Equals(xmlNode.Attribute("bubble")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
-            bool useBouncer = "true".Equals(xmlNode.Attribute("bouncer")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+            _ = bool.TryParse(xmlNode.Attribute("grab")?.Value, out bool useGrab);
+            _ = bool.TryParse(xmlNode.Attribute("bubble")?.Value, out bool useBubble);
+            _ = bool.TryParse(xmlNode.Attribute("bouncer")?.Value, out bool useBouncer);
             int possibleStatesMask = (useBouncer ? 8 : 0) | (useBubble ? 2 : 0) | (useGrab ? 4 : 0);
             Ghost ghost = new Ghost().InitWithPositionPossibleStatesMaskGrabRadiusBouncerAngleBubblesBungeesBouncers(
                 Vect(px, py),
