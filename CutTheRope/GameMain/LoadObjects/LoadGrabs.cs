@@ -26,9 +26,9 @@ namespace CutTheRope.GameMain
             _ = bool.TryParse(xmlNode.Attribute("kickable")?.Value, out bool kickable);
             _ = bool.TryParse(xmlNode.Attribute("kicked")?.Value, out bool kicked);
             _ = bool.TryParse(xmlNode.Attribute("invisible")?.Value, out bool invisible);
-            float k = (ParseFloatOrZero(xmlNode.Attribute("moveLength")?.Value)) * scale;
+            float k = ParseFloatOrZero(xmlNode.Attribute("moveLength")?.Value) * scale;
             _ = bool.TryParse(xmlNode.Attribute("moveVertical")?.Value, out bool v);
-            float o = (ParseFloatOrZero(xmlNode.Attribute("moveOffset")?.Value)) * scale;
+            float o = ParseFloatOrZero(xmlNode.Attribute("moveOffset")?.Value) * scale;
             _ = bool.TryParse(xmlNode.Attribute("spider")?.Value, out bool spider);
             bool flag = xmlNode.Attribute("part")?.Value == "L";
             _ = bool.TryParse(xmlNode.Attribute("hidePath")?.Value, out bool flag2);

@@ -64,7 +64,7 @@ namespace CutTheRope.GameMain
                             {
                                 waterLevel *= scale;
                             }
-                            waterSpeed = (ParseFloatOrZero(item2.Attribute("waterSpeed")?.Value)) * scale;
+                            waterSpeed = ParseFloatOrZero(item2.Attribute("waterSpeed")?.Value) * scale;
                             if (waterLevel > 0f)
                             {
                                 float waterWorldX = offsetX + mapOffsetX;

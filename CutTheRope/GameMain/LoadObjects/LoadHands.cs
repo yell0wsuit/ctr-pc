@@ -27,7 +27,7 @@ namespace CutTheRope.GameMain
                     angle += 360f;
                 }
 
-                float length = (ParseFloatOrZero(xmlNode.Attribute($"segment{i}Length")?.Value)) * scale;
+                float length = ParseFloatOrZero(xmlNode.Attribute($"segment{i}Length")?.Value) * scale;
                 _ = bool.TryParse(xmlNode.Attribute($"segment{i}Rotatable")?.Value, out bool rotatable);
                 hand.AddSegmentWithLengthAngleRotatable(length, angle, rotatable);
             }

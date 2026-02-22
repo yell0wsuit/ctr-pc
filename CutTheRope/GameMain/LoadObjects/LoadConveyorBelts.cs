@@ -8,8 +8,8 @@ namespace CutTheRope.GameMain
         {
             float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            float length = (ParseFloatOrZero(xmlNode.Attribute("length")?.Value)) * scale;
-            float height = (ParseFloatOrZero(xmlNode.Attribute("width")?.Value)) * scale;
+            float length = ParseFloatOrZero(xmlNode.Attribute("length")?.Value) * scale;
+            float height = ParseFloatOrZero(xmlNode.Attribute("width")?.Value) * scale;
             float rotation = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value);
             float velocity = ParseFloatOrZero(xmlNode.Attribute("velocity")?.Value);
             string direction = xmlNode.Attribute("direction")?.Value ?? string.Empty;
