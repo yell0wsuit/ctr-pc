@@ -7,7 +7,7 @@ namespace CutTheRope.Framework.Visual
         public virtual float StringWidth(string str)
         {
             float totalWidth = 0f;
-            int length = str.Length();
+            int length = str.Length;
             char[] characters = str.GetCharacters();
             float spacing = 0f;
             for (int i = 0; i < length; i++)

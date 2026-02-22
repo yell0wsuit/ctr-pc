@@ -10,19 +10,9 @@ namespace CutTheRope.Helpers
             return value ?? string.Empty;
         }
 
-        public static int Length(this string value)
-        {
-            return SafeValue(value).Length;
-        }
-
         public static bool IsEqualToString(this string value, string other)
         {
             return value == null ? other == null : other != null && value.Equals(other, StringComparison.Ordinal);
-        }
-
-        public static int IndexOf(this string value, char c)
-        {
-            return SafeValue(value).IndexOf(c);
         }
 
         public static char CharacterAtIndex(this string value, int n)

@@ -11,12 +11,12 @@ namespace CutTheRope.GameMain
         {
             rotation = 0f;
             string angleString = xml.AttributeAsNSString("angle");
-            if (angleString.Length() != 0)
+            if (angleString.Length != 0)
             {
                 rotation = angleString.FloatValue();
             }
             string pathString = xml.AttributeAsNSString("path");
-            if (pathString != null && pathString.Length() != 0)
+            if (pathString != null && pathString.Length != 0)
             {
                 int i = 100;
                 if (pathString.CharacterAtIndex(0) == 'R')

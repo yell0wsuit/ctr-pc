@@ -67,9 +67,9 @@ namespace CutTheRope.Framework.Helpers
                 return;
             }
             AddPathPoint(s);
-            if (p.CharacterAtIndex(p.Length() - 1) == ',')
+            if (p.CharacterAtIndex(p.Length - 1) == ',')
             {
-                p = p.SubstringToIndex(p.Length() - 1);
+                p = p.SubstringToIndex(p.Length - 1);
             }
             List<string> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)

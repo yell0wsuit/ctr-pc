@@ -98,7 +98,7 @@ namespace CutTheRope.Framework.Visual
         {
             multiDrawers.Clear();
             int totalCharmaps = font.TotalCharmaps();
-            int textLength = string_.Length();
+            int textLength = string_.Length;
             char[] characters = string_.GetCharacters();
             int[] array = new int[totalCharmaps];
             for (int i = 0; i < textLength; i++)
@@ -128,7 +128,7 @@ namespace CutTheRope.Framework.Visual
             for (int k = 0; k < visibleLineCount; k++)
             {
                 FormattedString formattedString = formattedStrings[k];
-                int lineLength = formattedString.string_.Length();
+                int lineLength = formattedString.string_.Length;
                 char[] characters3 = formattedString.string_.GetCharacters();
                 float lineX = align == 1 ? 0f : align != 2 ? wrapWidth - formattedString.width : (wrapWidth - formattedString.width) / 2f;
                 for (int l = 0; l < lineLength; l++)
@@ -474,7 +474,7 @@ namespace CutTheRope.Framework.Visual
         {
             short[] array = new short[512];
             char[] characters = string_.GetCharacters();
-            int textLength = string_.Length();
+            int textLength = string_.Length;
             int rangesLength = 0;
             int wordStart = 0;
             float wordWidth = 0f;

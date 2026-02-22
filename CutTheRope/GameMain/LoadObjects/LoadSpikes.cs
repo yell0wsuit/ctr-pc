@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
             float an = xmlNode.AttributeAsNSString("angle").IntValue();
             string toggledAttribute = xmlNode.AttributeAsNSString("toggled");
             int toggledState = -1;
-            if (toggledAttribute.Length() > 0)
+            if (toggledAttribute.Length > 0)
             {
                 toggledState = toggledAttribute.IsEqualToString("false") ? -1 : toggledAttribute.IntValue();
             }

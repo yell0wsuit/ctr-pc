@@ -84,7 +84,7 @@ namespace CutTheRope.Framework.Helpers
         {
             rotation = xml.AttributeAsNSString("angle").FloatValue();
             string pathString = xml.AttributeAsNSString("path");
-            if (pathString != null && pathString.Length() != 0)
+            if (pathString != null && pathString.Length != 0)
             {
                 int moverCapacity = 100;
                 if (pathString.CharacterAtIndex(0) == 'R')
