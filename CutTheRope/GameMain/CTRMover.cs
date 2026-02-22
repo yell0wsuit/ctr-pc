@@ -1,8 +1,8 @@
 using System;
+using System.Globalization;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {

@@ -1,7 +1,7 @@
+using System.Globalization;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Helpers;
-using System.Globalization;
 
 namespace CutTheRope.GameMain
 {

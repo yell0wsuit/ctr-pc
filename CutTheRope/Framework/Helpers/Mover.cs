@@ -1,7 +1,7 @@
 using System;
+using System.Globalization;
 
 using CutTheRope.Framework.Core;
-using System.Globalization;
 
 namespace CutTheRope.Framework.Helpers
 {
