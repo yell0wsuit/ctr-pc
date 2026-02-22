@@ -414,21 +414,39 @@ namespace CutTheRope.GameMain
             throw new InvalidDataException($"{fileName} has invalid integer value for '{propertyName}'.");
         }
 
-        private static bool ParseBoolProperty(JsonElement element, string propertyName, bool defaultValue, string fileName)
+        private static bool ParseBoolProperty(
+            JsonElement element,
+            string propertyName,
+            bool defaultValue,
+            string fileName
+        )
         {
+            bool ThrowInvalid()
+            {
+                throw new InvalidDataException(
+                    $"{fileName} has invalid boolean value for '{propertyName}'."
+                );
+            }
+
             return !element.TryGetProperty(propertyName, out JsonElement value)
                 ? defaultValue
                 : value.ValueKind switch
                 {
                     JsonValueKind.True => true,
                     JsonValueKind.False => false,
-                    JsonValueKind.String when bool.TryParse(value.GetString(), out bool parsed) => parsed,
-                    JsonValueKind.Undefined => throw new NotImplementedException(),
-                    JsonValueKind.Object => throw new NotImplementedException(),
-                    JsonValueKind.Array => throw new NotImplementedException(),
-                    JsonValueKind.Number => throw new NotImplementedException(),
-                    JsonValueKind.Null => throw new NotImplementedException(),
-                    _ => throw new InvalidDataException($"{fileName} has invalid boolean value for '{propertyName}'."),
+
+                    JsonValueKind.String
+                        when bool.TryParse(value.GetString(), out bool parsed)
+                            => parsed,
+
+                    JsonValueKind.Undefined or
+                    JsonValueKind.Object or
+                    JsonValueKind.Array or
+                    JsonValueKind.Number or
+                    JsonValueKind.Null or
+                    JsonValueKind.String
+                        => ThrowInvalid(),
+                    _ => ThrowInvalid(),
                 };
         }
 
