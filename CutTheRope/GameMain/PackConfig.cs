@@ -374,26 +374,34 @@ namespace CutTheRope.GameMain
                 return defaultValue;
             }
 
-            if (value.ValueKind == JsonValueKind.Number)
+            switch (value.ValueKind)
             {
-                if (value.TryGetInt32(out int intValue))
-                {
-                    return intValue;
-                }
+                case JsonValueKind.Number:
+                    if (value.TryGetInt32(out int intValue))
+                    {
+                        return intValue;
+                    }
 
-                if (value.TryGetInt64(out long longValue))
-                {
-                    return (int)longValue;
-                }
-            }
-
-            if (value.ValueKind == JsonValueKind.String)
-            {
-                string strValue = value.GetString();
-                if (!string.IsNullOrWhiteSpace(strValue) && int.TryParse(strValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedInt))
-                {
-                    return parsedInt;
-                }
+                    if (value.TryGetInt64(out long longValue))
+                    {
+                        return (int)longValue;
+                    }
+                    break;
+                case JsonValueKind.String:
+                    string strValue = value.GetString();
+                    if (!string.IsNullOrWhiteSpace(strValue) && int.TryParse(strValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedInt))
+                    {
+                        return parsedInt;
+                    }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Array:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    throw new InvalidDataException($"{fileName} has invalid integer value for '{propertyName}'.");
             }
 
             throw new InvalidDataException($"{fileName} has invalid integer value for '{propertyName}'.");
@@ -443,23 +451,32 @@ namespace CutTheRope.GameMain
 
             List<string> names = [];
 
-            if (value.ValueKind == JsonValueKind.String)
+            switch (value.ValueKind)
             {
-                names.AddRange(value.GetString()?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim()) ?? []);
-            }
-            else if (value.ValueKind == JsonValueKind.Array)
-            {
-                foreach (JsonElement item in value.EnumerateArray())
-                {
-                    if (item.ValueKind == JsonValueKind.String)
+                case JsonValueKind.String:
+                    names.AddRange(value.GetString()?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim()) ?? []);
+                    break;
+                case JsonValueKind.Array:
+                    foreach (JsonElement item in value.EnumerateArray())
                     {
-                        string name = item.GetString()?.Trim();
-                        if (!string.IsNullOrWhiteSpace(name))
+                        if (item.ValueKind == JsonValueKind.String)
                         {
-                            names.Add(name);
+                            string name = item.GetString()?.Trim();
+                            if (!string.IsNullOrWhiteSpace(name))
+                            {
+                                names.Add(name);
+                            }
                         }
                     }
-                }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    break;
             }
 
             names.Add(null);
@@ -473,23 +490,32 @@ namespace CutTheRope.GameMain
                 return null;
             }
 
-            if (value.ValueKind == JsonValueKind.String)
+            switch (value.ValueKind)
             {
-                string[] parts = value.GetString()?.Split(',') ?? [];
-                if (parts.Length >= 2)
-                {
-                    float x = float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
-                    float y = float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
-                    return new Vector(x, y);
-                }
-            }
-            else if (value.ValueKind == JsonValueKind.Array)
-            {
-                float[] coords = [.. value.EnumerateArray().Select(item => item.GetSingle())];
-                if (coords.Length >= 2)
-                {
-                    return new Vector(coords[0], coords[1]);
-                }
+                case JsonValueKind.String:
+                    string[] parts = value.GetString()?.Split(',') ?? [];
+                    if (parts.Length >= 2)
+                    {
+                        float x = float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
+                        float y = float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
+                        return new Vector(x, y);
+                    }
+                    break;
+                case JsonValueKind.Array:
+                    float[] coords = [.. value.EnumerateArray().Select(item => item.GetSingle())];
+                    if (coords.Length >= 2)
+                    {
+                        return new Vector(coords[0], coords[1]);
+                    }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    throw new InvalidDataException($"{fileName} has invalid vector value for '{propertyName}'.");
             }
 
             throw new InvalidDataException($"{fileName} has invalid vector value for '{propertyName}'.");
@@ -502,24 +528,27 @@ namespace CutTheRope.GameMain
                 return DefaultBoxHoleBgColor;
             }
 
-            if (value.ValueKind == JsonValueKind.String)
+            switch (value.ValueKind)
             {
-                string[] parts = value.GetString()?.Split(',') ?? [];
-                return ParseColorParts(parts);
+                case JsonValueKind.String:
+                    string[] parts = value.GetString()?.Split(',') ?? [];
+                    return ParseColorParts(parts);
+                case JsonValueKind.Array:
+                    List<string> arrayParts = [];
+                    foreach (JsonElement item in value.EnumerateArray())
+                    {
+                        arrayParts.Add(item.ToString());
+                    }
+                    return ParseColorParts([.. arrayParts]);
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    return DefaultBoxHoleBgColor;
             }
-
-            if (value.ValueKind == JsonValueKind.Array)
-            {
-                List<string> parts = [];
-                foreach (JsonElement item in value.EnumerateArray())
-                {
-                    parts.Add(item.ToString());
-                }
-
-                return ParseColorParts([.. parts]);
-            }
-
-            return DefaultBoxHoleBgColor;
         }
 
         private static RGBAColor ParseColorParts(string[] parts)
