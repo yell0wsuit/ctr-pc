@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 #if MACOS_AVFOUNDATION
 using Foundation;
@@ -28,14 +30,42 @@ namespace CutTheRope.Framework.Core
         ];
 
         private const string GlobalSaveFileName = "ctr_preferences.json";
-        private static readonly string[] BoxSaveFileNames =
-        [
-            "ctroriginal_savefile.json",
-            // add more save file names here for separate box pack save data
-        ];
+        private const string DynamicBoxSaveFilePrefix = "ctrsave_slot";
+        private const string DynamicBoxSaveFileExtension = ".json";
         private const string SaveFolderName = "CutTheRopeDX_SaveData";
 
         private static string GlobalSaveFilePath => Path.Combine(SaveDirectory, GlobalSaveFileName);
+
+        private static string GetBoxSaveFileName(int slot)
+        {
+            return $"{DynamicBoxSaveFilePrefix}{slot:D2}{DynamicBoxSaveFileExtension}";
+        }
+
+        private static string GetBoxSaveFilePath(int slot)
+        {
+            return Path.Combine(SaveDirectory, GetBoxSaveFileName(slot));
+        }
+
+        private static bool TryParseBoxSlotFromFileName(string fileName, out int slot)
+        {
+            slot = 0;
+
+            if (string.IsNullOrWhiteSpace(fileName) ||
+                !fileName.StartsWith(DynamicBoxSaveFilePrefix, StringComparison.OrdinalIgnoreCase) ||
+                !fileName.EndsWith(DynamicBoxSaveFileExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            int slotPartLength = fileName.Length - DynamicBoxSaveFilePrefix.Length - DynamicBoxSaveFileExtension.Length;
+            if (slotPartLength <= 0)
+            {
+                return false;
+            }
+
+            string slotPart = fileName.Substring(DynamicBoxSaveFilePrefix.Length, slotPartLength);
+            return int.TryParse(slotPart, NumberStyles.None, CultureInfo.InvariantCulture, out slot) && slot >= 0;
+        }
 
         // Global preferences (PREFS_*, IAP_*, SOUND_ON, etc.)
         private static readonly Dictionary<string, object> GlobalData = [];
@@ -139,7 +169,19 @@ namespace CutTheRope.Framework.Core
         /// <param name="newDir">The new directory to move save files to.</param>
         private static void MigrateOldSaveFiles(string oldDir, string newDir)
         {
-            string[] filesToMigrate = [GlobalSaveFileName, .. BoxSaveFileNames];
+            HashSet<string> filesToMigrate = new([GlobalSaveFileName], StringComparer.OrdinalIgnoreCase);
+
+            if (Directory.Exists(oldDir))
+            {
+                foreach (string oldSlotFilePath in Directory.EnumerateFiles(oldDir, $"{DynamicBoxSaveFilePrefix}*{DynamicBoxSaveFileExtension}"))
+                {
+                    string fileName = Path.GetFileName(oldSlotFilePath);
+                    if (TryParseBoxSlotFromFileName(fileName, out _))
+                    {
+                        _ = filesToMigrate.Add(fileName);
+                    }
+                }
+            }
 
             foreach (string fileName in filesToMigrate)
             {
@@ -433,7 +475,7 @@ namespace CutTheRope.Framework.Core
                 }
                 writer.WriteEndObject();
             }
-            return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         /// <summary>
@@ -449,10 +491,9 @@ namespace CutTheRope.Framework.Core
         private static void WritePreferenceFiles()
         {
             File.WriteAllText(GlobalSaveFilePath, SerializeToJson(GlobalData));
-            for (int b = 0; b < BoxSaveFileNames.Length; b++)
+            for (int b = 0; b < BoxData.Count; b++)
             {
-                Dictionary<string, object> boxDict = b < BoxData.Count ? BoxData[b] : [];
-                File.WriteAllText(Path.Combine(SaveDirectory, BoxSaveFileNames[b]), SerializeToJson(boxDict));
+                File.WriteAllText(GetBoxSaveFilePath(b), SerializeToJson(BoxData[b]));
             }
         }
 
@@ -665,25 +706,27 @@ namespace CutTheRope.Framework.Core
                 }
             }
 
-            // Load each box save file.
-            for (int b = 0; b < BoxSaveFileNames.Length; b++)
+            // Load dynamic slot save files
+            if (Directory.Exists(SaveDirectory))
             {
-                string boxFilePath = Path.Combine(SaveDirectory, BoxSaveFileNames[b]);
-                if (!File.Exists(boxFilePath))
+                foreach (string boxFilePath in Directory.EnumerateFiles(SaveDirectory, $"{DynamicBoxSaveFilePrefix}*{DynamicBoxSaveFileExtension}"))
                 {
-                    continue;
-                }
-
-                try
-                {
-                    string json = File.ReadAllText(boxFilePath);
-                    // Route non-game-data keys (IAP_*, SOUND_ON, etc.) to GlobalData for migration compat.
-                    bool migrated = DeserializeFromJsonRouted(json, GlobalData, EnsureBoxData(b));
-                    needsSave |= migrated;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error loading {BoxSaveFileNames[b]}: {ex}");
+                    string fileName = Path.GetFileName(boxFilePath);
+                    if (!TryParseBoxSlotFromFileName(fileName, out int slot))
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        string json = File.ReadAllText(boxFilePath);
+                        // Route non-game-data keys (IAP_*, SOUND_ON, etc.) to GlobalData for migration compat.
+                        bool migrated = DeserializeFromJsonRouted(json, GlobalData, EnsureBoxData(slot));
+                        needsSave |= migrated;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error loading {fileName}: {ex}");
+                    }
                 }
             }
 
