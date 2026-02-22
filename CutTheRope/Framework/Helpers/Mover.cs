@@ -66,7 +66,7 @@ namespace CutTheRope.Framework.Helpers
                 return;
             }
             AddPathPoint(s);
-            if (p[p.Length - 1] == ',')
+            if (p[^1] == ',')
             {
                 p = p[..(p.Length - 1)];
             }
