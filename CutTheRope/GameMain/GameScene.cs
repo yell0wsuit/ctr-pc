@@ -7,7 +7,6 @@ using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -47,7 +46,7 @@ namespace CutTheRope.GameMain
         public static bool ShouldSkipTutorialElement(XElement c)
         {
             string currentLang = LanguageHelper.CurrentCode;
-            string locale = c.AttributeAsNSString("locale");
+            string locale = c.Attribute("locale")?.Value ?? string.Empty;
             return LanguageHelper.IsUiLanguageCode(currentLang) ? locale != currentLang : locale != "en";
         }
 

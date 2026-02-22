@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 using System.Globalization;
@@ -83,8 +82,8 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void ParseMover(XElement xml)
         {
-            rotation = string.IsNullOrEmpty(xml.AttributeAsNSString("angle")) ? 0f : float.Parse(xml.AttributeAsNSString("angle"), CultureInfo.InvariantCulture);
-            string pathString = xml.AttributeAsNSString("path");
+            rotation = string.IsNullOrEmpty(xml.Attribute("angle")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("angle")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            string pathString = xml.Attribute("path")?.Value ?? string.Empty;
             if (pathString != null && pathString.Length != 0)
             {
                 int moverCapacity = 100;
@@ -92,8 +91,8 @@ namespace CutTheRope.Framework.Helpers
                 {
                     moverCapacity = ((string.IsNullOrEmpty(pathString[2..]) ? 0 : int.Parse(pathString[2..])) / 2) + 1;
                 }
-                float moveSpeed = string.IsNullOrEmpty(xml.AttributeAsNSString("moveSpeed")) ? 0f : float.Parse(xml.AttributeAsNSString("moveSpeed"), CultureInfo.InvariantCulture);
-                float rotateSpeed = string.IsNullOrEmpty(xml.AttributeAsNSString("rotateSpeed")) ? 0f : float.Parse(xml.AttributeAsNSString("rotateSpeed"), CultureInfo.InvariantCulture);
+                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
                 Mover parsedMover = new(moverCapacity, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation

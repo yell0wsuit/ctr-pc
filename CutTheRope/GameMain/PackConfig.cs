@@ -179,7 +179,7 @@ namespace CutTheRope.GameMain
 
         private static List<PackDefinition> LoadFromXml()
         {
-            XElement root = XElementExtensions.LoadContentXml("packs.xml");
+            XElement root = ContentPaths.LoadXml("packs.xml");
             List<PackDefinition> results = [];
 
             if (root == null)
@@ -239,19 +239,19 @@ namespace CutTheRope.GameMain
 
         private static int ParseIntAttribute(XElement element, string attributeName, int defaultValue = 0)
         {
-            string value = element.AttributeAsNSString(attributeName);
+            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
             return string.IsNullOrWhiteSpace(value) ? defaultValue : int.Parse(value, CultureInfo.InvariantCulture);
         }
 
         private static bool ParseBoolAttribute(XElement element, string attributeName, bool defaultValue = false)
         {
-            string value = element.AttributeAsNSString(attributeName);
+            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
             return string.IsNullOrWhiteSpace(value) ? defaultValue : bool.Parse(value);
         }
 
         private static Vector? ParseVectorAttribute(XElement element, string attributeName)
         {
-            string value = element.AttributeAsNSString(attributeName);
+            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
             if (string.IsNullOrWhiteSpace(value))
             {
                 return null;
@@ -270,7 +270,7 @@ namespace CutTheRope.GameMain
 
         private static RGBAColor ParseColorAttribute(XElement element, string attributeName)
         {
-            string value = element.AttributeAsNSString(attributeName);
+            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
             if (string.IsNullOrWhiteSpace(value))
             {
                 return DefaultBoxHoleBgColor;
@@ -291,7 +291,7 @@ namespace CutTheRope.GameMain
 
         private static int ParseLevelCount(XElement element)
         {
-            string attributeValue = element.AttributeAsNSString("levelCount");
+            string attributeValue = element.Attribute("levelCount")?.Value ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(attributeValue))
             {
                 return int.Parse(attributeValue, CultureInfo.InvariantCulture);
@@ -303,13 +303,13 @@ namespace CutTheRope.GameMain
 
         private static string ParseResourceName(XElement element, string attributeName)
         {
-            string value = element.AttributeAsNSString(attributeName);
+            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
             return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         }
 
         private static string[] ParseResourceNames(XElement element, string attributeName)
         {
-            string value = element.AttributeAsNSString(attributeName);
+            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
             if (string.IsNullOrWhiteSpace(value))
             {
                 return EmptyResourceNames;

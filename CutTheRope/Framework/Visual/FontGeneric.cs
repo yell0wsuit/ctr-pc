@@ -1,5 +1,3 @@
-using CutTheRope.Helpers;
-
 namespace CutTheRope.Framework.Visual
 {
     internal abstract class FontGeneric : FrameworkTypes

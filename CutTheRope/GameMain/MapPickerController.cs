@@ -63,7 +63,7 @@ namespace CutTheRope.GameMain
             if (autoLoad)
             {
                 string mapPath = Path.Combine(ContentPaths.MapsDirectory, selectedMap);
-                XElement mapElement = XElementExtensions.LoadContentXml(mapPath);
+                XElement mapElement = ContentPaths.LoadXml(mapPath);
                 XmlLoaderFinishedWithfromwithSuccess(mapElement, mapPath, mapElement != null);
                 return;
             }

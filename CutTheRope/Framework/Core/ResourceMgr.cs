@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Helpers;
@@ -134,16 +135,16 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         private static Font LoadSpriteFontInfo(string path, string resourceName)
         {
-            XElement xmlNode = XElementExtensions.LoadContentXml(path);
-            int charOffset = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("charoff")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("charoff"));
-            int lineOffset = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("lineoff")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("lineoff"));
-            int spaceWidth = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("space")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("space"));
-            XElement charsNode = xmlNode.FindChildWithTagNameRecursively("chars", false);
-            XElement kerningNode = xmlNode.FindChildWithTagNameRecursively("kerning", false);
-            string charsData = charsNode.ValueAsNSString();
+            XElement xmlNode = ContentPaths.LoadXml(path);
+            int charOffset = string.IsNullOrEmpty(xmlNode.Attribute("charoff")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("charoff")?.Value ?? string.Empty);
+            int lineOffset = string.IsNullOrEmpty(xmlNode.Attribute("lineoff")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("lineoff")?.Value ?? string.Empty);
+            int spaceWidth = string.IsNullOrEmpty(xmlNode.Attribute("space")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("space")?.Value ?? string.Empty);
+            XElement charsNode = xmlNode.Elements().FirstOrDefault(e => e.Name.LocalName == "chars");
+            XElement kerningNode = xmlNode.Elements().FirstOrDefault(e => e.Name.LocalName == "kerning");
+            string charsData = charsNode.Value;
             if (kerningNode != null)
             {
-                _ = kerningNode.ValueAsNSString();
+                _ = kerningNode.Value;
             }
             Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(charsData, Application.GetTexture(resourceName));
             font.SetCharOffsetLineOffsetSpaceWidth(charOffset, lineOffset, spaceWidth);

@@ -2,7 +2,6 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 using System.Globalization;
 
 namespace CutTheRope.GameMain
@@ -22,17 +21,17 @@ namespace CutTheRope.GameMain
             quadSize.Y *= 0.05f;
             rocket.bb = MakeRectangle(quadCenter.X - (quadSize.X / 2f), quadCenter.Y - (quadSize.Y / 2f), quadSize.X, quadSize.Y);
 
-            rocket.x = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
-            rocket.y = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
-            rocket.rotation = (string.IsNullOrEmpty(xmlNode.AttributeAsNSString("angle")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("angle"), CultureInfo.InvariantCulture)) - DEG_180;
-            rocket.impulse = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("impulse")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("impulse"), CultureInfo.InvariantCulture);
-            rocket.impulseFactor = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("impulseFactor")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("impulseFactor"), CultureInfo.InvariantCulture);
+            rocket.x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
+            rocket.y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+            rocket.rotation = (string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) - DEG_180;
+            rocket.impulse = string.IsNullOrEmpty(xmlNode.Attribute("impulse")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("impulse")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            rocket.impulseFactor = string.IsNullOrEmpty(xmlNode.Attribute("impulseFactor")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("impulseFactor")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
             if (rocket.impulseFactor == 0f)
             {
                 rocket.impulseFactor = 0.6f;
             }
-            rocket.time = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("time")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("time"), CultureInfo.InvariantCulture);
-            rocket.isRotatable = xmlNode.AttributeAsNSString("isRotatable") == "true";
+            rocket.time = string.IsNullOrEmpty(xmlNode.Attribute("time")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("time")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            rocket.isRotatable = xmlNode.Attribute("isRotatable")?.Value == "true";
             rocket.startRotation = rocket.rotation;
             rocket.ParseMover(xmlNode);
             rocket.RotateWithBB(rocket.rotation);

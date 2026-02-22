@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 using System.Globalization;
 
 namespace CutTheRope.GameMain
@@ -162,7 +161,7 @@ namespace CutTheRope.GameMain
         /// <param name="xml">The XML element containing <c>path</c>, <c>moveSpeed</c>, and <c>rotateSpeed</c> attributes.</param>
         public override void ParseMover(XElement xml)
         {
-            string path = xml.AttributeAsNSString("path");
+            string path = xml.Attribute("path")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(path))
             {
                 int pathPoints = 100;
@@ -171,8 +170,8 @@ namespace CutTheRope.GameMain
                     int pathRadius = string.IsNullOrEmpty(path[2..]) ? 0 : int.Parse(path[2..]);
                     pathPoints = MAX(11, (pathRadius / 2) + 1);
                 }
-                float moveSpeed = string.IsNullOrEmpty(xml.AttributeAsNSString("moveSpeed")) ? 0f : float.Parse(xml.AttributeAsNSString("moveSpeed"), CultureInfo.InvariantCulture);
-                float rotateSpeed = string.IsNullOrEmpty(xml.AttributeAsNSString("rotateSpeed")) ? 0f : float.Parse(xml.AttributeAsNSString("rotateSpeed"), CultureInfo.InvariantCulture);
+                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
                 CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation

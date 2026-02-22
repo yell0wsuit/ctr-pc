@@ -1,6 +1,4 @@
 using System.Xml.Linq;
-
-using CutTheRope.Helpers;
 using System.Globalization;
 
 namespace CutTheRope.GameMain
@@ -20,9 +18,9 @@ namespace CutTheRope.GameMain
             {
                 star.EnableNightMode();
             }
-            star.x = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
-            star.y = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
-            star.timeout = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("timeout")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("timeout"), CultureInfo.InvariantCulture);
+            star.x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
+            star.y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+            star.timeout = string.IsNullOrEmpty(xmlNode.Attribute("timeout")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("timeout")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
             star.CreateAnimations();
             star.bb = MakeRectangle(70f, 64f, 82f, 82f);
             star.ParseMover(xmlNode);

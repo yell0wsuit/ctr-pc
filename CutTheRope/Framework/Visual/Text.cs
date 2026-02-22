@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
-using CutTheRope.Helpers;
 
 using FontStashSharp;
 

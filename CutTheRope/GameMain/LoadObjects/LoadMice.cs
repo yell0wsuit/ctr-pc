@@ -1,6 +1,4 @@
 using System.Xml.Linq;
-
-using CutTheRope.Helpers;
 using System.Globalization;
 
 namespace CutTheRope.GameMain
@@ -9,17 +7,17 @@ namespace CutTheRope.GameMain
     {
         private void LoadMouse(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("x"), CultureInfo.InvariantCulture)) * scale) + offsetX + mapOffsetX;
-            float py = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("y"), CultureInfo.InvariantCulture)) * scale) + offsetY + mapOffsetY;
-            float angle = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("angle")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("angle"), CultureInfo.InvariantCulture);
-            float radius = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("radius")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("radius"), CultureInfo.InvariantCulture);
+            float px = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale) + offsetX + mapOffsetX;
+            float py = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale) + offsetY + mapOffsetY;
+            float angle = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            float radius = string.IsNullOrEmpty(xmlNode.Attribute("radius")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("radius")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
             radius = radius != 0f ? radius * scale : 80f * scale;
-            float activeTime = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("activeTime")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("activeTime"), CultureInfo.InvariantCulture);
+            float activeTime = string.IsNullOrEmpty(xmlNode.Attribute("activeTime")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("activeTime")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
             if (activeTime == 0f)
             {
                 activeTime = 3f;
             }
-            int index = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("index")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("index"));
+            int index = string.IsNullOrEmpty(xmlNode.Attribute("index")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("index")?.Value ?? string.Empty);
             if (index == 0)
             {
                 index = mice.Count + 1;

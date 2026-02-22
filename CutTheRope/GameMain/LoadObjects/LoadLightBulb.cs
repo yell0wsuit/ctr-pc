@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Sfe;
-using CutTheRope.Helpers;
 using System.Globalization;
 
 namespace CutTheRope.GameMain
@@ -16,10 +15,10 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadLightBulb(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float x = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
-            float y = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
-            float litRadius = (string.IsNullOrEmpty(xmlNode.AttributeAsNSString("litRadius")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("litRadius"), CultureInfo.InvariantCulture)) * scale;
-            string bulbNumber = xmlNode.AttributeAsNSString("bulbNumber");
+            float x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
+            float y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+            float litRadius = (string.IsNullOrEmpty(xmlNode.Attribute("litRadius")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("litRadius")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale;
+            string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
 
             ConstraintedPoint constraint = new();
             constraint.SetWeight(1f);

@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -24,9 +23,9 @@ namespace CutTheRope.GameMain
             sock.CreateAnimations();
             sock.scaleX = sock.scaleY = 0.7f;
             sock.DoRestoreCutTransparency();
-            sock.x = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
-            sock.y = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
-            sock.group = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("group")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("group"));
+            sock.x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
+            sock.y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+            sock.group = string.IsNullOrEmpty(xmlNode.Attribute("group")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("group")?.Value ?? string.Empty);
             sock.anchor = 10;
             sock.rotationCenterY -= (sock.height / 2f) - 85f;
             if (sock.group == 0)

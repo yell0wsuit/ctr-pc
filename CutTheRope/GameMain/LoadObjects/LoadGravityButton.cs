@@ -1,7 +1,5 @@
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -20,8 +18,8 @@ namespace CutTheRope.GameMain
             gravityButton.visible = false;
             gravityButton.touchable = false;
             _ = AddChild(gravityButton);
-            gravityButton.x = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
-            gravityButton.y = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
+            gravityButton.x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
+            gravityButton.y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
             gravityButton.anchor = 18;
         }
     }

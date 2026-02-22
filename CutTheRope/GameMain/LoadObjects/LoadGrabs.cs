@@ -3,7 +3,6 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
-using CutTheRope.Helpers;
 using System.Globalization;
 
 namespace CutTheRope.GameMain
@@ -20,23 +19,23 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadGrab(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float hx = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
-            float hy = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
-            float len = (string.IsNullOrEmpty(xmlNode.AttributeAsNSString("length")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("length"))) * scale;
-            float grabRadius = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("radius")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("radius"), CultureInfo.InvariantCulture);
-            bool wheel = xmlNode.AttributeAsNSString("wheel") == "true";
-            bool kickable = xmlNode.AttributeAsNSString("kickable") == "true";
-            bool kicked = xmlNode.AttributeAsNSString("kicked") == "true";
-            bool invisible = xmlNode.AttributeAsNSString("invisible") == "true";
-            float k = (string.IsNullOrEmpty(xmlNode.AttributeAsNSString("moveLength")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("moveLength"), CultureInfo.InvariantCulture)) * scale;
-            bool v = xmlNode.AttributeAsNSString("moveVertical") == "true";
-            float o = (string.IsNullOrEmpty(xmlNode.AttributeAsNSString("moveOffset")) ? 0f : float.Parse(xmlNode.AttributeAsNSString("moveOffset"), CultureInfo.InvariantCulture)) * scale;
-            bool spider = xmlNode.AttributeAsNSString("spider") == "true";
-            bool flag = xmlNode.AttributeAsNSString("part") == "L";
-            bool flag2 = xmlNode.AttributeAsNSString("hidePath") == "true";
-            bool bindBulb = xmlNode.AttributeAsNSString("bindBulb") == "true";
-            string bulbNumber = xmlNode.AttributeAsNSString("bulbNumber");
-            bool gun = xmlNode.AttributeAsNSString("gun") == "true";
+            float hx = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
+            float hy = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+            float len = (string.IsNullOrEmpty(xmlNode.Attribute("length")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("length")?.Value ?? string.Empty)) * scale;
+            float grabRadius = string.IsNullOrEmpty(xmlNode.Attribute("radius")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("radius")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            bool wheel = xmlNode.Attribute("wheel")?.Value == "true";
+            bool kickable = xmlNode.Attribute("kickable")?.Value == "true";
+            bool kicked = xmlNode.Attribute("kicked")?.Value == "true";
+            bool invisible = xmlNode.Attribute("invisible")?.Value == "true";
+            float k = (string.IsNullOrEmpty(xmlNode.Attribute("moveLength")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("moveLength")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale;
+            bool v = xmlNode.Attribute("moveVertical")?.Value == "true";
+            float o = (string.IsNullOrEmpty(xmlNode.Attribute("moveOffset")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("moveOffset")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale;
+            bool spider = xmlNode.Attribute("spider")?.Value == "true";
+            bool flag = xmlNode.Attribute("part")?.Value == "L";
+            bool flag2 = xmlNode.Attribute("hidePath")?.Value == "true";
+            bool bindBulb = xmlNode.Attribute("bindBulb")?.Value == "true";
+            string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
+            bool gun = xmlNode.Attribute("gun")?.Value == "true";
             Grab grab = new();
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
@@ -54,7 +53,7 @@ namespace CutTheRope.GameMain
                 if (!flag2)
                 {
                     int pollenPathStep = 3;
-                    bool flag3 = xmlNode.AttributeAsNSString("path").StartsWith("R");
+                    bool flag3 = (xmlNode.Attribute("path")?.Value ?? string.Empty).StartsWith('R');
                     for (int l = 0; l < grab.mover.pathLen - 1; l++)
                     {
                         if (!flag3 || l % pollenPathStep == 0)

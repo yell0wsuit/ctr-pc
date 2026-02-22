@@ -1,8 +1,6 @@
 using System;
 using System.Xml.Linq;
 
-using CutTheRope.Helpers;
-
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -16,11 +14,11 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadRotatedCircle(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float centerX = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("x")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("x"))) * scale) + offsetX + mapOffsetX;
-            float centerY = ((string.IsNullOrEmpty(xmlNode.AttributeAsNSString("y")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("y"))) * scale) + offsetY + mapOffsetY;
-            float circleSize = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("size")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("size"));
-            float d = string.IsNullOrEmpty(xmlNode.AttributeAsNSString("handleAngle")) ? 0 : int.Parse(xmlNode.AttributeAsNSString("handleAngle"));
-            bool hasOneHandle = "true".Equals(xmlNode.AttributeAsNSString("oneHandle"), StringComparison.OrdinalIgnoreCase);
+            float centerX = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
+            float centerY = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+            float circleSize = string.IsNullOrEmpty(xmlNode.Attribute("size")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("size")?.Value ?? string.Empty);
+            float d = string.IsNullOrEmpty(xmlNode.Attribute("handleAngle")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("handleAngle")?.Value ?? string.Empty);
+            bool hasOneHandle = "true".Equals(xmlNode.Attribute("oneHandle")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
             RotatedCircle rotatedCircle = new()
             {
                 anchor = 18,

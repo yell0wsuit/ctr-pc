@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Helpers;
 using System.Globalization;
 
 namespace CutTheRope.GameMain
