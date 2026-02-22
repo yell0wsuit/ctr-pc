@@ -257,6 +257,13 @@ namespace CutTheRope.GameMain
 
             string configName = ParseRequiredString(entryElement, "name", PackListConfigFile);
             int saveSlot = ParseIntProperty(entryElement, "saveSlot", 0, PackListConfigFile);
+            if (saveSlot < 0)
+            {
+                throw new InvalidDataException(
+                    $"{PackListConfigFile} entry '{configName}' has invalid saveSlot '{saveSlot}'. saveSlot must be >= 0."
+                );
+            }
+
             entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot));
         }
 
