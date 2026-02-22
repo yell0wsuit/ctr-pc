@@ -21,16 +21,16 @@ namespace CutTheRope.GameMain
             quadSize.Y *= 0.05f;
             rocket.bb = MakeRectangle(quadCenter.X - (quadSize.X / 2f), quadCenter.Y - (quadSize.Y / 2f), quadSize.X, quadSize.Y);
 
-            rocket.x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-            rocket.y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
-            rocket.rotation = (string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) - DEG_180;
-            rocket.impulse = string.IsNullOrEmpty(xmlNode.Attribute("impulse")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("impulse")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
-            rocket.impulseFactor = string.IsNullOrEmpty(xmlNode.Attribute("impulseFactor")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("impulseFactor")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            rocket.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            rocket.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            rocket.rotation = (string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture)) - DEG_180;
+            rocket.impulse = string.IsNullOrEmpty(xmlNode.Attribute("impulse")?.Value) ? 0f : float.Parse(xmlNode.Attribute("impulse")?.Value, CultureInfo.InvariantCulture);
+            rocket.impulseFactor = string.IsNullOrEmpty(xmlNode.Attribute("impulseFactor")?.Value) ? 0f : float.Parse(xmlNode.Attribute("impulseFactor")?.Value, CultureInfo.InvariantCulture);
             if (rocket.impulseFactor == 0f)
             {
                 rocket.impulseFactor = 0.6f;
             }
-            rocket.time = string.IsNullOrEmpty(xmlNode.Attribute("time")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("time")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            rocket.time = string.IsNullOrEmpty(xmlNode.Attribute("time")?.Value) ? 0f : float.Parse(xmlNode.Attribute("time")?.Value, CultureInfo.InvariantCulture);
             rocket.isRotatable = xmlNode.Attribute("isRotatable")?.Value == "true";
             rocket.startRotation = rocket.rotation;
             rocket.ParseMover(xmlNode);

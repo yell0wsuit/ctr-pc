@@ -13,7 +13,7 @@ namespace CutTheRope.GameMain
             if (p[0] == 'R')
             {
                 bool flag = p[1] == 'C';
-                int radius = (int)RTD(string.IsNullOrEmpty(p[2..]) ? 0 : int.Parse(p[2..]));
+                int radius = (int)RTD(ParseIntOrZero(p[2..]));
                 radius *= 3;
                 int pointCount = radius / 2;
                 if (pointCount <= 0)

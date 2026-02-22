@@ -18,9 +18,9 @@ namespace CutTheRope.GameMain
             {
                 star.EnableNightMode();
             }
-            star.x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-            star.y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
-            star.timeout = string.IsNullOrEmpty(xmlNode.Attribute("timeout")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("timeout")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            star.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            star.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            star.timeout = string.IsNullOrEmpty(xmlNode.Attribute("timeout")?.Value) ? 0f : float.Parse(xmlNode.Attribute("timeout")?.Value, CultureInfo.InvariantCulture);
             star.CreateAnimations();
             star.bb = MakeRectangle(70f, 64f, 82f, 82f);
             star.ParseMover(xmlNode);

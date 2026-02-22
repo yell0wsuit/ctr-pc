@@ -21,10 +21,10 @@ namespace CutTheRope.GameMain
                 int i = 100;
                 if (pathString[0] == 'R')
                 {
-                    i = ((int)((int)RTD(string.IsNullOrEmpty(pathString[2..]) ? 0 : int.Parse(pathString[2..])) * 3.3f) / 2) + 1;
+                    i = ((int)((int)RTD(ParseIntOrZero(pathString[2..])) * 3.3f) / 2) + 1;
                 }
-                float m_ = (string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * 3.3f;
-                float r_ = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                float m_ = (string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value, CultureInfo.InvariantCulture)) * 3.3f;
+                float r_ = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value, CultureInfo.InvariantCulture);
                 CTRMover cTRMover = new(i, m_, r_)
                 {
                     angle_ = rotation

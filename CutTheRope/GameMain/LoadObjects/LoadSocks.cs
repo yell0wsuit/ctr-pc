@@ -23,9 +23,9 @@ namespace CutTheRope.GameMain
             sock.CreateAnimations();
             sock.scaleX = sock.scaleY = 0.7f;
             sock.DoRestoreCutTransparency();
-            sock.x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-            sock.y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
-            sock.group = string.IsNullOrEmpty(xmlNode.Attribute("group")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("group")?.Value ?? string.Empty);
+            sock.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            sock.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            sock.group = ParseIntOrZero(xmlNode.Attribute("group")?.Value);
             sock.anchor = 10;
             sock.rotationCenterY -= (sock.height / 2f) - 85f;
             if (sock.group == 0)

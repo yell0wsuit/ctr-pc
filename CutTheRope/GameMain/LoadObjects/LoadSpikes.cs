@@ -16,15 +16,15 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadSpike(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-            float py = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
-            int w = string.IsNullOrEmpty(xmlNode.Attribute("size")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("size")?.Value ?? string.Empty);
-            float an = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("angle")?.Value ?? string.Empty);
+            float px = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float py = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            int w = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
+            float an = ParseIntOrZero(xmlNode.Attribute("angle")?.Value);
             string toggledAttribute = xmlNode.Attribute("toggled")?.Value ?? string.Empty;
             int toggledState = -1;
             if (toggledAttribute.Length > 0)
             {
-                toggledState = toggledAttribute == "false" ? -1 : (string.IsNullOrEmpty(toggledAttribute) ? 0 : int.Parse(toggledAttribute));
+                toggledState = toggledAttribute == "false" ? -1 : ParseIntOrZero(toggledAttribute);
             }
             Spikes spikes = new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, toggledState);
             spikes.ParseMover(xmlNode);
@@ -35,9 +35,9 @@ namespace CutTheRope.GameMain
             if (xmlNode.Name.LocalName == "electro")
             {
                 spikes.electro = true;
-                spikes.initialDelay = string.IsNullOrEmpty(xmlNode.Attribute("initialDelay")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("initialDelay")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
-                spikes.onTime = string.IsNullOrEmpty(xmlNode.Attribute("onTime")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("onTime")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
-                spikes.offTime = string.IsNullOrEmpty(xmlNode.Attribute("offTime")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("offTime")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                spikes.initialDelay = string.IsNullOrEmpty(xmlNode.Attribute("initialDelay")?.Value) ? 0f : float.Parse(xmlNode.Attribute("initialDelay")?.Value, CultureInfo.InvariantCulture);
+                spikes.onTime = string.IsNullOrEmpty(xmlNode.Attribute("onTime")?.Value) ? 0f : float.Parse(xmlNode.Attribute("onTime")?.Value, CultureInfo.InvariantCulture);
+                spikes.offTime = string.IsNullOrEmpty(xmlNode.Attribute("offTime")?.Value) ? 0f : float.Parse(xmlNode.Attribute("offTime")?.Value, CultureInfo.InvariantCulture);
                 spikes.electroTimer = 0f;
                 spikes.TurnElectroOff();
                 spikes.electroTimer += spikes.initialDelay;

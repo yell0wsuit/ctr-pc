@@ -34,9 +34,9 @@ namespace CutTheRope.GameMain
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
             string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
-            target.x = support.x = ((string.IsNullOrEmpty(xAttribute) ? 0 : int.Parse(xAttribute)) * scale) + offsetX + mapOffsetX;
+            target.x = support.x = (ParseIntOrZero(xAttribute) * scale) + offsetX + mapOffsetX;
             string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
-            target.y = support.y = ((string.IsNullOrEmpty(yAttribute) ? 0 : int.Parse(yAttribute)) * scale) + offsetY + mapOffsetY;
+            target.y = support.y = (ParseIntOrZero(yAttribute) * scale) + offsetY + mapOffsetY;
 
             target.AddImage(Resources.Img.CharAnimations2);
             target.AddImage(Resources.Img.CharAnimations3);

@@ -82,17 +82,17 @@ namespace CutTheRope.Framework.Helpers
 
         public virtual void ParseMover(XElement xml)
         {
-            rotation = string.IsNullOrEmpty(xml.Attribute("angle")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("angle")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            rotation = string.IsNullOrEmpty(xml.Attribute("angle")?.Value) ? 0f : float.Parse(xml.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
             string pathString = xml.Attribute("path")?.Value ?? string.Empty;
             if (pathString != null && pathString.Length != 0)
             {
                 int moverCapacity = 100;
                 if (pathString[0] == 'R')
                 {
-                    moverCapacity = ((string.IsNullOrEmpty(pathString[2..]) ? 0 : int.Parse(pathString[2..])) / 2) + 1;
+                    moverCapacity = (ParseIntOrZero(pathString[2..]) / 2) + 1;
                 }
-                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
-                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value, CultureInfo.InvariantCulture);
+                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value, CultureInfo.InvariantCulture);
                 Mover parsedMover = new(moverCapacity, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation

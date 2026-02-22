@@ -103,6 +103,11 @@ namespace CutTheRope.Framework
         {
         }
 
+        protected static int ParseIntOrZero(string value)
+        {
+            return int.TryParse(value, out int parsed) ? parsed : 0;
+        }
+
         public static float WVGAH(float H, float L)
         {
             return IS_WVGA ? H : L;

@@ -32,8 +32,8 @@ namespace CutTheRope.GameMain
                     switch (item2.Name.LocalName)
                     {
                         case "map":
-                            mapWidth = string.IsNullOrEmpty(item2.Attribute("width")?.Value ?? string.Empty) ? 0f : float.Parse(item2.Attribute("width")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
-                            mapHeight = string.IsNullOrEmpty(item2.Attribute("height")?.Value ?? string.Empty) ? 0f : float.Parse(item2.Attribute("height")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                            mapWidth = string.IsNullOrEmpty(item2.Attribute("width")?.Value) ? 0f : float.Parse(item2.Attribute("width")?.Value, CultureInfo.InvariantCulture);
+                            mapHeight = string.IsNullOrEmpty(item2.Attribute("height")?.Value) ? 0f : float.Parse(item2.Attribute("height")?.Value, CultureInfo.InvariantCulture);
                             offsetX = (2560f - (mapWidth * scale)) / 2f;
                             mapWidth *= scale;
                             mapHeight *= scale;
@@ -53,18 +53,18 @@ namespace CutTheRope.GameMain
                             }
                             break;
                         case "gameDesign":
-                            mapOffsetX = string.IsNullOrEmpty(item2.Attribute("mapOffsetX")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("mapOffsetX")?.Value ?? string.Empty);
-                            mapOffsetY = string.IsNullOrEmpty(item2.Attribute("mapOffsetY")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("mapOffsetY")?.Value ?? string.Empty);
-                            special = string.IsNullOrEmpty(item2.Attribute("special")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("special")?.Value ?? string.Empty);
-                            ropePhysicsSpeed = string.IsNullOrEmpty(item2.Attribute("ropePhysicsSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(item2.Attribute("ropePhysicsSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                            mapOffsetX = ParseIntOrZero(item2.Attribute("mapOffsetX")?.Value);
+                            mapOffsetY = ParseIntOrZero(item2.Attribute("mapOffsetY")?.Value);
+                            special = ParseIntOrZero(item2.Attribute("special")?.Value);
+                            ropePhysicsSpeed = string.IsNullOrEmpty(item2.Attribute("ropePhysicsSpeed")?.Value) ? 0f : float.Parse(item2.Attribute("ropePhysicsSpeed")?.Value, CultureInfo.InvariantCulture);
                             nightLevel = item2.Attribute("nightLevel")?.Value == "true";
                             twoParts = item2.Attribute("twoParts")?.Value != "true" ? 2 : 0;
-                            waterLevel = string.IsNullOrEmpty(item2.Attribute("water")?.Value ?? string.Empty) ? 0f : float.Parse(item2.Attribute("water")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                            waterLevel = string.IsNullOrEmpty(item2.Attribute("water")?.Value) ? 0f : float.Parse(item2.Attribute("water")?.Value, CultureInfo.InvariantCulture);
                             if (waterLevel != 0f)
                             {
                                 waterLevel *= scale;
                             }
-                            waterSpeed = (string.IsNullOrEmpty(item2.Attribute("waterSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(item2.Attribute("waterSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale;
+                            waterSpeed = (string.IsNullOrEmpty(item2.Attribute("waterSpeed")?.Value) ? 0f : float.Parse(item2.Attribute("waterSpeed")?.Value, CultureInfo.InvariantCulture)) * scale;
                             if (waterLevel > 0f)
                             {
                                 float waterWorldX = offsetX + mapOffsetX;
@@ -91,8 +91,8 @@ namespace CutTheRope.GameMain
                             ropePhysicsSpeed *= 1.4f;
                             break;
                         case "candyL":
-                            starL.pos.X = ((string.IsNullOrEmpty(item2.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-                            starL.pos.Y = ((string.IsNullOrEmpty(item2.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+                            starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            starL.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
                                 int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
@@ -107,8 +107,8 @@ namespace CutTheRope.GameMain
                             candyL.bb = MakeRectangle(155f, 176f, 88f, 76f);
                             break;
                         case "candyR":
-                            starR.pos.X = ((string.IsNullOrEmpty(item2.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-                            starR.pos.Y = ((string.IsNullOrEmpty(item2.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+                            starR.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            starR.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
                                 int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
@@ -123,8 +123,8 @@ namespace CutTheRope.GameMain
                             candyR.bb = MakeRectangle(155f, 176f, 88f, 76f);
                             break;
                         case "candy":
-                            star.pos.X = ((string.IsNullOrEmpty(item2.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-                            star.pos.Y = ((string.IsNullOrEmpty(item2.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(item2.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
+                            star.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            star.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             break;
                         default:
                             break;

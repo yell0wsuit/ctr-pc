@@ -167,11 +167,11 @@ namespace CutTheRope.GameMain
                 int pathPoints = 100;
                 if (path[0] == 'R')
                 {
-                    int pathRadius = string.IsNullOrEmpty(path[2..]) ? 0 : int.Parse(path[2..]);
+                    int pathRadius = ParseIntOrZero(path[2..]);
                     pathPoints = MAX(11, (pathRadius / 2) + 1);
                 }
-                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
-                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value ?? string.Empty) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+                float moveSpeed = string.IsNullOrEmpty(xml.Attribute("moveSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("moveSpeed")?.Value, CultureInfo.InvariantCulture);
+                float rotateSpeed = string.IsNullOrEmpty(xml.Attribute("rotateSpeed")?.Value) ? 0f : float.Parse(xml.Attribute("rotateSpeed")?.Value, CultureInfo.InvariantCulture);
                 CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation

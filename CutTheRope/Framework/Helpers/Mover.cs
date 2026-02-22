@@ -43,7 +43,7 @@ namespace CutTheRope.Framework.Helpers
             if (p[0] == 'R')
             {
                 bool clockwise = p[1] == 'C';
-                int radius = string.IsNullOrEmpty(p[2..]) ? 0 : int.Parse(p[2..]);
+                int radius = ParseIntOrZero(p[2..]);
                 int pointsCount = radius / 2;
                 if (pointsCount <= 0)
                 {

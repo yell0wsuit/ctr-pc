@@ -7,12 +7,12 @@ namespace CutTheRope.GameMain
     {
         private void LoadConveyorBelt(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float x = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-            float y = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
-            float length = (string.IsNullOrEmpty(xmlNode.Attribute("length")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("length")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale;
-            float height = (string.IsNullOrEmpty(xmlNode.Attribute("width")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("width")?.Value ?? string.Empty, CultureInfo.InvariantCulture)) * scale;
-            float rotation = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
-            float velocity = string.IsNullOrEmpty(xmlNode.Attribute("velocity")?.Value ?? string.Empty) ? 0f : float.Parse(xmlNode.Attribute("velocity")?.Value ?? string.Empty, CultureInfo.InvariantCulture);
+            float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            float length = (string.IsNullOrEmpty(xmlNode.Attribute("length")?.Value) ? 0f : float.Parse(xmlNode.Attribute("length")?.Value, CultureInfo.InvariantCulture)) * scale;
+            float height = (string.IsNullOrEmpty(xmlNode.Attribute("width")?.Value) ? 0f : float.Parse(xmlNode.Attribute("width")?.Value, CultureInfo.InvariantCulture)) * scale;
+            float rotation = string.IsNullOrEmpty(xmlNode.Attribute("angle")?.Value) ? 0f : float.Parse(xmlNode.Attribute("angle")?.Value, CultureInfo.InvariantCulture);
+            float velocity = string.IsNullOrEmpty(xmlNode.Attribute("velocity")?.Value) ? 0f : float.Parse(xmlNode.Attribute("velocity")?.Value, CultureInfo.InvariantCulture);
             string direction = xmlNode.Attribute("direction")?.Value ?? string.Empty;
             string type = xmlNode.Attribute("type")?.Value ?? string.Empty;
 

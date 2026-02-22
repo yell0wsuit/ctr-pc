@@ -14,10 +14,10 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void LoadRotatedCircle(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float centerX = ((string.IsNullOrEmpty(xmlNode.Attribute("x")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("x")?.Value ?? string.Empty)) * scale) + offsetX + mapOffsetX;
-            float centerY = ((string.IsNullOrEmpty(xmlNode.Attribute("y")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("y")?.Value ?? string.Empty)) * scale) + offsetY + mapOffsetY;
-            float circleSize = string.IsNullOrEmpty(xmlNode.Attribute("size")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("size")?.Value ?? string.Empty);
-            float d = string.IsNullOrEmpty(xmlNode.Attribute("handleAngle")?.Value ?? string.Empty) ? 0 : int.Parse(xmlNode.Attribute("handleAngle")?.Value ?? string.Empty);
+            float centerX = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float centerY = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            float circleSize = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
+            float d = ParseIntOrZero(xmlNode.Attribute("handleAngle")?.Value);
             bool hasOneHandle = "true".Equals(xmlNode.Attribute("oneHandle")?.Value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
             RotatedCircle rotatedCircle = new()
             {
