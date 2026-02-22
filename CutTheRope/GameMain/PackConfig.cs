@@ -202,30 +202,35 @@ namespace CutTheRope.GameMain
 
             List<PackListEntry> entries = [];
 
-            if (root.ValueKind == JsonValueKind.Array)
+            switch (root.ValueKind)
             {
-                foreach (JsonElement item in root.EnumerateArray())
-                {
-                    AddPackListEntry(item, entries);
-                }
-            }
-            else if (root.ValueKind == JsonValueKind.Object)
-            {
-                if (root.TryGetProperty("entries", out JsonElement entriesArray) && entriesArray.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (JsonElement item in entriesArray.EnumerateArray())
+                case JsonValueKind.Array:
+                    foreach (JsonElement item in root.EnumerateArray())
                     {
                         AddPackListEntry(item, entries);
                     }
-                }
-                else
-                {
-                    AddPackListEntry(root, entries);
-                }
-            }
-            else
-            {
-                throw new InvalidDataException($"{PackListConfigFile} root must be an object or array.");
+                    break;
+                case JsonValueKind.Object:
+                    if (root.TryGetProperty("entries", out JsonElement entriesArray) && entriesArray.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (JsonElement item in entriesArray.EnumerateArray())
+                        {
+                            AddPackListEntry(item, entries);
+                        }
+                    }
+                    else
+                    {
+                        AddPackListEntry(root, entries);
+                    }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.String:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    throw new InvalidDataException($"{PackListConfigFile} root must be an object or array.");
             }
 
             if (entries.Count == 0)
