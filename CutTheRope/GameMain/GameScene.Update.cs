@@ -1033,7 +1033,7 @@ namespace CutTheRope.GameMain
                             ReleaseAllRopes(false);
                             DetachActiveHands();
                             savedSockSpeed = 0.9f * VectLength(star.v);
-                            savedSockSpeed *= 1.4f;
+                            savedSockSpeed *= PhysicsConstants.SockTeleportSpeedMultiplier;
                             targetSock = sock4;
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
@@ -1082,7 +1082,7 @@ namespace CutTheRope.GameMain
                                 sock4.idleTimeout = 0.8f;
                                 ReleaseLightBulbRopes(bulb);
                                 bulb.sockSpeed = 0.9f * VectLength(bulb.constraint.v);
-                                bulb.sockSpeed *= 1.4f;
+                                bulb.sockSpeed *= PhysicsConstants.SockTeleportSpeedMultiplier;
                                 bulb.attachedSock = sock4;
                                 sock3.light.PlayTimeline(0);
                                 sock3.light.visible = true;
@@ -1325,7 +1325,7 @@ namespace CutTheRope.GameMain
                         CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)
                         {
-                            candyBreak.gravity.Y = -500f;
+                            candyBreak.gravity.Y = -PhysicsConstants.CandyBreakGravityY;
                             candyBreak.angle = 90f;
                         }
                         candyBreak.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
@@ -1512,8 +1512,8 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            float bubbleLift = -40f;
-            float bubbleDamping = 14f;
+            float bubbleLift = PhysicsConstants.BubbleImpulseY;
+            float bubbleDamping = PhysicsConstants.BubbleImpulseDamping;
             if (twoParts == 0)
             {
                 if (candyBubbleL != null)

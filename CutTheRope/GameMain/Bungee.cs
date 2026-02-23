@@ -718,7 +718,7 @@ namespace CutTheRope.GameMain
         public const int BUNGEE_RELAXION_TIMES = 30;
         public bool highlighted;
 
-        public static float BUNGEE_REST_LEN = 105f;
+        public static float BUNGEE_REST_LEN = PhysicsConstants.BungeeRestLength;
 
         public ConstraintedPoint bungeeAnchor;
 

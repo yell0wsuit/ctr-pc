@@ -422,15 +422,15 @@ namespace CutTheRope.GameMain
 
         public void OnButtonPressed(GameSceneButtonId _)
         {
-            if (MaterialPoint.globalGravity.Y == 784)
+            if (MaterialPoint.globalGravity.Y == PhysicsConstants.GravityEarthY)
             {
-                MaterialPoint.globalGravity.Y = -784f;
+                MaterialPoint.globalGravity.Y = -PhysicsConstants.GravityEarthY;
                 gravityNormal = false;
                 CTRSoundMgr.PlaySound(Resources.Snd.GravityOn);
             }
             else
             {
-                MaterialPoint.globalGravity.Y = 784f;
+                MaterialPoint.globalGravity.Y = PhysicsConstants.GravityEarthY;
                 gravityNormal = true;
                 CTRSoundMgr.PlaySound(Resources.Snd.GravityOff);
             }

@@ -74,12 +74,12 @@ namespace CutTheRope.GameMain
         public void OperateSteamTube(SteamTube tube, float delta)
         {
             float tubeScale = tube.GetHeightScale();
-            float damping = 5f;  // Damping factor (velocity reduction)
+            float damping = PhysicsConstants.SteamTubeDamping;  // Damping factor (velocity reduction)
             float angle = DEGREES_TO_RADIANS(tube.rotation);
-            float tubeWidth = 10f * tubeScale;  // Tube width for horizontal centering
+            float tubeWidth = PhysicsConstants.SteamTubeWidthScale * tubeScale;  // Tube width for horizontal centering
             float currentHeight = tube.GetCurrentHeightModulated();
-            float verticalOffset = 1f * tubeScale;  // Vertical offset for collision box
-            float collisionRadius = 17.5f * tubeScale;  // Candy collision radius (STAR_RADIUS scaled)
+            float verticalOffset = PhysicsConstants.SteamTubeVerticalOffsetScale * tubeScale;  // Vertical offset for collision box
+            float collisionRadius = PhysicsConstants.SteamTubeCollisionRadiusScale * tubeScale;  // Candy collision radius (STAR_RADIUS scaled)
             bool gravityInverted = gravityButton != null && !gravityNormal;
 
             float rectLeft = tube.x - (tubeWidth / 2f);
@@ -126,17 +126,17 @@ namespace CutTheRope.GameMain
                     (tube.rotation == DEG_180 && gravityInverted);
                 float localDamping = damping;
                 // Gravity compensation force. sqrt(tubeScale) accounts for increased flow area.
-                float gravityCompensation = -32f / pt.weight * MathF.Sqrt(tubeScale);
+                float gravityCompensation = PhysicsConstants.SteamTubeGravityCompensation / pt.weight * MathF.Sqrt(tubeScale);
                 if (!alignedWithGravity)
                 {
-                    localDamping *= 15f;
+                    localDamping *= PhysicsConstants.SteamTubeNonAlignedDampingMultiplier;
                     if (tube.rotation is DEG_90 or DEG_270)
                     {
-                        gravityCompensation /= 4f;
+                        gravityCompensation /= PhysicsConstants.SteamTubeSideGravityDivisor;
                     }
                     else
                     {
-                        gravityCompensation /= 2f;
+                        gravityCompensation /= PhysicsConstants.SteamTubeOppositeGravityDivisor;
                     }
                 }
 
