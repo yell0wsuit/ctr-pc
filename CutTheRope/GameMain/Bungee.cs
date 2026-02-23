@@ -774,8 +774,8 @@ namespace CutTheRope.GameMain
         private static float[] s_bungeePointerCache2;
 
         private static readonly RGBAColor[] ccolors =
-[
-    RGBAColor.transparentRGBA,
+        [
+            RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -783,11 +783,11 @@ namespace CutTheRope.GameMain
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-];
+        ];
 
         private static readonly RGBAColor[] ccolors2 =
-[
-    RGBAColor.transparentRGBA,
+        [
+            RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -797,7 +797,7 @@ namespace CutTheRope.GameMain
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA
-];
+        ];
 
         private static Color s_Color1 = new(0f, 0f, 0.4f, 1f);
 
