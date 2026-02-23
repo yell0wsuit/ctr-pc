@@ -1479,6 +1479,8 @@ namespace CutTheRope.GameMain
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
             float candyRadius = ActivePhysicsConstants.WaterCandyCollisionRadius;
+            bool rocketInWater = false;
+            float waterRocketDamping = ActivePhysicsConstants.WaterDamping * ActivePhysicsConstants.WaterRocketDampingMultiplier;
             if (waterLayer != null
                 && waterLevel > 0f
                 && star.pos.Y > waterLayer.y
@@ -1489,6 +1491,7 @@ namespace CutTheRope.GameMain
                 float verticalWaterImpulse = ActivePhysicsConstants.WaterVerticalImpulseBase / star.weight;
                 if (activeRocket != null)
                 {
+                    rocketInWater = true;
                     verticalWaterImpulse /= ActivePhysicsConstants.WaterRocketImpulseDivisor;
                     damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
                     if (activeRocket.state == Rocket.STATE_ROCKET_FLY)
@@ -1600,10 +1603,15 @@ namespace CutTheRope.GameMain
             }
             if (activeRocket != null)
             {
+                float rocketDamping = ActivePhysicsConstants.RocketActiveVelocityDamping;
+                if (rocketInWater)
+                {
+                    rocketDamping = waterRocketDamping;
+                }
                 star.ApplyImpulseDelta(
                     Vect(
-                        -star.v.X / ActivePhysicsConstants.RocketActiveVelocityDamping,
-                        -star.v.Y / ActivePhysicsConstants.RocketActiveVelocityDamping
+                        -star.v.X / rocketDamping,
+                        -star.v.Y / rocketDamping
                     ),
                     delta
                 );
