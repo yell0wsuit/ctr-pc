@@ -718,7 +718,7 @@ namespace CutTheRope.GameMain
         public const int BUNGEE_RELAXION_TIMES = 30;
         public bool highlighted;
 
-        public static float BUNGEE_REST_LEN = PhysicsConstants.BungeeRestLength;
+        public static float BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
         public ConstraintedPoint bungeeAnchor;
 
@@ -742,7 +742,7 @@ namespace CutTheRope.GameMain
         /// Flat array of bezier curve points in the format [x0, y0, x1, y1, x2, y2, ...].
         /// Used for rendering the rope and positioning Christmas lights.
         /// </summary>
-        public float[] drawPts = new float[PhysicsConstants.DrawPtsBufferSize];
+        public float[] drawPts = new float[ActivePhysicsConstants.DrawPtsBufferSize];
 
         /// <summary>
         /// Number of valid coordinates in the drawPts array (actual length is drawPtsCount * 2).

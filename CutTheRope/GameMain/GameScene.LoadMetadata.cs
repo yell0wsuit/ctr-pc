@@ -89,7 +89,7 @@ namespace CutTheRope.GameMain
                                     waterSpeed = 0f;
                                 }
                             }
-                            ropePhysicsSpeed *= PhysicsConstants.RopePhysicsSpeedMultiplier;
+                            ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
                             break;
                         case "candyL":
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

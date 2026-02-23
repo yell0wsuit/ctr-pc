@@ -1,7 +1,7 @@
 namespace CutTheRope.Framework
 {
     /// <summary>
-    /// Constants for WP7/mobile physics (unscaled).
+    /// Constants for mobile physics (unscaled).
     /// </summary>
     internal static class MobilePhysicsConstants
     {

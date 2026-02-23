@@ -52,16 +52,16 @@ namespace CutTheRope.GameMain
                 if (
                     GameObject.RectInObject(
                         waterLeftX,
-                        waterSurfaceY - PhysicsConstants.WaterSurfaceDetectionHeight,
+                        waterSurfaceY - ActivePhysicsConstants.WaterSurfaceDetectionHeight,
                         waterRightX,
-                        waterSurfaceY + PhysicsConstants.WaterSurfaceDetectionHeight,
+                        waterSurfaceY + ActivePhysicsConstants.WaterSurfaceDetectionHeight,
                         candy
                     )
                 )
                 {
                     if (!splashes)
                     {
-                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + PhysicsConstants.WaterSplashParticleYOffset);
+                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + ActivePhysicsConstants.WaterSplashParticleYOffset);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
                     }
                     splashes = true;
@@ -1063,8 +1063,8 @@ namespace CutTheRope.GameMain
                             sock4.idleTimeout = 0.8f;
                             ReleaseAllRopes(false);
                             DetachActiveHands();
-                            savedSockSpeed = PhysicsConstants.SockSpeedKoeff * VectLength(star.v);
-                            savedSockSpeed *= PhysicsConstants.SockTeleportSpeedMultiplier;
+                            savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(star.v);
+                            savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             targetSock = sock4;
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
@@ -1112,8 +1112,8 @@ namespace CutTheRope.GameMain
                                 sock4.state = Sock.SOCK_THROWING;
                                 sock4.idleTimeout = 0.8f;
                                 ReleaseLightBulbRopes(bulb);
-                                bulb.sockSpeed = PhysicsConstants.SockSpeedKoeff * VectLength(bulb.constraint.v);
-                                bulb.sockSpeed *= PhysicsConstants.SockTeleportSpeedMultiplier;
+                                bulb.sockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(bulb.constraint.v);
+                                bulb.sockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                                 bulb.attachedSock = sock4;
                                 sock3.light.PlayTimeline(0);
                                 sock3.light.visible = true;
@@ -1356,7 +1356,7 @@ namespace CutTheRope.GameMain
                         CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)
                         {
-                            candyBreak.gravity.Y = -PhysicsConstants.CandyBreakGravityY;
+                            candyBreak.gravity.Y = -ActivePhysicsConstants.CandyBreakGravityY;
                             candyBreak.angle = 90f;
                         }
                         candyBreak.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
@@ -1412,7 +1412,7 @@ namespace CutTheRope.GameMain
             {
                 Bouncer bouncer = (Bouncer)obj15;
                 bouncer.Update(delta);
-                float bouncerCollisionRadius = PhysicsConstants.BouncerCollisionRadius;
+                float bouncerCollisionRadius = ActivePhysicsConstants.BouncerCollisionRadius;
                 bool flag7 = false;
                 bool flag8;
                 if (twoParts != 2)
@@ -1477,19 +1477,19 @@ namespace CutTheRope.GameMain
                 waterLayer.y = mapOriginY + mapHeight - waterLevel;
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
-            float candyRadius = PhysicsConstants.WaterCandyCollisionRadius;
+            float candyRadius = ActivePhysicsConstants.WaterCandyCollisionRadius;
             if (waterLayer != null
                 && waterLevel > 0f
                 && star.pos.Y > waterLayer.y
                 && star.pos.X + candyRadius >= waterLayer.x
                 && star.pos.X - candyRadius <= waterLayer.x + waterLayer.width)
             {
-                float damping = PhysicsConstants.WaterDamping;
-                float verticalWaterImpulse = PhysicsConstants.WaterVerticalImpulseBase / star.weight;
+                float damping = ActivePhysicsConstants.WaterDamping;
+                float verticalWaterImpulse = ActivePhysicsConstants.WaterVerticalImpulseBase / star.weight;
                 if (activeRocket != null)
                 {
-                    verticalWaterImpulse /= PhysicsConstants.WaterRocketImpulseDivisor;
-                    damping *= PhysicsConstants.WaterRocketDampingMultiplier;
+                    verticalWaterImpulse /= ActivePhysicsConstants.WaterRocketImpulseDivisor;
+                    damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
                     if (activeRocket.state == Rocket.STATE_ROCKET_FLY)
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
@@ -1505,9 +1505,9 @@ namespace CutTheRope.GameMain
                 {
                     if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.rope != null)
                     {
-                        const float damping = PhysicsConstants.WaterDamping;
+                        float damping = ActivePhysicsConstants.WaterDamping;
                         ConstraintedPoint anchor = grab.rope.bungeeAnchor;
-                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + PhysicsConstants.WaterRopeAnchorImpulse), delta);
+                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + ActivePhysicsConstants.WaterRopeAnchorImpulse), delta);
                     }
                 }
             }
@@ -1543,8 +1543,8 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            float bubbleLift = PhysicsConstants.BubbleImpulseY;
-            float bubbleDamping = PhysicsConstants.BubbleImpulseDamping;
+            float bubbleLift = ActivePhysicsConstants.BubbleImpulseY;
+            float bubbleDamping = ActivePhysicsConstants.BubbleImpulseDamping;
             if (twoParts == 0)
             {
                 if (candyBubbleL != null)
@@ -1601,8 +1601,8 @@ namespace CutTheRope.GameMain
             {
                 star.ApplyImpulseDelta(
                     Vect(
-                        -star.v.X / PhysicsConstants.RocketActiveVelocityDamping,
-                        -star.v.Y / PhysicsConstants.RocketActiveVelocityDamping
+                        -star.v.X / ActivePhysicsConstants.RocketActiveVelocityDamping,
+                        -star.v.Y / ActivePhysicsConstants.RocketActiveVelocityDamping
                     ),
                     delta
                 );

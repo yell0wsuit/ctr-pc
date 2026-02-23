@@ -16,7 +16,7 @@ namespace CutTheRope.GameMain
             }
             duration = 2f;
             gravity.X = 0f;
-            gravity.Y = PhysicsConstants.CandyBreakGravityY;
+            gravity.Y = ActivePhysicsConstants.CandyBreakGravityY;
             angle = -90f;
             angleVar = 50f;
             speed = 150f;
