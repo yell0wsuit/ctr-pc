@@ -19,6 +19,12 @@ namespace CutTheRope.Framework
         public const float CandyBreakGravityY = 500f;
         public const float SockTeleportSpeedMultiplier = 1.4f;
 
+        // Bouncer tuning
+        public const float BouncerCollisionRadius = 40f;
+        public const float BouncerHeight = 5f;
+        public const float BouncerImpulseVelocityScale = 40f;
+        public const float BouncerMinImpulse = 840f;
+
         // Steam tube force tuning
         public const float SteamTubeDamping = 5f;
         public const float SteamTubeNonAlignedDampingMultiplier = 15f;

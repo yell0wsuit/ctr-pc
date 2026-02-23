@@ -1381,7 +1381,7 @@ namespace CutTheRope.GameMain
             {
                 Bouncer bouncer = (Bouncer)obj15;
                 bouncer.Update(delta);
-                float bouncerCollisionRadius = 40f;
+                float bouncerCollisionRadius = PhysicsConstants.BouncerCollisionRadius;
                 bool flag7 = false;
                 bool flag8;
                 if (twoParts != 2)
