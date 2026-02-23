@@ -55,6 +55,7 @@ namespace CutTheRope.Framework
 
         public static float RocketPointWeight => SelectRaw(PhysicsConstants.RocketPointWeight, MobilePhysicsConstants.RocketPointWeight);
         public static float RocketActiveVelocityDamping => SelectRaw(PhysicsConstants.RocketActiveVelocityDamping, MobilePhysicsConstants.RocketActiveVelocityDamping);
+        public static float RocketImpulseScale => UseMobilePhysicsModel ? Wp7ToWorldScale : 1f;
 
         // These are multiplied by per-object tubeScale in gameplay code.
         public static float SteamTubeDamping => SelectRaw(PhysicsConstants.SteamTubeDamping, MobilePhysicsConstants.SteamTubeDamping);

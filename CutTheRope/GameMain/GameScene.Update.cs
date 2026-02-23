@@ -1196,7 +1196,8 @@ namespace CutTheRope.GameMain
                         rocket.UpdateRotation();
                         float ang = rocket.angle;
                         Vector impulse = VectRotate(Vect(-1f, 0f), ang);
-                        impulse = VectMult(impulse, rocket.impulse);
+                        float rocketImpulse = rocket.impulse * ActivePhysicsConstants.RocketImpulseScale;
+                        impulse = VectMult(impulse, rocketImpulse);
                         if (ropeRelaxed)
                         {
                             impulse = VectMult(impulse, rocket.impulseFactor);
