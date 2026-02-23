@@ -21,6 +21,8 @@ namespace CutTheRope.GameMain
             offsetX = 0f;
             mapOffsetX = 0;
             mapOffsetY = 0;
+            ActivePhysicsConstants.UseMobilePhysicsModel = false;
+            Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
             CTRRootController rc = (CTRRootController)Application.SharedRootController();
 
@@ -57,6 +59,9 @@ namespace CutTheRope.GameMain
                             mapOffsetY = ParseIntOrZero(item2.Attribute("mapOffsetY")?.Value);
                             special = ParseIntOrZero(item2.Attribute("special")?.Value);
                             ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
+                            _ = bool.TryParse(item2.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
+                            ActivePhysicsConstants.UseMobilePhysicsModel = useMobilePhysics;
+                            Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
                             twoParts = twoPartsBool ? 0 : 2;
