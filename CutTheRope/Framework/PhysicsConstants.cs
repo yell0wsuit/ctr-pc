@@ -17,7 +17,10 @@ namespace CutTheRope.Framework
 
         // Candy
         public const float CandyBreakGravityY = 500f;
+
+        // Magic hat / sock
         public const float SockTeleportSpeedMultiplier = 1.4f;
+        public const float SockSpeedKoeff = 0.9f;
 
         // Water tuning
         public const float WaterSurfaceDetectionHeight = 2f;
