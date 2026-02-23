@@ -1,4 +1,3 @@
-using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Sfe
@@ -106,12 +105,6 @@ namespace CutTheRope.Framework.Sfe
             pos = VectAdd(pos, posDelta);
         }
 
-        public virtual void DrawForces()
-        {
-        }
-
-        protected const double TIME_SCALE = PhysicsConstants.TimeScale;
-        public const double GCONST = PhysicsConstants.GravityEarthY;
         public static Vector globalGravity;
 
         public Vector pos;
