@@ -35,6 +35,10 @@ namespace CutTheRope.Framework
         public const float BouncerImpulseVelocityScale = 40f;
         public const float BouncerMinImpulse = 840f;
 
+        // Rocket tuning
+        public const float RocketPointWeight = 2.5f;
+        public const float RocketActiveVelocityDamping = 40f;
+
         // Steam tube force tuning
         public const float SteamTubeDamping = 5f;
         public const float SteamTubeNonAlignedDampingMultiplier = 15f;

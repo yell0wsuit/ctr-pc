@@ -1576,7 +1576,13 @@ namespace CutTheRope.GameMain
             }
             if (activeRocket != null)
             {
-                star.ApplyImpulseDelta(Vect(-star.v.X / 40f, -star.v.Y / 40f), delta);
+                star.ApplyImpulseDelta(
+                    Vect(
+                        -star.v.X / PhysicsConstants.RocketActiveVelocityDamping,
+                        -star.v.Y / PhysicsConstants.RocketActiveVelocityDamping
+                    ),
+                    delta
+                );
             }
             if (lightBulbs.Count > 0)
             {
