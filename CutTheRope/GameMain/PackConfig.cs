@@ -255,7 +255,7 @@ namespace CutTheRope.GameMain
                 throw new InvalidDataException($"{PackListConfigFile} entry must be an object.");
             }
 
-            string configName = ParseRequiredString(entryElement, "name", PackListConfigFile);
+            string configName = ParseRequiredString(entryElement, "boxDataName", PackListConfigFile);
             int saveSlot = ParseIntProperty(entryElement, "saveSlot", 0, PackListConfigFile);
             if (saveSlot < 0)
             {
