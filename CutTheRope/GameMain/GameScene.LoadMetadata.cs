@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 
@@ -88,7 +89,7 @@ namespace CutTheRope.GameMain
                                     waterSpeed = 0f;
                                 }
                             }
-                            ropePhysicsSpeed *= 1.4f;
+                            ropePhysicsSpeed *= PhysicsConstants.RopePhysicsSpeedMultiplier;
                             break;
                         case "candyL":
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
