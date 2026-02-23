@@ -49,11 +49,19 @@ namespace CutTheRope.GameMain
                 float waterSurfaceY = waterLayer.y;
                 float waterLeftX = waterLayer.x;
                 float waterRightX = waterLeftX + waterLayer.width;
-                if (GameObject.RectInObject(waterLeftX, waterSurfaceY - 2f, waterRightX, waterSurfaceY + 2f, candy))
+                if (
+                    GameObject.RectInObject(
+                        waterLeftX,
+                        waterSurfaceY - PhysicsConstants.WaterSurfaceDetectionHeight,
+                        waterRightX,
+                        waterSurfaceY + PhysicsConstants.WaterSurfaceDetectionHeight,
+                        candy
+                    )
+                )
                 {
                     if (!splashes)
                     {
-                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + 3f);
+                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + PhysicsConstants.WaterSplashParticleYOffset);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
                     }
                     splashes = true;
@@ -1446,19 +1454,19 @@ namespace CutTheRope.GameMain
                 waterLayer.y = mapOriginY + mapHeight - waterLevel;
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
-            float candyRadius = 15f;
+            float candyRadius = PhysicsConstants.WaterCandyCollisionRadius;
             if (waterLayer != null
                 && waterLevel > 0f
                 && star.pos.Y > waterLayer.y
                 && star.pos.X + candyRadius >= waterLayer.x
                 && star.pos.X - candyRadius <= waterLayer.x + waterLayer.width)
             {
-                float damping = 20f;
-                float verticalWaterImpulse = -75f / star.weight;
+                float damping = PhysicsConstants.WaterDamping;
+                float verticalWaterImpulse = PhysicsConstants.WaterVerticalImpulseBase / star.weight;
                 if (activeRocket != null)
                 {
-                    verticalWaterImpulse /= 45f;
-                    damping *= 15f;
+                    verticalWaterImpulse /= PhysicsConstants.WaterRocketImpulseDivisor;
+                    damping *= PhysicsConstants.WaterRocketDampingMultiplier;
                     if (activeRocket.state == Rocket.STATE_ROCKET_FLY)
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
@@ -1474,9 +1482,9 @@ namespace CutTheRope.GameMain
                 {
                     if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.rope != null)
                     {
-                        const float damping = 20f;
+                        const float damping = PhysicsConstants.WaterDamping;
                         ConstraintedPoint anchor = grab.rope.bungeeAnchor;
-                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) - 20f), delta);
+                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + PhysicsConstants.WaterRopeAnchorDownImpulse), delta);
                     }
                 }
             }

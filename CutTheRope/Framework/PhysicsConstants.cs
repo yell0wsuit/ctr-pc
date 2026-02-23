@@ -19,6 +19,16 @@ namespace CutTheRope.Framework
         public const float CandyBreakGravityY = 500f;
         public const float SockTeleportSpeedMultiplier = 1.4f;
 
+        // Water tuning
+        public const float WaterSurfaceDetectionHeight = 2f;
+        public const float WaterSplashParticleYOffset = 3f;
+        public const float WaterCandyCollisionRadius = 15f;
+        public const float WaterDamping = 20f;
+        public const float WaterVerticalImpulseBase = -75f;
+        public const float WaterRocketImpulseDivisor = 45f;
+        public const float WaterRocketDampingMultiplier = 15f;
+        public const float WaterRopeAnchorDownImpulse = -20f;
+
         // Bouncer tuning
         public const float BouncerCollisionRadius = 40f;
         public const float BouncerHeight = 5f;
