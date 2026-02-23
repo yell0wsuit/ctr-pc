@@ -1,6 +1,7 @@
 using System;
 using System.Xml.Linq;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
@@ -83,7 +84,7 @@ namespace CutTheRope.GameMain
                 // 2.5 (invWeight = 0.4) keeps the rocket stable by reducing
                 // how much it moves in response to forces from connected rope
                 // points.
-                point.SetWeight(2.5f);
+                point.SetWeight(PhysicsConstants.RocketPointWeight);
 
                 container = new BaseElement
                 {

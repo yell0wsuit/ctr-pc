@@ -15,7 +15,7 @@ namespace CutTheRope.Framework.Sfe
         {
             weight = weightValue;
             invWeight = 1 / weight;
-            gravity = Vect(0f, 784f * weight);
+            gravity = Vect(0f, PhysicsConstants.GravityEarthY * weight);
         }
 
         protected override void Dispose(bool disposing)
@@ -66,7 +66,7 @@ namespace CutTheRope.Framework.Sfe
         {
             if (!VectEqual(impulse, vectZero))
             {
-                Vector impulseDelta = VectMult(impulse, delta / 1);
+                Vector impulseDelta = VectMult(impulse, delta / PhysicsConstants.TimeScale);
                 pos = VectAdd(pos, impulseDelta);
             }
         }
@@ -99,18 +99,12 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             totalForce = VectMult(totalForce, invWeight);
-            a = VectMult(totalForce, delta / 1);
+            a = VectMult(totalForce, delta / PhysicsConstants.TimeScale);
             v = VectAdd(v, a);
-            posDelta = VectMult(v, delta / 1);
+            posDelta = VectMult(v, delta / PhysicsConstants.TimeScale);
             pos = VectAdd(pos, posDelta);
         }
 
-        public virtual void DrawForces()
-        {
-        }
-
-        protected const double TIME_SCALE = 1;
-        public const double GCONST = 784;
         public static Vector globalGravity;
 
         public Vector pos;

@@ -66,7 +66,7 @@ namespace CutTheRope.GameMain
             time = 0f;
             score = 0;
             gravityNormal = true;
-            MaterialPoint.globalGravity = Vect(0f, 784f);
+            MaterialPoint.globalGravity = Vect(0f, PhysicsConstants.GravityEarthY);
             dimTime = 0f;
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
