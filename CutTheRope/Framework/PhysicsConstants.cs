@@ -30,7 +30,7 @@ namespace CutTheRope.Framework
         public const float WaterVerticalImpulseBase = -75f;
         public const float WaterRocketImpulseDivisor = 45f;
         public const float WaterRocketDampingMultiplier = 15f;
-        public const float WaterRopeAnchorDownImpulse = -20f;
+        public const float WaterRopeAnchorImpulse = -20f;
 
         // Bouncer tuning
         public const float BouncerCollisionRadius = 40f;

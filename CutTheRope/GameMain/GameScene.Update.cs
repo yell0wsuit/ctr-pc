@@ -1484,7 +1484,7 @@ namespace CutTheRope.GameMain
                     {
                         const float damping = PhysicsConstants.WaterDamping;
                         ConstraintedPoint anchor = grab.rope.bungeeAnchor;
-                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + PhysicsConstants.WaterRopeAnchorDownImpulse), delta);
+                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + PhysicsConstants.WaterRopeAnchorImpulse), delta);
                     }
                 }
             }
