@@ -146,11 +146,7 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             totalForce = VectMult(totalForce, invWeight);
-            // Mobile physics uses Windows Phone-style fixed-timestep Verlet (delta * 0.016). PC uses delta² Verlet.
-            float accelScale = ActivePhysicsConstants.UseMobilePhysicsModel
-                ? delta * QCP_FIXED_TIMESTEP
-                : delta * delta;
-            a = VectMult(totalForce, accelScale);
+            a = VectMult(totalForce, delta * delta);
             if (prevPos.X == UNDEFINED_COORDINATE)
             {
                 prevPos = pos;
