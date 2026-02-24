@@ -83,7 +83,6 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Gets current steam height with sine wave modulation for pulsing effect.
-        /// PC vs WP: Modulation amplitude is constant 1f (NOT scaled by heightScale).
         /// </summary>
         public float GetCurrentHeightModulated()
         {
