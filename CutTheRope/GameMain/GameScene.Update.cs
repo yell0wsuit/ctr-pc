@@ -1291,19 +1291,19 @@ namespace CutTheRope.GameMain
                     bool flag6;
                     if (twoParts != 2)
                     {
-                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f)) && !noCandyL;
+                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y)) && !noCandyL;
                         if (flag6)
                         {
                             flag5 = true;
                         }
                         else
                         {
-                            flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f)) && !noCandyR;
+                            flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y)) && !noCandyR;
                         }
                     }
                     else
                     {
-                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f)) && !noCandy;
+                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y)) && !noCandy;
                     }
                     if (flag6)
                     {
@@ -1394,19 +1394,19 @@ namespace CutTheRope.GameMain
                 bool flag8;
                 if (twoParts != 2)
                 {
-                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f)) && !noCandyL;
+                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y)) && !noCandyL;
                     if (flag8)
                     {
                         flag7 = true;
                     }
                     else
                     {
-                        flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f)) && !noCandyR;
+                        flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y)) && !noCandyR;
                     }
                 }
                 else
                 {
-                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f)) && !noCandy;
+                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y)) && !noCandy;
                 }
                 if (flag8)
                 {
@@ -1436,7 +1436,7 @@ namespace CutTheRope.GameMain
                         {
                             continue;
                         }
-                        if (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f))
+                        if (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(bulb.constraint.prevPos.X, bulb.constraint.prevPos.Y, bulb.constraint.pos.X, bulb.constraint.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(bulb.constraint.prevPos.X, bulb.constraint.prevPos.Y, bulb.constraint.pos.X, bulb.constraint.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y))
                         {
                             HandleBouncePtDelta(bouncer, bulb.constraint, delta);
                             bulbHit = true;
