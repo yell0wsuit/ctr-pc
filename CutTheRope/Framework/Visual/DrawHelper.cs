@@ -32,8 +32,18 @@ namespace CutTheRope.Framework.Visual
 
         public static void DrawImageTiledCool(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
         {
-            float xParam = 0f;
-            float yParam = 0f;
+            DrawImageTiledInternal(image, quadIndex, x, y, width, height, allowLegacyFallback: true);
+        }
+
+        public static void DrawImageTiled(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
+        {
+            DrawImageTiledInternal(image, quadIndex, x, y, width, height, allowLegacyFallback: true);
+        }
+
+        private static void DrawImageTiledInternal(CTRTexture2D image, int quadIndex, float x, float y, float width, float height, bool allowLegacyFallback)
+        {
+            float texX = 0f;
+            float texY = 0f;
             float tileWidth;
             float tileHeight;
             if (quadIndex == -1)
@@ -43,11 +53,105 @@ namespace CutTheRope.Framework.Visual
             }
             else
             {
-                xParam = image.quadRects[quadIndex].x;
-                yParam = image.quadRects[quadIndex].y;
+                texX = image.quadRects[quadIndex].x;
+                texY = image.quadRects[quadIndex].y;
                 tileWidth = image.quadRects[quadIndex].w;
                 tileHeight = image.quadRects[quadIndex].h;
             }
+
+            if (tileWidth <= 0f || tileHeight <= 0f || width <= 0f || height <= 0f)
+            {
+                return;
+            }
+
+            if (MathF.Abs(width - tileWidth) < 0.001f && MathF.Abs(height - tileHeight) < 0.001f)
+            {
+                DrawImageQuad(image, quadIndex, x, y);
+                return;
+            }
+
+            if (!TryDrawImageTiledBatch(image, texX, texY, tileWidth, tileHeight, x, y, width, height) && allowLegacyFallback)
+            {
+                DrawImageTiledFallback(image, texX, texY, tileWidth, tileHeight, x, y, width, height);
+            }
+        }
+
+        private static bool TryDrawImageTiledBatch(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
+        {
+            int tileColumns = (int)MathF.Ceiling(width / tileWidth);
+            int tileRows = (int)MathF.Ceiling(height / tileHeight);
+            if (tileColumns <= 0 || tileRows <= 0)
+            {
+                return true;
+            }
+
+            int quadCount = tileColumns * tileRows;
+            if (quadCount is <= 0 or > MaxBatchQuads)
+            {
+                return false;
+            }
+
+            int vertexCount = quadCount * 4;
+            int indexCount = quadCount * 6;
+            VertexPositionNormalTexture[] vertices = GetVertexCache(ref s_tiledVerticesCache, vertexCount);
+            short[] indices = GetShortCache(ref s_tiledIndicesCache, indexCount);
+
+            int v = 0;
+            int i = 0;
+            for (int row = 0; row < tileRows; row++)
+            {
+                float tileY = row * tileHeight;
+                float drawY = y + tileY;
+                float drawHeight = MathF.Min(tileHeight, height - tileY);
+                float v1 = image._invHeight * texY;
+                float v2 = image._invHeight * (texY + drawHeight);
+
+                for (int col = 0; col < tileColumns; col++)
+                {
+                    float tileX = col * tileWidth;
+                    float drawX = x + tileX;
+                    float drawWidth = MathF.Min(tileWidth, width - tileX);
+                    float u1 = image._invWidth * texX;
+                    float u2 = image._invWidth * (texX + drawWidth);
+
+                    vertices[v] = new VertexPositionNormalTexture(
+                        new Vector3(drawX, drawY, 0f),
+                        Vector3.UnitZ,
+                        new Vector2(u1, v1));
+                    vertices[v + 1] = new VertexPositionNormalTexture(
+                        new Vector3(drawX + drawWidth, drawY, 0f),
+                        Vector3.UnitZ,
+                        new Vector2(u2, v1));
+                    vertices[v + 2] = new VertexPositionNormalTexture(
+                        new Vector3(drawX, drawY + drawHeight, 0f),
+                        Vector3.UnitZ,
+                        new Vector2(u1, v2));
+                    vertices[v + 3] = new VertexPositionNormalTexture(
+                        new Vector3(drawX + drawWidth, drawY + drawHeight, 0f),
+                        Vector3.UnitZ,
+                        new Vector2(u2, v2));
+
+                    short baseIndex = (short)v;
+                    indices[i] = baseIndex;
+                    indices[i + 1] = (short)(baseIndex + 1);
+                    indices[i + 2] = (short)(baseIndex + 2);
+                    indices[i + 3] = (short)(baseIndex + 2);
+                    indices[i + 4] = (short)(baseIndex + 1);
+                    indices[i + 5] = (short)(baseIndex + 3);
+
+                    v += 4;
+                    i += 6;
+                }
+            }
+
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(image.Name());
+            Renderer.DrawTriangleList(vertices, indices, indexCount);
+            return true;
+        }
+
+        private static void DrawImageTiledFallback(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
+        {
             for (float currentY = 0f; currentY < height; currentY += tileHeight)
             {
                 for (float currentX = 0f; currentX < width; currentX += tileWidth)
@@ -62,68 +166,9 @@ namespace CutTheRope.Framework.Visual
                     {
                         remainingHeight = tileHeight;
                     }
-                    CTRRectangle rect = MakeRectangle(xParam, yParam, remainingWidth, remainingHeight);
+                    CTRRectangle rect = MakeRectangle(texX, texY, remainingWidth, remainingHeight);
                     DrawImagePart(image, rect, x + currentX, y + currentY);
                 }
-            }
-        }
-
-        public static void DrawImageTiled(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
-        {
-            if (IS_WVGA)
-            {
-                DrawImageTiledCool(image, quadIndex, x, y, width, height);
-                return;
-            }
-            float xParam = 0f;
-            float yParam = 0f;
-            float tileWidth;
-            float tileHeight;
-            if (quadIndex == -1)
-            {
-                tileWidth = image._realWidth;
-                tileHeight = image._realHeight;
-            }
-            else
-            {
-                xParam = image.quadRects[quadIndex].x;
-                yParam = image.quadRects[quadIndex].y;
-                tileWidth = image.quadRects[quadIndex].w;
-                tileHeight = image.quadRects[quadIndex].h;
-            }
-            if (width == tileWidth && height == tileHeight)
-            {
-                DrawImageQuad(image, quadIndex, x, y);
-                return;
-            }
-            int tileColumns = (int)Ceil(width / tileWidth);
-            int tileRows = (int)Ceil(height / tileHeight);
-            int widthRemainder = (int)width % (int)tileWidth;
-            int heightRemainder = (int)height % (int)tileHeight;
-            int edgeTileWidth = (int)(widthRemainder == 0 ? tileWidth : widthRemainder);
-            int edgeTileHeight = (int)(heightRemainder == 0 ? tileHeight : heightRemainder);
-            int drawY = (int)y;
-            for (int row = tileRows - 1; row >= 0; row--)
-            {
-                int drawX = (int)x;
-                for (int column = tileColumns - 1; column >= 0; column--)
-                {
-                    if (column == 0 || row == 0)
-                    {
-                        CTRRectangle rect = MakeRectangle(
-                            xParam,
-                            yParam,
-                            column == 0 ? edgeTileWidth : tileWidth,
-                            row == 0 ? edgeTileHeight : tileHeight);
-                        DrawImagePart(image, rect, drawX, drawY);
-                    }
-                    else
-                    {
-                        DrawImageQuad(image, quadIndex, drawX, drawY);
-                    }
-                    drawX += (int)tileWidth;
-                }
-                drawY += (int)tileHeight;
             }
         }
 
@@ -423,6 +468,15 @@ namespace CutTheRope.Framework.Visual
             return cache;
         }
 
+        private static VertexPositionNormalTexture[] GetVertexCache(ref VertexPositionNormalTexture[] cache, int vertexCount)
+        {
+            if (cache == null || cache.Length < vertexCount)
+            {
+                cache = new VertexPositionNormalTexture[vertexCount];
+            }
+            return cache;
+        }
+
         private static float[] GetFloatCache(ref float[] cache, int length)
         {
             if (cache == null || cache.Length < length)
@@ -441,15 +495,27 @@ namespace CutTheRope.Framework.Visual
             return cache;
         }
 
+        private static short[] GetShortCache(ref short[] cache, int length)
+        {
+            if (cache == null || cache.Length < length)
+            {
+                cache = new short[length];
+            }
+            return cache;
+        }
+
         private static VertexPositionColor[] s_coloredVerticesCache;
         private static VertexPositionColor[] s_lineVerticesCache;
         private static VertexPositionColor[] s_antialiasedLineVerticesCache;
+        private static VertexPositionNormalTexture[] s_tiledVerticesCache;
+        private static short[] s_tiledIndicesCache;
         private static float[] s_curveVerticesCache;
         private static float[] s_curveOuterCache;
         private static float[] s_curveInnerCache;
         private static float[] s_curveInnerEdgeCache;
         private static float[] s_curveInnerFadeCache;
         private static RGBAColor[] s_curveColorCache;
+        private const int MaxBatchQuads = short.MaxValue / 4;
 
     }
 }
