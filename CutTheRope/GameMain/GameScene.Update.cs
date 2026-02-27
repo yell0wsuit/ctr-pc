@@ -216,7 +216,7 @@ namespace CutTheRope.GameMain
                     {
                         if (rope.cut == -1 || rope.cutTime != 0)
                         {
-                            rope?.Update(delta * ropePhysicsSpeed);
+                            UpdateRopeWithAntCarryOverride(rope, delta);
                             if (grab.hasSpider)
                             {
                                 if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
@@ -610,6 +610,9 @@ namespace CutTheRope.GameMain
                     remaining -= step;
                 }
             }
+
+            UpdateAntConveyor(delta);
+
             if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
             {
                 foreach (object obj2 in stars)
@@ -1602,6 +1605,9 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+
+            ApplyAntCarryToCandyPosition();
+
             bool canInteractWithTarget = !nightLevel || isNightTargetAwake == true;
             if (!noCandy)
             {
@@ -1872,6 +1878,9 @@ namespace CutTheRope.GameMain
                     hand.state = MechanicalHand.STATE_HAND_CANDY;
                     hand.releaseSoundPlayed = false;
                     selectedHandIndex = hands.IndexOf(hand);
+
+                    ResetConveyor();
+                    BlockConveyor();
 
                     if (candyBubble != null)
                     {
