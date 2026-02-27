@@ -1436,7 +1436,7 @@ namespace CutTheRope.GameMain
                         {
                             continue;
                         }
-                        if (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f))
+                        if (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(bulb.constraint.prevPos.X, bulb.constraint.prevPos.Y, bulb.constraint.pos.X, bulb.constraint.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(bulb.constraint.prevPos.X, bulb.constraint.prevPos.Y, bulb.constraint.pos.X, bulb.constraint.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y))
                         {
                             HandleBouncePtDelta(bouncer, bulb.constraint, delta);
                             bulbHit = true;
