@@ -19,6 +19,40 @@ namespace CutTheRope.GameMain
 
         public void Teleport()
         {
+            if (targetBambooTube != null)
+            {
+                noCandy = false;
+                targetBambooTube.ThrowCandy(star);
+                targetBambooTube.ThrowParticlesOut(particlesAniPool);
+                candy.passTransformationsToChilds = false;
+                candy.color = RGBAColor.solidOpaqueRGBA;
+                candy.scaleX = candy.scaleY = 0.71f;
+                candyMain.scaleX = candyMain.scaleY = 0.71f;
+                candyTop.scaleX = candyTop.scaleY = 0.71f;
+                if (activeRocket != null)
+                {
+                    Vector holeOut = targetBambooTube.HoleOut;
+                    Vector tubeCenter = Vect(targetBambooTube.x, targetBambooTube.y);
+                    activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
+                    activeRocket.startRotation = activeRocket.rotation;
+                    activeRocket.startCandyRotation = 0f;
+                    candyMain.rotation = 0f;
+                    activeRocket.additionalAngle = 0f;
+                    activeRocket.UpdateRotation();
+                    activeRocket.point.posDelta = vectZero;
+                    activeRocket.point.pos = star.pos;
+                    activeRocket.point.prevPos = activeRocket.point.pos;
+                    activeRocket.point.v = vectZero;
+                }
+                else
+                {
+                    star.disableGravity = false;
+                }
+
+                targetBambooTube = null;
+                return;
+            }
+
             if (targetSock != null)
             {
                 targetSock.light.PlayTimeline(0);

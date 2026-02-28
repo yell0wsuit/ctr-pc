@@ -95,6 +95,9 @@ namespace CutTheRope.GameMain
                         case "steamTube":
                             LoadSteamTube(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
+                        case "pipe":
+                            LoadBambooTube(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
                         case "ants":
                             LoadAnts(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;

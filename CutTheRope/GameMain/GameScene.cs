@@ -375,6 +375,8 @@ namespace CutTheRope.GameMain
 
         private List<SteamTube> tubes;
 
+        private List<BambooTube> bambooTubes;
+
         private List<LightBulb> lightBulbs;
 
         private List<Sock> socks;
@@ -506,6 +508,8 @@ namespace CutTheRope.GameMain
         private float savedSockSpeed;
 
         private Sock targetSock;
+
+        private BambooTube targetBambooTube;
 
         private int ropesCutAtOnce;
 

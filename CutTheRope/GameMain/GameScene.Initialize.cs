@@ -39,6 +39,7 @@ namespace CutTheRope.GameMain
             twoParts = 2;
             partsDist = 0f;
             targetSock = null;
+            targetBambooTube = null;
             CTRSoundMgr.StopLoopedSounds();
 
             // Initialize object collections
@@ -49,6 +50,7 @@ namespace CutTheRope.GameMain
             bubbles = [];
             pumps = [];
             tubes = [];
+            bambooTubes = [];
             lightBulbs = [];
             socks = [];
             tutorialImages = [];
