@@ -29,8 +29,8 @@ namespace CutTheRope.GameMain
             interactionScale = MAX(0.1f, scale);
             bb = MakeRectangle(0f, 0f, BambooBaseBbSize * interactionScale, BambooBaseBbSize * interactionScale);
             rotatedBB = true;
-            scaleX = 0.9f;
-            scaleY = 0.9f;
+            scaleX = 0.77f;
+            scaleY = 0.77f;
             SetupBambooShellSprites();
             BambooTouchIndex = -1;
             bambooHoleOut = vectZero;
