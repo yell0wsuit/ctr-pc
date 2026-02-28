@@ -30,6 +30,12 @@ namespace CutTheRope.Framework
         public static float GravityEarthY => SelectScaled(PhysicsConstants.GravityEarthY, MobilePhysicsConstants.GravityEarthY);
         public static float RopePhysicsSpeedMultiplier => SelectRaw(PhysicsConstants.RopePhysicsSpeedMultiplier, MobilePhysicsConstants.RopePhysicsSpeedMultiplier);
         public static float BungeeRestLength => SelectScaled(PhysicsConstants.BungeeRestLength, MobilePhysicsConstants.BungeeRestLength);
+        public static float BungeeRollBackOverflowPadding => SelectScaled(PhysicsConstants.BungeeRollBackOverflowPadding, MobilePhysicsConstants.BungeeRollBackOverflowPadding);
+        public static float BungeeConstraintSlack => SelectScaled(PhysicsConstants.BungeeConstraintSlack, MobilePhysicsConstants.BungeeConstraintSlack);
+        public static float BungeeRelaxThresholdSoft => SelectScaled(PhysicsConstants.BungeeRelaxThresholdSoft, MobilePhysicsConstants.BungeeRelaxThresholdSoft);
+        public static float BungeeRelaxThresholdMedium => SelectScaled(PhysicsConstants.BungeeRelaxThresholdMedium, MobilePhysicsConstants.BungeeRelaxThresholdMedium);
+        public static float BungeeRelaxThresholdHard => SelectScaled(PhysicsConstants.BungeeRelaxThresholdHard, MobilePhysicsConstants.BungeeRelaxThresholdHard);
+        public static float BungeeStretchRedThreshold => SelectScaled(PhysicsConstants.BungeeStretchRedThreshold, MobilePhysicsConstants.BungeeStretchRedThreshold);
 
         public static float BubbleImpulseY => SelectScaled(PhysicsConstants.BubbleImpulseY, MobilePhysicsConstants.BubbleImpulseY);
         public static float BubbleImpulseDamping => SelectRaw(PhysicsConstants.BubbleImpulseDamping, MobilePhysicsConstants.BubbleImpulseDamping);
@@ -38,6 +44,8 @@ namespace CutTheRope.Framework
 
         public static float SockTeleportSpeedMultiplier => SelectRaw(PhysicsConstants.SockTeleportSpeedMultiplier, MobilePhysicsConstants.SockTeleportSpeedMultiplier);
         public static float SockSpeedKoeff => SelectRaw(PhysicsConstants.SockSpeedKoeff, MobilePhysicsConstants.SockSpeedKoeff);
+        public static float GrabRopeRollMaxLength => SelectScaled(PhysicsConstants.GrabRopeRollMaxLength, MobilePhysicsConstants.GrabRopeRollMaxLength);
+        public static float GrabWheelRotateDeltaMax => SelectRaw(PhysicsConstants.GrabWheelRotateDeltaMax, MobilePhysicsConstants.GrabWheelRotateDeltaMax);
 
         public static float WaterSurfaceDetectionHeight => SelectScaled(PhysicsConstants.WaterSurfaceDetectionHeight, MobilePhysicsConstants.WaterSurfaceDetectionHeight);
         public static float WaterSplashParticleYOffset => SelectScaled(PhysicsConstants.WaterSplashParticleYOffset, MobilePhysicsConstants.WaterSplashParticleYOffset);

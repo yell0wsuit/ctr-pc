@@ -10,6 +10,12 @@ namespace CutTheRope.Framework
         public const float GravityEarthY = 784f; // 9.8 * 80 (PIXEL_TO_SI_METERS_K)
         public const float RopePhysicsSpeedMultiplier = 1.4f;
         public const float BungeeRestLength = 105f;
+        public const float BungeeRollBackOverflowPadding = 1f;
+        public const float BungeeConstraintSlack = 3f;
+        public const float BungeeRelaxThresholdSoft = 0.3f;
+        public const float BungeeRelaxThresholdMedium = 1f;
+        public const float BungeeRelaxThresholdHard = 4f;
+        public const float BungeeStretchRedThreshold = 7f;
 
         // Bubble impulse
         public const float BubbleImpulseY = -40f;
@@ -21,6 +27,8 @@ namespace CutTheRope.Framework
         // Magic hat / sock
         public const float SockTeleportSpeedMultiplier = 1.4f;
         public const float SockSpeedKoeff = 0.9f;
+        public const float GrabRopeRollMaxLength = 1650f;
+        public const float GrabWheelRotateDeltaMax = 4.5f;
 
         // Water tuning
         public const float WaterSurfaceDetectionHeight = 2f;

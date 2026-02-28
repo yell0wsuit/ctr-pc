@@ -198,11 +198,17 @@ namespace CutTheRope.GameMain
                 rgbaColor4.GreenColor *= highlightMultiplier;
                 rgbaColor4.BlueColor *= highlightMultiplier;
             }
+            float relaxThresholdSoft = ActivePhysicsConstants.BungeeRelaxThresholdSoft;
+            float relaxThresholdMedium = ActivePhysicsConstants.BungeeRelaxThresholdMedium;
+            float relaxThresholdHard = ActivePhysicsConstants.BungeeRelaxThresholdHard;
+            float stretchRedThreshold = ActivePhysicsConstants.BungeeStretchRedThreshold;
             float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
-            b.relaxed = segmentLength <= BUNGEE_REST_LEN + 0.3
+            b.relaxed = segmentLength <= BUNGEE_REST_LEN + relaxThresholdSoft
                 ? 0
-                : segmentLength <= BUNGEE_REST_LEN + 1 ? 1 : segmentLength <= BUNGEE_REST_LEN + 4 ? 2 : 3;
-            if (segmentLength > BUNGEE_REST_LEN + 7)
+                : segmentLength <= BUNGEE_REST_LEN + relaxThresholdMedium
+                    ? 1
+                    : segmentLength <= BUNGEE_REST_LEN + relaxThresholdHard ? 2 : 3;
+            if (segmentLength > BUNGEE_REST_LEN + stretchRedThreshold)
             {
                 float stretchRedScale = segmentLength / BUNGEE_REST_LEN * 2f;
                 rgbaColor3.RedColor *= stretchRedScale;
@@ -391,7 +397,7 @@ namespace CutTheRope.GameMain
                     if (nextRestLength < 1)
                     {
                         remainingAmount = BUNGEE_REST_LEN;
-                        currentRestLength = (int)(BUNGEE_REST_LEN + nextRestLength + 1f);
+                        currentRestLength = (int)(BUNGEE_REST_LEN + nextRestLength + ActivePhysicsConstants.BungeeRollBackOverflowPadding);
                     }
                     else
                     {
@@ -407,7 +413,7 @@ namespace CutTheRope.GameMain
                 Constraint constraint = tail.constraints[j];
                 if (constraint != null && constraint.type == Constraint.CONSTRAINT.NOT_MORE_THAN)
                 {
-                    constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + 3f);
+                    constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack);
                 }
             }
             return remainingAmount;
@@ -473,7 +479,7 @@ namespace CutTheRope.GameMain
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack), Constraint.CONSTRAINT.NOT_MORE_THAN);
                         }
                     }
                     i++;
