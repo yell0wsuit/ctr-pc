@@ -272,6 +272,12 @@ namespace CutTheRope.GameMain
 
         public void ResetToNextState()
         {
+            // No non-idle states available; nothing to cycle to.
+            if ((possibleStatesMask & ~1) == 0)
+            {
+                return;
+            }
+
             int state = ghostState;
             do
             {
