@@ -249,6 +249,7 @@ namespace CutTheRope.GameMain
             }
 
             ReleaseAllRopes(false);
+            DetachActiveHands();
             targetBambooTube = bambooTube;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.15f);
             noCandy = true;
