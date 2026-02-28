@@ -282,6 +282,15 @@ namespace CutTheRope.GameMain
                 }
             }
             while ((state & possibleStatesMask) == 0);
+
+            // With only 1 non-idle property, the cycle wraps back to the current state.
+            // Calling ResetToState would orphan the existing object in its list before
+            // its disappear animation completes, so bail out instead.
+            if (state == ghostState)
+            {
+                return;
+            }
+
             ResetToState(state);
         }
 
