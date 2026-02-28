@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Helpers;
@@ -13,7 +12,7 @@ namespace CutTheRope.GameMain
             string angleString = xml.Attribute("angle")?.Value ?? string.Empty;
             if (angleString.Length != 0)
             {
-                rotation = string.IsNullOrEmpty(angleString) ? 0f : float.Parse(angleString, CultureInfo.InvariantCulture);
+                rotation = ParseFloatOrZero(angleString);
             }
             string pathString = xml.Attribute("path")?.Value ?? string.Empty;
             if (pathString != null && pathString.Length != 0)
@@ -21,7 +20,7 @@ namespace CutTheRope.GameMain
                 int i = 100;
                 if (pathString[0] == 'R')
                 {
-                    i = ((int)((int)RTD(ParseIntOrZero(pathString[2..])) * 3.3f) / 2) + 1;
+                    i = ((int)(RTD(ParseIntOrZero(pathString[2..])) * 3.3f) / 2) + 1;
                 }
                 float m_ = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * 3.3f;
                 float r_ = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
