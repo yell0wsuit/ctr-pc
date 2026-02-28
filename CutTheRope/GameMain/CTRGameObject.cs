@@ -20,7 +20,7 @@ namespace CutTheRope.GameMain
                 int i = 100;
                 if (pathString[0] == 'R')
                 {
-                    i = ((int)((int)RTD(ParseIntOrZero(pathString[2..])) * 3.3f) / 2) + 1;
+                    i = ((int)(RTD(ParseIntOrZero(pathString[2..])) * 3.3f) / 2) + 1;
                 }
                 float m_ = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * 3.3f;
                 float r_ = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
