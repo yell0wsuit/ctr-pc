@@ -253,6 +253,8 @@ namespace CutTheRope.GameMain
             public const string ObjRotatableSpikes03 = "obj_rotatable_spikes_03";
             public const string ObjRotatableSpikes04 = "obj_rotatable_spikes_04";
             public const string ObjRotatableSpikesButton = "obj_rotatable_spikes_button";
+            public const string ObjAnt = "obj_ant";
+            public const string AntHole = "ant_hole";
             public const string ObjBeeHd = "obj_bee_hd";
             public const string ObjPollenHd = "obj_pollen_hd";
             public const string CharSupports = "char_supports";
@@ -493,6 +495,8 @@ namespace CutTheRope.GameMain
             public const string ExpHandCatch = "hand_catch";
             public const string ExpHandDrop = "hand_drop";
             public const string ExpHandRotate = "hand_rotate";
+            public const string ExpAntsTakeCandy = "ants_take_candy";
+            public const string ExpAntsDropCandy = "ants_drop_candy";
         }
 
         /// <summary>

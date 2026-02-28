@@ -403,6 +403,18 @@ namespace CutTheRope.GameMain
 
         private ConveyorBeltObject conveyors;
 
+        private List<AntsPathSegment> antsPathsSegments;
+
+        private List<AntsPath> antsPaths;
+
+        private AntsPathSegment antsPathSegmentWithCandy;
+
+        private AntsPathSegment lastAntsPathSegmentWithCandy;
+
+        private float antsPathSegmentCooldown;
+
+        private bool candyWaitForFlyBeforeAttachingToConveyor;
+
         private GameObject candyL;
 
         private GameObject candyR;
