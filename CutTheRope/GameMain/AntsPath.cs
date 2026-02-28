@@ -248,7 +248,7 @@ namespace CutTheRope.GameMain
                 if (distToEnd < blendDistance)
                 {
                     float t = 1f - (distToEnd / blendDistance);
-                    angle = LerpAngleDeg(angle, segment.nextSegment.angleDeg, t * 0.5f);
+                    return AngleTo0_360(LerpAngleDeg(angle, segment.nextSegment.angleDeg, t * 0.5f));
                 }
             }
 
