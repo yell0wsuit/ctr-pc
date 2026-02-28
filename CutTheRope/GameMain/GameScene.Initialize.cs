@@ -61,6 +61,12 @@ namespace CutTheRope.GameMain
             activeRocket = null;
             ghosts = [];
             conveyors = new ConveyorBeltObject();
+            antsPathsSegments = [];
+            antsPaths = [];
+            antsPathSegmentWithCandy = null;
+            lastAntsPathSegmentWithCandy = null;
+            antsPathSegmentCooldown = 0f;
+            candyWaitForFlyBeforeAttachingToConveyor = false;
 
             // Cleanup old mice before creating new arrays
             if (mice != null)

@@ -229,6 +229,8 @@ namespace CutTheRope.GameMain
                         hand.doRotateCandy = false;
                         hand.releaseSoundPlayed = true;
                         hand.AnimateReleaseWithAnimationsPool(aniPool);
+                        ResetConveyor();
+                        UnblockConveyor();
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                         return true;
                     }
@@ -256,6 +258,12 @@ namespace CutTheRope.GameMain
             {
                 return true;
             }
+
+            if (HandleConveyorTouchConstraintedPointXY(star, tx, ty))
+            {
+                return true;
+            }
+
             foreach (Lantern lantern in Lantern.GetAllLanterns())
             {
                 if (lantern != null && lantern.OnTouchDown(tx + camera.pos.X, ty + camera.pos.Y))
