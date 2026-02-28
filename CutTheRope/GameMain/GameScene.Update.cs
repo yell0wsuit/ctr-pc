@@ -1033,7 +1033,7 @@ namespace CutTheRope.GameMain
                     continue;
                 }
 
-                if (candyHits && targetSock == null)
+                if (candyHits && targetSock == null && !isCandyInLantern)
                 {
                     foreach (Sock sock4 in socks)
                     {
