@@ -39,7 +39,7 @@ namespace CutTheRope.GameMain
             string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
             targetObject.y = support.y = (ParseIntOrZero(yAttribute) * scale) + offsetY + mapOffsetY;
 
-            targetObject.bb = MakeRectangle(264f, 350f, 108f, 2f);
+            targetObject.bb = GetTargetBoundingBox();
             blinkTimer = BLINK_SKIP;
 
             // Show greeting if needed (skip for night levels)

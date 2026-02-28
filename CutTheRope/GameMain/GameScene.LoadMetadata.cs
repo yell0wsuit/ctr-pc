@@ -110,7 +110,7 @@ namespace CutTheRope.GameMain
                             candyL.anchor = 18;
                             candyL.x = starL.pos.X;
                             candyL.y = starL.pos.Y;
-                            candyL.bb = MakeRectangle(155f, 176f, 88f, 76f);
+                            candyL.bb = GetSplitCandyBoundingBox();
                             break;
                         case "candyR":
                             starR.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -126,7 +126,7 @@ namespace CutTheRope.GameMain
                             candyR.anchor = 18;
                             candyR.x = starR.pos.X;
                             candyR.y = starR.pos.Y;
-                            candyR.bb = MakeRectangle(155f, 176f, 88f, 76f);
+                            candyR.bb = GetSplitCandyBoundingBox();
                             break;
                         case "candy":
                             star.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -137,6 +137,11 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+
+            // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
+            candy.bb = GetCandyBoundingBox();
+            _ = (candyL?.bb = GetSplitCandyBoundingBox());
+            _ = (candyR?.bb = GetSplitCandyBoundingBox());
         }
     }
 }
