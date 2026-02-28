@@ -93,10 +93,8 @@ namespace CutTheRope.GameMain
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
 
-            // Keep debris deliberately larger on desktop while preserving iOS-style randomness shape.
-            float debrisSize = ((RND_MINUS1_1 * 4f) + 22f) * 3;
-            particle.width = debrisSize;
-            particle.height = debrisSize;
+            particle.width = ((RND_MINUS1_1 * 4f) + 12f) * 3;
+            particle.height = ((RND_MINUS1_1 * 4f) + 22f) * 3;
         }
 
         /// <summary>
