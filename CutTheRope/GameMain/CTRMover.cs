@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
@@ -46,7 +45,7 @@ namespace CutTheRope.GameMain
             {
                 string xOffsetString = list[j];
                 string yOffsetString = list[j + 1];
-                AddPathPoint(Vect(s.X + ((string.IsNullOrEmpty(xOffsetString) ? 0f : float.Parse(xOffsetString, CultureInfo.InvariantCulture)) * 3f), s.Y + ((string.IsNullOrEmpty(yOffsetString) ? 0f : float.Parse(yOffsetString, CultureInfo.InvariantCulture)) * 3f)));
+                AddPathPoint(Vect(s.X + (ParseFloatOrZero(xOffsetString) * 3f), s.Y + (ParseFloatOrZero(yOffsetString) * 3f)));
             }
         }
     }
