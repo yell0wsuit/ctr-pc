@@ -38,6 +38,11 @@ namespace CutTheRope.GameMain
             return SelectPhysicsBoundingBox(48f, 48f, 152f, 152f, 0f, 0f, 57f, 57f);
         }
 
+        internal static CTRRectangle GetSnailBoundingBox()
+        {
+            return SelectPhysicsBoundingBox(133f, 171f, 120f, 138f, 43f, 55f, 38f, 44f);
+        }
+
         private static CTRRectangle GetPumpBoundingBox()
         {
             return SelectPhysicsBoundingBox(300f, 300f, 175f, 175f, 94f, 95f, 57f, 57f);
