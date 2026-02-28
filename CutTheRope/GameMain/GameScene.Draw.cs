@@ -123,6 +123,13 @@ namespace CutTheRope.GameMain
             {
                 ((GameObject)tutorialImage).Draw();
             }
+            if (antsPaths != null)
+            {
+                foreach (AntsPath antsPath in antsPaths)
+                {
+                    antsPath?.Draw();
+                }
+            }
             foreach (object razor in razors)
             {
                 ((Razor)razor).Draw();

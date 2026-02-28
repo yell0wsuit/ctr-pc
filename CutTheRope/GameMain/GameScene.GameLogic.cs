@@ -407,6 +407,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
+            bool releasedHand = false;
             foreach (MechanicalHand hand in hands)
             {
                 if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
@@ -416,7 +417,14 @@ namespace CutTheRope.GameMain
                     hand.doRotateCandy = false;
                     hand.releaseSoundPlayed = false;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
+                    releasedHand = true;
                 }
+            }
+
+            if (releasedHand)
+            {
+                ResetConveyor();
+                UnblockConveyor();
             }
         }
 
