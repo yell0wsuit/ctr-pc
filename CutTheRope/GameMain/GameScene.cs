@@ -171,6 +171,13 @@ namespace CutTheRope.GameMain
             Teleport();
         }
 
+        private void Selector_candyReappearedFromTube(FrameworkTypes param)
+        {
+            candy.passTransformationsToChilds = false;
+            candyMain.scaleX = candyMain.scaleY = 0.71f;
+            candyTop.scaleX = candyTop.scaleY = 0.71f;
+        }
+
         private void Selector_dropLightBulbFromSock(FrameworkTypes param)
         {
             if (param is LightBulb bulb)

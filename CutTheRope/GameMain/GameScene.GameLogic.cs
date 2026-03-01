@@ -24,11 +24,8 @@ namespace CutTheRope.GameMain
                 noCandy = false;
                 targetBambooTube.ThrowCandy(star);
                 targetBambooTube.ThrowParticlesOut(particlesAniPool);
-                candy.passTransformationsToChilds = false;
-                candy.color = RGBAColor.solidOpaqueRGBA;
-                candy.scaleX = candy.scaleY = 0.71f;
-                candyMain.scaleX = candyMain.scaleY = 0.71f;
-                candyTop.scaleX = candyTop.scaleY = 0.71f;
+                candy.PlayTimeline(2);
+                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_candyReappearedFromTube), null, 0.1f);
                 if (activeRocket != null)
                 {
                     Vector holeOut = targetBambooTube.HoleOut;
