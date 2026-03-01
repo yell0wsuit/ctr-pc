@@ -496,6 +496,7 @@ namespace CutTheRope.GameMain
             public const string ExpHandCatch = "hand_catch";
             public const string ExpHandDrop = "hand_drop";
             public const string ExpHandRotate = "hand_rotate";
+            public const string ExpHandClap = "hand_clap";
             public const string ExpAntsTakeCandy = "ants_take_candy";
             public const string ExpAntsDropCandy = "ants_drop_candy";
             public const string ExpBambooChute = "bamboo_chutes_4_5";

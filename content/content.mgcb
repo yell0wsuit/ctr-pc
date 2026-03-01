@@ -2881,6 +2881,12 @@
 /processorParam:Quality=Best
 /build:sounds/sfx/hand_rotate.wav
 
+#begin sounds/sfx/hand_clap.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/hand_clap.wav
+
 #begin images/ant_hole.png
 /importer:TextureImporter
 /processor:TextureProcessor

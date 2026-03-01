@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
 
@@ -25,6 +26,8 @@ namespace CutTheRope.GameMain
             };
             cPoint.SetWeight(0.0001f);
             releaseSoundPlayed = false;
+            clapTimer = 0f;
+            canPlayClap = false;
 
             Vector jointCenter = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 2);
             Vector candyAnchor = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 8);
@@ -159,10 +162,16 @@ namespace CutTheRope.GameMain
         /// <param name="animationPool">Animation pool responsible for timeline lifecycle.</param>
         public void AnimateReleaseWithAnimationsPool(AnimationsPool animationPool)
         {
-            Timeline timeline = CatchBounceTimelineWithInitialScaleandAmplitude(TheClaw().clawIdle.scaleX, 0.25f);
-            timeline.delegateTimelineDelegate = animationPool;
-            int timelineId = TheClaw().clawIdle.AddTimeline(timeline);
-            TheClaw().clawIdle.PlayTimeline(timelineId);
+            _ = animationPool;
+            TheClaw().clawIdle.PlayTimeline(0);
+        }
+
+        /// <summary>
+        /// Plays the claw clap bounce animation used when idle hands clap near each other.
+        /// </summary>
+        public void AnimateClap()
+        {
+            TheClaw().clawIdle.PlayTimeline(1);
         }
 
         /// <summary>
@@ -174,15 +183,8 @@ namespace CutTheRope.GameMain
         {
             const float amplitude = 0.1f;
 
-            Timeline bodyTimeline = CatchBounceTimelineWithInitialScaleandAmplitude(TheClaw().clawActive.scaleX, amplitude);
-            Timeline fingersTimeline = CatchBounceTimelineWithInitialScaleandAmplitude(TheClaw().clawActiveFingers.scaleX, amplitude);
-            bodyTimeline.delegateTimelineDelegate = animationPool;
-            fingersTimeline.delegateTimelineDelegate = animationPool;
-
-            int bodyTimelineId = TheClaw().clawActive.AddTimeline(bodyTimeline);
-            int fingersTimelineId = TheClaw().clawActiveFingers.AddTimeline(fingersTimeline);
-            TheClaw().clawActive.PlayTimeline(bodyTimelineId);
-            TheClaw().clawActiveFingers.PlayTimeline(fingersTimelineId);
+            TheClaw().clawActive.PlayTimeline(1);
+            TheClaw().clawActiveFingers.PlayTimeline(1);
 
             if (candyParts == null)
             {
@@ -235,6 +237,7 @@ namespace CutTheRope.GameMain
         {
             base.Update(delta);
             cPoint.pos = ClawPosition();
+            _ = Mover.MoveVariableToTarget(ref clapTimer, 0f, 1f, delta);
         }
 
         protected override void Dispose(bool disposing)
@@ -248,7 +251,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
-        private static Timeline CatchBounceTimelineWithInitialScaleandAmplitude(float startScale, float amplitude)
+        internal static Timeline CatchBounceTimelineWithInitialScaleandAmplitude(float startScale, float amplitude)
         {
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             float bounceScale = startScale + (amplitude * startScale);
@@ -271,6 +274,10 @@ namespace CutTheRope.GameMain
 
         public const float MH_RELEASE_DISTANCE = 34f * MH_WORLD_SCALE;
 
+        public const float MH_CLAP_DISTANCE = 40.8f * MH_WORLD_SCALE;
+
+        public const float MH_CLAP_COOLDOWN = 0.3f;
+
         public const int STATE_HAND_IDLE = 0;
 
         public const int STATE_HAND_CANDY = 1;
@@ -280,6 +287,10 @@ namespace CutTheRope.GameMain
         public int state;
 
         public bool doRotateCandy;
+
+        public bool canPlayClap;
+
+        public float clapTimer;
 
         public bool releaseSoundPlayed;
 
