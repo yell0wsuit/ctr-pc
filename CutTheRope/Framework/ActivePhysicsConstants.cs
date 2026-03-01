@@ -75,6 +75,8 @@ namespace CutTheRope.Framework
         public static float SteamTubeSideGravityDivisor => SelectRaw(PhysicsConstants.SteamTubeSideGravityDivisor, MobilePhysicsConstants.SteamTubeSideGravityDivisor);
         public static float SteamTubeOppositeGravityDivisor => SelectRaw(PhysicsConstants.SteamTubeOppositeGravityDivisor, MobilePhysicsConstants.SteamTubeOppositeGravityDivisor);
 
+        public static float SpiderTraversalSpeed => SelectRaw(PhysicsConstants.SpiderTraversalSpeed, MobilePhysicsConstants.SpiderTraversalSpeed);
+
         public static float ConveyorVelocityScale => SelectRaw(PhysicsConstants.ConveyorVelocityScale, MobilePhysicsConstants.ConveyorVelocityScale);
 
         public static int DrawPtsBufferSize => UseMobilePhysicsModel

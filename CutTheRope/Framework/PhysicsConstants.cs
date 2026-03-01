@@ -60,6 +60,9 @@ namespace CutTheRope.Framework
         public const float SteamTubeSideGravityDivisor = 4f;
         public const float SteamTubeOppositeGravityDivisor = 2f;
 
+        // Spider
+        public const float SpiderTraversalSpeed = 117f;
+
         // Conveyor-belt velocity scaling
         public const float ConveyorVelocityScale = 0.4f;
 

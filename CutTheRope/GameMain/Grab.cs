@@ -179,7 +179,7 @@ namespace CutTheRope.GameMain
             }
             if (spider.GetCurrentTimelineIndex() != 0)
             {
-                spiderPos += delta * 117f;
+                spiderPos += delta * ActivePhysicsConstants.SpiderTraversalSpeed;
             }
             float traversedLength = 0f;
             bool flag = false;
