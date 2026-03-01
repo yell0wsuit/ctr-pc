@@ -25,7 +25,6 @@ namespace CutTheRope.GameMain
                 targetBambooTube.ThrowCandy(star);
                 targetBambooTube.ThrowParticlesOut(particlesAniPool);
                 candy.PlayTimeline(2);
-                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_candyReappearedFromTube), null, 0.1f);
                 if (activeRocket != null)
                 {
                     Vector holeOut = targetBambooTube.HoleOut;

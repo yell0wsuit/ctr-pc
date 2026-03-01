@@ -171,11 +171,13 @@ namespace CutTheRope.GameMain
             Teleport();
         }
 
-        private void Selector_candyReappearedFromTube(FrameworkTypes param)
+        private void RestoreCandyProperties()
         {
             candy.passTransformationsToChilds = false;
-            candyMain.scaleX = candyMain.scaleY = 0.71f;
             candyTop.scaleX = candyTop.scaleY = 0.71f;
+            candyMain.scaleX = candyMain.scaleY = 0.71f;
+            candy.scaleX = candy.scaleY = 0.71f;
+            candy.color = RGBAColor.solidOpaqueRGBA;
         }
 
         private void Selector_dropLightBulbFromSock(FrameworkTypes param)
