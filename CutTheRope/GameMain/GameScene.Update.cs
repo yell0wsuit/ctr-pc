@@ -840,6 +840,26 @@ namespace CutTheRope.GameMain
                 }
             }
 
+            foreach (BambooTube bambooTube in bambooTubes)
+            {
+                if (bambooTube == null)
+                {
+                    continue;
+                }
+
+                if (targetBambooTube == null
+                    && targetSock == null
+                    && twoParts == PARTS_NONE
+                    && !noCandy
+                    && bambooTube.TryCatchCandy(star))
+                {
+                    OperateBambooTube(bambooTube);
+                    CTRSoundMgr.PlaySound(Resources.Snd.ExpBambooChute);
+                }
+
+                bambooTube.Update(delta);
+            }
+
             UpdateHands(delta);
 
             foreach (SteamTube steamTube in tubes)

@@ -211,7 +211,11 @@ namespace CutTheRope.GameMain
 
         public void TimelineFinished(Timeline t)
         {
-            if (t.element is RotatedCircle rotatedCircle && rotatedCircles.IndexOf(rotatedCircle) != -1)
+            if (t.element == candy)
+            {
+                RestoreCandyProperties();
+            }
+            else if (t.element is RotatedCircle rotatedCircle && rotatedCircles.IndexOf(rotatedCircle) != -1)
             {
                 ((RotatedCircle)t.element).removeOnNextUpdate = true;
             }

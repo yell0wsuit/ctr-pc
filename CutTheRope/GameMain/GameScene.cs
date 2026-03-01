@@ -171,6 +171,15 @@ namespace CutTheRope.GameMain
             Teleport();
         }
 
+        private void RestoreCandyProperties()
+        {
+            candy.passTransformationsToChilds = false;
+            candyTop.scaleX = candyTop.scaleY = 0.71f;
+            candyMain.scaleX = candyMain.scaleY = 0.71f;
+            candy.scaleX = candy.scaleY = 0.71f;
+            candy.color = RGBAColor.solidOpaqueRGBA;
+        }
+
         private void Selector_dropLightBulbFromSock(FrameworkTypes param)
         {
             if (param is LightBulb bulb)
@@ -375,6 +384,8 @@ namespace CutTheRope.GameMain
 
         private List<SteamTube> tubes;
 
+        private List<BambooTube> bambooTubes;
+
         private List<LightBulb> lightBulbs;
 
         private List<Sock> socks;
@@ -506,6 +517,8 @@ namespace CutTheRope.GameMain
         private float savedSockSpeed;
 
         private Sock targetSock;
+
+        private BambooTube targetBambooTube;
 
         private int ropesCutAtOnce;
 

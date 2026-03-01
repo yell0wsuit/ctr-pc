@@ -305,6 +305,7 @@ namespace CutTheRope.GameMain
             public const string WaterTile = "water_tile";
             public const string ObjSnail = "obj_snail";
             public const string ObjRoboHand = "obj_robohand";
+            public const string ObjBambooTube = "obj_bamboo_tube";
 
             // Candies
             public const string ObjCandyFx = "candies/obj_candy_fx";
@@ -497,6 +498,7 @@ namespace CutTheRope.GameMain
             public const string ExpHandRotate = "hand_rotate";
             public const string ExpAntsTakeCandy = "ants_take_candy";
             public const string ExpAntsDropCandy = "ants_drop_candy";
+            public const string ExpBambooChute = "bamboo_chutes_4_5";
         }
 
         /// <summary>

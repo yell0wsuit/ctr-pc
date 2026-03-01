@@ -155,6 +155,10 @@ namespace CutTheRope.GameMain
             {
                 ((Bouncer)bouncer).Draw();
             }
+            foreach (BambooTube bambooTube in bambooTubes)
+            {
+                bambooTube?.Draw();
+            }
             MechanicalHand activeHand = null;
             if (hands != null)
             {
@@ -247,7 +251,7 @@ namespace CutTheRope.GameMain
             {
                 foreach (Rocket rocket in rockets)
                 {
-                    if (rocket != null && !(rocket == activeRocket && targetSock != null))
+                    if (rocket != null && !(rocket == activeRocket && (targetSock != null || targetBambooTube != null)))
                     {
                         rocket.Draw();
                     }

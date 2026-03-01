@@ -239,6 +239,46 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Starts bamboo tube teleport sequence for the main candy.
+        /// </summary>
+        public void OperateBambooTube(BambooTube bambooTube)
+        {
+            if (bambooTube == null || targetBambooTube != null || twoParts != PARTS_NONE || noCandy)
+            {
+                return;
+            }
+
+            ReleaseAllRopes(false);
+            DetachActiveHands();
+            targetBambooTube = bambooTube;
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.15f);
+            noCandy = true;
+            star.disableGravity = true;
+            candy.passTransformationsToChilds = true;
+            candyMain.scaleX = candyMain.scaleY = 1f;
+            candyTop.scaleX = candyTop.scaleY = 1f;
+
+            if (candy.GetTimeline(1) != null)
+            {
+                candy.RemoveTimeline(1);
+            }
+
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            float towardTubeX = candy.x + ((bambooTube.x - candy.x) * 0.3f);
+            float towardTubeY = candy.y + ((bambooTube.y - candy.y) * 0.3f);
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)towardTubeX, (int)towardTubeY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(candy.scaleX, candy.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0f, 0f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            candy.AddTimelinewithID(timeline, 1);
+            candy.PlayTimeline(1);
+            timeline.delegateTimelineDelegate = aniPool;
+            _ = aniPool.AddChild(candy);
+        }
+
+        /// <summary>
         /// Cuts ropes with a razor or line. Returns number of ropes cut.
         /// </summary>
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)

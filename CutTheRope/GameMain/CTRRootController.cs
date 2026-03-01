@@ -447,6 +447,7 @@ namespace CutTheRope.GameMain
             Resources.Img.ObjRoboHand,
             Resources.Img.ObjAnt,
             Resources.Img.AntHole,
+            Resources.Img.ObjBambooTube,
             null
         ];
     }

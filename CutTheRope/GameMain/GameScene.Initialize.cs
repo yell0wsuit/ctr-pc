@@ -39,6 +39,7 @@ namespace CutTheRope.GameMain
             twoParts = 2;
             partsDist = 0f;
             targetSock = null;
+            targetBambooTube = null;
             CTRSoundMgr.StopLoopedSounds();
 
             // Initialize object collections
@@ -49,6 +50,7 @@ namespace CutTheRope.GameMain
             bubbles = [];
             pumps = [];
             tubes = [];
+            bambooTubes = [];
             lightBulbs = [];
             socks = [];
             tutorialImages = [];
@@ -124,6 +126,16 @@ namespace CutTheRope.GameMain
             candy.bb = MakeRectangle(142f, 157f, 112f, 104f);
             candy.passTransformationsToChilds = false;
             candy.scaleX = candy.scaleY = 0.71f;
+
+            // Candy reappear animation (timeline 2): scale 0→0.71 + transparent→opaque over 0.1s.
+            // Mirrors iOS: played by Teleport() after candy exits a bamboo tube.
+            Timeline candyReappearTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            candyReappearTimeline.AddKeyFrame(KeyFrame.MakeScale(0f, 0f, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            candyReappearTimeline.AddKeyFrame(KeyFrame.MakeScale(candy.scaleX, candy.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            candyReappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            candyReappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            candyReappearTimeline.delegateTimelineDelegate = this;
+            candy.AddTimelinewithID(candyReappearTimeline, 2);
 
             // Add candy main visual component
             candyMain = GameObject.GameObject_createWithResIDQuad(candyResource, 1);
