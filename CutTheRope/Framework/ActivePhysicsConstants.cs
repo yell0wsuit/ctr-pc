@@ -26,6 +26,11 @@ namespace CutTheRope.Framework
             return UseMobilePhysicsModel ? ToWorld(mobile) : pc;
         }
 
+        private static int SelectRaw(int pc, int mobile)
+        {
+            return UseMobilePhysicsModel ? mobile : pc;
+        }
+
         public static float TimeScale => SelectRaw(PhysicsConstants.TimeScale, MobilePhysicsConstants.TimeScale);
         public static float GravityEarthY => SelectScaled(PhysicsConstants.GravityEarthY, MobilePhysicsConstants.GravityEarthY);
         public static float RopePhysicsSpeedMultiplier => SelectRaw(PhysicsConstants.RopePhysicsSpeedMultiplier, MobilePhysicsConstants.RopePhysicsSpeedMultiplier);
@@ -77,6 +82,7 @@ namespace CutTheRope.Framework
         public static float SteamTubeOppositeGravityDivisor => SelectRaw(PhysicsConstants.SteamTubeOppositeGravityDivisor, MobilePhysicsConstants.SteamTubeOppositeGravityDivisor);
 
         public static float SpiderTraversalSpeed => SelectRaw(PhysicsConstants.SpiderTraversalSpeed, MobilePhysicsConstants.SpiderTraversalSpeed);
+        public static int BungeeDrawSamplePoints => SelectRaw(PhysicsConstants.BungeeDrawSamplePoints, MobilePhysicsConstants.BungeeDrawSamplePoints);
 
         public static float ConveyorVelocityScale => SelectRaw(PhysicsConstants.ConveyorVelocityScale, MobilePhysicsConstants.ConveyorVelocityScale);
 

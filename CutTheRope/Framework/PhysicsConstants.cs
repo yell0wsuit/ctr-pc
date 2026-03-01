@@ -16,6 +16,7 @@ namespace CutTheRope.Framework
         public const float BungeeRelaxThresholdMedium = 1f;
         public const float BungeeRelaxThresholdHard = 4f;
         public const float BungeeStretchRedThreshold = 7f;
+        public const int BungeeDrawSamplePoints = 4;
 
         // Bubble impulse
         public const float BubbleImpulseY = -40f;

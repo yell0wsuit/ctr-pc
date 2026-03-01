@@ -524,6 +524,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             int count = parts.Count;
+            int drawSamplePoints = ActivePhysicsConstants.BungeeDrawSamplePoints;
             Renderer.SetColor(s_Color1);
             if (cut == -1)
             {
@@ -533,7 +534,7 @@ namespace CutTheRope.GameMain
                     ConstraintedPoint constraintedPoint = parts[i];
                     array[i] = constraintedPoint.pos;
                 }
-                DrawBungee(this, array, count, 4, 0);
+                DrawBungee(this, array, count, drawSamplePoints, 0);
                 return;
             }
             Vector[] array2 = new Vector[count];
@@ -572,11 +573,11 @@ namespace CutTheRope.GameMain
             int headPartCount = count - tailPartCount;
             if (headPartCount > 0)
             {
-                DrawBungee(this, array2, headPartCount, 4, 0);
+                DrawBungee(this, array2, headPartCount, drawSamplePoints, 0);
             }
             if (tailPartCount > 0 && !hideTailParts)
             {
-                DrawBungee(this, array3, tailPartCount, 4, cutIndex);
+                DrawBungee(this, array3, tailPartCount, drawSamplePoints, cutIndex);
             }
         }
 

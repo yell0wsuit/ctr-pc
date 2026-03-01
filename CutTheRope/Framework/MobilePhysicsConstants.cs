@@ -16,6 +16,7 @@ namespace CutTheRope.Framework
         public const float BungeeRelaxThresholdMedium = 1f;
         public const float BungeeRelaxThresholdHard = 4f;
         public const float BungeeStretchRedThreshold = 7f;
+        public const int BungeeDrawSamplePoints = 3;
 
         // Bubble impulse
         public const float BubbleImpulseY = -18f;
@@ -62,7 +63,7 @@ namespace CutTheRope.Framework
         public const float SteamTubeOppositeGravityDivisor = 2f;
 
         // Spider
-        public const float SpiderTraversalSpeed = 184.09f;
+        public const float SpiderTraversalSpeed = 135f; // 45 * 3
 
         // Conveyor-belt velocity scaling
         public const float ConveyorVelocityScale = 0.4f;
