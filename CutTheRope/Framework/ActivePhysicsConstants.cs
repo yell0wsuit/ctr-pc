@@ -41,6 +41,7 @@ namespace CutTheRope.Framework
         public static float BubbleImpulseDamping => SelectRaw(PhysicsConstants.BubbleImpulseDamping, MobilePhysicsConstants.BubbleImpulseDamping);
 
         public static float CandyBreakGravityY => SelectScaled(PhysicsConstants.CandyBreakGravityY, MobilePhysicsConstants.CandyBreakGravityY);
+        public static float CandyGrabPadding => SelectRaw(PhysicsConstants.CandyGrabPadding, MobilePhysicsConstants.CandyGrabPadding);
 
         public static float SockTeleportSpeedMultiplier => SelectRaw(PhysicsConstants.SockTeleportSpeedMultiplier, MobilePhysicsConstants.SockTeleportSpeedMultiplier);
         public static float SockSpeedKoeff => SelectRaw(PhysicsConstants.SockSpeedKoeff, MobilePhysicsConstants.SockSpeedKoeff);
