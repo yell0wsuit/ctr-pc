@@ -270,6 +270,7 @@ namespace CutTheRope.GameMain
                         {
                             segment.Rotate();
                             hand.rotatingSegment = segment;
+                            hand.canPlayClap = true;
                             handledHandInput = true;
                             CTRSoundMgr.PlaySound(Resources.Snd.ExpHandRotate);
                             break;

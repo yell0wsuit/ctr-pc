@@ -164,6 +164,7 @@ namespace CutTheRope.GameMain
             Resources.Snd.ExpHandCatch,
             Resources.Snd.ExpHandDrop,
             Resources.Snd.ExpHandRotate,
+            Resources.Snd.ExpHandClap,
             Resources.Snd.ExpAntsDropCandy,
             Resources.Snd.ExpAntsTakeCandy,
             Resources.Snd.ExpBambooChute,
