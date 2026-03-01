@@ -26,6 +26,11 @@ namespace CutTheRope.GameMain
             clawIdle.DoRestoreCutTransparency();
             clawActive.DoRestoreCutTransparency();
             clawActiveFingers.DoRestoreCutTransparency();
+
+            clawIdle.AddTimelinewithID(MechanicalHand.CatchBounceTimelineWithInitialScaleandAmplitude(clawIdle.scaleX, 0.25f), 0);
+            clawIdle.AddTimelinewithID(MechanicalHand.CatchBounceTimelineWithInitialScaleandAmplitude(clawIdle.scaleX, 0.1f), 1);
+            clawActive.AddTimelinewithID(MechanicalHand.CatchBounceTimelineWithInitialScaleandAmplitude(clawActive.scaleX, 0.1f), 1);
+            clawActiveFingers.AddTimelinewithID(MechanicalHand.CatchBounceTimelineWithInitialScaleandAmplitude(clawActiveFingers.scaleX, 0.25f), 1);
         }
 
         /// <summary>
