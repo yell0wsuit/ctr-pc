@@ -233,6 +233,7 @@ namespace CutTheRope.GameMain
             public const string ObjStarNight = "obj_star_night";
             public const string HudStar = "hud_star";
             public const string CharAnimations = "char_animations";
+            public const string CharAnimationsSmooth = "char_animations_smooth";
             public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string FxSleep = "fx_sleep";
             public const string ObjHookRegulated = "obj_hook_regulated";
