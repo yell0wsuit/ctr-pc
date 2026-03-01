@@ -2916,3 +2916,21 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sounds/sfx/ants_take_candy.wav
+
+#begin images/obj_bamboo_tube.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/obj_bamboo_tube.png
+
+#begin sounds/sfx/bamboo_chutes_4_5.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/bamboo_chutes_4_5.wav
