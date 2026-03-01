@@ -212,6 +212,29 @@ namespace CutTheRope.GameMain
                     return true;
                 }
             }
+
+            BambooTube nearestBambooTube = null;
+            float nearestBambooDistance = float.PositiveInfinity;
+            foreach (BambooTube bambooTube in bambooTubes)
+            {
+                if (bambooTube == null)
+                {
+                    continue;
+                }
+
+                float distance = VectDistance(world, Vect(bambooTube.x, bambooTube.y));
+                if (distance < nearestBambooDistance)
+                {
+                    nearestBambooDistance = distance;
+                    nearestBambooTube = bambooTube;
+                }
+            }
+
+            if (nearestBambooTube != null && nearestBambooTube.HandleBambooTouchWithIndex(world, ti))
+            {
+                return true;
+            }
+
             bool handledHandInput = false;
             if (hands != null)
             {
@@ -445,6 +468,16 @@ namespace CutTheRope.GameMain
                 }
                 gravityTouchDown = -1;
             }
+
+            foreach (BambooTube bambooTube in bambooTubes)
+            {
+                if (bambooTube != null && bambooTube.BambooTouchIndex == ti)
+                {
+                    bambooTube.HandleBambooCancel();
+                    return true;
+                }
+            }
+
             if (hands != null)
             {
                 foreach (MechanicalHand hand in hands)
@@ -567,6 +600,15 @@ namespace CutTheRope.GameMain
                     pump3.pumpTouchTimer = 0f;
                 }
             }
+
+            foreach (BambooTube bambooTube in bambooTubes)
+            {
+                if (bambooTube != null && bambooTube.BambooTouchIndex == ti)
+                {
+                    bambooTube.HandleBambooRotate(world);
+                }
+            }
+
             if (hands != null)
             {
                 foreach (MechanicalHand hand in hands)
