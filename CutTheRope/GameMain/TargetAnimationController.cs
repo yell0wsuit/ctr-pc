@@ -22,18 +22,6 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Creates a controller that uses the original sprite/timeline backend.
-        /// </summary>
-        /// <param name="target">Om Nom sprite animation object.</param>
-        /// <param name="isNightLevel">Whether sleep animations should be configured.</param>
-        /// <param name="isXmas">Whether Christmas animation variants should be configured.</param>
-        /// <returns>A controller instance backed by <see cref="OriginalTargetAnimationBackend"/>.</returns>
-        public static TargetAnimationController Create(CharAnimations target, bool isNightLevel, bool isXmas)
-        {
-            return new TargetAnimationController(new OriginalTargetAnimationBackend(target, isNightLevel, isXmas));
-        }
-
-        /// <summary>
         /// Creates a controller with a custom backend implementation.
         /// </summary>
         /// <param name="backend">Backend implementation used for all animation operations.</param>

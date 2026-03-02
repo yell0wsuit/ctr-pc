@@ -41,7 +41,8 @@ namespace CutTheRope.GameMain
 
             target.bb = MakeRectangle(264f, 350f, 108f, 2f);
 
-            targetAnimationController = TargetAnimationController.Create(target, nightLevel, SpecialEvents.IsXmas);
+            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(target, nightLevel, SpecialEvents.IsXmas);
+            targetAnimationController = TargetAnimationController.Create(targetAnimationBackend);
             targetObject = targetAnimationController.TargetObject;
             sleepAnimPrimary = targetAnimationController.SleepAnimationPrimary;
             sleepAnimSecondary = targetAnimationController.SleepAnimationSecondary;
