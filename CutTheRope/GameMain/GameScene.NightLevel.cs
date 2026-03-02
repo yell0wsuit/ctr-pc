@@ -141,8 +141,6 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            targetAnimationController?.UpdateSleepOverlays(delta);
-
             // Check if any light bulb is close enough to wake Om Nom
             bool isAwake = false;
             if (targetObject == null)
@@ -166,8 +164,15 @@ namespace CutTheRope.GameMain
                 UpdateNightTargetAwake(isAwake);
             }
 
+            bool isSleeping = isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered;
+            if (isSleeping)
+            {
+                targetAnimationController?.UpdateSleepOverlays(delta);
+                targetAnimationController?.SyncSleepOverlayPosition(targetObject.x, targetObject.y);
+            }
+
             // Handle sleeping state animations and sounds
-            if (isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered)
+            if (isSleeping)
             {
                 // Wait for sleep animation to finish before starting pulse
                 if (!sleepPulseActive)
@@ -223,8 +228,6 @@ namespace CutTheRope.GameMain
                 star.SetLitState(lit);
             }
 
-            // Keep zzz animations positioned on Om Nom
-            targetAnimationController?.SyncSleepOverlayPosition(targetObject.x, targetObject.y);
         }
 
         /// <summary>
