@@ -37,6 +37,12 @@ namespace CutTheRope.GameMain
         private readonly bool isNightLevel;
         private readonly bool isXmas;
 
+        /// <summary>
+        /// Creates a controller instance bound to a specific Om Nom animation object and level flags.
+        /// </summary>
+        /// <param name="target">Om Nom character animation root.</param>
+        /// <param name="isNightLevel">Whether night-level sleep timelines should be configured.</param>
+        /// <param name="isXmas">Whether Christmas variants should be configured.</param>
         private TargetAnimationController(CharAnimations target, bool isNightLevel, bool isXmas)
         {
             this.target = target;
@@ -44,6 +50,13 @@ namespace CutTheRope.GameMain
             this.isXmas = isXmas;
         }
 
+        /// <summary>
+        /// Builds and fully configures an Om Nom animation controller.
+        /// </summary>
+        /// <param name="target">Om Nom character animation root.</param>
+        /// <param name="isNightLevel">Whether night-level sleep timelines should be configured.</param>
+        /// <param name="isXmas">Whether Christmas variants should be configured.</param>
+        /// <returns>Configured controller ready for runtime playback calls.</returns>
         public static TargetAnimationController Create(CharAnimations target, bool isNightLevel, bool isXmas)
         {
             TargetAnimationController controller = new(target, isNightLevel, isXmas);
@@ -64,6 +77,10 @@ namespace CutTheRope.GameMain
 
         public Animation SleepAnimationSecondary { get; private set; }
 
+        /// <summary>
+        /// Starts default Om Nom playback and wires the base idle timeline delegate.
+        /// </summary>
+        /// <param name="timelineDelegate">Timeline delegate that receives keyframe callbacks.</param>
         public void Initialize(ITimelineDelegate timelineDelegate)
         {
             target.PlayTimeline(IdleLoopTimeline);
@@ -71,6 +88,9 @@ namespace CutTheRope.GameMain
             target.SetPauseAtIndexforAnimation(MouthClosingTimeline, MouthOpeningTimeline);
         }
 
+        /// <summary>
+        /// Plays the greeting animation appropriate for the current seasonal variant.
+        /// </summary>
         public void PlayGreeting()
         {
             if (isXmas)
@@ -82,6 +102,10 @@ namespace CutTheRope.GameMain
             target.PlayAnimationtimeline(Resources.Img.CharAnimations2, GreetingTimeline);
         }
 
+        /// <summary>
+        /// Plays one of the two idle variation timelines using the provided random function.
+        /// </summary>
+        /// <param name="rng">Inclusive random function matching <c>RND_RANGE(min,max)</c> behavior.</param>
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
             if (rng(0, 1) == 1)
@@ -108,31 +132,49 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Plays the excited reaction timeline.
+        /// </summary>
         public void PlayExcited()
         {
             target.PlayAnimationtimeline(Resources.Img.CharAnimations2, ExcitedTimeline);
         }
 
+        /// <summary>
+        /// Plays the mouth opening timeline.
+        /// </summary>
         public void PlayMouthOpening()
         {
             target.PlayTimeline(MouthOpeningTimeline);
         }
 
+        /// <summary>
+        /// Plays the mouth closing timeline.
+        /// </summary>
         public void PlayMouthClosing()
         {
             target.PlayTimeline(MouthClosingTimeline);
         }
 
+        /// <summary>
+        /// Plays the chewing timeline used during level completion.
+        /// </summary>
         public void PlayChewing()
         {
             target.PlayTimeline(ChewingTimeline);
         }
 
+        /// <summary>
+        /// Plays the sad timeline used during loss flow.
+        /// </summary>
         public void PlaySad()
         {
             target.PlayAnimationtimeline(Resources.Img.CharAnimations3, SadTimeline);
         }
 
+        /// <summary>
+        /// Plays the sleeping timeline when night mode is enabled.
+        /// </summary>
         public void PlaySleeping()
         {
             if (!isNightLevel)
@@ -143,11 +185,19 @@ namespace CutTheRope.GameMain
             target.PlayAnimationtimeline(Resources.Img.CharAnimationsSleeping, SleepingTimeline);
         }
 
+        /// <summary>
+        /// Checks whether the base idle loop is currently active.
+        /// </summary>
+        /// <returns><c>true</c> when timeline <see cref="IdleLoopTimeline"/> is active; otherwise <c>false</c>.</returns>
         public bool IsIdleLoopPlaying()
         {
             return target.GetCurrentTimelineIndex() == IdleLoopTimeline;
         }
 
+        /// <summary>
+        /// Checks whether the sleeping timeline is currently active.
+        /// </summary>
+        /// <returns><c>true</c> when night mode is enabled and sleep timeline is active; otherwise <c>false</c>.</returns>
         public bool IsSleepingAnimationPlaying()
         {
             if (!isNightLevel)
@@ -159,11 +209,18 @@ namespace CutTheRope.GameMain
             return sleepAnimation != null && sleepAnimation.GetCurrentTimelineIndex() == SleepingTimeline;
         }
 
+        /// <summary>
+        /// Gets total duration of the base sleep animation section before pulse starts.
+        /// </summary>
+        /// <returns>Sleep section duration in seconds.</returns>
         public static float GetSleepPulseDelaySeconds()
         {
             return SleepAnimFrameDelay * (SleepAnimEndFrame - SleepAnimStartFrame + 1);
         }
 
+        /// <summary>
+        /// Registers auxiliary sprite sheets used by Om Nom timeline variants.
+        /// </summary>
         private void ConfigureTargetResources()
         {
             target.AddImage(Resources.Img.CharAnimations2);
@@ -179,6 +236,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Adds all Om Nom timelines and frame ranges for configured variants.
+        /// </summary>
         private void ConfigureTargetTimelines()
         {
             target.AddAnimationWithIDDelayLoopFirstLast(IdleLoopTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_REPLAY, 0, 18);
@@ -213,6 +273,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Configures end-of-animation transitions between Om Nom timelines.
+        /// </summary>
         private void ConfigureTargetTransitions()
         {
             target.SwitchToAnimationatEndOfAnimationDelay(MouthOpenedLoopTimeline, ChewingTimeline, DefaultFrameDelay);
@@ -231,6 +294,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Creates and attaches the blink overlay animation.
+        /// </summary>
+        /// <returns>Blink animation instance attached to Om Nom.</returns>
         private Animation CreateBlinkAnimation()
         {
             Animation blink = Animation.Animation_createWithResID(Resources.Img.CharAnimations);
@@ -243,6 +310,10 @@ namespace CutTheRope.GameMain
             return blink;
         }
 
+        /// <summary>
+        /// Creates the primary and secondary sleep overlay animations.
+        /// </summary>
+        /// <returns>Tuple containing primary and secondary sleep overlays.</returns>
         private static (Animation primary, Animation secondary) CreateSleepOverlayAnimations()
         {
             List<int> sleepFrames = [];
@@ -270,6 +341,11 @@ namespace CutTheRope.GameMain
                 CreateSleepOverlayAnimation(secondarySequence));
         }
 
+        /// <summary>
+        /// Builds a sleep overlay animation from a frame sequence.
+        /// </summary>
+        /// <param name="sequence">Full frame sequence including the first frame.</param>
+        /// <returns>Configured sleep overlay animation.</returns>
         private static Animation CreateSleepOverlayAnimation(List<int> sequence)
         {
             List<int> tailSequence = sequence.Count > 1 ? sequence.GetRange(1, sequence.Count - 1) : [];
@@ -284,6 +360,10 @@ namespace CutTheRope.GameMain
             return sleepOverlay;
         }
 
+        /// <summary>
+        /// Builds tail frames for the complex idle sequence after the initial frame.
+        /// </summary>
+        /// <returns>Frame list consumed by <c>AddAnimationWithIDDelayLoopCountSequence</c>.</returns>
         private static List<int> BuildComplexIdleTailSequence()
         {
             return
