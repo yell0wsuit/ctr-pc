@@ -1,0 +1,21 @@
+{
+    "frames": [
+        {
+            "filename": "fx_sleep_hd.png",
+            "frame": { "x": 1, "y": 1, "w": 55, "h": 51 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 55, "h": 51 },
+            "sourceSize": { "w": 55, "h": 51 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "fx_sleep.png",
+        "format": "RGBA8888",
+        "size": { "w": 57, "h": 53 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:95c312a02a436b1af4a1ca8a91745600:3d9360e1421869caf077068664880a0e:25c9399d60c098d8d25e5349f5e87952$"
+    }
+}
