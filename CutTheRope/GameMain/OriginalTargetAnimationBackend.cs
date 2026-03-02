@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
@@ -33,15 +34,38 @@ namespace CutTheRope.GameMain
         private const float DefaultFrameDelay = 0.05f;
         private const int ComplexIdleStartFrame = 68;
         private const int ComplexIdleLoopCount = 32;
-        private const int SleepZzzStartFrame = 7;
-        private const int SleepZzzEndFrame = 43;
+
+        // ZZZ overlay position offsets from Om Nom's origin
+        private const float ZzzOffsetX1 = 120f;
+        private const float ZzzOffsetY1 = -120f;
+        private const float ZzzOffsetX2 = 100f;
+        private const float ZzzOffsetY2 = -100f;
+
+        // Rotation pivot offset — the ZZZ orbits around a point 160 units left of its center
+        private const float ZzzRotationCenterX = -160f;
+
+        private static readonly (int Next, bool Visible, float Duration,
+            float ScaleStart, float ScaleEnd,
+            float RotStart, float RotEnd,
+            float AlphaStart, float AlphaEnd)[] ZzzStates =
+        [
+            (1, true,  0.40f, 0.61f, 0.80f,  29f,  9f, 0f, 1f),   // fade in while growing
+            (2, true,  0.30f, 0.80f, 0.89f,   9f, -2f, 1f, 1f),   // continue growing
+            (3, true,  0.20f, 0.89f, 0.98f,  -2f,-13f, 1f, 1f),   // near full size
+            (4, true,  0.50f, 0.98f, 0.59f, -13f,-33f, 1f, 0f),   // shrink and fade out
+            (0, false, 0.40f,    0f,   0f,    0f,  0f, 0f, 0f),   // invisible pause
+        ];
 
         private readonly CharAnimations target;
         private readonly bool isNightLevel;
         private readonly bool isXmas;
         private readonly Animation blink;
-        private readonly Animation sleepAnimPrimary;
-        private readonly Animation sleepAnimSecondary;
+        private readonly Image zz1;
+        private readonly Image zz2;
+        private int _zz1State;
+        private int _zz2State;
+        private float _zz1Time;
+        private float _zz2Time;
 
         /// <summary>
         /// Creates and configures the original timeline backend for Om Nom.
@@ -64,7 +88,10 @@ namespace CutTheRope.GameMain
             blink = CreateBlinkAnimation();
             if (isNightLevel)
             {
-                (sleepAnimPrimary, sleepAnimSecondary) = CreateSleepOverlayAnimations();
+                zz1 = CreateZzzOverlay();
+                zz2 = CreateZzzOverlay();
+                _zz1State = 0;
+                _zz2State = 4;
             }
         }
 
@@ -194,65 +221,99 @@ namespace CutTheRope.GameMain
         /// <inheritdoc />
         public void UpdateSleepOverlays(float delta)
         {
-            sleepAnimPrimary?.Update(delta);
-            sleepAnimSecondary?.Update(delta);
+            if (zz1 != null)
+            {
+                AdvanceZzzState(zz1, ref _zz1State, ref _zz1Time, delta);
+            }
+            if (zz2 != null)
+            {
+                AdvanceZzzState(zz2, ref _zz2State, ref _zz2Time, delta);
+            }
         }
 
         /// <inheritdoc />
         public void SyncSleepOverlayPosition(float x, float y)
         {
-            if (sleepAnimPrimary != null)
+            if (zz1 != null)
             {
-                sleepAnimPrimary.x = x;
-                sleepAnimPrimary.y = y;
+                zz1.x = x + ZzzOffsetX1;
+                zz1.y = y + ZzzOffsetY1;
             }
-            if (sleepAnimSecondary != null)
+            if (zz2 != null)
             {
-                sleepAnimSecondary.x = x;
-                sleepAnimSecondary.y = y;
+                zz2.x = x + ZzzOffsetX2;
+                zz2.y = y + ZzzOffsetY2;
             }
         }
 
         /// <inheritdoc />
         public void SetSleepOverlayVisible(bool visible)
         {
-            if (sleepAnimPrimary != null)
+            if (zz1 == null)
             {
-                sleepAnimPrimary.visible = visible;
-                if (visible)
-                {
-                    sleepAnimPrimary.PlayTimeline(0);
-                }
-                else
-                {
-                    sleepAnimPrimary.GetTimeline(0)?.StopTimeline();
-                }
+                return;
             }
-            if (sleepAnimSecondary != null)
+
+            if (visible)
             {
-                sleepAnimSecondary.visible = visible;
-                if (visible)
-                {
-                    sleepAnimSecondary.PlayTimeline(0);
-                }
-                else
-                {
-                    sleepAnimSecondary.GetTimeline(0)?.StopTimeline();
-                }
+                _zz1State = 0;
+                _zz1Time = 0f;
+                _zz2State = 4;
+                _zz2Time = 0f;
+            }
+            else
+            {
+                zz1.visible = false;
+                zz2.visible = false;
             }
         }
 
         /// <inheritdoc />
         public void DrawSleepOverlays()
         {
-            if (sleepAnimPrimary?.visible == true)
+            if (zz1?.visible == true)
             {
-                sleepAnimPrimary.Draw();
+                zz1.Draw();
             }
-            if (sleepAnimSecondary?.visible == true)
+            if (zz2?.visible == true)
             {
-                sleepAnimSecondary.Draw();
+                zz2.Draw();
             }
+        }
+
+        /// <summary>
+        /// Advances one ZZZ overlay through the state machine and applies the resulting transforms.
+        /// </summary>
+        /// <remarks>
+        /// Each state linearly interpolates scale, rotation, and alpha over its duration,
+        /// then transitions to the next state. States loop: 0→1→2→3→4→0.
+        /// zz1 starts at state 0 (visible), zz2 starts at state 4 (invisible, 0.4 s phase offset).
+        /// </remarks>
+        private static void AdvanceZzzState(Image zzz, ref int state, ref float time, float delta)
+        {
+            time += delta;
+
+            (int Next, bool Visible, float Duration, float ScaleStart, float ScaleEnd, float RotStart, float RotEnd, float AlphaStart, float AlphaEnd) s = ZzzStates[state];
+            while (time >= s.Duration)
+            {
+                time -= s.Duration;
+                state = s.Next;
+                s = ZzzStates[state];
+            }
+
+            zzz.visible = s.Visible;
+            if (!s.Visible)
+            {
+                return;
+            }
+
+            float t = time / s.Duration;
+            float scale = s.ScaleStart + ((s.ScaleEnd - s.ScaleStart) * t);
+            zzz.scaleX = scale;
+            zzz.scaleY = scale;
+            zzz.rotation = s.RotStart + ((s.RotEnd - s.RotStart) * t);
+            float alpha = s.AlphaStart + ((s.AlphaEnd - s.AlphaStart) * t);
+            zzz.color = new RGBAColor(1f, 1f, 1f, alpha);
         }
 
         /// <summary>
@@ -348,48 +409,16 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Creates primary and secondary sleep overlay animations.
+        /// Creates a single ZZZ overlay image for the night level sleep animation.
+        /// Scale, rotation, and alpha are driven each frame by <see cref="AdvanceZzzState"/>.
         /// </summary>
-        /// <returns>Tuple containing primary and secondary sleep overlays.</returns>
-        private static (Animation primary, Animation secondary) CreateSleepOverlayAnimations()
+        /// <returns>Configured ZZZ image, initially hidden.</returns>
+        private static Image CreateZzzOverlay()
         {
-            List<int> sleepFrames = [];
-            for (int frame = SleepZzzStartFrame; frame <= SleepZzzEndFrame; frame++)
-            {
-                sleepFrames.Add(frame);
-            }
-
-            List<int> sleepHoldFrames = [];
-            for (int i = 0; i < 15; i++)
-            {
-                sleepHoldFrames.Add(SleepZzzStartFrame);
-            }
-
-            List<int> primarySequence = [.. sleepFrames, .. sleepHoldFrames];
-            List<int> secondarySequence = [.. sleepHoldFrames, .. sleepFrames];
-
-            return (
-                CreateSleepOverlayAnimation(primarySequence),
-                CreateSleepOverlayAnimation(secondarySequence));
-        }
-
-        /// <summary>
-        /// Creates a replaying sleep overlay animation from the provided sequence.
-        /// </summary>
-        /// <param name="sequence">Frame sequence including the first frame.</param>
-        /// <returns>Configured sleep overlay animation.</returns>
-        private static Animation CreateSleepOverlayAnimation(List<int> sequence)
-        {
-            List<int> tailSequence = sequence.Count > 1 ? sequence.GetRange(1, sequence.Count - 1) : [];
-
-            Animation sleepOverlay = Animation.Animation_createWithResID(Resources.Img.CharAnimationsSleeping);
-            sleepOverlay.anchor = sleepOverlay.parentAnchor = 18;
-            sleepOverlay.DoRestoreCutTransparency();
-            sleepOverlay.AddAnimationWithIDDelayLoopCountSequence(0, 1f / 30f, Timeline.LoopType.TIMELINE_REPLAY, sequence.Count, sequence[0], tailSequence);
-            sleepOverlay.PlayTimeline(0);
-            sleepOverlay.visible = false;
-
-            return sleepOverlay;
+            Image zzz = Image.Image_createWithResID(Resources.Img.FxSleep);
+            zzz.rotationCenterX = ZzzRotationCenterX;
+            zzz.visible = false;
+            return zzz;
         }
 
         /// <summary>
