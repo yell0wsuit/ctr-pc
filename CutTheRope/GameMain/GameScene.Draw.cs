@@ -106,15 +106,8 @@ namespace CutTheRope.GameMain
             decalsLayer?.Draw();
             support.Draw();
             waterLayer?.DrawBack();
-            target.Draw();
-            if (sleepAnimPrimary?.visible == true)
-            {
-                sleepAnimPrimary.Draw();
-            }
-            if (sleepAnimSecondary?.visible == true)
-            {
-                sleepAnimSecondary.Draw();
-            }
+            targetObject?.Draw();
+            targetAnimationController?.DrawSleepOverlays();
             foreach (object tutorialText in tutorials)
             {
                 ((Text)tutorialText).Draw();
