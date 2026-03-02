@@ -2,7 +2,6 @@ using System;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
-using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
@@ -182,8 +181,7 @@ namespace CutTheRope.GameMain
                     float sinValue = MathF.Sin(sleepPulseTime * 2f);
                     float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
 
-                    Animation sleepAnimation = target.GetAnimation(Resources.Img.CharAnimationsSleeping);
-                    if (sleepAnimation != null && sleepAnimation.GetCurrentTimelineIndex() == CharAnimationSleeping)
+                    if (targetAnimationController?.IsSleepingAnimationPlaying() == true)
                     {
                         target.rotationCenterY = 86f;
                         target.scaleY = scaleY;
@@ -264,7 +262,7 @@ namespace CutTheRope.GameMain
                 target.rotationCenterX = 0f;
                 target.rotationCenterY = 0f;
                 SetNightSleepVisibility(false);
-                target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 3);  // excited animation
+                targetAnimationController?.PlayExcited();
                 return;
             }
 
@@ -277,10 +275,10 @@ namespace CutTheRope.GameMain
             // Falling asleep: start sleep animation and prepare pulse effect
             sleepPulseActive = false;
             sleepPulseTime = 0f;
-            sleepPulseDelay = SleepAnimFrameDelay * (SleepAnimEnd - SleepAnimStart + 1);
+            sleepPulseDelay = TargetAnimationController.GetSleepPulseDelaySeconds();
             sleepSoundTimer = 0f;
             SetNightSleepVisibility(true);
-            target.PlayAnimationtimeline(Resources.Img.CharAnimationsSleeping, CharAnimationSleeping);
+            targetAnimationController?.PlaySleeping();
             sleepPulseBaseY = GetSleepPulsePivotOffsetY(target.height);
             target.rotationCenterY = sleepPulseBaseY;
         }

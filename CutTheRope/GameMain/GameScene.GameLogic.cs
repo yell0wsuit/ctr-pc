@@ -201,7 +201,7 @@ namespace CutTheRope.GameMain
             target.rotationCenterX = 0f;
             target.rotationCenterY = 0f;
 
-            target.PlayTimeline(6);
+            targetAnimationController?.PlayChewing();
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterChewing);
             if (candyBubble != null)
             {
@@ -267,7 +267,7 @@ namespace CutTheRope.GameMain
             target.rotationCenterX = 0f;
             target.rotationCenterY = 0f;
 
-            target.PlayAnimationtimeline(Resources.Img.CharAnimations3, 5);
+            targetAnimationController?.PlaySad();
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();

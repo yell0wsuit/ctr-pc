@@ -659,9 +659,9 @@ namespace CutTheRope.GameMain
                             3 => Resources.Snd.Star3,
                             _ => Resources.Snd.Star1
                         });
-                        if (target.GetCurrentTimelineIndex() == 0)
+                        if (targetAnimationController?.IsIdleLoopPlaying() == true)
                         {
-                            target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 3);
+                            targetAnimationController.PlayExcited();
                             break;
                         }
                         break;
@@ -1636,7 +1636,7 @@ namespace CutTheRope.GameMain
                     if (!isCandyInLantern && VectDistance(star.pos, Vect(target.x, target.y)) < 200f)
                     {
                         mouthOpen = true;
-                        target.PlayTimeline(7);
+                        targetAnimationController?.PlayMouthOpening();
                         CTRSoundMgr.PlaySound(Resources.Snd.MonsterOpen);
                         mouthCloseTimer = 1f;
                     }
@@ -1649,7 +1649,7 @@ namespace CutTheRope.GameMain
                         if (isCandyInLantern || VectDistance(star.pos, Vect(target.x, target.y)) > 200f)
                         {
                             mouthOpen = false;
-                            target.PlayTimeline(8);
+                            targetAnimationController?.PlayMouthClosing();
                             CTRSoundMgr.PlaySound(Resources.Snd.MonsterClose);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
