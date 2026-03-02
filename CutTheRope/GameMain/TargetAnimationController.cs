@@ -10,15 +10,6 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class TargetAnimationController
     {
-        /// <summary>First frame index of the sleeping animation segment.</summary>
-        public const int SleepAnimStartFrame = 0;
-
-        /// <summary>Last frame index of the sleeping animation segment.</summary>
-        public const int SleepAnimEndFrame = 6;
-
-        /// <summary>Per-frame delay for the sleeping animation segment.</summary>
-        public const float SleepAnimFrameDelay = 0.05f;
-
         private readonly ITargetAnimationBackend backend;
 
         /// <summary>
@@ -164,12 +155,12 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Gets the total duration of the sleep segment before pulse effects should begin.
+        /// Gets the delay before night sleep pulse effects should begin.
         /// </summary>
-        /// <returns>Duration in seconds.</returns>
-        public static float GetSleepPulseDelaySeconds()
+        /// <returns>Delay in seconds.</returns>
+        public float GetSleepPulseDelaySeconds()
         {
-            return SleepAnimFrameDelay * (SleepAnimEndFrame - SleepAnimStartFrame + 1);
+            return backend.GetSleepPulseDelaySeconds();
         }
     }
 }

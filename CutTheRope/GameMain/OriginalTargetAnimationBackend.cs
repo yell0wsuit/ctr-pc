@@ -26,9 +26,9 @@ namespace CutTheRope.GameMain
         public const int XmasIdleVariationTwoTimeline = 13;
         public const int SleepingTimeline = 15;
 
-        public const int SleepAnimStartFrame = 0;
-        public const int SleepAnimEndFrame = 6;
-        public const float SleepAnimFrameDelay = 0.05f;
+        private const int SleepAnimStartFrame = 0;
+        private const int SleepAnimEndFrame = 6;
+        private const float SleepAnimFrameDelay = 0.05f;
 
         private const float DefaultFrameDelay = 0.05f;
         private const int ComplexIdleStartFrame = 68;
@@ -174,6 +174,12 @@ namespace CutTheRope.GameMain
                 default:
                     return false;
             }
+        }
+
+        /// <inheritdoc />
+        public float GetSleepPulseDelaySeconds()
+        {
+            return SleepAnimFrameDelay * (SleepAnimEndFrame - SleepAnimStartFrame + 1);
         }
 
         /// <summary>

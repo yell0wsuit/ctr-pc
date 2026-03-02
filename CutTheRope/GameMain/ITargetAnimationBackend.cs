@@ -38,5 +38,11 @@ namespace CutTheRope.GameMain
         /// <param name="state">Animation state to query.</param>
         /// <returns><c>true</c> if the state is active; otherwise <c>false</c>.</returns>
         bool IsPlaying(TargetAnimationState state);
+
+        /// <summary>
+        /// Gets the delay before night sleep pulse effects should begin.
+        /// </summary>
+        /// <returns>Delay in seconds.</returns>
+        float GetSleepPulseDelaySeconds();
     }
 }

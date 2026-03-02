@@ -283,7 +283,7 @@ namespace CutTheRope.GameMain
             // Falling asleep: start sleep animation and prepare pulse effect
             sleepPulseActive = false;
             sleepPulseTime = 0f;
-            sleepPulseDelay = TargetAnimationController.GetSleepPulseDelaySeconds();
+            sleepPulseDelay = targetAnimationController?.GetSleepPulseDelaySeconds() ?? 0f;
             sleepSoundTimer = 0f;
             SetNightSleepVisibility(true);
             targetAnimationController?.PlaySleeping();
