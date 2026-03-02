@@ -435,6 +435,7 @@ namespace CutTheRope.GameMain
             Resources.Img.ObjGap,
             Resources.Img.ObjLighter,
             Resources.Img.CharAnimationsSleeping,
+            Resources.Img.FxSleep,
             Resources.Img.ObjStarNight,
             Resources.Img.ObjTransporter,
 
