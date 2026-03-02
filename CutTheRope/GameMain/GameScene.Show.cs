@@ -61,7 +61,7 @@ namespace CutTheRope.GameMain
             noCandy = twoParts != 2;
             noCandyL = false;
             noCandyR = false;
-            blink.PlayTimeline(0);
+            targetAnimationController?.ResetBlink();
             // spiderTookCandy = false;
             time = 0f;
             score = 0;
@@ -173,8 +173,7 @@ namespace CutTheRope.GameMain
                 blinkTimer--;
                 if (blinkTimer == 0)
                 {
-                    blink.visible = true;
-                    blink.PlayTimeline(0);
+                    targetAnimationController?.TriggerBlink();
                     blinkTimer = 3;
                 }
                 idlesTimer--;

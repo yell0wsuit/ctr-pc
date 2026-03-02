@@ -141,8 +141,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            sleepAnimPrimary?.Update(delta);
-            sleepAnimSecondary?.Update(delta);
+            targetAnimationController?.UpdateSleepOverlays(delta);
 
             // Check if any light bulb is close enough to wake Om Nom
             bool isAwake = false;
@@ -225,16 +224,7 @@ namespace CutTheRope.GameMain
             }
 
             // Keep zzz animations positioned on Om Nom
-            if (sleepAnimPrimary != null)
-            {
-                sleepAnimPrimary.x = targetObject.x;
-                sleepAnimPrimary.y = targetObject.y;
-            }
-            if (sleepAnimSecondary != null)
-            {
-                sleepAnimSecondary.x = targetObject.x;
-                sleepAnimSecondary.y = targetObject.y;
-            }
+            targetAnimationController?.SyncSleepOverlayPosition(targetObject.x, targetObject.y);
         }
 
         /// <summary>
@@ -300,30 +290,7 @@ namespace CutTheRope.GameMain
         /// <param name="visible">Whether the zzz animations should be visible.</param>
         private void SetNightSleepVisibility(bool visible)
         {
-            if (sleepAnimPrimary != null)
-            {
-                sleepAnimPrimary.visible = visible;
-                if (visible)
-                {
-                    sleepAnimPrimary.PlayTimeline(0);
-                }
-                else
-                {
-                    sleepAnimPrimary.GetTimeline(0)?.StopTimeline();
-                }
-            }
-            if (sleepAnimSecondary != null)
-            {
-                sleepAnimSecondary.visible = visible;
-                if (visible)
-                {
-                    sleepAnimSecondary.PlayTimeline(0);
-                }
-                else
-                {
-                    sleepAnimSecondary.GetTimeline(0)?.StopTimeline();
-                }
-            }
+            targetAnimationController?.SetSleepOverlayVisible(visible);
         }
 
         /// <summary>

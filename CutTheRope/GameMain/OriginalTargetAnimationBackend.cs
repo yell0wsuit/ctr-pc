@@ -39,16 +39,21 @@ namespace CutTheRope.GameMain
         private readonly CharAnimations target;
         private readonly bool isNightLevel;
         private readonly bool isXmas;
+        private readonly Animation blink;
+        private readonly Animation sleepAnimPrimary;
+        private readonly Animation sleepAnimSecondary;
 
         /// <summary>
         /// Creates and configures the original timeline backend for Om Nom.
         /// </summary>
-        /// <param name="target">Om Nom base animation object.</param>
         /// <param name="isNightLevel">Whether sleep animations should be configured.</param>
         /// <param name="isXmas">Whether Christmas animation variants should be configured.</param>
-        public OriginalTargetAnimationBackend(CharAnimations target, bool isNightLevel, bool isXmas)
+        public OriginalTargetAnimationBackend(bool isNightLevel, bool isXmas)
         {
-            this.target = target;
+            target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
+            target.DoRestoreCutTransparency();
+            target.passColorToChilds = false;
+
             this.isNightLevel = isNightLevel;
             this.isXmas = isXmas;
 
@@ -56,21 +61,12 @@ namespace CutTheRope.GameMain
             ConfigureTargetTimelines();
             ConfigureTargetTransitions();
 
-            Blink = CreateBlinkAnimation();
+            blink = CreateBlinkAnimation();
             if (isNightLevel)
             {
-                (SleepAnimationPrimary, SleepAnimationSecondary) = CreateSleepOverlayAnimations();
+                (sleepAnimPrimary, sleepAnimSecondary) = CreateSleepOverlayAnimations();
             }
         }
-
-        /// <inheritdoc />
-        public Animation Blink { get; private set; }
-
-        /// <inheritdoc />
-        public Animation SleepAnimationPrimary { get; private set; }
-
-        /// <inheritdoc />
-        public Animation SleepAnimationSecondary { get; private set; }
 
         /// <inheritdoc />
         public GameObject TargetObject => target;
@@ -180,6 +176,83 @@ namespace CutTheRope.GameMain
         public float GetSleepPulseDelaySeconds()
         {
             return SleepAnimFrameDelay * (SleepAnimEndFrame - SleepAnimStartFrame + 1);
+        }
+
+        /// <inheritdoc />
+        public void ResetBlink()
+        {
+            blink.PlayTimeline(0);
+        }
+
+        /// <inheritdoc />
+        public void TriggerBlink()
+        {
+            blink.visible = true;
+            blink.PlayTimeline(0);
+        }
+
+        /// <inheritdoc />
+        public void UpdateSleepOverlays(float delta)
+        {
+            sleepAnimPrimary?.Update(delta);
+            sleepAnimSecondary?.Update(delta);
+        }
+
+        /// <inheritdoc />
+        public void SyncSleepOverlayPosition(float x, float y)
+        {
+            if (sleepAnimPrimary != null)
+            {
+                sleepAnimPrimary.x = x;
+                sleepAnimPrimary.y = y;
+            }
+            if (sleepAnimSecondary != null)
+            {
+                sleepAnimSecondary.x = x;
+                sleepAnimSecondary.y = y;
+            }
+        }
+
+        /// <inheritdoc />
+        public void SetSleepOverlayVisible(bool visible)
+        {
+            if (sleepAnimPrimary != null)
+            {
+                sleepAnimPrimary.visible = visible;
+                if (visible)
+                {
+                    sleepAnimPrimary.PlayTimeline(0);
+                }
+                else
+                {
+                    sleepAnimPrimary.GetTimeline(0)?.StopTimeline();
+                }
+            }
+            if (sleepAnimSecondary != null)
+            {
+                sleepAnimSecondary.visible = visible;
+                if (visible)
+                {
+                    sleepAnimSecondary.PlayTimeline(0);
+                }
+                else
+                {
+                    sleepAnimSecondary.GetTimeline(0)?.StopTimeline();
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public void DrawSleepOverlays()
+        {
+            if (sleepAnimPrimary?.visible == true)
+            {
+                sleepAnimPrimary.Draw();
+            }
+            if (sleepAnimSecondary?.visible == true)
+            {
+                sleepAnimSecondary.Draw();
+            }
         }
 
         /// <summary>

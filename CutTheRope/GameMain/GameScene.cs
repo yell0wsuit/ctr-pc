@@ -419,12 +419,6 @@ namespace CutTheRope.GameMain
 
         private ConstraintedPoint starR;
 
-        private Animation blink;
-
-        private Animation sleepAnimPrimary;
-
-        private Animation sleepAnimSecondary;
-
         private bool? isNightTargetAwake;
 
         private bool sleepPulseActive;

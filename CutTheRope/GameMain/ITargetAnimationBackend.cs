@@ -11,15 +11,6 @@ namespace CutTheRope.GameMain
         /// <summary>Gets the primary Om Nom gameplay object.</summary>
         GameObject TargetObject { get; }
 
-        /// <summary>Gets the blink overlay animation.</summary>
-        Animation Blink { get; }
-
-        /// <summary>Gets the primary sleep overlay animation.</summary>
-        Animation SleepAnimationPrimary { get; }
-
-        /// <summary>Gets the secondary sleep overlay animation.</summary>
-        Animation SleepAnimationSecondary { get; }
-
         /// <summary>
         /// Initializes backend timeline state and delegates.
         /// </summary>
@@ -44,5 +35,23 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <returns>Delay in seconds.</returns>
         float GetSleepPulseDelaySeconds();
+
+        /// <summary>Resets the blink animation to frame 0 without showing it.</summary>
+        void ResetBlink();
+
+        /// <summary>Shows the blink overlay and plays it from frame 0.</summary>
+        void TriggerBlink();
+
+        /// <summary>Advances all sleep overlay animations by <paramref name="delta"/> seconds.</summary>
+        void UpdateSleepOverlays(float delta);
+
+        /// <summary>Moves all sleep overlay animations to the given position.</summary>
+        void SyncSleepOverlayPosition(float x, float y);
+
+        /// <summary>Sets visibility and playback state of all sleep overlay animations.</summary>
+        void SetSleepOverlayVisible(bool visible);
+
+        /// <summary>Draws all sleep overlay animations that are currently visible.</summary>
+        void DrawSleepOverlays();
     }
 }

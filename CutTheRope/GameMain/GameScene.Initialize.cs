@@ -90,8 +90,6 @@ namespace CutTheRope.GameMain
             isCandyInGhostBubbleAnimationLeftLoaded = false;
             isCandyInGhostBubbleAnimationRightLoaded = false;
             shouldRestoreSecondGhost = false;
-            sleepAnimPrimary = null;
-            sleepAnimSecondary = null;
             targetObject = null;
             targetAnimationController = null;
             isNightTargetAwake = null;

@@ -31,15 +31,6 @@ namespace CutTheRope.GameMain
             return new TargetAnimationController(backend);
         }
 
-        /// <summary>Gets the blink overlay animation created by the backend.</summary>
-        public Animation Blink => backend.Blink;
-
-        /// <summary>Gets the primary sleep overlay animation created by the backend.</summary>
-        public Animation SleepAnimationPrimary => backend.SleepAnimationPrimary;
-
-        /// <summary>Gets the secondary sleep overlay animation created by the backend.</summary>
-        public Animation SleepAnimationSecondary => backend.SleepAnimationSecondary;
-
         /// <summary>Gets the primary Om Nom gameplay object owned by the backend.</summary>
         public GameObject TargetObject => backend.TargetObject;
 
@@ -149,6 +140,42 @@ namespace CutTheRope.GameMain
         public float GetSleepPulseDelaySeconds()
         {
             return backend.GetSleepPulseDelaySeconds();
+        }
+
+        /// <summary>Resets the blink animation to frame 0 without showing it.</summary>
+        public void ResetBlink()
+        {
+            backend.ResetBlink();
+        }
+
+        /// <summary>Shows the blink overlay and plays it from frame 0.</summary>
+        public void TriggerBlink()
+        {
+            backend.TriggerBlink();
+        }
+
+        /// <summary>Advances all sleep overlay animations by <paramref name="delta"/> seconds.</summary>
+        public void UpdateSleepOverlays(float delta)
+        {
+            backend.UpdateSleepOverlays(delta);
+        }
+
+        /// <summary>Moves all sleep overlay animations to the given position.</summary>
+        public void SyncSleepOverlayPosition(float x, float y)
+        {
+            backend.SyncSleepOverlayPosition(x, y);
+        }
+
+        /// <summary>Sets visibility and playback state of all sleep overlay animations.</summary>
+        public void SetSleepOverlayVisible(bool visible)
+        {
+            backend.SetSleepOverlayVisible(visible);
+        }
+
+        /// <summary>Draws all sleep overlay animations that are currently visible.</summary>
+        public void DrawSleepOverlays()
+        {
+            backend.DrawSleepOverlays();
         }
     }
 }

@@ -29,24 +29,17 @@ namespace CutTheRope.GameMain
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
-            CharAnimations target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
-            target.DoRestoreCutTransparency();
-            target.passColorToChilds = false;
-
-            string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
-            target.x = support.x = (ParseIntOrZero(xAttribute) * scale) + offsetX + mapOffsetX;
-
-            string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
-            target.y = support.y = (ParseIntOrZero(yAttribute) * scale) + offsetY + mapOffsetY;
-
-            target.bb = MakeRectangle(264f, 350f, 108f, 2f);
-
-            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(target, nightLevel, SpecialEvents.IsXmas);
+            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(nightLevel, SpecialEvents.IsXmas);
             targetAnimationController = TargetAnimationController.Create(targetAnimationBackend);
             targetObject = targetAnimationController.TargetObject;
-            sleepAnimPrimary = targetAnimationController.SleepAnimationPrimary;
-            sleepAnimSecondary = targetAnimationController.SleepAnimationSecondary;
-            blink = targetAnimationController.Blink;
+
+            string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
+            targetObject.x = support.x = (ParseIntOrZero(xAttribute) * scale) + offsetX + mapOffsetX;
+
+            string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
+            targetObject.y = support.y = (ParseIntOrZero(yAttribute) * scale) + offsetY + mapOffsetY;
+
+            targetObject.bb = MakeRectangle(264f, 350f, 108f, 2f);
             blinkTimer = BLINK_SKIP;
 
             // Show greeting if needed (skip for night levels)
