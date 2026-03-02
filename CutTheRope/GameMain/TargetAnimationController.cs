@@ -328,13 +328,8 @@ namespace CutTheRope.GameMain
                 sleepHoldFrames.Add(SleepZzzStartFrame);
             }
 
-            List<int> primarySequence = [];
-            primarySequence.AddRange(sleepFrames);
-            primarySequence.AddRange(sleepHoldFrames);
-
-            List<int> secondarySequence = [];
-            secondarySequence.AddRange(sleepHoldFrames);
-            secondarySequence.AddRange(sleepFrames);
+            List<int> primarySequence = [.. sleepFrames, .. sleepHoldFrames];
+            List<int> secondarySequence = [.. sleepHoldFrames, .. sleepFrames];
 
             return (
                 CreateSleepOverlayAnimation(primarySequence),
@@ -366,40 +361,26 @@ namespace CutTheRope.GameMain
         /// <returns>Frame list consumed by <c>AddAnimationWithIDDelayLoopCountSequence</c>.</returns>
         private static List<int> BuildComplexIdleTailSequence()
         {
-            return
-            [
-                ComplexIdleStartFrame + 1,
-                ComplexIdleStartFrame + 2,
-                ComplexIdleStartFrame + 3,
-                ComplexIdleStartFrame + 4,
-                ComplexIdleStartFrame + 5,
-                ComplexIdleStartFrame + 6,
-                ComplexIdleStartFrame + 7,
-                ComplexIdleStartFrame + 8,
-                ComplexIdleStartFrame + 9,
-                ComplexIdleStartFrame + 10,
-                ComplexIdleStartFrame + 11,
-                ComplexIdleStartFrame + 12,
-                ComplexIdleStartFrame + 13,
-                ComplexIdleStartFrame + 14,
-                ComplexIdleStartFrame + 15,
-                ComplexIdleStartFrame,
-                ComplexIdleStartFrame + 1,
-                ComplexIdleStartFrame + 2,
-                ComplexIdleStartFrame + 3,
-                ComplexIdleStartFrame + 4,
-                ComplexIdleStartFrame + 5,
-                ComplexIdleStartFrame + 6,
-                ComplexIdleStartFrame + 7,
-                ComplexIdleStartFrame + 8,
-                ComplexIdleStartFrame + 9,
-                ComplexIdleStartFrame + 10,
-                ComplexIdleStartFrame + 11,
-                ComplexIdleStartFrame + 12,
-                ComplexIdleStartFrame + 13,
-                ComplexIdleStartFrame + 14,
-                ComplexIdleStartFrame + 15
-            ];
+            const int frameRangeLength = 15;
+            const int totalLength = (frameRangeLength * 2) + 1;
+
+#pragma warning disable IDE0028
+            List<int> sequence = new(totalLength);
+#pragma warning restore IDE0028
+
+            for (int offset = 1; offset <= frameRangeLength; offset++)
+            {
+                sequence.Add(ComplexIdleStartFrame + offset);
+            }
+
+            sequence.Add(ComplexIdleStartFrame);
+
+            for (int offset = 1; offset <= frameRangeLength; offset++)
+            {
+                sequence.Add(ComplexIdleStartFrame + offset);
+            }
+
+            return sequence;
         }
     }
 }
