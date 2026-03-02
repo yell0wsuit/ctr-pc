@@ -52,14 +52,10 @@ namespace CutTheRope.GameMain
 
         public void ShowGreeting()
         {
+            targetAnimationController?.PlayGreeting();
             if (SpecialEvents.IsXmas)
             {
-                target.PlayAnimationtimeline(Resources.Img.CharGreetingXmas, 11);
                 CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
-            }
-            else
-            {
-                target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 10);
             }
         }
 
@@ -291,18 +287,6 @@ namespace CutTheRope.GameMain
 
         public const int GRAB_MOVE_RADIUS = 65;
 
-        private const int CharAnimationSleeping = 15;
-
-        private const int SleepAnimStart = 0;
-
-        private const int SleepAnimEnd = 6;
-
-        private const int SleepZzzStart = 7;
-
-        private const int SleepZzzEnd = 43;
-
-        private const float SleepAnimFrameDelay = 0.05f;
-
         private const float SleepPulsePivotYRatio = 433f / 480f;
 
         private const float NightSleepSoundInterval = 4f;
@@ -344,7 +328,8 @@ namespace CutTheRope.GameMain
         /// <summary>Cached background scale derived from internal screen width.</summary>
         private float backgroundScale = 1f;
 
-        private CharAnimations target;
+        private GameObject targetObject;
+        private TargetAnimationController targetAnimationController;
 
         private Image support;
 
@@ -433,12 +418,6 @@ namespace CutTheRope.GameMain
         private ConstraintedPoint starL;
 
         private ConstraintedPoint starR;
-
-        private Animation blink;
-
-        private Animation sleepAnimPrimary;
-
-        private Animation sleepAnimSecondary;
 
         private bool? isNightTargetAwake;
 

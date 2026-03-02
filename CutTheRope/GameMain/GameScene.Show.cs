@@ -61,7 +61,7 @@ namespace CutTheRope.GameMain
             noCandy = twoParts != 2;
             noCandyL = false;
             noCandyR = false;
-            blink.PlayTimeline(0);
+            targetAnimationController?.ResetBlink();
             // spiderTookCandy = false;
             time = 0f;
             score = 0;
@@ -173,37 +173,13 @@ namespace CutTheRope.GameMain
                 blinkTimer--;
                 if (blinkTimer == 0)
                 {
-                    blink.visible = true;
-                    blink.PlayTimeline(0);
+                    targetAnimationController?.TriggerBlink();
                     blinkTimer = 3;
                 }
                 idlesTimer--;
                 if (idlesTimer == 0)
                 {
-                    if (SpecialEvents.IsXmas)
-                    {
-                        // Play Christmas idle animations
-                        if (RND_RANGE(0, 1) == 1)
-                        {
-                            target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, 12);
-                        }
-                        else
-                        {
-                            target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, 13);
-                        }
-                    }
-                    else
-                    {
-                        // Play vanilla idle animations
-                        if (RND_RANGE(0, 1) == 1)
-                        {
-                            target.PlayTimeline(1);
-                        }
-                        else
-                        {
-                            target.PlayTimeline(2);
-                        }
-                    }
+                    targetAnimationController?.PlayRandomIdleVariant(RND_RANGE);
                     idlesTimer = RND_RANGE(5, 20);
                 }
             }

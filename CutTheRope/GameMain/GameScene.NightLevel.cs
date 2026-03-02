@@ -2,7 +2,6 @@ using System;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Sfe;
-using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
@@ -142,12 +141,16 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            sleepAnimPrimary?.Update(delta);
-            sleepAnimSecondary?.Update(delta);
+            targetAnimationController?.UpdateSleepOverlays(delta);
 
             // Check if any light bulb is close enough to wake Om Nom
             bool isAwake = false;
-            Vector targetPosition = Vect(target.x, target.y);
+            if (targetObject == null)
+            {
+                return;
+            }
+
+            Vector targetPosition = Vect(targetObject.x, targetObject.y);
             foreach (LightBulb bulb in lightBulbs)
             {
                 if (VectDistance(bulb.constraint.pos, targetPosition) < bulb.lightRadius)
@@ -182,11 +185,10 @@ namespace CutTheRope.GameMain
                     float sinValue = MathF.Sin(sleepPulseTime * 2f);
                     float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
 
-                    Animation sleepAnimation = target.GetAnimation(Resources.Img.CharAnimationsSleeping);
-                    if (sleepAnimation != null && sleepAnimation.GetCurrentTimelineIndex() == CharAnimationSleeping)
+                    if (targetAnimationController?.IsSleepingAnimationPlaying() == true)
                     {
-                        target.rotationCenterY = 86f;
-                        target.scaleY = scaleY;
+                        targetObject.rotationCenterY = 86f;
+                        targetObject.scaleY = scaleY;
                     }
                     sleepPulseTime += delta;
                 }
@@ -222,16 +224,7 @@ namespace CutTheRope.GameMain
             }
 
             // Keep zzz animations positioned on Om Nom
-            if (sleepAnimPrimary != null)
-            {
-                sleepAnimPrimary.x = target.x;
-                sleepAnimPrimary.y = target.y;
-            }
-            if (sleepAnimSecondary != null)
-            {
-                sleepAnimSecondary.x = target.x;
-                sleepAnimSecondary.y = target.y;
-            }
+            targetAnimationController?.SyncSleepOverlayPosition(targetObject.x, targetObject.y);
         }
 
         /// <summary>
@@ -259,12 +252,15 @@ namespace CutTheRope.GameMain
                 sleepPulseDelay = 0f;
                 sleepSoundTimer = 0f;
                 sleepPulseBaseY = 0f;
-                target.scaleX = 1f;
-                target.scaleY = 1f;
-                target.rotationCenterX = 0f;
-                target.rotationCenterY = 0f;
+                if (targetObject != null)
+                {
+                    targetObject.scaleX = 1f;
+                    targetObject.scaleY = 1f;
+                    targetObject.rotationCenterX = 0f;
+                    targetObject.rotationCenterY = 0f;
+                }
                 SetNightSleepVisibility(false);
-                target.PlayAnimationtimeline(Resources.Img.CharAnimations2, 3);  // excited animation
+                targetAnimationController?.PlayExcited();
                 return;
             }
 
@@ -277,12 +273,15 @@ namespace CutTheRope.GameMain
             // Falling asleep: start sleep animation and prepare pulse effect
             sleepPulseActive = false;
             sleepPulseTime = 0f;
-            sleepPulseDelay = SleepAnimFrameDelay * (SleepAnimEnd - SleepAnimStart + 1);
+            sleepPulseDelay = targetAnimationController?.GetSleepPulseDelaySeconds() ?? 0f;
             sleepSoundTimer = 0f;
             SetNightSleepVisibility(true);
-            target.PlayAnimationtimeline(Resources.Img.CharAnimationsSleeping, CharAnimationSleeping);
-            sleepPulseBaseY = GetSleepPulsePivotOffsetY(target.height);
-            target.rotationCenterY = sleepPulseBaseY;
+            targetAnimationController?.PlaySleeping();
+            if (targetObject != null)
+            {
+                sleepPulseBaseY = GetSleepPulsePivotOffsetY(targetObject.height);
+                targetObject.rotationCenterY = sleepPulseBaseY;
+            }
         }
 
         /// <summary>
@@ -291,30 +290,7 @@ namespace CutTheRope.GameMain
         /// <param name="visible">Whether the zzz animations should be visible.</param>
         private void SetNightSleepVisibility(bool visible)
         {
-            if (sleepAnimPrimary != null)
-            {
-                sleepAnimPrimary.visible = visible;
-                if (visible)
-                {
-                    sleepAnimPrimary.PlayTimeline(0);
-                }
-                else
-                {
-                    sleepAnimPrimary.GetTimeline(0)?.StopTimeline();
-                }
-            }
-            if (sleepAnimSecondary != null)
-            {
-                sleepAnimSecondary.visible = visible;
-                if (visible)
-                {
-                    sleepAnimSecondary.PlayTimeline(0);
-                }
-                else
-                {
-                    sleepAnimSecondary.GetTimeline(0)?.StopTimeline();
-                }
-            }
+            targetAnimationController?.SetSleepOverlayVisible(visible);
         }
 
         /// <summary>
