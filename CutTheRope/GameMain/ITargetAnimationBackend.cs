@@ -1,3 +1,4 @@
+using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -7,6 +8,9 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal interface ITargetAnimationBackend
     {
+        /// <summary>Gets the primary Om Nom gameplay object.</summary>
+        GameObject TargetObject { get; }
+
         /// <summary>Gets the blink overlay animation.</summary>
         Animation Blink { get; }
 

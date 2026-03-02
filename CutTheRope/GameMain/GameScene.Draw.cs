@@ -106,7 +106,7 @@ namespace CutTheRope.GameMain
             decalsLayer?.Draw();
             support.Draw();
             waterLayer?.DrawBack();
-            target.Draw();
+            targetObject?.Draw();
             if (sleepAnimPrimary?.visible == true)
             {
                 sleepAnimPrimary.Draw();

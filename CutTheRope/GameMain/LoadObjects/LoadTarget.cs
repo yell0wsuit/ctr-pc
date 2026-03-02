@@ -29,7 +29,7 @@ namespace CutTheRope.GameMain
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
-            target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
+            CharAnimations target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
 
@@ -42,6 +42,7 @@ namespace CutTheRope.GameMain
             target.bb = MakeRectangle(264f, 350f, 108f, 2f);
 
             targetAnimationController = TargetAnimationController.Create(target, nightLevel, SpecialEvents.IsXmas);
+            targetObject = targetAnimationController.TargetObject;
             sleepAnimPrimary = targetAnimationController.SleepAnimationPrimary;
             sleepAnimSecondary = targetAnimationController.SleepAnimationSecondary;
             blink = targetAnimationController.Blink;

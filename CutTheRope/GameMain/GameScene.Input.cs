@@ -720,11 +720,11 @@ namespace CutTheRope.GameMain
                                 bubble.y = vector5.Y;
                             }
                         }
-                        if (PointInRect(target.x, target.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
+                        if (targetObject != null && PointInRect(targetObject.x, targetObject.y, rotatedCircle.x - rotatedCircle.size, rotatedCircle.y - rotatedCircle.size, 2f * rotatedCircle.size, 2f * rotatedCircle.size))
                         {
-                            Vector vector6 = VectRotateAround(Vect(target.x, target.y), rotationDelta, rotatedCircle.x, rotatedCircle.y);
-                            target.x = vector6.X;
-                            target.y = vector6.Y;
+                            Vector vector6 = VectRotateAround(Vect(targetObject.x, targetObject.y), rotationDelta, rotatedCircle.x, rotatedCircle.y);
+                            targetObject.x = vector6.X;
+                            targetObject.y = vector6.Y;
                         }
                         rotatedCircle.lastTouch = vector2;
                         return true;

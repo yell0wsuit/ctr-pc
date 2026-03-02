@@ -196,10 +196,13 @@ namespace CutTheRope.GameMain
             SetNightSleepVisibility(false);
             sleepPulseActive = false;
             sleepSoundTimer = 0f;
-            target.scaleX = 1f;
-            target.scaleY = 1f;
-            target.rotationCenterX = 0f;
-            target.rotationCenterY = 0f;
+            if (targetObject != null)
+            {
+                targetObject.scaleX = 1f;
+                targetObject.scaleY = 1f;
+                targetObject.rotationCenterX = 0f;
+                targetObject.rotationCenterY = 0f;
+            }
 
             targetAnimationController?.PlayChewing();
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterChewing);
@@ -213,7 +216,9 @@ namespace CutTheRope.GameMain
             candyTop.scaleX = candyTop.scaleY = 1f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakePos((int)target.x, (int)(target.y + 10), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            float targetX = targetObject != null ? targetObject.x : candy.x;
+            float targetY = targetObject != null ? targetObject.y : candy.y;
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)targetX, (int)(targetY + 10), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.71f, 0.71f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
@@ -262,10 +267,13 @@ namespace CutTheRope.GameMain
             SetNightSleepVisibility(false);
             sleepPulseActive = false;
             sleepSoundTimer = 0f;
-            target.scaleX = 1f;
-            target.scaleY = 1f;
-            target.rotationCenterX = 0f;
-            target.rotationCenterY = 0f;
+            if (targetObject != null)
+            {
+                targetObject.scaleX = 1f;
+                targetObject.scaleY = 1f;
+                targetObject.rotationCenterX = 0f;
+                targetObject.rotationCenterY = 0f;
+            }
 
             targetAnimationController?.PlaySad();
             CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);

@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -59,6 +60,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Gets the secondary sleep overlay animation created by the backend.</summary>
         public Animation SleepAnimationSecondary => backend.SleepAnimationSecondary;
+
+        /// <summary>Gets the primary Om Nom gameplay object owned by the backend.</summary>
+        public GameObject TargetObject => backend.TargetObject;
 
         /// <summary>
         /// Initializes backend timelines and binds timeline delegate callbacks.

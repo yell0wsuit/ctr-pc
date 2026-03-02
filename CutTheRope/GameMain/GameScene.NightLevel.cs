@@ -146,7 +146,12 @@ namespace CutTheRope.GameMain
 
             // Check if any light bulb is close enough to wake Om Nom
             bool isAwake = false;
-            Vector targetPosition = Vect(target.x, target.y);
+            if (targetObject == null)
+            {
+                return;
+            }
+
+            Vector targetPosition = Vect(targetObject.x, targetObject.y);
             foreach (LightBulb bulb in lightBulbs)
             {
                 if (VectDistance(bulb.constraint.pos, targetPosition) < bulb.lightRadius)
@@ -183,8 +188,8 @@ namespace CutTheRope.GameMain
 
                     if (targetAnimationController?.IsSleepingAnimationPlaying() == true)
                     {
-                        target.rotationCenterY = 86f;
-                        target.scaleY = scaleY;
+                        targetObject.rotationCenterY = 86f;
+                        targetObject.scaleY = scaleY;
                     }
                     sleepPulseTime += delta;
                 }
@@ -222,13 +227,13 @@ namespace CutTheRope.GameMain
             // Keep zzz animations positioned on Om Nom
             if (sleepAnimPrimary != null)
             {
-                sleepAnimPrimary.x = target.x;
-                sleepAnimPrimary.y = target.y;
+                sleepAnimPrimary.x = targetObject.x;
+                sleepAnimPrimary.y = targetObject.y;
             }
             if (sleepAnimSecondary != null)
             {
-                sleepAnimSecondary.x = target.x;
-                sleepAnimSecondary.y = target.y;
+                sleepAnimSecondary.x = targetObject.x;
+                sleepAnimSecondary.y = targetObject.y;
             }
         }
 
@@ -257,10 +262,13 @@ namespace CutTheRope.GameMain
                 sleepPulseDelay = 0f;
                 sleepSoundTimer = 0f;
                 sleepPulseBaseY = 0f;
-                target.scaleX = 1f;
-                target.scaleY = 1f;
-                target.rotationCenterX = 0f;
-                target.rotationCenterY = 0f;
+                if (targetObject != null)
+                {
+                    targetObject.scaleX = 1f;
+                    targetObject.scaleY = 1f;
+                    targetObject.rotationCenterX = 0f;
+                    targetObject.rotationCenterY = 0f;
+                }
                 SetNightSleepVisibility(false);
                 targetAnimationController?.PlayExcited();
                 return;
@@ -279,8 +287,11 @@ namespace CutTheRope.GameMain
             sleepSoundTimer = 0f;
             SetNightSleepVisibility(true);
             targetAnimationController?.PlaySleeping();
-            sleepPulseBaseY = GetSleepPulsePivotOffsetY(target.height);
-            target.rotationCenterY = sleepPulseBaseY;
+            if (targetObject != null)
+            {
+                sleepPulseBaseY = GetSleepPulsePivotOffsetY(targetObject.height);
+                targetObject.rotationCenterY = sleepPulseBaseY;
+            }
         }
 
         /// <summary>

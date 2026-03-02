@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -70,6 +71,9 @@ namespace CutTheRope.GameMain
 
         /// <inheritdoc />
         public Animation SleepAnimationSecondary { get; private set; }
+
+        /// <inheritdoc />
+        public GameObject TargetObject => target;
 
         /// <inheritdoc />
         public void Initialize(ITimelineDelegate timelineDelegate)

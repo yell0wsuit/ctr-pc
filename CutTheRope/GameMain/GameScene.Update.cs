@@ -591,7 +591,7 @@ namespace CutTheRope.GameMain
                     starR.AddConstraintwithRestLengthofType(starL, partsDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
                 }
             }
-            target.Update(delta);
+            targetObject?.Update(delta);
             UpdateLightBulbPhysics(delta);
             UpdateNightLevel(delta);
             if (delta > 0f)
@@ -1633,7 +1633,7 @@ namespace CutTheRope.GameMain
             {
                 if (!mouthOpen && canInteractWithTarget)
                 {
-                    if (!isCandyInLantern && VectDistance(star.pos, Vect(target.x, target.y)) < 200f)
+                    if (!isCandyInLantern && targetObject != null && VectDistance(star.pos, Vect(targetObject.x, targetObject.y)) < 200f)
                     {
                         mouthOpen = true;
                         targetAnimationController?.PlayMouthOpening();
@@ -1646,7 +1646,7 @@ namespace CutTheRope.GameMain
                     _ = Mover.MoveVariableToTarget(ref mouthCloseTimer, 0, 1, delta);
                     if (mouthCloseTimer <= 0)
                     {
-                        if (isCandyInLantern || VectDistance(star.pos, Vect(target.x, target.y)) > 200f)
+                        if (targetObject == null || isCandyInLantern || VectDistance(star.pos, Vect(targetObject.x, targetObject.y)) > 200f)
                         {
                             mouthOpen = false;
                             targetAnimationController?.PlayMouthClosing();
@@ -1663,7 +1663,7 @@ namespace CutTheRope.GameMain
                         }
                     }
                 }
-                if (restartState != 0 && canInteractWithTarget && GameObject.ObjectsIntersect(candy, target))
+                if (restartState != 0 && canInteractWithTarget && targetObject != null && GameObject.ObjectsIntersect(candy, targetObject))
                 {
                     GameWon();
                     return;

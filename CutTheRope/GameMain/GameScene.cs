@@ -328,7 +328,7 @@ namespace CutTheRope.GameMain
         /// <summary>Cached background scale derived from internal screen width.</summary>
         private float backgroundScale = 1f;
 
-        private CharAnimations target;
+        private GameObject targetObject;
         private TargetAnimationController targetAnimationController;
 
         private Image support;
