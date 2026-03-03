@@ -93,10 +93,7 @@ namespace CutTheRope.Framework.Helpers
             {
                 pos = path[0];
                 targetPoint = pathLen > 1 ? 1 : 0;
-                if (UseMobileMoverFormula())
-                {
-                    CalculateOffset();
-                }
+                // CalculateOffset();
             }
         }
 
@@ -121,17 +118,14 @@ namespace CutTheRope.Framework.Helpers
         {
             targetPoint = p;
             pos = path[targetPoint];
-            if (UseMobileMoverFormula())
-            {
-                CalculateOffset();
-            }
+            // CalculateOffset();
         }
 
-        public virtual void CalculateOffset()
-        {
-            Vector v = path[targetPoint];
-            offset = VectMult(VectNormalize(VectSub(v, pos)), moveSpeed[targetPoint]);
-        }
+        //public virtual void CalculateOffset()
+        //{
+        // Vector v = path[targetPoint];
+        // offset = VectMult(VectNormalize(VectSub(v, pos)), moveSpeed[targetPoint]);
+        //}
 
         public virtual void SetMoveSpeedforPoint(float ms, int i)
         {
@@ -147,11 +141,6 @@ namespace CutTheRope.Framework.Helpers
         {
             if (IsPaused)
             {
-                return;
-            }
-            if (UseMobileMoverFormula())
-            {
-                UpdateMobileFormula(delta);
                 return;
             }
             if (pathLen > 0)
@@ -213,64 +202,6 @@ namespace CutTheRope.Framework.Helpers
                 }
                 angle_ += rotateSpeed * delta;
             }
-        }
-
-        private void UpdateMobileFormula(float delta)
-        {
-            if (pathLen > 0)
-            {
-                Vector target = path[targetPoint];
-                bool reachedTarget = false;
-                if (!VectEqual(pos, target))
-                {
-                    float dt = delta;
-                    if (overrun != 0f)
-                    {
-                        dt += overrun;
-                        overrun = 0f;
-                    }
-                    pos = VectAdd(pos, VectMult(offset, dt));
-                    if (!SameSign(offset.X, target.X - pos.X) || !SameSign(offset.Y, target.Y - pos.Y))
-                    {
-                        overrun = VectLength(VectSub(pos, target));
-                        float speed = VectLength(offset);
-                        if (speed != 0f)
-                        {
-                            overrun /= speed;
-                        }
-                        else
-                        {
-                            overrun = 0f;
-                        }
-                        pos = target;
-                        reachedTarget = true;
-                    }
-                }
-                else
-                {
-                    reachedTarget = true;
-                }
-
-                if (reachedTarget)
-                {
-                    AdvanceTarget();
-                    CalculateOffset();
-                }
-            }
-            if (rotateSpeed != 0f)
-            {
-                if (use_angle_initial && targetPoint == 0)
-                {
-                    angle_ = angle_initial;
-                    return;
-                }
-                angle_ += rotateSpeed * delta;
-            }
-        }
-
-        private static bool UseMobileMoverFormula()
-        {
-            return ActivePhysicsConstants.UseMobilePhysicsModel;
         }
 
         private void AdvanceTarget()
@@ -352,6 +283,6 @@ namespace CutTheRope.Framework.Helpers
 
         private float overrun;
 
-        private Vector offset;
+        // private Vector offset;
     }
 }
