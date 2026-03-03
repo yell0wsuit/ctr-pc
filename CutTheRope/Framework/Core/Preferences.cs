@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 #if MACOS_AVFOUNDATION
@@ -462,7 +463,7 @@ namespace CutTheRope.Framework.Core
             using (Utf8JsonWriter writer = new(stream, new JsonWriterOptions { Indented = true }))
             {
                 writer.WriteStartObject();
-                foreach (KeyValuePair<string, object> kvp in data)
+                foreach (KeyValuePair<string, object> kvp in data.OrderBy(kvp => kvp.Key, StringComparer.Ordinal))
                 {
                     writer.WritePropertyName(kvp.Key);
                     switch (kvp.Value)
