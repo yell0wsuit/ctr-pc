@@ -391,6 +391,7 @@ namespace CutTheRope.GameMain
             SetBooleanForKey(true, "PREFS_GAME_CENTER_ENABLED", true);
             SetIntForKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
             SetIntForKey(0, "PREFS_LAST_BOX", true);
+            SetIntForKey(0, "PREFS_LAST_GAMEPACK", true);
             SetBooleanForKey(true, "PREFS_WINDOW_FULLSCREEN", true);
             SetBooleanForKey(true, PREFS_RPC_ENABLED, true);
             SetBooleanForKey(true, PREFS_UPDATE_CHECK, true);
