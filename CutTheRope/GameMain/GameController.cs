@@ -66,7 +66,7 @@ namespace CutTheRope.GameMain
             mapNameLabel = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             mapNameLabel.SetName("mapNameLabel");
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
+            _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
             mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + 256f;
             mapNameLabel.y = RTD(-5);
@@ -150,24 +150,30 @@ namespace CutTheRope.GameMain
             view.GetChild(0).touchable = false;
         }
 
-        public static void CheckForBoxPerfect(int pack)
+        public static void CheckForBoxPerfect(int box, int pack)
         {
-            if (CTRPreferences.IsPackPerfect(pack) && pack < name.Length)
+            if (CTRPreferences.IsPackPerfect(box, pack) && pack < name.Length)
             {
                 CTRRootController.PostAchievementName(name[pack]);
             }
+        }
+
+        public static void CheckForBoxPerfect(int pack)
+        {
+            CheckForBoxPerfect(CTRPreferences.GetBoxForPack(pack), pack);
         }
 
         public void BoxClosed()
         {
             _ = Application.SharedPreferences();
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+            int box = ctrrootController.GetBox();
             int pack = ctrrootController.GetPack();
             _ = ctrrootController.GetLevel();
             bool flag = true;
             for (int levelIndex = CTRPreferences.GetLevelsInPackCount(pack) - 1; levelIndex >= 0; levelIndex--)
             {
-                if (CTRPreferences.GetScoreForPackLevel(pack, levelIndex) <= 0)
+                if (CTRPreferences.GetScoreForPackLevel(box, pack, levelIndex) <= 0)
                 {
                     flag = false;
                     break;
@@ -177,7 +183,7 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController.PostAchievementName(nameArray[pack]);
             }
-            CheckForBoxPerfect(pack);
+            CheckForBoxPerfect(box, pack);
             int totalStars = CTRPreferences.GetTotalStars();
             if (totalStars is >= 50 and < 150)
             {
@@ -195,7 +201,7 @@ namespace CutTheRope.GameMain
             int totalPackScore = 0;
             for (int i = 0; i < CTRPreferences.GetLevelsInPackCount(pack); i++)
             {
-                totalPackScore += CTRPreferences.GetScoreForPackLevel(pack, i);
+                totalPackScore += CTRPreferences.GetScoreForPackLevel(box, pack, i);
             }
             //if (!CTRRootController.IsHacked())
             //{
@@ -241,14 +247,15 @@ namespace CutTheRope.GameMain
             gameScene.touchable = false;
             view.GetChild(2).touchable = false;
             view.GetChild(1).touchable = false;
+            int box = cTRRootController.GetBox();
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
-            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(pack, level);
-            int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(pack, level);
+            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(box, pack, level);
+            int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(box, pack, level);
             boxOpenClose.shouldShowImprovedResult = false;
             if (gameScene.score > scoreForPackLevel)
             {
-                CTRPreferences.SetScoreForPackLevel(gameScene.score, pack, level);
+                CTRPreferences.SetScoreForPackLevel(box, gameScene.score, pack, level);
                 if (scoreForPackLevel > 0)
                 {
                     boxOpenClose.shouldShowImprovedResult = true;
@@ -256,7 +263,7 @@ namespace CutTheRope.GameMain
             }
             if (gameScene.starsCollected > starsForPackLevel)
             {
-                CTRPreferences.SetStarsForPackLevel(gameScene.starsCollected, pack, level);
+                CTRPreferences.SetStarsForPackLevel(box, gameScene.starsCollected, pack, level);
                 if (starsForPackLevel > 0)
                 {
                     boxOpenClose.shouldShowImprovedResult = true;
@@ -318,11 +325,12 @@ namespace CutTheRope.GameMain
         public static void UnlockNextLevel()
         {
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+            int box = ctrrootController.GetBox();
             int pack = ctrrootController.GetPack();
             int level = ctrrootController.GetLevel();
-            if (level < CTRPreferences.GetLevelsInPackCount(pack) - 1 && CTRPreferences.GetUnlockedForPackLevel(pack, level + 1) == UNLOCKEDSTATE.LOCKED)
+            if (level < CTRPreferences.GetLevelsInPackCount(pack) - 1 && CTRPreferences.GetUnlockedForPackLevel(box, pack, level + 1) == UNLOCKEDSTATE.LOCKED)
             {
-                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, pack, level + 1);
+                CTRPreferences.SetUnlockedForPackLevel(box, UNLOCKEDSTATE.UNLOCKED, pack, level + 1);
             }
         }
 
@@ -487,7 +495,7 @@ namespace CutTheRope.GameMain
                 mapNameLabel.SetString("");
                 return;
             }
-            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
+            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
         }
 

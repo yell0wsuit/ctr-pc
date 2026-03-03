@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.Json;
 #if MACOS_AVFOUNDATION
 using Foundation;
@@ -10,14 +13,67 @@ namespace CutTheRope.Framework.Core
 {
     internal class Preferences : FrameworkTypes
     {
-        private static readonly Dictionary<string, object> PreferencesData = [];
-        private const string SaveFileName = "ctr_preferences.json";
-        private const string LegacyBinaryFileName = "ctr_save.bin";
-        private const string MigratedBinaryFileName = "ctr_bin_candeletethis.bin";
+        private const string UnlockedKeyPrefix = "UNLOCKED_";
+        private static readonly HashSet<string> BooleanPreferenceKeys =
+        [
+            "PREFS_EXIST",
+            "PREFS_CANDY_WAS_CHANGED",
+            "PREFS_GAME_CENTER_ENABLED",
+            "PREFS_WINDOW_FULLSCREEN",
+            "PREFS_RPC_ENABLED",
+            "PREFS_UPDATE_CHECK",
+            "PREFS_CLICK_TO_CUT",
+            "SOUND_ON",
+            "MUSIC_ON",
+            "IAP_SHAREWARE",
+            "IAP_UNLOCK",
+            "IAP_BANNERS"
+        ];
+
+        private const string GlobalSaveFileName = "ctr_preferences.json";
+        private const string DynamicBoxSaveFilePrefix = "ctrsave_slot";
+        private const string DynamicBoxSaveFileExtension = ".json";
         private const string SaveFolderName = "CutTheRopeDX_SaveData";
-        private static string SaveFilePath => Path.Combine(SaveDirectory, SaveFileName);
-        private static string LegacyBinaryFilePath => Path.Combine(SaveDirectory, LegacyBinaryFileName);
-        private static string MigratedBinaryFilePath => Path.Combine(SaveDirectory, MigratedBinaryFileName);
+
+        private static string GlobalSaveFilePath => Path.Combine(SaveDirectory, GlobalSaveFileName);
+
+        private static string GetBoxSaveFileName(int slot)
+        {
+            return $"{DynamicBoxSaveFilePrefix}{slot:D2}{DynamicBoxSaveFileExtension}";
+        }
+
+        private static string GetBoxSaveFilePath(int slot)
+        {
+            return Path.Combine(SaveDirectory, GetBoxSaveFileName(slot));
+        }
+
+        private static bool TryParseBoxSlotFromFileName(string fileName, out int slot)
+        {
+            slot = 0;
+
+            if (string.IsNullOrWhiteSpace(fileName) ||
+                !fileName.StartsWith(DynamicBoxSaveFilePrefix, StringComparison.OrdinalIgnoreCase) ||
+                !fileName.EndsWith(DynamicBoxSaveFileExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            int slotPartLength = fileName.Length - DynamicBoxSaveFilePrefix.Length - DynamicBoxSaveFileExtension.Length;
+            if (slotPartLength <= 0)
+            {
+                return false;
+            }
+
+            string slotPart = fileName.Substring(DynamicBoxSaveFilePrefix.Length, slotPartLength);
+            return int.TryParse(slotPart, NumberStyles.None, CultureInfo.InvariantCulture, out slot) && slot >= 0;
+        }
+
+        // Global preferences (PREFS_*, IAP_*, SOUND_ON, etc.)
+        private static readonly Dictionary<string, object> GlobalData = [];
+
+        // Per-box game data (STARS_, SCORE_, UNLOCKED_) — indexed by box index
+        private static readonly List<Dictionary<string, object>> BoxData = [];
+
         public static bool GameSaveRequested { get; set; }
 
         /// <summary>
@@ -114,7 +170,19 @@ namespace CutTheRope.Framework.Core
         /// <param name="newDir">The new directory to move save files to.</param>
         private static void MigrateOldSaveFiles(string oldDir, string newDir)
         {
-            string[] filesToMigrate = [SaveFileName, LegacyBinaryFileName, MigratedBinaryFileName];
+            HashSet<string> filesToMigrate = new([GlobalSaveFileName], StringComparer.OrdinalIgnoreCase);
+
+            if (Directory.Exists(oldDir))
+            {
+                foreach (string oldSlotFilePath in Directory.EnumerateFiles(oldDir, $"{DynamicBoxSaveFilePrefix}*{DynamicBoxSaveFileExtension}"))
+                {
+                    string fileName = Path.GetFileName(oldSlotFilePath);
+                    if (TryParseBoxSlotFromFileName(fileName, out _))
+                    {
+                        _ = filesToMigrate.Add(fileName);
+                    }
+                }
+            }
 
             foreach (string fileName in filesToMigrate)
             {
@@ -220,12 +288,14 @@ namespace CutTheRope.Framework.Core
             LoadPreferences();
         }
 
+        // ── Global accessors (PREFS_*, IAP_*, SOUND_ON, etc.) ────────────────────
+
         /// <summary>
         /// Sets an integer preference and optionally saves to disk.
         /// </summary>
         public static void SetIntForKey(int value, string key, bool commit = false)
         {
-            PreferencesData[key] = value;
+            GlobalData[key] = value;
             if (commit)
             {
                 RequestSave();
@@ -237,7 +307,11 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public static void SetBooleanForKey(bool value, string key, bool commit = false)
         {
-            SetIntForKey(value ? 1 : 0, key, commit);
+            GlobalData[key] = value;
+            if (commit)
+            {
+                RequestSave();
+            }
         }
 
         /// <summary>
@@ -245,7 +319,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public static void SetStringForKey(string value, string key, bool commit = false)
         {
-            PreferencesData[key] = value;
+            GlobalData[key] = value;
             if (commit)
             {
                 RequestSave();
@@ -257,7 +331,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public static int GetIntForKey(string key)
         {
-            return PreferencesData.TryGetValue(key, out object value)
+            return GlobalData.TryGetValue(key, out object value)
                 ? value switch
                 {
                     int intVal => intVal,
@@ -272,7 +346,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public static bool GetBooleanForKey(string key)
         {
-            return GetIntForKey(key) != 0;
+            return GlobalData.TryGetValue(key, out object value) && value is bool boolVal && boolVal;
         }
 
         /// <summary>
@@ -280,28 +354,116 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public static string GetStringForKey(string key)
         {
-            return PreferencesData.TryGetValue(key, out object value) && value is string strVal ? strVal : "";
+            return GlobalData.TryGetValue(key, out object value) && value is string strVal ? strVal : "";
         }
 
         /// <summary>
-        /// Checks if a preference key exists in memory.
-        /// This might be removed once the setting UI is implemented.
+        /// Checks if a global preference key exists in memory.
         /// </summary>
         protected static bool ContainsKey(string key)
         {
-            return PreferencesData.ContainsKey(key);
+            return GlobalData.ContainsKey(key);
+        }
+
+        protected static void RemoveKey(string key)
+        {
+            _ = GlobalData.Remove(key);
+        }
+
+        // ── Box-scoped accessors (STARS_, SCORE_, UNLOCKED_ per box) ─────────────
+
+        public static void SetBoxIntForKey(int box, int value, string key, bool commit = false)
+        {
+            EnsureBoxData(box)[key] = value;
+            if (commit)
+            {
+                RequestSave();
+            }
+        }
+
+        public static int GetBoxIntForKey(int box, string key)
+        {
+            return box >= BoxData.Count
+                ? 0
+                : BoxData[box].TryGetValue(key, out object value)
+                ? value switch
+                {
+                    int intVal => intVal,
+                    long longVal => (int)longVal,
+                    _ => 0
+                }
+                : 0;
+        }
+
+        public static void SetBoxBoolForKey(int box, bool value, string key, bool commit = false)
+        {
+            EnsureBoxData(box)[key] = value;
+            if (commit)
+            {
+                RequestSave();
+            }
+        }
+
+        public static bool GetBoxBoolForKey(int box, string key)
+        {
+            return box < BoxData.Count && BoxData[box].TryGetValue(key, out object value) && value is bool boolVal && boolVal;
+        }
+
+        public static void SetBoxStringForKey(int box, string value, string key, bool commit = false)
+        {
+            EnsureBoxData(box)[key] = value;
+            if (commit)
+            {
+                RequestSave();
+            }
+        }
+
+        public static string GetBoxStringForKey(int box, string key)
+        {
+            return box >= BoxData.Count ? "" : BoxData[box].TryGetValue(key, out object value) && value is string strVal ? strVal : "";
+        }
+
+        public static void RemoveBoxKey(int box, string key)
+        {
+            if (box < BoxData.Count)
+            {
+                _ = BoxData[box].Remove(key);
+            }
         }
 
         /// <summary>
-        /// Serializes preferences dictionary to JSON string (AOT-safe).
+        /// Clears all in-memory per-box preference dictionaries.
         /// </summary>
-        private static string SerializeToJson()
+        protected static void ClearAllBoxData()
+        {
+            foreach (Dictionary<string, object> dict in BoxData)
+            {
+                dict.Clear();
+            }
+        }
+
+        private static Dictionary<string, object> EnsureBoxData(int box)
+        {
+            while (BoxData.Count <= box)
+            {
+                BoxData.Add([]);
+            }
+
+            return BoxData[box];
+        }
+
+        // ── Serialization ─────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Serializes a preferences dictionary to JSON string (AOT-safe).
+        /// </summary>
+        private static string SerializeToJson(Dictionary<string, object> data)
         {
             using MemoryStream stream = new();
             using (Utf8JsonWriter writer = new(stream, new JsonWriterOptions { Indented = true }))
             {
                 writer.WriteStartObject();
-                foreach (KeyValuePair<string, object> kvp in PreferencesData)
+                foreach (KeyValuePair<string, object> kvp in data.OrderBy(kvp => kvp.Key, StringComparer.Ordinal))
                 {
                     writer.WritePropertyName(kvp.Key);
                     switch (kvp.Value)
@@ -311,6 +473,9 @@ namespace CutTheRope.Framework.Core
                             break;
                         case long longVal:
                             writer.WriteNumberValue(longVal);
+                            break;
+                        case bool boolVal:
+                            writer.WriteBooleanValue(boolVal);
                             break;
                         case string strVal:
                             writer.WriteStringValue(strVal);
@@ -322,30 +487,133 @@ namespace CutTheRope.Framework.Core
                 }
                 writer.WriteEndObject();
             }
-            return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         /// <summary>
-        /// Deserializes JSON string into PreferencesData dictionary (AOT-safe).
+        /// Returns true if key belongs to per-box game data (STARS_, SCORE_, UNLOCKED_).
         /// </summary>
-        private static void DeserializeFromJson(string json)
+        private static bool IsGameDataKey(string key)
         {
+            return key.StartsWith("STARS_", StringComparison.Ordinal) ||
+            key.StartsWith("SCORE_", StringComparison.Ordinal) ||
+            key.StartsWith("UNLOCKED_", StringComparison.Ordinal);
+        }
+
+        private static void WritePreferenceFiles()
+        {
+            File.WriteAllText(GlobalSaveFilePath, SerializeToJson(GlobalData));
+            for (int b = 0; b < BoxData.Count; b++)
+            {
+                File.WriteAllText(GetBoxSaveFilePath(b), SerializeToJson(BoxData[b]));
+            }
+        }
+
+        /// <summary>
+        /// Deserializes JSON into the destination dictionary (AOT-safe).
+        /// </summary>
+        private static bool DeserializeFromJson(string json, Dictionary<string, object> dest)
+        {
+            bool didMigrate = false;
             using JsonDocument doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                return false;
+            }
+
             foreach (JsonProperty prop in doc.RootElement.EnumerateObject())
             {
-                PreferencesData[prop.Name] = prop.Value.ValueKind switch
+                if (TryReadJsonValue(prop.Name, prop.Value, out object parsedValue, out bool migrated))
                 {
-                    JsonValueKind.Number => prop.Value.TryGetInt32(out int intVal) ? intVal : prop.Value.GetInt64(),
-                    JsonValueKind.String => prop.Value.GetString() ?? "",
-                    JsonValueKind.Undefined => throw new NotImplementedException(),
-                    JsonValueKind.Object => throw new NotImplementedException(),
-                    JsonValueKind.Array => throw new NotImplementedException(),
-                    JsonValueKind.True => throw new NotImplementedException(),
-                    JsonValueKind.False => throw new NotImplementedException(),
-                    JsonValueKind.Null => throw new NotImplementedException(),
-                    _ => null
-                };
+                    dest[prop.Name] = parsedValue;
+                    didMigrate |= migrated;
+                }
             }
+
+            return didMigrate;
+        }
+
+        /// <summary>
+        /// Deserializes JSON routing game data keys to <paramref name="gameDataDest"/>
+        /// and all other keys to <paramref name="globalDest"/>. Used for migration of old
+        /// save files that mixed global prefs and game data in one file.
+        /// </summary>
+        private static bool DeserializeFromJsonRouted(
+            string json,
+            Dictionary<string, object> globalDest,
+            Dictionary<string, object> gameDataDest)
+        {
+            bool didMigrate = false;
+            using JsonDocument doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                return false;
+            }
+
+            foreach (JsonProperty prop in doc.RootElement.EnumerateObject())
+            {
+                Dictionary<string, object> dest = IsGameDataKey(prop.Name) ? gameDataDest : globalDest;
+                if (TryReadJsonValue(prop.Name, prop.Value, out object parsedValue, out bool migrated))
+                {
+                    dest[prop.Name] = parsedValue;
+                    didMigrate |= migrated;
+                }
+            }
+
+            return didMigrate;
+        }
+
+        private static bool TryReadJsonValue(string key, JsonElement element, out object parsedValue, out bool migratedBooleanValue)
+        {
+            migratedBooleanValue = false;
+
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Number:
+                    if (key.StartsWith(UnlockedKeyPrefix, StringComparison.Ordinal) &&
+                        element.TryGetInt64(out long legacyUnlockedState))
+                    {
+                        parsedValue = legacyUnlockedState > 0;
+                        migratedBooleanValue = true;
+                        return true;
+                    }
+
+                    if (BooleanPreferenceKeys.Contains(key) && element.TryGetInt64(out long boolNumeric) && (boolNumeric == 0 || boolNumeric == 1))
+                    {
+                        parsedValue = boolNumeric == 1;
+                        migratedBooleanValue = true;
+                        return true;
+                    }
+                    if (element.TryGetInt32(out int intVal))
+                    {
+                        parsedValue = intVal;
+                        return true;
+                    }
+                    if (element.TryGetInt64(out long longVal))
+                    {
+                        parsedValue = longVal;
+                        return true;
+                    }
+                    break;
+                case JsonValueKind.String:
+                    parsedValue = element.GetString() ?? "";
+                    return true;
+                case JsonValueKind.True:
+                    parsedValue = true;
+                    return true;
+                case JsonValueKind.False:
+                    parsedValue = false;
+                    return true;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Array:
+                case JsonValueKind.Null:
+                default:
+                    break;
+            }
+
+            parsedValue = null;
+            return false;
         }
 
         /// <summary>
@@ -372,7 +640,7 @@ namespace CutTheRope.Framework.Core
 
             try
             {
-                File.WriteAllText(SaveFilePath, SerializeToJson());
+                WritePreferenceFiles();
                 GameSaveRequested = false;
             }
             catch (Exception ex)
@@ -383,14 +651,14 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Serializes all preferences to a JSON stream.
+        /// Serializes all preferences to a JSON stream (global prefs only).
         /// </summary>
         public static bool SaveToStream(Stream stream)
         {
             try
             {
                 using StreamWriter writer = new(stream);
-                writer.Write(SerializeToJson());
+                writer.Write(SerializeToJson(GlobalData));
                 return true;
             }
             catch (Exception ex)
@@ -401,7 +669,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Deserializes all preferences from a JSON stream.
+        /// Deserializes all preferences from a JSON stream (global prefs only).
         /// </summary>
         public static bool LoadFromStream(Stream stream)
         {
@@ -409,8 +677,8 @@ namespace CutTheRope.Framework.Core
             {
                 using StreamReader reader = new(stream);
                 string json = reader.ReadToEnd();
-                PreferencesData.Clear();
-                DeserializeFromJson(json);
+                GlobalData.Clear();
+                _ = DeserializeFromJson(json, GlobalData);
                 return true;
             }
             catch (Exception ex)
@@ -421,115 +689,71 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Loads preferences from disk if the save file exists.
-        /// Supports migration from legacy binary format to JSON.
+        /// Loads preferences from disk. Global prefs go to GlobalData; per-box game data
+        /// goes to BoxData[b]. Old saves that mixed data in one file are routed automatically.
         /// </summary>
         public static void LoadPreferences()
         {
-            PreferencesData.Clear();
+            GlobalData.Clear();
+            foreach (Dictionary<string, object> dict in BoxData)
+            {
+                dict.Clear();
+            }
 
-            // Try to load from JSON first (preferred format)
-            if (File.Exists(SaveFilePath))
+            bool needsSave = false;
+
+            // Load global prefs file. Route any stale game data (old pre-split saves) to BoxData[0].
+            if (File.Exists(GlobalSaveFilePath))
             {
                 try
                 {
-                    string json = File.ReadAllText(SaveFilePath);
-                    DeserializeFromJson(json);
-                    return;
+                    string json = File.ReadAllText(GlobalSaveFilePath);
+                    bool migrated = DeserializeFromJsonRouted(json, GlobalData, EnsureBoxData(0));
+                    // If the global file had game data keys in it, we need to rewrite the split files.
+                    needsSave |= migrated || BoxData[0].Count > 0;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error loading JSON preferences: {ex}");
+                    Console.WriteLine($"Error loading global JSON preferences: {ex}");
                 }
             }
 
-            // Fall back to legacy binary format
-            if (File.Exists(LegacyBinaryFilePath))
+            // Load dynamic slot save files
+            if (Directory.Exists(SaveDirectory))
             {
-                try
+                foreach (string boxFilePath in Directory.EnumerateFiles(SaveDirectory, $"{DynamicBoxSaveFilePrefix}*{DynamicBoxSaveFileExtension}"))
                 {
-                    using FileStream fileStream = File.OpenRead(LegacyBinaryFilePath);
-                    if (LoadLegacyBinaryFormat(fileStream))
+                    string fileName = Path.GetFileName(boxFilePath);
+                    if (!TryParseBoxSlotFromFileName(fileName, out int slot))
                     {
-                        Console.WriteLine("Successfully migrated preferences from binary to JSON format");
-
-                        // Save as JSON
-                        try
-                        {
-                            File.WriteAllText(SaveFilePath, SerializeToJson());
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error saving migrated preferences as JSON: {ex}");
-                        }
-
-                        // Rename old binary file
-                        try
-                        {
-                            if (File.Exists(MigratedBinaryFilePath))
-                            {
-                                File.Delete(MigratedBinaryFilePath);
-                            }
-
-                            File.Move(LegacyBinaryFilePath, MigratedBinaryFilePath);
-                            Console.WriteLine($"Moved legacy binary to {MigratedBinaryFilePath}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error renaming legacy binary file: {ex}");
-                        }
+                        continue;
+                    }
+                    try
+                    {
+                        string json = File.ReadAllText(boxFilePath);
+                        // Route non-game-data keys (IAP_*, SOUND_ON, etc.) to GlobalData for migration compat.
+                        bool migrated = DeserializeFromJsonRouted(json, GlobalData, EnsureBoxData(slot));
+                        needsSave |= migrated;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error loading {fileName}: {ex}");
                     }
                 }
+            }
+
+            if (needsSave)
+            {
+                try
+                {
+                    WritePreferenceFiles();
+                }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error loading legacy binary preferences: {ex}");
+                    Console.WriteLine($"Error writing migrated preference files: {ex}");
+                    RequestSave();
                 }
             }
         }
-
-        /// <summary>
-        /// Loads preferences from legacy binary format.
-        /// </summary>
-        private static bool LoadLegacyBinaryFormat(Stream stream)
-        {
-            try
-            {
-                using BinaryReader reader = new(stream);
-
-                // Load integers
-                int intCount = reader.ReadInt32();
-                for (int i = 0; i < intCount; i++)
-                {
-                    string key = reader.ReadString();
-                    int value = reader.ReadInt32();
-                    PreferencesData[key] = value;
-                }
-
-                // Load strings
-                int stringCount = reader.ReadInt32();
-                for (int i = 0; i < stringCount; i++)
-                {
-                    string key = reader.ReadString();
-                    string value = reader.ReadString();
-                    PreferencesData[key] = value;
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: cannot load legacy binary format, {ex}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Instance method for compatibility. Requests save.
-        /// </summary>
-        public virtual void SavePreferences()
-        {
-            RequestSave();
-        }
-
     }
 }
