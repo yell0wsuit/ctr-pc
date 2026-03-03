@@ -146,7 +146,10 @@ namespace CutTheRope.Framework.Sfe
                 }
             }
             totalForce = VectMult(totalForce, invWeight);
-            a = VectMult(totalForce, delta * delta);
+            float accelerationScale = ActivePhysicsConstants.UseMobilePhysicsModel
+                ? delta * QCP_FIXED_TIMESTEP
+                : delta * delta;
+            a = VectMult(totalForce, accelerationScale);
             if (prevPos.X == UNDEFINED_COORDINATE)
             {
                 prevPos = pos;
