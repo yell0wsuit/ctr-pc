@@ -672,7 +672,7 @@ namespace CutTheRope.GameMain
             {
                 Bubble bubble3 = (Bubble)obj3;
                 bubble3.Update(delta);
-                float bubbleCaptureRadius = 85f;
+                float bubbleCaptureRadius = ActivePhysicsConstants.BubbleCaptureRadius;
                 if (twoParts != 2)
                 {
                     if (!noCandyL && !bubble3.popped && PointInRect(candyL.x, candyL.y, bubble3.x - bubbleCaptureRadius, bubble3.y - bubbleCaptureRadius, bubbleCaptureRadius * 2f, bubbleCaptureRadius * 2f))

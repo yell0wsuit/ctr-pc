@@ -21,6 +21,7 @@ namespace CutTheRope.Framework
         // Bubble impulse
         public const float BubbleImpulseY = -40f;
         public const float BubbleImpulseDamping = 14f;
+        public const float BubbleCaptureRadius = 85f;
 
         // Candy
         public const float CandyBreakGravityY = 500f;
