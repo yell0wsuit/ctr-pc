@@ -430,6 +430,17 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Clears all in-memory per-box preference dictionaries.
+        /// </summary>
+        protected static void ClearAllBoxData()
+        {
+            foreach (Dictionary<string, object> dict in BoxData)
+            {
+                dict.Clear();
+            }
+        }
+
         private static Dictionary<string, object> EnsureBoxData(int box)
         {
             while (BoxData.Count <= box)

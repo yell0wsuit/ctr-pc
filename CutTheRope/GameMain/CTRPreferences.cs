@@ -57,6 +57,7 @@ namespace CutTheRope.GameMain
                 playLevelScroll = false;
             }
             SetIntForKey(2, "PREFS_VERSION", true);
+            EnsureSlotEntryPacksUnlocked();
             SetRpcPreferenceInJson(); // temporary hack, remove after setting UI is implemented
             SetUpdateCheckPreferenceInJson(); // temporary hack, remove after setting UI is implemented
         }
@@ -358,26 +359,62 @@ namespace CutTheRope.GameMain
             return Application.SharedPreferences().playLevelScroll;
         }
 
+        private static bool IsSlotEntryPack(int pack)
+        {
+            int box = GetBoxForPack(pack);
+            for (int i = 0; i < pack; i++)
+            {
+                if (GetBoxForPack(i) == box)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static void EnsureSlotEntryPacksUnlocked()
+        {
+            bool changed = false;
+            for (int pack = 0; pack < GetPacksCount(); pack++)
+            {
+                if (!IsSlotEntryPack(pack))
+                {
+                    continue;
+                }
+
+                int box = GetBoxForPack(pack);
+                if (GetUnlockedForPackLevel(box, pack, 0) != UNLOCKEDSTATE.LOCKED)
+                {
+                    continue;
+                }
+
+                SetBoxBoolForKey(box, true, GetPackLevelKey(PREFS_UNLOCKED_, pack, 0), false);
+                RemoveBoxKey(box, GetPackLevelKey(PREFS_UNLOCKED_STATE_, pack, 0));
+                changed = true;
+            }
+
+            if (changed)
+            {
+                RequestSave();
+            }
+        }
+
         public static void ResetToDefaults()
         {
-            int i = 0;
-            int packsCount = GetPacksCount();
-            while (i < packsCount)
+            ClearAllBoxData();
+            for (int i = 0; i < GetPacksCount(); i++)
             {
-                int j = 0;
-                int levelsInPackCount = GetLevelsInPackCount(i);
-                while (j < levelsInPackCount)
+                bool unlockFirstLevel = IsSlotEntryPack(i) || (IsShareware() && i < SharewareFreePacks());
+                if (!unlockFirstLevel)
                 {
-                    bool isUnlocked = (i == 0 || (IsShareware() && i < SharewareFreePacks())) && j == 0;
-                    int box = GetBoxForPack(i);
-                    SetBoxIntForKey(box, 0, GetPackLevelKey(PREFS_SCORE_, i, j), false);
-                    SetBoxIntForKey(box, 0, GetPackLevelKey(PREFS_STARS_, i, j), false);
-                    SetBoxBoolForKey(box, isUnlocked, GetPackLevelKey(PREFS_UNLOCKED_, i, j), false);
-                    RemoveBoxKey(box, GetPackLevelKey(PREFS_UNLOCKED_STATE_, i, j));
-                    j++;
+                    continue;
                 }
-                i++;
+
+                int box = GetBoxForPack(i);
+                SetBoxBoolForKey(box, true, GetPackLevelKey(PREFS_UNLOCKED_, i, 0), false);
             }
+
             SetIntForKey(0, "PREFS_ROPES_CUT", true);
             SetIntForKey(0, "PREFS_ROPES_SHOOT", true);
             SetIntForKey(0, "PREFS_BUBBLES_POPPED", true);
