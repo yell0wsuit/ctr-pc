@@ -52,7 +52,7 @@ namespace CutTheRope.GameMain
             string boxBackground = boxBackgrounds.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
             if (string.IsNullOrWhiteSpace(boxBackground))
             {
-                throw new InvalidDataException($"packs.xml is missing boxBackground for pack {cTRRootController.GetPack()}.");
+                throw new InvalidDataException($"Pack config is missing boxBackground for pack {cTRRootController.GetPack()}.");
             }
             back = new TileMap().InitWithRowsColumns(1, 1);
             back.SetRepeatHorizontally(TileMap.Repeat.NONE);

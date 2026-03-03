@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
+using System.Text.Json;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
@@ -17,6 +19,7 @@ namespace CutTheRope.GameMain
     internal sealed class PackDefinition(
         int unlockStars,
         int levelCount,
+        int saveSlot,
         string[] boxBackgrounds,
         int boxBackgroundP2Y,
         string supportResourceName,
@@ -55,6 +58,9 @@ namespace CutTheRope.GameMain
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
 
+        /// <summary>Save slot index used to route this pack's progress file.</summary>
+        public int SaveSlot { get; } = saveSlot;
+
         /// <summary>Whether this pack uses earth background animations.</summary>
         public bool EarthBg { get; } = earthBg;
 
@@ -66,20 +72,32 @@ namespace CutTheRope.GameMain
     }
 
     /// <summary>
-    /// Loads pack metadata from <c>packs.xml</c> and exposes string resource names.
+    /// Loads pack metadata from JSON packs files and save routing from <c>packlist.json</c>.
     /// </summary>
     internal static class PackConfig
     {
+        private readonly record struct PackListEntry(string ConfigFileName, int SaveSlot);
+
+        /// <summary>
+        /// The configuration file for original <em>Cut the Rope</em> game.
+        /// </summary>
+        private const string DefaultPacksConfigFile = "ctroriginal_packs.json";
+
+        /// <summary>
+        /// The master configuration list for game pack.
+        /// </summary>
+        private const string PackListConfigFile = "packlist.json";
         private static readonly string[] EmptyResourceNames = [null];
 
-        /// <summary>Default box color when not specified in packs.xml (dark gray: 45, 45, 53).</summary>
+        /// <summary>Default box color when not specified in pack config (dark gray: 45, 45, 53).</summary>
         private static readonly RGBAColor DefaultBoxHoleBgColor = RGBAColor.MakeRGBA(45 / 255f, 45 / 255f, 53 / 255f, 1f);
 
         private static readonly List<PackDefinition> packs;
 
         static PackConfig()
         {
-            packs = LoadFromXml();
+            List<PackListEntry> packListEntries = LoadPackListEntries();
+            packs = LoadPacksFromEntries(packListEntries);
             MaxLevelsPerPack = packs.Count > 0 ? packs.Max(p => p.LevelCount) : 0;
         }
 
@@ -95,6 +113,11 @@ namespace CutTheRope.GameMain
         public static int GetLevelCount(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].LevelCount : 0;
+        }
+
+        public static int GetSaveSlot(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].SaveSlot : 0;
         }
 
         public static string[] GetBoxBackgrounds(int pack)
@@ -121,7 +144,7 @@ namespace CutTheRope.GameMain
             string coverResourceName = GetBoxCovers(pack).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
 
             return string.IsNullOrWhiteSpace(coverResourceName)
-                ? throw new InvalidDataException($"packs.xml is missing boxCover for pack {pack}.")
+                ? throw new InvalidDataException($"pack config is missing boxCover for pack {pack}.")
                 : coverResourceName;
         }
 
@@ -177,150 +200,404 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxLabelText : null;
         }
 
-        private static List<PackDefinition> LoadFromXml()
+        private static List<PackListEntry> LoadPackListEntries()
         {
-            XElement root = ContentPaths.LoadXml("packs.xml");
-            List<PackDefinition> results = [];
-
-            if (root == null)
+            if (!TryLoadJsonRoot(PackListConfigFile, out JsonElement root))
             {
-                return results;
+                return [new PackListEntry(DefaultPacksConfigFile, 0)];
             }
 
-            foreach (XElement packElement in root.Elements("pack"))
+            List<PackListEntry> entries = [];
+
+            switch (root.ValueKind)
             {
-                int unlockStars = ParseIntAttribute(packElement, "unlockStars");
-                int levelCount = ParseLevelCount(packElement);
+                case JsonValueKind.Array:
+                    foreach (JsonElement item in root.EnumerateArray())
+                    {
+                        AddPackListEntry(item, entries);
+                    }
+                    break;
+                case JsonValueKind.Object:
+                    if (root.TryGetProperty("entries", out JsonElement entriesArray) && entriesArray.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (JsonElement item in entriesArray.EnumerateArray())
+                        {
+                            AddPackListEntry(item, entries);
+                        }
+                    }
+                    else
+                    {
+                        AddPackListEntry(root, entries);
+                    }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.String:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    throw new InvalidDataException($"{PackListConfigFile} root must be an object or array.");
+            }
 
-                string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
-                RequireResourceNames(boxBackgrounds, "boxBackground");
-                ValidateResourceNames(boxBackgrounds, "boxBackground");
+            if (entries.Count == 0)
+            {
+                entries.Add(new PackListEntry(DefaultPacksConfigFile, 0));
+            }
 
-                int boxBackgroundP2Y = ParseIntAttribute(packElement, "boxBackgroundP2Y");
+            return entries;
+        }
 
-                string supportResourceName = ParseResourceName(packElement, "supportResourceName");
-                supportResourceName ??= Resources.Img.CharSupports;
-                ValidateResourceName(supportResourceName, "supportResourceName");
+        private static void AddPackListEntry(JsonElement entryElement, ICollection<PackListEntry> entries)
+        {
+            if (entryElement.ValueKind != JsonValueKind.Object)
+            {
+                throw new InvalidDataException($"{PackListConfigFile} entry must be an object.");
+            }
 
-                string[] boxCovers = ParseResourceNames(packElement, "boxCover");
-                RequireResourceNames(boxCovers, "boxCover");
-                ValidateResourceNames(boxCovers, "boxCover");
+            string configName = ParseRequiredString(entryElement, "boxDataName", PackListConfigFile);
+            int saveSlot = ParseIntProperty(entryElement, "saveSlot", 0, PackListConfigFile);
+            if (saveSlot < 0)
+            {
+                throw new InvalidDataException(
+                    $"{PackListConfigFile} entry '{configName}' has invalid saveSlot '{saveSlot}'. saveSlot must be >= 0."
+                );
+            }
 
-                RGBAColor boxHoleBgColor = ParseColorAttribute(packElement, "boxHoleBgColor");
+            entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot));
+        }
 
-                string[] musicPack = ParseResourceNames(packElement, "musicPack");
+        private static List<PackDefinition> LoadPacksFromEntries(IEnumerable<PackListEntry> packListEntries)
+        {
+            List<PackDefinition> results = [];
 
-                string[] musicList = ParseResourceNames(packElement, "musicList");
-                ValidateResourceNames(musicList, "musicList");
+            foreach (PackListEntry packListEntry in packListEntries)
+            {
+                if (!TryLoadJsonRoot(packListEntry.ConfigFileName, out JsonElement root))
+                {
+                    throw new InvalidDataException($"Failed to load pack config file '{packListEntry.ConfigFileName}'.");
+                }
 
-                bool earthBg = ParseBoolAttribute(packElement, "earthBg");
+                JsonElement packsArray = ResolvePacksArray(root, packListEntry.ConfigFileName);
 
-                Vector? earthBgPosition = ParseVectorAttribute(packElement, "earthBgPosition");
+                foreach (JsonElement packElement in packsArray.EnumerateArray())
+                {
+                    if (packElement.ValueKind != JsonValueKind.Object)
+                    {
+                        throw new InvalidDataException($"{packListEntry.ConfigFileName} contains a non-object pack entry.");
+                    }
 
-                string boxLabelText = ParseResourceName(packElement, "boxLabelText");
+                    int unlockStars = ParseIntProperty(packElement, "unlockStars", 0, packListEntry.ConfigFileName);
+                    int levelCount = ParseIntProperty(packElement, "levelCount", 0, packListEntry.ConfigFileName);
 
-                results.Add(new PackDefinition(
-                    unlockStars,
-                    levelCount,
-                    boxBackgrounds,
-                    boxBackgroundP2Y,
-                    supportResourceName,
-                    boxCovers,
-                    boxHoleBgColor,
-                    musicPack,
-                    musicList,
-                    earthBg,
-                    earthBgPosition,
-                    boxLabelText));
+                    string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
+                    RequireResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
+                    ValidateResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
+
+                    int boxBackgroundP2Y = ParseIntProperty(packElement, "boxBackgroundP2Y", 0, packListEntry.ConfigFileName);
+
+                    string supportResourceName = ParseStringProperty(packElement, "supportResourceName");
+                    supportResourceName ??= Resources.Img.CharSupports;
+                    ValidateResourceName(supportResourceName, "supportResourceName", packListEntry.ConfigFileName);
+
+                    string[] boxCovers = ParseResourceNames(packElement, "boxCover");
+                    RequireResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
+                    ValidateResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
+
+                    RGBAColor boxHoleBgColor = ParseColorProperty(packElement, "boxHoleBgColor");
+
+                    string[] musicPack = ParseResourceNames(packElement, "musicPack");
+
+                    string[] musicList = ParseResourceNames(packElement, "musicList");
+                    ValidateResourceNames(musicList, "musicList", packListEntry.ConfigFileName);
+
+                    bool earthBg = ParseBoolProperty(packElement, "earthBg", false, packListEntry.ConfigFileName);
+
+                    Vector? earthBgPosition = ParseVectorProperty(packElement, "earthBgPosition", packListEntry.ConfigFileName);
+
+                    string boxLabelText = ParseStringProperty(packElement, "boxLabelText");
+
+                    results.Add(new PackDefinition(
+                        unlockStars,
+                        levelCount,
+                        packListEntry.SaveSlot,
+                        boxBackgrounds,
+                        boxBackgroundP2Y,
+                        supportResourceName,
+                        boxCovers,
+                        boxHoleBgColor,
+                        musicPack,
+                        musicList,
+                        earthBg,
+                        earthBgPosition,
+                        boxLabelText));
+                }
             }
 
             return results;
         }
 
-        private static int ParseIntAttribute(XElement element, string attributeName, int defaultValue = 0)
+        private static JsonElement ResolvePacksArray(JsonElement root, string configFileName)
         {
-            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
-            return string.IsNullOrWhiteSpace(value) ? defaultValue : int.Parse(value, CultureInfo.InvariantCulture);
+            return root.ValueKind == JsonValueKind.Array
+                ? root
+                : root.ValueKind == JsonValueKind.Object &&
+                root.TryGetProperty("packs", out JsonElement packsProperty) &&
+                packsProperty.ValueKind == JsonValueKind.Array
+                ? packsProperty
+                : throw new InvalidDataException($"{configFileName} root must be a packs array or object with 'packs'.");
         }
 
-        private static bool ParseBoolAttribute(XElement element, string attributeName, bool defaultValue = false)
+        private static string NormalizePacksConfigFileName(string packsConfigName)
         {
-            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
-            return string.IsNullOrWhiteSpace(value) ? defaultValue : bool.Parse(value);
-        }
-
-        private static Vector? ParseVectorAttribute(XElement element, string attributeName)
-        {
-            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(packsConfigName))
             {
-                return null;
+                return DefaultPacksConfigFile;
             }
 
-            string[] parts = value.Split(',');
-            if (parts.Length >= 2)
-            {
-                float x = float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
-                float y = float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
-                return new Vector(x, y);
-            }
-
-            return null;
+            string normalized = packsConfigName.Trim();
+            return normalized.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ? normalized : $"{normalized}.json";
         }
 
-        private static RGBAColor ParseColorAttribute(XElement element, string attributeName)
+        private static bool TryLoadJsonRoot(string fileName, out JsonElement root)
         {
-            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(value))
+            root = default;
+
+            if (string.IsNullOrWhiteSpace(fileName))
             {
-                return DefaultBoxHoleBgColor;
+                return false;
             }
 
-            string[] parts = value.Split(',');
-            if (parts.Length >= 3)
+            try
             {
-                float r = int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture) / 255f;
-                float g = int.Parse(parts[1].Trim(), CultureInfo.InvariantCulture) / 255f;
-                float b = int.Parse(parts[2].Trim(), CultureInfo.InvariantCulture) / 255f;
-                float a = parts.Length >= 4 ? int.Parse(parts[3].Trim(), CultureInfo.InvariantCulture) / 255f : 1f;
-                return RGBAColor.MakeRGBA(r, g, b, a);
+                using Stream stream = TitleContainer.OpenStream(Path.Combine(ContentPaths.RootDirectory, fileName));
+                using JsonDocument document = JsonDocument.Parse(stream);
+                root = document.RootElement.Clone();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static int ParseIntProperty(JsonElement element, string propertyName, int defaultValue, string fileName)
+        {
+            if (!element.TryGetProperty(propertyName, out JsonElement value))
+            {
+                return defaultValue;
             }
 
-            return DefaultBoxHoleBgColor;
-        }
-
-        private static int ParseLevelCount(XElement element)
-        {
-            string attributeValue = element.Attribute("levelCount")?.Value ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(attributeValue))
+            switch (value.ValueKind)
             {
-                return int.Parse(attributeValue, CultureInfo.InvariantCulture);
+                case JsonValueKind.Number:
+                    if (value.TryGetInt32(out int intValue))
+                    {
+                        return intValue;
+                    }
+
+                    if (value.TryGetInt64(out long longValue))
+                    {
+                        return (int)longValue;
+                    }
+                    break;
+                case JsonValueKind.String:
+                    string strValue = value.GetString();
+                    if (!string.IsNullOrWhiteSpace(strValue) && int.TryParse(strValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedInt))
+                    {
+                        return parsedInt;
+                    }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Array:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    throw new InvalidDataException($"{fileName} has invalid integer value for '{propertyName}'.");
             }
 
-            string elementValue = element.Element("levelCount")?.Value;
-            return string.IsNullOrWhiteSpace(elementValue) ? 0 : int.Parse(elementValue, CultureInfo.InvariantCulture);
+            throw new InvalidDataException($"{fileName} has invalid integer value for '{propertyName}'.");
         }
 
-        private static string ParseResourceName(XElement element, string attributeName)
+        private static bool ParseBoolProperty(
+            JsonElement element,
+            string propertyName,
+            bool defaultValue,
+            string fileName
+        )
         {
-            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
-            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            bool ThrowInvalid()
+            {
+                throw new InvalidDataException(
+                    $"{fileName} has invalid boolean value for '{propertyName}'."
+                );
+            }
+
+            return !element.TryGetProperty(propertyName, out JsonElement value)
+                ? defaultValue
+                : value.ValueKind switch
+                {
+                    JsonValueKind.True => true,
+                    JsonValueKind.False => false,
+
+                    JsonValueKind.String
+                        when bool.TryParse(value.GetString(), out bool parsed)
+                            => parsed,
+
+                    JsonValueKind.Undefined or
+                    JsonValueKind.Object or
+                    JsonValueKind.Array or
+                    JsonValueKind.Number or
+                    JsonValueKind.Null or
+                    JsonValueKind.String
+                        => ThrowInvalid(),
+                    _ => ThrowInvalid(),
+                };
         }
 
-        private static string[] ParseResourceNames(XElement element, string attributeName)
+        private static string ParseRequiredString(JsonElement element, string propertyName, string fileName)
         {
-            string value = element.Attribute(attributeName)?.Value ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(value))
+            string value = ParseStringProperty(element, propertyName);
+            return string.IsNullOrWhiteSpace(value)
+                ? throw new InvalidDataException($"{fileName} is missing required property '{propertyName}'.")
+                : value;
+        }
+
+        private static string ParseStringProperty(JsonElement element, string propertyName)
+        {
+            return !element.TryGetProperty(propertyName, out JsonElement value) || value.ValueKind == JsonValueKind.Null
+                ? null
+                : value.ValueKind == JsonValueKind.String
+                ? value.GetString()?.Trim()
+                : null;
+        }
+
+        private static string[] ParseResourceNames(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out JsonElement value) || value.ValueKind == JsonValueKind.Null)
             {
                 return EmptyResourceNames;
             }
 
-            List<string> names = [.. value.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim())];
+            List<string> names = [];
+
+            switch (value.ValueKind)
+            {
+                case JsonValueKind.String:
+                    names.AddRange(value.GetString()?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim()) ?? []);
+                    break;
+                case JsonValueKind.Array:
+                    foreach (JsonElement item in value.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.String)
+                        {
+                            string name = item.GetString()?.Trim();
+                            if (!string.IsNullOrWhiteSpace(name))
+                            {
+                                names.Add(name);
+                            }
+                        }
+                    }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    break;
+            }
+
             names.Add(null);
             return [.. names];
         }
 
-        private static void ValidateResourceNames(IEnumerable<string> resourceNames, string context)
+        private static Vector? ParseVectorProperty(JsonElement element, string propertyName, string fileName)
+        {
+            if (!element.TryGetProperty(propertyName, out JsonElement value) || value.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+
+            switch (value.ValueKind)
+            {
+                case JsonValueKind.String:
+                    string[] parts = value.GetString()?.Split(',') ?? [];
+                    if (parts.Length >= 2)
+                    {
+                        float x = float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
+                        float y = float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
+                        return new Vector(x, y);
+                    }
+                    break;
+                case JsonValueKind.Array:
+                    float[] coords = [.. value.EnumerateArray().Select(item => item.GetSingle())];
+                    if (coords.Length >= 2)
+                    {
+                        return new Vector(coords[0], coords[1]);
+                    }
+                    break;
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    throw new InvalidDataException($"{fileName} has invalid vector value for '{propertyName}'.");
+            }
+
+            throw new InvalidDataException($"{fileName} has invalid vector value for '{propertyName}'.");
+        }
+
+        private static RGBAColor ParseColorProperty(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out JsonElement value) || value.ValueKind == JsonValueKind.Null)
+            {
+                return DefaultBoxHoleBgColor;
+            }
+
+            switch (value.ValueKind)
+            {
+                case JsonValueKind.String:
+                    string[] parts = value.GetString()?.Split(',') ?? [];
+                    return ParseColorParts(parts);
+                case JsonValueKind.Array:
+                    List<string> arrayParts = [];
+                    foreach (JsonElement item in value.EnumerateArray())
+                    {
+                        arrayParts.Add(item.ToString());
+                    }
+                    return ParseColorParts([.. arrayParts]);
+                case JsonValueKind.Undefined:
+                case JsonValueKind.Object:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                default:
+                    return DefaultBoxHoleBgColor;
+            }
+        }
+
+        private static RGBAColor ParseColorParts(string[] parts)
+        {
+            if (parts.Length < 3)
+            {
+                return DefaultBoxHoleBgColor;
+            }
+
+            float r = int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture) / 255f;
+            float g = int.Parse(parts[1].Trim(), CultureInfo.InvariantCulture) / 255f;
+            float b = int.Parse(parts[2].Trim(), CultureInfo.InvariantCulture) / 255f;
+            float a = parts.Length >= 4 ? int.Parse(parts[3].Trim(), CultureInfo.InvariantCulture) / 255f : 1f;
+            return RGBAColor.MakeRGBA(r, g, b, a);
+        }
+
+        private static void ValidateResourceNames(IEnumerable<string> resourceNames, string context, string packsConfigFile)
         {
             foreach (string resourceName in resourceNames)
             {
@@ -329,23 +606,23 @@ namespace CutTheRope.GameMain
                     continue; // Preserve sentinel semantics
                 }
 
-                ValidateResourceName(resourceName, context);
+                ValidateResourceName(resourceName, context, packsConfigFile);
             }
         }
 
-        private static void RequireResourceNames(string[] resourceNames, string context)
+        private static void RequireResourceNames(string[] resourceNames, string context, string packsConfigFile)
         {
             if (resourceNames.Length == 0 || string.IsNullOrWhiteSpace(resourceNames[0]))
             {
-                throw new InvalidDataException($"packs.xml is missing required {context}.");
+                throw new InvalidDataException($"{packsConfigFile} is missing required {context}.");
             }
         }
 
-        private static void ValidateResourceName(string resourceName, string context)
+        private static void ValidateResourceName(string resourceName, string context, string packsConfigFile)
         {
             if (!Resources.IsValidResourceName(resourceName))
             {
-                throw new InvalidDataException($"packs.xml contains unknown resource name '{resourceName}' in '{context}'.");
+                throw new InvalidDataException($"{packsConfigFile} contains unknown resource name '{resourceName}' in '{context}'.");
             }
         }
     }

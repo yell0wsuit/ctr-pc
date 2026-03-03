@@ -66,11 +66,6 @@ namespace CutTheRope.Helpers
         public const string MenuStringsFile = "menu_strings.json";
 
         /// <summary>
-        /// The box packs configuration XML filename.
-        /// </summary>
-        public const string PacksConfigFile = "packs.xml";
-
-        /// <summary>
         /// Gets the full path to a content file, including the root directory.
         /// </summary>
         /// <param name="relativePath">The relative path from the content root (e.g., "maps/1_1.xml")</param>
@@ -130,14 +125,6 @@ namespace CutTheRope.Helpers
         public static string GetMenuStringsPath()
         {
             return GetContentPath(MenuStringsFile);
-        }
-
-        /// <summary>
-        /// Gets the full path to the box packs configuration file.
-        /// </summary>
-        public static string GetPacksConfigPath()
-        {
-            return GetContentPath(PacksConfigFile);
         }
 
         /// <summary>
