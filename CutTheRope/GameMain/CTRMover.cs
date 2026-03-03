@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 
@@ -13,7 +14,7 @@ namespace CutTheRope.GameMain
             {
                 bool flag = p[1] == 'C';
                 int radius = (int)RTD(ParseIntOrZero(p[2..]));
-                radius *= 3;
+                radius = (int)RTD(radius * ActivePhysicsConstants.MoverPathScale);
                 int pointCount = radius / 2;
                 if (pointCount <= 0)
                 {
@@ -45,7 +46,9 @@ namespace CutTheRope.GameMain
             {
                 string xOffsetString = list[j];
                 string yOffsetString = list[j + 1];
-                AddPathPoint(Vect(s.X + (ParseFloatOrZero(xOffsetString) * 3f), s.Y + (ParseFloatOrZero(yOffsetString) * 3f)));
+                AddPathPoint(Vect(
+                    s.X + (ParseFloatOrZero(xOffsetString) * ActivePhysicsConstants.MoverPathScale),
+                    s.Y + (ParseFloatOrZero(yOffsetString) * ActivePhysicsConstants.MoverPathScale)));
             }
         }
     }

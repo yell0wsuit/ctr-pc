@@ -10,6 +10,8 @@ namespace CutTheRope.Framework
 
         // PC world scale relative to raw Windows Phone coordinates.
         public const float Wp7ToWorldScale = 3f;
+        // Mover speed used by original PC tuning.
+        public const float DesktopMoverSpeedScale = 3.3f;
 
         private static float ToWorld(float value)
         {
@@ -70,6 +72,9 @@ namespace CutTheRope.Framework
         public static float RocketPointWeight => SelectRaw(PhysicsConstants.RocketPointWeight, MobilePhysicsConstants.RocketPointWeight);
         public static float RocketActiveVelocityDamping => SelectRaw(PhysicsConstants.RocketActiveVelocityDamping, MobilePhysicsConstants.RocketActiveVelocityDamping);
         public static float RocketImpulseScale => UseMobilePhysicsModel ? Wp7ToWorldScale : 1f;
+
+        public static float MoverPathScale => Wp7ToWorldScale;
+        public static float MoverSpeedScale => UseMobilePhysicsModel ? Wp7ToWorldScale : DesktopMoverSpeedScale;
 
         // These are multiplied by per-object tubeScale in gameplay code.
         public static float SteamTubeDamping => SelectRaw(PhysicsConstants.SteamTubeDamping, MobilePhysicsConstants.SteamTubeDamping);
