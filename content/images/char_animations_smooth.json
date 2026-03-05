@@ -1031,7 +1031,7 @@
         "image": "char_animations_smooth.png",
         "format": "RGBA8888",
         "size": { "w": 1908, "h": 1357 },
-        "scale": "0.78",
+        "scale": "1",
         "smartupdate": "$TexturePacker:SmartUpdate:e74c3c96a13e0fc1dce964a3c45a4d88:960ea0220e5bdcc3793dcf1d55392e35:f6529cf3ca1439959bf7ef80a637151a$"
     }
 }
