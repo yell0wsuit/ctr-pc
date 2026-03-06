@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml.Linq;
 
-using CutTheRope.Framework;
-
 namespace CutTheRope.GameMain
 {
     public sealed class FlashXmlAnimationDefinition
@@ -100,7 +98,7 @@ namespace CutTheRope.GameMain
             {
                 int timelineId = ParseInt(timelineNode.Attribute("ID")?.Value);
                 string actionTrack = timelineNode.Element("Action")?.Value ?? string.Empty;
-                IReadOnlyList<FlashXmlActionGroupKeyFrame> groupedActions = ParseActionTrack(actionTrack);
+                List<FlashXmlActionGroupKeyFrame> groupedActions = ParseActionTrack(actionTrack);
 
                 float duration = 0f;
                 for (int i = 0; i < groupedActions.Count; i++)
@@ -156,7 +154,7 @@ namespace CutTheRope.GameMain
             };
         }
 
-        private static IReadOnlyList<FlashXmlFloat2KeyFrame> ParseFloat2Track(string rawTrack, int expectedArity)
+        private static List<FlashXmlFloat2KeyFrame> ParseFloat2Track(string rawTrack, int expectedArity)
         {
             if (string.IsNullOrWhiteSpace(rawTrack))
             {
@@ -186,7 +184,7 @@ namespace CutTheRope.GameMain
             return keyFrames;
         }
 
-        private static IReadOnlyList<FlashXmlFloat4KeyFrame> ParseFloat4Track(string rawTrack)
+        private static List<FlashXmlFloat4KeyFrame> ParseFloat4Track(string rawTrack)
         {
             if (string.IsNullOrWhiteSpace(rawTrack))
             {
@@ -218,7 +216,7 @@ namespace CutTheRope.GameMain
             return keyFrames;
         }
 
-        private static IReadOnlyList<FlashXmlActionGroupKeyFrame> ParseActionTrack(string rawTrack)
+        private static List<FlashXmlActionGroupKeyFrame> ParseActionTrack(string rawTrack)
         {
             if (string.IsNullOrWhiteSpace(rawTrack))
             {
