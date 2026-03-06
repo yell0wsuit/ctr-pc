@@ -149,7 +149,7 @@ namespace CutTheRope.GameMain
                 // Use FlashXmlImage to halve width/height from @2x atlas pixels to @1x Flash points.
                 // This ensures the rotation/scale center (drawX + width/2 + rotationCenterX)
                 // uses point-space dimensions consistent with Flash XML positions.
-                FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName, 0.6286f);
+                FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName, 0.65f);
                 part.anchor = 9;
                 part.parentAnchor = 9;
                 part.visible = ShouldStartVisible(partDefinition);
