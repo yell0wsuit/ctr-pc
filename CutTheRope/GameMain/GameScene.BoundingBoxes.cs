@@ -48,10 +48,10 @@ namespace CutTheRope.GameMain
             return SelectPhysicsBoundingBox(300f, 300f, 175f, 175f, 94f, 95f, 57f, 57f);
         }
 
-        private static CTRRectangle GetTargetBoundingBox()
-        {
-            return SelectPhysicsBoundingBox(264f, 350f, 108f, 2f, 90f, 110f, 25f, 1f);
-        }
+        // private static CTRRectangle GetTargetBoundingBox()
+        // {
+        //     return SelectPhysicsBoundingBox(264f, 350f, 108f, 2f, 90f, 110f, 25f, 1f);
+        // }
 
         private static CTRRectangle GetStarBoundingBox()
         {
