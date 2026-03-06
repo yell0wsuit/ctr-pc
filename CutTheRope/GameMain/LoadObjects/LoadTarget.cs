@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
@@ -36,10 +38,20 @@ namespace CutTheRope.GameMain
             targetObject = targetAnimationController.TargetObject;
 
             string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
-            targetObject.x = support.x = (ParseIntOrZero(xAttribute) * scale) + offsetX + mapOffsetX;
+            int sourceX = ParseIntOrZero(xAttribute);
+            float transformedX = (sourceX * scale) + offsetX + mapOffsetX;
+            targetObject.x = support.x = transformedX;
 
             string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
-            targetObject.y = support.y = (ParseIntOrZero(yAttribute) * scale) + offsetY + mapOffsetY;
+            int sourceY = ParseIntOrZero(yAttribute);
+            float transformedY = (sourceY * scale) + offsetY + mapOffsetY;
+            targetObject.y = support.y = transformedY;
+
+            if (targetAnimationBackend is FlashXmlTargetAnimationBackend)
+            {
+                Console.WriteLine(
+                    $"[OmNomFlashRootPos] xml=({sourceX},{sourceY}); mapScale={scale.ToString("0.###", CultureInfo.InvariantCulture)}; offset=({offsetX.ToString("0.###", CultureInfo.InvariantCulture)},{offsetY.ToString("0.###", CultureInfo.InvariantCulture)}); mapOffset=({mapOffsetX},{mapOffsetY}); dxWorld=({transformedX.ToString("0.###", CultureInfo.InvariantCulture)},{transformedY.ToString("0.###", CultureInfo.InvariantCulture)});");
+            }
 
             targetObject.bb = MakeRectangle(264f, 350f, 108f, 2f);
             blinkTimer = BLINK_SKIP;

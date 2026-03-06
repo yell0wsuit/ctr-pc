@@ -1,3 +1,7 @@
+using System.IO;
+
+using CutTheRope.Helpers;
+
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -13,7 +17,14 @@ namespace CutTheRope.GameMain
         /// <returns>The configured original backend.</returns>
         public static ITargetAnimationBackend CreateOriginal(bool isNightLevel, bool isXmas)
         {
-            return new OriginalTargetAnimationBackend(isNightLevel, isXmas);
+            _ = isNightLevel;
+            _ = isXmas;
+            return new FlashXmlTargetAnimationBackend(GetFlashOmNomXmlPath());
+        }
+
+        internal static string GetFlashOmNomXmlPath()
+        {
+            return Path.Combine(ContentPaths.GetContentRootAbsolute(), ContentPaths.AnimationsDirectory, "om_nom_original.xml");
         }
     }
 }

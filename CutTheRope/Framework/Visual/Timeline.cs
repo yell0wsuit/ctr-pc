@@ -34,7 +34,8 @@ namespace CutTheRope.Framework.Visual
                 time = 0f;
                 timelineDirReverse = false;
                 length = 0f;
-                for (int i = 0; i < 5; i++)
+                int trackCount = (int)Track.TrackType.TRACKS_COUNT;
+                for (int i = 0; i < trackCount; i++)
                 {
                     if (tracks[i] != null)
                     {
@@ -69,7 +70,8 @@ namespace CutTheRope.Framework.Visual
             {
                 thiss.time -= delta;
             }
-            for (int i = 0; i < 5; i++)
+            int trackCount = (int)Track.TrackType.TRACKS_COUNT;
+            for (int i = 0; i < trackCount; i++)
             {
                 if (thiss.tracks[i] != null)
                 {
@@ -202,7 +204,7 @@ namespace CutTheRope.Framework.Visual
 
         private LoopType timelineLoopType;
 
-        private readonly Track[] tracks = new Track[5];
+        private readonly Track[] tracks = new Track[(int)Track.TrackType.TRACKS_COUNT];
 
         public enum TimelineState
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -168,6 +169,21 @@ namespace CutTheRope.Framework.Core
         public virtual CTRTexture2D LoadTextureImageInfo(string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
             TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
+            float defaultScaleX = scaleX;
+            float defaultScaleY = scaleY;
+            float aspectRatioScaleX = GetAspectRatioScaleX();
+            (scaleX, scaleY) = ResolveTextureScales(
+                scaleX,
+                scaleY,
+                atlasConfig?.ScaleRes,
+                aspectRatioScaleX);
+
+            if (atlasConfig?.ScaleRes == 0 && resourceName == Resources.Img.CharAnimationsSmooth)
+            {
+                Console.WriteLine(
+                    $"[OmNomFlashTextureScale] resource={resourceName}; defaultScale=({FormatDebugFloat(defaultScaleX)},{FormatDebugFloat(defaultScaleY)}); aspectScaleX={FormatDebugFloat(aspectRatioScaleX)}; resolvedScale=({FormatDebugFloat(scaleX)},{FormatDebugFloat(scaleY)});");
+            }
+
             ParsedTexturePackerAtlas parsedAtlas = LoadTexturePackerAtlas(atlasConfig, resourceName);
 
             bool useAntialias = atlasConfig?.UseAntialias ?? true;
@@ -197,6 +213,31 @@ namespace CutTheRope.Framework.Core
             ApplyTexturePackerInfo(texture2D, parsedAtlas, isWvga, scaleX, scaleY);
 
             return texture2D;
+        }
+
+        private static (float scaleX, float scaleY) ResolveTextureScales(
+            float defaultScaleX,
+            float defaultScaleY,
+            int? scaleRes,
+            float aspectRatioScaleX)
+        {
+            if (scaleRes == 0 && aspectRatioScaleX > 0f)
+            {
+                // iOS legacy behavior: scaleRes=0 applies aspect-ratio scaling on X only.
+                return (aspectRatioScaleX, 1f);
+            }
+
+            return (defaultScaleX, defaultScaleY);
+        }
+
+        protected virtual float GetAspectRatioScaleX()
+        {
+            return 1f;
+        }
+
+        private static string FormatDebugFloat(float value)
+        {
+            return value.ToString("0.###", CultureInfo.InvariantCulture);
         }
 
         protected virtual TextureAtlasConfig GetTextureAtlasConfig(string resourceName)

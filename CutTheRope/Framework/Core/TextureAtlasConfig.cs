@@ -16,5 +16,10 @@ namespace CutTheRope.Framework.Core
 
         /// <summary>Whether sprite centers should be offset to their geometric centers.</summary>
         public bool CenterOffsets { get; init; }
+
+        /// <summary>
+        /// Optional iOS legacy scale-res flag. A value of <c>0</c> maps to aspect-ratio X scaling.
+        /// </summary>
+        public int? ScaleRes { get; init; }
     }
 }

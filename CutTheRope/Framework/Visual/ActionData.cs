@@ -7,5 +7,9 @@ namespace CutTheRope.Framework.Visual
         public int actionParam;
 
         public int actionSubParam;
+
+        public float actionParamFloat;
+
+        public float actionSubParamFloat;
     }
 }

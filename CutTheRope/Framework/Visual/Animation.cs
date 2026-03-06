@@ -152,7 +152,7 @@ namespace CutTheRope.Framework.Visual
 
         public void JumpTo(int index)
         {
-            GetCurrentTimeline().JumpToTrackKeyFrame(4, index);
+            GetCurrentTimeline().JumpToTrackKeyFrame((int)Track.TrackType.TRACK_ACTION, index);
         }
     }
 }
