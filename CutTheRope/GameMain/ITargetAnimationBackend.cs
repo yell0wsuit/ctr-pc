@@ -11,6 +11,12 @@ namespace CutTheRope.GameMain
         /// <summary>Gets the primary Om Nom gameplay object.</summary>
         GameObject TargetObject { get; }
 
+        /// <summary>Gets the default horizontal scale that should be applied to the target object.</summary>
+        float GetTargetBaseScaleX();
+
+        /// <summary>Gets the default vertical scale that should be applied to the target object.</summary>
+        float GetTargetBaseScaleY();
+
         /// <summary>
         /// Initializes backend timeline state and delegates.
         /// </summary>

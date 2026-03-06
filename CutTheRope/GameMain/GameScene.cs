@@ -446,6 +446,10 @@ namespace CutTheRope.GameMain
 
         private float sleepSoundTimer;
 
+        private float targetBaseScaleX = 1f;
+
+        private float targetBaseScaleY = 1f;
+
         private readonly bool[] dragging = new bool[5];
 
         private readonly Vector[] startPos = new Vector[5];

@@ -92,6 +92,8 @@ namespace CutTheRope.GameMain
             shouldRestoreSecondGhost = false;
             targetObject = null;
             targetAnimationController = null;
+            targetBaseScaleX = 1f;
+            targetBaseScaleY = 1f;
             isNightTargetAwake = null;
             sleepPulseActive = false;
             sleepPulseTime = 0f;

@@ -193,7 +193,8 @@ namespace CutTheRope.GameMain
                     if (targetAnimationController?.IsSleepingAnimationPlaying() == true)
                     {
                         targetObject.rotationCenterY = 86f;
-                        targetObject.scaleY = scaleY;
+                        targetObject.scaleX = targetBaseScaleX;
+                        targetObject.scaleY = targetBaseScaleY * scaleY;
                     }
                     sleepPulseTime += delta;
                 }
@@ -257,8 +258,8 @@ namespace CutTheRope.GameMain
                 sleepPulseBaseY = 0f;
                 if (targetObject != null)
                 {
-                    targetObject.scaleX = 1f;
-                    targetObject.scaleY = 1f;
+                    targetObject.scaleX = targetBaseScaleX;
+                    targetObject.scaleY = targetBaseScaleY;
                     targetObject.rotationCenterX = 0f;
                     targetObject.rotationCenterY = 0f;
                 }

@@ -34,6 +34,18 @@ namespace CutTheRope.GameMain
         /// <summary>Gets the primary Om Nom gameplay object owned by the backend.</summary>
         public GameObject TargetObject => backend.TargetObject;
 
+        /// <summary>Gets the backend-defined base horizontal scale for Om Nom.</summary>
+        public float GetTargetBaseScaleX()
+        {
+            return backend.GetTargetBaseScaleX();
+        }
+
+        /// <summary>Gets the backend-defined base vertical scale for Om Nom.</summary>
+        public float GetTargetBaseScaleY()
+        {
+            return backend.GetTargetBaseScaleY();
+        }
+
         /// <summary>
         /// Initializes backend timelines and binds timeline delegate callbacks.
         /// </summary>

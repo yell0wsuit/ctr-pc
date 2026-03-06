@@ -22,6 +22,8 @@ namespace CutTheRope.GameMain
         private const int MouthClosingTimeline = 8;
         private const int GreetingTimeline = 10;
         private const int SleepingTimeline = 15;
+        private const float PartDimensionScale = 0.65f;
+        private const float WholeObjectScale = 1.5384616f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
 
@@ -40,6 +42,8 @@ namespace CutTheRope.GameMain
             // Keep the container sized to stage dimensions so center anchoring math matches Flash.
             TargetObject.width = (int)MathF.Round(_definition.StageWidth);
             TargetObject.height = (int)MathF.Round(_definition.StageHeight);
+            TargetObject.scaleX = WholeObjectScale;
+            TargetObject.scaleY = WholeObjectScale;
 
             BuildParts(_definition);
             DumpPartPositions(_definition);
@@ -47,19 +51,27 @@ namespace CutTheRope.GameMain
 
         public GameObject TargetObject { get; }
 
+        public float GetTargetBaseScaleX()
+        {
+            return WholeObjectScale;
+        }
+
+        public float GetTargetBaseScaleY()
+        {
+            return WholeObjectScale;
+        }
+
         public void Initialize(ITimelineDelegate timelineDelegate)
         {
             Play(TargetAnimationState.IdleLoop);
 
-            // Match iOS setDelegate, which iterates all children and sets their delegate.
-            // This ensures one-shot animations (Excited, Sad, etc.) fire TimelineFinished.
-            for (int i = 0; i < parts.Count; i++)
+            // Mirror original backend timing semantics: only one idle-loop timeline should
+            // trigger delegate callbacks that drive blink/idle timers.
+            Image delegateDriver = FindFirstPartWithTimeline(IdleLoopTimeline);
+            Timeline timeline = delegateDriver?.GetTimeline(IdleLoopTimeline);
+            if (timeline != null)
             {
-                foreach (int timelineId in _definition.Parts[i].Timelines.Keys)
-                {
-                    Timeline timeline = parts[i].GetTimeline(timelineId);
-                    _ = (timeline?.delegateTimelineDelegate = timelineDelegate);
-                }
+                timeline.delegateTimelineDelegate = timelineDelegate;
             }
         }
 
@@ -113,7 +125,9 @@ namespace CutTheRope.GameMain
 
         public float GetSleepPulseDelaySeconds()
         {
-            return 0f;
+            return _definition.RootTimelines.TryGetValue(SleepingTimeline, out float duration)
+                ? duration
+                : 0f;
         }
 
         public void ResetBlink()
@@ -146,10 +160,8 @@ namespace CutTheRope.GameMain
             {
                 FlashXmlPartDefinition partDefinition = definition.Parts[i];
 
-                // Use FlashXmlImage to halve width/height from @2x atlas pixels to @1x Flash points.
-                // This ensures the rotation/scale center (drawX + width/2 + rotationCenterX)
-                // uses point-space dimensions consistent with Flash XML positions.
-                FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName, 0.65f);
+                // Keep per-part dimensions in tuned Flash->DX point space.
+                FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName, PartDimensionScale);
                 part.anchor = 9;
                 part.parentAnchor = 9;
                 part.visible = ShouldStartVisible(partDefinition);
@@ -238,6 +250,19 @@ namespace CutTheRope.GameMain
         private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition)
         {
             return partDefinition.Timelines.ContainsKey(IdleLoopTimeline);
+        }
+
+        private Image FindFirstPartWithTimeline(int timelineId)
+        {
+            for (int i = 0; i < parts.Count; i++)
+            {
+                if (parts[i].GetTimeline(timelineId) != null)
+                {
+                    return parts[i];
+                }
+            }
+
+            return null;
         }
 
         private static string FormatDebugFloat(float value)

@@ -238,7 +238,10 @@ namespace CutTheRope.GameMain
                     continue;
                 }
 
-                if (current == null || MathF.Abs(current.TimeOffset - parsed.TimeOffset) > GroupEpsilon)
+                // Flash action export encodes one keyframe as:
+                // first action has the keyframe delay, following actions use @0.
+                // Start a new group only when we see a positive delay token.
+                if (current == null || parsed.TimeOffset > GroupEpsilon)
                 {
                     if (current != null)
                     {

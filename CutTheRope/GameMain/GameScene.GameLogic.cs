@@ -199,8 +199,8 @@ namespace CutTheRope.GameMain
             sleepSoundTimer = 0f;
             if (targetObject != null)
             {
-                targetObject.scaleX = 1f;
-                targetObject.scaleY = 1f;
+                targetObject.scaleX = targetBaseScaleX;
+                targetObject.scaleY = targetBaseScaleY;
                 targetObject.rotationCenterX = 0f;
                 targetObject.rotationCenterY = 0f;
             }
@@ -270,8 +270,8 @@ namespace CutTheRope.GameMain
             sleepSoundTimer = 0f;
             if (targetObject != null)
             {
-                targetObject.scaleX = 1f;
-                targetObject.scaleY = 1f;
+                targetObject.scaleX = targetBaseScaleX;
+                targetObject.scaleY = targetBaseScaleY;
                 targetObject.rotationCenterX = 0f;
                 targetObject.rotationCenterY = 0f;
             }

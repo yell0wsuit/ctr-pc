@@ -99,6 +99,18 @@ namespace CutTheRope.GameMain
         public GameObject TargetObject => target;
 
         /// <inheritdoc />
+        public float GetTargetBaseScaleX()
+        {
+            return 1f;
+        }
+
+        /// <inheritdoc />
+        public float GetTargetBaseScaleY()
+        {
+            return 1f;
+        }
+
+        /// <inheritdoc />
         public void Initialize(ITimelineDelegate timelineDelegate)
         {
             target.PlayTimeline(IdleLoopTimeline);

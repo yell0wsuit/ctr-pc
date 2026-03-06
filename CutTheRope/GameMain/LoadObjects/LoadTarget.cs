@@ -36,6 +36,10 @@ namespace CutTheRope.GameMain
             ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(nightLevel, SpecialEvents.IsXmas);
             targetAnimationController = TargetAnimationController.Create(targetAnimationBackend);
             targetObject = targetAnimationController.TargetObject;
+            targetBaseScaleX = targetAnimationController.GetTargetBaseScaleX();
+            targetBaseScaleY = targetAnimationController.GetTargetBaseScaleY();
+            targetObject.scaleX = targetBaseScaleX;
+            targetObject.scaleY = targetBaseScaleY;
 
             string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
             int sourceX = ParseIntOrZero(xAttribute);
@@ -50,7 +54,7 @@ namespace CutTheRope.GameMain
             if (targetAnimationBackend is FlashXmlTargetAnimationBackend)
             {
                 Console.WriteLine(
-                    $"[OmNomFlashRootPos] xml=({sourceX},{sourceY}); mapScale={scale.ToString("0.###", CultureInfo.InvariantCulture)}; offset=({offsetX.ToString("0.###", CultureInfo.InvariantCulture)},{offsetY.ToString("0.###", CultureInfo.InvariantCulture)}); mapOffset=({mapOffsetX},{mapOffsetY}); dxWorld=({transformedX.ToString("0.###", CultureInfo.InvariantCulture)},{transformedY.ToString("0.###", CultureInfo.InvariantCulture)});");
+                    $"[OmNomFlashRootPos] xml=({sourceX},{sourceY}); mapScale={scale.ToString("0.###", CultureInfo.InvariantCulture)}; offset=({offsetX.ToString("0.###", CultureInfo.InvariantCulture)},{offsetY.ToString("0.###", CultureInfo.InvariantCulture)}); mapOffset=({mapOffsetX},{mapOffsetY}); dxWorld=({transformedX.ToString("0.###", CultureInfo.InvariantCulture)},{transformedY.ToString("0.###", CultureInfo.InvariantCulture)}); baseScale=({targetBaseScaleX.ToString("0.###", CultureInfo.InvariantCulture)},{targetBaseScaleY.ToString("0.###", CultureInfo.InvariantCulture)});");
             }
 
             targetObject.bb = MakeRectangle(264f, 350f, 108f, 2f);
