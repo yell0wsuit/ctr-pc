@@ -87,6 +87,13 @@ namespace CutTheRope.GameMain
 
         public void SetBBFromQuad(int quad)
         {
+            if (quad == SnailShellQuad)
+            {
+                bb = GameScene.GetSnailBoundingBox();
+                rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
+                return;
+            }
+
             if (texture?.quadOffsets == null || texture.quadRects == null || quad < 0 || quad >= texture.quadRects.Length)
             {
                 return;

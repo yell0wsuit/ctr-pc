@@ -17,7 +17,7 @@ namespace CutTheRope.GameMain
             string direction = xmlNode.Attribute("direction")?.Value ?? string.Empty;
             string type = xmlNode.Attribute("type")?.Value ?? string.Empty;
 
-            float adjustedVelocity = velocity * PhysicsConstants.ConveyorVelocityScale * (direction == "forward" ? 1f : -1f);
+            float adjustedVelocity = velocity * ActivePhysicsConstants.ConveyorVelocityScale * (direction == "forward" ? 1f : -1f);
             bool isManual = type == "manual";
 
             ConveyorBelt belt = ConveyorBelt.Create(conveyors.Count(), x, y, length, height, rotation, isManual, adjustedVelocity);

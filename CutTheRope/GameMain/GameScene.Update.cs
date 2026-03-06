@@ -52,16 +52,16 @@ namespace CutTheRope.GameMain
                 if (
                     GameObject.RectInObject(
                         waterLeftX,
-                        waterSurfaceY - PhysicsConstants.WaterSurfaceDetectionHeight,
+                        waterSurfaceY - ActivePhysicsConstants.WaterSurfaceDetectionHeight,
                         waterRightX,
-                        waterSurfaceY + PhysicsConstants.WaterSurfaceDetectionHeight,
+                        waterSurfaceY + ActivePhysicsConstants.WaterSurfaceDetectionHeight,
                         candy
                     )
                 )
                 {
                     if (!splashes)
                     {
-                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + PhysicsConstants.WaterSplashParticleYOffset);
+                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + ActivePhysicsConstants.WaterSplashParticleYOffset);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
                     }
                     splashes = true;
@@ -251,9 +251,9 @@ namespace CutTheRope.GameMain
                         {
                             if (twoParts != 2)
                             {
-                                if (!noCandyL && VectDistance(Vect(grab.x, grab.y), starL.pos) <= grab.radius + 42f)
+                                if (!noCandyL && VectDistance(Vect(grab.x, grab.y), starL.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding)
                                 {
-                                    Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.X, starL.pos.Y, grab.radius + 42f);
+                                    Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starL, starL.pos.X, starL.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
                                     bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee);
@@ -270,9 +270,9 @@ namespace CutTheRope.GameMain
                                         CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
                                     }
                                 }
-                                if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
+                                if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding)
                                 {
-                                    Bungee bungee2 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.X, starR.pos.Y, grab.radius + 42f);
+                                    Bungee bungee2 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, starR, starR.pos.X, starR.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
                                     bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee2);
@@ -290,9 +290,9 @@ namespace CutTheRope.GameMain
                                     }
                                 }
                             }
-                            else if (VectDistance(Vect(grab.x, grab.y), star.pos) <= grab.radius + 42f)
+                            else if (VectDistance(Vect(grab.x, grab.y), star.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding)
                             {
-                                Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, grab.radius + 42f);
+                                Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
                                 bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee3);
@@ -324,9 +324,9 @@ namespace CutTheRope.GameMain
                                     {
                                         continue;
                                     }
-                                    if (VectDistance(Vect(grab.x, grab.y), bulb.constraint.pos) <= grab.radius + 42f)
+                                    if (VectDistance(Vect(grab.x, grab.y), bulb.constraint.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding)
                                     {
-                                        Bungee bungeeBulb = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, bulb.constraint, bulb.constraint.pos.X, bulb.constraint.pos.Y, grab.radius + 42f);
+                                        Bungee bungeeBulb = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, bulb.constraint, bulb.constraint.pos.X, bulb.constraint.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
                                         bungeeBulb.bungeeAnchor.pin = bungeeBulb.bungeeAnchor.pos;
                                         grab.hideRadius = true;
                                         grab.SetRope(bungeeBulb);
@@ -672,7 +672,7 @@ namespace CutTheRope.GameMain
             {
                 Bubble bubble3 = (Bubble)obj3;
                 bubble3.Update(delta);
-                float bubbleCaptureRadius = 85f;
+                float bubbleCaptureRadius = ActivePhysicsConstants.BubbleCaptureRadius;
                 if (twoParts != 2)
                 {
                     if (!noCandyL && !bubble3.popped && PointInRect(candyL.x, candyL.y, bubble3.x - bubbleCaptureRadius, bubble3.y - bubbleCaptureRadius, bubbleCaptureRadius * 2f, bubbleCaptureRadius * 2f))
@@ -1063,8 +1063,8 @@ namespace CutTheRope.GameMain
                             sock4.idleTimeout = 0.8f;
                             ReleaseAllRopes(false);
                             DetachActiveHands();
-                            savedSockSpeed = PhysicsConstants.SockSpeedKoeff * VectLength(star.v);
-                            savedSockSpeed *= PhysicsConstants.SockTeleportSpeedMultiplier;
+                            savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(star.v);
+                            savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             targetSock = sock4;
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
@@ -1112,8 +1112,8 @@ namespace CutTheRope.GameMain
                                 sock4.state = Sock.SOCK_THROWING;
                                 sock4.idleTimeout = 0.8f;
                                 ReleaseLightBulbRopes(bulb);
-                                bulb.sockSpeed = PhysicsConstants.SockSpeedKoeff * VectLength(bulb.constraint.v);
-                                bulb.sockSpeed *= PhysicsConstants.SockTeleportSpeedMultiplier;
+                                bulb.sockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(bulb.constraint.v);
+                                bulb.sockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                                 bulb.attachedSock = sock4;
                                 sock3.light.PlayTimeline(0);
                                 sock3.light.visible = true;
@@ -1196,7 +1196,8 @@ namespace CutTheRope.GameMain
                         rocket.UpdateRotation();
                         float ang = rocket.angle;
                         Vector impulse = VectRotate(Vect(-1f, 0f), ang);
-                        impulse = VectMult(impulse, rocket.impulse);
+                        float rocketImpulse = rocket.impulse * ActivePhysicsConstants.RocketImpulseScale;
+                        impulse = VectMult(impulse, rocketImpulse);
                         if (ropeRelaxed)
                         {
                             impulse = VectMult(impulse, rocket.impulseFactor);
@@ -1356,7 +1357,7 @@ namespace CutTheRope.GameMain
                         CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)
                         {
-                            candyBreak.gravity.Y = -PhysicsConstants.CandyBreakGravityY;
+                            candyBreak.gravity.Y = -ActivePhysicsConstants.CandyBreakGravityY;
                             candyBreak.angle = 90f;
                         }
                         candyBreak.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
@@ -1412,7 +1413,7 @@ namespace CutTheRope.GameMain
             {
                 Bouncer bouncer = (Bouncer)obj15;
                 bouncer.Update(delta);
-                float bouncerCollisionRadius = PhysicsConstants.BouncerCollisionRadius;
+                float bouncerCollisionRadius = ActivePhysicsConstants.BouncerCollisionRadius;
                 bool flag7 = false;
                 bool flag8;
                 if (twoParts != 2)
@@ -1477,19 +1478,22 @@ namespace CutTheRope.GameMain
                 waterLayer.y = mapOriginY + mapHeight - waterLevel;
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
-            float candyRadius = PhysicsConstants.WaterCandyCollisionRadius;
+            float candyRadius = ActivePhysicsConstants.WaterCandyCollisionRadius;
+            bool rocketInWater = false;
+            float waterRocketDamping = ActivePhysicsConstants.WaterDamping * ActivePhysicsConstants.WaterRocketDampingMultiplier;
             if (waterLayer != null
                 && waterLevel > 0f
                 && star.pos.Y > waterLayer.y
                 && star.pos.X + candyRadius >= waterLayer.x
                 && star.pos.X - candyRadius <= waterLayer.x + waterLayer.width)
             {
-                float damping = PhysicsConstants.WaterDamping;
-                float verticalWaterImpulse = PhysicsConstants.WaterVerticalImpulseBase / star.weight;
+                float damping = ActivePhysicsConstants.WaterDamping;
+                float verticalWaterImpulse = ActivePhysicsConstants.WaterVerticalImpulseBase / star.weight;
                 if (activeRocket != null)
                 {
-                    verticalWaterImpulse /= PhysicsConstants.WaterRocketImpulseDivisor;
-                    damping *= PhysicsConstants.WaterRocketDampingMultiplier;
+                    rocketInWater = true;
+                    verticalWaterImpulse /= ActivePhysicsConstants.WaterRocketImpulseDivisor;
+                    damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
                     if (activeRocket.state == Rocket.STATE_ROCKET_FLY)
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
@@ -1505,9 +1509,9 @@ namespace CutTheRope.GameMain
                 {
                     if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.rope != null)
                     {
-                        const float damping = PhysicsConstants.WaterDamping;
+                        float damping = ActivePhysicsConstants.WaterDamping;
                         ConstraintedPoint anchor = grab.rope.bungeeAnchor;
-                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + PhysicsConstants.WaterRopeAnchorImpulse), delta);
+                        anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + ActivePhysicsConstants.WaterRopeAnchorImpulse), delta);
                     }
                 }
             }
@@ -1543,8 +1547,8 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
-            float bubbleLift = PhysicsConstants.BubbleImpulseY;
-            float bubbleDamping = PhysicsConstants.BubbleImpulseDamping;
+            float bubbleLift = ActivePhysicsConstants.BubbleImpulseY;
+            float bubbleDamping = ActivePhysicsConstants.BubbleImpulseDamping;
             if (twoParts == 0)
             {
                 if (candyBubbleL != null)
@@ -1599,10 +1603,15 @@ namespace CutTheRope.GameMain
             }
             if (activeRocket != null)
             {
+                float rocketDamping = ActivePhysicsConstants.RocketActiveVelocityDamping;
+                if (rocketInWater)
+                {
+                    rocketDamping = waterRocketDamping;
+                }
                 star.ApplyImpulseDelta(
                     Vect(
-                        -star.v.X / PhysicsConstants.RocketActiveVelocityDamping,
-                        -star.v.Y / PhysicsConstants.RocketActiveVelocityDamping
+                        -star.v.X / rocketDamping,
+                        -star.v.Y / rocketDamping
                     ),
                     delta
                 );

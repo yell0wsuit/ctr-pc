@@ -81,7 +81,8 @@ namespace CutTheRope.GameMain
             wheelImage2.rotation += rotateDelta;
             wheelImage3.rotation += rotateDelta;
             wheelHighlight.rotation += rotateDelta;
-            rotateDelta = rotateDelta > 0f ? MIN(MAX(1, rotateDelta), 4.5f) : MAX(MIN(-1, rotateDelta), -4.5f);
+            float maxWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMax;
+            rotateDelta = rotateDelta > 0f ? MIN(MAX(1, rotateDelta), maxWheelDelta) : MAX(MIN(-1, rotateDelta), 0f - maxWheelDelta);
             float ropeLength = 0f;
             if (rope != null)
             {
@@ -91,7 +92,7 @@ namespace CutTheRope.GameMain
             {
                 if (rotateDelta > 0f)
                 {
-                    if (ropeLength < 1650f)
+                    if (ropeLength < ActivePhysicsConstants.GrabRopeRollMaxLength)
                     {
                         rope.Roll(rotateDelta);
                     }
@@ -178,7 +179,7 @@ namespace CutTheRope.GameMain
             }
             if (spider.GetCurrentTimelineIndex() != 0)
             {
-                spiderPos += delta * 117f;
+                spiderPos += delta * ActivePhysicsConstants.SpiderTraversalSpeed;
             }
             float traversedLength = 0f;
             bool flag = false;

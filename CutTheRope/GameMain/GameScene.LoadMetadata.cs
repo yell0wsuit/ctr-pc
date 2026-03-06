@@ -21,6 +21,8 @@ namespace CutTheRope.GameMain
             offsetX = 0f;
             mapOffsetX = 0;
             mapOffsetY = 0;
+            ActivePhysicsConstants.UseMobilePhysicsModel = false;
+            Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
             CTRRootController rc = (CTRRootController)Application.SharedRootController();
 
@@ -57,6 +59,9 @@ namespace CutTheRope.GameMain
                             mapOffsetY = ParseIntOrZero(item2.Attribute("mapOffsetY")?.Value);
                             special = ParseIntOrZero(item2.Attribute("special")?.Value);
                             ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
+                            _ = bool.TryParse(item2.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
+                            ActivePhysicsConstants.UseMobilePhysicsModel = useMobilePhysics;
+                            Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
                             twoParts = twoPartsBool ? 0 : 2;
@@ -89,7 +94,7 @@ namespace CutTheRope.GameMain
                                     waterSpeed = 0f;
                                 }
                             }
-                            ropePhysicsSpeed *= PhysicsConstants.RopePhysicsSpeedMultiplier;
+                            ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
                             break;
                         case "candyL":
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -105,7 +110,7 @@ namespace CutTheRope.GameMain
                             candyL.anchor = 18;
                             candyL.x = starL.pos.X;
                             candyL.y = starL.pos.Y;
-                            candyL.bb = MakeRectangle(155f, 176f, 88f, 76f);
+                            candyL.bb = GetSplitCandyBoundingBox();
                             break;
                         case "candyR":
                             starR.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -121,7 +126,7 @@ namespace CutTheRope.GameMain
                             candyR.anchor = 18;
                             candyR.x = starR.pos.X;
                             candyR.y = starR.pos.Y;
-                            candyR.bb = MakeRectangle(155f, 176f, 88f, 76f);
+                            candyR.bb = GetSplitCandyBoundingBox();
                             break;
                         case "candy":
                             star.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -132,6 +137,11 @@ namespace CutTheRope.GameMain
                     }
                 }
             }
+
+            // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
+            candy.bb = GetCandyBoundingBox();
+            _ = (candyL?.bb = GetSplitCandyBoundingBox());
+            _ = (candyR?.bb = GetSplitCandyBoundingBox());
         }
     }
 }

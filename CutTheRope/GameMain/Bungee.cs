@@ -198,11 +198,17 @@ namespace CutTheRope.GameMain
                 rgbaColor4.GreenColor *= highlightMultiplier;
                 rgbaColor4.BlueColor *= highlightMultiplier;
             }
+            float relaxThresholdSoft = ActivePhysicsConstants.BungeeRelaxThresholdSoft;
+            float relaxThresholdMedium = ActivePhysicsConstants.BungeeRelaxThresholdMedium;
+            float relaxThresholdHard = ActivePhysicsConstants.BungeeRelaxThresholdHard;
+            float stretchRedThreshold = ActivePhysicsConstants.BungeeStretchRedThreshold;
             float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
-            b.relaxed = segmentLength <= BUNGEE_REST_LEN + 0.3
+            b.relaxed = segmentLength <= BUNGEE_REST_LEN + relaxThresholdSoft
                 ? 0
-                : segmentLength <= BUNGEE_REST_LEN + 1 ? 1 : segmentLength <= BUNGEE_REST_LEN + 4 ? 2 : 3;
-            if (segmentLength > BUNGEE_REST_LEN + 7)
+                : segmentLength <= BUNGEE_REST_LEN + relaxThresholdMedium
+                    ? 1
+                    : segmentLength <= BUNGEE_REST_LEN + relaxThresholdHard ? 2 : 3;
+            if (segmentLength > BUNGEE_REST_LEN + stretchRedThreshold)
             {
                 float stretchRedScale = segmentLength / BUNGEE_REST_LEN * 2f;
                 rgbaColor3.RedColor *= stretchRedScale;
@@ -391,7 +397,7 @@ namespace CutTheRope.GameMain
                     if (nextRestLength < 1)
                     {
                         remainingAmount = BUNGEE_REST_LEN;
-                        currentRestLength = (int)(BUNGEE_REST_LEN + nextRestLength + 1f);
+                        currentRestLength = (int)(BUNGEE_REST_LEN + nextRestLength + ActivePhysicsConstants.BungeeRollBackOverflowPadding);
                     }
                     else
                     {
@@ -407,7 +413,7 @@ namespace CutTheRope.GameMain
                 Constraint constraint = tail.constraints[j];
                 if (constraint != null && constraint.type == Constraint.CONSTRAINT.NOT_MORE_THAN)
                 {
-                    constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + 3f);
+                    constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack);
                 }
             }
             return remainingAmount;
@@ -473,7 +479,7 @@ namespace CutTheRope.GameMain
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack), Constraint.CONSTRAINT.NOT_MORE_THAN);
                         }
                     }
                     i++;
@@ -518,6 +524,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             int count = parts.Count;
+            int drawSamplePoints = ActivePhysicsConstants.BungeeDrawSamplePoints;
             Renderer.SetColor(s_Color1);
             if (cut == -1)
             {
@@ -527,7 +534,7 @@ namespace CutTheRope.GameMain
                     ConstraintedPoint constraintedPoint = parts[i];
                     array[i] = constraintedPoint.pos;
                 }
-                DrawBungee(this, array, count, 4, 0);
+                DrawBungee(this, array, count, drawSamplePoints, 0);
                 return;
             }
             Vector[] array2 = new Vector[count];
@@ -566,11 +573,11 @@ namespace CutTheRope.GameMain
             int headPartCount = count - tailPartCount;
             if (headPartCount > 0)
             {
-                DrawBungee(this, array2, headPartCount, 4, 0);
+                DrawBungee(this, array2, headPartCount, drawSamplePoints, 0);
             }
             if (tailPartCount > 0 && !hideTailParts)
             {
-                DrawBungee(this, array3, tailPartCount, 4, cutIndex);
+                DrawBungee(this, array3, tailPartCount, drawSamplePoints, cutIndex);
             }
         }
 
@@ -718,7 +725,7 @@ namespace CutTheRope.GameMain
         public const int BUNGEE_RELAXION_TIMES = 30;
         public bool highlighted;
 
-        public static float BUNGEE_REST_LEN = PhysicsConstants.BungeeRestLength;
+        public static float BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
         public ConstraintedPoint bungeeAnchor;
 
@@ -742,7 +749,7 @@ namespace CutTheRope.GameMain
         /// Flat array of bezier curve points in the format [x0, y0, x1, y1, x2, y2, ...].
         /// Used for rendering the rope and positioning Christmas lights.
         /// </summary>
-        public float[] drawPts = new float[PhysicsConstants.DrawPtsBufferSize];
+        public float[] drawPts = new float[ActivePhysicsConstants.DrawPtsBufferSize];
 
         /// <summary>
         /// Number of valid coordinates in the drawPts array (actual length is drawPtsCount * 2).
