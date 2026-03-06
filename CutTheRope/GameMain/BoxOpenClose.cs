@@ -272,7 +272,7 @@ namespace CutTheRope.GameMain
             int i = confetti.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, firstFrame, lastFrame);
             confetti.ani = confetti.GetTimeline(i);
             confetti.ani.PlayTimeline();
-            confetti.ani.JumpToTrackKeyFrame(4, RND_RANGE(0, lastFrame - firstFrame - 1));
+            confetti.ani.JumpToTrackKeyFrame((int)Track.TrackType.TRACK_ACTION, RND_RANGE(0, lastFrame - firstFrame - 1));
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, fadeDuration));

@@ -24,7 +24,19 @@ namespace CutTheRope.Framework.Visual
             {
                 state = TimelineState.TIMELINE_PAUSED;
             }
-            time = tracks[t].GetFrameTime(k);
+
+            if (t < 0 || t >= tracks.Length)
+            {
+                return;
+            }
+
+            Track track = tracks[t];
+            if (track == null || k < 0 || k >= track.keyFramesCount)
+            {
+                return;
+            }
+
+            time = track.GetFrameTime(k);
         }
 
         public void PlayTimeline()
