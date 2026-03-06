@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
             star.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             star.timeout = ParseFloatOrZero(xmlNode.Attribute("timeout")?.Value);
             star.CreateAnimations();
-            star.bb = MakeRectangle(70f, 64f, 82f, 82f);
+            star.bb = GetStarBoundingBox();
             star.ParseMover(xmlNode);
             star.Update(0f);
             stars.Add(star);

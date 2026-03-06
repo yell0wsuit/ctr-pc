@@ -49,7 +49,7 @@ namespace CutTheRope.GameMain
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
                 int directionSign = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y).Y >= b.y ? 1 : -1;
-                float s2 = MAX(VectLength(vector) * PhysicsConstants.BouncerImpulseVelocityScale, PhysicsConstants.BouncerMinImpulse) * directionSign;
+                float s2 = MAX(VectLength(vector) * ActivePhysicsConstants.BouncerImpulseVelocityScale, ActivePhysicsConstants.BouncerMinImpulse) * directionSign;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
                 s.pos = VectRotateAround(s.pos, 0f - b.angle, b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y);
@@ -64,22 +64,18 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Applies steam tube forces and interacts with candy pieces inside the flow area.
-        /// PC vs WP7 differences:
-        /// - tubeWidth: 10f * tubeScale (WP7: 10f unscaled)
-        /// - verticalOffset: 1f * tubeScale (WP7: 1f unscaled)
-        /// - collisionRadius: 17.5f * tubeScale (WP7: 17.5f unscaled)
-        /// - Gravity force: -32f/weight * sqrt(tubeScale) (WP7: no sqrt scaling)
-        /// - Damping factor: Always 5f (same in both)
+        /// Uses a dedicated mobile formula when mobile physics model is enabled.
         /// </summary>
         public void OperateSteamTube(SteamTube tube, float delta)
         {
             float tubeScale = tube.GetHeightScale();
-            float damping = PhysicsConstants.SteamTubeDamping;  // Damping factor (velocity reduction)
+            float damping = ActivePhysicsConstants.SteamTubeDamping;
             float angle = DEGREES_TO_RADIANS(tube.rotation);
-            float tubeWidth = PhysicsConstants.SteamTubeWidthScale * tubeScale;  // Tube width for horizontal centering
+            float tubeWidth = ActivePhysicsConstants.SteamTubeWidthScale * tubeScale;
             float currentHeight = tube.GetCurrentHeightModulated();
-            float verticalOffset = PhysicsConstants.SteamTubeVerticalOffsetScale * tubeScale;  // Vertical offset for collision box
-            float collisionRadius = PhysicsConstants.SteamTubeCollisionRadiusScale * tubeScale;  // Candy collision radius (STAR_RADIUS scaled)
+            float verticalOffset = ActivePhysicsConstants.SteamTubeVerticalOffsetScale * tubeScale;
+            float collisionRadius = ActivePhysicsConstants.SteamTubeCollisionRadiusScale * tubeScale;
+            bool useMobileFormula = ActivePhysicsConstants.UseMobilePhysicsModel;
             bool gravityInverted = gravityButton != null && !gravityNormal;
 
             float rectLeft = tube.x - (tubeWidth / 2f);
@@ -110,33 +106,63 @@ namespace CutTheRope.GameMain
                 }
 
                 float horizontalImpulse = 0f;
-                bool applyHorizontalCentering =
-                    (tube.rotation == 0f && !gravityInverted) ||
-                    (tube.rotation == DEG_180 && gravityInverted);
-                if (applyHorizontalCentering)
-                {
-                    float deltaX = tube.x - position.X;
-                    horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
-                        ? ((0f - velocity.X) / damping) + (0.25f * deltaX)
-                        : ABS(velocity.X) < 1f ? 0f - velocity.X : (0f - velocity.X) / damping;
-                }
-
-                bool alignedWithGravity =
-                    (tube.rotation == 0f && !gravityInverted) ||
-                    (tube.rotation == DEG_180 && gravityInverted);
                 float localDamping = damping;
-                // Gravity compensation force. sqrt(tubeScale) accounts for increased flow area.
-                float gravityCompensation = PhysicsConstants.SteamTubeGravityCompensation / pt.weight * MathF.Sqrt(tubeScale);
-                if (!alignedWithGravity)
+                float gravityCompensation;
+
+                if (useMobileFormula)
                 {
-                    localDamping *= PhysicsConstants.SteamTubeNonAlignedDampingMultiplier;
-                    if (tube.rotation is DEG_90 or DEG_270)
+                    // Windows Phone-style centering applies only at 0 degrees.
+                    if (tube.rotation == 0f)
                     {
-                        gravityCompensation /= PhysicsConstants.SteamTubeSideGravityDivisor;
+                        float deltaX = tube.x - position.X;
+                        horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
+                            ? ((0f - velocity.X) / damping) + (0.25f * deltaX)
+                            : ABS(velocity.X) < 1f ? 0f - velocity.X : (0f - velocity.X) / damping;
                     }
-                    else
+
+                    // Windows Phone force, mapped to world scale (tubeScale is world/Windows Phone transform).
+                    gravityCompensation = ActivePhysicsConstants.SteamTubeGravityCompensation * tubeScale / pt.weight;
+                    if (tube.rotation != 0f)
                     {
-                        gravityCompensation /= PhysicsConstants.SteamTubeOppositeGravityDivisor;
+                        localDamping *= ActivePhysicsConstants.SteamTubeNonAlignedDampingMultiplier;
+                        if (tube.rotation == DEG_180)
+                        {
+                            gravityCompensation /= ActivePhysicsConstants.SteamTubeOppositeGravityDivisor;
+                        }
+                        else
+                        {
+                            gravityCompensation /= ActivePhysicsConstants.SteamTubeSideGravityDivisor;
+                        }
+                    }
+                }
+                else
+                {
+                    bool applyHorizontalCentering =
+                        (tube.rotation == 0f && !gravityInverted) ||
+                        (tube.rotation == DEG_180 && gravityInverted);
+                    if (applyHorizontalCentering)
+                    {
+                        float deltaX = tube.x - position.X;
+                        horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
+                            ? ((0f - velocity.X) / damping) + (0.25f * deltaX)
+                            : ABS(velocity.X) < 1f ? 0f - velocity.X : (0f - velocity.X) / damping;
+                    }
+
+                    bool alignedWithGravity =
+                        (tube.rotation == 0f && !gravityInverted) ||
+                        (tube.rotation == DEG_180 && gravityInverted);
+                    gravityCompensation = ActivePhysicsConstants.SteamTubeGravityCompensation / pt.weight * MathF.Sqrt(tubeScale);
+                    if (!alignedWithGravity)
+                    {
+                        localDamping *= ActivePhysicsConstants.SteamTubeNonAlignedDampingMultiplier;
+                        if (tube.rotation is DEG_90 or DEG_270)
+                        {
+                            gravityCompensation /= ActivePhysicsConstants.SteamTubeSideGravityDivisor;
+                        }
+                        else
+                        {
+                            gravityCompensation /= ActivePhysicsConstants.SteamTubeOppositeGravityDivisor;
+                        }
                     }
                 }
 

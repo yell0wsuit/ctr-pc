@@ -17,7 +17,7 @@ namespace CutTheRope.GameMain
             Pump pump = Pump.Pump_createWithResID(Resources.Img.ObjPump);
             pump.DoRestoreCutTransparency();
             _ = pump.AddAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
-            pump.bb = MakeRectangle(300f, 300f, 175f, 175f);
+            pump.bb = GetPumpBoundingBox();
             pump.initial_x = pump.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             pump.initial_y = pump.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             pump.initial_rotation = 0f;

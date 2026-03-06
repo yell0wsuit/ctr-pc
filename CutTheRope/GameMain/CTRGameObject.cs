@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework;
 using CutTheRope.Framework.Helpers;
 
 namespace CutTheRope.GameMain
@@ -20,9 +21,9 @@ namespace CutTheRope.GameMain
                 int i = 100;
                 if (pathString[0] == 'R')
                 {
-                    i = ((int)(RTD(ParseIntOrZero(pathString[2..])) * 3.3f) / 2) + 1;
+                    i = ((int)(RTD(ParseIntOrZero(pathString[2..])) * ActivePhysicsConstants.MoverPathScale) / 2) + 1;
                 }
-                float m_ = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * 3.3f;
+                float m_ = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * ActivePhysicsConstants.MoverSpeedScale;
                 float r_ = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 CTRMover cTRMover = new(i, m_, r_)
                 {
