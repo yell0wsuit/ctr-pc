@@ -202,6 +202,7 @@ namespace CutTheRope.GameMain
 
                 // Keep per-part dimensions in tuned Flash->DX point space.
                 FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName, PartDimensionScale);
+                part.PlaybackRate = 0.7f;
                 part.anchor = 9;
                 part.parentAnchor = 9;
                 part.visible = ShouldStartVisible(partDefinition);

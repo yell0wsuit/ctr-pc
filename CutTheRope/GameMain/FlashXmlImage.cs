@@ -19,9 +19,19 @@ namespace CutTheRope.GameMain
     {
         private readonly float _dimensionScale;
 
+        /// <summary>
+        /// Multiplier applied to the update delta before advancing timelines.
+        /// </summary>
+        internal float PlaybackRate { get; set; } = 1f;
+
         private FlashXmlImage(float dimensionScale)
         {
             _dimensionScale = dimensionScale;
+        }
+
+        public override void Update(float delta)
+        {
+            base.Update(delta * PlaybackRate);
         }
 
         public override void SetDrawQuad(int n)
