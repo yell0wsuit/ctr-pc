@@ -25,7 +25,7 @@ namespace CutTheRope.GameMain
         private const int SleepingTimeline = 9;
         private const int GreetingTimeline = 18;
         private const float PartDimensionScale = 0.65f;
-        private const float WholeObjectScale = 1.78f;
+        private const float WholeObjectScale = 1.75f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
         private ITimelineDelegate _externalTimelineDelegate;
@@ -44,14 +44,21 @@ namespace CutTheRope.GameMain
             TargetObject = GameObject.GameObject_createWithResIDQuad(Resources.Img.CharAnimationsSmooth, 0);
             TargetObject.color = RGBAColor.transparentRGBA;
             TargetObject.passColorToChilds = false;
-            // Flash part coordinates are authored in stage space, not atlas pre-cut space.
-            // Keep the container sized to stage dimensions so center anchoring math matches Flash.
-            TargetObject.width = (int)MathF.Round(_definition.StageWidth);
-            TargetObject.height = (int)MathF.Round(_definition.StageHeight);
             TargetObject.scaleX = WholeObjectScale;
             TargetObject.scaleY = WholeObjectScale;
 
             BuildParts(_definition);
+
+            // Center the container on the idle-pose visual centroid so the anchor
+            // point lands on Om Nom's visual center, matching how the classic
+            // 640×640 sprite frame centers the character.  The classic body sits
+            // ~10 screen-px below the anchor; dividing by WholeObjectScale
+            // reproduces that offset here.
+            (float vcX, float vcY) = ComputeIdleVisualCenter(_definition, parts);
+            const float classicBodyScreenOffsetY = 20f;
+            TargetObject.width = (int)MathF.Round(vcX * 2f);
+            TargetObject.height = (int)MathF.Round((vcY - (classicBodyScreenOffsetY / WholeObjectScale)) * 2f);
+
             DumpPartPositions(_definition);
         }
 
@@ -287,6 +294,36 @@ namespace CutTheRope.GameMain
         private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition)
         {
             return partDefinition.Timelines.ContainsKey(IdleVariationOneTimeline);
+        }
+
+        private static (float X, float Y) ComputeIdleVisualCenter(
+            FlashXmlAnimationDefinition definition,
+            List<Image> builtParts)
+        {
+            float sumX = 0f;
+            float sumY = 0f;
+            int count = 0;
+
+            for (int i = 0; i < definition.Parts.Count; i++)
+            {
+                FlashXmlPartDefinition partDef = definition.Parts[i];
+                if (!partDef.Timelines.TryGetValue(IdleVariationOneTimeline, out FlashXmlTimelineDefinition timeline)
+                    || timeline.PositionKeyFrames.Count == 0)
+                {
+                    continue;
+                }
+
+                FlashXmlFloat2KeyFrame firstFrame = timeline.PositionKeyFrames[0];
+                Image part = builtParts[i];
+
+                sumX += firstFrame.X + (part.width / 2f);
+                sumY += firstFrame.Y + (part.height / 2f);
+                count++;
+            }
+
+            return count > 0
+                ? (sumX / count, sumY / count)
+                : (definition.StageWidth / 2f, definition.StageHeight / 2f);
         }
 
         private Image FindFirstPartWithTimeline(int timelineId)
