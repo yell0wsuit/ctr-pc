@@ -15,11 +15,11 @@ namespace CutTheRope.GameMain
         /// <param name="isNightLevel">Whether sleep animations should be configured.</param>
         /// <param name="isXmas">Whether Christmas animation variants should be configured.</param>
         /// <returns>The configured original backend.</returns>
-        public static ITargetAnimationBackend CreateOriginal(bool isNightLevel, bool isXmas)
+        public static ITargetAnimationBackend CreateOriginal(bool isNightLevel, bool isXmas, string animationStyle)
         {
-            _ = isNightLevel;
-            _ = isXmas;
-            return new FlashXmlTargetAnimationBackend(GetFlashOmNomXmlPath());
+            return string.Equals(animationStyle, "flash", System.StringComparison.OrdinalIgnoreCase)
+                ? new FlashXmlTargetAnimationBackend(GetFlashOmNomXmlPath())
+                : new OriginalTargetAnimationBackend(isNightLevel, isXmas);
         }
 
         internal static string GetFlashOmNomXmlPath()

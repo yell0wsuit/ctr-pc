@@ -33,7 +33,8 @@ namespace CutTheRope.GameMain
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
-            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(nightLevel, SpecialEvents.IsXmas);
+            string animationStyle = PackConfig.GetAnimationStyle(pack);
+            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(nightLevel, SpecialEvents.IsXmas, animationStyle);
             targetAnimationController = TargetAnimationController.Create(targetAnimationBackend);
             targetObject = targetAnimationController.TargetObject;
             targetBaseScaleX = targetAnimationController.GetTargetBaseScaleX();
