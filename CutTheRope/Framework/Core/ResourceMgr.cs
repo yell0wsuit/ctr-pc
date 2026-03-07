@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -169,20 +168,12 @@ namespace CutTheRope.Framework.Core
         public virtual CTRTexture2D LoadTextureImageInfo(string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
             TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
-            float defaultScaleX = scaleX;
-            float defaultScaleY = scaleY;
             float aspectRatioScaleX = GetAspectRatioScaleX();
             (scaleX, scaleY) = ResolveTextureScales(
                 scaleX,
                 scaleY,
                 atlasConfig?.ScaleRes,
                 aspectRatioScaleX);
-
-            if (atlasConfig?.ScaleRes == 0 && resourceName == Resources.Img.CharAnimationsSmooth)
-            {
-                Console.WriteLine(
-                    $"[OmNomFlashTextureScale] resource={resourceName}; defaultScale=({FormatDebugFloat(defaultScaleX)},{FormatDebugFloat(defaultScaleY)}); aspectScaleX={FormatDebugFloat(aspectRatioScaleX)}; resolvedScale=({FormatDebugFloat(scaleX)},{FormatDebugFloat(scaleY)});");
-            }
 
             ParsedTexturePackerAtlas parsedAtlas = LoadTexturePackerAtlas(atlasConfig, resourceName);
 
@@ -233,11 +224,6 @@ namespace CutTheRope.Framework.Core
         protected virtual float GetAspectRatioScaleX()
         {
             return 1f;
-        }
-
-        private static string FormatDebugFloat(float value)
-        {
-            return value.ToString("0.###", CultureInfo.InvariantCulture);
         }
 
         protected virtual TextureAtlasConfig GetTextureAtlasConfig(string resourceName)

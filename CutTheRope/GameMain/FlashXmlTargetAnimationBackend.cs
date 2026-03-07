@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 
@@ -18,27 +17,18 @@ namespace CutTheRope.GameMain
         private const int ExcitedTimeline = 2;
         private const int MouthOpeningTimeline = 3;
         private const int MouthClosingTimeline = 4;
-        private const int PuzzledTimeline = 5;
         private const int SadTimeline = 6;
         private const int ChewingTimeline = 7;
         private const int SleepingTimeline = 9;
         private const int GreetingTimeline = 18;
         private const float PartDimensionScale = 0.65f;
         private const float WholeObjectScale = 1.75f;
-        private static readonly bool EnableFlashTimelineTimingLogs = true;
-        private static readonly bool EnableFlashPartPositionLogs = false;
-        private const float MissingDurationSeconds = -1f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
         private ITimelineDelegate _externalTimelineDelegate;
         private int _activeTimelineId = -1;
         private Timeline _driverTimeline;
         private int _driverTimelineId = -1;
-        private long _driverTimelineStartTimestamp;
-        private float _driverExpectedDurationSeconds = MissingDurationSeconds;
-        private float _driverRootDurationSeconds = MissingDurationSeconds;
-        private float _driverPartDurationSeconds = MissingDurationSeconds;
-        private string _driverPartName = "n/a";
 
         public FlashXmlTargetAnimationBackend(string xmlPath = null)
         {
@@ -65,11 +55,6 @@ namespace CutTheRope.GameMain
             const float classicBodyScreenOffsetY = 20f;
             TargetObject.width = (int)MathF.Round(vcX * 2f);
             TargetObject.height = (int)MathF.Round((vcY - (classicBodyScreenOffsetY / WholeObjectScale)) * 2f);
-
-            if (EnableFlashPartPositionLogs)
-            {
-                DumpPartPositions(_definition);
-            }
         }
 
         public GameObject TargetObject { get; }
@@ -94,11 +79,9 @@ namespace CutTheRope.GameMain
         {
             if (!TryMapState(state, out int timelineId))
             {
-                LogTimelineTiming($"play request state={state} timeline=unmapped");
                 return;
             }
 
-            LogTimelineTiming($"play request state={state} timeline={timelineId}({GetTimelineDebugName(timelineId)})");
             PlayTimelineById(timelineId);
         }
 
@@ -194,34 +177,19 @@ namespace CutTheRope.GameMain
             }
 
             int finishedTimelineId = _driverTimelineId;
-            double elapsedSeconds = Stopwatch.GetElapsedTime(_driverTimelineStartTimestamp).TotalSeconds;
-            string drift = _driverExpectedDurationSeconds > 0f
-                ? FormatSignedDuration((float)(elapsedSeconds - _driverExpectedDurationSeconds))
-                : "n/a";
-            LogTimelineTiming(
-                $"finish timeline={finishedTimelineId}({GetTimelineDebugName(finishedTimelineId)}) part={_driverPartName} elapsed={FormatDuration((float)elapsedSeconds)} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} drift={drift}");
 
             _driverTimeline = null;
             _driverTimelineId = -1;
-            _driverTimelineStartTimestamp = 0L;
-            _driverExpectedDurationSeconds = MissingDurationSeconds;
-            _driverRootDurationSeconds = MissingDurationSeconds;
-            _driverPartDurationSeconds = MissingDurationSeconds;
-            _driverPartName = "n/a";
 
             if (TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
                 && FindFirstPartWithTimeline(followupTimelineId) != null)
             {
-                LogTimelineTiming(
-                    $"followup from={finishedTimelineId}({GetTimelineDebugName(finishedTimelineId)}) to={followupTimelineId}({GetTimelineDebugName(followupTimelineId)})");
                 PlayTimelineById(followupTimelineId);
                 return;
             }
 
             if (_activeTimelineId != IdleLoopTimeline)
             {
-                LogTimelineTiming(
-                    $"followup from={finishedTimelineId}({GetTimelineDebugName(finishedTimelineId)}) to={IdleLoopTimeline}({GetTimelineDebugName(IdleLoopTimeline)})");
                 PlayTimelineById(IdleLoopTimeline);
             }
         }
@@ -249,74 +217,6 @@ namespace CutTheRope.GameMain
                 _ = TargetObject.AddChild(part);
                 parts.Add(part);
             }
-        }
-
-        private static void DumpPartPositions(FlashXmlAnimationDefinition definition)
-        {
-            List<string> lines = BuildPartPositionDebugLines(definition);
-            for (int i = 0; i < lines.Count; i++)
-            {
-                Console.WriteLine(lines[i]);
-            }
-        }
-
-        private static List<string> BuildPartPositionDebugLines(FlashXmlAnimationDefinition definition)
-        {
-            const float positionScaleX = 1f;
-            const float positionScaleY = 1f;
-            const int preferredTimelineId = IdleLoopTimeline;
-
-            List<string> lines = [];
-            lines.Add(
-                $"[OmNomFlashPartPos] transform scale=({FormatDebugFloat(positionScaleX)},{FormatDebugFloat(positionScaleY)}) rounding=nearest-int preferredTimeline={preferredTimelineId}");
-
-            for (int i = 0; i < definition.Parts.Count; i++)
-            {
-                FlashXmlPartDefinition part = definition.Parts[i];
-                int timelineId = preferredTimelineId;
-                FlashXmlFloat2KeyFrame positionFrame = null;
-
-                if (part.Timelines.TryGetValue(preferredTimelineId, out FlashXmlTimelineDefinition preferredTimeline)
-                    && preferredTimeline.PositionKeyFrames.Count > 0)
-                {
-                    positionFrame = preferredTimeline.PositionKeyFrames[0];
-                }
-                else
-                {
-                    int fallbackTimelineId = int.MaxValue;
-                    foreach ((int candidateTimelineId, FlashXmlTimelineDefinition timeline) in part.Timelines)
-                    {
-                        if (timeline.PositionKeyFrames.Count == 0 || candidateTimelineId >= fallbackTimelineId)
-                        {
-                            continue;
-                        }
-
-                        fallbackTimelineId = candidateTimelineId;
-                        positionFrame = timeline.PositionKeyFrames[0];
-                    }
-
-                    if (fallbackTimelineId != int.MaxValue)
-                    {
-                        timelineId = fallbackTimelineId;
-                    }
-                }
-
-                if (positionFrame == null)
-                {
-                    lines.Add($"[OmNomFlashPartPos] part={part.Name}; timeline=none; xml=(n/a); dx=(n/a); rounded=(n/a);");
-                    continue;
-                }
-
-                float transformedX = positionFrame.X * positionScaleX;
-                float transformedY = positionFrame.Y * positionScaleY;
-                int roundedX = (int)MathF.Round(transformedX);
-                int roundedY = (int)MathF.Round(transformedY);
-
-                lines.Add(
-                    $"[OmNomFlashPartPos] part={part.Name}; timeline={timelineId}; xml=({FormatDebugFloat(positionFrame.X)},{FormatDebugFloat(positionFrame.Y)}); dx=({FormatDebugFloat(transformedX)},{FormatDebugFloat(transformedY)}); rounded=({roundedX},{roundedY}); scale=({FormatDebugFloat(positionScaleX)},{FormatDebugFloat(positionScaleY)}); anchor=({FormatDebugFloat(part.AnchorX)},{FormatDebugFloat(part.AnchorY)});");
-            }
-
-            return lines;
         }
 
         private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition)
@@ -375,25 +275,11 @@ namespace CutTheRope.GameMain
             Timeline timeline = delegateDriver?.GetTimeline(timelineId);
             if (timeline == null)
             {
-                LogTimelineTiming($"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) driver=none status=missing");
                 return;
             }
 
-            int partIndex = FindPartIndex(delegateDriver);
-            _driverPartName = GetPartName(partIndex);
-            _driverPartDurationSeconds = GetPartTimelineDurationSeconds(partIndex, timelineId);
-            _driverRootDurationSeconds = _definition.RootTimelines.TryGetValue(timelineId, out float rootDuration)
-                ? rootDuration
-                : MissingDurationSeconds;
-            _driverExpectedDurationSeconds = _driverRootDurationSeconds > 0f
-                ? _driverRootDurationSeconds
-                : _driverPartDurationSeconds;
-            _driverTimelineStartTimestamp = Stopwatch.GetTimestamp();
-
             if (timelineId == IdleLoopTimeline)
             {
-                LogTimelineTiming(
-                    $"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) part={_driverPartName} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} delegate=external");
                 timeline.delegateTimelineDelegate = _externalTimelineDelegate;
                 return;
             }
@@ -403,13 +289,6 @@ namespace CutTheRope.GameMain
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;
                 _driverTimelineId = timelineId;
-                LogTimelineTiming(
-                    $"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) part={_driverPartName} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} delegate=followup");
-            }
-            else
-            {
-                LogTimelineTiming(
-                    $"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) part={_driverPartName} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} delegate=none");
             }
         }
 
@@ -523,92 +402,6 @@ namespace CutTheRope.GameMain
             };
 
             return followupTimelineId >= 0;
-        }
-
-        private static string FormatDebugFloat(float value)
-        {
-            return value.ToString("0.###", CultureInfo.InvariantCulture);
-        }
-
-        private static string FormatDuration(float value)
-        {
-            return value.ToString("0.0000", CultureInfo.InvariantCulture);
-        }
-
-        private static string FormatSignedDuration(float value)
-        {
-            return value.ToString("+0.0000;-0.0000;0.0000", CultureInfo.InvariantCulture);
-        }
-
-        private static string FormatOptionalDuration(float value)
-        {
-            return value > 0f ? FormatDuration(value) : "n/a";
-        }
-
-        private static string GetTimelineDebugName(int timelineId)
-        {
-            return timelineId switch
-            {
-                IdleLoopTimeline => "IdleLoop",
-                IdleVariationOneTimeline => "IdleVariationOne",
-                ExcitedTimeline => "Excited",
-                MouthOpeningTimeline => "MouthOpening",
-                MouthClosingTimeline => "MouthClosing",
-                PuzzledTimeline => "Puzzled",
-                SadTimeline => "Sad",
-                ChewingTimeline => "Chewing",
-                SleepingTimeline => "Sleeping",
-                GreetingTimeline => "Greeting",
-                _ => "Unknown"
-            };
-        }
-
-        private int FindPartIndex(Image image)
-        {
-            for (int i = 0; i < parts.Count; i++)
-            {
-                if (ReferenceEquals(parts[i], image))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        private string GetPartName(int partIndex)
-        {
-            if (partIndex < 0 || partIndex >= _definition.Parts.Count)
-            {
-                return "n/a";
-            }
-
-            return _definition.Parts[partIndex].Name;
-        }
-
-        private float GetPartTimelineDurationSeconds(int partIndex, int timelineId)
-        {
-            if (partIndex < 0 || partIndex >= _definition.Parts.Count)
-            {
-                return MissingDurationSeconds;
-            }
-
-            if (!_definition.Parts[partIndex].Timelines.TryGetValue(timelineId, out FlashXmlTimelineDefinition timelineDefinition))
-            {
-                return MissingDurationSeconds;
-            }
-
-            return ComputeTimelineDurationSeconds(timelineDefinition);
-        }
-
-        private static void LogTimelineTiming(string message)
-        {
-            if (!EnableFlashTimelineTimingLogs)
-            {
-                return;
-            }
-
-            Console.WriteLine($"[OmNomFlashTiming] {message}");
         }
 
         private static void BuildTimelines(FlashXmlImage part, FlashXmlPartDefinition partDefinition)

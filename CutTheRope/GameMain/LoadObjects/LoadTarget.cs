@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
@@ -51,12 +50,6 @@ namespace CutTheRope.GameMain
             int sourceY = ParseIntOrZero(yAttribute);
             float transformedY = (sourceY * scale) + offsetY + mapOffsetY;
             targetObject.y = support.y = transformedY;
-
-            if (targetAnimationBackend is FlashXmlTargetAnimationBackend)
-            {
-                Console.WriteLine(
-                    $"[OmNomFlashRootPos] xml=({sourceX},{sourceY}); mapScale={scale.ToString("0.###", CultureInfo.InvariantCulture)}; offset=({offsetX.ToString("0.###", CultureInfo.InvariantCulture)},{offsetY.ToString("0.###", CultureInfo.InvariantCulture)}); mapOffset=({mapOffsetX},{mapOffsetY}); dxWorld=({transformedX.ToString("0.###", CultureInfo.InvariantCulture)},{transformedY.ToString("0.###", CultureInfo.InvariantCulture)}); baseScale=({targetBaseScaleX.ToString("0.###", CultureInfo.InvariantCulture)},{targetBaseScaleY.ToString("0.###", CultureInfo.InvariantCulture)});");
-            }
 
             // Mouth hitbox: 56 px left of center, 30 px below center.
             // Derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
