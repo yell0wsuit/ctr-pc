@@ -361,7 +361,10 @@ namespace CutTheRope.Framework.Visual
 
         private static bool IsFlashInterpolationTransition(KeyFrame.TransitionType transition)
         {
-            return transition is KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_IN_OUT
+            return transition is KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_LINEAR
+                or KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_IN
+                or KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_OUT
+                or KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_IN_OUT
                 or KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_MIRRORED
                 or KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_HOLD
                 or KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_IMMEDIATE;
@@ -375,8 +378,11 @@ namespace CutTheRope.Framework.Visual
 
             float factor = transition switch
             {
+                KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_LINEAR => progress,
                 KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_IMMEDIATE => 1f,
                 KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_HOLD => 0f,
+                KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_IN => progress * progress,
+                KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_OUT => 1f - ((1f - progress) * (1f - progress)),
                 KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_IN_OUT => EvaluateFlashEaseInOut(progress),
                 KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_MIRRORED => EvaluateFlashEaseMirrored(progress),
                 KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR => progress,

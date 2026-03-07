@@ -130,6 +130,9 @@ namespace CutTheRope.Framework.Visual
             FRAME_TRANSITION_EASE_IN,
             FRAME_TRANSITION_EASE_OUT,
             // Flash XML specific interpolation modes from iOS runtime.
+            FRAME_TRANSITION_FLASH_LINEAR,
+            FRAME_TRANSITION_FLASH_EASE_IN,
+            FRAME_TRANSITION_FLASH_EASE_OUT,
             FRAME_TRANSITION_FLASH_EASE_IN_OUT,
             FRAME_TRANSITION_FLASH_EASE_MIRRORED,
             FRAME_TRANSITION_FLASH_HOLD,

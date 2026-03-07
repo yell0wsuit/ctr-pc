@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 
@@ -12,26 +13,32 @@ namespace CutTheRope.GameMain
 {
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
-        private const int IdleVariationOneTimeline = 0;
-        private const int IdleVariationTwoTimeline = 1;
-        // private const int IdleVariationThreeTimeline = 13;
+        private const int IdleLoopTimeline = 0;
+        private const int IdleVariationOneTimeline = 1;
         private const int ExcitedTimeline = 2;
         private const int MouthOpeningTimeline = 3;
         private const int MouthClosingTimeline = 4;
         private const int PuzzledTimeline = 5;
         private const int SadTimeline = 6;
         private const int ChewingTimeline = 7;
-        private const int MouthOpenedLoopTimeline = 8;
         private const int SleepingTimeline = 9;
         private const int GreetingTimeline = 18;
         private const float PartDimensionScale = 0.65f;
         private const float WholeObjectScale = 1.75f;
+        private static readonly bool EnableFlashTimelineTimingLogs = true;
+        private static readonly bool EnableFlashPartPositionLogs = false;
+        private const float MissingDurationSeconds = -1f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
         private ITimelineDelegate _externalTimelineDelegate;
         private int _activeTimelineId = -1;
         private Timeline _driverTimeline;
         private int _driverTimelineId = -1;
+        private long _driverTimelineStartTimestamp;
+        private float _driverExpectedDurationSeconds = MissingDurationSeconds;
+        private float _driverRootDurationSeconds = MissingDurationSeconds;
+        private float _driverPartDurationSeconds = MissingDurationSeconds;
+        private string _driverPartName = "n/a";
 
         public FlashXmlTargetAnimationBackend(string xmlPath = null)
         {
@@ -59,7 +66,10 @@ namespace CutTheRope.GameMain
             TargetObject.width = (int)MathF.Round(vcX * 2f);
             TargetObject.height = (int)MathF.Round((vcY - (classicBodyScreenOffsetY / WholeObjectScale)) * 2f);
 
-            DumpPartPositions(_definition);
+            if (EnableFlashPartPositionLogs)
+            {
+                DumpPartPositions(_definition);
+            }
         }
 
         public GameObject TargetObject { get; }
@@ -84,9 +94,11 @@ namespace CutTheRope.GameMain
         {
             if (!TryMapState(state, out int timelineId))
             {
+                LogTimelineTiming($"play request state={state} timeline=unmapped");
                 return;
             }
 
+            LogTimelineTiming($"play request state={state} timeline={timelineId}({GetTimelineDebugName(timelineId)})");
             PlayTimelineById(timelineId);
         }
 
@@ -182,19 +194,35 @@ namespace CutTheRope.GameMain
             }
 
             int finishedTimelineId = _driverTimelineId;
+            double elapsedSeconds = Stopwatch.GetElapsedTime(_driverTimelineStartTimestamp).TotalSeconds;
+            string drift = _driverExpectedDurationSeconds > 0f
+                ? FormatSignedDuration((float)(elapsedSeconds - _driverExpectedDurationSeconds))
+                : "n/a";
+            LogTimelineTiming(
+                $"finish timeline={finishedTimelineId}({GetTimelineDebugName(finishedTimelineId)}) part={_driverPartName} elapsed={FormatDuration((float)elapsedSeconds)} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} drift={drift}");
+
             _driverTimeline = null;
             _driverTimelineId = -1;
+            _driverTimelineStartTimestamp = 0L;
+            _driverExpectedDurationSeconds = MissingDurationSeconds;
+            _driverRootDurationSeconds = MissingDurationSeconds;
+            _driverPartDurationSeconds = MissingDurationSeconds;
+            _driverPartName = "n/a";
 
             if (TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
                 && FindFirstPartWithTimeline(followupTimelineId) != null)
             {
+                LogTimelineTiming(
+                    $"followup from={finishedTimelineId}({GetTimelineDebugName(finishedTimelineId)}) to={followupTimelineId}({GetTimelineDebugName(followupTimelineId)})");
                 PlayTimelineById(followupTimelineId);
                 return;
             }
 
-            if (_activeTimelineId != IdleVariationOneTimeline)
+            if (_activeTimelineId != IdleLoopTimeline)
             {
-                PlayTimelineById(IdleVariationOneTimeline);
+                LogTimelineTiming(
+                    $"followup from={finishedTimelineId}({GetTimelineDebugName(finishedTimelineId)}) to={IdleLoopTimeline}({GetTimelineDebugName(IdleLoopTimeline)})");
+                PlayTimelineById(IdleLoopTimeline);
             }
         }
 
@@ -236,7 +264,7 @@ namespace CutTheRope.GameMain
         {
             const float positionScaleX = 1f;
             const float positionScaleY = 1f;
-            const int preferredTimelineId = IdleVariationOneTimeline;
+            const int preferredTimelineId = IdleLoopTimeline;
 
             List<string> lines = [];
             lines.Add(
@@ -293,7 +321,7 @@ namespace CutTheRope.GameMain
 
         private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition)
         {
-            return partDefinition.Timelines.ContainsKey(IdleVariationOneTimeline);
+            return partDefinition.Timelines.ContainsKey(IdleLoopTimeline);
         }
 
         private static (float X, float Y) ComputeIdleVisualCenter(
@@ -307,7 +335,7 @@ namespace CutTheRope.GameMain
             for (int i = 0; i < definition.Parts.Count; i++)
             {
                 FlashXmlPartDefinition partDef = definition.Parts[i];
-                if (!partDef.Timelines.TryGetValue(IdleVariationOneTimeline, out FlashXmlTimelineDefinition timeline)
+                if (!partDef.Timelines.TryGetValue(IdleLoopTimeline, out FlashXmlTimelineDefinition timeline)
                     || timeline.PositionKeyFrames.Count == 0)
                 {
                     continue;
@@ -343,15 +371,29 @@ namespace CutTheRope.GameMain
         {
             _driverTimeline = null;
             _driverTimelineId = -1;
-            Image delegateDriver = FindFirstPartWithTimeline(timelineId);
+            Image delegateDriver = FindBestDriverPartWithTimeline(timelineId);
             Timeline timeline = delegateDriver?.GetTimeline(timelineId);
             if (timeline == null)
             {
+                LogTimelineTiming($"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) driver=none status=missing");
                 return;
             }
 
-            if (timelineId == IdleVariationOneTimeline)
+            int partIndex = FindPartIndex(delegateDriver);
+            _driverPartName = GetPartName(partIndex);
+            _driverPartDurationSeconds = GetPartTimelineDurationSeconds(partIndex, timelineId);
+            _driverRootDurationSeconds = _definition.RootTimelines.TryGetValue(timelineId, out float rootDuration)
+                ? rootDuration
+                : MissingDurationSeconds;
+            _driverExpectedDurationSeconds = _driverRootDurationSeconds > 0f
+                ? _driverRootDurationSeconds
+                : _driverPartDurationSeconds;
+            _driverTimelineStartTimestamp = Stopwatch.GetTimestamp();
+
+            if (timelineId == IdleLoopTimeline)
             {
+                LogTimelineTiming(
+                    $"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) part={_driverPartName} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} delegate=external");
                 timeline.delegateTimelineDelegate = _externalTimelineDelegate;
                 return;
             }
@@ -361,19 +403,111 @@ namespace CutTheRope.GameMain
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;
                 _driverTimelineId = timelineId;
+                LogTimelineTiming(
+                    $"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) part={_driverPartName} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} delegate=followup");
             }
+            else
+            {
+                LogTimelineTiming(
+                    $"start timeline={timelineId}({GetTimelineDebugName(timelineId)}) part={_driverPartName} expected={FormatOptionalDuration(_driverExpectedDurationSeconds)} root={FormatOptionalDuration(_driverRootDurationSeconds)} partDur={FormatOptionalDuration(_driverPartDurationSeconds)} delegate=none");
+            }
+        }
+
+        private Image FindBestDriverPartWithTimeline(int timelineId)
+        {
+            const float epsilon = 0.0001f;
+            bool hasRootDuration = _definition.RootTimelines.TryGetValue(timelineId, out float rootDuration);
+
+            Image bestPart = null;
+            float bestScore = float.MaxValue;
+            float bestDuration = -1f;
+
+            for (int i = 0; i < parts.Count && i < _definition.Parts.Count; i++)
+            {
+                if (parts[i].GetTimeline(timelineId) == null)
+                {
+                    continue;
+                }
+
+                if (!_definition.Parts[i].Timelines.TryGetValue(timelineId, out FlashXmlTimelineDefinition timelineDefinition))
+                {
+                    continue;
+                }
+
+                float duration = ComputeTimelineDurationSeconds(timelineDefinition);
+                if (hasRootDuration)
+                {
+                    float score = MathF.Abs(duration - rootDuration);
+                    bool isBetter = score < bestScore - epsilon
+                        || (MathF.Abs(score - bestScore) <= epsilon && duration > bestDuration + epsilon);
+                    if (isBetter)
+                    {
+                        bestPart = parts[i];
+                        bestScore = score;
+                        bestDuration = duration;
+                    }
+                }
+                else if (duration > bestDuration + epsilon)
+                {
+                    bestPart = parts[i];
+                    bestDuration = duration;
+                }
+            }
+
+            return bestPart ?? FindFirstPartWithTimeline(timelineId);
+        }
+
+        private static float ComputeTimelineDurationSeconds(FlashXmlTimelineDefinition timelineDefinition)
+        {
+            float positionDuration = SumTimeOffsets(timelineDefinition.PositionKeyFrames);
+            float scaleDuration = SumTimeOffsets(timelineDefinition.ScaleKeyFrames);
+            float skewDuration = SumTimeOffsets(timelineDefinition.SkewKeyFrames);
+            float colorDuration = SumTimeOffsets(timelineDefinition.ColorKeyFrames);
+            float actionDuration = SumTimeOffsets(timelineDefinition.ActionKeyFrames);
+            return MathF.Max(MathF.Max(positionDuration, scaleDuration), MathF.Max(skewDuration, MathF.Max(colorDuration, actionDuration)));
+        }
+
+        private static float SumTimeOffsets(IReadOnlyList<FlashXmlFloat2KeyFrame> frames)
+        {
+            float total = 0f;
+            for (int i = 0; i < frames.Count; i++)
+            {
+                total += frames[i].TimeOffset;
+            }
+
+            return total;
+        }
+
+        private static float SumTimeOffsets(IReadOnlyList<FlashXmlFloat4KeyFrame> frames)
+        {
+            float total = 0f;
+            for (int i = 0; i < frames.Count; i++)
+            {
+                total += frames[i].TimeOffset;
+            }
+
+            return total;
+        }
+
+        private static float SumTimeOffsets(IReadOnlyList<FlashXmlActionGroupKeyFrame> frames)
+        {
+            float total = 0f;
+            for (int i = 0; i < frames.Count; i++)
+            {
+                total += frames[i].TimeOffset;
+            }
+
+            return total;
         }
 
         private static bool ShouldBindFollowupDelegate(int timelineId)
         {
-            return timelineId is IdleVariationTwoTimeline
-                // or IdleVariationThreeTimeline
+            return timelineId is IdleVariationOneTimeline
                 or ExcitedTimeline
                 or SadTimeline
                 or MouthOpeningTimeline
                 or MouthClosingTimeline
                 or ChewingTimeline
-                or PuzzledTimeline
                 or GreetingTimeline;
         }
 
@@ -381,15 +515,10 @@ namespace CutTheRope.GameMain
         {
             followupTimelineId = finishedTimelineId switch
             {
-                MouthOpeningTimeline => MouthOpenedLoopTimeline,
-                ChewingTimeline => MouthOpenedLoopTimeline,
-                MouthClosingTimeline => PuzzledTimeline,
-                PuzzledTimeline => IdleVariationOneTimeline,
-                IdleVariationTwoTimeline => IdleVariationOneTimeline,
-                // IdleVariationThreeTimeline => IdleVariationOneTimeline,
-                ExcitedTimeline => IdleVariationOneTimeline,
-                SadTimeline => IdleVariationOneTimeline,
-                GreetingTimeline => IdleVariationOneTimeline,
+                IdleVariationOneTimeline => IdleLoopTimeline,
+                ExcitedTimeline => IdleLoopTimeline,
+                SadTimeline => IdleLoopTimeline,
+                GreetingTimeline => IdleLoopTimeline,
                 _ => -1
             };
 
@@ -399,6 +528,87 @@ namespace CutTheRope.GameMain
         private static string FormatDebugFloat(float value)
         {
             return value.ToString("0.###", CultureInfo.InvariantCulture);
+        }
+
+        private static string FormatDuration(float value)
+        {
+            return value.ToString("0.0000", CultureInfo.InvariantCulture);
+        }
+
+        private static string FormatSignedDuration(float value)
+        {
+            return value.ToString("+0.0000;-0.0000;0.0000", CultureInfo.InvariantCulture);
+        }
+
+        private static string FormatOptionalDuration(float value)
+        {
+            return value > 0f ? FormatDuration(value) : "n/a";
+        }
+
+        private static string GetTimelineDebugName(int timelineId)
+        {
+            return timelineId switch
+            {
+                IdleLoopTimeline => "IdleLoop",
+                IdleVariationOneTimeline => "IdleVariationOne",
+                ExcitedTimeline => "Excited",
+                MouthOpeningTimeline => "MouthOpening",
+                MouthClosingTimeline => "MouthClosing",
+                PuzzledTimeline => "Puzzled",
+                SadTimeline => "Sad",
+                ChewingTimeline => "Chewing",
+                SleepingTimeline => "Sleeping",
+                GreetingTimeline => "Greeting",
+                _ => "Unknown"
+            };
+        }
+
+        private int FindPartIndex(Image image)
+        {
+            for (int i = 0; i < parts.Count; i++)
+            {
+                if (ReferenceEquals(parts[i], image))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private string GetPartName(int partIndex)
+        {
+            if (partIndex < 0 || partIndex >= _definition.Parts.Count)
+            {
+                return "n/a";
+            }
+
+            return _definition.Parts[partIndex].Name;
+        }
+
+        private float GetPartTimelineDurationSeconds(int partIndex, int timelineId)
+        {
+            if (partIndex < 0 || partIndex >= _definition.Parts.Count)
+            {
+                return MissingDurationSeconds;
+            }
+
+            if (!_definition.Parts[partIndex].Timelines.TryGetValue(timelineId, out FlashXmlTimelineDefinition timelineDefinition))
+            {
+                return MissingDurationSeconds;
+            }
+
+            return ComputeTimelineDurationSeconds(timelineDefinition);
+        }
+
+        private static void LogTimelineTiming(string message)
+        {
+            if (!EnableFlashTimelineTimingLogs)
+            {
+                return;
+            }
+
+            Console.WriteLine($"[OmNomFlashTiming] {message}");
         }
 
         private static void BuildTimelines(FlashXmlImage part, FlashXmlPartDefinition partDefinition)
@@ -484,7 +694,7 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                if (timelineId is IdleVariationOneTimeline or MouthOpenedLoopTimeline)
+                if (timelineId == IdleLoopTimeline)
                 {
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                 }
@@ -589,10 +799,10 @@ namespace CutTheRope.GameMain
             {
                 // Match iOS Flash runtime interpolation codes:
                 // 0=linear, 1=immediate, 2=ease-in, 3=ease-out, 4/5=custom easing, 6=hold.
-                0 => KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
+                0 => KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_LINEAR,
                 1 => KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_IMMEDIATE,
-                2 => KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN,
-                3 => KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT,
+                2 => KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_IN,
+                3 => KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_OUT,
                 4 => KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_IN_OUT,
                 5 => KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_EASE_MIRRORED,
                 6 => KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_HOLD,
@@ -604,9 +814,9 @@ namespace CutTheRope.GameMain
         {
             timelineId = state switch
             {
-                TargetAnimationState.IdleLoop => IdleVariationOneTimeline,
+                TargetAnimationState.IdleLoop => IdleLoopTimeline,
                 TargetAnimationState.IdleVariationOne => IdleVariationOneTimeline,
-                TargetAnimationState.IdleVariationTwo => IdleVariationTwoTimeline,
+                TargetAnimationState.IdleVariationTwo => -1,
                 TargetAnimationState.Excited => ExcitedTimeline,
                 TargetAnimationState.MouthOpening => MouthOpeningTimeline,
                 TargetAnimationState.MouthClosing => MouthClosingTimeline,
