@@ -98,7 +98,7 @@ namespace CutTheRope.GameMain
                 }
                 else
                 {
-                    // Match iOS setToInitialStateOfTimeline: stop all timelines before playing the
+                    // Stop all timelines before playing the
                     // new one. Parts without the requested timeline are stopped and hidden so they
                     // don't keep ticking invisibly with stale pose from a previous one-shot.
                     if (parts[i].GetCurrentTimeline() != null)
@@ -433,17 +433,9 @@ namespace CutTheRope.GameMain
                 for (int i = 0; i < timelineDefinition.ScaleKeyFrames.Count; i++)
                 {
                     FlashXmlFloat2KeyFrame frame = timelineDefinition.ScaleKeyFrames[i];
-                    FlashXmlFloat2KeyFrame skewFrame = FindSkewFrameAtTime(
-                        timelineDefinition.SkewKeyFrames,
-                        frame.TimeOffset,
-                        i);
-                    float signedScaleY = skewFrame != null
-                        ? MapSkewToSignedScaleY(frame.Y, skewFrame.X, skewFrame.Y)
-                        : frame.Y;
-
                     timeline.AddKeyFrame(KeyFrame.MakeScale(
                         frame.X,
-                        signedScaleY,
+                        frame.Y,
                         MapTransition(frame.Interpolation),
                         frame.TimeOffset));
                 }
@@ -451,8 +443,9 @@ namespace CutTheRope.GameMain
                 for (int i = 0; i < timelineDefinition.SkewKeyFrames.Count; i++)
                 {
                     FlashXmlFloat2KeyFrame frame = timelineDefinition.SkewKeyFrames[i];
-                    timeline.AddKeyFrame(KeyFrame.MakeRotation(
-                        MapSkewToRotationDegrees(frame.X, frame.Y),
+                    timeline.AddKeyFrame(KeyFrame.MakeSkew(
+                        frame.X,
+                        frame.Y,
                         MapTransition(frame.Interpolation),
                         frame.TimeOffset));
                 }
@@ -536,54 +529,6 @@ namespace CutTheRope.GameMain
             return float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out float floatValue)
                 ? floatValue
                 : 0f;
-        }
-
-        private static FlashXmlFloat2KeyFrame FindSkewFrameAtTime(
-            IReadOnlyList<FlashXmlFloat2KeyFrame> skewFrames,
-            float timeOffset,
-            int fallbackIndex)
-        {
-            const float epsilon = 0.0001f;
-            for (int i = 0; i < skewFrames.Count; i++)
-            {
-                if (MathF.Abs(skewFrames[i].TimeOffset - timeOffset) <= epsilon)
-                {
-                    return skewFrames[i];
-                }
-            }
-
-            return fallbackIndex >= 0 && fallbackIndex < skewFrames.Count
-                ? skewFrames[fallbackIndex]
-                : null;
-        }
-
-        private static float MapSkewToRotationDegrees(float skewXDegrees, float skewYDegrees)
-        {
-            _ = skewXDegrees;
-            // Flash exports skew as axis rotations; runtime rotation matches Y axis value.
-            return skewYDegrees;
-        }
-
-        private static float MapSkewToSignedScaleY(float scaleY, float skewXDegrees, float skewYDegrees)
-        {
-            float delta = NormalizeDegrees(skewXDegrees - skewYDegrees);
-            float sign = MathF.Abs(delta) > 90f ? -1f : 1f;
-            return MathF.Abs(scaleY) * sign;
-        }
-
-        private static float NormalizeDegrees(float value)
-        {
-            float normalized = value % 360f;
-            if (normalized > 180f)
-            {
-                normalized -= 360f;
-            }
-            else if (normalized < -180f)
-            {
-                normalized += 360f;
-            }
-
-            return normalized;
         }
 
         private static KeyFrame.TransitionType MapTransition(int interpolation)
