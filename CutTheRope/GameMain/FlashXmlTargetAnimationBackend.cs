@@ -10,22 +10,28 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend
+    internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
-        private const int IdleLoopTimeline = 0;
-        private const int IdleVariationOneTimeline = 1;
-        private const int IdleVariationTwoTimeline = 2;
-        private const int ExcitedTimeline = 3;
-        private const int SadTimeline = 5;
-        private const int ChewingTimeline = 6;
-        private const int MouthOpeningTimeline = 7;
-        private const int MouthClosingTimeline = 8;
-        private const int GreetingTimeline = 10;
-        private const int SleepingTimeline = 15;
+        private const int IdleVariationOneTimeline = 0;
+        private const int IdleVariationTwoTimeline = 1;
+        // private const int IdleVariationThreeTimeline = 13;
+        private const int ExcitedTimeline = 2;
+        private const int MouthOpeningTimeline = 3;
+        private const int MouthClosingTimeline = 4;
+        private const int PuzzledTimeline = 5;
+        private const int SadTimeline = 6;
+        private const int ChewingTimeline = 7;
+        private const int MouthOpenedLoopTimeline = 8;
+        private const int SleepingTimeline = 9;
+        private const int GreetingTimeline = 18;
         private const float PartDimensionScale = 0.65f;
         private const float WholeObjectScale = 1.5384616f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
+        private ITimelineDelegate _externalTimelineDelegate;
+        private int _activeTimelineId = -1;
+        private Timeline _driverTimeline;
+        private int _driverTimelineId = -1;
 
         public FlashXmlTargetAnimationBackend(string xmlPath = null)
         {
@@ -63,16 +69,8 @@ namespace CutTheRope.GameMain
 
         public void Initialize(ITimelineDelegate timelineDelegate)
         {
+            _externalTimelineDelegate = timelineDelegate;
             Play(TargetAnimationState.IdleLoop);
-
-            // Mirror original backend timing semantics: only one idle-loop timeline should
-            // trigger delegate callbacks that drive blink/idle timers.
-            Image delegateDriver = FindFirstPartWithTimeline(IdleLoopTimeline);
-            Timeline timeline = delegateDriver?.GetTimeline(IdleLoopTimeline);
-            if (timeline != null)
-            {
-                timeline.delegateTimelineDelegate = timelineDelegate;
-            }
         }
 
         public void Play(TargetAnimationState state)
@@ -82,6 +80,12 @@ namespace CutTheRope.GameMain
                 return;
             }
 
+            PlayTimelineById(timelineId);
+        }
+
+        private void PlayTimelineById(int timelineId)
+        {
+            _activeTimelineId = timelineId;
             for (int i = 0; i < parts.Count; i++)
             {
                 Timeline timeline = parts[i].GetTimeline(timelineId);
@@ -103,6 +107,8 @@ namespace CutTheRope.GameMain
                     parts[i].visible = false;
                 }
             }
+
+            BindDriverDelegateForTimeline(timelineId);
         }
 
         public bool IsPlaying(TargetAnimationState state)
@@ -154,6 +160,37 @@ namespace CutTheRope.GameMain
         {
         }
 
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        {
+            _ = t;
+            _ = k;
+            _ = i;
+        }
+
+        public void TimelineFinished(Timeline t)
+        {
+            if (_driverTimeline == null || !ReferenceEquals(t, _driverTimeline))
+            {
+                return;
+            }
+
+            int finishedTimelineId = _driverTimelineId;
+            _driverTimeline = null;
+            _driverTimelineId = -1;
+
+            if (TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
+                && FindFirstPartWithTimeline(followupTimelineId) != null)
+            {
+                PlayTimelineById(followupTimelineId);
+                return;
+            }
+
+            if (_activeTimelineId != IdleVariationOneTimeline)
+            {
+                PlayTimelineById(IdleVariationOneTimeline);
+            }
+        }
+
         private void BuildParts(FlashXmlAnimationDefinition definition)
         {
             for (int i = 0; i < definition.Parts.Count; i++)
@@ -192,7 +229,7 @@ namespace CutTheRope.GameMain
         {
             const float positionScaleX = 1f;
             const float positionScaleY = 1f;
-            const int preferredTimelineId = IdleLoopTimeline;
+            const int preferredTimelineId = IdleVariationOneTimeline;
 
             List<string> lines = [];
             lines.Add(
@@ -249,7 +286,7 @@ namespace CutTheRope.GameMain
 
         private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition)
         {
-            return partDefinition.Timelines.ContainsKey(IdleLoopTimeline);
+            return partDefinition.Timelines.ContainsKey(IdleVariationOneTimeline);
         }
 
         private Image FindFirstPartWithTimeline(int timelineId)
@@ -263,6 +300,63 @@ namespace CutTheRope.GameMain
             }
 
             return null;
+        }
+
+        private void BindDriverDelegateForTimeline(int timelineId)
+        {
+            _driverTimeline = null;
+            _driverTimelineId = -1;
+            Image delegateDriver = FindFirstPartWithTimeline(timelineId);
+            Timeline timeline = delegateDriver?.GetTimeline(timelineId);
+            if (timeline == null)
+            {
+                return;
+            }
+
+            if (timelineId == IdleVariationOneTimeline)
+            {
+                timeline.delegateTimelineDelegate = _externalTimelineDelegate;
+                return;
+            }
+
+            if (ShouldBindFollowupDelegate(timelineId))
+            {
+                timeline.delegateTimelineDelegate = this;
+                _driverTimeline = timeline;
+                _driverTimelineId = timelineId;
+            }
+        }
+
+        private static bool ShouldBindFollowupDelegate(int timelineId)
+        {
+            return timelineId is IdleVariationTwoTimeline
+                // or IdleVariationThreeTimeline
+                or ExcitedTimeline
+                or SadTimeline
+                or MouthOpeningTimeline
+                or MouthClosingTimeline
+                or ChewingTimeline
+                or PuzzledTimeline
+                or GreetingTimeline;
+        }
+
+        private static bool TryGetFollowupTimeline(int finishedTimelineId, out int followupTimelineId)
+        {
+            followupTimelineId = finishedTimelineId switch
+            {
+                MouthOpeningTimeline => MouthOpenedLoopTimeline,
+                ChewingTimeline => MouthOpenedLoopTimeline,
+                MouthClosingTimeline => PuzzledTimeline,
+                PuzzledTimeline => IdleVariationOneTimeline,
+                IdleVariationTwoTimeline => IdleVariationOneTimeline,
+                // IdleVariationThreeTimeline => IdleVariationOneTimeline,
+                ExcitedTimeline => IdleVariationOneTimeline,
+                SadTimeline => IdleVariationOneTimeline,
+                GreetingTimeline => IdleVariationOneTimeline,
+                _ => -1
+            };
+
+            return followupTimelineId >= 0;
         }
 
         private static string FormatDebugFloat(float value)
@@ -353,7 +447,7 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                if (timelineId == IdleLoopTimeline)
+                if (timelineId is IdleVariationOneTimeline or MouthOpenedLoopTimeline)
                 {
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                 }
@@ -473,7 +567,7 @@ namespace CutTheRope.GameMain
         {
             timelineId = state switch
             {
-                TargetAnimationState.IdleLoop => IdleLoopTimeline,
+                TargetAnimationState.IdleLoop => IdleVariationOneTimeline,
                 TargetAnimationState.IdleVariationOne => IdleVariationOneTimeline,
                 TargetAnimationState.IdleVariationTwo => IdleVariationTwoTimeline,
                 TargetAnimationState.Excited => ExcitedTimeline,
