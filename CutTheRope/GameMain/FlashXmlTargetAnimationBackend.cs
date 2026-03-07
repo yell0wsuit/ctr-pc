@@ -25,7 +25,7 @@ namespace CutTheRope.GameMain
         private const int SleepingTimeline = 9;
         private const int GreetingTimeline = 18;
         private const float PartDimensionScale = 0.65f;
-        private const float WholeObjectScale = 1.5384616f;
+        private const float WholeObjectScale = 1.78f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
         private ITimelineDelegate _externalTimelineDelegate;
