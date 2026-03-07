@@ -58,7 +58,9 @@ namespace CutTheRope.GameMain
                     $"[OmNomFlashRootPos] xml=({sourceX},{sourceY}); mapScale={scale.ToString("0.###", CultureInfo.InvariantCulture)}; offset=({offsetX.ToString("0.###", CultureInfo.InvariantCulture)},{offsetY.ToString("0.###", CultureInfo.InvariantCulture)}); mapOffset=({mapOffsetX},{mapOffsetY}); dxWorld=({transformedX.ToString("0.###", CultureInfo.InvariantCulture)},{transformedY.ToString("0.###", CultureInfo.InvariantCulture)}); baseScale=({targetBaseScaleX.ToString("0.###", CultureInfo.InvariantCulture)},{targetBaseScaleY.ToString("0.###", CultureInfo.InvariantCulture)});");
             }
 
-            targetObject.bb = MakeRectangle(264f, 350f, 108f, 2f);
+            // Mouth hitbox: 56 px left of center, 30 px below center.
+            // Derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
+            targetObject.bb = MakeRectangle((targetObject.width >> 1) - 56f, (targetObject.height >> 1) + 30f, 108f, 2f);
             blinkTimer = BLINK_SKIP;
 
             // Show greeting if needed (skip for night levels)
