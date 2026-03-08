@@ -40,7 +40,7 @@ namespace CutTheRope.GameMain
             // Use the Flash stage center as the anchor point. All skins share the
             // same stage dimensions (550×400), so this keeps every skin at the same
             // position without per-skin centroid calculation.
-            const float classicBodyScreenOffsetY = 20f;
+            const float classicBodyScreenOffsetY = -5f;
             TargetObject.width = (int)_definition.StageWidth;
             TargetObject.height = (int)MathF.Round(_definition.StageHeight - (2f * classicBodyScreenOffsetY / WholeObjectScale));
         }
