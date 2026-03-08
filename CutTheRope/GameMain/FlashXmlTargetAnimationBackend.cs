@@ -12,15 +12,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
-        private const int IdleLoopTimeline = 0;
-        private const int IdleVariationOneTimeline = 1;
-        private const int ExcitedTimeline = 2;
-        private const int MouthOpeningTimeline = 3;
-        private const int MouthClosingTimeline = 4;
-        private const int SadTimeline = 6;
-        private const int ChewingTimeline = 7;
-        private const int SleepingTimeline = 9;
-        private const int GreetingTimeline = 18;
         private const float PartDimensionScale = 0.65f;
         private const float WholeObjectScale = 1.75f;
         private readonly List<Image> parts = [];
@@ -181,7 +172,7 @@ namespace CutTheRope.GameMain
             _driverTimeline = null;
             _driverTimelineId = -1;
 
-            if (TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
+            if (FlashXmlTargetTimelineRules.TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
                 && FindFirstPartWithTimeline(followupTimelineId) != null)
             {
                 PlayTimelineById(followupTimelineId);
@@ -285,7 +276,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            if (ShouldBindFollowupDelegate(timelineId))
+            if (FlashXmlTargetTimelineRules.ShouldBindFollowupDelegate(timelineId))
             {
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;
@@ -378,31 +369,6 @@ namespace CutTheRope.GameMain
             }
 
             return total;
-        }
-
-        private static bool ShouldBindFollowupDelegate(int timelineId)
-        {
-            return timelineId is IdleVariationOneTimeline
-                or ExcitedTimeline
-                or SadTimeline
-                or MouthOpeningTimeline
-                or MouthClosingTimeline
-                or ChewingTimeline
-                or GreetingTimeline;
-        }
-
-        private static bool TryGetFollowupTimeline(int finishedTimelineId, out int followupTimelineId)
-        {
-            followupTimelineId = finishedTimelineId switch
-            {
-                IdleVariationOneTimeline => IdleLoopTimeline,
-                ExcitedTimeline => IdleLoopTimeline,
-                SadTimeline => IdleLoopTimeline,
-                GreetingTimeline => IdleLoopTimeline,
-                _ => -1
-            };
-
-            return followupTimelineId >= 0;
         }
 
         private static void BuildTimelines(FlashXmlImage part, FlashXmlPartDefinition partDefinition)
@@ -555,7 +521,7 @@ namespace CutTheRope.GameMain
             {
                 TargetAnimationState.IdleLoop => IdleLoopTimeline,
                 TargetAnimationState.IdleVariationOne => IdleVariationOneTimeline,
-                TargetAnimationState.IdleVariationTwo => -1,
+                TargetAnimationState.IdleVariationTwo => IdleVariationTwoTimeline,
                 TargetAnimationState.Excited => ExcitedTimeline,
                 TargetAnimationState.MouthOpening => MouthOpeningTimeline,
                 TargetAnimationState.MouthClosing => MouthClosingTimeline,
@@ -568,5 +534,16 @@ namespace CutTheRope.GameMain
 
             return timelineId >= 0;
         }
+
+        private const int IdleLoopTimeline = FlashXmlTargetTimelineRules.IdleLoopTimeline;
+        private const int IdleVariationOneTimeline = FlashXmlTargetTimelineRules.IdleVariationOneTimeline;
+        private const int IdleVariationTwoTimeline = FlashXmlTargetTimelineRules.IdleVariationTwoTimeline;
+        private const int ExcitedTimeline = FlashXmlTargetTimelineRules.ExcitedTimeline;
+        private const int MouthOpeningTimeline = FlashXmlTargetTimelineRules.MouthOpeningTimeline;
+        private const int MouthClosingTimeline = FlashXmlTargetTimelineRules.MouthClosingTimeline;
+        private const int SadTimeline = FlashXmlTargetTimelineRules.SadTimeline;
+        private const int ChewingTimeline = FlashXmlTargetTimelineRules.ChewingTimeline;
+        private const int SleepingTimeline = FlashXmlTargetTimelineRules.SleepingTimeline;
+        private const int GreetingTimeline = FlashXmlTargetTimelineRules.GreetingTimeline;
     }
 }
