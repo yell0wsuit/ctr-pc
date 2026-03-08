@@ -187,6 +187,8 @@ namespace CutTheRope.GameMain
 
         private void BuildParts(FlashXmlAnimationDefinition definition)
         {
+            // First pass: create all parts so cross-part action targets can be resolved.
+            Dictionary<string, Image> partsByName = new(definition.Parts.Count);
             for (int i = 0; i < definition.Parts.Count; i++)
             {
                 FlashXmlPartDefinition partDefinition = definition.Parts[i];
@@ -204,10 +206,19 @@ namespace CutTheRope.GameMain
                 part.rotationCenterY = partDefinition.RotationCenterY;
                 part.SetDrawQuad(partDefinition.QuadToDraw);
 
-                BuildTimelines(part, partDefinition);
-
                 _ = TargetObject.AddChild(part);
                 parts.Add(part);
+
+                if (!string.IsNullOrEmpty(partDefinition.Name))
+                {
+                    partsByName[partDefinition.Name] = part;
+                }
+            }
+
+            // Second pass: build timelines now that all parts exist for cross-part linking.
+            for (int i = 0; i < definition.Parts.Count; i++)
+            {
+                BuildTimelines((FlashXmlImage)parts[i], definition.Parts[i], partsByName);
             }
         }
 
@@ -332,10 +343,13 @@ namespace CutTheRope.GameMain
         {
             float positionDuration = SumTimeOffsets(timelineDefinition.PositionKeyFrames);
             float scaleDuration = SumTimeOffsets(timelineDefinition.ScaleKeyFrames);
+            float rotationDuration = SumTimeOffsets(timelineDefinition.RotationKeyFrames);
             float skewDuration = SumTimeOffsets(timelineDefinition.SkewKeyFrames);
             float colorDuration = SumTimeOffsets(timelineDefinition.ColorKeyFrames);
             float actionDuration = SumTimeOffsets(timelineDefinition.ActionKeyFrames);
-            return MathF.Max(MathF.Max(positionDuration, scaleDuration), MathF.Max(skewDuration, MathF.Max(colorDuration, actionDuration)));
+            return MathF.Max(
+                MathF.Max(MathF.Max(positionDuration, scaleDuration), MathF.Max(rotationDuration, skewDuration)),
+                MathF.Max(colorDuration, actionDuration));
         }
 
         private static float SumTimeOffsets(IReadOnlyList<FlashXmlFloat2KeyFrame> frames)
@@ -360,6 +374,17 @@ namespace CutTheRope.GameMain
             return total;
         }
 
+        private static float SumTimeOffsets(IReadOnlyList<FlashXmlFloat1KeyFrame> frames)
+        {
+            float total = 0f;
+            for (int i = 0; i < frames.Count; i++)
+            {
+                total += frames[i].TimeOffset;
+            }
+
+            return total;
+        }
+
         private static float SumTimeOffsets(IReadOnlyList<FlashXmlActionGroupKeyFrame> frames)
         {
             float total = 0f;
@@ -371,15 +396,15 @@ namespace CutTheRope.GameMain
             return total;
         }
 
-        private static void BuildTimelines(FlashXmlImage part, FlashXmlPartDefinition partDefinition)
+        private static void BuildTimelines(FlashXmlImage part, FlashXmlPartDefinition partDefinition, Dictionary<string, Image> partsByName)
         {
             foreach ((int timelineId, FlashXmlTimelineDefinition timelineDefinition) in partDefinition.Timelines)
             {
                 int maxKeyFrames = Math.Max(
                     Math.Max(timelineDefinition.PositionKeyFrames.Count, timelineDefinition.ScaleKeyFrames.Count),
                     Math.Max(
-                        timelineDefinition.ColorKeyFrames.Count,
-                        Math.Max(timelineDefinition.ActionKeyFrames.Count, timelineDefinition.SkewKeyFrames.Count)));
+                        Math.Max(timelineDefinition.RotationKeyFrames.Count, timelineDefinition.SkewKeyFrames.Count),
+                        Math.Max(timelineDefinition.ColorKeyFrames.Count, timelineDefinition.ActionKeyFrames.Count)));
                 if (maxKeyFrames == 0)
                 {
                     continue;
@@ -403,6 +428,15 @@ namespace CutTheRope.GameMain
                     timeline.AddKeyFrame(KeyFrame.MakeScale(
                         frame.X,
                         frame.Y,
+                        MapTransition(frame.Interpolation),
+                        frame.TimeOffset));
+                }
+
+                for (int i = 0; i < timelineDefinition.RotationKeyFrames.Count; i++)
+                {
+                    FlashXmlFloat1KeyFrame frame = timelineDefinition.RotationKeyFrames[i];
+                    timeline.AddKeyFrame(KeyFrame.MakeRotation(
+                        frame.Value,
                         MapTransition(frame.Interpolation),
                         frame.TimeOffset));
                 }
@@ -434,7 +468,7 @@ namespace CutTheRope.GameMain
                     for (int actionIndex = 0; actionIndex < frame.Actions.Count; actionIndex++)
                     {
                         FlashXmlActionCommand action = frame.Actions[actionIndex];
-                        CTRAction ctrAction = BuildAction(part, action);
+                        CTRAction ctrAction = BuildAction(part, action, partsByName);
                         if (ctrAction != null)
                         {
                             actions.Add(ctrAction);
@@ -456,27 +490,37 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private static CTRAction BuildAction(Image part, FlashXmlActionCommand action)
+        private static CTRAction BuildAction(Image part, FlashXmlActionCommand action, Dictionary<string, Image> partsByName)
         {
+            Image target;
+            if (action.Target == "self")
+            {
+                target = part;
+            }
+            else if (!partsByName.TryGetValue(action.Target, out target))
+            {
+                return null;
+            }
+
             return action.Command switch
             {
                 "AC_SDQ" => CTRAction.CreateAction(
-                    part,
+                    target,
                     Image.ACTION_SET_DRAWQUAD,
                     ParseActionInt(action.Param1),
                     0),
                 "AC_SV" => CTRAction.CreateAction(
-                    part,
+                    target,
                     BaseElement.ACTION_SET_VISIBLE,
                     0,
                     ParseActionInt(action.Param2)),
                 "AC_SAP" => CTRAction.CreateAction(
-                    part,
+                    target,
                     BaseElement.ACTION_SET_CUSTOM_ANCHOR,
                     ParseActionFloat(action.Param1),
                     ParseActionFloat(action.Param2)),
                 "AC_SRC" => CTRAction.CreateAction(
-                    part,
+                    target,
                     BaseElement.ACTION_SET_ROTATION_CENTER,
                     ParseActionFloat(action.Param1),
                     ParseActionFloat(action.Param2)),

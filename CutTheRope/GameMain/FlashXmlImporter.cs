@@ -31,9 +31,17 @@ namespace CutTheRope.GameMain
         public int Id { get; init; }
         public IReadOnlyList<FlashXmlFloat2KeyFrame> PositionKeyFrames { get; init; } = [];
         public IReadOnlyList<FlashXmlFloat2KeyFrame> ScaleKeyFrames { get; init; } = [];
+        public IReadOnlyList<FlashXmlFloat1KeyFrame> RotationKeyFrames { get; init; } = [];
         public IReadOnlyList<FlashXmlFloat2KeyFrame> SkewKeyFrames { get; init; } = [];
         public IReadOnlyList<FlashXmlFloat4KeyFrame> ColorKeyFrames { get; init; } = [];
         public IReadOnlyList<FlashXmlActionGroupKeyFrame> ActionKeyFrames { get; init; } = [];
+    }
+
+    public sealed class FlashXmlFloat1KeyFrame
+    {
+        public float Value { get; init; }
+        public int Interpolation { get; init; }
+        public float TimeOffset { get; init; }
     }
 
     public sealed class FlashXmlFloat2KeyFrame
@@ -148,10 +156,34 @@ namespace CutTheRope.GameMain
                 Id = ParseInt(timelineNode.Attribute("ID")?.Value),
                 PositionKeyFrames = ParseFloat2Track(timelineNode.Element("Pos")?.Value, expectedArity: 2),
                 ScaleKeyFrames = ParseFloat2Track(timelineNode.Element("Scale")?.Value, expectedArity: 2),
+                RotationKeyFrames = ParseFloat1Track(timelineNode.Element("Rot")?.Value),
                 SkewKeyFrames = ParseFloat2Track(timelineNode.Element("Skew")?.Value, expectedArity: 2),
                 ColorKeyFrames = ParseFloat4Track(timelineNode.Element("Color")?.Value),
                 ActionKeyFrames = ParseActionTrack(timelineNode.Element("Action")?.Value)
             };
+        }
+
+        private static List<FlashXmlFloat1KeyFrame> ParseFloat1Track(string rawTrack)
+        {
+            if (string.IsNullOrWhiteSpace(rawTrack))
+            {
+                return [];
+            }
+
+            List<FlashXmlFloat1KeyFrame> keyFrames = [];
+            string[] tokens = rawTrack.Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                ParsedToken parsed = ParseToken(tokens[i]);
+                keyFrames.Add(new FlashXmlFloat1KeyFrame
+                {
+                    Value = ParseFloat(parsed.Payload),
+                    Interpolation = parsed.Interpolation,
+                    TimeOffset = parsed.TimeOffset
+                });
+            }
+
+            return keyFrames;
         }
 
         private static List<FlashXmlFloat2KeyFrame> ParseFloat2Track(string rawTrack, int expectedArity)
