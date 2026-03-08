@@ -37,15 +37,12 @@ namespace CutTheRope.GameMain
 
             BuildParts(_definition);
 
-            // Center the container on the idle-pose visual centroid so the anchor
-            // point lands on Om Nom's visual center, matching how the classic
-            // 640×640 sprite frame centers the character.  The classic body sits
-            // ~10 screen-px below the anchor; dividing by WholeObjectScale
-            // reproduces that offset here.
-            (float vcX, float vcY) = ComputeIdleVisualCenter(_definition, parts);
+            // Use the Flash stage center as the anchor point. All skins share the
+            // same stage dimensions (550×400), so this keeps every skin at the same
+            // position without per-skin centroid calculation.
             const float classicBodyScreenOffsetY = 20f;
-            TargetObject.width = (int)MathF.Round(vcX * 2f);
-            TargetObject.height = (int)MathF.Round((vcY - (classicBodyScreenOffsetY / WholeObjectScale)) * 2f);
+            TargetObject.width = (int)_definition.StageWidth;
+            TargetObject.height = (int)MathF.Round(_definition.StageHeight - (2f * classicBodyScreenOffsetY / WholeObjectScale));
         }
 
         public GameObject TargetObject { get; }
@@ -227,36 +224,6 @@ namespace CutTheRope.GameMain
         private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition)
         {
             return partDefinition.Timelines.ContainsKey(IdleLoopTimeline);
-        }
-
-        private static (float X, float Y) ComputeIdleVisualCenter(
-            FlashXmlAnimationDefinition definition,
-            List<Image> builtParts)
-        {
-            float sumX = 0f;
-            float sumY = 0f;
-            int count = 0;
-
-            for (int i = 0; i < definition.Parts.Count; i++)
-            {
-                FlashXmlPartDefinition partDef = definition.Parts[i];
-                if (!partDef.Timelines.TryGetValue(IdleLoopTimeline, out FlashXmlTimelineDefinition timeline)
-                    || timeline.PositionKeyFrames.Count == 0)
-                {
-                    continue;
-                }
-
-                FlashXmlFloat2KeyFrame firstFrame = timeline.PositionKeyFrames[0];
-                Image part = builtParts[i];
-
-                sumX += firstFrame.X + (part.width / 2f);
-                sumY += firstFrame.Y + (part.height / 2f);
-                count++;
-            }
-
-            return count > 0
-                ? (sumX / count, sumY / count)
-                : (definition.StageWidth / 2f, definition.StageHeight / 2f);
         }
 
         private Image FindFirstPartWithTimeline(int timelineId)
