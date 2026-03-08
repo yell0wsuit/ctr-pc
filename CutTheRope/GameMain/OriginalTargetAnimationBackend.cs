@@ -293,6 +293,8 @@ namespace CutTheRope.GameMain
             }
         }
 
+        public bool HandlesOwnSleepPulse => false;
+
         /// <summary>
         /// Advances one ZZZ overlay through the state machine and applies the resulting transforms.
         /// </summary>

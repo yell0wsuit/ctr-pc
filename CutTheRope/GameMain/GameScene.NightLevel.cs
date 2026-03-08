@@ -184,8 +184,9 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                // Apply breathing pulse effect using sine wave
-                if (sleepPulseActive)
+                // Apply breathing pulse effect using sine wave (classic backend only;
+                // the Flash backend has its own sleeping timeline that includes the pulse).
+                if (sleepPulseActive && targetAnimationController?.HandlesOwnSleepPulse != true)
                 {
                     float sinValue = MathF.Sin(sleepPulseTime * 2f);
                     float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
@@ -196,6 +197,10 @@ namespace CutTheRope.GameMain
                         targetObject.scaleX = targetBaseScaleX;
                         targetObject.scaleY = targetBaseScaleY * scaleY;
                     }
+                    sleepPulseTime += delta;
+                }
+                else if (sleepPulseActive)
+                {
                     sleepPulseTime += delta;
                 }
 
@@ -256,7 +261,7 @@ namespace CutTheRope.GameMain
                 sleepPulseDelay = 0f;
                 sleepSoundTimer = 0f;
                 sleepPulseBaseY = 0f;
-                if (targetObject != null)
+                if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
                 {
                     targetObject.scaleX = targetBaseScaleX;
                     targetObject.scaleY = targetBaseScaleY;
@@ -281,7 +286,7 @@ namespace CutTheRope.GameMain
             sleepSoundTimer = 0f;
             SetNightSleepVisibility(true);
             targetAnimationController?.PlaySleeping();
-            if (targetObject != null)
+            if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
             {
                 sleepPulseBaseY = GetSleepPulsePivotOffsetY(targetObject.height);
                 targetObject.rotationCenterY = sleepPulseBaseY;

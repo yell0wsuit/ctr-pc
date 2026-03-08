@@ -34,6 +34,11 @@ namespace CutTheRope.GameMain
         /// <summary>Gets the primary Om Nom gameplay object owned by the backend.</summary>
         public GameObject TargetObject => backend.TargetObject;
 
+        /// <summary>
+        /// Whether the backend handles the sleep breathing pulse internally.
+        /// </summary>
+        public bool HandlesOwnSleepPulse => backend.HandlesOwnSleepPulse;
+
         /// <summary>Gets the backend-defined base horizontal scale for Om Nom.</summary>
         public float GetTargetBaseScaleX()
         {

@@ -59,5 +59,11 @@ namespace CutTheRope.GameMain
 
         /// <summary>Draws all sleep overlay animations that are currently visible.</summary>
         void DrawSleepOverlays();
+
+        /// <summary>
+        /// Whether the backend handles the sleep breathing pulse internally
+        /// (so GameScene should not apply its own scale/rotationCenter pulse).
+        /// </summary>
+        bool HandlesOwnSleepPulse { get; }
     }
 }

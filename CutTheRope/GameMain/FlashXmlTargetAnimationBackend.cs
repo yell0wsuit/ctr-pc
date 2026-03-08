@@ -112,7 +112,8 @@ namespace CutTheRope.GameMain
             {
                 if (parts[i].GetTimeline(timelineId) != null)
                 {
-                    return parts[i].GetCurrentTimelineIndex() == timelineId;
+                    return parts[i].GetCurrentTimelineIndex() == timelineId
+                        && parts[i].GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_PLAYING;
                 }
             }
 
@@ -149,6 +150,8 @@ namespace CutTheRope.GameMain
         public void DrawSleepOverlays()
         {
         }
+
+        public bool HandlesOwnSleepPulse => true;
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
