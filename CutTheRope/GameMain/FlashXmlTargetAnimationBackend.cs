@@ -188,7 +188,9 @@ namespace CutTheRope.GameMain
         private void BuildParts(FlashXmlAnimationDefinition definition)
         {
             // First pass: create all parts so cross-part action targets can be resolved.
+#pragma warning disable IDE0028
             Dictionary<string, Image> partsByName = new(definition.Parts.Count);
+#pragma warning restore IDE0028
             for (int i = 0; i < definition.Parts.Count; i++)
             {
                 FlashXmlPartDefinition partDefinition = definition.Parts[i];
