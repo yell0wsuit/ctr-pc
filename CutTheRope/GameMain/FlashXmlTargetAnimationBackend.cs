@@ -12,9 +12,12 @@ namespace CutTheRope.GameMain
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
         private const float BaseTargetScale = 1.73f;
+        private const int SleepOverlayTimeline = 0;
         private readonly List<Image> parts = [];
+        private readonly List<Image> _sleepOverlayParts = [];
         private readonly FlashXmlAnimationDefinition _definition;
         private readonly FlashXmlIdleCadenceClock _idleCadenceClock = new();
+        private readonly GameObject _sleepOverlayObject;
         private ITimelineDelegate _externalTimelineDelegate;
         private int _activeTimelineId = -1;
         private Timeline _driverTimeline;
@@ -30,27 +33,38 @@ namespace CutTheRope.GameMain
 
             _definition = FlashXmlImporter.ParseFile(resolvedXmlPath);
 
-            TargetObject = GameObject.GameObject_createWithResIDQuad(Resources.Img.CharAnimationsSmooth, 0);
-            TargetObject.color = RGBAColor.transparentRGBA;
-            TargetObject.passColorToChilds = false;
-            TargetObject.scaleX = BaseTargetScale;
-            TargetObject.scaleY = BaseTargetScale;
+            TargetObject = CreateStageRoot(_definition);
+            BuildParts(_definition, TargetObject, parts);
 
-            BuildParts(_definition);
-
-            // Use the Flash stage center as the anchor point. All skins share the
-            // same stage dimensions (550×400), so this keeps every skin at the same
-            // position without per-skin centroid calculation.
-            const float classicBodyScreenOffsetX = -6f;
-            const float classicBodyScreenOffsetY = -6f;
-            TargetObject.useCustomAnchor = true;
-            TargetObject.customAnchorX = -classicBodyScreenOffsetX / BaseTargetScale;
-            TargetObject.customAnchorY = -classicBodyScreenOffsetY / BaseTargetScale;
-            TargetObject.width = (int)MathF.Round(_definition.StageWidth);
-            TargetObject.height = (int)MathF.Round(_definition.StageHeight);
+            FlashXmlAnimationDefinition sleepOverlayDefinition = FlashXmlImporter.ParseFile(
+                ContentPaths.GetAnimationXmlAbsolutePath("fx_sleep.xml"));
+            _sleepOverlayObject = CreateStageRoot(sleepOverlayDefinition);
+            _sleepOverlayObject.visible = false;
+            BuildParts(sleepOverlayDefinition, _sleepOverlayObject, _sleepOverlayParts);
         }
 
         public GameObject TargetObject { get; }
+
+        private static GameObject CreateStageRoot(FlashXmlAnimationDefinition definition)
+        {
+            GameObject stageRoot = GameObject.GameObject_createWithResIDQuad(Resources.Img.CharAnimationsSmooth, 0);
+            stageRoot.color = RGBAColor.transparentRGBA;
+            stageRoot.passColorToChilds = false;
+            stageRoot.scaleX = BaseTargetScale;
+            stageRoot.scaleY = BaseTargetScale;
+
+            // Use the Flash stage center as the anchor point. All skins share the
+            // same stage dimensions (550x400), so this keeps every skin at the same
+            // position without per-skin centroid calculation.
+            const float classicBodyScreenOffsetX = -6f;
+            const float classicBodyScreenOffsetY = -6f;
+            stageRoot.useCustomAnchor = true;
+            stageRoot.customAnchorX = -classicBodyScreenOffsetX / BaseTargetScale;
+            stageRoot.customAnchorY = -classicBodyScreenOffsetY / BaseTargetScale;
+            stageRoot.width = (int)MathF.Round(definition.StageWidth);
+            stageRoot.height = (int)MathF.Round(definition.StageHeight);
+            return stageRoot;
+        }
 
         public float GetTargetBaseScaleX()
         {
@@ -93,28 +107,7 @@ namespace CutTheRope.GameMain
         private void PlayTimelineById(int timelineId)
         {
             _activeTimelineId = timelineId;
-            for (int i = 0; i < parts.Count; i++)
-            {
-                Timeline timeline = parts[i].GetTimeline(timelineId);
-                if (timeline != null)
-                {
-                    parts[i].visible = true;
-                    parts[i].PlayTimeline(timelineId);
-                }
-                else
-                {
-                    // Stop all timelines before playing the
-                    // new one. Parts without the requested timeline are stopped and hidden so they
-                    // don't keep ticking invisibly with stale pose from a previous one-shot.
-                    if (parts[i].GetCurrentTimeline() != null)
-                    {
-                        parts[i].StopCurrentTimeline();
-                    }
-
-                    parts[i].visible = false;
-                }
-            }
-
+            PlayTimeline(parts, timelineId);
             BindDriverDelegateForTimeline(timelineId);
         }
 
@@ -154,18 +147,33 @@ namespace CutTheRope.GameMain
 
         public void UpdateSleepOverlays(float delta)
         {
+            if (_sleepOverlayObject.visible)
+            {
+                _sleepOverlayObject.Update(delta);
+            }
         }
 
         public void SyncSleepOverlayPosition(float x, float y)
         {
+            _sleepOverlayObject.x = x;
+            _sleepOverlayObject.y = y;
         }
 
         public void SetSleepOverlayVisible(bool visible)
         {
+            _sleepOverlayObject.visible = visible;
+            if (visible)
+            {
+                PlayTimeline(_sleepOverlayParts, SleepOverlayTimeline);
+            }
         }
 
         public void DrawSleepOverlays()
         {
+            if (_sleepOverlayObject.visible)
+            {
+                _sleepOverlayObject.Draw();
+            }
         }
 
         public bool HandlesOwnSleepPulse => true;
@@ -212,7 +220,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private void BuildParts(FlashXmlAnimationDefinition definition)
+        private static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject, List<Image> targetParts)
         {
             // First pass: create all parts so cross-part action targets can be resolved.
 #pragma warning disable IDE0028
@@ -234,8 +242,8 @@ namespace CutTheRope.GameMain
                 part.rotationCenterY = partDefinition.RotationCenterY;
                 part.SetDrawQuad(partDefinition.QuadToDraw);
 
-                _ = TargetObject.AddChild(part);
-                parts.Add(part);
+                _ = rootObject.AddChild(part);
+                targetParts.Add(part);
 
                 if (!string.IsNullOrEmpty(partDefinition.Name))
                 {
@@ -246,7 +254,32 @@ namespace CutTheRope.GameMain
             // Second pass: build timelines now that all parts exist for cross-part linking.
             for (int i = 0; i < definition.Parts.Count; i++)
             {
-                BuildTimelines((FlashXmlImage)parts[i], definition.Parts[i], partsByName);
+                BuildTimelines((FlashXmlImage)targetParts[i], definition.Parts[i], partsByName);
+            }
+        }
+
+        private static void PlayTimeline(List<Image> targetParts, int timelineId)
+        {
+            for (int i = 0; i < targetParts.Count; i++)
+            {
+                Timeline timeline = targetParts[i].GetTimeline(timelineId);
+                if (timeline != null)
+                {
+                    targetParts[i].visible = true;
+                    targetParts[i].PlayTimeline(timelineId);
+                }
+                else
+                {
+                    // Stop all timelines before playing the new one. Parts without the
+                    // requested timeline are stopped and hidden so they do not keep
+                    // ticking invisibly with a stale pose from a previous one-shot.
+                    if (targetParts[i].GetCurrentTimeline() != null)
+                    {
+                        targetParts[i].StopCurrentTimeline();
+                    }
+
+                    targetParts[i].visible = false;
+                }
             }
         }
 
