@@ -89,6 +89,26 @@
         "idleVariants": []
     },
     {
+        "name": "OM_NOM_PHARAON",
+        "animationXml": "om_nom_pharaon.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6
+        },
+        "idleVariants": []
+    },
+    {
         "name": "OM_NOM_CAESAR",
         "animationXml": "om_nom_caesar.xml",
         "timelines": {
