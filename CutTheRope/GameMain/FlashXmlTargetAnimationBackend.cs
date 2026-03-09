@@ -509,7 +509,7 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                if (timelineId == IdleLoopTimeline)
+                if (timelineId is IdleLoopTimeline or SleepingTimeline)
                 {
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                 }
