@@ -12,10 +12,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
-        // PC's Om Nom base sprite is 201x207.
-        // Flash's Om Nom base sprite is 118x121.
-        // So the ratio is roughly 1.7.
-        private const float BaseTargetScale = 1.7f;
+        private const float BaseTargetScale = 1.73f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
         private readonly FlashXmlIdleCadenceClock _idleCadenceClock = new();
@@ -45,9 +42,13 @@ namespace CutTheRope.GameMain
             // Use the Flash stage center as the anchor point. All skins share the
             // same stage dimensions (550×400), so this keeps every skin at the same
             // position without per-skin centroid calculation.
-            const float classicBodyScreenOffsetY = -5f;
-            TargetObject.width = (int)_definition.StageWidth;
-            TargetObject.height = (int)MathF.Round(_definition.StageHeight - (2f * classicBodyScreenOffsetY / BaseTargetScale));
+            const float classicBodyScreenOffsetX = -6f;
+            const float classicBodyScreenOffsetY = -6f;
+            TargetObject.useCustomAnchor = true;
+            TargetObject.customAnchorX = -classicBodyScreenOffsetX / BaseTargetScale;
+            TargetObject.customAnchorY = -classicBodyScreenOffsetY / BaseTargetScale;
+            TargetObject.width = (int)MathF.Round(_definition.StageWidth);
+            TargetObject.height = (int)MathF.Round(_definition.StageHeight);
         }
 
         public GameObject TargetObject { get; }
