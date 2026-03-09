@@ -18,6 +18,7 @@ namespace CutTheRope.GameMain
         private readonly FlashXmlAnimationDefinition _definition;
         private readonly FlashXmlIdleCadenceClock _idleCadenceClock = new();
         private readonly GameObject _sleepOverlayObject;
+        private readonly OmNomSkinDefinition _skinDefinition;
         private ITimelineDelegate _externalTimelineDelegate;
         private int _activeTimelineId = -1;
         private Timeline _driverTimeline;
@@ -25,22 +26,22 @@ namespace CutTheRope.GameMain
         private float _driverTimelineDurationSeconds;
         private float _driverTimelinePlaybackRate = 1f;
 
-        public FlashXmlTargetAnimationBackend(string xmlPath = null)
+        public FlashXmlTargetAnimationBackend(OmNomSkinDefinition skinDefinition)
         {
-            string resolvedXmlPath = string.IsNullOrWhiteSpace(xmlPath)
-                ? ContentPaths.GetAnimationXmlAbsolutePath("om_nom_original.xml")
-                : xmlPath;
+            _skinDefinition = skinDefinition;
 
-            _definition = FlashXmlImporter.ParseFile(resolvedXmlPath);
+            _definition = FlashXmlImporter.ParseFile(skinDefinition.AnimationXmlPath);
 
             TargetObject = CreateStageRoot(_definition);
-            BuildParts(_definition, TargetObject, parts);
+            int idleLoopId = _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
+            int sleepingId = _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
+            BuildParts(_definition, TargetObject, parts, idleLoopId, sleepingId);
 
             FlashXmlAnimationDefinition sleepOverlayDefinition = FlashXmlImporter.ParseFile(
                 ContentPaths.GetAnimationXmlAbsolutePath("fx_sleep.xml"));
             _sleepOverlayObject = CreateStageRoot(sleepOverlayDefinition);
             _sleepOverlayObject.visible = false;
-            BuildParts(sleepOverlayDefinition, _sleepOverlayObject, _sleepOverlayParts);
+            BuildParts(sleepOverlayDefinition, _sleepOverlayObject, _sleepOverlayParts, SleepOverlayTimeline, -1);
         }
 
         public GameObject TargetObject { get; }
@@ -94,14 +95,13 @@ namespace CutTheRope.GameMain
 
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
-            int timelineId = rng(0, 2) switch
+            if (_skinDefinition.IdleVariants.Length == 0)
             {
-                0 => IdleVariationOneTimeline,
-                1 => IdleVariationTwoTimeline,
-                _ => IdleVariationThreeTimeline
-            };
+                return;
+            }
 
-            PlayTimelineById(timelineId);
+            int index = rng(0, _skinDefinition.IdleVariants.Length - 1);
+            PlayTimelineById(_skinDefinition.IdleVariants[index]);
         }
 
         private void PlayTimelineById(int timelineId)
@@ -132,7 +132,8 @@ namespace CutTheRope.GameMain
 
         public float GetSleepPulseDelaySeconds()
         {
-            return _definition.RootTimelines.TryGetValue(SleepingTimeline, out float duration)
+            int sleepingTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
+            return sleepingTimelineId >= 0 && _definition.RootTimelines.TryGetValue(sleepingTimelineId, out float duration)
                 ? duration
                 : 0f;
         }
@@ -180,7 +181,7 @@ namespace CutTheRope.GameMain
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
-            if (_driverTimelineId != IdleLoopTimeline
+            if (_driverTimelineId != _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop)
                 || _driverTimeline == null
                 || !ReferenceEquals(t, _driverTimeline)
                 || _externalTimelineDelegate == null)
@@ -207,20 +208,22 @@ namespace CutTheRope.GameMain
             _driverTimeline = null;
             _driverTimelineId = -1;
 
-            if (FlashXmlTargetTimelineRules.TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
+            if (_skinDefinition.TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
                 && FindFirstPartWithTimeline(followupTimelineId) != null)
             {
                 PlayTimelineById(followupTimelineId);
                 return;
             }
 
-            if (_activeTimelineId != IdleLoopTimeline)
+            int idleLoopTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
+            if (_activeTimelineId != idleLoopTimelineId)
             {
-                PlayTimelineById(IdleLoopTimeline);
+                PlayTimelineById(idleLoopTimelineId);
             }
         }
 
-        private static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject, List<Image> targetParts)
+        private static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject,
+            List<Image> targetParts, int idleLoopTimelineId, int sleepingTimelineId)
         {
             // First pass: create all parts so cross-part action targets can be resolved.
 #pragma warning disable IDE0028
@@ -234,7 +237,7 @@ namespace CutTheRope.GameMain
                 part.PlaybackRate = 0.7f;
                 part.anchor = 9;
                 part.parentAnchor = 9;
-                part.visible = ShouldStartVisible(partDefinition);
+                part.visible = ShouldStartVisible(partDefinition, idleLoopTimelineId);
                 part.useCustomAnchor = true;
                 part.customAnchorX = partDefinition.AnchorX;
                 part.customAnchorY = partDefinition.AnchorY;
@@ -254,7 +257,8 @@ namespace CutTheRope.GameMain
             // Second pass: build timelines now that all parts exist for cross-part linking.
             for (int i = 0; i < definition.Parts.Count; i++)
             {
-                BuildTimelines((FlashXmlImage)targetParts[i], definition.Parts[i], partsByName);
+                BuildTimelines((FlashXmlImage)targetParts[i], definition.Parts[i], partsByName,
+                    idleLoopTimelineId, sleepingTimelineId);
             }
         }
 
@@ -283,9 +287,9 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition)
+        private static bool ShouldStartVisible(FlashXmlPartDefinition partDefinition, int idleLoopTimelineId)
         {
-            return partDefinition.Timelines.ContainsKey(IdleLoopTimeline);
+            return idleLoopTimelineId >= 0 && partDefinition.Timelines.ContainsKey(idleLoopTimelineId);
         }
 
         private Image FindFirstPartWithTimeline(int timelineId)
@@ -315,7 +319,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            if (timelineId == IdleLoopTimeline)
+            if (timelineId == _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop))
             {
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;
@@ -327,7 +331,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            if (FlashXmlTargetTimelineRules.ShouldBindFollowupDelegate(timelineId))
+            if (_skinDefinition.ShouldBindFollowupDelegate(timelineId))
             {
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;
@@ -456,7 +460,8 @@ namespace CutTheRope.GameMain
             return total;
         }
 
-        private static void BuildTimelines(FlashXmlImage part, FlashXmlPartDefinition partDefinition, Dictionary<string, Image> partsByName)
+        private static void BuildTimelines(FlashXmlImage part, FlashXmlPartDefinition partDefinition,
+            Dictionary<string, Image> partsByName, int idleLoopTimelineId, int sleepingTimelineId)
         {
             foreach ((int timelineId, FlashXmlTimelineDefinition timelineDefinition) in partDefinition.Timelines)
             {
@@ -541,7 +546,7 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                if (timelineId is IdleLoopTimeline or SleepingTimeline)
+                if (timelineId == idleLoopTimelineId || timelineId == sleepingTimelineId)
                 {
                     timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
                 }
@@ -619,37 +624,11 @@ namespace CutTheRope.GameMain
             };
         }
 
-        private static bool TryMapState(TargetAnimationState state, out int timelineId)
+        private bool TryMapState(TargetAnimationState state, out int timelineId)
         {
-            timelineId = state switch
-            {
-                TargetAnimationState.IdleLoop => IdleLoopTimeline,
-                TargetAnimationState.IdleVariationOne => IdleVariationOneTimeline,
-                TargetAnimationState.IdleVariationTwo => IdleVariationTwoTimeline,
-                TargetAnimationState.Excited => ExcitedTimeline,
-                TargetAnimationState.MouthOpening => MouthOpeningTimeline,
-                TargetAnimationState.MouthClosing => MouthClosingTimeline,
-                TargetAnimationState.Chewing => ChewingTimeline,
-                TargetAnimationState.Sad => SadTimeline,
-                TargetAnimationState.Sleeping => SleepingTimeline,
-                TargetAnimationState.Greeting => GreetingTimeline,
-                _ => -1
-            };
-
+            timelineId = _skinDefinition.GetTimelineId(state);
             return timelineId >= 0;
         }
-
-        private const int IdleLoopTimeline = FlashXmlTargetTimelineRules.IdleLoopTimeline;
-        private const int IdleVariationOneTimeline = FlashXmlTargetTimelineRules.IdleVariationOneTimeline;
-        private const int IdleVariationTwoTimeline = FlashXmlTargetTimelineRules.IdleVariationTwoTimeline;
-        private const int IdleVariationThreeTimeline = FlashXmlTargetTimelineRules.IdleVariationThreeTimeline;
-        private const int ExcitedTimeline = FlashXmlTargetTimelineRules.ExcitedTimeline;
-        private const int MouthOpeningTimeline = FlashXmlTargetTimelineRules.MouthOpeningTimeline;
-        private const int MouthClosingTimeline = FlashXmlTargetTimelineRules.MouthClosingTimeline;
-        private const int SadTimeline = FlashXmlTargetTimelineRules.SadTimeline;
-        private const int ChewingTimeline = FlashXmlTargetTimelineRules.ChewingTimeline;
-        private const int SleepingTimeline = FlashXmlTargetTimelineRules.SleepingTimeline;
-        private const int GreetingTimeline = FlashXmlTargetTimelineRules.GreetingTimeline;
 
         private sealed class FlashXmlIdleCadenceClock
         {

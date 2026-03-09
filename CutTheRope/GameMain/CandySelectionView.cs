@@ -3,28 +3,37 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
     internal static class CandySelectionView
     {
+        private enum SelectionMode { Candy, Rope, OmNom }
+
         // Store candy slot button data for quick updates
         private static readonly List<SlotButtonData> slotButtons = [];
 
         // Track current selection mode and UI references
-        private static bool isRopeMode;
+        private static SelectionMode currentMode;
         private static ScrollableContainer currentContainer;
         private static BaseElement gridContainer;
         private static IButtonDelegation currentButtonDelegate;
+        private static readonly Random previewRandom = new();
         private static Button candyTabButton;
         private static Button ropeTabButton;
+        private static Button omNomTabButton;
+        private static ITargetAnimationBackend activePreviewBackend;
+        private static GameObject activePreviewObject;
 
         private sealed class SlotButtonData
         {
             public int CandyIndex { get; set; }
             public Image UpImage { get; set; }
             public Image DownImage { get; set; }
+            public BaseElement UpPreview { get; set; }
+            public BaseElement DownPreview { get; set; }
         }
 
         /// <summary>
@@ -46,18 +55,34 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Switches between candy and rope selection modes.
+        /// Switches between candy, rope, and Om Nom selection modes.
         /// </summary>
-        public static void SwitchToMode(bool ropeMode)
+        private static void SwitchToMode(SelectionMode mode)
         {
-            if (isRopeMode == ropeMode || currentContainer == null)
+            if (currentMode == mode || currentContainer == null)
             {
                 return;
             }
 
-            isRopeMode = ropeMode;
+            CleanupPreview();
+            currentMode = mode;
             UpdateTabButtonStates();
             RebuildGrid();
+        }
+
+        public static void SwitchToCandyMode()
+        {
+            SwitchToMode(SelectionMode.Candy);
+        }
+
+        public static void SwitchToRopeMode()
+        {
+            SwitchToMode(SelectionMode.Rope);
+        }
+
+        public static void SwitchToOmNomMode()
+        {
+            SwitchToMode(SelectionMode.OmNom);
         }
 
         /// <summary>
@@ -65,36 +90,23 @@ namespace CutTheRope.GameMain
         /// </summary>
         private static void UpdateTabButtonStates()
         {
-            if (candyTabButton == null || ropeTabButton == null)
+            if (candyTabButton == null || ropeTabButton == null || omNomTabButton == null)
             {
                 return;
             }
 
-            // Update candy button state
-            Image candyUpImage = (Image)candyTabButton.GetChild(0);
-            Image candyDownImage = (Image)candyTabButton.GetChild(1);
+            SetTabActive(candyTabButton, currentMode == SelectionMode.Candy);
+            SetTabActive(ropeTabButton, currentMode == SelectionMode.Rope);
+            SetTabActive(omNomTabButton, currentMode == SelectionMode.OmNom);
+        }
 
-            // Update rope button state
-            Image ropeUpImage = (Image)ropeTabButton.GetChild(0);
-            Image ropeDownImage = (Image)ropeTabButton.GetChild(1);
-
-            switch (isRopeMode)
-            {
-                case true:
-                    // Rope mode active: candy = idle, rope = pressed
-                    candyUpImage.SetDrawQuad(4);   // button_idle
-                    candyDownImage.SetDrawQuad(4); // button_idle (don't show pressed state for inactive tab)
-                    ropeUpImage.SetDrawQuad(5);    // button_pressed
-                    ropeDownImage.SetDrawQuad(5);  // button_pressed
-                    break;
-                case false:
-                    // Candy mode active: candy = pressed, rope = idle
-                    candyUpImage.SetDrawQuad(5);   // button_pressed
-                    candyDownImage.SetDrawQuad(5); // button_pressed
-                    ropeUpImage.SetDrawQuad(4);    // button_idle
-                    ropeDownImage.SetDrawQuad(4);  // button_idle (don't show pressed state for inactive tab)
-                    break;
-            }
+        private static void SetTabActive(Button tab, bool active)
+        {
+            Image upImage = (Image)tab.GetChild(0);
+            Image downImage = (Image)tab.GetChild(1);
+            int quad = active ? 5 : 4;
+            upImage.SetDrawQuad(quad);
+            downImage.SetDrawQuad(quad);
         }
 
         /// <summary>
@@ -138,7 +150,45 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Rebuilds the grid based on the current mode (candy or rope).
+        /// Creates a slot button for an Om Nom skin with artwork in both button states.
+        /// </summary>
+        private static Button CreateOmNomSlotButton(int skinIndex, int selectedIndex, float slotScale, MenuButtonId buttonId)
+        {
+            bool isEquipped = skinIndex == selectedIndex;
+            int bgUpQuad = isEquipped ? 2 : 0;
+            int bgDownQuad = isEquipped ? 3 : 1;
+
+            Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
+            Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
+            slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
+            slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
+
+            Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
+            slotButton.delegateButtonDelegate = currentButtonDelegate;
+
+            SlotButtonData slotButtonData = new()
+            {
+                CandyIndex = skinIndex,
+                UpImage = slotBgUp,
+                DownImage = slotBgDown,
+                UpPreview = CreateAndAttachOmNomPreview(
+                    slotBgUp,
+                    skinIndex,
+                    OmNomSlotPreviewPolicy.Resolve(skinIndex, selectedIndex),
+                    animated: skinIndex == selectedIndex),
+                DownPreview = CreateAndAttachOmNomPreview(
+                    slotBgDown,
+                    skinIndex,
+                    GetPressedPreviewMode(skinIndex),
+                    animated: false)
+            };
+
+            slotButtons.Add(slotButtonData);
+            return slotButton;
+        }
+
+        /// <summary>
+        /// Rebuilds the grid based on the current mode (candy, rope, or Om Nom).
         /// </summary>
         private static void RebuildGrid()
         {
@@ -187,20 +237,28 @@ namespace CutTheRope.GameMain
             int baseQuadIndex;
             Func<int, MenuButtonId> getButtonId;
 
-            if (isRopeMode)
+            switch (currentMode)
             {
-                totalItems = RopeColorHelper.TotalRopeColors;
-                selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
-                baseQuadIndex = 60; // rope01-rope09 are quads 60-68
-                getButtonId = MenuButtonId.ForRopeSlot;
-            }
-            else
-            {
-                const int TOTAL_CANDIES = 52;
-                totalItems = TOTAL_CANDIES;
-                selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
-                baseQuadIndex = 6; // candy01-candy52 are quads 6-57
-                getButtonId = MenuButtonId.ForCandySlot;
+                case SelectionMode.Rope:
+                    totalItems = RopeColorHelper.TotalRopeColors;
+                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
+                    baseQuadIndex = 60; // rope01-rope09 are quads 60-68
+                    getButtonId = MenuButtonId.ForRopeSlot;
+                    break;
+                case SelectionMode.OmNom:
+                    totalItems = OmNomSkinRegistry.TotalSkinCount;
+                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_OMNOM);
+                    baseQuadIndex = -1; // not used — Om Nom slots created differently
+                    getButtonId = MenuButtonId.ForOmNomSlot;
+                    break;
+                case SelectionMode.Candy:
+                default: // Candy
+                    const int TOTAL_CANDIES = 52;
+                    totalItems = TOTAL_CANDIES;
+                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                    baseQuadIndex = 6; // candy01-candy52 are quads 6-57
+                    getButtonId = MenuButtonId.ForCandySlot;
+                    break;
             }
 
             // Build grid rows
@@ -216,8 +274,16 @@ namespace CutTheRope.GameMain
                         break;
                     }
 
-                    int itemQuadIndex = baseQuadIndex + itemIndex;
-                    Button slotButton = CreateSlotButton(itemIndex, selectedIndex, itemQuadIndex, slotScale, getButtonId(itemIndex));
+                    Button slotButton;
+                    if (currentMode == SelectionMode.OmNom)
+                    {
+                        slotButton = CreateOmNomSlotButton(itemIndex, selectedIndex, slotScale, getButtonId(itemIndex));
+                    }
+                    else
+                    {
+                        int itemQuadIndex = baseQuadIndex + itemIndex;
+                        slotButton = CreateSlotButton(itemIndex, selectedIndex, itemQuadIndex, slotScale, getButtonId(itemIndex));
+                    }
                     _ = rowBox.AddChild(slotButton);
                 }
 
@@ -232,15 +298,182 @@ namespace CutTheRope.GameMain
             _ = currentContainer.AddChild(itemGrid);
         }
 
+        /// <summary>
+        /// Creates and attaches an Om Nom preview matching the requested mode.
+        /// </summary>
+        private static BaseElement CreateAndAttachOmNomPreview(
+            Image parentImage,
+            int skinIndex,
+            OmNomSlotPreviewMode previewMode,
+            bool animated)
+        {
+            BaseElement preview = CreateOmNomPreview(skinIndex, previewMode, animated);
+            _ = parentImage.AddChild(preview);
+            return preview;
+        }
+
+        private static GameObject CreateOmNomPreview(int skinIndex, OmNomSlotPreviewMode previewMode, bool animated)
+        {
+            return previewMode switch
+            {
+                OmNomSlotPreviewMode.ClassicAnimated => CreateClassicOmNomPreview(animated: true),
+                OmNomSlotPreviewMode.ClassicStatic => CreateClassicOmNomPreview(animated: false),
+                OmNomSlotPreviewMode.Xml => CreateXmlOmNomPreview(skinIndex, animated),
+                _ => throw new ArgumentOutOfRangeException(nameof(previewMode), previewMode, null),
+            };
+        }
+
+        private static GameObject CreateClassicOmNomPreview(bool animated)
+        {
+            OmNomSlotPreviewLayoutInfo layout = OmNomSlotPreviewLayout.Resolve(
+                animated ? OmNomSlotPreviewMode.ClassicAnimated : OmNomSlotPreviewMode.ClassicStatic);
+            OriginalTargetAnimationBackend backend = new(isNightLevel: false, isXmas: false);
+            GameObject previewObject = backend.TargetObject;
+            ConfigureOmNomPreviewLayout(previewObject, layout);
+
+            backend.Initialize(null);
+            previewObject.updateable = false;
+
+            if (animated)
+            {
+                activePreviewBackend = backend;
+                activePreviewObject = previewObject;
+            }
+
+            return previewObject;
+        }
+
+        private static GameObject CreateXmlOmNomPreview(int skinIndex, bool animated)
+        {
+            OmNomSlotPreviewLayoutInfo layout = OmNomSlotPreviewLayout.Resolve(OmNomSlotPreviewMode.Xml);
+            OmNomSkinDefinition skin = OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex);
+            FlashXmlTargetAnimationBackend backend = new(skin);
+            GameObject previewObject = backend.TargetObject;
+            ConfigureOmNomPreviewLayout(previewObject, layout);
+
+            backend.Initialize(null);
+            previewObject.updateable = false;
+
+            if (animated)
+            {
+                activePreviewBackend = backend;
+                activePreviewObject = previewObject;
+                activePreviewBackend.PlayRandomIdleVariant((min, max) => previewRandom.Next(min, max + 1));
+            }
+
+            return previewObject;
+        }
+
+        private static void ConfigureOmNomPreviewLayout(GameObject previewObject, OmNomSlotPreviewLayoutInfo layout)
+        {
+            previewObject.scaleX = layout.Scale;
+            previewObject.scaleY = layout.Scale;
+            previewObject.anchor = 18;
+            previewObject.parentAnchor = 18;
+            previewObject.x = 0f;
+            previewObject.y = layout.YOffset;
+        }
+
+        private static OmNomSlotPreviewMode GetPressedPreviewMode(int skinIndex)
+        {
+            return skinIndex == 0
+                ? OmNomSlotPreviewMode.ClassicStatic
+                : OmNomSlotPreviewMode.Xml;
+        }
+
+        private static SlotButtonData FindSlotButtonData(int slotIndex)
+        {
+            for (int i = 0; i < slotButtons.Count; i++)
+            {
+                if (slotButtons[i].CandyIndex == slotIndex)
+                {
+                    return slotButtons[i];
+                }
+            }
+
+            return null;
+        }
+
+        private static void ReplaceUpPreview(SlotButtonData slotData, OmNomSlotPreviewMode previewMode, bool animated)
+        {
+            if (slotData == null)
+            {
+                return;
+            }
+
+            if (slotData.UpPreview != null)
+            {
+                slotData.UpImage.RemoveChild(slotData.UpPreview);
+            }
+
+            slotData.UpPreview = CreateAndAttachOmNomPreview(slotData.UpImage, slotData.CandyIndex, previewMode, animated);
+        }
+
+        /// <summary>
+        /// Cleans up the current preview animation and removes it from the display tree.
+        /// </summary>
+        private static void CleanupPreview()
+        {
+            activePreviewObject?.parent?.RemoveChild(activePreviewObject);
+            activePreviewObject = null;
+            activePreviewBackend = null;
+        }
+
+        /// <summary>
+        /// Selects an Om Nom skin slot and swaps the live preview to it.
+        /// </summary>
+        public static void SelectOmNomSlot(int newSelectedIndex)
+        {
+            int previousSelectedIndex = -1;
+            for (int i = 0; i < slotButtons.Count; i++)
+            {
+                if (ReferenceEquals(slotButtons[i].UpPreview, activePreviewObject))
+                {
+                    previousSelectedIndex = slotButtons[i].CandyIndex;
+                    break;
+                }
+            }
+
+            CleanupPreview();
+            UpdateCandySlotButtons(newSelectedIndex);
+
+            if (previousSelectedIndex >= 0 && previousSelectedIndex != newSelectedIndex)
+            {
+                ReplaceUpPreview(
+                    FindSlotButtonData(previousSelectedIndex),
+                    previousSelectedIndex == 0
+                        ? OmNomSlotPreviewMode.ClassicStatic
+                        : OmNomSlotPreviewMode.Xml,
+                    animated: false);
+            }
+
+            ReplaceUpPreview(
+                FindSlotButtonData(newSelectedIndex),
+                OmNomSlotPreviewPolicy.Resolve(newSelectedIndex, newSelectedIndex),
+                animated: true);
+        }
+
+        /// <summary>
+        /// Ticks the preview animation each frame.
+        /// </summary>
+        public static void Update(float delta)
+        {
+            if (currentMode == SelectionMode.OmNom && activePreviewObject != null)
+            {
+                activePreviewObject.Update(delta);
+            }
+        }
+
         public static MenuView CreateCandySelection(
             IButtonDelegation buttonDelegate,
             out ScrollableContainer candyContainer)
         {
             MenuView menuView = new();
+            const float tabGap = 24f;
 
             // Store delegate for later use
             currentButtonDelegate = buttonDelegate;
-            isRopeMode = false;
+            currentMode = SelectionMode.Candy;
 
             BaseElement background = new()
             {
@@ -275,7 +508,6 @@ namespace CutTheRope.GameMain
             candyTabButton = new Button().InitWithUpElementDownElementandID(candyBtnUp, candyBtnDown, MenuButtonId.CandySelect);
             candyTabButton.delegateButtonDelegate = buttonDelegate;
             candyTabButton.anchor = candyTabButton.parentAnchor = 10;
-            candyTabButton.x = -200f;
             candyTabButton.y = 50f;
 
             _ = background.AddChild(candyTabButton);
@@ -298,10 +530,37 @@ namespace CutTheRope.GameMain
             ropeTabButton = new Button().InitWithUpElementDownElementandID(ropeBtnUp, ropeBtnDown, MenuButtonId.RopeSelect);
             ropeTabButton.delegateButtonDelegate = buttonDelegate;
             ropeTabButton.anchor = ropeTabButton.parentAnchor = 10;
-            ropeTabButton.x = 200f;
             ropeTabButton.y = 50f;
 
             _ = background.AddChild(ropeTabButton);
+
+            // Om Nom tab button
+            Image omNomBtnUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
+            Image omNomBtnDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
+
+            Text omNomButtonText = new Text().InitWithFont(font);
+            omNomButtonText.SetString(Application.GetString("OM_NOM_BTN"));
+            omNomButtonText.anchor = omNomButtonText.parentAnchor = 18;
+            _ = omNomBtnUp.AddChild(omNomButtonText);
+
+            Text omNomButtonText2 = new Text().InitWithFont(font);
+            omNomButtonText2.SetString(Application.GetString("OM_NOM_BTN"));
+            omNomButtonText2.anchor = omNomButtonText2.parentAnchor = 18;
+            _ = omNomBtnDown.AddChild(omNomButtonText2);
+
+            omNomTabButton = new Button().InitWithUpElementDownElementandID(omNomBtnUp, omNomBtnDown, MenuButtonId.OmNomSelect);
+            omNomTabButton.delegateButtonDelegate = buttonDelegate;
+            omNomTabButton.anchor = omNomTabButton.parentAnchor = 10;
+            omNomTabButton.y = 50f;
+
+            _ = background.AddChild(omNomTabButton);
+
+            float tabStride = MathF.Max(
+                MathF.Max(candyBtnDown.width, ropeBtnDown.width),
+                omNomBtnDown.width) + tabGap;
+            candyTabButton.x = SkinSelectionTabLayout.GetCenteredX(0, 3, tabStride);
+            ropeTabButton.x = SkinSelectionTabLayout.GetCenteredX(1, 3, tabStride);
+            omNomTabButton.x = SkinSelectionTabLayout.GetCenteredX(2, 3, tabStride);
 
             // Create scrollable container (initially empty, will be populated by RebuildGrid)
             float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;

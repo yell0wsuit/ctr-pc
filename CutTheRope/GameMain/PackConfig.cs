@@ -29,8 +29,7 @@ namespace CutTheRope.GameMain
         string[] musicList,
         bool earthBg,
         Vector? earthBgPosition,
-        string boxLabelText,
-        string animationStyle)
+        string boxLabelText)
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
@@ -70,9 +69,6 @@ namespace CutTheRope.GameMain
 
         /// <summary>Localization key for optional box label text (e.g., "the hardest one").</summary>
         public string BoxLabelText { get; } = boxLabelText;
-
-        /// <summary>Animation style for Om Nom (e.g., "flash" for Flash XML animations).</summary>
-        public string AnimationStyle { get; } = animationStyle;
     }
 
     /// <summary>
@@ -204,11 +200,6 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxLabelText : null;
         }
 
-        public static string GetAnimationStyle(int pack)
-        {
-            return pack >= 0 && pack < packs.Count ? packs[pack].AnimationStyle : null;
-        }
-
         private static List<PackListEntry> LoadPackListEntries()
         {
             if (!TryLoadJsonRoot(PackListConfigFile, out JsonElement root))
@@ -326,8 +317,6 @@ namespace CutTheRope.GameMain
 
                     string boxLabelText = ParseStringProperty(packElement, "boxLabelText");
 
-                    string animationStyle = ParseStringProperty(packElement, "animationStyle");
-
                     results.Add(new PackDefinition(
                         unlockStars,
                         levelCount,
@@ -341,8 +330,7 @@ namespace CutTheRope.GameMain
                         musicList,
                         earthBg,
                         earthBgPosition,
-                        boxLabelText,
-                        animationStyle));
+                        boxLabelText));
                 }
             }
 
