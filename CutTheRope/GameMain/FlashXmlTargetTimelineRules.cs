@@ -4,7 +4,7 @@ namespace CutTheRope.GameMain
     {
         public const int IdleLoopTimeline = 0;
         public const int IdleVariationOneTimeline = 1;
-        public const int IdleVariationTwoTimeline = 12;
+        public const int IdleVariationTwoTimeline = 17;
         public const int ExcitedTimeline = 2;
         public const int MouthOpeningTimeline = 3;
         public const int MouthClosingTimeline = 4;
