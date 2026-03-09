@@ -49,6 +49,26 @@
         "idleVariants": [1]
     },
     {
+        "name": "OM_NOM_PAINTER",
+        "animationXml": "om_nom_painter.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 5,
+            "MouthClosing": 6,
+            "Sad": 7,
+            "Chewing": 8,
+            "Sleeping": 3
+        },
+        "followups": {
+            "1": 0,
+            "6": 2,
+            "2": 0,
+            "8": 8
+        },
+        "idleVariants": [1]
+    },
+    {
         "name": "OM_NOM_PIRATE",
         "animationXml": "om_nom_pirate.xml",
         "timelines": {
