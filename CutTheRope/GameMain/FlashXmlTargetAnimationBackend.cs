@@ -12,6 +12,9 @@ namespace CutTheRope.GameMain
 {
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
+        // PC's Om Nom base sprite is 201x207.
+        // Flash's Om Nom base sprite is 118x121.
+        // So the ratio is roughly 1.7.
         private const float BaseTargetScale = 1.7f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
