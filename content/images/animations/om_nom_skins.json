@@ -58,7 +58,7 @@
             "MouthClosing": 3,
             "Sad": 5,
             "Chewing": 6,
-            "Sleeping": 7
+            "Sleeping": 8
         },
         "followups": {
             "1": 0,
