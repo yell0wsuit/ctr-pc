@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
         public FlashXmlTargetAnimationBackend(string xmlPath = null)
         {
             string resolvedXmlPath = string.IsNullOrWhiteSpace(xmlPath)
-                ? ContentPaths.GetContentPath(Path.Combine(ContentPaths.AnimationsDirectory, "om_nom_original.xml"))
+                ? ContentPaths.GetAnimationXmlAbsolutePath("om_nom_original.xml")
                 : xmlPath;
 
             _definition = FlashXmlImporter.ParseFile(resolvedXmlPath);

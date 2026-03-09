@@ -1,5 +1,3 @@
-using System.IO;
-
 using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
@@ -18,13 +16,8 @@ namespace CutTheRope.GameMain
         public static ITargetAnimationBackend CreateOriginal(bool isNightLevel, bool isXmas, string animationStyle)
         {
             return string.Equals(animationStyle, "flash", System.StringComparison.OrdinalIgnoreCase)
-                ? new FlashXmlTargetAnimationBackend(GetFlashOmNomXmlPath())
+                ? new FlashXmlTargetAnimationBackend()
                 : new OriginalTargetAnimationBackend(isNightLevel, isXmas);
-        }
-
-        internal static string GetFlashOmNomXmlPath()
-        {
-            return Path.Combine(ContentPaths.GetContentRootAbsolute(), ContentPaths.AnimationsDirectory, "om_nom_original.xml");
         }
     }
 }
