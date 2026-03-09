@@ -66,14 +66,6 @@ namespace CutTheRope.Helpers
         public static readonly string AnimationsDirectory = Path.Combine(ImagesDirectory, "animations");
 
         /// <summary>
-        /// Gets the full path to a flash animation JSON file.
-        /// </summary>
-        public static string GetAnimationJsonPath(string animationName)
-        {
-            return Path.Combine(RootDirectory, AnimationsDirectory, animationName + ".json");
-        }
-
-        /// <summary>
         /// Gets the absolute filesystem path to a flash animation XML file.
         /// </summary>
         /// <param name="fileName">The XML file name, including extension.</param>
