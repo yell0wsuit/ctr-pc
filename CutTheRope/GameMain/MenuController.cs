@@ -1596,6 +1596,8 @@ namespace CutTheRope.GameMain
                                 case SkinSelectionMode.OmNom:
                                     CandySelectionView.SwitchToOmNomMode();
                                     break;
+                                default:
+                                    throw new InvalidOperationException($"Unhandled {nameof(SkinSelectionMode)}: {skinAction.Mode}.");
                             }
                         }
                         else if (skinAction.Mode == SkinSelectionMode.Candy)
@@ -1623,6 +1625,8 @@ namespace CutTheRope.GameMain
                             case SkinSelectionMode.OmNom:
                                 CandySelectionView.SelectOmNomSlot(selectedIndex);
                                 break;
+                            default:
+                                throw new InvalidOperationException($"Unhandled {nameof(SkinSelectionMode)}: {skinAction.Mode}.");
                         }
 
                         return;
