@@ -46,7 +46,7 @@
             "4": 0,
             "6": 6
         },
-        "idleVariants": [1]
+        "idleVariants": []
     },
     {
         "name": "OM_NOM_PAINTER",
@@ -66,7 +66,7 @@
             "2": 0,
             "8": 8
         },
-        "idleVariants": [1]
+        "idleVariants": []
     },
     {
         "name": "OM_NOM_PIRATE",
@@ -86,7 +86,7 @@
             "4": 0,
             "6": 6
         },
-        "idleVariants": [1]
+        "idleVariants": []
     },
     {
         "name": "OM_NOM_CAESAR",
@@ -106,6 +106,6 @@
             "4": 0,
             "6": 6
         },
-        "idleVariants": [1]
+        "idleVariants": []
     }
 ]
