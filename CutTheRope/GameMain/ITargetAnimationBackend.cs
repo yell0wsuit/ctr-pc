@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
@@ -28,6 +30,12 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="state">Animation state to play.</param>
         void Play(TargetAnimationState state);
+
+        /// <summary>
+        /// Plays a backend-specific random idle variation.
+        /// </summary>
+        /// <param name="rng">Inclusive random function with signature <c>(min, max) => value</c>.</param>
+        void PlayRandomIdleVariant(Func<int, int, int> rng);
 
         /// <summary>
         /// Checks whether the requested target animation state is currently active.

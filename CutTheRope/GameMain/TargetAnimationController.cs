@@ -74,14 +74,7 @@ namespace CutTheRope.GameMain
         /// <param name="rng">Inclusive random function with signature <c>(min, max) => value</c>.</param>
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
-            if (rng(0, 1) == 1)
-            {
-                backend.Play(TargetAnimationState.IdleVariationOne);
-            }
-            else
-            {
-                backend.Play(TargetAnimationState.IdleVariationTwo);
-            }
+            backend.PlayRandomIdleVariant(rng);
         }
 
         /// <summary>

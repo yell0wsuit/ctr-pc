@@ -78,6 +78,18 @@ namespace CutTheRope.GameMain
             PlayTimelineById(timelineId);
         }
 
+        public void PlayRandomIdleVariant(Func<int, int, int> rng)
+        {
+            int timelineId = rng(0, 2) switch
+            {
+                0 => IdleVariationOneTimeline,
+                1 => IdleVariationTwoTimeline,
+                _ => IdleVariationThreeTimeline
+            };
+
+            PlayTimelineById(timelineId);
+        }
+
         private void PlayTimelineById(int timelineId)
         {
             _activeTimelineId = timelineId;
@@ -597,6 +609,7 @@ namespace CutTheRope.GameMain
         private const int IdleLoopTimeline = FlashXmlTargetTimelineRules.IdleLoopTimeline;
         private const int IdleVariationOneTimeline = FlashXmlTargetTimelineRules.IdleVariationOneTimeline;
         private const int IdleVariationTwoTimeline = FlashXmlTargetTimelineRules.IdleVariationTwoTimeline;
+        private const int IdleVariationThreeTimeline = FlashXmlTargetTimelineRules.IdleVariationThreeTimeline;
         private const int ExcitedTimeline = FlashXmlTargetTimelineRules.ExcitedTimeline;
         private const int MouthOpeningTimeline = FlashXmlTargetTimelineRules.MouthOpeningTimeline;
         private const int MouthClosingTimeline = FlashXmlTargetTimelineRules.MouthClosingTimeline;

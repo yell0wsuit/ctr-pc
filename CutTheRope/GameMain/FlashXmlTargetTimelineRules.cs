@@ -13,13 +13,8 @@ namespace CutTheRope.GameMain
         public const int ChewingTimeline = 7;
         public const int PostChewTimeline = 8;
         public const int SleepingTimeline = 9;
-        public const int GreetingAltTimeline = 10;
-        public const int Timeline13 = 13;
-        public const int Timeline14 = 14;
-        public const int Timeline15 = 15;
-        public const int Timeline16 = 16;
-        public const int Timeline17 = 17;
         public const int GreetingTimeline = 18;
+        public const int IdleVariationThreeTimeline = 12;
 
         public static bool ShouldBindFollowupDelegate(int timelineId)
         {
@@ -34,8 +29,8 @@ namespace CutTheRope.GameMain
                 ExcitedTimeline => IdleLoopTimeline,
                 MouthClosingTimeline => PuzzledTimeline,
                 PuzzledTimeline => IdleLoopTimeline,
-                GreetingAltTimeline => IdleLoopTimeline,
                 IdleVariationTwoTimeline => IdleLoopTimeline,
+                IdleVariationThreeTimeline => IdleLoopTimeline,
                 ChewingTimeline => ChewingTimeline,
                 GreetingTimeline => IdleLoopTimeline,
                 _ => -1

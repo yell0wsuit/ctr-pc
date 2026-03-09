@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework;
@@ -179,6 +180,19 @@ namespace CutTheRope.GameMain
                     break;
                 default:
                     break;
+            }
+        }
+
+        /// <inheritdoc />
+        public void PlayRandomIdleVariant(Func<int, int, int> rng)
+        {
+            if (rng(0, 1) == 1)
+            {
+                Play(TargetAnimationState.IdleVariationOne);
+            }
+            else
+            {
+                Play(TargetAnimationState.IdleVariationTwo);
             }
         }
 
