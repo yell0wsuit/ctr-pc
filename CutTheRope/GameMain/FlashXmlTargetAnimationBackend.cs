@@ -351,7 +351,7 @@ namespace CutTheRope.GameMain
                 if (_pendingPirateBubbleDelaySeconds <= 0f)
                 {
                     TriggerPirateBubbleOverlay();
-                    float loopInterval = GetPirateBubbleLoopIntervalSeconds();
+                    float loopInterval = FlashXmlTargetAnimationBackend.GetPirateBubbleLoopIntervalSeconds();
                     _pendingPirateBubbleDelaySeconds = loopInterval > 0f
                         ? _pendingPirateBubbleDelaySeconds + loopInterval
                         : -1f;
@@ -381,7 +381,7 @@ namespace CutTheRope.GameMain
             _activeBubbleOverlays.Add(new PirateBubbleOverlayInstance(rootObject, overlayParts));
         }
 
-        private float GetPirateBubbleLoopIntervalSeconds()
+        private static float GetPirateBubbleLoopIntervalSeconds()
         {
             return PirateBubbleRepeatIntervalSeconds;
         }
