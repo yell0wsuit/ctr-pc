@@ -15,6 +15,11 @@ namespace CutTheRope.GameMain
         {
             delta = 0.016f;
             base.Update(delta);
+            if (targetObject != null)
+            {
+                targetAnimationController?.UpdateAdditionalOverlays(delta);
+                targetAnimationController?.SyncAdditionalOverlayPosition(targetObject.x, targetObject.y);
+            }
             dd.Update(delta);
             pollenDrawer.Update(delta);
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();

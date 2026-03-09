@@ -170,10 +170,22 @@ namespace CutTheRope.GameMain
             backend.UpdateSleepOverlays(delta);
         }
 
+        /// <summary>Advances backend-specific non-sleep overlays by <paramref name="delta"/> seconds.</summary>
+        public void UpdateAdditionalOverlays(float delta)
+        {
+            backend.UpdateAdditionalOverlays(delta);
+        }
+
         /// <summary>Moves all sleep overlay animations to the given position.</summary>
         public void SyncSleepOverlayPosition(float x, float y)
         {
             backend.SyncSleepOverlayPosition(x, y);
+        }
+
+        /// <summary>Updates the spawn position used by backend-specific non-sleep overlays.</summary>
+        public void SyncAdditionalOverlayPosition(float x, float y)
+        {
+            backend.SyncAdditionalOverlayPosition(x, y);
         }
 
         /// <summary>Sets visibility and playback state of all sleep overlay animations.</summary>

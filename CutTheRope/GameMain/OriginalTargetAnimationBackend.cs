@@ -258,6 +258,12 @@ namespace CutTheRope.GameMain
         }
 
         /// <inheritdoc />
+        public void UpdateAdditionalOverlays(float delta)
+        {
+            _ = delta;
+        }
+
+        /// <inheritdoc />
         public void SyncSleepOverlayPosition(float x, float y)
         {
             if (zz1 != null)
@@ -270,6 +276,13 @@ namespace CutTheRope.GameMain
                 zz2.x = x + ZzzOffsetX2;
                 zz2.y = y + ZzzOffsetY2;
             }
+        }
+
+        /// <inheritdoc />
+        public void SyncAdditionalOverlayPosition(float x, float y)
+        {
+            _ = x;
+            _ = y;
         }
 
         /// <inheritdoc />

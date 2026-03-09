@@ -13,9 +13,14 @@ namespace CutTheRope.GameMain
     {
         private const float BaseTargetScale = 1.73f;
         private const int SleepOverlayTimeline = 0;
+        private const string PirateSkinName = "OM_NOM_PIRATE";
+        private const float PirateBubbleSpawnDelaySeconds = 0.932203f;
+        private const float PirateBubbleRepeatIntervalSeconds = 4f;
         private readonly List<Image> parts = [];
         private readonly List<Image> _sleepOverlayParts = [];
+        private readonly List<PirateBubbleOverlayInstance> _activeBubbleOverlays = [];
         private readonly FlashXmlAnimationDefinition _definition;
+        private readonly FlashXmlAnimationDefinition _bubbleOverlayDefinition;
         private readonly FlashXmlIdleCadenceClock _idleCadenceClock = new();
         private readonly GameObject _sleepOverlayObject;
         private readonly OmNomSkinDefinition _skinDefinition;
@@ -25,6 +30,9 @@ namespace CutTheRope.GameMain
         private int _driverTimelineId = -1;
         private float _driverTimelineDurationSeconds;
         private float _driverTimelinePlaybackRate = 1f;
+        private float _additionalOverlayX;
+        private float _additionalOverlayY;
+        private float _pendingPirateBubbleDelaySeconds = -1f;
 
         public FlashXmlTargetAnimationBackend(OmNomSkinDefinition skinDefinition)
         {
@@ -42,6 +50,11 @@ namespace CutTheRope.GameMain
             _sleepOverlayObject = CreateStageRoot(sleepOverlayDefinition);
             _sleepOverlayObject.visible = false;
             BuildParts(sleepOverlayDefinition, _sleepOverlayObject, _sleepOverlayParts, SleepOverlayTimeline, -1);
+
+            _bubbleOverlayDefinition = string.Equals(_skinDefinition.Name, PirateSkinName, StringComparison.Ordinal)
+                ? FlashXmlImporter.ParseFile(
+                    ContentPaths.GetAnimationXmlAbsolutePath("fx_bubbles.xml"))
+                : null;
         }
 
         public GameObject TargetObject { get; }
@@ -91,6 +104,7 @@ namespace CutTheRope.GameMain
             }
 
             PlayTimelineById(timelineId);
+            UpdatePirateBubbleScheduleForState(state);
         }
 
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
@@ -160,12 +174,25 @@ namespace CutTheRope.GameMain
             _sleepOverlayObject.y = y;
         }
 
+        public void UpdateAdditionalOverlays(float delta)
+        {
+            UpdatePirateBubbleOverlays(delta);
+        }
+
+        public void SyncAdditionalOverlayPosition(float x, float y)
+        {
+            _additionalOverlayX = x;
+            _additionalOverlayY = y;
+        }
+
         public void SetSleepOverlayVisible(bool visible)
         {
             _sleepOverlayObject.visible = visible;
             if (visible)
             {
                 PlayTimeline(_sleepOverlayParts, SleepOverlayTimeline);
+                _pendingPirateBubbleDelaySeconds = -1f;
+                _activeBubbleOverlays.Clear();
             }
         }
 
@@ -175,25 +202,32 @@ namespace CutTheRope.GameMain
             {
                 _sleepOverlayObject.Draw();
             }
+
+            for (int i = 0; i < _activeBubbleOverlays.Count; i++)
+            {
+                _activeBubbleOverlays[i].RootObject.Draw();
+            }
         }
 
         public bool HandlesOwnSleepPulse => true;
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
-            if (_driverTimelineId != _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop)
-                || _driverTimeline == null
-                || !ReferenceEquals(t, _driverTimeline)
-                || _externalTimelineDelegate == null)
+            if (_driverTimeline == null || !ReferenceEquals(t, _driverTimeline))
             {
                 return;
             }
 
-            int syntheticTicks = _idleCadenceClock.Advance(t.time, _driverTimelineDurationSeconds, _driverTimelinePlaybackRate);
-            for (int tick = 0; tick < syntheticTicks; tick++)
+            if (_driverTimelineId == _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop)
+                && _externalTimelineDelegate != null)
             {
-                _externalTimelineDelegate.TimelinereachedKeyFramewithIndex(t, k, 1);
+                int syntheticTicks = _idleCadenceClock.Advance(t.time, _driverTimelineDurationSeconds, _driverTimelinePlaybackRate);
+                for (int tick = 0; tick < syntheticTicks; tick++)
+                {
+                    _externalTimelineDelegate.TimelinereachedKeyFramewithIndex(t, k, 1);
+                }
             }
+
         }
 
         public void TimelineFinished(Timeline t)
@@ -284,6 +318,91 @@ namespace CutTheRope.GameMain
 
                     targetParts[i].visible = false;
                 }
+            }
+        }
+
+        private static bool IsTimelinePlaying(List<Image> targetParts, int timelineId)
+        {
+            for (int i = 0; i < targetParts.Count; i++)
+            {
+                Timeline timeline = targetParts[i].GetTimeline(timelineId);
+                if (timeline == null)
+                {
+                    continue;
+                }
+
+                return targetParts[i].GetCurrentTimelineIndex() == timelineId
+                    && targetParts[i].GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_PLAYING;
+            }
+
+            return false;
+        }
+
+        private void UpdatePirateBubbleOverlays(float delta)
+        {
+            if (_bubbleOverlayDefinition == null)
+            {
+                return;
+            }
+
+            if (_pendingPirateBubbleDelaySeconds >= 0f)
+            {
+                _pendingPirateBubbleDelaySeconds -= delta;
+                if (_pendingPirateBubbleDelaySeconds <= 0f)
+                {
+                    TriggerPirateBubbleOverlay();
+                    float loopInterval = GetPirateBubbleLoopIntervalSeconds();
+                    _pendingPirateBubbleDelaySeconds = loopInterval > 0f
+                        ? _pendingPirateBubbleDelaySeconds + loopInterval
+                        : -1f;
+                }
+            }
+
+            for (int i = _activeBubbleOverlays.Count - 1; i >= 0; i--)
+            {
+                PirateBubbleOverlayInstance overlay = _activeBubbleOverlays[i];
+                overlay.RootObject.Update(delta);
+                if (!IsTimelinePlaying(overlay.Parts, SleepOverlayTimeline))
+                {
+                    _activeBubbleOverlays.RemoveAt(i);
+                }
+            }
+        }
+
+        private void TriggerPirateBubbleOverlay()
+        {
+            GameObject rootObject = CreateStageRoot(_bubbleOverlayDefinition);
+            rootObject.x = _additionalOverlayX;
+            rootObject.y = _additionalOverlayY;
+
+            List<Image> overlayParts = [];
+            BuildParts(_bubbleOverlayDefinition, rootObject, overlayParts, -1, -1);
+            PlayTimeline(overlayParts, SleepOverlayTimeline);
+            _activeBubbleOverlays.Add(new PirateBubbleOverlayInstance(rootObject, overlayParts));
+        }
+
+        private float GetPirateBubbleLoopIntervalSeconds()
+        {
+            return PirateBubbleRepeatIntervalSeconds;
+        }
+
+        private void UpdatePirateBubbleScheduleForState(TargetAnimationState state)
+        {
+            if (_bubbleOverlayDefinition == null)
+            {
+                return;
+            }
+
+            if (state == TargetAnimationState.Sleeping)
+            {
+                _pendingPirateBubbleDelaySeconds = -1f;
+                _activeBubbleOverlays.Clear();
+                return;
+            }
+
+            if (_pendingPirateBubbleDelaySeconds < 0f)
+            {
+                _pendingPirateBubbleDelaySeconds = PirateBubbleSpawnDelaySeconds;
             }
         }
 
@@ -683,6 +802,12 @@ namespace CutTheRope.GameMain
                 _lastTimelineTime = 0f;
                 _initialized = false;
             }
+        }
+
+        private sealed class PirateBubbleOverlayInstance(GameObject rootObject, List<Image> parts)
+        {
+            public GameObject RootObject { get; } = rootObject;
+            public List<Image> Parts { get; } = parts;
         }
     }
 }

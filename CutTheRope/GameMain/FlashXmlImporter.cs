@@ -159,6 +159,7 @@ namespace CutTheRope.GameMain
             {
                 nameof(Resources.Img.CharAnimationsSmooth) => Resources.Img.CharAnimationsSmooth,
                 nameof(Resources.Img.FxSleep) => Resources.Img.FxSleep,
+                nameof(Resources.Img.FxBubbles) => Resources.Img.FxBubbles,
                 _ => throw new InvalidOperationException($"Unsupported Flash XML image src '{rawSourceId}'.")
             };
         }
