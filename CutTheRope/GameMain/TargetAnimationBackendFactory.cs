@@ -5,12 +5,9 @@ namespace CutTheRope.GameMain
         public static ITargetAnimationBackend CreateOriginal(bool isNightLevel, bool isXmas)
         {
             int skinIndex = OmNomSkinRegistry.GetSelectedSkinIndex();
-            if (OmNomSkinRegistry.IsClassicSkin(skinIndex))
-            {
-                return new OriginalTargetAnimationBackend(isNightLevel, isXmas);
-            }
-
-            return new FlashXmlTargetAnimationBackend(
+            return OmNomSkinRegistry.IsClassicSkin(skinIndex)
+                ? new OriginalTargetAnimationBackend(isNightLevel, isXmas)
+                : new FlashXmlTargetAnimationBackend(
                 OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex));
         }
     }
