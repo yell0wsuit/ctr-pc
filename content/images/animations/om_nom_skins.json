@@ -127,5 +127,34 @@
             "6": 6
         },
         "idleVariants": []
+    },
+    {
+        "name": "OM_NOM_PREHISTORIC",
+        "animationXml": "om_nom_prehistoric.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "IdleVariationOne": 2,
+            "IdleVariationTwo": 5,
+            "IdleVariationThree": 9,
+            "Excited": 7,
+            "MouthOpening": 10,
+            "MouthClosing": 11,
+            "Sad": 12,
+            "Chewing": 6,
+            "Sleeping": 1,
+            "Greeting": 4
+        },
+        "followups": {
+            "1": 0,
+            "2": 0,
+            "5": 0,
+            "9": 0,
+            "7": 0,
+            "11": 8,
+            "8": 0,
+            "6": 6,
+            "4": 0
+        },
+        "idleVariants": [2, 5, 9]
     }
 ]
