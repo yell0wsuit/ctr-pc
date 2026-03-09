@@ -33,21 +33,17 @@
         "animationXml": "om_nom_pirate.xml",
         "timelines": {
             "IdleLoop": 0,
-            "IdleVariationOne": 1,
-            "Excited": 2,
-            "MouthOpening": 3,
-            "MouthClosing": 4,
-            "Sad": 6,
-            "Chewing": 7,
-            "PostChew": 8,
-            "Sleeping": 9
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7
         },
         "followups": {
             "1": 0,
-            "2": 0,
-            "4": 5,
-            "5": 0,
-            "7": 7
+            "3": 4,
+            "6": 6
         },
         "idleVariants": [1]
     },
@@ -56,21 +52,17 @@
         "animationXml": "om_nom_caesar.xml",
         "timelines": {
             "IdleLoop": 0,
-            "IdleVariationOne": 1,
-            "Excited": 2,
-            "MouthOpening": 3,
-            "MouthClosing": 4,
-            "Sad": 6,
-            "Chewing": 7,
-            "PostChew": 8,
-            "Sleeping": 9
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7
         },
         "followups": {
             "1": 0,
-            "2": 0,
-            "4": 5,
-            "5": 0,
-            "7": 7
+            "3": 4,
+            "6": 6
         },
         "idleVariants": [1]
     }
