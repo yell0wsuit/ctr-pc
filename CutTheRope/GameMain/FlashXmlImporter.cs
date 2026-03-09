@@ -139,13 +139,27 @@ namespace CutTheRope.GameMain
             return new FlashXmlPartDefinition
             {
                 Name = imageNode.Attribute("name")?.Value ?? string.Empty,
-                TextureResourceName = Resources.Img.CharAnimationsSmooth,
+                TextureResourceName = ResolveTextureResourceName(imageNode.Attribute("src")?.Value),
                 QuadToDraw = ParseInt(imageNode.Attribute("quadToDraw")?.Value),
                 AnchorX = ParseFloat(imageNode.Attribute("anchorX")?.Value),
                 AnchorY = ParseFloat(imageNode.Attribute("anchorY")?.Value),
                 RotationCenterX = ParseFloat(imageNode.Attribute("rotationCenterX")?.Value),
                 RotationCenterY = ParseFloat(imageNode.Attribute("rotationCenterY")?.Value),
                 Timelines = timelines
+            };
+        }
+
+        private static string ResolveTextureResourceName(string rawSourceId)
+        {
+            rawSourceId = string.IsNullOrWhiteSpace(rawSourceId)
+                ? throw new InvalidOperationException("Flash XML image src is missing.")
+                : rawSourceId;
+
+            return rawSourceId switch
+            {
+                nameof(Resources.Img.CharAnimationsSmooth) => Resources.Img.CharAnimationsSmooth,
+                nameof(Resources.Img.FxSleep) => Resources.Img.FxSleep,
+                _ => throw new InvalidOperationException($"Unsupported Flash XML image src '{rawSourceId}'.")
             };
         }
 
