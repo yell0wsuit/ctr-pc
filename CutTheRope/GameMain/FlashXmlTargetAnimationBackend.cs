@@ -18,10 +18,13 @@ namespace CutTheRope.GameMain
         private const float BaseTargetScale = 1.7f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
+        private readonly FlashXmlIdleCadenceClock _idleCadenceClock = new();
         private ITimelineDelegate _externalTimelineDelegate;
         private int _activeTimelineId = -1;
         private Timeline _driverTimeline;
         private int _driverTimelineId = -1;
+        private float _driverTimelineDurationSeconds;
+        private float _driverTimelinePlaybackRate = 1f;
 
         public FlashXmlTargetAnimationBackend(string xmlPath = null)
         {
@@ -157,9 +160,19 @@ namespace CutTheRope.GameMain
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
-            _ = t;
-            _ = k;
-            _ = i;
+            if (_driverTimelineId != IdleLoopTimeline
+                || _driverTimeline == null
+                || !ReferenceEquals(t, _driverTimeline)
+                || _externalTimelineDelegate == null)
+            {
+                return;
+            }
+
+            int syntheticTicks = _idleCadenceClock.Advance(t.time, _driverTimelineDurationSeconds, _driverTimelinePlaybackRate);
+            for (int tick = 0; tick < syntheticTicks; tick++)
+            {
+                _externalTimelineDelegate.TimelinereachedKeyFramewithIndex(t, k, 1);
+            }
         }
 
         public void TimelineFinished(Timeline t)
@@ -247,6 +260,9 @@ namespace CutTheRope.GameMain
         {
             _driverTimeline = null;
             _driverTimelineId = -1;
+            _driverTimelineDurationSeconds = 0f;
+            _driverTimelinePlaybackRate = 1f;
+            _idleCadenceClock.Reset();
             Image delegateDriver = FindBestDriverPartWithTimeline(timelineId);
             Timeline timeline = delegateDriver?.GetTimeline(timelineId);
             if (timeline == null)
@@ -256,7 +272,13 @@ namespace CutTheRope.GameMain
 
             if (timelineId == IdleLoopTimeline)
             {
-                timeline.delegateTimelineDelegate = _externalTimelineDelegate;
+                timeline.delegateTimelineDelegate = this;
+                _driverTimeline = timeline;
+                _driverTimelineId = timelineId;
+                _driverTimelineDurationSeconds = GetTimelineDurationSeconds(delegateDriver, timelineId);
+                _driverTimelinePlaybackRate = delegateDriver is FlashXmlImage flashXmlImage
+                    ? flashXmlImage.PlaybackRate
+                    : 1f;
                 return;
             }
 
@@ -266,6 +288,26 @@ namespace CutTheRope.GameMain
                 _driverTimeline = timeline;
                 _driverTimelineId = timelineId;
             }
+        }
+
+        private float GetTimelineDurationSeconds(Image part, int timelineId)
+        {
+            for (int i = 0; i < parts.Count && i < _definition.Parts.Count; i++)
+            {
+                if (!ReferenceEquals(parts[i], part))
+                {
+                    continue;
+                }
+
+                if (_definition.Parts[i].Timelines.TryGetValue(timelineId, out FlashXmlTimelineDefinition timelineDefinition))
+                {
+                    return ComputeTimelineDurationSeconds(timelineDefinition);
+                }
+
+                break;
+            }
+
+            return 0f;
         }
 
         private Image FindBestDriverPartWithTimeline(int timelineId)
@@ -562,5 +604,60 @@ namespace CutTheRope.GameMain
         private const int ChewingTimeline = FlashXmlTargetTimelineRules.ChewingTimeline;
         private const int SleepingTimeline = FlashXmlTargetTimelineRules.SleepingTimeline;
         private const int GreetingTimeline = FlashXmlTargetTimelineRules.GreetingTimeline;
+
+        private sealed class FlashXmlIdleCadenceClock
+        {
+            private const float IdleTickSeconds = 1f;
+            private const float Epsilon = 0.0001f;
+            private float _accumulatedWallSeconds;
+            private float _lastTimelineTime;
+            private bool _initialized;
+
+            public int Advance(float currentTimelineTime, float loopDurationSeconds, float playbackRate)
+            {
+                float timelineDelta;
+                if (!_initialized)
+                {
+                    _initialized = true;
+                    timelineDelta = MathF.Max(currentTimelineTime, 0f);
+                }
+                else
+                {
+                    timelineDelta = currentTimelineTime - _lastTimelineTime;
+                    if (timelineDelta < -Epsilon && loopDurationSeconds > Epsilon)
+                    {
+                        timelineDelta += loopDurationSeconds;
+                    }
+                    else if (timelineDelta < 0f)
+                    {
+                        timelineDelta = 0f;
+                    }
+                }
+
+                _lastTimelineTime = currentTimelineTime;
+                if (timelineDelta <= Epsilon)
+                {
+                    return 0;
+                }
+
+                float effectivePlaybackRate = playbackRate > Epsilon ? playbackRate : 1f;
+                _accumulatedWallSeconds += timelineDelta / effectivePlaybackRate;
+
+                int tickCount = (int)(_accumulatedWallSeconds / IdleTickSeconds);
+                if (tickCount > 0)
+                {
+                    _accumulatedWallSeconds -= tickCount * IdleTickSeconds;
+                }
+
+                return tickCount;
+            }
+
+            public void Reset()
+            {
+                _accumulatedWallSeconds = 0f;
+                _lastTimelineTime = 0f;
+                _initialized = false;
+            }
+        }
     }
 }
