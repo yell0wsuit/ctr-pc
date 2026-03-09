@@ -12,8 +12,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
-        private const float PartDimensionScale = 0.65f;
-        private const float WholeObjectScale = 1.75f;
+        private const float BaseTargetScale = 1.7f;
         private readonly List<Image> parts = [];
         private readonly FlashXmlAnimationDefinition _definition;
         private ITimelineDelegate _externalTimelineDelegate;
@@ -32,8 +31,8 @@ namespace CutTheRope.GameMain
             TargetObject = GameObject.GameObject_createWithResIDQuad(Resources.Img.CharAnimationsSmooth, 0);
             TargetObject.color = RGBAColor.transparentRGBA;
             TargetObject.passColorToChilds = false;
-            TargetObject.scaleX = WholeObjectScale;
-            TargetObject.scaleY = WholeObjectScale;
+            TargetObject.scaleX = BaseTargetScale;
+            TargetObject.scaleY = BaseTargetScale;
 
             BuildParts(_definition);
 
@@ -42,19 +41,19 @@ namespace CutTheRope.GameMain
             // position without per-skin centroid calculation.
             const float classicBodyScreenOffsetY = -5f;
             TargetObject.width = (int)_definition.StageWidth;
-            TargetObject.height = (int)MathF.Round(_definition.StageHeight - (2f * classicBodyScreenOffsetY / WholeObjectScale));
+            TargetObject.height = (int)MathF.Round(_definition.StageHeight - (2f * classicBodyScreenOffsetY / BaseTargetScale));
         }
 
         public GameObject TargetObject { get; }
 
         public float GetTargetBaseScaleX()
         {
-            return WholeObjectScale;
+            return BaseTargetScale;
         }
 
         public float GetTargetBaseScaleY()
         {
-            return WholeObjectScale;
+            return BaseTargetScale;
         }
 
         public void Initialize(ITimelineDelegate timelineDelegate)
@@ -195,8 +194,7 @@ namespace CutTheRope.GameMain
             {
                 FlashXmlPartDefinition partDefinition = definition.Parts[i];
 
-                // Keep per-part dimensions in tuned Flash->DX point space.
-                FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName, PartDimensionScale);
+                FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName);
                 part.PlaybackRate = 0.7f;
                 part.anchor = 9;
                 part.parentAnchor = 9;
