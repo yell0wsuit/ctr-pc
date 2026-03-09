@@ -29,6 +29,26 @@
         "idleVariants": [1, 17, 12]
     },
     {
+        "name": "OM_NOM_VIKING",
+        "animationXml": "om_nom_viking.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6
+        },
+        "idleVariants": [1]
+    },
+    {
         "name": "OM_NOM_PIRATE",
         "animationXml": "om_nom_pirate.xml",
         "timelines": {
