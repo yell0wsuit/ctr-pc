@@ -246,5 +246,51 @@
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27
+    },
+    {
+        "name": "OM_NOM_INVENTOR",
+        "animationXml": "om_nom_inventor.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 8
+        },
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27
+    },
+    {
+        "name": "OM_NOM_CYBORG",
+        "animationXml": "om_nom_cyborg.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 8
+        },
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27
     }
 ]
