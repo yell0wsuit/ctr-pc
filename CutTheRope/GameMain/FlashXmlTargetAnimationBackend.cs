@@ -12,6 +12,7 @@ namespace CutTheRope.GameMain
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
         private const float BaseTargetScale = 1.73f;
+        private const float FlashXmlFrameDurationSeconds = 1f / 30f;
         private const int SleepOverlayTimeline = 0;
         private const string PirateSkinName = "OM_NOM_PIRATE";
         private const float PirateBubbleSpawnDelaySeconds = 0.932203f;
@@ -33,6 +34,7 @@ namespace CutTheRope.GameMain
         private float _additionalOverlayX;
         private float _additionalOverlayY;
         private float _pendingPirateBubbleDelaySeconds = -1f;
+        private bool _skipIdleToSleepTransitionUntilWake = true;
 
         public FlashXmlTargetAnimationBackend(OmNomSkinDefinition skinDefinition)
         {
@@ -98,12 +100,19 @@ namespace CutTheRope.GameMain
 
         public void Play(TargetAnimationState state)
         {
+            if (state == TargetAnimationState.Sleeping && TryPlayIdleToSleepTransition())
+            {
+                UpdatePirateBubbleScheduleForState(state);
+                return;
+            }
+
             if (!TryMapState(state, out int timelineId))
             {
                 return;
             }
 
             PlayTimelineById(timelineId);
+            UpdateIdleToSleepTransitionAvailability(state);
             UpdatePirateBubbleScheduleForState(state);
         }
 
@@ -147,9 +156,21 @@ namespace CutTheRope.GameMain
         public float GetSleepPulseDelaySeconds()
         {
             int sleepingTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
-            return sleepingTimelineId >= 0 && _definition.RootTimelines.TryGetValue(sleepingTimelineId, out float duration)
+            float sleepingDuration = sleepingTimelineId >= 0 && _definition.RootTimelines.TryGetValue(sleepingTimelineId, out float duration)
                 ? duration
                 : 0f;
+
+            if (!ShouldUseIdleToSleepTransition()
+                || _activeTimelineId == sleepingTimelineId
+                || !TryMapState(TargetAnimationState.IdleToSleep, out int idleToSleepTimelineId))
+            {
+                return sleepingDuration;
+            }
+
+            float idleToSleepDuration = GetTimelineDurationSeconds(idleToSleepTimelineId);
+            float idleToSleepSkipSeconds = GetIdleToSleepSkipSeconds(idleToSleepDuration);
+
+            return MathF.Max(0f, idleToSleepDuration - idleToSleepSkipSeconds) + sleepingDuration;
         }
 
         public void ResetBlink()
@@ -338,6 +359,66 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        private bool TryPlayIdleToSleepTransition()
+        {
+            if (!ShouldUseIdleToSleepTransition()
+                || _activeTimelineId == _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping)
+                || !TryMapState(TargetAnimationState.IdleToSleep, out int idleToSleepTimelineId))
+            {
+                return false;
+            }
+
+            PlayTimelineById(idleToSleepTimelineId);
+
+            float trimSeconds = GetIdleToSleepSkipSeconds(GetTimelineDurationSeconds(idleToSleepTimelineId));
+            if (trimSeconds > 0f)
+            {
+                SeekTimeline(parts, idleToSleepTimelineId, trimSeconds);
+            }
+
+            return true;
+        }
+
+        private bool ShouldUseIdleToSleepTransition()
+        {
+            return !_skipIdleToSleepTransitionUntilWake;
+        }
+
+        private float GetIdleToSleepSkipSeconds(float idleToSleepDurationSeconds)
+        {
+            float skippedDurationSeconds = _skinDefinition.IdleToSleepTrimFrames * FlashXmlFrameDurationSeconds;
+            return MathF.Min(skippedDurationSeconds, idleToSleepDurationSeconds);
+        }
+
+        private void UpdateIdleToSleepTransitionAvailability(TargetAnimationState state)
+        {
+            if (state is not TargetAnimationState.Sleeping and not TargetAnimationState.IdleLoop)
+            {
+                _skipIdleToSleepTransitionUntilWake = false;
+            }
+        }
+
+        private void SeekTimeline(List<Image> targetParts, int timelineId, float timeSeconds)
+        {
+            float durationSeconds = GetTimelineDurationSeconds(timelineId);
+            float clampedTimeSeconds = durationSeconds > 0f
+                ? MathF.Min(timeSeconds, MathF.Max(0f, durationSeconds - FlashXmlFrameDurationSeconds))
+                : timeSeconds;
+
+            for (int i = 0; i < targetParts.Count; i++)
+            {
+                Timeline timeline = targetParts[i].GetTimeline(timelineId);
+                if (timeline == null || targetParts[i].GetCurrentTimelineIndex() != timelineId)
+                {
+                    continue;
+                }
+
+                timeline.DeactivateTracks();
+                timeline.time = clampedTimeSeconds;
+                Timeline.UpdateTimeline(timeline, 0f);
+            }
+        }
+
         private void UpdatePirateBubbleOverlays(float delta)
         {
             if (_bubbleOverlayDefinition == null)
@@ -351,7 +432,7 @@ namespace CutTheRope.GameMain
                 if (_pendingPirateBubbleDelaySeconds <= 0f)
                 {
                     TriggerPirateBubbleOverlay();
-                    float loopInterval = FlashXmlTargetAnimationBackend.GetPirateBubbleLoopIntervalSeconds();
+                    float loopInterval = GetPirateBubbleLoopIntervalSeconds();
                     _pendingPirateBubbleDelaySeconds = loopInterval > 0f
                         ? _pendingPirateBubbleDelaySeconds + loopInterval
                         : -1f;
@@ -476,6 +557,19 @@ namespace CutTheRope.GameMain
             }
 
             return 0f;
+        }
+
+        private float GetTimelineDurationSeconds(int timelineId)
+        {
+            if (_definition.RootTimelines.TryGetValue(timelineId, out float rootDuration))
+            {
+                return rootDuration;
+            }
+
+            Image driverPart = FindBestDriverPartWithTimeline(timelineId);
+            return driverPart != null
+                ? GetTimelineDurationSeconds(driverPart, timelineId)
+                : 0f;
         }
 
         private Image FindBestDriverPartWithTimeline(int timelineId)

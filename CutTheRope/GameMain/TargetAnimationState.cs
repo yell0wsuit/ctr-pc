@@ -29,6 +29,9 @@ namespace CutTheRope.GameMain
         /// <summary>Sad reaction animation.</summary>
         Sad,
 
+        /// <summary>Transition from idle loop into sleeping.</summary>
+        IdleToSleep,
+
         /// <summary>Sleeping animation.</summary>
         Sleeping,
 

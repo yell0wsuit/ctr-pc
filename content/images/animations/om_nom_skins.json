@@ -14,7 +14,8 @@
             "Chewing": 7,
             "PostChew": 8,
             "Sleeping": 9,
-            "Greeting": 18
+            "Greeting": 18,
+            "IdleToSleep": 8
         },
         "followups": {
             "1": 0,
@@ -24,9 +25,11 @@
             "17": 0,
             "12": 0,
             "7": 7,
-            "18": 0
+            "18": 0,
+            "8": 9
         },
-        "idleVariants": [1, 17, 12]
+        "idleVariants": [1, 17, 12],
+        "idleToSleepTrimFrames": 27
     },
     {
         "name": "OM_NOM_VIKING",
@@ -38,15 +41,18 @@
             "MouthClosing": 3,
             "Sad": 5,
             "Chewing": 6,
-            "Sleeping": 7
+            "Sleeping": 7,
+            "IdleToSleep": 9
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
-            "6": 6
+            "6": 6,
+            "9": 7
         },
-        "idleVariants": []
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 60
     },
     {
         "name": "OM_NOM_PAINTER",
@@ -142,7 +148,8 @@
             "Sad": 12,
             "Chewing": 6,
             "Sleeping": 1,
-            "Greeting": 4
+            "Greeting": 4,
+            "IdleToSleep": 3
         },
         "followups": {
             "1": 0,
@@ -153,8 +160,10 @@
             "11": 8,
             "8": 0,
             "6": 6,
-            "4": 0
+            "4": 0,
+            "3": 1
         },
-        "idleVariants": [2, 5, 9]
+        "idleVariants": [2, 5, 9],
+        "idleToSleepTrimFrames": 27
     }
 ]

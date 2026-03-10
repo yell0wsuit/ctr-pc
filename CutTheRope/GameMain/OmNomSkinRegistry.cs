@@ -150,12 +150,20 @@ namespace CutTheRope.GameMain
                 }
             }
 
+            int idleToSleepTrimFrames = 0;
+            if (entry.TryGetProperty("idleToSleepTrimFrames", out JsonElement trimElement)
+                && trimElement.TryGetInt32(out int parsedTrimFrames))
+            {
+                idleToSleepTrimFrames = Math.Max(0, parsedTrimFrames);
+            }
+
             return new OmNomSkinDefinition(
                 name,
                 xmlPath,
                 timelineMappings,
                 followups,
-                [.. idleVariants]);
+                [.. idleVariants],
+                idleToSleepTrimFrames);
         }
 
         private static string GetStringProperty(JsonElement element, string propertyName)

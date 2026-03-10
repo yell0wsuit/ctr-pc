@@ -10,7 +10,8 @@ namespace CutTheRope.GameMain
         string animationXmlPath,
         IReadOnlyDictionary<TargetAnimationState, int> timelineMappings,
         IReadOnlyDictionary<int, int> followups,
-        int[] idleVariants)
+        int[] idleVariants,
+        int idleToSleepTrimFrames)
     {
         /// <summary>Localization key for display name.</summary>
         public string Name { get; } = name;
@@ -26,6 +27,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Timeline IDs to randomly pick from for idle variations.</summary>
         public int[] IdleVariants { get; } = idleVariants;
+
+        /// <summary>Frames to skip from the start of the idle-to-sleep transition.</summary>
+        public int IdleToSleepTrimFrames { get; } = idleToSleepTrimFrames;
 
         /// <summary>Gets the timeline ID for a given state, or -1 if unmapped.</summary>
         public int GetTimelineId(TargetAnimationState state)
