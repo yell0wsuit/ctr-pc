@@ -12,6 +12,8 @@ namespace CutTheRope.GameMain
         public string TextureResourceName { get; init; } = string.Empty;
         public IReadOnlyList<FlashXmlPartDefinition> Parts { get; init; } = [];
         public IReadOnlyDictionary<int, float> RootTimelines { get; init; } = new Dictionary<int, float>();
+        public IReadOnlyDictionary<int, FlashXmlRootTimelineDefinition> RootTimelineDefinitions { get; init; }
+            = new Dictionary<int, FlashXmlRootTimelineDefinition>();
     }
 
     public sealed class FlashXmlPartDefinition
@@ -24,6 +26,14 @@ namespace CutTheRope.GameMain
         public float RotationCenterX { get; init; }
         public float RotationCenterY { get; init; }
         public IReadOnlyDictionary<int, FlashXmlTimelineDefinition> Timelines { get; init; } = new Dictionary<int, FlashXmlTimelineDefinition>();
+        public IReadOnlyList<int> EmptyTimelineIds { get; init; } = [];
+    }
+
+    public sealed class FlashXmlRootTimelineDefinition
+    {
+        public int Id { get; init; }
+        public float DurationSeconds { get; init; }
+        public IReadOnlyList<FlashXmlActionGroupKeyFrame> ActionKeyFrames { get; init; } = [];
     }
 
     public sealed class FlashXmlTimelineDefinition
@@ -102,6 +112,7 @@ namespace CutTheRope.GameMain
             }
 
             Dictionary<int, float> rootTimelines = [];
+            Dictionary<int, FlashXmlRootTimelineDefinition> rootTimelineDefinitions = [];
             foreach (XElement timelineNode in root.Elements("Timeline"))
             {
                 int timelineId = ParseInt(timelineNode.Attribute("ID")?.Value);
@@ -115,6 +126,12 @@ namespace CutTheRope.GameMain
                 }
 
                 rootTimelines[timelineId] = duration;
+                rootTimelineDefinitions[timelineId] = new FlashXmlRootTimelineDefinition
+                {
+                    Id = timelineId,
+                    DurationSeconds = duration,
+                    ActionKeyFrames = groupedActions
+                };
             }
 
             return new FlashXmlAnimationDefinition
@@ -123,7 +140,8 @@ namespace CutTheRope.GameMain
                 StageHeight = ParseFloat(root.Attribute("height")?.Value),
                 TextureResourceName = Resources.Img.CharAnimationsSmooth,
                 Parts = parts,
-                RootTimelines = rootTimelines
+                RootTimelines = rootTimelines,
+                RootTimelineDefinitions = rootTimelineDefinitions
             };
         }
 
@@ -145,8 +163,26 @@ namespace CutTheRope.GameMain
                 AnchorY = ParseFloat(imageNode.Attribute("anchorY")?.Value),
                 RotationCenterX = ParseFloat(imageNode.Attribute("rotationCenterX")?.Value),
                 RotationCenterY = ParseFloat(imageNode.Attribute("rotationCenterY")?.Value),
-                Timelines = timelines
+                Timelines = timelines,
+                EmptyTimelineIds = ParseEmptyTimelineIds(imageNode.Element("EmptyTimelines")?.Value)
             };
+        }
+
+        private static List<int> ParseEmptyTimelineIds(string rawEmptyTimelines)
+        {
+            if (string.IsNullOrWhiteSpace(rawEmptyTimelines))
+            {
+                return [];
+            }
+
+            List<int> timelineIds = [];
+            string[] tokens = rawEmptyTimelines.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                timelineIds.Add(ParseInt(tokens[i]));
+            }
+
+            return timelineIds;
         }
 
         private static string ResolveTextureResourceName(string rawSourceId)

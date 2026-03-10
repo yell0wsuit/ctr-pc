@@ -31,6 +31,7 @@ namespace CutTheRope.GameMain
         private int _driverTimelineId = -1;
         private float _driverTimelineDurationSeconds;
         private float _driverTimelinePlaybackRate = 1f;
+        private bool _driverTimelineUsesRootDefinition;
         private float _additionalOverlayX;
         private float _additionalOverlayY;
         private float _pendingPirateBubbleDelaySeconds = -1f;
@@ -46,12 +47,14 @@ namespace CutTheRope.GameMain
             int idleLoopId = _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
             int sleepingId = _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
             BuildParts(_definition, TargetObject, parts, idleLoopId, sleepingId);
+            BuildRootTimelines(_definition, TargetObject, idleLoopId, sleepingId);
 
             FlashXmlAnimationDefinition sleepOverlayDefinition = FlashXmlImporter.ParseFile(
                 ContentPaths.GetAnimationXmlAbsolutePath("fx_sleep.xml"));
             _sleepOverlayObject = CreateStageRoot(sleepOverlayDefinition);
             _sleepOverlayObject.visible = false;
             BuildParts(sleepOverlayDefinition, _sleepOverlayObject, _sleepOverlayParts, SleepOverlayTimeline, -1);
+            BuildRootTimelines(sleepOverlayDefinition, _sleepOverlayObject, SleepOverlayTimeline, -1);
 
             _bubbleOverlayDefinition = string.Equals(_skinDefinition.Name, PirateSkinName, StringComparison.Ordinal)
                 ? FlashXmlImporter.ParseFile(
@@ -131,6 +134,7 @@ namespace CutTheRope.GameMain
         {
             _activeTimelineId = timelineId;
             PlayTimeline(parts, timelineId);
+            PlayRootTimeline(TargetObject, timelineId);
             BindDriverDelegateForTimeline(timelineId);
         }
 
@@ -212,6 +216,7 @@ namespace CutTheRope.GameMain
             if (visible)
             {
                 PlayTimeline(_sleepOverlayParts, SleepOverlayTimeline);
+                PlayRootTimeline(_sleepOverlayObject, SleepOverlayTimeline);
                 _pendingPirateBubbleDelaySeconds = -1f;
                 _activeBubbleOverlays.Clear();
             }
@@ -239,6 +244,12 @@ namespace CutTheRope.GameMain
                 return;
             }
 
+            if (_driverTimelineUsesRootDefinition)
+            {
+                _externalTimelineDelegate?.TimelinereachedKeyFramewithIndex(t, k, i);
+                return;
+            }
+
             if (_driverTimelineId == _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop)
                 && _externalTimelineDelegate != null)
             {
@@ -263,18 +274,17 @@ namespace CutTheRope.GameMain
             _driverTimeline = null;
             _driverTimelineId = -1;
 
-            if (_skinDefinition.TryGetFollowupTimeline(finishedTimelineId, out int followupTimelineId)
+            if (TryGetCompletionTargetTimelineId(_skinDefinition, finishedTimelineId, out int followupTimelineId)
                 && FindFirstPartWithTimeline(followupTimelineId) != null)
             {
                 PlayTimelineById(followupTimelineId);
-                return;
             }
+        }
 
-            int idleLoopTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
-            if (_activeTimelineId != idleLoopTimelineId)
-            {
-                PlayTimelineById(idleLoopTimelineId);
-            }
+        private static bool TryGetCompletionTargetTimelineId(OmNomSkinDefinition skinDefinition,
+            int finishedTimelineId, out int followupTimelineId)
+        {
+            return skinDefinition.TryGetFollowupTimeline(finishedTimelineId, out followupTimelineId);
         }
 
         private static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject,
@@ -317,6 +327,21 @@ namespace CutTheRope.GameMain
             }
         }
 
+        private static void BuildRootTimelines(FlashXmlAnimationDefinition definition, GameObject rootObject,
+            int idleLoopTimelineId, int sleepingTimelineId)
+        {
+            foreach ((int timelineId, FlashXmlRootTimelineDefinition timelineDefinition) in definition.RootTimelineDefinitions)
+            {
+                Timeline timeline = CreateRootDriverTimeline(timelineDefinition);
+                if (timelineId == idleLoopTimelineId || timelineId == sleepingTimelineId)
+                {
+                    timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                }
+
+                rootObject.AddTimelinewithID(timeline, timelineId);
+            }
+        }
+
         private static void PlayTimeline(List<Image> targetParts, int timelineId)
         {
             for (int i = 0; i < targetParts.Count; i++)
@@ -339,6 +364,18 @@ namespace CutTheRope.GameMain
 
                     targetParts[i].visible = false;
                 }
+            }
+        }
+
+        private static void PlayRootTimeline(GameObject rootObject, int timelineId)
+        {
+            if (rootObject.GetTimeline(timelineId) != null)
+            {
+                rootObject.PlayTimeline(timelineId);
+            }
+            else if (rootObject.GetCurrentTimeline() != null)
+            {
+                rootObject.StopCurrentTimeline();
             }
         }
 
@@ -458,7 +495,9 @@ namespace CutTheRope.GameMain
 
             List<Image> overlayParts = [];
             BuildParts(_bubbleOverlayDefinition, rootObject, overlayParts, -1, -1);
+            BuildRootTimelines(_bubbleOverlayDefinition, rootObject, -1, -1);
             PlayTimeline(overlayParts, SleepOverlayTimeline);
+            PlayRootTimeline(rootObject, SleepOverlayTimeline);
             _activeBubbleOverlays.Add(new PirateBubbleOverlayInstance(rootObject, overlayParts));
         }
 
@@ -511,7 +550,20 @@ namespace CutTheRope.GameMain
             _driverTimelineId = -1;
             _driverTimelineDurationSeconds = 0f;
             _driverTimelinePlaybackRate = 1f;
+            _driverTimelineUsesRootDefinition = false;
             _idleCadenceClock.Reset();
+
+            Timeline rootTimeline = TargetObject.GetTimeline(timelineId);
+            if (rootTimeline != null)
+            {
+                rootTimeline.delegateTimelineDelegate = this;
+                _driverTimeline = rootTimeline;
+                _driverTimelineId = timelineId;
+                _driverTimelineDurationSeconds = GetTimelineDurationSeconds(timelineId);
+                _driverTimelineUsesRootDefinition = true;
+                return;
+            }
+
             Image delegateDriver = FindBestDriverPartWithTimeline(timelineId);
             Timeline timeline = delegateDriver?.GetTimeline(timelineId);
             if (timeline == null)
@@ -766,6 +818,43 @@ namespace CutTheRope.GameMain
 
                 part.AddTimelinewithID(timeline, timelineId);
             }
+
+            for (int i = 0; i < partDefinition.EmptyTimelineIds.Count; i++)
+            {
+                int emptyTimelineId = partDefinition.EmptyTimelineIds[i];
+                if (part.GetTimeline(emptyTimelineId) != null)
+                {
+                    continue;
+                }
+
+                Timeline hiddenTimeline = CreateHiddenTimeline();
+                hiddenTimeline.GetTrack(Track.TrackType.TRACK_ACTION).keyFrames[0].value.action.actionSet[0].actionTarget = part;
+                if (emptyTimelineId == idleLoopTimelineId || emptyTimelineId == sleepingTimelineId)
+                {
+                    hiddenTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                }
+
+                part.AddTimelinewithID(hiddenTimeline, emptyTimelineId);
+            }
+        }
+
+        private static Timeline CreateHiddenTimeline()
+        {
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+            timeline.AddKeyFrame(KeyFrame.MakeSingleAction(new BaseElement(), BaseElement.ACTION_SET_VISIBLE, 0, 0, 0f));
+            return timeline;
+        }
+
+        private static Timeline CreateRootDriverTimeline(FlashXmlRootTimelineDefinition timelineDefinition)
+        {
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(timelineDefinition.ActionKeyFrames.Count + 2);
+            for (int i = 0; i < timelineDefinition.ActionKeyFrames.Count; i++)
+            {
+                FlashXmlActionGroupKeyFrame actionFrame = timelineDefinition.ActionKeyFrames[i];
+                timeline.AddKeyFrame(KeyFrame.MakeAction([], actionFrame.TimeOffset));
+            }
+
+            return timeline;
         }
 
         private static CTRAction BuildAction(Image part, FlashXmlActionCommand action, Dictionary<string, Image> partsByName)
