@@ -177,5 +177,28 @@
         },
         "idleVariants": [2, 5, 9],
         "idleToSleepTrimFrames": 27
+    },
+    {
+        "name": "OM_NOM_DISCO",
+        "animationXml": "om_nom_disco.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 8,
+            "IdleToSleep": 7
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "7": 8
+        },
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27
     }
 ]
