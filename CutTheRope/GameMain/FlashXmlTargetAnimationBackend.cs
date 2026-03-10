@@ -25,7 +25,7 @@ namespace CutTheRope.GameMain
         private readonly FlashXmlAnimationDefinition _definition;
         private readonly FlashXmlAnimationDefinition _bubbleOverlayDefinition;
         private readonly FlashXmlIdleCadenceClock _idleCadenceClock = new();
-        private readonly GameObject _sleepOverlayObject;
+        private readonly FlashXmlStageRoot _sleepOverlayObject;
         private readonly OmNomSkinDefinition _skinDefinition;
         private ITimelineDelegate _externalTimelineDelegate;
         private int _activeTimelineId = -1;
@@ -298,12 +298,9 @@ namespace CutTheRope.GameMain
 
         private static float GetTimelinePlaybackRate(OmNomSkinDefinition skinDefinition, int activeTimelineId)
         {
-            if (activeTimelineId < 0)
-            {
-                return 1f;
-            }
-
-            return Array.IndexOf(skinDefinition.SlowTimelineIds, activeTimelineId) >= 0
+            return activeTimelineId < 0
+                ? 1f
+                : Array.IndexOf(skinDefinition.SlowTimelineIds, activeTimelineId) >= 0
                 ? IosSlowPlaybackRate
                 : 1f;
         }
