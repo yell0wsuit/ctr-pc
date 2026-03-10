@@ -368,6 +368,7 @@ namespace CutTheRope.GameMain
         {
             previewObject.scaleX = layout.Scale;
             previewObject.scaleY = layout.Scale;
+            previewObject.useCustomAnchor = false;
             previewObject.anchor = 18;
             previewObject.parentAnchor = 18;
             previewObject.x = 0f;
