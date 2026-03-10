@@ -237,6 +237,8 @@ namespace CutTheRope.GameMain
             public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string FxSleep = "fx_sleep";
             public const string FxBubbles = "fx_bubbles";
+            public const string HatHalloween = "hat_halloween";
+            public const string HatXmas = "hat_xmas";
             public const string CharAnimationsPrehistoric = "char_animations_body_prehistoric";
             public const string ObjHookRegulated = "obj_hook_regulated";
             public const string ObjHookMovable = "obj_hook_movable";

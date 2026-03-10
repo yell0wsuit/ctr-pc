@@ -197,6 +197,8 @@ namespace CutTheRope.GameMain
                 nameof(Resources.Img.FxSleep) => Resources.Img.FxSleep,
                 nameof(Resources.Img.FxBubbles) => Resources.Img.FxBubbles,
                 nameof(Resources.Img.CharAnimationsPrehistoric) => Resources.Img.CharAnimationsPrehistoric,
+                nameof(Resources.Img.HatHalloween) => Resources.Img.HatHalloween,
+                nameof(Resources.Img.HatXmas) => Resources.Img.HatXmas,
                 _ => throw new InvalidOperationException($"Unsupported Flash XML image src '{rawSourceId}'.")
             };
         }
