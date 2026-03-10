@@ -10,13 +10,12 @@ namespace CutTheRope.GameMain
 {
     internal static class CandySelectionView
     {
-        private enum SelectionMode { Candy, Rope, OmNom }
-
         // Store candy slot button data for quick updates
-        private static readonly List<SlotButtonData> slotButtons = [];
+        private static List<SlotButtonData> slotButtons = [];
 
         // Track current selection mode and UI references
-        private static SelectionMode currentMode;
+        private static CandySelectionMode currentMode;
+        private static CandySelectionModeCache modeCache = new();
         private static ScrollableContainer currentContainer;
         private static BaseElement gridContainer;
         private static IButtonDelegation currentButtonDelegate;
@@ -57,32 +56,34 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Switches between candy, rope, and Om Nom selection modes.
         /// </summary>
-        private static void SwitchToMode(SelectionMode mode)
+        private static void SwitchToMode(CandySelectionMode mode)
         {
             if (currentMode == mode || currentContainer == null)
             {
                 return;
             }
 
-            CleanupPreview();
+            StoreCurrentModeState();
+            DetachModeGrid(currentMode);
             currentMode = mode;
             UpdateTabButtonStates();
-            RebuildGrid();
+            AttachCurrentModeGrid();
+            currentContainer.SetScroll(new Vector(0f, 0f));
         }
 
         public static void SwitchToCandyMode()
         {
-            SwitchToMode(SelectionMode.Candy);
+            SwitchToMode(CandySelectionMode.Candy);
         }
 
         public static void SwitchToRopeMode()
         {
-            SwitchToMode(SelectionMode.Rope);
+            SwitchToMode(CandySelectionMode.Rope);
         }
 
         public static void SwitchToOmNomMode()
         {
-            SwitchToMode(SelectionMode.OmNom);
+            SwitchToMode(CandySelectionMode.OmNom);
         }
 
         /// <summary>
@@ -95,9 +96,9 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            SetTabActive(candyTabButton, currentMode == SelectionMode.Candy);
-            SetTabActive(ropeTabButton, currentMode == SelectionMode.Rope);
-            SetTabActive(omNomTabButton, currentMode == SelectionMode.OmNom);
+            SetTabActive(candyTabButton, currentMode == CandySelectionMode.Candy);
+            SetTabActive(ropeTabButton, currentMode == CandySelectionMode.Rope);
+            SetTabActive(omNomTabButton, currentMode == CandySelectionMode.OmNom);
         }
 
         private static void SetTabActive(Button tab, bool active)
@@ -187,26 +188,87 @@ namespace CutTheRope.GameMain
             return slotButton;
         }
 
-        /// <summary>
-        /// Rebuilds the grid based on the current mode (candy, rope, or Om Nom).
-        /// </summary>
-        private static void RebuildGrid()
+        private static void StoreCurrentModeState()
+        {
+            CandySelectionModeState state = modeCache.GetState(currentMode);
+            state.SlotButtons = slotButtons;
+            state.ActivePreviewBackend = activePreviewBackend;
+            state.ActivePreviewObject = activePreviewObject;
+
+            if (state.Grid == null && currentContainer?.ChildsCount() > 0)
+            {
+                state.Grid = currentContainer.GetChild(0);
+            }
+        }
+
+        private static void DetachModeGrid(CandySelectionMode mode)
         {
             if (currentContainer == null)
             {
                 return;
             }
 
-            // Reset scroll position to top
-            currentContainer.SetScroll(new Vector(0f, 0f));
+            BaseElement grid = modeCache.GetState(mode).Grid;
+            if (grid != null)
+            {
+                currentContainer.RemoveChild(grid);
+                return;
+            }
 
-            // Clear existing content - remove the old grid (child at index 0)
             if (currentContainer.ChildsCount() > 0)
             {
                 currentContainer.RemoveChildWithID(0);
             }
-            slotButtons.Clear();
+        }
 
+        private static void AttachCurrentModeGrid()
+        {
+            CandySelectionModeActivation activation = modeCache.ActivateMode(currentMode);
+            if (activation.RequiresBuild)
+            {
+                BuildAndAttachGrid(currentMode);
+                return;
+            }
+
+            AttachCachedGrid(activation.State);
+        }
+
+        private static void AttachCachedGrid(CandySelectionModeState state)
+        {
+            slotButtons = state.SlotButtons as List<SlotButtonData> ?? [];
+            activePreviewBackend = state.ActivePreviewBackend;
+            activePreviewObject = state.ActivePreviewObject;
+
+            if (state.Grid == null || currentContainer == null)
+            {
+                return;
+            }
+
+            if (gridContainer != null)
+            {
+                gridContainer.width = state.Grid.width;
+                gridContainer.height = state.Grid.height;
+            }
+
+            _ = currentContainer.AddChild(state.Grid);
+        }
+
+        private static void BuildAndAttachGrid(CandySelectionMode mode)
+        {
+            slotButtons = [];
+            activePreviewBackend = null;
+            activePreviewObject = null;
+
+            BaseElement grid = CreateGrid(mode);
+            modeCache.StoreState(mode, grid, slotButtons, activePreviewObject, activePreviewBackend);
+            AttachCachedGrid(modeCache.GetState(mode));
+        }
+
+        /// <summary>
+        /// Builds the grid for the requested mode.
+        /// </summary>
+        private static VBox CreateGrid(CandySelectionMode mode)
+        {
             const int ITEMS_PER_ROW = 4;
 
             // Sprite sheet dimensions
@@ -237,21 +299,21 @@ namespace CutTheRope.GameMain
             int baseQuadIndex;
             Func<int, MenuButtonId> getButtonId;
 
-            switch (currentMode)
+            switch (mode)
             {
-                case SelectionMode.Rope:
+                case CandySelectionMode.Rope:
                     totalItems = RopeColorHelper.TotalRopeColors;
                     selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
                     baseQuadIndex = 60; // rope01-rope09 are quads 60-68
                     getButtonId = MenuButtonId.ForRopeSlot;
                     break;
-                case SelectionMode.OmNom:
+                case CandySelectionMode.OmNom:
                     totalItems = OmNomSkinRegistry.TotalSkinCount;
                     selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_OMNOM);
                     baseQuadIndex = -1; // not used — Om Nom slots created differently
                     getButtonId = MenuButtonId.ForOmNomSlot;
                     break;
-                case SelectionMode.Candy:
+                case CandySelectionMode.Candy:
                 default: // Candy
                     const int TOTAL_CANDIES = 52;
                     totalItems = TOTAL_CANDIES;
@@ -275,7 +337,7 @@ namespace CutTheRope.GameMain
                     }
 
                     Button slotButton;
-                    if (currentMode == SelectionMode.OmNom)
+                    if (mode == CandySelectionMode.OmNom)
                     {
                         slotButton = CreateOmNomSlotButton(itemIndex, selectedIndex, slotScale, getButtonId(itemIndex));
                     }
@@ -295,7 +357,7 @@ namespace CutTheRope.GameMain
                 gridContainer.width = itemGrid.width;
                 gridContainer.height = itemGrid.height;
             }
-            _ = currentContainer.AddChild(itemGrid);
+            return itemGrid;
         }
 
         /// <summary>
@@ -459,7 +521,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static void Update(float delta)
         {
-            if (currentMode == SelectionMode.OmNom && activePreviewObject != null)
+            if (currentMode == CandySelectionMode.OmNom && activePreviewObject != null)
             {
                 activePreviewObject.Update(delta);
             }
@@ -474,7 +536,11 @@ namespace CutTheRope.GameMain
 
             // Store delegate for later use
             currentButtonDelegate = buttonDelegate;
-            currentMode = SelectionMode.Candy;
+            currentMode = CandySelectionMode.Candy;
+            modeCache = new();
+            slotButtons = [];
+            activePreviewBackend = null;
+            activePreviewObject = null;
 
             BaseElement background = new()
             {
@@ -583,7 +649,7 @@ namespace CutTheRope.GameMain
             // Store container reference and build initial grid
             currentContainer = candyContainer;
             UpdateTabButtonStates(); // Set initial tab button states (candy active)
-            RebuildGrid();
+            AttachCurrentModeGrid();
 
             _ = menuView.AddChild(background);
 
