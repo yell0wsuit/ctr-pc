@@ -100,6 +100,7 @@ namespace CutTheRope.GameMain
             sleepPulseDelay = 0f;
             sleepPulseBaseY = 0f;
             sleepSoundTimer = 0f;
+            nightSleepOverlayVisible = false;
             gameLostTriggered = false;
         }
 

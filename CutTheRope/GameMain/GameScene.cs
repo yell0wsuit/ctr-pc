@@ -446,6 +446,8 @@ namespace CutTheRope.GameMain
 
         private float sleepSoundTimer;
 
+        private bool nightSleepOverlayVisible;
+
         private float targetBaseScaleX = 1f;
 
         private float targetBaseScaleY = 1f;

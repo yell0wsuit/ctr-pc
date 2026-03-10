@@ -165,7 +165,10 @@ namespace CutTheRope.GameMain
             }
 
             bool isSleeping = isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered;
-            if (isSleeping)
+            bool shouldShowSleepOverlay = isSleeping && targetAnimationController?.IsSleepingAnimationPlaying() == true;
+            SetNightSleepVisibility(shouldShowSleepOverlay);
+
+            if (shouldShowSleepOverlay)
             {
                 targetAnimationController?.UpdateSleepOverlays(delta);
                 targetAnimationController?.SyncSleepOverlayPosition(targetObject.x, targetObject.y);
@@ -284,7 +287,7 @@ namespace CutTheRope.GameMain
             sleepPulseTime = 0f;
             sleepPulseDelay = targetAnimationController?.GetSleepPulseDelaySeconds() ?? 0f;
             sleepSoundTimer = 0f;
-            SetNightSleepVisibility(true);
+            SetNightSleepVisibility(false);
             targetAnimationController?.PlaySleeping();
             if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
             {
@@ -299,6 +302,12 @@ namespace CutTheRope.GameMain
         /// <param name="visible">Whether the zzz animations should be visible.</param>
         private void SetNightSleepVisibility(bool visible)
         {
+            if (nightSleepOverlayVisible == visible)
+            {
+                return;
+            }
+
+            nightSleepOverlayVisible = visible;
             targetAnimationController?.SetSleepOverlayVisible(visible);
         }
 
