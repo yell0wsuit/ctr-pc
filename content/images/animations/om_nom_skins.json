@@ -52,7 +52,7 @@
             "9": 7
         },
         "idleVariants": [],
-        "idleToSleepTrimFrames": 60
+        "idleToSleepTrimFrames": 27
     },
     {
         "name": "OM_NOM_PAINTER",
@@ -64,15 +64,18 @@
             "MouthClosing": 6,
             "Sad": 7,
             "Chewing": 8,
-            "Sleeping": 3
+            "Sleeping": 3,
+            "IdleToSleep": 9
         },
         "followups": {
             "1": 0,
             "6": 2,
             "2": 0,
-            "8": 8
+            "8": 8,
+            "9": 3
         },
-        "idleVariants": []
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27
     },
     {
         "name": "OM_NOM_PIRATE",
@@ -84,15 +87,18 @@
             "MouthClosing": 3,
             "Sad": 5,
             "Chewing": 6,
-            "Sleeping": 7
+            "Sleeping": 7,
+            "IdleToSleep": 9
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
-            "6": 6
+            "6": 6,
+            "9": 7
         },
-        "idleVariants": []
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27
     },
     {
         "name": "OM_NOM_PHARAON",
@@ -104,15 +110,18 @@
             "MouthClosing": 3,
             "Sad": 5,
             "Chewing": 6,
-            "Sleeping": 7
+            "Sleeping": 7,
+            "IdleToSleep": 9
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
-            "6": 6
+            "6": 6,
+            "9": 7
         },
-        "idleVariants": []
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27
     },
     {
         "name": "OM_NOM_CAESAR",
@@ -124,15 +133,18 @@
             "MouthClosing": 3,
             "Sad": 5,
             "Chewing": 6,
-            "Sleeping": 8
+            "Sleeping": 8,
+            "IdleToSleep": 9
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
-            "6": 6
+            "6": 6,
+            "9": 8
         },
-        "idleVariants": []
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27
     },
     {
         "name": "OM_NOM_PREHISTORIC",
