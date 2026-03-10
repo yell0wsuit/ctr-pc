@@ -11,7 +11,8 @@ namespace CutTheRope.GameMain
         IReadOnlyDictionary<TargetAnimationState, int> timelineMappings,
         IReadOnlyDictionary<int, int> followups,
         int[] idleVariants,
-        int idleToSleepTrimFrames)
+        int idleToSleepTrimFrames,
+        int[] slowTimelineIds)
     {
         /// <summary>Localization key for display name.</summary>
         public string Name { get; } = name;
@@ -30,6 +31,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Frames to skip from the start of the idle-to-sleep transition.</summary>
         public int IdleToSleepTrimFrames { get; } = idleToSleepTrimFrames;
+
+        /// <summary>Timeline IDs that should run at the slowed iOS Flash playback rate.</summary>
+        public int[] SlowTimelineIds { get; } = slowTimelineIds;
 
         /// <summary>Gets the timeline ID for a given state, or -1 if unmapped.</summary>
         public int GetTimelineId(TargetAnimationState state)

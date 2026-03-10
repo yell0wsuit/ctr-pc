@@ -29,16 +29,6 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class FlashXmlImage : Image
     {
-        /// <summary>
-        /// Multiplier applied to the update delta before advancing timelines.
-        /// </summary>
-        internal float PlaybackRate { get; set; } = 1f;
-
-        public override void Update(float delta)
-        {
-            base.Update(delta * PlaybackRate);
-        }
-
         public override void SetDrawQuad(int n)
         {
             base.SetDrawQuad(n);

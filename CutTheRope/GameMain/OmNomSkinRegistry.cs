@@ -157,13 +157,27 @@ namespace CutTheRope.GameMain
                 idleToSleepTrimFrames = Math.Max(0, parsedTrimFrames);
             }
 
+            List<int> slowTimelineIds = [];
+            if (entry.TryGetProperty("slowTimelines", out JsonElement slowTimelinesElement)
+                && slowTimelinesElement.ValueKind == JsonValueKind.Array)
+            {
+                foreach (JsonElement item in slowTimelinesElement.EnumerateArray())
+                {
+                    if (item.TryGetInt32(out int timelineId))
+                    {
+                        slowTimelineIds.Add(timelineId);
+                    }
+                }
+            }
+
             return new OmNomSkinDefinition(
                 name,
                 xmlPath,
                 timelineMappings,
                 followups,
                 [.. idleVariants],
-                idleToSleepTrimFrames);
+                idleToSleepTrimFrames,
+                [.. slowTimelineIds]);
         }
 
         private static string GetStringProperty(JsonElement element, string propertyName)

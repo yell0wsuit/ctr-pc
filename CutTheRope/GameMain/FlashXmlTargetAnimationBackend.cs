@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 
 using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
@@ -14,6 +15,7 @@ namespace CutTheRope.GameMain
         private const float BaseTargetScale = 1.73f;
         private const float FlashXmlFrameDurationSeconds = 1f / 30f;
         private const int SleepOverlayTimeline = 0;
+        private const float IosSlowPlaybackRate = 0.6f;
         private const string PirateSkinName = "OM_NOM_PIRATE";
         private const float PirateBubbleSpawnDelaySeconds = 0.932203f;
         private const float PirateBubbleRepeatIntervalSeconds = 4f;
@@ -64,9 +66,11 @@ namespace CutTheRope.GameMain
 
         public GameObject TargetObject { get; }
 
-        private static GameObject CreateStageRoot(FlashXmlAnimationDefinition definition)
+        private static FlashXmlStageRoot CreateStageRoot(FlashXmlAnimationDefinition definition)
         {
-            GameObject stageRoot = GameObject.GameObject_createWithResIDQuad(Resources.Img.CharAnimationsSmooth, 0);
+            FlashXmlStageRoot stageRoot = new();
+            _ = stageRoot.InitWithTexture(Application.GetTexture(Resources.Img.CharAnimationsSmooth));
+            stageRoot.SetDrawQuad(0);
             stageRoot.color = RGBAColor.transparentRGBA;
             stageRoot.passColorToChilds = false;
             stageRoot.scaleX = BaseTargetScale;
@@ -133,6 +137,11 @@ namespace CutTheRope.GameMain
         private void PlayTimelineById(int timelineId)
         {
             _activeTimelineId = timelineId;
+            if (TargetObject is FlashXmlStageRoot stageRoot)
+            {
+                stageRoot.PlaybackRate = GetTimelinePlaybackRate(_skinDefinition, timelineId);
+            }
+
             PlayTimeline(parts, timelineId);
             PlayRootTimeline(TargetObject, timelineId);
             BindDriverDelegateForTimeline(timelineId);
@@ -287,6 +296,18 @@ namespace CutTheRope.GameMain
             return skinDefinition.TryGetFollowupTimeline(finishedTimelineId, out followupTimelineId);
         }
 
+        private static float GetTimelinePlaybackRate(OmNomSkinDefinition skinDefinition, int activeTimelineId)
+        {
+            if (activeTimelineId < 0)
+            {
+                return 1f;
+            }
+
+            return Array.IndexOf(skinDefinition.SlowTimelineIds, activeTimelineId) >= 0
+                ? IosSlowPlaybackRate
+                : 1f;
+        }
+
         private static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject,
             List<Image> targetParts, int idleLoopTimelineId, int sleepingTimelineId)
         {
@@ -299,7 +320,6 @@ namespace CutTheRope.GameMain
                 FlashXmlPartDefinition partDefinition = definition.Parts[i];
 
                 FlashXmlImage part = FlashXmlImage.CreateWithResID(partDefinition.TextureResourceName);
-                part.PlaybackRate = 0.7f;
                 part.anchor = 9;
                 part.parentAnchor = 9;
                 part.visible = ShouldStartVisible(partDefinition, idleLoopTimelineId);
@@ -577,9 +597,7 @@ namespace CutTheRope.GameMain
                 _driverTimeline = timeline;
                 _driverTimelineId = timelineId;
                 _driverTimelineDurationSeconds = GetTimelineDurationSeconds(delegateDriver, timelineId);
-                _driverTimelinePlaybackRate = delegateDriver is FlashXmlImage flashXmlImage
-                    ? flashXmlImage.PlaybackRate
-                    : 1f;
+                _driverTimelinePlaybackRate = GetTimelinePlaybackRate(_skinDefinition, timelineId);
                 return;
             }
 
