@@ -77,6 +77,9 @@ namespace CutTheRope.GameMain
             backend.PlayRandomIdleVariant(rng);
         }
 
+        /// <summary>Whether this skin plays the greeting animation on initialization instead of idle.</summary>
+        public bool StartsWithGreeting => backend.StartsWithGreeting;
+
         /// <summary>
         /// Plays the excited animation.
         /// </summary>

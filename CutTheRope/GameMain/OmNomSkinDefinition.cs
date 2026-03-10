@@ -12,7 +12,8 @@ namespace CutTheRope.GameMain
         IReadOnlyDictionary<int, int> followups,
         int[] idleVariants,
         int idleToSleepTrimFrames,
-        int[] slowTimelineIds)
+        int[] slowTimelineIds,
+        bool startWithGreeting)
     {
         /// <summary>Localization key for display name.</summary>
         public string Name { get; } = name;
@@ -28,6 +29,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Timeline IDs to randomly pick from for idle variations.</summary>
         public int[] IdleVariants { get; } = idleVariants;
+
+        /// <summary>Whether to play the greeting animation immediately on initialization.</summary>
+        public bool StartWithGreeting { get; } = startWithGreeting;
 
         /// <summary>Frames to skip from the start of the idle-to-sleep transition.</summary>
         public int IdleToSleepTrimFrames { get; } = idleToSleepTrimFrames;

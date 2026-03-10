@@ -1,4 +1,3 @@
-using System;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
@@ -55,10 +54,13 @@ namespace CutTheRope.GameMain
             targetObject.bb = MakeRectangle((targetObject.width >> 1) - 56f, (targetObject.height >> 1) + 30f, 108f, 2f);
             blinkTimer = BLINK_SKIP;
 
-            // Show greeting if needed (skip for night levels)
+            targetAnimationController.Initialize(this);
+
+            // Show greeting if needed (skip for night levels).
+            // Skins with startWithGreeting already play greeting on init, so skip the delayed call.
             if (CTRRootController.IsShowGreeting())
             {
-                if (!nightLevel)
+                if (!nightLevel && !targetAnimationController.StartsWithGreeting)
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
                 }
@@ -66,7 +68,6 @@ namespace CutTheRope.GameMain
                 CTRRootController.SetShowGreeting(false);
             }
 
-            targetAnimationController.Initialize(this);
             idlesTimer = RND_RANGE(5, 20);
         }
     }

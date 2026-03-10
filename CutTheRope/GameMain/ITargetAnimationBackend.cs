@@ -37,6 +37,9 @@ namespace CutTheRope.GameMain
         /// <param name="rng">Inclusive random function with signature <c>(min, max) => value</c>.</param>
         void PlayRandomIdleVariant(Func<int, int, int> rng);
 
+        /// <summary>Whether this skin plays the greeting animation on initialization instead of idle.</summary>
+        bool StartsWithGreeting { get; }
+
         /// <summary>
         /// Checks whether the requested target animation state is currently active.
         /// </summary>

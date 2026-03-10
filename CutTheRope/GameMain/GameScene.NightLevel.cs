@@ -165,7 +165,9 @@ namespace CutTheRope.GameMain
             }
 
             bool isSleeping = isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered;
-            bool shouldShowSleepOverlay = isSleeping && targetAnimationController?.IsSleepingAnimationPlaying() == true;
+            bool shouldShowSleepOverlay = isSleeping
+                && targetAnimationController != null
+                && targetAnimationController.IsSleepingAnimationPlaying();
             SetNightSleepVisibility(shouldShowSleepOverlay);
 
             if (shouldShowSleepOverlay)

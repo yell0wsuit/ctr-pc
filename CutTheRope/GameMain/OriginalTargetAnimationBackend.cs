@@ -199,6 +199,9 @@ namespace CutTheRope.GameMain
         }
 
         /// <inheritdoc />
+        public bool StartsWithGreeting => false;
+
+        /// <inheritdoc />
         public bool IsPlaying(TargetAnimationState state)
         {
             return state switch

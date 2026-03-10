@@ -99,10 +99,20 @@ namespace CutTheRope.GameMain
             return BaseTargetScale;
         }
 
+        public bool StartsWithGreeting => _skinDefinition.StartWithGreeting;
+
         public void Initialize(ITimelineDelegate timelineDelegate)
         {
             _externalTimelineDelegate = timelineDelegate;
-            Play(TargetAnimationState.IdleLoop);
+
+            if (_skinDefinition.StartWithGreeting && TryMapState(TargetAnimationState.Greeting, out _))
+            {
+                Play(TargetAnimationState.Greeting);
+            }
+            else
+            {
+                Play(TargetAnimationState.IdleLoop);
+            }
         }
 
         public void Play(TargetAnimationState state)

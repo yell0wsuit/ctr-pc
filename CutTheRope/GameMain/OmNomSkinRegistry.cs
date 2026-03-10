@@ -170,6 +170,13 @@ namespace CutTheRope.GameMain
                 }
             }
 
+            bool startWithGreeting = false;
+            if (entry.TryGetProperty("startWithGreeting", out JsonElement greetingElement)
+                && greetingElement.ValueKind == JsonValueKind.True)
+            {
+                startWithGreeting = true;
+            }
+
             return new OmNomSkinDefinition(
                 name,
                 xmlPath,
@@ -177,7 +184,8 @@ namespace CutTheRope.GameMain
                 followups,
                 [.. idleVariants],
                 idleToSleepTrimFrames,
-                [.. slowTimelineIds]);
+                [.. slowTimelineIds],
+                startWithGreeting);
         }
 
         private static string GetStringProperty(JsonElement element, string propertyName)
