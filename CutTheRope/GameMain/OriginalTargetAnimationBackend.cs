@@ -162,6 +162,8 @@ namespace CutTheRope.GameMain
                 case TargetAnimationState.Sad:
                     target.PlayAnimationtimeline(Resources.Img.CharAnimations3, SadTimeline);
                     break;
+                case TargetAnimationState.IdleToSleep:
+                    break;
                 case TargetAnimationState.Sleeping:
                     if (isNightLevel)
                     {
@@ -199,30 +201,22 @@ namespace CutTheRope.GameMain
         /// <inheritdoc />
         public bool IsPlaying(TargetAnimationState state)
         {
-            switch (state)
+            return state switch
             {
-                case TargetAnimationState.IdleLoop:
-                    return target.GetCurrentTimelineIndex() == IdleLoopTimeline;
-                case TargetAnimationState.IdleVariationOne:
-                case TargetAnimationState.IdleVariationTwo:
-                case TargetAnimationState.Excited:
-                case TargetAnimationState.MouthOpening:
-                case TargetAnimationState.MouthClosing:
-                case TargetAnimationState.Chewing:
-                case TargetAnimationState.Sad:
-                case TargetAnimationState.Greeting:
-                    return false;
-                case TargetAnimationState.Sleeping:
-                    if (!isNightLevel)
-                    {
-                        return false;
-                    }
-
-                    Animation sleepAnimation = target.GetAnimation(Resources.Img.CharAnimationsSleeping);
-                    return sleepAnimation != null && sleepAnimation.GetCurrentTimelineIndex() == SleepingTimeline;
-                default:
-                    return false;
-            }
+                TargetAnimationState.IdleLoop => target.GetCurrentTimelineIndex() == IdleLoopTimeline,
+                TargetAnimationState.IdleVariationOne
+                or TargetAnimationState.IdleVariationTwo
+                or TargetAnimationState.Excited
+                or TargetAnimationState.MouthOpening
+                or TargetAnimationState.MouthClosing
+                or TargetAnimationState.Chewing
+                or TargetAnimationState.Sad
+                or TargetAnimationState.IdleToSleep
+                or TargetAnimationState.Greeting => false,
+                TargetAnimationState.Sleeping => isNightLevel
+                    && target.GetAnimation(Resources.Img.CharAnimationsSleeping)?.GetCurrentTimelineIndex() == SleepingTimeline,
+                _ => false
+            };
         }
 
         /// <inheritdoc />
