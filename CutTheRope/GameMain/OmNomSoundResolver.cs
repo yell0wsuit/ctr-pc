@@ -26,6 +26,20 @@ namespace CutTheRope.GameMain
                 return classicSoundResourceName;
             }
 
+            if (classicSoundResourceName == Resources.Snd.MonsterExcited)
+            {
+                if (skinDefinition == null)
+                {
+                    return null;
+                }
+
+                if (skinDefinition.HasUniqueSound(classicSoundResourceName)
+                    && string.IsNullOrWhiteSpace(skinDefinition.UniqueSoundSet))
+                {
+                    return null;
+                }
+            }
+
             if (skinDefinition == null || !skinDefinition.HasUniqueSound(classicSoundResourceName))
             {
                 return classicSoundResourceName;

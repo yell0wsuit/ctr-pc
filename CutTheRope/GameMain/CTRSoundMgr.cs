@@ -17,7 +17,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static void PlaySound(string soundResourceName)
         {
-            if (Preferences.GetBooleanForKey("SOUND_ON"))
+            if (!string.IsNullOrWhiteSpace(soundResourceName)
+                && Preferences.GetBooleanForKey("SOUND_ON"))
             {
                 Application.SharedSoundMgr().PlaySound(soundResourceName);
             }
@@ -64,7 +65,31 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            string soundName = soundNames[RND_RANGE(0, soundNames.Length - 1)];
+            int validCount = 0;
+            for (int i = 0; i < soundNames.Length; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(soundNames[i]))
+                {
+                    validCount++;
+                }
+            }
+
+            if (validCount == 0)
+            {
+                return;
+            }
+
+            string[] validSoundNames = new string[validCount];
+            int validIndex = 0;
+            for (int i = 0; i < soundNames.Length; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(soundNames[i]))
+                {
+                    validSoundNames[validIndex++] = soundNames[i];
+                }
+            }
+
+            string soundName = validSoundNames[RND_RANGE(0, validSoundNames.Length - 1)];
             PlaySound(soundName);
         }
 
