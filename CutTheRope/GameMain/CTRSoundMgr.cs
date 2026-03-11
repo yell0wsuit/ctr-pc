@@ -29,6 +29,12 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static void PlayOmNomSound(string soundResourceName)
         {
+            if (soundResourceName is Resources.Snd.MonsterExcited or Resources.Snd.MonsterGreeting
+                && RND_RANGE(0, 1) == 0)
+            {
+                return;
+            }
+
             PlaySound(OmNomSoundResolver.ResolveSelectedSkinSoundResource(soundResourceName));
         }
 
