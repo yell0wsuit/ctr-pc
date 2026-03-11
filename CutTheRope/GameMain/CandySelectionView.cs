@@ -10,6 +10,9 @@ namespace CutTheRope.GameMain
 {
     internal static class CandySelectionView
     {
+        private const string OriginalFlashSkinName = "OM_NOM_ORIGINAL_FLASH";
+        private const int XmlPreviewSkipFrames = 14;
+
         // Store candy slot button data for quick updates
         private static List<SlotButtonData> slotButtons = [];
 
@@ -422,8 +425,31 @@ namespace CutTheRope.GameMain
                 activePreviewObject = previewObject;
                 activePreviewBackend.PlayRandomIdleVariant((min, max) => previewRandom.Next(min, max + 1));
             }
+            else
+            {
+                PlayStaticXmlPreviewState(backend, skin);
+                backend.SkipCurrentTimelineFrames(XmlPreviewSkipFrames);
+            }
 
             return previewObject;
+        }
+
+        private static void PlayStaticXmlPreviewState(FlashXmlTargetAnimationBackend backend, OmNomSkinDefinition skin)
+        {
+            if (string.Equals(skin.Name, OriginalFlashSkinName, StringComparison.Ordinal)
+                && skin.GetTimelineId(TargetAnimationState.IdleVariationThree) >= 0)
+            {
+                backend.Play(TargetAnimationState.IdleVariationThree);
+                return;
+            }
+
+            if (skin.GetTimelineId(TargetAnimationState.Excited) >= 0)
+            {
+                backend.Play(TargetAnimationState.Excited);
+                return;
+            }
+
+            backend.Play(TargetAnimationState.IdleLoop);
         }
 
         private static void ConfigureOmNomPreviewLayout(GameObject previewObject, OmNomSlotPreviewLayoutInfo layout)

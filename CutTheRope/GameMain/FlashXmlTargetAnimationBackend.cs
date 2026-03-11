@@ -144,6 +144,17 @@ namespace CutTheRope.GameMain
             PlayTimelineById(_skinDefinition.IdleVariants[index]);
         }
 
+        internal void SkipCurrentTimelineFrames(int frameCount)
+        {
+            if (_activeTimelineId < 0 || frameCount <= 0)
+            {
+                return;
+            }
+
+            float skipSeconds = frameCount * FlashXmlFrameDurationSeconds;
+            SeekCurrentTimeline(skipSeconds);
+        }
+
         private void PlayTimelineById(int timelineId)
         {
             _activeTimelineId = timelineId;
@@ -481,6 +492,25 @@ namespace CutTheRope.GameMain
                 timeline.time = clampedTimeSeconds;
                 Timeline.UpdateTimeline(timeline, 0f);
             }
+        }
+
+        private void SeekCurrentTimeline(float timeSeconds)
+        {
+            int timelineId = _activeTimelineId;
+            float durationSeconds = GetTimelineDurationSeconds(timelineId);
+            float clampedTimeSeconds = durationSeconds > 0f
+                ? MathF.Min(timeSeconds, MathF.Max(0f, durationSeconds - FlashXmlFrameDurationSeconds))
+                : timeSeconds;
+
+            Timeline rootTimeline = TargetObject.GetTimeline(timelineId);
+            if (rootTimeline != null && TargetObject.GetCurrentTimelineIndex() == timelineId)
+            {
+                rootTimeline.DeactivateTracks();
+                rootTimeline.time = clampedTimeSeconds;
+                Timeline.UpdateTimeline(rootTimeline, 0f);
+            }
+
+            SeekTimeline(parts, timelineId, clampedTimeSeconds);
         }
 
         private void UpdatePirateBubbleOverlays(float delta)

@@ -147,6 +147,8 @@ namespace CutTheRope.GameMain
                         target.PlayTimeline(IdleVariationTwoTimeline);
                     }
                     break;
+                case TargetAnimationState.IdleVariationThree:
+                    break;
                 case TargetAnimationState.Excited:
                     target.PlayAnimationtimeline(Resources.Img.CharAnimations2, ExcitedTimeline);
                     break;
@@ -209,6 +211,7 @@ namespace CutTheRope.GameMain
                 TargetAnimationState.IdleLoop => target.GetCurrentTimelineIndex() == IdleLoopTimeline,
                 TargetAnimationState.IdleVariationOne
                 or TargetAnimationState.IdleVariationTwo
+                or TargetAnimationState.IdleVariationThree
                 or TargetAnimationState.Excited
                 or TargetAnimationState.MouthOpening
                 or TargetAnimationState.MouthClosing

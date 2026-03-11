@@ -14,6 +14,9 @@ namespace CutTheRope.GameMain
         /// <summary>Second idle variation.</summary>
         IdleVariationTwo,
 
+        /// <summary>Third idle variation.</summary>
+        IdleVariationThree,
+
         /// <summary>Excited reaction animation.</summary>
         Excited,
 
