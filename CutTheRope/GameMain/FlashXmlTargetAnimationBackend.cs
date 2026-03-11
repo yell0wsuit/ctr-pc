@@ -18,7 +18,6 @@ namespace CutTheRope.GameMain
         private const float IosSlowPlaybackRate = 0.6f;
         private const string PirateSkinName = "OM_NOM_PIRATE";
         private const float PirateBubbleSpawnDelaySeconds = 0.932203f;
-        private const float PirateBubbleRepeatIntervalSeconds = 4f;
         private readonly List<Image> parts = [];
         private readonly List<Image> _sleepOverlayParts = [];
         private readonly List<PirateBubbleOverlayInstance> _activeBubbleOverlays = [];
@@ -560,7 +559,7 @@ namespace CutTheRope.GameMain
 
         private static float GetPirateBubbleLoopIntervalSeconds()
         {
-            return PirateBubbleRepeatIntervalSeconds;
+            return CTRMathHelper.RND_RANGE(1, 4);
         }
 
         private void UpdatePirateBubbleScheduleForState(TargetAnimationState state)
