@@ -483,6 +483,7 @@ namespace CutTheRope.GameMain
             public const string MonsterOpen = "monster_open";
             public const string MonsterSad = "monster_sad";
             public const string MonsterExcited = "monster_excited";
+            public const string MonsterGreeting = "monster_greeting";
             public const string Ring = "ring";
             public const string RopeBleak1 = "rope_bleak_1";
             public const string RopeBleak2 = "rope_bleak_2";

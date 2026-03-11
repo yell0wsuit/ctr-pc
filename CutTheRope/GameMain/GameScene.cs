@@ -68,6 +68,7 @@ namespace CutTheRope.GameMain
         public void ShowGreeting()
         {
             targetAnimationController?.PlayGreeting();
+            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting);
             if (SpecialEvents.IsXmas)
             {
                 CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);

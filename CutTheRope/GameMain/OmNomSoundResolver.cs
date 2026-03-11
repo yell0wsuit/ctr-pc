@@ -14,6 +14,7 @@ namespace CutTheRope.GameMain
             [Resources.Snd.MonsterOpen] = "mouthOpen",
             [Resources.Snd.MonsterSad] = "sad",
             [Resources.Snd.MonsterExcited] = "excited",
+            [Resources.Snd.MonsterGreeting] = "greeting",
             [Resources.Snd.MonsterSleep1] = "sleep01",
             [Resources.Snd.MonsterSleep2] = "sleep02",
             [Resources.Snd.MonsterSleep3] = "sleep03",
@@ -26,18 +27,28 @@ namespace CutTheRope.GameMain
                 return classicSoundResourceName;
             }
 
-            if (classicSoundResourceName == Resources.Snd.MonsterExcited)
+            if (skinDefinition == null)
             {
-                if (skinDefinition == null)
-                {
-                    return null;
-                }
+                return classicSoundResourceName is Resources.Snd.MonsterExcited or Resources.Snd.MonsterGreeting
+                    ? null
+                    : classicSoundResourceName;
+            }
 
-                if (skinDefinition.HasUniqueSound(classicSoundResourceName)
-                    && string.IsNullOrWhiteSpace(skinDefinition.UniqueSoundSet))
-                {
-                    return null;
-                }
+            if (
+                classicSoundResourceName == Resources.Snd.MonsterGreeting &&
+                !skinDefinition.HasUniqueSound(classicSoundResourceName)
+                )
+            {
+                return null;
+            }
+
+            if (
+                classicSoundResourceName == Resources.Snd.MonsterExcited &&
+                skinDefinition.HasUniqueSound(classicSoundResourceName) &&
+                string.IsNullOrWhiteSpace(skinDefinition.UniqueSoundSet)
+                )
+            {
+                return null;
             }
 
             if (skinDefinition == null || !skinDefinition.HasUniqueSound(classicSoundResourceName))

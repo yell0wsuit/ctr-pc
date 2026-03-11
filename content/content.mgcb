@@ -3396,3 +3396,9 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sounds/sfx/monster_excited.wav
+
+#begin sounds/sfx/monster_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/monster_greeting.wav
