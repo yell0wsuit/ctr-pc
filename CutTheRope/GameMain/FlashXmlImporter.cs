@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -92,8 +93,7 @@ namespace CutTheRope.GameMain
     {
         private const float GroupEpsilon = 0.0001f;
 
-        private static readonly Dictionary<string, FlashXmlAnimationDefinition> parseCache = [];
-        private static readonly Lock parseCacheLock = new();
+        private static readonly ConcurrentDictionary<string, Lazy<FlashXmlAnimationDefinition>> parseCache = new();
 
         public static FlashXmlAnimationDefinition ParseFile(string xmlPath)
         {
@@ -102,62 +102,70 @@ namespace CutTheRope.GameMain
                 throw new ArgumentException("XML path is required.", nameof(xmlPath));
             }
 
-            lock (parseCacheLock)
+            Lazy<FlashXmlAnimationDefinition> cachedDefinition = parseCache.GetOrAdd(
+                xmlPath,
+                static path => new Lazy<FlashXmlAnimationDefinition>(
+                    () => ParseFileCore(path),
+                    LazyThreadSafetyMode.ExecutionAndPublication));
+
+            try
             {
-                if (parseCache.TryGetValue(xmlPath, out FlashXmlAnimationDefinition cached))
-                {
-                    return cached;
-                }
-
-                XElement root = XDocument.Load(xmlPath).Root
-                    ?? throw new InvalidOperationException("Flash XML is missing a root element.");
-                if (root.Name.LocalName != "FlashAnimation")
-                {
-                    throw new InvalidOperationException($"Unexpected root element '{root.Name.LocalName}'.");
-                }
-
-                List<FlashXmlPartDefinition> parts = [];
-                foreach (XElement imageNode in root.Elements("Image"))
-                {
-                    parts.Add(ParseImageNode(imageNode));
-                }
-
-                Dictionary<int, float> rootTimelines = [];
-                Dictionary<int, FlashXmlRootTimelineDefinition> rootTimelineDefinitions = [];
-                foreach (XElement timelineNode in root.Elements("Timeline"))
-                {
-                    int timelineId = ParseInt(timelineNode.Attribute("ID")?.Value);
-                    string actionTrack = timelineNode.Element("Action")?.Value ?? string.Empty;
-                    List<FlashXmlActionGroupKeyFrame> groupedActions = ParseActionTrack(actionTrack);
-
-                    float duration = 0f;
-                    for (int i = 0; i < groupedActions.Count; i++)
-                    {
-                        duration += groupedActions[i].TimeOffset;
-                    }
-
-                    rootTimelines[timelineId] = duration;
-                    rootTimelineDefinitions[timelineId] = new FlashXmlRootTimelineDefinition
-                    {
-                        Id = timelineId,
-                        DurationSeconds = duration,
-                        ActionKeyFrames = groupedActions
-                    };
-                }
-
-                FlashXmlAnimationDefinition definition = new()
-                {
-                    StageWidth = ParseFloat(root.Attribute("width")?.Value),
-                    StageHeight = ParseFloat(root.Attribute("height")?.Value),
-                    TextureResourceName = Resources.Img.CharAnimationsSmooth,
-                    Parts = parts,
-                    RootTimelines = rootTimelines,
-                    RootTimelineDefinitions = rootTimelineDefinitions
-                };
-
-                parseCache[xmlPath] = definition;
-                return definition;
+                return cachedDefinition.Value;
             }
+            catch
+            {
+                _ = parseCache.TryRemove(xmlPath, out _);
+                throw;
+            }
+        }
+
+        private static FlashXmlAnimationDefinition ParseFileCore(string xmlPath)
+        {
+            XElement root = XDocument.Load(xmlPath).Root
+                ?? throw new InvalidOperationException("Flash XML is missing a root element.");
+            if (root.Name.LocalName != "FlashAnimation")
+            {
+                throw new InvalidOperationException($"Unexpected root element '{root.Name.LocalName}'.");
+            }
+
+            List<FlashXmlPartDefinition> parts = [];
+            foreach (XElement imageNode in root.Elements("Image"))
+            {
+                parts.Add(ParseImageNode(imageNode));
+            }
+
+            Dictionary<int, float> rootTimelines = [];
+            Dictionary<int, FlashXmlRootTimelineDefinition> rootTimelineDefinitions = [];
+            foreach (XElement timelineNode in root.Elements("Timeline"))
+            {
+                int timelineId = ParseInt(timelineNode.Attribute("ID")?.Value);
+                string actionTrack = timelineNode.Element("Action")?.Value ?? string.Empty;
+                List<FlashXmlActionGroupKeyFrame> groupedActions = ParseActionTrack(actionTrack);
+
+                float duration = 0f;
+                for (int i = 0; i < groupedActions.Count; i++)
+                {
+                    duration += groupedActions[i].TimeOffset;
+                }
+
+                rootTimelines[timelineId] = duration;
+                rootTimelineDefinitions[timelineId] = new FlashXmlRootTimelineDefinition
+                {
+                    Id = timelineId,
+                    DurationSeconds = duration,
+                    ActionKeyFrames = groupedActions
+                };
+            }
+
+            return new FlashXmlAnimationDefinition
+            {
+                StageWidth = ParseFloat(root.Attribute("width")?.Value),
+                StageHeight = ParseFloat(root.Attribute("height")?.Value),
+                TextureResourceName = Resources.Img.CharAnimationsSmooth,
+                Parts = parts,
+                RootTimelines = rootTimelines,
+                RootTimelineDefinitions = rootTimelineDefinitions
+            };
         }
 
         private static FlashXmlPartDefinition ParseImageNode(XElement imageNode)

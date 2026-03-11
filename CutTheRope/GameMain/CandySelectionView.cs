@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -12,6 +14,8 @@ namespace CutTheRope.GameMain
     {
         private const string OriginalFlashSkinName = "OM_NOM_ORIGINAL_FLASH";
         private const int XmlPreviewSkipFrames = 14;
+        private const int GridItemsPerRow = 4;
+        private const int OmNomWarmupSlotsPerTick = 1;
 
         // Store candy slot button data for quick updates
         private static List<SlotButtonData> slotButtons = [];
@@ -28,6 +32,15 @@ namespace CutTheRope.GameMain
         private static Button omNomTabButton;
         private static ITargetAnimationBackend activePreviewBackend;
         private static GameObject activePreviewObject;
+        private static OmNomWarmupState omNomWarmupState;
+        private static Task omNomXmlPreparseTask;
+
+        private readonly record struct SelectionGridLayoutInfo(
+            float ContainerWidth,
+            float SlotScale,
+            float ColumnSpacing,
+            float RowSpacing,
+            float RowHeight);
 
         private sealed class SlotButtonData
         {
@@ -36,6 +49,28 @@ namespace CutTheRope.GameMain
             public Image DownImage { get; set; }
             public BaseElement UpPreview { get; set; }
             public BaseElement DownPreview { get; set; }
+        }
+
+        private sealed class OmNomPreviewBuildState
+        {
+            public ITargetAnimationBackend ActivePreviewBackend { get; set; }
+            public GameObject ActivePreviewObject { get; set; }
+        }
+
+        private sealed class OmNomWarmupState
+        {
+            public VBox Grid { get; init; }
+            public List<SlotButtonData> SlotButtons { get; } = [];
+            public OmNomPreviewBuildState PreviewState { get; } = new();
+            public int SelectedIndex { get; init; }
+            public float SlotScale { get; init; }
+            public float ColumnSpacing { get; init; }
+            public float RowHeight { get; init; }
+            public float ContainerWidth { get; init; }
+            public int TotalItems { get; init; }
+            public int NextItemIndex { get; set; }
+            public int ItemsInCurrentRow { get; set; }
+            public HBox CurrentRow { get; set; }
         }
 
         /// <summary>
@@ -153,44 +188,6 @@ namespace CutTheRope.GameMain
             return slotButton;
         }
 
-        /// <summary>
-        /// Creates a slot button for an Om Nom skin with artwork in both button states.
-        /// </summary>
-        private static Button CreateOmNomSlotButton(int skinIndex, int selectedIndex, float slotScale, MenuButtonId buttonId)
-        {
-            bool isEquipped = skinIndex == selectedIndex;
-            int bgUpQuad = isEquipped ? 2 : 0;
-            int bgDownQuad = isEquipped ? 3 : 1;
-
-            Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
-            Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
-            slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
-            slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
-
-            Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
-            slotButton.delegateButtonDelegate = currentButtonDelegate;
-
-            SlotButtonData slotButtonData = new()
-            {
-                CandyIndex = skinIndex,
-                UpImage = slotBgUp,
-                DownImage = slotBgDown,
-                UpPreview = CreateAndAttachOmNomPreview(
-                    slotBgUp,
-                    skinIndex,
-                    OmNomSlotPreviewPolicy.Resolve(skinIndex, selectedIndex),
-                    animated: skinIndex == selectedIndex),
-                DownPreview = CreateAndAttachOmNomPreview(
-                    slotBgDown,
-                    skinIndex,
-                    GetPressedPreviewMode(skinIndex),
-                    animated: false)
-            };
-
-            slotButtons.Add(slotButtonData);
-            return slotButton;
-        }
-
         private static void StoreCurrentModeState()
         {
             CandySelectionModeState state = modeCache.GetState(currentMode);
@@ -226,6 +223,11 @@ namespace CutTheRope.GameMain
 
         private static void AttachCurrentModeGrid()
         {
+            if (currentMode == CandySelectionMode.OmNom)
+            {
+                EnsureOmNomGridReady();
+            }
+
             CandySelectionModeActivation activation = modeCache.ActivateMode(currentMode);
             if (activation.RequiresBuild)
             {
@@ -258,10 +260,26 @@ namespace CutTheRope.GameMain
 
         private static void BuildAndAttachGrid(CandySelectionMode mode)
         {
+            if (mode == CandySelectionMode.OmNom)
+            {
+                CompleteOmNomWarmupSynchronously();
+
+                CandySelectionModeState omNomState = modeCache.GetState(CandySelectionMode.OmNom);
+                if (omNomState.Grid == null)
+                {
+                    OmNomWarmupState warmupState = CreateOmNomWarmupState();
+                    BuildOmNomWarmupSlots(warmupState, warmupState.TotalItems);
+                    StoreCompletedOmNomWarmupState(warmupState);
+                    omNomState = modeCache.GetState(CandySelectionMode.OmNom);
+                }
+
+                AttachCachedGrid(omNomState);
+                return;
+            }
+
             slotButtons = [];
             activePreviewBackend = null;
             activePreviewObject = null;
-
             BaseElement grid = CreateGrid(mode);
             modeCache.StoreState(mode, grid, slotButtons, activePreviewObject, activePreviewBackend);
             AttachCachedGrid(modeCache.GetState(mode));
@@ -272,29 +290,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         private static VBox CreateGrid(CandySelectionMode mode)
         {
-            const int ITEMS_PER_ROW = 4;
-
-            // Sprite sheet dimensions
-            float spriteSheetSlotWidth = 271f;
-            float spriteSheetSlotHeight = 336f;
-            float spriteSheetScale = 3f;
-
-            // Actual rendered dimensions after sprite sheet scale
-            float baseSlotWidth = spriteSheetSlotWidth * spriteSheetScale;
-            float baseSlotHeight = spriteSheetSlotHeight * spriteSheetScale;
-            float baseSpacing = 20f;
-
-            // Calculate scale to fit 4 columns on screen
-            float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;
-            float totalBaseWidth = (baseSlotWidth * ITEMS_PER_ROW) + (baseSpacing * (ITEMS_PER_ROW - 1));
-            float slotScale = containerWidth / totalBaseWidth;
-
-            float slotHeight = baseSlotHeight * slotScale;
-            float columnSpacing = baseSpacing;
-            float rowSpacing = 10f;
-            float rowHeight = slotHeight * 0.4f;
-
-            VBox itemGrid = new VBox().InitWithOffsetAlignWidth(rowSpacing, 2, containerWidth);
+            SelectionGridLayoutInfo layout = CalculateGridLayout();
+            VBox itemGrid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.ContainerWidth);
 
             // Get mode-specific configuration
             int totalItems;
@@ -311,11 +308,7 @@ namespace CutTheRope.GameMain
                     getButtonId = MenuButtonId.ForRopeSlot;
                     break;
                 case CandySelectionMode.OmNom:
-                    totalItems = OmNomSkinRegistry.TotalSkinCount;
-                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_OMNOM);
-                    baseQuadIndex = -1; // not used — Om Nom slots created differently
-                    getButtonId = MenuButtonId.ForOmNomSlot;
-                    break;
+                    throw new InvalidOperationException("Om Nom grids are built through the warmup pipeline.");
                 case CandySelectionMode.Candy:
                 default: // Candy
                     const int TOTAL_CANDIES = 52;
@@ -327,28 +320,20 @@ namespace CutTheRope.GameMain
             }
 
             // Build grid rows
-            for (int row = 0; row < ((totalItems + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW); row++)
+            for (int row = 0; row < ((totalItems + GridItemsPerRow - 1) / GridItemsPerRow); row++)
             {
-                HBox rowBox = new HBox().InitWithOffsetAlignHeight(columnSpacing, 16, rowHeight);
+                HBox rowBox = new HBox().InitWithOffsetAlignHeight(layout.ColumnSpacing, 16, layout.RowHeight);
 
-                for (int col = 0; col < ITEMS_PER_ROW; col++)
+                for (int col = 0; col < GridItemsPerRow; col++)
                 {
-                    int itemIndex = (row * ITEMS_PER_ROW) + col;
+                    int itemIndex = (row * GridItemsPerRow) + col;
                     if (itemIndex >= totalItems)
                     {
                         break;
                     }
 
-                    Button slotButton;
-                    if (mode == CandySelectionMode.OmNom)
-                    {
-                        slotButton = CreateOmNomSlotButton(itemIndex, selectedIndex, slotScale, getButtonId(itemIndex));
-                    }
-                    else
-                    {
-                        int itemQuadIndex = baseQuadIndex + itemIndex;
-                        slotButton = CreateSlotButton(itemIndex, selectedIndex, itemQuadIndex, slotScale, getButtonId(itemIndex));
-                    }
+                    int itemQuadIndex = baseQuadIndex + itemIndex;
+                    Button slotButton = CreateSlotButton(itemIndex, selectedIndex, itemQuadIndex, layout.SlotScale, getButtonId(itemIndex));
                     _ = rowBox.AddChild(slotButton);
                 }
 
@@ -363,6 +348,168 @@ namespace CutTheRope.GameMain
             return itemGrid;
         }
 
+        private static SelectionGridLayoutInfo CalculateGridLayout()
+        {
+            float spriteSheetSlotWidth = 271f;
+            float spriteSheetSlotHeight = 336f;
+            float spriteSheetScale = 3f;
+            float baseSlotWidth = spriteSheetSlotWidth * spriteSheetScale;
+            float baseSlotHeight = spriteSheetSlotHeight * spriteSheetScale;
+            float baseSpacing = 20f;
+            float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;
+            float totalBaseWidth = (baseSlotWidth * GridItemsPerRow) + (baseSpacing * (GridItemsPerRow - 1));
+            float slotScale = containerWidth / totalBaseWidth;
+            float slotHeight = baseSlotHeight * slotScale;
+
+            return new SelectionGridLayoutInfo(
+                containerWidth,
+                slotScale,
+                baseSpacing,
+                10f,
+                slotHeight * 0.4f);
+        }
+
+        private static void EnsureOmNomGridReady()
+        {
+            if (modeCache.GetState(CandySelectionMode.OmNom).Grid != null)
+            {
+                return;
+            }
+
+            CompleteOmNomWarmupSynchronously();
+        }
+
+        private static void StartOmNomWarmup()
+        {
+            if (modeCache.GetState(CandySelectionMode.OmNom).Grid != null || omNomWarmupState != null)
+            {
+                return;
+            }
+
+            omNomWarmupState = CreateOmNomWarmupState();
+            omNomXmlPreparseTask = Task.Run(() =>
+            {
+                try
+                {
+                    PreparseOmNomXmlDefinitions();
+                }
+                catch
+                {
+                    // Warmup failures should not block on-demand Om Nom creation.
+                }
+            });
+        }
+
+        private static OmNomWarmupState CreateOmNomWarmupState()
+        {
+            SelectionGridLayoutInfo layout = CalculateGridLayout();
+            return new OmNomWarmupState
+            {
+                Grid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.ContainerWidth),
+                SelectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_OMNOM),
+                SlotScale = layout.SlotScale,
+                ColumnSpacing = layout.ColumnSpacing,
+                RowHeight = layout.RowHeight,
+                ContainerWidth = layout.ContainerWidth,
+                TotalItems = OmNomSkinRegistry.TotalSkinCount
+            };
+        }
+
+        private static void PreparseOmNomXmlDefinitions()
+        {
+            for (int i = 0; i < OmNomSkinRegistry.XmlSkins.Count; i++)
+            {
+                _ = FlashXmlImporter.ParseFile(OmNomSkinRegistry.XmlSkins[i].AnimationXmlPath);
+            }
+
+            _ = FlashXmlImporter.ParseFile(ContentPaths.GetAnimationXmlAbsolutePath("fx_sleep.xml"));
+            _ = FlashXmlImporter.ParseFile(ContentPaths.GetAnimationXmlAbsolutePath("fx_bubbles.xml"));
+        }
+
+        private static void WarmOmNomGridIncrementally()
+        {
+            if (omNomWarmupState == null || modeCache.GetState(CandySelectionMode.OmNom).Grid != null)
+            {
+                return;
+            }
+
+            if (omNomXmlPreparseTask is { IsCompleted: false })
+            {
+                return;
+            }
+
+            BuildOmNomWarmupSlots(omNomWarmupState, OmNomWarmupSlotsPerTick);
+            if (omNomWarmupState.NextItemIndex >= omNomWarmupState.TotalItems)
+            {
+                StoreCompletedOmNomWarmupState(omNomWarmupState);
+            }
+        }
+
+        private static void CompleteOmNomWarmupSynchronously()
+        {
+            if (modeCache.GetState(CandySelectionMode.OmNom).Grid != null)
+            {
+                return;
+            }
+
+            omNomWarmupState ??= CreateOmNomWarmupState();
+
+            int remainingSlots = omNomWarmupState.TotalItems - omNomWarmupState.NextItemIndex;
+            if (remainingSlots > 0)
+            {
+                BuildOmNomWarmupSlots(omNomWarmupState, remainingSlots);
+            }
+
+            StoreCompletedOmNomWarmupState(omNomWarmupState);
+        }
+
+        private static void BuildOmNomWarmupSlots(OmNomWarmupState warmupState, int slotCount)
+        {
+            int targetItemIndex = Math.Min(warmupState.TotalItems, warmupState.NextItemIndex + slotCount);
+            while (warmupState.NextItemIndex < targetItemIndex)
+            {
+                if (warmupState.CurrentRow == null)
+                {
+                    warmupState.CurrentRow = new HBox().InitWithOffsetAlignHeight(
+                        warmupState.ColumnSpacing,
+                        16,
+                        warmupState.RowHeight);
+                    warmupState.ItemsInCurrentRow = 0;
+                    _ = warmupState.Grid.AddChild(warmupState.CurrentRow);
+                }
+
+                int itemIndex = warmupState.NextItemIndex;
+                Button slotButton = CreateOmNomSlotButton(
+                    itemIndex,
+                    warmupState.SelectedIndex,
+                    warmupState.SlotScale,
+                    MenuButtonId.ForOmNomSlot(itemIndex),
+                    warmupState.SlotButtons,
+                    warmupState.PreviewState);
+
+                _ = warmupState.CurrentRow.AddChild(slotButton);
+                warmupState.NextItemIndex++;
+                warmupState.ItemsInCurrentRow++;
+
+                if (warmupState.ItemsInCurrentRow >= GridItemsPerRow)
+                {
+                    warmupState.CurrentRow = null;
+                }
+            }
+        }
+
+        private static void StoreCompletedOmNomWarmupState(OmNomWarmupState warmupState)
+        {
+            modeCache.StoreState(
+                CandySelectionMode.OmNom,
+                warmupState.Grid,
+                warmupState.SlotButtons,
+                warmupState.PreviewState.ActivePreviewObject,
+                warmupState.PreviewState.ActivePreviewBackend);
+
+            omNomWarmupState = null;
+        }
+
         /// <summary>
         /// Creates and attaches an Om Nom preview matching the requested mode.
         /// </summary>
@@ -370,25 +517,30 @@ namespace CutTheRope.GameMain
             Image parentImage,
             int skinIndex,
             OmNomSlotPreviewMode previewMode,
-            bool animated)
+            bool animated,
+            OmNomPreviewBuildState previewState)
         {
-            BaseElement preview = CreateOmNomPreview(skinIndex, previewMode, animated);
+            BaseElement preview = CreateOmNomPreview(skinIndex, previewMode, animated, previewState);
             _ = parentImage.AddChild(preview);
             return preview;
         }
 
-        private static GameObject CreateOmNomPreview(int skinIndex, OmNomSlotPreviewMode previewMode, bool animated)
+        private static GameObject CreateOmNomPreview(
+            int skinIndex,
+            OmNomSlotPreviewMode previewMode,
+            bool animated,
+            OmNomPreviewBuildState previewState)
         {
             return previewMode switch
             {
-                OmNomSlotPreviewMode.ClassicAnimated => CreateClassicOmNomPreview(animated: true),
-                OmNomSlotPreviewMode.ClassicStatic => CreateClassicOmNomPreview(animated: false),
-                OmNomSlotPreviewMode.Xml => CreateXmlOmNomPreview(skinIndex, animated),
+                OmNomSlotPreviewMode.ClassicAnimated => CreateClassicOmNomPreview(animated: true, previewState),
+                OmNomSlotPreviewMode.ClassicStatic => CreateClassicOmNomPreview(animated: false, previewState),
+                OmNomSlotPreviewMode.Xml => CreateXmlOmNomPreview(skinIndex, animated, previewState),
                 _ => throw new ArgumentOutOfRangeException(nameof(previewMode), previewMode, null),
             };
         }
 
-        private static GameObject CreateClassicOmNomPreview(bool animated)
+        private static GameObject CreateClassicOmNomPreview(bool animated, OmNomPreviewBuildState previewState)
         {
             OmNomSlotPreviewLayoutInfo layout = OmNomSlotPreviewLayout.Resolve(
                 animated ? OmNomSlotPreviewMode.ClassicAnimated : OmNomSlotPreviewMode.ClassicStatic);
@@ -401,14 +553,14 @@ namespace CutTheRope.GameMain
 
             if (animated)
             {
-                activePreviewBackend = backend;
-                activePreviewObject = previewObject;
+                previewState.ActivePreviewBackend = backend;
+                previewState.ActivePreviewObject = previewObject;
             }
 
             return previewObject;
         }
 
-        private static GameObject CreateXmlOmNomPreview(int skinIndex, bool animated)
+        private static GameObject CreateXmlOmNomPreview(int skinIndex, bool animated, OmNomPreviewBuildState previewState)
         {
             OmNomSlotPreviewLayoutInfo layout = OmNomSlotPreviewLayout.Resolve(OmNomSlotPreviewMode.Xml);
             OmNomSkinDefinition skin = OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex);
@@ -421,9 +573,9 @@ namespace CutTheRope.GameMain
 
             if (animated)
             {
-                activePreviewBackend = backend;
-                activePreviewObject = previewObject;
-                activePreviewBackend.PlayRandomIdleVariant((min, max) => previewRandom.Next(min, max + 1));
+                previewState.ActivePreviewBackend = backend;
+                previewState.ActivePreviewObject = previewObject;
+                backend.PlayRandomIdleVariant((min, max) => previewRandom.Next(min, max + 1));
             }
             else
             {
@@ -470,6 +622,49 @@ namespace CutTheRope.GameMain
                 : OmNomSlotPreviewMode.Xml;
         }
 
+        private static Button CreateOmNomSlotButton(
+            int skinIndex,
+            int selectedIndex,
+            float slotScale,
+            MenuButtonId buttonId,
+            List<SlotButtonData> targetSlotButtons,
+            OmNomPreviewBuildState previewState)
+        {
+            bool isEquipped = skinIndex == selectedIndex;
+            int bgUpQuad = isEquipped ? 2 : 0;
+            int bgDownQuad = isEquipped ? 3 : 1;
+
+            Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
+            Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
+            slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
+            slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
+
+            Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
+            slotButton.delegateButtonDelegate = currentButtonDelegate;
+
+            SlotButtonData slotButtonData = new()
+            {
+                CandyIndex = skinIndex,
+                UpImage = slotBgUp,
+                DownImage = slotBgDown,
+                UpPreview = CreateAndAttachOmNomPreview(
+                    slotBgUp,
+                    skinIndex,
+                    OmNomSlotPreviewPolicy.Resolve(skinIndex, selectedIndex),
+                    animated: skinIndex == selectedIndex,
+                    previewState),
+                DownPreview = CreateAndAttachOmNomPreview(
+                    slotBgDown,
+                    skinIndex,
+                    GetPressedPreviewMode(skinIndex),
+                    animated: false,
+                    previewState)
+            };
+
+            targetSlotButtons.Add(slotButtonData);
+            return slotButton;
+        }
+
         private static SlotButtonData FindSlotButtonData(int slotIndex)
         {
             for (int i = 0; i < slotButtons.Count; i++)
@@ -495,7 +690,19 @@ namespace CutTheRope.GameMain
                 slotData.UpImage.RemoveChild(slotData.UpPreview);
             }
 
-            slotData.UpPreview = CreateAndAttachOmNomPreview(slotData.UpImage, slotData.CandyIndex, previewMode, animated);
+            OmNomPreviewBuildState previewState = new();
+            slotData.UpPreview = CreateAndAttachOmNomPreview(
+                slotData.UpImage,
+                slotData.CandyIndex,
+                previewMode,
+                animated,
+                previewState);
+
+            if (animated)
+            {
+                activePreviewBackend = previewState.ActivePreviewBackend;
+                activePreviewObject = previewState.ActivePreviewObject;
+            }
         }
 
         /// <summary>
@@ -547,6 +754,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static void Update(float delta)
         {
+            WarmOmNomGridIncrementally();
+
             if (currentMode == CandySelectionMode.OmNom && activePreviewObject != null)
             {
                 activePreviewObject.Update(delta);
@@ -567,6 +776,8 @@ namespace CutTheRope.GameMain
             slotButtons = [];
             activePreviewBackend = null;
             activePreviewObject = null;
+            omNomWarmupState = null;
+            omNomXmlPreparseTask = null;
 
             BaseElement background = new()
             {
@@ -676,6 +887,7 @@ namespace CutTheRope.GameMain
             currentContainer = candyContainer;
             UpdateTabButtonStates(); // Set initial tab button states (candy active)
             AttachCurrentModeGrid();
+            StartOmNomWarmup();
 
             _ = menuView.AddChild(background);
 
