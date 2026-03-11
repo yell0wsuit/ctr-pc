@@ -180,7 +180,7 @@
             "8": 8,
             "9": 3
         },
-        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "slowTimelines": [0, 1, 5, 6, 2, 7, 8],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSoundSet": "Artist",
