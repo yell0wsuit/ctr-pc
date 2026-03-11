@@ -213,7 +213,7 @@ namespace CutTheRope.GameMain
                 if (sleepSoundTimer > NightSleepSoundInterval)
                 {
                     sleepSoundTimer = 0f;
-                    CTRSoundMgr.PlayRandomSound(
+                    CTRSoundMgr.PlayRandomOmNomSound(
                         Resources.Snd.MonsterSleep1,
                         Resources.Snd.MonsterSleep2,
                         Resources.Snd.MonsterSleep3);

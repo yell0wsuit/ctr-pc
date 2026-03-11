@@ -206,7 +206,7 @@ namespace CutTheRope.GameMain
             }
 
             targetAnimationController?.PlayChewing();
-            CTRSoundMgr.PlaySound(Resources.Snd.MonsterChewing);
+            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing);
             if (candyBubble != null)
             {
                 PopCandyBubble(false);
@@ -277,7 +277,7 @@ namespace CutTheRope.GameMain
             }
 
             targetAnimationController?.PlaySad();
-            CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
+            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
             if (activeRocket != null)

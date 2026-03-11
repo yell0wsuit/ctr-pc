@@ -93,7 +93,7 @@ namespace CutTheRope.GameMain
             return skins;
         }
 
-        private static OmNomSkinDefinition ParseSkinEntry(JsonElement entry)
+        internal static OmNomSkinDefinition ParseSkinEntry(JsonElement entry)
         {
             if (entry.ValueKind != JsonValueKind.Object)
             {
@@ -177,6 +177,26 @@ namespace CutTheRope.GameMain
                 startWithGreeting = true;
             }
 
+            string uniqueSoundSet = GetStringProperty(entry, "uniqueSoundSet");
+            List<string> uniqueSounds = [];
+            if (entry.TryGetProperty("uniqueSounds", out JsonElement uniqueSoundsElement)
+                && uniqueSoundsElement.ValueKind == JsonValueKind.Array)
+            {
+                foreach (JsonElement item in uniqueSoundsElement.EnumerateArray())
+                {
+                    if (item.ValueKind != JsonValueKind.String)
+                    {
+                        continue;
+                    }
+
+                    string soundIdentifier = item.GetString()?.Trim();
+                    if (Resources.TryResolveSoundIdentifier(soundIdentifier, out string soundResourceName))
+                    {
+                        uniqueSounds.Add(soundResourceName);
+                    }
+                }
+            }
+
             return new OmNomSkinDefinition(
                 name,
                 xmlPath,
@@ -185,7 +205,9 @@ namespace CutTheRope.GameMain
                 [.. idleVariants],
                 idleToSleepTrimFrames,
                 [.. slowTimelineIds],
-                startWithGreeting);
+                startWithGreeting,
+                uniqueSoundSet,
+                [.. uniqueSounds]);
         }
 
         private static string GetStringProperty(JsonElement element, string propertyName)

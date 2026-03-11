@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace CutTheRope.GameMain
@@ -13,7 +14,9 @@ namespace CutTheRope.GameMain
         int[] idleVariants,
         int idleToSleepTrimFrames,
         int[] slowTimelineIds,
-        bool startWithGreeting)
+        bool startWithGreeting,
+        string uniqueSoundSet,
+        string[] uniqueSounds)
     {
         /// <summary>Localization key for display name.</summary>
         public string Name { get; } = name;
@@ -39,10 +42,22 @@ namespace CutTheRope.GameMain
         /// <summary>Timeline IDs that should run at the slowed iOS Flash playback rate.</summary>
         public int[] SlowTimelineIds { get; } = slowTimelineIds;
 
+        /// <summary>Optional Time Travel sound set prefix such as Artist or Pirate.</summary>
+        public string UniqueSoundSet { get; } = uniqueSoundSet;
+
+        /// <summary>Classic Om Nom sounds that this skin overrides or explicitly uses.</summary>
+        public string[] UniqueSounds { get; } = uniqueSounds;
+
         /// <summary>Gets the timeline ID for a given state, or -1 if unmapped.</summary>
         public int GetTimelineId(TargetAnimationState state)
         {
             return TimelineMappings.TryGetValue(state, out int id) ? id : -1;
+        }
+
+        /// <summary>Whether this skin declares a unique behavior for the given Om Nom sound.</summary>
+        public bool HasUniqueSound(string soundResourceName)
+        {
+            return Array.IndexOf(UniqueSounds, soundResourceName) >= 0;
         }
 
         /// <summary>Whether a followup timeline should play after the given timeline finishes.</summary>

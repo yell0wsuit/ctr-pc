@@ -24,6 +24,14 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Plays an Om Nom sound, swapping to a skin-specific variant when available.
+        /// </summary>
+        public static void PlayOmNomSound(string soundResourceName)
+        {
+            PlaySound(OmNomSoundResolver.ResolveSelectedSkinSoundResource(soundResourceName));
+        }
+
+        /// <summary>
         /// Enables or disables looped sound playback globally.
         /// </summary>
         /// <param name="bEnable">If <c>true</c>, looped sounds are enabled; otherwise, they are stopped and disabled.</param>
@@ -58,6 +66,25 @@ namespace CutTheRope.GameMain
 
             string soundName = soundNames[RND_RANGE(0, soundNames.Length - 1)];
             PlaySound(soundName);
+        }
+
+        /// <summary>
+        /// Plays a random Om Nom sound, resolving candidates for the selected skin first.
+        /// </summary>
+        public static void PlayRandomOmNomSound(params string[] soundNames)
+        {
+            if (soundNames == null || soundNames.Length == 0)
+            {
+                return;
+            }
+
+            string[] resolvedSounds = new string[soundNames.Length];
+            for (int i = 0; i < soundNames.Length; i++)
+            {
+                resolvedSounds[i] = OmNomSoundResolver.ResolveSelectedSkinSoundResource(soundNames[i]);
+            }
+
+            PlayRandomSound(resolvedSounds);
         }
 
         /// <summary>
