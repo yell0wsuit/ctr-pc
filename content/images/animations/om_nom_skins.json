@@ -96,7 +96,7 @@
         "idleToSleepTrimFrames": 27
     },
     {
-        "name": "OM_NOM_ORIGINAL_FLASH_SUPERPOWER",
+        "name": "OM_NOM_SUPERPOWERS",
         "animationXml": "om_nom_original.xml",
         "timelines": {
             "IdleLoop": 19,
@@ -111,6 +111,7 @@
         },
         "followups": {
             "20": 19,
+            "22": 19,
             "23": 23,
             "25": 19,
             "24": 26
