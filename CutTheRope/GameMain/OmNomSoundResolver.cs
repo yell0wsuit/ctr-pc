@@ -27,31 +27,21 @@ namespace CutTheRope.GameMain
                 return classicSoundResourceName;
             }
 
+            bool isOptInOnlySound = classicSoundResourceName is Resources.Snd.MonsterExcited or Resources.Snd.MonsterGreeting;
+
             if (skinDefinition == null)
             {
-                return classicSoundResourceName is Resources.Snd.MonsterExcited or Resources.Snd.MonsterGreeting
+                return isOptInOnlySound
                     ? null
                     : classicSoundResourceName;
             }
 
-            if (
-                classicSoundResourceName == Resources.Snd.MonsterGreeting &&
-                !skinDefinition.HasUniqueSound(classicSoundResourceName)
-                )
+            if (isOptInOnlySound && !skinDefinition.HasUniqueSound(classicSoundResourceName))
             {
                 return null;
             }
 
-            if (
-                classicSoundResourceName == Resources.Snd.MonsterExcited &&
-                skinDefinition.HasUniqueSound(classicSoundResourceName) &&
-                string.IsNullOrWhiteSpace(skinDefinition.UniqueSoundSet)
-                )
-            {
-                return null;
-            }
-
-            if (skinDefinition == null || !skinDefinition.HasUniqueSound(classicSoundResourceName))
+            if (!skinDefinition.HasUniqueSound(classicSoundResourceName))
             {
                 return classicSoundResourceName;
             }
