@@ -370,6 +370,65 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        public void QueuePrefetchPack(IEnumerable<string> pack)
+        {
+            if (pack == null)
+            {
+                return;
+            }
+
+            foreach (string resourceName in pack)
+            {
+                QueuePrefetchResource(resourceName);
+            }
+        }
+
+        public void QueuePrefetchResource(string resourceName)
+        {
+            if (!TryResolveResource(resourceName, out string localizedName))
+            {
+                return;
+            }
+
+            if (s_Resources.ContainsKey(localizedName) || !prefetchQueueSet.Add(localizedName))
+            {
+                return;
+            }
+
+            prefetchQueue.Add(localizedName);
+        }
+
+        public bool HasPendingPrefetchResources()
+        {
+            return prefetchQueue.Count > 0;
+        }
+
+        public bool PrefetchNextResource()
+        {
+            while (prefetchQueue.Count > 0)
+            {
+                string resourceName = prefetchQueue[0];
+                prefetchQueue.RemoveAt(0);
+                _ = prefetchQueueSet.Remove(resourceName);
+
+                if (s_Resources.ContainsKey(resourceName))
+                {
+                    continue;
+                }
+
+                LoadResource(resourceName);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void ClearPrefetchQueue()
+        {
+            prefetchQueue.Clear();
+            prefetchQueueSet.Clear();
+        }
+
         public virtual void FreePack(string[] pack)
         {
             if (pack == null)
@@ -506,6 +565,10 @@ namespace CutTheRope.Framework.Core
         private int loadCount;
 
         private readonly List<string> loadQueue = [];
+
+        private readonly List<string> prefetchQueue = [];
+
+        private readonly HashSet<string> prefetchQueueSet = [];
 
         private int Timer;
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Linq;
 
 using CutTheRope.Framework;
@@ -34,13 +35,22 @@ namespace CutTheRope.GameMain
 
         public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string _, bool _1)
         {
-            ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
+            CTRRootController rootController = (CTRRootController)Application.SharedRootController();
+            string resolvedMapName = ResolveMapName(_);
+            rootController.PrepareMapAndEnsureResources(rootNode, resolvedMapName);
             if (animateRestartDim)
             {
                 AnimateLevelRestart();
                 return;
             }
             Restart();
+        }
+
+        private static string ResolveMapName(string source)
+        {
+            return string.IsNullOrWhiteSpace(source) || source.Contains("://", StringComparison.Ordinal)
+                ? ((CTRRootController)Application.SharedRootController()).GetMapName()
+                : Path.GetFileName(source);
         }
 
         public static bool ShouldSkipTutorialElement(XElement c)

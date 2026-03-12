@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using CutTheRope.Commons;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Platform;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -31,6 +34,33 @@ namespace CutTheRope.GameMain
         public void SetMapName(string map)
         {
             mapName = map;
+        }
+
+        public void PrepareMapAndEnsureResources(XElement map, string newMapName)
+        {
+            if (map == null)
+            {
+                return;
+            }
+
+            StopGameplayPrefetch();
+
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(map, pack);
+            TrackSessionResources(levelResources);
+
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            resourceMgr.InitLoading();
+            resourceMgr.LoadPack(levelResources);
+            resourceMgr.LoadImmediately();
+
+            SetMap(map);
+            if (!string.IsNullOrWhiteSpace(newMapName))
+            {
+                SetMapName(newMapName);
+            }
+
+            StartBoxResourceScanIfNeeded();
+            QueueOrPollBoxPrefetch();
         }
 
         public static void SetMapsList(Dictionary<string, XElement> _)
@@ -132,11 +162,15 @@ namespace CutTheRope.GameMain
                     {
                         DeleteMenu();
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
-                        string[] packResourceNames = PackConfig.GetBoxBackgrounds(pack);
+                        ResetGameplayResourceSession();
+                        EnsureCurrentMapLoaded();
+                        string[] levelResources = LevelResourceScanner.GetRequiredResources(loadedMap, pack);
+                        TrackSessionResources(levelResources);
+                        StartBoxResourceScanIfNeeded();
                         resourceMgr.InitLoading();
                         resourceMgr.LoadPack(PackGame);
-                        resourceMgr.LoadPack(PackGameNormal);
-                        resourceMgr.LoadPack(packResourceNames);
+                        resourceMgr.LoadPack(PackConfig.GetBoxBackgrounds(pack));
+                        resourceMgr.LoadPack(levelResources);
                         resourceMgr.StartLoading();
                         ((LoadingController)GetChild(2)).nextController = 0;
                         ActivateChild(2);
@@ -151,6 +185,7 @@ namespace CutTheRope.GameMain
                             GameController c3 = new(this);
                             AddChildwithID(c3, 3);
                             ActivateChild(3);
+                            QueueOrPollBoxPrefetch();
                             return;
                         }
                         if (nextController - 1 > 3)
@@ -195,9 +230,11 @@ namespace CutTheRope.GameMain
                         _ = (GameScene)gameController.GetView(0).GetChild(0);
                         if (exitCode <= 2)
                         {
+                            StopGameplayPrefetch();
                             DeleteChild(3);
                             resourceMgr.FreePack(PackGame);
-                            resourceMgr.FreePack(PackGameNormal);
+                            resourceMgr.FreePack([.. sessionResources]);
+                            sessionResources.Clear();
                             int packCount = CTRPreferences.GetPacksCount();
                             for (int i = 0; i < packCount; i++)
                             {
@@ -224,6 +261,7 @@ namespace CutTheRope.GameMain
         {
             if (disposing)
             {
+                StopGameplayPrefetch();
                 loadedMap = null;
                 mapName = null;
             }
@@ -323,6 +361,172 @@ namespace CutTheRope.GameMain
             AddChildwithID(c, 2);
         }
 
+        private void EnsureCurrentMapLoaded()
+        {
+            if (loadedMap != null)
+            {
+                return;
+            }
+
+            string currentMapName = mapName;
+            if (string.IsNullOrWhiteSpace(currentMapName) && pack >= 0 && level >= 0 && pack < PackConfig.GetPackCount() && level < PackConfig.GetLevelCount(pack))
+            {
+                currentMapName = LevelsList.LEVEL_NAMES[pack, level];
+                mapName = currentMapName;
+            }
+
+            if (string.IsNullOrWhiteSpace(currentMapName))
+            {
+                return;
+            }
+
+            loadedMap = ContentPaths.LoadXml(Path.Combine(ContentPaths.MapsDirectory, currentMapName));
+        }
+
+        private void TrackSessionResources(IEnumerable<string> resources)
+        {
+            if (resources == null)
+            {
+                return;
+            }
+
+            foreach (string resourceName in resources)
+            {
+                if (!string.IsNullOrWhiteSpace(resourceName))
+                {
+                    _ = sessionResources.Add(resourceName);
+                }
+            }
+        }
+
+        private void ResetGameplayResourceSession()
+        {
+            StopGameplayPrefetch();
+            sessionResources.Clear();
+            boxResourceScanTask = null;
+            boxResourceScanPack = -1;
+        }
+
+        private void StartBoxResourceScanIfNeeded()
+        {
+            if (pack < 0)
+            {
+                return;
+            }
+
+            if (boxResourceScanTask != null && boxResourceScanPack == pack && !boxResourceScanTask.IsFaulted && !boxResourceScanTask.IsCanceled)
+            {
+                return;
+            }
+
+            boxResourceScanPack = pack;
+            boxResourceScanTask = Task.Run(() => LevelResourceScanner.GetBoxResources(pack));
+        }
+
+        private void QueueOrPollBoxPrefetch()
+        {
+            if (GetChild(CHILD_GAME) == null)
+            {
+                return;
+            }
+
+            if (boxResourceScanTask == null)
+            {
+                return;
+            }
+
+            if (boxResourceScanTask.IsCompletedSuccessfully)
+            {
+                StopBoxScanPollTimer();
+                QueueRemainingBoxResourcesForPrefetch(boxResourceScanTask.Result);
+                return;
+            }
+
+            if (boxScanPollTimer < 0)
+            {
+                boxScanPollTimer = TimerManager.Schedule(static obj => ((CTRRootController)obj).PollBoxResourceScan(), this, 0.25f);
+            }
+        }
+
+        private void PollBoxResourceScan()
+        {
+            if (boxResourceScanTask == null)
+            {
+                StopBoxScanPollTimer();
+                return;
+            }
+
+            if (!boxResourceScanTask.IsCompleted)
+            {
+                return;
+            }
+
+            StopBoxScanPollTimer();
+            if (boxResourceScanTask.IsCompletedSuccessfully)
+            {
+                QueueRemainingBoxResourcesForPrefetch(boxResourceScanTask.Result);
+            }
+        }
+
+        private void QueueRemainingBoxResourcesForPrefetch(HashSet<string> boxResources)
+        {
+            if (boxResources == null || boxResources.Count == 0)
+            {
+                return;
+            }
+
+            HashSet<string> remainingResources = [.. boxResources];
+            remainingResources.ExceptWith(sessionResources);
+            if (remainingResources.Count == 0)
+            {
+                return;
+            }
+
+            TrackSessionResources(remainingResources);
+
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            resourceMgr.QueuePrefetchPack(remainingResources);
+
+            if (prefetchDrainTimer < 0)
+            {
+                prefetchDrainTimer = TimerManager.Schedule(static obj => ((CTRRootController)obj).DrainPrefetchQueue(), this, 1f / 60f);
+            }
+        }
+
+        private void DrainPrefetchQueue()
+        {
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            if (!resourceMgr.PrefetchNextResource() && !resourceMgr.HasPendingPrefetchResources())
+            {
+                StopPrefetchDrainTimer();
+            }
+        }
+
+        private void StopGameplayPrefetch()
+        {
+            StopBoxScanPollTimer();
+            StopPrefetchDrainTimer();
+            Application.SharedResourceMgr().ClearPrefetchQueue();
+        }
+
+        private void StopBoxScanPollTimer()
+        {
+            if (boxScanPollTimer >= 0)
+            {
+                TimerManager.StopTimer(boxScanPollTimer);
+                boxScanPollTimer = -1;
+            }
+        }
+
+        private void StopPrefetchDrainTimer()
+        {
+            if (prefetchDrainTimer >= 0)
+            {
+                TimerManager.StopTimer(prefetchDrainTimer);
+                prefetchDrainTimer = -1;
+            }
+        }
+
         public const int NEXT_GAME = 0;
 
         public const int NEXT_MENU = 1;
@@ -394,65 +598,14 @@ namespace CutTheRope.GameMain
             null
         ];
 
-        private static readonly string[] PackGameNormal = [
-            Resources.Img.ObjStarDisappear,
-            Resources.Img.ObjBubbleFlight,
-            Resources.Img.ObjBubblePop,
-            Resources.Img.ObjHookAuto,
-            Resources.Img.ObjBubbleAttached,
-            Resources.Img.ObjHook01,
-            Resources.Img.ObjHook02,
-            Resources.Img.ObjStarIdle,
-            Resources.Img.HudStar,
-            Resources.Img.CharAnimations,
-            Resources.Img.ObjHookRegulated,
-            Resources.Img.ObjHookMovable,
-            Resources.Img.ObjPump,
-            Resources.Img.TutorialSigns,
-            Resources.Img.ObjHat,
-            Resources.Img.ObjBouncer01,
-            Resources.Img.ObjBouncer02,
-            Resources.Img.ObjSpikes01,
-            Resources.Img.ObjSpikes02,
-            Resources.Img.ObjSpikes03,
-            Resources.Img.ObjSpikes04,
-            Resources.Img.ObjElectrodes,
-            Resources.Img.ObjRotatableSpikes01,
-            Resources.Img.ObjRotatableSpikes02,
-            Resources.Img.ObjRotatableSpikes03,
-            Resources.Img.ObjRotatableSpikes04,
-            Resources.Img.ObjRotatableSpikesButton,
-            Resources.Img.ObjBeeHd,
-            Resources.Img.ObjPollenHd,
-            Resources.Img.CharSupports,
-            Resources.Img.CharAnimations2,
-            Resources.Img.CharAnimations3,
-            Resources.Img.ObjVinil,
-            Resources.Img.ObjGhost,
-            Resources.Img.XmasLights,
-            Resources.Img.CharGreetingXmas,
-            Resources.Img.CharIdleXmas,
-            Resources.Img.ObjSock,
-            Resources.Img.ObjPipe,
-            Resources.Img.ObjLantern,
-            Resources.Img.ObjGap,
-            Resources.Img.ObjLighter,
-            Resources.Img.CharAnimationsSleeping,
-            Resources.Img.FxSleep,
-            Resources.Img.ObjStarNight,
-            Resources.Img.ObjTransporter,
+        private readonly HashSet<string> sessionResources = [];
 
-            // CTR Experiments objects
-            Resources.Img.ObjGun,
-            Resources.Img.ObjSticker,
-            Resources.Img.ObjRocket,
-            Resources.Img.WaterTile,
-            Resources.Img.ObjSnail,
-            Resources.Img.ObjRoboHand,
-            Resources.Img.ObjAnt,
-            Resources.Img.AntHole,
-            Resources.Img.ObjBambooTube,
-            null
-        ];
+        private Task<HashSet<string>> boxResourceScanTask;
+
+        private int boxResourceScanPack = -1;
+
+        private int boxScanPollTimer = -1;
+
+        private int prefetchDrainTimer = -1;
     }
 }
