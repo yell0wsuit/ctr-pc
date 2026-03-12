@@ -389,7 +389,7 @@ namespace CutTheRope.Framework.Core
             if (resourcesDelegate != null)
             {
                 DelayedDispatcher.DispatchFunc dispatchFunc = new(Rmgr_internalUpdate);
-                Timer = TimerManager.Schedule(dispatchFunc, this, 0.022222223f);
+                Timer = TimerManager.Schedule(dispatchFunc, this, 1f / 60f);
             }
         }
 
