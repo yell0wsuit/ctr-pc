@@ -370,6 +370,10 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Queues a batch of resources for opportunistic background prefetch.
+        /// </summary>
+        /// <param name="pack">Resource names to enqueue for silent warming.</param>
         public void QueuePrefetchPack(IEnumerable<string> pack)
         {
             if (pack == null)
@@ -383,6 +387,10 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Queues a single resource for background prefetch if it is not already cached or queued.
+        /// </summary>
+        /// <param name="resourceName">The string resource identifier to enqueue.</param>
         public void QueuePrefetchResource(string resourceName)
         {
             if (!TryResolveResource(resourceName, out string localizedName))
@@ -398,11 +406,19 @@ namespace CutTheRope.Framework.Core
             prefetchQueue.Add(localizedName);
         }
 
+        /// <summary>
+        /// Indicates whether any background prefetch work remains queued.
+        /// </summary>
+        /// <returns><see langword="true"/> when at least one prefetched resource is still pending.</returns>
         public bool HasPendingPrefetchResources()
         {
             return prefetchQueue.Count > 0;
         }
 
+        /// <summary>
+        /// Loads the next queued prefetch resource, if any remain.
+        /// </summary>
+        /// <returns><see langword="true"/> when a resource was loaded; otherwise, <see langword="false"/>.</returns>
         public bool PrefetchNextResource()
         {
             while (prefetchQueue.Count > 0)
@@ -423,6 +439,9 @@ namespace CutTheRope.Framework.Core
             return false;
         }
 
+        /// <summary>
+        /// Clears all queued prefetch work without touching already-cached resources.
+        /// </summary>
         public void ClearPrefetchQueue()
         {
             prefetchQueue.Clear();

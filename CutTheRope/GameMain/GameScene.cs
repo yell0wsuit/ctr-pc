@@ -46,6 +46,11 @@ namespace CutTheRope.GameMain
             Restart();
         }
 
+        /// <summary>
+        /// Resolves the persisted map name from an XML loader source string.
+        /// </summary>
+        /// <param name="source">The XML loader source path or virtual identifier.</param>
+        /// <returns>The filename for disk-backed maps, or the current root-controller map name for virtual reload sources.</returns>
         private static string ResolveMapName(string source)
         {
             return string.IsNullOrWhiteSpace(source) || source.Contains("://", StringComparison.Ordinal)

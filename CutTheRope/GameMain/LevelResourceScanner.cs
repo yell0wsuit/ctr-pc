@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
+using CutTheRope.Framework;
 using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
@@ -12,6 +13,20 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal static class LevelResourceScanner
     {
+        private sealed class XmlValueParser : FrameworkTypes
+        {
+            public static float ParseFloat(string value)
+            {
+                return ParseFloatOrZero(value);
+            }
+        }
+
+        /// <summary>
+        /// Computes the gameplay resources required to instantiate a single parsed map.
+        /// </summary>
+        /// <param name="map">The parsed level XML.</param>
+        /// <param name="pack">The active pack index for pack-specific resources.</param>
+        /// <returns>A de-duplicated array of resource identifiers needed for the map.</returns>
         public static string[] GetRequiredResources(XElement map, int pack)
         {
             if (map == null)
@@ -32,7 +47,7 @@ namespace CutTheRope.GameMain
                 {
                     case "gameDesign":
                         nightLevel = ParseBool(node.Attribute("nightLevel")?.Value);
-                        waterLevel = ParseFloat(node.Attribute("water")?.Value) > 0f;
+                        waterLevel = XmlValueParser.ParseFloat(node.Attribute("water")?.Value) > 0f;
                         break;
                     case "star":
                         if (nightLevel)
@@ -195,6 +210,10 @@ namespace CutTheRope.GameMain
             return resources;
         }
 
+        /// <summary>
+        /// Adds resources that are expected in every gameplay map regardless of XML contents.
+        /// </summary>
+        /// <param name="resources">The destination set being accumulated.</param>
         private static void AddAlwaysLoadedLevelResources(HashSet<string> resources)
         {
             _ = resources.Add(Resources.Img.HudStar);
@@ -204,6 +223,11 @@ namespace CutTheRope.GameMain
             _ = resources.Add(Resources.Img.ObjStarDisappear);
         }
 
+        /// <summary>
+        /// Adds hook-related resources based on a grab node's attributes.
+        /// </summary>
+        /// <param name="resources">The destination set being accumulated.</param>
+        /// <param name="node">The grab XML node being inspected.</param>
         private static void AddGrabResources(HashSet<string> resources, XElement node)
         {
             _ = resources.Add(Resources.Img.ObjHook01);
@@ -213,8 +237,8 @@ namespace CutTheRope.GameMain
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
             bool wheel = ParseBool(node.Attribute("wheel")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
-            float radius = ParseFloat(node.Attribute("radius")?.Value);
-            float moveLength = ParseFloat(node.Attribute("moveLength")?.Value);
+            float radius = XmlValueParser.ParseFloat(node.Attribute("radius")?.Value);
+            float moveLength = XmlValueParser.ParseFloat(node.Attribute("moveLength")?.Value);
 
             if (radius != -1f && !gun && !kickable)
             {
@@ -243,6 +267,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Adds spike resources, including the toggle button when the spike is controlled by a switch.
+        /// </summary>
+        /// <param name="resources">The destination set being accumulated.</param>
+        /// <param name="node">The spike XML node being inspected.</param>
+        /// <param name="baseResourceName">The base spike sprite resource.</param>
+        /// <param name="rotatedResourceName">The rotated spike sprite resource.</param>
         private static void AddSpikeResources(HashSet<string> resources, XElement node, string baseResourceName, string rotatedResourceName)
         {
             _ = resources.Add(baseResourceName);
@@ -253,6 +284,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Adds Om Nom animation resources, including the pack-specific support sprite.
+        /// </summary>
+        /// <param name="resources">The destination set being accumulated.</param>
+        /// <param name="pack">The active pack index.</param>
         private static void AddTargetResources(HashSet<string> resources, int pack)
         {
             _ = resources.Add(Resources.Img.CharAnimations);
@@ -262,14 +298,14 @@ namespace CutTheRope.GameMain
             _ = resources.Add(PackConfig.GetSupportResourceName(pack));
         }
 
+        /// <summary>
+        /// Parses a boolean XML attribute value, defaulting to <see langword="false"/> when absent or invalid.
+        /// </summary>
+        /// <param name="value">The attribute text to parse.</param>
+        /// <returns>The parsed boolean value.</returns>
         private static bool ParseBool(string value)
         {
             return bool.TryParse(value, out bool parsed) && parsed;
-        }
-
-        private static float ParseFloat(string value)
-        {
-            return float.TryParse(value, out float parsed) ? parsed : 0f;
         }
     }
 }

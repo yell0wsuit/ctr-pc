@@ -16,26 +16,47 @@ namespace CutTheRope.GameMain
         {
         }
 
+        /// <summary>
+        /// Stores the currently prepared gameplay map XML on the root controller.
+        /// </summary>
+        /// <param name="map">The parsed map XML that should be treated as current.</param>
         public void SetMap(XElement map)
         {
             loadedMap = map;
         }
 
+        /// <summary>
+        /// Gets the parsed gameplay map XML currently cached on the root controller.
+        /// </summary>
+        /// <returns>The current map XML, or <see langword="null"/> when no map is loaded.</returns>
         public XElement GetMap()
         {
             return loadedMap;
         }
 
+        /// <summary>
+        /// Gets the current map filename tracked for reload and transition flows.
+        /// </summary>
+        /// <returns>The current map filename, or <see langword="null"/> when none has been assigned.</returns>
         public string GetMapName()
         {
             return mapName;
         }
 
+        /// <summary>
+        /// Stores the current map filename tracked for reload and transition flows.
+        /// </summary>
+        /// <param name="map">The map filename to persist on the root controller.</param>
         public void SetMapName(string map)
         {
             mapName = map;
         }
 
+        /// <summary>
+        /// Synchronously ensures the resources required by a map are loaded, then stores the map as current.
+        /// </summary>
+        /// <param name="map">The parsed map XML to prepare.</param>
+        /// <param name="newMapName">Optional map filename to persist on the root controller.</param>
         public void PrepareMapAndEnsureResources(XElement map, string newMapName)
         {
             if (map == null)
@@ -361,6 +382,9 @@ namespace CutTheRope.GameMain
             AddChildwithID(c, 2);
         }
 
+        /// <summary>
+        /// Loads the current map XML from disk when only the pack/level identity is known.
+        /// </summary>
         private void EnsureCurrentMapLoaded()
         {
             if (loadedMap != null)
@@ -383,6 +407,10 @@ namespace CutTheRope.GameMain
             loadedMap = ContentPaths.LoadXml(Path.Combine(ContentPaths.MapsDirectory, currentMapName));
         }
 
+        /// <summary>
+        /// Adds resource identifiers to the set that will be freed when gameplay ends.
+        /// </summary>
+        /// <param name="resources">Gameplay resources to track for session cleanup.</param>
         private void TrackSessionResources(IEnumerable<string> resources)
         {
             if (resources == null)
@@ -399,6 +427,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Clears session-scoped loading state before starting a fresh gameplay resource session.
+        /// </summary>
         private void ResetGameplayResourceSession()
         {
             StopGameplayPrefetch();
@@ -407,6 +438,9 @@ namespace CutTheRope.GameMain
             boxResourceScanPack = -1;
         }
 
+        /// <summary>
+        /// Starts the asynchronous scan that discovers the union of resources used across the current box.
+        /// </summary>
         private void StartBoxResourceScanIfNeeded()
         {
             if (pack < 0)
@@ -423,6 +457,9 @@ namespace CutTheRope.GameMain
             boxResourceScanTask = Task.Run(() => LevelResourceScanner.GetBoxResources(pack));
         }
 
+        /// <summary>
+        /// Starts gameplay prefetch immediately if the box scan is done, or polls until scan results are ready.
+        /// </summary>
         private void QueueOrPollBoxPrefetch()
         {
             if (GetChild(CHILD_GAME) == null)
@@ -448,6 +485,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Polls the asynchronous box scan task and queues prefetch work once it completes successfully.
+        /// </summary>
         private void PollBoxResourceScan()
         {
             if (boxResourceScanTask == null)
@@ -468,6 +508,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Queues the subset of whole-box resources that were not already loaded for the current session.
+        /// </summary>
+        /// <param name="boxResources">The full resource union discovered for the current box.</param>
         private void QueueRemainingBoxResourcesForPrefetch(HashSet<string> boxResources)
         {
             if (boxResources == null || boxResources.Count == 0)
@@ -493,6 +537,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Advances background gameplay prefetch by at most one queued resource.
+        /// </summary>
         private void DrainPrefetchQueue()
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
@@ -502,6 +549,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Stops all gameplay-prefetch timers and clears any queued prefetch work.
+        /// </summary>
         private void StopGameplayPrefetch()
         {
             StopBoxScanPollTimer();
@@ -509,6 +559,9 @@ namespace CutTheRope.GameMain
             Application.SharedResourceMgr().ClearPrefetchQueue();
         }
 
+        /// <summary>
+        /// Stops the timer that waits for whole-box scan completion.
+        /// </summary>
         private void StopBoxScanPollTimer()
         {
             if (boxScanPollTimer >= 0)
@@ -518,6 +571,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Stops the timer that drains the silent gameplay-prefetch queue.
+        /// </summary>
         private void StopPrefetchDrainTimer()
         {
             if (prefetchDrainTimer >= 0)
