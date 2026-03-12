@@ -44,9 +44,9 @@ namespace CutTheRope.Framework.Media
         public void FreeSound(string soundResourceName)
         {
             string localizedName = CTRResourceMgr.HandleLocalizedResource(soundResourceName);
-            if (!string.IsNullOrEmpty(localizedName))
+            if (!string.IsNullOrEmpty(localizedName) && LoadedSounds.Remove(localizedName, out SoundEffect sound))
             {
-                _ = LoadedSounds.Remove(localizedName);
+                sound.Dispose();
             }
         }
 

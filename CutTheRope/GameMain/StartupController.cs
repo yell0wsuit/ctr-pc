@@ -60,7 +60,6 @@ namespace CutTheRope.GameMain
             ctrresourceMgr.LoadPack(PackCommonImages);
             ctrresourceMgr.LoadPack(PackMenu);
             ctrresourceMgr.LoadPack(PackLocalizationMenu);
-            ctrresourceMgr.LoadPack(PackMusic);
             ctrresourceMgr.StartLoading();
         }
 
@@ -91,94 +90,14 @@ namespace CutTheRope.GameMain
         [
             Resources.Snd.Tap,
             Resources.Str.MenuStrings,
-            Resources.Snd.Button,
-            Resources.Snd.BubbleBreak,
-            Resources.Snd.Bubble,
-            Resources.Snd.CandyBreak,
-            Resources.Snd.MonsterChewing,
-            Resources.Snd.MonsterClose,
-            Resources.Snd.MonsterOpen,
-            Resources.Snd.MonsterSad,
-            Resources.Snd.Ring,
-            Resources.Snd.RopeBleak1,
-            Resources.Snd.RopeBleak2,
-            Resources.Snd.RopeBleak3,
-            Resources.Snd.RopeBleak4,
-            Resources.Snd.RopeGet,
-            Resources.Snd.Star1,
-            Resources.Snd.Star2,
-            Resources.Snd.Star3,
-            Resources.Snd.Electric,
-            Resources.Snd.Pump1,
-            Resources.Snd.Pump2,
-            Resources.Snd.Pump3,
-            Resources.Snd.Pump4,
-            Resources.Snd.SpiderActivate,
-            Resources.Snd.SpiderFall,
-            Resources.Snd.SpiderWin,
-            Resources.Snd.Wheel,
-            Resources.Snd.Win,
-            Resources.Snd.GravityOff,
-            Resources.Snd.GravityOn,
-            Resources.Snd.CandyLink,
-            Resources.Snd.Bouncer,
-            Resources.Snd.SpikeRotateIn,
-            Resources.Snd.SpikeRotateOut,
-            Resources.Snd.Buzz,
-            Resources.Snd.Teleport,
-            Resources.Snd.ScratchIn,
-            Resources.Snd.ScratchOut,
-            Resources.Snd.GhostPuff,
-            Resources.Snd.XmasBell,
-            Resources.Snd.TeleportXmas,
-            Resources.Snd.SteamStart,
-            Resources.Snd.SteamStart2,
-            Resources.Snd.SteamEnd,
-            Resources.Snd.LanternTeleportIn,
-            Resources.Snd.LanternTeleportOut,
-            Resources.Snd.MouseIdle,
-            Resources.Snd.MouseRustle,
-            Resources.Snd.MouseTap,
-            Resources.Snd.MonsterSleep1,
-            Resources.Snd.MonsterSleep2,
-            Resources.Snd.MonsterSleep3,
-            Resources.Snd.StarLight1,
-            Resources.Snd.StarLight2,
-            Resources.Snd.TransporterDrop,
-            Resources.Snd.TransporterMove,
-            Resources.Snd.Conv01,
-            Resources.Snd.Conv02,
-            Resources.Snd.Conv03,
-            Resources.Snd.Conv04,
-
-            // CTR Experiments sounds
-            Resources.Snd.ExpGun,
-            Resources.Snd.ExpSuckerDrop,
-            Resources.Snd.ExpSuckerLand,
-            Resources.Snd.ExpRocketFlyLooped,
-            Resources.Snd.ExpRocketInWater,
-            Resources.Snd.ExpRocketStart,
-            Resources.Snd.ExpWaterSplash,
-            Resources.Snd.ExpSnailIn,
-            Resources.Snd.ExpSnailOut,
-            Resources.Snd.ExpHandCatch,
-            Resources.Snd.ExpHandDrop,
-            Resources.Snd.ExpHandRotate,
-            Resources.Snd.ExpHandClap,
-            Resources.Snd.ExpAntsDropCandy,
-            Resources.Snd.ExpAntsTakeCandy,
-            Resources.Snd.ExpBambooChute,
+            Resources.Fnt.BigFont,
             null,
         ];
 
         private static readonly string[] PackCommonImages =
         [
             Resources.Img.MenuButtonDefault,
-            Resources.Fnt.BigFont,
-            Resources.Fnt.SmallFont,
             Resources.Img.MenuLoading,
-            Resources.Img.MenuNotification,
-            Resources.Img.MenuAchievement,
             Resources.Img.MenuOptions,
             null
         ];
@@ -193,27 +112,11 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuPackSelection,
             Resources.Img.MenuPackSelection2,
             Resources.Img.MenuExtraButtons,
-            Resources.Img.MenuScrollbar,
-            Resources.Img.MenuLeaderboard,
-            Resources.Img.MenuProcessingHd,
-            Resources.Img.MenuScrollbarChangename,
-            Resources.Img.MenuButtonAchivCup,
             Resources.Img.MenuBgrShadow,
             Resources.Img.MenuBgrXmas,
             null
         ];
 
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn, null];
-        private static readonly string[] PackMusic =
-        [
-            Resources.Music.MenuMusic,
-            Resources.Music.GameMusic,
-            Resources.Music.GameMusic2,
-            Resources.Music.GameMusic3,
-            Resources.Music.GameMusic4,
-            Resources.Music.MenuMusicXmas,
-            Resources.Music.GameMusicXmas,
-            null,
-        ];
     }
 }

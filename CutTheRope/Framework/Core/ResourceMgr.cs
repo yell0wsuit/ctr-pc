@@ -27,9 +27,21 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        public void ClearCachedResources()
+        public void ClearCachedFonts()
         {
-            s_Resources.Clear();
+            List<string> fontKeys = [];
+            foreach (KeyValuePair<string, object> kvp in s_Resources)
+            {
+                if (kvp.Value is FontGeneric)
+                {
+                    fontKeys.Add(kvp.Key);
+                }
+            }
+            foreach (string key in fontKeys)
+            {
+                _ = s_Resources.Remove(key);
+            }
+            FontManager.ClearCache();
         }
 
         /// <summary>
@@ -389,7 +401,7 @@ namespace CutTheRope.Framework.Core
             if (resourcesDelegate != null)
             {
                 DelayedDispatcher.DispatchFunc dispatchFunc = new(Rmgr_internalUpdate);
-                Timer = TimerManager.Schedule(dispatchFunc, this, 0.022222223f);
+                Timer = TimerManager.Schedule(dispatchFunc, this, 1f / 60f);
             }
         }
 

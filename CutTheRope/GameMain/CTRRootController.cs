@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
@@ -72,7 +71,6 @@ namespace CutTheRope.GameMain
             DeleteChild(1);
             Application.SharedMovieMgr().delegateMovieMgrDelegate = null;
             resourceMgr.FreePack(PackMenu);
-            GC.Collect();
         }
 
         public static void DisableGameCenter()
@@ -187,7 +185,6 @@ namespace CutTheRope.GameMain
                         {
                             menuController3.ShowNextPack();
                         }
-                        GC.Collect();
                         return;
                     }
                 case 3:
@@ -215,7 +212,6 @@ namespace CutTheRope.GameMain
                             ActivateChild(2);
                             //Show menu presence on exit to menu
                             Game1.RPC?.MenuPresence();
-                            GC.Collect();
                         }
                         return;
                     }
@@ -378,11 +374,6 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuPackSelection,
             Resources.Img.MenuPackSelection2,
             Resources.Img.MenuExtraButtons,
-            Resources.Img.MenuScrollbar,
-            Resources.Img.MenuLeaderboard,
-            Resources.Img.MenuProcessingHd,
-            Resources.Img.MenuScrollbarChangename,
-            Resources.Img.MenuButtonAchivCup,
             Resources.Img.MenuBgrShadow,
             Resources.Img.MenuBgrXmas,
             null
