@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using CutTheRope.Commons;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Platform;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
@@ -13,24 +16,72 @@ namespace CutTheRope.GameMain
         {
         }
 
+        /// <summary>
+        /// Stores the currently prepared gameplay map XML on the root controller.
+        /// </summary>
+        /// <param name="map">The parsed map XML that should be treated as current.</param>
         public void SetMap(XElement map)
         {
             loadedMap = map;
         }
 
+        /// <summary>
+        /// Gets the parsed gameplay map XML currently cached on the root controller.
+        /// </summary>
+        /// <returns>The current map XML, or <see langword="null"/> when no map is loaded.</returns>
         public XElement GetMap()
         {
             return loadedMap;
         }
 
+        /// <summary>
+        /// Gets the current map filename tracked for reload and transition flows.
+        /// </summary>
+        /// <returns>The current map filename, or <see langword="null"/> when none has been assigned.</returns>
         public string GetMapName()
         {
             return mapName;
         }
 
+        /// <summary>
+        /// Stores the current map filename tracked for reload and transition flows.
+        /// </summary>
+        /// <param name="map">The map filename to persist on the root controller.</param>
         public void SetMapName(string map)
         {
             mapName = map;
+        }
+
+        /// <summary>
+        /// Synchronously ensures the resources required by a map are loaded, then stores the map as current.
+        /// </summary>
+        /// <param name="map">The parsed map XML to prepare.</param>
+        /// <param name="newMapName">Optional map filename to persist on the root controller.</param>
+        public void PrepareMapAndEnsureResources(XElement map, string newMapName)
+        {
+            if (map == null)
+            {
+                return;
+            }
+
+            StopGameplayPrefetch();
+
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(map, pack);
+            TrackSessionResources(levelResources);
+
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            resourceMgr.InitLoading();
+            resourceMgr.LoadPack(levelResources);
+            resourceMgr.LoadImmediately();
+
+            SetMap(map);
+            if (!string.IsNullOrWhiteSpace(newMapName))
+            {
+                SetMapName(newMapName);
+            }
+
+            StartBoxResourceScanIfNeeded();
+            QueueOrPollBoxPrefetch();
         }
 
         public static void SetMapsList(Dictionary<string, XElement> _)
@@ -132,11 +183,15 @@ namespace CutTheRope.GameMain
                     {
                         DeleteMenu();
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
-                        string[] packResourceNames = PackConfig.GetBoxBackgrounds(pack);
+                        ResetGameplayResourceSession();
+                        EnsureCurrentMapLoaded();
+                        string[] levelResources = LevelResourceScanner.GetRequiredResources(loadedMap, pack);
+                        TrackSessionResources(levelResources);
+                        StartBoxResourceScanIfNeeded();
                         resourceMgr.InitLoading();
                         resourceMgr.LoadPack(PackGame);
-                        resourceMgr.LoadPack(PackGameNormal);
-                        resourceMgr.LoadPack(packResourceNames);
+                        resourceMgr.LoadPack(PackConfig.GetBoxBackgrounds(pack));
+                        resourceMgr.LoadPack(levelResources);
                         resourceMgr.StartLoading();
                         ((LoadingController)GetChild(2)).nextController = 0;
                         ActivateChild(2);
@@ -151,6 +206,7 @@ namespace CutTheRope.GameMain
                             GameController c3 = new(this);
                             AddChildwithID(c3, 3);
                             ActivateChild(3);
+                            QueueOrPollBoxPrefetch();
                             return;
                         }
                         if (nextController - 1 > 3)
@@ -195,9 +251,11 @@ namespace CutTheRope.GameMain
                         _ = (GameScene)gameController.GetView(0).GetChild(0);
                         if (exitCode <= 2)
                         {
+                            StopGameplayPrefetch();
                             DeleteChild(3);
                             resourceMgr.FreePack(PackGame);
-                            resourceMgr.FreePack(PackGameNormal);
+                            resourceMgr.FreePack([.. sessionResources]);
+                            sessionResources.Clear();
                             int packCount = CTRPreferences.GetPacksCount();
                             for (int i = 0; i < packCount; i++)
                             {
@@ -224,6 +282,7 @@ namespace CutTheRope.GameMain
         {
             if (disposing)
             {
+                StopGameplayPrefetch();
                 loadedMap = null;
                 mapName = null;
             }
@@ -323,6 +382,212 @@ namespace CutTheRope.GameMain
             AddChildwithID(c, 2);
         }
 
+        /// <summary>
+        /// Loads the current map XML from disk when only the pack/level identity is known.
+        /// </summary>
+        private void EnsureCurrentMapLoaded()
+        {
+            if (loadedMap != null)
+            {
+                return;
+            }
+
+            string currentMapName = mapName;
+            if (string.IsNullOrWhiteSpace(currentMapName) && pack >= 0 && level >= 0 && pack < PackConfig.GetPackCount() && level < PackConfig.GetLevelCount(pack))
+            {
+                currentMapName = LevelsList.LEVEL_NAMES[pack, level];
+                mapName = currentMapName;
+            }
+
+            if (string.IsNullOrWhiteSpace(currentMapName))
+            {
+                return;
+            }
+
+            loadedMap = ContentPaths.LoadXml(Path.Combine(ContentPaths.MapsDirectory, currentMapName));
+        }
+
+        /// <summary>
+        /// Adds resource identifiers to the set that will be freed when gameplay ends.
+        /// </summary>
+        /// <param name="resources">Gameplay resources to track for session cleanup.</param>
+        private void TrackSessionResources(IEnumerable<string> resources)
+        {
+            if (resources == null)
+            {
+                return;
+            }
+
+            foreach (string resourceName in resources)
+            {
+                if (!string.IsNullOrWhiteSpace(resourceName))
+                {
+                    _ = sessionResources.Add(resourceName);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clears session-scoped loading state before starting a fresh gameplay resource session.
+        /// </summary>
+        private void ResetGameplayResourceSession()
+        {
+            StopGameplayPrefetch();
+            sessionResources.Clear();
+            boxResourceScanTask = null;
+            boxResourceScanPack = -1;
+        }
+
+        /// <summary>
+        /// Starts the asynchronous scan that discovers the union of resources used across the current box.
+        /// </summary>
+        private void StartBoxResourceScanIfNeeded()
+        {
+            if (pack < 0)
+            {
+                return;
+            }
+
+            if (boxResourceScanTask != null && boxResourceScanPack == pack && !boxResourceScanTask.IsFaulted && !boxResourceScanTask.IsCanceled)
+            {
+                return;
+            }
+
+            boxResourceScanPack = pack;
+            boxResourceScanTask = Task.Run(() => LevelResourceScanner.GetBoxResources(pack));
+        }
+
+        /// <summary>
+        /// Starts gameplay prefetch immediately if the box scan is done, or polls until scan results are ready.
+        /// </summary>
+        private void QueueOrPollBoxPrefetch()
+        {
+            if (GetChild(CHILD_GAME) == null)
+            {
+                return;
+            }
+
+            if (boxResourceScanTask == null)
+            {
+                return;
+            }
+
+            if (boxResourceScanTask.IsCompletedSuccessfully)
+            {
+                StopBoxScanPollTimer();
+                QueueRemainingBoxResourcesForPrefetch(boxResourceScanTask.Result);
+                return;
+            }
+
+            if (boxScanPollTimer < 0)
+            {
+                boxScanPollTimer = TimerManager.Schedule(static obj => ((CTRRootController)obj).PollBoxResourceScan(), this, 0.25f);
+            }
+        }
+
+        /// <summary>
+        /// Polls the asynchronous box scan task and queues prefetch work once it completes successfully.
+        /// </summary>
+        private void PollBoxResourceScan()
+        {
+            if (boxResourceScanTask == null)
+            {
+                StopBoxScanPollTimer();
+                return;
+            }
+
+            if (!boxResourceScanTask.IsCompleted)
+            {
+                return;
+            }
+
+            StopBoxScanPollTimer();
+            if (boxResourceScanTask.IsCompletedSuccessfully)
+            {
+                QueueRemainingBoxResourcesForPrefetch(boxResourceScanTask.Result);
+            }
+        }
+
+        /// <summary>
+        /// Queues the subset of whole-box resources that were not already loaded for the current session.
+        /// </summary>
+        /// <param name="boxResources">The full resource union discovered for the current box.</param>
+        private void QueueRemainingBoxResourcesForPrefetch(HashSet<string> boxResources)
+        {
+            if (boxResources == null || boxResources.Count == 0)
+            {
+                return;
+            }
+
+            HashSet<string> remainingResources = [.. boxResources];
+            remainingResources.ExceptWith(sessionResources);
+            if (remainingResources.Count == 0)
+            {
+                return;
+            }
+
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            resourceMgr.QueuePrefetchPack(remainingResources);
+
+            if (prefetchDrainTimer < 0)
+            {
+                prefetchDrainTimer = TimerManager.Schedule(static obj => ((CTRRootController)obj).DrainPrefetchQueue(), this, 1f / 60f);
+            }
+        }
+
+        /// <summary>
+        /// Advances background gameplay prefetch by at most one queued resource.
+        /// </summary>
+        private void DrainPrefetchQueue()
+        {
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            if (resourceMgr.PrefetchNextResource(out string loadedName))
+            {
+                if (!string.IsNullOrWhiteSpace(loadedName))
+                {
+                    _ = sessionResources.Add(loadedName);
+                }
+            }
+            else if (!resourceMgr.HasPendingPrefetchResources())
+            {
+                StopPrefetchDrainTimer();
+            }
+        }
+
+        /// <summary>
+        /// Stops all gameplay-prefetch timers and clears any queued prefetch work.
+        /// </summary>
+        private void StopGameplayPrefetch()
+        {
+            StopBoxScanPollTimer();
+            StopPrefetchDrainTimer();
+            Application.SharedResourceMgr().ClearPrefetchQueue();
+        }
+
+        /// <summary>
+        /// Stops the timer that waits for whole-box scan completion.
+        /// </summary>
+        private void StopBoxScanPollTimer()
+        {
+            if (boxScanPollTimer >= 0)
+            {
+                TimerManager.StopTimer(boxScanPollTimer);
+                boxScanPollTimer = -1;
+            }
+        }
+
+        /// <summary>
+        /// Stops the timer that drains the silent gameplay-prefetch queue.
+        /// </summary>
+        private void StopPrefetchDrainTimer()
+        {
+            if (prefetchDrainTimer >= 0)
+            {
+                TimerManager.StopTimer(prefetchDrainTimer);
+                prefetchDrainTimer = -1;
+            }
+        }
+
         public const int NEXT_GAME = 0;
 
         public const int NEXT_MENU = 1;
@@ -394,65 +659,14 @@ namespace CutTheRope.GameMain
             null
         ];
 
-        private static readonly string[] PackGameNormal = [
-            Resources.Img.ObjStarDisappear,
-            Resources.Img.ObjBubbleFlight,
-            Resources.Img.ObjBubblePop,
-            Resources.Img.ObjHookAuto,
-            Resources.Img.ObjBubbleAttached,
-            Resources.Img.ObjHook01,
-            Resources.Img.ObjHook02,
-            Resources.Img.ObjStarIdle,
-            Resources.Img.HudStar,
-            Resources.Img.CharAnimations,
-            Resources.Img.ObjHookRegulated,
-            Resources.Img.ObjHookMovable,
-            Resources.Img.ObjPump,
-            Resources.Img.TutorialSigns,
-            Resources.Img.ObjHat,
-            Resources.Img.ObjBouncer01,
-            Resources.Img.ObjBouncer02,
-            Resources.Img.ObjSpikes01,
-            Resources.Img.ObjSpikes02,
-            Resources.Img.ObjSpikes03,
-            Resources.Img.ObjSpikes04,
-            Resources.Img.ObjElectrodes,
-            Resources.Img.ObjRotatableSpikes01,
-            Resources.Img.ObjRotatableSpikes02,
-            Resources.Img.ObjRotatableSpikes03,
-            Resources.Img.ObjRotatableSpikes04,
-            Resources.Img.ObjRotatableSpikesButton,
-            Resources.Img.ObjBeeHd,
-            Resources.Img.ObjPollenHd,
-            Resources.Img.CharSupports,
-            Resources.Img.CharAnimations2,
-            Resources.Img.CharAnimations3,
-            Resources.Img.ObjVinil,
-            Resources.Img.ObjGhost,
-            Resources.Img.XmasLights,
-            Resources.Img.CharGreetingXmas,
-            Resources.Img.CharIdleXmas,
-            Resources.Img.ObjSock,
-            Resources.Img.ObjPipe,
-            Resources.Img.ObjLantern,
-            Resources.Img.ObjGap,
-            Resources.Img.ObjLighter,
-            Resources.Img.CharAnimationsSleeping,
-            Resources.Img.FxSleep,
-            Resources.Img.ObjStarNight,
-            Resources.Img.ObjTransporter,
+        private readonly HashSet<string> sessionResources = [];
 
-            // CTR Experiments objects
-            Resources.Img.ObjGun,
-            Resources.Img.ObjSticker,
-            Resources.Img.ObjRocket,
-            Resources.Img.WaterTile,
-            Resources.Img.ObjSnail,
-            Resources.Img.ObjRoboHand,
-            Resources.Img.ObjAnt,
-            Resources.Img.AntHole,
-            Resources.Img.ObjBambooTube,
-            null
-        ];
+        private Task<HashSet<string>> boxResourceScanTask;
+
+        private int boxResourceScanPack = -1;
+
+        private int boxScanPollTimer = -1;
+
+        private int prefetchDrainTimer = -1;
     }
 }
