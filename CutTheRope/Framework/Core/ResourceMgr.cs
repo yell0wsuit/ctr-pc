@@ -29,6 +29,13 @@ namespace CutTheRope.Framework.Core
 
         public void ClearCachedResources()
         {
+            foreach (object value in s_Resources.Values)
+            {
+                if (value is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
             s_Resources.Clear();
         }
 
