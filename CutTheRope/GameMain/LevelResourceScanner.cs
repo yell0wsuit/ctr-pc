@@ -145,17 +145,6 @@ namespace CutTheRope.GameMain
                         break;
                     case "target":
                         AddTargetResources(resources, pack);
-                        if (nightLevel)
-                        {
-                            _ = resources.Add(Resources.Img.CharAnimationsSleeping);
-                            _ = resources.Add(Resources.Img.FxSleep);
-                        }
-                        if (SpecialEvents.IsXmas)
-                        {
-                            _ = resources.Add(Resources.Img.CharGreetingXmas);
-                            _ = resources.Add(Resources.Img.CharIdleXmas);
-                            _ = resources.Add(Resources.Img.XmasLights);
-                        }
                         break;
                     case "steamTube":
                         _ = resources.Add(Resources.Img.ObjPipe);
