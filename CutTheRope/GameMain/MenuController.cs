@@ -1509,7 +1509,7 @@ namespace CutTheRope.GameMain
                         Preferences.SetStringForKey(nextLocale, "PREFS_LOCALE", true);
                         CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
                         ctrresourceMgr2.FreePack(PackLocalizationMenu);
-                        ctrresourceMgr2.ClearCachedResources();
+                        ctrresourceMgr2.ClearCachedFonts();
                         ctrresourceMgr2.InitLoading();
                         ctrresourceMgr2.LoadPack(PackLocalizationMenu);
                         ctrresourceMgr2.LoadImmediately();
