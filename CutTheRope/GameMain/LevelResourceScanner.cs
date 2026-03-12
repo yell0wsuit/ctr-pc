@@ -59,9 +59,6 @@ namespace CutTheRope.GameMain
                         AddGrabResources(resources, node);
                         break;
                     case "bubble":
-                        _ = resources.Add(Resources.Img.ObjBubbleAttached);
-                        _ = resources.Add(Resources.Img.ObjBubbleFlight);
-                        _ = resources.Add(Resources.Img.ObjBubblePop);
                         break;
                     case "spike1":
                         AddSpikeResources(resources, node, Resources.Img.ObjSpikes01, Resources.Img.ObjRotatableSpikes01);
@@ -91,12 +88,6 @@ namespace CutTheRope.GameMain
                         break;
                     case "ghost":
                         _ = resources.Add(Resources.Img.ObjGhost);
-                        if (ParseBool(node.Attribute("bubble")?.Value))
-                        {
-                            _ = resources.Add(Resources.Img.ObjBubbleAttached);
-                            _ = resources.Add(Resources.Img.ObjBubbleFlight);
-                            _ = resources.Add(Resources.Img.ObjBubblePop);
-                        }
                         break;
                     case "rocket":
                         _ = resources.Add(Resources.Img.ObjRocket);
@@ -141,9 +132,7 @@ namespace CutTheRope.GameMain
                     case "lightBulb":
                     case "lightbulb":
                         _ = resources.Add(Resources.Img.ObjLighter);
-                        _ = resources.Add(Resources.Img.ObjBubbleAttached);
-                        _ = resources.Add(Resources.Img.ObjBubbleFlight);
-                        _ = resources.Add(Resources.Img.ObjBubblePop);
+                        _ = resources.Add(Resources.Img.ObjGhost);
                         break;
                     case "hand":
                         _ = resources.Add(Resources.Img.ObjRoboHand);
@@ -213,6 +202,9 @@ namespace CutTheRope.GameMain
             _ = resources.Add(Resources.Img.HudStar);
             _ = resources.Add(Resources.Img.ObjStarIdle);
             _ = resources.Add(Resources.Img.ObjStarDisappear);
+            _ = resources.Add(Resources.Img.ObjBubbleAttached);
+            _ = resources.Add(Resources.Img.ObjBubbleFlight);
+            _ = resources.Add(Resources.Img.ObjBubblePop);
         }
 
         /// <summary>
