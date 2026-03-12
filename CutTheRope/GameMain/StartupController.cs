@@ -90,6 +90,7 @@ namespace CutTheRope.GameMain
         [
             Resources.Snd.Tap,
             Resources.Str.MenuStrings,
+            Resources.Fnt.BigFont,
             null,
         ];
 
