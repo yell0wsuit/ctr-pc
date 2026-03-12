@@ -7,17 +7,17 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal static class OmNomSoundResolver
     {
-        private static readonly Dictionary<string, string> SuffixesByClassicSound = new()
+        private static readonly Dictionary<string, string> ThemedIdentifierSuffixesByClassicSound = new()
         {
-            [Resources.Snd.MonsterChewing] = "chewing",
-            [Resources.Snd.MonsterClose] = "mouthClose",
-            [Resources.Snd.MonsterOpen] = "mouthOpen",
-            [Resources.Snd.MonsterSad] = "sad",
-            [Resources.Snd.MonsterExcited] = "excited",
-            [Resources.Snd.MonsterGreeting] = "greeting",
-            [Resources.Snd.MonsterSleep1] = "sleep01",
-            [Resources.Snd.MonsterSleep2] = "sleep02",
-            [Resources.Snd.MonsterSleep3] = "sleep03",
+            [Resources.Snd.MonsterChewing] = "Chewing",
+            [Resources.Snd.MonsterClose] = "MouthClose",
+            [Resources.Snd.MonsterOpen] = "MouthOpen",
+            [Resources.Snd.MonsterSad] = "Sad",
+            [Resources.Snd.MonsterExcited] = "Excited",
+            [Resources.Snd.MonsterGreeting] = "Greeting",
+            [Resources.Snd.MonsterSleep1] = "Sleep01",
+            [Resources.Snd.MonsterSleep2] = "Sleep02",
+            [Resources.Snd.MonsterSleep3] = "Sleep03",
         };
 
         public static string ResolveSoundResource(OmNomSkinDefinition skinDefinition, string classicSoundResourceName)
@@ -29,33 +29,15 @@ namespace CutTheRope.GameMain
 
             bool isOptInOnlySound = classicSoundResourceName is Resources.Snd.MonsterExcited or Resources.Snd.MonsterGreeting;
 
-            if (skinDefinition == null)
-            {
-                return isOptInOnlySound
+            return skinDefinition == null
+                ? isOptInOnlySound
                     ? null
-                    : classicSoundResourceName;
-            }
-
-            if (isOptInOnlySound && !skinDefinition.HasUniqueSound(classicSoundResourceName))
-            {
-                return null;
-            }
-
-            if (!skinDefinition.HasUniqueSound(classicSoundResourceName))
-            {
-                return classicSoundResourceName;
-            }
-
-            if (string.IsNullOrWhiteSpace(skinDefinition.Name)
-                || !SuffixesByClassicSound.TryGetValue(classicSoundResourceName, out string suffix))
-            {
-                return classicSoundResourceName;
-            }
-
-            string resolvedSound = skinDefinition.Name + "_" + suffix;
-            return Resources.IsSound(resolvedSound)
-                ? resolvedSound
-                : classicSoundResourceName;
+                    : classicSoundResourceName
+                : isOptInOnlySound && !skinDefinition.HasUniqueSound(classicSoundResourceName)
+                ? null
+                : !skinDefinition.HasUniqueSound(classicSoundResourceName)
+                ? classicSoundResourceName
+                : ResolveThemedSoundResourceName(skinDefinition.Name, classicSoundResourceName);
         }
 
         public static string ResolveSelectedSkinSoundResource(string classicSoundResourceName)
@@ -69,6 +51,20 @@ namespace CutTheRope.GameMain
             return OmNomSkinRegistry.IsClassicSkin(skinIndex)
                 ? null
                 : OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex);
+        }
+
+        private static string ResolveThemedSoundResourceName(string skinName, string classicSoundResourceName)
+        {
+            if (string.IsNullOrWhiteSpace(skinName)
+                || !ThemedIdentifierSuffixesByClassicSound.TryGetValue(classicSoundResourceName, out string suffix))
+            {
+                return classicSoundResourceName;
+            }
+
+            string themedSoundIdentifier = "TT" + skinName + suffix;
+            return Resources.TryResolveSoundIdentifier(themedSoundIdentifier, out string themedSoundResourceName)
+                ? themedSoundResourceName
+                : classicSoundResourceName;
         }
     }
 }
