@@ -588,7 +588,7 @@ namespace CutTheRope.GameMain
 
         private static void PlayStaticXmlPreviewState(FlashXmlTargetAnimationBackend backend, OmNomSkinDefinition skin)
         {
-            if (string.Equals(skin.Name, OriginalFlashSkinName, StringComparison.Ordinal)
+            if (string.Equals(skin.Id, OriginalFlashSkinName, StringComparison.Ordinal)
                 && skin.GetTimelineId(TargetAnimationState.IdleVariationThree) >= 0)
             {
                 backend.Play(TargetAnimationState.IdleVariationThree);

@@ -1,6 +1,6 @@
 [
     {
-        "name": "OM_NOM_ORIGINAL_FLASH",
+        "id": "OM_NOM_ORIGINAL_FLASH",
         "animationXml": "om_nom_original.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -33,7 +33,7 @@
         "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
     },
     {
-        "name": "OM_NOM_HALLOWEEN",
+        "id": "OM_NOM_HALLOWEEN",
         "animationXml": "om_nom_halloween_hat.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -66,7 +66,7 @@
         "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
     },
     {
-        "name": "OM_NOM_XMAS",
+        "id": "OM_NOM_XMAS",
         "animationXml": "om_nom_new_year_hat.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -99,7 +99,7 @@
         "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
     },
     {
-        "name": "OM_NOM_SUPERPOWERS",
+        "id": "OM_NOM_SUPERPOWERS",
         "animationXml": "om_nom_original.xml",
         "timelines": {
             "IdleLoop": 19,
@@ -126,7 +126,8 @@
         "idleToSleepTrimFrames": 27
     },
     {
-        "name": "OM_NOM_VIKING",
+        "id": "OM_NOM_VIKING",
+        "name": "Medieval",
         "animationXml": "om_nom_viking.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -148,7 +149,6 @@
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
-        "uniqueSoundSet": "Medieval",
         "uniqueSounds": [
             "MonsterChewing",
             "MonsterClose",
@@ -161,7 +161,8 @@
         ]
     },
     {
-        "name": "OM_NOM_PAINTER",
+        "id": "OM_NOM_PAINTER",
+        "name": "Artist",
         "animationXml": "om_nom_painter.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -183,7 +184,6 @@
         "slowTimelines": [0, 1, 5, 6, 2, 7, 8],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
-        "uniqueSoundSet": "Artist",
         "uniqueSounds": [
             "MonsterChewing",
             "MonsterClose",
@@ -196,7 +196,8 @@
         ]
     },
     {
-        "name": "OM_NOM_PIRATE",
+        "id": "OM_NOM_PIRATE",
+        "name": "Pirate",
         "animationXml": "om_nom_pirate.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -218,7 +219,6 @@
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
-        "uniqueSoundSet": "Pirate",
         "uniqueSounds": [
             "MonsterChewing",
             "MonsterClose",
@@ -231,7 +231,8 @@
         ]
     },
     {
-        "name": "OM_NOM_PHARAON",
+        "id": "OM_NOM_PHARAON",
+        "name": "Pharaoh",
         "animationXml": "om_nom_pharaon.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -253,7 +254,6 @@
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
-        "uniqueSoundSet": "Pharaoh",
         "uniqueSounds": [
             "MonsterChewing",
             "MonsterClose",
@@ -266,7 +266,8 @@
         ]
     },
     {
-        "name": "OM_NOM_CAESAR",
+        "id": "OM_NOM_CAESAR",
+        "name": "Caesar",
         "animationXml": "om_nom_caesar.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -288,7 +289,6 @@
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
-        "uniqueSoundSet": "Caesar",
         "uniqueSounds": [
             "MonsterChewing",
             "MonsterClose",
@@ -301,7 +301,8 @@
         ]
     },
     {
-        "name": "OM_NOM_PREHISTORIC",
+        "id": "OM_NOM_PREHISTORIC",
+        "name": "Prehistoric",
         "animationXml": "om_nom_prehistoric.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -332,7 +333,6 @@
         "slowTimelines": [0, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         "idleVariants": [2, 5, 9],
         "idleToSleepTrimFrames": 27,
-        "uniqueSoundSet": "Prehistoric",
         "uniqueSounds": [
             "MonsterGreeting",
             "MonsterChewing",
@@ -346,7 +346,8 @@
         ]
     },
     {
-        "name": "OM_NOM_DISCO",
+        "id": "OM_NOM_DISCO",
+        "name": "Disco",
         "animationXml": "om_nom_disco.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -368,7 +369,6 @@
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
-        "uniqueSoundSet": "Disco",
         "uniqueSounds": [
             "MonsterChewing",
             "MonsterClose",
@@ -381,7 +381,7 @@
         ]
     },
     {
-        "name": "OM_NOM_SHERIF",
+        "id": "OM_NOM_SHERIF",
         "animationXml": "om_nom_sherif.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -405,7 +405,7 @@
         "idleToSleepTrimFrames": 27
     },
     {
-        "name": "OM_NOM_EMPEROR",
+        "id": "OM_NOM_EMPEROR",
         "animationXml": "om_nom_emperor.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -429,7 +429,7 @@
         "idleToSleepTrimFrames": 27
     },
     {
-        "name": "OM_NOM_INVENTOR",
+        "id": "OM_NOM_INVENTOR",
         "animationXml": "om_nom_inventor.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -453,7 +453,7 @@
         "idleToSleepTrimFrames": 27
     },
     {
-        "name": "OM_NOM_CYBORG",
+        "id": "OM_NOM_CYBORG",
         "animationXml": "om_nom_cyborg.xml",
         "timelines": {
             "IdleLoop": 0,

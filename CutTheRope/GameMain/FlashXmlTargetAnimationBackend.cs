@@ -57,7 +57,7 @@ namespace CutTheRope.GameMain
             BuildParts(sleepOverlayDefinition, _sleepOverlayObject, _sleepOverlayParts, SleepOverlayTimeline, -1);
             BuildRootTimelines(sleepOverlayDefinition, _sleepOverlayObject, SleepOverlayTimeline, -1);
 
-            _bubbleOverlayDefinition = string.Equals(_skinDefinition.Name, PirateSkinName, StringComparison.Ordinal)
+            _bubbleOverlayDefinition = string.Equals(_skinDefinition.Id, PirateSkinName, StringComparison.Ordinal)
                 ? FlashXmlImporter.ParseFile(
                     ContentPaths.GetAnimationXmlAbsolutePath("fx_bubbles.xml"))
                 : null;

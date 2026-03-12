@@ -100,9 +100,10 @@ namespace CutTheRope.GameMain
                 return null;
             }
 
+            string id = GetStringProperty(entry, "id");
             string name = GetStringProperty(entry, "name");
             string animationXml = GetStringProperty(entry, "animationXml");
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(animationXml))
+            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(animationXml))
             {
                 return null;
             }
@@ -177,7 +178,6 @@ namespace CutTheRope.GameMain
                 startWithGreeting = true;
             }
 
-            string uniqueSoundSet = GetStringProperty(entry, "uniqueSoundSet");
             List<string> uniqueSounds = [];
             if (entry.TryGetProperty("uniqueSounds", out JsonElement uniqueSoundsElement)
                 && uniqueSoundsElement.ValueKind == JsonValueKind.Array)
@@ -198,6 +198,7 @@ namespace CutTheRope.GameMain
             }
 
             return new OmNomSkinDefinition(
+                id,
                 name,
                 xmlPath,
                 timelineMappings,
@@ -206,7 +207,6 @@ namespace CutTheRope.GameMain
                 idleToSleepTrimFrames,
                 [.. slowTimelineIds],
                 startWithGreeting,
-                uniqueSoundSet,
                 [.. uniqueSounds]);
         }
 

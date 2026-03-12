@@ -46,13 +46,13 @@ namespace CutTheRope.GameMain
                 return classicSoundResourceName;
             }
 
-            if (string.IsNullOrWhiteSpace(skinDefinition.UniqueSoundSet)
+            if (string.IsNullOrWhiteSpace(skinDefinition.Name)
                 || !SuffixesByClassicSound.TryGetValue(classicSoundResourceName, out string suffix))
             {
                 return classicSoundResourceName;
             }
 
-            string resolvedSound = skinDefinition.UniqueSoundSet + "_" + suffix;
+            string resolvedSound = skinDefinition.Name + "_" + suffix;
             return Resources.IsSound(resolvedSound)
                 ? resolvedSound
                 : classicSoundResourceName;

@@ -286,7 +286,7 @@ namespace CutTheRope.GameMain
             else
             {
                 OmNomSkinDefinition skin = OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex);
-                _ = string.Equals(skin.Name, "OM_NOM_PREHISTORIC", StringComparison.Ordinal)
+                _ = string.Equals(skin.Id, "OM_NOM_PREHISTORIC", StringComparison.Ordinal)
                     ? resources.Add(Resources.Img.CharAnimationsPrehistoric)
                     : resources.Add(Resources.Img.CharAnimationsSmooth);
             }

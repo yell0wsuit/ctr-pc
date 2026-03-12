@@ -7,6 +7,7 @@ namespace CutTheRope.GameMain
     /// Immutable definition of a single Om Nom skin loaded from the skins manifest.
     /// </summary>
     internal sealed class OmNomSkinDefinition(
+        string id,
         string name,
         string animationXmlPath,
         IReadOnlyDictionary<TargetAnimationState, int> timelineMappings,
@@ -15,10 +16,12 @@ namespace CutTheRope.GameMain
         int idleToSleepTrimFrames,
         int[] slowTimelineIds,
         bool startWithGreeting,
-        string uniqueSoundSet,
         string[] uniqueSounds)
     {
-        /// <summary>Localization key for display name.</summary>
+        /// <summary>Identifier for the skin.</summary>
+        public string Id { get; } = id;
+
+        /// <summary>Skin name/prefix.</summary>
         public string Name { get; } = name;
 
         /// <summary>Absolute path to the animation XML file.</summary>
@@ -41,9 +44,6 @@ namespace CutTheRope.GameMain
 
         /// <summary>Timeline IDs that should run at the slowed iOS Flash playback rate.</summary>
         public int[] SlowTimelineIds { get; } = slowTimelineIds;
-
-        /// <summary>Optional Time Travel sound set prefix such as Artist or Pirate.</summary>
-        public string UniqueSoundSet { get; } = uniqueSoundSet;
 
         /// <summary>Classic Om Nom sounds that this skin overrides or explicitly uses.</summary>
         public string[] UniqueSounds { get; } = uniqueSounds;
