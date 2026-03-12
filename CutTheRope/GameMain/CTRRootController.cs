@@ -374,11 +374,6 @@ namespace CutTheRope.GameMain
             Resources.Img.MenuPackSelection,
             Resources.Img.MenuPackSelection2,
             Resources.Img.MenuExtraButtons,
-            Resources.Img.MenuScrollbar,
-            Resources.Img.MenuLeaderboard,
-            Resources.Img.MenuProcessingHd,
-            Resources.Img.MenuScrollbarChangename,
-            Resources.Img.MenuButtonAchivCup,
             Resources.Img.MenuBgrShadow,
             Resources.Img.MenuBgrXmas,
             null
