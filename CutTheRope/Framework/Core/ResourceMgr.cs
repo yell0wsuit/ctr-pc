@@ -418,8 +418,9 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Loads the next queued prefetch resource, if any remain.
         /// </summary>
+        /// <param name="loadedResourceName">The resource name that was loaded, or <see langword="null"/> if nothing was loaded.</param>
         /// <returns><see langword="true"/> when a resource was loaded; otherwise, <see langword="false"/>.</returns>
-        public bool PrefetchNextResource()
+        public bool PrefetchNextResource(out string loadedResourceName)
         {
             while (prefetchQueue.Count > 0)
             {
@@ -433,9 +434,11 @@ namespace CutTheRope.Framework.Core
                 }
 
                 LoadResource(resourceName);
+                loadedResourceName = resourceName;
                 return true;
             }
 
+            loadedResourceName = null;
             return false;
         }
 

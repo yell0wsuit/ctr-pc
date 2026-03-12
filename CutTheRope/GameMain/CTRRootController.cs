@@ -526,8 +526,6 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            TrackSessionResources(remainingResources);
-
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             resourceMgr.QueuePrefetchPack(remainingResources);
 
@@ -543,7 +541,14 @@ namespace CutTheRope.GameMain
         private void DrainPrefetchQueue()
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
-            if (!resourceMgr.PrefetchNextResource() && !resourceMgr.HasPendingPrefetchResources())
+            if (resourceMgr.PrefetchNextResource(out string loadedName))
+            {
+                if (!string.IsNullOrWhiteSpace(loadedName))
+                {
+                    _ = sessionResources.Add(loadedName);
+                }
+            }
+            else if (!resourceMgr.HasPendingPrefetchResources())
             {
                 StopPrefetchDrainTimer();
             }
