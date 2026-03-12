@@ -382,6 +382,7 @@
     },
     {
         "id": "OM_NOM_SHERIF",
+        "name": "Western",
         "animationXml": "om_nom_sherif.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -402,10 +403,21 @@
         },
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
-        "idleToSleepTrimFrames": 27
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
     },
     {
         "id": "OM_NOM_EMPEROR",
+        "name": "China",
         "animationXml": "om_nom_emperor.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -426,10 +438,21 @@
         },
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
-        "idleToSleepTrimFrames": 27
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
     },
     {
         "id": "OM_NOM_INVENTOR",
+        "name": "Industrial",
         "animationXml": "om_nom_inventor.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -450,10 +473,21 @@
         },
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
-        "idleToSleepTrimFrames": 27
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
     },
     {
         "id": "OM_NOM_CYBORG",
+        "name": "Cyborg",
         "animationXml": "om_nom_cyborg.xml",
         "timelines": {
             "IdleLoop": 0,
@@ -474,6 +508,16 @@
         },
         "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
-        "idleToSleepTrimFrames": 27
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
     }
 ]
