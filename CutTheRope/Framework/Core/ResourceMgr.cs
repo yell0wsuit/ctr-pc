@@ -27,16 +27,21 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        public void ClearCachedResources()
+        public void ClearCachedFonts()
         {
-            foreach (object value in s_Resources.Values)
+            List<string> fontKeys = [];
+            foreach (KeyValuePair<string, object> kvp in s_Resources)
             {
-                if (value is IDisposable disposable)
+                if (kvp.Value is FontGeneric)
                 {
-                    disposable.Dispose();
+                    fontKeys.Add(kvp.Key);
                 }
             }
-            s_Resources.Clear();
+            foreach (string key in fontKeys)
+            {
+                _ = s_Resources.Remove(key);
+            }
+            FontManager.ClearCache();
         }
 
         /// <summary>
