@@ -29,7 +29,6 @@ namespace CutTheRope.GameMain
                 LoadingView loadingView = (LoadingView)GetView(0);
                 if (loadingView.IsAnimationComplete())
                 {
-                    GC.Collect();
                     Application.SharedRootController().SetViewTransition(4);
                     Deactivate();
                     resourcesLoaded = false; // Reset for next time
