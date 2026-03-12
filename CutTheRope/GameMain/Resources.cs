@@ -618,6 +618,42 @@ namespace CutTheRope.GameMain
             public const string TTPrehistoricSleep01 = "Prehistoric_sleep01";
             public const string TTPrehistoricSleep02 = "Prehistoric_sleep02";
             public const string TTPrehistoricSleep03 = "Prehistoric_sleep03";
+            public const string TTWesternChewing = "Western_chewing";
+            public const string TTWesternExcited = "Western_excited";
+            public const string TTWesternGreeting = "Western_greeting";
+            public const string TTWesternMouthClose = "Western_mouthClose";
+            public const string TTWesternMouthOpen = "Western_mouthOpen";
+            public const string TTWesternSad = "Western_sad";
+            public const string TTWesternSleep01 = "Western_sleep01";
+            public const string TTWesternSleep02 = "Western_sleep02";
+            public const string TTWesternSleep03 = "Western_sleep03";
+            public const string TTChinaChewing = "China_chewing";
+            public const string TTChinaExcited = "China_excited";
+            public const string TTChinaGreeting = "China_greeting";
+            public const string TTChinaMouthClose = "China_mouthClose";
+            public const string TTChinaMouthOpen = "China_mouthOpen";
+            public const string TTChinaSad = "China_sad";
+            public const string TTChinaSleep01 = "China_sleep01";
+            public const string TTChinaSleep02 = "China_sleep02";
+            public const string TTChinaSleep03 = "China_sleep03";
+            public const string TTIndustrialChewing = "Industrial_chewing";
+            public const string TTIndustrialExcited = "Industrial_excited";
+            public const string TTIndustrialGreeting = "Industrial_greeting";
+            public const string TTIndustrialMouthClose = "Industrial_mouthClose";
+            public const string TTIndustrialMouthOpen = "Industrial_mouthOpen";
+            public const string TTIndustrialSad = "Industrial_sad";
+            public const string TTIndustrialSleep01 = "Industrial_sleep_01";
+            public const string TTIndustrialSleep02 = "Industrial_sleep_02";
+            public const string TTIndustrialSleep03 = "Industrial_sleep_03";
+            public const string TTCyborgChewing = "Cyborg_chewing";
+            public const string TTCyborgExcited = "Cyborg_excited";
+            public const string TTCyborgGreeting = "Cyborg_greeting";
+            public const string TTCyborgMouthClose = "Cyborg_mouthClose";
+            public const string TTCyborgMouthOpen = "Cyborg_mouthOpen";
+            public const string TTCyborgSad = "Cyborg_sad";
+            public const string TTCyborgSleep01 = "Cyborg_sleep01";
+            public const string TTCyborgSleep02 = "Cyborg_sleep02";
+            public const string TTCyborgSleep03 = "Cyborg_sleep03";
         }
 
         /// <summary>
