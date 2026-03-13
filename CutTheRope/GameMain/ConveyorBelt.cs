@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
@@ -279,6 +280,7 @@ namespace CutTheRope.GameMain
             }
 
             boundObjects.Add(item);
+            item.IsDrawnByTransporter = true;
 
             Vector local = ToLocalSpace(item.BindPoint);
             item.PositionOnTransporter = local.X;
@@ -306,6 +308,8 @@ namespace CutTheRope.GameMain
                 Vector worldPos = VecToWorldSpace(item.PositionOnTransporter, local.Y);
                 item.SetBindPoint(worldPos);
             }
+
+            objectsDistributed = false;
         }
 
         /// <summary>
@@ -399,7 +403,7 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            DistributeObjects();
+            DistributeObjects(deltaTime);
         }
 
         /// <summary>
@@ -458,6 +462,7 @@ namespace CutTheRope.GameMain
                 if (distFromEdge >= collisionRadius * maxScale)
                 {
                     item.TransporterScale = maxScale;
+                    ApplyItemScale(item, maxScale);
                     Vector worldPos = VecToWorldSpace(item.PositionOnTransporter, local.Y);
                     item.SetBindPoint(worldPos);
                 }
@@ -466,6 +471,7 @@ namespace CutTheRope.GameMain
                     float scaleRange = maxScale - minScale;
                     float scale = minScale + (distFromEdge * scaleRange / (collisionRadius * maxScale));
                     item.TransporterScale = scale;
+                    ApplyItemScale(item, scale);
 
                     float adjustedPos = side == 1 ? beltWidth - (scale * collisionRadius) : scale * collisionRadius;
                     Vector worldPos = VecToWorldSpace(adjustedPos, local.Y);
@@ -519,6 +525,9 @@ namespace CutTheRope.GameMain
             {
                 activePointerId = pointerId;
                 lastDragPosition = local;
+                offsetDelta = 0f;
+                needsAlignment = false;
+                ActiveSetTime = (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
                 return true;
             }
 
@@ -534,9 +543,6 @@ namespace CutTheRope.GameMain
         /// <returns>True if the belt released its captured pointer; false otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
-            _ = pointerX;
-            _ = pointerY;
-
             if (!IsManual)
             {
                 return false;
@@ -545,7 +551,18 @@ namespace CutTheRope.GameMain
             if (activePointerId == pointerId)
             {
                 activePointerId = -1;
-                offsetDelta = 0f;
+
+                Vector local = ToLocalSpace(Vect(pointerX, pointerY));
+                offsetDelta = lastDragPosition.X - local.X;
+
+                if (MathF.Abs(offsetDelta) <= 0.5f)
+                {
+                    offsetDelta = 0f;
+                    if (!needsAlignment)
+                    {
+                        StartAlignmentIfNeeded();
+                    }
+                }
                 return true;
             }
 
@@ -569,8 +586,8 @@ namespace CutTheRope.GameMain
             if (activePointerId == pointerId)
             {
                 Vector local = ToLocalSpace(Vect(pointerX, pointerY));
-                offsetDelta = local.X - lastDragPosition.X;
-                MoveBoundObjects(-offsetDelta);
+                offsetDelta = lastDragPosition.X - local.X;
+                MoveBoundObjects(offsetDelta);
                 lastDragPosition = local;
                 return true;
             }
@@ -629,6 +646,12 @@ namespace CutTheRope.GameMain
         /// Gets whether this belt is controlled manually by user drag input.
         /// </summary>
         public bool IsManual { get; private set; }
+
+        /// <summary>
+        /// Gets the timestamp when this transporter was most recently activated by touch.
+        /// Used for iOS-style transporter handoff arbitration.
+        /// </summary>
+        public double ActiveSetTime { get; private set; }
 
         /// <summary>
         /// Gets the normalized direction vector along the belt's length.
@@ -763,7 +786,7 @@ namespace CutTheRope.GameMain
         /// Separates overlapping items on the belt by pushing them apart.
         /// Matches iOS distributeObjects:/pushObject:.
         /// </summary>
-        private void DistributeObjects()
+        private void DistributeObjects(float deltaTime)
         {
             if (objectsDistributed || boundObjects.Count < 2)
             {
@@ -782,17 +805,23 @@ namespace CutTheRope.GameMain
                     float posA = a.PositionOnTransporter;
                     float posB = b.PositionOnTransporter;
                     float requiredDist = a.CollisionRadius + b.CollisionRadius + minSpacing;
-                    float actualDist = MathF.Abs(posA - posB);
+                    float delta = posA - posB;
+                    float actualDist = MathF.Abs(delta);
 
-                    if (actualDist < requiredDist)
+                    if (MathF.Abs(requiredDist - actualDist) >= 1f && actualDist < requiredDist)
                     {
-                        float push = (requiredDist - actualDist) * 0.5f;
-                        float sign = posA < posB ? -1f : 1f;
-                        PushObject(a, posA, sign * push);
-                        PushObject(b, posB, -sign * push);
+                        float norm = actualDist <= 0.0001f ? 1f : delta / actualDist;
+                        float distance = (requiredDist - actualDist) * norm * deltaTime;
+                        PushObject(a, posA, distance * 10f);
+                        PushObject(b, posB, distance * -10f);
                         objectsDistributed = false;
                     }
                 }
+            }
+
+            if (!objectsDistributed)
+            {
+                MoveBoundObjects(0f);
             }
         }
 
@@ -808,6 +837,15 @@ namespace CutTheRope.GameMain
                 newPos = currentPos < beltWidth * 0.5f ? transitionDist : beltWidth - transitionDist;
             }
             item.PositionOnTransporter = newPos;
+        }
+
+        private static void ApplyItemScale(ITransporterItem item, float scale)
+        {
+            if (item is BaseElement element)
+            {
+                element.scaleX = scale;
+                element.scaleY = scale;
+            }
         }
 
         /// <summary>

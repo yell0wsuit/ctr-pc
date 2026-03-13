@@ -109,11 +109,6 @@ namespace CutTheRope.GameMain
                     if (belt.CollidesWithCircle(bindPoint, radius))
                     {
                         belt.BindObject(item);
-                        if (item is Bubble)
-                        {
-                            item.IsDrawnByTransporter = true;
-                        }
-
                         break;
                     }
                 }
@@ -145,17 +140,22 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void TransporterMoves(ConveyorBelt movingBelt)
         {
-            foreach (ConveyorBelt otherBelt in list)
+            foreach (ConveyorBelt ownerBelt in list)
             {
-                if (otherBelt == movingBelt)
+                if (ownerBelt == movingBelt)
                 {
                     continue;
                 }
 
-                // Check each item on the other belt
-                for (int i = otherBelt.BoundObjects.Count - 1; i >= 0; i--)
+                for (int i = ownerBelt.BoundObjects.Count - 1; i >= 0; i--)
                 {
-                    ITransporterItem item = otherBelt.BoundObjects[i];
+                    ITransporterItem item = ownerBelt.BoundObjects[i];
+
+                    if (movingBelt.HasItem(item))
+                    {
+                        continue;
+                    }
+
                     float radius = item.CollisionRadius * 0.6f;
 
                     if (!movingBelt.CollidesWithCircle(item.BindPoint, radius))
@@ -163,22 +163,19 @@ namespace CutTheRope.GameMain
                         continue;
                     }
 
-                    // Auto belt can always take items; manual belt needs to be active
-                    bool shouldTransfer;
-                    if (!movingBelt.IsManual)
+                    if (AutoTransportersOwnObject(item))
                     {
-                        // Auto belt takes from manual belts (not from other auto belts)
-                        shouldTransfer = otherBelt.IsManual;
-                    }
-                    else
-                    {
-                        // Active manual belt takes from inactive manual belts
-                        shouldTransfer = movingBelt.IsActive() && otherBelt.IsManual && !otherBelt.IsActive();
+                        continue;
                     }
 
-                    if (shouldTransfer)
+                    bool canTake = !movingBelt.IsManual || movingBelt.ActiveSetTime >= ownerBelt.ActiveSetTime;
+                    if (!canTake)
                     {
-                        otherBelt.Remove(item);
+                        continue;
+                    }
+
+                    if (UnbindObjectFromTransporters(item))
+                    {
                         movingBelt.BindObject(item);
                         CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
                     }
@@ -316,6 +313,34 @@ namespace CutTheRope.GameMain
                 }
             }
             SortByManualFlag();
+        }
+
+        private bool AutoTransportersOwnObject(ITransporterItem item)
+        {
+            foreach (ConveyorBelt belt in list)
+            {
+                if (!belt.IsManual && belt.HasItem(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool UnbindObjectFromTransporters(ITransporterItem item)
+        {
+            bool removed = false;
+            foreach (ConveyorBelt belt in list)
+            {
+                if (belt.HasItem(item))
+                {
+                    belt.Remove(item);
+                    removed = true;
+                }
+            }
+
+            return removed;
         }
 
         /// <summary>
