@@ -241,10 +241,10 @@ namespace CutTheRope.GameMain
             width = (int)MathF.Ceiling(length);
             this.height = (int)MathF.Ceiling(height);
 
-            this.rotation = rotation;
+            this.rotation = -rotation;
             IsManual = isManual;
             rotationRad = DEGREES_TO_RADIANS(rotation);
-            direction = Vect(Cosf(rotationRad), Sinf(rotationRad));
+            direction = Vect(Cosf(rotationRad), -Sinf(rotationRad));
             this.velocity = velocity;
             rotationCenterX = -length / 2f;
             rotationCenterY = 0f;
@@ -406,7 +406,7 @@ namespace CutTheRope.GameMain
                 state.offset = WrapOffset(state.nextOffset, beltWidth);
             }
 
-            beltVisual?.Move(offsetDelta);
+            beltVisual?.Move(-offsetDelta);
 
             if (IsManual)
             {
@@ -571,7 +571,7 @@ namespace CutTheRope.GameMain
         /// <returns>The point in belt-local coordinates.</returns>
         public Vector ToLocalSpace(Vector worldPoint)
         {
-            float perpAngle = rotationRad - (MathF.PI / 2f);
+            float perpAngle = -rotationRad - (MathF.PI / 2f);
             Vector perp = Vect(Cosf(perpAngle), Sinf(perpAngle));
             float dx = worldPoint.X - x;
             float dy = worldPoint.Y - y;
@@ -705,7 +705,7 @@ namespace CutTheRope.GameMain
                 height = (int)MathF.Ceiling(beltWidth),
                 anchor = 18,
                 parentAnchor = 18,
-                rotation = -90f
+                rotation = 90f
             };
             _ = AddChild(visualRoot);
 
