@@ -90,8 +90,6 @@ namespace CutTheRope.Framework
         public static float SpiderTraversalSpeed => SelectRaw(PhysicsConstants.SpiderTraversalSpeed, MobilePhysicsConstants.SpiderTraversalSpeed);
         public static int BungeeDrawSamplePoints => SelectRaw(PhysicsConstants.BungeeDrawSamplePoints, MobilePhysicsConstants.BungeeDrawSamplePoints);
 
-        public static float ConveyorVelocityScale => SelectRaw(PhysicsConstants.ConveyorVelocityScale, MobilePhysicsConstants.ConveyorVelocityScale);
-
         public static int DrawPtsBufferSize => UseMobilePhysicsModel
             ? MobilePhysicsConstants.DrawPtsBufferSize
             : PhysicsConstants.DrawPtsBufferSize;

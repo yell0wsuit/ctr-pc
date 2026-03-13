@@ -66,9 +66,6 @@ namespace CutTheRope.Framework
         // Spider
         public const float SpiderTraversalSpeed = 117f;
 
-        // Conveyor-belt velocity scaling
-        public const float ConveyorVelocityScale = 0.4f;
-
         // Rope drawing buffer — sized to fit any rope in any level.
         // Formula: (MaxRopeLength / BungeeRestLength + 3) * 4 samples/segment * 2 floats/sample
         public const float MaxRopeLength = 2000f;

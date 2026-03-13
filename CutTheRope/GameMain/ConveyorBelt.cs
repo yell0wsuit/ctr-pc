@@ -264,7 +264,7 @@ namespace CutTheRope.GameMain
 
             if (!IsManual)
             {
-                offsetDelta = deltaTime * velocity * 7.5f;
+                offsetDelta = deltaTime * velocity;
                 offset += offsetDelta;
                 offset = WrapOffset(offset, beltWidth);
             }
