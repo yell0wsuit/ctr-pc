@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading;
 using System.Xml.Linq;
+
+using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
@@ -138,7 +139,7 @@ namespace CutTheRope.GameMain
             Dictionary<int, FlashXmlRootTimelineDefinition> rootTimelineDefinitions = [];
             foreach (XElement timelineNode in root.Elements("Timeline"))
             {
-                int timelineId = ParseInt(timelineNode.Attribute("ID")?.Value);
+                int timelineId = ParseIntOrZero(timelineNode.Attribute("ID")?.Value);
                 string actionTrack = timelineNode.Element("Action")?.Value ?? string.Empty;
                 List<FlashXmlActionGroupKeyFrame> groupedActions = ParseActionTrack(actionTrack);
 
@@ -159,8 +160,8 @@ namespace CutTheRope.GameMain
 
             return new FlashXmlAnimationDefinition
             {
-                StageWidth = ParseFloat(root.Attribute("width")?.Value),
-                StageHeight = ParseFloat(root.Attribute("height")?.Value),
+                StageWidth = ParseFloatOrZero(root.Attribute("width")?.Value),
+                StageHeight = ParseFloatOrZero(root.Attribute("height")?.Value),
                 TextureResourceName = ResolveTextureResourceName(root.Attribute("src")?.Value, "animation"),
                 Parts = parts,
                 RootTimelines = rootTimelines,
@@ -181,11 +182,11 @@ namespace CutTheRope.GameMain
             {
                 Name = imageNode.Attribute("name")?.Value ?? string.Empty,
                 TextureResourceName = ResolveTextureResourceName(imageNode.Attribute("src")?.Value, "image"),
-                QuadToDraw = ParseInt(imageNode.Attribute("quadToDraw")?.Value),
-                AnchorX = ParseFloat(imageNode.Attribute("anchorX")?.Value),
-                AnchorY = ParseFloat(imageNode.Attribute("anchorY")?.Value),
-                RotationCenterX = ParseFloat(imageNode.Attribute("rotationCenterX")?.Value),
-                RotationCenterY = ParseFloat(imageNode.Attribute("rotationCenterY")?.Value),
+                QuadToDraw = ParseIntOrZero(imageNode.Attribute("quadToDraw")?.Value),
+                AnchorX = ParseFloatOrZero(imageNode.Attribute("anchorX")?.Value),
+                AnchorY = ParseFloatOrZero(imageNode.Attribute("anchorY")?.Value),
+                RotationCenterX = ParseFloatOrZero(imageNode.Attribute("rotationCenterX")?.Value),
+                RotationCenterY = ParseFloatOrZero(imageNode.Attribute("rotationCenterY")?.Value),
                 Timelines = timelines,
                 EmptyTimelineIds = ParseEmptyTimelineIds(imageNode.Element("EmptyTimelines")?.Value)
             };
@@ -202,7 +203,7 @@ namespace CutTheRope.GameMain
             string[] tokens = rawEmptyTimelines.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             for (int i = 0; i < tokens.Length; i++)
             {
-                timelineIds.Add(ParseInt(tokens[i]));
+                timelineIds.Add(ParseIntOrZero(tokens[i]));
             }
 
             return timelineIds;
@@ -223,7 +224,7 @@ namespace CutTheRope.GameMain
         {
             return new FlashXmlTimelineDefinition
             {
-                Id = ParseInt(timelineNode.Attribute("ID")?.Value),
+                Id = ParseIntOrZero(timelineNode.Attribute("ID")?.Value),
                 PositionKeyFrames = ParseFloat2Track(timelineNode.Element("Pos")?.Value, expectedArity: 2),
                 ScaleKeyFrames = ParseFloat2Track(timelineNode.Element("Scale")?.Value, expectedArity: 2),
                 RotationKeyFrames = ParseFloat1Track(timelineNode.Element("Rot")?.Value),
@@ -247,7 +248,7 @@ namespace CutTheRope.GameMain
                 ParsedToken parsed = ParseToken(tokens[i]);
                 keyFrames.Add(new FlashXmlFloat1KeyFrame
                 {
-                    Value = ParseFloat(parsed.Payload),
+                    Value = ParseFloatOrZero(parsed.Payload),
                     Interpolation = parsed.Interpolation,
                     TimeOffset = parsed.TimeOffset
                 });
@@ -276,8 +277,8 @@ namespace CutTheRope.GameMain
 
                 keyFrames.Add(new FlashXmlFloat2KeyFrame
                 {
-                    X = ParseFloat(values[0]),
-                    Y = ParseFloat(values[1]),
+                    X = ParseFloatOrZero(values[0]),
+                    Y = ParseFloatOrZero(values[1]),
                     Interpolation = parsed.Interpolation,
                     TimeOffset = parsed.TimeOffset
                 });
@@ -306,10 +307,10 @@ namespace CutTheRope.GameMain
 
                 keyFrames.Add(new FlashXmlFloat4KeyFrame
                 {
-                    A = ParseFloat(values[0]),
-                    B = ParseFloat(values[1]),
-                    C = ParseFloat(values[2]),
-                    D = ParseFloat(values[3]),
+                    A = ParseFloatOrZero(values[0]),
+                    B = ParseFloatOrZero(values[1]),
+                    C = ParseFloatOrZero(values[2]),
+                    D = ParseFloatOrZero(values[3]),
                     Interpolation = parsed.Interpolation,
                     TimeOffset = parsed.TimeOffset
                 });
@@ -385,17 +386,7 @@ namespace CutTheRope.GameMain
             string interpolationRaw = token[(interpolationStart + 1)..interpolationEnd];
             string timeRaw = token[(interpolationEnd + 2)..];
 
-            return new ParsedToken(payload, ParseInt(interpolationRaw), ParseFloat(timeRaw));
-        }
-
-        private static int ParseInt(string raw)
-        {
-            return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value) ? value : 0;
-        }
-
-        private static float ParseFloat(string raw)
-        {
-            return float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out float value) ? value : 0f;
+            return new ParsedToken(payload, ParseIntOrZero(interpolationRaw), ParseFloatOrZero(timeRaw));
         }
 
         private readonly struct ParsedToken(string payload, int interpolation, float timeOffset)
