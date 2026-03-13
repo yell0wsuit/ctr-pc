@@ -717,6 +717,7 @@ namespace CutTheRope.GameMain
 
             Image middle = CreatePiece(ImgObjConveyorMiddle, 18);
             middle.scaleX = (transporterWidth - 10f) / middle.width;
+            middle.scaleY = transporterHeight / middle.height;
             _ = visualRoot.AddChild(middle);
 
             Image bottomEnd = endTemplate;
