@@ -4,6 +4,8 @@ using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
+using static CutTheRope.Helpers.ParsingHelpers;
+
 namespace CutTheRope.GameMain
 {
     /// <summary>
