@@ -15,15 +15,13 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBelt : BaseElement
     {
-        private const float BeltPlateScaleX = 0.7f;
-        private const int ImgObjTransporterEnd = 0;
-        private const int ImgObjTransporterEndSide = 1;
-        private const int ImgObjTransporterMiddle = 2;
-        private const int ImgObjTransporterMiddleSide = 3;
-        private const int ImgObjTransporterPlate = 4;
-        private const int ImgObjTransporterPlateArrowRight = 5;
-        private const int ImgObjTransporterPlateArrowLeft = 6;
-        private const int ImgObjTransporterHighlight = 7;
+        private const int ImgObjConveyorEnd = 0;
+        private const int ImgObjConveyorEndSide = 1;
+        private const int ImgObjConveyorMiddle = 2;
+        private const int ImgObjConveyorMiddleSide = 3;
+        private const int ImgObjConveyorPlate = 4;
+        private const int ImgObjConveyorPlateArrow = 5;
+        private const int ImgObjConveyorHighlight = 6;
 
         /// <summary>
         /// Tracks the state of an item riding on the conveyor belt.
@@ -49,13 +47,9 @@ namespace CutTheRope.GameMain
         /// </summary>
         private sealed class ConveyorBeltVisual : BaseElement
         {
-            private readonly int plateQuad;
-            private readonly List<Image> segments = [];
-            private readonly float tileWidth;
+            private readonly Image plateSection;
+            private readonly Image plateArrow;
             private readonly float tileHeight;
-            private readonly float tileScaleX;
-            private readonly float tileScaleY;
-            private readonly string textureName = Resources.Img.ObjTransporter;
 
             /// <summary>The current visual offset for the scrolling belt texture.</summary>
             public float offset;
@@ -73,18 +67,29 @@ namespace CutTheRope.GameMain
                 anchor = 9;
                 parentAnchor = 9;
 
-                plateQuad = direction < 0 ? ImgObjTransporterPlateArrowLeft : direction > 0 ? ImgObjTransporterPlateArrowRight : ImgObjTransporterPlate;
+                plateSection = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, ImgObjConveyorPlate);
+                plateSection.parent = this;
+                plateSection.anchor = 10;
+                plateSection.parentAnchor = 10;
+                plateSection.scaleX = plateSection.width > 0 ? width / plateSection.width : 1f;
+                tileHeight = plateSection.height;
 
-                Image template = Image.Image_createWithResIDQuad(textureName, plateQuad);
-                template.anchor = 18;
-                template.parentAnchor = 9;
-                tileWidth = template.width;
-                tileHeight = template.height;
-                tileScaleY = tileHeight > 0 ? height / tileHeight : 1f;
-                tileScaleX = BeltPlateScaleX;
+                if (direction != 0)
+                {
+                    plateArrow = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, ImgObjConveyorPlateArrow);
+                    plateArrow.anchor = 18;
+                    plateArrow.parentAnchor = 18;
+                    if (direction < 0)
+                    {
+                        plateArrow.rotation = 180f;
+                    }
 
-                segments.Add(template);
-                _ = AddChild(template);
+                    _ = plateSection.AddChild(plateArrow);
+                }
+                else
+                {
+                    plateArrow = null;
+                }
             }
 
             /// <summary>
@@ -93,115 +98,79 @@ namespace CutTheRope.GameMain
             /// <param name="delta">The distance to move the belt texture.</param>
             public void Move(float delta)
             {
-                if (tileWidth <= 0)
-                {
-                    return;
-                }
-
-                float tileStep = tileWidth * tileScaleX;
-                if (tileStep <= 0)
+                if (tileHeight <= 0f)
                 {
                     return;
                 }
 
                 offset += delta;
-                while (offset > width)
+                if (offset > height)
                 {
-                    offset -= tileStep;
+                    do
+                    {
+                        offset -= tileHeight;
+                    }
+                    while (offset > height);
                 }
-                while (offset < 0)
+
+                while (offset < 0f)
                 {
-                    offset += tileStep;
+                    offset += tileHeight;
                 }
             }
 
             /// <summary>
-            /// Recalculates and positions all tile segments to fill the belt width at the current offset.
+            /// Draws the conveyor plate using the same slice/repeat/slice pattern as the iOS TransporterPlate.
             /// </summary>
-            public void UpdateLayout()
+            public override void Draw()
             {
-                if (tileWidth <= 0 || tileHeight <= 0 || width <= 0)
+                PreDraw();
+
+                if (tileHeight <= 0f || height <= 0)
                 {
+                    PostDraw();
                     return;
                 }
 
-                float tileStep = tileWidth * tileScaleX;
-                if (tileStep <= 0)
+                float wrappedOffset = offset;
+                while (wrappedOffset >= tileHeight)
                 {
-                    return;
+                    wrappedOffset -= tileHeight;
+                }
+                while (wrappedOffset < 0f)
+                {
+                    wrappedOffset += tileHeight;
                 }
 
-                float localOffset = offset;
-                localOffset -= MathF.Floor(localOffset / tileStep) * tileStep;
-                if (localOffset < 0)
+                float drawnHeight = 0f;
+                if (wrappedOffset > 0f)
                 {
-                    localOffset += tileStep;
+                    DrawSegment(-0.5f * (tileHeight - wrappedOffset), wrappedOffset);
+                    drawnHeight = wrappedOffset;
                 }
 
-                int segmentIndex = 0;
-                segmentIndex = LayoutSegment(segmentIndex, 0f, localOffset);
-
-                float x = localOffset;
-                while (x + tileStep <= width)
+                while (drawnHeight + tileHeight <= height)
                 {
-                    segmentIndex = LayoutSegment(segmentIndex, x, tileStep);
-                    x += tileStep;
+                    DrawSegment(drawnHeight, tileHeight);
+                    drawnHeight += tileHeight;
                 }
 
-                float remainingWidth = MathF.Max(width - x, 0f);
-                segmentIndex = LayoutSegment(segmentIndex, x, remainingWidth);
-
-                for (int i = segmentIndex; i < segments.Count; i++)
+                float remainingHeight = height - drawnHeight;
+                if (remainingHeight > 0f)
                 {
-                    segments[i].visible = false;
+                    float finalY = height - remainingHeight - (0.5f * (tileHeight - remainingHeight));
+                    DrawSegment(finalY, remainingHeight);
                 }
+
+                PostDraw();
             }
 
-            /// <summary>
-            /// Positions a single tile segment at the specified location.
-            /// </summary>
-            /// <param name="index">The segment index in the pool.</param>
-            /// <param name="left">The left edge position of this segment.</param>
-            /// <param name="width">The width to display for this segment.</param>
-            /// <returns>The next segment index to use.</returns>
-            private int LayoutSegment(int index, float left, float width)
+            private void DrawSegment(float y, float visibleHeight)
             {
-                Image segment = EnsureSegment(index);
-                if (width <= 0)
-                {
-                    segment.visible = false;
-                    return index + 1;
-                }
-
-                float scaleX = width / tileWidth;
-                segment.scaleX = scaleX;
-                segment.scaleY = tileScaleY;
-                float scaledWidth = tileWidth * MathF.Abs(scaleX);
-                float scaledHeight = tileHeight * MathF.Abs(tileScaleY);
-                segment.x = left + (scaledWidth / 2f);
-                segment.y = scaledHeight / 2f;
-                segment.visible = true;
-                return index + 1;
-            }
-
-            /// <summary>
-            /// Gets an existing segment at the index or creates a new one if needed.
-            /// </summary>
-            /// <param name="index">The segment index.</param>
-            /// <returns>The image segment at the specified index.</returns>
-            private Image EnsureSegment(int index)
-            {
-                if (index < segments.Count)
-                {
-                    return segments[index];
-                }
-
-                Image segment = Image.Image_createWithResIDQuad(textureName, plateQuad);
-                segment.anchor = 18;
-                segment.parentAnchor = 9;
-                segments.Add(segment);
-                _ = AddChild(segment);
-                return segment;
+                plateSection.y = y;
+                plateSection.scaleY = visibleHeight / tileHeight;
+                plateSection.Draw();
+                plateSection.scaleY = 1f;
             }
         }
 
@@ -272,10 +241,9 @@ namespace CutTheRope.GameMain
             width = (int)MathF.Ceiling(length);
             this.height = (int)MathF.Ceiling(height);
 
-            float adjustedRotation = -rotation;
-            this.rotation = adjustedRotation;
+            this.rotation = rotation;
             IsManual = isManual;
-            rotationRad = DEGREES_TO_RADIANS(adjustedRotation);
+            rotationRad = DEGREES_TO_RADIANS(rotation);
             direction = Vect(Cosf(rotationRad), Sinf(rotationRad));
             this.velocity = velocity;
             rotationCenterX = -length / 2f;
@@ -296,17 +264,17 @@ namespace CutTheRope.GameMain
 
             if (!IsManual)
             {
-                offsetDelta = deltaTime * velocity * 10f;
+                offsetDelta = deltaTime * velocity;
                 offset += offsetDelta;
                 offset = WrapOffset(offset, beltWidth);
             }
 
-            active = MathF.Abs(offsetDelta) > 0.001f;
+            active = MathF.Abs(offsetDelta) > 0.5f;
 
             if (IsManual && active)
             {
                 manualTravelDistance += MathF.Abs(offsetDelta);
-                if (manualTravelDistance >= 15f)
+                if (manualTravelDistance >= 100f)
                 {
                     PlayManualMoveSound();
                     manualTravelDistance = 0f;
@@ -439,7 +407,6 @@ namespace CutTheRope.GameMain
             }
 
             beltVisual?.Move(offsetDelta);
-            beltVisual?.UpdateLayout();
 
             if (IsManual)
             {
@@ -730,121 +697,94 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void BuildVisuals()
         {
-            float scale = 0.75f;
-            float plateHeight = beltHeight - 10f;
-
-            float GetScaledHeight(Image element)
+            const float endScale = 0.6f;
+            const float plateScale = 0.8f;
+            BaseElement visualRoot = new()
             {
-                return element.height * MathF.Abs(element.scaleY);
-            }
+                width = (int)MathF.Ceiling(beltHeight),
+                height = (int)MathF.Ceiling(beltWidth),
+                anchor = 18,
+                parentAnchor = 18,
+                rotation = -90f
+            };
+            _ = AddChild(visualRoot);
 
-            float GetScaledWidth(Image element)
-            {
-                return element.width * MathF.Abs(element.scaleX);
-            }
+            float transporterWidth = visualRoot.width;
+            float transporterHeight = visualRoot.height;
 
-            Image pillarRef = CreatePiece(ImgObjTransporterEndSide);
-            pillarRef.scaleX = scale;
-            pillarRef.scaleY = scale;
-            float pillarScaledHeight = GetScaledHeight(pillarRef);
-            float pillarScaledWidth = GetScaledWidth(pillarRef);
-            float pillarXOffset = pillarScaledWidth * 0.2f;
+            Image endTemplate = CreatePiece(ImgObjConveyorEnd, 34);
+            float capOffset = endTemplate.height * 0.25f;
 
-            Image middle = CreatePiece(ImgObjTransporterMiddle);
-            middle.scaleX = (beltWidth - pillarScaledWidth + pillarXOffset) / middle.width;
-            middle.scaleY = plateHeight / middle.height;
-            middle.x = 0f;
-            middle.y = 0f;
-            _ = AddChild(middle);
+            Image middle = CreatePiece(ImgObjConveyorMiddle, 18);
+            middle.scaleX = (transporterWidth - 10f) / middle.width;
+            _ = visualRoot.AddChild(middle);
 
-            Image endSideLeftTop = CreatePiece(ImgObjTransporterEndSide);
-            endSideLeftTop.scaleX = scale;
-            endSideLeftTop.scaleY = -scale;
-            endSideLeftTop.x = -pillarXOffset;
-            endSideLeftTop.y = pillarScaledHeight - 3f;
-            _ = AddChild(endSideLeftTop);
+            Image bottomEnd = endTemplate;
+            bottomEnd.y = capOffset;
+            bottomEnd.scaleX = transporterWidth * endScale / bottomEnd.width;
+            _ = visualRoot.AddChild(bottomEnd);
 
-            Image endSideRightTop = CreatePiece(ImgObjTransporterEndSide);
-            endSideRightTop.scaleX = -scale;
-            endSideRightTop.scaleY = -scale;
-            endSideRightTop.x = beltWidth + pillarXOffset;
-            endSideRightTop.y = pillarScaledHeight - 3f;
-            _ = AddChild(endSideRightTop);
+            Image topEnd = CreatePiece(ImgObjConveyorEnd, 10);
+            topEnd.y = -capOffset;
+            topEnd.scaleX = transporterWidth * endScale / topEnd.width;
+            _ = visualRoot.AddChild(topEnd);
 
-            Image endSideRightBottom = CreatePiece(ImgObjTransporterEndSide);
-            endSideRightBottom.scaleX = -scale;
-            endSideRightBottom.scaleY = scale;
-            endSideRightBottom.x = beltWidth + pillarXOffset;
-            endSideRightBottom.y = beltHeight - pillarScaledHeight + 3f;
-            _ = AddChild(endSideRightBottom);
+            Image leftSide = CreatePiece(ImgObjConveyorMiddleSide, 17);
+            float sideScaleY = (transporterHeight - (2f * capOffset)) / leftSide.height;
+            leftSide.scaleX = -1f;
+            leftSide.scaleY = sideScaleY;
+            _ = visualRoot.AddChild(leftSide);
 
-            Image endSideLeftBottom = pillarRef;
-            endSideLeftBottom.scaleX = scale;
-            endSideLeftBottom.x = -pillarXOffset;
-            endSideLeftBottom.y = beltHeight - pillarScaledHeight + 3f;
-            _ = AddChild(endSideLeftBottom);
+            Image rightSide = CreatePiece(ImgObjConveyorMiddleSide, 20);
+            rightSide.scaleY = sideScaleY;
+            _ = visualRoot.AddChild(rightSide);
 
-            Image endLeft = CreatePiece(ImgObjTransporterEnd);
-            endLeft.scaleX = scale;
-            endLeft.scaleY = plateHeight / endLeft.height;
-            endLeft.x = -pillarXOffset;
-            endLeft.y = 5f;
-            _ = AddChild(endLeft);
+            Image bottomRightCorner = CreatePiece(ImgObjConveyorEndSide, 36);
+            bottomRightCorner.y = capOffset;
+            _ = visualRoot.AddChild(bottomRightCorner);
 
-            Image endRight = CreatePiece(ImgObjTransporterEnd);
-            endRight.scaleX = scale;
-            endRight.scaleY = plateHeight / endRight.height;
-            endRight.x = beltWidth - GetScaledWidth(endRight) + pillarXOffset;
-            endRight.y = 5f;
-            _ = AddChild(endRight);
+            Image bottomLeftCorner = CreatePiece(ImgObjConveyorEndSide, 33);
+            bottomLeftCorner.y = capOffset;
+            bottomLeftCorner.scaleX = -1f;
+            _ = visualRoot.AddChild(bottomLeftCorner);
 
-            Image midSideTop = CreatePiece(ImgObjTransporterMiddleSide);
-            midSideTop.scaleX = (beltWidth - pillarScaledWidth) / midSideTop.width;
-            midSideTop.scaleY = -scale;
-            midSideTop.x = 15f;
-            midSideTop.y = pillarScaledHeight - 4f;
-            _ = AddChild(midSideTop);
+            Image topLeftCorner = CreatePiece(ImgObjConveyorEndSide, 9);
+            topLeftCorner.y = -capOffset;
+            topLeftCorner.scaleX = -1f;
+            topLeftCorner.scaleY = -1f;
+            _ = visualRoot.AddChild(topLeftCorner);
 
-            Image midSideBottom = CreatePiece(ImgObjTransporterMiddleSide);
-            midSideBottom.scaleX = (beltWidth - pillarScaledWidth) / midSideBottom.width;
-            midSideBottom.scaleY = scale;
-            midSideBottom.x = 15f;
-            midSideBottom.y = beltHeight - pillarScaledHeight + 4f;
-            _ = AddChild(midSideBottom);
+            Image topRightCorner = CreatePiece(ImgObjConveyorEndSide, 12);
+            topRightCorner.y = -capOffset;
+            topRightCorner.scaleY = -1f;
+            _ = visualRoot.AddChild(topRightCorner);
 
             int beltDirection = IsManual ? 0 : velocity > 0f ? 1 : -1;
-            beltVisual = new ConveyorBeltVisual(beltWidth - 2f, plateHeight, beltDirection)
+            beltVisual = new ConveyorBeltVisual(transporterWidth * plateScale, transporterHeight, beltDirection)
             {
-                x = 0f,
-                y = 5f
+                anchor = 10,
+                parentAnchor = 10
             };
-            _ = AddChild(beltVisual);
+            _ = visualRoot.AddChild(beltVisual);
 
-            Image highlightLeft = CreatePiece(ImgObjTransporterHighlight);
-            highlightLeft.scaleX = scale;
-            highlightLeft.scaleY = plateHeight / highlightLeft.height;
-            highlightLeft.x = 0f;
-            highlightLeft.y = 5f;
-            _ = AddChild(highlightLeft);
+            Image bottomHighlight = CreatePiece(ImgObjConveyorHighlight, 34);
+            bottomHighlight.scaleX = transporterWidth * plateScale / bottomHighlight.width;
+            _ = visualRoot.AddChild(bottomHighlight);
 
-            Image highlightRight = CreatePiece(ImgObjTransporterHighlight);
-            highlightRight.scaleX = -scale;
-            highlightRight.scaleY = plateHeight / highlightRight.height;
-            highlightRight.x = beltWidth;
-            highlightRight.y = 5f;
-            _ = AddChild(highlightRight);
+            Image topHighlight = CreatePiece(ImgObjConveyorHighlight, 10);
+            topHighlight.scaleX = transporterWidth * plateScale / topHighlight.width;
+            topHighlight.scaleY = -1f;
+            _ = visualRoot.AddChild(topHighlight);
         }
 
         /// <summary>
         /// Creates a visual piece for the belt frame from the transporter sprite sheet.
         /// </summary>
-        private static Image CreatePiece(int quad)
+        private static Image CreatePiece(int quad, int anchors)
         {
-            Image piece = Image.Image_createWithResIDQuad(Resources.Img.ObjTransporter, quad);
-            piece.anchor = 9;
-            piece.parentAnchor = 9;
-            piece.rotationCenterX = -piece.width / 2f;
-            piece.rotationCenterY = -piece.height / 2f;
+            Image piece = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, quad);
+            piece.anchor = (sbyte)anchors;
+            piece.parentAnchor = (sbyte)anchors;
             return piece;
         }
 
