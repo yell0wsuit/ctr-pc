@@ -9,7 +9,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Star : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider
+    internal sealed class Star : CTRGameObject, ITransporterItem
     {
         private const int ImgObjStarIdleGlow = 0;
         private const int ImgObjStarNightGlow = 0;
@@ -20,9 +20,6 @@ namespace CutTheRope.GameMain
         private const int ImgObjStarNightLightUpStart = 25;
         private const int ImgObjStarNightLightUpEnd = 30;
         private const float NightFadeStep = 0.1f;
-        private const float ConveyorSizeScale = 0.9f;
-        private const float ConveyorPaddingJs = 8f;
-        private const float JsPm = 1.2f;
 
         public static Star Star_create(CTRTexture2D t)
         {
@@ -172,25 +169,13 @@ namespace CutTheRope.GameMain
         private void UpdateBobOffset(float delta)
         {
             bobTime += delta;
-            bool onConveyor = ConveyorId != -1;
-            float offset = onConveyor ? 0f : (3 * Sinf(3f * bobTime));
+            float offset = IsDrawnByTransporter ? 0f : (3 * Sinf(3f * bobTime));
             Dictionary<int, BaseElement> childs = GetChilds();
             foreach (KeyValuePair<int, BaseElement> kvp in childs)
             {
                 BaseElement child = kvp.Value;
                 _ = (child?.y = offset);
             }
-        }
-
-        public Vector GetConveyorSize()
-        {
-            CTRRectangle bounds = bb.Equals(default) ? new CTRRectangle(22f, 20f, 30f, 30f) : bb;
-            return Vect(bounds.w * ConveyorSizeScale, bounds.h * ConveyorSizeScale);
-        }
-
-        public float GetConveyorPadding()
-        {
-            return ConveyorPaddingJs * RotatedCircle.PM / JsPm;
         }
 
         public void SetLitState(bool lit)
@@ -277,11 +262,25 @@ namespace CutTheRope.GameMain
 
         private bool? isLit;
 
-        public int ConveyorId { get; set; } = -1;
+        public float PositionOnTransporter { get; set; }
 
-        public float? ConveyorBaseScaleX { get; set; }
+        public Vector BindPoint => Vect(x, y);
 
-        public float? ConveyorBaseScaleY { get; set; }
+        public void SetBindPoint(Vector point)
+        {
+            x = point.X;
+            y = point.Y;
+        }
+
+        public float CollisionRadius => 60f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
 
         private float bobTime;
 

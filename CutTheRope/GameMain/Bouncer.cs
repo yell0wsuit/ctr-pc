@@ -4,7 +4,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class Bouncer : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionSetter
+    internal class Bouncer : CTRGameObject, ITransporterItem
     {
         public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, float an)
         {
@@ -52,24 +52,6 @@ namespace CutTheRope.GameMain
             b2 = VectRotateAround(b2, angle, x, y);
         }
 
-        public Vector GetConveyorSize()
-        {
-            return Vect(width, height);
-        }
-
-        public float GetConveyorPadding()
-        {
-            Vector size = GetConveyorSize();
-            return (size.X + size.Y) / 4f;
-        }
-
-        public void SetConveyorPosition(Vector position)
-        {
-            x = position.X;
-            y = position.Y;
-            UpdateRotation();
-        }
-
         public float angle;
 
         public Vector t1;
@@ -82,11 +64,26 @@ namespace CutTheRope.GameMain
 
         public bool skip;
 
-        public int ConveyorId { get; set; } = -1;
+        public float PositionOnTransporter { get; set; }
 
-        public float? ConveyorBaseScaleX { get; set; }
+        public Vector BindPoint => Vect(x, y);
 
-        public float? ConveyorBaseScaleY { get; set; }
+        public void SetBindPoint(Vector point)
+        {
+            x = point.X;
+            y = point.Y;
+            UpdateRotation();
+        }
+
+        public float CollisionRadius => width * 0.5f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
 
         private const int SmallBouncerWidth = 1;
 

@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Steam tube object that emits animated steam puffs based on its valve state.
     /// </summary>
-    internal sealed class SteamTube : BaseElement, ITimelineDelegate, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionSetter
+    internal sealed class SteamTube : BaseElement, ITimelineDelegate, ITransporterItem
     {
         public SteamTube()
         {
@@ -165,26 +165,35 @@ namespace CutTheRope.GameMain
             element.parent.RemoveChild(element);
         }
 
-        public Vector GetConveyorSize()
-        {
-            return Vect(40f, 56f);
-        }
+        public float PositionOnTransporter { get; set; }
 
-        public float GetConveyorPadding()
-        {
-            return 40f * 0.3f;
-        }
+        public Vector BindPoint => Vect(x, y);
 
-        public void SetConveyorPosition(Vector position)
+        /// <summary>
+        /// Sets the steam tube's position for transporter placement.
+        /// Also sets the on-conveyor flag and adjusts child element offsets so the
+        /// tube visual shifts to mount flush on the belt.
+        /// </summary>
+        public void SetBindPoint(Vector point)
         {
             onConveyor = true;
             tube.y = -24f * heightScale;
             valve.y = 3f * heightScale;
             steamBack.y = -27f * heightScale;
             steamFront.y = -27f * heightScale;
-            x = position.X;
-            y = position.Y;
+            x = point.X;
+            y = point.Y;
         }
+
+        public float CollisionRadius => 80f;
+
+        public float MinScale => 0.7f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
 
         /// <summary>
         /// Gets base steam height for current valve state (0=low, 1=medium, 2=high).
@@ -330,10 +339,5 @@ namespace CutTheRope.GameMain
 
         private float phase;
 
-        public int ConveyorId { get; set; } = -1;
-
-        public float? ConveyorBaseScaleX { get; set; }
-
-        public float? ConveyorBaseScaleY { get; set; }
     }
 }

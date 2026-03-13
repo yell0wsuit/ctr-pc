@@ -3,9 +3,8 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Sock : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionProvider, IConveyorPositionSetter
+    internal sealed class Sock : CTRGameObject, ITransporterItem
     {
-        private const float SockConveyorSizeScale = 0.28f;
         private static readonly Vector SockConveyorOffset = Vect(-2.1f, 15f);
         private const float ConveyorPm = 1.2f;
 
@@ -84,37 +83,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public Vector GetConveyorSize()
-        {
-            return Vect(width * SockConveyorSizeScale, height * SockConveyorSizeScale);
-        }
-
-        public float GetConveyorPadding()
-        {
-            Vector size = GetConveyorSize();
-            return (size.X + size.Y) / 4f;
-        }
-
-        public Vector GetConveyorPosition()
-        {
-            float pmScale = RotatedCircle.PM / ConveyorPm;
-            Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
-            // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
-            offset = VectRotate(offset, angle);
-            return VectAdd(Vect(x, y), offset);
-        }
-
-        public void SetConveyorPosition(Vector position)
-        {
-            float pmScale = RotatedCircle.PM / ConveyorPm;
-            Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
-            // offset = VectRotate(offset, DEGREES_TO_RADIANS(rotation));
-            offset = VectRotate(offset, angle);
-            Vector adjusted = VectSub(position, offset);
-            x = adjusted.X;
-            y = adjusted.Y;
-        }
-
         public const float SOCK_IDLE_TIMOUT = 0.8f;
 
         public const int SOCK_RECEIVING = 0;
@@ -139,10 +107,45 @@ namespace CutTheRope.GameMain
         private string XmasSock;
         public Animation light;
 
-        public int ConveyorId { get; set; } = -1;
+        public float PositionOnTransporter { get; set; }
 
-        public float? ConveyorBaseScaleX { get; set; }
+        /// <summary>
+        /// Returns the effective position of the sock for transporter calculations,
+        /// applying a scaled and rotated offset from the sock's origin to the mouth position.
+        /// </summary>
+        public Vector BindPoint
+        {
+            get
+            {
+                float pmScale = RotatedCircle.PM / ConveyorPm;
+                Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
+                offset = VectRotate(offset, angle);
+                return VectAdd(Vect(x, y), offset);
+            }
+        }
 
-        public float? ConveyorBaseScaleY { get; set; }
+        /// <summary>
+        /// Sets the sock's position such that its effective transporter bind point
+        /// matches the given position, accounting for the rotated offset.
+        /// </summary>
+        public void SetBindPoint(Vector point)
+        {
+            float pmScale = RotatedCircle.PM / ConveyorPm;
+            Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
+            offset = VectRotate(offset, angle);
+            Vector adjusted = VectSub(point, offset);
+            x = adjusted.X;
+            y = adjusted.Y;
+        }
+
+        public float CollisionRadius => 120f;
+
+        public float MinScale => 0.35f;
+
+        public float MaxScale => 0.7f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
     }
 }

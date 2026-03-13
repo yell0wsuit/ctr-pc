@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
-    internal class Grab : CTRGameObject
+    internal class Grab : CTRGameObject, ITransporterItem
     {
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
@@ -600,6 +600,26 @@ namespace CutTheRope.GameMain
                 y = rope.bungeeAnchor.pos.Y;
             }
         }
+
+        public float PositionOnTransporter { get; set; }
+
+        public Vector BindPoint => Vect(x, y);
+
+        public void SetBindPoint(Vector point)
+        {
+            x = point.X;
+            y = point.Y;
+        }
+
+        public float CollisionRadius => 40f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
 
         protected override void Dispose(bool disposing)
         {
