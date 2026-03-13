@@ -3,8 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-using CutTheRope.Framework;
 using CutTheRope.Helpers;
+
+using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
@@ -13,14 +14,6 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal static class LevelResourceScanner
     {
-        private sealed class XmlValueParser : FrameworkTypes
-        {
-            public static float ParseFloat(string value)
-            {
-                return ParseFloatOrZero(value);
-            }
-        }
-
         /// <summary>
         /// Computes the gameplay resources required to instantiate a single parsed map.
         /// </summary>
@@ -47,7 +40,7 @@ namespace CutTheRope.GameMain
                 {
                     case "gameDesign":
                         nightLevel = ParseBool(node.Attribute("nightLevel")?.Value);
-                        waterLevel = XmlValueParser.ParseFloat(node.Attribute("water")?.Value) > 0f;
+                        waterLevel = ParseFloatOrZero(node.Attribute("water")?.Value) > 0f;
                         break;
                     case "star":
                         if (nightLevel)
@@ -221,8 +214,8 @@ namespace CutTheRope.GameMain
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
             bool wheel = ParseBool(node.Attribute("wheel")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
-            float radius = XmlValueParser.ParseFloat(node.Attribute("radius")?.Value);
-            float moveLength = XmlValueParser.ParseFloat(node.Attribute("moveLength")?.Value);
+            float radius = ParseFloatOrZero(node.Attribute("radius")?.Value);
+            float moveLength = ParseFloatOrZero(node.Attribute("moveLength")?.Value);
 
             if (radius != -1f && !gun && !kickable)
             {

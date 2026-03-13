@@ -3,6 +3,8 @@ using System.Globalization;
 
 using CutTheRope.Framework.Core;
 
+using static CutTheRope.Helpers.ParsingHelpers;
+
 namespace CutTheRope.Framework.Helpers
 {
     internal class Mover : FrameworkTypes

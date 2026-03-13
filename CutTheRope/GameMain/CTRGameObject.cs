@@ -3,6 +3,8 @@ using System.Xml.Linq;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Helpers;
 
+using static CutTheRope.Helpers.ParsingHelpers;
+
 namespace CutTheRope.GameMain
 {
     internal class CTRGameObject : GameObject

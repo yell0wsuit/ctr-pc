@@ -11,6 +11,8 @@ using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 
+using static CutTheRope.Helpers.ParsingHelpers;
+
 namespace CutTheRope.Framework.Core
 {
     internal class ResourceMgr : FrameworkTypes

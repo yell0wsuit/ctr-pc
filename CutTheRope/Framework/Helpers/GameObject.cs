@@ -7,6 +7,8 @@ using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 
+using static CutTheRope.Helpers.ParsingHelpers;
+
 namespace CutTheRope.Framework.Helpers
 {
     internal class GameObject : Animation

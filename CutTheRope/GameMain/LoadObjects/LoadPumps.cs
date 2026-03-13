@@ -2,6 +2,8 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Visual;
 
+using static CutTheRope.Helpers.ParsingHelpers;
+
 namespace CutTheRope.GameMain
 {
     /// <summary>
