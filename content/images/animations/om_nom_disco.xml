@@ -1,5 +1,5 @@
-<FlashAnimation width="550" height="400">
- <Image rotationCenterY="-2.57283" anchorX="0.359719" anchorY="2.51803" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left_mouth_close" src="CharAnimationsSmooth" quadToDraw="85" rotationCenterX="-9.99602">
+<FlashAnimation width="550" height="400" src="char_animations_smooth">
+ <Image rotationCenterY="-2.57283" anchorX="0.359719" anchorY="2.51803" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left_mouth_close" src="char_animations_smooth" quadToDraw="85" rotationCenterX="-9.99602">
   <Timeline ID="3">
    <Pos>213.9731,231.5308(1)@0+213.9731,231.5308(4)@0.06666667+212.3731,231.5308(4)@0.06666667+212.3731,231.5308(0)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.750454,0.750581(4)@0.06666667+0.750454,0.750581(4)@0.06666667+0.750454,0.750581(0)@0.03333334</Scale>
@@ -9,7 +9,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-6.43021" anchorX="0.239813" anchorY="3.837" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right_mouth_close" src="CharAnimationsSmooth" quadToDraw="84" rotationCenterX="4.3363">
+ <Image rotationCenterY="-6.43021" anchorX="0.239813" anchorY="3.837" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right_mouth_close" src="char_animations_smooth" quadToDraw="84" rotationCenterX="4.3363">
   <Timeline ID="3">
    <Pos>288.4395,231.5972(1)@0+288.4395,231.5972(4)@0.06666667+290.6395,231.5972(4)@0.06666667+290.6395,231.5972(0)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.750454,0.750581(4)@0.06666667+0.750454,0.750581(4)@0.06666667+0.750454,0.750581(0)@0.03333334</Scale>
@@ -19,7 +19,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="35.3349" anchorX="0.479625" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body_mouth_close" src="CharAnimationsSmooth" quadToDraw="115" rotationCenterX="-0.153404">
+ <Image rotationCenterY="35.3349" anchorX="0.479625" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body_mouth_close" src="char_animations_smooth" quadToDraw="115" rotationCenterX="-0.153404">
   <Timeline ID="3">
    <Pos>207.214,172.1544(1)@0+206.3696,171.7112(4)@0.06666667+208.6662,173.5443(4)@0.06666667+208.6662,173.5443(0)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.707288,0.788923(4)@0.06666667+0.841104,0.639665(4)@0.06666667+0.841104,0.639665(0)@0.03333334</Scale>
@@ -29,7 +29,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right_mouth_close" src="CharAnimationsSmooth" quadToDraw="1" rotationCenterX="-56.0905">
+ <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right_mouth_close" src="char_animations_smooth" quadToDraw="1" rotationCenterX="-56.0905">
   <Timeline ID="3">
    <Pos>290.55,172.45(1)@0+290.55,176.95(0)@0.03333334+288.05,176.95(0)@0.03333334+285.05,184.95(0)@0.06666667+285.05,184.95(0)@0.03333334</Pos>
    <Scale>0.546581,0.630915(1)@0+0.546581,0.600091(0)@0.03333334+0.564726,0.600091(0)@0.03333334+0.674337,0.586745(0)@0.06666667+0.674337,0.586745(0)@0.03333334</Scale>
@@ -39,7 +39,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left_mouth_close" src="CharAnimationsSmooth" quadToDraw="0" rotationCenterX="-23.9027">
+ <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left_mouth_close" src="char_animations_smooth" quadToDraw="0" rotationCenterX="-23.9027">
   <Timeline ID="3">
    <Pos>211.8,170.95(1)@0+211.8,175.95(0)@0.03333334+213.3,175.95(0)@0.03333334+210.3,177.45(0)@0.06666667+210.3,177.45(0)@0.03333334</Pos>
    <Scale>0.506294,0.563514(1)@0+0.506294,0.526847(0)@0.03333334+0.506288,0.526826(0)@0.03333334+0.548775,0.519185(0)@0.06666667+0.548775,0.519185(0)@0.03333334</Scale>
@@ -49,7 +49,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-60.0556" anchorX="-0.486131" anchorY="-0.555578" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hair_mouth_close" src="CharAnimationsSmooth" quadToDraw="2" rotationCenterX="-97.4861">
+ <Image rotationCenterY="-60.0556" anchorX="-0.486131" anchorY="-0.555578" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hair_mouth_close" src="char_animations_smooth" quadToDraw="2" rotationCenterX="-97.4861">
   <Timeline ID="3">
    <Pos>204.05,146.6(1)@0+202.6,145.4(0)@0.03333334+205.6,145.9(0)@0.03333334+197.35,128.7(0)@0.06666667+197.35,128.7(0)@0.03333334</Pos>
    <Scale>0.702161,0.627074(1)@0+0.711859,0.660912(0)@0.03333334+0.686018,0.614683(0)@0.03333334+0.763326,0.822291(0)@0.06666667+0.763326,0.822291(0)@0.03333334</Scale>
@@ -59,7 +59,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.25" anchorX="1.85" anchorY="-0.75" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="sheeks_add__mouth_close" src="CharAnimationsSmooth" quadToDraw="7" rotationCenterX="0">
+ <Image rotationCenterY="-0.25" anchorX="1.85" anchorY="-0.75" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="sheeks_add__mouth_close" src="char_animations_smooth" quadToDraw="7" rotationCenterX="0">
   <Timeline ID="3">
    <Pos>236.0708,214.0762(1)@0+237.0729,215.5798(0)@0.06666667+236.5912,219.0681(0)@0.06666667+236.5912,219.0681(0)@0.03333334</Pos>
    <Scale>1.2036,1.58272(1)@0+1.07191,1.58272(0)@0.06666667+1.38812,1.58272(0)@0.06666667+1.38812,1.58272(0)@0.03333334</Scale>
@@ -69,7 +69,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.0470734" anchorX="0.239813" anchorY="0.239813" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right_mouth_close" src="CharAnimationsSmooth" quadToDraw="96" rotationCenterX="-0.0932083">
+ <Image rotationCenterY="0.0470734" anchorX="0.239813" anchorY="0.239813" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right_mouth_close" src="char_animations_smooth" quadToDraw="96" rotationCenterX="-0.0932083">
   <Timeline ID="3">
    <Pos>283.5408,238.1327(1)@0+283.0467,236.6127(4)@0.06666667+282.7097,239.6381(4)@0.06666667+282.7097,239.6381(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.699806,0.844407(4)@0.06666667+0.815908,0.659491(4)@0.06666667+0.815908,0.659491(4)@0.03333334</Scale>
@@ -79,7 +79,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.731148" anchorX="0.239813" anchorY="-0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left_mouth_close" src="CharAnimationsSmooth" quadToDraw="101" rotationCenterX="-0.0932083">
+ <Image rotationCenterY="-0.731148" anchorX="0.239813" anchorY="-0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left_mouth_close" src="char_animations_smooth" quadToDraw="101" rotationCenterX="-0.0932083">
   <Timeline ID="3">
    <Pos>233.9408,239.6013(1)@0+234.6467,238.0239(4)@0.06666667+233.2538,241.028(4)@0.06666667+233.2538,241.028(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.699806,0.844407(4)@0.06666667+0.815908,0.659491(4)@0.06666667+0.815908,0.659491(4)@0.03333334</Scale>
@@ -89,7 +89,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.623653" anchorX="0.119906" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_mouth_close" src="CharAnimationsSmooth" quadToDraw="92" rotationCenterX="-0.459015">
+ <Image rotationCenterY="-0.623653" anchorX="0.119906" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_mouth_close" src="char_animations_smooth" quadToDraw="92" rotationCenterX="-0.459015">
   <Timeline ID="3">
    <Pos>200.2885,137.7433(1)@0+200.9284,131.8812(4)@0.06666667+201.6898,148.2954(4)@0.06666667+201.6898,148.2954(0)@0.03333334</Pos>
    <Scale>0.750581,0.750581(1)@0+0.698427,0.812929(4)@0.06666667+0.841263,0.639665(4)@0.06666667+0.841263,0.639665(0)@0.03333334</Scale>
@@ -99,7 +99,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.0369987" anchorX="0.599532" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_mouth_close" src="CharAnimationsSmooth" quadToDraw="81" rotationCenterX="0.287827">
+ <Image rotationCenterY="0.0369987" anchorX="0.599532" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_mouth_close" src="char_animations_smooth" quadToDraw="81" rotationCenterX="0.287827">
   <Timeline ID="3">
    <Pos>208.9914,143.9624(1)@0+209.5897,141.6292(4)@0.06666667+210.3364,153.8068(4)@0.06666667+210.3364,153.8068(0)@0.03333334</Pos>
    <Scale>0.750581,0.750581(1)@0+0.698431,0.894456(4)@0.06666667+0.841263,0.407703(4)@0.06666667+0.841263,0.407703(0)@0.03333334</Scale>
@@ -109,7 +109,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.120607" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tonque_mouth_close" src="CharAnimationsSmooth" quadToDraw="78" rotationCenterX="-0.390163">
+ <Image rotationCenterY="-0.120607" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tonque_mouth_close" src="char_animations_smooth" quadToDraw="78" rotationCenterX="-0.390163">
   <Timeline ID="3">
    <Pos>236.57,204.9906(1)@0+236.9355,188.8959(4)@0.06666667+237.8841,199.9612(4)@0.06666667+237.8841,199.9612(0)@0.03333334</Pos>
    <Scale>0.750581,0.750581(1)@0+0.481587,1.12494(4)@0.06666667+0.687818,0.266442(4)@0.06666667+0.687818,0.266442(0)@0.03333334</Scale>
@@ -119,7 +119,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-2.57283" anchorX="0.359719" anchorY="2.51803" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left" src="CharAnimationsSmooth" quadToDraw="85" rotationCenterX="-9.99602">
+ <Image rotationCenterY="-2.57283" anchorX="0.359719" anchorY="2.51803" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left" src="char_animations_smooth" quadToDraw="85" rotationCenterX="-9.99602">
   <Timeline ID="0">
    <Pos>213.8231,231.4808(1)@0+213.8231,231.4808(4)@0.3+213.8231,231.4808(4)@1</Pos>
    <Scale>0.750454,0.750581(1)@0+0.750454,0.750581(4)@0.3+0.750454,0.750581(4)@1</Scale>
@@ -185,7 +185,7 @@
   </Timeline>
   <EmptyTimelines>3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-6.43021" anchorX="0.239813" anchorY="3.837" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right" src="CharAnimationsSmooth" quadToDraw="84" rotationCenterX="4.3363">
+ <Image rotationCenterY="-6.43021" anchorX="0.239813" anchorY="3.837" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right" src="char_animations_smooth" quadToDraw="84" rotationCenterX="4.3363">
   <Timeline ID="0">
    <Pos>288.2895,231.5472(1)@0+288.2895,231.5472(4)@0.3+288.2895,231.5472(4)@1</Pos>
    <Scale>0.750454,0.750581(1)@0+0.750454,0.750581(4)@0.3+0.750454,0.750581(4)@1</Scale>
@@ -251,7 +251,7 @@
   </Timeline>
   <EmptyTimelines>3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="35.3349" anchorX="0.479625" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body" src="CharAnimationsSmooth" quadToDraw="115" rotationCenterX="-0.153404">
+ <Image rotationCenterY="35.3349" anchorX="0.479625" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body" src="char_animations_smooth" quadToDraw="115" rotationCenterX="-0.153404">
   <Timeline ID="0">
    <Pos>207.064,172.1044(1)@0+207.5661,171.3007(4)@0.3+207.064,172.1044(4)@0.3333333+207.5661,171.3007(4)@0.3+207.064,172.1044(4)@0.3333333+207.064,172.1044(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.692476,0.819834(4)@0.3+0.750454,0.750581(4)@0.3333333+0.692476,0.819834(4)@0.3+0.750454,0.750581(4)@0.3333333+0.750454,0.750581(4)@0.03333334</Scale>
@@ -317,7 +317,7 @@
   </Timeline>
   <EmptyTimelines>3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right_mouth_open" src="CharAnimationsSmooth" quadToDraw="1" rotationCenterX="-56.0905">
+ <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right_mouth_open" src="char_animations_smooth" quadToDraw="1" rotationCenterX="-56.0905">
   <Timeline ID="2">
    <Pos>281.85,162.2(1)@0+289.05,159.4(0)@0.03333334+286.55,163.95(0)@0.03333334+290.55,172.45(0)@0.1+290.55,172.45(0)@0.1333333</Pos>
    <Scale>0.681091,0.721642(1)@0+0.613403,0.726934(0)@0.03333334+0.652412,0.706451(0)@0.03333334+0.546581,0.630915(0)@0.1+0.546581,0.630915(0)@0.1333333</Scale>
@@ -327,7 +327,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left_mouth_open" src="CharAnimationsSmooth" quadToDraw="0" rotationCenterX="-23.9027">
+ <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left_mouth_open" src="char_animations_smooth" quadToDraw="0" rotationCenterX="-23.9027">
   <Timeline ID="2">
    <Pos>211.55,156.5(1)@0+211.15,160.1(0)@0.03333334+216.8,156.95(0)@0.03333334+211.8,170.95(0)@0.1+211.8,170.95(0)@0.1333333</Pos>
    <Scale>0.797921,0.61212(1)@0+0.644297,0.626242(0)@0.03333334+0.650033,0.636014(0)@0.03333334+0.506294,0.563514(0)@0.1+0.506294,0.563514(0)@0.1333333</Scale>
@@ -337,7 +337,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-60.0556" anchorX="-0.486131" anchorY="-0.555578" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hair_mouth_open" src="CharAnimationsSmooth" quadToDraw="2" rotationCenterX="-97.4861">
+ <Image rotationCenterY="-60.0556" anchorX="-0.486131" anchorY="-0.555578" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hair_mouth_open" src="char_animations_smooth" quadToDraw="2" rotationCenterX="-97.4861">
   <Timeline ID="2">
    <Pos>196.6,122.65(1)@0+200.1,126.15(0)@0.03333334+201.25,132.2(0)@0.03333334+204.05,146.6(0)@0.1+204.05,146.6(0)@0.1333333</Pos>
    <Scale>0.760951,0.782427(1)@0+0.727536,0.747877(0)@0.03333334+0.747237,0.75758(0)@0.03333334+0.702161,0.627074(0)@0.1+0.702161,0.627074(0)@0.1333333</Scale>
@@ -347,7 +347,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.25" anchorX="1.85" anchorY="-0.75" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="sheeks_add_mouth" src="CharAnimationsSmooth" quadToDraw="7" rotationCenterX="0">
+ <Image rotationCenterY="-0.25" anchorX="1.85" anchorY="-0.75" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="sheeks_add_mouth" src="char_animations_smooth" quadToDraw="7" rotationCenterX="0">
   <Timeline ID="2">
    <Pos>236.0208,214.0262(1)@0+237.0229,215.5298(0)@0.06666667+236.0208,214.0262(0)@0.1+236.0208,214.0262(0)@0.1333333</Pos>
    <Scale>1.2036,1.58272(1)@0+1.07191,1.58272(0)@0.06666667+1.2036,1.58272(0)@0.1+1.2036,1.58272(0)@0.1333333</Scale>
@@ -364,7 +364,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.0470734" anchorX="0.239813" anchorY="0.239813" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right" src="CharAnimationsSmooth" quadToDraw="96" rotationCenterX="-0.0932083">
+ <Image rotationCenterY="0.0470734" anchorX="0.239813" anchorY="0.239813" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right" src="char_animations_smooth" quadToDraw="96" rotationCenterX="-0.0932083">
   <Timeline ID="0">
    <Pos>283.3408,238.0827(1)@0+283.3899,236.2307(4)@0.3+283.3408,238.0827(4)@0.3333333+283.3899,236.2307(4)@0.3+283.3408,238.0827(4)@0.3333333+283.3408,238.0827(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.675398,0.863909(4)@0.3+0.750454,0.750581(4)@0.3333333+0.675398,0.863909(4)@0.3+0.750454,0.750581(4)@0.3333333+0.750454,0.750581(4)@0.03333334</Scale>
@@ -430,7 +430,7 @@
   </Timeline>
   <EmptyTimelines>3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.731148" anchorX="0.239813" anchorY="-0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left" src="CharAnimationsSmooth" quadToDraw="101" rotationCenterX="-0.0932083">
+ <Image rotationCenterY="-0.731148" anchorX="0.239813" anchorY="-0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left" src="char_animations_smooth" quadToDraw="101" rotationCenterX="-0.0932083">
   <Timeline ID="0">
    <Pos>233.7908,239.5513(1)@0+233.651,237.7255(4)@0.3+233.7908,239.5513(4)@0.3333333+233.651,237.7255(4)@0.3+233.7908,239.5513(4)@0.3333333+233.7908,239.5513(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.675398,0.863909(4)@0.3+0.750454,0.750581(4)@0.3333333+0.675398,0.863909(4)@0.3+0.750454,0.750581(4)@0.3333333+0.750454,0.750581(4)@0.03333334</Scale>
@@ -496,7 +496,7 @@
   </Timeline>
   <EmptyTimelines>3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.503746" anchorX="0.119906" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_mouth_open" src="CharAnimationsSmooth" quadToDraw="92" rotationCenterX="-0.459015">
+ <Image rotationCenterY="-0.503746" anchorX="0.119906" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_mouth_open" src="char_animations_smooth" quadToDraw="92" rotationCenterX="-0.459015">
   <Timeline ID="2">
    <Pos>200.2457,139.9615(1)@0+199.87,135.9946(0)@0.03333334+199.496,134.0811(0)@0.03333334+200.2385,137.6933(4)@0.1+200.2385,137.7433(0)@0.1+200.2385,137.7433(0)@0.03333334</Pos>
    <Scale>0.768575,0.712964(1)@0+0.728457,0.762772(0)@0.03333334+0.70739,0.788923(0)@0.03333334+0.750581,0.750581(4)@0.1+0.750581,0.750581(0)@0.1+0.750581,0.750581(0)@0.03333334</Scale>
@@ -506,7 +506,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.0369987" anchorX="0.599532" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_mouth_open" src="CharAnimationsSmooth" quadToDraw="81" rotationCenterX="0.287827">
+ <Image rotationCenterY="0.0369987" anchorX="0.599532" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_mouth_open" src="char_animations_smooth" quadToDraw="81" rotationCenterX="0.287827">
   <Timeline ID="2">
    <Pos>208.9824,145.9507(1)@0+208.1327,140.6342(0)@0.06666667+208.9414,143.9124(4)@0.1+208.8914,143.8624(0)@0.1+208.8914,143.8624(0)@0.03333334</Pos>
    <Scale>0.768575,0.503463(1)@0+0.70739,0.788923(0)@0.06666667+0.750581,0.750581(4)@0.1+0.750581,0.750581(0)@0.1+0.750581,0.750581(0)@0.03333334</Scale>
@@ -516,7 +516,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.000699997" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tonque" src="CharAnimationsSmooth" quadToDraw="78" rotationCenterX="-0.390163">
+ <Image rotationCenterY="-0.000699997" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tonque" src="char_animations_smooth" quadToDraw="78" rotationCenterX="-0.390163">
   <Timeline ID="2">
    <Pos>236.5221,197.6604(1)@0+236.4901,204.3876(0)@0.06666667+236.5098,204.9099(0)@0.1+236.52,204.9406(4)@0.1+236.52,204.9406(0)@0.03333334</Pos>
    <Scale>0.445014,0.664168(1)@0+0.823823,0.592014(0)@0.06666667+0.694633,0.811689(0)@0.1+0.750581,0.750581(4)@0.1+0.750581,0.750581(0)@0.03333334</Scale>
@@ -526,7 +526,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-2.39649" anchorX="0.119906" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="chin" src="CharAnimationsSmooth" quadToDraw="113" rotationCenterX="-0.333721">
+ <Image rotationCenterY="-2.39649" anchorX="0.119906" anchorY="0.359719" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="chin" src="char_animations_smooth" quadToDraw="113" rotationCenterX="-0.333721">
   <Timeline ID="4">
    <Pos>0,0(1)@0+232.4671,185.2991(1)@0.3333333+232.4606,196.3206(0)@0.1+232.4606,197.9706(4)@0.1+232.4671,185.2991(4)@0.1333333+232.4671,185.2991(0)@0.03333334+0,0(1)@0+0,0(1)@0.2</Pos>
    <Scale>0,0(1)@0+1.14094,0.727586(1)@0.3333333+0.915454,0.9914(0)@0.1+0.915454,0.9914(4)@0.1+1.14094,0.727586(4)@0.1333333+1.14094,0.727586(0)@0.03333334+0,0(1)@0+0,0(1)@0.2</Scale>
@@ -543,7 +543,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;5;6;7;8</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.120607" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tongue" src="CharAnimationsSmooth" quadToDraw="78" rotationCenterX="-0.27026">
+ <Image rotationCenterY="-0.120607" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tongue" src="char_animations_smooth" quadToDraw="78" rotationCenterX="-0.27026">
   <Timeline ID="4">
    <Pos>0,0(1)@0+226.2599,182.4492(1)@0.3333333+237.0324,204.0492(4)@0.1666667+247.8679,180.2174(0)@0.1666667+247.8679,180.2174(0)@0.03333334+0,0(1)@0+0,0(1)@0.2</Pos>
    <Scale>0,0(1)@0+0.770458,0.643355(1)@0.3333333+0.770458,0.643355(4)@0.1666667+0.565341,0.780791(0)@0.1666667+0.565341,0.780791(0)@0.03333334+0,0(1)@0+0,0(1)@0.2</Scale>
@@ -553,7 +553,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;5;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="7.00058" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right copy" src="CharAnimationsSmooth" quadToDraw="1" rotationCenterX="-13.6249">
+ <Image rotationCenterY="7.00058" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right copy" src="char_animations_smooth" quadToDraw="1" rotationCenterX="-13.6249">
   <Timeline ID="7">
    <Pos>285.8782,137.7325(1)@0+274.7505,129.8663(0)@0.3333333+278.3857,133.2792(0)@0.1+290.2571,149.6997(0)@0.1+290.2571,149.6997(0)@0.03333334+0,0(1)@0+0,0(1)@2.466667</Pos>
    <Scale>0.851007,0.670273(1)@0+0.800397,0.838868(0)@0.3333333+0.869002,0.796422(0)@0.1+1.00788,0.577858(0)@0.1+1.00788,0.577858(0)@0.03333334+0,0(1)@0+0,0(1)@2.466667</Scale>
@@ -563,7 +563,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="1.2158" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left copy" src="CharAnimationsSmooth" quadToDraw="0" rotationCenterX="12.7295">
+ <Image rotationCenterY="1.2158" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left copy" src="char_animations_smooth" quadToDraw="0" rotationCenterX="12.7295">
   <Timeline ID="7">
    <Pos>186.6271,135.2312(1)@0+199.2263,120.5518(2)@0.3333333+190.0823,131.8066(0)@0.1+182.3941,147.6183(0)@0.1+182.3941,147.6183(0)@0.03333334+0,0(1)@0+0,0(1)@2.466667</Pos>
    <Scale>0.889481,0.613622(1)@0+0.749951,0.835892(2)@0.3333333+0.799718,0.800947(0)@0.1+1.00707,0.6087(0)@0.1+1.00707,0.6087(0)@0.03333334+0,0(1)@0+0,0(1)@2.466667</Scale>
@@ -580,7 +580,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;8</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-1.05" anchorX="1.85" anchorY="-0.75" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="sheeks_animation_chew" src="CharAnimationsSmooth" quadToDraw="7" rotationCenterX="1.9">
+ <Image rotationCenterY="-1.05" anchorX="1.85" anchorY="-0.75" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="sheeks_animation_chew" src="char_animations_smooth" quadToDraw="7" rotationCenterX="1.9">
   <Timeline ID="6">
    <Pos>234,201.4(1)@0+234,201.4(0)@0.6+234,201.9(0)@0.6+234,201.9(0)@0.03333334</Pos>
    <Scale>1,1(1)@0+1,1(0)@0.6+1,1(0)@0.6333334</Scale>
@@ -597,7 +597,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="20.2855" anchorX="0.359719" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head" src="CharAnimationsSmooth" quadToDraw="95" rotationCenterX="1.00258">
+ <Image rotationCenterY="20.2855" anchorX="0.359719" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head" src="char_animations_smooth" quadToDraw="95" rotationCenterX="1.00258">
   <Timeline ID="0">
    <Pos>201.7475,150.3241(1)@0+202.3068,146.227(4)@0.3+201.7475,150.3241(4)@0.3333333+202.3068,146.227(4)@0.3+201.7475,150.3241(4)@0.3333333+201.7475,150.3241(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.692476,0.819834(4)@0.3+0.750454,0.750581(4)@0.3333333+0.692476,0.819834(4)@0.3+0.750454,0.750581(4)@0.3333333+0.750454,0.750581(4)@0.03333334</Scale>
@@ -656,7 +656,7 @@
   </Timeline>
   <EmptyTimelines>2;3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right_animation_chew" src="CharAnimationsSmooth" quadToDraw="1" rotationCenterX="-56.0905">
+ <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right_animation_chew" src="char_animations_smooth" quadToDraw="1" rotationCenterX="-56.0905">
   <Timeline ID="6">
    <Pos>284.1,168.7(1)@0+291.45,149.6(0)@0.03333334+295.25,140(0)@0.1+289.4,140.65(0)@0.03333334+284.1,168.7(0)@0.1333333+291.45,149.6(0)@0.03333334+295.25,140(0)@0.1+289.4,140.65(0)@0.03333334+284.1,168.7(0)@0.1333333+291.45,149.6(0)@0.03333334+295.25,140(0)@0.1+289.4,140.65(0)@0.03333334+284.1,168.7(0)@0.1333333+291.45,149.6(0)@0.03333334+295.25,140(0)@0.1+289.4,140.65(0)@0.03333334+284.1,168.7(0)@0.1333333+284.1,168.7(0)@0.03333334</Pos>
    <Scale>0.851007,0.670273(1)@0+0.735565,0.794669(0)@0.03333334+0.615806,0.851817(0)@0.1+0.725458,0.832857(0)@0.03333334+0.851007,0.670273(0)@0.1333333+0.735565,0.794669(0)@0.03333334+0.615806,0.851817(0)@0.1+0.725458,0.832857(0)@0.03333334+0.851007,0.670273(0)@0.1333333+0.735565,0.794669(0)@0.03333334+0.615806,0.851817(0)@0.1+0.725458,0.832857(0)@0.03333334+0.851007,0.670273(0)@0.1333333+0.735565,0.794669(0)@0.03333334+0.615806,0.851817(0)@0.1+0.725458,0.832857(0)@0.03333334+0.851007,0.670273(0)@0.1333333+0.851007,0.670273(0)@0.03333334</Scale>
@@ -666,7 +666,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left_animation_chew" src="CharAnimationsSmooth" quadToDraw="0" rotationCenterX="-23.9027">
+ <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left_animation_chew" src="char_animations_smooth" quadToDraw="0" rotationCenterX="-23.9027">
   <Timeline ID="6">
    <Pos>206.2,155.25(1)@0+209.5,143.6(2)@0.03333334+222.55,126.2(0)@0.1+215.45,133.85(0)@0.03333334+206.2,155.25(0)@0.1333333+209.5,143.6(2)@0.03333334+222.55,126.2(0)@0.1+215.45,133.85(0)@0.03333334+206.2,155.25(0)@0.1333333+209.5,143.6(2)@0.03333334+222.55,126.2(0)@0.1+215.45,133.85(0)@0.03333334+206.2,155.25(0)@0.1333333+209.5,143.6(2)@0.03333334+222.55,126.2(0)@0.1+215.45,133.85(0)@0.03333334+206.2,155.25(0)@0.1333333+206.2,155.25(2)@0.03333334</Pos>
    <Scale>0.889481,0.613622(1)@0+0.786478,0.760557(2)@0.03333334+0.682518,0.900355(0)@0.1+0.75579,0.826868(0)@0.03333334+0.889481,0.613622(0)@0.1333333+0.786478,0.760557(2)@0.03333334+0.682518,0.900355(0)@0.1+0.75579,0.826868(0)@0.03333334+0.889481,0.613622(0)@0.1333333+0.786478,0.760557(2)@0.03333334+0.682518,0.900355(0)@0.1+0.75579,0.826868(0)@0.03333334+0.889481,0.613622(0)@0.1333333+0.786478,0.760557(2)@0.03333334+0.682518,0.900355(0)@0.1+0.75579,0.826868(0)@0.03333334+0.889481,0.613622(0)@0.1333333+0.889481,0.613622(2)@0.03333334</Scale>
@@ -676,7 +676,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.514988" anchorX="-4.19672" anchorY="2.03841" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="cheeks_chew" src="CharAnimationsSmooth" quadToDraw="114" rotationCenterX="0.377983">
+ <Image rotationCenterY="0.514988" anchorX="-4.19672" anchorY="2.03841" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="cheeks_chew" src="char_animations_smooth" quadToDraw="114" rotationCenterX="0.377983">
   <Timeline ID="6">
    <Pos>191.4798,176.2907(1)@0+191.1548,172.3452(4)@0.06666667+191.228,175.2045(4)@0.06666667+191.2955,182.7082(4)@0.06666667+191.4798,176.2907(4)@0.1+191.1548,172.3452(4)@0.06666667+191.228,175.2045(4)@0.06666667+191.2955,182.7082(4)@0.06666667+191.4798,176.2907(4)@0.1+191.1548,172.3452(4)@0.06666667+191.228,175.2045(4)@0.06666667+191.2955,182.7082(4)@0.06666667+191.4798,176.2907(4)@0.1+191.1548,172.3452(4)@0.06666667+191.228,175.2045(4)@0.06666667+191.2955,182.7082(4)@0.06666667+191.4798,176.2907(4)@0.1+191.4798,176.2907(4)@0.03333334</Pos>
    <Scale>0.915403,0.596041(1)@0+0.727847,0.764655(4)@0.06666667+0.649247,0.844407(4)@0.06666667+0.725957,0.777655(4)@0.06666667+0.915403,0.596041(4)@0.1+0.727847,0.764655(4)@0.06666667+0.649247,0.844407(4)@0.06666667+0.725957,0.777655(4)@0.06666667+0.915403,0.596041(4)@0.1+0.727847,0.764655(4)@0.06666667+0.649247,0.844407(4)@0.06666667+0.725957,0.777655(4)@0.06666667+0.915403,0.596041(4)@0.1+0.727847,0.764655(4)@0.06666667+0.649247,0.844407(4)@0.06666667+0.725957,0.777655(4)@0.06666667+0.915403,0.596041(4)@0.1+0.915403,0.596041(4)@0.03333334</Scale>
@@ -693,7 +693,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.282904" anchorX="0.599532" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_add" src="CharAnimationsSmooth" quadToDraw="82" rotationCenterX="0.348009">
+ <Image rotationCenterY="-0.282904" anchorX="0.599532" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_add" src="char_animations_smooth" quadToDraw="82" rotationCenterX="0.348009">
   <Timeline ID="6">
    <Pos>258.7616,221.57(1)@0+263.8974,236.0015(4)@0.1333333+258.7616,221.57(4)@0.1666667+263.8974,236.0015(4)@0.1333333+258.7616,221.57(4)@0.1666667+263.8974,236.0015(4)@0.1333333+258.7616,221.57(4)@0.1666667+263.8974,236.0015(4)@0.1333333+258.7616,221.57(4)@0.1666667+258.7616,221.57(4)@0.03333334</Pos>
    <Scale>0.237994,0.310581(1)@0+0.528693,0.750012(4)@0.1333333+0.237994,0.310581(4)@0.1666667+0.528693,0.750012(4)@0.1333333+0.237994,0.310581(4)@0.1666667+0.528693,0.750012(4)@0.1333333+0.237994,0.310581(4)@0.1666667+0.528693,0.750012(4)@0.1333333+0.237994,0.310581(4)@0.1666667+0.237994,0.310581(4)@0.03333334</Scale>
@@ -710,7 +710,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="23.5457" anchorX="1.07916" anchorY="0.239813" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_2_animation_chat" src="CharAnimationsSmooth" quadToDraw="88" rotationCenterX="-2.65808">
+ <Image rotationCenterY="23.5457" anchorX="1.07916" anchorY="0.239813" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_2_animation_chat" src="char_animations_smooth" quadToDraw="88" rotationCenterX="-2.65808">
   <Timeline ID="9">
    <Pos>0,0(1)@0+196.2924,158.806(1)@0.1666667+197.7863,139.5298(3)@0.1666667+199.4503,147.7986(3)@0.1333333+198.6869,147.5926(3)@0.1333333+199.4503,147.7986(3)@0.1333333+198.6869,147.5926(3)@0.1333333+199.4503,147.7986(3)@0.1333333+201.2121,141.4807(3)@0.2+195.6942,156.6178(3)@0.06666667+193.9452,158.6883(0)@0.03333334+193.0503,160.8354(0)@0.03333334+193.0503,160.8354(0)@0.03333334+0,0(1)@0+0,0(1)@0.3</Pos>
    <Scale>0,0(1)@0+0.79638,0.660292(1)@0.1666667+0.644561,0.762012(3)@0.1666667+0.668291,0.733932(3)@0.1333333+0.687223,0.680531(3)@0.1333333+0.668291,0.733932(3)@0.1333333+0.687223,0.680531(3)@0.1333333+0.668291,0.733932(3)@0.1333333+0.632588,0.75757(3)@0.2+0.713362,0.675134(3)@0.06666667+0.733005,0.662107(0)@0.03333334+0.752767,0.649242(0)@0.03333334+0.752767,0.649242(0)@0.03333334+0,0(1)@0+0,0(1)@0.3</Scale>
@@ -720,7 +720,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;8</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.234428" anchorX="-1.07916" anchorY="1.07916" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes" src="CharAnimationsSmooth" quadToDraw="110" rotationCenterX="-0.361122">
+ <Image rotationCenterY="0.234428" anchorX="-1.07916" anchorY="1.07916" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes" src="char_animations_smooth" quadToDraw="110" rotationCenterX="-0.361122">
   <Timeline ID="0">
    <Pos>221.0197,162.0119(1)@0+220.8239,154.9865(4)@0.3+221.0197,162.0119(4)@0.3333333+220.8239,154.9865(4)@0.3+221.0197,162.0119(4)@0.3333333+221.0197,162.0119(4)@0.03333334</Pos>
    <Scale>0.7686,0.749232(1)@0+0.740528,0.7672(4)@0.3+0.7686,0.749232(4)@0.3333333+0.740528,0.7672(4)@0.3+0.7686,0.749232(4)@0.3333333+0.7686,0.749232(4)@0.03333334</Scale>
@@ -772,7 +772,7 @@
   </Timeline>
   <EmptyTimelines>2;3;7</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.114517" anchorX="-1.07916" anchorY="1.07916" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes_chew_to_sleep" src="CharAnimationsSmooth" quadToDraw="110" rotationCenterX="-0.600937">
+ <Image rotationCenterY="0.114517" anchorX="-1.07916" anchorY="1.07916" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes_chew_to_sleep" src="char_animations_smooth" quadToDraw="110" rotationCenterX="-0.600937">
   <Timeline ID="7">
    <Pos>220.5436,162.5886(1)@0+223.231,148.2886(3)@0.3333333+218.7391,166.1207(4)@0.1+219.2763,171.6234(4)@0.03333334+220.1443,182.7138(0)@0.03333334+220.3926,188.7164(0)@0.03333334+220.5386,191.4204(0)@0.03333334+220.7113,180.3088(0)@0.03333334+221.0395,173.6794(0)@0.03333334+221.0197,169.5119(0)@0.03333334+221.081,167.2131(0)@0.03333334+221.4297,155.7843(3)@0.06666667+221.4845,153.439(0)@0.03333334+221.0197,159.5119(0)@0.1333333+220.826,160.6146(4)@0.2333333+225.8786,150.1102(3)@0.9333334+225.8786,150.1102(3)@0.06666667+214.6332,167.6691(2)@0.4666667+215.24,163.8551(3)@0.3666667+215.24,163.8551(4)@0.03333334</Pos>
    <Scale>0.905716,0.592191(1)@0+0.717024,0.784797(3)@0.3333333+0.948427,0.576109(4)@0.1+0.97097,0.560534(4)@0.03333334+1.01631,0.529739(0)@0.03333334+1.04045,0.513749(0)@0.03333334+1.00087,0.547747(0)@0.03333334+0.881882,0.650751(0)@0.03333334+0.810773,0.712548(0)@0.03333334+0.7686,0.749232(0)@0.03333334+0.758573,0.761907(0)@0.03333334+0.709216,0.824179(3)@0.06666667+0.699068,0.836962(0)@0.03333334+0.7686,0.749232(0)@0.1333333+0.790126,0.738262(4)@0.2333333+0.72411,0.798059(3)@0.9333334+0.72411,0.798059(3)@0.06666667+0.852609,0.718825(2)@0.4666667+0.766402,0.782297(3)@0.3666667+0.766402,0.782297(4)@0.03333334</Scale>
@@ -782,7 +782,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.384778" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_right" src="CharAnimationsSmooth" quadToDraw="79" rotationCenterX="0.0360656">
+ <Image rotationCenterY="-0.384778" anchorX="0" anchorY="-0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_right" src="char_animations_smooth" quadToDraw="79" rotationCenterX="0.0360656">
   <Timeline ID="0">
    <Pos>277.2433,186.0448(1)@0+277.2433,178.3948(4)@0.3+277.2433,186.0448(4)@0.3333333+277.2433,178.3948(4)@0.3+277.2433,186.0448(4)@0.3333333+277.2433,186.0448(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.750454,0.750581(4)@0.3+0.750454,0.750581(4)@1</Scale>
@@ -841,7 +841,7 @@
   </Timeline>
   <EmptyTimelines>2;3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.425527" anchorX="0" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_left" src="CharAnimationsSmooth" quadToDraw="80" rotationCenterX="-0.484309">
+ <Image rotationCenterY="-0.425527" anchorX="0" anchorY="0.119906" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_left" src="char_animations_smooth" quadToDraw="80" rotationCenterX="-0.484309">
   <Timeline ID="0">
    <Pos>262.5736,184.8654(1)@0+262.5736,177.2154(4)@0.3+262.5736,184.8654(4)@0.3333333+262.5736,177.2154(4)@0.3+262.5736,184.8654(4)@0.3333333+262.5736,184.8654(4)@0.03333334</Pos>
    <Scale>0.750454,0.750581(1)@0+0.750454,0.750581(4)@0.3+0.750454,0.750581(4)@1</Scale>
@@ -900,7 +900,7 @@
   </Timeline>
   <EmptyTimelines>2;3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.190398" anchorX="-0.119906" anchorY="0.479625" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="light_l" src="CharAnimationsSmooth" quadToDraw="103" rotationCenterX="-0.287588">
+ <Image rotationCenterY="-0.190398" anchorX="-0.119906" anchorY="0.479625" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="light_l" src="char_animations_smooth" quadToDraw="103" rotationCenterX="-0.287588">
   <Timeline ID="1">
    <Pos>0,0(1)@0+256.3677,153.22(1)@0.1+254.9906,165.5591(0)@0.1333333+254.9906,165.5591(0)@0.2333333+254.8677,156.22(0)@0.06666667+254.8677,156.22(0)@0.03333334+0,0(1)@0+0,0(1)@0.1</Pos>
    <Scale>0,0(1)@0+0.416992,0.416992(1)@0.1+0.463754,0.463754(0)@0.1333333+0.463754,0.463754(0)@0.2333333+0.416992,0.416992(0)@0.06666667+0.416992,0.416992(0)@0.03333334+0,0(1)@0+0,0(1)@0.1</Scale>
@@ -917,7 +917,7 @@
   </Timeline>
   <EmptyTimelines>0;2;3;4;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.190398" anchorX="-0.119906" anchorY="0.479625" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="light_r" src="CharAnimationsSmooth" quadToDraw="103" rotationCenterX="-0.167682">
+ <Image rotationCenterY="-0.190398" anchorX="-0.119906" anchorY="0.479625" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="light_r" src="char_animations_smooth" quadToDraw="103" rotationCenterX="-0.167682">
   <Timeline ID="1">
    <Pos>0,0(1)@0+271.4169,155.02(1)@0.1+271.2478,166.4695(0)@0.1333333+271.2478,166.4695(0)@0.2333333+270.4169,158.02(0)@0.06666667+270.4169,158.02(0)@0.03333334+0,0(1)@0+0,0(1)@0.1</Pos>
    <Scale>0,0(1)@0+0.323459,0.323459(1)@0.1+0.356711,0.356711(0)@0.1333333+0.356711,0.356711(0)@0.2333333+0.323459,0.323459(0)@0.06666667+0.323459,0.323459(0)@0.03333334+0,0(1)@0+0,0(1)@0.1</Scale>
@@ -934,7 +934,7 @@
   </Timeline>
   <EmptyTimelines>0;2;3;4;6;7;8;9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.145668" anchorX="0" anchorY="0.959251" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes_closed" src="CharAnimationsSmooth" quadToDraw="109" rotationCenterX="-0.105621">
+ <Image rotationCenterY="-0.145668" anchorX="0" anchorY="0.959251" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes_closed" src="char_animations_smooth" quadToDraw="109" rotationCenterX="-0.105621">
   <Timeline ID="0">
    <Pos>215.7279,161.7448(1)@0+215.7279,161.0552(6)@0.03333334+215.7279,161.0552(0)@0.03333334+0,0(1)@0+0,0(1)@1.233333</Pos>
    <Scale>0.750454,0.750581(1)@0+0.750454,0.76902(6)@0.03333334+0.750454,0.76902(0)@0.03333334+0,0(1)@0+0,0(1)@1.233333</Scale>
@@ -986,7 +986,7 @@
   </Timeline>
   <EmptyTimelines>2;3;6</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right" src="CharAnimationsSmooth" quadToDraw="1" rotationCenterX="-56.0905">
+ <Image rotationCenterY="-64.4584" anchorX="-30.5905" anchorY="-6.45839" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_right" src="char_animations_smooth" quadToDraw="1" rotationCenterX="-56.0905">
   <Timeline ID="0">
    <Pos>285.4,161.55(1)@0+285.7,151.6(4)@0.3+285.4,160.55(4)@0.3333333+285.7,151.6(4)@0.3+285.4,160.55(4)@0.3333333+285.4,160.55(4)@0.03333334</Pos>
    <Scale>0.719924,0.719969(1)@0+0.674821,0.761632(4)@0.3+0.719924,0.719969(4)@0.3333333+0.674821,0.761632(4)@0.3+0.719924,0.719969(4)@0.3333333+0.719924,0.719969(4)@0.03333334</Scale>
@@ -1038,7 +1038,7 @@
   </Timeline>
   <EmptyTimelines>2;3;6</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left" src="CharAnimationsSmooth" quadToDraw="0" rotationCenterX="-23.9027">
+ <Image rotationCenterY="-71.146" anchorX="4.09726" anchorY="-13.646" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="whisker_left" src="char_animations_smooth" quadToDraw="0" rotationCenterX="-23.9027">
   <Timeline ID="0">
    <Pos>205.85,159.4(1)@0+208.3,149.25(4)@0.3+205.85,159.4(4)@0.3333333+208.3,149.25(4)@0.3+205.85,159.4(4)@0.3333333+205.85,159.4(4)@0.03333334</Pos>
    <Scale>0.719977,0.719967(1)@0+0.694171,0.761849(4)@0.3+0.719977,0.719967(4)@0.3333333+0.694171,0.761849(4)@0.3+0.719977,0.719967(4)@0.3333333+0.719977,0.719967(4)@0.03333334</Scale>
@@ -1090,7 +1090,7 @@
   </Timeline>
   <EmptyTimelines>2;3;6</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-32.1386" anchorX="36.7712" anchorY="27.3614" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hair" src="CharAnimationsSmooth" quadToDraw="2" rotationCenterX="-60.2288">
+ <Image rotationCenterY="-32.1386" anchorX="36.7712" anchorY="27.3614" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hair" src="char_animations_smooth" quadToDraw="2" rotationCenterX="-60.2288">
   <Timeline ID="0">
    <Pos>231.45,127.9(1)@0+232,120.05(4)@0.3+231.45,127.9(4)@0.3333333+232,120.05(4)@0.3+231.45,127.9(4)@0.3333333+231.45,127.9(4)@0.03333334</Pos>
    <Scale>0.719994,0.719994(1)@0+0.704327,0.706546(4)@0.3+0.719994,0.719994(4)@0.3333333+0.704327,0.706546(4)@0.3+0.719994,0.719994(4)@0.3333333+0.719994,0.719994(4)@0.03333334</Scale>
@@ -1149,7 +1149,7 @@
   </Timeline>
   <EmptyTimelines>2;3</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-33.4167" anchorX="-0.0347225" anchorY="-0.41667" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="glasses" src="CharAnimationsSmooth" quadToDraw="3" rotationCenterX="-73.5347">
+ <Image rotationCenterY="-33.4167" anchorX="-0.0347225" anchorY="-0.41667" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="glasses" src="char_animations_smooth" quadToDraw="3" rotationCenterX="-73.5347">
   <Timeline ID="0">
    <Pos>217.2,172.15(1)@0+219.5,161.3(4)@0.3+217.2,172.15(4)@0.3333333+219.5,161.3(4)@0.3+217.2,172.15(4)@0.3333333+217.2,172.15(4)@0.03333334</Pos>
    <Scale>0.774639,0.765521(1)@0+0.741856,0.766641(4)@0.3+0.774639,0.765521(4)@0.3333333+0.741856,0.766641(4)@0.3+0.774639,0.765521(4)@0.3333333+0.774639,0.765521(4)@0.03333334</Scale>

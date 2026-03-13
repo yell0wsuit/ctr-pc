@@ -161,7 +161,7 @@ namespace CutTheRope.GameMain
             {
                 StageWidth = ParseFloat(root.Attribute("width")?.Value),
                 StageHeight = ParseFloat(root.Attribute("height")?.Value),
-                TextureResourceName = Resources.Img.CharAnimationsSmooth,
+                TextureResourceName = ResolveTextureResourceName(root.Attribute("src")?.Value, "animation"),
                 Parts = parts,
                 RootTimelines = rootTimelines,
                 RootTimelineDefinitions = rootTimelineDefinitions
@@ -180,7 +180,7 @@ namespace CutTheRope.GameMain
             return new FlashXmlPartDefinition
             {
                 Name = imageNode.Attribute("name")?.Value ?? string.Empty,
-                TextureResourceName = ResolveTextureResourceName(imageNode.Attribute("src")?.Value),
+                TextureResourceName = ResolveTextureResourceName(imageNode.Attribute("src")?.Value, "image"),
                 QuadToDraw = ParseInt(imageNode.Attribute("quadToDraw")?.Value),
                 AnchorX = ParseFloat(imageNode.Attribute("anchorX")?.Value),
                 AnchorY = ParseFloat(imageNode.Attribute("anchorY")?.Value),
@@ -208,22 +208,15 @@ namespace CutTheRope.GameMain
             return timelineIds;
         }
 
-        private static string ResolveTextureResourceName(string rawSourceId)
+        private static string ResolveTextureResourceName(string rawSourceId, string sourceKind)
         {
             rawSourceId = string.IsNullOrWhiteSpace(rawSourceId)
-                ? throw new InvalidOperationException("Flash XML image src is missing.")
+                ? throw new InvalidOperationException($"Flash XML {sourceKind} src is missing.")
                 : rawSourceId;
 
-            return rawSourceId switch
-            {
-                nameof(Resources.Img.CharAnimationsSmooth) => Resources.Img.CharAnimationsSmooth,
-                nameof(Resources.Img.FxSleep) => Resources.Img.FxSleep,
-                nameof(Resources.Img.FxBubbles) => Resources.Img.FxBubbles,
-                nameof(Resources.Img.CharAnimationsPrehistoric) => Resources.Img.CharAnimationsPrehistoric,
-                nameof(Resources.Img.HatHalloween) => Resources.Img.HatHalloween,
-                nameof(Resources.Img.HatXmas) => Resources.Img.HatXmas,
-                _ => throw new InvalidOperationException($"Unsupported Flash XML image src '{rawSourceId}'.")
-            };
+            return Resources.IsImage(rawSourceId)
+                ? rawSourceId
+                : throw new InvalidOperationException($"Unsupported Flash XML {sourceKind} src '{rawSourceId}'.");
         }
 
         private static FlashXmlTimelineDefinition ParseImageTimeline(XElement timelineNode)

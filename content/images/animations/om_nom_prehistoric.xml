@@ -1,5 +1,5 @@
-<FlashAnimation width="550" height="400">
- <Image rotationCenterY="52.7925" anchorX="-327.506" anchorY="-284.511" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body" src="CharAnimationsPrehistoric" quadToDraw="81" rotationCenterX="-0.399902">
+<FlashAnimation width="550" height="400" src="char_animations_body_prehistoric">
+ <Image rotationCenterY="52.7925" anchorX="-327.506" anchorY="-284.511" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body" src="char_animations_body_prehistoric" quadToDraw="81" rotationCenterX="-0.399902">
   <Timeline ID="0">
    <Pos>-127.8992,-125.7083(1)@0+-127.9212,-125.845(4)@0.3+-127.8992,-125.7083(4)@0.3333333+-127.9212,-125.845(4)@0.3333333+-127.8992,-125.7083(4)@0.3333333+-127.8992,-125.7083(4)@0.03333334</Pos>
    <Scale>0.797366,0.761648(1)@0+0.762119,0.829338(4)@0.3+0.797366,0.761648(4)@0.3333333+0.762119,0.829338(4)@0.3333333+0.797366,0.761648(4)@0.3333333+0.797366,0.761648(4)@0.03333334</Scale>
@@ -92,7 +92,7 @@
    <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,81,0(1)@0+AC_SAP,self,-327.506,-284.511(1)@0+AC_SRC,self,-0.428955,52.6472(1)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,81,0(0)@0+AC_SAP,self,-327.506,-284.511(0)@0+AC_SRC,self,-0.428955,52.6472(0)@0+AC_SV,self,0,0(1)@0+AC_SV,self,0,1(1)@0.06666667+AC_SDQ,self,79,0(1)@0+AC_SAP,self,-326.808,-306.168(1)@0+AC_SRC,self,0.0942993,41.2864(1)@0+AC_SV,self,0,1(3)@0.2666667+AC_SDQ,self,79,0(3)@0+AC_SAP,self,-326.808,-306.168(3)@0+AC_SRC,self,0.0361328,41.2573(3)@0+AC_SV,self,0,1(4)@0.1666667+AC_SDQ,self,79,0(4)@0+AC_SAP,self,-326.808,-306.168(4)@0+AC_SRC,self,0.0361328,41.2573(4)@0</Action>
   </Timeline>
  </Image>
- <Image rotationCenterY="-5.16266" anchorX="-446.486" anchorY="-354.48" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right_animation" src="CharAnimationsPrehistoric" quadToDraw="22" rotationCenterX="-8.54062">
+ <Image rotationCenterY="-5.16266" anchorX="-446.486" anchorY="-354.48" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right_animation" src="char_animations_body_prehistoric" quadToDraw="22" rotationCenterX="-8.54062">
   <Timeline ID="9">
    <Pos>-139.4402,-120.2231(1)@0+-137.8527,-119.5162(4)@0.1333333+-141.368,-121.5895(4)@0.06666667+-148.3284,-126.1715(6)@0.03333334+-156.4345,-131.698(6)@0.03333334+-161.5738,-135.0069(6)@0.03333334+-158.0547,-130.2878(4)@0.1666667+-170.0735,-136.1319(4)@0.2+-157.89,-130.2803(4)@0.2+-162.3676,-130.592(4)@0.2+-160.3727,-131.7455(0)@0.1+-152.3145,-128.1778(6)@0.03333334+-147.0526,-124.0147(6)@0.03333334+-141.1962,-121.1148(6)@0.03333334+-139.4402,-120.2231(0)@0.1+-139.4402,-120.2231(4)@0.03333334</Pos>
    <Scale>0.790814,0.764943(1)@0+0.819592,0.729914(4)@0.1333333+0.790814,0.776854(4)@0.06666667+0.77454,0.820898(6)@0.03333334+0.765459,0.835907(6)@0.03333334+0.761522,0.831178(6)@0.03333334+0.836165,0.752184(4)@0.1666667+0.795657,0.744882(4)@0.2+0.826937,0.751131(4)@0.2+0.829917,0.678661(4)@0.2+0.795536,0.753769(0)@0.1+0.765438,0.799827(6)@0.03333334+0.757822,0.806898(6)@0.03333334+0.757822,0.808064(6)@0.03333334+0.790814,0.764943(0)@0.1+0.790814,0.764943(4)@0.03333334</Scale>
@@ -102,7 +102,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;8;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-5.29059" anchorX="-313.462" anchorY="-352.706" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left_animation" src="CharAnimationsPrehistoric" quadToDraw="27" rotationCenterX="6.54089">
+ <Image rotationCenterY="-5.29059" anchorX="-313.462" anchorY="-352.706" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left_animation" src="char_animations_body_prehistoric" quadToDraw="27" rotationCenterX="6.54089">
   <Timeline ID="9">
    <Pos>-114.5465,-120.0174(1)@0+-115.509,-119.547(0)@0.06666667+-114.3963,-119.8761(4)@0.03333334+-109.0978,-122.7676(6)@0.03333334+-100.146,-127.1815(6)@0.03333334+-93.0874,-131.1506(0)@0.03333334+-90.4328,-133.5691(6)@0.03333334+-90.3282,-134.251(0)@0.03333334+-88.6232,-133.6667(0)@0.2+-98.9418,-125.0229(4)@0.2+-88.6232,-133.6667(4)@0.2+-93.1344,-127.8463(4)@0.2+-93.0703,-128.1241(6)@0.03333334+-95.4782,-128.0225(0)@0.03333334+-102.7481,-125.224(6)@0.03333334+-110.2278,-122.3127(6)@0.03333334+-114.5465,-120.0174(0)@0.1666667+-114.5465,-120.0174(0)@0.03333334</Pos>
    <Scale>0.788547,0.771819(1)@0+0.81291,0.73519(0)@0.06666667+0.814484,0.734114(4)@0.03333334+0.805666,0.74083(6)@0.03333334+0.811554,0.754533(6)@0.03333334+0.799008,0.78099(0)@0.03333334+0.772862,0.828987(6)@0.03333334+0.75987,0.839669(0)@0.03333334+0.830916,0.753882(0)@0.2+0.789059,0.764368(4)@0.2+0.830916,0.753882(4)@0.2+0.826062,0.687311(4)@0.2+0.817476,0.68751(6)@0.03333334+0.8175,0.690992(0)@0.03333334+0.801309,0.744018(6)@0.03333334+0.770498,0.798407(6)@0.03333334+0.788547,0.771819(0)@0.1666667+0.788547,0.771819(0)@0.03333334</Scale>
@@ -112,7 +112,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;8;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="18.5585" anchorX="-380.962" anchorY="-196.775" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth2" src="CharAnimationsPrehistoric" quadToDraw="2" rotationCenterX="1.86063">
+ <Image rotationCenterY="18.5585" anchorX="-380.962" anchorY="-196.775" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth2" src="char_animations_body_prehistoric" quadToDraw="2" rotationCenterX="1.86063">
   <Timeline ID="10">
    <Pos>0,0(1)@0+-124.6663,-90.4445(1)@0.06666667+-124.6663,-90.4445(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Pos>
    <Scale>0,0(1)@0+0.790929,0.845088(1)@0.06666667+0.790929,0.845088(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Scale>
@@ -129,7 +129,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;8;9;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="1.65735" anchorX="-370.152" anchorY="-198.434" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth" src="CharAnimationsPrehistoric" quadToDraw="78" rotationCenterX="-2.2728">
+ <Image rotationCenterY="1.65735" anchorX="-370.152" anchorY="-198.434" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth" src="char_animations_body_prehistoric" quadToDraw="78" rotationCenterX="-2.2728">
   <Timeline ID="10">
    <Pos>0,0(1)@0+-123.7733,-83.2379(1)@0.06666667+-123.7733,-83.2379(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Pos>
    <Scale>0,0(1)@0+0.764663,0.82594(1)@0.06666667+0.764663,0.82594(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Scale>
@@ -146,7 +146,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;8;9;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="52.5309" anchorX="-327.506" anchorY="-284.511" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body_3" src="CharAnimationsPrehistoric" quadToDraw="81" rotationCenterX="-0.748749">
+ <Image rotationCenterY="52.5309" anchorX="-327.506" anchorY="-284.511" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body_3" src="char_animations_body_prehistoric" quadToDraw="81" rotationCenterX="-0.748749">
   <Timeline ID="12">
    <Pos>0,0(1)@0+-127.6984,-125.145(1)@0.06666667+-127.6984,-125.145(0)@0.03333334+0,0(1)@0+0,0(1)@0.4333334</Pos>
    <Scale>0,0(1)@0+0.764035,0.689016(1)@0.06666667+0.764035,0.689016(0)@0.03333334+0,0(1)@0+0,0(1)@0.4333334</Scale>
@@ -156,7 +156,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;8;9;10;11</EmptyTimelines>
  </Image>
- <Image rotationCenterY="37.5303" anchorX="-332.389" anchorY="-236.835" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head" src="CharAnimationsPrehistoric" quadToDraw="58" rotationCenterX="-0.591888">
+ <Image rotationCenterY="37.5303" anchorX="-332.389" anchorY="-236.835" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head" src="char_animations_body_prehistoric" quadToDraw="58" rotationCenterX="-0.591888">
   <Timeline ID="0">
    <Pos>-125.5363,-108.7252(1)@0+-125.7568,-114.3885(4)@0.3+-125.5363,-108.7252(4)@0.3333333+-125.7568,-114.3885(4)@0.3333333+-125.5363,-108.7252(4)@0.3333333+-125.5363,-108.7252(4)@0.03333334</Pos>
    <Scale>0.791329,0.762045(1)@0+0.755085,0.829671(4)@0.3+0.791329,0.762045(4)@0.3333333+0.755085,0.829671(4)@0.3333333+0.791329,0.762045(4)@0.3333333+0.791329,0.762045(4)@0.03333334</Scale>
@@ -229,7 +229,7 @@
   </Timeline>
   <EmptyTimelines>3;6;8</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.7276" anchorX="-325.413" anchorY="-236.923" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head2" src="CharAnimationsPrehistoric" quadToDraw="38" rotationCenterX="-0.0511169">
+ <Image rotationCenterY="0.7276" anchorX="-325.413" anchorY="-236.923" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head2" src="char_animations_body_prehistoric" quadToDraw="38" rotationCenterX="-0.0511169">
   <Timeline ID="2">
    <Pos>0,0(1)@0+0,0(1)@0.4666667+0,0(1)@0+-118.7086,-92.5471(1)@0.03333334+-124.8872,-93.2061(3)@0.1333333+-118.7086,-92.5471(0)@0.1333333+-124.8872,-93.2061(0)@0.1333333+-118.7086,-92.5471(0)@0.1333333+-118.7086,-92.5471(0)@0.03333334+0,0(1)@0+0,0(1)@0.6333334</Pos>
    <Scale>0,0(1)@0+0,0(1)@0.4666667+0,0(1)@0+0.876599,0.749419(1)@0.03333334+0.899188,0.728575(3)@0.1333333+0.876599,0.749419(0)@0.1333333+0.899188,0.728575(0)@0.1333333+0.876599,0.749419(0)@0.1333333+0.876599,0.749419(0)@0.03333334+0,0(1)@0+0,0(1)@0.6333334</Scale>
@@ -239,7 +239,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.209015" anchorX="-362.768" anchorY="-282.941" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="teeth" src="CharAnimationsPrehistoric" quadToDraw="47" rotationCenterX="0.436676">
+ <Image rotationCenterY="-0.209015" anchorX="-362.768" anchorY="-282.941" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="teeth" src="char_animations_body_prehistoric" quadToDraw="47" rotationCenterX="0.436676">
   <Timeline ID="3">
    <Pos>-124.6615,-112.8286(1)@0+-126.521,-97.9768(0)@0.3+-125.3465,-106.7209(0)@0.06666667+-125.3465,-106.7209(0)@0.03333334+0,0(1)@0+0,0(1)@2.533334</Pos>
    <Scale>0.788265,0.492846(1)@0+0.637589,0.761069(0)@0.3+0.738,0.582264(0)@0.06666667+0.738,0.582264(0)@0.03333334+0,0(1)@0+0,0(1)@2.533334</Scale>
@@ -256,7 +256,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="16.1871" anchorX="-326.866" anchorY="-235.178" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="teeth2" src="CharAnimationsPrehistoric" quadToDraw="54" rotationCenterX="1.55942">
+ <Image rotationCenterY="16.1871" anchorX="-326.866" anchorY="-235.178" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="teeth2" src="char_animations_body_prehistoric" quadToDraw="54" rotationCenterX="1.55942">
   <Timeline ID="3">
    <Pos>0,0(1)@0+-126.2679,-102.5723(1)@0.4+-127.9059,-90.1952(0)@0.1333333+-128.1608,-91.0076(0)@0.03333334+-127.907,-92.5824(0)@0.03333334+-126.8482,-86.8064(6)@0.03333334+-125.8207,-109.2746(0)@0.1333333+-125.6715,-103.7081(4)@0.1666667+-126.2773,-102.4227(0)@0.2333333+-121.034,-108.7844(3)@0.9666667+-120.8999,-108.7232(0)@0.06666667+-132.6271,-98.9081(2)@0.4333334+-127.8789,-105.5989(6)@0.03333334+-127.9008,-105.7731(0)@0.03333334+-131.0904,-111.6522(4)@0.2+-131.0904,-111.6522(0)@0.03333334</Pos>
    <Scale>0,0(1)@0+0.804355,0.749457(1)@0.4+0.862717,0.881474(0)@0.1333333+0.861223,0.885091(0)@0.03333334+0.859754,0.876434(0)@0.03333334+0.895085,1.11008(6)@0.03333334+0.746803,0.94794(0)@0.1333333+0.794059,0.808121(4)@0.1666667+0.822088,0.794177(0)@0.2333333+0.74695,0.86141(3)@0.9666667+0.747158,0.86141(0)@0.06666667+0.874752,0.894604(2)@0.4333334+0.876024,0.759895(6)@0.03333334+0.877557,0.760462(0)@0.03333334+0.811386,0.806835(4)@0.2+0.811386,0.806835(0)@0.03333334</Scale>
@@ -266,7 +266,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="52.8507" anchorX="-327.506" anchorY="-284.511" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body_2" src="CharAnimationsPrehistoric" quadToDraw="81" rotationCenterX="-0.428955">
+ <Image rotationCenterY="52.8507" anchorX="-327.506" anchorY="-284.511" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="body_2" src="char_animations_body_prehistoric" quadToDraw="81" rotationCenterX="-0.428955">
   <Timeline ID="8">
    <Pos>0,0(1)@0+-127.8733,-125.4555(1)@0.03333334+-127.8733,-125.4555(0)@0.03333334+0,0(1)@0+-127.5923,-125.3084(1)@0.03333334+-127.5923,-125.3084(0)@0.03333334+0,0(1)@0+-127.6798,-125.1969(1)@0.6333334+-127.6798,-125.1969(0)@0.03333334+0,0(1)@0+-127.8722,-125.4319(1)@0.03333334+-127.8722,-125.4319(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334</Pos>
    <Scale>0,0(1)@0+0.809806,0.730435(1)@0.03333334+0.809806,0.730435(0)@0.03333334+0,0(1)@0+0.727397,0.817122(1)@0.03333334+0.727397,0.817122(0)@0.03333334+0,0(1)@0+0.726872,0.819619(1)@0.6333334+0.726872,0.819619(0)@0.03333334+0,0(1)@0+0.809806,0.730435(1)@0.03333334+0.809806,0.730435(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334</Scale>
@@ -283,7 +283,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;9;10;11</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.383911" anchorX="-360.733" anchorY="-315.005" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_puzzled" src="CharAnimationsPrehistoric" quadToDraw="18" rotationCenterX="-0.0516357">
+ <Image rotationCenterY="0.383911" anchorX="-360.733" anchorY="-315.005" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="mouth_puzzled" src="char_animations_body_prehistoric" quadToDraw="18" rotationCenterX="-0.0516357">
   <Timeline ID="8">
    <Pos>0,0(1)@0+-127.571,-122.2389(1)@0.3666667+-127.1924,-127.4344(6)@0.03333334+-128.1714,-132.2355(6)@0.03333334+-128.1944,-133.9793(6)@0.03333334+-128.1472,-134.4353(0)@0.03333334+-128.1944,-133.9793(0)@0.03333334+-128.1714,-132.2355(6)@0.03333334+-127.1924,-127.4344(6)@0.03333334+-127.571,-122.2389(6)@0.03333334+-127.571,-122.2389(0)@0.03333334+0,0(1)@0+0,0(1)@0.2333333</Pos>
    <Scale>0,0(1)@0+0.788574,0.660957(1)@0.3666667+0.786474,0.652617(6)@0.03333334+0.78431,0.645256(6)@0.03333334+0.782301,0.641596(6)@0.03333334+0.776632,0.652288(0)@0.03333334+0.782301,0.641596(0)@0.03333334+0.78431,0.645256(6)@0.03333334+0.786474,0.652617(6)@0.03333334+0.788574,0.660957(6)@0.03333334+0.788574,0.660957(0)@0.03333334+0,0(1)@0+0,0(1)@0.2333333</Scale>
@@ -293,7 +293,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-28.4941" anchorX="-360.933" anchorY="-292.241" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tongue_puzzled" src="CharAnimationsPrehistoric" quadToDraw="8" rotationCenterX="-0.662476">
+ <Image rotationCenterY="-28.4941" anchorX="-360.933" anchorY="-292.241" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tongue_puzzled" src="char_animations_body_prehistoric" quadToDraw="8" rotationCenterX="-0.662476">
   <Timeline ID="8">
    <Pos>0,0(1)@0+-123.9194,-126.8957(1)@0.3666667+-124.567,-124.3022(2)@0.06666667+-125.0017,-117.4717(0)@0.06666667+-124.0098,-126.2791(0)@0.06666667+-123.1356,-132.3543(0)@0.03333334+-122.9846,-131.4501(0)@0.03333334+-122.9846,-131.4501(2)@0.03333334+0,0(1)@0+0,0(1)@0.2333333</Pos>
    <Scale>0,0(1)@0+0.788569,0.660928(1)@0.3666667+0.786509,0.655721(2)@0.06666667+0.783366,0.642819(0)@0.06666667+0.785612,0.65167(0)@0.06666667+0.78662,0.655982(0)@0.03333334+0.788556,0.660895(0)@0.03333334+0.788556,0.660895(2)@0.03333334+0,0(1)@0+0,0(1)@0.2333333</Scale>
@@ -303,7 +303,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="37.4722" anchorX="-332.389" anchorY="-236.835" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_puzzled" src="CharAnimationsPrehistoric" quadToDraw="58" rotationCenterX="-0.562836">
+ <Image rotationCenterY="37.4722" anchorX="-332.389" anchorY="-236.835" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_puzzled" src="char_animations_body_prehistoric" quadToDraw="58" rotationCenterX="-0.562836">
   <Timeline ID="8">
    <Pos>-125.5145,-103.4076(1)@0+-126.2679,-102.5723(6)@0.03333334+-126.6231,-104.4443(6)@0.03333334+-126.5324,-114.041(6)@0.03333334+-126.5766,-113.2939(0)@0.03333334+-126.628,-110.9676(0)@0.1+-126.8197,-109.8786(0)@0.1+-126.8415,-112.8317(6)@0.03333334+-126.8212,-116.4464(6)@0.03333334+-126.5307,-119.2483(6)@0.03333334+-126.8351,-120.8717(6)@0.03333334+-126.8458,-121.3713(0)@0.03333334+-126.7712,-120.986(0)@0.03333334+-126.5307,-119.2483(6)@0.03333334+-126.8212,-116.4464(6)@0.03333334+-126.8415,-112.8317(6)@0.03333334+-126.8197,-109.8786(6)@0.03333334+-126.5324,-114.041(0)@0.1+-126.6365,-104.4533(6)@0.03333334+-126.6305,-102.5423(6)@0.03333334+-125.5145,-103.4076(6)@0.03333334+-125.5145,-103.4076(4)@0.03333334</Pos>
    <Scale>0.833531,0.714721(1)@0+0.804355,0.749457(6)@0.03333334+0.745153,0.831074(6)@0.03333334+0.725376,0.873648(6)@0.03333334+0.73884,0.824972(0)@0.03333334+0.779204,0.67943(0)@0.1+0.787445,0.674457(0)@0.1+0.788075,0.662732(6)@0.03333334+0.786474,0.648351(6)@0.03333334+0.784611,0.64612(6)@0.03333334+0.782354,0.642411(6)@0.03333334+0.775667,0.643469(0)@0.03333334+0.780884,0.644649(0)@0.03333334+0.784611,0.64612(6)@0.03333334+0.786474,0.648351(6)@0.03333334+0.788075,0.662732(6)@0.03333334+0.787445,0.674457(6)@0.03333334+0.725376,0.873648(0)@0.1+0.75065,0.831074(6)@0.03333334+0.804347,0.74944(6)@0.03333334+0.833531,0.714721(6)@0.03333334+0.833531,0.714721(4)@0.03333334</Scale>
@@ -313,7 +313,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="18.7329" anchorX="-380.962" anchorY="-196.775" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="top" src="CharAnimationsPrehistoric" quadToDraw="2" rotationCenterX="2.00598">
+ <Image rotationCenterY="18.7329" anchorX="-380.962" anchorY="-196.775" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="top" src="char_animations_body_prehistoric" quadToDraw="2" rotationCenterX="2.00598">
   <Timeline ID="0">
    <Pos>-124.6594,-90.4018(1)@0+-124.4908,-100.0755(4)@0.3333333+-124.6594,-90.4018(4)@0.3+-124.4908,-100.0755(4)@0.3666667+-124.6385,-90.6792(4)@0.3+-124.6385,-90.6792(0)@0.03333334</Pos>
    <Scale>0.847366,0.756958(1)@0+0.733571,0.90043(4)@0.3333333+0.847366,0.756958(4)@0.3+0.733571,0.90043(4)@0.3666667+0.844238,0.760455(4)@0.3+0.844238,0.760455(0)@0.03333334</Scale>
@@ -406,7 +406,7 @@
    <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,2,0(1)@0+AC_SAP,self,-380.962,-196.775(1)@0+AC_SRC,self,1.94785,18.8783(1)@0+AC_SV,self,0,1(0)@0.06666667+AC_SDQ,self,2,0(0)@0+AC_SAP,self,-380.962,-196.775(0)@0+AC_SRC,self,1.86063,18.7329(0)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,2,0(0)@0+AC_SAP,self,-380.962,-196.775(0)@0+AC_SRC,self,1.68622,18.6748(0)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,2,0(0)@0+AC_SAP,self,-380.962,-196.775(0)@0+AC_SRC,self,1.68622,18.6457(0)@0+AC_SV,self,0,1(3)@0.1666667+AC_SDQ,self,2,0(3)@0+AC_SAP,self,-380.962,-196.775(3)@0+AC_SRC,self,2.00598,18.762(3)@0+AC_SV,self,0,1(4)@0.2+AC_SDQ,self,2,0(4)@0+AC_SAP,self,-380.962,-196.775(4)@0+AC_SRC,self,1.86063,18.9073(4)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,2,0(0)@0+AC_SAP,self,-380.962,-196.775(0)@0+AC_SRC,self,1.86063,18.9073(0)@0</Action>
   </Timeline>
  </Image>
- <Image rotationCenterY="18.784" anchorX="-366.941" anchorY="-196.392" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="top2" src="CharAnimationsPrehistoric" quadToDraw="1" rotationCenterX="8.84241">
+ <Image rotationCenterY="18.784" anchorX="-366.941" anchorY="-196.392" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="top2" src="char_animations_body_prehistoric" quadToDraw="1" rotationCenterX="8.84241">
   <Timeline ID="2">
    <Pos>0,0(1)@0+-117.1336,-77.367(1)@0.4333334+-116.9457,-76.5266(0)@0.03333334+-115.4397,-70.4792(0)@0.03333334+-122.3739,-67.8302(0)@0.1333333+-118.8347,-67.9286(0)@0.03333334+-114.2401,-67.8805(0)@0.1+-117.8774,-67.9755(0)@0.03333334+-122.4168,-67.8414(0)@0.1+-118.9539,-67.9323(0)@0.03333334+-114.9174,-67.3974(0)@0.1+-116.0635,-74.4446(0)@0.03333334+-118.5472,-80.6946(0)@0.03333334+-119.4752,-94.0008(0)@0.06666667+-119.4752,-94.0008(0)@0.03333334+0,0(1)@0+0,0(1)@0.5</Pos>
    <Scale>0,0(1)@0+0.550956,0.958529(1)@0.4333334+0.507566,0.941807(0)@0.03333334+0.524879,0.993816(0)@0.03333334+0.794724,0.847887(0)@0.1333333+0.793583,0.85665(0)@0.03333334+0.794724,0.857266(0)@0.1+0.793629,0.867694(0)@0.03333334+0.794724,0.847872(0)@0.1+0.793583,0.852167(0)@0.03333334+0.776143,0.837213(0)@0.1+0.856648,0.672274(0)@0.03333334+0.813806,0.68145(0)@0.03333334+0.662364,0.805083(0)@0.06666667+0.662364,0.805083(0)@0.03333334+0,0(1)@0+0,0(1)@0.5</Scale>
@@ -416,7 +416,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="1.71548" anchorX="-370.152" anchorY="-198.434" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="bone" src="CharAnimationsPrehistoric" quadToDraw="78" rotationCenterX="-2.06931">
+ <Image rotationCenterY="1.71548" anchorX="-370.152" anchorY="-198.434" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="bone" src="char_animations_body_prehistoric" quadToDraw="78" rotationCenterX="-2.06931">
   <Timeline ID="0">
    <Pos>-122.7923,-84.4022(1)@0+-122.5468,-96.0536(4)@0.3333333+-122.8109,-82.6864(4)@0.3+-122.5468,-96.0536(4)@0.3666667+-122.7922,-84.6675(4)@0.3+-122.7922,-84.6675(0)@0.03333334</Pos>
    <Scale>0.797366,0.761648(1)@0+0.754101,0.782662(4)@0.3333333+0.797337,0.761704(4)@0.3+0.754101,0.782662(4)@0.3666667+0.79622,0.762175(4)@0.3+0.79622,0.762175(0)@0.03333334</Scale>
@@ -509,7 +509,7 @@
    <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,78,0(1)@0+AC_SAP,self,-370.152,-198.434(1)@0+AC_SRC,self,-2.09836,1.65735(1)@0+AC_SV,self,0,1(2)@0.06666667+AC_SDQ,self,78,0(2)@0+AC_SAP,self,-370.152,-198.434(2)@0+AC_SRC,self,-2.12744,1.80269(2)@0+AC_SV,self,0,1(4)@0.03333334+AC_SDQ,self,78,0(4)@0+AC_SAP,self,-370.152,-198.434(4)@0+AC_SRC,self,-2.33096,1.77364(4)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,78,0(0)@0+AC_SAP,self,-370.152,-198.434(0)@0+AC_SRC,self,-2.04025,1.71548(0)@0+AC_SV,self,0,1(3)@0.1+AC_SDQ,self,78,0(3)@0+AC_SAP,self,-370.152,-198.434(3)@0+AC_SRC,self,-2.15649,1.74457(3)@0+AC_SV,self,0,1(3)@0.06666667+AC_SDQ,self,78,0(3)@0+AC_SAP,self,-370.152,-198.434(3)@0+AC_SRC,self,-2.04025,1.62828(3)@0+AC_SV,self,0,1(4)@0.06666667+AC_SDQ,self,78,0(4)@0+AC_SAP,self,-370.152,-198.434(4)@0+AC_SRC,self,-1.98209,1.62828(4)@0+AC_SV,self,0,1(4)@0.1666667+AC_SDQ,self,78,0(4)@0+AC_SAP,self,-370.152,-198.434(4)@0+AC_SRC,self,-2.2728,1.74457(4)@0</Action>
   </Timeline>
  </Image>
- <Image rotationCenterY="-0.894821" anchorX="-317.157" anchorY="-252.126" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left2" src="CharAnimationsPrehistoric" quadToDraw="77" rotationCenterX="-2.37167">
+ <Image rotationCenterY="-0.894821" anchorX="-317.157" anchorY="-252.126" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left2" src="char_animations_body_prehistoric" quadToDraw="77" rotationCenterX="-2.37167">
   <Timeline ID="3">
    <Pos>-111.6383,-105.477(1)@0+-102.3798,-103.6079(4)@0.3+-103.2847,-101.8241(4)@0.06666667+-103.2847,-101.8241(0)@0.03333334+0,0(1)@0+0,0(1)@2.533334</Pos>
    <Scale>0.921187,0.659033(1)@0+0.606264,0.993637(4)@0.3+0.638267,0.764341(4)@0.06666667+0.638267,0.764341(0)@0.03333334+0,0(1)@0+0,0(1)@2.533334</Scale>
@@ -526,7 +526,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="15.2677" anchorX="-313.811" anchorY="-270.758" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left_sub" src="CharAnimationsPrehistoric" quadToDraw="34" rotationCenterX="18.1515">
+ <Image rotationCenterY="15.2677" anchorX="-313.811" anchorY="-270.758" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left_sub" src="char_animations_body_prehistoric" quadToDraw="34" rotationCenterX="18.1515">
   <Timeline ID="5">
    <Pos>0,0(1)@0+-118.8153,-90.4768(1)@0.03333334+-113.022,-100.6593(4)@0.06666667+-112.3768,-107.5724(4)@0.03333334+-112.5682,-110.0638(4)@0.03333334+-114.0525,-108.0567(4)@0.03333334+-110.581,-98.4144(0)@0.1+-115.081,-106.5019(4)@0.1+-110.2933,-98.9964(4)@0.1+-114.8559,-106.9956(4)@0.1+-112.0831,-102.9352(3)@0.1+-113.8749,-98.1115(0)@0.03333334+-117.9021,-91.0072(0)@0.03333334+-117.9021,-91.0072(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334</Pos>
    <Scale>0,0(1)@0+0.699778,0.518686(1)@0.03333334+0.69897,0.610352(4)@0.06666667+0.70414,0.726746(4)@0.03333334+0.734067,0.781981(4)@0.03333334+0.760151,0.769587(4)@0.03333334+0.730422,0.725892(0)@0.1+0.766938,0.752637(4)@0.1+0.726138,0.72961(4)@0.1+0.766938,0.759775(4)@0.1+0.700845,0.632412(3)@0.1+0.695861,0.571327(0)@0.03333334+0.690544,0.524325(0)@0.03333334+0.690544,0.524325(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334</Scale>
@@ -536,7 +536,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;6;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="33.8213" anchorX="-334.192" anchorY="-211.399" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_2" src="CharAnimationsPrehistoric" quadToDraw="40" rotationCenterX="0.233704">
+ <Image rotationCenterY="33.8213" anchorX="-334.192" anchorY="-211.399" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="head_2" src="char_animations_body_prehistoric" quadToDraw="40" rotationCenterX="0.233704">
   <Timeline ID="10">
    <Pos>0,0(1)@0+-126.5737,-108.1694(1)@0.06666667+-126.6497,-108.1711(6)@0.03333334+-126.6497,-108.1711(0)@0.03333334+0,0(1)@0+0,0(1)@0.3666667</Pos>
    <Scale>0,0(1)@0+0.768523,0.735106(1)@0.06666667+0.768523,0.842737(6)@0.03333334+0.768523,0.842737(0)@0.03333334+0,0(1)@0+0,0(1)@0.3666667</Scale>
@@ -546,7 +546,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;8;9;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-14.0582" anchorX="-337.555" anchorY="-305.433" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left" src="CharAnimationsPrehistoric" quadToDraw="37" rotationCenterX="-3.22107">
+ <Image rotationCenterY="-14.0582" anchorX="-337.555" anchorY="-305.433" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left" src="char_animations_body_prehistoric" quadToDraw="37" rotationCenterX="-3.22107">
   <Timeline ID="0">
    <Pos>-116.5329,-106.0833(1)@0+-114.5776,-111.6274(4)@0.3666667+-116.5329,-106.0833(4)@0.3333333+-114.5776,-111.6274(4)@0.3333333+-116.5329,-106.0833(4)@0.2666667+-116.5329,-106.0833(4)@0.03333334</Pos>
    <Scale>0.796859,0.762958(1)@0+0.76114,0.830121(4)@0.3666667+0.796859,0.762958(4)@0.3333333+0.76114,0.830121(4)@0.3333333+0.796859,0.762958(4)@0.2666667+0.796859,0.762958(4)@0.03333334</Scale>
@@ -619,7 +619,7 @@
   </Timeline>
   <EmptyTimelines>8;9;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.750534" anchorX="-427.246" anchorY="-250.964" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right2" src="CharAnimationsPrehistoric" quadToDraw="76" rotationCenterX="1.13422">
+ <Image rotationCenterY="0.750534" anchorX="-427.246" anchorY="-250.964" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right2" src="char_animations_body_prehistoric" quadToDraw="76" rotationCenterX="1.13422">
   <Timeline ID="3">
    <Pos>-134.7274,-102.4209(1)@0+-146.9118,-102.1339(4)@0.3+-143.7592,-100.4902(4)@0.06666667+-143.7592,-100.4902(0)@0.03333334+0,0(1)@0+0,0(1)@2.533334</Pos>
    <Scale>0.888197,0.685443(1)@0+0.547293,1.00285(4)@0.3+0.592878,0.771002(4)@0.06666667+0.592878,0.771002(0)@0.03333334+0,0(1)@0+0,0(1)@2.533334</Scale>
@@ -636,7 +636,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-15.8314" anchorX="-428.608" anchorY="-307.503" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right" src="CharAnimationsPrehistoric" quadToDraw="32" rotationCenterX="2.06409">
+ <Image rotationCenterY="-15.8314" anchorX="-428.608" anchorY="-307.503" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right" src="char_animations_body_prehistoric" quadToDraw="32" rotationCenterX="2.06409">
   <Timeline ID="0">
    <Pos>-136.0187,-106.3177(1)@0+-137.5261,-111.5718(4)@0.3+-136.0187,-106.3177(4)@0.3333333+-137.5261,-111.5718(4)@0.3333333+-136.0187,-106.3177(4)@0.3333333+-136.0187,-106.3177(4)@0.03333334</Pos>
    <Scale>0.796362,0.762732(1)@0+0.768442,0.822726(4)@0.3+0.796362,0.762732(4)@0.3333333+0.768442,0.822726(4)@0.3333333+0.796362,0.762732(4)@0.3333333+0.796362,0.762732(4)@0.03333334</Scale>
@@ -709,7 +709,7 @@
   </Timeline>
   <EmptyTimelines>8;9;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-12.4594" anchorX="-337.555" anchorY="-305.433" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_2_right_animation" src="CharAnimationsPrehistoric" quadToDraw="37" rotationCenterX="-7.11639">
+ <Image rotationCenterY="-12.4594" anchorX="-337.555" anchorY="-305.433" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_2_right_animation" src="char_animations_body_prehistoric" quadToDraw="37" rotationCenterX="-7.11639">
   <Timeline ID="2">
    <Pos>0,0(1)@0+-47.943,-63.8202(1)@0.5+-49.9248,-60.8783(3)@0.1333333+-47.943,-63.8202(3)@0.1333333+-49.9248,-60.8783(3)@0.1333333+-47.943,-63.8202(3)@0.1333333+-47.943,-63.8202(3)@0.03333334+0,0(1)@0+0,0(1)@0.6333334</Pos>
    <Scale>0,0(1)@0+0.962439,0.811887(1)@0.5+1.01508,0.764616(3)@0.1333333+0.962439,0.811887(3)@0.1333333+1.01508,0.764616(3)@0.1333333+0.962439,0.811887(3)@0.1333333+0.962439,0.811887(3)@0.03333334+0,0(1)@0+0,0(1)@0.6333334</Scale>
@@ -726,7 +726,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-5.14523" anchorX="-313.462" anchorY="-352.706" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left" src="CharAnimationsPrehistoric" quadToDraw="27" rotationCenterX="6.51181">
+ <Image rotationCenterY="-5.14523" anchorX="-313.462" anchorY="-352.706" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_left" src="char_animations_body_prehistoric" quadToDraw="27" rotationCenterX="6.51181">
   <Timeline ID="0">
    <Pos>-115.2245,-119.8052(1)@0+-111.7031,-120.0988(0)@0.3+-115.2245,-119.8052(4)@0.3333333+-111.7031,-120.0988(0)@0.3333333+-115.2245,-119.8052(4)@0.3333333+-115.2245,-119.8052(0)@0.03333334</Pos>
    <Scale>0.761522,0.765123(1)@0+0.78509,0.775412(0)@0.3+0.761522,0.765123(4)@0.3333333+0.78509,0.775412(0)@0.3333333+0.761522,0.765123(4)@0.3333333+0.761522,0.765123(0)@0.03333334</Scale>
@@ -813,7 +813,7 @@
   </Timeline>
   <EmptyTimelines>9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-5.16266" anchorX="-446.486" anchorY="-354.48" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right" src="CharAnimationsPrehistoric" quadToDraw="22" rotationCenterX="-8.42432">
+ <Image rotationCenterY="-5.16266" anchorX="-446.486" anchorY="-354.48" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="leg_right" src="char_animations_body_prehistoric" quadToDraw="22" rotationCenterX="-8.42432">
   <Timeline ID="0">
    <Pos>-138.8242,-120.2074(1)@0+-142.769,-120.53(0)@0.3+-138.8242,-120.2074(4)@0.3333333+-142.769,-120.53(0)@0.3333333+-138.8242,-120.2074(4)@0.3333333+-138.8242,-120.2074(0)@0.03333334</Pos>
    <Scale>0.761522,0.759467(1)@0+0.783122,0.762228(0)@0.3+0.761522,0.759467(4)@0.3333333+0.783122,0.762228(0)@0.3333333+0.761522,0.759467(4)@0.3333333+0.761522,0.759467(0)@0.03333334</Scale>
@@ -900,7 +900,7 @@
   </Timeline>
   <EmptyTimelines>9</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-13.9419" anchorX="-337.555" anchorY="-305.433" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left_animation" src="CharAnimationsPrehistoric" quadToDraw="37" rotationCenterX="-3.22107">
+ <Image rotationCenterY="-13.9419" anchorX="-337.555" anchorY="-305.433" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_left_animation" src="char_animations_body_prehistoric" quadToDraw="37" rotationCenterX="-3.22107">
   <Timeline ID="8">
    <Pos>-118.4829,-101.5407(1)@0+-112.8765,-84.9301(0)@0.1+-115.1481,-83.0934(0)@0.1333333+-115.1959,-82.2965(0)@0.1+-116.456,-81.5333(0)@0.1333333+-116.5609,-81.1571(0)@0.2+-114.0811,-86.2901(3)@0.1333333+-118.4829,-101.5407(2)@0.06666667+-118.4829,-101.5407(0)@0.03333334</Pos>
    <Scale>0.828891,0.715202(1)@0+0.728903,0.831652(0)@0.1+0.763984,0.785733(0)@0.1333333+0.76397,0.775605(0)@0.1+0.76397,0.775605(0)@0.1333333+0.76397,0.775605(0)@0.2+0.749178,0.795672(3)@0.1333333+0.828891,0.715202(2)@0.06666667+0.828891,0.715202(0)@0.03333334</Scale>
@@ -924,7 +924,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;10;11</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-16.0639" anchorX="-428.608" anchorY="-307.503" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right_animation" src="CharAnimationsPrehistoric" quadToDraw="32" rotationCenterX="1.94785">
+ <Image rotationCenterY="-16.0639" anchorX="-428.608" anchorY="-307.503" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="hand_right_animation" src="char_animations_body_prehistoric" quadToDraw="32" rotationCenterX="1.94785">
   <Timeline ID="8">
    <Pos>-134.268,-101.3895(1)@0+-138.8717,-93.6814(0)@0.1+-138.4626,-93.0061(0)@0.03333334+-137.5561,-90.9919(0)@0.1+-137.052,-90.1312(0)@0.1+-136.1298,-89.4973(0)@0.1333333+-135.7143,-89.1069(0)@0.2+-139.1811,-93.1453(0)@0.1+-134.268,-101.3895(0)@0.1+-134.268,-101.3895(0)@0.03333334</Pos>
    <Scale>0.836032,0.703927(1)@0+0.725251,0.824404(0)@0.1+0.733836,0.813469(0)@0.03333334+0.762867,0.784219(0)@0.1+0.776065,0.765054(0)@0.1+0.764729,0.774579(0)@0.1333333+0.764729,0.774579(0)@0.2+0.736122,0.808071(0)@0.1+0.836032,0.703927(0)@0.1+0.836032,0.703927(0)@0.03333334</Scale>
@@ -948,7 +948,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;7;10;11</EmptyTimelines>
  </Image>
- <Image rotationCenterY="1.35483" anchorX="-353.142" anchorY="-237.066" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes" src="CharAnimationsPrehistoric" quadToDraw="66" rotationCenterX="-0.924042">
+ <Image rotationCenterY="1.35483" anchorX="-353.142" anchorY="-237.066" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes" src="char_animations_body_prehistoric" quadToDraw="66" rotationCenterX="-0.924042">
   <Timeline ID="0">
    <Pos>-125.0274,-93.9253(1)@0+-125.1694,-94.2587(0)@0.03333334+-125.1474,-94.5494(6)@0.03333334+-124.9004,-95.848(6)@0.03333334+-124.9388,-97.5634(6)@0.03333334+-124.6546,-99.3636(6)@0.03333334+-124.694,-103.249(0)@0.1333333+-124.7769,-93.7786(4)@0.3333333+-124.694,-103.249(4)@0.3333333+-124.7712,-93.954(4)@0.3+-124.7734,-93.7763(6)@0.03333334+-124.7734,-93.7763(4)@0.03333334</Pos>
    <Scale>0.83071,0.79103(1)@0+0.796751,0.842873(0)@0.03333334+0.794179,0.841929(6)@0.03333334+0.789639,0.845279(6)@0.03333334+0.783209,0.852268(6)@0.03333334+0.776063,0.860588(6)@0.03333334+0.789448,0.747311(0)@0.1333333+0.811494,0.684049(4)@0.3333333+0.789448,0.747311(4)@0.3333333+0.811054,0.68526(4)@0.3+0.811501,0.684055(6)@0.03333334+0.811501,0.684055(4)@0.03333334</Scale>
@@ -1041,7 +1041,7 @@
    <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,66,0(1)@0+AC_SAP,self,-353.142,-237.066(1)@0+AC_SRC,self,-1.09848,1.26761(1)@0+AC_SV,self,0,1(6)@0.03333334+AC_SDQ,self,67,0(6)@0+AC_SAP,self,-355.642,-234.188(6)@0+AC_SRC,self,0.424744,3.33743(6)@0+AC_SV,self,0,1(6)@0.03333334+AC_SDQ,self,60,0(6)@0+AC_SAP,self,-361.14,-233.899(6)@0+AC_SRC,self,-1.61566,-0.0228271(6)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,60,0(0)@0+AC_SAP,self,-361.14,-233.899(0)@0+AC_SRC,self,-1.76102,-0.110046(0)@0+AC_SV,self,0,1(3)@0.2666667+AC_SDQ,self,60,0(3)@0+AC_SAP,self,-361.14,-233.899(3)@0+AC_SRC,self,-1.76102,-0.0519104(3)@0+AC_SV,self,0,1(2)@0.1666667+AC_SDQ,self,60,0(2)@0+AC_SAP,self,-361.14,-233.899(2)@0+AC_SRC,self,-1.76102,-0.0519104(2)@0</Action>
   </Timeline>
  </Image>
- <Image rotationCenterY="-6.6508" anchorX="-364.89" anchorY="-238.202" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes2" src="CharAnimationsPrehistoric" quadToDraw="59" rotationCenterX="-1.33661">
+ <Image rotationCenterY="-6.6508" anchorX="-364.89" anchorY="-238.202" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="eyes2" src="char_animations_body_prehistoric" quadToDraw="59" rotationCenterX="-1.33661">
   <Timeline ID="2">
    <Pos>0,0(1)@0+-121.243,-69.9484(1)@0.5+-127.5649,-67.3441(0)@0.1333333+-121.243,-69.9484(0)@0.1333333+-127.5649,-67.3441(0)@0.1333333+-121.243,-69.9484(0)@0.1333333+-121.243,-69.9484(0)@0.03333334+0,0(1)@0+0,0(1)@0.6333334</Pos>
    <Scale>0,0(1)@0+0.970249,0.638888(1)@0.5+0.952817,0.592827(0)@0.1333333+0.970249,0.638888(0)@0.1333333+0.952817,0.592827(0)@0.1333333+0.970249,0.638888(0)@0.1333333+0.970249,0.638888(0)@0.03333334+0,0(1)@0+0,0(1)@0.6333334</Scale>
@@ -1051,7 +1051,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.349976" anchorX="-698.65" anchorY="-438.3" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_right" src="CharAnimationsPrehistoric" quadToDraw="13" rotationCenterX="0">
+ <Image rotationCenterY="-0.349976" anchorX="-698.65" anchorY="-438.3" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_right" src="char_animations_body_prehistoric" quadToDraw="13" rotationCenterX="0">
   <Timeline ID="0">
    <Pos>0,0(1)@0+-422.3971,-282.4962(1)@0.06666667+-422.5386,-286.9521(0)@0.1+-422.294,-291.0473(0)@0.1333333+-422.1957,-281.7443(4)@0.3333333+-422.294,-291.0473(4)@0.3333333+-422.1957,-281.7443(4)@0.3333333+-422.1957,-281.7443(4)@0.03333334</Pos>
    <Scale>0,0(1)@0+0.550715,0.40208(1)@0.06666667+0.550709,0.491948(0)@0.1+0.550715,0.428356(0)@0.1333333+0.56358,0.395893(4)@0.3333333+0.550715,0.428356(4)@0.3333333+0.56358,0.395893(4)@0.3333333+0.56358,0.395893(4)@0.03333334</Scale>
@@ -1138,7 +1138,7 @@
   </Timeline>
   <EmptyTimelines>1</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.0500183" anchorX="-661" anchorY="-434.4" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_left" src="CharAnimationsPrehistoric" quadToDraw="14" rotationCenterX="-0.0499878">
+ <Image rotationCenterY="0.0500183" anchorX="-661" anchorY="-434.4" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_left" src="char_animations_body_prehistoric" quadToDraw="14" rotationCenterX="-0.0499878">
   <Timeline ID="0">
    <Pos>0,0(1)@0+-402.2942,-281.6968(1)@0.06666667+-402.2056,-282.7998(0)@0.03333334+-402.1602,-284.249(0)@0.03333334+-402.0019,-286.1571(0)@0.03333334+-401.9456,-290.2038(3)@0.1333333+-402.4083,-280.8403(4)@0.3333333+-401.9456,-290.2038(4)@0.3333333+-402.4083,-280.8403(4)@0.3333333+-402.4083,-280.8403(4)@0.03333334</Pos>
    <Scale>0,0(1)@0+0.50112,0.270837(1)@0.06666667+0.540969,0.333475(0)@0.03333334+0.529121,0.514589(0)@0.03333334+0.543229,0.509535(0)@0.03333334+0.543166,0.447184(3)@0.1333333+0.553817,0.410404(4)@0.3333333+0.543166,0.447184(4)@0.3333333+0.553817,0.410404(4)@0.3333333+0.553817,0.410404(4)@0.03333334</Scale>
@@ -1225,7 +1225,7 @@
   </Timeline>
   <EmptyTimelines>1</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.0116811" anchorX="4.12787" anchorY="6.27912" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="glow_left" src="CharAnimationsPrehistoric" quadToDraw="82" rotationCenterX="-0.0465498">
+ <Image rotationCenterY="0.0116811" anchorX="4.12787" anchorY="6.27912" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="glow_left" src="char_animations_body_prehistoric" quadToDraw="82" rotationCenterX="-0.0465498">
   <Timeline ID="7">
    <Pos>0,0(1)@0+262.425,167.7683(1)@0.03333334+267.5839,144.6689(0)@0.06666667+264.9841,160.8729(3)@0.1333333+264.9841,160.8729(0)@0.2333333+264.9841,160.8729(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334+0,0(1)@0+264.9841,160.8729(1)@0.03333334+264.9841,160.8729(0)@0.06666667+264.9841,160.8729(0)@0.1666667+266.139,151.6287(0)@0.06666667+257.6502,167.0403(0)@0.1+257.6502,167.0403(0)@0.03333334</Pos>
    <Scale>0,0(1)@0+0.283083,0.218778(1)@0.03333334+0.783162,0.896236(0)@0.06666667+0.857592,0.763679(3)@0.1333333+0.857592,0.763679(0)@0.2333333+0.857592,0.763679(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334+0,0(1)@0+0.857592,0.763679(1)@0.03333334+0.857592,0.763679(0)@0.06666667+0.857592,0.763679(0)@0.1666667+0.526389,0.46878(0)@0.06666667+0.396303,0.304945(0)@0.1+0.396303,0.304945(0)@0.03333334</Scale>
@@ -1242,7 +1242,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;8;9;10;11</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.127961" anchorX="4.12787" anchorY="6.27912" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="glow_right" src="CharAnimationsPrehistoric" quadToDraw="82" rotationCenterX="0.0115891">
+ <Image rotationCenterY="0.127961" anchorX="4.12787" anchorY="6.27912" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="glow_right" src="char_animations_body_prehistoric" quadToDraw="82" rotationCenterX="0.0115891">
   <Timeline ID="7">
    <Pos>0,0(1)@0+281.0652,166.702(1)@0.03333334+278.9632,147.3239(0)@0.06666667+279.2529,162.1379(3)@0.1333333+279.2529,162.1379(0)@0.2333333+279.2529,162.1379(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334+0,0(1)@0+279.2529,162.1379(1)@0.03333334+279.2529,162.1379(0)@0.06666667+279.2529,162.1379(0)@0.1666667+280.1279,152.5538(0)@0.06666667+276.3779,167.7038(0)@0.1+276.3779,167.7038(0)@0.03333334</Pos>
    <Scale>0,0(1)@0+0.307375,0.307369(1)@0.03333334+0.599308,0.621713(0)@0.06666667+0.796554,0.724708(3)@0.1333333+0.796554,0.724708(0)@0.2333333+0.796554,0.724708(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334+0,0(1)@0+0.796554,0.724708(1)@0.03333334+0.796554,0.724708(0)@0.06666667+0.796554,0.724708(0)@0.1666667+0.497833,0.439841(0)@0.06666667+0.497833,0.439841(0)@0.1333333</Scale>
@@ -1259,7 +1259,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;6;8;9;10;11</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.0464592" anchorX="0.05814" anchorY="-0.02907" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food09" src="CharAnimationsPrehistoric" quadToDraw="75" rotationCenterX="0.0523911">
+ <Image rotationCenterY="-0.0464592" anchorX="0.05814" anchorY="-0.02907" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food09" src="char_animations_body_prehistoric" quadToDraw="75" rotationCenterX="0.0523911">
   <Timeline ID="6">
    <Pos>0,0(1)@0+232.7157,177.1257(1)@0.5333334+200.4544,187.6297(0)@0.06666667+194.2947,220.5446(0)@0.1+194.2947,220.5446(0)@0.03333334+0,0(1)@0+0,0(1)@0.5</Pos>
    <Scale>0,0(1)@0+0.759857,0.759857(1)@0.5333334+0.759814,0.759814(0)@0.06666667+0.136664,0.136664(0)@0.1+0.136664,0.136664(0)@0.03333334+0,0(1)@0+0,0(1)@0.5</Scale>
@@ -1269,7 +1269,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.0814409" anchorX="-0.02907" anchorY="0.2907" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food08" src="CharAnimationsPrehistoric" quadToDraw="74" rotationCenterX="-0.0231781">
+ <Image rotationCenterY="0.0814409" anchorX="-0.02907" anchorY="0.2907" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food08" src="char_animations_body_prehistoric" quadToDraw="74" rotationCenterX="-0.0231781">
   <Timeline ID="6">
    <Pos>0,0(1)@0+287.9471,184.3491(1)@0.5333334+320.1534,178.7335(0)@0.1+330.7336,206.027(0)@0.1+330.7336,206.027(0)@0.03333334+0,0(1)@0+0,0(1)@0.4666667</Pos>
    <Scale>0,0(1)@0+0.766738,0.766738(1)@0.5333334+0.766775,0.766775(0)@0.1+0.261827,0.261827(0)@0.1+0.261827,0.261827(0)@0.03333334+0,0(1)@0+0,0(1)@0.4666667</Scale>
@@ -1279,7 +1279,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.262043" anchorX="0.145371" anchorY="0.145371" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food07" src="CharAnimationsPrehistoric" quadToDraw="72" rotationCenterX="0.17482">
+ <Image rotationCenterY="0.262043" anchorX="0.145371" anchorY="0.145371" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food07" src="char_animations_body_prehistoric" quadToDraw="72" rotationCenterX="0.17482">
   <Timeline ID="6">
    <Pos>0,0(1)@0+263.7172,192.177(1)@0.3666667+263.889,190.8012(0)@0.03333334+262.2753,186.5057(0)@0.03333334+263.6437,184.7892(0)@0.03333334+261.5792,185.5143(0)@0.03333334+263.589,189.4012(0)@0.03333334+226.4131,177.116(0)@0.06666667+205.3018,195.6298(0)@0.1+205.3018,195.6298(0)@0.03333334+0,0(1)@0+262.7672,194.427(1)@0.03333334+263.7172,192.977(0)@0.03333334+263.7172,192.977(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Pos>
    <Scale>0,0(1)@0+0.745727,0.745727(1)@0.3666667+0.745687,0.745687(0)@0.03333334+0.745537,0.745537(0)@0.03333334+0.745473,0.745473(0)@0.03333334+0.744737,0.744737(0)@0.03333334+0.745687,0.745687(0)@0.03333334+0.991256,0.991256(0)@0.06666667+0.443873,0.443873(0)@0.1+0.443873,0.443873(0)@0.03333334+0,0(1)@0+0.745727,0.745727(1)@0.03333334+0.745727,0.745727(0)@0.03333334+0.745727,0.745727(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Scale>
@@ -1289,7 +1289,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.262043" anchorX="0.145371" anchorY="0.145371" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food06" src="CharAnimationsPrehistoric" quadToDraw="72" rotationCenterX="0.17482">
+ <Image rotationCenterY="0.262043" anchorX="0.145371" anchorY="0.145371" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food06" src="char_animations_body_prehistoric" quadToDraw="72" rotationCenterX="0.17482">
   <Timeline ID="6">
    <Pos>0,0(1)@0+252.7733,178.9823(1)@0.3666667+256.2411,180.0517(0)@0.03333334+258.0749,177.6275(0)@0.03333334+258.3193,174.7676(0)@0.03333334+256.2693,178.7176(0)@0.03333334+256.2693,178.7176(0)@0.03333334+0,0(1)@0+0,0(1)@0.2+0,0(1)@0+252.7193,180.4176(1)@0.03333334+253.2402,180.1989(0)@0.03333334+253.2402,180.1989(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Pos>
    <Scale>0,0(1)@0+0.639048,0.767732(1)@0.3666667+0.639057,0.767722(0)@0.03333334+0.639056,0.767675(0)@0.03333334+0.639058,0.767698(0)@0.03333334+0.639058,0.767698(0)@0.03333334+0.639058,0.767698(0)@0.03333334+0,0(1)@0+0,0(1)@0.2+0,0(1)@0+0.639058,0.767698(1)@0.03333334+0.639035,0.767682(0)@0.03333334+0.639035,0.767682(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Scale>
@@ -1299,7 +1299,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.0464592" anchorX="0.05814" anchorY="-0.02907" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food05" src="CharAnimationsPrehistoric" quadToDraw="75" rotationCenterX="-0.122029">
+ <Image rotationCenterY="-0.0464592" anchorX="0.05814" anchorY="-0.02907" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food05" src="char_animations_body_prehistoric" quadToDraw="75" rotationCenterX="-0.122029">
   <Timeline ID="6">
    <Pos>0,0(1)@0+300.2871,172.2639(1)@0.5333334+315.9066,162.474(0)@0.1+328.1635,184.6172(0)@0.1+328.1635,184.6172(0)@0.03333334+0,0(1)@0+0,0(1)@0.4666667</Pos>
    <Scale>0,0(1)@0+0.593214,0.477293(1)@0.5333334+0.593201,0.47735(0)@0.1+0.119672,0.0963436(0)@0.1+0.119672,0.0963436(0)@0.03333334+0,0(1)@0+0,0(1)@0.4666667</Scale>
@@ -1309,7 +1309,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.162895" anchorX="-0.0581405" anchorY="0.0872108" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food04" src="CharAnimationsPrehistoric" quadToDraw="70" rotationCenterX="-0.203364">
+ <Image rotationCenterY="0.162895" anchorX="-0.0581405" anchorY="0.0872108" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food04" src="char_animations_body_prehistoric" quadToDraw="70" rotationCenterX="-0.203364">
   <Timeline ID="6">
    <Pos>0,0(1)@0+262.1417,180.865(1)@0.3666667+262.1417,180.865(0)@0.03333334+0,0(1)@0+261.593,183.8697(1)@0.3666667+262.1565,182.3963(0)@0.03333334+262.1565,182.3963(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Pos>
    <Scale>0,0(1)@0+0.752275,0.752275(1)@0.3666667+0.752275,0.752275(0)@0.03333334+0,0(1)@0+0.75227,0.75227(1)@0.3666667+0.752277,0.752277(0)@0.03333334+0.752277,0.752277(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Scale>
@@ -1319,7 +1319,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.273209" anchorX="0" anchorY="0.14535" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food03" src="CharAnimationsPrehistoric" quadToDraw="73" rotationCenterX="0.0814409">
+ <Image rotationCenterY="-0.273209" anchorX="0" anchorY="0.14535" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food03" src="char_animations_body_prehistoric" quadToDraw="73" rotationCenterX="0.0814409">
   <Timeline ID="6">
    <Pos>0,0(1)@0+283.3601,184.5167(1)@0.3666667+281.7538,183.9645(0)@0.03333334+280.8386,180.4815(0)@0.03333334+280.8015,180.3885(0)@0.03333334+280.8188,187.4905(0)@0.03333334+280.8188,187.4905(0)@0.03333334+0,0(1)@0+282.6927,188.0349(1)@0.2333333+283.6221,185.8835(0)@0.03333334+283.6221,185.8835(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Pos>
    <Scale>0,0(1)@0+0.760731,0.760731(1)@0.3666667+0.760767,0.760767(0)@0.03333334+0.76053,0.76053(0)@0.03333334+0.759719,0.759719(0)@0.03333334+0.760735,0.760735(0)@0.03333334+0.760735,0.760735(0)@0.03333334+0,0(1)@0+0.760742,0.760742(1)@0.2333333+0.76077,0.76077(0)@0.03333334+0.76077,0.76077(0)@0.03333334+0,0(1)@0+0,0(1)@0.4</Scale>
@@ -1329,7 +1329,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.17482" anchorX="0.145371" anchorY="0.145371" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food02" src="CharAnimationsPrehistoric" quadToDraw="72" rotationCenterX="0.116672">
+ <Image rotationCenterY="0.17482" anchorX="0.145371" anchorY="0.145371" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food02" src="char_animations_body_prehistoric" quadToDraw="72" rotationCenterX="0.116672">
   <Timeline ID="6">
    <Pos>0,0(1)@0+287.9225,179.9624(1)@0.3666667+285.7639,179.752(0)@0.03333334+285.4359,176.8891(0)@0.03333334+285.6962,177.9395(0)@0.03333334+285.1625,183.6689(0)@0.03333334+285.1625,183.6689(0)@0.03333334+0,0(1)@0+0,0(1)@0.7</Pos>
    <Scale>0,0(1)@0+1.21992,0.879431(1)@0.3666667+1.21994,0.879437(0)@0.03333334+1.21995,0.879403(0)@0.03333334+1.21993,0.879391(0)@0.03333334+1.21992,0.87941(0)@0.03333334+1.21992,0.87941(0)@0.03333334+0,0(1)@0+0,0(1)@0.7</Scale>
@@ -1339,7 +1339,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.162861" anchorX="-0.05814" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food01" src="CharAnimationsPrehistoric" quadToDraw="71" rotationCenterX="0.0872712">
+ <Image rotationCenterY="0.162861" anchorX="-0.05814" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="food01" src="char_animations_body_prehistoric" quadToDraw="71" rotationCenterX="0.0872712">
   <Timeline ID="6">
    <Pos>0,0(1)@0+263.5153,175.8341(1)@0.4+262.6877,172.4421(0)@0.06666667+263.7283,178.6807(0)@0.03333334+263.7283,178.6807(0)@0.03333334+0,0(1)@0+0,0(1)@0.7</Pos>
    <Scale>0,0(1)@0+0.753648,0.753648(1)@0.4+0.753675,0.753675(0)@0.06666667+0.753665,0.753665(0)@0.03333334+0.753665,0.753665(0)@0.03333334+0,0(1)@0+0,0(1)@0.7</Scale>
@@ -1349,7 +1349,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;5;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="0.988464" anchorX="-377.794" anchorY="-288.985" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tongue" src="CharAnimationsPrehistoric" quadToDraw="12" rotationCenterX="-1.06952">
+ <Image rotationCenterY="0.988464" anchorX="-377.794" anchorY="-288.985" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="tongue" src="char_animations_body_prehistoric" quadToDraw="12" rotationCenterX="-1.06952">
   <Timeline ID="5">
    <Pos>0,0(1)@0+-123.0228,-106.4812(1)@0.06666667+-119.8411,-108.0887(6)@0.03333334+-118.0193,-108.6105(6)@0.03333334+-117.9339,-107.2991(6)@0.03333334+-117.6212,-103.2041(3)@0.1+-117.23,-102.7532(3)@0.1333333+-117.7685,-103.4307(4)@0.1+-117.23,-102.7532(4)@0.1+-118.3439,-107.7599(4)@0.06666667+-118.5775,-109.127(6)@0.03333334+-120.5246,-108.1059(6)@0.03333334+-120.5246,-108.1059(4)@0.03333334+0,0(1)@0+0,0(1)@0.06666667</Pos>
    <Scale>0,0(1)@0+0.752341,0.788723(1)@0.06666667+0.732637,0.807327(6)@0.03333334+0.722473,0.813087(6)@0.03333334+0.729358,0.800824(6)@0.03333334+0.760981,0.753811(3)@0.1+0.760979,0.753767(3)@0.1333333+0.760936,0.753784(4)@0.1+0.760979,0.753767(4)@0.1+0.729359,0.800815(4)@0.06666667+0.717324,0.815225(6)@0.03333334+0.73739,0.79622(6)@0.03333334+0.73739,0.79622(4)@0.03333334+0,0(1)@0+0,0(1)@0.06666667</Scale>
@@ -1373,7 +1373,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;3;4;6;7;8;9;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="1.3974" anchorX="0.802505" anchorY="1.03179" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="closed" src="CharAnimationsPrehistoric" quadToDraw="62" rotationCenterX="0.469181">
+ <Image rotationCenterY="1.3974" anchorX="0.802505" anchorY="1.03179" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="closed" src="char_animations_body_prehistoric" quadToDraw="62" rotationCenterX="0.469181">
   <Timeline ID="3">
    <Pos>0,0(1)@0+235.4333,145.4977(1)@1.033333+234.6833,149.6755(0)@0.1333333+243.1825,142.7494(3)@0.6+242.8616,144.7286(0)@0.03333334+242.8616,144.7286(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334+0,0(1)@0.03333334+243.3438,143.8343(1)@0.03333334+243.6807,142.4803(0)@0.06666667+243.7956,143.0031(0)@0.1+243.7956,143.0031(0)@0.03333334+0,0(1)@0+0,0(1)@0.8000001</Pos>
    <Scale>0,0(1)@0+0.872269,0.641624(1)@1.033333+0.872269,0.908564(0)@0.1333333+0.815142,0.959683(3)@0.6+0.812174,1.11715(0)@0.03333334+0.812174,1.11715(0)@0.03333334+0,0(1)@0+0,0(1)@0.03333334+0,0(1)@0.03333334+0.804108,1.07482(1)@0.03333334+0.798993,1.0435(0)@0.06666667+0.792108,1.12847(0)@0.1+0.792108,1.12847(0)@0.03333334+0,0(1)@0+0,0(1)@0.8000001</Scale>
@@ -1383,7 +1383,7 @@
   </Timeline>
   <EmptyTimelines>0;1;2;4;5;6;7;8;9;10;11;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.0999756" anchorX="-698.65" anchorY="-438.3" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_right_2" src="CharAnimationsPrehistoric" quadToDraw="13" rotationCenterX="-0.300049">
+ <Image rotationCenterY="-0.0999756" anchorX="-698.65" anchorY="-438.3" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_right_2" src="char_animations_body_prehistoric" quadToDraw="13" rotationCenterX="-0.300049">
   <Timeline ID="2">
    <Pos>0,0(1)@0+-421.6914,-247.498(1)@0.5+-421.6914,-247.498(0)@0.03333334+0,0(1)@0+0,0(1)@1.166667</Pos>
    <Scale>0,0(1)@0+0.417948,0.414004(1)@0.5+0.417948,0.414004(0)@0.03333334+0,0(1)@0+0,0(1)@1.166667</Scale>
@@ -1400,7 +1400,7 @@
   </Timeline>
   <EmptyTimelines>0;1;3;4;5;6;7;8;9;10;12</EmptyTimelines>
  </Image>
- <Image rotationCenterY="-0.199982" anchorX="-661" anchorY="-434.4" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_left_2" src="CharAnimationsPrehistoric" quadToDraw="14" rotationCenterX="-0.0999756">
+ <Image rotationCenterY="-0.199982" anchorX="-661" anchorY="-434.4" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="pupil_left_2" src="char_animations_body_prehistoric" quadToDraw="14" rotationCenterX="-0.0999756">
   <Timeline ID="2">
    <Pos>0,0(1)@0+-397.1584,-248.4946(1)@0.5+-397.1584,-248.4946(0)@0.03333334+0,0(1)@0+0,0(1)@1.166667</Pos>
    <Scale>0,0(1)@0+0.407849,0.417511(1)@0.5+0.407849,0.417511(0)@0.03333334+0,0(1)@0+0,0(1)@1.166667</Scale>
