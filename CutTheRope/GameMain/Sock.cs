@@ -5,8 +5,9 @@ namespace CutTheRope.GameMain
 {
     internal sealed class Sock : CTRGameObject, ITransporterItem
     {
-        private static readonly Vector SockConveyorOffset = Vect(-2.1f, 15f);
-        private const float ConveyorPm = 1.2f;
+        private const float BindPointOffsetX = -2.1f;
+        private const float BindPointOffsetY = 15f;
+        private const float BindPointPmScale = 2.5f;
 
         public static Sock Sock_create(CTRTexture2D t)
         {
@@ -117,8 +118,7 @@ namespace CutTheRope.GameMain
         {
             get
             {
-                float pmScale = RotatedCircle.PM / ConveyorPm;
-                Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
+                Vector offset = Vect(BindPointOffsetX * BindPointPmScale, BindPointOffsetY * BindPointPmScale);
                 offset = VectRotate(offset, angle);
                 return VectAdd(Vect(x, y), offset);
             }
@@ -130,8 +130,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void SetBindPoint(Vector point)
         {
-            float pmScale = RotatedCircle.PM / ConveyorPm;
-            Vector offset = Vect(SockConveyorOffset.X * pmScale, SockConveyorOffset.Y * pmScale);
+            Vector offset = Vect(BindPointOffsetX * BindPointPmScale, BindPointOffsetY * BindPointPmScale);
             offset = VectRotate(offset, angle);
             Vector adjusted = VectSub(point, offset);
             x = adjusted.X;
