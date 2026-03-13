@@ -305,10 +305,7 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            if (currentBelt != null)
-            {
-                currentBelt.Remove(item);
-            }
+            currentBelt?.Remove(item);
 
             belt.AttachItem(item);
             CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
