@@ -264,7 +264,7 @@ namespace CutTheRope.GameMain
 
             if (!IsManual)
             {
-                offsetDelta = deltaTime * velocity;
+                offsetDelta = deltaTime * velocity * 7.5f;
                 offset += offsetDelta;
                 offset = WrapOffset(offset, beltWidth);
             }
@@ -760,7 +760,7 @@ namespace CutTheRope.GameMain
             topRightCorner.scaleY = -1f;
             _ = visualRoot.AddChild(topRightCorner);
 
-            int beltDirection = IsManual ? 0 : velocity > 0f ? 1 : -1;
+            int beltDirection = IsManual ? 0 : velocity > 0f ? -1 : 1;
             beltVisual = new ConveyorBeltVisual(transporterWidth * plateScale, transporterHeight, beltDirection)
             {
                 anchor = 10,
