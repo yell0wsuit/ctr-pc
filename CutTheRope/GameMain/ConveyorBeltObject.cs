@@ -93,8 +93,8 @@ namespace CutTheRope.GameMain
                     continue;
                 }
 
-                // Check collision against each belt with 1.5x radius (matches iOS)
-                float radius = item.CollisionRadius * 1.5f;
+                // Check collision against each belt with 0.6x radius
+                float radius = item.CollisionRadius * 0.6f;
                 Vector bindPoint = item.BindPoint;
                 foreach (ConveyorBelt belt in list)
                 {

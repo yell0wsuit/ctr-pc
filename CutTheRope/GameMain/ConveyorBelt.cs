@@ -241,11 +241,11 @@ namespace CutTheRope.GameMain
         /// <returns>The world-space position.</returns>
         private Vector VecToWorldSpace(float localX, float localY)
         {
-            float cosA = Cosf(rotationRad);
-            float sinA = -Sinf(rotationRad);
+            float cosR = Cosf(rotationRad);
+            float sinR = Sinf(rotationRad);
             return Vect(
-                x + (cosA * localX) - (sinA * localY),
-                y + (sinA * localX) + (cosA * localY));
+                x + (cosR * localX) - (sinR * localY),
+                y - (sinR * localX) - (cosR * localY));
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace CutTheRope.GameMain
         /// <param name="delta">The distance to move items along the belt.</param>
         private void MoveBoundObjects(float delta)
         {
-            beltVisual?.Move(-delta);
+            beltVisual?.Move(delta);
 
             foreach (ITransporterItem item in boundObjects)
             {
@@ -505,7 +505,7 @@ namespace CutTheRope.GameMain
             {
                 Vector local = ToLocalSpace(Vect(pointerX, pointerY));
                 offsetDelta = local.X - lastDragPosition.X;
-                MoveBoundObjects(offsetDelta);
+                MoveBoundObjects(-offsetDelta);
                 lastDragPosition = local;
                 return true;
             }
