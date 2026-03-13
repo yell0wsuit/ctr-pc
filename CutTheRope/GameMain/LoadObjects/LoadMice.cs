@@ -1,5 +1,7 @@
 using System.Xml.Linq;
 
+using static CutTheRope.Helpers.ParsingHelpers;
+
 namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
