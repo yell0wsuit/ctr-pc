@@ -105,7 +105,7 @@ namespace CutTheRope.GameMain
                         break;
                     case "conveyorBelt":
                     case "transporter":
-                        _ = resources.Add(Resources.Img.ObjTransporter);
+                        _ = resources.Add(Resources.Img.ObjConveyor);
                         break;
                     case "tutorialText":
                         _ = resources.Add(Resources.Fnt.SmallFont);
