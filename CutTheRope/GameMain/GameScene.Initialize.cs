@@ -62,8 +62,10 @@ namespace CutTheRope.GameMain
             snailobjects = [];
             activeRocket = null;
             ghosts = [];
-            conveyors = new ConveyorBeltObject();
-            conveyors.OnDestroyRopesForCandy = DestroyRopesForCandy;
+            conveyors = new ConveyorBeltObject
+            {
+                OnDestroyRopesForCandy = DestroyRopesForCandy
+            };
             antsPathsSegments = [];
             antsPaths = [];
             antsPathSegmentWithCandy = null;
