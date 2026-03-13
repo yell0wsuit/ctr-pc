@@ -45,6 +45,8 @@ namespace CutTheRope.GameMain
             tube.anchor = 10;
             tube.parentAnchor = 18;
             _ = AddChild(tube);
+            width = tube.width;
+            height = tube.height;
             valve = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 1);
             valve.x = 0f;
             valve.y = 27f * heightScale;
@@ -118,9 +120,7 @@ namespace CutTheRope.GameMain
 
         public override bool OnTouchDownXY(float tx, float ty)
         {
-            Vector vector = onConveyor
-                ? Vect(x, y)
-                : VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
+            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
             float touchZone = VectLength(VectSub(Vect(tx, ty), vector));
             if (touchZone < 40f)
             {
@@ -167,22 +167,27 @@ namespace CutTheRope.GameMain
 
         public float PositionOnTransporter { get; set; }
 
-        public Vector BindPoint => Vect(x, y);
+        public Vector BindPoint
+        {
+            get
+            {
+                float angle = DEGREES_TO_RADIANS(rotation);
+                Vector offset = VectRotate(Vect(0f, height * 0.45f * scaleY), angle);
+                return VectAdd(Vect(x, y), offset);
+            }
+        }
 
         /// <summary>
-        /// Sets the steam tube's position for transporter placement.
-        /// Also sets the on-conveyor flag and adjusts child element offsets so the
-        /// tube visual shifts to mount flush on the belt.
+        /// Sets the steam tube's position so its transporter bind point matches
+        /// the given world point (inverse of <see cref="BindPoint"/>).
         /// </summary>
         public void SetBindPoint(Vector point)
         {
-            onConveyor = true;
-            tube.y = -24f * heightScale;
-            valve.y = 3f * heightScale;
-            steamBack.y = -27f * heightScale;
-            steamFront.y = -27f * heightScale;
-            x = point.X;
-            y = point.Y;
+            float angle = DEGREES_TO_RADIANS(rotation);
+            Vector offset = VectRotate(Vect(0f, height * 0.45f * scaleY), angle);
+            Vector adjusted = VectSub(point, offset);
+            x = adjusted.X;
+            y = adjusted.Y;
         }
 
         public float CollisionRadius => 80f;
@@ -324,7 +329,6 @@ namespace CutTheRope.GameMain
         }
 
         private float heightScale = 1f;
-        private bool onConveyor;
         public int steamState;
 
         private DelayedDispatcher dd;
