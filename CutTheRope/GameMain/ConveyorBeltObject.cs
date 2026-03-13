@@ -42,6 +42,7 @@ namespace CutTheRope.GameMain
         /// <param name="belt">The belt to add.</param>
         public void Push(ConveyorBelt belt)
         {
+            belt.OnTransporterMoves = TransporterMoves;
             list.Add(belt);
         }
 
@@ -127,6 +128,54 @@ namespace CutTheRope.GameMain
             {
                 SortBelts();
                 needsSort = false;
+            }
+        }
+
+        /// <summary>
+        /// Handles transporter-to-transporter handoff. Called after a belt moves its items.
+        /// Checks if any item bound to another belt now overlaps this belt and should transfer.
+        /// Matches iOS transporterMoves: delegate.
+        /// </summary>
+        private void TransporterMoves(ConveyorBelt movingBelt)
+        {
+            foreach (ConveyorBelt otherBelt in list)
+            {
+                if (otherBelt == movingBelt)
+                {
+                    continue;
+                }
+
+                // Check each item on the other belt
+                for (int i = otherBelt.BoundObjects.Count - 1; i >= 0; i--)
+                {
+                    ITransporterItem item = otherBelt.BoundObjects[i];
+                    float radius = item.CollisionRadius * 0.6f;
+
+                    if (!movingBelt.CollidesWithCircle(item.BindPoint, radius))
+                    {
+                        continue;
+                    }
+
+                    // Auto belt can always take items; manual belt needs to be active
+                    bool shouldTransfer;
+                    if (!movingBelt.IsManual)
+                    {
+                        // Auto belt takes from manual belts (not from other auto belts)
+                        shouldTransfer = otherBelt.IsManual;
+                    }
+                    else
+                    {
+                        // Active manual belt takes from inactive manual belts
+                        shouldTransfer = movingBelt.IsActive() && otherBelt.IsManual && !otherBelt.IsActive();
+                    }
+
+                    if (shouldTransfer)
+                    {
+                        otherBelt.Remove(item);
+                        movingBelt.BindObject(item);
+                        CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
+                    }
+                }
             }
         }
 

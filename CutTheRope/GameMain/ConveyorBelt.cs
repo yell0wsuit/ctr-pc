@@ -354,10 +354,52 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            if (IsManual)
+            // Manual inertia: decay after finger release, then align
+            if (IsManual && activePointerId == -1)
             {
-                offsetDelta = 0f;
+                if (MathF.Abs(offsetDelta) <= 0.5f)
+                {
+                    offsetDelta = 0f;
+                    if (!needsAlignment)
+                    {
+                        StartAlignmentIfNeeded();
+                    }
+                }
+                else
+                {
+                    offsetDelta *= 0.75f;
+                    if (active)
+                    {
+                        MoveBoundObjects(offsetDelta);
+                    }
+                }
             }
+
+            // Alignment step: nudge items out of transition zones
+            if (needsAlignment)
+            {
+                float alignDelta = alignmentSign * 120f * deltaTime;
+                MoveBoundObjects(alignDelta);
+
+                // Check if any item is still in the transition zone
+                bool stillAligning = false;
+                foreach (ITransporterItem item in boundObjects)
+                {
+                    float pos = item.PositionOnTransporter;
+                    float dist = pos < beltWidth * 0.5f ? pos : beltWidth - pos;
+                    if (dist < item.CollisionRadius * item.MaxScale)
+                    {
+                        stillAligning = true;
+                        break;
+                    }
+                }
+                if (!stillAligning)
+                {
+                    needsAlignment = false;
+                }
+            }
+
+            DistributeObjects();
         }
 
         /// <summary>
@@ -393,12 +435,15 @@ namespace CutTheRope.GameMain
                 }
 
                 // Check if within transition zone
+                bool wrapped = false;
                 if (distFromEdge < transitionDist)
                 {
                     float newDist = (2f * transitionDist) - distFromEdge;
                     item.PositionOnTransporter = side == 0 ? beltWidth - newDist : newDist;
 
                     CTRSoundMgr.PlaySound(Resources.Snd.TransporterDrop);
+                    objectsDistributed = false;
+                    wrapped = true;
                     side ^= 1;
 
                     pos = item.PositionOnTransporter;
@@ -426,7 +471,16 @@ namespace CutTheRope.GameMain
                     Vector worldPos = VecToWorldSpace(adjustedPos, local.Y);
                     item.SetBindPoint(worldPos);
                 }
+
+                // Side-switch callback: move rope anchor when Grab wraps
+                if (wrapped && item is Grab grab && grab.rope != null && grab.rope.cut == -1)
+                {
+                    grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
+                    grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
+                }
             }
+
+            OnTransporterMoves?.Invoke(this);
         }
 
         /// <summary>
@@ -675,6 +729,87 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Conv01, Resources.Snd.Conv02, Resources.Snd.Conv03, Resources.Snd.Conv04);
         }
 
+        /// <summary>
+        /// Checks if any bound object is in the transition zone and starts alignment if so.
+        /// Matches iOS startAlignmentIfNeeded.
+        /// </summary>
+        private void StartAlignmentIfNeeded()
+        {
+            foreach (ITransporterItem item in boundObjects)
+            {
+                float pos = item.PositionOnTransporter;
+                float dist = pos < beltWidth * 0.5f ? pos : beltWidth - pos;
+                if (dist < item.CollisionRadius)
+                {
+                    needsAlignment = true;
+                    alignmentSign = pos < beltWidth * 0.5f ? -1 : 1;
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Separates overlapping items on the belt by pushing them apart.
+        /// Matches iOS distributeObjects:/pushObject:.
+        /// </summary>
+        private void DistributeObjects()
+        {
+            if (objectsDistributed || boundObjects.Count < 2)
+            {
+                return;
+            }
+
+            objectsDistributed = true;
+            const float minSpacing = 8f;
+
+            for (int i = 0; i < boundObjects.Count; i++)
+            {
+                for (int j = i + 1; j < boundObjects.Count; j++)
+                {
+                    ITransporterItem a = boundObjects[i];
+                    ITransporterItem b = boundObjects[j];
+                    float posA = a.PositionOnTransporter;
+                    float posB = b.PositionOnTransporter;
+                    float requiredDist = a.CollisionRadius + b.CollisionRadius + minSpacing;
+                    float actualDist = MathF.Abs(posA - posB);
+
+                    if (actualDist < requiredDist)
+                    {
+                        float push = (requiredDist - actualDist) * 0.5f;
+                        float sign = posA < posB ? -1f : 1f;
+                        PushObject(a, posA, sign * push);
+                        PushObject(b, posB, -sign * push);
+                        objectsDistributed = false;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Pushes an item along the belt, clamping to transition zone boundaries.
+        /// Matches iOS pushObject:withLocalCoordinate:distance:.
+        /// </summary>
+        private void PushObject(ITransporterItem item, float currentPos, float distance)
+        {
+            float newPos = currentPos + distance;
+            if (newPos <= transitionDist || newPos >= beltWidth - transitionDist)
+            {
+                newPos = currentPos < beltWidth * 0.5f ? transitionDist : beltWidth - transitionDist;
+            }
+            item.PositionOnTransporter = newPos;
+        }
+
+        /// <summary>
+        /// Callback invoked after MoveBoundObjects completes. Used by ConveyorBeltObject
+        /// for transporter-to-transporter handoff (iOS transporterMoves: delegate).
+        /// </summary>
+        public Action<ConveyorBelt> OnTransporterMoves;
+
+        /// <summary>
+        /// The list of items currently bound to this belt.
+        /// </summary>
+        public IReadOnlyList<ITransporterItem> BoundObjects => boundObjects;
+
         private float velocity;
         private float manualTravelDistance;
         private float rotationRad;
@@ -688,5 +823,8 @@ namespace CutTheRope.GameMain
         private float transitionDist;
         private float beltWidth;
         private float beltHeight;
+        private bool needsAlignment;
+        private int alignmentSign;
+        private bool objectsDistributed;
     }
 }
