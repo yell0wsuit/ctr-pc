@@ -231,13 +231,21 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void AttachItemToBelts(BaseElement item)
         {
+            if (FindOwningBelt(item) != null)
+            {
+                return;
+            }
+
             Vector position = ConveyorBelt.GetItemPosition(item);
             foreach (ConveyorBelt belt in list)
             {
-                if (belt.Contains(position))
+                if (!belt.Contains(position))
                 {
-                    belt.AttachItem(item);
+                    continue;
                 }
+
+                belt.AttachItem(item);
+                return;
             }
         }
 
@@ -247,7 +255,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void ProcessItem(BaseElement item)
         {
-            ConveyorBelt manualBelt = null;
+            ConveyorBelt currentBelt = null;
             List<ConveyorBelt> overlappingBelts = [];
 
             Vector position = ConveyorBelt.GetItemPosition(item);
@@ -261,11 +269,11 @@ namespace CutTheRope.GameMain
                 }
                 if (belt.HasItem(item))
                 {
-                    manualBelt = belt;
+                    currentBelt = belt;
                 }
             }
 
-            if (manualBelt != null && manualBelt.IsManual)
+            if (currentBelt != null && currentBelt.IsManual)
             {
                 foreach (ConveyorBelt belt in overlappingBelts)
                 {
@@ -291,19 +299,32 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void MoveItemToBelt(ConveyorBelt belt, BaseElement item)
         {
-            if (!belt.HasItem(item) || belt.IsItemMarkedForRemoval(item))
+            ConveyorBelt currentBelt = FindOwningBelt(item);
+            if (currentBelt == belt && !belt.IsItemMarkedForRemoval(item))
             {
-                foreach (ConveyorBelt candidate in list)
-                {
-                    if (candidate.HasItem(item))
-                    {
-                        candidate.MarkItemForRemoval(item);
-                    }
-                }
-
-                belt.AttachItem(item);
-                CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
+                return;
             }
+
+            if (currentBelt != null)
+            {
+                currentBelt.Remove(item);
+            }
+
+            belt.AttachItem(item);
+            CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
+        }
+
+        private ConveyorBelt FindOwningBelt(BaseElement item)
+        {
+            foreach (ConveyorBelt belt in list)
+            {
+                if (belt.HasItem(item))
+                {
+                    return belt;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

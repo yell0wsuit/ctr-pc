@@ -708,6 +708,11 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void RegisterItem(BaseElement item)
         {
+            if (itemStates.ContainsKey(item))
+            {
+                return;
+            }
+
             Vector position = GetItemPosition(item);
             Vector offsetVector = Vect(position.X - x, position.Y - y);
             float initialOffset = MathF.Max(MathF.Min((offsetVector.X * direction.X) + (offsetVector.Y * direction.Y), beltWidth), 0f);
