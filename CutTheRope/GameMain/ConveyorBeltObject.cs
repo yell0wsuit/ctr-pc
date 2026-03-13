@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Visual;
 
 using static CutTheRope.Framework.Helpers.CTRMathHelper;
 
@@ -67,34 +66,49 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Attaches a collection of items to any belts they overlap with.
+        /// For each belt, checks each item for collision and binds if matching.
+        /// Items already bound to any belt are skipped.
         /// </summary>
-        /// <param name="items">The items to attach.</param>
-        public void AttachItems(IEnumerable<BaseElement> items)
+        public void ProcessItems<T>(IEnumerable<T> items)
         {
-            foreach (BaseElement item in items)
+            foreach (T obj in items)
             {
-                if (item == null)
+                if (obj is not ITransporterItem item)
                 {
                     continue;
                 }
-                AttachItemToBelts(item);
-            }
-        }
 
-        /// <summary>
-        /// Processes items to handle transitions between manual and automatic belts.
-        /// </summary>
-        /// <param name="items">The items to process.</param>
-        public void ProcessItems(IEnumerable<BaseElement> items)
-        {
-            foreach (BaseElement item in items)
-            {
-                if (item == null)
+                // Skip if already bound to any belt
+                bool alreadyBound = false;
+                foreach (ConveyorBelt belt in list)
+                {
+                    if (belt.HasItem(item))
+                    {
+                        alreadyBound = true;
+                        break;
+                    }
+                }
+                if (alreadyBound)
                 {
                     continue;
                 }
-                ProcessItem(item);
+
+                // Check collision against each belt with 1.5x radius (matches iOS)
+                float radius = item.CollisionRadius * 1.5f;
+                Vector bindPoint = item.BindPoint;
+                foreach (ConveyorBelt belt in list)
+                {
+                    if (belt.CollidesWithCircle(bindPoint, radius))
+                    {
+                        belt.BindObject(item);
+                        if (item is Bubble)
+                        {
+                            item.IsDrawnByTransporter = true;
+                        }
+
+                        break;
+                    }
+                }
             }
         }
 
@@ -120,12 +134,13 @@ namespace CutTheRope.GameMain
         /// Removes an item from all belts in the collection.
         /// </summary>
         /// <param name="item">The item to remove.</param>
-        public void Remove(BaseElement item)
+        public void Remove(ITransporterItem item)
         {
             foreach (ConveyorBelt belt in list)
             {
                 belt.Remove(item);
             }
+            item.IsDrawnByTransporter = false;
         }
 
         /// <summary>
@@ -224,104 +239,6 @@ namespace CutTheRope.GameMain
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Attaches an item to all belts that contain its position.
-        /// </summary>
-        private void AttachItemToBelts(BaseElement item)
-        {
-            if (FindOwningBelt(item) != null)
-            {
-                return;
-            }
-
-            Vector position = ConveyorBelt.GetItemPosition(item);
-            foreach (ConveyorBelt belt in list)
-            {
-                if (!belt.Contains(position))
-                {
-                    continue;
-                }
-
-                belt.AttachItem(item);
-                return;
-            }
-        }
-
-        /// <summary>
-        /// Processes an item to handle belt transitions. Items on manual belts can transfer
-        /// to active manual belts or automatic belts when overlapping.
-        /// </summary>
-        private void ProcessItem(BaseElement item)
-        {
-            ConveyorBelt currentBelt = null;
-            List<ConveyorBelt> overlappingBelts = [];
-
-            Vector position = ConveyorBelt.GetItemPosition(item);
-            float padding = ConveyorBelt.GetItemPadding(item);
-
-            foreach (ConveyorBelt belt in list)
-            {
-                if (belt.ContainsWithPadding(position, padding))
-                {
-                    overlappingBelts.Add(belt);
-                }
-                if (belt.HasItem(item))
-                {
-                    currentBelt = belt;
-                }
-            }
-
-            if (currentBelt != null && currentBelt.IsManual)
-            {
-                foreach (ConveyorBelt belt in overlappingBelts)
-                {
-                    if (belt.IsManual && belt.IsActive())
-                    {
-                        MoveItemToBelt(belt, item);
-                        return;
-                    }
-                }
-
-                foreach (ConveyorBelt belt in overlappingBelts)
-                {
-                    if (!belt.IsManual)
-                    {
-                        MoveItemToBelt(belt, item);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transfers an item to a new belt, marking it for removal from all other belts.
-        /// </summary>
-        private void MoveItemToBelt(ConveyorBelt belt, BaseElement item)
-        {
-            ConveyorBelt currentBelt = FindOwningBelt(item);
-            if (currentBelt == belt && !belt.IsItemMarkedForRemoval(item))
-            {
-                return;
-            }
-
-            currentBelt?.Remove(item);
-
-            belt.AttachItem(item);
-            CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
-        }
-
-        private ConveyorBelt FindOwningBelt(BaseElement item)
-        {
-            foreach (ConveyorBelt belt in list)
-            {
-                if (belt.HasItem(item))
-                {
-                    return belt;
-                }
-            }
-
-            return null;
         }
 
         /// <summary>
