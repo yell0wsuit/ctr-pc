@@ -64,6 +64,8 @@ namespace CutTheRope.GameMain
 
         public bool skip;
 
+        public Vector prevPosition2;
+
         public float PositionOnTransporter { get; set; }
 
         public Vector BindPoint => Vect(x, y);

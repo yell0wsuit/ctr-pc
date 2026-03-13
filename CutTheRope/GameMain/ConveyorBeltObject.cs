@@ -18,6 +18,12 @@ namespace CutTheRope.GameMain
         private bool needsSort;
 
         /// <summary>
+        /// Set by GameScene. Called when a Grab wraps and other ropes for the same candy should be cut.
+        /// Parameters: candyNumber, the Grab that wrapped.
+        /// </summary>
+        public Action<int, Grab> OnDestroyRopesForCandy;
+
+        /// <summary>
         /// Gets the number of conveyor belts in this collection.
         /// </summary>
         /// <returns>The count of belts.</returns>
@@ -43,6 +49,7 @@ namespace CutTheRope.GameMain
         public void Push(ConveyorBelt belt)
         {
             belt.OnTransporterMoves = TransporterMoves;
+            belt.OnDestroyRopesForCandy = OnDestroyRopesForCandy;
             list.Add(belt);
         }
 

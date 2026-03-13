@@ -74,6 +74,7 @@ namespace CutTheRope.GameMain
             }
             if (grabRadius == -1f && !gun)
             {
+                grab.candyNumber = twoParts == 2 ? 0 : flag ? 1 : 2;
                 ConstraintedPoint constraintedPoint = star;
                 if (bindBulb)
                 {

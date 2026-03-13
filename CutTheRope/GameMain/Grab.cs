@@ -668,6 +668,8 @@ namespace CutTheRope.GameMain
 
         public Bungee rope;
 
+        public int candyNumber = -1;
+
         public float radius;
 
         public float radiusAlpha;

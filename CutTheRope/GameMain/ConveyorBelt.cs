@@ -472,11 +472,22 @@ namespace CutTheRope.GameMain
                     item.SetBindPoint(worldPos);
                 }
 
-                // Side-switch callback: move rope anchor when Grab wraps
-                if (wrapped && item is Grab grab && grab.rope != null && grab.rope.cut == -1)
+                // Side-switch callbacks
+                if (wrapped)
                 {
-                    grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                    grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
+                    if (item is Grab grab && grab.candyNumber != -1)
+                    {
+                        if (grab.rope != null && grab.rope.cut == -1)
+                        {
+                            grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
+                            grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
+                        }
+                        OnDestroyRopesForCandy?.Invoke(grab.candyNumber, grab);
+                    }
+                    if (item is Bouncer bouncer)
+                    {
+                        bouncer.prevPosition2 = Vect(bouncer.x, bouncer.y);
+                    }
                 }
             }
 
@@ -804,6 +815,13 @@ namespace CutTheRope.GameMain
         /// for transporter-to-transporter handoff (iOS transporterMoves: delegate).
         /// </summary>
         public Action<ConveyorBelt> OnTransporterMoves;
+
+        /// <summary>
+        /// Callback invoked when a Grab wraps around the belt edge, requesting all other
+        /// ropes for the same candy to be cut. Matches iOS destroyRopesForCandy:except:.
+        /// Parameters: candyNumber, the Grab that wrapped (excluded from cutting).
+        /// </summary>
+        public Action<int, Grab> OnDestroyRopesForCandy;
 
         /// <summary>
         /// The list of items currently bound to this belt.
