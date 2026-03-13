@@ -675,7 +675,7 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Conv01, Resources.Snd.Conv02, Resources.Snd.Conv03, Resources.Snd.Conv04);
         }
 
-        private float velocity = 10f;
+        private float velocity;
         private float manualTravelDistance;
         private float rotationRad;
         private float offsetDelta;
