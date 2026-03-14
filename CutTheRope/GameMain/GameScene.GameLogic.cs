@@ -22,6 +22,7 @@ namespace CutTheRope.GameMain
             if (targetBambooTube != null)
             {
                 noCandy = false;
+                RestoreCandyProperties();
                 targetBambooTube.ThrowCandy(star);
                 targetBambooTube.ThrowParticlesOut(particlesAniPool);
                 candy.PlayTimeline(2);
