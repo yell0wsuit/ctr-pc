@@ -495,18 +495,9 @@ namespace CutTheRope.GameMain
                 // Side-switch callbacks
                 if (wrapped)
                 {
-                    if (item is Grab grab && grab.candyNumber != -1)
+                    if (item is Grab grab && grab.rope != null && grab.candyNumber != -1)
                     {
-                        if (grab.rope != null && grab.rope.cut == -1)
-                        {
-                            grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                            grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
-                        }
                         OnDestroyRopesForCandy?.Invoke(grab.candyNumber, grab);
-                    }
-                    if (item is Bouncer bouncer)
-                    {
-                        bouncer.prevPosition2 = Vect(bouncer.x, bouncer.y);
                     }
                     if (item is ITransporterSideSwitchAware sideSwitchAware)
                     {
