@@ -318,7 +318,7 @@ namespace CutTheRope.GameMain
             {
                 item.PositionOnTransporter = side == 1 ? beltWidth - transitionDist : transitionDist;
 
-                Vector worldPos = VecToWorldSpace(item.PositionOnTransporter, local.Y);
+                Vector worldPos = VecToWorldSpace(item.PositionOnTransporter, 0f);
                 item.SetBindPoint(worldPos);
             }
 
