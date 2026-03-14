@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
@@ -41,7 +40,6 @@ namespace CutTheRope.GameMain
             glowSprite = null;
             lightUpAnim = null;
             lightDownAnim = null;
-            bobTime = 0f;
         }
 
         public override void Update(float delta)
@@ -66,7 +64,6 @@ namespace CutTheRope.GameMain
                 }
             }
             base.Update(delta);
-            UpdateBobOffset(delta);
         }
 
         public override void Draw()
@@ -105,7 +102,17 @@ namespace CutTheRope.GameMain
                 AddTimelinewithID(timeline2, 1);
             }
             bb = new CTRRectangle(22f, 20f, 30f, 30f);
-            bobTime = RND_RANGE(0, 20) / 10f;
+
+            Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y - 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y + 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            AddTimelinewithID(timeline3, 0);
+            PlayTimeline(0);
+            Timeline.UpdateTimeline(timeline3, (float)(RND_RANGE(0, 20) / 10.0));
 
             // Add glow sprite
             if (!nightMode)
@@ -164,18 +171,6 @@ namespace CutTheRope.GameMain
         public void EnableNightMode()
         {
             nightMode = true;
-        }
-
-        private void UpdateBobOffset(float delta)
-        {
-            bobTime += delta;
-            float offset = IsDrawnByTransporter ? 0f : (3 * Sinf(3f * bobTime));
-            Dictionary<int, BaseElement> childs = GetChilds();
-            foreach (KeyValuePair<int, BaseElement> kvp in childs)
-            {
-                BaseElement child = kvp.Value;
-                _ = (child?.y = offset);
-            }
         }
 
         public void SetLitState(bool lit)
@@ -291,8 +286,6 @@ namespace CutTheRope.GameMain
         public float TransporterScale { get; set; } = 1.0f;
 
         public bool IsDrawnByTransporter { get; set; }
-
-        private float bobTime;
 
         private Animation idleSprite;
 
