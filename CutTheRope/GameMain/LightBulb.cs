@@ -323,6 +323,7 @@ namespace CutTheRope.GameMain
         {
             x = point.X;
             y = point.Y;
+            constraint.pos = point;
         }
 
         public float CollisionRadius => width * 0.15f;
