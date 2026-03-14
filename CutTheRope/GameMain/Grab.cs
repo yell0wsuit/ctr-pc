@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
-    internal class Grab : CTRGameObject, ITransporterItem
+    internal class Grab : CTRGameObject, ITransporterItem, ITransporterSideSwitchAware
     {
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
@@ -659,6 +659,14 @@ namespace CutTheRope.GameMain
         public const float STICK_DELAY = 0.05f;
 
         public const int MAX_STAINS = 10;
+
+        public void DidMoveToOtherSide()
+        {
+            if (candyNumber != -1 && rope != null && rope.cut == -1)
+            {
+                rope.MoveAnchor(Vect(x, y));
+            }
+        }
 
         public Image back;
 
