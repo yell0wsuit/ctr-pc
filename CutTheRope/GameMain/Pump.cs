@@ -19,8 +19,6 @@ namespace CutTheRope.GameMain
         /// </summary>
         public const float MouthOffset = 80f;
 
-        private static readonly Vector ConveyorOffset = Vect(0.8f, -1.2f);
-
         /// <summary>
         /// Creates a pump from a texture.
         /// </summary>
@@ -108,7 +106,8 @@ namespace CutTheRope.GameMain
         {
             get
             {
-                Vector offset = VectRotate(ConveyorOffset, angle);
+                float angleRad = DEGREES_TO_RADIANS(rotation);
+                Vector offset = VectRotate(Vect(width * 0.01f * scaleX, 0f), angleRad);
                 return VectAdd(Vect(x, y), offset);
             }
         }
@@ -119,7 +118,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void SetBindPoint(Vector point)
         {
-            Vector offset = VectRotate(ConveyorOffset, angle);
+            float angleRad = DEGREES_TO_RADIANS(rotation);
+            Vector offset = VectRotate(Vect(width * 0.01f * scaleX, 0f), angleRad);
             Vector adjusted = VectSub(point, offset);
             x = adjusted.X;
             y = adjusted.Y;
