@@ -14,6 +14,14 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBelt : BaseElement
     {
+        private const float ActiveThreshold = 1f;
+        private const float ManualStopThreshold = 1f;
+        private const float ManualMoveSoundDistance = 15f;
+        private const float AlignmentSpeed = 80f;
+        private const float CenterlineSnapThreshold = 0.01f;
+        private const float CenterlineHardSnapDistance = 2f;
+        private const float CenterlineReturnFactor = 0.8f;
+
         private const int ImgObjConveyorEnd = 0;
         private const int ImgObjConveyorEndSide = 1;
         private const int ImgObjConveyorMiddle = 2;
@@ -280,6 +288,11 @@ namespace CutTheRope.GameMain
             }
 
             boundObjects.Add(item);
+            if (item is ITransporterBindAware bindAware)
+            {
+                bindAware.WillBind();
+            }
+
             item.IsDrawnByTransporter = true;
 
             Vector local = ToLocalSpace(item.BindPoint);
@@ -346,12 +359,12 @@ namespace CutTheRope.GameMain
                 MoveBoundObjects(offsetDelta);
             }
 
-            active = MathF.Abs(offsetDelta) > 0.5f;
+            active = MathF.Abs(offsetDelta) > ActiveThreshold;
 
             if (IsManual && active)
             {
                 manualTravelDistance += MathF.Abs(offsetDelta);
-                if (manualTravelDistance >= 100f)
+                if (manualTravelDistance >= ManualMoveSoundDistance)
                 {
                     PlayManualMoveSound();
                     manualTravelDistance = 0f;
@@ -361,7 +374,7 @@ namespace CutTheRope.GameMain
             // Manual inertia: decay after finger release, then align
             if (IsManual && activePointerId == -1)
             {
-                if (MathF.Abs(offsetDelta) <= 0.5f)
+                if (MathF.Abs(offsetDelta) <= ManualStopThreshold)
                 {
                     offsetDelta = 0f;
                     if (!needsAlignment)
@@ -379,31 +392,32 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            // Alignment step: nudge items out of transition zones
-            if (needsAlignment)
+            // Keep bound objects visually centered on the belt's centerline.
+            foreach (ITransporterItem item in boundObjects)
             {
-                float alignDelta = alignmentSign * 120f * deltaTime;
-                MoveBoundObjects(alignDelta);
+                Vector local = ToLocalSpace(item.BindPoint);
+                float sideOffsetAbs = MathF.Abs(local.Y);
+                if (sideOffsetAbs <= CenterlineSnapThreshold)
+                {
+                    continue;
+                }
 
-                // Check if any item is still in the transition zone
-                bool stillAligning = false;
-                foreach (ITransporterItem item in boundObjects)
-                {
-                    float pos = item.PositionOnTransporter;
-                    float dist = pos < beltWidth * 0.5f ? pos : beltWidth - pos;
-                    if (dist < item.CollisionRadius * item.MaxScale)
-                    {
-                        stillAligning = true;
-                        break;
-                    }
-                }
-                if (!stillAligning)
-                {
-                    needsAlignment = false;
-                }
+                float correctedOffset = sideOffsetAbs <= CenterlineHardSnapDistance
+                    ? 0f
+                    : local.Y * CenterlineReturnFactor;
+                Vector correctedWorld = VecToWorldSpace(local.X, correctedOffset);
+                item.SetBindPoint(correctedWorld);
             }
 
             DistributeObjects(deltaTime);
+
+            // iOS does one alignment move per update when requested.
+            if (needsAlignment)
+            {
+                float alignDelta = alignmentSign * AlignmentSpeed * deltaTime;
+                MoveBoundObjects(alignDelta);
+                needsAlignment = false;
+            }
         }
 
         /// <summary>
@@ -494,6 +508,10 @@ namespace CutTheRope.GameMain
                     {
                         bouncer.prevPosition2 = Vect(bouncer.x, bouncer.y);
                     }
+                    if (item is ITransporterSideSwitchAware sideSwitchAware)
+                    {
+                        sideSwitchAware.DidMoveToOtherSide();
+                    }
                 }
             }
 
@@ -509,7 +527,7 @@ namespace CutTheRope.GameMain
         /// <returns>True if the belt captured the pointer; false otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
-            if (!IsManual)
+            if (!IsManual || activePointerId != -1)
             {
                 return false;
             }
@@ -555,7 +573,7 @@ namespace CutTheRope.GameMain
                 Vector local = ToLocalSpace(Vect(pointerX, pointerY));
                 offsetDelta = lastDragPosition.X - local.X;
 
-                if (MathF.Abs(offsetDelta) <= 0.5f)
+                if (MathF.Abs(offsetDelta) <= ManualStopThreshold)
                 {
                     offsetDelta = 0f;
                     if (!needsAlignment)
@@ -769,16 +787,29 @@ namespace CutTheRope.GameMain
         /// </summary>
         private void StartAlignmentIfNeeded()
         {
+            needsAlignment = false;
+            float minDistance = float.MaxValue;
+            int nearestSide = 0;
+
             foreach (ITransporterItem item in boundObjects)
             {
                 float pos = item.PositionOnTransporter;
-                float dist = pos < beltWidth * 0.5f ? pos : beltWidth - pos;
+                bool rightSide = pos >= beltWidth * 0.5f;
+                float dist = rightSide ? beltWidth - pos : pos;
                 if (dist < item.CollisionRadius)
                 {
-                    needsAlignment = true;
-                    alignmentSign = pos < beltWidth * 0.5f ? -1 : 1;
-                    return;
+                    if (dist < minDistance)
+                    {
+                        minDistance = dist;
+                        needsAlignment = true;
+                        nearestSide = rightSide ? 1 : 0;
+                    }
                 }
+            }
+
+            if (needsAlignment)
+            {
+                alignmentSign = nearestSide == 1 ? 1 : -1;
             }
         }
 

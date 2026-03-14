@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
 
-using static CutTheRope.Framework.Helpers.CTRMathHelper;
-
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -13,9 +11,8 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBeltObject
     {
-        private readonly Dictionary<int, Vector> pointerPositions = [];
         private readonly List<ConveyorBelt> list = [];
-        private bool needsSort;
+        private readonly List<ConveyorBelt> touchCandidates = [];
 
         /// <summary>
         /// Set by GameScene. Called when a Grab wraps and other ropes for the same candy should be cut.
@@ -38,8 +35,7 @@ namespace CutTheRope.GameMain
         public void Clear()
         {
             list.Clear();
-            pointerPositions.Clear();
-            needsSort = false;
+            touchCandidates.Clear();
         }
 
         /// <summary>
@@ -116,7 +112,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Updates all conveyor belts and performs deferred sorting if needed.
+        /// Updates all conveyor belts.
         /// </summary>
         /// <param name="deltaTime">The time elapsed since the last frame in seconds.</param>
         public void Update(float deltaTime)
@@ -124,12 +120,6 @@ namespace CutTheRope.GameMain
             foreach (ConveyorBelt belt in list)
             {
                 belt.Update(deltaTime);
-            }
-
-            if (needsSort)
-            {
-                SortBelts();
-                needsSort = false;
             }
         }
 
@@ -197,7 +187,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Handles pointer down events, storing the position for later direction detection.
+        /// Handles pointer down events by selecting the most recently activated manual transporter first.
         /// </summary>
         /// <param name="pointerX">The x-coordinate of the pointer.</param>
         /// <param name="pointerY">The y-coordinate of the pointer.</param>
@@ -205,15 +195,25 @@ namespace CutTheRope.GameMain
         /// <returns>True if a belt captured the pointer; false otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            touchCandidates.Clear();
+            foreach (ConveyorBelt belt in list)
             {
-                ConveyorBelt belt = list[i];
-                if (belt != null && belt.OnPointerDown(pointerX, pointerY, pointerId))
+                if (belt is { IsManual: true })
                 {
-                    pointerPositions[pointerId] = Vect(pointerX, pointerY);
+                    touchCandidates.Add(belt);
+                }
+            }
+
+            touchCandidates.Sort(static (a, b) => b.ActiveSetTime.CompareTo(a.ActiveSetTime));
+
+            foreach (ConveyorBelt belt in touchCandidates)
+            {
+                if (belt.OnPointerDown(pointerX, pointerY, pointerId))
+                {
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -226,12 +226,10 @@ namespace CutTheRope.GameMain
         /// <returns>True if a belt released the pointer; false otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            foreach (ConveyorBelt belt in list)
             {
-                ConveyorBelt belt = list[i];
                 if (belt != null && belt.OnPointerUp(pointerX, pointerY, pointerId))
                 {
-                    _ = pointerPositions.Remove(pointerId);
                     return true;
                 }
             }
@@ -239,8 +237,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Handles pointer move events. When the drag exceeds a threshold, selects the belt
-        /// whose direction best matches the drag direction for disambiguation.
+        /// Handles pointer move events.
         /// </summary>
         /// <param name="pointerX">The x-coordinate of the pointer.</param>
         /// <param name="pointerY">The y-coordinate of the pointer.</param>
@@ -248,45 +245,10 @@ namespace CutTheRope.GameMain
         /// <returns>True if a belt handled the movement; false otherwise.</returns>
         public bool OnPointerMove(float pointerX, float pointerY, int pointerId)
         {
-            if (pointerPositions.TryGetValue(pointerId, out Vector start))
+            foreach (ConveyorBelt belt in list)
             {
-                Vector delta = Vect(pointerX - start.X, pointerY - start.Y);
-                float distanceSq = (delta.X * delta.X) + (delta.Y * delta.Y);
-                if (distanceSq < 4f)
-                {
-                    return false;
-                }
-
-                float distance = VectLength(delta);
-                Vector direction = distance > 0 ? Vect(delta.X / distance, delta.Y / distance) : vectZero;
-
-                float bestDot = -1f;
-                ConveyorBelt bestBelt = null;
-                foreach (ConveyorBelt belt in list)
-                {
-                    if (belt == null || !belt.Contains(start))
-                    {
-                        continue;
-                    }
-                    float dot = MathF.Abs((direction.X * belt.Direction.X) + (direction.Y * belt.Direction.Y));
-                    if (dot >= bestDot)
-                    {
-                        bestDot = dot;
-                        bestBelt = belt;
-                    }
-                }
-
-                _ = (bestBelt?.OnPointerDown(start.X, start.Y, pointerId));
-
-                _ = pointerPositions.Remove(pointerId);
-            }
-
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                ConveyorBelt belt = list[i];
                 if (belt != null && belt.OnPointerMove(pointerX, pointerY, pointerId))
                 {
-                    RequestSort();
                     return true;
                 }
             }
@@ -370,12 +332,5 @@ namespace CutTheRope.GameMain
             (list[toIndex], list[fromIndex]) = (list[fromIndex], list[toIndex]);
         }
 
-        /// <summary>
-        /// Requests a deferred sort of the belt list on the next update.
-        /// </summary>
-        private void RequestSort()
-        {
-            needsSort = true;
-        }
     }
 }

@@ -13,4 +13,22 @@ namespace CutTheRope.GameMain
         float TransporterScale { get; set; }
         bool IsDrawnByTransporter { get; set; }
     }
+
+    /// <summary>
+    /// Optional callback invoked right before an object is bound to a transporter.
+    /// Mirrors iOS willBind selector semantics.
+    /// </summary>
+    internal interface ITransporterBindAware
+    {
+        void WillBind();
+    }
+
+    /// <summary>
+    /// Optional callback invoked when an object wraps to the opposite transporter side.
+    /// Mirrors iOS didMoveToOtherSide selector semantics.
+    /// </summary>
+    internal interface ITransporterSideSwitchAware
+    {
+        void DidMoveToOtherSide();
+    }
 }
