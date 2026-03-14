@@ -113,6 +113,13 @@ namespace CutTheRope.GameMain
             {
                 gunCup.Update(delta);
             }
+            // Transported grabs keep their rope anchor pinned to grab position
+            // regardless of launcher state.
+            if (IsDrawnByTransporter && rope != null)
+            {
+                rope.bungeeAnchor.pos = Vect(x, y);
+                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
+            }
             if (launcher && rope != null)
             {
                 rope.bungeeAnchor.pos = Vect(x, y);
