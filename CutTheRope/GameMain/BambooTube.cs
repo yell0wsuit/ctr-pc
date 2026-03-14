@@ -184,6 +184,7 @@ namespace CutTheRope.GameMain
                 ? Vect(0f, -1f)
                 : VectNormalize(throwDirection);
 
+            candyPoint.v = vectZero;
             candyPoint.a = vectZero;
             candyPoint.ResetForces();
             candyPoint.pos = bambooHoleOut;
