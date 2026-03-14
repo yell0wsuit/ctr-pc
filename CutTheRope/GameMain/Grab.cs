@@ -609,6 +609,7 @@ namespace CutTheRope.GameMain
         {
             x = point.X;
             y = point.Y;
+            ReCalcCircle();
         }
 
         public float CollisionRadius => 40f;
