@@ -866,6 +866,12 @@ namespace CutTheRope.GameMain
 
         private static void ApplyItemScale(ITransporterItem item, float scale)
         {
+            if (item is ITransporterScaleAware scaleAware)
+            {
+                scaleAware.SetTransporterScale(scale);
+                return;
+            }
+
             if (item is BaseElement element)
             {
                 element.scaleX = scale;

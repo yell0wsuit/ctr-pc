@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Steam tube object that emits animated steam puffs based on its valve state.
     /// </summary>
-    internal sealed class SteamTube : BaseElement, ITimelineDelegate, ITransporterItem, ITransporterBindAware
+    internal sealed class SteamTube : BaseElement, ITimelineDelegate, ITransporterItem, ITransporterBindAware, ITransporterScaleAware
     {
         public SteamTube()
         {
@@ -203,6 +203,24 @@ namespace CutTheRope.GameMain
         public void WillBind()
         {
             IsDrawnByTransporter = true;
+        }
+
+        public void SetTransporterScale(float scale)
+        {
+            scaleX = scale;
+            scaleY = scale;
+
+            if (tube != null)
+            {
+                tube.scaleX = scale;
+                tube.scaleY = scale;
+            }
+
+            if (valve != null)
+            {
+                valve.scaleX = scale;
+                valve.scaleY = scale;
+            }
         }
 
         /// <summary>

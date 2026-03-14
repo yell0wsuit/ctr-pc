@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
-    internal class Grab : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware
+    internal class Grab : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware, ITransporterScaleAware
     {
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
@@ -672,6 +672,21 @@ namespace CutTheRope.GameMain
         public void WillBind()
         {
             IsDrawnByTransporter = true;
+        }
+
+        public void SetTransporterScale(float scale)
+        {
+            if (back != null)
+            {
+                back.scaleX = scale;
+                back.scaleY = scale;
+            }
+
+            if (front != null)
+            {
+                front.scaleX = scale;
+                front.scaleY = scale;
+            }
         }
 
         public Image back;

@@ -31,4 +31,13 @@ namespace CutTheRope.GameMain
     {
         void DidMoveToOtherSide();
     }
+
+    /// <summary>
+    /// Optional callback for custom transporter scaling.
+    /// Mirrors iOS classes that override setScale: (e.g., Grab, SteamTube).
+    /// </summary>
+    internal interface ITransporterScaleAware
+    {
+        void SetTransporterScale(float scale);
+    }
 }
