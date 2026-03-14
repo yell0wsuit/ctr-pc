@@ -816,7 +816,7 @@ namespace CutTheRope.GameMain
             }
 
             objectsDistributed = true;
-            const float minSpacing = 8f;
+            const float minSpacing = 2f;
 
             for (int i = 0; i < boundObjects.Count; i++)
             {
