@@ -35,6 +35,16 @@ namespace CutTheRope.GameMain
 
             conveyors.SortBelts();
 
+            // Bind objects to transporters once at scene setup (matches iOS [GameScene show])
+            conveyors.ProcessItems(bubbles);
+            conveyors.ProcessItems(stars);
+            conveyors.ProcessItems(bouncers);
+            conveyors.ProcessItems(socks);
+            conveyors.ProcessItems(tubes);
+            conveyors.ProcessItems(pumps);
+            conveyors.ProcessItems(bungees);
+            conveyors.ProcessItems(lightBulbs);
+
             // Load two-parts candy bubble animations
             LoadCandyBubbleAnimations();
             foreach (object obj in rotatedCircles)

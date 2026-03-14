@@ -606,14 +606,6 @@ namespace CutTheRope.GameMain
                 {
                     float step = MathF.Min(0.01f, remaining);
                     conveyors.Update(step);
-                    conveyors.ProcessItems(bubbles);
-                    conveyors.ProcessItems(stars);
-                    conveyors.ProcessItems(bouncers);
-                    conveyors.ProcessItems(socks);
-                    conveyors.ProcessItems(tubes);
-                    conveyors.ProcessItems(pumps);
-                    conveyors.ProcessItems(bungees);
-                    conveyors.ProcessItems(lightBulbs);
                     remaining -= step;
                 }
             }
