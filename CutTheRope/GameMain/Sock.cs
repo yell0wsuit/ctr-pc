@@ -5,8 +5,9 @@ namespace CutTheRope.GameMain
 {
     internal sealed class Sock : CTRGameObject, ITransporterItem
     {
-        private const float BindPointOffsetX = -3f;
-        private const float BindPointOffsetY = 25f;
+        private const float ScalingCompensation = 3f;
+        private const float BindPointOffsetX = -3f * ScalingCompensation;
+        private const float BindPointOffsetY = 25f * ScalingCompensation;
 
         public static Sock Sock_create(CTRTexture2D t)
         {
@@ -146,13 +147,13 @@ namespace CutTheRope.GameMain
 
         public float MaxScale => 0.7f;
 
-        public float TransporterScale { get; set; } = 1.0f;
+        public float TransporterScale { get; set; } = 1f;
 
         public bool IsDrawnByTransporter { get; set; }
 
         private static float GetCollisionRadius()
         {
-            return 30f;
+            return 30f * ScalingCompensation;
         }
     }
 }
