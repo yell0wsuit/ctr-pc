@@ -142,6 +142,8 @@ namespace CutTheRope.GameMain
             {
                 belt.Update(deltaTime);
             }
+
+            SortBelts();
         }
 
         /// <summary>
