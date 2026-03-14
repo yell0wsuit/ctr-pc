@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
@@ -34,6 +36,11 @@ namespace CutTheRope.GameMain
             if (mover != null)
             {
                 UpdateRotation();
+            }
+
+            if (timeElapsedFromLastMove >= 0f)
+            {
+                timeElapsedFromLastMove += delta;
             }
         }
 
@@ -82,6 +89,37 @@ namespace CutTheRope.GameMain
 
         public void SetBindPoint(Vector point)
         {
+            float dx = point.X - x;
+            float dy = point.Y - y;
+            float distSq = (dx * dx) + (dy * dy);
+
+            if (distSq < 0.000001f)
+            {
+                return;
+            }
+
+            if (timeElapsedFromLastMove is < 0.001f or > 0.1f)
+            {
+                instantVelocity = Vect(0f, 0f);
+            }
+            else
+            {
+                float vx = dx / timeElapsedFromLastMove;
+                float vy = dy / timeElapsedFromLastMove;
+                float magSq = (vx * vx) + (vy * vy);
+
+                if (magSq > MaxVelocityMagnitude * MaxVelocityMagnitude)
+                {
+                    float invMag = 1f / MathF.Sqrt(magSq);
+                    vx *= invMag * MaxVelocityMagnitude;
+                    vy *= invMag * MaxVelocityMagnitude;
+                }
+
+                instantVelocity = Vect(vx, vy);
+            }
+
+            timeElapsedFromLastMove = 0f;
+            prevPosition2 = Vect(x, y);
             x = point.X;
             y = point.Y;
             UpdateRotation();
@@ -100,5 +138,10 @@ namespace CutTheRope.GameMain
         private const int SmallBouncerWidth = 1;
 
         private const int LargeBouncerWidth = 2;
+
+        private const float MaxVelocityMagnitude = 200f;
+
+        private float timeElapsedFromLastMove = -1f;
+        public Vector instantVelocity;
     }
 }
