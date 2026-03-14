@@ -63,9 +63,30 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void Draw()
         {
+            // Manual transporters sorted by activeSetTime (ascending),
+            // then non-manual transporters in their existing order.
+            touchCandidates.Clear();
             foreach (ConveyorBelt belt in list)
             {
+                if (belt is { IsManual: true })
+                {
+                    touchCandidates.Add(belt);
+                }
+            }
+
+            touchCandidates.Sort(static (a, b) => a.ActiveSetTime.CompareTo(b.ActiveSetTime));
+
+            foreach (ConveyorBelt belt in touchCandidates)
+            {
                 belt.Draw();
+            }
+
+            foreach (ConveyorBelt belt in list)
+            {
+                if (!belt.IsManual)
+                {
+                    belt.Draw();
+                }
             }
         }
 
