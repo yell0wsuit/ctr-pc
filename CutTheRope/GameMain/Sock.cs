@@ -5,8 +5,8 @@ namespace CutTheRope.GameMain
 {
     internal sealed class Sock : CTRGameObject, ITransporterItem
     {
-        private const float BindPointOffsetX = -12f;
-        private const float BindPointOffsetY = 152f;
+        private const float BindPointOffsetX = -3f;
+        private const float BindPointOffsetY = 25f;
 
         public static Sock Sock_create(CTRTexture2D t)
         {
@@ -117,7 +117,9 @@ namespace CutTheRope.GameMain
         {
             get
             {
-                Vector offset = Vect(BindPointOffsetX * scaleX, BindPointOffsetY * scaleY);
+                float bindPointOffsetX = BindPointOffsetX;
+                float bindPointOffsetY = BindPointOffsetY;
+                Vector offset = Vect(bindPointOffsetX * scaleX, bindPointOffsetY * scaleY);
                 offset = VectRotate(offset, angle);
                 return VectAdd(Vect(x, y), offset);
             }
@@ -129,14 +131,16 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void SetBindPoint(Vector point)
         {
-            Vector offset = Vect(BindPointOffsetX * scaleX, BindPointOffsetY * scaleY);
+            float bindPointOffsetX = BindPointOffsetX;
+            float bindPointOffsetY = BindPointOffsetY;
+            Vector offset = Vect(bindPointOffsetX * scaleX, bindPointOffsetY * scaleY);
             offset = VectRotate(offset, angle);
             Vector adjusted = VectSub(point, offset);
             x = adjusted.X;
             y = adjusted.Y;
         }
 
-        public float CollisionRadius => 120f;
+        public float CollisionRadius => GetCollisionRadius();
 
         public float MinScale => 0.35f;
 
@@ -145,5 +149,10 @@ namespace CutTheRope.GameMain
         public float TransporterScale { get; set; } = 1.0f;
 
         public bool IsDrawnByTransporter { get; set; }
+
+        private static float GetCollisionRadius()
+        {
+            return 30f;
+        }
     }
 }
