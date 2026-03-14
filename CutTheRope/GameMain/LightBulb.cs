@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
     /// The light bulb can be attached to ropes via its constraint point and can
     /// capture or be captured by bubbles.
     /// </remarks>
-    internal sealed class LightBulb : CTRGameObject, ITransporterItem
+    internal sealed class LightBulb : CTRGameObject, ITransporterItem, ITransporterBindAware
     {
         /// <summary>Sprite index for the light glow effect.</summary>
         private const int ImgObjLighterLight = 0;
@@ -334,6 +334,11 @@ namespace CutTheRope.GameMain
         public float TransporterScale { get; set; } = 1.0f;
 
         public bool IsDrawnByTransporter { get; set; }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
 
         /// <summary>
         /// Updates the light bulb's state each frame.

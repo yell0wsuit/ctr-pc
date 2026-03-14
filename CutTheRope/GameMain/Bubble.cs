@@ -4,7 +4,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class Bubble : GameObject, ITransporterItem
+    internal class Bubble : GameObject, ITransporterItem, ITransporterBindAware
     {
         public static Bubble Bubble_create(CTRTexture2D t)
         {
@@ -73,5 +73,10 @@ namespace CutTheRope.GameMain
         public float TransporterScale { get; set; } = 1.0f;
 
         public bool IsDrawnByTransporter { get; set; }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
     }
 }

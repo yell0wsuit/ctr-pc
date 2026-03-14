@@ -9,7 +9,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Star : CTRGameObject, ITransporterItem
+    internal sealed class Star : CTRGameObject, ITransporterItem, ITransporterBindAware
     {
         private const int ImgObjStarIdleGlow = 0;
         private const int ImgObjStarNightGlow = 0;
@@ -230,6 +230,16 @@ namespace CutTheRope.GameMain
         }
 
         public bool IsLit => isLit == true;
+
+        public void WillBind()
+        {
+            if (GetCurrentTimeline() != null)
+            {
+                StopCurrentTimeline();
+            }
+
+            IsDrawnByTransporter = true;
+        }
 
         private static void AdjustNightAlpha(BaseElement element, float delta)
         {

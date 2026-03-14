@@ -4,7 +4,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class Bouncer : CTRGameObject, ITransporterItem, ITransporterSideSwitchAware
+    internal class Bouncer : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware
     {
         public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, float an)
         {
@@ -69,6 +69,11 @@ namespace CutTheRope.GameMain
         public void DidMoveToOtherSide()
         {
             prevPosition2 = Vect(x, y);
+        }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
         }
 
         public float PositionOnTransporter { get; set; }

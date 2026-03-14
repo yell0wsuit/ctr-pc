@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
-    internal class Grab : CTRGameObject, ITransporterItem, ITransporterSideSwitchAware
+    internal class Grab : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware
     {
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
@@ -666,6 +666,11 @@ namespace CutTheRope.GameMain
             {
                 rope.MoveAnchor(Vect(x, y));
             }
+        }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
         }
 
         public Image back;

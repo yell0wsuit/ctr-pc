@@ -3,7 +3,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Sock : CTRGameObject, ITransporterItem
+    internal sealed class Sock : CTRGameObject, ITransporterItem, ITransporterBindAware
     {
         private const float ScalingCompensation = 3f;
         private const float BindPointOffsetX = -3f * ScalingCompensation;
@@ -150,6 +150,11 @@ namespace CutTheRope.GameMain
         public float TransporterScale { get; set; } = 1f;
 
         public bool IsDrawnByTransporter { get; set; }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
 
         private static float GetCollisionRadius()
         {

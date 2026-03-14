@@ -7,7 +7,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Represents a pump object that can apply a directional flow and be placed on conveyors.
     /// </summary>
-    internal sealed class Pump : GameObject, ITransporterItem
+    internal sealed class Pump : GameObject, ITransporterItem, ITransporterBindAware
     {
         /// <summary>
         /// Length of the pump flow influence area in world units.
@@ -134,5 +134,10 @@ namespace CutTheRope.GameMain
         public float TransporterScale { get; set; } = 1.0f;
 
         public bool IsDrawnByTransporter { get; set; }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
     }
 }
