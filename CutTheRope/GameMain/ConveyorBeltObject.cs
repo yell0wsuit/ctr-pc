@@ -183,7 +183,6 @@ namespace CutTheRope.GameMain
             {
                 belt.Remove(item);
             }
-            item.IsDrawnByTransporter = false;
         }
 
         /// <summary>
