@@ -14,10 +14,10 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBelt : BaseElement
     {
-        private const float ActiveThreshold = 1f;
-        private const float ManualStopThreshold = 1f;
+        private const float ActiveThreshold = 4f;
+        private const float ManualStopThreshold = 4f;
         private const float ManualMoveSoundDistance = 15f;
-        private const float AlignmentSpeed = 80f;
+        private const float AlignmentSpeed = 320f;
         private const float CenterlineSnapThreshold = 0.01f;
         private const float CenterlineHardSnapDistance = 2f;
         private const float CenterlineReturnFactor = 0.8f;
@@ -236,8 +236,6 @@ namespace CutTheRope.GameMain
             this.velocity = velocity;
             rotationCenterX = -length / 2f;
             rotationCenterY = 0f;
-            transitionDist = height * 0.25f;
-
             RemoveAllChilds();
             BuildVisuals();
         }
@@ -692,7 +690,8 @@ namespace CutTheRope.GameMain
             float transporterHeight = visualRoot.height;
 
             Image endTemplate = CreatePiece(ImgObjConveyorEnd, 34);
-            float capOffset = endTemplate.height * 0.25f;
+            transitionDist = endTemplate.height * 0.25f;
+            float capOffset = transitionDist;
 
             Image middle = CreatePiece(ImgObjConveyorMiddle, 18);
             middle.scaleX = (transporterWidth - 10f) / middle.width;
@@ -820,7 +819,7 @@ namespace CutTheRope.GameMain
             }
 
             objectsDistributed = true;
-            const float minSpacing = 2f;
+            const float minSpacing = 8f;
 
             for (int i = 0; i < boundObjects.Count; i++)
             {
