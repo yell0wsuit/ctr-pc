@@ -530,6 +530,7 @@ namespace CutTheRope.GameMain
                 local.Y >= -0.5f * beltHeight &&
                 local.Y <= 0.5f * beltHeight;
 
+            bool captured = false;
             if (insideBounds)
             {
                 activePointerId = pointerId;
@@ -537,10 +538,13 @@ namespace CutTheRope.GameMain
                 offsetDelta = 0f;
                 needsAlignment = false;
                 ActiveSetTime = (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
-                return true;
+                captured = true;
             }
 
-            return false;
+            // Matches iOS touchDownX:Y:Index: where alignment is canceled
+            // after each manual touch-down attempt, including misses.
+            needsAlignment = false;
+            return captured;
         }
 
         /// <summary>
