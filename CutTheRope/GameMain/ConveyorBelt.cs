@@ -16,7 +16,7 @@ namespace CutTheRope.GameMain
     {
         private const float ActiveThreshold = 4f;
         private const float ManualStopThreshold = 4f;
-        private const float ManualMoveSoundDistance = 15f;
+        private const float ManualMoveSoundDistance = 45f;
         private const float AlignmentSpeed = 320f;
         private const float CenterlineSnapThreshold = 0.01f;
         private const float CenterlineHardSnapDistance = 2f;
