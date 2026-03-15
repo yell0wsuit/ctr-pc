@@ -59,6 +59,11 @@ namespace CutTheRope.Framework.Visual
                 e.drawX = e.x;
                 e.drawY = e.y;
             }
+            if (e.useCustomAnchor)
+            {
+                e.drawX -= e.customAnchorX;
+                e.drawY -= e.customAnchorY;
+            }
             if ((e.anchor & 8) == 0)
             {
                 if ((e.anchor & 16) != 0)
@@ -86,7 +91,14 @@ namespace CutTheRope.Framework.Visual
 
         protected static void RestoreTransformations(BaseElement t)
         {
-            if (t.pushM || t.rotation != 0 || t.scaleX != 1 || t.scaleY != 1 || t.translateX != 0 || t.translateY != 0)
+            if (t.pushM
+                || t.rotation != 0
+                || t.scaleX != 1
+                || t.scaleY != 1
+                || t.translateX != 0
+                || t.translateY != 0
+                || t.skewX != 0
+                || t.skewY != 0)
             {
                 Renderer.PopMatrix();
                 t.pushM = false;
@@ -116,8 +128,13 @@ namespace CutTheRope.Framework.Visual
             rotation = 0f;
             rotationCenterX = 0f;
             rotationCenterY = 0f;
+            customAnchorX = 0f;
+            customAnchorY = 0f;
+            useCustomAnchor = false;
             scaleX = 1f;
             scaleY = 1f;
+            skewX = 0f;
+            skewY = 0f;
             color = RGBAColor.solidOpaqueRGBA;
             translateX = 0f;
             translateY = 0f;
@@ -139,12 +156,13 @@ namespace CutTheRope.Framework.Visual
             CalculateTopLeft(this);
             bool changeScale = scaleX != 1 || scaleY != 1;
             bool changeRotation = rotation != 0;
+            bool changeSkew = skewX != 0 || skewY != 0;
             bool changeTranslate = translateX != 0 || translateY != 0;
-            if (changeScale || changeRotation || changeTranslate)
+            if (changeScale || changeRotation || changeTranslate || changeSkew)
             {
                 Renderer.PushMatrix();
                 pushM = true;
-                if (changeScale || changeRotation)
+                if (changeScale || changeRotation || changeSkew)
                 {
                     float rotationOffsetX = drawX + (width >> 1) + rotationCenterX;
                     float rotationOffsetY = drawY + (height >> 1) + rotationCenterY;
@@ -152,6 +170,10 @@ namespace CutTheRope.Framework.Visual
                     if (changeRotation)
                     {
                         Renderer.Rotate(rotation, 0f, 0f, 1f);
+                    }
+                    if (changeSkew)
+                    {
+                        Renderer.Skew(skewX, skewY);
                     }
                     if (changeScale)
                     {
@@ -307,33 +329,44 @@ namespace CutTheRope.Framework.Visual
 
         public virtual bool HandleAction(ActionData a)
         {
-            if (a.actionName == "ACTION_SET_VISIBLE")
+            if (a.actionName == ACTION_SET_VISIBLE)
             {
                 visible = a.actionSubParam != 0;
             }
-            else if (a.actionName == "ACTION_SET_UPDATEABLE")
+            else if (a.actionName == ACTION_SET_UPDATEABLE)
             {
                 updateable = a.actionSubParam != 0;
             }
-            else if (a.actionName == "ACTION_SET_TOUCHABLE")
+            else if (a.actionName == ACTION_SET_TOUCHABLE)
             {
                 touchable = a.actionSubParam != 0;
             }
-            else if (a.actionName == "ACTION_PLAY_TIMELINE")
+            else if (a.actionName == ACTION_PLAY_TIMELINE)
             {
                 PlayTimeline(a.actionSubParam);
             }
-            else if (a.actionName == "ACTION_PAUSE_TIMELINE")
+            else if (a.actionName == ACTION_PAUSE_TIMELINE)
             {
                 PauseCurrentTimeline();
             }
-            else if (a.actionName == "ACTION_STOP_TIMELINE")
+            else if (a.actionName == ACTION_STOP_TIMELINE)
             {
                 StopCurrentTimeline();
             }
+            else if (a.actionName == ACTION_SET_CUSTOM_ANCHOR)
+            {
+                customAnchorX = a.actionParamFloat;
+                customAnchorY = a.actionSubParamFloat;
+                useCustomAnchor = true;
+            }
+            else if (a.actionName == ACTION_SET_ROTATION_CENTER)
+            {
+                rotationCenterX = a.actionParamFloat;
+                rotationCenterY = a.actionSubParamFloat;
+            }
             else
             {
-                if (!(a.actionName == "ACTION_JUMP_TO_TIMELINE_FRAME"))
+                if (a.actionName != ACTION_JUMP_TO_TIMELINE_FRAME)
                 {
                     return false;
                 }
@@ -620,6 +653,10 @@ namespace CutTheRope.Framework.Visual
 
         public const string ACTION_JUMP_TO_TIMELINE_FRAME = "ACTION_JUMP_TO_TIMELINE_FRAME";
 
+        public const string ACTION_SET_CUSTOM_ANCHOR = "ACTION_SET_CUSTOM_ANCHOR";
+
+        public const string ACTION_SET_ROTATION_CENTER = "ACTION_SET_ROTATION_CENTER";
+
         private bool pushM;
 
         public bool visible;
@@ -648,9 +685,19 @@ namespace CutTheRope.Framework.Visual
 
         public float rotationCenterY;
 
+        public float customAnchorX;
+
+        public float customAnchorY;
+
+        public bool useCustomAnchor;
+
         public float scaleX;
 
         public float scaleY;
+
+        public float skewX;
+
+        public float skewY;
 
         public RGBAColor color;
 

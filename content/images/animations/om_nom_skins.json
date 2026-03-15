@@ -1,0 +1,523 @@
+[
+    {
+        "id": "OM_NOM_ORIGINAL_FLASH",
+        "animationXml": "om_nom_original.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "IdleVariationOne": 1,
+            "IdleVariationTwo": 17,
+            "IdleVariationThree": 12,
+            "Excited": 2,
+            "MouthOpening": 3,
+            "MouthClosing": 4,
+            "Sad": 6,
+            "Chewing": 7,
+            "Sleeping": 9,
+            "Greeting": 18,
+            "IdleToSleep": 8
+        },
+        "followups": {
+            "1": 0,
+            "2": 0,
+            "4": 5,
+            "5": 0,
+            "17": 0,
+            "12": 0,
+            "7": 7,
+            "18": 0,
+            "8": 9
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6, 7, 17, 18, 19, 20, 21, 22, 23],
+        "idleVariants": [1, 17, 12],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
+    },
+    {
+        "id": "OM_NOM_HALLOWEEN",
+        "animationXml": "om_nom_halloween_hat.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "IdleVariationOne": 1,
+            "IdleVariationTwo": 17,
+            "IdleVariationThree": 12,
+            "Excited": 2,
+            "MouthOpening": 3,
+            "MouthClosing": 4,
+            "Sad": 6,
+            "Chewing": 7,
+            "Sleeping": 9,
+            "Greeting": 18,
+            "IdleToSleep": 8
+        },
+        "followups": {
+            "1": 0,
+            "2": 0,
+            "4": 5,
+            "5": 0,
+            "17": 0,
+            "12": 0,
+            "7": 7,
+            "18": 0,
+            "8": 9
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6, 7, 17, 18, 19, 20, 21, 22, 23],
+        "idleVariants": [1, 17, 12],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
+    },
+    {
+        "id": "OM_NOM_XMAS",
+        "animationXml": "om_nom_new_year_hat.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "IdleVariationOne": 1,
+            "IdleVariationTwo": 17,
+            "IdleVariationThree": 12,
+            "Excited": 2,
+            "MouthOpening": 3,
+            "MouthClosing": 4,
+            "Sad": 6,
+            "Chewing": 7,
+            "Sleeping": 9,
+            "Greeting": 18,
+            "IdleToSleep": 8
+        },
+        "followups": {
+            "1": 0,
+            "2": 0,
+            "4": 5,
+            "5": 0,
+            "17": 0,
+            "12": 0,
+            "7": 7,
+            "18": 0,
+            "8": 9
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6, 7, 17, 18, 19, 20, 21, 22, 23],
+        "idleVariants": [1, 17, 12],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
+    },
+    {
+        "id": "OM_NOM_SUPERPOWERS",
+        "animationXml": "om_nom_original.xml",
+        "timelines": {
+            "IdleLoop": 19,
+            "Excited": 20,
+            "MouthOpening": 21,
+            "MouthClosing": 22,
+            "Sad": 29,
+            "Chewing": 23,
+            "Sleeping": 26,
+            "Greeting": 25,
+            "IdleToSleep": 24
+        },
+        "followups": {
+            "20": 19,
+            "22": 28,
+            "28": 19,
+            "23": 23,
+            "25": 19,
+            "24": 26
+        },
+        "slowTimelines": [19, 20, 21, 22, 23],
+        "idleVariants": [],
+        "startWithGreeting": true,
+        "idleToSleepTrimFrames": 27
+    },
+    {
+        "id": "OM_NOM_VIKING",
+        "name": "Medieval",
+        "animationXml": "om_nom_viking.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 7
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_PAINTER",
+        "name": "Artist",
+        "animationXml": "om_nom_painter.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 5,
+            "MouthClosing": 6,
+            "Sad": 7,
+            "Chewing": 8,
+            "Sleeping": 3,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "6": 2,
+            "2": 0,
+            "8": 8,
+            "9": 3
+        },
+        "slowTimelines": [0, 1, 5, 6, 2, 7, 8],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_PIRATE",
+        "name": "Pirate",
+        "animationXml": "om_nom_pirate.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 7
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_PHARAON",
+        "name": "Pharaoh",
+        "animationXml": "om_nom_pharaon.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 7
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_CAESAR",
+        "name": "Caesar",
+        "animationXml": "om_nom_caesar.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 8,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 8
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_PREHISTORIC",
+        "name": "Prehistoric",
+        "animationXml": "om_nom_prehistoric.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "IdleVariationOne": 2,
+            "IdleVariationTwo": 5,
+            "IdleVariationThree": 9,
+            "Excited": 7,
+            "MouthOpening": 10,
+            "MouthClosing": 11,
+            "Sad": 12,
+            "Chewing": 6,
+            "Sleeping": 1,
+            "Greeting": 4,
+            "IdleToSleep": 3
+        },
+        "followups": {
+            "1": 0,
+            "2": 0,
+            "5": 0,
+            "9": 0,
+            "7": 0,
+            "11": 8,
+            "8": 0,
+            "6": 6,
+            "4": 0,
+            "3": 1
+        },
+        "slowTimelines": [0, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        "idleVariants": [2, 5, 9],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterGreeting",
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_DISCO",
+        "name": "Disco",
+        "animationXml": "om_nom_disco.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 8,
+            "IdleToSleep": 7
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "7": 8
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_SHERIF",
+        "name": "Western",
+        "animationXml": "om_nom_sherif.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 7
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_EMPEROR",
+        "name": "China",
+        "animationXml": "om_nom_emperor.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 7
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_INVENTOR",
+        "name": "Industrial",
+        "animationXml": "om_nom_inventor.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 7
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    },
+    {
+        "id": "OM_NOM_CYBORG",
+        "name": "Cyborg",
+        "animationXml": "om_nom_cyborg.xml",
+        "timelines": {
+            "IdleLoop": 0,
+            "Excited": 1,
+            "MouthOpening": 2,
+            "MouthClosing": 3,
+            "Sad": 5,
+            "Chewing": 6,
+            "Sleeping": 7,
+            "IdleToSleep": 9
+        },
+        "followups": {
+            "1": 0,
+            "3": 4,
+            "4": 0,
+            "6": 6,
+            "9": 7
+        },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
+        "idleVariants": [],
+        "idleToSleepTrimFrames": 27,
+        "uniqueSounds": [
+            "MonsterChewing",
+            "MonsterClose",
+            "MonsterOpen",
+            "MonsterSad",
+            "MonsterExcited",
+            "MonsterSleep1",
+            "MonsterSleep2",
+            "MonsterSleep3"
+        ]
+    }
+]

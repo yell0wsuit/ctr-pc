@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
     internal static class Resources
     {
         private static HashSet<string> soundNames_;
+        private static Dictionary<string, string> soundFieldNames_;
         private static HashSet<string> musicNames_;
         private static HashSet<string> fontNames_;
         private static HashSet<string> imageNames_;
@@ -67,6 +68,38 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Resolves a sound identifier such as MonsterExcited to the underlying resource name.
+        /// Accepts either the constant identifier or the resource value.
+        /// </summary>
+        public static bool TryResolveSoundIdentifier(string soundIdentifier, out string soundResourceName)
+        {
+            if (soundNames_ == null || soundFieldNames_ == null)
+            {
+                InitializeSoundNames();
+            }
+
+            if (string.IsNullOrWhiteSpace(soundIdentifier))
+            {
+                soundResourceName = null;
+                return false;
+            }
+
+            if (soundFieldNames_.TryGetValue(soundIdentifier, out soundResourceName))
+            {
+                return true;
+            }
+
+            if (soundNames_.Contains(soundIdentifier))
+            {
+                soundResourceName = soundIdentifier;
+                return true;
+            }
+
+            soundResourceName = null;
+            return false;
+        }
+
+        /// <summary>
         /// Checks if a resource name is music.
         /// </summary>
         public static bool IsMusic(string resourceName)
@@ -113,8 +146,20 @@ namespace CutTheRope.GameMain
                 .Select(f => (string)f.GetValue(null))];
         }
 
+        private static Dictionary<string, string> NameMapFrom(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type)
+        {
+            return type.GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Where(f => f.IsLiteral)
+                .ToDictionary(f => f.Name, f => (string)f.GetValue(null));
+        }
+
         private static void InitializeImageNames() { imageNames_ = NamesFrom(typeof(Img)); }
-        private static void InitializeSoundNames() { soundNames_ = NamesFrom(typeof(Snd)); }
+        private static void InitializeSoundNames()
+        {
+            soundNames_ = NamesFrom(typeof(Snd));
+            soundFieldNames_ = NameMapFrom(typeof(Snd));
+        }
         private static void InitializeMusicNames() { musicNames_ = NamesFrom(typeof(Music)); }
         private static void InitializeFontNames() { fontNames_ = NamesFrom(typeof(Fnt)); }
 
@@ -233,8 +278,13 @@ namespace CutTheRope.GameMain
             public const string ObjStarNight = "obj_star_night";
             public const string HudStar = "hud_star";
             public const string CharAnimations = "char_animations";
+            public const string CharAnimationsSmooth = "char_animations_smooth";
             public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string FxSleep = "fx_sleep";
+            public const string FxBubbles = "fx_bubbles";
+            public const string HatHalloween = "hat_halloween";
+            public const string HatXmas = "hat_xmas";
+            public const string CharAnimationsPrehistoric = "char_animations_body_prehistoric";
             public const string ObjHookRegulated = "obj_hook_regulated";
             public const string ObjHookMovable = "obj_hook_movable";
             public const string ObjGun = "obj_gun";
@@ -432,6 +482,8 @@ namespace CutTheRope.GameMain
             public const string MonsterClose = "monster_close";
             public const string MonsterOpen = "monster_open";
             public const string MonsterSad = "monster_sad";
+            public const string MonsterExcited = "monster_excited";
+            public const string MonsterGreeting = "monster_greeting";
             public const string Ring = "ring";
             public const string RopeBleak1 = "rope_bleak_1";
             public const string RopeBleak2 = "rope_bleak_2";
@@ -501,6 +553,107 @@ namespace CutTheRope.GameMain
             public const string ExpAntsTakeCandy = "ants_take_candy";
             public const string ExpAntsDropCandy = "ants_drop_candy";
             public const string ExpBambooChute = "bamboo_chutes_4_5";
+
+            // CTR Time Travel sounds
+            public const string TTArtistChewing = "Artist_chewing";
+            public const string TTArtistExcited = "Artist_excited";
+            public const string TTArtistGreeting = "Artist_greeting";
+            public const string TTArtistMouthClose = "Artist_mouthClose";
+            public const string TTArtistMouthOpen = "Artist_mouthOpen";
+            public const string TTArtistSad = "Artist_sad";
+            public const string TTArtistSleep01 = "Artist_sleep01";
+            public const string TTArtistSleep02 = "Artist_sleep02";
+            public const string TTArtistSleep03 = "Artist_sleep03";
+            public const string TTCaesarChewing = "Caesar_chewing";
+            public const string TTCaesarExcited = "Caesar_excited";
+            public const string TTCaesarGreeting = "Caesar_greeting";
+            public const string TTCaesarMouthClose = "Caesar_mouthClose";
+            public const string TTCaesarMouthOpen = "Caesar_mouthOpen";
+            public const string TTCaesarSad = "Caesar_sad";
+            public const string TTCaesarSleep01 = "Caesar_sleep01";
+            public const string TTCaesarSleep02 = "Caesar_sleep02";
+            public const string TTCaesarSleep03 = "Caesar_sleep03";
+            public const string TTDiscoChewing = "Disco_chewing";
+            public const string TTDiscoExcited = "Disco_excited";
+            public const string TTDiscoGreeting = "Disco_greeting";
+            public const string TTDiscoMouthClose = "Disco_mouthClose";
+            public const string TTDiscoMouthOpen = "Disco_mouthOpen";
+            public const string TTDiscoSad = "Disco_sad";
+            public const string TTDiscoSleep01 = "Disco_sleep01";
+            public const string TTDiscoSleep02 = "Disco_sleep02";
+            public const string TTDiscoSleep03 = "Disco_sleep03";
+            public const string TTMedievalChewing = "Medieval_chewing";
+            public const string TTMedievalExcited = "Medieval_excited";
+            public const string TTMedievalGreeting = "Medieval_greeting";
+            public const string TTMedievalMouthClose = "Medieval_mouthClose";
+            public const string TTMedievalMouthOpen = "Medieval_mouthOpen";
+            public const string TTMedievalSad = "Medieval_sad";
+            public const string TTMedievalSleep01 = "Medieval_sleep01";
+            public const string TTMedievalSleep02 = "Medieval_sleep02";
+            public const string TTMedievalSleep03 = "Medieval_sleep03";
+            public const string TTPharaohChewing = "Pharaoh_chewing";
+            public const string TTPharaohExcited = "Pharaoh_excited";
+            public const string TTPharaohGreeting = "Pharaoh_greeting";
+            public const string TTPharaohMouthClose = "Pharaoh_mouthClose";
+            public const string TTPharaohMouthOpen = "Pharaoh_mouthOpen";
+            public const string TTPharaohSad = "Pharaoh_sad";
+            public const string TTPharaohSleep01 = "Pharaoh_sleep01";
+            public const string TTPharaohSleep02 = "Pharaoh_sleep02";
+            public const string TTPharaohSleep03 = "Pharaoh_sleep03";
+            public const string TTPirateChewing = "Pirate_chewing";
+            public const string TTPirateExcited = "Pirate_excited";
+            public const string TTPirateGreeting = "Pirate_greeting";
+            public const string TTPirateMouthClose = "Pirate_mouthClose";
+            public const string TTPirateMouthOpen = "Pirate_mouthOpen";
+            public const string TTPirateSad = "Pirate_sad";
+            public const string TTPirateSleep01 = "Pirate_sleep01";
+            public const string TTPirateSleep02 = "Pirate_sleep02";
+            public const string TTPirateSleep03 = "Pirate_sleep03";
+            public const string TTPrehistoricChewing = "Prehistoric_chewing";
+            public const string TTPrehistoricExcited = "Prehistoric_excited";
+            public const string TTPrehistoricGreeting = "Prehistoric_greeting";
+            public const string TTPrehistoricMouthClose = "Prehistoric_mouthClose";
+            public const string TTPrehistoricMouthOpen = "Prehistoric_mouthOpen";
+            public const string TTPrehistoricSad = "Prehistoric_sad";
+            public const string TTPrehistoricSleep01 = "Prehistoric_sleep01";
+            public const string TTPrehistoricSleep02 = "Prehistoric_sleep02";
+            public const string TTPrehistoricSleep03 = "Prehistoric_sleep03";
+            public const string TTWesternChewing = "Western_chewing";
+            public const string TTWesternExcited = "Western_excited";
+            public const string TTWesternGreeting = "Western_greeting";
+            public const string TTWesternMouthClose = "Western_mouthClose";
+            public const string TTWesternMouthOpen = "Western_mouthOpen";
+            public const string TTWesternSad = "Western_sad";
+            public const string TTWesternSleep01 = "Western_sleep01";
+            public const string TTWesternSleep02 = "Western_sleep02";
+            public const string TTWesternSleep03 = "Western_sleep03";
+            public const string TTChinaChewing = "China_chewing";
+            public const string TTChinaExcited = "China_excited";
+            public const string TTChinaGreeting = "China_greeting";
+            public const string TTChinaMouthClose = "China_mouthClose";
+            public const string TTChinaMouthOpen = "China_mouthOpen";
+            public const string TTChinaSad = "China_sad";
+            public const string TTChinaSleep01 = "China_sleep01";
+            public const string TTChinaSleep02 = "China_sleep02";
+            public const string TTChinaSleep03 = "China_sleep03";
+            public const string TTIndustrialChewing = "Industrial_chewing";
+            public const string TTIndustrialExcited = "Industrial_excited";
+            public const string TTIndustrialGreeting = "Industrial_greeting";
+            public const string TTIndustrialMouthClose = "Industrial_mouthClose";
+            public const string TTIndustrialMouthOpen = "Industrial_mouthOpen";
+            public const string TTIndustrialSad = "Industrial_sad";
+            public const string TTIndustrialSleep01 = "Industrial_sleep_01";
+            public const string TTIndustrialSleep02 = "Industrial_sleep_02";
+            public const string TTIndustrialSleep03 = "Industrial_sleep_03";
+            public const string TTCyborgChewing = "Cyborg_chewing";
+            public const string TTCyborgExcited = "Cyborg_excited";
+            public const string TTCyborgGreeting = "Cyborg_greeting";
+            public const string TTCyborgMouthClose = "Cyborg_mouthClose";
+            public const string TTCyborgMouthOpen = "Cyborg_mouthOpen";
+            public const string TTCyborgSad = "Cyborg_sad";
+            public const string TTCyborgSleep01 = "Cyborg_sleep01";
+            public const string TTCyborgSleep02 = "Cyborg_sleep02";
+            public const string TTCyborgSleep03 = "Cyborg_sleep03";
         }
 
         /// <summary>

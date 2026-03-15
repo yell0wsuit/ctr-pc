@@ -61,6 +61,21 @@ namespace CutTheRope.Helpers
         public static readonly string BackgroundsDirectory = Path.Combine(ImagesDirectory, "backgrounds");
 
         /// <summary>
+        /// Subdirectory for flash animation JSON files.
+        /// </summary>
+        public static readonly string AnimationsDirectory = Path.Combine(ImagesDirectory, "animations");
+
+        /// <summary>
+        /// Gets the absolute filesystem path to a flash animation XML file.
+        /// </summary>
+        /// <param name="fileName">The XML file name, including extension.</param>
+        /// <returns>The absolute path to the animation XML file.</returns>
+        public static string GetAnimationXmlAbsolutePath(string fileName)
+        {
+            return Path.Combine(GetContentRootAbsolute(), AnimationsDirectory, fileName);
+        }
+
+        /// <summary>
         /// The menu strings JSON filename.
         /// </summary>
         public const string MenuStringsFile = "menu_strings.json";

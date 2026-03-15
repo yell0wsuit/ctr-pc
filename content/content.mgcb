@@ -2952,3 +2952,669 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/fx_sleep.png
+
+#begin images/char_animations_smooth.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/char_animations_smooth.png
+
+#begin images/fx_bubbles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/fx_bubbles.png
+
+#begin images/char_animations_body_prehistoric.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/char_animations_body_prehistoric.png
+
+#begin images/hat_halloween.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/hat_halloween.png
+
+#begin images/hat_xmas.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/hat_xmas.png
+
+#begin sounds/sfx/Artist_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_chewing.wav
+
+#begin sounds/sfx/Artist_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_excited.wav
+
+#begin sounds/sfx/Artist_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_greeting.wav
+
+#begin sounds/sfx/Artist_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_mouthClose.wav
+
+#begin sounds/sfx/Artist_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_mouthOpen.wav
+
+#begin sounds/sfx/Artist_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_sad.wav
+
+#begin sounds/sfx/Artist_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_sleep01.wav
+
+#begin sounds/sfx/Artist_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_sleep02.wav
+
+#begin sounds/sfx/Artist_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Artist_sleep03.wav
+
+#begin sounds/sfx/Caesar_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_chewing.wav
+
+#begin sounds/sfx/Caesar_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_excited.wav
+
+#begin sounds/sfx/Caesar_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_greeting.wav
+
+#begin sounds/sfx/Caesar_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_mouthClose.wav
+
+#begin sounds/sfx/Caesar_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_mouthOpen.wav
+
+#begin sounds/sfx/Caesar_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_sad.wav
+
+#begin sounds/sfx/Caesar_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_sleep01.wav
+
+#begin sounds/sfx/Caesar_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_sleep02.wav
+
+#begin sounds/sfx/Caesar_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Caesar_sleep03.wav
+
+#begin sounds/sfx/Disco_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_chewing.wav
+
+#begin sounds/sfx/Disco_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_excited.wav
+
+#begin sounds/sfx/Disco_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_greeting.wav
+
+#begin sounds/sfx/Disco_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_mouthClose.wav
+
+#begin sounds/sfx/Disco_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_mouthOpen.wav
+
+#begin sounds/sfx/Disco_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_sad.wav
+
+#begin sounds/sfx/Disco_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_sleep01.wav
+
+#begin sounds/sfx/Disco_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_sleep02.wav
+
+#begin sounds/sfx/Disco_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Disco_sleep03.wav
+
+#begin sounds/sfx/Medieval_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_chewing.wav
+
+#begin sounds/sfx/Medieval_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_excited.wav
+
+#begin sounds/sfx/Medieval_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_greeting.wav
+
+#begin sounds/sfx/Medieval_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_mouthClose.wav
+
+#begin sounds/sfx/Medieval_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_mouthOpen.wav
+
+#begin sounds/sfx/Medieval_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_sad.wav
+
+#begin sounds/sfx/Medieval_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_sleep01.wav
+
+#begin sounds/sfx/Medieval_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_sleep02.wav
+
+#begin sounds/sfx/Medieval_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Medieval_sleep03.wav
+
+#begin sounds/sfx/Pharaoh_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_chewing.wav
+
+#begin sounds/sfx/Pharaoh_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_excited.wav
+
+#begin sounds/sfx/Pharaoh_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_greeting.wav
+
+#begin sounds/sfx/Pharaoh_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_mouthClose.wav
+
+#begin sounds/sfx/Pharaoh_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_mouthOpen.wav
+
+#begin sounds/sfx/Pharaoh_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_sad.wav
+
+#begin sounds/sfx/Pharaoh_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_sleep01.wav
+
+#begin sounds/sfx/Pharaoh_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_sleep02.wav
+
+#begin sounds/sfx/Pharaoh_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pharaoh_sleep03.wav
+
+#begin sounds/sfx/Pirate_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_chewing.wav
+
+#begin sounds/sfx/Pirate_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_excited.wav
+
+#begin sounds/sfx/Pirate_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_greeting.wav
+
+#begin sounds/sfx/Pirate_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_mouthClose.wav
+
+#begin sounds/sfx/Pirate_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_mouthOpen.wav
+
+#begin sounds/sfx/Pirate_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_sad.wav
+
+#begin sounds/sfx/Pirate_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_sleep01.wav
+
+#begin sounds/sfx/Pirate_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_sleep02.wav
+
+#begin sounds/sfx/Pirate_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Pirate_sleep03.wav
+
+#begin sounds/sfx/Prehistoric_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_chewing.wav
+
+#begin sounds/sfx/Prehistoric_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_excited.wav
+
+#begin sounds/sfx/Prehistoric_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_greeting.wav
+
+#begin sounds/sfx/Prehistoric_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_mouthClose.wav
+
+#begin sounds/sfx/Prehistoric_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_mouthOpen.wav
+
+#begin sounds/sfx/Prehistoric_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_sad.wav
+
+#begin sounds/sfx/Prehistoric_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_sleep01.wav
+
+#begin sounds/sfx/Prehistoric_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_sleep02.wav
+
+#begin sounds/sfx/Prehistoric_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Prehistoric_sleep03.wav
+
+#begin sounds/sfx/monster_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/monster_excited.wav
+
+#begin sounds/sfx/monster_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/monster_greeting.wav
+
+#begin sounds/sfx/China_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_chewing.wav
+
+#begin sounds/sfx/China_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_excited.wav
+
+#begin sounds/sfx/China_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_greeting.wav
+
+#begin sounds/sfx/China_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_mouthClose.wav
+
+#begin sounds/sfx/China_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_mouthOpen.wav
+
+#begin sounds/sfx/China_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_sad.wav
+
+#begin sounds/sfx/China_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_sleep01.wav
+
+#begin sounds/sfx/China_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_sleep02.wav
+
+#begin sounds/sfx/China_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/China_sleep03.wav
+
+#begin sounds/sfx/Cyborg_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_chewing.wav
+
+#begin sounds/sfx/Cyborg_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_excited.wav
+
+#begin sounds/sfx/Cyborg_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_greeting.wav
+
+#begin sounds/sfx/Cyborg_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_mouthClose.wav
+
+#begin sounds/sfx/Cyborg_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_mouthOpen.wav
+
+#begin sounds/sfx/Cyborg_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_sad.wav
+
+#begin sounds/sfx/Cyborg_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_sleep01.wav
+
+#begin sounds/sfx/Cyborg_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_sleep02.wav
+
+#begin sounds/sfx/Cyborg_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Cyborg_sleep03.wav
+
+#begin sounds/sfx/Industrial_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_chewing.wav
+
+#begin sounds/sfx/Industrial_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_excited.wav
+
+#begin sounds/sfx/Industrial_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_greeting.wav
+
+#begin sounds/sfx/Industrial_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_mouthClose.wav
+
+#begin sounds/sfx/Industrial_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_mouthOpen.wav
+
+#begin sounds/sfx/Industrial_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_sad.wav
+
+#begin sounds/sfx/Industrial_sleep_01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_sleep_01.wav
+
+#begin sounds/sfx/Industrial_sleep_02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_sleep_02.wav
+
+#begin sounds/sfx/Industrial_sleep_03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Industrial_sleep_03.wav
+
+#begin sounds/sfx/Western_chewing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_chewing.wav
+
+#begin sounds/sfx/Western_excited.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_excited.wav
+
+#begin sounds/sfx/Western_greeting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_greeting.wav
+
+#begin sounds/sfx/Western_mouthClose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_mouthClose.wav
+
+#begin sounds/sfx/Western_mouthOpen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_mouthOpen.wav
+
+#begin sounds/sfx/Western_sad.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_sad.wav
+
+#begin sounds/sfx/Western_sleep01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_sleep01.wav
+
+#begin sounds/sfx/Western_sleep02.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_sleep02.wav
+
+#begin sounds/sfx/Western_sleep03.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/Western_sleep03.wav

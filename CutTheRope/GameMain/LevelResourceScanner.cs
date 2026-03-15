@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -147,7 +148,13 @@ namespace CutTheRope.GameMain
             if (nightLevel)
             {
                 _ = resources.Add(Resources.Img.ObjStarNight);
-                _ = resources.Add(Resources.Img.CharAnimationsSleeping);
+
+                int skinIndex = OmNomSkinRegistry.GetSelectedSkinIndex();
+                if (OmNomSkinRegistry.IsClassicSkin(skinIndex))
+                {
+                    _ = resources.Add(Resources.Img.CharAnimationsSleeping);
+                }
+
                 _ = resources.Add(Resources.Img.FxSleep);
             }
             if (waterLevel)
@@ -268,9 +275,23 @@ namespace CutTheRope.GameMain
         /// <param name="pack">The active pack index.</param>
         private static void AddTargetResources(HashSet<string> resources, int pack)
         {
-            _ = resources.Add(Resources.Img.CharAnimations);
-            _ = resources.Add(Resources.Img.CharAnimations2);
-            _ = resources.Add(Resources.Img.CharAnimations3);
+            int skinIndex = OmNomSkinRegistry.GetSelectedSkinIndex();
+
+            if (OmNomSkinRegistry.IsClassicSkin(skinIndex))
+            {
+                _ = resources.Add(Resources.Img.CharAnimations);
+                _ = resources.Add(Resources.Img.CharAnimations2);
+                _ = resources.Add(Resources.Img.CharAnimations3);
+            }
+            else
+            {
+                OmNomSkinDefinition skin = OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex);
+                _ = string.Equals(skin.Id, "OM_NOM_PREHISTORIC", StringComparison.Ordinal)
+                    ? resources.Add(Resources.Img.CharAnimationsPrehistoric)
+                    : resources.Add(Resources.Img.CharAnimationsSmooth);
+            }
+
+            _ = resources.Add(Resources.Img.FxBubbles);
             _ = resources.Add(Resources.Img.CharSupports);
             _ = resources.Add(PackConfig.GetSupportResourceName(pack));
         }

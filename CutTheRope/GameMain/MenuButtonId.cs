@@ -41,6 +41,7 @@ namespace CutTheRope.GameMain
         RopeSelect,
         BackFromCandySelect,
         UpdateDownload,
+        OmNomSelect,
     }
 
     /// <summary>
@@ -220,11 +221,17 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static readonly MenuButtonId UpdateDownload = MenuButton.UpdateDownload;
 
+        /// <summary>
+        /// Opens Om Nom skin selection.
+        /// </summary>
+        public static readonly MenuButtonId OmNomSelect = MenuButton.OmNomSelect;
+
         // Dynamic button IDs encode their type in the high byte and index in the low 24 bits.
         private const int LevelTag = 1 << 24;
         private const int PackTag = 2 << 24;
         private const int CandySlotTag = 3 << 24;
         private const int RopeSlotTag = 4 << 24;
+        private const int OmNomSlotTag = 5 << 24;
         private const int IndexMask = 0x00FFFFFF;
 
         /// <summary>
@@ -268,6 +275,16 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Creates an identifier for an Om Nom skin slot button.
+        /// </summary>
+        /// <param name="omNomIndex">Zero-based Om Nom skin index.</param>
+        /// <returns>A tagged menu button identifier for the given Om Nom skin slot.</returns>
+        public static MenuButtonId ForOmNomSlot(int omNomIndex)
+        {
+            return new(OmNomSlotTag | omNomIndex);
+        }
+
+        /// <summary>
         /// Determines whether this identifier represents a dynamic level button.
         /// </summary>
         /// <returns><see langword="true"/> when this is a level button; otherwise <see langword="false"/>.</returns>
@@ -304,6 +321,15 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Determines whether this identifier represents a dynamic Om Nom skin slot button.
+        /// </summary>
+        /// <returns><see langword="true"/> when this is an Om Nom skin slot button; otherwise <see langword="false"/>.</returns>
+        public bool IsOmNomSlotButton()
+        {
+            return (Value >> 24) == 5;
+        }
+
+        /// <summary>
         /// Gets the zero-based level index when this identifier is a level button.
         /// </summary>
         /// <returns>The level index, or <c>-1</c> when this is not a level button.</returns>
@@ -337,6 +363,15 @@ namespace CutTheRope.GameMain
         public int GetRopeIndex()
         {
             return IsRopeSlotButton() ? Value & IndexMask : -1;
+        }
+
+        /// <summary>
+        /// Gets the zero-based Om Nom skin index when this identifier is an Om Nom slot button.
+        /// </summary>
+        /// <returns>The Om Nom skin index, or <c>-1</c> when this is not an Om Nom slot button.</returns>
+        public int GetOmNomIndex()
+        {
+            return IsOmNomSlotButton() ? Value & IndexMask : -1;
         }
 
         /// <summary>

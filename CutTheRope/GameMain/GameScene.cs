@@ -68,6 +68,7 @@ namespace CutTheRope.GameMain
         public void ShowGreeting()
         {
             targetAnimationController?.PlayGreeting();
+            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting);
             if (SpecialEvents.IsXmas)
             {
                 CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
@@ -445,6 +446,12 @@ namespace CutTheRope.GameMain
         private float sleepPulseBaseY;
 
         private float sleepSoundTimer;
+
+        private bool nightSleepOverlayVisible;
+
+        private float targetBaseScaleX = 1f;
+
+        private float targetBaseScaleY = 1f;
 
         private readonly bool[] dragging = new bool[5];
 

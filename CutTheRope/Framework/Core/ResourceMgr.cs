@@ -168,6 +168,13 @@ namespace CutTheRope.Framework.Core
         public virtual CTRTexture2D LoadTextureImageInfo(string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
             TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
+            float aspectRatioScaleX = GetAspectRatioScaleX();
+            (scaleX, scaleY) = ResolveTextureScales(
+                scaleX,
+                scaleY,
+                atlasConfig?.ScaleRes,
+                aspectRatioScaleX);
+
             ParsedTexturePackerAtlas parsedAtlas = LoadTexturePackerAtlas(atlasConfig, resourceName);
 
             bool useAntialias = atlasConfig?.UseAntialias ?? true;
@@ -197,6 +204,26 @@ namespace CutTheRope.Framework.Core
             ApplyTexturePackerInfo(texture2D, parsedAtlas, isWvga, scaleX, scaleY);
 
             return texture2D;
+        }
+
+        private static (float scaleX, float scaleY) ResolveTextureScales(
+            float defaultScaleX,
+            float defaultScaleY,
+            int? scaleRes,
+            float aspectRatioScaleX)
+        {
+            if (scaleRes == 0 && aspectRatioScaleX > 0f)
+            {
+                // iOS legacy behavior: scaleRes=0 applies aspect-ratio scaling on X only.
+                return (aspectRatioScaleX, 1f);
+            }
+
+            return (defaultScaleX, defaultScaleY);
+        }
+
+        protected virtual float GetAspectRatioScaleX()
+        {
+            return 1f;
         }
 
         protected virtual TextureAtlasConfig GetTextureAtlasConfig(string resourceName)

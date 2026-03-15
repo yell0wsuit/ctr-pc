@@ -14,6 +14,9 @@ namespace CutTheRope.GameMain
         /// <summary>Second idle variation.</summary>
         IdleVariationTwo,
 
+        /// <summary>Third idle variation.</summary>
+        IdleVariationThree,
+
         /// <summary>Excited reaction animation.</summary>
         Excited,
 
@@ -28,6 +31,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Sad reaction animation.</summary>
         Sad,
+
+        /// <summary>Transition from idle loop into sleeping.</summary>
+        IdleToSleep,
 
         /// <summary>Sleeping animation.</summary>
         Sleeping,

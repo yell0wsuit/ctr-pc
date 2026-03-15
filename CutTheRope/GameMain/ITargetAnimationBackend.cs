@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
@@ -11,6 +13,12 @@ namespace CutTheRope.GameMain
         /// <summary>Gets the primary Om Nom gameplay object.</summary>
         GameObject TargetObject { get; }
 
+        /// <summary>Gets the default horizontal scale that should be applied to the target object.</summary>
+        float GetTargetBaseScaleX();
+
+        /// <summary>Gets the default vertical scale that should be applied to the target object.</summary>
+        float GetTargetBaseScaleY();
+
         /// <summary>
         /// Initializes backend timeline state and delegates.
         /// </summary>
@@ -22,6 +30,15 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="state">Animation state to play.</param>
         void Play(TargetAnimationState state);
+
+        /// <summary>
+        /// Plays a backend-specific random idle variation.
+        /// </summary>
+        /// <param name="rng">Inclusive random function with signature <c>(min, max) => value</c>.</param>
+        void PlayRandomIdleVariant(Func<int, int, int> rng);
+
+        /// <summary>Whether this skin plays the greeting animation on initialization instead of idle.</summary>
+        bool StartsWithGreeting { get; }
 
         /// <summary>
         /// Checks whether the requested target animation state is currently active.
@@ -45,13 +62,25 @@ namespace CutTheRope.GameMain
         /// <summary>Advances all sleep overlay animations by <paramref name="delta"/> seconds.</summary>
         void UpdateSleepOverlays(float delta);
 
+        /// <summary>Advances backend-specific non-sleep overlays by <paramref name="delta"/> seconds.</summary>
+        void UpdateAdditionalOverlays(float delta);
+
         /// <summary>Moves all sleep overlay animations to the given position.</summary>
         void SyncSleepOverlayPosition(float x, float y);
+
+        /// <summary>Updates the spawn position used by backend-specific non-sleep overlays.</summary>
+        void SyncAdditionalOverlayPosition(float x, float y);
 
         /// <summary>Sets visibility and playback state of all sleep overlay animations.</summary>
         void SetSleepOverlayVisible(bool visible);
 
         /// <summary>Draws all sleep overlay animations that are currently visible.</summary>
         void DrawSleepOverlays();
+
+        /// <summary>
+        /// Whether the backend handles the sleep breathing pulse internally
+        /// (so GameScene should not apply its own scale/rotationCenter pulse).
+        /// </summary>
+        bool HandlesOwnSleepPulse { get; }
     }
 }

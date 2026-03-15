@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
@@ -85,8 +86,27 @@ namespace CutTheRope.GameMain
                 AtlasPath = ContentPaths.GetImagePath(resourceName, ".json"),
                 ResourceName = resourceName,
                 UseAntialias = true,
-                CenterOffsets = false
+                CenterOffsets = false,
+                ScaleRes = null
             };
         }
+
+        protected override float GetAspectRatioScaleX()
+        {
+            int width = Global.ScreenSizeManager.CurrentSize.Width;
+            int height = Global.ScreenSizeManager.CurrentSize.Height;
+            if (width <= 0 || height <= 0)
+            {
+                return 1f;
+            }
+
+            // iOS ScreenSizeMgr derives ASPECT_RATIO from logical 640x960 fit scale.
+            // This mirrors min(scaleX, scaleY) against that logical reference size.
+            float scaleByWidth = width / 640f;
+            float scaleByHeight = height / 960f;
+            float scale = MathF.Min(scaleByWidth, scaleByHeight);
+            return scale > 0f ? scale : 1f;
+        }
+
     }
 }
