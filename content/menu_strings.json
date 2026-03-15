@@ -1042,5 +1042,11 @@
     },
     "OM_NOM_BTN": {
         "en": "Om Nom"
+    },
+    "OUTDATED_WINDOWS_TITLE": {
+        "en": "Outdated Windows version detected!"
+    },
+    "OUTDATED_WINDOWS_TEXT": {
+        "en": "This Windows version is not officially supported. Bugs and crashes may occur.\nPlease do not open a GitHub issue or ask for help for problems caused by this configuration."
     }
 }
