@@ -165,7 +165,12 @@ namespace CutTheRope.GameMain
             }
 
             bool isSleeping = isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered;
-            if (isSleeping)
+            bool shouldShowSleepOverlay = isSleeping
+                && targetAnimationController != null
+                && targetAnimationController.IsSleepingAnimationPlaying();
+            SetNightSleepVisibility(shouldShowSleepOverlay);
+
+            if (shouldShowSleepOverlay)
             {
                 targetAnimationController?.UpdateSleepOverlays(delta);
                 targetAnimationController?.SyncSleepOverlayPosition(targetObject.x, targetObject.y);
@@ -184,8 +189,9 @@ namespace CutTheRope.GameMain
                     }
                 }
 
-                // Apply breathing pulse effect using sine wave
-                if (sleepPulseActive)
+                // Apply breathing pulse effect using sine wave (classic backend only;
+                // the Flash backend has its own sleeping timeline that includes the pulse).
+                if (sleepPulseActive && targetAnimationController?.HandlesOwnSleepPulse != true)
                 {
                     float sinValue = MathF.Sin(sleepPulseTime * 2f);
                     float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
@@ -193,8 +199,13 @@ namespace CutTheRope.GameMain
                     if (targetAnimationController?.IsSleepingAnimationPlaying() == true)
                     {
                         targetObject.rotationCenterY = 86f;
-                        targetObject.scaleY = scaleY;
+                        targetObject.scaleX = targetBaseScaleX;
+                        targetObject.scaleY = targetBaseScaleY * scaleY;
                     }
+                    sleepPulseTime += delta;
+                }
+                else if (sleepPulseActive)
+                {
                     sleepPulseTime += delta;
                 }
 
@@ -202,7 +213,7 @@ namespace CutTheRope.GameMain
                 if (sleepSoundTimer > NightSleepSoundInterval)
                 {
                     sleepSoundTimer = 0f;
-                    CTRSoundMgr.PlayRandomSound(
+                    CTRSoundMgr.PlayRandomOmNomSound(
                         Resources.Snd.MonsterSleep1,
                         Resources.Snd.MonsterSleep2,
                         Resources.Snd.MonsterSleep3);
@@ -255,10 +266,10 @@ namespace CutTheRope.GameMain
                 sleepPulseDelay = 0f;
                 sleepSoundTimer = 0f;
                 sleepPulseBaseY = 0f;
-                if (targetObject != null)
+                if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
                 {
-                    targetObject.scaleX = 1f;
-                    targetObject.scaleY = 1f;
+                    targetObject.scaleX = targetBaseScaleX;
+                    targetObject.scaleY = targetBaseScaleY;
                     targetObject.rotationCenterX = 0f;
                     targetObject.rotationCenterY = 0f;
                 }
@@ -278,9 +289,9 @@ namespace CutTheRope.GameMain
             sleepPulseTime = 0f;
             sleepPulseDelay = targetAnimationController?.GetSleepPulseDelaySeconds() ?? 0f;
             sleepSoundTimer = 0f;
-            SetNightSleepVisibility(true);
+            SetNightSleepVisibility(false);
             targetAnimationController?.PlaySleeping();
-            if (targetObject != null)
+            if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
             {
                 sleepPulseBaseY = GetSleepPulsePivotOffsetY(targetObject.height);
                 targetObject.rotationCenterY = sleepPulseBaseY;
@@ -293,6 +304,12 @@ namespace CutTheRope.GameMain
         /// <param name="visible">Whether the zzz animations should be visible.</param>
         private void SetNightSleepVisibility(bool visible)
         {
+            if (nightSleepOverlayVisible == visible)
+            {
+                return;
+            }
+
+            nightSleepOverlayVisible = visible;
             targetAnimationController?.SetSleepOverlayVisible(visible);
         }
 

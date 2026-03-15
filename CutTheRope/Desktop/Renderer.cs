@@ -263,6 +263,27 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
+        /// Applies a skew transformation that matches the legacy OpenGL matrix used by iOS.
+        /// </summary>
+        public static void Skew(float skewXDegrees, float skewYDegrees)
+        {
+            float skewX = MathHelper.ToRadians(skewXDegrees);
+            float skewY = MathHelper.ToRadians(skewYDegrees);
+            float tanX = MathF.Tan(skewX);
+            float tanY = MathF.Tan(skewY);
+            float cosX = MathF.Cos(skewX);
+            float cosY = MathF.Cos(skewY);
+
+            Matrix skew = Matrix.Identity;
+            skew.M11 = cosY;
+            skew.M12 = tanY * cosY;
+            skew.M21 = -tanX * cosX;
+            skew.M22 = cosX;
+
+            s_matrixModelView = skew * s_matrixModelView;
+        }
+
+        /// <summary>
         /// Applies a translation transformation to the current model-view matrix.
         /// Z component is ignored for 2D rendering.
         /// </summary>

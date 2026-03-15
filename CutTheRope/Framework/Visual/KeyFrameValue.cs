@@ -8,6 +8,7 @@ namespace CutTheRope.Framework.Visual
             scale = new ScaleParams();
             pos = new PosParams();
             rotation = new RotationParams();
+            skew = new SkewParams();
             color = new ColorParams();
         }
 
@@ -16,6 +17,8 @@ namespace CutTheRope.Framework.Visual
         public ScaleParams scale;
 
         public RotationParams rotation;
+
+        public SkewParams skew;
 
         public ColorParams color;
 

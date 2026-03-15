@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework;
@@ -99,6 +100,18 @@ namespace CutTheRope.GameMain
         public GameObject TargetObject => target;
 
         /// <inheritdoc />
+        public float GetTargetBaseScaleX()
+        {
+            return 1f;
+        }
+
+        /// <inheritdoc />
+        public float GetTargetBaseScaleY()
+        {
+            return 1f;
+        }
+
+        /// <inheritdoc />
         public void Initialize(ITimelineDelegate timelineDelegate)
         {
             target.PlayTimeline(IdleLoopTimeline);
@@ -134,6 +147,8 @@ namespace CutTheRope.GameMain
                         target.PlayTimeline(IdleVariationTwoTimeline);
                     }
                     break;
+                case TargetAnimationState.IdleVariationThree:
+                    break;
                 case TargetAnimationState.Excited:
                     target.PlayAnimationtimeline(Resources.Img.CharAnimations2, ExcitedTimeline);
                     break;
@@ -148,6 +163,8 @@ namespace CutTheRope.GameMain
                     break;
                 case TargetAnimationState.Sad:
                     target.PlayAnimationtimeline(Resources.Img.CharAnimations3, SadTimeline);
+                    break;
+                case TargetAnimationState.IdleToSleep:
                     break;
                 case TargetAnimationState.Sleeping:
                     if (isNightLevel)
@@ -171,32 +188,41 @@ namespace CutTheRope.GameMain
         }
 
         /// <inheritdoc />
+        public void PlayRandomIdleVariant(Func<int, int, int> rng)
+        {
+            if (rng(0, 1) == 1)
+            {
+                Play(TargetAnimationState.IdleVariationOne);
+            }
+            else
+            {
+                Play(TargetAnimationState.IdleVariationTwo);
+            }
+        }
+
+        /// <inheritdoc />
+        public bool StartsWithGreeting => false;
+
+        /// <inheritdoc />
         public bool IsPlaying(TargetAnimationState state)
         {
-            switch (state)
+            return state switch
             {
-                case TargetAnimationState.IdleLoop:
-                    return target.GetCurrentTimelineIndex() == IdleLoopTimeline;
-                case TargetAnimationState.IdleVariationOne:
-                case TargetAnimationState.IdleVariationTwo:
-                case TargetAnimationState.Excited:
-                case TargetAnimationState.MouthOpening:
-                case TargetAnimationState.MouthClosing:
-                case TargetAnimationState.Chewing:
-                case TargetAnimationState.Sad:
-                case TargetAnimationState.Greeting:
-                    return false;
-                case TargetAnimationState.Sleeping:
-                    if (!isNightLevel)
-                    {
-                        return false;
-                    }
-
-                    Animation sleepAnimation = target.GetAnimation(Resources.Img.CharAnimationsSleeping);
-                    return sleepAnimation != null && sleepAnimation.GetCurrentTimelineIndex() == SleepingTimeline;
-                default:
-                    return false;
-            }
+                TargetAnimationState.IdleLoop => target.GetCurrentTimelineIndex() == IdleLoopTimeline,
+                TargetAnimationState.IdleVariationOne
+                or TargetAnimationState.IdleVariationTwo
+                or TargetAnimationState.IdleVariationThree
+                or TargetAnimationState.Excited
+                or TargetAnimationState.MouthOpening
+                or TargetAnimationState.MouthClosing
+                or TargetAnimationState.Chewing
+                or TargetAnimationState.Sad
+                or TargetAnimationState.IdleToSleep
+                or TargetAnimationState.Greeting => false,
+                TargetAnimationState.Sleeping => isNightLevel
+                    && target.GetAnimation(Resources.Img.CharAnimationsSleeping)?.GetCurrentTimelineIndex() == SleepingTimeline,
+                _ => false
+            };
         }
 
         /// <inheritdoc />
@@ -232,6 +258,12 @@ namespace CutTheRope.GameMain
         }
 
         /// <inheritdoc />
+        public void UpdateAdditionalOverlays(float delta)
+        {
+            _ = delta;
+        }
+
+        /// <inheritdoc />
         public void SyncSleepOverlayPosition(float x, float y)
         {
             if (zz1 != null)
@@ -244,6 +276,13 @@ namespace CutTheRope.GameMain
                 zz2.x = x + ZzzOffsetX2;
                 zz2.y = y + ZzzOffsetY2;
             }
+        }
+
+        /// <inheritdoc />
+        public void SyncAdditionalOverlayPosition(float x, float y)
+        {
+            _ = x;
+            _ = y;
         }
 
         /// <inheritdoc />
@@ -280,6 +319,8 @@ namespace CutTheRope.GameMain
                 zz2.Draw();
             }
         }
+
+        public bool HandlesOwnSleepPulse => false;
 
         /// <summary>
         /// Advances one ZZZ overlay through the state machine and applies the resulting transforms.

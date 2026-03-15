@@ -1,0 +1,45 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 1, "w": 365, "h": 291 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 14, "y": 2, "w": 365, "h": 291 },
+            "sourceSize": { "w": 393, "h": 295 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 368, "y": 1, "w": 393, "h": 164 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 112, "w": 393, "h": 164 },
+            "sourceSize": { "w": 393, "h": 295 }
+        },
+        {
+            "filename": "frame_0002.png",
+            "frame": { "x": 763, "y": 1, "w": 201, "h": 145 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 73, "y": 41, "w": 201, "h": 145 },
+            "sourceSize": { "w": 393, "h": 295 }
+        },
+        {
+            "filename": "frame_0003.png",
+            "frame": { "x": 368, "y": 167, "w": 387, "h": 128 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 111, "w": 387, "h": 128 },
+            "sourceSize": { "w": 393, "h": 295 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "hat_halloween.png",
+        "format": "RGBA8888",
+        "size": { "w": 965, "h": 296 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:cf9cfd7c13e3b4157410a0871e3843e7:882a3bb84d9656fe622a896638ebc2a2:0a5eda620a62c88bc0facb0825ee9ab1$"
+    }
+}

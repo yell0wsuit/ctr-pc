@@ -34,20 +34,33 @@ namespace CutTheRope.GameMain
             ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(nightLevel, SpecialEvents.IsXmas);
             targetAnimationController = TargetAnimationController.Create(targetAnimationBackend);
             targetObject = targetAnimationController.TargetObject;
+            targetBaseScaleX = targetAnimationController.GetTargetBaseScaleX();
+            targetBaseScaleY = targetAnimationController.GetTargetBaseScaleY();
+            targetObject.scaleX = targetBaseScaleX;
+            targetObject.scaleY = targetBaseScaleY;
 
             string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
-            targetObject.x = support.x = (ParseIntOrZero(xAttribute) * scale) + offsetX + mapOffsetX;
+            int sourceX = ParseIntOrZero(xAttribute);
+            float transformedX = (sourceX * scale) + offsetX + mapOffsetX;
+            targetObject.x = support.x = transformedX;
 
             string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
-            targetObject.y = support.y = (ParseIntOrZero(yAttribute) * scale) + offsetY + mapOffsetY;
+            int sourceY = ParseIntOrZero(yAttribute);
+            float transformedY = (sourceY * scale) + offsetY + mapOffsetY;
+            targetObject.y = support.y = transformedY;
 
-            targetObject.bb = MakeRectangle(264f, 350f, 108f, 2f);
+            // Mouth hitbox: 56 px left of center, 30 px below center.
+            // Derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
+            targetObject.bb = MakeRectangle((targetObject.width >> 1) - 56f, (targetObject.height >> 1) + 30f, 108f, 2f);
             blinkTimer = BLINK_SKIP;
 
-            // Show greeting if needed (skip for night levels)
+            targetAnimationController.Initialize(this);
+
+            // Show greeting if needed (skip for night levels).
+            // Skins with startWithGreeting already play greeting on init, so skip the delayed call.
             if (CTRRootController.IsShowGreeting())
             {
-                if (!nightLevel)
+                if (!nightLevel && !targetAnimationController.StartsWithGreeting)
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
                 }
@@ -55,7 +68,6 @@ namespace CutTheRope.GameMain
                 CTRRootController.SetShowGreeting(false);
             }
 
-            targetAnimationController.Initialize(this);
             idlesTimer = RND_RANGE(5, 20);
         }
     }

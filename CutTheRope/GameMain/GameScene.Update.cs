@@ -15,6 +15,11 @@ namespace CutTheRope.GameMain
         {
             delta = 0.016f;
             base.Update(delta);
+            if (targetObject != null)
+            {
+                targetAnimationController?.UpdateAdditionalOverlays(delta);
+                targetAnimationController?.SyncAdditionalOverlayPosition(targetObject.x, targetObject.y);
+            }
             dd.Update(delta);
             pollenDrawer.Update(delta);
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -662,6 +667,7 @@ namespace CutTheRope.GameMain
                         if (targetAnimationController?.IsIdleLoopPlaying() == true)
                         {
                             targetAnimationController.PlayExcited();
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited);
                             break;
                         }
                         break;
@@ -1646,7 +1652,7 @@ namespace CutTheRope.GameMain
                     {
                         mouthOpen = true;
                         targetAnimationController?.PlayMouthOpening();
-                        CTRSoundMgr.PlaySound(Resources.Snd.MonsterOpen);
+                        CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen);
                         mouthCloseTimer = 1f;
                     }
                 }
@@ -1659,7 +1665,7 @@ namespace CutTheRope.GameMain
                         {
                             mouthOpen = false;
                             targetAnimationController?.PlayMouthClosing();
-                            CTRSoundMgr.PlaySound(Resources.Snd.MonsterClose);
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {

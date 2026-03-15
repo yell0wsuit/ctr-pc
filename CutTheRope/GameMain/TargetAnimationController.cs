@@ -35,6 +35,23 @@ namespace CutTheRope.GameMain
         public GameObject TargetObject => backend.TargetObject;
 
         /// <summary>
+        /// Whether the backend handles the sleep breathing pulse internally.
+        /// </summary>
+        public bool HandlesOwnSleepPulse => backend.HandlesOwnSleepPulse;
+
+        /// <summary>Gets the backend-defined base horizontal scale for Om Nom.</summary>
+        public float GetTargetBaseScaleX()
+        {
+            return backend.GetTargetBaseScaleX();
+        }
+
+        /// <summary>Gets the backend-defined base vertical scale for Om Nom.</summary>
+        public float GetTargetBaseScaleY()
+        {
+            return backend.GetTargetBaseScaleY();
+        }
+
+        /// <summary>
         /// Initializes backend timelines and binds timeline delegate callbacks.
         /// </summary>
         /// <param name="timelineDelegate">Timeline delegate receiving keyframe callbacks.</param>
@@ -57,15 +74,11 @@ namespace CutTheRope.GameMain
         /// <param name="rng">Inclusive random function with signature <c>(min, max) => value</c>.</param>
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
-            if (rng(0, 1) == 1)
-            {
-                backend.Play(TargetAnimationState.IdleVariationOne);
-            }
-            else
-            {
-                backend.Play(TargetAnimationState.IdleVariationTwo);
-            }
+            backend.PlayRandomIdleVariant(rng);
         }
+
+        /// <summary>Whether this skin plays the greeting animation on initialization instead of idle.</summary>
+        public bool StartsWithGreeting => backend.StartsWithGreeting;
 
         /// <summary>
         /// Plays the excited animation.
@@ -160,10 +173,22 @@ namespace CutTheRope.GameMain
             backend.UpdateSleepOverlays(delta);
         }
 
+        /// <summary>Advances backend-specific non-sleep overlays by <paramref name="delta"/> seconds.</summary>
+        public void UpdateAdditionalOverlays(float delta)
+        {
+            backend.UpdateAdditionalOverlays(delta);
+        }
+
         /// <summary>Moves all sleep overlay animations to the given position.</summary>
         public void SyncSleepOverlayPosition(float x, float y)
         {
             backend.SyncSleepOverlayPosition(x, y);
+        }
+
+        /// <summary>Updates the spawn position used by backend-specific non-sleep overlays.</summary>
+        public void SyncAdditionalOverlayPosition(float x, float y)
+        {
+            backend.SyncAdditionalOverlayPosition(x, y);
         }
 
         /// <summary>Sets visibility and playback state of all sleep overlay animations.</summary>

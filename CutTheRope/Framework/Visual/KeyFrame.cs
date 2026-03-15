@@ -29,6 +29,16 @@ namespace CutTheRope.Framework.Visual
 
         public static KeyFrame MakePos(int x, int y, TransitionType transition, float time)
         {
+            return MakePosCore(x, y, transition, time);
+        }
+
+        public static KeyFrame MakePos(float x, float y, TransitionType transition, float time)
+        {
+            return MakePosCore(x, y, transition, time);
+        }
+
+        private static KeyFrame MakePosCore(float x, float y, TransitionType transition, float time)
+        {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.pos.x = x;
             keyFrameValue.pos.y = y;
@@ -57,12 +67,36 @@ namespace CutTheRope.Framework.Visual
 
         public static KeyFrame MakeRotation(int r, TransitionType transition, float time)
         {
+            return MakeRotationCore(r, transition, time);
+        }
+
+        public static KeyFrame MakeRotation(float r, TransitionType transition, float time)
+        {
+            return MakeRotationCore(r, transition, time);
+        }
+
+        private static KeyFrame MakeRotationCore(float r, TransitionType transition, float time)
+        {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.rotation.angle = r;
             return new KeyFrame
             {
                 timeOffset = time,
                 trackType = Track.TrackType.TRACK_ROTATION,
+                transitionType = transition,
+                value = keyFrameValue
+            };
+        }
+
+        public static KeyFrame MakeSkew(float x, float y, TransitionType transition, float time)
+        {
+            KeyFrameValue keyFrameValue = new();
+            keyFrameValue.skew.skewX = x;
+            keyFrameValue.skew.skewY = y;
+            return new KeyFrame
+            {
+                timeOffset = time,
+                trackType = Track.TrackType.TRACK_SKEW,
                 transitionType = transition,
                 value = keyFrameValue
             };
@@ -94,7 +128,15 @@ namespace CutTheRope.Framework.Visual
             FRAME_TRANSITION_LINEAR,
             FRAME_TRANSITION_IMMEDIATE,
             FRAME_TRANSITION_EASE_IN,
-            FRAME_TRANSITION_EASE_OUT
+            FRAME_TRANSITION_EASE_OUT,
+            // Flash XML specific interpolation modes from iOS runtime.
+            FRAME_TRANSITION_FLASH_LINEAR,
+            FRAME_TRANSITION_FLASH_EASE_IN,
+            FRAME_TRANSITION_FLASH_EASE_OUT,
+            FRAME_TRANSITION_FLASH_EASE_IN_OUT,
+            FRAME_TRANSITION_FLASH_EASE_MIRRORED,
+            FRAME_TRANSITION_FLASH_HOLD,
+            FRAME_TRANSITION_FLASH_IMMEDIATE
         }
     }
 }

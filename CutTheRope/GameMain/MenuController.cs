@@ -1572,24 +1572,6 @@ namespace CutTheRope.GameMain
                 case var id when id == MenuButtonId.ShowQuitPopup:
                     ShowYesNoPopup(Application.GetString("QUIT"), MenuButtonId.QuitGame, MenuButtonId.ClosePopup);
                     return;
-                case var id when id == MenuButtonId.CandySelect:
-                    // Switch to candy selection mode or open candy selection view
-                    if (activeViewID == VIEW_CANDY_SELECT)
-                    {
-                        // Already in candy select view, switch to candy mode
-                        CandySelectionView.SwitchToMode(false);
-                    }
-                    else
-                    {
-                        // Open candy selection view
-                        Preferences.SetBooleanForKey(true, "PREFS_CANDY_WAS_CHANGED", true);
-                        ShowView(VIEW_CANDY_SELECT);
-                    }
-                    return;
-                case var id when id == MenuButtonId.RopeSelect:
-                    // Switch to rope selection mode
-                    CandySelectionView.SwitchToMode(true);
-                    return;
                 case var id when id == MenuButtonId.BackFromCandySelect:
                     // Return to main menu from candy selection
                     // Recreate the main menu to reflect the new candy selection
@@ -1598,31 +1580,58 @@ namespace CutTheRope.GameMain
                     ShowView(0);
                     return;
                 default:
-                    // Handle candy slot selection buttons
-                    if (n.IsCandySlotButton())
+                    MenuSkinSelectionAction skinAction = MenuSkinSelectionActionResolver.Resolve(n);
+                    if (skinAction.Kind == MenuSkinSelectionActionKind.SwitchMode)
                     {
-                        int selectedCandyIndex = n.GetCandyIndex();
+                        if (activeViewID == VIEW_CANDY_SELECT)
+                        {
+                            switch (skinAction.Mode)
+                            {
+                                case SkinSelectionMode.Candy:
+                                    CandySelectionView.SwitchToCandyMode();
+                                    break;
+                                case SkinSelectionMode.Rope:
+                                    CandySelectionView.SwitchToRopeMode();
+                                    break;
+                                case SkinSelectionMode.OmNom:
+                                    CandySelectionView.SwitchToOmNomMode();
+                                    break;
+                                default:
+                                    throw new InvalidOperationException($"Unhandled {nameof(SkinSelectionMode)}: {skinAction.Mode}.");
+                            }
+                        }
+                        else if (skinAction.Mode == SkinSelectionMode.Candy)
+                        {
+                            Preferences.SetBooleanForKey(true, CTRPreferences.PREFS_CANDY_WAS_CHANGED, true);
+                            ShowView(VIEW_CANDY_SELECT);
+                        }
 
-                        // Save the selected candy skin to preferences
-                        Preferences.SetIntForKey(selectedCandyIndex, CTRPreferences.PREFS_SELECTED_CANDY, true);
-
-                        // Update candy slot buttons to show new equipped state
-                        CandySelectionView.UpdateCandySlotButtons(selectedCandyIndex);
                         return;
                     }
 
-                    // Handle rope slot selection buttons
-                    if (n.IsRopeSlotButton())
+                    if (skinAction.Kind == MenuSkinSelectionActionKind.SelectSlot
+                        && skinAction.PreferenceKey != null
+                        && skinAction.SelectedIndex.HasValue)
                     {
-                        int selectedRopeIndex = n.GetRopeIndex();
+                        int selectedIndex = skinAction.SelectedIndex.Value;
+                        Preferences.SetIntForKey(selectedIndex, skinAction.PreferenceKey, true);
 
-                        // Save the selected rope skin to preferences
-                        Preferences.SetIntForKey(selectedRopeIndex, CTRPreferences.PREFS_SELECTED_ROPE, true);
+                        switch (skinAction.Mode)
+                        {
+                            case SkinSelectionMode.Candy:
+                            case SkinSelectionMode.Rope:
+                                CandySelectionView.UpdateCandySlotButtons(selectedIndex);
+                                break;
+                            case SkinSelectionMode.OmNom:
+                                CandySelectionView.SelectOmNomSlot(selectedIndex);
+                                break;
+                            default:
+                                throw new InvalidOperationException($"Unhandled {nameof(SkinSelectionMode)}: {skinAction.Mode}.");
+                        }
 
-                        // Update rope slot buttons to show new equipped state (reuse candy logic)
-                        CandySelectionView.UpdateCandySlotButtons(selectedRopeIndex);
                         return;
                     }
+
                     // Handle pack selection buttons dynamically
                     if (n.IsPackButton())
                     {
@@ -1676,6 +1685,11 @@ namespace CutTheRope.GameMain
             TryShowUpdatePopup();
             if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
             {
+                return;
+            }
+            if (activeViewID == VIEW_CANDY_SELECT)
+            {
+                CandySelectionView.Update(delta);
                 return;
             }
             if (activeViewID == 5 && ddPackSelect != null)
