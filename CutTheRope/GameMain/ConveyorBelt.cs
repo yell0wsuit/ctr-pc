@@ -430,6 +430,9 @@ namespace CutTheRope.GameMain
             foreach (ITransporterItem item in boundObjects)
             {
                 Vector local = ToLocalSpace(item.BindPoint);
+                float previousPos = item.PositionOnTransporter;
+                int previousSide = previousPos < beltWidth * 0.5f ? 0 : 1;
+                float previousDistFromEdge = previousSide == 0 ? previousPos : beltWidth - previousPos;
 
                 // Move along belt
                 item.PositionOnTransporter -= delta;
@@ -452,7 +455,9 @@ namespace CutTheRope.GameMain
 
                 // Check if within transition zone
                 bool wrapped = false;
-                if (distFromEdge < transitionDist)
+                bool movingTowardEdge = previousSide == 0 ? delta > 0f : delta < 0f;
+                bool enteredTransitionZone = previousDistFromEdge >= transitionDist && distFromEdge < transitionDist;
+                if (distFromEdge < transitionDist && (movingTowardEdge || enteredTransitionZone))
                 {
                     float newDist = (2f * transitionDist) - distFromEdge;
                     item.PositionOnTransporter = side == 0 ? beltWidth - newDist : newDist;
