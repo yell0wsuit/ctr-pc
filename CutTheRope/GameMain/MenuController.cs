@@ -1682,6 +1682,7 @@ namespace CutTheRope.GameMain
                 movieMgr.Update();
                 return;
             }
+            TryShowOutdatedWindowsPopup();
             TryShowUpdatePopup();
             if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
             {
@@ -1861,6 +1862,27 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        private void TryShowOutdatedWindowsPopup()
+        {
+            if (outdatedWindowsPopupShown)
+            {
+                return;
+            }
+
+            if (activeViewID != VIEW_MAIN_MENU)
+            {
+                return;
+            }
+
+            if (!WindowsVersionChecker.IsOutdatedWindows())
+            {
+                return;
+            }
+
+            outdatedWindowsPopupShown = true;
+            WindowsVersionChecker.ShowOutdatedWindowsPopup(popUpMenu.builder);
+        }
+
         private void TryShowUpdatePopup()
         {
             if (updatePopupShown)
@@ -1946,6 +1968,8 @@ namespace CutTheRope.GameMain
         private string updateReleaseUrl;
 
         private bool updatePopupShown;
+
+        private bool outdatedWindowsPopupShown;
 
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
 

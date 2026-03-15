@@ -1,0 +1,39 @@
+using System;
+
+using CutTheRope.Commons;
+using CutTheRope.Framework.Core;
+using CutTheRope.GameMain;
+
+using static CutTheRope.Commons.PopupBuilder;
+
+namespace CutTheRope.Helpers
+{
+    /// <summary>
+    /// Detects whether the application is running on an outdated Windows version.
+    /// </summary>
+    internal static class WindowsVersionChecker
+    {
+        /// <summary>
+        /// Returns true when running on Windows 8.1 or earlier (i.e. below Windows 10).
+        /// </summary>
+        public static bool IsOutdatedWindows()
+        {
+            return OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10);
+        }
+
+        /// <summary>
+        /// Shows a warning popup when running on an outdated Windows version.
+        /// </summary>
+        /// <param name="builder">The popup builder used to create and display the popup.</param>
+        public static void ShowOutdatedWindowsPopup(PopupBuilder builder)
+        {
+            PopupTemplate template = PopupTemplate.Create(PopupSize.Large)
+                .WithScaleMode(PopupScaleMode.Background)
+                .AddText(Application.GetString("OUTDATED_WINDOWS_TITLE"), Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 900f, offsetY: -200f)
+                .AddScrollableText(Application.GetString("OUTDATED_WINDOWS_TEXT"), Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 800f, scrollHeight: 400f, offsetY: -20f)
+                .AddButton(Application.GetString("OK"), MenuButtonId.PopupOk);
+
+            _ = builder.Show(template);
+        }
+    }
+}

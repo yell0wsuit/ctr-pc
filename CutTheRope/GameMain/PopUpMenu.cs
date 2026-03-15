@@ -12,7 +12,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class PopUpMenu(MenuController controller)
     {
-        private readonly PopupBuilder builder = new(controller);
+        internal readonly PopupBuilder builder = new(controller);
 
         /// <summary>
         /// Shows the "can't unlock" popup with required stars and explanatory text.
