@@ -112,7 +112,7 @@ namespace CutTheRope.GameMain
             timeline3.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             AddTimelinewithID(timeline3, 0);
             PlayTimeline(0);
-            Timeline.UpdateTimeline(timeline3, (float)(RND_RANGE(0, 20) / 10.0));
+            Timeline.UpdateTimeline(timeline3, RND_RANGE(0, 20) / 10);
 
             // Add glow sprite
             if (!nightMode)
