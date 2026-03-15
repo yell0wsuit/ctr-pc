@@ -2759,7 +2759,7 @@
  </Image>
  <Image rotationCenterY="0.349998" anchorX="0" anchorY="-1.2" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="glasses_front" src="char_animations_smooth" quadToDraw="120" rotationCenterX="-0.800003">
   <Timeline ID="29">
-   <Pos>195,157.75(1)@0+194.7973,151.2645(4)@0.3+194.7973,151.2645(0)@0.1333334</Pos>
+   <Pos>195,167.75(1)@0+194.7973,161.2645(4)@0.3+194.7973,161.2645(0)@0.1333334</Pos>
    <Scale>1,1(1)@0+0.959991,1.01996(4)@0.3+0.959991,1.01996(0)@0.1333334</Scale>
    <Color>1,1,1,1(1)@0+1,1,1,1(0)@0.4333334</Color>
    <Skew>0,0(1)@0+0,0(4)@0.3+0,0(0)@0.1333334</Skew>
