@@ -14,7 +14,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class StartupController : ViewController, IResourceMgrDelegate, IMovieMgrDelegate, ITimelineDelegate
     {
-        private enum Phase { Loading, Animating, DisclaimerFadeOut }
+        private enum Phase { Loading, Animating }
 
         public StartupController(ViewController parent)
             : base(parent)
@@ -49,18 +49,17 @@ namespace CutTheRope.GameMain
             {
                 Global.MouseCursor.Enable(true);
                 animRoot?.Update(t);
-                if (animFinished)
+                animElapsed += t;
+
+                // Start fading the disclaimer text before the animation ends
+                float fadeStart = animTotalDuration - DisclaimerFadeDuration;
+                if (animElapsed >= fadeStart)
                 {
-                    currentPhase = Phase.DisclaimerFadeOut;
-                    disclaimerFadeElapsed = 0f;
-                    animFinished = false;
+                    disclaimerFadeElapsed = animElapsed - fadeStart;
+                    UpdateDisclaimerAlpha();
                 }
-            }
-            else if (currentPhase == Phase.DisclaimerFadeOut)
-            {
-                disclaimerFadeElapsed += t;
-                UpdateDisclaimerAlpha();
-                if (disclaimerFadeElapsed >= DisclaimerFadeDuration)
+
+                if (animFinished)
                 {
                     Application.SharedRootController().SetViewTransition(4);
                     Deactivate();
@@ -101,6 +100,9 @@ namespace CutTheRope.GameMain
             {
                 rootTimeline.delegateTimelineDelegate = this;
             }
+
+            animElapsed = 0f;
+            animTotalDuration = definition.RootTimelines.TryGetValue(0, out float duration) ? duration : 3.214f;
         }
 
         public void MoviePlaybackFinished(string url)
@@ -144,13 +146,6 @@ namespace CutTheRope.GameMain
                 animFinished = true;
                 return true;
             }
-            if (currentPhase == Phase.DisclaimerFadeOut)
-            {
-                disclaimerFadeElapsed = DisclaimerFadeDuration;
-                UpdateDisclaimerAlpha();
-                return true;
-            }
-
             return base.TouchesBeganwithEvent(touches);
         }
 
@@ -206,7 +201,7 @@ namespace CutTheRope.GameMain
         private void UpdateDisclaimerAlpha()
         {
             float alpha = DisclaimerTextBaseAlpha;
-            if (currentPhase == Phase.DisclaimerFadeOut)
+            if (disclaimerFadeElapsed > 0f)
             {
                 float fadeProgress = disclaimerFadeElapsed / DisclaimerFadeDuration;
                 if (fadeProgress > 1f)
@@ -226,12 +221,14 @@ namespace CutTheRope.GameMain
         private FlashXmlStageRoot animRoot;
         private List<Image> animParts;
         private bool animFinished;
+        private float animElapsed;
+        private float animTotalDuration;
         private float animStageWidth;
         private float animStageHeight;
         private Text legalDisclaimerText;
         private float disclaimerFadeElapsed;
 
-        private const float DisclaimerFadeDuration = 0.1f;
+        private const float DisclaimerFadeDuration = 0.25f;
         private const float DisclaimerTextBaseAlpha = 0.85f;
 
         private static readonly string[] PackCommon =
@@ -311,13 +308,6 @@ namespace CutTheRope.GameMain
                         {
                             controller.UpdateSplashLayout();
                             controller.animRoot.Draw();
-                        }
-                        controller.legalDisclaimerText?.Draw();
-                        break;
-                    case Phase.DisclaimerFadeOut:
-                        if (controller.animRoot != null)
-                        {
-                            controller.UpdateSplashLayout();
                         }
                         controller.legalDisclaimerText?.Draw();
                         break;
