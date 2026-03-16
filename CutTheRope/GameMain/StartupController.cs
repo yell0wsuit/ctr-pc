@@ -192,7 +192,7 @@ namespace CutTheRope.GameMain
             {
                 float stageBottom = (SCREEN_HEIGHT + (animStageHeight * scale)) / 2f;
                 legalDisclaimerText.x = SCREEN_WIDTH / 2f;
-                legalDisclaimerText.y = stageBottom - 25f;
+                legalDisclaimerText.y = stageBottom - 35f;
             }
         }
 
@@ -214,8 +214,9 @@ namespace CutTheRope.GameMain
                 legalDisclaimerText.anchor = legalDisclaimerText.parentAnchor = 34;
             }
 
-            legalDisclaimerText.SetStringandWidth(Application.GetString("STARTUP_LEGAL_DISCLAIMER"), SCREEN_WIDTH * 0.92f);
+            legalDisclaimerText.SetStringandWidth(Application.GetString("STARTUP_LEGAL_DISCLAIMER"), SCREEN_WIDTH * 0.9f);
             UpdateDisclaimerAlpha();
+            legalDisclaimerText.scaleX = legalDisclaimerText.scaleY = 0.65f;
         }
 
         private void UpdateDisclaimerAlpha()
