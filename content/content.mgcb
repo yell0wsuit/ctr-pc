@@ -3642,3 +3642,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/zeptolab_logo_anim.png
+
+#begin sounds/sfx/zepto_logo_bubbles.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx/zepto_logo_bubbles.wav
