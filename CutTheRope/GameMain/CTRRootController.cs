@@ -626,6 +626,7 @@ namespace CutTheRope.GameMain
 
         private static readonly string[] PackStartup = [
             Resources.Img.ZeptoLabLogoLoading,
+            Resources.Img.ZeptoLabLogoAnim,
             null
         ];
 
