@@ -187,6 +187,13 @@ namespace CutTheRope.GameMain
                 disclaimerText.x = SCREEN_WIDTH / 2f;
                 disclaimerText.y = stageTop + 56f;
             }
+
+            if (legalDisclaimerText != null)
+            {
+                float stageBottom = (SCREEN_HEIGHT + (animStageHeight * scale)) / 2f;
+                legalDisclaimerText.x = SCREEN_WIDTH / 2f;
+                legalDisclaimerText.y = stageBottom - 25f;
+            }
         }
 
         private void EnsureDisclaimerText()
@@ -199,6 +206,15 @@ namespace CutTheRope.GameMain
             }
 
             disclaimerText.SetStringandWidth(Application.GetString("STARTUP_ORIGINAL_BY"), SCREEN_WIDTH * 0.9f);
+
+            if (legalDisclaimerText == null)
+            {
+                legalDisclaimerText = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
+                legalDisclaimerText.SetAlignment(2);
+                legalDisclaimerText.anchor = legalDisclaimerText.parentAnchor = 34;
+            }
+
+            legalDisclaimerText.SetStringandWidth(Application.GetString("STARTUP_LEGAL_DISCLAIMER"), SCREEN_WIDTH * 0.92f);
             UpdateDisclaimerAlpha();
         }
 
@@ -222,6 +238,7 @@ namespace CutTheRope.GameMain
             }
 
             disclaimerText.color = RGBAColor.MakeRGBA(0f, 0f, 0f, alpha);
+            _ = (legalDisclaimerText?.color = RGBAColor.MakeRGBA(0f, 0f, 0f, alpha * 0.9f));
         }
 
         private Phase currentPhase;
@@ -233,6 +250,7 @@ namespace CutTheRope.GameMain
         private float animStageWidth;
         private float animStageHeight;
         private Text disclaimerText;
+        private Text legalDisclaimerText;
         private float disclaimerFadeElapsed;
 
         private const float DisclaimerFadeDuration = 0.1f;
@@ -317,6 +335,7 @@ namespace CutTheRope.GameMain
                             controller.animRoot.Draw();
                         }
                         controller.disclaimerText?.Draw();
+                        controller.legalDisclaimerText?.Draw();
                         break;
                     case Phase.DisclaimerFadeOut:
                         if (controller.animRoot != null)
@@ -324,6 +343,7 @@ namespace CutTheRope.GameMain
                             controller.UpdateSplashLayout();
                         }
                         controller.disclaimerText?.Draw();
+                        controller.legalDisclaimerText?.Draw();
                         break;
                     default:
                         break;

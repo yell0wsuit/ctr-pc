@@ -1051,5 +1051,8 @@
     },
     "STARTUP_ORIGINAL_BY": {
         "en": "Original by"
+    },
+    "STARTUP_LEGAL_DISCLAIMER": {
+        "en": "Cut the Rope: DX is not, and will never be affiliated with or endorsed by ZeptoLab.\nAll rights to the original game and its assets belong to ZeptoLab."
     }
 }
