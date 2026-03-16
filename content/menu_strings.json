@@ -1048,5 +1048,8 @@
     },
     "OUTDATED_WINDOWS_TEXT": {
         "en": "This Windows version is not officially supported. Bugs and crashes may occur.\nPlease do not open a GitHub issue or ask for help for problems caused by this configuration."
+    },
+    "STARTUP_ORIGINAL_BY": {
+        "en": "Original by"
     }
 }
