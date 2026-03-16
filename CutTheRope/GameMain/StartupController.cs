@@ -208,31 +208,35 @@ namespace CutTheRope.GameMain
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
                 Renderer.SetColor(Color.White);
 
-                if (controller.currentPhase == Phase.Loading)
+                switch (controller.currentPhase)
                 {
-                    CTRTexture2D barTex = Application.GetTexture(Resources.Img.ZeptoLabLogoLoading);
-                    float barW = barTex.quadRects[0].w;
-                    float barH = barTex.quadRects[0].h;
-                    float barX = (SCREEN_WIDTH - barW) / 2f;
-                    float barY = (SCREEN_HEIGHT - barH) / 2f;
+                    case Phase.Loading:
+                        CTRTexture2D barTex = Application.GetTexture(Resources.Img.ZeptoLabLogoLoading);
+                        float barW = barTex.quadRects[0].w;
+                        float barH = barTex.quadRects[0].h;
+                        float barX = (SCREEN_WIDTH - barW) / 2f;
+                        float barY = (SCREEN_HEIGHT - barH) / 2f;
 
-                    // Empty bar centered
-                    DrawHelper.DrawImageQuad(barTex, 0, barX, barY);
+                        // Empty bar centered
+                        DrawHelper.DrawImageQuad(barTex, 0, barX, barY);
 
-                    // Full bar with scissor from bottom up
-                    float fillH = barH * controller.currentPercent / 100f;
-                    if (fillH > 0f)
-                    {
-                        Renderer.Enable(Renderer.GL_SCISSOR_TEST);
-                        Renderer.SetScissor(barX, barY + barH - fillH, barW, fillH);
-                        DrawHelper.DrawImageQuad(barTex, 1, barX, barY);
-                        Renderer.Disable(Renderer.GL_SCISSOR_TEST);
-                    }
-                }
-                else if (controller.currentPhase == Phase.Animating && controller.animRoot != null)
-                {
-                    controller.UpdateSplashLayout();
-                    controller.animRoot.Draw();
+                        // Full bar with scissor from bottom up
+                        float fillH = barH * controller.currentPercent / 100f;
+                        if (fillH > 0f)
+                        {
+                            Renderer.Enable(Renderer.GL_SCISSOR_TEST);
+                            Renderer.SetScissor(barX, barY + barH - fillH, barW, fillH);
+                            DrawHelper.DrawImageQuad(barTex, 1, barX, barY);
+                            Renderer.Disable(Renderer.GL_SCISSOR_TEST);
+                        }
+
+                        break;
+                    case Phase.Animating:
+                        controller.UpdateSplashLayout();
+                        controller.animRoot.Draw();
+                        break;
+                    default:
+                        break;
                 }
 
                 Renderer.Disable(Renderer.GL_BLEND);
