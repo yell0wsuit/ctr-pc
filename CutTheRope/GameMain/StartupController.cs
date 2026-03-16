@@ -8,6 +8,7 @@ using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.GameMain
 {
@@ -46,6 +47,7 @@ namespace CutTheRope.GameMain
             }
             else if (currentPhase == Phase.Animating)
             {
+                Global.MouseCursor.Enable(true);
                 animRoot?.Update(t);
                 if (animFinished)
                 {
@@ -120,6 +122,18 @@ namespace CutTheRope.GameMain
         public void AllResourcesLoaded()
         {
             resourcesLoaded = true;
+        }
+
+        public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
+        {
+            if (currentPhase == Phase.Animating)
+            {
+                CTRSoundMgr.StopSounds();
+                animFinished = true;
+                return true;
+            }
+
+            return base.TouchesBeganwithEvent(touches);
         }
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
