@@ -475,6 +475,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         internal static class Snd
         {
+            public const string ZeptoLogoBubbles = "zepto_logo_bubbles";
             public const string Tap = "tap";
             public const string Button = "button";
             public const string BubbleBreak = "bubble_break";
