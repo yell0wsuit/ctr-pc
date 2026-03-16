@@ -1,7 +1,11 @@
+using CutTheRope.Desktop;
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Media;
 using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
@@ -10,19 +14,7 @@ namespace CutTheRope.GameMain
         public StartupController(ViewController parent)
             : base(parent)
         {
-            View view = new();
-            Image image = Image.Image_createWithResID(Resources.BackgroundImg.ZeptolabNoLink);
-            image.parentAnchor = image.anchor = 18;
-            image.scaleX = image.scaleY = 1.25f;
-            _ = view.AddChild(image);
-            bar = TiledImage.TiledImage_createWithResID(Resources.Img.LoaderbarFull);
-            bar.parentAnchor = bar.anchor = 9;
-            bar.SetTile(-1);
-            bar.x = 738f;
-            bar.y = 1056f;
-            _ = image.AddChild(bar);
-            barTotalWidth = bar.width;
-            AddViewwithID(view, 1);
+            AddViewwithID(new StartupView(this), 1);
         }
 
         public override void Update(float t)
@@ -33,21 +25,19 @@ namespace CutTheRope.GameMain
             // Smooth interpolation for loading bar
             if (currentPercent < targetPercent)
             {
-                currentPercent += (targetPercent - currentPercent) * 0.16f; // Fast smooth lerp
+                currentPercent += (targetPercent - currentPercent) * 0.16f;
                 if (targetPercent - currentPercent < 0.5f)
                 {
-                    currentPercent = targetPercent; // Snap when close enough
+                    currentPercent = targetPercent;
                 }
             }
-
-            bar.width = (int)(barTotalWidth * currentPercent / 100f);
 
             // Wait for animation to complete before transitioning
             if (resourcesLoaded && currentPercent >= 99.5f)
             {
                 Application.SharedRootController().SetViewTransition(4);
                 Deactivate();
-                resourcesLoaded = false; // Reset for next time
+                resourcesLoaded = false;
             }
         }
 
@@ -66,7 +56,7 @@ namespace CutTheRope.GameMain
         public override void Activate()
         {
             base.Activate();
-            resourcesLoaded = false; // Reset flag when activating
+            resourcesLoaded = false;
             ShowView(1);
             UpdateChecker.StartIfNeeded();
             Game1.RPC.Setup();
@@ -75,15 +65,10 @@ namespace CutTheRope.GameMain
 
         public void AllResourcesLoaded()
         {
-            // Just set flag - Update() will handle transition after animation completes
             resourcesLoaded = true;
         }
 
-        private readonly float barTotalWidth;
-
-        private readonly TiledImage bar;
-
-        private float currentPercent;
+        internal float currentPercent;
         private bool resourcesLoaded;
 
         private static readonly string[] PackCommon =
@@ -118,5 +103,48 @@ namespace CutTheRope.GameMain
         ];
 
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn, null];
+
+        private sealed class StartupView : View
+        {
+            private readonly StartupController controller;
+
+            public StartupView(StartupController ctrl)
+            {
+                controller = ctrl;
+            }
+
+            public override void Draw()
+            {
+                Renderer.Enable(Renderer.GL_BLEND);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+
+                // White background
+                Renderer.Disable(Renderer.GL_TEXTURE_2D);
+                DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.solidOpaqueRGBA);
+                Renderer.Enable(Renderer.GL_TEXTURE_2D);
+                Renderer.SetColor(Color.White);
+
+                CTRTexture2D barTex = Application.GetTexture(Resources.Img.ZeptoLabLogoLoading);
+                float barW = barTex.quadRects[0].w;
+                float barH = barTex.quadRects[0].h;
+                float barX = (SCREEN_WIDTH - barW) / 2f;
+                float barY = (SCREEN_HEIGHT - barH) / 2f;
+
+                // Empty bar centered
+                DrawHelper.DrawImageQuad(barTex, 0, barX, barY);
+
+                // Full bar with scissor from bottom up
+                float fillH = barH * controller.currentPercent / 100f;
+                if (fillH > 0f)
+                {
+                    Renderer.Enable(Renderer.GL_SCISSOR_TEST);
+                    Renderer.SetScissor(barX, barY + barH - fillH, barW, fillH);
+                    DrawHelper.DrawImageQuad(barTex, 1, barX, barY);
+                    Renderer.Disable(Renderer.GL_SCISSOR_TEST);
+                }
+
+                Renderer.Disable(Renderer.GL_BLEND);
+            }
+        }
     }
 }
