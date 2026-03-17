@@ -1057,7 +1057,7 @@
 /processorParam:TextureFormat=Color
 /build:images/obj_bouncer.png
 
-#begin images/obj_bubble_attached.png
+#begin images/obj_bubble.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1067,31 +1067,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/obj_bubble_attached.png
-
-#begin images/obj_bubble_flight.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:images/obj_bubble_flight.png
-
-#begin images/obj_bubble_pop.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:images/obj_bubble_pop.png
+/build:images/obj_bubble.png
 
 #begin images/obj_electrodes.png
 /importer:TextureImporter

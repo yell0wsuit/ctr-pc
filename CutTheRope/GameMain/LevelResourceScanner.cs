@@ -201,9 +201,7 @@ namespace CutTheRope.GameMain
             _ = resources.Add(Resources.Img.HudStar);
             _ = resources.Add(Resources.Img.ObjStarIdle);
             _ = resources.Add(Resources.Img.ObjStarDisappear);
-            _ = resources.Add(Resources.Img.ObjBubbleAttached);
-            _ = resources.Add(Resources.Img.ObjBubbleFlight);
-            _ = resources.Add(Resources.Img.ObjBubblePop);
+            _ = resources.Add(Resources.Img.ObjBubble);
         }
 
         /// <summary>

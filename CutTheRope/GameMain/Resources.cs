@@ -270,10 +270,8 @@ namespace CutTheRope.GameMain
             public const string HudButtonsEn = "hud_buttons_en";
             public const string MenuResultEn = "menu_result_en";
             public const string ObjStarDisappear = "obj_star_disappear";
-            public const string ObjBubbleFlight = "obj_bubble_flight";
-            public const string ObjBubblePop = "obj_bubble_pop";
+            public const string ObjBubble = "obj_bubble";
             public const string ObjHookAuto = "obj_hook_auto";
-            public const string ObjBubbleAttached = "obj_bubble_attached";
             public const string ObjHook01 = "obj_hook_01";
             public const string ObjHook02 = "obj_hook_02";
             public const string ObjStarIdle = "obj_star_idle";
