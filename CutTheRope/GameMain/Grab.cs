@@ -782,11 +782,20 @@ namespace CutTheRope.GameMain
 
         private const int GunFrontQuad = 2;
 
+        private static bool s_movableRailTrimmed;
+
         /// <summary>
         /// Trims 1px transparent edges from movable rail tiles to prevent tiling seams.
+        /// Only applies once to avoid compounding mutations on the shared texture.
         /// </summary>
         private static void TrimMovableRailTileEdges(CTRTexture2D texture)
         {
+            if (s_movableRailTrimmed)
+            {
+                return;
+            }
+            s_movableRailTrimmed = true;
+
             ref CTRRectangle left = ref texture.quadRects[MovableRailLeftQuad];
             left.w -= 1;
 
