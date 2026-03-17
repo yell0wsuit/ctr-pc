@@ -153,7 +153,7 @@ namespace CutTheRope.GameMain
             {
                 Looped = false;
 
-                startHole = Image.Image_createWithResID(Resources.Img.AntHole);
+                startHole = Image.Image_createWithResIDQuad(Resources.Img.ObjAnt, 6);
                 startHole.anchor = CENTER;
                 startHole.x = first.startPoint.X;
                 startHole.y = first.startPoint.Y;
@@ -165,7 +165,7 @@ namespace CutTheRope.GameMain
                 startHole.y += firstDir.Y * -halfWidth;
                 StartAntOffset = halfWidth;
 
-                endHole = Image.Image_createWithResID(Resources.Img.AntHole);
+                endHole = Image.Image_createWithResIDQuad(Resources.Img.ObjAnt, 6);
                 endHole.anchor = CENTER;
                 endHole.x = last.endPoint.X;
                 endHole.y = last.endPoint.Y;

@@ -645,7 +645,10 @@ namespace CutTheRope.GameMain
                         starsCollected++;
                         // Update RPC with new star count
                         Game1.RPC?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false);
-                        hudStar[starsCollected - 1].PlayTimeline(0);
+                        if (starsCollected <= hudStar.Length)
+                        {
+                            hudStar[starsCollected - 1].PlayTimeline(0);
+                        }
                         Animation animation2 = Animation.Animation_createWithResID(Resources.Img.ObjStarDisappear);
                         animation2.DoRestoreCutTransparency();
                         animation2.x = star.x;

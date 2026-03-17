@@ -285,6 +285,8 @@ namespace CutTheRope.Framework.Visual
 
         public Vector preCutSize;
 
+        public Vector[] preCutSizes;
+
         private bool _isWvga;
 
         // private TexParams _localTexParams;

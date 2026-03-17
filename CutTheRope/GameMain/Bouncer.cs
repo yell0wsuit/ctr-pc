@@ -8,23 +8,25 @@ namespace CutTheRope.GameMain
     {
         public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, float an)
         {
-            string textureResourceName = w switch
+            int firstQuad = w switch
             {
-                SmallBouncerWidth => Resources.Img.ObjBouncer01,
-                LargeBouncerWidth => Resources.Img.ObjBouncer02,
-                _ => null
+                SmallBouncerWidth => SmallBouncerFirstQuad,
+                LargeBouncerWidth => LargeBouncerFirstQuad,
+                _ => -1
             };
 
-            if (textureResourceName == null || InitWithTexture(Application.GetTexture(textureResourceName)) == null)
+            if (firstQuad == -1 || InitWithTexture(Application.GetTexture(Resources.Img.ObjBouncer)) == null)
             {
                 return null;
             }
+            SetDrawQuad(firstQuad);
             rotation = an;
             x = px;
             y = py;
             UpdateRotation();
-            int i = AddAnimationDelayLoopFirstLast(0.04f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 4);
-            GetTimeline(i).AddKeyFrame(KeyFrame.MakeSingleAction(this, "ACTION_SET_DRAWQUAD", 0, 0, 0.04f));
+            int lastQuad = firstQuad + 4;
+            int i = AddAnimationDelayLoopFirstLast(0.04f, Timeline.LoopType.TIMELINE_NO_LOOP, firstQuad, lastQuad);
+            GetTimeline(i).AddKeyFrame(KeyFrame.MakeSingleAction(this, "ACTION_SET_DRAWQUAD", firstQuad, 0, 0.04f));
             return this;
         }
 
@@ -91,5 +93,9 @@ namespace CutTheRope.GameMain
         private const int SmallBouncerWidth = 1;
 
         private const int LargeBouncerWidth = 2;
+
+        private const int SmallBouncerFirstQuad = 0;
+
+        private const int LargeBouncerFirstQuad = 5;
     }
 }

@@ -144,6 +144,10 @@ namespace CutTheRope.Framework.Visual
                 width = (int)texture.quadRects[n].w;
                 height = (int)texture.quadRects[n].h;
             }
+            else
+            {
+                _ = ApplyPerQuadPreCutSize(n);
+            }
         }
 
         public virtual void DoRestoreCutTransparency()
@@ -151,9 +155,27 @@ namespace CutTheRope.Framework.Visual
             if (texture.preCutSize.X != vectUndefined.X)
             {
                 restoreCutTransparency = true;
-                width = (int)texture.preCutSize.X;
-                height = (int)texture.preCutSize.Y;
+                if (!ApplyPerQuadPreCutSize(quadToDraw))
+                {
+                    width = (int)texture.preCutSize.X;
+                    height = (int)texture.preCutSize.Y;
+                }
             }
+        }
+
+        private bool ApplyPerQuadPreCutSize(int quad)
+        {
+            if (quad >= 0 && texture.preCutSizes != null && quad < texture.preCutSizes.Length)
+            {
+                Vector size = texture.preCutSizes[quad];
+                if (size.X > 0f && size.Y > 0f)
+                {
+                    width = (int)size.X;
+                    height = (int)size.Y;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override void Draw()

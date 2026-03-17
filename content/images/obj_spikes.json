@@ -1,0 +1,109 @@
+{
+    "frames": [
+        {
+            "filename": "obj_rotatable_spikes_01_frame_0000.png",
+            "frame": { "x": 1328, "y": 95, "w": 204, "h": 83 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 315, "y": 86, "w": 204, "h": 83 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_rotatable_spikes_02_frame_0000.png",
+            "frame": { "x": 1007, "y": 95, "w": 321, "h": 85 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 259, "y": 86, "w": 321, "h": 85 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_rotatable_spikes_03_frame_0000.png",
+            "frame": { "x": 561, "y": 95, "w": 446, "h": 88 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 194, "y": 80, "w": 446, "h": 88 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_rotatable_spikes_04_frame_0000.png",
+            "frame": { "x": 0, "y": 95, "w": 561, "h": 91 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 136, "y": 76, "w": 561, "h": 91 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_rotatable_spikes_button_frame_0000.png",
+            "frame": { "x": 1572, "y": 0, "w": 103, "h": 104 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 368, "y": 73, "w": 103, "h": 104 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_rotatable_spikes_button_frame_0001.png",
+            "frame": { "x": 1675, "y": 0, "w": 103, "h": 104 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 367, "y": 73, "w": 103, "h": 104 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_rotatable_spikes_button_frame_0002.png",
+            "frame": { "x": 1778, "y": 0, "w": 103, "h": 104 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 368, "y": 73, "w": 103, "h": 104 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_rotatable_spikes_button_frame_0003.png",
+            "frame": { "x": 1881, "y": 0, "w": 103, "h": 104 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 368, "y": 73, "w": 103, "h": 104 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_spikes_01_frame_0000.png",
+            "frame": { "x": 1358, "y": 0, "w": 214, "h": 95 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 309, "y": 78, "w": 214, "h": 95 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_spikes_02_frame_0000.png",
+            "frame": { "x": 1023, "y": 0, "w": 335, "h": 95 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 250, "y": 78, "w": 335, "h": 95 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_spikes_03_frame_0000.png",
+            "frame": { "x": 568, "y": 0, "w": 455, "h": 95 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 190, "y": 75, "w": 455, "h": 95 },
+            "sourceSize": { "w": 833, "h": 250 }
+        },
+        {
+            "filename": "obj_spikes_04_frame_0000.png",
+            "frame": { "x": 0, "y": 0, "w": 568, "h": 95 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 132, "y": 75, "w": 568, "h": 95 },
+            "sourceSize": { "w": 833, "h": 250 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_spikes.png",
+        "format": "RGBA8888",
+        "size": { "w": 1984, "h": 186 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:aa2af5e95be6aee0bd25e6ad125facc3:b4d1fdcbda0722c74ae33603b1c67de2:95ae4d03c97326e680e444abffedee44$"
+    }
+}
