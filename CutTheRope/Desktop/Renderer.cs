@@ -745,8 +745,8 @@ namespace CutTheRope.Desktop
             {
                 s_indexBuffer?.Dispose();
                 s_indexBuffer = new IndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
-                s_indexBuffer.SetData(indices, 0, indexCount);
             }
+            s_indexBuffer.SetData(indices, 0, indexCount);
             return s_indexBuffer;
         }
 

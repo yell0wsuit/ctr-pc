@@ -1,0 +1,165 @@
+{
+    "frames": [
+        {
+            "filename": "00_hud_restart_button_frame_0000.png",
+            "frame": { "x": 1, "y": 310, "w": 98, "h": 99 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2236, "y": 8, "w": 98, "h": 99 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        },
+        {
+            "filename": "01_hud_restart_button_frame_0001.png",
+            "frame": { "x": 101, "y": 310, "w": 98, "h": 99 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2236, "y": 8, "w": 98, "h": 99 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        },
+        {
+            "filename": "02_hud_star_frame_0000.png",
+            "frame": { "x": 1, "y": 411, "w": 86, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 5, "y": 4, "w": 86, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "03_hud_star_frame_0001.png",
+            "frame": { "x": 339, "y": 399, "w": 60, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 18, "y": 4, "w": 60, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "04_hud_star_frame_0002.png",
+            "frame": { "x": 395, "y": 310, "w": 34, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 31, "y": 4, "w": 34, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "05_hud_star_frame_0003.png",
+            "frame": { "x": 415, "y": 1, "w": 14, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 41, "y": 4, "w": 14, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "06_hud_star_frame_0004.png",
+            "frame": { "x": 401, "y": 399, "w": 30, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 33, "y": 4, "w": 30, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "07_hud_star_frame_0005.png",
+            "frame": { "x": 347, "y": 310, "w": 46, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 25, "y": 4, "w": 46, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "08_hud_star_frame_0006.png",
+            "frame": { "x": 283, "y": 310, "w": 62, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 17, "y": 4, "w": 62, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "09_hud_star_frame_0007.png",
+            "frame": { "x": 265, "y": 399, "w": 72, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 12, "y": 4, "w": 72, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "10_hud_star_frame_0008.png",
+            "frame": { "x": 201, "y": 310, "w": 80, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 8, "y": 4, "w": 80, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "11_hud_star_frame_0009.png",
+            "frame": { "x": 89, "y": 411, "w": 86, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 5, "y": 4, "w": 86, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "12_hud_star_frame_0010.png",
+            "frame": { "x": 177, "y": 411, "w": 86, "h": 87 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 5, "y": 4, "w": 86, "h": 87 },
+            "sourceSize": { "w": 100, "h": 100 }
+        },
+        {
+            "filename": "13_hud_buttons_en_frame_0000.png",
+            "frame": { "x": 1, "y": 1, "w": 205, "h": 101 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2346, "y": 8, "w": 205, "h": 101 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        },
+        {
+            "filename": "14_hud_buttons_en_frame_0001.png",
+            "frame": { "x": 208, "y": 1, "w": 205, "h": 101 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2346, "y": 8, "w": 205, "h": 101 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        },
+        {
+            "filename": "15_hud_buttons_gr_frame_0000.png",
+            "frame": { "x": 1, "y": 207, "w": 204, "h": 101 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2346, "y": 7, "w": 204, "h": 101 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        },
+        {
+            "filename": "16_hud_buttons_gr_frame_0001.png",
+            "frame": { "x": 207, "y": 207, "w": 204, "h": 101 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2346, "y": 7, "w": 204, "h": 101 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        },
+        {
+            "filename": "17_hud_buttons_ru_frame_0000.png",
+            "frame": { "x": 1, "y": 104, "w": 205, "h": 101 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2345, "y": 7, "w": 205, "h": 101 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        },
+        {
+            "filename": "18_hud_buttons_ru_frame_0001.png",
+            "frame": { "x": 208, "y": 104, "w": 205, "h": 101 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2345, "y": 7, "w": 205, "h": 101 },
+            "sourceSize": { "w": 2560, "h": 122 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "hud_ui.png",
+        "format": "RGBA8888",
+        "size": { "w": 432, "h": 499 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:879d2b1feeac5f0b9f73cb1617721e10:dd5d3bf94ac7bec1a73829ceb3477352:d72811c104bf469c10fafd6d6457bc47$"
+    }
+}

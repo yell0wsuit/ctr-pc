@@ -504,11 +504,127 @@ namespace CutTheRope.Framework.Visual
             return cache;
         }
 
+        /// <summary>
+        /// Draws a textured quad with radial (pie-chart) clipping, sweeping counterclockwise from 12 o'clock.
+        /// Uses a triangle fan from the quad center with UV-mapped edge vertices.
+        /// </summary>
+        /// <param name="texture">The texture containing the quad.</param>
+        /// <param name="quadIndex">Index of the quad in the texture atlas.</param>
+        /// <param name="x">Draw X position (top-left).</param>
+        /// <param name="y">Draw Y position (top-left).</param>
+        /// <param name="fraction">Visible fraction (0 = invisible, 1 = fully visible).</param>
+        public static void DrawRadialClippedQuad(CTRTexture2D texture, int quadIndex, float x, float y, float fraction)
+        {
+            if (fraction <= 0f)
+            {
+                return;
+            }
+
+            float w = texture.quadRects[quadIndex].w;
+            float h = texture.quadRects[quadIndex].h;
+            Quad2D quad = texture.quads[quadIndex];
+
+            if (fraction >= 1f)
+            {
+                Renderer.Enable(Renderer.GL_TEXTURE_2D);
+                Renderer.BindTexture(texture.Name());
+                VertexPositionNormalTexture[] fullQuad = QuadVertexCache.GetTexturedQuad(
+                    x, y, w, h, quad.tlX, quad.tlY, quad.brX, quad.brY);
+                Renderer.DrawTriangleStrip(fullQuad);
+                return;
+            }
+
+            float hw = w / 2f;
+            float hh = h / 2f;
+            float cx = x + hw;
+            float cy = y + hh;
+            float sweepAngle = fraction * MathF.Tau;
+
+            // Corner angles in sweep order from top (12 o'clock)
+            float cornerAngle = MathF.Atan2(hw, hh);
+            Span<float> corners =
+            [
+                cornerAngle,                   // top-left
+                MathF.PI - cornerAngle,        // bottom-left
+                MathF.PI + cornerAngle,        // bottom-right
+                MathF.Tau - cornerAngle        // top-right
+            ];
+
+            // Build edge vertices: start at top center, add corners within sweep, end at sweep angle
+            int edgeCount = 0;
+            Span<float> edgeAngles = stackalloc float[6]; // start + 4 corners + end
+
+            edgeAngles[edgeCount++] = 0f; // top center (start)
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (corners[i] < sweepAngle - 0.001f)
+                {
+                    edgeAngles[edgeCount++] = corners[i];
+                }
+            }
+
+            edgeAngles[edgeCount++] = sweepAngle; // end
+
+            // Build triangle fan: center + edge vertices
+            int vertexCount = 1 + edgeCount;
+            int triangleCount = edgeCount - 1;
+            int indexCount = triangleCount * 3;
+
+            VertexPositionNormalTexture[] vertices = GetVertexCache(ref s_radialVerticesCache, vertexCount);
+            short[] indices = GetShortCache(ref s_radialIndicesCache, indexCount);
+
+            // Center UV
+            float texCenterU = (quad.tlX + quad.brX) / 2f;
+            float texCenterV = (quad.tlY + quad.brY) / 2f;
+
+            // Center vertex
+            vertices[0] = new VertexPositionNormalTexture(
+                new Vector3(cx, cy, 0f), Vector3.UnitZ, new Vector2(texCenterU, texCenterV));
+
+            // Edge vertices
+            for (int i = 0; i < edgeCount; i++)
+            {
+                float angle = edgeAngles[i];
+                float dx = -MathF.Sin(angle);
+                float dy = -MathF.Cos(angle);
+
+                // Find intersection with quad boundary [-hw,hw] x [-hh,hh]
+                float tx = dx != 0f ? ((dx > 0f ? hw : -hw) / dx) : float.MaxValue;
+                float ty = dy != 0f ? ((dy < 0f ? -hh : hh) / dy) : float.MaxValue;
+                float t = MathF.Min(MathF.Abs(tx), MathF.Abs(ty));
+
+                float localX = t * dx;
+                float localY = t * dy;
+
+                // Map local position to UV
+                float u = quad.tlX + ((localX + hw) / w * (quad.brX - quad.tlX));
+                float v = quad.tlY + ((localY + hh) / h * (quad.brY - quad.tlY));
+
+                vertices[1 + i] = new VertexPositionNormalTexture(
+                    new Vector3(cx + localX, cy + localY, 0f), Vector3.UnitZ, new Vector2(u, v));
+            }
+
+            // Build triangle indices (fan from center)
+            for (int i = 0; i < triangleCount; i++)
+            {
+                indices[i * 3] = 0;
+                indices[(i * 3) + 1] = (short)(1 + i);
+                indices[(i * 3) + 2] = (short)(2 + i);
+            }
+
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(texture.Name());
+            Renderer.DrawTriangleList(vertices, indices, indexCount);
+        }
+
         private static VertexPositionColor[] s_coloredVerticesCache;
         private static VertexPositionColor[] s_lineVerticesCache;
         private static VertexPositionColor[] s_antialiasedLineVerticesCache;
         private static VertexPositionNormalTexture[] s_tiledVerticesCache;
         private static short[] s_tiledIndicesCache;
+        private static VertexPositionNormalTexture[] s_radialVerticesCache;
+        private static short[] s_radialIndicesCache;
         private static float[] s_curveVerticesCache;
         private static float[] s_curveOuterCache;
         private static float[] s_curveInnerCache;

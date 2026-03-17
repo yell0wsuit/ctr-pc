@@ -381,12 +381,12 @@ namespace CutTheRope.GameMain
         public void PopBubbleAtXY(float bx, float by)
         {
             CTRSoundMgr.PlaySound(Resources.Snd.BubbleBreak);
-            Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjBubblePop);
+            Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
             animation.DoRestoreCutTransparency();
             animation.x = bx;
             animation.y = by;
             animation.anchor = 18;
-            int i = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 11);
+            int i = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 18, 29);
             animation.GetTimeline(i).delegateTimelineDelegate = aniPool;
             animation.PlayTimeline(0);
             _ = aniPool.AddChild(animation);

@@ -320,6 +320,21 @@ namespace CutTheRope.Framework.Core
                     texture.preCutSize.Y /= 1.5f;
                 }
             }
+
+            if (atlas.SourceSizes.Count == atlas.Rects.Count)
+            {
+                texture.preCutSizes = new Vector[atlas.SourceSizes.Count];
+                for (int k = 0; k < atlas.SourceSizes.Count; k++)
+                {
+                    Vector size = atlas.SourceSizes[k];
+                    if (isWvga)
+                    {
+                        size.X /= 1.5f;
+                        size.Y /= 1.5f;
+                    }
+                    texture.preCutSizes[k] = size;
+                }
+            }
         }
 
         private static void SetQuadsInfo(CTRTexture2D texture, float[] data, float scaleX, float scaleY)
