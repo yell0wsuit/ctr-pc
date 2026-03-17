@@ -425,11 +425,11 @@ namespace CutTheRope.GameMain
             }
             else if (radius == -1f)
             {
-                string hookTexture = RandomHookTexture();
-                back = Image_createWithResIDQuad(hookTexture, HookBackQuad);
+                int hookBaseQuad = RandomHookBaseQuad();
+                back = Image_createWithResIDQuad(Resources.Img.ObjHook, hookBaseQuad);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
-                front = Image_createWithResIDQuad(hookTexture, HookFrontQuad);
+                front = Image_createWithResIDQuad(Resources.Img.ObjHook, hookBaseQuad + 1);
                 front.anchor = front.parentAnchor = 18;
                 _ = AddChild(back);
                 _ = AddChild(front);
@@ -438,10 +438,10 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                back = Image_createWithResIDQuad(Resources.Img.ObjHookAuto, HookBackQuad);
+                back = Image_createWithResIDQuad(Resources.Img.ObjHook, HookAutoBackQuad);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
-                front = Image_createWithResIDQuad(Resources.Img.ObjHookAuto, HookFrontQuad);
+                front = Image_createWithResIDQuad(Resources.Img.ObjHook, HookAutoFrontQuad);
                 front.anchor = front.parentAnchor = 18;
                 _ = AddChild(back);
                 _ = AddChild(front);
@@ -460,16 +460,16 @@ namespace CutTheRope.GameMain
             }
             if (wheel)
             {
-                wheelImage = Image_createWithResIDQuad(Resources.Img.ObjHookRegulated, RegulatedWheelQuadBase);
+                wheelImage = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadBase);
                 wheelImage.anchor = wheelImage.parentAnchor = 18;
                 _ = AddChild(wheelImage);
                 wheelImage.visible = false;
-                wheelImage2 = Image_createWithResIDQuad(Resources.Img.ObjHookRegulated, RegulatedWheelQuadArm);
+                wheelImage2 = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadArm);
                 wheelImage2.passTransformationsToChilds = false;
-                wheelHighlight = Image_createWithResIDQuad(Resources.Img.ObjHookRegulated, RegulatedWheelQuadHighlight);
+                wheelHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadHighlight);
                 wheelHighlight.anchor = wheelHighlight.parentAnchor = 18;
                 _ = wheelImage2.AddChild(wheelHighlight);
-                wheelImage3 = Image_createWithResIDQuad(Resources.Img.ObjHookRegulated, RegulatedWheelQuadIndicator);
+                wheelImage3 = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadIndicator);
                 wheelImage3.anchor = wheelImage3.parentAnchor = wheelImage2.anchor = wheelImage2.parentAnchor = 18;
                 _ = wheelImage2.AddChild(wheelImage3);
                 _ = AddChild(wheelImage2);
@@ -485,16 +485,17 @@ namespace CutTheRope.GameMain
             moveOffset = o;
             if (moveLength > 0)
             {
-                moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHookMovable);
-                moveBackground.SetTileHorizontallyLeftCenterRight(0, 2, 1);
+                moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHook);
+                TrimMovableRailTileEdges(moveBackground.texture);
+                moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
                 moveBackground.width = (int)(l + 142f);
                 moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
                 moveBackground.x = -74f;
-                grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHookMovable, MovableHookHighlightQuad);
+                grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookHighlightQuad);
                 grabMoverHighlight.visible = false;
                 grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
                 _ = AddChild(grabMoverHighlight);
-                grabMover = Image_createWithResIDQuad(Resources.Img.ObjHookMovable, MovableHookQuad);
+                grabMover = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookQuad);
                 grabMover.visible = false;
                 grabMover.anchor = grabMover.parentAnchor = 18;
                 _ = AddChild(grabMover);
@@ -528,21 +529,21 @@ namespace CutTheRope.GameMain
 
         public void SetBee()
         {
-            bee = Image_createWithResIDQuad(Resources.Img.ObjBeeHd, BeeQuad);
+            bee = Image_createWithResIDQuad(Resources.Img.ObjBee, BeeQuad);
             bee.blendingMode = 1;
             bee.DoRestoreCutTransparency();
             bee.parentAnchor = 18;
-            Animation animation = Animation_createWithResID(Resources.Img.ObjBeeHd);
+            Animation animation = Animation_createWithResID(Resources.Img.ObjBee);
             animation.parentAnchor = animation.anchor = 9;
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.03f, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.PlayTimeline(0);
             animation.JumpTo(RND_RANGE(0, 2));
             _ = bee.AddChild(animation);
-            Vector quadOffset = GetQuadOffset(Resources.Img.ObjBeeHd, 0);
+            Vector quadOffset = GetQuadOffset(Resources.Img.ObjBee, 0);
             if (VectEqual(quadOffset, vectZero))
             {
-                CTRTexture2D beeTexture = Application.GetTexture(Resources.Img.ObjBeeHd);
+                CTRTexture2D beeTexture = Application.GetTexture(Resources.Img.ObjBee);
                 if (beeTexture.preCutSize.X != vectUndefined.X && beeTexture.preCutSize.Y != vectUndefined.Y)
                 {
                     Vector bodyOffset = beeTexture.quadOffsets[BeeQuad];
@@ -758,27 +759,20 @@ namespace CutTheRope.GameMain
 
         public Image bee;
 
-        private static readonly string[] HookTextures =
-        [
-            Resources.Img.ObjHook01,
-            Resources.Img.ObjHook02
-        ];
-
-        private const int HookBackQuad = 0;
-
-        private const int HookFrontQuad = 1;
-
-        private const int RegulatedWheelQuadBase = 0;
-
-        private const int RegulatedWheelQuadArm = 1;
-
-        private const int RegulatedWheelQuadHighlight = 2;
-
-        private const int RegulatedWheelQuadIndicator = 3;
-
-        private const int MovableHookHighlightQuad = 3;
-
-        private const int MovableHookQuad = 4;
+        // Combined obj_hook quad indices
+        private const int Hook01BackQuad = 0;
+        private const int Hook02BackQuad = 2;
+        private const int HookAutoBackQuad = 4;
+        private const int HookAutoFrontQuad = 5;
+        private const int MovableRailLeftQuad = 6;
+        private const int MovableRailRightQuad = 7;
+        private const int MovableRailCenterQuad = 8;
+        private const int MovableHookHighlightQuad = 9;
+        private const int MovableHookQuad = 10;
+        private const int RegulatedWheelQuadBase = 11;
+        private const int RegulatedWheelQuadArm = 12;
+        private const int RegulatedWheelQuadHighlight = 13;
+        private const int RegulatedWheelQuadIndicator = 14;
 
         private const int BeeQuad = 1;
 
@@ -788,9 +782,39 @@ namespace CutTheRope.GameMain
 
         private const int GunFrontQuad = 2;
 
-        private static string RandomHookTexture()
+        private static bool s_movableRailTrimmed;
+
+        /// <summary>
+        /// Trims 1px transparent edges from movable rail tiles to prevent tiling seams.
+        /// Only applies once to avoid compounding mutations on the shared texture.
+        /// </summary>
+        private static void TrimMovableRailTileEdges(CTRTexture2D texture)
         {
-            return HookTextures[RND_RANGE(0, HookTextures.Length - 1)];
+            if (s_movableRailTrimmed)
+            {
+                return;
+            }
+            s_movableRailTrimmed = true;
+
+            ref CTRRectangle left = ref texture.quadRects[MovableRailLeftQuad];
+            left.w -= 1;
+
+            ref CTRRectangle right = ref texture.quadRects[MovableRailRightQuad];
+            right.x += 1;
+            right.w -= 1;
+
+            ref CTRRectangle center = ref texture.quadRects[MovableRailCenterQuad];
+            center.x += 1;
+            center.w -= 2;
+
+            texture.quads[MovableRailLeftQuad] = DrawHelper.GetTextureCoordinates(texture, left);
+            texture.quads[MovableRailRightQuad] = DrawHelper.GetTextureCoordinates(texture, right);
+            texture.quads[MovableRailCenterQuad] = DrawHelper.GetTextureCoordinates(texture, center);
+        }
+
+        private static int RandomHookBaseQuad()
+        {
+            return RND_RANGE(0, 1) == 0 ? Hook01BackQuad : Hook02BackQuad;
         }
 
         private enum SPIDER_ANI

@@ -70,31 +70,31 @@ namespace CutTheRope.GameMain
             Renderer.Translate(-mirrorPivotX, -SCREEN_HEIGHT / 2f, 0f);
             DrawHelper.DrawImageQuad(texture, 0, SCREEN_WIDTH / 2f, 0.5f);
             Renderer.PopMatrix();
-            CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLoading);
+            CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLevelUi);
             if (!game)
             {
                 Renderer.Enable(Renderer.GL_SCISSOR_TEST);
                 Renderer.SetScissor(0f, 0f, SCREEN_WIDTH, 1200f * progressPercent / 100f);
             }
             Renderer.SetColor(Color.White);
-            leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;
-            DrawHelper.DrawImageQuad(texture2, 0, leftQuadX, 80f);
-            leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).X;
-            DrawHelper.DrawImageQuad(texture2, 1, leftQuadX, 80f);
+            leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 6).X;
+            DrawHelper.DrawImageQuad(texture2, 6, leftQuadX, 80f);
+            leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 7).X;
+            DrawHelper.DrawImageQuad(texture2, 7, leftQuadX, 80f);
             if (!game)
             {
                 Renderer.Disable(Renderer.GL_SCISSOR_TEST);
             }
             if (game)
             {
-                Vector quadOffset = Image.GetQuadOffset(Resources.Img.MenuLoading, 3);
+                Vector quadOffset = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 9);
                 float rocketLiftOffset = 1250f * progressPercent / 100f;
-                DrawHelper.DrawImageQuad(texture2, 3, quadOffset.X, 700f - rocketLiftOffset);
+                DrawHelper.DrawImageQuad(texture2, 9, quadOffset.X, 700f - rocketLiftOffset);
             }
             else
             {
                 float loadingBarOffset = 1120f * progressPercent / 100f;
-                DrawHelper.DrawImageQuad(texture2, 2, 1084f, loadingBarOffset - 100f);
+                DrawHelper.DrawImageQuad(texture2, 8, 1084f, loadingBarOffset - 100f);
             }
             PostDraw();
             Renderer.SetColor(Color.White);

@@ -12,6 +12,8 @@ namespace CutTheRope.Framework.Core
 
         public List<Vector> Offsets { get; } = [];
 
+        public List<Vector> SourceSizes { get; } = [];
+
         public bool HasNonZeroOffset { get; set; }
 
         public float PreCutWidth { get; set; }
@@ -155,6 +157,7 @@ namespace CutTheRope.Framework.Core
             {
                 float sourceWidth = ReadFloat(sourceSize, "w");
                 float sourceHeight = ReadFloat(sourceSize, "h");
+                atlas.SourceSizes.Add(new Vector(sourceWidth, sourceHeight));
                 if (sourceWidth > atlas.PreCutWidth)
                 {
                     atlas.PreCutWidth = sourceWidth;
@@ -163,6 +166,10 @@ namespace CutTheRope.Framework.Core
                 {
                     atlas.PreCutHeight = sourceHeight;
                 }
+            }
+            else
+            {
+                atlas.SourceSizes.Add(new Vector(rect.w, rect.h));
             }
         }
 
@@ -176,8 +183,8 @@ namespace CutTheRope.Framework.Core
             bool hasOffset = false;
             for (int i = 0; i < atlas.Rects.Count; i++)
             {
-                float referenceWidth = atlas.PreCutWidth > 0f ? atlas.PreCutWidth : rectSizes[i].w;
-                float referenceHeight = atlas.PreCutHeight > 0f ? atlas.PreCutHeight : rectSizes[i].h;
+                float referenceWidth = i < atlas.SourceSizes.Count && atlas.SourceSizes[i].X > 0f ? atlas.SourceSizes[i].X : rectSizes[i].w;
+                float referenceHeight = i < atlas.SourceSizes.Count && atlas.SourceSizes[i].Y > 0f ? atlas.SourceSizes[i].Y : rectSizes[i].h;
                 float offsetX = MathF.Round((referenceWidth - rectSizes[i].w) / 2f);
                 float offsetY = MathF.Round((referenceHeight - rectSizes[i].h) / 2f);
                 atlas.Offsets[i] = new Vector(offsetX, offsetY);

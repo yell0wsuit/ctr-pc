@@ -161,19 +161,19 @@ namespace CutTheRope.GameMain
             _ = AddChild(firefly);
 
             // Create bubble capture animation (shown when inside a normal bubble)
-            bubbleAnimation = Animation_createWithResID(Resources.Img.ObjBubbleFlight);
+            bubbleAnimation = Animation_createWithResID(Resources.Img.ObjBubble);
             bubbleAnimation.anchor = bubbleAnimation.parentAnchor = 18;
-            _ = bubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+            _ = bubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
             bubbleAnimation.PlayTimeline(0);
             bubbleAnimation.visible = false; // Hidden until captured
             _ = AddChild(bubbleAnimation);
 
             // Create ghost bubble animation (shown when inside a ghost bubble)
-            ghostBubbleAnimation = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubbleFlight);
+            ghostBubbleAnimation = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
             ghostBubbleAnimation.anchor = ghostBubbleAnimation.parentAnchor = 18;
             ghostBubbleAnimation.visible = false; // Hidden until captured
             ghostBubbleAnimation.AddSupportingCloudsTimelines();
-            _ = ghostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+            _ = ghostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
             ghostBubbleAnimation.PlayTimeline(0);
             _ = AddChild(ghostBubbleAnimation);
 

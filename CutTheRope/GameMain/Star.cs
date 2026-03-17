@@ -24,6 +24,9 @@ namespace CutTheRope.GameMain
         private const float ConveyorPaddingJs = 8f;
         private const float JsPm = 1.2f;
 
+        private const int TimedFullQuad = 19;  // frame_0019: full timed ring
+        private const int TimedEmptyQuad = 20; // frame_0055: empty timed ring
+
         public static Star Star_create(CTRTexture2D t)
         {
             return (Star)new Star().InitWithTexture(t);
@@ -74,7 +77,19 @@ namespace CutTheRope.GameMain
 
         public override void Draw()
         {
-            timedAnim?.Draw();
+            if (timedAnim != null && timeout > 0)
+            {
+                timedAnim.PreDraw();
+                // Draw empty ring (always visible as background)
+                timedAnim.DrawQuad(TimedEmptyQuad);
+                // Draw full ring with radial clipping based on remaining time
+                float fraction = time / timeout;
+                if (fraction > 0f)
+                {
+                    DrawTimedFullRadial(TimedFullQuad, fraction);
+                }
+                timedAnim.PostDraw();
+            }
 
             // Each child element has its own blendingMode set, so just use standard rendering
             PreDraw();
@@ -90,9 +105,7 @@ namespace CutTheRope.GameMain
             {
                 timedAnim = Animation_createWithResID(Resources.Img.ObjStarIdle);
                 timedAnim.anchor = timedAnim.parentAnchor = 18;
-                float d = timeout / 37f;
-                timedAnim.AddAnimationWithIDDelayLoopFirstLast(0, d, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 55);
-                timedAnim.PlayTimeline(0);
+                timedAnim.SetDrawQuad(TimedEmptyQuad);
                 time = timeout;
                 timedAnim.visible = false;
                 _ = AddChild(timedAnim);
@@ -265,6 +278,18 @@ namespace CutTheRope.GameMain
             _ = (glowSprite?.visible = true);
             _ = (idleSprite?.visible = true);
             _ = (dimmedIdleSprite?.visible = true);
+        }
+
+        private void DrawTimedFullRadial(int quadIndex, float fraction)
+        {
+            float px = timedAnim.drawX;
+            float py = timedAnim.drawY;
+            if (timedAnim.restoreCutTransparency)
+            {
+                px += timedAnim.texture.quadOffsets[quadIndex].X;
+                py += timedAnim.texture.quadOffsets[quadIndex].Y;
+            }
+            DrawHelper.DrawRadialClippedQuad(timedAnim.texture, quadIndex, px, py, fraction);
         }
 
         public float time;

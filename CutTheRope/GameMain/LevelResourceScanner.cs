@@ -55,24 +55,17 @@ namespace CutTheRope.GameMain
                     case "bubble":
                         break;
                     case "spike1":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes01, Resources.Img.ObjRotatableSpikes01);
-                        break;
                     case "spike2":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes02, Resources.Img.ObjRotatableSpikes02);
-                        break;
                     case "spike3":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes03, Resources.Img.ObjRotatableSpikes03);
-                        break;
                     case "spike4":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes04, Resources.Img.ObjRotatableSpikes04);
+                        _ = resources.Add(Resources.Img.ObjSpikes);
                         break;
                     case "electro":
-                        AddSpikeResources(resources, node, Resources.Img.ObjElectrodes, Resources.Img.ObjRotatableSpikesButton);
+                        _ = resources.Add(Resources.Img.ObjElectrodes);
                         break;
                     case "bouncer1":
                     case "bouncer2":
-                        _ = resources.Add(Resources.Img.ObjBouncer01);
-                        _ = resources.Add(Resources.Img.ObjBouncer02);
+                        _ = resources.Add(Resources.Img.ObjBouncer);
                         break;
                     case "pump":
                         _ = resources.Add(Resources.Img.ObjPump);
@@ -94,7 +87,6 @@ namespace CutTheRope.GameMain
                         break;
                     case "ants":
                         _ = resources.Add(Resources.Img.ObjAnt);
-                        _ = resources.Add(Resources.Img.AntHole);
                         break;
                     case "lantern":
                         _ = resources.Add(Resources.Img.ObjLantern);
@@ -199,12 +191,10 @@ namespace CutTheRope.GameMain
         /// <param name="resources">The destination set being accumulated.</param>
         private static void AddAlwaysLoadedLevelResources(HashSet<string> resources)
         {
-            _ = resources.Add(Resources.Img.HudStar);
+            _ = resources.Add(Resources.Img.HudUi);
             _ = resources.Add(Resources.Img.ObjStarIdle);
             _ = resources.Add(Resources.Img.ObjStarDisappear);
-            _ = resources.Add(Resources.Img.ObjBubbleAttached);
-            _ = resources.Add(Resources.Img.ObjBubbleFlight);
-            _ = resources.Add(Resources.Img.ObjBubblePop);
+            _ = resources.Add(Resources.Img.ObjBubble);
         }
 
         /// <summary>
@@ -214,32 +204,15 @@ namespace CutTheRope.GameMain
         /// <param name="node">The grab XML node being inspected.</param>
         private static void AddGrabResources(HashSet<string> resources, XElement node)
         {
-            _ = resources.Add(Resources.Img.ObjHook01);
-            _ = resources.Add(Resources.Img.ObjHook02);
+            _ = resources.Add(Resources.Img.ObjHook);
 
             bool gun = ParseBool(node.Attribute("gun")?.Value);
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
-            bool wheel = ParseBool(node.Attribute("wheel")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
-            float radius = ParseFloatOrZero(node.Attribute("radius")?.Value);
-            float moveLength = ParseFloatOrZero(node.Attribute("moveLength")?.Value);
 
-            if (radius != -1f && !gun && !kickable)
-            {
-                _ = resources.Add(Resources.Img.ObjHookAuto);
-            }
-            if (wheel)
-            {
-                _ = resources.Add(Resources.Img.ObjHookRegulated);
-            }
-            if (moveLength > 0f)
-            {
-                _ = resources.Add(Resources.Img.ObjHookMovable);
-            }
             if (bee)
             {
-                _ = resources.Add(Resources.Img.ObjBeeHd);
-                _ = resources.Add(Resources.Img.ObjPollenHd);
+                _ = resources.Add(Resources.Img.ObjBee);
             }
             if (gun)
             {
@@ -251,22 +224,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Adds spike resources, including the toggle button when the spike is controlled by a switch.
-        /// </summary>
-        /// <param name="resources">The destination set being accumulated.</param>
-        /// <param name="node">The spike XML node being inspected.</param>
-        /// <param name="baseResourceName">The base spike sprite resource.</param>
-        /// <param name="rotatedResourceName">The rotated spike sprite resource.</param>
-        private static void AddSpikeResources(HashSet<string> resources, XElement node, string baseResourceName, string rotatedResourceName)
-        {
-            _ = resources.Add(baseResourceName);
-            if (node.Attribute("toggled") is not null)
-            {
-                _ = resources.Add(rotatedResourceName);
-                _ = resources.Add(Resources.Img.ObjRotatableSpikesButton);
-            }
-        }
 
         /// <summary>
         /// Adds Om Nom animation resources, including the pack-specific support sprite.

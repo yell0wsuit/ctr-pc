@@ -167,11 +167,11 @@ namespace CutTheRope.GameMain
             _ = candy.AddChild(candyBlink);
 
             // Setup candy bubble animation
-            candyBubbleAnimation = Animation.Animation_createWithResID(Resources.Img.ObjBubbleFlight);
+            candyBubbleAnimation = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
             candyBubbleAnimation.x = candy.x;
             candyBubbleAnimation.y = candy.y;
             candyBubbleAnimation.parentAnchor = candyBubbleAnimation.anchor = 18;
-            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
             candyBubbleAnimation.PlayTimeline(0);
             _ = candy.AddChild(candyBubbleAnimation);
             candyBubbleAnimation.visible = false;
@@ -187,7 +187,8 @@ namespace CutTheRope.GameMain
             {
                 Timeline timeline2 = hudStar[i].GetCurrentTimeline();
                 timeline2?.StopTimeline();
-                hudStar[i].SetDrawQuad(0);
+                const int HudUiStarFirstQuad = 2;
+                hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
             }
         }
 
@@ -195,34 +196,34 @@ namespace CutTheRope.GameMain
         {
             if (!isCandyInGhostBubbleAnimationLoaded && candy != null)
             {
-                candyGhostBubbleAnimation = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubbleFlight);
+                candyGhostBubbleAnimation = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
                 candyGhostBubbleAnimation.parentAnchor = candyGhostBubbleAnimation.anchor = 18;
                 _ = candy.AddChild(candyGhostBubbleAnimation);
                 candyGhostBubbleAnimation.visible = false;
                 candyGhostBubbleAnimation.AddSupportingCloudsTimelines();
-                _ = candyGhostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyGhostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
                 candyGhostBubbleAnimation.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationLoaded = true;
             }
             if (!isCandyInGhostBubbleAnimationLeftLoaded && candyL != null)
             {
-                candyGhostBubbleAnimationL = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubbleFlight);
+                candyGhostBubbleAnimationL = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
                 candyGhostBubbleAnimationL.parentAnchor = candyGhostBubbleAnimationL.anchor = 18;
                 _ = candyL.AddChild(candyGhostBubbleAnimationL);
                 candyGhostBubbleAnimationL.visible = false;
                 candyGhostBubbleAnimationL.AddSupportingCloudsTimelines();
-                _ = candyGhostBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyGhostBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
                 candyGhostBubbleAnimationL.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationLeftLoaded = true;
             }
             if (!isCandyInGhostBubbleAnimationRightLoaded && candyR != null)
             {
-                candyGhostBubbleAnimationR = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubbleFlight);
+                candyGhostBubbleAnimationR = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
                 candyGhostBubbleAnimationR.parentAnchor = candyGhostBubbleAnimationR.anchor = 18;
                 _ = candyR.AddChild(candyGhostBubbleAnimationR);
                 candyGhostBubbleAnimationR.visible = false;
                 candyGhostBubbleAnimationR.AddSupportingCloudsTimelines();
-                _ = candyGhostBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyGhostBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
                 candyGhostBubbleAnimationR.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationRightLoaded = true;
             }

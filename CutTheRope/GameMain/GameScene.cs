@@ -118,7 +118,8 @@ namespace CutTheRope.GameMain
             _ = (childWithName?.x = 15f + Canvas.xOffsetScaled);
             for (int i = 0; i < 3; i++)
             {
-                hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
+                int starSize = hudStar[i].width;
+                hudStar[i].x = (starSize * i) + (starSize / 2) + Canvas.xOffsetScaled;
             }
             UpdateBackgroundScale();
         }

@@ -21,26 +21,6 @@ namespace CutTheRope.GameMain
                 ? resourceName
                 : resourceName switch
                 {
-                    _ when resourceName == Resources.Img.HudButtonsEn => LanguageHelper.Current switch
-                    {
-                        Language.LANGEN => Resources.Img.HudButtonsEn,
-                        Language.LANGRU => Resources.Img.HudButtonsRu,
-                        Language.LANGDE => Resources.Img.HudButtonsGr,
-                        Language.LANGFR => Resources.Img.HudButtonsEn,
-                        Language.LANGZH => throw new NotImplementedException(),
-                        Language.LANGJA => throw new NotImplementedException(),
-                        _ => Resources.Img.HudButtonsEn,
-                    },
-                    _ when resourceName == Resources.Img.MenuResultEn => LanguageHelper.Current switch
-                    {
-                        Language.LANGEN => Resources.Img.MenuResultEn,
-                        Language.LANGRU => Resources.Img.MenuResultRu,
-                        Language.LANGDE => Resources.Img.MenuResultGr,
-                        Language.LANGFR => Resources.Img.MenuResultFr,
-                        Language.LANGZH => throw new NotImplementedException(),
-                        Language.LANGJA => throw new NotImplementedException(),
-                        _ => Resources.Img.MenuResultEn,
-                    },
                     _ when resourceName == Resources.Img.MenuExtraButtonsEn => LanguageHelper.Current switch
                     {
                         Language.LANGEN => Resources.Img.MenuExtraButtonsEn,
@@ -61,6 +41,34 @@ namespace CutTheRope.GameMain
         public static string XNA_ResName(string resourceName)
         {
             return HandleLocalizedResource(resourceName);
+        }
+
+        public static int GetResultStampQuad()
+        {
+            return LanguageHelper.Current switch
+            {
+                Language.LANGEN => 17,
+                Language.LANGFR => 18,
+                Language.LANGDE => 19,
+                Language.LANGRU => 20,
+                Language.LANGZH => throw new NotImplementedException(),
+                Language.LANGJA => throw new NotImplementedException(),
+                _ => 17,
+            };
+        }
+
+        public static int GetHudButtonQuadOffset()
+        {
+            return LanguageHelper.Current switch
+            {
+                Language.LANGEN => 13,
+                Language.LANGFR => 13,
+                Language.LANGDE => 15,
+                Language.LANGRU => 17,
+                Language.LANGZH => throw new NotImplementedException(),
+                Language.LANGJA => throw new NotImplementedException(),
+                _ => 13,
+            };
         }
 
         /// <summary>

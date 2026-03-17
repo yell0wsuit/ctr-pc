@@ -13,10 +13,10 @@ namespace CutTheRope.GameMain
     {
         public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
-            Image u = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 56);
-            Image d2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 56);
-            Image u2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
-            Image d3 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
+            Image u = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
+            Image d2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
+            Image u2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
+            Image d3 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, GameSceneButtonId.GravityToggle);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
@@ -65,12 +65,16 @@ namespace CutTheRope.GameMain
             UpdateBackgroundScale();
             for (int i = 0; i < 3; i++)
             {
-                hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudStar);
-                hudStar[i].DoRestoreCutTransparency();
-                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
+                const int HudUiStarFirstQuad = 2;
+                const int HudUiStarLastQuad = 12;
+                hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudUi);
+                hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
+                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, HudUiStarFirstQuad, HudUiStarLastQuad);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
-                hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
-                hudStar[i].y = 0f;
+                int starSize = hudStar[i].width;
+                hudStar[i].anchor = 18;
+                hudStar[i].x = (starSize * i) + (starSize / 2) + Canvas.xOffsetScaled;
+                hudStar[i].y = hudStar[i].height / 2;
                 _ = AddChild(hudStar[i]);
             }
             for (int j = 0; j < 5; j++)
@@ -125,7 +129,7 @@ namespace CutTheRope.GameMain
 
         public void CreateEarthImageWithOffsetXY(float xs, float ys)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 58);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 23);
             image.anchor = 18;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
