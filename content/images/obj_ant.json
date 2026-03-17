@@ -47,6 +47,14 @@
             "trimmed": true,
             "spriteSourceSize": { "x": 12, "y": 9, "w": 97, "h": 71 },
             "sourceSize": { "w": 115, "h": 87 }
+        },
+        {
+            "filename": "ant_hole.png",
+            "frame": { "x": 1, "y": 451, "w": 93, "h": 101 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 93, "h": 101 },
+            "sourceSize": { "w": 98, "h": 126 }
         }
     ],
     "meta": {
@@ -54,8 +62,8 @@
         "version": "1.0",
         "image": "obj_ant.png",
         "format": "RGBA8888",
-        "size": { "w": 100, "h": 450 },
-        "scale": "0.78",
-        "smartupdate": "$TexturePacker:SmartUpdate:f5839b354acee78998853bdcaa0345e2:1062d8dad2e43f5c3377838f51061294:be5569ca49573b08d83d1bbd716caabe$"
+        "size": { "w": 100, "h": 553 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:fe0f23b5e284740614ebde18bdbe12d8:9aeb1a8b8a0ccb565fa8728350fd2a5a:be5569ca49573b08d83d1bbd716caabe$"
     }
 }

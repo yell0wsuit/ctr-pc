@@ -87,7 +87,6 @@ namespace CutTheRope.GameMain
                         break;
                     case "ants":
                         _ = resources.Add(Resources.Img.ObjAnt);
-                        _ = resources.Add(Resources.Img.AntHole);
                         break;
                     case "lantern":
                         _ = resources.Add(Resources.Img.ObjLantern);

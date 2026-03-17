@@ -292,7 +292,6 @@ namespace CutTheRope.GameMain
             public const string ObjSpikes = "obj_spikes";
             public const string ObjElectrodes = "obj_electrodes";
             public const string ObjAnt = "obj_ant";
-            public const string AntHole = "ant_hole";
             public const string ObjBeeHd = "obj_bee_hd";
             public const string ObjPollenHd = "obj_pollen_hd";
             public const string CharSupports = "char_supports";
