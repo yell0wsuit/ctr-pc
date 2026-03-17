@@ -212,8 +212,7 @@ namespace CutTheRope.GameMain
 
             if (bee)
             {
-                _ = resources.Add(Resources.Img.ObjBeeHd);
-                _ = resources.Add(Resources.Img.ObjPollenHd);
+                _ = resources.Add(Resources.Img.ObjBee);
             }
             if (gun)
             {

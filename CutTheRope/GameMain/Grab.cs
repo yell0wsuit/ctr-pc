@@ -529,21 +529,21 @@ namespace CutTheRope.GameMain
 
         public void SetBee()
         {
-            bee = Image_createWithResIDQuad(Resources.Img.ObjBeeHd, BeeQuad);
+            bee = Image_createWithResIDQuad(Resources.Img.ObjBee, BeeQuad);
             bee.blendingMode = 1;
             bee.DoRestoreCutTransparency();
             bee.parentAnchor = 18;
-            Animation animation = Animation_createWithResID(Resources.Img.ObjBeeHd);
+            Animation animation = Animation_createWithResID(Resources.Img.ObjBee);
             animation.parentAnchor = animation.anchor = 9;
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.03f, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.PlayTimeline(0);
             animation.JumpTo(RND_RANGE(0, 2));
             _ = bee.AddChild(animation);
-            Vector quadOffset = GetQuadOffset(Resources.Img.ObjBeeHd, 0);
+            Vector quadOffset = GetQuadOffset(Resources.Img.ObjBee, 0);
             if (VectEqual(quadOffset, vectZero))
             {
-                CTRTexture2D beeTexture = Application.GetTexture(Resources.Img.ObjBeeHd);
+                CTRTexture2D beeTexture = Application.GetTexture(Resources.Img.ObjBee);
                 if (beeTexture.preCutSize.X != vectUndefined.X && beeTexture.preCutSize.Y != vectUndefined.Y)
                 {
                     Vector bodyOffset = beeTexture.quadOffsets[BeeQuad];

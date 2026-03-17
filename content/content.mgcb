@@ -913,7 +913,7 @@
 /processorParam:TextureFormat=Color
 /build:images/menu_scrollbar.png
 
-#begin images/obj_bee_hd.png
+#begin images/obj_bee.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -923,7 +923,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/obj_bee_hd.png
+/build:images/obj_bee.png
 
 #begin images/obj_bouncer.png
 /importer:TextureImporter
@@ -996,18 +996,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/obj_hook.png
-
-#begin images/obj_pollen_hd.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:images/obj_pollen_hd.png
 
 #begin images/obj_pump.png
 /importer:TextureImporter

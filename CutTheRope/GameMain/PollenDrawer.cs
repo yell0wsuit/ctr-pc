@@ -12,9 +12,11 @@ namespace CutTheRope.GameMain
 {
     internal sealed class PollenDrawer : BaseElement
     {
+        private const int PollenQuad = 5;
+
         public PollenDrawer()
         {
-            Image image = Image.Image_createWithResID(Resources.Img.ObjPollenHd);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjBee, PollenQuad);
             qw = image.width * 1.5f;
             qh = image.height * 1.5f;
             totalCapacity = 200;
@@ -73,7 +75,7 @@ namespace CutTheRope.GameMain
             pollen.endAlpha = 0.3f;
             pollen.startAlpha = 1f;
             pollen.alpha = (0.7f * rND_0_) + 0.3f;
-            Quad2D qt = drawer.image.texture.quads[0];
+            Quad2D qt = drawer.image.texture.quads[PollenQuad];
             Quad3D qv = Quad3D.MakeQuad3D(v.X - (quadWidth / 2), v.Y - (quadHeight / 2), 0f, quadWidth, quadHeight);
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, pollenCount);
             if (pollenCount >= totalCapacity)
