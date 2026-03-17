@@ -426,8 +426,8 @@ namespace CutTheRope.GameMain
             }
             coverBackgroundRight.AddTimelinewithID(timeline, 0);
             coverBackgroundRight.PlayTimeline(0);
-            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 0);
-            Image image5 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 1);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 6);
+            Image image5 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 7);
             float loadingY = 80f;
             float leftOpenOffset = 50f;
             float rightRestInset = 10f;

@@ -1058,13 +1058,13 @@ namespace CutTheRope.GameMain
             if (flag)
             {
                 touchBaseElement.bid = new MenuButtonId(-1);
-                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelSelection, 1);
+                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 1);
                 image.DoRestoreCutTransparency();
             }
             else
             {
                 touchBaseElement.bid = MenuButtonId.ForLevel(l);
-                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelSelection, 0);
+                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 0);
                 image.DoRestoreCutTransparency();
                 Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
                 string @string = (l + 1).ToString(CultureInfo.InvariantCulture);
@@ -1072,7 +1072,7 @@ namespace CutTheRope.GameMain
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
                 _ = image.AddChild(text);
-                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelSelection, 2 + starsForPackLevel);
+                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 2 + starsForPackLevel);
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
@@ -1103,11 +1103,11 @@ namespace CutTheRope.GameMain
             image.SetName("levelsBack");
             _ = image.AddChild(image2);
             _ = menuView.AddChild(image);
-            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 0);
-            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLoading, 1);
-            image3.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 0).X;
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 6);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 7);
+            image3.x = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 6).X;
             image3.y = 80f;
-            image4.x = Image.GetQuadOffset(Resources.Img.MenuLoading, 1).X;
+            image4.x = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 7).X;
             image4.y = 80f;
             _ = menuView.AddChild(image3);
             _ = menuView.AddChild(image4);

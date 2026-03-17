@@ -240,7 +240,6 @@ namespace CutTheRope.GameMain
             public const string ZeptoLabLogoAnim = "zeptolab_logo_anim";
             public const string LoaderbarFull = "loaderbar_full";
             public const string MenuButtons = "menu_buttons";
-            public const string MenuLoading = "menu_loading";
             public const string MenuNotification = "menu_notification";
             public const string MenuAchievement = "menu_achievement";
             public const string MenuOptions = "menu_options";
@@ -251,7 +250,6 @@ namespace CutTheRope.GameMain
             public const string CutTheRopeDXLogo = "CutTheRopeDXLogo";
             public const string CandySelectionFx = "candy_selection_fx";
             public const string SkinSelection = "skin_selection";
-            public const string MenuLevelSelection = "menu_level_selection";
             public const string MenuPackSelection = "menu_pack_selection";
             public const string MenuPackSelection2 = "menu_pack_selection2";
             public const string MenuExtraButtons = "menu_extra_buttons";
@@ -261,6 +259,7 @@ namespace CutTheRope.GameMain
             public const string MenuScrollbarChangename = "menu_scrollbar_changename";
             public const string MenuButtonAchivCup = "menu_button_achiv_cup";
             public const string MenuBgrShadow = "menu_bgr_shadow";
+            public const string MenuLevelUi = "menu_level_ui";
             public const string HudUi = "hud_ui";
             public const string ObjSpider = "obj_spider";
             public const string ConfettiParticles = "confetti_particles";
