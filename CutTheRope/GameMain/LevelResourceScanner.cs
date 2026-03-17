@@ -191,7 +191,7 @@ namespace CutTheRope.GameMain
         /// <param name="resources">The destination set being accumulated.</param>
         private static void AddAlwaysLoadedLevelResources(HashSet<string> resources)
         {
-            _ = resources.Add(Resources.Img.HudStar);
+            _ = resources.Add(Resources.Img.HudUi);
             _ = resources.Add(Resources.Img.ObjStarIdle);
             _ = resources.Add(Resources.Img.ObjStarDisappear);
             _ = resources.Add(Resources.Img.ObjBubble);

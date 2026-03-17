@@ -65,12 +65,16 @@ namespace CutTheRope.GameMain
             UpdateBackgroundScale();
             for (int i = 0; i < 3; i++)
             {
-                hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudStar);
-                hudStar[i].DoRestoreCutTransparency();
-                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
+                const int HudUiStarFirstQuad = 2;
+                const int HudUiStarLastQuad = 12;
+                hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudUi);
+                hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
+                _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, HudUiStarFirstQuad, HudUiStarLastQuad);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
-                hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
-                hudStar[i].y = 0f;
+                int starSize = hudStar[i].width;
+                hudStar[i].anchor = 18;
+                hudStar[i].x = (starSize * i) + (starSize / 2) + Canvas.xOffsetScaled;
+                hudStar[i].y = hudStar[i].height / 2;
                 _ = AddChild(hudStar[i]);
             }
             for (int j = 0; j < 5; j++)
