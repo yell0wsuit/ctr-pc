@@ -660,17 +660,17 @@ namespace CutTheRope.GameMain
         // MenuPackSelection2 quads 0-7 are packs 8-15
         private static readonly int[] PackSelection2QuadMap =
         [
-            0, // pack 8
-            1, // pack 9
-            2, // pack 10
-            3, // pack 11
-            4, // pack 12
-            5, // pack 13
-            6, // pack 14
-            7, // pack 15
-            8, // pack 16
-            9, // pack 17
-            10, // coming soon box
+            1, // pack 8
+            2, // pack 9
+            3, // pack 10
+            4, // pack 11
+            5, // pack 12
+            6, // pack 13
+            7, // pack 14
+            8, // pack 15
+            9, // pack 16
+            10, // pack 17
+            11, // coming soon box
         ];
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
@@ -836,7 +836,7 @@ namespace CutTheRope.GameMain
             string boxLabelTextKey = PackConfig.GetBoxLabelText(n);
             if (!string.IsNullOrEmpty(boxLabelTextKey))
             {
-                Image boxLabel = Image.Image_createWithResIDQuad(Resources.Img.BoxLabel, 0);
+                Image boxLabel = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection2, 0);
                 boxLabel.parentAnchor = boxLabel.anchor = 36; // bottom-right
                 boxLabel.x = -90f;
                 boxLabel.y = -90f;
