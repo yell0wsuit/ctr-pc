@@ -1045,7 +1045,7 @@
 /processorParam:TextureFormat=Color
 /build:images/obj_bee_hd.png
 
-#begin images/obj_bouncer_01.png
+#begin images/obj_bouncer.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1055,19 +1055,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/obj_bouncer_01.png
-
-#begin images/obj_bouncer_02.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:images/obj_bouncer_02.png
+/build:images/obj_bouncer.png
 
 #begin images/obj_bubble_attached.png
 /importer:TextureImporter

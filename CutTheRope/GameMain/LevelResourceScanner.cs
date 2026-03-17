@@ -71,8 +71,7 @@ namespace CutTheRope.GameMain
                         break;
                     case "bouncer1":
                     case "bouncer2":
-                        _ = resources.Add(Resources.Img.ObjBouncer01);
-                        _ = resources.Add(Resources.Img.ObjBouncer02);
+                        _ = resources.Add(Resources.Img.ObjBouncer);
                         break;
                     case "pump":
                         _ = resources.Add(Resources.Img.ObjPump);

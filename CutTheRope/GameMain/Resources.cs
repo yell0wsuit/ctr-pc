@@ -294,8 +294,7 @@ namespace CutTheRope.GameMain
             public const string ObjPump = "obj_pump";
             public const string TutorialSigns = "tutorial_signs";
             public const string ObjHat = "obj_hat";
-            public const string ObjBouncer01 = "obj_bouncer_01";
-            public const string ObjBouncer02 = "obj_bouncer_02";
+            public const string ObjBouncer = "obj_bouncer";
             public const string ObjSpikes01 = "obj_spikes_01";
             public const string ObjSpikes02 = "obj_spikes_02";
             public const string ObjSpikes03 = "obj_spikes_03";
