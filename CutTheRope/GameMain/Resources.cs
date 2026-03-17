@@ -271,9 +271,7 @@ namespace CutTheRope.GameMain
             public const string MenuResultEn = "menu_result_en";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
-            public const string ObjHookAuto = "obj_hook_auto";
-            public const string ObjHook01 = "obj_hook_01";
-            public const string ObjHook02 = "obj_hook_02";
+            public const string ObjHook = "obj_hook";
             public const string ObjStarIdle = "obj_star_idle";
             public const string ObjStarNight = "obj_star_night";
             public const string HudStar = "hud_star";
@@ -285,8 +283,6 @@ namespace CutTheRope.GameMain
             public const string HatHalloween = "hat_halloween";
             public const string HatXmas = "hat_xmas";
             public const string CharAnimationsPrehistoric = "char_animations_body_prehistoric";
-            public const string ObjHookRegulated = "obj_hook_regulated";
-            public const string ObjHookMovable = "obj_hook_movable";
             public const string ObjGun = "obj_gun";
             public const string ObjSticker = "obj_sticker";
             public const string ObjPump = "obj_pump";

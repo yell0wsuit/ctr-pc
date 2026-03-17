@@ -205,28 +205,12 @@ namespace CutTheRope.GameMain
         /// <param name="node">The grab XML node being inspected.</param>
         private static void AddGrabResources(HashSet<string> resources, XElement node)
         {
-            _ = resources.Add(Resources.Img.ObjHook01);
-            _ = resources.Add(Resources.Img.ObjHook02);
+            _ = resources.Add(Resources.Img.ObjHook);
 
             bool gun = ParseBool(node.Attribute("gun")?.Value);
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
-            bool wheel = ParseBool(node.Attribute("wheel")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
-            float radius = ParseFloatOrZero(node.Attribute("radius")?.Value);
-            float moveLength = ParseFloatOrZero(node.Attribute("moveLength")?.Value);
 
-            if (radius != -1f && !gun && !kickable)
-            {
-                _ = resources.Add(Resources.Img.ObjHookAuto);
-            }
-            if (wheel)
-            {
-                _ = resources.Add(Resources.Img.ObjHookRegulated);
-            }
-            if (moveLength > 0f)
-            {
-                _ = resources.Add(Resources.Img.ObjHookMovable);
-            }
             if (bee)
             {
                 _ = resources.Add(Resources.Img.ObjBeeHd);
