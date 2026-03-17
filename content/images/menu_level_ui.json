@@ -2,7 +2,7 @@
     "frames": [
         {
             "filename": "menu_level_selection_frame_0000.png",
-            "frame": { "x": 572, "y": 1006, "w": 192, "h": 198 },
+            "frame": { "x": 554, "y": 1080, "w": 192, "h": 198 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 9, "y": 9, "w": 192, "h": 198 },
@@ -10,7 +10,7 @@
         },
         {
             "filename": "menu_level_selection_frame_0001.png",
-            "frame": { "x": 572, "y": 794, "w": 204, "h": 210 },
+            "frame": { "x": 441, "y": 794, "w": 204, "h": 210 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 4, "y": 6, "w": 204, "h": 210 },
@@ -18,34 +18,34 @@
         },
         {
             "filename": "menu_level_selection_frame_0002.png",
-            "frame": { "x": 132, "y": 1203, "w": 145, "h": 79 },
+            "frame": { "x": 132, "y": 1203, "w": 139, "h": 72 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 57, "y": 138, "w": 145, "h": 79 },
+            "spriteSourceSize": { "x": 60, "y": 138, "w": 139, "h": 72 },
             "sourceSize": { "w": 218, "h": 218 }
         },
         {
             "filename": "menu_level_selection_frame_0003.png",
-            "frame": { "x": 778, "y": 794, "w": 143, "h": 79 },
+            "frame": { "x": 414, "y": 1203, "w": 138, "h": 72 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 58, "y": 138, "w": 143, "h": 79 },
+            "spriteSourceSize": { "x": 60, "y": 138, "w": 138, "h": 72 },
             "sourceSize": { "w": 218, "h": 218 }
         },
         {
             "filename": "menu_level_selection_frame_0004.png",
-            "frame": { "x": 279, "y": 1203, "w": 145, "h": 79 },
+            "frame": { "x": 273, "y": 1203, "w": 139, "h": 72 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 57, "y": 138, "w": 145, "h": 79 },
+            "spriteSourceSize": { "x": 60, "y": 138, "w": 139, "h": 72 },
             "sourceSize": { "w": 218, "h": 218 }
         },
         {
             "filename": "menu_level_selection_frame_0005.png",
-            "frame": { "x": 426, "y": 1203, "w": 144, "h": 79 },
+            "frame": { "x": 441, "y": 1006, "w": 138, "h": 72 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 57, "y": 138, "w": 144, "h": 79 },
+            "spriteSourceSize": { "x": 60, "y": 138, "w": 138, "h": 72 },
             "sourceSize": { "w": 218, "h": 218 }
         },
         {
@@ -88,6 +88,6 @@
         "format": "RGBA8888",
         "size": { "w": 970, "h": 1307 },
         "scale": "1",
-        "smartupdate": "$TexturePacker:SmartUpdate:6138958be3facabc075ee869926b6d10:1288c2f7598f189909eb72190a9561b5:534167c623a0bd0112ee1a9e58018387$"
+        "smartupdate": "$TexturePacker:SmartUpdate:0e84e6a6e5adcc75156004835fcde784:38f57dd80f08bcb675fe0c7e15a453ea:534167c623a0bd0112ee1a9e58018387$"
     }
 }
