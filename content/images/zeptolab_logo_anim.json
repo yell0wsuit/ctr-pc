@@ -1,0 +1,69 @@
+{
+    "frames": [
+        {
+            "filename": "1_frame_0000.png",
+            "frame": { "x": 768, "y": 159, "w": 114, "h": 317 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 611, "y": 110, "w": 114, "h": 317 },
+            "sourceSize": { "w": 765, "h": 858 }
+        },
+        {
+            "filename": "2_frame_0001.png",
+            "frame": { "x": 639, "y": 861, "w": 182, "h": 167 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 431, "y": 155, "w": 182, "h": 167 },
+            "sourceSize": { "w": 765, "h": 858 }
+        },
+        {
+            "filename": "3_frame_0002.png",
+            "frame": { "x": 1, "y": 1, "w": 765, "h": 858 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 765, "h": 858 },
+            "sourceSize": { "w": 765, "h": 858 }
+        },
+        {
+            "filename": "4_frame_0003.png",
+            "frame": { "x": 1, "y": 861, "w": 636, "h": 208 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 66, "y": 463, "w": 636, "h": 208 },
+            "sourceSize": { "w": 765, "h": 858 }
+        },
+        {
+            "filename": "5_frame_0004.png",
+            "frame": { "x": 768, "y": 1, "w": 160, "h": 77 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 23, "y": 123, "w": 160, "h": 77 },
+            "sourceSize": { "w": 765, "h": 858 }
+        },
+        {
+            "filename": "6_frame_0005.png",
+            "frame": { "x": 768, "y": 80, "w": 160, "h": 77 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 23, "y": 34, "w": 160, "h": 77 },
+            "sourceSize": { "w": 765, "h": 858 }
+        },
+        {
+            "filename": "7_frame_0006.png",
+            "frame": { "x": 823, "y": 478, "w": 53, "h": 53 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 76, "y": 211, "w": 53, "h": 53 },
+            "sourceSize": { "w": 765, "h": 858 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "zeptolab_logo_anim.png",
+        "format": "RGBA8888",
+        "size": { "w": 929, "h": 1070 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:fbfaef2555958fa0da5fffda6bf9bf0c:ea8c1c2731a7034bb58bfb26af6eb057:e9103af04200fbf287e0a0e07782bf09$"
+    }
+}

@@ -325,7 +325,7 @@ namespace CutTheRope.GameMain
                 : 1f;
         }
 
-        private static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject,
+        internal static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject,
             List<Image> targetParts, int idleLoopTimelineId, int sleepingTimelineId)
         {
             // First pass: create all parts so cross-part action targets can be resolved.
@@ -364,7 +364,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private static void BuildRootTimelines(FlashXmlAnimationDefinition definition, GameObject rootObject,
+        internal static void BuildRootTimelines(FlashXmlAnimationDefinition definition, GameObject rootObject,
             int idleLoopTimelineId, int sleepingTimelineId)
         {
             foreach ((int timelineId, FlashXmlRootTimelineDefinition timelineDefinition) in definition.RootTimelineDefinitions)
@@ -379,7 +379,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private static void PlayTimeline(List<Image> targetParts, int timelineId)
+        internal static void PlayTimeline(List<Image> targetParts, int timelineId)
         {
             for (int i = 0; i < targetParts.Count; i++)
             {
@@ -404,7 +404,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        private static void PlayRootTimeline(GameObject rootObject, int timelineId)
+        internal static void PlayRootTimeline(GameObject rootObject, int timelineId)
         {
             if (rootObject.GetTimeline(timelineId) != null)
             {
