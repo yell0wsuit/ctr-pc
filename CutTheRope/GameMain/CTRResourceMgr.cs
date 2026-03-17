@@ -21,16 +21,6 @@ namespace CutTheRope.GameMain
                 ? resourceName
                 : resourceName switch
                 {
-                    _ when resourceName == Resources.Img.MenuResultEn => LanguageHelper.Current switch
-                    {
-                        Language.LANGEN => Resources.Img.MenuResultEn,
-                        Language.LANGRU => Resources.Img.MenuResultRu,
-                        Language.LANGDE => Resources.Img.MenuResultGr,
-                        Language.LANGFR => Resources.Img.MenuResultFr,
-                        Language.LANGZH => throw new NotImplementedException(),
-                        Language.LANGJA => throw new NotImplementedException(),
-                        _ => Resources.Img.MenuResultEn,
-                    },
                     _ when resourceName == Resources.Img.MenuExtraButtonsEn => LanguageHelper.Current switch
                     {
                         Language.LANGEN => Resources.Img.MenuExtraButtonsEn,
@@ -51,6 +41,20 @@ namespace CutTheRope.GameMain
         public static string XNA_ResName(string resourceName)
         {
             return HandleLocalizedResource(resourceName);
+        }
+
+        public static int GetResultStampQuad()
+        {
+            return LanguageHelper.Current switch
+            {
+                Language.LANGEN => 17,
+                Language.LANGFR => 18,
+                Language.LANGDE => 19,
+                Language.LANGRU => 20,
+                Language.LANGZH => throw new NotImplementedException(),
+                Language.LANGJA => throw new NotImplementedException(),
+                _ => 17,
+            };
         }
 
         public static int GetHudButtonQuadOffset()

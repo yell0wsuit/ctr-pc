@@ -652,9 +652,8 @@ namespace CutTheRope.GameMain
             Resources.Img.ObjSpider,
             Resources.Img.ConfettiParticles,
             Resources.Img.MenuPause,
-            Resources.Img.MenuResult,
+            Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,
-            Resources.Img.MenuResultEn,
             null
         ];
 

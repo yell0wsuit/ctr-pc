@@ -264,8 +264,7 @@ namespace CutTheRope.GameMain
             public const string ObjSpider = "obj_spider";
             public const string ConfettiParticles = "confetti_particles";
             public const string MenuPause = "menu_pause";
-            public const string MenuResult = "menu_result";
-            public const string MenuResultEn = "menu_result_en";
+            public const string MenuResults = "menu_results";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";
@@ -308,9 +307,6 @@ namespace CutTheRope.GameMain
             public const string MenuExtraButtonsFr = "menu_extra_buttons_fr";
             public const string MenuExtraButtonsGr = "menu_extra_buttons_gr";
             public const string MenuExtraButtonsRu = "menu_extra_buttons_ru";
-            public const string MenuResultRu = "menu_result_ru";
-            public const string MenuResultFr = "menu_result_fr";
-            public const string MenuResultGr = "menu_result_gr";
             public const string MenuExtraButtonsEn = "menu_extra_buttons_en";
             public const string Bgr12Cover = "bgr_12_cover";
             public const string ObjGhost = "obj_ghost";
