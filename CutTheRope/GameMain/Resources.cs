@@ -239,7 +239,7 @@ namespace CutTheRope.GameMain
             public const string ZeptoLabLogoLoading = "zepto_loaderbar";
             public const string ZeptoLabLogoAnim = "zeptolab_logo_anim";
             public const string LoaderbarFull = "loaderbar_full";
-            public const string MenuButtonDefault = "menu_button_default";
+            public const string MenuButtons = "menu_buttons";
             public const string MenuLoading = "menu_loading";
             public const string MenuNotification = "menu_notification";
             public const string MenuAchievement = "menu_achievement";
@@ -261,7 +261,6 @@ namespace CutTheRope.GameMain
             public const string MenuScrollbarChangename = "menu_scrollbar_changename";
             public const string MenuButtonAchivCup = "menu_button_achiv_cup";
             public const string MenuBgrShadow = "menu_bgr_shadow";
-            public const string MenuButtonShort = "menu_button_short";
             public const string HudButtons = "hud_buttons";
             public const string ObjSpider = "obj_spider";
             public const string ConfettiParticles = "confetti_particles";

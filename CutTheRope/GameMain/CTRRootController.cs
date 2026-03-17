@@ -645,7 +645,7 @@ namespace CutTheRope.GameMain
         ];
 
         private static readonly string[] PackGame = [
-            Resources.Img.MenuButtonShort,
+            Resources.Img.MenuButtons,
             Resources.Img.HudButtons,
             CandySkinHelper.GetCandyResource(Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY)),
             Resources.Img.ObjCandyFx,

@@ -242,7 +242,7 @@ namespace CutTheRope.GameMain
 
         private static readonly string[] PackCommonImages =
         [
-            Resources.Img.MenuButtonDefault,
+            Resources.Img.MenuButtons,
             Resources.Img.MenuLoading,
             Resources.Img.MenuOptions,
             null

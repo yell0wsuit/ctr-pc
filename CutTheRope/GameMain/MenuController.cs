@@ -20,8 +20,8 @@ namespace CutTheRope.GameMain
     {
         public static Button CreateButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
@@ -39,8 +39,8 @@ namespace CutTheRope.GameMain
 
         public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonShort, 1);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonShort, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 3);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 2);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
@@ -58,10 +58,10 @@ namespace CutTheRope.GameMain
 
         public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, ButtonId bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
-            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
-            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(str1);
@@ -334,8 +334,8 @@ namespace CutTheRope.GameMain
         {
             int q = LanguageHelper.GetLanguageFlagQuadIndex();
             string string2 = Application.GetString("LANGUAGE");
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 1);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(string2);
