@@ -586,7 +586,7 @@ namespace CutTheRope.Framework.Visual
             for (int i = 0; i < edgeCount; i++)
             {
                 float angle = edgeAngles[i];
-                float dx = MathF.Sin(angle);
+                float dx = -MathF.Sin(angle);
                 float dy = -MathF.Cos(angle);
 
                 // Find intersection with quad boundary [-hw,hw] x [-hh,hh]
