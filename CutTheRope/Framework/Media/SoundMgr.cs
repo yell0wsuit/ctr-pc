@@ -168,6 +168,8 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         public void StopAllSounds()
         {
+            StopList(activeSounds);
+            activeSounds.Clear();
             StopLoopedSounds();
         }
 

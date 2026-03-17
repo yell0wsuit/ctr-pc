@@ -1,0 +1,29 @@
+{
+    "frames": [
+        {
+            "filename": "loaderbar_empty_1536_2048.png",
+            "frame": { "x": 1, "y": 1, "w": 278, "h": 312 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 278, "h": 312 },
+            "sourceSize": { "w": 278, "h": 312 }
+        },
+        {
+            "filename": "loaderbar_full_1536_2048.png",
+            "frame": { "x": 281, "y": 1, "w": 278, "h": 312 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 278, "h": 312 },
+            "sourceSize": { "w": 278, "h": 312 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "zepto_loaderbar.png",
+        "format": "RGBA8888",
+        "size": { "w": 560, "h": 314 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:a81b0aca06a6d4c0521c929beded7049:648587fac51be9af25bdd09c55136eb6:d8a277a9025214ef8825e75a19ec99fc$"
+    }
+}

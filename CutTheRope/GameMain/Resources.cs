@@ -236,6 +236,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         internal static class Img
         {
+            public const string ZeptoLabLogoLoading = "zepto_loaderbar";
+            public const string ZeptoLabLogoAnim = "zeptolab_logo_anim";
             public const string LoaderbarFull = "loaderbar_full";
             public const string MenuButtonDefault = "menu_button_default";
             public const string MenuLoading = "menu_loading";
@@ -473,6 +475,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         internal static class Snd
         {
+            public const string ZeptoLogoBubbles = "zepto_logo_bubbles";
             public const string Tap = "tap";
             public const string Button = "button";
             public const string BubbleBreak = "bubble_break";
