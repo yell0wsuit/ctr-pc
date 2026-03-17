@@ -797,6 +797,10 @@ namespace CutTheRope.GameMain
             ref CTRRectangle center = ref texture.quadRects[MovableRailCenterQuad];
             center.x += 1;
             center.w -= 2;
+
+            texture.quads[MovableRailLeftQuad] = DrawHelper.GetTextureCoordinates(texture, left);
+            texture.quads[MovableRailRightQuad] = DrawHelper.GetTextureCoordinates(texture, right);
+            texture.quads[MovableRailCenterQuad] = DrawHelper.GetTextureCoordinates(texture, center);
         }
 
         private static int RandomHookBaseQuad()
