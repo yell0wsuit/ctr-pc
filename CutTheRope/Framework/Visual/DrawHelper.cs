@@ -505,7 +505,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Draws a textured quad with radial (pie-chart) clipping, sweeping clockwise from 12 o'clock.
+        /// Draws a textured quad with radial (pie-chart) clipping, sweeping counterclockwise from 12 o'clock.
         /// Uses a triangle fan from the quad center with UV-mapped edge vertices.
         /// </summary>
         /// <param name="texture">The texture containing the quad.</param>
@@ -540,14 +540,14 @@ namespace CutTheRope.Framework.Visual
             float cy = y + hh;
             float sweepAngle = fraction * MathF.Tau;
 
-            // Corner angles clockwise from top (12 o'clock)
+            // Corner angles in sweep order from top (12 o'clock)
             float cornerAngle = MathF.Atan2(hw, hh);
             Span<float> corners =
             [
-                cornerAngle,                   // top-right
-                MathF.PI - cornerAngle,        // bottom-right
-                MathF.PI + cornerAngle,        // bottom-left
-                MathF.Tau - cornerAngle        // top-left
+                cornerAngle,                   // top-left
+                MathF.PI - cornerAngle,        // bottom-left
+                MathF.PI + cornerAngle,        // bottom-right
+                MathF.Tau - cornerAngle        // top-right
             ];
 
             // Build edge vertices: start at top center, add corners within sweep, end at sweep angle
