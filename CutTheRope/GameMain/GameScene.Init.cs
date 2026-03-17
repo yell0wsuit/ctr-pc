@@ -13,10 +13,10 @@ namespace CutTheRope.GameMain
     {
         public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
-            Image u = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 56);
-            Image d2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 56);
-            Image u2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
-            Image d3 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
+            Image u = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
+            Image d2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
+            Image u2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
+            Image d3 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, GameSceneButtonId.GravityToggle);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
@@ -125,7 +125,7 @@ namespace CutTheRope.GameMain
 
         public void CreateEarthImageWithOffsetXY(float xs, float ys)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 58);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 23);
             image.anchor = 18;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
