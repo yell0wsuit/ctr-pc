@@ -55,19 +55,13 @@ namespace CutTheRope.GameMain
                     case "bubble":
                         break;
                     case "spike1":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes01, Resources.Img.ObjRotatableSpikes01);
-                        break;
                     case "spike2":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes02, Resources.Img.ObjRotatableSpikes02);
-                        break;
                     case "spike3":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes03, Resources.Img.ObjRotatableSpikes03);
-                        break;
                     case "spike4":
-                        AddSpikeResources(resources, node, Resources.Img.ObjSpikes04, Resources.Img.ObjRotatableSpikes04);
+                        _ = resources.Add(Resources.Img.ObjSpikes);
                         break;
                     case "electro":
-                        AddSpikeResources(resources, node, Resources.Img.ObjElectrodes, Resources.Img.ObjRotatableSpikesButton);
+                        _ = resources.Add(Resources.Img.ObjElectrodes);
                         break;
                     case "bouncer1":
                     case "bouncer2":
@@ -248,22 +242,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Adds spike resources, including the toggle button when the spike is controlled by a switch.
-        /// </summary>
-        /// <param name="resources">The destination set being accumulated.</param>
-        /// <param name="node">The spike XML node being inspected.</param>
-        /// <param name="baseResourceName">The base spike sprite resource.</param>
-        /// <param name="rotatedResourceName">The rotated spike sprite resource.</param>
-        private static void AddSpikeResources(HashSet<string> resources, XElement node, string baseResourceName, string rotatedResourceName)
-        {
-            _ = resources.Add(baseResourceName);
-            if (node.Attribute("toggled") is not null)
-            {
-                _ = resources.Add(rotatedResourceName);
-                _ = resources.Add(Resources.Img.ObjRotatableSpikesButton);
-            }
-        }
 
         /// <summary>
         /// Adds Om Nom animation resources, including the pack-specific support sprite.

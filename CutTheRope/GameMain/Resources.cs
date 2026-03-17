@@ -293,16 +293,8 @@ namespace CutTheRope.GameMain
             public const string TutorialSigns = "tutorial_signs";
             public const string ObjHat = "obj_hat";
             public const string ObjBouncer = "obj_bouncer";
-            public const string ObjSpikes01 = "obj_spikes_01";
-            public const string ObjSpikes02 = "obj_spikes_02";
-            public const string ObjSpikes03 = "obj_spikes_03";
-            public const string ObjSpikes04 = "obj_spikes_04";
+            public const string ObjSpikes = "obj_spikes";
             public const string ObjElectrodes = "obj_electrodes";
-            public const string ObjRotatableSpikes01 = "obj_rotatable_spikes_01";
-            public const string ObjRotatableSpikes02 = "obj_rotatable_spikes_02";
-            public const string ObjRotatableSpikes03 = "obj_rotatable_spikes_03";
-            public const string ObjRotatableSpikes04 = "obj_rotatable_spikes_04";
-            public const string ObjRotatableSpikesButton = "obj_rotatable_spikes_button";
             public const string ObjAnt = "obj_ant";
             public const string AntHole = "ant_hole";
             public const string ObjBeeHd = "obj_bee_hd";

@@ -12,26 +12,30 @@ namespace CutTheRope.GameMain
     {
         public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, float an, int t)
         {
-            string textureResourceName = GetSpikeTexture(w, t != -1);
-            if (textureResourceName == null || InitWithTexture(Application.GetTexture(textureResourceName)) == null)
+            (string textureName, int spikeQuad) = GetSpikeTextureAndQuad(w, t != -1);
+            if (textureName == null || InitWithTexture(Application.GetTexture(textureName)) == null)
             {
                 return null;
+            }
+            if (spikeQuad > 0)
+            {
+                SetDrawQuad(spikeQuad);
             }
             if (t > 0)
             {
                 DoRestoreCutTransparency();
-                int buttonQuad = (t - 1) * ButtonFramesPerToggle;
-                int q = ButtonPressedQuadOffset + ((t - 1) * ButtonFramesPerToggle);
-                Image image = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, buttonQuad);
-                Image image2 = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, q);
+                int buttonQuad = ButtonFirstQuad + ((t - 1) * ButtonFramesPerToggle);
+                int q = ButtonFirstQuad + ButtonPressedQuadOffset + ((t - 1) * ButtonFramesPerToggle);
+                Image image = Image_createWithResIDQuad(Resources.Img.ObjSpikes, buttonQuad);
+                Image image2 = Image_createWithResIDQuad(Resources.Img.ObjSpikes, q);
                 image.DoRestoreCutTransparency();
                 image2.DoRestoreCutTransparency();
                 rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, SpikesButtonId.Rotate);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
                 _ = AddChild(rotateButton);
-                Vector quadOffset = GetQuadOffset(Resources.Img.ObjRotatableSpikesButton, buttonQuad);
-                Vector quadSize = GetQuadSize(Resources.Img.ObjRotatableSpikesButton, buttonQuad);
+                Vector quadOffset = GetQuadOffset(Resources.Img.ObjSpikes, buttonQuad);
+                Vector quadSize = GetQuadSize(Resources.Img.ObjSpikes, buttonQuad);
                 Vector vector = VectSub(Vect(image.texture.preCutSize.X, image.texture.preCutSize.Y), VectAdd(quadSize, quadOffset));
                 rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.X + (quadSize.X / 2f), 0f - vector.X + (quadSize.X / 2f), 0f - quadOffset.Y + (quadSize.Y / 2f), 0f - vector.Y + (quadSize.Y / 2f));
             }
@@ -212,23 +216,9 @@ namespace CutTheRope.GameMain
 
         private SoundEffectInstance sndElectric;
 
-        private static readonly string[] SpikeTextures =
-        [
-            Resources.Img.ObjSpikes01,
-            Resources.Img.ObjSpikes02,
-            Resources.Img.ObjSpikes03,
-            Resources.Img.ObjSpikes04,
-            Resources.Img.ObjElectrodes
-        ];
-
-        private static readonly string[] RotatableSpikeTextures =
-        [
-            Resources.Img.ObjRotatableSpikes01,
-            Resources.Img.ObjRotatableSpikes02,
-            Resources.Img.ObjRotatableSpikes03,
-            Resources.Img.ObjRotatableSpikes04
-        ];
-
+        private const int RotatableSpikeFirstQuad = 0;
+        private const int ButtonFirstQuad = 4;
+        private const int StaticSpikeFirstQuad = 8;
 
         private const int ElectrodesWidthIndex = 5;
 
@@ -236,16 +226,20 @@ namespace CutTheRope.GameMain
 
         private const int ButtonPressedQuadOffset = 1;
 
-        private static string GetSpikeTexture(int width, bool rotatable)
+        private static (string texture, int quad) GetSpikeTextureAndQuad(int width, bool rotatable)
         {
+            if (width == ElectrodesWidthIndex)
+            {
+                return (Resources.Img.ObjElectrodes, 0);
+            }
             int index = width - 1;
-            return index < 0
-                ? null
-                : rotatable
-                ? index < RotatableSpikeTextures.Length ? RotatableSpikeTextures[index] : null
-                : width == ElectrodesWidthIndex
-                ? SpikeTextures.Length > 4 ? SpikeTextures[4] : null
-                : index < SpikeTextures.Length ? SpikeTextures[index] : null;
+            if (index is < 0 or >= 4)
+            {
+                return (null, 0);
+            }
+            return rotatable
+                ? (Resources.Img.ObjSpikes, RotatableSpikeFirstQuad + index)
+                : (Resources.Img.ObjSpikes, StaticSpikeFirstQuad + index);
         }
 
         private enum SPIKES_ANIM
