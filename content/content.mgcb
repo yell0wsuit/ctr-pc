@@ -817,6 +817,18 @@
 /processorParam:TextureFormat=Color
 /build:images/menu_options.png
 
+#begin images/menu_pack_ui.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/menu_pack_ui.png
+
 #begin images/menu_pack_selection.png
 /importer:TextureImporter
 /processor:TextureProcessor
