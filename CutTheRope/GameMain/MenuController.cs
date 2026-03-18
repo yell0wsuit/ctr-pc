@@ -683,27 +683,7 @@ namespace CutTheRope.GameMain
             {
                 string text3 = (n + 1).ToString(CultureInfo.InvariantCulture);
                 string text4 = ". ";
-                string boxLabelId = n switch
-                {
-                    0 => "BOX1_LABEL",
-                    1 => "BOX2_LABEL",
-                    2 => "BOX3_LABEL",
-                    3 => "BOX4_LABEL",
-                    4 => "BOX5_LABEL",
-                    5 => "BOX6_LABEL",
-                    6 => "BOX7_LABEL",
-                    7 => "BOX8_LABEL",
-                    8 => "BOX9_LABEL",
-                    9 => "BOX10_LABEL",
-                    10 => "BOX11_LABEL",
-                    11 => "BOX12_LABEL",
-                    12 => "BOX13_LABEL",
-                    13 => "BOX14_LABEL",
-                    14 => "BOX15_LABEL",
-                    15 => "BOX16_LABEL",
-                    16 => "BOX17_LABEL",
-                    _ => "BOX1_LABEL",
-                };
+                string boxLabelId = PackConfig.GetPackName(n);
                 string @string = Application.GetString(boxLabelId);
                 nsstring = text3 + text4 + (@string?.ToString());
             }

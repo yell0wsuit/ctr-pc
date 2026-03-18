@@ -31,7 +31,9 @@ namespace CutTheRope.GameMain
         string[] musicList,
         bool earthBg,
         Vector? earthBgPosition,
-        string boxLabelText)
+        string boxLabelText,
+        string packName
+        )
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
@@ -41,6 +43,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Quad index within <see cref="PackSpritesheet"/> for this pack's box sprite.</summary>
         public int PackQuadIndex { get; } = packQuadIndex;
+
+        /// <summary>The localized box pack name.</summary>
+        public string PackName { get; } = packName;
 
         /// <summary>String resource names for pack assets.</summary>
         public string[] BoxBackgrounds { get; } = boxBackgrounds;
@@ -210,6 +215,11 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxLabelText : null;
         }
 
+        public static string GetPackName(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].PackName : null;
+        }
+
         public static string GetPackSpritesheet(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].PackSpritesheet : null;
@@ -364,22 +374,28 @@ namespace CutTheRope.GameMain
 
                     string boxLabelText = ParseStringProperty(packElement, "boxLabelText");
 
-                    results.Add(new PackDefinition(
-                        unlockStars,
-                        levelCount,
-                        packListEntry.SaveSlot,
-                        packSpritesheet,
-                        packQuadIndex,
-                        boxBackgrounds,
-                        boxBackgroundP2Y,
-                        supportResourceName,
-                        boxCovers,
-                        boxHoleBgColor,
-                        musicPack,
-                        musicList,
-                        earthBg,
-                        earthBgPosition,
-                        boxLabelText));
+                    string packName = ParseStringProperty(packElement, "packName");
+
+                    results.Add(
+                        new PackDefinition(
+                            unlockStars,
+                            levelCount,
+                            packListEntry.SaveSlot,
+                            packSpritesheet,
+                            packQuadIndex,
+                            boxBackgrounds,
+                            boxBackgroundP2Y,
+                            supportResourceName,
+                            boxCovers,
+                            boxHoleBgColor,
+                            musicPack,
+                            musicList,
+                            earthBg,
+                            earthBgPosition,
+                            boxLabelText,
+                            packName
+                            )
+                        );
                 }
             }
 
