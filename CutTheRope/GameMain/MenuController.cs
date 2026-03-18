@@ -681,10 +681,8 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                string boxPackNumber = (n + 1).ToString(CultureInfo.InvariantCulture);
-                string boxPackSeparator = ". ";
                 string boxPackNameString = Application.GetString(PackConfig.GetPackName(n));
-                boxPackStrings = boxPackNumber + boxPackSeparator + (boxPackNameString?.ToString());
+                boxPackStrings = $"{n + 1}. {boxPackNameString}";
             }
             string packTitle = boxPackStrings;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
