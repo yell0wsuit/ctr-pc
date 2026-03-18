@@ -9,6 +9,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 0,
+        "sittingPlatform": 0,
         "unlockStars": 0
     },
     {
@@ -21,6 +22,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 1,
+        "sittingPlatform": 1,
         "unlockStars": 30
     },
     {
@@ -33,6 +35,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 2,
+        "sittingPlatform": 2,
         "unlockStars": 80
     },
     {
@@ -45,6 +48,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 3,
+        "sittingPlatform": 3,
         "unlockStars": 170
     },
     {
@@ -57,6 +61,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 4,
+        "sittingPlatform": 4,
         "unlockStars": 240
     },
     {
@@ -69,6 +74,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 5,
+        "sittingPlatform": 5,
         "unlockStars": 300
     },
     {
@@ -81,6 +87,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 6,
+        "sittingPlatform": 6,
         "unlockStars": 350
     },
     {
@@ -95,6 +102,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 7,
+        "sittingPlatform": 7,
         "unlockStars": 400
     },
     {
@@ -107,6 +115,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "1",
         "packQuadIndex": 8,
+        "sittingPlatform": 8,
         "unlockStars": 450
     },
     {
@@ -119,6 +128,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 0,
+        "sittingPlatform": 9,
         "unlockStars": 500
     },
     {
@@ -131,6 +141,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 1,
+        "sittingPlatform": 10,
         "unlockStars": 550
     },
     {
@@ -142,6 +153,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 2,
+        "sittingPlatform": 11,
         "unlockStars": 600
     },
     {
@@ -153,6 +165,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 3,
+        "sittingPlatform": 12,
         "unlockStars": 650
     },
     {
@@ -164,6 +177,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 4,
+        "sittingPlatform": 13,
         "unlockStars": 700
     },
     {
@@ -175,6 +189,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 5,
+        "sittingPlatform": 14,
         "unlockStars": 750
     },
     {
@@ -186,6 +201,7 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 6,
+        "sittingPlatform": 15,
         "unlockStars": 800
     },
     {
@@ -198,9 +214,11 @@
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",
         "packQuadIndex": 7,
+        "sittingPlatform": 16,
         "unlockStars": 850
     },
     {
+        "packName": "BOX_SOON_LABEL",
         "packSpritesheet": "2",
         "packQuadIndex": 8
     }

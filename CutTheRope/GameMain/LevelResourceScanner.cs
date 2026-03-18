@@ -250,7 +250,6 @@ namespace CutTheRope.GameMain
 
             _ = resources.Add(Resources.Img.FxBubbles);
             _ = resources.Add(Resources.Img.CharSupports);
-            _ = resources.Add(PackConfig.GetSupportResourceName(pack));
         }
 
         /// <summary>

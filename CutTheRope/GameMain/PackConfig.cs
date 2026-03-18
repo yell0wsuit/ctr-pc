@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
         int packQuadIndex,
         string[] boxBackgrounds,
         int boxBackgroundP2Y,
-        string supportResourceName,
+        int sittingPlatform,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
         string[] musicPack,
@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
         Vector? earthBgPosition,
         string boxLabelText,
         string packName
-        )
+    )
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
@@ -53,8 +53,8 @@ namespace CutTheRope.GameMain
         /// <summary>Y position for secondary background (p2) in long levels. 0 means no p2.</summary>
         public int BoxBackgroundP2Y { get; } = boxBackgroundP2Y;
 
-        /// <summary>String resource name for the support asset.</summary>
-        public string SupportResourceName { get; } = supportResourceName;
+        /// <summary>Quad index in <see cref="Resources.Img.CharSupports"/> used for the support platform.</summary>
+        public int SittingPlatform { get; } = sittingPlatform;
 
         /// <summary>String resource names for cover assets.</summary>
         public string[] BoxCovers { get; } = boxCovers;
@@ -163,9 +163,9 @@ namespace CutTheRope.GameMain
                 : coverResourceName;
         }
 
-        public static string GetSupportResourceName(int pack)
+        public static int GetSittingPlatform(int pack)
         {
-            return pack >= 0 && pack < packs.Count ? packs[pack].SupportResourceName : null;
+            return pack >= 0 && pack < packs.Count ? packs[pack].SittingPlatform : 0;
         }
 
         public static string[] GetMusicPack(int pack)
@@ -350,9 +350,7 @@ namespace CutTheRope.GameMain
 
                     int boxBackgroundP2Y = ParseIntProperty(packElement, "boxBackgroundP2Y", 0, packListEntry.ConfigFileName);
 
-                    string supportResourceName = ParseStringProperty(packElement, "supportResourceName");
-                    supportResourceName ??= Resources.Img.CharSupports;
-                    ValidateResourceName(supportResourceName, "supportResourceName", packListEntry.ConfigFileName);
+                    int sittingPlatform = ParseIntProperty(packElement, "sittingPlatform", 0, packListEntry.ConfigFileName);
 
                     string[] boxCovers = ParseResourceNames(packElement, "boxCover");
                     if (isPlayable)
@@ -385,7 +383,7 @@ namespace CutTheRope.GameMain
                             packQuadIndex,
                             boxBackgrounds,
                             boxBackgroundP2Y,
-                            supportResourceName,
+                            sittingPlatform,
                             boxCovers,
                             boxHoleBgColor,
                             musicPack,
