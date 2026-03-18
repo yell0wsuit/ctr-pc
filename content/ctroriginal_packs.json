@@ -6,6 +6,8 @@
         "boxHoleBgColor": [70, 37, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 0,
         "unlockStars": 0
     },
     {
@@ -15,6 +17,8 @@
         "boxHoleBgColor": [39, 52, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 1,
         "unlockStars": 30
     },
     {
@@ -24,6 +28,8 @@
         "boxHoleBgColor": [44, 45, 54],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 2,
         "unlockStars": 80
     },
     {
@@ -33,6 +39,8 @@
         "boxHoleBgColor": [31, 42, 84],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 3,
         "unlockStars": 170
     },
     {
@@ -42,6 +50,8 @@
         "boxHoleBgColor": [69, 31, 50],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 4,
         "unlockStars": 240
     },
     {
@@ -51,6 +61,8 @@
         "boxHoleBgColor": [75, 33, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 5,
         "unlockStars": 300
     },
     {
@@ -60,6 +72,8 @@
         "boxHoleBgColor": [84, 22, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 6,
         "unlockStars": 350
     },
     {
@@ -71,6 +85,8 @@
         "earthBgPosition": [1284, 724],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 7,
         "unlockStars": 400
     },
     {
@@ -80,6 +96,8 @@
         "boxHoleBgColor": [98, 0, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "1",
+        "packQuadIndex": 8,
         "unlockStars": 450
     },
     {
@@ -89,6 +107,8 @@
         "boxHoleBgColor": [66, 40, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 0,
         "unlockStars": 500
     },
     {
@@ -98,6 +118,8 @@
         "boxHoleBgColor": [0, 47, 90],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 1,
         "unlockStars": 550
     },
     {
@@ -106,6 +128,8 @@
         "boxHoleBgColor": [0, 58, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 2,
         "unlockStars": 600
     },
     {
@@ -114,6 +138,8 @@
         "boxHoleBgColor": [63, 42, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 3,
         "unlockStars": 650
     },
     {
@@ -122,6 +148,8 @@
         "boxHoleBgColor": [89, 12, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 4,
         "unlockStars": 700
     },
     {
@@ -130,6 +158,8 @@
         "boxHoleBgColor": [56, 45, 0],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 5,
         "unlockStars": 750
     },
     {
@@ -138,6 +168,8 @@
         "boxHoleBgColor": [37, 32, 104],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 6,
         "unlockStars": 800
     },
     {
@@ -147,6 +179,12 @@
         "boxLabelText": "HARDEST_LABEL",
         "levelCount": 25,
         "musicPack": ["ctr_original"],
+        "packSpritesheet": "2",
+        "packQuadIndex": 7,
         "unlockStars": 850
+    },
+    {
+        "packSpritesheet": "2",
+        "packQuadIndex": 8
     }
 ]

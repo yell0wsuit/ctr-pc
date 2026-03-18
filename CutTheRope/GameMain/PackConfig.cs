@@ -20,6 +20,8 @@ namespace CutTheRope.GameMain
         int unlockStars,
         int levelCount,
         int saveSlot,
+        string packSpritesheet,
+        int packQuadIndex,
         string[] boxBackgrounds,
         int boxBackgroundP2Y,
         string supportResourceName,
@@ -33,6 +35,12 @@ namespace CutTheRope.GameMain
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
+
+        /// <summary>Resource ID for the spritesheet containing this pack's box sprite.</summary>
+        public string PackSpritesheet { get; } = packSpritesheet;
+
+        /// <summary>Quad index within <see cref="PackSpritesheet"/> for this pack's box sprite.</summary>
+        public int PackQuadIndex { get; } = packQuadIndex;
 
         /// <summary>String resource names for pack assets.</summary>
         public string[] BoxBackgrounds { get; } = boxBackgrounds;
@@ -93,11 +101,13 @@ namespace CutTheRope.GameMain
         private static readonly RGBAColor DefaultBoxHoleBgColor = RGBAColor.MakeRGBA(45 / 255f, 45 / 255f, 53 / 255f, 1f);
 
         private static readonly List<PackDefinition> packs;
+        private static readonly int playablePackCount;
 
         static PackConfig()
         {
             List<PackListEntry> packListEntries = LoadPackListEntries();
             packs = LoadPacksFromEntries(packListEntries);
+            playablePackCount = packs.Count(p => p.LevelCount > 0);
             MaxLevelsPerPack = packs.Count > 0 ? packs.Max(p => p.LevelCount) : 0;
         }
 
@@ -107,7 +117,7 @@ namespace CutTheRope.GameMain
 
         public static int GetPackCount()
         {
-            return packs.Count;
+            return playablePackCount;
         }
 
         public static int GetLevelCount(int pack)
@@ -200,6 +210,32 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxLabelText : null;
         }
 
+        public static string GetPackSpritesheet(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].PackSpritesheet : null;
+        }
+
+        public static int GetPackQuadIndex(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].PackQuadIndex : 0;
+        }
+
+        /// <summary>
+        /// Returns the index of the first non-playable pack entry (coming soon placeholder), or -1 if none.
+        /// </summary>
+        public static int GetComingSoonPackIndex()
+        {
+            for (int i = packs.Count - 1; i >= 0; i--)
+            {
+                if (packs[i].LevelCount == 0)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         private static List<PackListEntry> LoadPackListEntries()
         {
             if (!TryLoadJsonRoot(PackListConfigFile, out JsonElement root))
@@ -289,9 +325,17 @@ namespace CutTheRope.GameMain
 
                     int unlockStars = ParseIntProperty(packElement, "unlockStars", 0, packListEntry.ConfigFileName);
                     int levelCount = ParseIntProperty(packElement, "levelCount", 0, packListEntry.ConfigFileName);
+                    bool isPlayable = levelCount > 0;
+
+                    string packSpritesheetRaw = ParseStringProperty(packElement, "packSpritesheet");
+                    string packSpritesheet = ResolvePackSpritesheetId(packSpritesheetRaw);
+                    int packQuadIndex = ParseIntProperty(packElement, "packQuadIndex", 0, packListEntry.ConfigFileName);
 
                     string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
-                    RequireResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
+                    if (isPlayable)
+                    {
+                        RequireResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
+                    }
                     ValidateResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
 
                     int boxBackgroundP2Y = ParseIntProperty(packElement, "boxBackgroundP2Y", 0, packListEntry.ConfigFileName);
@@ -301,7 +345,10 @@ namespace CutTheRope.GameMain
                     ValidateResourceName(supportResourceName, "supportResourceName", packListEntry.ConfigFileName);
 
                     string[] boxCovers = ParseResourceNames(packElement, "boxCover");
-                    RequireResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
+                    if (isPlayable)
+                    {
+                        RequireResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
+                    }
                     ValidateResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
 
                     RGBAColor boxHoleBgColor = ParseColorProperty(packElement, "boxHoleBgColor");
@@ -321,6 +368,8 @@ namespace CutTheRope.GameMain
                         unlockStars,
                         levelCount,
                         packListEntry.SaveSlot,
+                        packSpritesheet,
+                        packQuadIndex,
                         boxBackgrounds,
                         boxBackgroundP2Y,
                         supportResourceName,
@@ -346,6 +395,20 @@ namespace CutTheRope.GameMain
                 packsProperty.ValueKind == JsonValueKind.Array
                 ? packsProperty
                 : throw new InvalidDataException($"{configFileName} root must be a packs array or object with 'packs'.");
+        }
+
+        /// <summary>
+        /// Maps a shorthand spritesheet ID (e.g. "1", "2") to its full resource name.
+        /// Falls back to <see cref="Resources.Img.MenuPackSelection"/> for unrecognized or empty values.
+        /// </summary>
+        private static string ResolvePackSpritesheetId(string id)
+        {
+            return id switch
+            {
+                "1" => Resources.Img.MenuPackSelection,
+                "2" => Resources.Img.MenuPackSelection2,
+                _ => Resources.Img.MenuPackSelection,
+            };
         }
 
         private static string NormalizePacksConfigFileName(string packsConfigName)
