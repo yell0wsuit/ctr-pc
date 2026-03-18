@@ -674,20 +674,19 @@ namespace CutTheRope.GameMain
                 resourceName = PackConfig.Packs[0].PackSpritesheet;
                 q = PackConfig.Packs[0].PackQuadIndex;
             }
-            string nsstring;
+            string boxPackStrings;
             if (isComingSoon)
             {
-                nsstring = Application.GetString("BOX_SOON_LABEL");
+                boxPackStrings = Application.GetString("BOX_SOON_LABEL");
             }
             else
             {
-                string text3 = (n + 1).ToString(CultureInfo.InvariantCulture);
-                string text4 = ". ";
-                string boxLabelId = PackConfig.GetPackName(n);
-                string @string = Application.GetString(boxLabelId);
-                nsstring = text3 + text4 + (@string?.ToString());
+                string boxPackNumber = (n + 1).ToString(CultureInfo.InvariantCulture);
+                string boxPackSeparator = ". ";
+                string boxPackNameString = Application.GetString(PackConfig.GetPackName(n));
+                boxPackStrings = boxPackNumber + boxPackSeparator + (boxPackNameString?.ToString());
             }
-            string packTitle = nsstring;
+            string packTitle = boxPackStrings;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
