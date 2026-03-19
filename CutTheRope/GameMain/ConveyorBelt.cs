@@ -14,10 +14,13 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBelt : BaseElement
     {
-        private const float ActiveThreshold = 4f;
-        private const float ManualStopThreshold = 4f;
-        private const float ManualMoveSoundDistance = 45f;
-        private const float AlignmentSpeed = 320f;
+        // PC conveyor tuning uses base iOS values scaled by 3x world scale.
+        private const float ConveyorScale = 3f;
+        private const float ActiveThreshold = 1f * ConveyorScale;
+        private const float ManualStopThreshold = 1f * ConveyorScale;
+        private const float ManualMoveSoundDistance = 15f * ConveyorScale;
+        private const float AlignmentSpeed = 80f * ConveyorScale;
+        private const float DistributionMinSpacing = 2f * ConveyorScale;
         private const float CenterlineSnapThreshold = 0.01f;
         private const float CenterlineHardSnapDistance = 2f;
         private const float CenterlineReturnFactor = 0.8f;
@@ -824,8 +827,6 @@ namespace CutTheRope.GameMain
             }
 
             objectsDistributed = true;
-            const float minSpacing = 8f;
-
             for (int i = 0; i < boundObjects.Count; i++)
             {
                 for (int j = i + 1; j < boundObjects.Count; j++)
@@ -834,7 +835,7 @@ namespace CutTheRope.GameMain
                     ITransporterItem b = boundObjects[j];
                     float posA = a.PositionOnTransporter;
                     float posB = b.PositionOnTransporter;
-                    float requiredDist = a.CollisionRadius + b.CollisionRadius + minSpacing;
+                    float requiredDist = a.CollisionRadius + b.CollisionRadius + DistributionMinSpacing;
                     float delta = posA - posB;
                     float actualDist = MathF.Abs(delta);
 
