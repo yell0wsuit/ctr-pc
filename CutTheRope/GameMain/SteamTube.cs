@@ -190,7 +190,7 @@ namespace CutTheRope.GameMain
             y = adjusted.Y;
         }
 
-        public float CollisionRadius => 60f;
+        public float CollisionRadius => 52.5f;
 
         public float MinScale => 0.7f;
 

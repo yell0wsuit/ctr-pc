@@ -64,7 +64,7 @@ namespace CutTheRope.GameMain
             y = point.Y;
         }
 
-        public float CollisionRadius => 82.5f;
+        public float CollisionRadius => 85f;
 
         public float MinScale => 0.5f;
 

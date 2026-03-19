@@ -127,7 +127,7 @@ namespace CutTheRope.GameMain
             UpdateRotation();
         }
 
-        public float CollisionRadius => width * 0.5f;
+        public float CollisionRadius => 40f;
 
         public float MinScale => 0.5f;
 
