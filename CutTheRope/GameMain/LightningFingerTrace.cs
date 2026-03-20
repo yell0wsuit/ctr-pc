@@ -14,6 +14,9 @@ using XnaVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// CTR2-style lightning finger trace that renders randomized head / body quads plus trailing sparks.
+    /// </summary>
     internal sealed class LightningFingerTrace : FingerTrace
     {
         private const int BodyQuadStart = 14;
@@ -43,11 +46,20 @@ namespace CutTheRope.GameMain
         private float averageRotation;
         private float headScale;
 
+        /// <summary>
+        /// Initializes a lightning trace with the RNG path.
+        /// </summary>
         public LightningFingerTrace()
         {
             FillBodyVariants();
         }
 
+        /// <summary>
+        /// Initializes a lightning trace for a touch slot.
+        /// </summary>
+        /// <param name="_">
+        /// Unused touch-slot placeholder retained so callers can mirror the original per-touch construction API.
+        /// </param>
         public LightningFingerTrace(int _)
             : this()
         {
@@ -55,6 +67,13 @@ namespace CutTheRope.GameMain
 
         protected override bool HasLiveParticles => particles.HasLiveParticles;
 
+        /// <summary>
+        /// Adds a lightning segment using the CTR2 lifetime rules based on segment length.
+        /// </summary>
+        /// <param name="startX">Segment start X.</param>
+        /// <param name="startY">Segment start Y.</param>
+        /// <param name="endX">Segment end X.</param>
+        /// <param name="endY">Segment end Y.</param>
         public override void AddSegment(float startX, float startY, float endX, float endY)
         {
             Vector start = new(startX, startY);
@@ -69,6 +88,9 @@ namespace CutTheRope.GameMain
             particles.SetPosition(end);
         }
 
+        /// <summary>
+        /// Draws the batched lightning body quads first, then overlays spark particles.
+        /// </summary>
         public override void Draw()
         {
             DrawLightningBody();
@@ -102,6 +124,10 @@ namespace CutTheRope.GameMain
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
+        /// <summary>
+        /// Updates particle emission, average direction, head/body variant selection, and spark motion.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
         protected override void UpdateCore(float delta)
         {
             particleTimer -= delta;
@@ -140,6 +166,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Resets the lightning-specific transient state when the trace is cleared.
+        /// </summary>
         protected override void ResetCore()
         {
             directionHistory.Clear();
@@ -152,6 +181,11 @@ namespace CutTheRope.GameMain
             FillBodyVariants();
         }
 
+        /// <summary>
+        /// Builds the snapshot used by tests and debug inspection from the live lightning geometry and sparks.
+        /// </summary>
+        /// <param name="sampledPoints">Receives sampled path points for the current segments.</param>
+        /// <param name="sprites">Receives the sprite poses representing the current lightning frame.</param>
         protected override void BuildSnapshot(List<Vector> sampledPoints, List<FingerTraceSpritePose> sprites)
         {
             AppendSampledPoints(sampledPoints);

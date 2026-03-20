@@ -6,6 +6,9 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Lightweight spark emitter used by <see cref="LightningFingerTrace"/> to reproduce the CTR2 lightning trail.
+    /// </summary>
     internal sealed class LightningTraceParticles : FrameworkTypes
     {
         private const int Capacity = 100;
@@ -19,8 +22,14 @@ namespace CutTheRope.GameMain
         private float emissionRate;
         private float emitCounter;
 
+        /// <summary>
+        /// Gets a value indicating whether emission is active or live spark particles remain.
+        /// </summary>
         public bool HasLiveParticles => emissionRate > 0f || particles.Count > 0;
 
+        /// <summary>
+        /// Clears all live particles and resets emission state.
+        /// </summary>
         public void Reset()
         {
             particles.Clear();
@@ -28,21 +37,37 @@ namespace CutTheRope.GameMain
             emissionRate = 0f;
         }
 
+        /// <summary>
+        /// Sets the emitter position used for newly spawned sparks.
+        /// </summary>
+        /// <param name="position">Emitter position in world space.</param>
         public void SetPosition(Vector position)
         {
             emitterPosition = position;
         }
 
+        /// <summary>
+        /// Sets the emitter rotation used as the center angle for newly spawned sparks.
+        /// </summary>
+        /// <param name="rotation">Emitter rotation in degrees.</param>
         public void SetRotation(float rotation)
         {
             emitterRotation = rotation;
         }
 
+        /// <summary>
+        /// Sets the requested spark emission rate in particles per second.
+        /// </summary>
+        /// <param name="rate">Requested emission rate.</param>
         public void SetEmissionRate(float rate)
         {
             emissionRate = MAX(0f, rate);
         }
 
+        /// <summary>
+        /// Advances spark emission and moves all live particles for one frame.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
         public void Update(float delta)
         {
             if (emissionRate > 0f)
@@ -76,6 +101,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Appends the currently live sparks as sprite poses for snapshot rendering or testing.
+        /// </summary>
+        /// <param name="sprites">Destination sprite list.</param>
         public void AppendSprites(List<FingerTraceSpritePose> sprites)
         {
             foreach (SparkParticle particle in particles)
