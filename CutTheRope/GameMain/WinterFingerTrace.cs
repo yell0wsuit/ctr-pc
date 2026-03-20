@@ -16,7 +16,6 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class WinterFingerTrace : FingerTrace
     {
-        private const int GlowQuadIndex = 1;
         private const float SegmentLife = 0.1f;
         private const float ParticleBurstDuration = 0.1f;
         private const float ParticleEmissionRate = 50f;
@@ -30,9 +29,6 @@ namespace CutTheRope.GameMain
         private VertexPositionColor[] ribbonVerticesCache;
         private float particleTimer;
         private float averageRotation;
-        private float headRotation;
-        private float headScale;
-        private Vector headPosition;
 
         public WinterFingerTrace()
         {
@@ -61,7 +57,6 @@ namespace CutTheRope.GameMain
             Vector delta = VectSub(end, start);
 
             particleTimer = ParticleBurstDuration;
-            headPosition = start;
             StoreSegment(start, end, SegmentLife);
             directionHistory.Add(delta);
             RefreshHeadState();
@@ -69,7 +64,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Draws winter particles, the winter glow head, and the icy ribbon strip.
+        /// Draws winter particles and the icy ribbon strip.
         /// </summary>
         public override void Draw()
         {
@@ -78,11 +73,6 @@ namespace CutTheRope.GameMain
             foreach (FingerTraceSpritePose sprite in particleSprites)
             {
                 DrawSpritePose(sprite);
-            }
-
-            if (TryCreateGlowSprite(out FingerTraceSpritePose glowSprite))
-            {
-                DrawSpritePose(glowSprite);
             }
 
             DrawRibbon();
@@ -111,9 +101,6 @@ namespace CutTheRope.GameMain
             particles.Reset();
             particleTimer = 0f;
             averageRotation = 0f;
-            headRotation = 0f;
-            headScale = 0f;
-            headPosition = default;
         }
 
         /// <summary>
@@ -122,11 +109,6 @@ namespace CutTheRope.GameMain
         protected override void BuildSnapshot(List<Vector> sampledPoints, List<FingerTraceSpritePose> sprites)
         {
             AppendRibbonSampledPoints(sampledPoints);
-
-            if (TryCreateGlowSprite(out FingerTraceSpritePose glowSprite))
-            {
-                sprites.Add(glowSprite);
-            }
 
             particles.AppendSprites(sprites);
         }
@@ -233,8 +215,6 @@ namespace CutTheRope.GameMain
 
             Vector averageDirection = GetAverageDirection();
             averageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
-            headRotation = averageRotation + DEG_90;
-            headScale = MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
             particles.SetRotation(averageRotation + DEG_180);
         }
 
@@ -247,26 +227,6 @@ namespace CutTheRope.GameMain
                 : index == sampledPoints.Count - 1
                 ? VectSub(sampledPoints[^1], sampledPoints[^2])
                 : VectSub(sampledPoints[index + 1], sampledPoints[index - 1]);
-        }
-
-        private bool TryCreateGlowSprite(out FingerTraceSpritePose glowSprite)
-        {
-            if (Segments.Count == 0 || headScale <= 0f)
-            {
-                glowSprite = default;
-                return false;
-            }
-
-            glowSprite = new FingerTraceSpritePose(
-                FingerTraceSpriteKind.Glow,
-                Resources.Img.FingerTraceGlow,
-                GlowQuadIndex,
-                headPosition,
-                headRotation,
-                headScale,
-                1f,
-                FingerTraceBlendMode.Alpha);
-            return true;
         }
 
         private static RGBAColor GetRibbonColor(float t)
