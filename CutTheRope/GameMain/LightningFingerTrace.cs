@@ -51,7 +51,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public LightningFingerTrace()
         {
-            FillBodyVariants();
+            ResetVariants();
         }
 
         /// <summary>
@@ -139,21 +139,9 @@ namespace CutTheRope.GameMain
             }
 
             Vector averageDirection = GetAverageDirection();
-            if (VectLengthsq(averageDirection) <= FLOAT_PRECISION)
-            {
-                averageDirection = GetFallbackDirection();
-            }
-
-            if (VectLengthsq(averageDirection) > FLOAT_PRECISION)
-            {
-                averageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
-                particles.SetRotation(averageRotation + DEG_180);
-                headScale = MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
-            }
-            else
-            {
-                headScale = 0f;
-            }
+            averageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
+            particles.SetRotation(averageRotation + DEG_180);
+            headScale = MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
 
             particles.Update(delta);
 
@@ -178,7 +166,7 @@ namespace CutTheRope.GameMain
             variantTimer = 0f;
             averageRotation = 0f;
             headScale = 0f;
-            FillBodyVariants();
+            ResetVariants();
         }
 
         /// <summary>
@@ -202,7 +190,7 @@ namespace CutTheRope.GameMain
                     quad.QuadIndex,
                     quad.Center,
                     rotation,
-                    i == 0 ? MAX(0.01f, headScale) : scale,
+                    i == 0 ? headScale : scale,
                     1f,
                     FingerTraceBlendMode.Alpha));
             }
@@ -358,18 +346,20 @@ namespace CutTheRope.GameMain
                 : VectDiv(sum, directionHistory.Count);
         }
 
-        private Vector GetFallbackDirection()
-        {
-            return Segments.Count == 0
-                ? vectZero
-                : VectSub(Segments[^1].End, Segments[^1].Start);
-        }
-
         private void FillBodyVariants()
         {
             for (int i = 0; i < bodyVariants.Length; i++)
             {
                 bodyVariants[i] = NextDifferentVariant(BodyQuadStart, BodyQuadCount, bodyVariants[i]);
+            }
+        }
+
+        private void ResetVariants()
+        {
+            currentHeadVariant = -1;
+            for (int i = 0; i < bodyVariants.Length; i++)
+            {
+                bodyVariants[i] = -1;
             }
         }
 
