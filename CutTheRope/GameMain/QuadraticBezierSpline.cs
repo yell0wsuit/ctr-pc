@@ -5,6 +5,9 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Stores one or more quadratic spline segments.
+    /// </summary>
     internal sealed class QuadraticBezierSpline
     {
         private readonly SplineSegment[] segments;
@@ -14,6 +17,9 @@ namespace CutTheRope.GameMain
             this.segments = segments;
         }
 
+        /// <summary>
+        /// Creates the default multi-segment preview path used by the non-lightning trace skins.
+        /// </summary>
         public static QuadraticBezierSpline CreateDefaultTracePath()
         {
             return new(
@@ -22,11 +28,21 @@ namespace CutTheRope.GameMain
                 new SplineSegment(-325f, 5f, 120f, 30f, 120f, 135f));
         }
 
+        /// <summary>
+        /// Creates the single quadratic segment used by the CTR2 lightning trace preview.
+        /// </summary>
         public static QuadraticBezierSpline CreateLightningTracePath()
         {
             return new(new SplineSegment(-500f, -40f, 250f, 90f, 10f, 20f));
         }
 
+        /// <summary>
+        /// Evaluates the spline at the provided parameter using the CTR2 segment-selection rules.
+        /// </summary>
+        /// <param name="param">
+        /// Segment-local parameter. Values greater than <c>1</c> advance across segments and, once the
+        /// last segment is reached, continue evaluating that last segment with the overflow preserved.
+        /// </param>
         public Vector GetPointForParam(float param)
         {
             uint index = 0;
@@ -48,6 +64,9 @@ namespace CutTheRope.GameMain
                 segment.Cy + (param * ((param * segment.Ay) + (segment.By + segment.By))));
         }
 
+        /// <summary>
+        /// Evaluates a standard quadratic Bezier curve for the given control points.
+        /// </summary>
         public static Vector Evaluate(Vector start, Vector control, Vector end, float t)
         {
             float clampedT = Math.Clamp(t, 0f, 1f);
@@ -61,6 +80,11 @@ namespace CutTheRope.GameMain
                 (start.Y * startWeight) + (control.Y * controlWeight) + (end.Y * endWeight));
         }
 
+        /// <summary>
+        /// Samples a smooth path through a control-point list for snapshot/debug visualization.
+        /// </summary>
+        /// <param name="controlPoints">The points to interpolate through.</param>
+        /// <param name="subdivisionsPerCurve">How many samples to emit for each curve span.</param>
         public static Vector[] SamplePath(IReadOnlyList<Vector> controlPoints, int subdivisionsPerCurve)
         {
             ArgumentNullException.ThrowIfNull(controlPoints);
