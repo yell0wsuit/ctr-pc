@@ -16,7 +16,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class WinterFingerTrace : FingerTrace
     {
-        private const float SegmentLife = 0.1f;
+        private const float SegmentLife = 0.15f;
         private const float ParticleBurstDuration = 0.1f;
         private const float ParticleEmissionRate = 50f;
         private const float RibbonBaseWidth = 8f;
@@ -128,7 +128,9 @@ namespace CutTheRope.GameMain
                 float directionLength = MAX(0.0001f, VectLength(direction));
                 Vector normal = new(-(direction.Y / directionLength), direction.X / directionLength);
                 float t = sampledPoints.Count == 1 ? 1f : i / (float)(sampledPoints.Count - 1);
-                float halfWidth = MinimumRibbonHalfWidth + (RibbonBaseWidth * t);
+                float halfWidth = i == sampledPoints.Count - 1
+                    ? MinimumRibbonHalfWidth
+                    : MinimumRibbonHalfWidth + (RibbonBaseWidth * t);
                 Vector left = VectSub(point, VectMult(normal, halfWidth));
                 Vector right = VectAdd(point, VectMult(normal, halfWidth));
                 Color color = GetRibbonColor(t).ToXNA();
@@ -235,18 +237,18 @@ namespace CutTheRope.GameMain
             {
                 float blend = t * 2f;
                 return RGBAColor.MakeRGBA(
-                    MathHelper.Lerp(0.7f, 0.51765f, blend),
-                    MathHelper.Lerp(1f, 0.59608f, blend),
-                    MathHelper.Lerp(1f, 0.75686f, blend),
+                    MathHelper.Lerp(0.13f, 0.51765f, blend),
+                    MathHelper.Lerp(0.59608f, 1f, blend),
+                    MathHelper.Lerp(0.75686f, 1f, blend),
                     MathHelper.Lerp(0f, 1f, blend));
             }
 
             float fade = (t - 0.5f) * 2f;
             return RGBAColor.MakeRGBA(
                 MathHelper.Lerp(0.51765f, 1f, fade),
-                MathHelper.Lerp(0.59608f, 1f, fade),
-                MathHelper.Lerp(0.75686f, 1f, fade),
-                MathHelper.Lerp(1f, 0f, fade));
+                1f,
+                1f,
+                1f);
         }
 
         private void EnsureRibbonCache(int vertexCount)
