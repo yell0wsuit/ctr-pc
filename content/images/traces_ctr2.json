@@ -1,7 +1,7 @@
 {
     "frames": [
         {
-            "filename": "01_frame_0000.png",
+            "filename": "01_startrace_particle_violet.png",
             "frame": { "x": 356, "y": 452, "w": 37, "h": 33 },
             "rotated": false,
             "trimmed": true,
@@ -9,7 +9,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "02_frame_0001.png",
+            "filename": "02_startrace_particle_red.png",
             "frame": { "x": 381, "y": 405, "w": 41, "h": 39 },
             "rotated": false,
             "trimmed": true,
@@ -17,7 +17,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "03_frame_0002.png",
+            "filename": "03_startrace_particle_orange.png",
             "frame": { "x": 395, "y": 446, "w": 38, "h": 38 },
             "rotated": false,
             "trimmed": true,
@@ -25,7 +25,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "04_frame_0003.png",
+            "filename": "04_startrace_particle_magenta.png",
             "frame": { "x": 452, "y": 300, "w": 45, "h": 44 },
             "rotated": false,
             "trimmed": true,
@@ -33,7 +33,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "05_frame_0004.png",
+            "filename": "05_startrace_particle_blue.png",
             "frame": { "x": 452, "y": 346, "w": 47, "h": 42 },
             "rotated": false,
             "trimmed": true,
@@ -41,7 +41,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "06_frame_0005.png",
+            "filename": "06_bubbletrace_particle_cyan.png",
             "frame": { "x": 1, "y": 429, "w": 56, "h": 56 },
             "rotated": false,
             "trimmed": true,
@@ -49,7 +49,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "07_frame_0006.png",
+            "filename": "07_bubbletrace_particle_yellow.png",
             "frame": { "x": 59, "y": 429, "w": 56, "h": 56 },
             "rotated": false,
             "trimmed": true,
@@ -57,7 +57,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "08_frame_0007.png",
+            "filename": "08_bubbletrace_particle_rose.png",
             "frame": { "x": 117, "y": 429, "w": 56, "h": 56 },
             "rotated": false,
             "trimmed": true,
@@ -65,7 +65,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "09_frame_0008.png",
+            "filename": "09_bubbletrace_particle_green.png",
             "frame": { "x": 175, "y": 428, "w": 56, "h": 56 },
             "rotated": false,
             "trimmed": true,
@@ -73,7 +73,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "10_frame_0009.png",
+            "filename": "10_wintertrace_particle_large.png",
             "frame": { "x": 452, "y": 195, "w": 47, "h": 54 },
             "rotated": false,
             "trimmed": true,
@@ -81,7 +81,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "11_frame_0010.png",
+            "filename": "11_wintertrace_particle_medium.png",
             "frame": { "x": 452, "y": 251, "w": 45, "h": 47 },
             "rotated": false,
             "trimmed": true,
@@ -89,7 +89,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "12_frame_0011.png",
+            "filename": "12_wintertrace_particle_streak.png",
             "frame": { "x": 435, "y": 440, "w": 17, "h": 32 },
             "rotated": false,
             "trimmed": true,
@@ -97,7 +97,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "13_frame_0012.png",
+            "filename": "13_wintertrace_particle_small.png",
             "frame": { "x": 472, "y": 431, "w": 17, "h": 22 },
             "rotated": false,
             "trimmed": true,
@@ -105,7 +105,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "14_frame_0013.png",
+            "filename": "14_wintertrace_particle_tiny.png",
             "frame": { "x": 410, "y": 195, "w": 14, "h": 15 },
             "rotated": false,
             "trimmed": true,
@@ -113,7 +113,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "15_frame_0014.png",
+            "filename": "15_lightningtrace_body_variant_01.png",
             "frame": { "x": 1, "y": 1, "w": 117, "h": 212 },
             "rotated": false,
             "trimmed": true,
@@ -121,7 +121,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "16_frame_0015.png",
+            "filename": "16_lightningtrace_body_variant_02.png",
             "frame": { "x": 1, "y": 215, "w": 116, "h": 212 },
             "rotated": false,
             "trimmed": true,
@@ -129,7 +129,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "17_frame_0016.png",
+            "filename": "17_lightningtrace_body_variant_03.png",
             "frame": { "x": 120, "y": 1, "w": 101, "h": 213 },
             "rotated": false,
             "trimmed": true,
@@ -137,7 +137,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "18_frame_0017.png",
+            "filename": "18_lightningtrace_body_variant_04.png",
             "frame": { "x": 223, "y": 1, "w": 94, "h": 211 },
             "rotated": false,
             "trimmed": true,
@@ -145,7 +145,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "19_frame_0018.png",
+            "filename": "19_lightningtrace_body_variant_05.png",
             "frame": { "x": 319, "y": 1, "w": 89, "h": 210 },
             "rotated": false,
             "trimmed": true,
@@ -153,7 +153,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "20_frame_0019.png",
+            "filename": "20_lightningtrace_body_variant_06.png",
             "frame": { "x": 119, "y": 216, "w": 87, "h": 210 },
             "rotated": false,
             "trimmed": true,
@@ -161,7 +161,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "21_frame_0020.png",
+            "filename": "21_lightningtrace_head_variant_01.png",
             "frame": { "x": 410, "y": 1, "w": 90, "h": 192 },
             "rotated": false,
             "trimmed": true,
@@ -169,7 +169,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "22_frame_0021.png",
+            "filename": "22_lightningtrace_head_variant_02.png",
             "frame": { "x": 208, "y": 216, "w": 82, "h": 196 },
             "rotated": false,
             "trimmed": true,
@@ -177,7 +177,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "23_frame_0022.png",
+            "filename": "23_lightningtrace_head_variant_03.png",
             "frame": { "x": 292, "y": 214, "w": 71, "h": 190 },
             "rotated": false,
             "trimmed": true,
@@ -185,7 +185,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "24_frame_0023.png",
+            "filename": "24_lightningtrace_head_variant_04.png",
             "frame": { "x": 365, "y": 213, "w": 85, "h": 190 },
             "rotated": false,
             "trimmed": true,
@@ -193,7 +193,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "25_frame_0024.png",
+            "filename": "25_lightningtrace_spark_variant_01.png",
             "frame": { "x": 356, "y": 406, "w": 23, "h": 44 },
             "rotated": false,
             "trimmed": true,
@@ -201,7 +201,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "26_frame_0025.png",
+            "filename": "26_lightningtrace_spark_variant_02.png",
             "frame": { "x": 424, "y": 405, "w": 22, "h": 33 },
             "rotated": false,
             "trimmed": true,
@@ -209,7 +209,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "27_frame_0026.png",
+            "filename": "27_lightningtrace_spark_variant_03.png",
             "frame": { "x": 454, "y": 431, "w": 16, "h": 24 },
             "rotated": false,
             "trimmed": true,
@@ -217,7 +217,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "28_frame_0027.png",
+            "filename": "28_redtrace_particle_variant_01.png",
             "frame": { "x": 299, "y": 406, "w": 55, "h": 56 },
             "rotated": false,
             "trimmed": true,
@@ -225,7 +225,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "29_frame_0028.png",
+            "filename": "29_redtrace_particle_variant_02.png",
             "frame": { "x": 452, "y": 390, "w": 42, "h": 39 },
             "rotated": false,
             "trimmed": true,
@@ -233,7 +233,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "30_frame_0029.png",
+            "filename": "30_redtrace_particle_variant_03.png",
             "frame": { "x": 233, "y": 414, "w": 64, "h": 66 },
             "rotated": false,
             "trimmed": true,
@@ -241,7 +241,7 @@
             "sourceSize": { "w": 144, "h": 222 }
         },
         {
-            "filename": "31_frame_0030.png",
+            "filename": "31_trace_placeholder_pixel.png",
             "frame": { "x": 233, "y": 482, "w": 3, "h": 3 },
             "rotated": false,
             "trimmed": true,
