@@ -14,6 +14,8 @@ namespace CutTheRope.GameMain
         private const int Capacity = 100;
         private const int FirstQuad = 9;
         private const int QuadCount = 5;
+        private const float RadialAcceleration = -200f;
+        private const float GravityY = 500f;
 
         private readonly List<WinterParticle> particles = [];
 
@@ -87,6 +89,15 @@ namespace CutTheRope.GameMain
                     continue;
                 }
 
+                Vector toEmitter = VectSub(particle.SpawnPosition, particle.Position);
+                float distance = VectLength(toEmitter);
+                if (distance > 0.0001f)
+                {
+                    Vector radialDir = VectDiv(toEmitter, distance);
+                    particle.Velocity = VectAdd(particle.Velocity, VectMult(radialDir, RadialAcceleration * delta));
+                }
+
+                particle.Velocity = new Vector(particle.Velocity.X, particle.Velocity.Y + (GravityY * delta));
                 particle.Position = VectAdd(particle.Position, VectMult(particle.Velocity, delta));
                 particle.Rotation += particle.RotationVelocity * delta;
                 particles[i] = particle;
@@ -124,6 +135,7 @@ namespace CutTheRope.GameMain
             return new WinterParticle
             {
                 Position = emitterPosition,
+                SpawnPosition = emitterPosition,
                 Velocity = VectMult(direction, speed),
                 Rotation = 0f,
                 RotationVelocity = DEGREES_TO_RADIANS(180f * RND_MINUS1_1),
@@ -145,6 +157,7 @@ namespace CutTheRope.GameMain
         private struct WinterParticle
         {
             public Vector Position;
+            public Vector SpawnPosition;
             public Vector Velocity;
             public float Rotation;
             public float RotationVelocity;
