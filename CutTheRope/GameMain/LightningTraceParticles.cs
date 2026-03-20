@@ -81,10 +81,6 @@ namespace CutTheRope.GameMain
                     emitCounter -= emissionInterval;
                 }
             }
-            else
-            {
-                emitCounter = 0f;
-            }
 
             for (int i = particles.Count - 1; i >= 0; i--)
             {
