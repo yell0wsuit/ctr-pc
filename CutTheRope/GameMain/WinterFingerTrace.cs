@@ -70,9 +70,13 @@ namespace CutTheRope.GameMain
         {
             List<FingerTraceSpritePose> particleSprites = [];
             particles.AppendSprites(particleSprites);
-            foreach (FingerTraceSpritePose sprite in particleSprites)
+            if (particleSprites.Count > 0)
             {
-                DrawSpritePose(sprite);
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                foreach (FingerTraceSpritePose sprite in particleSprites)
+                {
+                    DrawSpritePose(sprite);
+                }
             }
 
             DrawRibbon();
