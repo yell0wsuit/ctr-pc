@@ -10,7 +10,8 @@ namespace CutTheRope.GameMain
     {
         Candy,
         Rope,
-        OmNom
+        OmNom,
+        Trace
     }
 
     internal sealed class CandySelectionModeState
@@ -32,7 +33,8 @@ namespace CutTheRope.GameMain
         {
             [CandySelectionMode.Candy] = new(),
             [CandySelectionMode.Rope] = new(),
-            [CandySelectionMode.OmNom] = new()
+            [CandySelectionMode.OmNom] = new(),
+            [CandySelectionMode.Trace] = new()
         };
 
         public CandySelectionModeActivation ActivateMode(CandySelectionMode mode)

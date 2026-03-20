@@ -425,6 +425,7 @@ namespace CutTheRope.GameMain
             SetIntForKey(0, "PREFS_SELECTED_CANDY", true);
             SetIntForKey(0, "PREFS_SELECTED_ROPE", true);
             SetIntForKey(0, "PREFS_SELECTED_OMNOM", true);
+            SetIntForKey(0, "PREFS_SELECTED_TRACE", true);
             SetBooleanForKey(false, "PREFS_CANDY_WAS_CHANGED", true);
             SetBooleanForKey(true, "PREFS_GAME_CENTER_ENABLED", true);
             SetIntForKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
@@ -588,6 +589,8 @@ namespace CutTheRope.GameMain
         public const string PREFS_SELECTED_ROPE = "PREFS_SELECTED_ROPE";
 
         public const string PREFS_SELECTED_OMNOM = "PREFS_SELECTED_OMNOM";
+
+        public const string PREFS_SELECTED_TRACE = "PREFS_SELECTED_TRACE";
 
         public const string PREFS_GAME_CENTER_ENABLED = "PREFS_GAME_CENTER_ENABLED";
 

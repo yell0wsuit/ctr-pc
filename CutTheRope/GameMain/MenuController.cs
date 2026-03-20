@@ -1560,6 +1560,9 @@ namespace CutTheRope.GameMain
                                 case SkinSelectionMode.OmNom:
                                     CandySelectionView.SwitchToOmNomMode();
                                     break;
+                                case SkinSelectionMode.Trace:
+                                    CandySelectionView.SwitchToTraceMode();
+                                    break;
                                 default:
                                     throw new InvalidOperationException($"Unhandled {nameof(SkinSelectionMode)}: {skinAction.Mode}.");
                             }
@@ -1584,6 +1587,7 @@ namespace CutTheRope.GameMain
                         {
                             case SkinSelectionMode.Candy:
                             case SkinSelectionMode.Rope:
+                            case SkinSelectionMode.Trace:
                                 CandySelectionView.UpdateCandySlotButtons(selectedIndex);
                                 break;
                             case SkinSelectionMode.OmNom:

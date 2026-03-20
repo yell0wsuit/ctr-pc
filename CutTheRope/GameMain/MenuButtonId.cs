@@ -42,6 +42,7 @@ namespace CutTheRope.GameMain
         BackFromCandySelect,
         UpdateDownload,
         OmNomSelect,
+        TraceSelect,
     }
 
     /// <summary>
@@ -226,12 +227,18 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static readonly MenuButtonId OmNomSelect = MenuButton.OmNomSelect;
 
+        /// <summary>
+        /// Opens finger trace skin selection.
+        /// </summary>
+        public static readonly MenuButtonId TraceSelect = MenuButton.TraceSelect;
+
         // Dynamic button IDs encode their type in the high byte and index in the low 24 bits.
         private const int LevelTag = 1 << 24;
         private const int PackTag = 2 << 24;
         private const int CandySlotTag = 3 << 24;
         private const int RopeSlotTag = 4 << 24;
         private const int OmNomSlotTag = 5 << 24;
+        private const int TraceSlotTag = 6 << 24;
         private const int IndexMask = 0x00FFFFFF;
 
         /// <summary>
@@ -285,6 +292,16 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Creates an identifier for a finger trace skin slot button.
+        /// </summary>
+        /// <param name="traceIndex">Zero-based finger trace skin index.</param>
+        /// <returns>A tagged menu button identifier for the given finger trace slot.</returns>
+        public static MenuButtonId ForTraceSlot(int traceIndex)
+        {
+            return new(TraceSlotTag | traceIndex);
+        }
+
+        /// <summary>
         /// Determines whether this identifier represents a dynamic level button.
         /// </summary>
         /// <returns><see langword="true"/> when this is a level button; otherwise <see langword="false"/>.</returns>
@@ -330,6 +347,15 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Determines whether this identifier represents a dynamic finger trace slot button.
+        /// </summary>
+        /// <returns><see langword="true"/> when this is a finger trace slot button; otherwise <see langword="false"/>.</returns>
+        public bool IsTraceSlotButton()
+        {
+            return (Value >> 24) == 6;
+        }
+
+        /// <summary>
         /// Gets the zero-based level index when this identifier is a level button.
         /// </summary>
         /// <returns>The level index, or <c>-1</c> when this is not a level button.</returns>
@@ -372,6 +398,15 @@ namespace CutTheRope.GameMain
         public int GetOmNomIndex()
         {
             return IsOmNomSlotButton() ? Value & IndexMask : -1;
+        }
+
+        /// <summary>
+        /// Gets the zero-based finger trace slot index when this identifier is a trace slot button.
+        /// </summary>
+        /// <returns>The trace slot index, or <c>-1</c> when this is not a trace slot button.</returns>
+        public int GetTraceIndex()
+        {
+            return IsTraceSlotButton() ? Value & IndexMask : -1;
         }
 
         /// <summary>
