@@ -80,6 +80,7 @@ namespace CutTheRope.GameMain
             for (int j = 0; j < 5; j++)
             {
                 fingerCuts[j] = [];
+                fingerTraces[j] = new LightningFingerTrace(j + 1);
             }
             clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
         }

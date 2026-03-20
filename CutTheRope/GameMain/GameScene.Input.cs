@@ -134,6 +134,7 @@ namespace CutTheRope.GameMain
             {
                 dragging[ti] = true;
                 prevStartPos[ti] = startPos[ti] = vector;
+                fingerTraces[ti]?.Begin(world);
             }
             foreach (object obj in spikes)
             {
@@ -428,6 +429,7 @@ namespace CutTheRope.GameMain
                 return true;
             }
             dragging[ti] = false;
+            fingerTraces[ti]?.End();
             if (ti >= 5)
             {
                 return true;
@@ -831,6 +833,7 @@ namespace CutTheRope.GameMain
                 }
                 prevStartPos[ti] = startPos[ti];
                 startPos[ti] = vector;
+                fingerTraces[ti]?.Append(world);
             }
             return true;
         }

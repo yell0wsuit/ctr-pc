@@ -584,6 +584,8 @@ namespace CutTheRope.GameMain
 
         public List<FingerCut>[] fingerCuts = new List<FingerCut>[5];
 
+        public FingerTrace[] fingerTraces = new FingerTrace[5];
+
         public sealed class FingerCut : FrameworkTypes
         {
             public Vector start;

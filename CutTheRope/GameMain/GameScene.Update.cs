@@ -39,6 +39,7 @@ namespace CutTheRope.GameMain
                         fingerCut.c.AlphaChannel = alpha;
                     }
                 }
+                fingerTraces[i]?.Update(delta);
             }
             if (earthAnims != null)
             {
