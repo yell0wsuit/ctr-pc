@@ -4,7 +4,7 @@ using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.GameMain
+namespace CutTheRope.GameMain.FingerTraces
 {
     /// <summary>
     /// Lightweight particle emitter used by <see cref="StarFingerTrace"/> for the CTR2 star trail.

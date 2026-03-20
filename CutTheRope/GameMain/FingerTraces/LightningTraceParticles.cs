@@ -5,7 +5,7 @@ using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.GameMain
+namespace CutTheRope.GameMain.FingerTraces
 {
     /// <summary>
     /// Lightweight spark emitter used by <see cref="LightningFingerTrace"/> to reproduce the CTR2 lightning trail.

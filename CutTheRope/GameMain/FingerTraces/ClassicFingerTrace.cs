@@ -7,7 +7,7 @@ using CutTheRope.Framework.Visual;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CutTheRope.GameMain
+namespace CutTheRope.GameMain.FingerTraces
 {
     /// <summary>
     /// CTR2-style classic finger trace that renders a solid white bezier ribbon with no particles.

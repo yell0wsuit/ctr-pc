@@ -12,7 +12,7 @@ using XnaColor = Microsoft.Xna.Framework.Color;
 using XnaVector2 = Microsoft.Xna.Framework.Vector2;
 using XnaVector3 = Microsoft.Xna.Framework.Vector3;
 
-namespace CutTheRope.GameMain
+namespace CutTheRope.GameMain.FingerTraces
 {
     /// <summary>
     /// CTR2-style lightning finger trace that renders randomized head / body quads plus trailing sparks.

@@ -1,4 +1,5 @@
 using CutTheRope.Framework.Visual;
+using CutTheRope.GameMain.FingerTraces;
 
 namespace CutTheRope.GameMain
 {

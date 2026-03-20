@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.GameMain
+namespace CutTheRope.GameMain.FingerTraces
 {
     /// <summary>
     /// CTR2-style bubble finger trace with floating bubble particles that decelerate radially.

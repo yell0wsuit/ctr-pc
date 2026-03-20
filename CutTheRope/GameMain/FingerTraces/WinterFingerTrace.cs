@@ -9,47 +9,46 @@ using CutTheRope.Framework.Visual;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CutTheRope.GameMain
+namespace CutTheRope.GameMain.FingerTraces
 {
     /// <summary>
-    /// CTR2-style (PRODUCT)RED finger trace with dual particle layers (glow + core) and a warm-toned ribbon.
+    /// CTR2-style winter finger trace with an icy ribbon, winter glow, and snowflake particles.
     /// </summary>
-    internal sealed class RedFingerTrace : FingerTrace
+    internal sealed class WinterFingerTrace : FingerTrace
     {
         private const float SegmentLife = 0.15f;
         private const float ParticleBurstDuration = 0.1f;
-        private const float ParticleEmissionRate = 35f;
+        private const float ParticleEmissionRate = 50f;
         private const float RibbonBaseWidth = 12f;
         private const float MinimumRibbonHalfWidth = 1f;
         private const int MaximumDirectionHistory = 10;
 
-        private readonly RedTraceParticles glowParticles = new(0.3f, FingerTraceBlendMode.Additive);
-        private readonly RedTraceParticles coreParticles = new(0.75f, FingerTraceBlendMode.Alpha);
+        private readonly WinterTraceParticles particles = new();
         private readonly List<Vector> directionHistory = [];
 
         private VertexPositionColor[] ribbonVerticesCache;
         private float particleTimer;
         private float averageRotation;
 
-        public RedFingerTrace()
+        public WinterFingerTrace()
         {
         }
 
         /// <summary>
-        /// Initializes a red trace for a touch slot.
+        /// Initializes a winter trace for a touch slot.
         /// </summary>
         /// <param name="_">
         /// Unused touch-slot placeholder retained for parity with the existing per-touch construction API.
         /// </param>
-        public RedFingerTrace(int _)
+        public WinterFingerTrace(int _)
             : this()
         {
         }
 
-        protected override bool HasLiveParticles => glowParticles.HasLiveParticles || coreParticles.HasLiveParticles;
+        protected override bool HasLiveParticles => particles.HasLiveParticles;
 
         /// <summary>
-        /// Adds a new red segment with the fixed CTR2 red lifetime.
+        /// Adds a new winter segment with the fixed CTR2 winter lifetime.
         /// </summary>
         public override void AddSegment(float startX, float startY, float endX, float endY)
         {
@@ -61,32 +60,20 @@ namespace CutTheRope.GameMain
             StoreSegment(start, end, SegmentLife);
             directionHistory.Add(delta);
             RefreshHeadState();
-            glowParticles.SetPosition(end);
-            coreParticles.SetPosition(end);
+            particles.SetPosition(end);
         }
 
         /// <summary>
-        /// Draws glow particles, core particles, then the red ribbon strip.
+        /// Draws winter particles and the icy ribbon strip.
         /// </summary>
         public override void Draw()
         {
-            List<FingerTraceSpritePose> glowSprites = [];
-            glowParticles.AppendSprites(glowSprites);
-            if (glowSprites.Count > 0)
+            List<FingerTraceSpritePose> particleSprites = [];
+            particles.AppendSprites(particleSprites);
+            if (particleSprites.Count > 0)
             {
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                foreach (FingerTraceSpritePose sprite in glowSprites)
-                {
-                    DrawSpritePose(sprite);
-                }
-            }
-
-            List<FingerTraceSpritePose> coreSprites = [];
-            coreParticles.AppendSprites(coreSprites);
-            if (coreSprites.Count > 0)
-            {
-                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                foreach (FingerTraceSpritePose sprite in coreSprites)
+                foreach (FingerTraceSpritePose sprite in particleSprites)
                 {
                     DrawSpritePose(sprite);
                 }
@@ -99,39 +86,35 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Advances particle emission and the averaged head direction state.
+        /// Advances particle emission and the averaged head direction / scale state.
         /// </summary>
         protected override void UpdateCore(float delta)
         {
             particleTimer -= delta;
-            float rate = particleTimer > 0f ? ParticleEmissionRate : 0f;
-            glowParticles.SetEmissionRate(rate);
-            coreParticles.SetEmissionRate(rate);
+            particles.SetEmissionRate(particleTimer > 0f ? ParticleEmissionRate : 0f);
             RefreshHeadState();
-            glowParticles.Update(delta);
-            coreParticles.Update(delta);
+            particles.Update(delta);
         }
 
         /// <summary>
-        /// Clears red-specific transient state.
+        /// Clears winter-specific transient state.
         /// </summary>
         protected override void ResetCore()
         {
             directionHistory.Clear();
-            glowParticles.Reset();
-            coreParticles.Reset();
+            particles.Reset();
             particleTimer = 0f;
             averageRotation = 0f;
         }
 
         /// <summary>
-        /// Publishes the red ribbon path together with particle sprite metadata.
+        /// Publishes the winter ribbon path together with glow and particle sprite metadata.
         /// </summary>
         protected override void BuildSnapshot(List<Vector> sampledPoints, List<FingerTraceSpritePose> sprites)
         {
             AppendRibbonSampledPoints(sampledPoints);
-            glowParticles.AppendSprites(sprites);
-            coreParticles.AppendSprites(sprites);
+
+            particles.AppendSprites(sprites);
         }
 
         private void DrawRibbon()
@@ -238,9 +221,7 @@ namespace CutTheRope.GameMain
 
             Vector averageDirection = GetAverageDirection();
             averageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
-            float particleAngle = averageRotation + DEG_180;
-            glowParticles.SetRotation(particleAngle);
-            coreParticles.SetRotation(particleAngle);
+            particles.SetRotation(averageRotation + DEG_180);
         }
 
         private static Vector GetPointDirection(List<Vector> sampledPoints, int index)
@@ -254,26 +235,23 @@ namespace CutTheRope.GameMain
                 : VectSub(sampledPoints[index + 1], sampledPoints[index - 1]);
         }
 
-        /// <summary>
-        /// Returns a 2-phase warm gradient: dark red → bright red → warm orange.
-        /// </summary>
         private static RGBAColor GetRibbonColor(float t)
         {
-            if (t < 0.7f)
+            if (t < 0.5f)
             {
                 float blend = t * 2f;
                 return RGBAColor.MakeRGBA(
-                    MathHelper.Lerp(0.7882f, 0.98824f, blend),
-                    MathHelper.Lerp(0.2157f, 0.20784f, blend),
-                    MathHelper.Lerp(0.2980f, 0.16863f, blend),
+                    MathHelper.Lerp(0.13f, 0.51765f, blend),
+                    MathHelper.Lerp(0.59608f, 1f, blend),
+                    MathHelper.Lerp(0.75686f, 1f, blend),
                     MathHelper.Lerp(0f, 1f, blend));
             }
 
-            float fade = (t - 0.7f) * 2f;
+            float fade = (t - 0.5f) * 2f;
             return RGBAColor.MakeRGBA(
-                MathHelper.Lerp(0.98824f, 0.95294f, fade),
-                MathHelper.Lerp(0.20784f, 0.61961f, fade),
-                MathHelper.Lerp(0.16863f, 0.41961f, fade),
+                MathHelper.Lerp(0.51765f, 1f, fade),
+                1f,
+                1f,
                 1f);
         }
 
