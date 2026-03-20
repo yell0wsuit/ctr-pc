@@ -106,16 +106,17 @@ namespace CutTheRope.GameMain
         {
             foreach (SparkParticle particle in particles)
             {
-                float alpha = FIT_TO_BOUNDARIES(particle.Life / particle.MaxLife, 0f, 1f);
+                float lifeRatio = FIT_TO_BOUNDARIES(particle.Life / particle.MaxLife, 0f, 1f);
+                float scale = particle.StartScale + ((particle.EndScale - particle.StartScale) * (1f - lifeRatio));
                 sprites.Add(new FingerTraceSpritePose(
                     FingerTraceSpriteKind.Spark,
                     Resources.Img.FingerTraces,
                     particle.QuadIndex,
                     particle.Position,
                     particle.Rotation,
-                    particle.Scale,
-                    alpha,
-                    FingerTraceBlendMode.Alpha));
+                    scale,
+                    lifeRatio,
+                    FingerTraceBlendMode.Additive));
             }
         }
 
@@ -123,7 +124,7 @@ namespace CutTheRope.GameMain
         {
             float angle = DEGREES_TO_RADIANS(emitterRotation + (70f * RND_MINUS1_1));
             Vector direction = new(Cosf(angle), Sinf(angle));
-            float speed = 800f + (500f * RND_MINUS1_1);
+            float speed = 500f + (20f * RND_MINUS1_1);
             float life = MAX(0.05f, 0.25f + (0.05f * RND_MINUS1_1));
 
             return new SparkParticle
@@ -131,7 +132,8 @@ namespace CutTheRope.GameMain
                 Position = emitterPosition,
                 Velocity = VectMult(direction, speed),
                 Rotation = RADIANS_TO_DEGREES(MathF.Atan2(direction.Y, direction.X) + 1.5708f),
-                Scale = MAX(0.05f, 0.1f + (0.02f * RND_MINUS1_1)),
+                StartScale = 2.0f,
+                EndScale = 0.1f,
                 Life = life,
                 MaxLife = life,
                 QuadIndex = FirstQuad + NextInt(QuadCount),
@@ -150,7 +152,8 @@ namespace CutTheRope.GameMain
             public Vector Position;
             public Vector Velocity;
             public float Rotation;
-            public float Scale;
+            public float StartScale;
+            public float EndScale;
             public float Life;
             public float MaxLife;
             public int QuadIndex;
