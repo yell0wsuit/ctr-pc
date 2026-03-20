@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.GameMain
+namespace CutTheRope.Framework.Visual
 {
     /// <summary>
     /// Identifies the logical sprite role produced by a finger trace snapshot.
