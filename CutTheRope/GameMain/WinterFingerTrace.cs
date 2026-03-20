@@ -240,20 +240,13 @@ namespace CutTheRope.GameMain
 
         private static Vector GetPointDirection(List<Vector> sampledPoints, int index)
         {
-            if (sampledPoints.Count == 1)
-                return vectZero;
-
-            if (index == 0)
-            {
-                return VectSub(sampledPoints[1], sampledPoints[0]);
-            }
-
-            if (index == sampledPoints.Count - 1)
-            {
-                return VectSub(sampledPoints[^1], sampledPoints[^2]);
-            }
-
-            return VectSub(sampledPoints[index + 1], sampledPoints[index - 1]);
+            return sampledPoints.Count == 1
+                ? vectZero
+                : index == 0
+                ? VectSub(sampledPoints[1], sampledPoints[0])
+                : index == sampledPoints.Count - 1
+                ? VectSub(sampledPoints[^1], sampledPoints[^2])
+                : VectSub(sampledPoints[index + 1], sampledPoints[index - 1]);
         }
 
         private bool TryCreateGlowSprite(out FingerTraceSpritePose glowSprite)

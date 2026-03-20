@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 
 using CutTheRope.Desktop;
-using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 
 using Microsoft.Xna.Framework;
