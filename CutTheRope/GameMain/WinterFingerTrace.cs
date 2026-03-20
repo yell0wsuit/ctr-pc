@@ -19,7 +19,7 @@ namespace CutTheRope.GameMain
         private const float SegmentLife = 0.15f;
         private const float ParticleBurstDuration = 0.1f;
         private const float ParticleEmissionRate = 50f;
-        private const float RibbonBaseWidth = 8f;
+        private const float RibbonBaseWidth = 12f;
         private const float MinimumRibbonHalfWidth = 1f;
         private const int MaximumDirectionHistory = 10;
 
