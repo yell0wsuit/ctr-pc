@@ -100,16 +100,17 @@ namespace CutTheRope.GameMain
         {
             foreach (WinterParticle particle in particles)
             {
-                float alpha = FIT_TO_BOUNDARIES(particle.Life / particle.MaxLife, 0f, 1f);
+                float lifeRatio = FIT_TO_BOUNDARIES(particle.Life / particle.MaxLife, 0f, 1f);
+                float scale = particle.StartScale + ((particle.EndScale - particle.StartScale) * (1f - lifeRatio));
                 sprites.Add(new FingerTraceSpritePose(
                     FingerTraceSpriteKind.Spark,
                     Resources.Img.FingerTraces,
                     particle.QuadIndex,
                     particle.Position,
                     particle.Rotation,
-                    particle.Scale,
-                    alpha,
-                    FingerTraceBlendMode.Alpha));
+                    scale,
+                    lifeRatio,
+                    FingerTraceBlendMode.Additive));
             }
         }
 
@@ -117,16 +118,17 @@ namespace CutTheRope.GameMain
         {
             float angle = DEGREES_TO_RADIANS(emitterRotation + (90f * RND_MINUS1_1));
             Vector direction = new(Cosf(angle), Sinf(angle));
-            float speed = 180f + (200f * RND_MINUS1_1);
-            float life = MAX(0.35f, 1f + (0.1f * RND_MINUS1_1));
+            float speed = 200f + (20f * RND_MINUS1_1);
+            float life = MAX(0.05f, 0.6f + (0.2f * RND_MINUS1_1));
 
             return new WinterParticle
             {
                 Position = emitterPosition,
                 Velocity = VectMult(direction, speed),
-                Rotation = emitterRotation + (45f * RND_MINUS1_1),
-                RotationVelocity = 90f * RND_MINUS1_1,
-                Scale = MAX(0.1f, 0.25f + (0.15f * RND_MINUS1_1)),
+                Rotation = 0f,
+                RotationVelocity = DEGREES_TO_RADIANS(180f * RND_MINUS1_1),
+                StartScale = 1.0f,
+                EndScale = 0.1f,
                 Life = life,
                 MaxLife = life,
                 QuadIndex = FirstQuad + NextInt(QuadCount),
@@ -146,7 +148,8 @@ namespace CutTheRope.GameMain
             public Vector Velocity;
             public float Rotation;
             public float RotationVelocity;
-            public float Scale;
+            public float StartScale;
+            public float EndScale;
             public float Life;
             public float MaxLife;
             public int QuadIndex;
