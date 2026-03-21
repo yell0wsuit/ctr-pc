@@ -22,9 +22,12 @@ namespace CutTheRope.GameMain.FingerTraces
         private const float RibbonBaseWidth = 12f;
         private const float MinimumRibbonHalfWidth = 1f;
         private const int MaximumDirectionHistory = 10;
+        private const int GlowQuadIndex = 0;
+        private const float GlowBaseScale = 48f / 222f;
 
         private readonly StarTraceParticles particles = new();
         private readonly List<Vector> directionHistory = [];
+        private Image glowImage;
 
         private VertexPositionColor[] ribbonVerticesCache;
         private float particleTimer;
@@ -61,6 +64,9 @@ namespace CutTheRope.GameMain.FingerTraces
             directionHistory.Add(delta);
             RefreshHeadState();
             particles.SetPosition(end);
+            EnsureGlowImage();
+            glowImage.x = startX;
+            glowImage.y = startY;
         }
 
         /// <summary>
@@ -77,6 +83,12 @@ namespace CutTheRope.GameMain.FingerTraces
                 {
                     DrawSpritePose(sprite);
                 }
+            }
+
+            if (Segments.Count > 0 && glowImage != null)
+            {
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                glowImage.Draw();
             }
 
             DrawRibbon();
@@ -221,6 +233,14 @@ namespace CutTheRope.GameMain.FingerTraces
             Vector averageDirection = GetAverageDirection();
             averageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
             particles.SetRotation(averageRotation + DEG_180);
+
+            if (glowImage != null)
+            {
+                glowImage.rotation = averageRotation + DEG_90;
+                float scale = GlowBaseScale * MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
+                glowImage.scaleX = scale;
+                glowImage.scaleY = scale;
+            }
         }
 
         private static Vector GetPointDirection(List<Vector> sampledPoints, int index)
@@ -265,6 +285,18 @@ namespace CutTheRope.GameMain.FingerTraces
                 MathHelper.Lerp(0.95294f, 1f, fade),
                 MathHelper.Lerp(0.20392f, 1f, fade),
                 1f);
+        }
+
+        private void EnsureGlowImage()
+        {
+            if (glowImage != null)
+            {
+                return;
+            }
+
+            glowImage = Image.Image_createWithResIDQuad(Resources.Img.FingerTraceGlow, GlowQuadIndex);
+            glowImage.DoRestoreCutTransparency();
+            glowImage.anchor = CENTER;
         }
 
         private void EnsureRibbonCache(int vertexCount)

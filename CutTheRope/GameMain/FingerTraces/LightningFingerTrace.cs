@@ -34,9 +34,13 @@ namespace CutTheRope.GameMain.FingerTraces
         private const float QuadStretch = 140f / 112f;
         private const float QuadOffsetAmount = 15f;
 
+        private const int GlowQuadIndex = 0;
+        private const float GlowBaseScale = 48f / 222f;
+
         private readonly LightningTraceParticles particles = new();
         private readonly List<Vector> directionHistory = [];
         private readonly int[] bodyVariants = new int[10];
+        private Image glowImage;
 
         private VertexPositionColorTexture[] verticesCache;
         private short[] indicesCache;
@@ -86,6 +90,9 @@ namespace CutTheRope.GameMain.FingerTraces
             StoreSegment(start, end, life);
             directionHistory.Add(delta);
             particles.SetPosition(end);
+            EnsureGlowImage();
+            glowImage.x = startX;
+            glowImage.y = startY;
         }
 
         /// <summary>
@@ -93,6 +100,12 @@ namespace CutTheRope.GameMain.FingerTraces
         /// </summary>
         public override void Draw()
         {
+            if (Segments.Count >= 2 && currentHeadVariant != -1 && glowImage != null)
+            {
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                glowImage.Draw();
+            }
+
             DrawLightningBody();
 
             List<FingerTraceSpritePose> particleSprites = [];
@@ -142,6 +155,14 @@ namespace CutTheRope.GameMain.FingerTraces
             averageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
             particles.SetRotation(averageRotation + DEG_180);
             headScale = MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
+
+            if (glowImage != null)
+            {
+                glowImage.rotation = averageRotation + DEG_90;
+                float scale = GlowBaseScale * headScale;
+                glowImage.scaleX = scale;
+                glowImage.scaleY = scale;
+            }
 
             particles.Update(delta);
 
@@ -373,6 +394,18 @@ namespace CutTheRope.GameMain.FingerTraces
             while (count > 1 && next == previous);
 
             return next;
+        }
+
+        private void EnsureGlowImage()
+        {
+            if (glowImage != null)
+            {
+                return;
+            }
+
+            glowImage = Image.Image_createWithResIDQuad(Resources.Img.FingerTraceGlow, GlowQuadIndex);
+            glowImage.DoRestoreCutTransparency();
+            glowImage.anchor = CENTER;
         }
 
         private void EnsureBuffers(int quadCount)
