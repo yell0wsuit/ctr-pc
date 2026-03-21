@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain.FingerTraces
         private const float MinimumRibbonHalfWidth = 1f;
         private const int MaximumDirectionHistory = 10;
         private const int GlowQuadIndex = 1;
-        private const float GlowBaseScale = 48f / 222f;
+        private const float GlowTranslateY = 48f;
 
         private readonly WinterTraceParticles particles = new();
         private readonly List<Vector> directionHistory = [];
@@ -62,7 +62,6 @@ namespace CutTheRope.GameMain.FingerTraces
             particleTimer = ParticleBurstDuration;
             StoreSegment(start, end, SegmentLife);
             directionHistory.Add(delta);
-            RefreshHeadState();
             particles.SetPosition(end);
             EnsureGlowImage();
             glowImage.x = startX;
@@ -87,7 +86,7 @@ namespace CutTheRope.GameMain.FingerTraces
 
             if (Segments.Count > 0 && glowImage != null)
             {
-                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 glowImage.Draw();
             }
 
@@ -238,11 +237,8 @@ namespace CutTheRope.GameMain.FingerTraces
             if (glowImage != null)
             {
                 glowImage.rotation = averageRotation + DEG_90;
-                float dirScale = VectLength(averageDirection) / 10f;
-                float segScale = Segments.Count / 5f;
-                float scale = GlowBaseScale * MIN(segScale, dirScale);
-                glowImage.scaleX = scale;
-                glowImage.scaleY = scale;
+                float glowAlpha = MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
+                glowImage.color = RGBAColor.MakeRGBA(1f, 1f, 1f, glowAlpha);
             }
         }
 
@@ -285,8 +281,8 @@ namespace CutTheRope.GameMain.FingerTraces
             }
 
             glowImage = Image.Image_createWithResIDQuad(Resources.Img.FingerTraceGlow, GlowQuadIndex);
-            glowImage.DoRestoreCutTransparency();
             glowImage.anchor = CENTER;
+            glowImage.translateY = GlowTranslateY;
         }
 
         private void EnsureRibbonCache(int vertexCount)
