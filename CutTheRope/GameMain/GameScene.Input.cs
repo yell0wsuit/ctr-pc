@@ -134,7 +134,8 @@ namespace CutTheRope.GameMain
             {
                 dragging[ti] = true;
                 prevStartPos[ti] = startPos[ti] = vector;
-                fingerTraces[ti]?.Begin(world);
+                fingerTraceDownPos[ti] = world;
+                fingerTraceDragging[ti] = false;
             }
             foreach (object obj in spikes)
             {
@@ -429,7 +430,11 @@ namespace CutTheRope.GameMain
                 return true;
             }
             dragging[ti] = false;
-            fingerTraces[ti]?.End();
+            if (fingerTraceDragging[ti])
+            {
+                fingerTraces[ti]?.End();
+                fingerTraceDragging[ti] = false;
+            }
             if (ti >= 5)
             {
                 return true;
@@ -833,7 +838,23 @@ namespace CutTheRope.GameMain
                 }
                 prevStartPos[ti] = startPos[ti];
                 startPos[ti] = vector;
-                fingerTraces[ti]?.Append(world);
+                if (fingerTraces[ti] != null)
+                {
+                    if (!fingerTraceDragging[ti])
+                    {
+                        float dx = world.X - fingerTraceDownPos[ti].X;
+                        float dy = world.Y - fingerTraceDownPos[ti].Y;
+                        if ((dx * dx) + (dy * dy) >= 100f)
+                        {
+                            fingerTraceDragging[ti] = true;
+                        }
+                    }
+
+                    if (fingerTraceDragging[ti])
+                    {
+                        fingerTraces[ti].Append(world);
+                    }
+                }
             }
             return true;
         }

@@ -586,6 +586,10 @@ namespace CutTheRope.GameMain
 
         public FingerTrace[] fingerTraces = new FingerTrace[5];
 
+        private readonly Vector[] fingerTraceDownPos = new Vector[5];
+
+        private readonly bool[] fingerTraceDragging = new bool[5];
+
         public sealed class FingerCut : FrameworkTypes
         {
             public Vector start;
