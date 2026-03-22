@@ -1,52 +1,76 @@
 {
     "frames": [
         {
-            "filename": "01_trace_classic.png",
-            "frame": { "x": 1, "y": 734, "w": 109, "h": 115 },
+            "filename": "00_trace_1.png",
+            "frame": { "x": 1, "y": 378, "w": 109, "h": 115 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 109, "h": 115 },
             "sourceSize": { "w": 109, "h": 115 }
         },
         {
-            "filename": "02_trace_bubbles.png",
-            "frame": { "x": 1, "y": 608, "w": 115, "h": 124 },
+            "filename": "01_trace_2.png",
+            "frame": { "x": 371, "y": 295, "w": 115, "h": 124 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 115, "h": 124 },
             "sourceSize": { "w": 115, "h": 124 }
         },
         {
-            "filename": "03_trace_lightning.png",
-            "frame": { "x": 1, "y": 472, "w": 142, "h": 134 },
+            "filename": "02_trace_3.png",
+            "frame": { "x": 371, "y": 159, "w": 142, "h": 134 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 142, "h": 134 },
             "sourceSize": { "w": 142, "h": 134 }
         },
         {
-            "filename": "04_trace_rainbow.png",
-            "frame": { "x": 1, "y": 1, "w": 150, "h": 159 },
+            "filename": "03_trace_4.png",
+            "frame": { "x": 215, "y": 1, "w": 150, "h": 159 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 150, "h": 159 },
             "sourceSize": { "w": 150, "h": 159 }
         },
         {
-            "filename": "05_trace_winter.png",
-            "frame": { "x": 1, "y": 162, "w": 151, "h": 156 },
+            "filename": "04_trace_5.png",
+            "frame": { "x": 367, "y": 1, "w": 151, "h": 156 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 151, "h": 156 },
             "sourceSize": { "w": 151, "h": 156 }
         },
         {
-            "filename": "06_trace_product_red.png",
-            "frame": { "x": 1, "y": 320, "w": 153, "h": 150 },
+            "filename": "05_trace_6.png",
+            "frame": { "x": 215, "y": 315, "w": 153, "h": 150 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 153, "h": 150 },
             "sourceSize": { "w": 153, "h": 150 }
+        },
+        {
+            "filename": "06_trace_7.png",
+            "frame": { "x": 1, "y": 195, "w": 212, "h": 181 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 212, "h": 181 },
+            "sourceSize": { "w": 212, "h": 181 }
+        },
+        {
+            "filename": "07_trace_8.png",
+            "frame": { "x": 215, "y": 162, "w": 154, "h": 151 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 154, "h": 151 },
+            "sourceSize": { "w": 154, "h": 151 }
+        },
+        {
+            "filename": "08_trace_9.png",
+            "frame": { "x": 1, "y": 1, "w": 212, "h": 192 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 212, "h": 192 },
+            "sourceSize": { "w": 212, "h": 192 }
         }
     ],
     "meta": {
@@ -54,8 +78,8 @@
         "version": "1.0",
         "image": "fingertrace_skin.png",
         "format": "RGBA8888",
-        "size": { "w": 155, "h": 850 },
+        "size": { "w": 519, "h": 494 },
         "scale": "1",
-        "smartupdate": "$TexturePacker:SmartUpdate:a54e6404c776a20e845ffb7ee1765b44:1a1fdaa1ac19ea3762206ff8e2b1b084:f2a0780e22c2352f315468d070785796$"
+        "smartupdate": "$TexturePacker:SmartUpdate:8fbe5c427f9c5e59723100ae7d71b3f2:7b0b79459dcde1a0a141932d41ac4b4a:f2a0780e22c2352f315468d070785796$"
     }
 }
