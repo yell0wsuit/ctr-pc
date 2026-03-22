@@ -19,7 +19,7 @@ namespace CutTheRope.GameMain.FingerTraces
         private const float RibbonBaseWidth = 12f;
         private const float MinimumRibbonHalfWidth = 1f;
         private const int MaximumDirectionHistory = 10;
-        private const int GlowQuadIndex = 0;
+        private const int GlowQuadIndex = 2;
         private const float GlowTranslateY = 50f;
 
         private readonly OmnomBirthdayTraceParticles particles = new();
@@ -131,7 +131,7 @@ namespace CutTheRope.GameMain.FingerTraces
             }
 
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.DrawTriangleStrip(ribbonVerticesCache, sampledPoints.Count * 2);
         }
 
