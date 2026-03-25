@@ -217,10 +217,5 @@
         "packQuadIndex": 7,
         "sittingPlatform": 16,
         "unlockStars": 850
-    },
-    {
-        "packName": "BOX_SOON_LABEL",
-        "packSpritesheet": "2",
-        "packQuadIndex": 8
     }
 ]
