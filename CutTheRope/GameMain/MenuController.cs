@@ -1200,6 +1200,7 @@ namespace CutTheRope.GameMain
 
         public void MoviePlaybackFinished(string url)
         {
+            bool isOutro = url != null && url.EndsWith("outro", StringComparison.Ordinal);
             if (replayingIntroMovie)
             {
                 replayingIntroMovie = false;
@@ -1225,13 +1226,13 @@ namespace CutTheRope.GameMain
                 CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(0));
                 PreLevelSelect();
                 ShowView(VIEW_LEVEL_SELECT);
-                if (url != null && url.EndsWith("outro", StringComparison.Ordinal))
+                if (isOutro)
                 {
                     ShowGameFinishedPopup();
                 }
                 return;
             }
-            if (CTRPreferences.ShouldPlayLevelScroll())
+            if (!isOutro && CTRPreferences.ShouldPlayLevelScroll())
             {
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
                 packContainer.MoveToScrollPointmoveMultiplier(0, 0.6f);
@@ -1242,9 +1243,9 @@ namespace CutTheRope.GameMain
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetLastBox());
             }
             ShowView(5);
-            if (url != null && url.EndsWith("outro", StringComparison.Ordinal))
+            if (isOutro)
             {
-                packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8f);
+                packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
                 ShowGameFinishedPopup();
             }
         }
