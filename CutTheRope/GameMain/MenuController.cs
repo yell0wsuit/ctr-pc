@@ -847,7 +847,8 @@ namespace CutTheRope.GameMain
             };
             _ = hBox2.AddChild(baseElement2);
             float scrollPointX = 0f + GetPackOffset();
-            for (int i = 0; i < CTRPreferences.GetPacksCount() + 1; i++)
+            int displayCount = CTRPreferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
+            for (int i = 0; i < displayCount; i++)
             {
                 TouchBaseElement touchBaseElement = (TouchBaseElement)CreatePackElementforContainer(i, packContainer);
                 boxes[i] = touchBaseElement;
