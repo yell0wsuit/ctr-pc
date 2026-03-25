@@ -1149,7 +1149,14 @@ namespace CutTheRope.GameMain
             base.Activate();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             pack = cTRRootController.GetPack();
-            if (viewToShow == 6)
+            if (IsSinglePack && viewToShow == VIEW_PACK_SELECT)
+            {
+                pack = 0;
+                currentPack = 0;
+                PreLevelSelect();
+                viewToShow = VIEW_LEVEL_SELECT;
+            }
+            if (viewToShow == VIEW_LEVEL_SELECT)
             {
                 currentPack = pack;
                 PreLevelSelect();
@@ -1209,6 +1216,16 @@ namespace CutTheRope.GameMain
                 {
                     CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
                 }
+            }
+            if (IsSinglePack)
+            {
+                pack = 0;
+                currentPack = 0;
+                CTRPreferences.SetLastBox(0);
+                CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(0));
+                PreLevelSelect();
+                ShowView(VIEW_LEVEL_SELECT);
+                return;
             }
             if (CTRPreferences.ShouldPlayLevelScroll())
             {
@@ -1378,6 +1395,11 @@ namespace CutTheRope.GameMain
                         return;
                     }
                 case var id when id == MenuButtonId.PackSelect:
+                    if (IsSinglePack)
+                    {
+                        ShowView(VIEW_MAIN_MENU);
+                        return;
+                    }
                     ShowView(5);
                     packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8f);
                     return;
@@ -1853,6 +1875,8 @@ namespace CutTheRope.GameMain
         public const int VIEW_PACK_SELECT = 5;
 
         public const int VIEW_LEVEL_SELECT = 6;
+
+        private static bool IsSinglePack => CTRPreferences.GetPacksCount() == 1;
 
         public const int VIEW_MOVIE = 7;
 
