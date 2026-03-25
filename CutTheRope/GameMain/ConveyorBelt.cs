@@ -698,7 +698,7 @@ namespace CutTheRope.GameMain
             float transporterHeight = visualRoot.height;
 
             Image endTemplate = CreatePiece(ImgObjConveyorEnd, 34);
-            transitionDist = endTemplate.height * 0.25f;
+            transitionDist = 18f;
             float capOffset = transitionDist;
 
             Image middle = CreatePiece(ImgObjConveyorMiddle, 18);
