@@ -1225,6 +1225,10 @@ namespace CutTheRope.GameMain
                 CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(0));
                 PreLevelSelect();
                 ShowView(VIEW_LEVEL_SELECT);
+                if (url != null && url.EndsWith("outro", StringComparison.Ordinal))
+                {
+                    ShowGameFinishedPopup();
+                }
                 return;
             }
             if (CTRPreferences.ShouldPlayLevelScroll())
