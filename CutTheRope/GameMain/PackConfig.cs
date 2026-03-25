@@ -112,6 +112,12 @@ namespace CutTheRope.GameMain
         private static readonly List<PackDefinition> packs;
         private static readonly int playablePackCount;
 
+        /// <summary>Video filename for the intro movie (without extension), or null to skip.</summary>
+        public static string IntroVideo { get; private set; }
+
+        /// <summary>Video filename for the outro/completion movie (without extension), or null to skip.</summary>
+        public static string OutroVideo { get; private set; }
+
         static PackConfig()
         {
             List<PackListEntry> packListEntries = LoadPackListEntries();
@@ -320,6 +326,9 @@ namespace CutTheRope.GameMain
             }
 
             entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot));
+
+            IntroVideo ??= ParseStringProperty(entryElement, "introVideo");
+            OutroVideo ??= ParseStringProperty(entryElement, "outroVideo");
         }
 
         private static List<PackDefinition> LoadPacksFromEntries(IEnumerable<PackListEntry> packListEntries)

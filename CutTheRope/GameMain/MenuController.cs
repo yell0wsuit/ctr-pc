@@ -1185,10 +1185,17 @@ namespace CutTheRope.GameMain
                 return;
             }
             replayingIntroMovie = false;
-            packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
-            CTRSoundMgr.StopMusic();
-            Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-            Application.SharedMovieMgr().PlayURL("outro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+            if (PackConfig.OutroVideo != null)
+            {
+                packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
+                CTRSoundMgr.StopMusic();
+                Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
+                Application.SharedMovieMgr().PlayURL(PackConfig.OutroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+            }
+            else
+            {
+                MoviePlaybackFinished(null);
+            }
         }
 
         public override void OnChildDeactivated(int n)
@@ -1200,7 +1207,7 @@ namespace CutTheRope.GameMain
 
         public void MoviePlaybackFinished(string url)
         {
-            bool isOutro = url != null && url.EndsWith("outro", StringComparison.Ordinal);
+            bool isOutro = url != null && url == PackConfig.OutroVideo;
             if (replayingIntroMovie)
             {
                 replayingIntroMovie = false;
@@ -1273,13 +1280,13 @@ namespace CutTheRope.GameMain
             ctrrootController.SetLevel(level);
             Application.SharedRootController().SetViewTransition(-1);
             ((MapPickerController)GetChild(0)).SetAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
-            if (pack == 0 && level == 0 && CTRPreferences.GetScoreForPackLevel(0, 0) != 0)
+            if (pack == 0 && level == 0 && CTRPreferences.GetScoreForPackLevel(0, 0) != 0 && PackConfig.IntroVideo != null)
             {
                 replayingIntroMovie = true;
                 ShowView(7);
                 CTRSoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                Application.SharedMovieMgr().PlayURL("intro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+                Application.SharedMovieMgr().PlayURL(PackConfig.IntroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                 return;
             }
             ActivateChild(0);
@@ -1318,12 +1325,12 @@ namespace CutTheRope.GameMain
                             GameController.CheckForBoxPerfect(i);
                         }
                         replayingIntroMovie = false;
-                        if (CTRPreferences.GetScoreForPackLevel(0, 0) == 0)
+                        if (CTRPreferences.GetScoreForPackLevel(0, 0) == 0 && PackConfig.IntroVideo != null)
                         {
                             ShowView(7);
                             CTRSoundMgr.StopMusic();
                             Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                            Application.SharedMovieMgr().PlayURL("intro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+                            Application.SharedMovieMgr().PlayURL(PackConfig.IntroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                             return;
                         }
                         MoviePlaybackFinished(null);

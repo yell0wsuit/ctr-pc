@@ -234,7 +234,7 @@ namespace CutTheRope.GameMain
                         }
                         if (nextController == 3)
                         {
-                            menuController3.viewToShow = pack < CTRPreferences.GetPacksCount() - 1 ? 5 : 7;
+                            menuController3.viewToShow = pack < CTRPreferences.GetPacksCount() - 1 ? 5 : (PackConfig.OutroVideo != null ? 7 : 5);
                         }
                         ActivateChild(1);
                         if (nextController == 3)
