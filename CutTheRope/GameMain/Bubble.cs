@@ -4,7 +4,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class Bubble : GameObject, IConveyorItem
+    internal class Bubble : GameObject, ITransporterItem, ITransporterBindAware
     {
         public static Bubble Bubble_create(CTRTexture2D t)
         {
@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
         public override void Draw()
         {
             PreDraw();
-            if (!withoutShadow && ConveyorId == -1)
+            if (!withoutShadow && !IsDrawnByTransporter)
             {
                 if (quadToDraw == -1)
                 {
@@ -54,10 +54,29 @@ namespace CutTheRope.GameMain
 
         public bool capturedByBulb;
 
-        public int ConveyorId { get; set; } = -1;
+        public float PositionOnTransporter { get; set; }
 
-        public float? ConveyorBaseScaleX { get; set; }
+        public Vector BindPoint => Vect(x, y);
 
-        public float? ConveyorBaseScaleY { get; set; }
+        public void SetBindPoint(Vector point)
+        {
+            x = point.X;
+            y = point.Y;
+        }
+
+        public float CollisionRadius => 85f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
     }
 }

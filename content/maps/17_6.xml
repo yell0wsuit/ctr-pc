@@ -1,21 +1,26 @@
 <?xml version='1.0' encoding='utf-8'?>
 <map>
     <layer name="settings">
-        <map height="480" gridSize="32" width="320" />
-        <gameDesign nightLevel="false" ropePhysicsSpeed="1" twoParts="false" />
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1.0" nightLevel="false" />
     </layer>
-    <layer name="Objects">
+    <layer name="Object">
         <target x="269" y="108" />
-        <transporter velocity="10" direction="forward" length="270" angle="0" x="24" y="305" type="manual" width="50" />
-        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="L" moveOffset="0" moveVertical="false" length="55" x="157" bulbNumber="first" y="61" moveLength="-1" radius="-1" />
+        <transporter x="24" y="315" type="manual" direction="forward" velocity="10" angle="0"
+            width="50" length="270" />
+        <grab x="157" y="61" length="55" wheel="false" gun="false" kickable="false" kicked="false"
+            radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0"
+            spider="false" part="L" bindBulb="false" bulbNumber="first" />
         <candy x="157" y="140" />
-        <grab bindBulb="false" spider="false" gun="false" wheel="false" part="L" moveOffset="0" moveVertical="false" length="215" x="266" bulbNumber="first" y="169" moveLength="-1" radius="-1" />
+        <steamTube x="48" y="305" angle="0" />
+        <grab x="266" y="169" length="215" wheel="false" gun="false" kickable="false" kicked="false"
+            radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0"
+            spider="false" part="L" bindBulb="false" bulbNumber="first" />
         <star x="156" y="251" timeout="-1" />
         <bubble x="160" y="415" />
-        <bouncer2 size="2" angle="0" x="155" y="204" />
+        <bouncer2 x="155" y="204" angle="0" size="2" />
         <star x="51" y="149" timeout="-1" />
         <star x="265" y="414" timeout="-1" />
-        <steamTube angle="0" x="48" y="305" />
-        <hiddenElement x="60" y="52" />
+        <hiddenElement x="52" y="60" radius="30" />
     </layer>
 </map>

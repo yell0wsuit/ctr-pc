@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
-    internal class Grab : CTRGameObject
+    internal class Grab : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware, ITransporterScaleAware
     {
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
@@ -112,6 +112,13 @@ namespace CutTheRope.GameMain
             if (gunFired && gunCup != null)
             {
                 gunCup.Update(delta);
+            }
+            // Transported grabs keep their rope anchor pinned to grab position
+            // regardless of launcher state.
+            if (IsDrawnByTransporter && rope != null)
+            {
+                rope.bungeeAnchor.pos = Vect(x, y);
+                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
             }
             if (launcher && rope != null)
             {
@@ -602,6 +609,27 @@ namespace CutTheRope.GameMain
             }
         }
 
+        public float PositionOnTransporter { get; set; }
+
+        public Vector BindPoint => Vect(x, y);
+
+        public void SetBindPoint(Vector point)
+        {
+            x = point.X;
+            y = point.Y;
+            ReCalcCircle();
+        }
+
+        public float CollisionRadius => 40f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -641,6 +669,34 @@ namespace CutTheRope.GameMain
 
         public const int MAX_STAINS = 10;
 
+        public void DidMoveToOtherSide()
+        {
+            if (candyNumber != -1 && rope != null && rope.cut == -1)
+            {
+                rope.MoveAnchor(Vect(x, y));
+            }
+        }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
+
+        public void SetTransporterScale(float scale)
+        {
+            if (back != null)
+            {
+                back.scaleX = scale;
+                back.scaleY = scale;
+            }
+
+            if (front != null)
+            {
+                front.scaleX = scale;
+                front.scaleY = scale;
+            }
+        }
+
         public Image back;
 
         public Image front;
@@ -648,6 +704,8 @@ namespace CutTheRope.GameMain
         // public Image dot;
 
         public Bungee rope;
+
+        public int candyNumber = -1;
 
         public float radius;
 

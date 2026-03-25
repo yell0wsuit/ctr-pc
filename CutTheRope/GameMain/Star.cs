@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework;
@@ -9,7 +8,7 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class Star : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider
+    internal sealed class Star : CTRGameObject, ITransporterItem, ITransporterBindAware
     {
         private const int ImgObjStarIdleGlow = 0;
         private const int ImgObjStarNightGlow = 0;
@@ -20,9 +19,6 @@ namespace CutTheRope.GameMain
         private const int ImgObjStarNightLightUpStart = 25;
         private const int ImgObjStarNightLightUpEnd = 30;
         private const float NightFadeStep = 0.1f;
-        private const float ConveyorSizeScale = 0.9f;
-        private const float ConveyorPaddingJs = 8f;
-        private const float JsPm = 1.2f;
 
         private const int TimedFullQuad = 19;  // frame_0019: full timed ring
         private const int TimedEmptyQuad = 20; // frame_0055: empty timed ring
@@ -47,7 +43,6 @@ namespace CutTheRope.GameMain
             glowSprite = null;
             lightUpAnim = null;
             lightDownAnim = null;
-            bobTime = 0f;
         }
 
         public override void Update(float delta)
@@ -72,7 +67,6 @@ namespace CutTheRope.GameMain
                 }
             }
             base.Update(delta);
-            UpdateBobOffset(delta);
         }
 
         public override void Draw()
@@ -121,7 +115,17 @@ namespace CutTheRope.GameMain
                 AddTimelinewithID(timeline2, 1);
             }
             bb = new CTRRectangle(22f, 20f, 30f, 30f);
-            bobTime = RND_RANGE(0, 20) / 10f;
+
+            Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y - 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y + 3, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5f));
+            timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            timeline3.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            AddTimelinewithID(timeline3, 0);
+            PlayTimeline(0);
+            Timeline.UpdateTimeline(timeline3, RND_RANGE(0, 20) / 10);
 
             // Add glow sprite
             if (!nightMode)
@@ -182,30 +186,6 @@ namespace CutTheRope.GameMain
             nightMode = true;
         }
 
-        private void UpdateBobOffset(float delta)
-        {
-            bobTime += delta;
-            bool onConveyor = ConveyorId != -1;
-            float offset = onConveyor ? 0f : (3 * Sinf(3f * bobTime));
-            Dictionary<int, BaseElement> childs = GetChilds();
-            foreach (KeyValuePair<int, BaseElement> kvp in childs)
-            {
-                BaseElement child = kvp.Value;
-                _ = (child?.y = offset);
-            }
-        }
-
-        public Vector GetConveyorSize()
-        {
-            CTRRectangle bounds = bb.Equals(default) ? new CTRRectangle(22f, 20f, 30f, 30f) : bb;
-            return Vect(bounds.w * ConveyorSizeScale, bounds.h * ConveyorSizeScale);
-        }
-
-        public float GetConveyorPadding()
-        {
-            return ConveyorPaddingJs * RotatedCircle.PM / JsPm;
-        }
-
         public void SetLitState(bool lit)
         {
             if (!nightMode)
@@ -259,6 +239,16 @@ namespace CutTheRope.GameMain
 
         public bool IsLit => isLit == true;
 
+        public void WillBind()
+        {
+            if (GetCurrentTimeline() != null)
+            {
+                StopCurrentTimeline();
+            }
+
+            IsDrawnByTransporter = true;
+        }
+
         private static void AdjustNightAlpha(BaseElement element, float delta)
         {
             if (element == null)
@@ -302,13 +292,25 @@ namespace CutTheRope.GameMain
 
         private bool? isLit;
 
-        public int ConveyorId { get; set; } = -1;
+        public float PositionOnTransporter { get; set; }
 
-        public float? ConveyorBaseScaleX { get; set; }
+        public Vector BindPoint => Vect(x, y);
 
-        public float? ConveyorBaseScaleY { get; set; }
+        public void SetBindPoint(Vector point)
+        {
+            x = point.X;
+            y = point.Y;
+        }
 
-        private float bobTime;
+        public float CollisionRadius => 60f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
 
         private Animation idleSprite;
 

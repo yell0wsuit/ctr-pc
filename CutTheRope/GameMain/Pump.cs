@@ -7,7 +7,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Represents a pump object that can apply a directional flow and be placed on conveyors.
     /// </summary>
-    internal sealed class Pump : GameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionProvider, IConveyorPositionSetter
+    internal sealed class Pump : GameObject, ITransporterItem, ITransporterBindAware
     {
         /// <summary>
         /// Length of the pump flow influence area in world units.
@@ -18,8 +18,6 @@ namespace CutTheRope.GameMain
         /// Offset from the pump center to the mouth in local X before rotation.
         /// </summary>
         public const float MouthOffset = 80f;
-
-        private static readonly Vector ConveyorOffset = Vect(0.8f, -1.2f);
 
         /// <summary>
         /// Creates a pump from a texture.
@@ -62,32 +60,6 @@ namespace CutTheRope.GameMain
             t2 = VectRotateAround(t2, angle, x, y);
         }
 
-        public Vector GetConveyorSize()
-        {
-            const float scale = 0.48f;
-            return Vect(bb.w * scale, bb.h * scale);
-        }
-
-        public float GetConveyorPadding()
-        {
-            Vector size = GetConveyorSize();
-            return (size.X + size.Y) / 4f;
-        }
-
-        public Vector GetConveyorPosition()
-        {
-            Vector offset = VectRotate(ConveyorOffset, angle);
-            return VectAdd(Vect(x, y), offset);
-        }
-
-        public void SetConveyorPosition(Vector position)
-        {
-            Vector offset = VectRotate(ConveyorOffset, angle);
-            Vector adjusted = VectSub(position, offset);
-            x = adjusted.X;
-            y = adjusted.Y;
-        }
-
         /// <summary>
         /// Current pump angle in radians.
         /// </summary>
@@ -124,10 +96,48 @@ namespace CutTheRope.GameMain
 
         public RotatedCircle initial_rotatedCircle;
 
-        public int ConveyorId { get; set; } = -1;
+        public float PositionOnTransporter { get; set; }
 
-        public float? ConveyorBaseScaleX { get; set; }
+        /// <summary>
+        /// Returns the effective position of the pump for transporter calculations,
+        /// applying a rotated ConveyorOffset from the pump's origin.
+        /// </summary>
+        public Vector BindPoint
+        {
+            get
+            {
+                float angleRad = DEGREES_TO_RADIANS(rotation);
+                Vector offset = VectRotate(Vect(width * 0.01f * scaleX, 0f), angleRad);
+                return VectAdd(Vect(x, y), offset);
+            }
+        }
 
-        public float? ConveyorBaseScaleY { get; set; }
+        /// <summary>
+        /// Sets the pump's position such that its effective transporter bind point
+        /// matches the given position, accounting for the rotated offset.
+        /// </summary>
+        public void SetBindPoint(Vector point)
+        {
+            float angleRad = DEGREES_TO_RADIANS(rotation);
+            Vector offset = VectRotate(Vect(width * 0.01f * scaleX, 0f), angleRad);
+            Vector adjusted = VectSub(point, offset);
+            x = adjusted.X;
+            y = adjusted.Y;
+        }
+
+        public float CollisionRadius => width * 0.13f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
+
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
     }
 }

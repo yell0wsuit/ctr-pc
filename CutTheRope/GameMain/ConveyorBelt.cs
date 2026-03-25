@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
-using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -15,47 +14,33 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBelt : BaseElement
     {
-        private const float BeltPlateScaleX = 0.7f;
-        private const int ImgObjTransporterEnd = 0;
-        private const int ImgObjTransporterEndSide = 1;
-        private const int ImgObjTransporterMiddle = 2;
-        private const int ImgObjTransporterMiddleSide = 3;
-        private const int ImgObjTransporterPlate = 4;
-        private const int ImgObjTransporterPlateArrowRight = 5;
-        private const int ImgObjTransporterPlateArrowLeft = 6;
-        private const int ImgObjTransporterHighlight = 7;
+        // PC conveyor tuning uses base iOS values scaled by 3x world scale.
+        private const float ConveyorScale = 3f;
+        private const float ActiveThreshold = 1f * ConveyorScale;
+        private const float ManualStopThreshold = 1f * ConveyorScale;
+        private const float ManualMoveSoundDistance = 15f * ConveyorScale;
+        private const float AlignmentSpeed = 80f * ConveyorScale;
+        private const float DistributionMinSpacing = 2f * ConveyorScale;
+        private const float CenterlineSnapThreshold = 0.01f;
+        private const float CenterlineHardSnapDistance = 2f;
+        private const float CenterlineReturnFactor = 0.8f;
 
-        /// <summary>
-        /// Tracks the state of an item riding on the conveyor belt.
-        /// </summary>
-        /// <param name="initialOffset">The starting offset position along the belt.</param>
-        private sealed class ConveyorItemState(float initialOffset)
-        {
-            private static int nextIndex;
-            /// <summary>Whether the item should be removed from the belt.</summary>
-            public bool markedForRemoval;
-            /// <summary>Whether the item is still sliding perpendicular to settle onto the belt center.</summary>
-            public bool isSettling = true;
-            /// <summary>The target offset for the next frame.</summary>
-            public float nextOffset = initialOffset;
-            /// <summary>The current offset position along the belt length.</summary>
-            public float offset = initialOffset;
-            /// <summary>Unique index for ordering items.</summary>
-            public int index = nextIndex++;
-        }
+        private const int ImgObjConveyorEnd = 0;
+        private const int ImgObjConveyorEndSide = 1;
+        private const int ImgObjConveyorMiddle = 2;
+        private const int ImgObjConveyorMiddleSide = 3;
+        private const int ImgObjConveyorPlate = 4;
+        private const int ImgObjConveyorPlateArrow = 5;
+        private const int ImgObjConveyorHighlight = 6;
 
         /// <summary>
         /// Handles the visual rendering of the conveyor belt's moving surface using tiled plate segments.
         /// </summary>
         private sealed class ConveyorBeltVisual : BaseElement
         {
-            private readonly int plateQuad;
-            private readonly List<Image> segments = [];
-            private readonly float tileWidth;
+            private readonly Image plateSection;
+            private readonly Image plateArrow;
             private readonly float tileHeight;
-            private readonly float tileScaleX;
-            private readonly float tileScaleY;
-            private readonly string textureName = Resources.Img.ObjTransporter;
 
             /// <summary>The current visual offset for the scrolling belt texture.</summary>
             public float offset;
@@ -73,18 +58,29 @@ namespace CutTheRope.GameMain
                 anchor = 9;
                 parentAnchor = 9;
 
-                plateQuad = direction < 0 ? ImgObjTransporterPlateArrowLeft : direction > 0 ? ImgObjTransporterPlateArrowRight : ImgObjTransporterPlate;
+                plateSection = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, ImgObjConveyorPlate);
+                plateSection.parent = this;
+                plateSection.anchor = 10;
+                plateSection.parentAnchor = 10;
+                plateSection.scaleX = plateSection.width > 0 ? width / plateSection.width : 1f;
+                tileHeight = plateSection.height;
 
-                Image template = Image.Image_createWithResIDQuad(textureName, plateQuad);
-                template.anchor = 18;
-                template.parentAnchor = 9;
-                tileWidth = template.width;
-                tileHeight = template.height;
-                tileScaleY = tileHeight > 0 ? height / tileHeight : 1f;
-                tileScaleX = BeltPlateScaleX;
+                if (direction != 0)
+                {
+                    plateArrow = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, ImgObjConveyorPlateArrow);
+                    plateArrow.anchor = 18;
+                    plateArrow.parentAnchor = 18;
+                    if (direction < 0)
+                    {
+                        plateArrow.rotation = 180f;
+                    }
 
-                segments.Add(template);
-                _ = AddChild(template);
+                    _ = plateSection.AddChild(plateArrow);
+                }
+                else
+                {
+                    plateArrow = null;
+                }
             }
 
             /// <summary>
@@ -93,115 +89,79 @@ namespace CutTheRope.GameMain
             /// <param name="delta">The distance to move the belt texture.</param>
             public void Move(float delta)
             {
-                if (tileWidth <= 0)
-                {
-                    return;
-                }
-
-                float tileStep = tileWidth * tileScaleX;
-                if (tileStep <= 0)
+                if (tileHeight <= 0f)
                 {
                     return;
                 }
 
                 offset += delta;
-                while (offset > width)
+                if (offset > height)
                 {
-                    offset -= tileStep;
+                    do
+                    {
+                        offset -= tileHeight;
+                    }
+                    while (offset > height);
                 }
-                while (offset < 0)
+
+                while (offset < 0f)
                 {
-                    offset += tileStep;
+                    offset += tileHeight;
                 }
             }
 
             /// <summary>
-            /// Recalculates and positions all tile segments to fill the belt width at the current offset.
+            /// Draws the conveyor plate using the same slice/repeat/slice pattern as the iOS TransporterPlate.
             /// </summary>
-            public void UpdateLayout()
+            public override void Draw()
             {
-                if (tileWidth <= 0 || tileHeight <= 0 || width <= 0)
+                PreDraw();
+
+                if (tileHeight <= 0f || height <= 0)
                 {
+                    PostDraw();
                     return;
                 }
 
-                float tileStep = tileWidth * tileScaleX;
-                if (tileStep <= 0)
+                float wrappedOffset = offset;
+                while (wrappedOffset >= tileHeight)
                 {
-                    return;
+                    wrappedOffset -= tileHeight;
+                }
+                while (wrappedOffset < 0f)
+                {
+                    wrappedOffset += tileHeight;
                 }
 
-                float localOffset = offset;
-                localOffset -= MathF.Floor(localOffset / tileStep) * tileStep;
-                if (localOffset < 0)
+                float drawnHeight = 0f;
+                if (wrappedOffset > 0f)
                 {
-                    localOffset += tileStep;
+                    DrawSegment(-0.5f * (tileHeight - wrappedOffset), wrappedOffset);
+                    drawnHeight = wrappedOffset;
                 }
 
-                int segmentIndex = 0;
-                segmentIndex = LayoutSegment(segmentIndex, 0f, localOffset);
-
-                float x = localOffset;
-                while (x + tileStep <= width)
+                while (drawnHeight + tileHeight <= height)
                 {
-                    segmentIndex = LayoutSegment(segmentIndex, x, tileStep);
-                    x += tileStep;
+                    DrawSegment(drawnHeight, tileHeight);
+                    drawnHeight += tileHeight;
                 }
 
-                float remainingWidth = MathF.Max(width - x, 0f);
-                segmentIndex = LayoutSegment(segmentIndex, x, remainingWidth);
-
-                for (int i = segmentIndex; i < segments.Count; i++)
+                float remainingHeight = height - drawnHeight;
+                if (remainingHeight > 0f)
                 {
-                    segments[i].visible = false;
+                    float finalY = height - remainingHeight - (0.5f * (tileHeight - remainingHeight));
+                    DrawSegment(finalY, remainingHeight);
                 }
+
+                PostDraw();
             }
 
-            /// <summary>
-            /// Positions a single tile segment at the specified location.
-            /// </summary>
-            /// <param name="index">The segment index in the pool.</param>
-            /// <param name="left">The left edge position of this segment.</param>
-            /// <param name="width">The width to display for this segment.</param>
-            /// <returns>The next segment index to use.</returns>
-            private int LayoutSegment(int index, float left, float width)
+            private void DrawSegment(float y, float visibleHeight)
             {
-                Image segment = EnsureSegment(index);
-                if (width <= 0)
-                {
-                    segment.visible = false;
-                    return index + 1;
-                }
-
-                float scaleX = width / tileWidth;
-                segment.scaleX = scaleX;
-                segment.scaleY = tileScaleY;
-                float scaledWidth = tileWidth * MathF.Abs(scaleX);
-                float scaledHeight = tileHeight * MathF.Abs(tileScaleY);
-                segment.x = left + (scaledWidth / 2f);
-                segment.y = scaledHeight / 2f;
-                segment.visible = true;
-                return index + 1;
-            }
-
-            /// <summary>
-            /// Gets an existing segment at the index or creates a new one if needed.
-            /// </summary>
-            /// <param name="index">The segment index.</param>
-            /// <returns>The image segment at the specified index.</returns>
-            private Image EnsureSegment(int index)
-            {
-                if (index < segments.Count)
-                {
-                    return segments[index];
-                }
-
-                Image segment = Image.Image_createWithResIDQuad(textureName, plateQuad);
-                segment.anchor = 18;
-                segment.parentAnchor = 9;
-                segments.Add(segment);
-                _ = AddChild(segment);
-                return segment;
+                plateSection.y = y;
+                plateSection.scaleY = visibleHeight / tileHeight;
+                plateSection.Draw();
+                plateSection.scaleY = 1f;
             }
         }
 
@@ -263,8 +223,8 @@ namespace CutTheRope.GameMain
             bool isManual,
             float velocity)
         {
+            _ = id;
             activePointerId = -1;
-            this.id = id;
             this.x = x;
             this.y = y;
             beltWidth = length;
@@ -272,22 +232,122 @@ namespace CutTheRope.GameMain
             width = (int)MathF.Ceiling(length);
             this.height = (int)MathF.Ceiling(height);
 
-            float adjustedRotation = -rotation;
-            this.rotation = adjustedRotation;
+            this.rotation = -rotation;
             IsManual = isManual;
-            rotationRad = DEGREES_TO_RADIANS(adjustedRotation);
-            direction = Vect(Cosf(rotationRad), Sinf(rotationRad));
+            rotationRad = DEGREES_TO_RADIANS(rotation);
+            direction = Vect(Cosf(rotationRad), -Sinf(rotationRad));
             this.velocity = velocity;
             rotationCenterX = -length / 2f;
             rotationCenterY = 0f;
-
             RemoveAllChilds();
             BuildVisuals();
         }
 
         /// <summary>
-        /// Updates the belt and all items on it each frame. Handles movement, collision avoidance,
-        /// wrapping, and settling of items onto the belt surface.
+        /// Transforms a local-space vector to world-space coordinates.
+        /// </summary>
+        /// <param name="localX">The local X coordinate (along belt length).</param>
+        /// <param name="localY">The local Y coordinate (perpendicular to belt).</param>
+        /// <returns>The world-space position.</returns>
+        private Vector VecToWorldSpace(float localX, float localY)
+        {
+            float cosR = Cosf(rotationRad);
+            float sinR = Sinf(rotationRad);
+            return Vect(
+                x + (cosR * localX) - (sinR * localY),
+                y - (sinR * localX) - (cosR * localY));
+        }
+
+        /// <summary>
+        /// Checks whether a circle (center + radius) overlaps the belt's axis-aligned bounds.
+        /// </summary>
+        /// <param name="center">The center of the circle in world space.</param>
+        /// <param name="radius">The radius of the circle.</param>
+        /// <returns>True if the circle overlaps the belt bounds; false otherwise.</returns>
+        public bool CollidesWithCircle(Vector center, float radius)
+        {
+            Vector local = ToLocalSpace(center);
+            // local.X = along belt, local.Y = perpendicular
+            if (local.X < -radius || local.X > beltWidth + radius)
+            {
+                return false;
+            }
+
+            float halfHeight = beltHeight * 0.5f;
+            return local.Y >= -halfHeight - radius && local.Y <= halfHeight + radius;
+        }
+
+        /// <summary>
+        /// Binds an item to this conveyor belt, setting its initial position along the belt.
+        /// </summary>
+        /// <param name="item">The transporter item to bind.</param>
+        public void BindObject(ITransporterItem item)
+        {
+            if (boundObjects.Contains(item))
+            {
+                return;
+            }
+
+            boundObjects.Add(item);
+            if (item is ITransporterBindAware bindAware)
+            {
+                bindAware.WillBind();
+            }
+
+            item.IsDrawnByTransporter = true;
+
+            Vector local = ToLocalSpace(item.BindPoint);
+            item.PositionOnTransporter = local.X;
+
+            // Determine which end the item is near
+            float pos = item.PositionOnTransporter;
+            int side;
+            float distFromEdge;
+            if (pos < beltWidth * 0.5f)
+            {
+                side = 0;
+                distFromEdge = pos;
+            }
+            else
+            {
+                side = 1;
+                distFromEdge = beltWidth - pos;
+            }
+
+            // If past the edge, clamp to transitionDist from the opposite end
+            if (distFromEdge < 0f)
+            {
+                item.PositionOnTransporter = side == 1 ? beltWidth - transitionDist : transitionDist;
+
+                Vector worldPos = VecToWorldSpace(item.PositionOnTransporter, 0f);
+                item.SetBindPoint(worldPos);
+            }
+
+            objectsDistributed = false;
+        }
+
+        /// <summary>
+        /// Checks whether an item is currently bound to this belt.
+        /// </summary>
+        /// <param name="item">The transporter item to check.</param>
+        /// <returns>True if the item is on this belt; false otherwise.</returns>
+        public bool HasItem(ITransporterItem item)
+        {
+            return boundObjects.Contains(item);
+        }
+
+        /// <summary>
+        /// Removes a bound item from this belt.
+        /// </summary>
+        /// <param name="item">The transporter item to remove.</param>
+        public void Remove(ITransporterItem item)
+        {
+            _ = boundObjects.Remove(item);
+        }
+
+        /// <summary>
+        /// Updates the belt and all bound items each frame. Handles movement, wrapping,
+        /// and scale transitions at belt edges.
         /// </summary>
         /// <param name="deltaTime">The time elapsed since the last frame in seconds.</param>
         public override void Update(float deltaTime)
@@ -296,187 +356,163 @@ namespace CutTheRope.GameMain
 
             if (!IsManual)
             {
-                offsetDelta = deltaTime * velocity * 10f;
-                offset += offsetDelta;
-                offset = WrapOffset(offset, beltWidth);
+                offsetDelta = deltaTime * velocity;
+                MoveBoundObjects(offsetDelta);
             }
 
-            active = MathF.Abs(offsetDelta) > 0.001f;
+            active = MathF.Abs(offsetDelta) > ActiveThreshold;
 
             if (IsManual && active)
             {
                 manualTravelDistance += MathF.Abs(offsetDelta);
-                if (manualTravelDistance >= 15f)
+                if (manualTravelDistance >= ManualMoveSoundDistance)
                 {
                     PlayManualMoveSound();
                     manualTravelDistance = 0f;
                 }
             }
 
-            CleanupMarkedItems();
-
-            BaseElement firstItem = null;
-            BaseElement lastItem = null;
-
-            foreach (KeyValuePair<BaseElement, ConveyorItemState> kvp in itemStates)
+            // Manual inertia: decay after finger release, then align
+            if (IsManual && activePointerId == -1)
             {
-                BaseElement item = kvp.Key;
-                ConveyorItemState itemState = kvp.Value;
-                if (itemState.markedForRemoval)
+                if (MathF.Abs(offsetDelta) <= ManualStopThreshold)
+                {
+                    offsetDelta = 0f;
+                    if (!needsAlignment)
+                    {
+                        StartAlignmentIfNeeded();
+                    }
+                }
+                else
+                {
+                    offsetDelta *= 0.75f;
+                    if (active)
+                    {
+                        MoveBoundObjects(offsetDelta);
+                    }
+                }
+            }
+
+            // Keep bound objects visually centered on the belt's centerline.
+            foreach (ITransporterItem item in boundObjects)
+            {
+                Vector local = ToLocalSpace(item.BindPoint);
+                float sideOffsetAbs = MathF.Abs(local.Y);
+                if (sideOffsetAbs <= CenterlineSnapThreshold)
                 {
                     continue;
                 }
 
-                float targetOffset = itemState.offset + offsetDelta;
-                bool wrappedAround = true;
+                float correctedOffset = sideOffsetAbs <= CenterlineHardSnapDistance
+                    ? 0f
+                    : local.Y * CenterlineReturnFactor;
+                Vector correctedWorld = VecToWorldSpace(local.X, correctedOffset);
+                item.SetBindPoint(correctedWorld);
+            }
 
-                if (targetOffset >= beltWidth)
+            DistributeObjects(deltaTime);
+
+            // iOS does one alignment move per update when requested.
+            if (needsAlignment)
+            {
+                float alignDelta = alignmentSign * AlignmentSpeed * deltaTime;
+                MoveBoundObjects(alignDelta);
+                needsAlignment = false;
+            }
+        }
+
+        /// <summary>
+        /// Moves all bound objects along the belt by the given delta, handling wrapping
+        /// and scale transitions at belt edges.
+        /// </summary>
+        /// <param name="delta">The distance to move items along the belt.</param>
+        private void MoveBoundObjects(float delta)
+        {
+            beltVisual?.Move(delta);
+
+            foreach (ITransporterItem item in boundObjects)
+            {
+                Vector local = ToLocalSpace(item.BindPoint);
+                float previousPos = item.PositionOnTransporter;
+                int previousSide = previousPos < beltWidth * 0.5f ? 0 : 1;
+                float previousDistFromEdge = previousSide == 0 ? previousPos : beltWidth - previousPos;
+
+                // Move along belt
+                item.PositionOnTransporter -= delta;
+
+                float pos = item.PositionOnTransporter;
+
+                // Determine which end is closer
+                int side;
+                float distFromEdge;
+                if (pos < beltWidth * 0.5f)
                 {
-                    targetOffset -= beltWidth;
-                }
-                else if (targetOffset <= 0f)
-                {
-                    targetOffset += beltWidth;
-                }
-                else
-                {
-                    wrappedAround = false;
-                }
-
-                Vector size = GetItemSize(item);
-                Vector position = GetItemPosition(item);
-                Vector projectedSize = Vect(size.X * direction.X, size.Y * direction.Y);
-                float halfLength = VectLength(projectedSize) / 2f;
-
-                float scale = 1f;
-                float projectedOffset = targetOffset;
-
-                if (targetOffset < halfLength)
-                {
-                    scale = 0.5f + (0.5f * targetOffset / halfLength);
-                    firstItem = item;
-                    projectedOffset = halfLength * scale;
-                }
-                else if (beltWidth - targetOffset < halfLength)
-                {
-                    scale = 0.5f + (0.5f * (beltWidth - targetOffset) / halfLength);
-                    lastItem = item;
-                    projectedOffset = beltWidth - (halfLength * scale);
-                }
-
-                foreach (KeyValuePair<BaseElement, ConveyorItemState> neighborPair in itemStates)
-                {
-                    BaseElement neighbor = neighborPair.Key;
-                    ConveyorItemState neighborState = neighborPair.Value;
-                    if (neighbor == item || neighborState.markedForRemoval || scale != 1f)
-                    {
-                        continue;
-                    }
-
-                    float separation = neighborState.offset - itemState.offset;
-                    Vector neighborSize = GetItemSize(neighbor);
-                    Vector combined = Vect(size.X + neighborSize.X, size.Y + neighborSize.Y);
-                    float combinedSq = (combined.X * combined.X) + (combined.Y * combined.Y);
-                    if (0.25f * combinedSq > separation * separation)
-                    {
-                        if (MathF.Abs(separation) < 0.001f)
-                        {
-                            int deltaIndex = items.IndexOf(neighbor) - items.IndexOf(item);
-                            separation = 600f * (deltaIndex > 0 ? 1f : deltaIndex < 0 ? -1f : 0f);
-                        }
-                        else if (MathF.Abs(separation) < 600f)
-                        {
-                            separation = MathF.Sign(separation) * 600f;
-                        }
-                        targetOffset -= separation * deltaTime;
-                    }
-                }
-
-                ApplyItemScale(item, scale);
-
-                Vector offsetVector = Vect(
-                    x + (direction.X * projectedOffset) - position.X,
-                    y + (direction.Y * projectedOffset) - position.Y);
-
-                if (itemState.isSettling)
-                {
-                    Vector perpendicular = Vect(direction.Y, -direction.X);
-                    float slideDistance = ((offsetVector.X * perpendicular.X) + (offsetVector.Y * perpendicular.Y)) / VectLength(direction);
-                    Vector projectedSlide = Vect(perpendicular.X * slideDistance, perpendicular.Y * slideDistance);
-
-                    float maxSlide = 800f * deltaTime;
-                    float slideLengthSq = (projectedSlide.X * projectedSlide.X) + (projectedSlide.Y * projectedSlide.Y);
-                    if (slideLengthSq >= maxSlide * maxSlide)
-                    {
-                        float slideLength = MathF.Sqrt(slideLengthSq);
-                        float factor = (slideLength - maxSlide) / slideLength;
-                        projectedSlide = Vect(projectedSlide.X * factor, projectedSlide.Y * factor);
-                    }
-                    else
-                    {
-                        itemState.isSettling = false;
-                    }
-
-                    offsetVector = VectSub(offsetVector, projectedSlide);
-                    SetItemPosition(item, VectAdd(position, offsetVector));
+                    side = 0;
+                    distFromEdge = pos;
                 }
                 else
                 {
-                    SetItemPosition(item, VectAdd(Vect(x, y), VectMult(direction, projectedOffset)));
+                    side = 1;
+                    distFromEdge = beltWidth - pos;
                 }
 
-                itemState.nextOffset = targetOffset;
-                if (wrappedAround)
+                // Check if within transition zone
+                bool wrapped = false;
+                bool movingTowardEdge = previousSide == 0 ? delta > 0f : delta < 0f;
+                bool enteredTransitionZone = previousDistFromEdge >= transitionDist && distFromEdge < transitionDist;
+                if (distFromEdge < transitionDist && (movingTowardEdge || enteredTransitionZone))
                 {
-                    (item as IConveyorDropHandler)?.OnConveyorDrop();
+                    float newDist = (2f * transitionDist) - distFromEdge;
+                    item.PositionOnTransporter = side == 0 ? beltWidth - newDist : newDist;
+
                     CTRSoundMgr.PlaySound(Resources.Snd.TransporterDrop);
+                    objectsDistributed = false;
+                    wrapped = true;
+                    side ^= 1;
+
+                    pos = item.PositionOnTransporter;
+                    distFromEdge = pos < beltWidth * 0.5f ? pos : beltWidth - pos;
                 }
-            }
 
-            foreach (ConveyorItemState state in itemStates.Values)
-            {
-                state.offset = WrapOffset(state.nextOffset, beltWidth);
-            }
+                // Compute scale
+                float collisionRadius = item.CollisionRadius;
+                float maxScale = item.MaxScale;
+                float minScale = item.MinScale;
 
-            beltVisual?.Move(offsetDelta);
-            beltVisual?.UpdateLayout();
-
-            if (IsManual)
-            {
-                offsetDelta = 0f;
-            }
-
-            if (activePointerId == -1)
-            {
-                if (firstItem != null && lastItem != null)
+                if (distFromEdge >= collisionRadius * maxScale)
                 {
-                    foreach (KeyValuePair<BaseElement, ConveyorItemState> kvp in itemStates)
+                    item.TransporterScale = maxScale;
+                    ApplyItemScale(item, maxScale);
+                    Vector worldPos = VecToWorldSpace(item.PositionOnTransporter, local.Y);
+                    item.SetBindPoint(worldPos);
+                }
+                else
+                {
+                    float scaleRange = maxScale - minScale;
+                    float scale = minScale + (distFromEdge * scaleRange / (collisionRadius * maxScale));
+                    item.TransporterScale = scale;
+                    ApplyItemScale(item, scale);
+
+                    float adjustedPos = side == 1 ? beltWidth - (scale * collisionRadius) : scale * collisionRadius;
+                    Vector worldPos = VecToWorldSpace(adjustedPos, local.Y);
+                    item.SetBindPoint(worldPos);
+                }
+
+                // Side-switch callbacks
+                if (wrapped)
+                {
+                    if (item is Grab grab && grab.rope != null && grab.candyNumber != -1)
                     {
-                        if (kvp.Value.markedForRemoval)
-                        {
-                            continue;
-                        }
-
-                        if (kvp.Key == firstItem)
-                        {
-                            kvp.Value.offset += 1500f * deltaTime;
-                        }
-
-                        if (kvp.Key == lastItem)
-                        {
-                            kvp.Value.offset -= 1500f * deltaTime;
-                        }
+                        OnDestroyRopesForCandy?.Invoke(grab.candyNumber, grab);
+                    }
+                    if (item is ITransporterSideSwitchAware sideSwitchAware)
+                    {
+                        sideSwitchAware.DidMoveToOtherSide();
                     }
                 }
-                else if (firstItem != null)
-                {
-                    offsetDelta = 1500f * deltaTime;
-                }
-                else if (lastItem != null)
-                {
-                    offsetDelta = -1500f * deltaTime;
-                }
             }
+
+            OnTransporterMoves?.Invoke(this);
         }
 
         /// <summary>
@@ -488,7 +524,7 @@ namespace CutTheRope.GameMain
         /// <returns>True if the belt captured the pointer; false otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
-            if (!IsManual)
+            if (!IsManual || activePointerId != -1)
             {
                 return false;
             }
@@ -500,14 +536,21 @@ namespace CutTheRope.GameMain
                 local.Y >= -0.5f * beltHeight &&
                 local.Y <= 0.5f * beltHeight;
 
+            bool captured = false;
             if (insideBounds)
             {
                 activePointerId = pointerId;
                 lastDragPosition = local;
-                return true;
+                offsetDelta = 0f;
+                needsAlignment = false;
+                ActiveSetTime = (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+                captured = true;
             }
 
-            return false;
+            // Matches iOS touchDownX:Y:Index: where alignment is canceled
+            // after each manual touch-down attempt, including misses.
+            needsAlignment = false;
+            return captured;
         }
 
         /// <summary>
@@ -519,9 +562,6 @@ namespace CutTheRope.GameMain
         /// <returns>True if the belt released its captured pointer; false otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
-            _ = pointerX;
-            _ = pointerY;
-
             if (!IsManual)
             {
                 return false;
@@ -530,16 +570,18 @@ namespace CutTheRope.GameMain
             if (activePointerId == pointerId)
             {
                 activePointerId = -1;
-                offsetDelta = 0f;
 
-                foreach (KeyValuePair<BaseElement, ConveyorItemState> kvp in itemStates)
+                Vector local = ToLocalSpace(Vect(pointerX, pointerY));
+                offsetDelta = lastDragPosition.X - local.X;
+
+                if (MathF.Abs(offsetDelta) <= ManualStopThreshold)
                 {
-                    if (kvp.Value.markedForRemoval)
+                    offsetDelta = 0f;
+                    if (!needsAlignment)
                     {
-                        Remove(kvp.Key);
+                        StartAlignmentIfNeeded();
                     }
                 }
-
                 return true;
             }
 
@@ -563,9 +605,8 @@ namespace CutTheRope.GameMain
             if (activePointerId == pointerId)
             {
                 Vector local = ToLocalSpace(Vect(pointerX, pointerY));
-                offsetDelta = local.X - lastDragPosition.X;
-                offset += offsetDelta;
-                offset = WrapOffset(offset, beltWidth);
+                offsetDelta = lastDragPosition.X - local.X;
+                MoveBoundObjects(offsetDelta);
                 lastDragPosition = local;
                 return true;
             }
@@ -604,66 +645,11 @@ namespace CutTheRope.GameMain
         /// <returns>The point in belt-local coordinates.</returns>
         public Vector ToLocalSpace(Vector worldPoint)
         {
-            float perpAngle = rotationRad - (MathF.PI / 2f);
+            float perpAngle = -rotationRad - (MathF.PI / 2f);
             Vector perp = Vect(Cosf(perpAngle), Sinf(perpAngle));
             float dx = worldPoint.X - x;
             float dy = worldPoint.Y - y;
             return Vect((direction.X * dx) + (direction.Y * dy), (perp.X * dx) + (perp.Y * dy));
-        }
-
-        /// <summary>
-        /// Attaches an item to the conveyor belt for transport.
-        /// </summary>
-        /// <param name="item">The element to attach to the belt.</param>
-        public void AttachItem(BaseElement item)
-        {
-            RegisterItem(item);
-        }
-
-        /// <summary>
-        /// Marks an item for removal from the belt. The item will be removed once it exits the belt bounds.
-        /// </summary>
-        /// <param name="item">The element to mark for removal.</param>
-        public void MarkItemForRemoval(BaseElement item)
-        {
-            if (itemStates.TryGetValue(item, out ConveyorItemState state))
-            {
-                state.markedForRemoval = true;
-            }
-
-            if (item is IConveyorItem conveyorItem)
-            {
-                conveyorItem.ConveyorId = -1;
-            }
-        }
-
-        /// <summary>
-        /// Checks whether an item is currently attached to this belt.
-        /// </summary>
-        /// <param name="item">The element to check.</param>
-        /// <returns>True if the item is on this belt; false otherwise.</returns>
-        public bool HasItem(BaseElement item)
-        {
-            return itemStates.ContainsKey(item);
-        }
-
-        /// <summary>
-        /// Immediately removes an item from the belt's tracking state.
-        /// </summary>
-        /// <param name="item">The element to remove.</param>
-        public void Remove(BaseElement item)
-        {
-            _ = itemStates.Remove(item);
-        }
-
-        /// <summary>
-        /// Checks whether an item has been marked for removal.
-        /// </summary>
-        /// <param name="item">The element to check.</param>
-        /// <returns>True if the item is marked for removal; false otherwise.</returns>
-        public bool IsItemMarkedForRemoval(BaseElement item)
-        {
-            return itemStates.TryGetValue(item, out ConveyorItemState state) && state.markedForRemoval;
         }
 
         /// <summary>
@@ -681,188 +667,112 @@ namespace CutTheRope.GameMain
         public bool IsManual { get; private set; }
 
         /// <summary>
+        /// Gets the timestamp when this transporter was most recently activated by touch.
+        /// Used for iOS-style transporter handoff arbitration.
+        /// </summary>
+        public double ActiveSetTime { get; private set; }
+
+        /// <summary>
         /// Gets the normalized direction vector along the belt's length.
         /// </summary>
         public Vector Direction => direction;
-
-        /// <summary>
-        /// Wraps an offset value to stay within the belt width range.
-        /// </summary>
-        private static float WrapOffset(float value, float maxWidth)
-        {
-            float width = maxWidth;
-            float wrapped = value;
-            if (wrapped > maxWidth)
-            {
-                wrapped -= width;
-            }
-            if (wrapped < 0f)
-            {
-                wrapped += width;
-            }
-            return wrapped;
-        }
-
-        /// <summary>
-        /// Registers an item with the belt and calculates its initial offset position.
-        /// </summary>
-        private void RegisterItem(BaseElement item)
-        {
-            Vector position = GetItemPosition(item);
-            Vector offsetVector = Vect(position.X - x, position.Y - y);
-            float initialOffset = MathF.Max(MathF.Min((offsetVector.X * direction.X) + (offsetVector.Y * direction.Y), beltWidth), 0f);
-            itemStates[item] = new ConveyorItemState(initialOffset);
-            items.Add(item);
-            if (item is IConveyorItem conveyorItem)
-            {
-                conveyorItem.ConveyorId = id;
-            }
-            CacheBaseScale(item);
-        }
 
         /// <summary>
         /// Constructs the belt's visual components including frame, pillars, and moving surface.
         /// </summary>
         private void BuildVisuals()
         {
-            float scale = 0.75f;
-            float plateHeight = beltHeight - 10f;
-
-            float GetScaledHeight(Image element)
+            const float endScale = 0.6f;
+            const float plateScale = 0.8f;
+            BaseElement visualRoot = new()
             {
-                return element.height * MathF.Abs(element.scaleY);
-            }
+                width = (int)MathF.Ceiling(beltHeight),
+                height = (int)MathF.Ceiling(beltWidth),
+                anchor = 18,
+                parentAnchor = 18,
+                rotation = 90f
+            };
+            _ = AddChild(visualRoot);
 
-            float GetScaledWidth(Image element)
-            {
-                return element.width * MathF.Abs(element.scaleX);
-            }
+            float transporterWidth = visualRoot.width;
+            float transporterHeight = visualRoot.height;
 
-            Image pillarRef = CreatePiece(ImgObjTransporterEndSide);
-            pillarRef.scaleX = scale;
-            pillarRef.scaleY = scale;
-            float pillarScaledHeight = GetScaledHeight(pillarRef);
-            float pillarScaledWidth = GetScaledWidth(pillarRef);
-            float pillarXOffset = pillarScaledWidth * 0.2f;
+            Image endTemplate = CreatePiece(ImgObjConveyorEnd, 34);
+            transitionDist = 18f;
+            float capOffset = transitionDist;
 
-            Image middle = CreatePiece(ImgObjTransporterMiddle);
-            middle.scaleX = (beltWidth - pillarScaledWidth + pillarXOffset) / middle.width;
-            middle.scaleY = plateHeight / middle.height;
-            middle.x = 0f;
-            middle.y = 0f;
-            _ = AddChild(middle);
+            Image middle = CreatePiece(ImgObjConveyorMiddle, 18);
+            middle.scaleX = (transporterWidth - 10f) / middle.width;
+            middle.scaleY = transporterHeight / middle.height;
+            _ = visualRoot.AddChild(middle);
 
-            Image endSideLeftTop = CreatePiece(ImgObjTransporterEndSide);
-            endSideLeftTop.scaleX = scale;
-            endSideLeftTop.scaleY = -scale;
-            endSideLeftTop.x = -pillarXOffset;
-            endSideLeftTop.y = pillarScaledHeight - 3f;
-            _ = AddChild(endSideLeftTop);
+            Image bottomEnd = endTemplate;
+            bottomEnd.y = capOffset;
+            bottomEnd.scaleX = transporterWidth * endScale / bottomEnd.width;
+            _ = visualRoot.AddChild(bottomEnd);
 
-            Image endSideRightTop = CreatePiece(ImgObjTransporterEndSide);
-            endSideRightTop.scaleX = -scale;
-            endSideRightTop.scaleY = -scale;
-            endSideRightTop.x = beltWidth + pillarXOffset;
-            endSideRightTop.y = pillarScaledHeight - 3f;
-            _ = AddChild(endSideRightTop);
+            Image topEnd = CreatePiece(ImgObjConveyorEnd, 10);
+            topEnd.y = -capOffset;
+            topEnd.scaleX = transporterWidth * endScale / topEnd.width;
+            _ = visualRoot.AddChild(topEnd);
 
-            Image endSideRightBottom = CreatePiece(ImgObjTransporterEndSide);
-            endSideRightBottom.scaleX = -scale;
-            endSideRightBottom.scaleY = scale;
-            endSideRightBottom.x = beltWidth + pillarXOffset;
-            endSideRightBottom.y = beltHeight - pillarScaledHeight + 3f;
-            _ = AddChild(endSideRightBottom);
+            Image leftSide = CreatePiece(ImgObjConveyorMiddleSide, 17);
+            float sideScaleY = (transporterHeight - (2f * capOffset)) / leftSide.height;
+            leftSide.scaleX = -1f;
+            leftSide.scaleY = sideScaleY;
+            _ = visualRoot.AddChild(leftSide);
 
-            Image endSideLeftBottom = pillarRef;
-            endSideLeftBottom.scaleX = scale;
-            endSideLeftBottom.x = -pillarXOffset;
-            endSideLeftBottom.y = beltHeight - pillarScaledHeight + 3f;
-            _ = AddChild(endSideLeftBottom);
+            Image rightSide = CreatePiece(ImgObjConveyorMiddleSide, 20);
+            rightSide.scaleY = sideScaleY;
+            _ = visualRoot.AddChild(rightSide);
 
-            Image endLeft = CreatePiece(ImgObjTransporterEnd);
-            endLeft.scaleX = scale;
-            endLeft.scaleY = plateHeight / endLeft.height;
-            endLeft.x = -pillarXOffset;
-            endLeft.y = 5f;
-            _ = AddChild(endLeft);
+            Image bottomRightCorner = CreatePiece(ImgObjConveyorEndSide, 36);
+            bottomRightCorner.y = capOffset;
+            _ = visualRoot.AddChild(bottomRightCorner);
 
-            Image endRight = CreatePiece(ImgObjTransporterEnd);
-            endRight.scaleX = scale;
-            endRight.scaleY = plateHeight / endRight.height;
-            endRight.x = beltWidth - GetScaledWidth(endRight) + pillarXOffset;
-            endRight.y = 5f;
-            _ = AddChild(endRight);
+            Image bottomLeftCorner = CreatePiece(ImgObjConveyorEndSide, 33);
+            bottomLeftCorner.y = capOffset;
+            bottomLeftCorner.scaleX = -1f;
+            _ = visualRoot.AddChild(bottomLeftCorner);
 
-            Image midSideTop = CreatePiece(ImgObjTransporterMiddleSide);
-            midSideTop.scaleX = (beltWidth - pillarScaledWidth) / midSideTop.width;
-            midSideTop.scaleY = -scale;
-            midSideTop.x = 15f;
-            midSideTop.y = pillarScaledHeight - 4f;
-            _ = AddChild(midSideTop);
+            Image topLeftCorner = CreatePiece(ImgObjConveyorEndSide, 9);
+            topLeftCorner.y = -capOffset;
+            topLeftCorner.scaleX = -1f;
+            topLeftCorner.scaleY = -1f;
+            _ = visualRoot.AddChild(topLeftCorner);
 
-            Image midSideBottom = CreatePiece(ImgObjTransporterMiddleSide);
-            midSideBottom.scaleX = (beltWidth - pillarScaledWidth) / midSideBottom.width;
-            midSideBottom.scaleY = scale;
-            midSideBottom.x = 15f;
-            midSideBottom.y = beltHeight - pillarScaledHeight + 4f;
-            _ = AddChild(midSideBottom);
+            Image topRightCorner = CreatePiece(ImgObjConveyorEndSide, 12);
+            topRightCorner.y = -capOffset;
+            topRightCorner.scaleY = -1f;
+            _ = visualRoot.AddChild(topRightCorner);
 
             int beltDirection = IsManual ? 0 : velocity > 0f ? 1 : -1;
-            beltVisual = new ConveyorBeltVisual(beltWidth - 2f, plateHeight, beltDirection)
+            beltVisual = new ConveyorBeltVisual(transporterWidth * plateScale, transporterHeight, beltDirection)
             {
-                x = 0f,
-                y = 5f
+                anchor = 10,
+                parentAnchor = 10
             };
-            _ = AddChild(beltVisual);
+            _ = visualRoot.AddChild(beltVisual);
 
-            Image highlightLeft = CreatePiece(ImgObjTransporterHighlight);
-            highlightLeft.scaleX = scale;
-            highlightLeft.scaleY = plateHeight / highlightLeft.height;
-            highlightLeft.x = 0f;
-            highlightLeft.y = 5f;
-            _ = AddChild(highlightLeft);
+            Image bottomHighlight = CreatePiece(ImgObjConveyorHighlight, 34);
+            bottomHighlight.scaleX = transporterWidth * plateScale / bottomHighlight.width;
+            _ = visualRoot.AddChild(bottomHighlight);
 
-            Image highlightRight = CreatePiece(ImgObjTransporterHighlight);
-            highlightRight.scaleX = -scale;
-            highlightRight.scaleY = plateHeight / highlightRight.height;
-            highlightRight.x = beltWidth;
-            highlightRight.y = 5f;
-            _ = AddChild(highlightRight);
+            Image topHighlight = CreatePiece(ImgObjConveyorHighlight, 10);
+            topHighlight.scaleX = transporterWidth * plateScale / topHighlight.width;
+            topHighlight.scaleY = -1f;
+            _ = visualRoot.AddChild(topHighlight);
         }
 
         /// <summary>
         /// Creates a visual piece for the belt frame from the transporter sprite sheet.
         /// </summary>
-        private static Image CreatePiece(int quad)
+        private static Image CreatePiece(int quad, int anchors)
         {
-            Image piece = Image.Image_createWithResIDQuad(Resources.Img.ObjTransporter, quad);
-            piece.anchor = 9;
-            piece.parentAnchor = 9;
-            piece.rotationCenterX = -piece.width / 2f;
-            piece.rotationCenterY = -piece.height / 2f;
+            Image piece = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, quad);
+            piece.anchor = (sbyte)anchors;
+            piece.parentAnchor = (sbyte)anchors;
             return piece;
-        }
-
-        /// <summary>
-        /// Removes items that are marked for removal and have exited the belt bounds.
-        /// </summary>
-        private void CleanupMarkedItems()
-        {
-            List<BaseElement> toRemove = [];
-            foreach (KeyValuePair<BaseElement, ConveyorItemState> kvp in itemStates)
-            {
-                if (kvp.Value.markedForRemoval && !Contains(GetItemPosition(kvp.Key)))
-                {
-                    toRemove.Add(kvp.Key);
-                }
-            }
-
-            foreach (BaseElement item in toRemove)
-            {
-                _ = itemStates.Remove(item);
-                _ = items.Remove(item);
-                RestoreItemScale(item);
-            }
         }
 
         /// <summary>
@@ -874,148 +784,126 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Stores the item's original scale values for later restoration.
+        /// Checks if any bound object is in the transition zone and starts alignment if so.
+        /// Matches iOS startAlignmentIfNeeded.
         /// </summary>
-        private static void CacheBaseScale(BaseElement item)
+        private void StartAlignmentIfNeeded()
         {
-            if (item is not IConveyorItem conveyorItem)
+            needsAlignment = false;
+            float minDistance = float.MaxValue;
+            int nearestSide = 0;
+
+            foreach (ITransporterItem item in boundObjects)
+            {
+                float pos = item.PositionOnTransporter;
+                bool rightSide = pos >= beltWidth * 0.5f;
+                float dist = rightSide ? beltWidth - pos : pos;
+                if (dist < item.CollisionRadius)
+                {
+                    if (dist < minDistance)
+                    {
+                        minDistance = dist;
+                        needsAlignment = true;
+                        nearestSide = rightSide ? 1 : 0;
+                    }
+                }
+            }
+
+            if (needsAlignment)
+            {
+                alignmentSign = nearestSide == 1 ? 1 : -1;
+            }
+        }
+
+        /// <summary>
+        /// Separates overlapping items on the belt by pushing them apart.
+        /// Matches iOS distributeObjects:/pushObject:.
+        /// </summary>
+        private void DistributeObjects(float deltaTime)
+        {
+            if (objectsDistributed || boundObjects.Count < 2)
             {
                 return;
             }
 
-            conveyorItem.ConveyorBaseScaleX ??= item.scaleX;
-            conveyorItem.ConveyorBaseScaleY ??= item.scaleY;
+            objectsDistributed = true;
+            for (int i = 0; i < boundObjects.Count; i++)
+            {
+                for (int j = i + 1; j < boundObjects.Count; j++)
+                {
+                    ITransporterItem a = boundObjects[i];
+                    ITransporterItem b = boundObjects[j];
+                    float posA = a.PositionOnTransporter;
+                    float posB = b.PositionOnTransporter;
+                    float requiredDist = a.CollisionRadius + b.CollisionRadius + DistributionMinSpacing;
+                    float delta = posA - posB;
+                    float actualDist = MathF.Abs(delta);
+
+                    if (MathF.Abs(requiredDist - actualDist) >= 1f && actualDist < requiredDist)
+                    {
+                        float norm = actualDist <= 0.0001f ? 1f : delta / actualDist;
+                        float distance = (requiredDist - actualDist) * norm * deltaTime;
+                        PushObject(a, posA, distance * 10f);
+                        PushObject(b, posB, distance * -10f);
+                        objectsDistributed = false;
+                    }
+                }
+            }
+
+            if (!objectsDistributed)
+            {
+                MoveBoundObjects(0f);
+            }
         }
 
         /// <summary>
-        /// Restores the item's scale to its original cached values.
+        /// Pushes an item along the belt, clamping to transition zone boundaries.
+        /// Matches iOS pushObject:withLocalCoordinate:distance:.
         /// </summary>
-        private static void RestoreItemScale(BaseElement item)
+        private void PushObject(ITransporterItem item, float currentPos, float distance)
         {
-            if (item is not IConveyorItem conveyorItem)
+            float newPos = currentPos + distance;
+            if (newPos <= transitionDist || newPos >= beltWidth - transitionDist)
             {
+                newPos = currentPos < beltWidth * 0.5f ? transitionDist : beltWidth - transitionDist;
+            }
+            item.PositionOnTransporter = newPos;
+        }
+
+        private static void ApplyItemScale(ITransporterItem item, float scale)
+        {
+            if (item is ITransporterScaleAware scaleAware)
+            {
+                scaleAware.SetTransporterScale(scale);
                 return;
             }
 
-            if (conveyorItem.ConveyorBaseScaleX.HasValue)
+            if (item is BaseElement element)
             {
-                item.scaleX = conveyorItem.ConveyorBaseScaleX.Value;
-            }
-            if (conveyorItem.ConveyorBaseScaleY.HasValue)
-            {
-                item.scaleY = conveyorItem.ConveyorBaseScaleY.Value;
+                element.scaleX = scale;
+                element.scaleY = scale;
             }
         }
 
         /// <summary>
-        /// Applies a scale factor to the item relative to its cached base scale.
+        /// Callback invoked after MoveBoundObjects completes. Used by ConveyorBeltObject
+        /// for transporter-to-transporter handoff (iOS transporterMoves: delegate).
         /// </summary>
-        private static void ApplyItemScale(BaseElement item, float scale)
-        {
-            if (item is not IConveyorItem conveyorItem)
-            {
-                return;
-            }
-
-            CacheBaseScale(item);
-            float baseX = conveyorItem.ConveyorBaseScaleX ?? 1f;
-            float baseY = conveyorItem.ConveyorBaseScaleY ?? 1f;
-            item.scaleX = baseX * scale;
-            item.scaleY = baseY * scale;
-        }
+        public Action<ConveyorBelt> OnTransporterMoves;
 
         /// <summary>
-        /// Gets the world-space position of an item, using its conveyor position provider if available.
+        /// Callback invoked when a Grab wraps around the belt edge, requesting all other
+        /// ropes for the same candy to be cut. Matches iOS destroyRopesForCandy:except:.
+        /// Parameters: candyNumber, the Grab that wrapped (excluded from cutting).
         /// </summary>
-        /// <param name="item">The element to get the position for.</param>
-        /// <returns>The item's position in world coordinates.</returns>
-        public static Vector GetItemPosition(BaseElement item)
-        {
-            return item is IConveyorPositionProvider provider ? provider.GetConveyorPosition() : Vect(item.x, item.y);
-        }
+        public Action<int, Grab> OnDestroyRopesForCandy;
 
         /// <summary>
-        /// Sets the world-space position of an item, using its conveyor position setter if available.
+        /// The list of items currently bound to this belt.
         /// </summary>
-        private static void SetItemPosition(BaseElement item, Vector position)
-        {
-            if (item is IConveyorPositionSetter setter)
-            {
-                setter.SetConveyorPosition(position);
-                return;
-            }
-            item.x = position.X;
-            item.y = position.Y;
-        }
+        public IReadOnlyList<ITransporterItem> BoundObjects => boundObjects;
 
-        /// <summary>
-        /// Determines the effective size of an item for collision and spacing calculations.
-        /// </summary>
-        private static Vector GetItemSize(BaseElement item)
-        {
-            if (item is IConveyorSizeProvider provider)
-            {
-                return provider.GetConveyorSize();
-            }
-
-            float rawWidth = item.width;
-            float rawHeight = item.height;
-            float bbWidth = 0f;
-            float bbHeight = 0f;
-
-            if (item is GameObject gameObject)
-            {
-                bbWidth = gameObject.bb.w;
-                bbHeight = gameObject.bb.h;
-            }
-
-            float fallbackWidth = bbWidth > 0f ? bbWidth : rawWidth;
-            float fallbackHeight = bbHeight > 0f ? bbHeight : rawHeight;
-
-            // When restoreCutTransparency is disabled and there's no bounding box,
-            // use the texture quad rect dimensions as a fallback.
-            // When restoreCutTransparency is enabled, Image.width/height are already
-            // set to preCutSize, so use those values (rawWidth/rawHeight) instead.
-            if (bbWidth <= 0f && bbHeight <= 0f &&
-                item is Image image &&
-                !image.restoreCutTransparency &&
-                image.quadToDraw >= 0 &&
-                image.texture?.quadRects != null &&
-                image.quadToDraw < image.texture.quadRects.Length)
-            {
-                CTRRectangle rect = image.texture.quadRects[image.quadToDraw];
-                fallbackWidth = rect.w;
-                fallbackHeight = rect.h;
-            }
-
-            if (item is IConveyorItem conveyorItem)
-            {
-                float scaleX = MathF.Abs(conveyorItem.ConveyorBaseScaleX ?? 1f);
-                float scaleY = MathF.Abs(conveyorItem.ConveyorBaseScaleY ?? 1f);
-                return Vect(fallbackWidth * scaleX, fallbackHeight * scaleY);
-            }
-
-            return Vect(fallbackWidth, fallbackHeight);
-        }
-
-        /// <summary>
-        /// Gets the padding distance for detecting when an item is near the belt.
-        /// </summary>
-        /// <param name="item">The element to get padding for.</param>
-        /// <returns>The padding distance in world units.</returns>
-        public static float GetItemPadding(BaseElement item)
-        {
-            if (item is IConveyorPaddingProvider provider)
-            {
-                return provider.GetConveyorPadding();
-            }
-            Vector size = GetItemSize(item);
-            return (size.X + size.Y) / 4f;
-        }
-
-        private float velocity = 10f;
-        private float offset;
-        private int id = -1;
+        private float velocity;
         private float manualTravelDistance;
         private float rotationRad;
         private float offsetDelta;
@@ -1024,9 +912,12 @@ namespace CutTheRope.GameMain
         private int activePointerId = -1;
         private Vector lastDragPosition;
         private ConveyorBeltVisual beltVisual;
-        private readonly Dictionary<BaseElement, ConveyorItemState> itemStates = [];
-        private readonly List<BaseElement> items = [];
+        private readonly List<ITransporterItem> boundObjects = [];
+        private float transitionDist;
         private float beltWidth;
         private float beltHeight;
+        private bool needsAlignment;
+        private int alignmentSign;
+        private bool objectsDistributed;
     }
 }

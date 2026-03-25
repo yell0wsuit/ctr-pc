@@ -66,9 +66,6 @@ namespace CutTheRope.Framework
         // Spider
         public const float SpiderTraversalSpeed = 135f; // 45 * 3
 
-        // Conveyor-belt velocity scaling
-        public const float ConveyorVelocityScale = 0.4f;
-
         // Windows Phone's bungee renderer used a fixed buffer of 200 floats.
         public const float MaxRopeLength = 600f; // 20 segments * 30 rest length
         public static readonly int DrawPtsBufferSize = 200;

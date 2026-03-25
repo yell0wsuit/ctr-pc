@@ -410,6 +410,22 @@ namespace CutTheRope.GameMain
             PopBubbleAtXY(bulb.x, bulb.y);
         }
 
+        /// <summary>
+        /// Cuts all ropes for the specified candy number, except the one belonging to the given Grab.
+        /// Matches iOS destroyRopesForCandy:except:.
+        /// </summary>
+        private void DestroyRopesForCandy(int candyNumber, Grab except)
+        {
+            for (int i = 0; i < bungees.Count; i++)
+            {
+                Grab grab = bungees[i];
+                if (grab != except && grab.candyNumber == candyNumber && grab.rope != null && grab.rope.cut == -1)
+                {
+                    grab.rope.SetCut(grab.rope.parts.Count - 2);
+                }
+            }
+        }
+
         public void ResetBungeeHighlight()
         {
             for (int i = 0; i < bungees.Count; i++)

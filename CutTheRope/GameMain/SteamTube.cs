@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Steam tube object that emits animated steam puffs based on its valve state.
     /// </summary>
-    internal sealed class SteamTube : BaseElement, ITimelineDelegate, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionSetter
+    internal sealed class SteamTube : BaseElement, ITimelineDelegate, ITransporterItem, ITransporterBindAware, ITransporterScaleAware
     {
         public SteamTube()
         {
@@ -45,6 +45,8 @@ namespace CutTheRope.GameMain
             tube.anchor = 10;
             tube.parentAnchor = 18;
             _ = AddChild(tube);
+            width = tube.width;
+            height = tube.height;
             valve = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 1);
             valve.x = 0f;
             valve.y = 27f * heightScale;
@@ -118,9 +120,7 @@ namespace CutTheRope.GameMain
 
         public override bool OnTouchDownXY(float tx, float ty)
         {
-            Vector vector = onConveyor
-                ? Vect(x, y)
-                : VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
+            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
             float touchZone = VectLength(VectSub(Vect(tx, ty), vector));
             if (touchZone < 40f)
             {
@@ -165,25 +165,62 @@ namespace CutTheRope.GameMain
             element.parent.RemoveChild(element);
         }
 
-        public Vector GetConveyorSize()
+        public float PositionOnTransporter { get; set; }
+
+        public Vector BindPoint
         {
-            return Vect(40f, 56f);
+            get
+            {
+                float angle = DEGREES_TO_RADIANS(rotation);
+                Vector offset = VectRotate(Vect(0f, height * 0.45f * scaleY), angle);
+                return VectAdd(Vect(x, y), offset);
+            }
         }
 
-        public float GetConveyorPadding()
+        /// <summary>
+        /// Sets the steam tube's position so its transporter bind point matches
+        /// the given world point (inverse of <see cref="BindPoint"/>).
+        /// </summary>
+        public void SetBindPoint(Vector point)
         {
-            return 40f * 0.3f;
+            float angle = DEGREES_TO_RADIANS(rotation);
+            Vector offset = VectRotate(Vect(0f, height * 0.45f * scaleY), angle);
+            Vector adjusted = VectSub(point, offset);
+            x = adjusted.X;
+            y = adjusted.Y;
         }
 
-        public void SetConveyorPosition(Vector position)
+        public float CollisionRadius => 52.5f;
+
+        public float MinScale => 0.7f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
+
+        public void WillBind()
         {
-            onConveyor = true;
-            tube.y = -24f * heightScale;
-            valve.y = 3f * heightScale;
-            steamBack.y = -27f * heightScale;
-            steamFront.y = -27f * heightScale;
-            x = position.X;
-            y = position.Y;
+            IsDrawnByTransporter = true;
+        }
+
+        public void SetTransporterScale(float scale)
+        {
+            scaleX = scale;
+            scaleY = scale;
+
+            if (tube != null)
+            {
+                tube.scaleX = scale;
+                tube.scaleY = scale;
+            }
+
+            if (valve != null)
+            {
+                valve.scaleX = scale;
+                valve.scaleY = scale;
+            }
         }
 
         /// <summary>
@@ -315,7 +352,6 @@ namespace CutTheRope.GameMain
         }
 
         private float heightScale = 1f;
-        private bool onConveyor;
         public int steamState;
 
         private DelayedDispatcher dd;
@@ -330,10 +366,5 @@ namespace CutTheRope.GameMain
 
         private float phase;
 
-        public int ConveyorId { get; set; } = -1;
-
-        public float? ConveyorBaseScaleX { get; set; }
-
-        public float? ConveyorBaseScaleY { get; set; }
     }
 }
