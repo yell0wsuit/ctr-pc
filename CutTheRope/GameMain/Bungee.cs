@@ -722,6 +722,37 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Moves the anchor to a new position, shifting all rope parts by the same delta.
+        /// Matches iOS [Bungee moveAnchor:].
+        /// </summary>
+        public void MoveAnchor(Vector newPos)
+        {
+            Vector oldPos = bungeeAnchor != null ? bungeeAnchor.pos : Vect(0f, 0f);
+            float dx = newPos.X - oldPos.X;
+            float dy = newPos.Y - oldPos.Y;
+
+            if (parts != null)
+            {
+                foreach (ConstraintedPoint part in parts)
+                {
+                    part.pos = Vect(part.pos.X + dx, part.pos.Y + dy);
+
+                    // Keep Verlet history aligned so teleport doesn't inject fake velocity.
+                    if (part.prevPos.X != vectUndefined.X)
+                    {
+                        part.prevPos = Vect(part.prevPos.X + dx, part.prevPos.Y + dy);
+                    }
+
+                    // Only adjust pins that are actually set (unset pin is -1, -1).
+                    if (part.pin.X != -1f || part.pin.Y != -1f)
+                    {
+                        part.pin = Vect(part.pin.X + dx, part.pin.Y + dy);
+                    }
+                }
+            }
+        }
+
         public const int BUNGEE_RELAXION_TIMES = 30;
         public bool highlighted;
 

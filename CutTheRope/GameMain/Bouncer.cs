@@ -1,10 +1,12 @@
+using System;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    internal class Bouncer : CTRGameObject, IConveyorItem, IConveyorSizeProvider, IConveyorPaddingProvider, IConveyorPositionSetter
+    internal class Bouncer : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware
     {
         public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, float an)
         {
@@ -37,6 +39,11 @@ namespace CutTheRope.GameMain
             {
                 UpdateRotation();
             }
+
+            if (timeElapsedFromLastMove >= 0f)
+            {
+                timeElapsedFromLastMove += delta;
+            }
         }
 
         public void UpdateRotation()
@@ -54,24 +61,6 @@ namespace CutTheRope.GameMain
             b2 = VectRotateAround(b2, angle, x, y);
         }
 
-        public Vector GetConveyorSize()
-        {
-            return Vect(width, height);
-        }
-
-        public float GetConveyorPadding()
-        {
-            Vector size = GetConveyorSize();
-            return (size.X + size.Y) / 4f;
-        }
-
-        public void SetConveyorPosition(Vector position)
-        {
-            x = position.X;
-            y = position.Y;
-            UpdateRotation();
-        }
-
         public float angle;
 
         public Vector t1;
@@ -84,11 +73,69 @@ namespace CutTheRope.GameMain
 
         public bool skip;
 
-        public int ConveyorId { get; set; } = -1;
+        public Vector prevPosition2;
 
-        public float? ConveyorBaseScaleX { get; set; }
+        public void DidMoveToOtherSide()
+        {
+            prevPosition2 = Vect(x, y);
+        }
 
-        public float? ConveyorBaseScaleY { get; set; }
+        public void WillBind()
+        {
+            IsDrawnByTransporter = true;
+        }
+
+        public float PositionOnTransporter { get; set; }
+
+        public Vector BindPoint => Vect(x, y);
+
+        public void SetBindPoint(Vector point)
+        {
+            float dx = point.X - x;
+            float dy = point.Y - y;
+            float distSq = (dx * dx) + (dy * dy);
+
+            if (distSq < 0.000001f)
+            {
+                return;
+            }
+
+            if (timeElapsedFromLastMove is < 0.001f or > 0.1f)
+            {
+                instantVelocity = Vect(0f, 0f);
+            }
+            else
+            {
+                float vx = dx / timeElapsedFromLastMove;
+                float vy = dy / timeElapsedFromLastMove;
+                float magSq = (vx * vx) + (vy * vy);
+
+                if (magSq > MaxVelocityMagnitude * MaxVelocityMagnitude)
+                {
+                    float invMag = 1f / MathF.Sqrt(magSq);
+                    vx *= invMag * MaxVelocityMagnitude;
+                    vy *= invMag * MaxVelocityMagnitude;
+                }
+
+                instantVelocity = Vect(vx, vy);
+            }
+
+            timeElapsedFromLastMove = 0f;
+            prevPosition2 = Vect(x, y);
+            x = point.X;
+            y = point.Y;
+            UpdateRotation();
+        }
+
+        public float CollisionRadius => 40f;
+
+        public float MinScale => 0.5f;
+
+        public float MaxScale => 1.0f;
+
+        public float TransporterScale { get; set; } = 1.0f;
+
+        public bool IsDrawnByTransporter { get; set; }
 
         private const int SmallBouncerWidth = 1;
 
@@ -97,5 +144,10 @@ namespace CutTheRope.GameMain
         private const int SmallBouncerFirstQuad = 0;
 
         private const int LargeBouncerFirstQuad = 5;
+
+        private const float MaxVelocityMagnitude = 200f;
+
+        private float timeElapsedFromLastMove = -1f;
+        public Vector instantVelocity;
     }
 }

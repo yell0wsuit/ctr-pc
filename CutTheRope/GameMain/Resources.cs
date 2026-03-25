@@ -326,7 +326,7 @@ namespace CutTheRope.GameMain
             public const string ObjLighter = "obj_lighter";
             public const string Bgr17Cover = "bgr_17_cover";
             public const string BoxLabel = "box_label";
-            public const string ObjTransporter = "obj_transporter";
+            public const string ObjConveyor = "obj_conveyor";
             public const string ObjRocket = "obj_rocket";
             public const string WaterTile = "water_tile";
             public const string ObjSnail = "obj_snail";

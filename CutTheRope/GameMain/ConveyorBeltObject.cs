@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Visual;
-
-using static CutTheRope.Framework.Helpers.CTRMathHelper;
 
 namespace CutTheRope.GameMain
 {
@@ -14,9 +11,14 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBeltObject
     {
-        private readonly Dictionary<int, Vector> pointerPositions = [];
         private readonly List<ConveyorBelt> list = [];
-        private bool needsSort;
+        private readonly List<ConveyorBelt> touchCandidates = [];
+
+        /// <summary>
+        /// Set by GameScene. Called when a Grab wraps and other ropes for the same candy should be cut.
+        /// Parameters: candyNumber, the Grab that wrapped.
+        /// </summary>
+        public Action<int, Grab> OnDestroyRopesForCandy;
 
         /// <summary>
         /// Gets the number of conveyor belts in this collection.
@@ -33,8 +35,7 @@ namespace CutTheRope.GameMain
         public void Clear()
         {
             list.Clear();
-            pointerPositions.Clear();
-            needsSort = false;
+            touchCandidates.Clear();
         }
 
         /// <summary>
@@ -43,6 +44,8 @@ namespace CutTheRope.GameMain
         /// <param name="belt">The belt to add.</param>
         public void Push(ConveyorBelt belt)
         {
+            belt.OnTransporterMoves = TransporterMoves;
+            belt.OnDestroyRopesForCandy = OnDestroyRopesForCandy;
             list.Add(belt);
         }
 
@@ -60,46 +63,77 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void Draw()
         {
+            // Manual transporters sorted by activeSetTime (ascending),
+            // then non-manual transporters in their existing order.
+            touchCandidates.Clear();
             foreach (ConveyorBelt belt in list)
+            {
+                if (belt is { IsManual: true })
+                {
+                    touchCandidates.Add(belt);
+                }
+            }
+
+            touchCandidates.Sort(static (a, b) => a.ActiveSetTime.CompareTo(b.ActiveSetTime));
+
+            foreach (ConveyorBelt belt in touchCandidates)
             {
                 belt.Draw();
             }
-        }
 
-        /// <summary>
-        /// Attaches a collection of items to any belts they overlap with.
-        /// </summary>
-        /// <param name="items">The items to attach.</param>
-        public void AttachItems(IEnumerable<BaseElement> items)
-        {
-            foreach (BaseElement item in items)
+            foreach (ConveyorBelt belt in list)
             {
-                if (item == null)
+                if (!belt.IsManual)
                 {
-                    continue;
+                    belt.Draw();
                 }
-                AttachItemToBelts(item);
             }
         }
 
         /// <summary>
-        /// Processes items to handle transitions between manual and automatic belts.
+        /// For each belt, checks each item for collision and binds if matching.
+        /// Items already bound to any belt are skipped.
         /// </summary>
-        /// <param name="items">The items to process.</param>
-        public void ProcessItems(IEnumerable<BaseElement> items)
+        public void ProcessItems<T>(IEnumerable<T> items)
         {
-            foreach (BaseElement item in items)
+            foreach (T obj in items)
             {
-                if (item == null)
+                if (obj is not ITransporterItem item)
                 {
                     continue;
                 }
-                ProcessItem(item);
+
+                // Skip if already bound to any belt
+                bool alreadyBound = false;
+                foreach (ConveyorBelt belt in list)
+                {
+                    if (belt.HasItem(item))
+                    {
+                        alreadyBound = true;
+                        break;
+                    }
+                }
+                if (alreadyBound)
+                {
+                    continue;
+                }
+
+                // Check collision against each belt with 0.6x radius
+                float radius = item.CollisionRadius * 0.6f;
+                Vector bindPoint = item.BindPoint;
+                foreach (ConveyorBelt belt in list)
+                {
+                    if (belt.CollidesWithCircle(bindPoint, radius))
+                    {
+                        belt.BindObject(item);
+                        break;
+                    }
+                }
             }
         }
 
         /// <summary>
-        /// Updates all conveyor belts and performs deferred sorting if needed.
+        /// Updates all conveyor belts.
         /// </summary>
         /// <param name="deltaTime">The time elapsed since the last frame in seconds.</param>
         public void Update(float deltaTime)
@@ -109,10 +143,56 @@ namespace CutTheRope.GameMain
                 belt.Update(deltaTime);
             }
 
-            if (needsSort)
+            SortBelts();
+        }
+
+        /// <summary>
+        /// Handles transporter-to-transporter handoff. Called after a belt moves its items.
+        /// Checks if any item bound to another belt now overlaps this belt and should transfer.
+        /// Matches iOS transporterMoves: delegate.
+        /// </summary>
+        private void TransporterMoves(ConveyorBelt movingBelt)
+        {
+            foreach (ConveyorBelt ownerBelt in list)
             {
-                SortBelts();
-                needsSort = false;
+                if (ownerBelt == movingBelt)
+                {
+                    continue;
+                }
+
+                for (int i = ownerBelt.BoundObjects.Count - 1; i >= 0; i--)
+                {
+                    ITransporterItem item = ownerBelt.BoundObjects[i];
+
+                    if (movingBelt.HasItem(item))
+                    {
+                        continue;
+                    }
+
+                    float radius = item.CollisionRadius * 0.6f;
+
+                    if (!movingBelt.CollidesWithCircle(item.BindPoint, radius))
+                    {
+                        continue;
+                    }
+
+                    if (AutoTransportersOwnObject(item))
+                    {
+                        continue;
+                    }
+
+                    bool canTake = !movingBelt.IsManual || movingBelt.ActiveSetTime >= ownerBelt.ActiveSetTime;
+                    if (!canTake)
+                    {
+                        continue;
+                    }
+
+                    if (UnbindObjectFromTransporters(item))
+                    {
+                        movingBelt.BindObject(item);
+                        CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
+                    }
+                }
             }
         }
 
@@ -120,7 +200,7 @@ namespace CutTheRope.GameMain
         /// Removes an item from all belts in the collection.
         /// </summary>
         /// <param name="item">The item to remove.</param>
-        public void Remove(BaseElement item)
+        public void Remove(ITransporterItem item)
         {
             foreach (ConveyorBelt belt in list)
             {
@@ -129,7 +209,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Handles pointer down events, storing the position for later direction detection.
+        /// Handles pointer down events by selecting the most recently activated manual transporter first.
         /// </summary>
         /// <param name="pointerX">The x-coordinate of the pointer.</param>
         /// <param name="pointerY">The y-coordinate of the pointer.</param>
@@ -137,15 +217,25 @@ namespace CutTheRope.GameMain
         /// <returns>True if a belt captured the pointer; false otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            touchCandidates.Clear();
+            foreach (ConveyorBelt belt in list)
             {
-                ConveyorBelt belt = list[i];
-                if (belt != null && belt.OnPointerDown(pointerX, pointerY, pointerId))
+                if (belt is { IsManual: true })
                 {
-                    pointerPositions[pointerId] = Vect(pointerX, pointerY);
+                    touchCandidates.Add(belt);
+                }
+            }
+
+            touchCandidates.Sort(static (a, b) => b.ActiveSetTime.CompareTo(a.ActiveSetTime));
+
+            foreach (ConveyorBelt belt in touchCandidates)
+            {
+                if (belt.OnPointerDown(pointerX, pointerY, pointerId))
+                {
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -158,12 +248,10 @@ namespace CutTheRope.GameMain
         /// <returns>True if a belt released the pointer; false otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            foreach (ConveyorBelt belt in list)
             {
-                ConveyorBelt belt = list[i];
                 if (belt != null && belt.OnPointerUp(pointerX, pointerY, pointerId))
                 {
-                    _ = pointerPositions.Remove(pointerId);
                     return true;
                 }
             }
@@ -171,8 +259,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Handles pointer move events. When the drag exceeds a threshold, selects the belt
-        /// whose direction best matches the drag direction for disambiguation.
+        /// Handles pointer move events.
         /// </summary>
         /// <param name="pointerX">The x-coordinate of the pointer.</param>
         /// <param name="pointerY">The y-coordinate of the pointer.</param>
@@ -180,130 +267,15 @@ namespace CutTheRope.GameMain
         /// <returns>True if a belt handled the movement; false otherwise.</returns>
         public bool OnPointerMove(float pointerX, float pointerY, int pointerId)
         {
-            if (pointerPositions.TryGetValue(pointerId, out Vector start))
+            foreach (ConveyorBelt belt in list)
             {
-                Vector delta = Vect(pointerX - start.X, pointerY - start.Y);
-                float distanceSq = (delta.X * delta.X) + (delta.Y * delta.Y);
-                if (distanceSq < 4f)
-                {
-                    return false;
-                }
-
-                float distance = VectLength(delta);
-                Vector direction = distance > 0 ? Vect(delta.X / distance, delta.Y / distance) : vectZero;
-
-                float bestDot = -1f;
-                ConveyorBelt bestBelt = null;
-                foreach (ConveyorBelt belt in list)
-                {
-                    if (belt == null || !belt.Contains(start))
-                    {
-                        continue;
-                    }
-                    float dot = MathF.Abs((direction.X * belt.Direction.X) + (direction.Y * belt.Direction.Y));
-                    if (dot >= bestDot)
-                    {
-                        bestDot = dot;
-                        bestBelt = belt;
-                    }
-                }
-
-                _ = (bestBelt?.OnPointerDown(start.X, start.Y, pointerId));
-
-                _ = pointerPositions.Remove(pointerId);
-            }
-
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                ConveyorBelt belt = list[i];
                 if (belt != null && belt.OnPointerMove(pointerX, pointerY, pointerId))
                 {
-                    RequestSort();
                     return true;
                 }
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Attaches an item to all belts that contain its position.
-        /// </summary>
-        private void AttachItemToBelts(BaseElement item)
-        {
-            Vector position = ConveyorBelt.GetItemPosition(item);
-            foreach (ConveyorBelt belt in list)
-            {
-                if (belt.Contains(position))
-                {
-                    belt.AttachItem(item);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Processes an item to handle belt transitions. Items on manual belts can transfer
-        /// to active manual belts or automatic belts when overlapping.
-        /// </summary>
-        private void ProcessItem(BaseElement item)
-        {
-            ConveyorBelt manualBelt = null;
-            List<ConveyorBelt> overlappingBelts = [];
-
-            Vector position = ConveyorBelt.GetItemPosition(item);
-            float padding = ConveyorBelt.GetItemPadding(item);
-
-            foreach (ConveyorBelt belt in list)
-            {
-                if (belt.ContainsWithPadding(position, padding))
-                {
-                    overlappingBelts.Add(belt);
-                }
-                if (belt.HasItem(item))
-                {
-                    manualBelt = belt;
-                }
-            }
-
-            if (manualBelt != null && manualBelt.IsManual)
-            {
-                foreach (ConveyorBelt belt in overlappingBelts)
-                {
-                    if (belt.IsManual && belt.IsActive())
-                    {
-                        MoveItemToBelt(belt, item);
-                        return;
-                    }
-                }
-
-                foreach (ConveyorBelt belt in overlappingBelts)
-                {
-                    if (!belt.IsManual)
-                    {
-                        MoveItemToBelt(belt, item);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transfers an item to a new belt, marking it for removal from all other belts.
-        /// </summary>
-        private void MoveItemToBelt(ConveyorBelt belt, BaseElement item)
-        {
-            if (!belt.HasItem(item) || belt.IsItemMarkedForRemoval(item))
-            {
-                foreach (ConveyorBelt candidate in list)
-                {
-                    if (candidate.HasItem(item))
-                    {
-                        candidate.MarkItemForRemoval(item);
-                    }
-                }
-
-                belt.AttachItem(item);
-                CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
-            }
         }
 
         /// <summary>
@@ -325,6 +297,34 @@ namespace CutTheRope.GameMain
                 }
             }
             SortByManualFlag();
+        }
+
+        private bool AutoTransportersOwnObject(ITransporterItem item)
+        {
+            foreach (ConveyorBelt belt in list)
+            {
+                if (!belt.IsManual && belt.HasItem(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool UnbindObjectFromTransporters(ITransporterItem item)
+        {
+            bool removed = false;
+            foreach (ConveyorBelt belt in list)
+            {
+                if (belt.HasItem(item))
+                {
+                    belt.Remove(item);
+                    removed = true;
+                }
+            }
+
+            return removed;
         }
 
         /// <summary>
@@ -354,12 +354,5 @@ namespace CutTheRope.GameMain
             (list[toIndex], list[fromIndex]) = (list[fromIndex], list[toIndex]);
         }
 
-        /// <summary>
-        /// Requests a deferred sort of the belt list on the next update.
-        /// </summary>
-        private void RequestSort()
-        {
-            needsSort = true;
-        }
     }
 }

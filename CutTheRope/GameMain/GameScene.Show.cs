@@ -33,13 +33,17 @@ namespace CutTheRope.GameMain
             // Load all game objects from XML
             LoadObjectsFromMap(map, mapScale, mapOffsetX, mapOffsetY, mapGridOffsetX, mapGridOffsetY);
 
-            conveyors.AttachItems(stars);
-            conveyors.AttachItems(socks);
-            conveyors.AttachItems(bubbles);
-            conveyors.AttachItems(tubes);
-            conveyors.AttachItems(pumps);
-            conveyors.AttachItems(bouncers);
             conveyors.SortBelts();
+
+            // Bind objects to transporters once at scene setup (matches iOS [GameScene show])
+            conveyors.ProcessItems(bubbles);
+            conveyors.ProcessItems(stars);
+            conveyors.ProcessItems(bouncers);
+            conveyors.ProcessItems(socks);
+            conveyors.ProcessItems(tubes);
+            conveyors.ProcessItems(pumps);
+            conveyors.ProcessItems(bungees);
+            conveyors.ProcessItems(lightBulbs);
 
             // Load two-parts candy bubble animations
             LoadCandyBubbleAnimations();

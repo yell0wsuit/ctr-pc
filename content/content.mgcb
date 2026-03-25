@@ -2329,7 +2329,7 @@
 /processorParam:TextureFormat=Color
 /build:images/backgrounds/bgr_17_p1.png
 
-#begin images/obj_transporter.png
+#begin images/obj_conveyor.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -2339,7 +2339,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/obj_transporter.png
+/build:images/obj_conveyor.png
 
 #begin sounds/sfx/con01.wav
 /importer:WavImporter

@@ -599,22 +599,7 @@ namespace CutTheRope.GameMain
             targetObject?.Update(delta);
             UpdateLightBulbPhysics(delta);
             UpdateNightLevel(delta);
-            if (delta > 0f)
-            {
-                float remaining = delta;
-                while (remaining > 0f)
-                {
-                    float step = MathF.Min(0.01f, remaining);
-                    conveyors.Update(step);
-                    conveyors.ProcessItems(bubbles);
-                    conveyors.ProcessItems(stars);
-                    conveyors.ProcessItems(bouncers);
-                    conveyors.ProcessItems(socks);
-                    conveyors.ProcessItems(tubes);
-                    conveyors.ProcessItems(pumps);
-                    remaining -= step;
-                }
-            }
+            conveyors.Update(delta);
 
             UpdateAntConveyor(delta);
 
