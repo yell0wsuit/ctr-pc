@@ -161,6 +161,7 @@
         "boxBackground": ["bgr_13_p1"],
         "boxCover": ["bgr_13_cover"],
         "boxHoleBgColor": [63, 42, 0],
+        "ghostGrabColor": [102, 179, 255],
         "levelCount": 25,
         "musicPack": ["ctr_original"],
         "packSpritesheet": "2",

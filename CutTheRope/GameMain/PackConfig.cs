@@ -32,7 +32,8 @@ namespace CutTheRope.GameMain
         bool earthBg,
         Vector? earthBgPosition,
         string boxLabelText,
-        string packName
+        string packName,
+        RGBAColor? ghostGrabColor
     )
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
@@ -82,6 +83,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Localization key for optional box label text (e.g., "the hardest one").</summary>
         public string BoxLabelText { get; } = boxLabelText;
+
+        /// <summary>Optional ghost grab circle color override. When null, the default color is used.</summary>
+        public RGBAColor? GhostGrabColor { get; } = ghostGrabColor;
     }
 
     /// <summary>
@@ -203,6 +207,11 @@ namespace CutTheRope.GameMain
         public static Vector? GetEarthBgPosition(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].EarthBgPosition : null;
+        }
+
+        public static RGBAColor? GetGhostGrabColor(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].GhostGrabColor : null;
         }
 
         public static RGBAColor GetBoxHoleBgColor(int pack)
@@ -374,6 +383,8 @@ namespace CutTheRope.GameMain
 
                     string packName = ParseStringProperty(packElement, "packName");
 
+                    RGBAColor? ghostGrabColor = ParseNullableColorProperty(packElement, "ghostGrabColor");
+
                     results.Add(
                         new PackDefinition(
                             unlockStars,
@@ -391,7 +402,8 @@ namespace CutTheRope.GameMain
                             earthBg,
                             earthBgPosition,
                             boxLabelText,
-                            packName
+                            packName,
+                            ghostGrabColor
                             )
                         );
                 }
@@ -628,6 +640,13 @@ namespace CutTheRope.GameMain
             }
 
             throw new InvalidDataException($"{fileName} has invalid vector value for '{propertyName}'.");
+        }
+
+        private static RGBAColor? ParseNullableColorProperty(JsonElement element, string propertyName)
+        {
+            return !element.TryGetProperty(propertyName, out JsonElement value) || value.ValueKind == JsonValueKind.Null
+                ? null
+                : ParseColorProperty(element, propertyName);
         }
 
         private static RGBAColor ParseColorProperty(JsonElement element, string propertyName)
