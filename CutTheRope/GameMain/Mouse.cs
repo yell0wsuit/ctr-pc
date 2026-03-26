@@ -132,6 +132,7 @@ namespace CutTheRope.GameMain
         {
             EntryEmpty = 0,
             EntryWithCandy = 1,
+            IdleEmpty = 2,
             Idle = 3,
             ExitEmpty = 4,
             ExitWithCandy = 5,
@@ -354,7 +355,11 @@ namespace CutTheRope.GameMain
             }
 
             SharedMouseSprites? sprites = sharedSprites;
-            if (sprites.HasValue)
+
+            bool hasCandy = carriedStar != null;
+
+            // iOS: only hide eyes when exiting empty (not when exiting with candy)
+            if (!hasCandy && sprites.HasValue)
             {
                 sprites.Value.Eyes.visible = false;
             }
@@ -364,8 +369,14 @@ namespace CutTheRope.GameMain
             elapsedActive = 0f;
             grabAnimating = false;
 
+            // iOS: remove bounce timeline on retreat
+            if (sprites.HasValue)
+            {
+                sprites.Value.Container.RemoveTimeline((int)MouseAnimationId.Bounce);
+            }
+
             mouthPathPlayer.Play(CreateExitPath());
-            PlayAnimation(carriedStar != null ? MouseAnimationId.ExitWithCandy : MouseAnimationId.ExitEmpty);
+            PlayAnimation(hasCandy ? MouseAnimationId.ExitWithCandy : MouseAnimationId.ExitEmpty);
         }
 
         /// <summary>
@@ -400,7 +411,7 @@ namespace CutTheRope.GameMain
             if (IsActive && !retreating && !grabAnimating)
             {
                 elapsedActive += delta;
-                if (elapsedActive >= activeDuration)
+                if (elapsedActive >= activeDuration && !IsBounceTimelinePlaying())
                 {
                     BeginRetreat();
                 }
@@ -542,10 +553,14 @@ namespace CutTheRope.GameMain
             switch (currentId)
             {
                 case MouseAnimationId.EntryEmpty:
-                    // iOS case 0: just become active, no new body animation
+                    // iOS case 0: become active, 50% chance of idle pose + eyes blink
                     elapsedActive = 0f;
                     IsActive = true;
-                    EnableEyesBlink();
+                    if (RND(1) == 1)
+                    {
+                        PlayAnimation(MouseAnimationId.IdleEmpty);
+                        EnableEyesBlink();
+                    }
                     break;
 
                 case MouseAnimationId.EntryWithCandy:
@@ -569,13 +584,28 @@ namespace CutTheRope.GameMain
                     }
                     manager.AdvanceToNextMouse();
                     break;
+                case MouseAnimationId.IdleEmpty:
                 case MouseAnimationId.Idle:
-                    break;
                 case MouseAnimationId.Bounce:
                     break;
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// Checks whether the bounce timeline (ID 6) is currently playing on the container.
+        /// </summary>
+        private bool IsBounceTimelinePlaying()
+        {
+            SharedMouseSprites? sprites = sharedSprites;
+            if (!sprites.HasValue)
+            {
+                return false;
+            }
+
+            Timeline t = sprites.Value.Container.GetTimeline((int)MouseAnimationId.Bounce);
+            return t != null && t.state == Timeline.TimelineState.TIMELINE_PLAYING;
         }
 
         /// <summary>

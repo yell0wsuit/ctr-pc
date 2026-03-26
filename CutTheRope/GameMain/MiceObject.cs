@@ -242,6 +242,15 @@ namespace CutTheRope.GameMain
                 Mouse.CandyInMouthQuad,
                 Mouse.CandyInMouthQuad);
 
+            // ID 2: Idle empty — single frame 4 (mouse body, no candy)
+            body.AddAnimationWithIDDelayLoopCountSequence(
+                (int)MouseAnimationId.IdleEmpty,
+                0.05f,
+                Timeline.LoopType.TIMELINE_NO_LOOP,
+                1,
+                Mouse.IdleQuad,
+                []);
+
             // ID 4: Exit empty — frames 14, 15, 16, 18
             body.AddAnimationWithIDDelayLoopCountSequence(
                 (int)MouseAnimationId.ExitEmpty,
@@ -286,6 +295,7 @@ namespace CutTheRope.GameMain
         {
             EntryEmpty = 0,
             EntryWithCandy = 1,
+            IdleEmpty = 2,
             Idle = 3,
             ExitEmpty = 4,
             ExitWithCandy = 5,
