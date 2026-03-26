@@ -126,16 +126,16 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Identifiers for mouse animation states.
+        /// Identifiers for mouse animation states, matching iOS BoxGap timeline indices.
         /// </summary>
         private enum MouseAnimationId
         {
             EntryEmpty = 0,
             EntryWithCandy = 1,
-            ExitEmpty = 2,
-            ExitWithCandy = 3,
-            Retreat = 4,
-            Idle = 5
+            Idle = 3,
+            ExitEmpty = 4,
+            ExitWithCandy = 5,
+            Bounce = 6
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace CutTheRope.GameMain
                 anchor = 18,
                 parentAnchor = 18
             };
-            holeSprite = Image.Image_createWithResIDQuad(Resources.Img.ObjGap, ImgObjGapCheeseHoleQuad);
+            holeSprite = Image.Image_createWithResIDQuad(Resources.Img.ObjMouse, HoleQuad);
             holeSprite.anchor = 18;
             holeSprite.parentAnchor = 18;
             holeSprite.scaleX = 1f;
@@ -212,6 +212,21 @@ namespace CutTheRope.GameMain
             exitOffsets[0] = VectAdd(origin, Rotate(new Vector(0f, -36.4f)));
             exitOffsets[1] = VectAdd(origin, Rotate(new Vector(0f, -43.2f)));
             exitOffsets[2] = VectAdd(origin, Rotate(new Vector(0f, -9.2f)));
+
+            // Create bounce timeline (iOS timeline 6): mouse pops out slightly then returns
+            const float bounceHeight = 142f; // Reference height from mouse sprite
+            Vector bounceOut = Rotate(new Vector(0f, -bounceHeight * 0.15f * 0.45f));
+            Vector bounceBack = Rotate(new Vector(0f, bounceHeight * 0.15f * 0.4f));
+
+            bounceTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(8);
+            bounceTimeline.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0f));
+            bounceTimeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
+            bounceTimeline.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
+            bounceTimeline.AddKeyFrame(KeyFrame.MakePos((int)bounceOut.X, (int)bounceOut.Y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
+            bounceTimeline.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
+            bounceTimeline.AddKeyFrame(KeyFrame.MakePos((int)bounceBack.X, (int)bounceBack.Y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
+            bounceTimeline.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
+            bounceTimeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.05f));
         }
 
         /// <summary>
@@ -230,6 +245,11 @@ namespace CutTheRope.GameMain
             mouseGroup.RemoveAllChilds();
             _ = mouseGroup.AddChild(sprites.Container);
             sprites.Container.parent = mouseGroup;
+
+            if (bounceTimeline != null)
+            {
+                sprites.Container.AddTimelinewithID(bounceTimeline, (int)MouseAnimationId.Bounce);
+            }
 
             if (carriedCandy != null && carriedStar == null)
             {
@@ -288,7 +308,8 @@ namespace CutTheRope.GameMain
             SharedMouseSprites? sprites = sharedSprites;
             if (sprites.HasValue)
             {
-                sprites.Value.Body.SetDrawQuad(ImgObjGapMouse0008Quad);
+                sprites.Value.Body.SetDrawQuad(CandyInMouthQuad);
+                sprites.Value.Container.PlayTimeline((int)MouseAnimationId.Bounce);
             }
 
             CTRSoundMgr.PlaySound(Resources.Snd.MouseIdle);
@@ -518,31 +539,42 @@ namespace CutTheRope.GameMain
                 ? (MouseAnimationId)sprites.Value.Body.GetCurrentTimelineIndex()
                 : MouseAnimationId.Idle;
 
-            if (currentId is MouseAnimationId.ExitEmpty or MouseAnimationId.ExitWithCandy)
+            switch (currentId)
             {
-                if (sharedSprites.HasValue)
-                {
-                    mouseGroup.RemoveChild(sharedSprites.Value.Container);
-                    sharedSprites = null;
-                }
-                else
-                {
-                    mouseGroup.RemoveAllChilds();
-                }
-                manager.AdvanceToNextMouse();
-                return;
-            }
-
-            if (currentId is MouseAnimationId.EntryEmpty or MouseAnimationId.EntryWithCandy)
-            {
-                IsActive = true;
-                elapsedActive = 0f;
-
-                if (currentId == MouseAnimationId.EntryEmpty)
-                {
-                    PlayAnimation(MouseAnimationId.Idle);
+                case MouseAnimationId.EntryEmpty:
+                    // iOS case 0: just become active, no new body animation
+                    elapsedActive = 0f;
+                    IsActive = true;
                     EnableEyesBlink();
-                }
+                    break;
+
+                case MouseAnimationId.EntryWithCandy:
+                    // iOS case 1: play idle (frame 24 = candy in mouth)
+                    elapsedActive = 0f;
+                    PlayAnimation(MouseAnimationId.Idle);
+                    IsActive = true;
+                    break;
+
+                case MouseAnimationId.ExitEmpty:
+                case MouseAnimationId.ExitWithCandy:
+                    // iOS cases 4,5: remove mouse, advance to next
+                    if (sharedSprites.HasValue)
+                    {
+                        mouseGroup.RemoveChild(sharedSprites.Value.Container);
+                        sharedSprites = null;
+                    }
+                    else
+                    {
+                        mouseGroup.RemoveAllChilds();
+                    }
+                    manager.AdvanceToNextMouse();
+                    break;
+                case MouseAnimationId.Idle:
+                    break;
+                case MouseAnimationId.Bounce:
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -614,34 +646,13 @@ namespace CutTheRope.GameMain
         /// </summary>
         public bool IsActive { get; private set; }
 
-        /// <summary>
-        /// Quad index for the cheese hole sprite.
-        /// </summary>
-        internal const int ImgObjGapCheeseHoleQuad = 0;
-        /// <summary>
-        /// Starting quad index for mouse eye blinking animation.
-        /// </summary>
-        internal const int ImgObjGapEyesStartQuad = 1;
-        /// <summary>
-        /// Ending quad index for mouse eye blinking animation.
-        /// </summary>
-        internal const int ImgObjGapEyesEndQuad = 9;
-        /// <summary>
-        /// Quad index for mouse idle state.
-        /// </summary>
-        internal const int ImgObjGapIdleQuad = 10;
-        /// <summary>
-        /// Starting quad index for mouse entry/exit animations.
-        /// </summary>
-        internal const int ImgObjGapMouseStartQuad = 11;
-        /// <summary>
-        /// Quad index for mouse with candy in mouth.
-        /// </summary>
-        internal const int ImgObjGapMouse0008Quad = 19;
-        /// <summary>
-        /// Ending quad index for mouse animations.
-        /// </summary>
-        internal const int ImgObjGapMouseEndQuad = 22;
+        // Quad indices for obj_mouse sprite sheet
+        internal const int HoleQuad = 0;
+        internal const int IdleQuad = 4;
+        internal const int EyesStartQuad = 5;
+        internal const int EyesEndQuad = 13;
+        internal const int CandyInMouthQuad = 24;
+        internal const int BlankQuad = 18;
 
         private readonly Vector[] entryOffsets;
         private readonly Vector[] exitOffsets;
@@ -649,6 +660,7 @@ namespace CutTheRope.GameMain
         private readonly BaseElement mouseGroup;
         private readonly Image holeSprite;
         private readonly MiceObject manager;
+        private Timeline bounceTimeline;
 
         /// <summary>
         /// The logical index for this mouse, used for ordering and activation.

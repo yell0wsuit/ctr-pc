@@ -322,7 +322,7 @@ namespace CutTheRope.GameMain
             public const string Bgr14Cover = "bgr_14_cover";
             public const string ObjLantern = "obj_lantern";
             public const string Bgr15Cover = "bgr_15_cover";
-            public const string ObjGap = "obj_gap";
+            public const string ObjMouse = "obj_mouse";
             public const string Bgr16Cover = "bgr_16_cover";
             public const string ObjLighter = "obj_lighter";
             public const string Bgr17Cover = "bgr_17_cover";
