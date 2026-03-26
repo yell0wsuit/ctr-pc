@@ -288,7 +288,7 @@ namespace CutTheRope.GameMain
             sleepPulseActive = false;
             sleepPulseTime = 0f;
             sleepPulseDelay = targetAnimationController?.GetSleepPulseDelaySeconds() ?? 0f;
-            sleepSoundTimer = 0f;
+            sleepSoundTimer = 0.9f;
             SetNightSleepVisibility(false);
             targetAnimationController?.PlaySleeping();
             if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
