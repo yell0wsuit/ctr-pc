@@ -165,7 +165,8 @@ namespace CutTheRope.GameMain
             int itemQuadIndex,
             float slotScale,
             MenuButtonId buttonId,
-            float itemYOffset = -20f)
+            float itemYOffset = -20f,
+            bool doRestoreTransparency = false)
         {
             bool isEquipped = itemIndex == selectedIndex;
             int bgUpQuad = isEquipped ? 2 : 0;
@@ -181,11 +182,19 @@ namespace CutTheRope.GameMain
             Image itemImage = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
             itemImage.anchor = itemImage.parentAnchor = 18;
             itemImage.y = itemYOffset;
+            if (doRestoreTransparency)
+            {
+                itemImage.DoRestoreCutTransparency();
+            }
             _ = slotBgUp.AddChild(itemImage);
 
             Image itemImage2 = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
             itemImage2.anchor = itemImage2.parentAnchor = 18;
             itemImage2.y = itemYOffset;
+            if (doRestoreTransparency)
+            {
+                itemImage2.DoRestoreCutTransparency();
+            }
             _ = slotBgDown.AddChild(itemImage2);
 
             Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
@@ -313,6 +322,7 @@ namespace CutTheRope.GameMain
             int baseQuadIndex;
             string itemResourceName = Resources.Img.SkinSelection;
             float itemYOffset = -20f;
+            bool doRestoreTransparency = false;
             Func<int, MenuButtonId> getButtonId;
 
             switch (mode)
@@ -331,6 +341,7 @@ namespace CutTheRope.GameMain
                     baseQuadIndex = 0;
                     itemResourceName = Resources.Img.FingerTraceSkinOptions;
                     itemYOffset = 0f;
+                    doRestoreTransparency = true;
                     getButtonId = MenuButtonId.ForTraceSlot;
                     break;
                 case CandySelectionMode.Candy:
@@ -364,7 +375,8 @@ namespace CutTheRope.GameMain
                         itemQuadIndex,
                         layout.SlotScale,
                         getButtonId(itemIndex),
-                        itemYOffset);
+                        itemYOffset,
+                        doRestoreTransparency);
                     _ = rowBox.AddChild(slotButton);
                 }
 
