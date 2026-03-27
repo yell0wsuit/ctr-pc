@@ -340,7 +340,7 @@ namespace CutTheRope.GameMain
                     selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_TRACE);
                     baseQuadIndex = 0;
                     itemResourceName = Resources.Img.FingerTraceSkinOptions;
-                    itemYOffset = 0f;
+                    itemYOffset = -20f;
                     doRestoreTransparency = true;
                     getButtonId = MenuButtonId.ForTraceSlot;
                     break;
