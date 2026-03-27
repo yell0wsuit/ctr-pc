@@ -9,8 +9,8 @@ namespace CutTheRope.GameMain.FingerTraces
     internal sealed class EasterTraceParticles : FrameworkTypes
     {
         private const int Capacity = 100;
-        private const int FirstQuad = 30;
-        private const int QuadCount = 9;
+        private const int FirstQuad = 52;
+        private const int QuadCount = 10;
         private const float PositionVariance = 5f;
         private const float RadialAcceleration = -200f;
 
