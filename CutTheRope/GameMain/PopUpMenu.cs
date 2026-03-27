@@ -43,8 +43,8 @@ namespace CutTheRope.GameMain
         {
             PopupTemplate template = PopupTemplate.Create(PopupSize.Large)
                 .WithScaleMode(PopupScaleMode.Background)
-                .AddText(Application.GetString("GAME_FINISHED_TEXT"), Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 600f, offsetY: -200f)
-                .AddScrollableText(Application.GetString("GAME_FINISHED_THANKS"), Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 700f, scrollHeight: 400f, offsetY: -30f)
+                .AddText(Application.GetString("GAME_FINISHED_TEXT"), Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 600f, offsetY: -250f)
+                .AddText(Application.GetString("GAME_FINISHED_THANKS"), Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 700f, offsetY: -30f)
                 .AddButton(Application.GetString("OK"), MenuButtonId.PopupOk);
 
             _ = builder.Show(template);
