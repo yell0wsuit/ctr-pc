@@ -627,14 +627,15 @@ namespace CutTheRope.GameMain
             text.rotationCenterX = -text.width / 2;
             text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
-            Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 3);
+            Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 3);
             _ = hbox.AddChild(c);
             return hbox;
         }
 
         public static float GetBoxWidth()
         {
-            return Image.GetQuadSize(Resources.Img.MenuPackSelection, 4).X + (Image.GetQuadOffset(Resources.Img.MenuPackSelection, 4).X * 2f);
+            PackDefinition firstPack = PackConfig.Packs[0];
+            return Image.GetQuadSize(firstPack.PackSpritesheet, firstPack.PackQuadIndex).X + (Image.GetQuadOffset(firstPack.PackSpritesheet, firstPack.PackQuadIndex).X * 2f);
         }
 
         public static float GetPackOffset()
@@ -643,35 +644,6 @@ namespace CutTheRope.GameMain
             float boxWidth = GetBoxWidth();
             return boxWidth * 3f > availableScreenWidth - 200f ? boxWidth / 2f : 0f;
         }
-
-        // Explicit mapping from pack index to quad index
-        // MenuPackSelection quads 4-10 are packs 1-7 (Cardboard, Fabric, Foil, Valentine, Cosmic, Toy, Gift)
-        private static readonly int[] PackSelection1QuadMap =
-        [
-            4,  // pack 1
-            5,  // pack 2
-            6,  // pack 3
-            7,  // pack 4
-            8,  // pack 5
-            9,  // pack 6
-            10, // pack 7
-        ];
-
-        // MenuPackSelection2 quads 0-7 are packs 8-15
-        private static readonly int[] PackSelection2QuadMap =
-        [
-            1, // pack 8
-            2, // pack 9
-            3, // pack 10
-            4, // pack 11
-            5, // pack 12
-            6, // pack 13
-            7, // pack 14
-            8, // pack 15
-            9, // pack 16
-            10, // pack 17
-            11, // coming soon box
-        ];
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
@@ -688,77 +660,34 @@ namespace CutTheRope.GameMain
             {
                 CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
-            string resourceName;
-            int q;
+            // Resolve pack config index: for display index == packsCount, use the coming soon entry
+            int packConfigIndex = n < CTRPreferences.GetPacksCount() ? n : PackConfig.GetComingSoonPackIndex();
+            bool isComingSoon = n >= CTRPreferences.GetPacksCount();
+            PackDefinition packDef = PackConfig.Packs[packConfigIndex];
+            string resourceName = packDef.PackSpritesheet;
+            int q = packDef.PackQuadIndex;
 
-            // Determine resource and quad based on pack index
-            switch (n)
+            // Fallback to first pack's box sprite if quad index is out of range
+            int quadCount = Application.GetTexture(resourceName).quadRects?.Length ?? 0;
+            if (q < 0 || q >= quadCount)
             {
-                case var _ when n == CTRPreferences.GetPacksCount():
-                    // "Coming soon" box - always use the last quad from MenuPackSelection2
-                    resourceName = Resources.Img.MenuPackSelection2;
-                    q = PackSelection2QuadMap[^1];
-                    break;
-
-                case <= 6:
-                    // Packs 0-6 use MenuPackSelection
-                    resourceName = Resources.Img.MenuPackSelection;
-                    q = n >= 0 && n < PackSelection1QuadMap.Length ? PackSelection1QuadMap[n] : 4; // fallback to pack 1
-                    break;
-
-                default:
-                    // Packs 7+ use MenuPackSelection2
-                    int index = n - 7;
-                    if (index >= 0 && index < PackSelection2QuadMap.Length - 1) // -1 to exclude "coming soon" quad
-                    {
-                        resourceName = Resources.Img.MenuPackSelection2;
-                        q = PackSelection2QuadMap[index];
-                    }
-                    else
-                    {
-                        // fallback to pack 1 from MenuPackSelection
-                        resourceName = Resources.Img.MenuPackSelection;
-                        q = 4;
-                    }
-                    break;
+                resourceName = PackConfig.Packs[0].PackSpritesheet;
+                q = PackConfig.Packs[0].PackQuadIndex;
             }
-            string nsstring;
-            if (n == CTRPreferences.GetPacksCount())
+            string boxPackStrings;
+            if (isComingSoon)
             {
-                nsstring = Application.GetString("BOX_SOON_LABEL");
+                boxPackStrings = Application.GetString("BOX_SOON_LABEL");
             }
             else
             {
-                string text3 = (n + 1).ToString(CultureInfo.InvariantCulture);
-                string text4 = ". ";
-                string boxLabelId = n switch
-                {
-                    0 => "BOX1_LABEL",
-                    1 => "BOX2_LABEL",
-                    2 => "BOX3_LABEL",
-                    3 => "BOX4_LABEL",
-                    4 => "BOX5_LABEL",
-                    5 => "BOX6_LABEL",
-                    6 => "BOX7_LABEL",
-                    7 => "BOX8_LABEL",
-                    8 => "BOX9_LABEL",
-                    9 => "BOX10_LABEL",
-                    10 => "BOX11_LABEL",
-                    11 => "BOX12_LABEL",
-                    12 => "BOX13_LABEL",
-                    13 => "BOX14_LABEL",
-                    14 => "BOX15_LABEL",
-                    15 => "BOX16_LABEL",
-                    16 => "BOX17_LABEL",
-                    _ => "BOX1_LABEL",
-                };
-                string @string = Application.GetString(boxLabelId);
-                nsstring = text3 + text4 + (@string?.ToString());
+                string boxPackNameString = Application.GetString(PackConfig.GetPackName(n));
+                boxPackStrings = $"{n + 1}. {boxPackNameString}";
             }
-            string packTitle = nsstring;
+            string packTitle = boxPackStrings;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
-            bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
-            touchBaseElement.bid = n != CTRPreferences.GetPacksCount() ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
+            bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
+            touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
             Image image = Image.Image_createWithResIDQuad(resourceName, q);
             image.DoRestoreCutTransparency();
             image.anchor = image.parentAnchor = 9;
@@ -766,7 +695,7 @@ namespace CutTheRope.GameMain
             {
                 _ = baseElement.AddChild(image);
                 int requiredStars = CTRPreferences.PackUnlockStars(n);
-                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 2);
+                Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 2);
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
@@ -787,7 +716,7 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                if (n != CTRPreferences.GetPacksCount())
+                if (!isComingSoon)
                 {
                     // drawing om nom and the background behind him in the box
                     int q3 = 1;
@@ -797,7 +726,7 @@ namespace CutTheRope.GameMain
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
                     _ = baseElement.AddChild(monsterSlot);
-                    Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, q3);
+                    Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, q3);
                     image3.DoRestoreCutTransparency();
                     image3.anchor = 17;
                     monsterSlot.s = (image.width * (n - 1)) + (-20f * n) + packContainer.x + 50f;
@@ -808,18 +737,18 @@ namespace CutTheRope.GameMain
                     _ = monsterSlot.AddChild(image3);
                 }
                 _ = baseElement.AddChild(image);
-                if (CTRPreferences.IsPackPerfect(n) & n != CTRPreferences.GetPacksCount())
+                if (CTRPreferences.IsPackPerfect(n) & !isComingSoon)
                 {
                     // Create perfect pack badge
-                    Image packPerfect = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 15);
+                    Image packPerfect = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 8);
                     packPerfect.parentAnchor = packPerfect.anchor = 33; // bottom-left
                     packPerfect.x = 100f;
                     packPerfect.y = -100f;
                     _ = image.AddChild(packPerfect);
                 }
-                if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED && n != CTRPreferences.GetPacksCount())
+                if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED && !isComingSoon)
                 {
-                    Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 2);
+                    Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 2);
                     image4.SetName("lockHideMe");
                     image4.DoRestoreCutTransparency();
                     image4.anchor = image4.parentAnchor = 9;
@@ -836,7 +765,7 @@ namespace CutTheRope.GameMain
             string boxLabelTextKey = PackConfig.GetBoxLabelText(n);
             if (!string.IsNullOrEmpty(boxLabelTextKey))
             {
-                Image boxLabel = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection2, 0);
+                Image boxLabel = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 9);
                 boxLabel.parentAnchor = boxLabel.anchor = 36; // bottom-right
                 boxLabel.x = -90f;
                 boxLabel.y = -90f;
@@ -859,7 +788,7 @@ namespace CutTheRope.GameMain
                 text2.scaleX = 0.7f;
             }
             text2.SetAlignment(2);
-            if (n != CTRPreferences.GetPacksCount())
+            if (!isComingSoon)
             {
                 text2.SetString(packTitle);
             }
@@ -910,7 +839,7 @@ namespace CutTheRope.GameMain
             packContainer.x = (SCREEN_WIDTH / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
             _ = baseElement.AddChild(hBox);
-            CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackSelection);
+            CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
             BaseElement baseElement2 = new()
             {
                 width = (int)texture.preCutSize.X,
@@ -918,7 +847,8 @@ namespace CutTheRope.GameMain
             };
             _ = hBox2.AddChild(baseElement2);
             float scrollPointX = 0f + GetPackOffset();
-            for (int i = 0; i < CTRPreferences.GetPacksCount() + 1; i++)
+            int displayCount = CTRPreferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
+            for (int i = 0; i < displayCount; i++)
             {
                 TouchBaseElement touchBaseElement = (TouchBaseElement)CreatePackElementforContainer(i, packContainer);
                 boxes[i] = touchBaseElement;
@@ -930,35 +860,35 @@ namespace CutTheRope.GameMain
                 scrollPointX += touchBaseElement.width + -20f;
             }
             hBox2.width += 1000;
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 11);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 4);
             image.anchor = 17;
             image.y += SCREEN_HEIGHT / 2f;
             image.x = packContainer.x - 2f;
             _ = baseElement.AddChild(image);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 11);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 4);
             image2.anchor = 20;
             image2.y += SCREEN_HEIGHT / 2f;
             image2.x = packContainer.x + packContainer.width + 2f;
             _ = baseElement.AddChild(image2);
             image2.scaleX = image2.scaleY = -1f;
             _ = baseElement.AddChild(packContainer);
-            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 12);
+            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 5);
             image3.anchor = 20;
             image3.y += SCREEN_HEIGHT / 2f;
             image3.x = packContainer.x + 3f;
             _ = baseElement.AddChild(image3);
-            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackSelection, 12);
+            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 5);
             image4.anchor = 17;
             image4.y += SCREEN_HEIGHT / 2f;
             image4.x = packContainer.x + packContainer.width - 3f;
             image4.scaleX = image4.scaleY = -1f;
             _ = baseElement.AddChild(image4);
-            prevb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackSelection, 13, 14, MenuButtonId.PreviousPack, this);
+            prevb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackUI, 6, 7, MenuButtonId.PreviousPack, this);
             prevb.parentAnchor = 17;
             prevb.anchor = 20;
             prevb.x = packContainer.x - 40f;
             _ = baseElement.AddChild(prevb);
-            nextb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackSelection, 13, 14, MenuButtonId.NextPack, this);
+            nextb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackUI, 6, 7, MenuButtonId.NextPack, this);
             nextb.anchor = nextb.parentAnchor = 17;
             nextb.x = packContainer.x + packContainer.width + 40f;
             nextb.scaleX = -1f;
@@ -1219,7 +1149,14 @@ namespace CutTheRope.GameMain
             base.Activate();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             pack = cTRRootController.GetPack();
-            if (viewToShow == 6)
+            if (IsSinglePack && viewToShow == VIEW_PACK_SELECT)
+            {
+                pack = 0;
+                currentPack = 0;
+                PreLevelSelect();
+                viewToShow = VIEW_LEVEL_SELECT;
+            }
+            if (viewToShow == VIEW_LEVEL_SELECT)
             {
                 currentPack = pack;
                 PreLevelSelect();
@@ -1248,10 +1185,17 @@ namespace CutTheRope.GameMain
                 return;
             }
             replayingIntroMovie = false;
-            packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
-            CTRSoundMgr.StopMusic();
-            Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-            Application.SharedMovieMgr().PlayURL("outro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+            if (PackConfig.OutroVideo != null)
+            {
+                packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
+                CTRSoundMgr.StopMusic();
+                Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
+                Application.SharedMovieMgr().PlayURL(PackConfig.OutroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+            }
+            else
+            {
+                MoviePlaybackFinished(null);
+            }
         }
 
         public override void OnChildDeactivated(int n)
@@ -1263,6 +1207,7 @@ namespace CutTheRope.GameMain
 
         public void MoviePlaybackFinished(string url)
         {
+            bool isOutro = url != null && url == PackConfig.OutroVideo;
             if (replayingIntroMovie)
             {
                 replayingIntroMovie = false;
@@ -1280,7 +1225,21 @@ namespace CutTheRope.GameMain
                     CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
                 }
             }
-            if (CTRPreferences.ShouldPlayLevelScroll())
+            if (IsSinglePack)
+            {
+                pack = 0;
+                currentPack = 0;
+                CTRPreferences.SetLastBox(0);
+                CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(0));
+                PreLevelSelect();
+                ShowView(VIEW_LEVEL_SELECT);
+                if (isOutro)
+                {
+                    ShowGameFinishedPopup();
+                }
+                return;
+            }
+            if (!isOutro && CTRPreferences.ShouldPlayLevelScroll())
             {
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
                 packContainer.MoveToScrollPointmoveMultiplier(0, 0.6f);
@@ -1291,9 +1250,9 @@ namespace CutTheRope.GameMain
                 packContainer.PlaceToScrollPoint(CTRPreferences.GetLastBox());
             }
             ShowView(5);
-            if (url != null && url.EndsWith("outro", StringComparison.Ordinal))
+            if (isOutro)
             {
-                packContainer.MoveToScrollPointmoveMultiplier(CTRPreferences.GetPacksCount(), 0.8f);
+                packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
                 ShowGameFinishedPopup();
             }
         }
@@ -1321,13 +1280,13 @@ namespace CutTheRope.GameMain
             ctrrootController.SetLevel(level);
             Application.SharedRootController().SetViewTransition(-1);
             ((MapPickerController)GetChild(0)).SetAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
-            if (pack == 0 && level == 0 && CTRPreferences.GetScoreForPackLevel(0, 0) != 0)
+            if (pack == 0 && level == 0 && CTRPreferences.GetScoreForPackLevel(0, 0) != 0 && PackConfig.IntroVideo != null)
             {
                 replayingIntroMovie = true;
                 ShowView(7);
                 CTRSoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                Application.SharedMovieMgr().PlayURL("intro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+                Application.SharedMovieMgr().PlayURL(PackConfig.IntroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                 return;
             }
             ActivateChild(0);
@@ -1366,12 +1325,12 @@ namespace CutTheRope.GameMain
                             GameController.CheckForBoxPerfect(i);
                         }
                         replayingIntroMovie = false;
-                        if (CTRPreferences.GetScoreForPackLevel(0, 0) == 0)
+                        if (CTRPreferences.GetScoreForPackLevel(0, 0) == 0 && PackConfig.IntroVideo != null)
                         {
                             ShowView(7);
                             CTRSoundMgr.StopMusic();
                             Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
-                            Application.SharedMovieMgr().PlayURL("intro", !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
+                            Application.SharedMovieMgr().PlayURL(PackConfig.IntroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                             return;
                         }
                         MoviePlaybackFinished(null);
@@ -1448,6 +1407,11 @@ namespace CutTheRope.GameMain
                         return;
                     }
                 case var id when id == MenuButtonId.PackSelect:
+                    if (IsSinglePack)
+                    {
+                        ShowView(VIEW_MAIN_MENU);
+                        return;
+                    }
                     ShowView(5);
                     packContainer.MoveToScrollPointmoveMultiplier(pack, 0.8f);
                     return;
@@ -1924,6 +1888,8 @@ namespace CutTheRope.GameMain
 
         public const int VIEW_LEVEL_SELECT = 6;
 
+        private static bool IsSinglePack => CTRPreferences.GetPacksCount() == 1;
+
         public const int VIEW_MOVIE = 7;
 
         public const int VIEW_LEADERBOARDS = 8;
@@ -2004,19 +1970,19 @@ namespace CutTheRope.GameMain
         public sealed class MonsterSlot : ColorRect
         {
             /// <summary>
-            /// Quad index for the box background in MenuPackSelection texture.
+            /// Quad index for the box background in MenuPackUI texture.
             /// </summary>
             private const int QuadIndex = 0;
 
             /// <summary>
             /// Creates a new <see cref="MonsterSlot"/> with the specified background color.
-            /// Dimensions and positioning are derived from the MenuPackSelection texture.
+            /// Dimensions and positioning are derived from the MenuPackUI texture.
             /// </summary>
             /// <param name="color">Background fill color for the slot.</param>
             /// <returns>A new <see cref="MonsterSlot"/> instance.</returns>
             public static MonsterSlot Create(RGBAColor color)
             {
-                CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackSelection);
+                CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
                 MonsterSlot slot = new()
                 {
                     width = (int)texture.preCutSize.X,
@@ -2042,7 +2008,7 @@ namespace CutTheRope.GameMain
 
                 // Apply scissor clipping to reveal Om Nom during scroll animation
                 float scrollX = c.GetScroll().X;
-                Vector preCutSize = Application.GetTexture(Resources.Img.MenuPackSelection).preCutSize;
+                Vector preCutSize = Application.GetTexture(Resources.Img.MenuPackUI).preCutSize;
                 if (scrollX >= s && scrollX < e)
                 {
                     scrollX -= preCutSize.X + -20f;

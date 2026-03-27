@@ -250,6 +250,7 @@ namespace CutTheRope.GameMain
             public const string CutTheRopeDXLogo = "CutTheRopeDXLogo";
             public const string CandySelectionFx = "candy_selection_fx";
             public const string SkinSelection = "skin_selection";
+            public const string MenuPackUI = "menu_pack_ui";
             public const string MenuPackSelection = "menu_pack_selection";
             public const string MenuPackSelection2 = "menu_pack_selection2";
             public const string MenuExtraButtons = "menu_extra_buttons";

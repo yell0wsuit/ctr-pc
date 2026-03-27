@@ -21,7 +21,7 @@ namespace CutTheRope.GameMain
         /// <param name="map">The parsed level XML.</param>
         /// <param name="pack">The active pack index for pack-specific resources.</param>
         /// <returns>A de-duplicated array of resource identifiers needed for the map.</returns>
-        public static string[] GetRequiredResources(XElement map, int pack)
+        public static string[] GetRequiredResources(XElement map)
         {
             if (map == null)
             {
@@ -124,7 +124,7 @@ namespace CutTheRope.GameMain
                         _ = resources.Add(Resources.Img.ObjRoboHand);
                         break;
                     case "target":
-                        AddTargetResources(resources, pack);
+                        AddTargetResources(resources);
                         break;
                     case "steamTube":
                         _ = resources.Add(Resources.Img.ObjPipe);
@@ -176,7 +176,7 @@ namespace CutTheRope.GameMain
                 }
 
                 XElement map = ContentPaths.LoadXml(Path.Combine(ContentPaths.MapsDirectory, mapName));
-                foreach (string resourceName in GetRequiredResources(map, pack))
+                foreach (string resourceName in GetRequiredResources(map))
                 {
                     _ = resources.Add(resourceName);
                 }
@@ -230,7 +230,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="resources">The destination set being accumulated.</param>
         /// <param name="pack">The active pack index.</param>
-        private static void AddTargetResources(HashSet<string> resources, int pack)
+        private static void AddTargetResources(HashSet<string> resources)
         {
             int skinIndex = OmNomSkinRegistry.GetSelectedSkinIndex();
 
@@ -250,7 +250,6 @@ namespace CutTheRope.GameMain
 
             _ = resources.Add(Resources.Img.FxBubbles);
             _ = resources.Add(Resources.Img.CharSupports);
-            _ = resources.Add(PackConfig.GetSupportResourceName(pack));
         }
 
         /// <summary>
