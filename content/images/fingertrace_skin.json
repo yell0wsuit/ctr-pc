@@ -2,75 +2,83 @@
     "frames": [
         {
             "filename": "00_trace_1.png",
-            "frame": { "x": 1, "y": 378, "w": 109, "h": 115 },
+            "frame": { "x": 121, "y": 357, "w": 112, "h": 118 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 109, "h": 115 },
-            "sourceSize": { "w": 109, "h": 115 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 61, "y": 58, "w": 112, "h": 118 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "01_trace_2.png",
-            "frame": { "x": 371, "y": 295, "w": 115, "h": 124 },
+            "frame": { "x": 1, "y": 357, "w": 118, "h": 127 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 115, "h": 124 },
-            "sourceSize": { "w": 115, "h": 124 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 58, "y": 53, "w": 118, "h": 127 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "02_trace_3.png",
-            "frame": { "x": 371, "y": 159, "w": 142, "h": 134 },
+            "frame": { "x": 394, "y": 317, "w": 142, "h": 135 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 142, "h": 134 },
-            "sourceSize": { "w": 142, "h": 134 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 46, "y": 49, "w": 142, "h": 135 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "03_trace_4.png",
-            "frame": { "x": 215, "y": 1, "w": 150, "h": 159 },
+            "frame": { "x": 217, "y": 1, "w": 152, "h": 162 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 150, "h": 159 },
-            "sourceSize": { "w": 150, "h": 159 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 41, "y": 36, "w": 152, "h": 162 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "04_trace_5.png",
-            "frame": { "x": 367, "y": 1, "w": 151, "h": 156 },
+            "frame": { "x": 371, "y": 1, "w": 153, "h": 159 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 151, "h": 156 },
-            "sourceSize": { "w": 151, "h": 156 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 40, "y": 38, "w": 153, "h": 159 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "05_trace_6.png",
-            "frame": { "x": 215, "y": 315, "w": 153, "h": 150 },
+            "frame": { "x": 217, "y": 165, "w": 155, "h": 152 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 153, "h": 150 },
-            "sourceSize": { "w": 153, "h": 150 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 39, "y": 41, "w": 155, "h": 152 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "06_trace_7.png",
-            "frame": { "x": 1, "y": 195, "w": 212, "h": 181 },
+            "frame": { "x": 1, "y": 197, "w": 192, "h": 158 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 212, "h": 181 },
-            "sourceSize": { "w": 212, "h": 181 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 21, "y": 38, "w": 192, "h": 158 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "07_trace_8.png",
-            "frame": { "x": 215, "y": 162, "w": 154, "h": 151 },
+            "frame": { "x": 1, "y": 1, "w": 214, "h": 194 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 154, "h": 151 },
-            "sourceSize": { "w": 154, "h": 151 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 10, "y": 11, "w": 214, "h": 194 },
+            "sourceSize": { "w": 234, "h": 234 }
         },
         {
             "filename": "08_trace_9.png",
-            "frame": { "x": 1, "y": 1, "w": 212, "h": 192 },
+            "frame": { "x": 374, "y": 162, "w": 156, "h": 153 },
             "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 212, "h": 192 },
-            "sourceSize": { "w": 212, "h": 192 }
+            "trimmed": true,
+            "spriteSourceSize": { "x": 39, "y": 40, "w": 156, "h": 153 },
+            "sourceSize": { "w": 234, "h": 234 }
+        },
+        {
+            "filename": "09_trace_10.png",
+            "frame": { "x": 235, "y": 319, "w": 157, "h": 153 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 38, "y": 40, "w": 157, "h": 153 },
+            "sourceSize": { "w": 234, "h": 234 }
         }
     ],
     "meta": {
@@ -78,8 +86,8 @@
         "version": "1.0",
         "image": "fingertrace_skin.png",
         "format": "RGBA8888",
-        "size": { "w": 519, "h": 494 },
+        "size": { "w": 537, "h": 485 },
         "scale": "1",
-        "smartupdate": "$TexturePacker:SmartUpdate:8fbe5c427f9c5e59723100ae7d71b3f2:7b0b79459dcde1a0a141932d41ac4b4a:f2a0780e22c2352f315468d070785796$"
+        "smartupdate": "$TexturePacker:SmartUpdate:4ae72f2a29e5f4bd7791bb37afe39c2a:ce1b26ee69ed385b6933217ea83a1fae:f2a0780e22c2352f315468d070785796$"
     }
 }
