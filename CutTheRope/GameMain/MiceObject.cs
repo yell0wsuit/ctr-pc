@@ -216,14 +216,14 @@ namespace CutTheRope.GameMain
             body.anchor = body.parentAnchor = 18;
             body.DoRestoreCutTransparency();
 
-            // ID 0: Entry empty — frames 1, 2, 3
+            // ID 0: Entry empty — frames 1, 2, 3, 14
             body.AddAnimationWithIDDelayLoopCountSequence(
                 (int)MouseAnimationId.EntryEmpty,
                 0.05f,
                 Timeline.LoopType.TIMELINE_NO_LOOP,
-                3,
+                4,
                 1,
-                [2, 3]);
+                [2, 3, 14]);
 
             // ID 1: Entry with candy — frames 17, 19, 21, 24
             body.AddAnimationWithIDDelayLoopCountSequence(
