@@ -5,7 +5,7 @@ namespace CutTheRope.GameMain
 {
     internal static class FingerTraceFactory
     {
-        public const int TotalTraceSkins = 10;
+        public const int TotalTraceSkins = 11;
 
         public static FingerTrace CreateForSlot(int traceIndex, int touchSlot)
         {
@@ -18,9 +18,10 @@ namespace CutTheRope.GameMain
                 4 => new WinterFingerTrace(touchSlot),
                 5 => new RedFingerTrace(touchSlot),
                 6 => new EasterFingerTrace(touchSlot),
-                7 => new BackToSchoolFingerTrace(touchSlot),
-                8 => new OmnomBirthdayFingerTrace(touchSlot),
+                7 => new OmnomBirthdayFingerTrace(touchSlot),
+                8 => new BackToSchoolFingerTrace(touchSlot),
                 9 => new AlphabetFingerTrace(touchSlot),
+                10 => new Easter2016FingerTrace(touchSlot),
                 _ => new ClassicFingerTrace(touchSlot),
             };
         }
