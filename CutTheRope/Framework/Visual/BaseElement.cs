@@ -703,7 +703,7 @@ namespace CutTheRope.Framework.Visual
 
         private readonly float translateX;
 
-        private readonly float translateY;
+        public float translateY;
 
         public sbyte anchor;
 

@@ -1060,6 +1060,9 @@
     "OM_NOM_BTN": {
         "en": "Om Nom"
     },
+    "TRACES_BTN": {
+        "en": "Traces"
+    },
     "OUTDATED_WINDOWS_TITLE": {
         "en": "Outdated Windows version detected!"
     },

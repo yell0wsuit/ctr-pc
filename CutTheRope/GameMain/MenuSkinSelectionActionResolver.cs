@@ -5,6 +5,7 @@ namespace CutTheRope.GameMain
         Candy,
         Rope,
         OmNom,
+        Trace,
     }
 
     internal enum MenuSkinSelectionActionKind
@@ -29,6 +30,7 @@ namespace CutTheRope.GameMain
                 var _ when buttonId == MenuButtonId.CandySelect => new(MenuSkinSelectionActionKind.SwitchMode, SkinSelectionMode.Candy, null, null),
                 var _ when buttonId == MenuButtonId.RopeSelect => new(MenuSkinSelectionActionKind.SwitchMode, SkinSelectionMode.Rope, null, null),
                 var _ when buttonId == MenuButtonId.OmNomSelect => new(MenuSkinSelectionActionKind.SwitchMode, SkinSelectionMode.OmNom, null, null),
+                var _ when buttonId == MenuButtonId.TraceSelect => new(MenuSkinSelectionActionKind.SwitchMode, SkinSelectionMode.Trace, null, null),
                 var _ when buttonId.IsCandySlotButton() => new(
                     MenuSkinSelectionActionKind.SelectSlot,
                     SkinSelectionMode.Candy,
@@ -46,6 +48,12 @@ namespace CutTheRope.GameMain
                     SkinSelectionMode.OmNom,
                     CTRPreferences.PREFS_SELECTED_OMNOM,
                     buttonId.GetOmNomIndex()
+                ),
+                var _ when buttonId.IsTraceSlotButton() => new(
+                    MenuSkinSelectionActionKind.SelectSlot,
+                    SkinSelectionMode.Trace,
+                    CTRPreferences.PREFS_SELECTED_TRACE,
+                    buttonId.GetTraceIndex()
                 ),
                 _ => new(MenuSkinSelectionActionKind.None, SkinSelectionMode.Candy, null, null),
             };

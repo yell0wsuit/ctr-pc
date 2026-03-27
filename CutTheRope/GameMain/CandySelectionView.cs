@@ -30,6 +30,7 @@ namespace CutTheRope.GameMain
         private static Button candyTabButton;
         private static Button ropeTabButton;
         private static Button omNomTabButton;
+        private static Button traceTabButton;
         private static ITargetAnimationBackend activePreviewBackend;
         private static GameObject activePreviewObject;
         private static OmNomWarmupState omNomWarmupState;
@@ -124,12 +125,17 @@ namespace CutTheRope.GameMain
             SwitchToMode(CandySelectionMode.OmNom);
         }
 
+        public static void SwitchToTraceMode()
+        {
+            SwitchToMode(CandySelectionMode.Trace);
+        }
+
         /// <summary>
         /// Updates the tab button visual states to show which mode is active.
         /// </summary>
         private static void UpdateTabButtonStates()
         {
-            if (candyTabButton == null || ropeTabButton == null || omNomTabButton == null)
+            if (candyTabButton == null || ropeTabButton == null || omNomTabButton == null || traceTabButton == null)
             {
                 return;
             }
@@ -137,6 +143,7 @@ namespace CutTheRope.GameMain
             SetTabActive(candyTabButton, currentMode == CandySelectionMode.Candy);
             SetTabActive(ropeTabButton, currentMode == CandySelectionMode.Rope);
             SetTabActive(omNomTabButton, currentMode == CandySelectionMode.OmNom);
+            SetTabActive(traceTabButton, currentMode == CandySelectionMode.Trace);
         }
 
         private static void SetTabActive(Button tab, bool active)
@@ -151,7 +158,15 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a slot button with background and item image.
         /// </summary>
-        private static Button CreateSlotButton(int itemIndex, int selectedIndex, int itemQuadIndex, float slotScale, MenuButtonId buttonId)
+        private static Button CreateSlotButton(
+            int itemIndex,
+            int selectedIndex,
+            string itemResourceName,
+            int itemQuadIndex,
+            float slotScale,
+            MenuButtonId buttonId,
+            float itemYOffset = -20f,
+            bool doRestoreTransparency = false)
         {
             bool isEquipped = itemIndex == selectedIndex;
             int bgUpQuad = isEquipped ? 2 : 0;
@@ -164,14 +179,22 @@ namespace CutTheRope.GameMain
             slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
 
             // Add item image to both up and down states
-            Image itemImage = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, itemQuadIndex);
+            Image itemImage = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
             itemImage.anchor = itemImage.parentAnchor = 18;
-            itemImage.y = -20f;
+            itemImage.y = itemYOffset;
+            if (doRestoreTransparency)
+            {
+                itemImage.DoRestoreCutTransparency();
+            }
             _ = slotBgUp.AddChild(itemImage);
 
-            Image itemImage2 = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, itemQuadIndex);
+            Image itemImage2 = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
             itemImage2.anchor = itemImage2.parentAnchor = 18;
-            itemImage2.y = -20f;
+            itemImage2.y = itemYOffset;
+            if (doRestoreTransparency)
+            {
+                itemImage2.DoRestoreCutTransparency();
+            }
             _ = slotBgDown.AddChild(itemImage2);
 
             Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
@@ -297,6 +320,9 @@ namespace CutTheRope.GameMain
             int totalItems;
             int selectedIndex;
             int baseQuadIndex;
+            string itemResourceName = Resources.Img.SkinSelection;
+            float itemYOffset = -20f;
+            bool doRestoreTransparency = false;
             Func<int, MenuButtonId> getButtonId;
 
             switch (mode)
@@ -309,6 +335,15 @@ namespace CutTheRope.GameMain
                     break;
                 case CandySelectionMode.OmNom:
                     throw new InvalidOperationException("Om Nom grids are built through the warmup pipeline.");
+                case CandySelectionMode.Trace:
+                    totalItems = FingerTraceFactory.TotalTraceSkins;
+                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_TRACE);
+                    baseQuadIndex = 0;
+                    itemResourceName = Resources.Img.FingerTraceSkinOptions;
+                    itemYOffset = -20f;
+                    doRestoreTransparency = true;
+                    getButtonId = MenuButtonId.ForTraceSlot;
+                    break;
                 case CandySelectionMode.Candy:
                 default: // Candy
                     const int TOTAL_CANDIES = 52;
@@ -333,7 +368,15 @@ namespace CutTheRope.GameMain
                     }
 
                     int itemQuadIndex = baseQuadIndex + itemIndex;
-                    Button slotButton = CreateSlotButton(itemIndex, selectedIndex, itemQuadIndex, layout.SlotScale, getButtonId(itemIndex));
+                    Button slotButton = CreateSlotButton(
+                        itemIndex,
+                        selectedIndex,
+                        itemResourceName,
+                        itemQuadIndex,
+                        layout.SlotScale,
+                        getButtonId(itemIndex),
+                        itemYOffset,
+                        doRestoreTransparency);
                     _ = rowBox.AddChild(slotButton);
                 }
 
@@ -762,6 +805,34 @@ namespace CutTheRope.GameMain
             }
         }
 
+        private static Button CreateTabButton(
+            string textKey,
+            MenuButtonId buttonId,
+            FontGeneric font,
+            IButtonDelegation buttonDelegate,
+            out float width)
+        {
+            Image buttonUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
+            Image buttonDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
+
+            Text upText = new Text().InitWithFont(font);
+            upText.SetString(Application.GetString(textKey));
+            upText.anchor = upText.parentAnchor = 18;
+            _ = buttonUp.AddChild(upText);
+
+            Text downText = new Text().InitWithFont(font);
+            downText.SetString(Application.GetString(textKey));
+            downText.anchor = downText.parentAnchor = 18;
+            _ = buttonDown.AddChild(downText);
+
+            Button button = new Button().InitWithUpElementDownElementandID(buttonUp, buttonDown, buttonId);
+            button.delegateButtonDelegate = buttonDelegate;
+            button.anchor = button.parentAnchor = 10;
+            button.y = 50f;
+            width = buttonDown.width;
+            return button;
+        }
+
         public static MenuView CreateCandySelection(
             IButtonDelegation buttonDelegate,
             out ScrollableContainer candyContainer)
@@ -793,78 +864,23 @@ namespace CutTheRope.GameMain
             bgImage.scaleX = bgImage.scaleY = bgScale;
             _ = background.AddChild(bgImage);
 
-            // Candy tab button
-            Image candyBtnUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
-            Image candyBtnDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
-
-            // Add "Candy" text to the button images
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
-            Text buttonText = new Text().InitWithFont(font);
-            buttonText.SetString(Application.GetString("CANDIES_BTN"));
-            buttonText.anchor = buttonText.parentAnchor = 18;
-            _ = candyBtnUp.AddChild(buttonText);
-
-            Text buttonText2 = new Text().InitWithFont(font);
-            buttonText2.SetString(Application.GetString("CANDIES_BTN"));
-            buttonText2.anchor = buttonText2.parentAnchor = 18;
-            _ = candyBtnDown.AddChild(buttonText2);
-
-            candyTabButton = new Button().InitWithUpElementDownElementandID(candyBtnUp, candyBtnDown, MenuButtonId.CandySelect);
-            candyTabButton.delegateButtonDelegate = buttonDelegate;
-            candyTabButton.anchor = candyTabButton.parentAnchor = 10;
-            candyTabButton.y = 50f;
-
+            candyTabButton = CreateTabButton("CANDIES_BTN", MenuButtonId.CandySelect, font, buttonDelegate, out float candyTabWidth);
             _ = background.AddChild(candyTabButton);
-
-            // Rope tab button
-            Image ropeBtnUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
-            Image ropeBtnDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
-
-            // Add "Rope" text to the button images
-            Text ropeButtonText = new Text().InitWithFont(font);
-            ropeButtonText.SetString(Application.GetString("ROPE_SKINS_BTN"));
-            ropeButtonText.anchor = ropeButtonText.parentAnchor = 18;
-            _ = ropeBtnUp.AddChild(ropeButtonText);
-
-            Text ropeButtonText2 = new Text().InitWithFont(font);
-            ropeButtonText2.SetString(Application.GetString("ROPE_SKINS_BTN"));
-            ropeButtonText2.anchor = ropeButtonText2.parentAnchor = 18;
-            _ = ropeBtnDown.AddChild(ropeButtonText2);
-
-            ropeTabButton = new Button().InitWithUpElementDownElementandID(ropeBtnUp, ropeBtnDown, MenuButtonId.RopeSelect);
-            ropeTabButton.delegateButtonDelegate = buttonDelegate;
-            ropeTabButton.anchor = ropeTabButton.parentAnchor = 10;
-            ropeTabButton.y = 50f;
-
+            ropeTabButton = CreateTabButton("ROPE_SKINS_BTN", MenuButtonId.RopeSelect, font, buttonDelegate, out float ropeTabWidth);
             _ = background.AddChild(ropeTabButton);
-
-            // Om Nom tab button
-            Image omNomBtnUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
-            Image omNomBtnDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
-
-            Text omNomButtonText = new Text().InitWithFont(font);
-            omNomButtonText.SetString(Application.GetString("OM_NOM_BTN"));
-            omNomButtonText.anchor = omNomButtonText.parentAnchor = 18;
-            _ = omNomBtnUp.AddChild(omNomButtonText);
-
-            Text omNomButtonText2 = new Text().InitWithFont(font);
-            omNomButtonText2.SetString(Application.GetString("OM_NOM_BTN"));
-            omNomButtonText2.anchor = omNomButtonText2.parentAnchor = 18;
-            _ = omNomBtnDown.AddChild(omNomButtonText2);
-
-            omNomTabButton = new Button().InitWithUpElementDownElementandID(omNomBtnUp, omNomBtnDown, MenuButtonId.OmNomSelect);
-            omNomTabButton.delegateButtonDelegate = buttonDelegate;
-            omNomTabButton.anchor = omNomTabButton.parentAnchor = 10;
-            omNomTabButton.y = 50f;
-
+            omNomTabButton = CreateTabButton("OM_NOM_BTN", MenuButtonId.OmNomSelect, font, buttonDelegate, out float omNomTabWidth);
             _ = background.AddChild(omNomTabButton);
+            traceTabButton = CreateTabButton("TRACES_BTN", MenuButtonId.TraceSelect, font, buttonDelegate, out float traceTabWidth);
+            _ = background.AddChild(traceTabButton);
 
             float tabStride = MathF.Max(
-                MathF.Max(candyBtnDown.width, ropeBtnDown.width),
-                omNomBtnDown.width) + tabGap;
-            candyTabButton.x = SkinSelectionTabLayout.GetCenteredX(0, 3, tabStride);
-            ropeTabButton.x = SkinSelectionTabLayout.GetCenteredX(1, 3, tabStride);
-            omNomTabButton.x = SkinSelectionTabLayout.GetCenteredX(2, 3, tabStride);
+                MathF.Max(candyTabWidth, ropeTabWidth),
+                MathF.Max(omNomTabWidth, traceTabWidth)) + tabGap;
+            candyTabButton.x = SkinSelectionTabLayout.GetCenteredX(0, 4, tabStride);
+            ropeTabButton.x = SkinSelectionTabLayout.GetCenteredX(1, 4, tabStride);
+            omNomTabButton.x = SkinSelectionTabLayout.GetCenteredX(2, 4, tabStride);
+            traceTabButton.x = SkinSelectionTabLayout.GetCenteredX(3, 4, tabStride);
 
             // Create scrollable container (initially empty, will be populated by RebuildGrid)
             float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;

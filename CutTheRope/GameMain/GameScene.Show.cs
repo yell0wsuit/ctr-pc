@@ -101,6 +101,7 @@ namespace CutTheRope.GameMain
             {
                 dragging[m] = false;
                 startPos[m] = prevStartPos[m] = vectZero;
+                fingerTraces[m]?.Reset();
             }
             if (clickToCut)
             {
