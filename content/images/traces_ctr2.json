@@ -1,0 +1,549 @@
+{
+    "frames": [
+        {
+            "filename": "01_star_particle_01.png",
+            "frame": { "x": 84, "y": 223, "w": 34, "h": 30 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 34, "h": 30 },
+            "sourceSize": { "w": 34, "h": 30 }
+        },
+        {
+            "filename": "02_star_particle_02.png",
+            "frame": { "x": 1188, "y": 214, "w": 37, "h": 36 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 37, "h": 36 },
+            "sourceSize": { "w": 37, "h": 36 }
+        },
+        {
+            "filename": "03_star_particle_03.png",
+            "frame": { "x": 1251, "y": 102, "w": 36, "h": 34 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 34 },
+            "sourceSize": { "w": 36, "h": 34 }
+        },
+        {
+            "filename": "04_star_particle_04.png",
+            "frame": { "x": 1101, "y": 206, "w": 42, "h": 41 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 41 },
+            "sourceSize": { "w": 42, "h": 41 }
+        },
+        {
+            "filename": "05_star_particle_05.png",
+            "frame": { "x": 917, "y": 212, "w": 44, "h": 39 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 44, "h": 39 },
+            "sourceSize": { "w": 44, "h": 39 }
+        },
+        {
+            "filename": "06_bubble_particle_01.png",
+            "frame": { "x": 966, "y": 196, "w": 53, "h": 53 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 53, "h": 53 },
+            "sourceSize": { "w": 53, "h": 53 }
+        },
+        {
+            "filename": "07_bubble_particle_02.png",
+            "frame": { "x": 1143, "y": 57, "w": 53, "h": 53 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 53, "h": 53 },
+            "sourceSize": { "w": 53, "h": 53 }
+        },
+        {
+            "filename": "08_bubble_particle_03.png",
+            "frame": { "x": 1197, "y": 1, "w": 53, "h": 53 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 53, "h": 53 },
+            "sourceSize": { "w": 53, "h": 53 }
+        },
+        {
+            "filename": "09_bubble_particle_04.png",
+            "frame": { "x": 1145, "y": 112, "w": 53, "h": 53 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 53, "h": 53 },
+            "sourceSize": { "w": 53, "h": 53 }
+        },
+        {
+            "filename": "10_snow_particle_01.png",
+            "frame": { "x": 1200, "y": 162, "w": 44, "h": 50 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 44, "h": 50 },
+            "sourceSize": { "w": 44, "h": 50 }
+        },
+        {
+            "filename": "11_snow_particle_02.png",
+            "frame": { "x": 827, "y": 207, "w": 42, "h": 44 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 44 },
+            "sourceSize": { "w": 42, "h": 44 }
+        },
+        {
+            "filename": "12_snow_particle_03.png",
+            "frame": { "x": 700, "y": 221, "w": 16, "h": 29 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 29 },
+            "sourceSize": { "w": 16, "h": 29 }
+        },
+        {
+            "filename": "13_snow_particle_04.png",
+            "frame": { "x": 754, "y": 221, "w": 14, "h": 19 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 14, "h": 19 },
+            "sourceSize": { "w": 14, "h": 19 }
+        },
+        {
+            "filename": "14_snow_particle_05.png",
+            "frame": { "x": 465, "y": 222, "w": 11, "h": 12 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 11, "h": 12 },
+            "sourceSize": { "w": 11, "h": 12 }
+        },
+        {
+            "filename": "15_tile_01.png",
+            "frame": { "x": 1, "y": 1, "w": 128, "h": 220 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 220 },
+            "sourceSize": { "w": 128, "h": 220 }
+        },
+        {
+            "filename": "16_tile_02.png",
+            "frame": { "x": 131, "y": 1, "w": 126, "h": 219 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 126, "h": 219 },
+            "sourceSize": { "w": 126, "h": 219 }
+        },
+        {
+            "filename": "17_tile_03.png",
+            "frame": { "x": 259, "y": 1, "w": 112, "h": 222 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 112, "h": 222 },
+            "sourceSize": { "w": 112, "h": 222 }
+        },
+        {
+            "filename": "18_tile_04.png",
+            "frame": { "x": 373, "y": 1, "w": 103, "h": 219 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 103, "h": 219 },
+            "sourceSize": { "w": 103, "h": 219 }
+        },
+        {
+            "filename": "19_tile_05.png",
+            "frame": { "x": 581, "y": 1, "w": 98, "h": 218 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 98, "h": 218 },
+            "sourceSize": { "w": 98, "h": 218 }
+        },
+        {
+            "filename": "20_tile_06.png",
+            "frame": { "x": 681, "y": 1, "w": 94, "h": 218 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 94, "h": 218 },
+            "sourceSize": { "w": 94, "h": 218 }
+        },
+        {
+            "filename": "21_tail_01.png",
+            "frame": { "x": 478, "y": 1, "w": 101, "h": 204 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 101, "h": 204 },
+            "sourceSize": { "w": 101, "h": 204 }
+        },
+        {
+            "filename": "22_tail_02.png",
+            "frame": { "x": 873, "y": 1, "w": 91, "h": 209 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 91, "h": 209 },
+            "sourceSize": { "w": 91, "h": 209 }
+        },
+        {
+            "filename": "23_tail_03.png",
+            "frame": { "x": 1058, "y": 1, "w": 83, "h": 203 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 83, "h": 203 },
+            "sourceSize": { "w": 83, "h": 203 }
+        },
+        {
+            "filename": "24_tail_04.png",
+            "frame": { "x": 777, "y": 1, "w": 94, "h": 204 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 94, "h": 204 },
+            "sourceSize": { "w": 94, "h": 204 }
+        },
+        {
+            "filename": "25_electro_particle_01.png",
+            "frame": { "x": 553, "y": 207, "w": 22, "h": 44 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 22, "h": 44 },
+            "sourceSize": { "w": 22, "h": 44 }
+        },
+        {
+            "filename": "26_electro_particle_02.png",
+            "frame": { "x": 612, "y": 221, "w": 20, "h": 31 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 20, "h": 31 },
+            "sourceSize": { "w": 20, "h": 31 }
+        },
+        {
+            "filename": "27_electro_particle_03.png",
+            "frame": { "x": 357, "y": 225, "w": 14, "h": 22 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 14, "h": 22 },
+            "sourceSize": { "w": 14, "h": 22 }
+        },
+        {
+            "filename": "28_heart_particle_01.png",
+            "frame": { "x": 1143, "y": 1, "w": 52, "h": 54 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 52, "h": 54 },
+            "sourceSize": { "w": 52, "h": 54 }
+        },
+        {
+            "filename": "29_heart_particle_02.png",
+            "frame": { "x": 1143, "y": 167, "w": 39, "h": 37 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 39, "h": 37 },
+            "sourceSize": { "w": 39, "h": 37 }
+        },
+        {
+            "filename": "30_heart_particle_03.png",
+            "frame": { "x": 966, "y": 69, "w": 61, "h": 63 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 61, "h": 63 },
+            "sourceSize": { "w": 61, "h": 63 }
+        },
+        {
+            "filename": "31_flower_particle_09.png",
+            "frame": { "x": 966, "y": 1, "w": 90, "h": 66 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 90, "h": 66 },
+            "sourceSize": { "w": 90, "h": 66 }
+        },
+        {
+            "filename": "32_flower_particle_08.png",
+            "frame": { "x": 478, "y": 207, "w": 73, "h": 45 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 73, "h": 45 },
+            "sourceSize": { "w": 73, "h": 45 }
+        },
+        {
+            "filename": "33_flower_particle_07.png",
+            "frame": { "x": 1246, "y": 208, "w": 40, "h": 40 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 40, "h": 40 },
+            "sourceSize": { "w": 40, "h": 40 }
+        },
+        {
+            "filename": "34_flower_particle_06.png",
+            "frame": { "x": 777, "y": 207, "w": 48, "h": 33 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 33 },
+            "sourceSize": { "w": 48, "h": 33 }
+        },
+        {
+            "filename": "35_flower_particle_05.png",
+            "frame": { "x": 1198, "y": 56, "w": 51, "h": 51 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 51 },
+            "sourceSize": { "w": 51, "h": 51 }
+        },
+        {
+            "filename": "36_flower_particle_04.png",
+            "frame": { "x": 373, "y": 222, "w": 30, "h": 30 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 30, "h": 30 },
+            "sourceSize": { "w": 30, "h": 30 }
+        },
+        {
+            "filename": "37_flower_particle_03.png",
+            "frame": { "x": 405, "y": 222, "w": 28, "h": 29 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 29 },
+            "sourceSize": { "w": 28, "h": 29 }
+        },
+        {
+            "filename": "38_flower_particle_02.png",
+            "frame": { "x": 736, "y": 221, "w": 16, "h": 16 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
+            "sourceSize": { "w": 16, "h": 16 }
+        },
+        {
+            "filename": "39_flower_particle_01.png",
+            "frame": { "x": 1029, "y": 115, "w": 16, "h": 16 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
+            "sourceSize": { "w": 16, "h": 16 }
+        },
+        {
+            "filename": "40_leaf_particle_01.png",
+            "frame": { "x": 966, "y": 134, "w": 76, "h": 60 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 76, "h": 60 },
+            "sourceSize": { "w": 76, "h": 60 }
+        },
+        {
+            "filename": "41_leaf_particle_02.png",
+            "frame": { "x": 1029, "y": 69, "w": 27, "h": 44 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 27, "h": 44 },
+            "sourceSize": { "w": 27, "h": 44 }
+        },
+        {
+            "filename": "42_leaf_particle_03.png",
+            "frame": { "x": 1200, "y": 109, "w": 49, "h": 51 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 49, "h": 51 },
+            "sourceSize": { "w": 49, "h": 51 }
+        },
+        {
+            "filename": "43_leaf_particle_04.png",
+            "frame": { "x": 871, "y": 212, "w": 44, "h": 42 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 44, "h": 42 },
+            "sourceSize": { "w": 44, "h": 42 }
+        },
+        {
+            "filename": "44_confetti_particle_01.png",
+            "frame": { "x": 131, "y": 222, "w": 42, "h": 23 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 23 },
+            "sourceSize": { "w": 42, "h": 23 }
+        },
+        {
+            "filename": "45_confetti_particle_02.png",
+            "frame": { "x": 175, "y": 222, "w": 42, "h": 23 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 23 },
+            "sourceSize": { "w": 42, "h": 23 }
+        },
+        {
+            "filename": "46_confetti_particle_03.png",
+            "frame": { "x": 1, "y": 223, "w": 42, "h": 23 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 23 },
+            "sourceSize": { "w": 42, "h": 23 }
+        },
+        {
+            "filename": "47_confetti_particle_04.png",
+            "frame": { "x": 634, "y": 221, "w": 20, "h": 31 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 20, "h": 31 },
+            "sourceSize": { "w": 20, "h": 31 }
+        },
+        {
+            "filename": "48_confetti_particle_05.png",
+            "frame": { "x": 656, "y": 221, "w": 20, "h": 31 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 20, "h": 31 },
+            "sourceSize": { "w": 20, "h": 31 }
+        },
+        {
+            "filename": "49_confetti_particle_06.png",
+            "frame": { "x": 678, "y": 221, "w": 20, "h": 31 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 20, "h": 31 },
+            "sourceSize": { "w": 20, "h": 31 }
+        },
+        {
+            "filename": "50_confetti_particle_07.png",
+            "frame": { "x": 258, "y": 225, "w": 23, "h": 20 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 20 },
+            "sourceSize": { "w": 23, "h": 20 }
+        },
+        {
+            "filename": "51_confetti_particle_08.png",
+            "frame": { "x": 283, "y": 225, "w": 23, "h": 20 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 20 },
+            "sourceSize": { "w": 23, "h": 20 }
+        },
+        {
+            "filename": "52_confetti_particle_09.png",
+            "frame": { "x": 308, "y": 225, "w": 23, "h": 20 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 20 },
+            "sourceSize": { "w": 23, "h": 20 }
+        },
+        {
+            "filename": "53_butterfly_01.png",
+            "frame": { "x": 219, "y": 222, "w": 37, "h": 29 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 37, "h": 29 },
+            "sourceSize": { "w": 37, "h": 29 }
+        },
+        {
+            "filename": "54_butterfly_02.png",
+            "frame": { "x": 333, "y": 225, "w": 22, "h": 17 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 22, "h": 17 },
+            "sourceSize": { "w": 22, "h": 17 }
+        },
+        {
+            "filename": "55_butterfly_03.png",
+            "frame": { "x": 1227, "y": 214, "w": 16, "h": 16 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
+            "sourceSize": { "w": 16, "h": 16 }
+        },
+        {
+            "filename": "56_butterfly_04.png",
+            "frame": { "x": 718, "y": 221, "w": 16, "h": 20 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 20 },
+            "sourceSize": { "w": 16, "h": 20 }
+        },
+        {
+            "filename": "57_butterfly_05.png",
+            "frame": { "x": 577, "y": 221, "w": 33, "h": 33 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 33, "h": 33 },
+            "sourceSize": { "w": 33, "h": 33 }
+        },
+        {
+            "filename": "58_butterfly_06.png",
+            "frame": { "x": 1252, "y": 1, "w": 36, "h": 37 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 37 },
+            "sourceSize": { "w": 36, "h": 37 }
+        },
+        {
+            "filename": "59_butterfly_07.png",
+            "frame": { "x": 45, "y": 223, "w": 37, "h": 28 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 37, "h": 28 },
+            "sourceSize": { "w": 37, "h": 28 }
+        },
+        {
+            "filename": "60_butterfly_08.png",
+            "frame": { "x": 435, "y": 222, "w": 28, "h": 26 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 26 },
+            "sourceSize": { "w": 28, "h": 26 }
+        },
+        {
+            "filename": "61_butterfly_09.png",
+            "frame": { "x": 1227, "y": 232, "w": 16, "h": 16 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
+            "sourceSize": { "w": 16, "h": 16 }
+        },
+        {
+            "filename": "62_butterfly_10.png",
+            "frame": { "x": 736, "y": 239, "w": 13, "h": 11 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 13, "h": 11 },
+            "sourceSize": { "w": 13, "h": 11 }
+        },
+        {
+            "filename": "63_a.png",
+            "frame": { "x": 1057, "y": 206, "w": 42, "h": 43 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 43 },
+            "sourceSize": { "w": 42, "h": 43 }
+        },
+        {
+            "filename": "64_b.png",
+            "frame": { "x": 1251, "y": 56, "w": 37, "h": 44 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 37, "h": 44 },
+            "sourceSize": { "w": 37, "h": 44 }
+        },
+        {
+            "filename": "65_c.png",
+            "frame": { "x": 1246, "y": 162, "w": 38, "h": 44 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 44 },
+            "sourceSize": { "w": 38, "h": 44 }
+        },
+        {
+            "filename": "66_d.png",
+            "frame": { "x": 1145, "y": 206, "w": 41, "h": 45 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 41, "h": 45 },
+            "sourceSize": { "w": 41, "h": 45 }
+        },
+        {
+            "filename": "67_e.png",
+            "frame": { "x": 1021, "y": 196, "w": 34, "h": 45 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 34, "h": 45 },
+            "sourceSize": { "w": 34, "h": 45 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "traces_ctr2.png",
+        "format": "RGBA8888",
+        "size": { "w": 1289, "h": 255 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:a1f91af2b08f90c091cffe9d549b38a7:1921cfd29c9ba9f10d27b7b89bae2a79:69ad8f70d54761fb4e0edc911e890395$"
+    }
+}

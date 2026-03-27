@@ -1,0 +1,37 @@
+{
+    "frames": [
+        {
+            "filename": "1_yellow_glow.png",
+            "frame": { "x": 117, "y": 1, "w": 103, "h": 203 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 103, "h": 203 },
+            "sourceSize": { "w": 103, "h": 203 }
+        },
+        {
+            "filename": "2_blue_glow.png",
+            "frame": { "x": 1, "y": 1, "w": 114, "h": 222 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 114, "h": 222 },
+            "sourceSize": { "w": 114, "h": 222 }
+        },
+        {
+            "filename": "3_white_glow.png",
+            "frame": { "x": 222, "y": 1, "w": 103, "h": 203 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 103, "h": 203 },
+            "sourceSize": { "w": 103, "h": 203 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "traces_ctr2_glow.png",
+        "format": "RGBA8888",
+        "size": { "w": 326, "h": 224 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:8e8b9d1ccfe3800c71880cccdab1a3fe:bdd6dc750ddc4102a53cb90eb4dcf05d:59e8474724855870e165f4d2cc9c360d$"
+    }
+}
