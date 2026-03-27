@@ -21,13 +21,13 @@ namespace CutTheRope.GameMain
         private void LoadTarget(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
-            string supportResourceName = PackConfig.GetSupportResourceName(pack);
+            int sittingPlatform = PackConfig.GetSittingPlatform(pack);
 
-            // Clamp quad index to valid range; fall back to first quad if pack index exceeds available quads
-            CTRTexture2D supportTexture = Application.GetTexture(supportResourceName);
-            int quadIndex = (pack >= 0 && pack < supportTexture.quadRects.Length) ? pack : 0;
+            // Clamp quad index to valid range; fall back to first quad for invalid values.
+            CTRTexture2D supportTexture = Application.GetTexture(Resources.Img.CharSupports);
+            int quadIndex = (sittingPlatform >= 0 && sittingPlatform < supportTexture.quadRects.Length) ? sittingPlatform : 0;
 
-            support = Image.Image_createWithResIDQuad(supportResourceName, quadIndex);
+            support = Image.Image_createWithResIDQuad(Resources.Img.CharSupports, quadIndex);
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 

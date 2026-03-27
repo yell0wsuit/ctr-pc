@@ -209,6 +209,23 @@
         "fr": "Tu as terminé le jeu !",
         "de": "Du hast das Spiel geschafft!"
     },
+    "GAME_FINISHED_THANKS": {
+        "en": "Thank you for playing Cut the Rope: DX.\nMake sure you visit Cut the Rope Home website for more Cut the Rope fun."
+    },
+    "GAME_FINISHED_WEBSITE_BTN": {
+        "en": "More Cut the Rope fun!",
+        "fr": "Toujours plus de Cut the Rope !",
+        "de": "Mehr Cut the Rope Spaß!",
+        "ru": "Еще больше веселья в игре Cut the Rope!",
+        "ko": "더 많은 Cut the Rope 재미!",
+        "zh": "更多 Cut the Rope 乐趣！",
+        "ja": "もっとCut the Ropeを楽しもう！",
+        "es": "¡Más diversión de Cut the Rope!",
+        "it": "Più divertimento con Cut the Rope!",
+        "nl": "Meer Cut the Rope plezier!",
+        "br": "Mais diversão de Cut the Rope!",
+        "ca": "Més diversió de Cut the Rope!"
+    },
     "GAME_FINISHED_TEXT2": {
         "en": "Check back for the new levels coming with the updates",
         "ru": "Новые уровни будут добавляться с обновлениями",

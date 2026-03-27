@@ -1,6 +1,8 @@
 [
     {
         "boxDataName": "ctroriginal_packs",
-        "saveSlot": 0
+        "saveSlot": 0,
+        "introVideo": "ctr_intro",
+        "outroVideo": "ctr_outro"
     }
 ]

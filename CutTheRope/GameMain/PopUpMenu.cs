@@ -37,14 +37,14 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Shows the "game finished" popup with completion text and an OK button.
+        /// Shows the "game finished" popup with completion text and button.
         /// </summary>
         public void ShowGameFinishedPopup()
         {
-            PopupTemplate template = PopupTemplate.Create()
+            PopupTemplate template = PopupTemplate.Create(PopupSize.Large)
                 .WithScaleMode(PopupScaleMode.Background)
-                .AddText(Application.GetString("GAME_FINISHED_TEXT"), Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 600f, offsetY: -170f)
-                .AddText(Application.GetString("GAME_FINISHED_TEXT2"), Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 700f, offsetY: 30f)
+                .AddText(Application.GetString("GAME_FINISHED_TEXT"), Resources.Fnt.BigFont, PopupAnchor.Text2, wrapWidth: 600f, offsetY: -250f)
+                .AddText(Application.GetString("GAME_FINISHED_THANKS"), Resources.Fnt.SmallFont, PopupAnchor.Text3, wrapWidth: 700f, offsetY: -30f)
                 .AddButton(Application.GetString("OK"), MenuButtonId.PopupOk);
 
             _ = builder.Show(template);

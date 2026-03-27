@@ -66,7 +66,7 @@ namespace CutTheRope.GameMain
 
             StopGameplayPrefetch();
 
-            string[] levelResources = LevelResourceScanner.GetRequiredResources(map, pack);
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(map);
             TrackSessionResources(levelResources);
 
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
@@ -185,7 +185,7 @@ namespace CutTheRope.GameMain
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                         ResetGameplayResourceSession();
                         EnsureCurrentMapLoaded();
-                        string[] levelResources = LevelResourceScanner.GetRequiredResources(loadedMap, pack);
+                        string[] levelResources = LevelResourceScanner.GetRequiredResources(loadedMap);
                         TrackSessionResources(levelResources);
                         StartBoxResourceScanIfNeeded();
                         resourceMgr.InitLoading();
@@ -234,7 +234,7 @@ namespace CutTheRope.GameMain
                         }
                         if (nextController == 3)
                         {
-                            menuController3.viewToShow = pack < CTRPreferences.GetPacksCount() - 1 ? 5 : 7;
+                            menuController3.viewToShow = pack < CTRPreferences.GetPacksCount() - 1 ? 5 : (PackConfig.OutroVideo != null ? 7 : 5);
                         }
                         ActivateChild(1);
                         if (nextController == 3)

@@ -20,19 +20,33 @@ namespace CutTheRope.GameMain
         int unlockStars,
         int levelCount,
         int saveSlot,
+        string packSpritesheet,
+        int packQuadIndex,
         string[] boxBackgrounds,
         int boxBackgroundP2Y,
-        string supportResourceName,
+        int sittingPlatform,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
         string[] musicPack,
         string[] musicList,
         bool earthBg,
         Vector? earthBgPosition,
-        string boxLabelText)
+        string boxLabelText,
+        string packName,
+        RGBAColor? ghostGrabColor
+    )
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
+
+        /// <summary>Resource ID for the spritesheet containing this pack's box sprite.</summary>
+        public string PackSpritesheet { get; } = packSpritesheet;
+
+        /// <summary>Quad index within <see cref="PackSpritesheet"/> for this pack's box sprite.</summary>
+        public int PackQuadIndex { get; } = packQuadIndex;
+
+        /// <summary>The localized box pack name.</summary>
+        public string PackName { get; } = packName;
 
         /// <summary>String resource names for pack assets.</summary>
         public string[] BoxBackgrounds { get; } = boxBackgrounds;
@@ -40,8 +54,8 @@ namespace CutTheRope.GameMain
         /// <summary>Y position for secondary background (p2) in long levels. 0 means no p2.</summary>
         public int BoxBackgroundP2Y { get; } = boxBackgroundP2Y;
 
-        /// <summary>String resource name for the support asset.</summary>
-        public string SupportResourceName { get; } = supportResourceName;
+        /// <summary>Quad index in <see cref="Resources.Img.CharSupports"/> used for the support platform.</summary>
+        public int SittingPlatform { get; } = sittingPlatform;
 
         /// <summary>String resource names for cover assets.</summary>
         public string[] BoxCovers { get; } = boxCovers;
@@ -69,6 +83,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Localization key for optional box label text (e.g., "the hardest one").</summary>
         public string BoxLabelText { get; } = boxLabelText;
+
+        /// <summary>Optional ghost grab circle color override. When null, the default color is used.</summary>
+        public RGBAColor? GhostGrabColor { get; } = ghostGrabColor;
     }
 
     /// <summary>
@@ -93,11 +110,19 @@ namespace CutTheRope.GameMain
         private static readonly RGBAColor DefaultBoxHoleBgColor = RGBAColor.MakeRGBA(45 / 255f, 45 / 255f, 53 / 255f, 1f);
 
         private static readonly List<PackDefinition> packs;
+        private static readonly int playablePackCount;
+
+        /// <summary>Video filename for the intro movie (without extension), or null to skip.</summary>
+        public static string IntroVideo { get; private set; }
+
+        /// <summary>Video filename for the outro/completion movie (without extension), or null to skip.</summary>
+        public static string OutroVideo { get; private set; }
 
         static PackConfig()
         {
             List<PackListEntry> packListEntries = LoadPackListEntries();
             packs = LoadPacksFromEntries(packListEntries);
+            playablePackCount = packs.Count(p => p.LevelCount > 0);
             MaxLevelsPerPack = packs.Count > 0 ? packs.Max(p => p.LevelCount) : 0;
         }
 
@@ -107,7 +132,7 @@ namespace CutTheRope.GameMain
 
         public static int GetPackCount()
         {
-            return packs.Count;
+            return playablePackCount;
         }
 
         public static int GetLevelCount(int pack)
@@ -148,9 +173,9 @@ namespace CutTheRope.GameMain
                 : coverResourceName;
         }
 
-        public static string GetSupportResourceName(int pack)
+        public static int GetSittingPlatform(int pack)
         {
-            return pack >= 0 && pack < packs.Count ? packs[pack].SupportResourceName : null;
+            return pack >= 0 && pack < packs.Count ? packs[pack].SittingPlatform : 0;
         }
 
         public static string[] GetMusicPack(int pack)
@@ -190,6 +215,11 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].EarthBgPosition : null;
         }
 
+        public static RGBAColor? GetGhostGrabColor(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].GhostGrabColor : null;
+        }
+
         public static RGBAColor GetBoxHoleBgColor(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxHoleBgColor : DefaultBoxHoleBgColor;
@@ -198,6 +228,37 @@ namespace CutTheRope.GameMain
         public static string GetBoxLabelText(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].BoxLabelText : null;
+        }
+
+        public static string GetPackName(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].PackName : null;
+        }
+
+        public static string GetPackSpritesheet(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].PackSpritesheet : null;
+        }
+
+        public static int GetPackQuadIndex(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].PackQuadIndex : 0;
+        }
+
+        /// <summary>
+        /// Returns the index of the first non-playable pack entry (coming soon placeholder), or -1 if none.
+        /// </summary>
+        public static int GetComingSoonPackIndex()
+        {
+            for (int i = packs.Count - 1; i >= 0; i--)
+            {
+                if (packs[i].LevelCount == 0)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         private static List<PackListEntry> LoadPackListEntries()
@@ -265,6 +326,9 @@ namespace CutTheRope.GameMain
             }
 
             entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot));
+
+            IntroVideo ??= ParseStringProperty(entryElement, "introVideo");
+            OutroVideo ??= ParseStringProperty(entryElement, "outroVideo");
         }
 
         private static List<PackDefinition> LoadPacksFromEntries(IEnumerable<PackListEntry> packListEntries)
@@ -289,19 +353,28 @@ namespace CutTheRope.GameMain
 
                     int unlockStars = ParseIntProperty(packElement, "unlockStars", 0, packListEntry.ConfigFileName);
                     int levelCount = ParseIntProperty(packElement, "levelCount", 0, packListEntry.ConfigFileName);
+                    bool isPlayable = levelCount > 0;
+
+                    string packSpritesheetRaw = ParseStringProperty(packElement, "packSpritesheet");
+                    string packSpritesheet = ResolvePackSpritesheetId(packSpritesheetRaw);
+                    int packQuadIndex = ParseIntProperty(packElement, "packQuadIndex", 0, packListEntry.ConfigFileName);
 
                     string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
-                    RequireResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
+                    if (isPlayable)
+                    {
+                        RequireResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
+                    }
                     ValidateResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
 
                     int boxBackgroundP2Y = ParseIntProperty(packElement, "boxBackgroundP2Y", 0, packListEntry.ConfigFileName);
 
-                    string supportResourceName = ParseStringProperty(packElement, "supportResourceName");
-                    supportResourceName ??= Resources.Img.CharSupports;
-                    ValidateResourceName(supportResourceName, "supportResourceName", packListEntry.ConfigFileName);
+                    int sittingPlatform = ParseIntProperty(packElement, "sittingPlatform", 0, packListEntry.ConfigFileName);
 
                     string[] boxCovers = ParseResourceNames(packElement, "boxCover");
-                    RequireResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
+                    if (isPlayable)
+                    {
+                        RequireResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
+                    }
                     ValidateResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
 
                     RGBAColor boxHoleBgColor = ParseColorProperty(packElement, "boxHoleBgColor");
@@ -317,20 +390,31 @@ namespace CutTheRope.GameMain
 
                     string boxLabelText = ParseStringProperty(packElement, "boxLabelText");
 
-                    results.Add(new PackDefinition(
-                        unlockStars,
-                        levelCount,
-                        packListEntry.SaveSlot,
-                        boxBackgrounds,
-                        boxBackgroundP2Y,
-                        supportResourceName,
-                        boxCovers,
-                        boxHoleBgColor,
-                        musicPack,
-                        musicList,
-                        earthBg,
-                        earthBgPosition,
-                        boxLabelText));
+                    string packName = ParseStringProperty(packElement, "packName");
+
+                    RGBAColor? ghostGrabColor = ParseNullableColorProperty(packElement, "ghostGrabColor");
+
+                    results.Add(
+                        new PackDefinition(
+                            unlockStars,
+                            levelCount,
+                            packListEntry.SaveSlot,
+                            packSpritesheet,
+                            packQuadIndex,
+                            boxBackgrounds,
+                            boxBackgroundP2Y,
+                            sittingPlatform,
+                            boxCovers,
+                            boxHoleBgColor,
+                            musicPack,
+                            musicList,
+                            earthBg,
+                            earthBgPosition,
+                            boxLabelText,
+                            packName,
+                            ghostGrabColor
+                            )
+                        );
                 }
             }
 
@@ -346,6 +430,20 @@ namespace CutTheRope.GameMain
                 packsProperty.ValueKind == JsonValueKind.Array
                 ? packsProperty
                 : throw new InvalidDataException($"{configFileName} root must be a packs array or object with 'packs'.");
+        }
+
+        /// <summary>
+        /// Maps a shorthand spritesheet ID (e.g. "1", "2") to its full resource name.
+        /// Falls back to <see cref="Resources.Img.MenuPackSelection"/> for unrecognized or empty values.
+        /// </summary>
+        private static string ResolvePackSpritesheetId(string id)
+        {
+            return id switch
+            {
+                "1" => Resources.Img.MenuPackSelection,
+                "2" => Resources.Img.MenuPackSelection2,
+                _ => Resources.Img.MenuPackSelection,
+            };
         }
 
         private static string NormalizePacksConfigFileName(string packsConfigName)
@@ -551,6 +649,13 @@ namespace CutTheRope.GameMain
             }
 
             throw new InvalidDataException($"{fileName} has invalid vector value for '{propertyName}'.");
+        }
+
+        private static RGBAColor? ParseNullableColorProperty(JsonElement element, string propertyName)
+        {
+            return !element.TryGetProperty(propertyName, out JsonElement value) || value.ValueKind == JsonValueKind.Null
+                ? null
+                : ParseColorProperty(element, propertyName);
         }
 
         private static RGBAColor ParseColorProperty(JsonElement element, string propertyName)
