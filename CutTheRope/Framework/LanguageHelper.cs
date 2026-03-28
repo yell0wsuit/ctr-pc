@@ -152,6 +152,23 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
+        /// Gets the English display name for a language code (e.g. "ru" → "Russian").
+        /// </summary>
+        public static string GetLanguageDisplayName(string code)
+        {
+            return code switch
+            {
+                "en" => "English",
+                "ru" => "Russian",
+                "de" => "German",
+                "fr" => "French",
+                "zh" => "Chinese",
+                "ja" => "Japanese",
+                _ => code,
+            };
+        }
+
+        /// <summary>
         /// Gets the quad index for the current language's flag icon in MenuExtraButtons.
         /// </summary>
         public static int GetLanguageFlagQuadIndex()

@@ -37,10 +37,13 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
+        public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d, bool selected = false)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 3);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 2);
+            // When selected, swap quads so the "down" look is the default state
+            int upQuad = selected ? 2 : 3;
+            int downQuad = selected ? 3 : 2;
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, upQuad);
+            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, downQuad);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
@@ -538,8 +541,8 @@ namespace CutTheRope.GameMain
             _ = hBox2.AddChild(toggleButton2);
             _ = hBox2.AddChild(toggleButton);
             _ = vBox.AddChild(hBox2);
-            Button c = CreateLanguageButtonWithIDDelegate(MenuButtonId.Language, this);
-            _ = vBox.AddChild(c);
+            Button langBtn = CreateButtonWithTextIDDelegate(Application.GetString("LANGUAGE"), MenuButtonId.ShowLanguage, this);
+            _ = vBox.AddChild(langBtn);
             Button c2 = CreateButtonWithTextIDDelegate(Application.GetString("RESET"), MenuButtonId.ShowReset, this);
             _ = vBox.AddChild(c2);
             Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("CREDITS"), MenuButtonId.ShowCredits, this);
@@ -596,6 +599,48 @@ namespace CutTheRope.GameMain
             _ = menuView.AddChild(button3);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 4);
+        }
+
+        public void CreateLanguageSelection()
+        {
+            MenuView menuView = new();
+            BaseElement baseElement = CreateBackgroundWithLogo(false);
+
+            IReadOnlyList<string> langCodes = LanguageHelper.UiLanguageCodes;
+            string currentLocale = LanguageHelper.CurrentCode;
+            int columns = 2;
+
+            // Build rows using VBox of HBoxes (same pattern as options menu)
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
+            vBox.anchor = vBox.parentAnchor = 18;
+
+            for (int i = 0; i < langCodes.Count; i += columns)
+            {
+                string firstName = LanguageHelper.GetLanguageDisplayName(langCodes[i]);
+                bool firstSelected = langCodes[i] == currentLocale;
+                Button firstButton = CreateShortButtonWithTextIDDelegate(firstName, MenuButtonId.ForLanguage(i), this, firstSelected);
+                HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, firstButton.height);
+                _ = hBox.AddChild(firstButton);
+
+                for (int j = 1; j < columns && i + j < langCodes.Count; j++)
+                {
+                    string name = LanguageHelper.GetLanguageDisplayName(langCodes[i + j]);
+                    bool selected = langCodes[i + j] == currentLocale;
+                    Button button = CreateShortButtonWithTextIDDelegate(name, MenuButtonId.ForLanguage(i + j), this, selected);
+                    _ = hBox.AddChild(button);
+                }
+
+                _ = vBox.AddChild(hBox);
+            }
+
+            _ = baseElement.AddChild(vBox);
+            _ = menuView.AddChild(baseElement);
+            Button backButton = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromLanguage);
+            backButton.SetName("backb");
+            backButton.x = Canvas.xOffsetScaled;
+            _ = menuView.AddChild(backButton);
+            AttachSnowfallOverlay(menuView);
+            AddViewwithID(menuView, VIEW_LANGUAGE_SELECT);
         }
 
         public void CreateMovieView()
@@ -1123,6 +1168,7 @@ namespace CutTheRope.GameMain
             CreateMainMenu();
             CreateOptions();
             CreateReset();
+            CreateLanguageSelection();
             CreateAbout();
             CreateCandySelection();
             CreateMovieView();
@@ -1326,6 +1372,41 @@ namespace CutTheRope.GameMain
                 return;
             }
 
+            if (n.IsLanguageSelectButton())
+            {
+                int langIndex = n.GetLanguageSelectIndex();
+                IReadOnlyList<string> langCodes = LanguageHelper.UiLanguageCodes;
+                if (langIndex >= 0 && langIndex < langCodes.Count)
+                {
+                    string newLocale = langCodes[langIndex];
+                    Application.SharedAppSettings().SetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE, newLocale);
+                    Preferences.SetStringForKey(newLocale, "PREFS_LOCALE", true);
+                    CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
+                    ctrresourceMgr2.FreePack(PackLocalizationMenu);
+                    ctrresourceMgr2.ClearCachedFonts();
+                    ctrresourceMgr2.InitLoading();
+                    ctrresourceMgr2.LoadPack(PackLocalizationMenu);
+                    ctrresourceMgr2.LoadImmediately();
+                    DeleteView(VIEW_PACK_SELECT);
+                    CreatePackSelect();
+                    DeleteView(VIEW_MAIN_MENU);
+                    CreateMainMenu();
+                    DeleteView(VIEW_RESET);
+                    CreateReset();
+                    DeleteView(VIEW_LANGUAGE_SELECT);
+                    CreateLanguageSelection();
+                    DeleteView(VIEW_ABOUT);
+                    CreateAbout();
+                    DeleteView(VIEW_CANDY_SELECT);
+                    CreateCandySelection();
+                    CreateLeaderboards();
+                    ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01f);
+                    ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
+                    ShowView(VIEW_OPTIONS);
+                }
+                return;
+            }
+
             switch (n)
             {
                 case var id when id == MenuButtonId.Play:
@@ -1473,35 +1554,12 @@ namespace CutTheRope.GameMain
                         bScrolling = true;
                         break;
                     }
-                case var id when id == MenuButtonId.Language:
-                    {
-                        // Cycle through languages in the setting UI
-                        string currentLocale = Application.SharedAppSettings().GetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE);
-                        string nextLocale = LanguageHelper.GetNextUiLanguageCode(currentLocale);
-
-                        Application.SharedAppSettings().SetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE, nextLocale);
-                        Preferences.SetStringForKey(nextLocale, "PREFS_LOCALE", true);
-                        CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
-                        ctrresourceMgr2.FreePack(PackLocalizationMenu);
-                        ctrresourceMgr2.ClearCachedFonts();
-                        ctrresourceMgr2.InitLoading();
-                        ctrresourceMgr2.LoadPack(PackLocalizationMenu);
-                        ctrresourceMgr2.LoadImmediately();
-                        DeleteView(VIEW_PACK_SELECT);
-                        CreatePackSelect();
-                        DeleteView(VIEW_MAIN_MENU);
-                        CreateMainMenu();
-                        DeleteView(VIEW_RESET);
-                        CreateReset();
-                        DeleteView(VIEW_ABOUT);
-                        CreateAbout();
-                        DeleteView(VIEW_CANDY_SELECT);
-                        CreateCandySelection();
-                        CreateLeaderboards();
-                        ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01f);
-                        ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
-                        return;
-                    }
+                case var id when id == MenuButtonId.ShowLanguage:
+                    ShowView(VIEW_LANGUAGE_SELECT);
+                    return;
+                case var id when id == MenuButtonId.BackFromLanguage:
+                    ShowView(VIEW_OPTIONS);
+                    return;
                 case var id when id == MenuButtonId.BackFromPackSelect || id == MenuButtonId.BackFromOptions || id == MenuButtonId.BackFromLeaderboards || id == MenuButtonId.BackFromAchievements:
                     {
                         string[] array4 =
@@ -1825,6 +1883,9 @@ namespace CutTheRope.GameMain
                 case 4:
                     OnButtonPressed(MenuButtonId.BackToOptions);
                     break;
+                case VIEW_LANGUAGE_SELECT:
+                    OnButtonPressed(MenuButtonId.BackFromLanguage);
+                    break;
                 case 5:
                     OnButtonPressed(MenuButtonId.BackFromPackSelect);
                     break;
@@ -1911,6 +1972,8 @@ namespace CutTheRope.GameMain
         public const int VIEW_ACHIEVEMENTS = 9;
 
         public const int VIEW_CANDY_SELECT = 10;
+
+        public const int VIEW_LANGUAGE_SELECT = 11;
         public DelayedDispatcher ddMainMenu;
 
         public DelayedDispatcher ddPackSelect;
