@@ -53,13 +53,13 @@ namespace CutTheRope.GameMain
             };
             _ = gameView.AddChildwithID(gameScene, 0);
             int hudQuadOffset = CTRResourceMgr.GetHudButtonQuadOffset();
-            Button button = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.HudUi, hudQuadOffset, hudQuadOffset + 1, GameControllerButtonId.Pause, this);
+            Button button = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, hudQuadOffset, GameControllerButtonId.Pause, this);
             button.anchor = button.parentAnchor = 12;
             button.x = -Canvas.xOffsetScaled - 8f;
             button.y = 8f;
             _ = gameView.AddChildwithID(button, 1);
             const int HudUiRestartQuad = 0;
-            Button button2 = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.HudUi, HudUiRestartQuad, HudUiRestartQuad + 1, GameControllerButtonId.Restart, this);
+            Button button2 = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, HudUiRestartQuad, GameControllerButtonId.Restart, this);
             button2.anchor = button2.parentAnchor = 12;
             button2.x = -Canvas.xOffsetScaled - button.width - 16f;
             button2.y = 8f;

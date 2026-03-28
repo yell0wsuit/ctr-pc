@@ -117,16 +117,26 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        public static Button CreateButtonWithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, int bid, IButtonDelegation d)
+        public static Button CreateButtonWithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, ButtonId bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(resourceName, q1);
             Image image2 = Image.Image_createWithResIDQuad(resourceName, q2);
-            image.DoRestoreCutTransparency();
-            image2.DoRestoreCutTransparency();
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
             button.delegateButtonDelegate = d;
             CTRTexture2D texture = Application.GetTexture(resourceName);
             button.ForceTouchRect(MakeRectangle(texture.quadOffsets[q1].X, texture.quadOffsets[q1].Y, texture.quadRects[q1].w, texture.quadRects[q1].h));
+            return button;
+        }
+
+        public static Button CreateButtonWithImageQuadIDDelegate(string resourceName, int quad, int bid, IButtonDelegation d)
+        {
+            Image up = Image.Image_createWithResIDQuad(resourceName, quad);
+            up.color.AlphaChannel = 0.6f;
+            Image down = Image.Image_createWithResIDQuad(resourceName, quad);
+            Button button = new Button().InitWithUpElementDownElementandID(up, down, bid);
+            button.delegateButtonDelegate = d;
+            CTRTexture2D texture = Application.GetTexture(resourceName);
+            button.ForceTouchRect(MakeRectangle(texture.quadOffsets[quad].X, texture.quadOffsets[quad].Y, texture.quadRects[quad].w, texture.quadRects[quad].h));
             return button;
         }
 

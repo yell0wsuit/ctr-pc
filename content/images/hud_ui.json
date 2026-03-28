@@ -1,16 +1,8 @@
 {
     "frames": [
         {
-            "filename": "00_hud_restart_button_frame_0000.png",
-            "frame": { "x": 1436, "y": 1, "w": 96, "h": 97 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 96, "h": 97 },
-            "sourceSize": { "w": 96, "h": 97 }
-        },
-        {
             "filename": "01_hud_restart_button_frame_0001.png",
-            "frame": { "x": 1534, "y": 1, "w": 96, "h": 97 },
+            "frame": { "x": 206, "y": 305, "w": 96, "h": 97 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 96, "h": 97 },
@@ -18,7 +10,7 @@
         },
         {
             "filename": "02_hud_star_frame_0000.png",
-            "frame": { "x": 1632, "y": 1, "w": 86, "h": 87 },
+            "frame": { "x": 1, "y": 407, "w": 86, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 5, "y": 4, "w": 86, "h": 87 },
@@ -26,7 +18,7 @@
         },
         {
             "filename": "03_hud_star_frame_0001.png",
-            "frame": { "x": 1434, "y": 103, "w": 60, "h": 87 },
+            "frame": { "x": 265, "y": 404, "w": 60, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 18, "y": 4, "w": 60, "h": 87 },
@@ -34,7 +26,7 @@
         },
         {
             "filename": "04_hud_star_frame_0002.png",
-            "frame": { "x": 1544, "y": 100, "w": 34, "h": 87 },
+            "frame": { "x": 411, "y": 1, "w": 34, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 31, "y": 4, "w": 34, "h": 87 },
@@ -42,7 +34,7 @@
         },
         {
             "filename": "05_hud_star_frame_0003.png",
-            "frame": { "x": 1612, "y": 100, "w": 14, "h": 87 },
+            "frame": { "x": 410, "y": 204, "w": 14, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 41, "y": 4, "w": 14, "h": 87 },
@@ -50,7 +42,7 @@
         },
         {
             "filename": "06_hud_star_frame_0004.png",
-            "frame": { "x": 1580, "y": 100, "w": 30, "h": 87 },
+            "frame": { "x": 411, "y": 90, "w": 30, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 33, "y": 4, "w": 30, "h": 87 },
@@ -58,7 +50,7 @@
         },
         {
             "filename": "07_hud_star_frame_0005.png",
-            "frame": { "x": 1496, "y": 100, "w": 46, "h": 87 },
+            "frame": { "x": 401, "y": 394, "w": 46, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 25, "y": 4, "w": 46, "h": 87 },
@@ -66,7 +58,7 @@
         },
         {
             "filename": "08_hud_star_frame_0006.png",
-            "frame": { "x": 1808, "y": 1, "w": 62, "h": 87 },
+            "frame": { "x": 386, "y": 305, "w": 62, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 17, "y": 4, "w": 62, "h": 87 },
@@ -74,7 +66,7 @@
         },
         {
             "filename": "09_hud_star_frame_0007.png",
-            "frame": { "x": 1802, "y": 90, "w": 72, "h": 87 },
+            "frame": { "x": 327, "y": 394, "w": 72, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 12, "y": 4, "w": 72, "h": 87 },
@@ -82,7 +74,7 @@
         },
         {
             "filename": "10_hud_star_frame_0008.png",
-            "frame": { "x": 1720, "y": 90, "w": 80, "h": 87 },
+            "frame": { "x": 304, "y": 305, "w": 80, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 8, "y": 4, "w": 80, "h": 87 },
@@ -90,7 +82,7 @@
         },
         {
             "filename": "11_hud_star_frame_0009.png",
-            "frame": { "x": 1720, "y": 1, "w": 86, "h": 87 },
+            "frame": { "x": 89, "y": 407, "w": 86, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 5, "y": 4, "w": 86, "h": 87 },
@@ -98,22 +90,30 @@
         },
         {
             "filename": "12_hud_star_frame_0010.png",
-            "frame": { "x": 1632, "y": 90, "w": 86, "h": 87 },
+            "frame": { "x": 177, "y": 407, "w": 86, "h": 87 },
             "rotated": false,
             "trimmed": true,
             "spriteSourceSize": { "x": 5, "y": 4, "w": 86, "h": 87 },
             "sourceSize": { "w": 100, "h": 100 }
         },
         {
-            "filename": "13_hud_buttons_en_frame_0000.png",
-            "frame": { "x": 1, "y": 103, "w": 203, "h": 99 },
+            "filename": "14_hud_buttons_en_frame_0001.png",
+            "frame": { "x": 1, "y": 205, "w": 203, "h": 99 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 99 },
             "sourceSize": { "w": 203, "h": 99 }
         },
         {
-            "filename": "14_hud_buttons_en_frame_0001.png",
+            "filename": "16_hud_buttons_gr_frame_0001.png",
+            "frame": { "x": 206, "y": 204, "w": 202, "h": 99 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 202, "h": 99 },
+            "sourceSize": { "w": 202, "h": 99 }
+        },
+        {
+            "filename": "18_hud_buttons_ru_frame_0001.png",
             "frame": { "x": 206, "y": 103, "w": 203, "h": 99 },
             "rotated": false,
             "trimmed": false,
@@ -121,39 +121,7 @@
             "sourceSize": { "w": 203, "h": 99 }
         },
         {
-            "filename": "15_hud_buttons_gr_frame_0000.png",
-            "frame": { "x": 1026, "y": 103, "w": 202, "h": 99 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 202, "h": 99 },
-            "sourceSize": { "w": 202, "h": 99 }
-        },
-        {
-            "filename": "16_hud_buttons_gr_frame_0001.png",
-            "frame": { "x": 1230, "y": 103, "w": 202, "h": 99 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 202, "h": 99 },
-            "sourceSize": { "w": 202, "h": 99 }
-        },
-        {
-            "filename": "17_hud_buttons_ru_frame_0000.png",
-            "frame": { "x": 411, "y": 103, "w": 203, "h": 99 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 99 },
-            "sourceSize": { "w": 203, "h": 99 }
-        },
-        {
-            "filename": "18_hud_buttons_ru_frame_0001.png",
-            "frame": { "x": 616, "y": 103, "w": 203, "h": 99 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 99 },
-            "sourceSize": { "w": 203, "h": 99 }
-        },
-        {
-            "filename": "19_hud_buttons_ja_frame_0000.png",
+            "filename": "20_hud_buttons_ja_frame_0001.png",
             "frame": { "x": 1, "y": 1, "w": 203, "h": 100 },
             "rotated": false,
             "trimmed": false,
@@ -161,32 +129,8 @@
             "sourceSize": { "w": 203, "h": 100 }
         },
         {
-            "filename": "20_hud_buttons_ja_frame_0001.png",
-            "frame": { "x": 206, "y": 1, "w": 203, "h": 100 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 100 },
-            "sourceSize": { "w": 203, "h": 100 }
-        },
-        {
-            "filename": "21_hud_buttons_ko_frame_0000.png",
-            "frame": { "x": 411, "y": 1, "w": 203, "h": 100 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 100 },
-            "sourceSize": { "w": 203, "h": 100 }
-        },
-        {
             "filename": "22_hud_buttons_ko_frame_0001.png",
-            "frame": { "x": 616, "y": 1, "w": 203, "h": 100 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 100 },
-            "sourceSize": { "w": 203, "h": 100 }
-        },
-        {
-            "filename": "23_hud_buttons_zh_frame_0000.png",
-            "frame": { "x": 821, "y": 1, "w": 203, "h": 100 },
+            "frame": { "x": 1, "y": 103, "w": 203, "h": 100 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 100 },
@@ -194,15 +138,7 @@
         },
         {
             "filename": "24_hud_buttons_zh_frame_0001.png",
-            "frame": { "x": 1026, "y": 1, "w": 203, "h": 100 },
-            "rotated": false,
-            "trimmed": false,
-            "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 100 },
-            "sourceSize": { "w": 203, "h": 100 }
-        },
-        {
-            "filename": "25_hud_buttons_es_frame_0000.png",
-            "frame": { "x": 1231, "y": 1, "w": 203, "h": 100 },
+            "frame": { "x": 206, "y": 1, "w": 203, "h": 100 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 100 },
@@ -210,7 +146,7 @@
         },
         {
             "filename": "26_hud_buttons_es_frame_0001.png",
-            "frame": { "x": 821, "y": 103, "w": 203, "h": 99 },
+            "frame": { "x": 1, "y": 306, "w": 203, "h": 99 },
             "rotated": false,
             "trimmed": false,
             "spriteSourceSize": { "x": 0, "y": 0, "w": 203, "h": 99 },
@@ -222,8 +158,8 @@
         "version": "1.0",
         "image": "hud_ui.png",
         "format": "RGBA8888",
-        "size": { "w": 1875, "h": 203 },
+        "size": { "w": 449, "h": 495 },
         "scale": "1",
-        "smartupdate": "$TexturePacker:SmartUpdate:238fb946edff8f2ebe2467ae79d284e4:51b16fb1de0de9025239f1dd2aa8a92b:d72811c104bf469c10fafd6d6457bc47$"
+        "smartupdate": "$TexturePacker:SmartUpdate:4e6f73b8249276b286446c15f7ff3cf2:04b30d423353770f7b1c5dd743aa3235:d72811c104bf469c10fafd6d6457bc47$"
     }
 }

@@ -190,7 +190,7 @@ namespace CutTheRope.GameMain
             {
                 Timeline timeline2 = hudStar[i].GetCurrentTimeline();
                 timeline2?.StopTimeline();
-                const int HudUiStarFirstQuad = 2;
+                const int HudUiStarFirstQuad = 1;
                 hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
             }
         }

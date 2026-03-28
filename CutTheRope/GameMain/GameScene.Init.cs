@@ -65,8 +65,8 @@ namespace CutTheRope.GameMain
             UpdateBackgroundScale();
             for (int i = 0; i < 3; i++)
             {
-                const int HudUiStarFirstQuad = 2;
-                const int HudUiStarLastQuad = 12;
+                const int HudUiStarFirstQuad = 1;
+                const int HudUiStarLastQuad = 11;
                 hudStar[i] = Animation.Animation_createWithResID(Resources.Img.HudUi);
                 hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
                 _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, HudUiStarFirstQuad, HudUiStarLastQuad);

@@ -61,13 +61,13 @@ namespace CutTheRope.GameMain
         {
             return LanguageHelper.Current switch
             {
-                Language.LANGEN => 13,
-                Language.LANGFR => 13,
-                Language.LANGDE => 15,
-                Language.LANGRU => 17,
-                Language.LANGZH => throw new NotImplementedException(),
-                Language.LANGJA => throw new NotImplementedException(),
-                _ => 13,
+                Language.LANGEN => 12,
+                Language.LANGFR => 12,
+                Language.LANGDE => 13,
+                Language.LANGRU => 14,
+                Language.LANGJA => 15,
+                Language.LANGZH => 17,
+                _ => 12,
             };
         }
 
