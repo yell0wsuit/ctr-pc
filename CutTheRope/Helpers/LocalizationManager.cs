@@ -158,6 +158,16 @@ namespace CutTheRope.Helpers
                     {
                         result[prop.Name] = prop.Value.GetString() ?? string.Empty;
                     }
+                    else if (prop.Value.ValueKind == JsonValueKind.Object)
+                    {
+                        foreach (JsonProperty nested in prop.Value.EnumerateObject())
+                        {
+                            if (nested.Value.ValueKind == JsonValueKind.String)
+                            {
+                                result[nested.Name] = nested.Value.GetString() ?? string.Empty;
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
