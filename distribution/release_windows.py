@@ -7,8 +7,9 @@ from pathlib import Path
 
 try:
     import py7zr
+    from tqdm import tqdm
 except ImportError:
-    print("py7zr is required: pip install py7zr", file=sys.stderr)
+    print("Required: pip install py7zr tqdm", file=sys.stderr)
     sys.exit(1)
 
 SCRIPT_DIR = Path(__file__).parent
@@ -24,11 +25,15 @@ def package(version: str):
     archive_name = f"CutTheRopeDX-v{version}-Windows-x64.7z"
     archive_path = RELEASE_DIR / archive_name
 
+    files = sorted(f for f in OUTPUT_DIR.rglob("*") if f.is_file())
+    total_size = sum(f.stat().st_size for f in files)
+
     print(f"\nPackaging {archive_name}...")
     with py7zr.SevenZipFile(archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]) as archive:
-        for file in sorted(OUTPUT_DIR.rglob("*")):
-            if file.is_file():
+        with tqdm(total=total_size, unit="B", unit_scale=True) as pbar:
+            for file in files:
                 archive.write(file, str(file.relative_to(OUTPUT_DIR)))
+                pbar.update(file.stat().st_size)
 
     size_mb = archive_path.stat().st_size / (1024 * 1024)
     print(f"Created {archive_path} ({size_mb:.1f} MB)")

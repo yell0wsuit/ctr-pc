@@ -7,8 +7,9 @@ from pathlib import Path
 
 try:
     import py7zr
+    from tqdm import tqdm
 except ImportError:
-    print("py7zr is required: pip install py7zr", file=sys.stderr)
+    print("Required: pip install py7zr tqdm", file=sys.stderr)
     sys.exit(1)
 
 SCRIPT_DIR = Path(__file__).parent
@@ -29,14 +30,18 @@ def package(version: str):
         print(f"App bundle not found: {APP_BUNDLE}", file=sys.stderr)
         sys.exit(1)
 
+    files = sorted(f for f in APP_BUNDLE.rglob("*") if f.is_file())
+    total_size = sum(f.stat().st_size for f in files)
+
     print(f"\nPackaging {archive_name}...")
     with py7zr.SevenZipFile(
         archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]
     ) as archive:
-        for file in sorted(APP_BUNDLE.rglob("*")):
-            if file.is_file():
+        with tqdm(total=total_size, unit="B", unit_scale=True) as pbar:
+            for file in files:
                 arcname = str(Path("CutTheRope-DX.app") / file.relative_to(APP_BUNDLE))
                 archive.write(file, arcname)
+                pbar.update(file.stat().st_size)
 
     size_mb = archive_path.stat().st_size / (1024 * 1024)
     print(f"Created {archive_path} ({size_mb:.1f} MB)")
