@@ -1117,7 +1117,7 @@
 /processorParam:TextureFormat=Color
 /build:images/obj_lantern.png
 
-#begin images/obj_gap.png
+#begin images/obj_mouse.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1127,7 +1127,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/obj_gap.png
+/build:images/obj_mouse.png
 
 #begin images/small_font.png
 /importer:TextureImporter

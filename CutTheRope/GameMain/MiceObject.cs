@@ -204,7 +204,6 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates and configures the shared sprite container used by all mice.
         /// </summary>
-        /// <returns>A populated <see cref="Mouse.SharedMouseSprites"/> instance.</returns>
         private static Mouse.SharedMouseSprites CreateSharedSprites()
         {
             BaseElement container = new()
@@ -213,74 +212,74 @@ namespace CutTheRope.GameMain
                 parentAnchor = 18
             };
 
-            Animation body = Animation.Animation_createWithResID(Resources.Img.ObjGap);
+            Animation body = Animation.Animation_createWithResID(Resources.Img.ObjMouse);
             body.anchor = body.parentAnchor = 18;
             body.DoRestoreCutTransparency();
 
+            // ID 0: Entry empty — frames 1, 2, 3, 14
             body.AddAnimationWithIDDelayLoopCountSequence(
                 (int)MouseAnimationId.EntryEmpty,
                 0.05f,
                 Timeline.LoopType.TIMELINE_NO_LOOP,
-                3,
-                Mouse.ImgObjGapMouseStartQuad,
-                [
-                    Mouse.ImgObjGapMouseStartQuad + 1,
-                    Mouse.ImgObjGapMouseStartQuad + 2
-                ]);
+                4,
+                1,
+                [2, 3, 14]);
 
+            // ID 1: Entry with candy — frames 17, 19, 21, 24
             body.AddAnimationWithIDDelayLoopCountSequence(
                 (int)MouseAnimationId.EntryWithCandy,
                 0.05f,
                 Timeline.LoopType.TIMELINE_NO_LOOP,
-                3,
-                Mouse.ImgObjGapMouseStartQuad + 3,
-                [
-                    Mouse.ImgObjGapMouseStartQuad + 4,
-                    Mouse.ImgObjGapMouse0008Quad
-                ]);
+                4,
+                17,
+                [19, 21, Mouse.CandyInMouthQuad]);
 
+            // ID 3: Idle — single frame 24 (candy in mouth pose, plays after entry-with-candy)
+            body.AddAnimationWithIDDelayLoopFirstLast(
+                (int)MouseAnimationId.Idle,
+                0.05f,
+                Timeline.LoopType.TIMELINE_NO_LOOP,
+                Mouse.CandyInMouthQuad,
+                Mouse.CandyInMouthQuad);
+
+            // ID 2: Idle empty — single frame 4 (mouse body, no candy)
+            body.AddAnimationWithIDDelayLoopCountSequence(
+                (int)MouseAnimationId.IdleEmpty,
+                0.05f,
+                Timeline.LoopType.TIMELINE_NO_LOOP,
+                1,
+                Mouse.IdleQuad,
+                []);
+
+            // ID 4: Exit empty — frames 14, 15, 16, 18
             body.AddAnimationWithIDDelayLoopCountSequence(
                 (int)MouseAnimationId.ExitEmpty,
                 0.05f,
                 Timeline.LoopType.TIMELINE_NO_LOOP,
                 4,
-                Mouse.ImgObjGapMouseStartQuad + 2,
-                [
-                    Mouse.ImgObjGapMouseStartQuad + 6,
-                    Mouse.ImgObjGapMouseStartQuad + 7,
-                    Mouse.ImgObjGapMouseEndQuad
-                ]);
+                14,
+                [15, 16, Mouse.BlankQuad]);
 
+            // ID 5: Exit with candy — frames 24, 26, 28, 18
             body.AddAnimationWithIDDelayLoopCountSequence(
                 (int)MouseAnimationId.ExitWithCandy,
                 0.05f,
                 Timeline.LoopType.TIMELINE_NO_LOOP,
                 4,
-                Mouse.ImgObjGapMouse0008Quad,
-                [
-                    Mouse.ImgObjGapMouseStartQuad + 9,
-                    Mouse.ImgObjGapMouseStartQuad + 10,
-                    Mouse.ImgObjGapMouseEndQuad
-                ]);
-
-            body.AddAnimationWithIDDelayLoopFirstLast(
-                (int)MouseAnimationId.Idle,
-                0.05f,
-                Timeline.LoopType.TIMELINE_NO_LOOP,
-                Mouse.ImgObjGapIdleQuad,
-                Mouse.ImgObjGapIdleQuad);
+                Mouse.CandyInMouthQuad,
+                [26, 28, Mouse.BlankQuad]);
 
             _ = container.AddChild(body);
 
-            Animation eyes = Animation.Animation_createWithResID(Resources.Img.ObjGap);
+            // Eye blink animation — frames 5-13
+            Animation eyes = Animation.Animation_createWithResID(Resources.Img.ObjMouse);
             eyes.anchor = eyes.parentAnchor = 18;
             eyes.DoRestoreCutTransparency();
             _ = eyes.AddAnimationDelayLoopFirstLast(
                 0.05f,
                 Timeline.LoopType.TIMELINE_NO_LOOP,
-                Mouse.ImgObjGapEyesStartQuad,
-                Mouse.ImgObjGapEyesEndQuad);
-
+                Mouse.EyesStartQuad,
+                Mouse.EyesEndQuad);
             _ = container.AddChild(eyes);
             eyes.visible = false;
 
@@ -292,17 +291,15 @@ namespace CutTheRope.GameMain
             };
         }
 
-        /// <summary>
-        /// Identifiers for mouse animation states.
-        /// </summary>
         private enum MouseAnimationId
         {
             EntryEmpty = 0,
             EntryWithCandy = 1,
-            ExitEmpty = 2,
-            ExitWithCandy = 3,
-            Retreat = 4,
-            Idle = 5
+            IdleEmpty = 2,
+            Idle = 3,
+            ExitEmpty = 4,
+            ExitWithCandy = 5,
+            Bounce = 6
         }
 
         private readonly GameScene scene = scene;
