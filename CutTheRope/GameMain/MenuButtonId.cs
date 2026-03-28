@@ -43,6 +43,8 @@ namespace CutTheRope.GameMain
         UpdateDownload,
         OmNomSelect,
         TraceSelect,
+        ShowLanguage,
+        BackFromLanguage,
     }
 
     /// <summary>
@@ -232,6 +234,16 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static readonly MenuButtonId TraceSelect = MenuButton.TraceSelect;
 
+        /// <summary>
+        /// Opens language selection view.
+        /// </summary>
+        public static readonly MenuButtonId ShowLanguage = MenuButton.ShowLanguage;
+
+        /// <summary>
+        /// Navigates back from language selection.
+        /// </summary>
+        public static readonly MenuButtonId BackFromLanguage = MenuButton.BackFromLanguage;
+
         // Dynamic button IDs encode their type in the high byte and index in the low 24 bits.
         private const int LevelTag = 1 << 24;
         private const int PackTag = 2 << 24;
@@ -239,6 +251,7 @@ namespace CutTheRope.GameMain
         private const int RopeSlotTag = 4 << 24;
         private const int OmNomSlotTag = 5 << 24;
         private const int TraceSlotTag = 6 << 24;
+        private const int LanguageSelectTag = 7 << 24;
         private const int IndexMask = 0x00FFFFFF;
 
         /// <summary>
@@ -302,6 +315,16 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Creates an identifier for a language selection button.
+        /// </summary>
+        /// <param name="languageIndex">Zero-based language index in the UI language list.</param>
+        /// <returns>A tagged menu button identifier for the given language.</returns>
+        public static MenuButtonId ForLanguage(int languageIndex)
+        {
+            return new(LanguageSelectTag | languageIndex);
+        }
+
+        /// <summary>
         /// Determines whether this identifier represents a dynamic level button.
         /// </summary>
         /// <returns><see langword="true"/> when this is a level button; otherwise <see langword="false"/>.</returns>
@@ -356,6 +379,15 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Determines whether this identifier represents a dynamic language selection button.
+        /// </summary>
+        /// <returns><see langword="true"/> when this is a language selection button; otherwise <see langword="false"/>.</returns>
+        public bool IsLanguageSelectButton()
+        {
+            return (Value >> 24) == 7;
+        }
+
+        /// <summary>
         /// Gets the zero-based level index when this identifier is a level button.
         /// </summary>
         /// <returns>The level index, or <c>-1</c> when this is not a level button.</returns>
@@ -407,6 +439,15 @@ namespace CutTheRope.GameMain
         public int GetTraceIndex()
         {
             return IsTraceSlotButton() ? Value & IndexMask : -1;
+        }
+
+        /// <summary>
+        /// Gets the zero-based language index when this identifier is a language selection button.
+        /// </summary>
+        /// <returns>The language index, or <c>-1</c> when this is not a language selection button.</returns>
+        public int GetLanguageSelectIndex()
+        {
+            return IsLanguageSelectButton() ? Value & IndexMask : -1;
         }
 
         /// <summary>
