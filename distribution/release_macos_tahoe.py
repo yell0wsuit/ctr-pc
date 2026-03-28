@@ -16,21 +16,27 @@ PROJECT_ROOT = SCRIPT_DIR / ".."
 CSPROJ = PROJECT_ROOT / "CutTheRope" / "CutTheRope.csproj"
 OUTPUT_DIR = PROJECT_ROOT / "CutTheRope" / "bin" / "Publish" / "osx-arm64"
 RELEASE_DIR = PROJECT_ROOT / "CutTheRope" / "bin" / "release_github"
+APP_BUNDLE = OUTPUT_DIR / "CutTheRope-DX.app"
 
 
 def package(version: str):
-    """Compress the build output into a .7z archive."""
+    """Compress only the .app bundle into a .7z archive."""
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
     archive_name = f"CutTheRopeDX-v{version}-macOS-arm64-avfoundation.7z"
     archive_path = RELEASE_DIR / archive_name
+
+    if not APP_BUNDLE.exists():
+        print(f"App bundle not found: {APP_BUNDLE}", file=sys.stderr)
+        sys.exit(1)
 
     print(f"\nPackaging {archive_name}...")
     with py7zr.SevenZipFile(
         archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]
     ) as archive:
-        for file in sorted(OUTPUT_DIR.rglob("*")):
+        for file in sorted(APP_BUNDLE.rglob("*")):
             if file.is_file():
-                archive.write(file, str(file.relative_to(OUTPUT_DIR)))
+                arcname = str(Path("CutTheRope-DX.app") / file.relative_to(APP_BUNDLE))
+                archive.write(file, arcname)
 
     size_mb = archive_path.stat().st_size / (1024 * 1024)
     print(f"Created {archive_path} ({size_mb:.1f} MB)")
