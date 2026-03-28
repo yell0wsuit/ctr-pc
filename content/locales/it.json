@@ -65,5 +65,17 @@
     "ABOUT_SPECIAL_THANKS": "Controllo qualità:\n      SPL\n      Universally Speaking\n\n      Ringraziamenti speciali:\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      ZeptoLab, Cut the Rope, Om Nom, Nommies e Feed with Candy sono marchi o marchi registrati di\n      ZeptoLab UK Limited. © 2010-2015 ZeptoLab UK Limited. Tutti i diritti riservati.\n\n      Assistenza legale: Hughes Media Law Group",
     "PROCESSING": "Elaborazione in corso...",
     "CANDIES_BTN": "Caramelle",
-    "ROPE_SKINS_BTN": "Corde"
+    "ROPE_SKINS_BTN": "Corde",
+    "TUTORIAL_TEXTS": {
+        "TUTORIAL_LVL_12_1_01": "Il fantasma ha diverse forme. Tocca per passare da una all'altra.",
+        "TUTORIAL_LVL_13_1_01": "Tocca la valvola per spostarti tra le 3 modalità di pressione.",
+        "TUTORIAL_LVL_14_1_01": "Inserisci il bonbon in una lanterna e spunterà in tutte le altre",
+        "TUTORIAL_LVL_14_1_02": "Tocca una lanterna qualsiasi per far cadere il bonbon",
+        "TUTORIAL_LVL_15_1_01": "Il topo sta prendendo la caramella e dirigendosi verso le sue tane ",
+        "TUTORIAL_LVL_15_1_02": "Tocca il topo per far cadere la caramella",
+        "TUTORIAL_LVL_16_1_01": "Illumina Om Nom per svegliarlo",
+        "TUTORIAL_LVL_16_2_01": "Illumina le stelle per attivarle",
+        "TUTORIAL_LVL_17_1_01": "Trascina la cintura per usarla per spostare gli oggetti",
+        "TUTORIAL_LVL_17_8_01": "Puoi spostare gli oggetti da una cintura all’altra"
+    }
 }

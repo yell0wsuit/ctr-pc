@@ -65,5 +65,17 @@
     "ABOUT_SPECIAL_THANKS": "质量保证：\n      SPL\n      Universally Speaking\n\n      特别致谢：\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      *Zeptolab、Cut the Rope、Om Nom、Nommies以及Feed with Candy是*Zeptolab英国有限公司的*商标或注册商标。*© 2010-2015\n      Zeptolab英国有限公司。保留所有权利。\n\n      法律事务：Hughes Media Law Group",
     "PROCESSING": "正在*处理中 ...",
     "CANDIES_BTN": "糖果",
-    "ROPE_SKINS_BTN": "绳子"
+    "ROPE_SKINS_BTN": "绳子",
+    "TUTORIAL_TEXTS": {
+        "TUTORIAL_LVL_12_1_01": "幽灵*有多种*形态。*触按*可以*切换*形态。",
+        "TUTORIAL_LVL_13_1_01": "拍拍阀门*可以转换3种压力模式。",
+        "TUTORIAL_LVL_14_1_01": "把糖果放入其中一个灯笼，*其他灯笼都会蹦进糖果哦",
+        "TUTORIAL_LVL_14_1_02": "轻触任一灯笼，*丢出糖果",
+        "TUTORIAL_LVL_15_1_01": "老鼠正在抓糖果， 并把糖果 转移到不同的洞穴里",
+        "TUTORIAL_LVL_15_1_02": "点击老鼠图标 丢下糖果",
+        "TUTORIAL_LVL_16_1_01": "照亮 Om Nom 让他醒来",
+        "TUTORIAL_LVL_16_2_01": "照亮星星 即可激活",
+        "TUTORIAL_LVL_17_1_01": "拖动传送带，*移动它上面的物体",
+        "TUTORIAL_LVL_17_8_01": "您可以将物体 *从一条传送带 *转移到另一条。"
+    }
 }

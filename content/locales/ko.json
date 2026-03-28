@@ -65,5 +65,17 @@
     "ABOUT_SPECIAL_THANKS": "QA:\n      SPL\n      Universally Speaking\n\n      도움 주신 분들:\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      ZeptoLab, Cut the Rope, Om Nom, Nommies 및 Feed with Candy는 ZeptoLab UK Limited의 상표 또는 등록\n      상표입니다. © 2010-2015 ZeptoLab UK Limited. All rights reserved.\n\n      법률 자문: Hughes Media Law Group",
     "PROCESSING": "처리 중 ...",
     "CANDIES_BTN": "사탕",
-    "ROPE_SKINS_BTN": "로프"
+    "ROPE_SKINS_BTN": "로프",
+    "TUTORIAL_TEXTS": {
+        "TUTORIAL_LVL_12_1_01": "유령은 여러 모양으로 나타납니다. 유령을 터치하여 모양을 바꾸세요.",
+        "TUTORIAL_LVL_13_1_01": "밸브를 눌러 3가지 압력 모드 중 하나로 설정하세요.",
+        "TUTORIAL_LVL_14_1_01": "사탕을 등에 넣으면 *모든 등에서 사탕이* 나타납니다.",
+        "TUTORIAL_LVL_14_1_02": "등을 살짝 눌러서 *사탕을 떨어뜨리세요.",
+        "TUTORIAL_LVL_15_1_01": "생쥐가 사탕을 잡아 다른 구멍으로 옮깁니다 ",
+        "TUTORIAL_LVL_15_1_02": "생쥐를 탭하여 사탕을 떨어뜨리세요 ",
+        "TUTORIAL_LVL_16_1_01": "Om Nom 에게 조명을 비춰 잠을 깨우세요",
+        "TUTORIAL_LVL_16_2_01": "별에 조명을 비춰 움직이게 하세요",
+        "TUTORIAL_LVL_17_1_01": "컨베이어로 물건을 *옮기려면 벨트를 *드래그하세요.",
+        "TUTORIAL_LVL_17_8_01": "한 벨트에서 다른 *벨트로 물건을 옮길 수 *있습니다."
+    }
 }

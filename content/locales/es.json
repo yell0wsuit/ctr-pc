@@ -65,5 +65,17 @@
     "ABOUT_SPECIAL_THANKS": "Control de calidad:\n      SPL\n      Universally Speaking\n\n      Agradecimientos:\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      ZeptoLab, Cut the Rope, Om Nom, Nommies y Feed with Candy son marcas comerciales o marcas\n      registradas de ZeptoLab UK Limited. © 2010-2015 ZeptoLab UK Limited. Todos los derechos\n      reservados.\n\n      Asesoría legal: Hughes Media Law Group",
     "PROCESSING": "Procesando...",
     "CANDIES_BTN": "Caramelos",
-    "ROPE_SKINS_BTN": "Cuerdas"
+    "ROPE_SKINS_BTN": "Cuerdas",
+    "TUTORIAL_TEXTS": {
+        "TUTORIAL_LVL_12_1_01": "El fantasma tiene diversas formas.  Toca para cambiarlas.",
+        "TUTORIAL_LVL_13_1_01": "Toca la válvula para cambiar entre 3 modos de presión.",
+        "TUTORIAL_LVL_14_1_01": "Pon un caramelo en una linterna y aparecerá en las demás",
+        "TUTORIAL_LVL_14_1_02": "Toca cualquier linterna para hacer caer el caramelo",
+        "TUTORIAL_LVL_15_1_01": "El ratón atrapa golosinas y las lleva por los distintos hoyos",
+        "TUTORIAL_LVL_15_1_02": "Pulse sobre el ratón para soltar el dulce",
+        "TUTORIAL_LVL_16_1_01": "Ilumina a Om Nom para despertarlo",
+        "TUTORIAL_LVL_16_2_01": "Ilumina a las estrellas para activarlas",
+        "TUTORIAL_LVL_17_1_01": "Arrastra la cinta para mover objetos con ella",
+        "TUTORIAL_LVL_17_8_01": "Puedes cambiar objetos de una cinta a la otra "
+    }
 }

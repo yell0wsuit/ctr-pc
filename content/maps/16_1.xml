@@ -18,47 +18,47 @@
         <star x="111" y="356" timeout="-1" />
     </layer>
     <layer name="en">
-        <tutorialText x="170" y="320" locale="en" text="Illuminate Om Nom to wake him up" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="en" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
         <tutorial04 x="160" y="400" locale="en" angle="0" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="ru">
         <tutorial04 x="160" y="400" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="170" y="320" locale="ru" text="Посветите на Ам Няма, чтобы его разбудить" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="ru" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
     </layer>
     <layer name="fr">
         <tutorial04 x="160" y="400" locale="fr" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="170" y="320" locale="fr" text="Éclairez Om Nom pour le réveiller" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="fr" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
     </layer>
     <layer name="de">
-        <tutorialText x="170" y="320" locale="de" text="Beleuchte Om Nom, um ihn aufzuwecken" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="de" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
         <tutorial04 x="160" y="400" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="es">
-        <tutorialText x="170" y="320" locale="es" text="Ilumina a Om Nom para despertarlo" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="es" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
         <tutorial04 x="160" y="400" locale="es" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="it">
         <tutorial04 x="160" y="400" locale="it" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="170" y="320" locale="it" text="Illumina Om Nom per svegliarlo" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="it" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
     </layer>
     <layer name="nl">
-        <tutorialText x="170" y="320" locale="nl" text="Schijn op Om Nom om hem wakker te maken" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="nl" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
         <tutorial04 x="160" y="400" locale="nl" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="br">
         <tutorial04 x="160" y="400" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="170" y="320" locale="br" text="Ilumine Om Nom para acordá-lo" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="br" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
     </layer>
     <layer name="ko">
         <tutorial04 x="160" y="400" locale="ko" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="170" y="320" locale="ko" text="Om Nom 에게 조명을 비춰 잠을 깨우세요" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="ko" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
     </layer>
     <layer name="zh">
         <tutorial04 x="160" y="400" locale="zh" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="170" y="320" locale="zh" text="照亮 Om Nom 让他醒来" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="zh" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
     </layer>
     <layer name="ja">
         <tutorial04 x="160" y="400" locale="ja" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="170" y="320" locale="ja" text="Om Nom に*光を当てて*彼を起こす" width="120" height="60" />
+        <tutorialText x="170" y="320" locale="ja" text="TUTORIAL_LVL_16_1_01" width="120" height="60" />
     </layer>
 </map>

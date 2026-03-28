@@ -65,5 +65,17 @@
     "ABOUT_SPECIAL_THANKS": "品質管理：\n      SPL\n      Universally Speaking\n\n      スペシャル・*サンクス：\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      ZeptoLab、Cut the Rope、Om Nom、Nommies、Feed with Candy は ZeptoLab UK Limited の商標、または登録商標です。\n      © 2010-2015 ZeptoLab UK Limited.\n      All rights reserved.\n\n      法律顧問：*Hughes Media Law Group",
     "PROCESSING": "処理中 ...",
     "CANDIES_BTN": "キャンディー",
-    "ROPE_SKINS_BTN": "ロープ"
+    "ROPE_SKINS_BTN": "ロープ",
+    "TUTORIAL_TEXTS": {
+        "TUTORIAL_LVL_12_1_01": "オバケには*いくつかの形態が*あります。*タップすると*これを変えることが*できます。",
+        "TUTORIAL_LVL_13_1_01": "3つの*圧力*モードを*切り*替えるには*バルブを*タップ*して*ください。",
+        "TUTORIAL_LVL_14_1_01": "ちょうちんに*キャンディを*入れると*他のちょうちんに*弾けだします。",
+        "TUTORIAL_LVL_14_1_02": "キャンディを*落とすには*ちょうちんを*タップします。",
+        "TUTORIAL_LVL_15_1_01": "ネズミは キャンディを 手に入れて、 別の 穴へと 運んでいる ところです ",
+        "TUTORIAL_LVL_15_1_02": "ネズミを タップ すると、 キャンディを 落とします",
+        "TUTORIAL_LVL_16_1_01": "Om Nom に*光を当てて*彼を起こす",
+        "TUTORIAL_LVL_16_2_01": "スターに*光を当て て*アクティブ化する",
+        "TUTORIAL_LVL_17_1_01": "ベルトを *ドラッグして、 *目標の*下に *動かしてね。",
+        "TUTORIAL_LVL_17_8_01": "目標は、1つの *ベルトから *別の *ベルトに *移すことが *できるよ。"
+    }
 }

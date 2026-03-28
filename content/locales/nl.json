@@ -65,5 +65,17 @@
     "ABOUT_SPECIAL_THANKS": "Kwaliteitsbeheer:\n      SPL\n      Universally Speaking\n\n      Met bijzondere dank aan:\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      ZeptoLab, Cut the Rope, Om Nom, Nommies en Feed with Candy zijn handelsmerken of gedeponeerde\n      handelsmerken van ZeptoLab UK Limited. © 2010-2015 ZeptoLab UK Limited. Alle rechten\n      voorbehouden.\n\n      Juridische ondersteuning: Hughes Media Law Group",
     "PROCESSING": "Bezig met verwerken...",
     "CANDIES_BTN": "Snoep",
-    "ROPE_SKINS_BTN": "Touwen"
+    "ROPE_SKINS_BTN": "Touwen",
+    "TUTORIAL_TEXTS": {
+        "TUTORIAL_LVL_12_1_01": "Het spookje heeft allerlei vormen. Tik om van vorm te wisselen.",
+        "TUTORIAL_LVL_13_1_01": "Tik op het ventiel om tussen 3 drukstanden te schakelen.",
+        "TUTORIAL_LVL_14_1_01": "Stop een snoepje in een lampion en het verspringt naar alle andere lampionnen",
+        "TUTORIAL_LVL_14_1_02": "Raak de lampion aan waaruit je het snoepje wilt laten vallen",
+        "TUTORIAL_LVL_15_1_01": "De muis vangt snoep op en verplaatst het naar diverse gaten",
+        "TUTORIAL_LVL_15_1_02": "Tik op de muis zodat de snoep valt",
+        "TUTORIAL_LVL_16_1_01": "Schijn op Om Nom om hem wakker te maken",
+        "TUTORIAL_LVL_16_2_01": "Schijn op sterren om ze te activeren",
+        "TUTORIAL_LVL_17_1_01": "Versleep de Band om er een voorwerp op te laten bewegen",
+        "TUTORIAL_LVL_17_8_01": "Je kunt een voorwerp van de ene Band naar de andere verschuiven."
+    }
 }

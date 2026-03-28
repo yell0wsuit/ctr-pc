@@ -65,5 +65,17 @@
     "ABOUT_SPECIAL_THANKS": "Controle de Qualidade:\n      SPL\n      Universally Speaking\n\n      Agradecimentos especiais:\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk, Gonçalo Matos\n\n      ZeptoLab, Cut the Rope, Om Nom, Nommies e Feed with Candy são a marca ou marcas registradas da\n      ZeptoLab UK Limited. © 2010-2015 ZeptoLab UK Limited. Todos os direitos reservados.\n\n      Legal: Hughes Media Law Group",
     "PROCESSING": "Processando...",
     "CANDIES_BTN": "Doces",
-    "ROPE_SKINS_BTN": "Cordas"
+    "ROPE_SKINS_BTN": "Cordas",
+    "TUTORIAL_TEXTS": {
+        "TUTORIAL_LVL_12_1_01": "O Fantasma tem várias formas. Toque para trocá-las.",
+        "TUTORIAL_LVL_13_1_01": "Toque na válvula para escolher entre 3 níveis de pressão.",
+        "TUTORIAL_LVL_14_1_01": "Ponha um doce numa lanterna e ele surgirá em todas as outras",
+        "TUTORIAL_LVL_14_1_02": "Toque em qualquer lanterna para soltar o doce",
+        "TUTORIAL_LVL_15_1_01": "O rato coleciona doces e os carrega a buracos diferentes ",
+        "TUTORIAL_LVL_15_1_02": "Clique no mouse para soltar os doces ",
+        "TUTORIAL_LVL_16_1_01": "Ilumine Om Nom para acordá-lo",
+        "TUTORIAL_LVL_16_2_01": "Ilumine estrelas para ativá-las",
+        "TUTORIAL_LVL_17_1_01": "Arraste a esteira para mover os objetos que estão nela",
+        "TUTORIAL_LVL_17_8_01": "Você pode levar objetos de uma esteira para outra"
+    }
 }
