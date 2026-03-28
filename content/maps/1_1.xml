@@ -54,4 +54,32 @@
         <tutorial04 x="231" y="416" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="200" y="317" locale="de" text="TUTORIAL_LVL_1_1_02" width="100" />
     </layer>
+    <layer name="It">
+        <tutorialText x="177" y="25" locale="it" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="204" y="314" locale="it" text="TUTORIAL_LVL_1_1_02" width="100" />
+    </layer>
+    <layer name="Ja">
+        <tutorialText x="177" y="25" locale="ja" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="196" y="314" locale="ja" text="TUTORIAL_LVL_1_1_02" width="100" />
+    </layer>
+    <layer name="Es">
+        <tutorialText x="177" y="25" locale="es" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="203" y="296" locale="es" text="TUTORIAL_LVL_1_1_02" width="100" />
+    </layer>
+    <layer name="Zh">
+        <tutorialText x="177" y="47" locale="zh" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="196" y="323" locale="zh" text="TUTORIAL_LVL_1_1_02" width="100" />
+    </layer>
+    <layer name="Ko">
+        <tutorialText x="177" y="50" locale="ko" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="196" y="314" locale="ko" text="TUTORIAL_LVL_1_1_02" width="100" />
+    </layer>
+    <layer name="Br">
+        <tutorialText x="177" y="25" locale="br" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="196" y="314" locale="br" text="TUTORIAL_LVL_1_1_02" width="100" />
+    </layer>
+    <layer name="Nl">
+        <tutorialText x="177" y="25" locale="nl" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="202" y="297" locale="nl" text="TUTORIAL_LVL_1_1_02" width="100" />
+    </layer>
 </map>

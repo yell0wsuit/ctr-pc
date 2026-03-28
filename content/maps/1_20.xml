@@ -53,4 +53,25 @@
         <tutorial07 x="304" y="106" locale="de" angle="180" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="35" y="46" locale="de" text="TUTORIAL_LVL_1_20_01" width="250" />
     </layer>
+    <layer name="It">
+        <tutorialText x="45" y="48" locale="it" text="TUTORIAL_LVL_1_20_01" width="240" />
+    </layer>
+    <layer name="Ja">
+        <tutorialText x="10" y="50" locale="ja" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Es">
+        <tutorialText x="43" y="46" locale="es" text="TUTORIAL_LVL_1_20_01" width="240" />
+    </layer>
+    <layer name="Zh">
+        <tutorialText x="10" y="58" locale="zh" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Ko">
+        <tutorialText x="16" y="58" locale="ko" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Br">
+        <tutorialText x="10" y="50" locale="br" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Nl">
+        <tutorialText x="10" y="50" locale="nl" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
 </map>
