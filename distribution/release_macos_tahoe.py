@@ -29,6 +29,7 @@ def main():
         "net10.0-macos",
         "-r",
         "osx-arm64",
+        "-p:ValidateXcodeVersion=false",
         f"-p:VersionPrefix={version}",
         "-p:VersionSuffix=",
         f"-p:PublishAot={str(use_aot).lower()}",
