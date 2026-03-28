@@ -133,9 +133,15 @@ rm -rf "$BUILD_DIR"
 DEB_FILE="$PUBLISH_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb"
 DEB_SIZE=$(ls -lh "$DEB_FILE" | awk '{print $5}')
 
+# Copy to release_github
+RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
+mkdir -p "$RELEASE_DIR"
+cp "$DEB_FILE" "$RELEASE_DIR/"
+
 echo ""
 echo "=== Build complete! ==="
 echo "Package created: $DEB_FILE ($DEB_SIZE)"
+echo "Copied to:       $RELEASE_DIR/"
 echo ""
 echo "To install: sudo apt install $PUBLISH_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb"
 echo "To uninstall: sudo apt remove $APP_NAME"
