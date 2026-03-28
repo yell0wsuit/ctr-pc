@@ -222,6 +222,44 @@ namespace CutTheRope.GameMain
             float[] array = new float[sampleCount * 2];
             b.drawPtsCount = sampleCount * 2;
             float sampleStep = 1f / sampleCount;
+
+            // Draw outline for non-default rope skins
+            if (selectedRopeIndex >= 1 && count >= 3 && sampleCount > 0)
+            {
+                int outlineMaxPts = sampleCount + 2;
+                float[] outlinePts = new float[outlineMaxPts * 2];
+                int outlinePtCount = 0;
+                float outlineT = 0f;
+                for (; ; )
+                {
+                    if (outlineT > 1)
+                    {
+                        outlineT = 1f;
+                    }
+                    if (outlinePtCount + 2 > outlinePts.Length)
+                    {
+                        break;
+                    }
+                    Vector v = DrawHelper.CalcPathBezier(pts, count, outlineT);
+                    outlinePts[outlinePtCount++] = v.X;
+                    outlinePts[outlinePtCount++] = v.Y;
+                    if (outlineT >= 1f)
+                    {
+                        break;
+                    }
+                    outlineT += sampleStep;
+                }
+                float olx = -1f, oly = -1f, orx = -1f, ory = -1f;
+                RGBAColor outlineColor = RGBAColor.MakeRGBA(0, 0, 0, 0.4f * alphaMultiplier);
+                Renderer.SetColor(outlineColor.ToXNA());
+                int ptCount = outlinePtCount / 2;
+                for (int i = 0; i < ptCount - 1; i++)
+                {
+                    int idx = i * 2;
+                    DrawAntialiasedLineContinued(outlinePts[idx], outlinePts[idx + 1], outlinePts[idx + 2], outlinePts[idx + 3], 7f, outlineColor, ref olx, ref oly, ref orx, ref ory, false);
+                }
+            }
+
             float bezierT = 0f;
             int cachedPointCount = 0;
             int drawPointCount = 0;
