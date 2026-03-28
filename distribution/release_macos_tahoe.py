@@ -5,9 +5,35 @@ import subprocess
 import sys
 from pathlib import Path
 
+try:
+    import py7zr
+except ImportError:
+    print("py7zr is required: pip install py7zr", file=sys.stderr)
+    sys.exit(1)
+
 SCRIPT_DIR = Path(__file__).parent
-CSPROJ = SCRIPT_DIR / ".." / "CutTheRope" / "CutTheRope.csproj"
-OUTPUT_DIR = SCRIPT_DIR / ".." / "CutTheRope" / "bin" / "Publish" / "osx-arm64"
+PROJECT_ROOT = SCRIPT_DIR / ".."
+CSPROJ = PROJECT_ROOT / "CutTheRope" / "CutTheRope.csproj"
+OUTPUT_DIR = PROJECT_ROOT / "CutTheRope" / "bin" / "Publish" / "osx-arm64"
+RELEASE_DIR = PROJECT_ROOT / "CutTheRope" / "bin" / "release_github"
+
+
+def package(version: str):
+    """Compress the build output into a .7z archive."""
+    RELEASE_DIR.mkdir(parents=True, exist_ok=True)
+    archive_name = f"CutTheRopeDX-v{version}-macOS-arm64-avfoundation.7z"
+    archive_path = RELEASE_DIR / archive_name
+
+    print(f"\nPackaging {archive_name}...")
+    with py7zr.SevenZipFile(
+        archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]
+    ) as archive:
+        for file in sorted(OUTPUT_DIR.rglob("*")):
+            if file.is_file():
+                archive.write(file, str(file.relative_to(OUTPUT_DIR)))
+
+    size_mb = archive_path.stat().st_size / (1024 * 1024)
+    print(f"Created {archive_path} ({size_mb:.1f} MB)")
 
 
 def main():
@@ -43,7 +69,10 @@ def main():
     print(f"> {' '.join(cmd)}\n")
 
     result = subprocess.run(cmd, check=False)
-    sys.exit(result.returncode)
+    if result.returncode != 0:
+        sys.exit(result.returncode)
+
+    package(version)
 
 
 if __name__ == "__main__":
