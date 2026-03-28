@@ -24,10 +24,8 @@ TEMPLATES_DIR="$SCRIPT_DIR/templates/macos"
 # =========================
 VERSION="$1"
 if [ -z "$VERSION" ]; then
-    VERSION=$(dotnet msbuild "$PROJECT" \
-      -nologo -v:q \
-      -getProperty:InformationalVersion \
-      -p:Configuration=Release)
+    echo "Error: version is required. Usage: $0 <version>"
+    exit 1
 fi
 
 echo "=== Building Cut The Rope: DX v$VERSION for macOS ==="
