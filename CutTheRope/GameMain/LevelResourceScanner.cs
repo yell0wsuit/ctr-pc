@@ -93,7 +93,7 @@ namespace CutTheRope.GameMain
                         break;
                     case "gap":
                     case "mouse":
-                        _ = resources.Add(Resources.Img.ObjGap);
+                        _ = resources.Add(Resources.Img.ObjMouse);
                         break;
                     case "conveyorBelt":
                     case "transporter":
