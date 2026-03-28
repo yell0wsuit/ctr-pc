@@ -169,17 +169,20 @@ namespace CutTheRope.GameMain
                 alphaMultiplier
             );
 
-            // Create darker variants for shading (40% of base color)
+            // Create darker variants for shading
+            // Only the default skin (0) uses dark shading; other skins use full brightness
+            float darkFactor1 = selectedRopeIndex == 0 ? 0.4f : 1f;
+            float darkFactor2 = selectedRopeIndex == 0 ? 0.45f : 1f;
             RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * 0.4f * alphaMultiplier,
-                ropeColors.Color1.GreenColor * 0.4f * alphaMultiplier,
-                ropeColors.Color1.BlueColor * 0.4f * alphaMultiplier,
+                ropeColors.Color1.RedColor * darkFactor1 * alphaMultiplier,
+                ropeColors.Color1.GreenColor * darkFactor1 * alphaMultiplier,
+                ropeColors.Color1.BlueColor * darkFactor1 * alphaMultiplier,
                 alphaMultiplier
             );
             RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * 0.45f * alphaMultiplier,
-                ropeColors.Color2.GreenColor * 0.45f * alphaMultiplier,
-                ropeColors.Color2.BlueColor * 0.45f * alphaMultiplier,
+                ropeColors.Color2.RedColor * darkFactor2 * alphaMultiplier,
+                ropeColors.Color2.GreenColor * darkFactor2 * alphaMultiplier,
+                ropeColors.Color2.BlueColor * darkFactor2 * alphaMultiplier,
                 alphaMultiplier
             );
             if (b.highlighted)
