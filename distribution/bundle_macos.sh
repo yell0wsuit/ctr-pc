@@ -40,6 +40,7 @@ rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
     -f net10.0 \
+    -p:PublishAot=true \
     -r osx-arm64 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
