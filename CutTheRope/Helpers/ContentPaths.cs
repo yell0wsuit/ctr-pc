@@ -78,7 +78,7 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// The directory containing per-language localization JSON files.
         /// </summary>
-        public const string StringsDirectory = "strings";
+        public const string StringsDirectory = "locales";
 
         /// <summary>
         /// Gets the path to a per-language localization JSON file.
