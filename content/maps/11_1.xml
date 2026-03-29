@@ -34,24 +34,31 @@
         <tutorial04 x="297" y="135" locale="fr" angle="-55" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="It">
+        <tutorial04 x="290" y="135" locale="it" angle="-55" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="115" y="37" locale="it" text="TUTORIAL_LVL_11_1_01" width="195" />
     </layer>
     <layer name="Ja">
+        <tutorial04 x="290" y="135" locale="ja" angle="-55" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="126" y="45" locale="ja" text="TUTORIAL_LVL_11_1_01" width="200" />
     </layer>
     <layer name="Es">
+        <tutorial04 x="290" y="135" locale="es" angle="-55" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="137" y="37" locale="es" text="TUTORIAL_LVL_11_1_01" width="155" />
     </layer>
     <layer name="Zh">
+        <tutorial04 x="290" y="135" locale="zh" angle="-55" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="127" y="60" locale="zh" text="TUTORIAL_LVL_11_1_01" width="200" />
     </layer>
     <layer name="Ko">
+        <tutorial04 x="290" y="135" locale="ko" angle="-55" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="130" y="46" locale="ko" text="TUTORIAL_LVL_11_1_01" width="200" />
     </layer>
     <layer name="Br">
+        <tutorial04 x="290" y="135" locale="br" angle="-55" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="149" y="45" locale="br" text="TUTORIAL_LVL_11_1_01" width="150" />
     </layer>
     <layer name="Nl">
+        <tutorial04 x="290" y="135" locale="nl" angle="-55" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="156" y="41" locale="nl" text="TUTORIAL_LVL_11_1_01" width="150" />
     </layer>
 </map>

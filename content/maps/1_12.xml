@@ -30,24 +30,31 @@
         <tutorial09 x="39" y="68" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="It">
+        <tutorial09 x="68" y="64" locale="it" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="21" y="77" locale="it" text="TUTORIAL_LVL_1_12_01" width="100" />
     </layer>
     <layer name="Ja">
+        <tutorial09 x="68" y="64" locale="ja" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="21" y="77" locale="ja" text="TUTORIAL_LVL_1_12_01" width="100" />
     </layer>
     <layer name="Es">
+        <tutorial09 x="57" y="64" locale="es" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="10" y="77" locale="es" text="TUTORIAL_LVL_1_12_01" width="100" />
     </layer>
     <layer name="Zh">
+        <tutorial09 x="81" y="61" locale="zh" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="31" y="77" locale="zh" text="TUTORIAL_LVL_1_12_01" width="100" />
     </layer>
     <layer name="Ko">
+        <tutorial09 x="68" y="64" locale="ko" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="21" y="77" locale="ko" text="TUTORIAL_LVL_1_12_01" width="100" />
     </layer>
     <layer name="Br">
+        <tutorial09 x="68" y="64" locale="br" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="21" y="77" locale="br" text="TUTORIAL_LVL_1_12_01" width="100" />
     </layer>
     <layer name="Nl">
+        <tutorial09 x="68" y="64" locale="nl" moveSpeed="100" rotateSpeed="100" />
         <tutorialText x="21" y="77" locale="nl" text="TUTORIAL_LVL_1_12_01" width="100" />
     </layer>
 </map>
