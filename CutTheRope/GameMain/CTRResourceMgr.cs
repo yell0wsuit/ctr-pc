@@ -30,7 +30,7 @@ namespace CutTheRope.GameMain
                         Language.LANGES => Resources.Img.MenuExtraButtonsEn,
                         Language.LANGIT => Resources.Img.MenuExtraButtonsEn,
                         Language.LANGNL => Resources.Img.MenuExtraButtonsEn,
-                        Language.LANGBR => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGPTBR => Resources.Img.MenuExtraButtonsEn,
                         Language.LANGKO => Resources.Img.MenuExtraButtonsEn,
                         Language.LANGJA => Resources.Img.MenuExtraButtonsEn,
                         Language.LANGZH => Resources.Img.MenuExtraButtonsEn,
@@ -57,7 +57,7 @@ namespace CutTheRope.GameMain
                 Language.LANGFR => 18,
                 Language.LANGDE => 19,
                 Language.LANGRU => 20,
-                Language.LANGBR => 21,
+                Language.LANGPTBR => 21,
                 Language.LANGES => 22,
                 Language.LANGIT => 23,
                 Language.LANGJA => 24,
@@ -84,7 +84,7 @@ namespace CutTheRope.GameMain
                 Language.LANGFR => 12,
                 Language.LANGIT => 12,
                 Language.LANGNL => 12,
-                Language.LANGBR => 12,
+                Language.LANGPTBR => 12,
                 _ => 12, // en fallback
             };
         }

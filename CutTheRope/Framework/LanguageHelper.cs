@@ -19,7 +19,7 @@ namespace CutTheRope.Framework
             "es", // Spanish
             "it", // Italian
             "nl", // Dutch
-            "br", // Portuguese (Brazilian)
+            "pt_br", // Portuguese (Brazilian)
             "ko", // Korean
             "ja", // Japanese
             "zh", // Chinese (Simplified)
@@ -128,7 +128,7 @@ namespace CutTheRope.Framework
                 Language.LANGES => "es",
                 Language.LANGIT => "it",
                 Language.LANGNL => "nl",
-                Language.LANGBR => "br",
+                Language.LANGPTBR => "pt_br",
                 Language.LANGKO => "ko",
                 Language.LANGJA => "ja",
                 Language.LANGZH => "zh",
@@ -151,7 +151,7 @@ namespace CutTheRope.Framework
                 "es" => Language.LANGES,
                 "it" => Language.LANGIT,
                 "nl" => Language.LANGNL,
-                "br" => Language.LANGBR,
+                "pt_br" => Language.LANGPTBR,
                 "ko" => Language.LANGKO,
                 "ja" => Language.LANGJA,
                 "zh" => Language.LANGZH,
@@ -182,7 +182,7 @@ namespace CutTheRope.Framework
             // Map Portuguese to Brazilian Portuguese
             if (code == "pt")
             {
-                return Language.LANGBR;
+                return Language.LANGPTBR;
             }
 
             Language lang = FromCode(code);
@@ -205,7 +205,7 @@ namespace CutTheRope.Framework
                 "es" => "Spanish",
                 "it" => "Italian",
                 "nl" => "Dutch",
-                "br" => "Portuguese",
+                "pt_br" => "Portuguese",
                 "ko" => "Korean",
                 "ja" => "Japanese",
                 "zh" => "Chinese",
