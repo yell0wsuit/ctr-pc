@@ -426,6 +426,17 @@ namespace CutTheRope.GameMain
                 };
             }
 
+            private static float GetFontSizeScale(int language)
+            {
+                return language switch
+                {
+                    (int)Language.LANGZH or (int)Language.LANGZHTW => 0.8f,
+                    (int)Language.LANGJA => 0.8f,
+                    (int)Language.LANGRU => 0.9f,
+                    _ => 1f,
+                };
+            }
+
             public static FontConfiguration GetConfiguration(string fontName, int language)
             {
                 return fontName switch
@@ -433,7 +444,7 @@ namespace CutTheRope.GameMain
                     Fnt.BigFont => new FontConfiguration
                     {
                         FontFile = GetFontFile(language),
-                        Size = 100f,
+                        Size = 100f * GetFontSizeScale(language),
                         Color = Color.White,
                         Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3),
                         LineSpacing = 5f,
@@ -442,7 +453,7 @@ namespace CutTheRope.GameMain
                     Fnt.SmallFont => new FontConfiguration
                     {
                         FontFile = GetFontFile(language),
-                        Size = 72f,
+                        Size = 72f * GetFontSizeScale(language),
                         Color = Color.Black,
                         Effects = FontEffectSettings.None,
                         LineSpacing = 5f,
@@ -451,7 +462,7 @@ namespace CutTheRope.GameMain
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
                         FontFile = StandardFont,
-                        Size = 100f,
+                        Size = 100f * GetFontSizeScale(language),
                         Color = Color.Black,
                         Effects = FontEffectSettings.None,
                         LineSpacing = 5f,
