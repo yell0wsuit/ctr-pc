@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using CutTheRope.Commons;
 using CutTheRope.Desktop;
+using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
@@ -74,7 +75,8 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
-            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + 256f;
+            float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
+            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + labelXOffset;
             mapNameLabel.y = RTD(-5);
             _ = image.AddChild(mapNameLabel);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
