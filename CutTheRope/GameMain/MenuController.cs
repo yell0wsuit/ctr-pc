@@ -415,16 +415,25 @@ namespace CutTheRope.GameMain
             text.parentAnchor = 9;
             text.anchor = 18;
             text.scaleX = text.scaleY = 0.75f;
+            text.SetAlignment(2);
             _ = image.AddChild(text);
             text.x = image.width / 2f;
             text.y = illustrationHeight + 37;
+            FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
+            float singleLineHeight = (font.FontHeight() + font.GetTopSpacing()) * text.scaleY;
+            float extraTextHeight = (text.height * text.scaleY) - singleLineHeight;
+            if (extraTextHeight > 0)
+            {
+                image.height = illustrationHeight + 140 + (int)extraTextHeight;
+            }
+            float checkY = illustrationHeight + 75 + extraTextHeight;
             if (bId != -1)
             {
                 ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(Resources.Img.MenuOptions, -1, 8, bId, delegateValue);
                 toggleButton.SetName("button");
                 toggleButton.parentAnchor = 9;
                 toggleButton.x = (image.width - toggleButton.width) / 2f;
-                toggleButton.y = illustrationHeight + 59;
+                toggleButton.y = checkY;
                 Image checkBg = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 9);
                 checkBg.parentAnchor = 9;
                 checkBg.x = ((image.width - checkBg.width) / 2f) - 10;
@@ -439,7 +448,7 @@ namespace CutTheRope.GameMain
                 Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 7);
                 image2.parentAnchor = 9;
                 image2.x = (image.width - image2.width) / 2f;
-                image2.y = illustrationHeight + 59;
+                image2.y = checkY;
                 Image checkBg = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 10);
                 checkBg.parentAnchor = 9;
                 checkBg.x = ((image.width - checkBg.width) / 2f) - 10;
