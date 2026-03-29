@@ -9,8 +9,8 @@
         <tutorialText text="TUTORIAL_LVL_17_8_01" x="142" y="93" locale="nl" width="100" />
     </layer>
     <layer name="Br">
-        <tutorial04 rotateSpeed="100" x="174" y="261" locale="br" />
-        <tutorialText text="TUTORIAL_LVL_17_8_01" x="142" y="115" locale="br" width="80" />
+        <tutorial04 rotateSpeed="100" x="174" y="261" locale="pt_br" />
+        <tutorialText text="TUTORIAL_LVL_17_8_01" x="142" y="115" locale="pt_br" width="80" />
     </layer>
     <layer name="It">
         <tutorial04 rotateSpeed="100" x="174" y="261" locale="it" />

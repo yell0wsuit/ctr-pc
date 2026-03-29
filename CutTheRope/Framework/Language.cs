@@ -9,7 +9,7 @@ namespace CutTheRope.Framework
         LANGES,
         LANGIT,
         LANGNL,
-        LANGBR,
+        LANGPTBR,
         LANGKO,
         LANGJA,
         LANGZH,

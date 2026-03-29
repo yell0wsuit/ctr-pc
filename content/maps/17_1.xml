@@ -10,9 +10,9 @@
         <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="nl" />
     </layer>
     <layer name="Br">
-        <tutorialText text="TUTORIAL_LVL_17_1_01" x="20" y="160" height="60" locale="br" width="150" />
-        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="br" />
-        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="br" />
+        <tutorialText text="TUTORIAL_LVL_17_1_01" x="20" y="160" height="60" locale="pt_br" width="150" />
+        <tutorial04 moveSpeed="100" angle="-80" rotateSpeed="100" x="150" y="240" locale="pt_br" />
+        <tutorial10 moveSpeed="100" path="-95,49," rotateSpeed="0" x="192" y="369" locale="pt_br" />
     </layer>
     <layer name="It">
         <tutorialText text="TUTORIAL_LVL_17_1_01" x="20" y="150" height="60" locale="it" width="150" />

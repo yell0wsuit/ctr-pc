@@ -30,9 +30,9 @@
         <tutorialText x="20" y="270" locale="en" text="TUTORIAL_LVL_12_1_01" width="200" height="60" />
         <tutorial04 x="222" y="340" locale="en" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
-    <layer name="br">
-        <tutorialText x="20" y="270" locale="br" text="TUTORIAL_LVL_12_1_01" width="200" height="60" />
-        <tutorial04 x="222" y="340" locale="br" angle="-60" moveSpeed="100" rotateSpeed="100" />
+    <layer name="pt_br">
+        <tutorialText x="20" y="270" locale="pt_br" text="TUTORIAL_LVL_12_1_01" width="200" height="60" />
+        <tutorial04 x="222" y="340" locale="pt_br" angle="-60" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="ja">
         <tutorialText x="20" y="270" locale="ja" text="TUTORIAL_LVL_12_1_01" width="200" height="60" />
