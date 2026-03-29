@@ -76,10 +76,10 @@
         <tutorialText x="5" y="230" locale="nl" text="TUTORIAL_LVL_15_1_01" width="160" />
         <tutorial09 x="34" y="314" locale="nl" moveSpeed="100" rotateSpeed="100" special="4" />
     </layer>
-    <layer name="br">
-        <tutorialText x="7" y="218" locale="br" text="TUTORIAL_LVL_15_1_01" width="130" />
-        <tutorial04 x="109" y="367" locale="br" angle="300" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="61" y="272" locale="br" text="TUTORIAL_LVL_15_1_02" width="170" special="4" />
-        <tutorial09 x="35" y="315" locale="br" moveSpeed="100" rotateSpeed="100" special="4" />
+    <layer name="pt_br">
+        <tutorialText x="7" y="218" locale="pt_br" text="TUTORIAL_LVL_15_1_01" width="130" />
+        <tutorial04 x="109" y="367" locale="pt_br" angle="300" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="61" y="272" locale="pt_br" text="TUTORIAL_LVL_15_1_02" width="170" special="4" />
+        <tutorial09 x="35" y="315" locale="pt_br" moveSpeed="100" rotateSpeed="100" special="4" />
     </layer>
 </map>

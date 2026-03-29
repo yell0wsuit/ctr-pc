@@ -51,8 +51,8 @@
         <tutorialText x="132" y="386" locale="ko" text="TUTORIAL_LVL_9_1_01" width="150" />
     </layer>
     <layer name="Br">
-        <tutorial04 x="126" y="401" locale="br" angle="90" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="152" y="392" locale="br" text="TUTORIAL_LVL_9_1_01" width="150" />
+        <tutorial04 x="126" y="401" locale="pt_br" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="152" y="392" locale="pt_br" text="TUTORIAL_LVL_9_1_01" width="150" />
     </layer>
     <layer name="Nl">
         <tutorial04 x="130" y="401" locale="nl" angle="90" moveSpeed="100" rotateSpeed="100" />

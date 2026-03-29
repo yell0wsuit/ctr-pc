@@ -94,12 +94,12 @@
         <tutorialText x="16" y="58" locale="ko" text="TUTORIAL_LVL_1_20_01" width="300" />
     </layer>
     <layer name="Br">
-        <tutorial01 x="54" y="110" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="107" y="110" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="160" y="110" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="210" y="109" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="264" y="109" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="10" y="50" locale="br" text="TUTORIAL_LVL_1_20_01" width="300" />
+        <tutorial01 x="54" y="110" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="10" y="50" locale="pt_br" text="TUTORIAL_LVL_1_20_01" width="300" />
     </layer>
     <layer name="Nl">
         <tutorial01 x="54" y="110" locale="nl" moveSpeed="100" rotateSpeed="100" />

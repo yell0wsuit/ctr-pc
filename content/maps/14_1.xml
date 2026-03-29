@@ -33,9 +33,9 @@
         <tutorialText x="50" y="250" locale="es" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
         <tutorialText x="60" y="50" locale="es" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
     </layer>
-    <layer name="br">
-        <tutorialText x="50" y="250" locale="br" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="br" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+    <layer name="pt_br">
+        <tutorialText x="50" y="250" locale="pt_br" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
+        <tutorialText x="60" y="50" locale="pt_br" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
     </layer>
     <layer name="ja">
         <tutorialText x="50" y="250" locale="ja" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />

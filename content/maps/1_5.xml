@@ -67,10 +67,10 @@
         <tutorialText x="21" y="44" locale="ko" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
     </layer>
     <layer name="Br">
-        <tutorial04 x="167" y="391" locale="br" angle="20" moveSpeed="100" rotateSpeed="100" />
-        <tutorial05 x="218" y="78" locale="br" moveSpeed="100" rotateSpeed="100" special="1" />
-        <tutorialText x="138" y="315" locale="br" text="TUTORIAL_LVL_1_5_02" width="160" />
-        <tutorialText x="11" y="44" locale="br" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
+        <tutorial04 x="167" y="391" locale="pt_br" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="pt_br" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="315" locale="pt_br" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="11" y="44" locale="pt_br" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
     </layer>
     <layer name="Nl">
         <tutorial04 x="167" y="391" locale="nl" angle="20" moveSpeed="100" rotateSpeed="100" />
