@@ -6,7 +6,7 @@
     </layer>
     <layer name="Objects">
         <steamTube x="272" y="344" angle="0" />
-        <bouncer1 x="64" y="229" angle="0" size="1" path="210,0" moveSpeed="50" />
+        <bouncer1 x="64" y="229" angle="0" size="1" path="240,0" moveSpeed="50" />
         <lantern x="278" y="120" candyCaptured="false" />
         <lantern x="206" y="119" candyCaptured="false" />
         <lantern x="130" y="119" candyCaptured="false" />
