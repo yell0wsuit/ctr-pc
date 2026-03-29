@@ -55,7 +55,7 @@
     "BOX11_LABEL": "DJ",
     "BOX12_LABEL": "Spookachtig",
     "BOX13_LABEL": "Stoomkast",
-    "BOX14_LABEL": "Lampionnendoos",
+    "BOX14_LABEL": "Lampionnen",
     "BOX15_LABEL": "Kaas",
     "BOX16_LABEL": "Kussendoos",
     "BOX17_LABEL": "Mechanisch",
@@ -66,6 +66,8 @@
     "PROCESSING": "Bezig met verwerken...",
     "CANDIES_BTN": "Snoep",
     "ROPE_SKINS_BTN": "Touwen",
+    "CANCEL": "Annuleren",
+    "QUIT": "Weet je zeker dat je wilt stoppen?",
     "TUTORIAL_TEXTS": {
         "TUTORIAL_LVL_1_1_01": "Schuif met je vinger om het touw door te snijden",
         "TUTORIAL_LVL_1_1_02": "Lever het snoepje af bij Om Nom",
