@@ -463,7 +463,7 @@ namespace CutTheRope.GameMain
                     Fnt.FontNumbersBig => new FontConfiguration
                     {
                         FontFile = StandardFont,
-                        Size = 100f * GetFontSizeScale(language),
+                        Size = 100f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None,
                         LineSpacing = 5f,
