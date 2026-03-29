@@ -83,7 +83,8 @@ namespace CutTheRope.GameMain
             text.SetName("levelLabel");
             text.x = 15f + Canvas.xOffsetScaled;
             text.y = SCREEN_HEIGHT + 15f;
-            text2.y = 30f; // the "Level" label in game
+            bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
+            text2.y = isChinese ? 20f : 30f; // the "Level" label in game
             text2.rotationCenterX -= text2.width / 2f;
             text2.scaleX = text2.scaleY = 0.7f;
             _ = text.AddChild(text2);
