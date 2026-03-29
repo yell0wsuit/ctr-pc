@@ -106,5 +106,6 @@
         "TUTORIAL_LVL_16_2_01": "Ilumina a las estrellas para activarlas",
         "TUTORIAL_LVL_17_1_01": "Arrastra la cinta para mover objetos con ella",
         "TUTORIAL_LVL_17_8_01": "Puedes cambiar objetos de una cinta a la otra "
-    }
+    },
+    "TRACES_BTN": "Huellas"
 }

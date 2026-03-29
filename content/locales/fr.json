@@ -154,5 +154,6 @@
         "TUTORIAL_LVL_16_2_01": "Éclairez les étoiles pour les activer",
         "TUTORIAL_LVL_17_1_01": "Faites glisser le tapis pour déplacer des objets",
         "TUTORIAL_LVL_17_8_01": "Vous pouvez passer des objets d’un tapis à l’autre"
-    }
+    },
+    "TRACES_BTN": "Traces"
 }

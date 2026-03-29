@@ -154,5 +154,6 @@
         "TUTORIAL_LVL_16_2_01": "Beleuchte die Sterne, um sie zu aktivieren",
         "TUTORIAL_LVL_17_1_01": "Ziehe das Band, um Objekte zu bewegen.",
         "TUTORIAL_LVL_17_8_01": "Du kannst Objekte von Band zu Band befördern."
-    }
+    },
+    "TRACES_BTN": "Spuren"
 }
