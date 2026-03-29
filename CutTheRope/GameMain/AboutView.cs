@@ -157,7 +157,9 @@ namespace CutTheRope.GameMain
             Image ZeptolabLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 1);
             _ = vBox.AddChild(ZeptolabLogo);
 
-            Text aboutBody = CreateCenteredTextBlock(Application.GetString("ABOUT_TEXT").ToString(), containerWidth);
+            string aboutText = Application.GetString("ABOUT_TEXT").ToString()
+                .Replace("%versionNo%", GetAssemblyVersion(), StringComparison.Ordinal);
+            Text aboutBody = CreateCenteredTextBlock(aboutText, containerWidth);
             _ = vBox.AddChild(aboutBody);
 
             Image bottomLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 2);
