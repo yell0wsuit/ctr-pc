@@ -147,7 +147,7 @@ namespace CutTheRope.GameMain
             buffer[index++] = v.Y;
         }
 
-        private static void DrawBungee(Bungee b, Vector[] pts, int count, int points, int segmentStartIndex)
+        private static void DrawBungee(Bungee b, Vector[] pts, int count, int points)
         {
             float alphaMultiplier = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
 
@@ -169,17 +169,20 @@ namespace CutTheRope.GameMain
                 alphaMultiplier
             );
 
-            // Create darker variants for shading (40% of base color)
+            // Create darker variants for shading
+            // Only the default skin (0) uses dark shading; other skins use full brightness
+            float darkFactor1 = selectedRopeIndex == 0 ? 0.4f : 1f;
+            float darkFactor2 = selectedRopeIndex == 0 ? 0.45f : 1f;
             RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * 0.4f * alphaMultiplier,
-                ropeColors.Color1.GreenColor * 0.4f * alphaMultiplier,
-                ropeColors.Color1.BlueColor * 0.4f * alphaMultiplier,
+                ropeColors.Color1.RedColor * darkFactor1 * alphaMultiplier,
+                ropeColors.Color1.GreenColor * darkFactor1 * alphaMultiplier,
+                ropeColors.Color1.BlueColor * darkFactor1 * alphaMultiplier,
                 alphaMultiplier
             );
             RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * 0.45f * alphaMultiplier,
-                ropeColors.Color2.GreenColor * 0.45f * alphaMultiplier,
-                ropeColors.Color2.BlueColor * 0.45f * alphaMultiplier,
+                ropeColors.Color2.RedColor * darkFactor2 * alphaMultiplier,
+                ropeColors.Color2.GreenColor * darkFactor2 * alphaMultiplier,
+                ropeColors.Color2.BlueColor * darkFactor2 * alphaMultiplier,
                 alphaMultiplier
             );
             if (b.highlighted)
@@ -219,6 +222,44 @@ namespace CutTheRope.GameMain
             float[] array = new float[sampleCount * 2];
             b.drawPtsCount = sampleCount * 2;
             float sampleStep = 1f / sampleCount;
+
+            // Draw outline for non-default rope skins
+            if (selectedRopeIndex >= 1 && count >= 3 && sampleCount > 0)
+            {
+                int outlineMaxPts = sampleCount + 2;
+                float[] outlinePts = new float[outlineMaxPts * 2];
+                int outlinePtCount = 0;
+                float outlineT = 0f;
+                for (; ; )
+                {
+                    if (outlineT > 1)
+                    {
+                        outlineT = 1f;
+                    }
+                    if (outlinePtCount + 2 > outlinePts.Length)
+                    {
+                        break;
+                    }
+                    Vector v = DrawHelper.CalcPathBezier(pts, count, outlineT);
+                    outlinePts[outlinePtCount++] = v.X;
+                    outlinePts[outlinePtCount++] = v.Y;
+                    if (outlineT >= 1f)
+                    {
+                        break;
+                    }
+                    outlineT += sampleStep;
+                }
+                float olx = -1f, oly = -1f, orx = -1f, ory = -1f;
+                RGBAColor outlineColor = RGBAColor.MakeRGBA(0, 0, 0, 0.4f * alphaMultiplier);
+                Renderer.SetColor(outlineColor.ToXNA());
+                int ptCount = outlinePtCount / 2;
+                for (int i = 0; i < ptCount - 1; i++)
+                {
+                    int idx = i * 2;
+                    DrawAntialiasedLineContinued(outlinePts[idx], outlinePts[idx + 1], outlinePts[idx + 2], outlinePts[idx + 3], 7f, outlineColor, ref olx, ref oly, ref orx, ref ory, false);
+                }
+            }
+
             float bezierT = 0f;
             int cachedPointCount = 0;
             int drawPointCount = 0;
@@ -277,7 +318,7 @@ namespace CutTheRope.GameMain
             }
 
             b.drawPtsCount = drawPointCount;
-            b.DrawChristmasLights(drawPointCount / 2, alphaMultiplier, segmentStartIndex);
+            b.DrawChristmasLights(alphaMultiplier);
         }
 
         public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
@@ -534,14 +575,16 @@ namespace CutTheRope.GameMain
                     ConstraintedPoint constraintedPoint = parts[i];
                     array[i] = constraintedPoint.pos;
                 }
-                DrawBungee(this, array, count, drawSamplePoints, 0);
+                s_lightCounter = 0;
+                s_lightStartCoord = 8;
+                s_lightEndSkip = 8;
+                DrawBungee(this, array, count, drawSamplePoints);
                 return;
             }
             Vector[] array2 = new Vector[count];
             Vector[] array3 = new Vector[count];
             bool flag = false;
             int tailPartCount = 0;
-            int cutIndex = 0;
             for (int j = 0; j < count; j++)
             {
                 ConstraintedPoint constraintedPoint2 = parts[j];
@@ -557,7 +600,6 @@ namespace CutTheRope.GameMain
                 if (constraintedPoint2.pin.X == -1f && !flag2)
                 {
                     flag = true;
-                    cutIndex = j;
                     array2[j] = constraintedPoint2.pos;
                 }
                 if (!flag)
@@ -571,33 +613,35 @@ namespace CutTheRope.GameMain
                 }
             }
             int headPartCount = count - tailPartCount;
+            s_lightCounter = 0;
+            s_lightSavedEnd = 0;
             if (headPartCount > 0)
             {
-                DrawBungee(this, array2, headPartCount, drawSamplePoints, 0);
+                s_lightStartCoord = 8;
+                s_lightEndSkip = tailPartCount > 0 ? 0 : 8;
+                DrawBungee(this, array2, headPartCount, drawSamplePoints);
             }
             if (tailPartCount > 0 && !hideTailParts)
             {
-                DrawBungee(this, array3, tailPartCount, drawSamplePoints, cutIndex);
+                s_lightStartCoord = headPartCount > 0 ? s_lightSavedEnd : 8;
+                DrawBungee(this, array3, tailPartCount, drawSamplePoints);
             }
         }
 
         /// <summary>
-        /// Draws Christmas lights along the rope during the Christmas event.
-        /// Lights are positioned at regular intervals along the rope's bezier curve,
-        /// with colors that remain consistent even when the rope is cut.
+        /// Draws Christmas lights along the rope.
+        /// Matches the original iOS implementation: lights are placed at every 6 bezier sample points
+        /// (12 coord indices), skipping 4 points at the start and end of each segment.
+        /// Uses static state (s_lightStartCoord, s_lightEndSkip, etc.) set by Draw() to coordinate
+        /// light placement across head/tail segments when the rope is cut.
         /// </summary>
-        /// <param name="pointCount">Number of points in the bezier curve (drawPts array length / 2)</param>
-        /// <param name="alpha">Alpha transparency value for fading effects (0 to 1)</param>
-        /// <param name="segmentStartIndex">Starting segment index for cut rope pieces, used to maintain color consistency</param>
-        private void DrawChristmasLights(int pointCount, float alpha, int segmentStartIndex)
+        private void DrawChristmasLights(float alpha)
         {
-            // Early exit if Christmas mode is disabled, not enough points, or fully transparent
-            if (!SpecialEvents.IsXmas || pointCount < 2 || drawPts == null || alpha <= 0f)
+            if (!SpecialEvents.IsXmas || drawPtsCount < 4 || drawPts == null || alpha <= 0f)
             {
                 return;
             }
 
-            // Load the Christmas lights texture atlas
             CTRTexture2D texture;
             try
             {
@@ -608,7 +652,6 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            // Get the sprite frames from the texture atlas
             CTRRectangle[] rects = texture.quadRects;
             int rectCount = texture.quadsCount > 0 ? texture.quadsCount : rects?.Length ?? 0;
             if (rectCount == 0)
@@ -616,26 +659,15 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            // Calculate spacing between lights (1.5x the base rope segment length)
-            float lightSpacing = BUNGEE_REST_LEN * 1.5f;
+            int totalCoords = drawPtsCount;
+            int startCoord = s_lightStartCoord;
+            int endCoord = totalCoords - s_lightEndSkip;
 
-            // Calculate cumulative distances along the rope's bezier curve
-            // This allows us to position lights at equal intervals along the curved rope
-            float[] distances = new float[pointCount];
-            float totalDistance = 0f;
-
-            for (int i = 1; i < pointCount; i++)
+            if (startCoord >= endCoord)
             {
-                // drawPts is a flat array: [x0, y0, x1, y1, x2, y2, ...]
-                int index = i * 2;
-                int previousIndex = index - 2;
-                float dx = drawPts[index] - drawPts[previousIndex];
-                float dy = drawPts[index + 1] - drawPts[previousIndex + 1];
-                totalDistance += MathF.Sqrt((dx * dx) + (dy * dy));
-                distances[i] = totalDistance;
+                return;
             }
 
-            // Set the drawing color with alpha for fade effects
             RGBAColor color = RGBAColor.whiteRGBA;
             if (alpha < 1f)
             {
@@ -643,59 +675,46 @@ namespace CutTheRope.GameMain
             }
             Renderer.SetColor(color.ToXNA());
 
-            // Initialize random seed for consistent light color selection across frames
-            // This seed remains the same for the lifetime of the rope
             lightRandomSeed ??= christmasRandom.Next(0, 1000);
 
-            // Calculate offset based on segment position to maintain consistent colors after cutting
-            // This ensures that when a rope is cut, the remaining pieces show the same light colors
-            // at the same absolute positions along the original rope
-            float segmentOffset = segmentStartIndex * BUNGEE_REST_LEN;
-
-            // Start placing lights at half the spacing interval (centered distribution)
-            float currentDistance = lightSpacing / 2f;
-
-            // Draw lights at regular intervals along the rope
-            while (currentDistance < totalDistance)
+            int lightIdx = s_lightCounter;
+            for (int i = startCoord; i < endCoord; i += 12)
             {
-                // Find which curve segment this light position falls on
-                for (int i = 1; i < pointCount; i++)
+                if (lightsCount != -1 && lightIdx >= lightsCount)
                 {
-                    float segmentEnd = distances[i];
-                    float segmentStart = distances[i - 1];
-
-                    // Skip segments that end before the current light position
-                    if (currentDistance > segmentEnd)
-                    {
-                        continue;
-                    }
-
-                    // Interpolate position within the segment using linear interpolation
-                    float segmentDelta = MathF.Max(segmentEnd - segmentStart, 0.0001f);
-                    float t = (currentDistance - segmentStart) / segmentDelta;
-
-                    // Calculate the actual x,y position along the bezier curve
-                    int index = i * 2;
-                    int previousIndex = index - 2;
-                    float x = drawPts[previousIndex] + ((drawPts[index] - drawPts[previousIndex]) * t);
-                    float y = drawPts[previousIndex + 1] + ((drawPts[index + 1] - drawPts[previousIndex + 1]) * t);
-
-                    // Select light color based on absolute distance (including segment offset)
-                    // This ensures consistent colors even after the rope is cut
-                    int distanceIndex = (int)MathF.Round((currentDistance + segmentOffset) / lightSpacing);
-                    int rectIndex = (lightRandomSeed.Value + distanceIndex) % rectCount;
-                    CTRRectangle rect = rects[rectIndex];
-
-                    // Draw the light sprite centered on the calculated position
-                    DrawHelper.DrawImagePart(texture, rect, x - (rect.w / 2f), y - (rect.h / 2f));
                     break;
                 }
 
-                // Move to the next light position
-                currentDistance += lightSpacing;
+                if (i + 1 >= drawPts.Length)
+                {
+                    break;
+                }
+
+                float x = drawPts[i];
+                float y = drawPts[i + 1];
+
+                if (lightsCount == -1)
+                {
+                    lightFrames[lightIdx] = christmasRandom.Next(rectCount);
+                }
+
+                int rectIndex = lightFrames[lightIdx] % rectCount;
+                CTRRectangle rect = rects[rectIndex];
+
+                DrawHelper.DrawImagePart(texture, rect, x - (rect.w / 2f), y - (rect.h / 2f));
+
+                // Save overflow for tail continuation
+                s_lightSavedEnd = i + 12 - endCoord + 2;
+
+                lightIdx++;
             }
 
-            // Reset drawing color to default
+            s_lightCounter = lightIdx;
+            if (lightsCount == -1)
+            {
+                lightsCount = lightIdx;
+            }
+
             Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
         }
 
@@ -724,7 +743,6 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Moves the anchor to a new position, shifting all rope parts by the same delta.
-        /// Matches iOS [Bungee moveAnchor:].
         /// </summary>
         public void MoveAnchor(Vector newPos)
         {
@@ -791,17 +809,26 @@ namespace CutTheRope.GameMain
 
         public bool hideTailParts;
 
-        /// <summary>
-        /// Random number generator for Christmas light color selection.
-        /// Shared across all Bungee instances to ensure variety.
-        /// </summary>
         private static readonly Random christmasRandom = new();
 
-        /// <summary>
-        /// Per-rope random seed used to select light colors deterministically.
-        /// Ensures lights maintain consistent colors across frames and after cutting.
-        /// </summary>
         private int? lightRandomSeed;
+
+        /// <summary>
+        /// Per-light frame indices, stored on first draw and reused for consistency.
+        /// The number of lights can go up to 200.
+        /// </summary>
+        private readonly int[] lightFrames = new int[200];
+
+        /// <summary>
+        /// Number of lights determined on first draw (-1 = not yet determined).
+        /// </summary>
+        private int lightsCount = -1;
+
+        // Static state for coordinating lights across head/tail segments
+        private static int s_lightStartCoord;
+        private static int s_lightEndSkip;
+        private static int s_lightCounter;
+        private static int s_lightSavedEnd;
 
         private bool ownsAnchor;
 
