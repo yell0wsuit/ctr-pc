@@ -242,7 +242,7 @@ namespace CutTheRope.GameMain
             public const string MenuButtons = "menu_buttons";
             public const string MenuNotification = "menu_notification";
             public const string MenuAchievement = "menu_achievement";
-            public const string MenuOptions = "menu_options";
+            public const string MenuOptions = "menu_options_packed";
             public const string MenuBgr = "menu_bgr";
             public const string MenuPopup = "menu_popup";
             public const string MenuLogo = "menu_logo";

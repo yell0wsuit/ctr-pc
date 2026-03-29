@@ -311,33 +311,33 @@ namespace CutTheRope.GameMain
             return CreateBackgroundWithLogowithShadow(l, true);
         }
 
-        public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, Vector offset)
+        public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p)
         {
             int pressedStateQuad = p ? 1 : 0;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, pressedStateQuad);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
-            Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuOptions, pressedStateQuad, q);
             image2.parentAnchor = image2.anchor = 9;
-            image2.x += offset.X;
-            image2.y += offset.Y;
+            image2.x = (image.width - image2.width) / 2f;
+            image2.y = (image.height - image2.height) / 2f;
             _ = image.AddChild(image2);
             if (b)
             {
                 image2.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
                 Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 4);
                 image3.parentAnchor = image3.anchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(image3, Resources.Img.MenuOptions, pressedStateQuad, 4);
+                image3.x = image2.x + image2.width - (image3.width / 2f);
+                image3.y = image2.y + image2.height - image3.height;
                 _ = image.AddChild(image3);
             }
             return image;
         }
 
-        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid, Vector offset)
+        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid)
         {
-            Image u = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false, offset);
-            Image d = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true, offset);
-            Image u2 = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, false, offset);
-            Image d2 = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, true, offset);
+            Image u = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false);
+            Image d = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true);
+            Image u2 = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, false);
+            Image d2 = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, true);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d, u2, d2, bid);
             toggleButton.delegateButtonDelegate = delegateValue;
             return toggleButton;
@@ -406,21 +406,30 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
+        public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
+            int illustrationHeight = image.height;
+            image.height = illustrationHeight + 140;
             Text text = Text.CreateWithFontandString(Resources.Fnt.SmallFont, str);
             text.parentAnchor = 9;
             text.anchor = 18;
             text.scaleX = text.scaleY = 0.75f;
             _ = image.AddChild(text);
-            Image.SetElementPositionWithRelativeQuadOffset(text, Resources.Img.MenuOptions, q, tq);
+            text.x = image.width / 2f;
+            text.y = illustrationHeight + 37;
             if (bId != -1)
             {
                 ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(Resources.Img.MenuOptions, -1, 8, bId, delegateValue);
                 toggleButton.SetName("button");
                 toggleButton.parentAnchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(toggleButton, Resources.Img.MenuOptions, q, 8);
+                toggleButton.x = (image.width - toggleButton.width) / 2f;
+                toggleButton.y = illustrationHeight + 59;
+                Image checkBg = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 9);
+                checkBg.parentAnchor = 9;
+                checkBg.x = ((image.width - checkBg.width) / 2f) - 10;
+                checkBg.y = toggleButton.y + toggleButton.height - checkBg.height;
+                _ = image.AddChild(checkBg);
                 _ = image.AddChild(toggleButton);
                 int horizontalTouchPadding = (image.width / 2) - (toggleButton.width / 2);
                 toggleButton.SetTouchIncreaseLeftRightTopBottom(horizontalTouchPadding, horizontalTouchPadding, image.height * 0.85f, 0);
@@ -429,7 +438,13 @@ namespace CutTheRope.GameMain
             {
                 Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 7);
                 image2.parentAnchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuOptions, q, 7);
+                image2.x = (image.width - image2.width) / 2f;
+                image2.y = illustrationHeight + 59;
+                Image checkBg = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 10);
+                checkBg.parentAnchor = 9;
+                checkBg.x = ((image.width - checkBg.width) / 2f) - 10;
+                checkBg.y = image2.y + image2.height - checkBg.height;
+                _ = image.AddChild(checkBg);
                 _ = image.AddChild(image2);
             }
             return image;
@@ -515,8 +530,8 @@ namespace CutTheRope.GameMain
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
             _ = menuView.AddChild(baseElement);
-            BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString("DRAG_TO_CUT"), -1, null);
-            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.GetString("CLICK_TO_CUT"), MenuButtonId.ToggleClickToCut, this);
+            BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, Application.GetString("DRAG_TO_CUT"), -1, null);
+            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, Application.GetString("CLICK_TO_CUT"), MenuButtonId.ToggleClickToCut, this);
             HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80), 16, MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(baseElement2);
@@ -534,9 +549,8 @@ namespace CutTheRope.GameMain
             _ = menuView.AddChild(image);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 18;
-            Vector offset = VectSub(Image.GetQuadCenter(Resources.Img.MenuOptions, 0), Image.GetQuadOffset(Resources.Img.MenuOptions, 12));
-            ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic, vectZero);
-            ToggleButton toggleButton2 = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, MenuButtonId.ToggleSound, offset);
+            ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic);
+            ToggleButton toggleButton2 = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, MenuButtonId.ToggleSound);
             HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
             _ = hBox2.AddChild(toggleButton2);
             _ = hBox2.AddChild(toggleButton);

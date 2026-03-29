@@ -89,9 +89,8 @@ namespace CutTheRope.GameMain
             Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("MAIN_MENU"), GameControllerButtonId.MainMenu, this);
             _ = vBox.AddChild(c4);
             vBox.anchor = vBox.parentAnchor = 10;
-            Vector offset = VectSub(Image.GetQuadCenter(Resources.Img.MenuOptions, 0), Image.GetQuadOffset(Resources.Img.MenuOptions, 12));
-            ToggleButton toggleButton = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, GameControllerButtonId.ToggleMusic, vectZero);
-            ToggleButton toggleButton2 = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, GameControllerButtonId.ToggleSound, offset);
+            ToggleButton toggleButton = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, GameControllerButtonId.ToggleMusic);
+            ToggleButton toggleButton2 = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, GameControllerButtonId.ToggleSound);
             HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
             _ = hBox.AddChild(toggleButton2);
             _ = hBox.AddChild(toggleButton);

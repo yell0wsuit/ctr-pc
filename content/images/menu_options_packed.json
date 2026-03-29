@@ -1,0 +1,101 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000_button.png",
+            "frame": { "x": 1, "y": 635, "w": 361, "h": 173 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 361, "h": 173 },
+            "sourceSize": { "w": 361, "h": 173 }
+        },
+        {
+            "filename": "frame_0001_button_active.png",
+            "frame": { "x": 1, "y": 459, "w": 363, "h": 174 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 363, "h": 174 },
+            "sourceSize": { "w": 363, "h": 174 }
+        },
+        {
+            "filename": "frame_0002_sound.png",
+            "frame": { "x": 222, "y": 316, "w": 153, "h": 141 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 153, "h": 141 },
+            "sourceSize": { "w": 153, "h": 141 }
+        },
+        {
+            "filename": "frame_0003_music.png",
+            "frame": { "x": 364, "y": 635, "w": 107, "h": 148 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 107, "h": 148 },
+            "sourceSize": { "w": 107, "h": 148 }
+        },
+        {
+            "filename": "frame_0004_disabled_cross.png",
+            "frame": { "x": 366, "y": 479, "w": 68, "h": 67 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 68, "h": 67 },
+            "sourceSize": { "w": 68, "h": 67 }
+        },
+        {
+            "filename": "frame_0005_drag_to_cut.png",
+            "frame": { "x": 222, "y": 1, "w": 217, "h": 313 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 217, "h": 313 },
+            "sourceSize": { "w": 217, "h": 313 }
+        },
+        {
+            "filename": "frame_0006_click_to_cut.png",
+            "frame": { "x": 1, "y": 1, "w": 219, "h": 319 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 219, "h": 319 },
+            "sourceSize": { "w": 219, "h": 319 }
+        },
+        {
+            "filename": "frame_0007_check_default.png",
+            "frame": { "x": 377, "y": 398, "w": 79, "h": 79 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 79, "h": 79 },
+            "sourceSize": { "w": 79, "h": 79 }
+        },
+        {
+            "filename": "frame_0008_check_toggle.png",
+            "frame": { "x": 377, "y": 316, "w": 79, "h": 80 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 79, "h": 80 },
+            "sourceSize": { "w": 79, "h": 80 }
+        },
+        {
+            "filename": "frame_0009_check_default_bg.png",
+            "frame": { "x": 366, "y": 548, "w": 72, "h": 53 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 72, "h": 53 },
+            "sourceSize": { "w": 72, "h": 53 }
+        },
+        {
+            "filename": "frame_0010_check_toggle_bg.png",
+            "frame": { "x": 1, "y": 322, "w": 53, "h": 51 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 53, "h": 51 },
+            "sourceSize": { "w": 53, "h": 51 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_options_packed.png",
+        "format": "RGBA8888",
+        "size": { "w": 472, "h": 809 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:3394bb3dac3b72a3c62928684ffb2e13:2852f18cc029aeb950875f15e26dcf10:37c32511f521356a443634718a1680f8$"
+    }
+}
