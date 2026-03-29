@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -14,7 +15,15 @@ namespace CutTheRope.Framework
             "en", // English
             "ru", // Russian
             "de", // German
-            "fr" // French
+            "fr", // French
+            "es", // Spanish
+            "it", // Italian
+            "nl", // Dutch
+            "br", // Portuguese (Brazilian)
+            "ko", // Korean
+            "ja", // Japanese
+            "zh", // Chinese (Simplified)
+            "zh_tw" // Chinese (Traditional)
         ];
 
         /// <summary>
@@ -116,8 +125,14 @@ namespace CutTheRope.Framework
                 Language.LANGRU => "ru",
                 Language.LANGDE => "de",
                 Language.LANGFR => "fr",
-                Language.LANGZH => "zh",
+                Language.LANGES => "es",
+                Language.LANGIT => "it",
+                Language.LANGNL => "nl",
+                Language.LANGBR => "br",
+                Language.LANGKO => "ko",
                 Language.LANGJA => "ja",
+                Language.LANGZH => "zh",
+                Language.LANGZHTW => "zh_tw",
                 _ => "en",
             };
         }
@@ -133,8 +148,14 @@ namespace CutTheRope.Framework
                 "ru" => Language.LANGRU,
                 "de" => Language.LANGDE,
                 "fr" => Language.LANGFR,
-                "zh" => Language.LANGZH,
+                "es" => Language.LANGES,
+                "it" => Language.LANGIT,
+                "nl" => Language.LANGNL,
+                "br" => Language.LANGBR,
+                "ko" => Language.LANGKO,
                 "ja" => Language.LANGJA,
+                "zh" => Language.LANGZH,
+                "zh_tw" => Language.LANGZHTW,
                 _ => Language.LANGEN,
             };
         }
@@ -144,7 +165,26 @@ namespace CutTheRope.Framework
         /// </summary>
         public static Language FromSystemCulture()
         {
-            string code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+            CultureInfo culture = CultureInfo.CurrentCulture;
+            string code = culture.TwoLetterISOLanguageName;
+
+            // Distinguish zh-TW/zh-HK (Traditional) from zh-CN (Simplified)
+            if (code == "zh")
+            {
+                string name = culture.Name;
+                return name.StartsWith("zh-TW", StringComparison.OrdinalIgnoreCase) ||
+                    name.StartsWith("zh-HK", StringComparison.OrdinalIgnoreCase) ||
+                    name.StartsWith("zh-Hant", StringComparison.OrdinalIgnoreCase)
+                    ? Language.LANGZHTW
+                    : Language.LANGZH;
+            }
+
+            // Map Portuguese to Brazilian Portuguese
+            if (code == "pt")
+            {
+                return Language.LANGBR;
+            }
+
             Language lang = FromCode(code);
 
             // Only allow supported languages, otherwise force English
@@ -152,9 +192,32 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
+        /// Gets the English display name for a language code (e.g. "ru" → "Russian").
+        /// </summary>
+        public static string GetLanguageDisplayName(string code)
+        {
+            return code switch
+            {
+                "en" => "English",
+                "ru" => "Russian",
+                "de" => "German",
+                "fr" => "French",
+                "es" => "Spanish",
+                "it" => "Italian",
+                "nl" => "Dutch",
+                "br" => "Portuguese",
+                "ko" => "Korean",
+                "ja" => "Japanese",
+                "zh" => "Chinese",
+                "zh_tw" => "Tr. Chinese",
+                _ => code,
+            };
+        }
+
+        /// <summary>
         /// Gets the quad index for the current language's flag icon in MenuExtraButtons.
         /// </summary>
-        public static int GetLanguageFlagQuadIndex()
+        /*public static int GetLanguageFlagQuadIndex()
         {
             return Current switch
             {
@@ -162,10 +225,8 @@ namespace CutTheRope.Framework
                 Language.LANGDE => 5, // German flag quad
                 Language.LANGFR => 6, // French flag quad
                 Language.LANGEN => 7, // English flag quad
-                Language.LANGZH => throw new System.NotImplementedException(),
-                Language.LANGJA => throw new System.NotImplementedException(),
-                _ => 15, // Woldwide flag for fallback
+                _ => 15, // Worldwide flag for all other languages
             };
-        }
+        }*/
     }
 }

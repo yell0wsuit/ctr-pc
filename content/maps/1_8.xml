@@ -13,20 +13,48 @@
         <star x="152" y="41" timeout="-1" />
         <star x="276" y="254" timeout="-1" />
         <bubble x="252" y="367" />
-        <tutorialText x="17" y="301" locale="en" text="You can restart the level by pressing the" width="200" />
+        <tutorialText x="17" y="301" locale="en" text="TUTORIAL_LVL_1_8_01" width="200" />
         <tutorial08 x="85" y="373" locale="en" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="85" y="348" locale="en" text="button" width="100" />
+        <tutorialText x="85" y="348" locale="en" text="TUTORIAL_LVL_1_8_02" width="100" />
     </layer>
     <layer name="Ru">
-        <tutorialText x="17" y="304" locale="ru" text="Вы можете перезапустить уровень, нажав кнопку" width="200" />
+        <tutorialText x="17" y="304" locale="ru" text="TUTORIAL_LVL_1_8_01" width="200" />
         <tutorial08 x="188" y="376" locale="ru" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Fr">
-        <tutorialText x="27" y="285" locale="fr" text="Tu peux recommencer le niveau en touchant le bouton" width="180" />
+        <tutorialText x="27" y="285" locale="fr" text="TUTORIAL_LVL_1_8_01" width="180" />
         <tutorial08 x="171" y="361" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="De">
         <tutorial08 x="212" y="329" locale="de" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="31" y="282" locale="de" text="Lass den Bonbon nicht aus der Schachtel" width="175" />
+        <tutorialText x="31" y="282" locale="de" text="TUTORIAL_LVL_1_8_01" width="175" />
+    </layer>
+    <layer name="It">
+        <tutorial08 x="150" y="374" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="17" y="304" locale="it" text="TUTORIAL_LVL_1_8_01" width="180" />
+    </layer>
+    <layer name="Ja">
+        <tutorial08 x="190" y="371" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="17" y="304" locale="ja" text="TUTORIAL_LVL_1_8_01" width="200" />
+    </layer>
+    <layer name="Es">
+        <tutorial08 x="203" y="352" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="17" y="304" locale="es" text="TUTORIAL_LVL_1_8_01" width="200" />
+    </layer>
+    <layer name="Zh">
+        <tutorial08 x="170" y="344" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="29" y="325" locale="zh" text="TUTORIAL_LVL_1_8_01" width="200" />
+    </layer>
+    <layer name="Ko">
+        <tutorial08 x="39" y="306" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="53" y="276" locale="ko" text="TUTORIAL_LVL_1_8_01" width="210" />
+    </layer>
+    <layer name="Br">
+        <tutorial08 x="157" y="373" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="17" y="304" locale="br" text="TUTORIAL_LVL_1_8_01" width="200" />
+    </layer>
+    <layer name="Nl">
+        <tutorial08 x="202" y="375" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="6" y="304" locale="nl" text="TUTORIAL_LVL_1_8_01" width="200" />
     </layer>
 </map>

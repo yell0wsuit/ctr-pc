@@ -76,9 +76,19 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// The menu strings JSON filename.
+        /// The directory containing per-language localization JSON files.
         /// </summary>
-        public const string MenuStringsFile = "menu_strings.json";
+        public const string StringsDirectory = "locales";
+
+        /// <summary>
+        /// Gets the path to a per-language localization JSON file.
+        /// </summary>
+        /// <param name="languageCode">The language code (e.g., "en", "ru")</param>
+        /// <returns>The relative path (e.g., "strings/en.json")</returns>
+        public static string GetStringsPath(string languageCode)
+        {
+            return Path.Combine(StringsDirectory, languageCode + ".json");
+        }
 
         /// <summary>
         /// Gets the full path to a content file, including the root directory.
@@ -135,11 +145,11 @@ namespace CutTheRope.Helpers
         }
 
         /// <summary>
-        /// Gets the full path to the menu strings file.
+        /// Gets the full path to a per-language localization JSON file.
         /// </summary>
-        public static string GetMenuStringsPath()
+        public static string GetStringsFullPath(string languageCode)
         {
-            return GetContentPath(MenuStringsFile);
+            return GetContentPath(GetStringsPath(languageCode));
         }
 
         /// <summary>

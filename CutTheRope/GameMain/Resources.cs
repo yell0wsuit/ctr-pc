@@ -242,7 +242,7 @@ namespace CutTheRope.GameMain
             public const string MenuButtons = "menu_buttons";
             public const string MenuNotification = "menu_notification";
             public const string MenuAchievement = "menu_achievement";
-            public const string MenuOptions = "menu_options";
+            public const string MenuOptions = "menu_options_packed";
             public const string MenuBgr = "menu_bgr";
             public const string MenuPopup = "menu_popup";
             public const string MenuLogo = "menu_logo";
@@ -409,7 +409,34 @@ namespace CutTheRope.GameMain
         internal static class FontConfig
         {
             private const string StandardFont = "gooddog_new-webfont.ttf";
-            private const string ExtendedFont = "PlaypenSans-SemiBold.ttf";
+            private const string RussianFont = "PlaypenSans-SemiBold.ttf";
+            private const string KoreanFont = "Cafe24DongdongRegular.otf";
+            private const string ChineseFont = "KNMaiyuan-Regular.ttf";
+            private const string JapaneseFont = "MPLUSRounded1c-Medium.ttf";
+
+            private static string GetFontFile(int language)
+            {
+                return language switch
+                {
+                    (int)Language.LANGRU => RussianFont,
+                    (int)Language.LANGKO => KoreanFont,
+                    (int)Language.LANGZH or (int)Language.LANGZHTW => ChineseFont,
+                    (int)Language.LANGJA => JapaneseFont,
+                    _ => StandardFont,
+                };
+            }
+
+            private static float GetFontSizeScale(int language)
+            {
+                return language switch
+                {
+                    (int)Language.LANGZH or (int)Language.LANGZHTW => 0.75f,
+                    (int)Language.LANGJA => 0.85f,
+                    (int)Language.LANGRU => 0.9f,
+                    (int)Language.LANGKO => 0.9f,
+                    _ => 1f,
+                };
+            }
 
             public static FontConfiguration GetConfiguration(string fontName, int language)
             {
@@ -417,8 +444,8 @@ namespace CutTheRope.GameMain
                 {
                     Fnt.BigFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
-                        Size = 100f,
+                        FontFile = GetFontFile(language),
+                        Size = 100f * GetFontSizeScale(language),
                         Color = Color.White,
                         Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3),
                         LineSpacing = 5f,
@@ -426,8 +453,8 @@ namespace CutTheRope.GameMain
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
-                        Size = 72f,
+                        FontFile = GetFontFile(language),
+                        Size = 72f * GetFontSizeScale(language),
                         Color = Color.Black,
                         Effects = FontEffectSettings.None,
                         LineSpacing = 5f,

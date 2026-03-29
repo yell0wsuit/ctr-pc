@@ -6,7 +6,13 @@ namespace CutTheRope.Framework
         LANGRU,
         LANGDE,
         LANGFR,
+        LANGES,
+        LANGIT,
+        LANGNL,
+        LANGBR,
+        LANGKO,
+        LANGJA,
         LANGZH,
-        LANGJA
+        LANGZHTW
     }
 }

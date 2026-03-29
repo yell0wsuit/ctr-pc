@@ -16,7 +16,7 @@
         <spike4 x="104" y="310" angle="100" size="4" />
         <grab x="236" y="250" length="100" wheel="false" gun="false" radius="80" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
         <grab x="88" y="248" length="100" wheel="false" gun="false" radius="80" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
-        <tutorialText x="9" y="56" locale="en" text="You can cut several ropes at once" width="300" />
+        <tutorialText x="9" y="56" locale="en" text="TUTORIAL_LVL_1_20_01" width="300" />
         <tutorial01 x="56" y="96" locale="en" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="108" y="96" locale="en" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="161" y="96" locale="en" moveSpeed="100" rotateSpeed="100" />
@@ -31,7 +31,7 @@
         <tutorial01 x="160" y="110" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="210" y="109" locale="ru" moveSpeed="100" rotateSpeed="100" />
         <tutorial01 x="264" y="109" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="10" y="50" locale="ru" text="Вы можете перерезать несколько веревок одновременно" width="300" />
+        <tutorialText x="10" y="50" locale="ru" text="TUTORIAL_LVL_1_20_01" width="300" />
     </layer>
     <layer name="Fr">
         <tutorial01 x="56" y="106" locale="fr" moveSpeed="100" rotateSpeed="100" />
@@ -41,7 +41,7 @@
         <tutorial01 x="266" y="105" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorial07 x="19" y="105" locale="fr" moveSpeed="100" rotateSpeed="100" />
         <tutorial07 x="304" y="106" locale="fr" angle="180" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="37" y="46" locale="fr" text="Tu peux couper plusieurs cordes à la fois" width="250" />
+        <tutorialText x="37" y="46" locale="fr" text="TUTORIAL_LVL_1_20_01" width="250" />
     </layer>
     <layer name="De">
         <tutorial01 x="56" y="106" locale="de" moveSpeed="100" rotateSpeed="100" />
@@ -51,6 +51,62 @@
         <tutorial01 x="266" y="105" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial07 x="19" y="105" locale="de" moveSpeed="100" rotateSpeed="100" />
         <tutorial07 x="304" y="106" locale="de" angle="180" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="35" y="46" locale="de" text="Du kannst mehrere Seile gleichzeitig durchschneiden" width="250" />
+        <tutorialText x="35" y="46" locale="de" text="TUTORIAL_LVL_1_20_01" width="250" />
+    </layer>
+    <layer name="It">
+        <tutorial01 x="54" y="110" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="45" y="48" locale="it" text="TUTORIAL_LVL_1_20_01" width="240" />
+    </layer>
+    <layer name="Ja">
+        <tutorial01 x="54" y="110" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="10" y="50" locale="ja" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Es">
+        <tutorial01 x="54" y="110" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="43" y="46" locale="es" text="TUTORIAL_LVL_1_20_01" width="240" />
+    </layer>
+    <layer name="Zh">
+        <tutorial01 x="54" y="110" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="10" y="58" locale="zh" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Ko">
+        <tutorial01 x="54" y="110" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="16" y="58" locale="ko" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Br">
+        <tutorial01 x="54" y="110" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="10" y="50" locale="br" text="TUTORIAL_LVL_1_20_01" width="300" />
+    </layer>
+    <layer name="Nl">
+        <tutorial01 x="54" y="110" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="107" y="110" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="160" y="110" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="210" y="109" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="264" y="109" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="10" y="50" locale="nl" text="TUTORIAL_LVL_1_20_01" width="300" />
     </layer>
 </map>

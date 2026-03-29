@@ -27,8 +27,14 @@ namespace CutTheRope.GameMain
                         Language.LANGRU => Resources.Img.MenuExtraButtonsRu,
                         Language.LANGDE => Resources.Img.MenuExtraButtonsGr,
                         Language.LANGFR => Resources.Img.MenuExtraButtonsFr,
-                        Language.LANGZH => throw new NotImplementedException(),
-                        Language.LANGJA => throw new NotImplementedException(),
+                        Language.LANGES => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGIT => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGNL => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGBR => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGKO => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGJA => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGZH => Resources.Img.MenuExtraButtonsEn,
+                        Language.LANGZHTW => Resources.Img.MenuExtraButtonsEn,
                         _ => Resources.Img.MenuExtraButtonsEn,
                     },
                     _ => resourceName,
@@ -51,8 +57,14 @@ namespace CutTheRope.GameMain
                 Language.LANGFR => 18,
                 Language.LANGDE => 19,
                 Language.LANGRU => 20,
-                Language.LANGZH => throw new NotImplementedException(),
-                Language.LANGJA => throw new NotImplementedException(),
+                Language.LANGBR => 21,
+                Language.LANGES => 22,
+                Language.LANGIT => 23,
+                Language.LANGJA => 24,
+                Language.LANGKO => 25,
+                Language.LANGNL => 26,
+                Language.LANGZH => 27,
+                Language.LANGZHTW => 27, // no zh_tw stamp, use English
                 _ => 17,
             };
         }
@@ -61,13 +73,19 @@ namespace CutTheRope.GameMain
         {
             return LanguageHelper.Current switch
             {
-                Language.LANGEN => 13,
-                Language.LANGFR => 13,
-                Language.LANGDE => 15,
-                Language.LANGRU => 17,
-                Language.LANGZH => throw new NotImplementedException(),
-                Language.LANGJA => throw new NotImplementedException(),
-                _ => 13,
+                Language.LANGEN => 12,
+                Language.LANGDE => 13,
+                Language.LANGRU => 14,
+                Language.LANGJA => 15,
+                Language.LANGKO => 16,
+                Language.LANGZH => 17,
+                Language.LANGZHTW => 17, // use zh
+                Language.LANGES => 18,
+                Language.LANGFR => 12,
+                Language.LANGIT => 12,
+                Language.LANGNL => 12,
+                Language.LANGBR => 12,
+                _ => 12, // en fallback
             };
         }
 

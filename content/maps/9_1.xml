@@ -16,18 +16,46 @@
     </layer>
     <layer name="ru">
         <tutorial04 x="126" y="401" locale="ru" angle="90" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="146" y="392" locale="ru" text="Чтобы повернуть пилу, нажмите кнопку" width="150" />
+        <tutorialText x="146" y="392" locale="ru" text="TUTORIAL_LVL_9_1_01" width="150" />
     </layer>
     <layer name="en">
-        <tutorialText x="143" y="393" locale="en" text="Turn the blades with this button" width="150" />
+        <tutorialText x="143" y="393" locale="en" text="TUTORIAL_LVL_9_1_01" width="150" />
         <tutorial04 x="126" y="401" locale="en" angle="90" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="de">
-        <tutorialText x="150" y="389" locale="de" text="Drehe die Sägeblätter mit diesem Schaltfeld" width="180" />
+        <tutorialText x="150" y="389" locale="de" text="TUTORIAL_LVL_9_1_01" width="180" />
         <tutorial04 x="126" y="403" locale="de" angle="90" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="fr">
-        <tutorialText x="146" y="391" locale="fr" text="Faites tourner les lames avec ce bouton" width="150" />
+        <tutorialText x="146" y="391" locale="fr" text="TUTORIAL_LVL_9_1_01" width="150" />
         <tutorial04 x="128" y="407" locale="fr" angle="90" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="It">
+        <tutorial04 x="126" y="401" locale="it" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="152" y="392" locale="it" text="TUTORIAL_LVL_9_1_01" width="150" />
+    </layer>
+    <layer name="Ja">
+        <tutorial04 x="126" y="401" locale="ja" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="146" y="377" locale="ja" text="TUTORIAL_LVL_9_1_01" width="150" />
+    </layer>
+    <layer name="Es">
+        <tutorial04 x="133" y="411" locale="es" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="147" y="380" locale="es" text="TUTORIAL_LVL_9_1_01" width="180" />
+    </layer>
+    <layer name="Zh">
+        <tutorial04 x="126" y="401" locale="zh" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="146" y="395" locale="zh" text="TUTORIAL_LVL_9_1_01" width="150" />
+    </layer>
+    <layer name="Ko">
+        <tutorial04 x="126" y="407" locale="ko" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="132" y="386" locale="ko" text="TUTORIAL_LVL_9_1_01" width="150" />
+    </layer>
+    <layer name="Br">
+        <tutorial04 x="126" y="401" locale="br" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="152" y="392" locale="br" text="TUTORIAL_LVL_9_1_01" width="150" />
+    </layer>
+    <layer name="Nl">
+        <tutorial04 x="130" y="401" locale="nl" angle="90" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="146" y="392" locale="nl" text="TUTORIAL_LVL_9_1_01" width="150" />
     </layer>
 </map>

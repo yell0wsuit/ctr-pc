@@ -13,27 +13,69 @@
         <grab x="96" y="139" length="90" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
         <bubble x="99" y="391" />
         <grab x="219" y="252" length="140" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
-        <tutorialText x="43" y="45" locale="en" text="Click to pop the bubble" width="120" special="1" />
-        <tutorialText x="157" y="293" locale="en" text="The bubble will lift the candy up" width="120" />
+        <tutorialText x="43" y="45" locale="en" text="TUTORIAL_LVL_1_5_01" width="120" special="1" />
+        <tutorialText x="157" y="293" locale="en" text="TUTORIAL_LVL_1_5_02" width="120" />
         <tutorial04 x="167" y="391" locale="en" angle="15" moveSpeed="100" rotateSpeed="100" />
         <tutorial05 x="218" y="78" locale="en" moveSpeed="100" rotateSpeed="10" special="1" />
     </layer>
     <layer name="Ru">
         <tutorial04 x="167" y="391" locale="ru" angle="20" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="138" y="315" locale="ru" text="Пузырь подымет леденец вверх" width="160" />
-        <tutorialText x="21" y="44" locale="ru" text="Нажмите чтобы лопнуть пузырь" width="160" special="1" />
+        <tutorialText x="138" y="315" locale="ru" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="21" y="44" locale="ru" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
         <tutorial05 x="218" y="78" locale="ru" moveSpeed="100" rotateSpeed="100" special="1" />
     </layer>
     <layer name="Fr">
-        <tutorialText x="121" y="311" locale="fr" text="La bulle fera monter le bonbon" width="150" />
+        <tutorialText x="121" y="311" locale="fr" text="TUTORIAL_LVL_1_5_02" width="150" />
         <tutorial04 x="167" y="386" locale="fr" angle="15" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="33" y="46" locale="fr" text="Clique pour éclater la bulle" width="130" special="1" />
+        <tutorialText x="33" y="46" locale="fr" text="TUTORIAL_LVL_1_5_01" width="130" special="1" />
         <tutorial05 x="217" y="78" locale="fr" moveSpeed="100" rotateSpeed="100" special="1" />
     </layer>
     <layer name="De">
-        <tutorialText x="17" y="30" locale="de" text="Klicke, um die Seifenblase platzen zu lassen" width="140" special="1" />
+        <tutorialText x="17" y="30" locale="de" text="TUTORIAL_LVL_1_5_01" width="140" special="1" />
         <tutorial05 x="217" y="77" locale="de" moveSpeed="100" rotateSpeed="10" special="1" />
-        <tutorialText x="138" y="308" locale="de" text="Die Seifenblase lässt den Bonbon schweben" width="170" />
+        <tutorialText x="138" y="308" locale="de" text="TUTORIAL_LVL_1_5_02" width="170" />
         <tutorial04 x="166" y="390" locale="de" angle="15" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="It">
+        <tutorial04 x="167" y="391" locale="it" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="it" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="315" locale="it" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="21" y="44" locale="it" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
+    </layer>
+    <layer name="Ja">
+        <tutorial04 x="167" y="391" locale="ja" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="ja" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="300" locale="ja" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="9" y="45" locale="ja" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
+    </layer>
+    <layer name="Es">
+        <tutorial04 x="167" y="391" locale="es" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="es" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="300" locale="es" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="12" y="44" locale="es" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
+    </layer>
+    <layer name="Zh">
+        <tutorial04 x="167" y="391" locale="zh" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="zh" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="332" locale="zh" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="21" y="56" locale="zh" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
+    </layer>
+    <layer name="Ko">
+        <tutorial04 x="167" y="391" locale="ko" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="ko" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="315" locale="ko" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="21" y="44" locale="ko" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
+    </layer>
+    <layer name="Br">
+        <tutorial04 x="167" y="391" locale="br" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="br" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="315" locale="br" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="11" y="44" locale="br" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
+    </layer>
+    <layer name="Nl">
+        <tutorial04 x="167" y="391" locale="nl" angle="20" moveSpeed="100" rotateSpeed="100" />
+        <tutorial05 x="218" y="78" locale="nl" moveSpeed="100" rotateSpeed="100" special="1" />
+        <tutorialText x="138" y="315" locale="nl" text="TUTORIAL_LVL_1_5_02" width="160" />
+        <tutorialText x="9" y="44" locale="nl" text="TUTORIAL_LVL_1_5_01" width="160" special="1" />
     </layer>
 </map>

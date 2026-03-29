@@ -15,19 +15,47 @@
         <grab x="494" y="69" length="320" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" hidePath="false" />
     </layer>
     <layer name="En_Track">
-        <tutorialText x="333" y="285" locale="en" text="Collect as many stars as you can" width="150" />
+        <tutorialText x="333" y="285" locale="en" text="TUTORIAL_LVL_1_2_01" width="150" />
         <tutorial09 x="313" y="321" locale="en" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Ru_Track">
         <tutorial09 x="265" y="315" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="303" y="278" locale="ru" text="Старайтесь собрать как можно больше звезд" width="210" />
+        <tutorialText x="303" y="278" locale="ru" text="TUTORIAL_LVL_1_2_01" width="210" />
     </layer>
     <layer name="De_Track">
-        <tutorialText x="326" y="285" locale="de" text="Sammle möglichst viele Sterne." width="170" />
+        <tutorialText x="326" y="285" locale="de" text="TUTORIAL_LVL_1_2_01" width="170" />
         <tutorial09 x="306" y="321" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Fr_Track">
-        <tutorialText x="337" y="285" locale="fr" text="Recueillez le plus d'étoiles possible" width="150" />
+        <tutorialText x="337" y="285" locale="fr" text="TUTORIAL_LVL_1_2_01" width="150" />
         <tutorial09 x="313" y="321" locale="fr" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="It">
+        <tutorial09 x="94" y="315" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="103" y="278" locale="it" text="TUTORIAL_LVL_1_2_01" width="210" />
+    </layer>
+    <layer name="Ja">
+        <tutorial09 x="94" y="315" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="103" y="278" locale="ja" text="TUTORIAL_LVL_1_2_01" width="210" />
+    </layer>
+    <layer name="Es">
+        <tutorial09 x="85" y="315" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="103" y="278" locale="es" text="TUTORIAL_LVL_1_2_01" width="210" />
+    </layer>
+    <layer name="Zh">
+        <tutorial09 x="94" y="315" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="89" y="288" locale="zh" text="TUTORIAL_LVL_1_2_01" width="210" />
+    </layer>
+    <layer name="Ko">
+        <tutorial09 x="94" y="315" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="110" y="289" locale="ko" text="TUTORIAL_LVL_1_2_01" width="210" />
+    </layer>
+    <layer name="Br">
+        <tutorial09 x="94" y="315" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="103" y="278" locale="br" text="TUTORIAL_LVL_1_2_01" width="210" />
+    </layer>
+    <layer name="Nl">
+        <tutorial09 x="94" y="315" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="102" y="278" locale="nl" text="TUTORIAL_LVL_1_2_01" width="180" />
     </layer>
 </map>
