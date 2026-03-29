@@ -805,7 +805,7 @@
 /processorParam:TextureFormat=Color
 /build:images/menu_notification.png
 
-#begin images/menu_options.png
+#begin images/menu_options_packed.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -815,7 +815,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/menu_options.png
+/build:images/menu_options_packed.png
 
 #begin images/menu_pack_ui.png
 /importer:TextureImporter

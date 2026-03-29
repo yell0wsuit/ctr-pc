@@ -11,17 +11,17 @@ using Microsoft.Xna.Framework;
 namespace CutTheRope.Helpers
 {
     /// <summary>
-    /// Manages JSON-based localization strings.
+    /// Manages JSON-based localization strings loaded from per-language files.
     /// </summary>
     internal static class LocalizationManager
     {
         /// <summary>
-        /// JSON-based localized strings storage.
-        /// Structure: stringKey -> languageCode -> localizedText
+        /// Per-language localized strings storage.
+        /// Structure: languageCode -> (stringKey -> localizedText)
         /// </summary>
-        private static Dictionary<string, Dictionary<string, string>> jsonStrings_;
+        private static readonly Dictionary<string, Dictionary<string, string>> langStrings_ = [];
 
-        private static readonly Lock jsonStringsLock_ = new();
+        private static readonly Lock langStringsLock_ = new();
 
         /// <summary>
         /// Gets a localized string for the given key and language.
@@ -36,29 +36,23 @@ namespace CutTheRope.Helpers
                 return string.Empty;
             }
 
-            EnsureStringsLoaded();
-
-            lock (jsonStringsLock_)
+            Dictionary<string, string> strings = GetLanguageStrings(languageCode);
+            if (strings != null && strings.TryGetValue(key, out string value))
             {
-                if (jsonStrings_ == null)
-                {
-                    return string.Empty;
-                }
-
-                if (!jsonStrings_.TryGetValue(key, out Dictionary<string, string> translations))
-                {
-                    return string.Empty;
-                }
-
-                // Try to get the requested language
-                if (translations.TryGetValue(languageCode, out string value))
-                {
-                    return value;
-                }
-
-                // Fallback to English
-                return languageCode != "en" && translations.TryGetValue("en", out string fallback) ? fallback : string.Empty;
+                return value;
             }
+
+            // Fallback to English
+            if (languageCode != "en")
+            {
+                Dictionary<string, string> enStrings = GetLanguageStrings("en");
+                if (enStrings != null && enStrings.TryGetValue(key, out string fallback))
+                {
+                    return fallback;
+                }
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -82,20 +76,27 @@ namespace CutTheRope.Helpers
                 return false;
             }
 
-            EnsureStringsLoaded();
-
-            lock (jsonStringsLock_)
+            Dictionary<string, string> strings = GetLanguageStrings(LanguageHelper.CurrentCode);
+            if (strings != null && strings.ContainsKey(key))
             {
-                return jsonStrings_?.ContainsKey(key) ?? false;
+                return true;
             }
+
+            Dictionary<string, string> enStrings = GetLanguageStrings("en");
+            return enStrings?.ContainsKey(key) ?? false;
         }
 
         /// <summary>
-        /// Ensures the localization strings are loaded into memory.
+        /// Ensures localization strings are loaded for English and the current language.
         /// </summary>
         public static void EnsureLoaded()
         {
-            EnsureStringsLoaded();
+            _ = GetLanguageStrings("en");
+            string current = LanguageHelper.CurrentCode;
+            if (current != "en")
+            {
+                _ = GetLanguageStrings(current);
+            }
         }
 
         /// <summary>
@@ -103,32 +104,40 @@ namespace CutTheRope.Helpers
         /// </summary>
         public static void ClearCache()
         {
-            lock (jsonStringsLock_)
+            lock (langStringsLock_)
             {
-                jsonStrings_ = null;
+                langStrings_.Clear();
             }
         }
 
-        private static void EnsureStringsLoaded()
+        private static Dictionary<string, string> GetLanguageStrings(string languageCode)
         {
-            if (jsonStrings_ != null)
+            lock (langStringsLock_)
             {
-                return;
+                if (langStrings_.TryGetValue(languageCode, out Dictionary<string, string> cached))
+                {
+                    return cached;
+                }
             }
 
-            lock (jsonStringsLock_)
+            Dictionary<string, string> loaded = LoadLanguageFile(languageCode);
+
+            lock (langStringsLock_)
             {
-                jsonStrings_ ??= LoadJsonStrings();
+                langStrings_[languageCode] = loaded;
             }
+
+            return loaded;
         }
 
-        private static Dictionary<string, Dictionary<string, string>> LoadJsonStrings()
+        private static Dictionary<string, string> LoadLanguageFile(string languageCode)
         {
-            Dictionary<string, Dictionary<string, string>> result = [];
+            Dictionary<string, string> result = [];
 
             try
             {
-                using Stream stream = OpenStream(ContentPaths.MenuStringsFile);
+                string path = ContentPaths.GetStringsPath(languageCode);
+                using Stream stream = OpenStream(path);
                 if (stream == null)
                 {
                     return result;
@@ -142,40 +151,28 @@ namespace CutTheRope.Helpers
                     return result;
                 }
 
-                result = DeserializeLocalizationJson(json);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to load localization strings: {ex.Message}");
-            }
-
-            return result ?? [];
-        }
-
-        /// <summary>
-        /// Deserializes localization JSON using AOT-safe JsonDocument parsing.
-        /// </summary>
-        private static Dictionary<string, Dictionary<string, string>> DeserializeLocalizationJson(string json)
-        {
-            Dictionary<string, Dictionary<string, string>> result = [];
-
-            using JsonDocument doc = JsonDocument.Parse(json);
-            foreach (JsonProperty keyProp in doc.RootElement.EnumerateObject())
-            {
-                Dictionary<string, string> translations = [];
-
-                if (keyProp.Value.ValueKind == JsonValueKind.Object)
+                using JsonDocument doc = JsonDocument.Parse(json);
+                foreach (JsonProperty prop in doc.RootElement.EnumerateObject())
                 {
-                    foreach (JsonProperty langProp in keyProp.Value.EnumerateObject())
+                    if (prop.Value.ValueKind == JsonValueKind.String)
                     {
-                        if (langProp.Value.ValueKind == JsonValueKind.String)
+                        result[prop.Name] = prop.Value.GetString() ?? string.Empty;
+                    }
+                    else if (prop.Value.ValueKind == JsonValueKind.Object)
+                    {
+                        foreach (JsonProperty nested in prop.Value.EnumerateObject())
                         {
-                            translations[langProp.Name] = langProp.Value.GetString() ?? string.Empty;
+                            if (nested.Value.ValueKind == JsonValueKind.String)
+                            {
+                                result[nested.Name] = nested.Value.GetString() ?? string.Empty;
+                            }
                         }
                     }
                 }
-
-                result[keyProp.Name] = translations;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load localization strings for '{languageCode}': {ex.Message}");
             }
 
             return result;

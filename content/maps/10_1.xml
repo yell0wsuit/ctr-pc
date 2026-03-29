@@ -5,10 +5,17 @@
         <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
     </layer>
     <layer name="Objects">
-        <grab x="162" y="131" length="40" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" hidePath="false" />
+        <grab x="162" y="131" length="40" wheel="false" gun="false" kickable="false" kicked="false"
+            radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0"
+            spider="false" helicopter="false" part="L" hidePath="false" />
         <candy x="175" y="189" />
-        <grab x="256" y="28" length="150" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" path="0,237," hidePath="false" moveSpeed="45" />
-        <grab x="65" y="256" length="150" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" helicopter="false" part="L" path="0,-237," hidePath="false" moveSpeed="45" />
+        <grab x="256" y="28" length="150" wheel="false" gun="false" kickable="false" kicked="false"
+            radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0"
+            spider="false" helicopter="false" part="L" path="0,237," hidePath="false" moveSpeed="45" />
+        <grab x="65" y="256" length="150" wheel="false" gun="false" kickable="false" kicked="false"
+            radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0"
+            spider="false" helicopter="false" part="L" path="0,-237," hidePath="false"
+            moveSpeed="45" />
         <spike1 x="104" y="368" angle="90" size="1" toggled="false" />
         <spike1 x="211" y="368" angle="90" size="1" toggled="false" />
         <target x="158" y="425" />
@@ -18,18 +25,46 @@
     </layer>
     <layer name="En">
         <tutorial09 x="155" y="261" locale="en" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="57" y="271" locale="en" text="The bee carries candy along this path" width="200" />
+        <tutorialText x="57" y="271" locale="en" text="TUTORIAL_LVL_10_1_01" width="200" />
     </layer>
     <layer name="Ru">
         <tutorial09 x="98" y="289" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="127" y="247" locale="ru" text="Пчела носит леденец по траектории" width="100" />
+        <tutorialText x="127" y="247" locale="ru" text="TUTORIAL_LVL_10_1_01" width="100" />
     </layer>
     <layer name="De">
-        <tutorialText x="56" y="262" locale="de" text="Die Biene trägt das Bonbon diesen Pfad entlang" width="200" />
+        <tutorialText x="56" y="262" locale="de" text="TUTORIAL_LVL_10_1_01" width="200" />
         <tutorial09 x="155" y="252" locale="de" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Fr">
-        <tutorialText x="55" y="268" locale="fr" text="L'abeille transporte le bonbon le long de ce chemin" width="200" />
+        <tutorialText x="55" y="268" locale="fr" text="TUTORIAL_LVL_10_1_01" width="200" />
         <tutorial09 x="155" y="252" locale="fr" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="It">
+        <tutorial09 x="98" y="289" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="122" y="244" locale="it" text="TUTORIAL_LVL_10_1_01" width="150" />
+    </layer>
+    <layer name="Ja">
+        <tutorial09 x="98" y="289" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="121" y="247" locale="ja" text="TUTORIAL_LVL_10_1_01" width="150" />
+    </layer>
+    <layer name="Es">
+        <tutorial09 x="79" y="289" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="99" y="245" locale="es" text="TUTORIAL_LVL_10_1_01" width="180" />
+    </layer>
+    <layer name="Zh">
+        <tutorial09 x="61" y="288" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="131" y="263" locale="zh" text="TUTORIAL_LVL_10_1_01" width="100" />
+    </layer>
+    <layer name="Ko">
+        <tutorial09 x="98" y="289" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="118" y="247" locale="ko" text="TUTORIAL_LVL_10_1_01" width="130" />
+    </layer>
+    <layer name="Br">
+        <tutorial09 x="98" y="289" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="115" y="247" locale="br" text="TUTORIAL_LVL_10_1_01" width="150" />
+    </layer>
+    <layer name="Nl">
+        <tutorial09 x="85" y="289" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="99" y="234" locale="nl" text="TUTORIAL_LVL_10_1_01" width="150" />
     </layer>
 </map>

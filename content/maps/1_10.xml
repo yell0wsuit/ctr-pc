@@ -14,19 +14,47 @@
         <star x="448" y="430" timeout="-1" />
         <star x="328" y="345" timeout="-1" />
         <grab x="180" y="31" length="50" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" />
-        <tutorialText x="273" y="39" locale="en" text="Automatic ropes appear when candy gets into their area" width="140" />
+        <tutorialText x="273" y="39" locale="en" text="TUTORIAL_LVL_1_10_01" width="140" />
         <tutorial04 x="316" y="164" locale="en" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Ru">
         <tutorial04 x="325" y="173" locale="ru" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="234" y="68" locale="ru" text="Авто-веревки появляются, когда леденец попадает в их радиус" width="220" />
+        <tutorialText x="234" y="68" locale="ru" text="TUTORIAL_LVL_1_10_01" width="220" />
     </layer>
     <layer name="Fr">
-        <tutorialText x="213" y="41" locale="fr" text="Les cordes automatiques apparaissent lorsqu'un bonbon arrive dans leur zone" width="260" />
+        <tutorialText x="213" y="41" locale="fr" text="TUTORIAL_LVL_1_10_01" width="260" />
         <tutorial04 x="298" y="144" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="De">
-        <tutorialText x="250" y="47" locale="de" text="Sobald der Bonbon in ihrer Nähe ist, erscheinen automatisch Seile" width="200" />
+        <tutorialText x="250" y="47" locale="de" text="TUTORIAL_LVL_1_10_01" width="200" />
         <tutorial04 x="329" y="152" locale="de" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="It">
+        <tutorial04 x="316" y="171" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="273" y="66" locale="it" text="TUTORIAL_LVL_1_10_01" width="220" />
+    </layer>
+    <layer name="Ja">
+        <tutorial04 x="316" y="171" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="273" y="77" locale="ja" text="TUTORIAL_LVL_1_10_01" width="220" />
+    </layer>
+    <layer name="Es">
+        <tutorial04 x="316" y="171" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="273" y="53" locale="es" text="TUTORIAL_LVL_1_10_01" width="220" />
+    </layer>
+    <layer name="Zh">
+        <tutorial04 x="316" y="171" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="273" y="85" locale="zh" text="TUTORIAL_LVL_1_10_01" width="220" />
+    </layer>
+    <layer name="Ko">
+        <tutorial04 x="316" y="171" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="273" y="85" locale="ko" text="TUTORIAL_LVL_1_10_01" width="220" />
+    </layer>
+    <layer name="Br">
+        <tutorial04 x="316" y="171" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="273" y="66" locale="br" text="TUTORIAL_LVL_1_10_01" width="220" />
+    </layer>
+    <layer name="Nl">
+        <tutorial04 x="316" y="171" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="273" y="48" locale="nl" text="TUTORIAL_LVL_1_10_01" width="220" />
     </layer>
 </map>

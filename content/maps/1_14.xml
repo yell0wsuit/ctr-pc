@@ -14,19 +14,47 @@
         <star x="65" y="425" timeout="-1" />
         <star x="63" y="205" timeout="-1" />
         <star x="239" y="211" timeout="-1" />
-        <tutorialText x="135" y="336" locale="en" text="You can skip the level in the pause menu" width="140" />
+        <tutorialText x="135" y="336" locale="en" text="TUTORIAL_LVL_1_14_01" width="140" />
         <tutorial09 x="200" y="322" locale="en" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Ru">
-        <tutorialText x="137" y="312" locale="ru" text="Вы можете пропустить уровень через меню паузы" width="140" />
+        <tutorialText x="137" y="312" locale="ru" text="TUTORIAL_LVL_1_14_01" width="140" />
         <tutorial09 x="202" y="297" locale="ru" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Fr">
-        <tutorialText x="135" y="337" locale="fr" text="Tu peux passer le niveau via le menu Pause" width="140" />
+        <tutorialText x="135" y="337" locale="fr" text="TUTORIAL_LVL_1_14_01" width="140" />
         <tutorial09 x="200" y="323" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="De">
-        <tutorialText x="141" y="318" locale="de" text="Im Pause-Menü kannst Du den Level überspringen" width="170" />
+        <tutorialText x="141" y="318" locale="de" text="TUTORIAL_LVL_1_14_01" width="170" />
         <tutorial09 x="224" y="303" locale="de" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="It">
+        <tutorial09 x="202" y="301" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="137" y="312" locale="it" text="TUTORIAL_LVL_1_14_01" width="140" />
+    </layer>
+    <layer name="Ja">
+        <tutorial09 x="208" y="298" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="147" y="312" locale="ja" text="TUTORIAL_LVL_1_14_01" width="130" />
+    </layer>
+    <layer name="Es">
+        <tutorial09 x="202" y="297" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="137" y="312" locale="es" text="TUTORIAL_LVL_1_14_01" width="140" />
+    </layer>
+    <layer name="Zh">
+        <tutorial09 x="203" y="298" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="129" y="312" locale="zh" text="TUTORIAL_LVL_1_14_01" width="160" />
+    </layer>
+    <layer name="Ko">
+        <tutorial09 x="202" y="297" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="137" y="312" locale="ko" text="TUTORIAL_LVL_1_14_01" width="140" />
+    </layer>
+    <layer name="Br">
+        <tutorial09 x="202" y="297" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="137" y="312" locale="br" text="TUTORIAL_LVL_1_14_01" width="140" />
+    </layer>
+    <layer name="Nl">
+        <tutorial09 x="209" y="295" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="130" y="309" locale="nl" text="TUTORIAL_LVL_1_14_01" width="160" />
     </layer>
 </map>

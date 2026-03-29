@@ -11,22 +11,50 @@
         <grab x="317" y="225" length="70" wheel="false" gun="false" radius="80" moveLength="-1" moveVertical="false" moveOffset="0" spider="true" part="L" />
         <spike1 x="375" y="406" angle="90" size="1" />
         <spike1 x="256" y="407" angle="90" size="1" />
-        <tutorialText x="211" y="300" locale="en" text="Cut the rope before the spider reaches the candy" width="240" />
+        <tutorialText x="211" y="300" locale="en" text="TUTORIAL_LVL_2_9_01" width="240" />
         <tutorial09 x="194" y="335" locale="en" moveSpeed="100" rotateSpeed="100" />
         <star x="268" y="223" timeout="-1" />
         <star x="410" y="287" timeout="-1" />
         <star x="317" y="377" timeout="-1" />
     </layer>
     <layer name="Ru">
-        <tutorialText x="48" y="271" locale="ru" text="Перережьте веревку, прежде чем паучок доберется до леденца" width="200" />
+        <tutorialText x="48" y="271" locale="ru" text="TUTORIAL_LVL_2_9_01" width="200" />
         <tutorial09 x="35" y="317" locale="ru" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="Fr">
-        <tutorialText x="56" y="299" locale="fr" text="Coupe la corde avant que l'araignée n'atteigne le bonbon" width="240" />
+        <tutorialText x="56" y="299" locale="fr" text="TUTORIAL_LVL_2_9_01" width="240" />
         <tutorial09 x="39" y="334" locale="fr" moveSpeed="100" rotateSpeed="100" />
     </layer>
     <layer name="De">
-        <tutorialText x="79" y="287" locale="de" text="Schneide das Seil durch, bevor die Spinne am Bonbon ist" width="170" />
+        <tutorialText x="79" y="287" locale="de" text="TUTORIAL_LVL_2_9_01" width="170" />
         <tutorial09 x="150" y="276" locale="de" moveSpeed="100" rotateSpeed="100" />
+    </layer>
+    <layer name="It">
+        <tutorial09 x="42" y="326" locale="it" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="62" y="288" locale="it" text="TUTORIAL_LVL_2_9_01" width="200" />
+    </layer>
+    <layer name="Ja">
+        <tutorial09 x="67" y="331" locale="ja" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="80" y="287" locale="ja" text="TUTORIAL_LVL_2_9_01" width="180" />
+    </layer>
+    <layer name="Es">
+        <tutorial09 x="43" y="331" locale="es" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="61" y="288" locale="es" text="TUTORIAL_LVL_2_9_01" width="200" />
+    </layer>
+    <layer name="Zh">
+        <tutorial09 x="67" y="328" locale="zh" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="70" y="294" locale="zh" text="TUTORIAL_LVL_2_9_01" width="200" />
+    </layer>
+    <layer name="Ko">
+        <tutorial09 x="53" y="333" locale="ko" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="75" y="295" locale="ko" text="TUTORIAL_LVL_2_9_01" width="180" />
+    </layer>
+    <layer name="Br">
+        <tutorial09 x="47" y="330" locale="br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="71" y="287" locale="br" text="TUTORIAL_LVL_2_9_01" width="200" />
+    </layer>
+    <layer name="Nl">
+        <tutorial09 x="51" y="322" locale="nl" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="61" y="288" locale="nl" text="TUTORIAL_LVL_2_9_01" width="200" />
     </layer>
 </map>
