@@ -63,6 +63,8 @@
     "BOX_SOON_LABEL": "¡Más niveles próximamente!",
     "ABOUT_TEXT": "Cut the Rope, versión %versionNo%\n\n      Desarrollado por ZeptoLab y distribuido por Chillingo.\n\n      Diseño adicional:\n      Nataliya Omelyanchuk\n\n      Música y efectos:\n      Alexander Falinski\n      Dargalon",
     "ABOUT_SPECIAL_THANKS": "Control de calidad:\n      SPL\n      Universally Speaking\n\n      Agradecimientos:\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      ZeptoLab, Cut the Rope, Om Nom, Nommies y Feed with Candy son marcas comerciales o marcas\n      registradas de ZeptoLab UK Limited. © 2010-2015 ZeptoLab UK Limited. Todos los derechos\n      reservados.\n\n      Asesoría legal: Hughes Media Law Group",
+    "CLICK_TO_CUT": "Haga clic",
+    "DRAG_TO_CUT": "Arrastre",
     "PROCESSING": "Procesando...",
     "CANDIES_BTN": "Caramelos",
     "ROPE_SKINS_BTN": "Cuerdas",

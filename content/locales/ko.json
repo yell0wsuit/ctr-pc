@@ -63,6 +63,8 @@
     "BOX_SOON_LABEL": "새로운 레벨이 곧 *추가됩니다!",
     "ABOUT_TEXT": "Cut the Rope 버전 %versionNo%\n\n      ZeptoLab 개발 / Chillingo 출시.\n\n      추가 디자인:\n      Nataliya Omelyanchuk\n\n      음악/효과음:\n      Alexander Falinski\n      Dargalon",
     "ABOUT_SPECIAL_THANKS": "QA:\n      SPL\n      Universally Speaking\n\n      도움 주신 분들:\n      Vladimir Agafonov, Maks Chekmarev, Dmitry Chernenko, Alexander Danilov, Alexandra\n      Dubovitskaya, Grigory Kireev, Louise Lazzari, Brandyn Rasmussen, Tiago Amorim Rocha, Andrey\n      Vengerskiy, Barbos, Uliya Voinova, Elena Volk\n\n      ZeptoLab, Cut the Rope, Om Nom, Nommies 및 Feed with Candy는 ZeptoLab UK Limited의 상표 또는 등록\n      상표입니다. © 2010-2015 ZeptoLab UK Limited. All rights reserved.\n\n      법률 자문: Hughes Media Law Group",
+    "CLICK_TO_CUT": "잘라 클릭",
+    "DRAG_TO_CUT": "드래그 잘라",
     "PROCESSING": "처리 중...",
     "CANDIES_BTN": "사탕",
     "ROPE_SKINS_BTN": "로프",
