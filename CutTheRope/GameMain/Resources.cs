@@ -433,6 +433,7 @@ namespace CutTheRope.GameMain
                     (int)Language.LANGZH or (int)Language.LANGZHTW => 0.75f,
                     (int)Language.LANGJA => 0.85f,
                     (int)Language.LANGRU => 0.9f,
+                    (int)Language.LANGKO => 0.9f,
                     _ => 1f,
                 };
             }
