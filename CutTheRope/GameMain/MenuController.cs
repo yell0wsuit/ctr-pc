@@ -608,7 +608,7 @@ namespace CutTheRope.GameMain
 
             IReadOnlyList<string> langCodes = LanguageHelper.UiLanguageCodes;
             string currentLocale = LanguageHelper.CurrentCode;
-            int columns = 2;
+            int columns = 3;
 
             // Build rows using VBox of HBoxes (same pattern as options menu)
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
