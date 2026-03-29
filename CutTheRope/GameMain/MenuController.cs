@@ -418,10 +418,10 @@ namespace CutTheRope.GameMain
             text.SetAlignment(2);
             _ = image.AddChild(text);
             text.x = image.width / 2f;
-            text.y = illustrationHeight + 37;
             FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
             float singleLineHeight = (font.FontHeight() + font.GetTopSpacing()) * text.scaleY;
             float extraTextHeight = (text.height * text.scaleY) - singleLineHeight;
+            text.y = illustrationHeight + 37 + (extraTextHeight > 0 ? 10 : 0);
             if (extraTextHeight > 0)
             {
                 image.height = illustrationHeight + 140 + (int)extraTextHeight;
