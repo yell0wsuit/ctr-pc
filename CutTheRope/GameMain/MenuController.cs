@@ -343,7 +343,7 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
-        public static Button CreateLanguageButtonWithIDDelegate(ButtonId bid, IButtonDelegation d)
+        /*public static Button CreateLanguageButtonWithIDDelegate(ButtonId bid, IButtonDelegation d)
         {
             int q = LanguageHelper.GetLanguageFlagQuadIndex();
             string string2 = Application.GetString("LANGUAGE");
@@ -370,7 +370,7 @@ namespace CutTheRope.GameMain
             button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
             button.delegateButtonDelegate = d;
             return button;
-        }
+        }*/
 
         public static BaseElement CreateElementWithResIdquad(string resourceName, int quad)
         {

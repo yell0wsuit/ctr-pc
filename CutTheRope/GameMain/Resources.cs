@@ -409,7 +409,22 @@ namespace CutTheRope.GameMain
         internal static class FontConfig
         {
             private const string StandardFont = "gooddog_new-webfont.ttf";
-            private const string ExtendedFont = "PlaypenSans-SemiBold.ttf";
+            private const string RussianFont = "PlaypenSans-SemiBold.ttf";
+            private const string KoreanFont = "Cafe24DongdongRegular.otf";
+            private const string ChineseFont = "KNMaiyuan-Regular.ttf";
+            private const string JapaneseFont = "MPLUSRounded1c-Medium.ttf";
+
+            private static string GetFontFile(int language)
+            {
+                return language switch
+                {
+                    (int)Language.LANGRU => RussianFont,
+                    (int)Language.LANGKO => KoreanFont,
+                    (int)Language.LANGZH or (int)Language.LANGZHTW => ChineseFont,
+                    (int)Language.LANGJA => JapaneseFont,
+                    _ => StandardFont,
+                };
+            }
 
             public static FontConfiguration GetConfiguration(string fontName, int language)
             {
@@ -417,7 +432,7 @@ namespace CutTheRope.GameMain
                 {
                     Fnt.BigFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
+                        FontFile = GetFontFile(language),
                         Size = 100f,
                         Color = Color.White,
                         Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3),
@@ -426,7 +441,7 @@ namespace CutTheRope.GameMain
                     },
                     Fnt.SmallFont => new FontConfiguration
                     {
-                        FontFile = language == (int)Language.LANGRU ? ExtendedFont : StandardFont,
+                        FontFile = GetFontFile(language),
                         Size = 72f,
                         Color = Color.Black,
                         Effects = FontEffectSettings.None,
