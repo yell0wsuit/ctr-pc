@@ -110,15 +110,15 @@
         <tutorialText x="196" y="314" locale="ko" text="TUTORIAL_LVL_1_1_02" width="100" />
     </layer>
     <layer name="Br">
-        <tutorial10 x="61" y="187" locale="br" moveSpeed="100" rotateSpeed="100" special="2" />
-        <tutorial01 x="109" y="126" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="57" y="126" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="161" y="126" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="213" y="126" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial01 x="265" y="126" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorial04 x="231" y="415" locale="br" moveSpeed="100" rotateSpeed="100" />
-        <tutorialText x="177" y="25" locale="br" text="TUTORIAL_LVL_1_1_01" width="130" />
-        <tutorialText x="196" y="314" locale="br" text="TUTORIAL_LVL_1_1_02" width="100" />
+        <tutorial10 x="61" y="187" locale="pt_br" moveSpeed="100" rotateSpeed="100" special="2" />
+        <tutorial01 x="109" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="57" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="161" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="213" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial01 x="265" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorial04 x="231" y="415" locale="pt_br" moveSpeed="100" rotateSpeed="100" />
+        <tutorialText x="177" y="25" locale="pt_br" text="TUTORIAL_LVL_1_1_01" width="130" />
+        <tutorialText x="196" y="314" locale="pt_br" text="TUTORIAL_LVL_1_1_02" width="100" />
     </layer>
     <layer name="Nl">
         <tutorial10 x="61" y="187" locale="nl" moveSpeed="100" rotateSpeed="100" special="2" />
