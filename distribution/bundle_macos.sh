@@ -28,7 +28,14 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-echo "=== Building Cut The Rope: DX v$VERSION for macOS ==="
+printf "Use NativeAOT? [Y/n]: "
+read -r AOT_INPUT
+case "$AOT_INPUT" in
+    [nN]) USE_AOT="false" ;;
+    *)    USE_AOT="true" ;;
+esac
+
+echo "=== Building Cut The Rope: DX v$VERSION for macOS (NativeAOT: $USE_AOT) ==="
 
 # =========================
 # Step 1: Build the application
@@ -38,7 +45,7 @@ rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
     -f net10.0 \
-    -p:PublishAot=true \
+    -p:PublishAot="$USE_AOT" \
     -r osx-arm64 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
@@ -108,8 +115,12 @@ xattr -dr com.apple.quarantine "$APP_DIR" || true
 # =========================
 echo "[5/5] Packaging .7z archive..."
 
-# Ensure 7z is available (brew install 7zip)
-if ! command -v 7z &> /dev/null; then
+# Ensure 7z/7zz is available (brew install 7zip)
+if command -v 7zz &> /dev/null; then
+    SEVENZIP="7zz"
+elif command -v 7z &> /dev/null; then
+    SEVENZIP="7z"
+else
     echo "7z not found. Install with: brew install 7zip"
     exit 1
 fi
@@ -122,7 +133,7 @@ ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_NAME"
 # Remove old archive if exists
 rm -f "$ARCHIVE_PATH"
 
-(cd "$PUBLISH_DIR" && 7z a -t7z -m0=lzma -mx=9 "$ARCHIVE_PATH" "$APP_NAME.app")
+(cd "$PUBLISH_DIR" && "$SEVENZIP" a -t7z -m0=lzma -mx=9 "$ARCHIVE_PATH" "$APP_NAME.app")
 
 echo ""
 echo "=== Build complete! ==="
