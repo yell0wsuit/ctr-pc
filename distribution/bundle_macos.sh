@@ -96,12 +96,6 @@ sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
 echo "[3/5] Bundling FFmpeg dylibs into Frameworks..."
 "$SCRIPT_DIR/bundle_ffmpeg_macos.sh" "$APP_DIR/Contents/Frameworks"
 
-# Codesign the bundled dylibs (required on macOS to avoid crashes)
-echo "Codesigning bundled dylibs..."
-for dylib in "$APP_DIR/Contents/Frameworks"/*.dylib; do
-    codesign --force --sign - "$dylib"
-done
-
 # =========================
 # Step 4: Finalize
 # =========================
@@ -109,6 +103,10 @@ echo "[4/5] Finalizing..."
 
 # Dev convenience: remove quarantine attribute
 xattr -dr com.apple.quarantine "$APP_DIR" || true
+
+# Ad-hoc codesign the entire .app bundle (deep signs all binaries and dylibs)
+echo "Codesigning .app bundle..."
+codesign --force --deep --sign - "$APP_DIR"
 
 # =========================
 # Step 5: Package .7z
