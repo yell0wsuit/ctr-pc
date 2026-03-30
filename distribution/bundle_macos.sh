@@ -24,10 +24,8 @@ TEMPLATES_DIR="$SCRIPT_DIR/templates/macos"
 # =========================
 VERSION="$1"
 if [ -z "$VERSION" ]; then
-    VERSION=$(dotnet msbuild "$PROJECT" \
-      -nologo -v:q \
-      -getProperty:InformationalVersion \
-      -p:Configuration=Release)
+    echo "Error: version is required. Usage: $0 <version>"
+    exit 1
 fi
 
 echo "=== Building Cut The Rope: DX v$VERSION for macOS ==="
@@ -35,11 +33,12 @@ echo "=== Building Cut The Rope: DX v$VERSION for macOS ==="
 # =========================
 # Step 1: Build the application
 # =========================
-echo "[1/4] Building macOS arm64 release..."
+echo "[1/5] Building macOS arm64 release..."
 rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
     -f net10.0 \
+    -p:PublishAot=true \
     -r osx-arm64 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
@@ -47,7 +46,7 @@ dotnet publish "$PROJECT" \
 # =========================
 # Step 2: Create .app bundle
 # =========================
-echo "[2/4] Creating .app bundle structure..."
+echo "[2/5] Creating .app bundle structure..."
 mkdir -p "$APP_DIR/Contents/MacOS"
 mkdir -p "$APP_DIR/Contents/Resources"
 
@@ -87,7 +86,7 @@ sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
 # =========================
 # Step 3: Bundle FFmpeg
 # =========================
-echo "[3/4] Bundling FFmpeg dylibs into Frameworks..."
+echo "[3/5] Bundling FFmpeg dylibs into Frameworks..."
 "$SCRIPT_DIR/bundle_ffmpeg_macos.sh" "$APP_DIR/Contents/Frameworks"
 
 # Codesign the bundled dylibs (required on macOS to avoid crashes)
@@ -99,13 +98,33 @@ done
 # =========================
 # Step 4: Finalize
 # =========================
-echo "[4/4] Finalizing..."
+echo "[4/5] Finalizing..."
 
 # Dev convenience: remove quarantine attribute
 xattr -dr com.apple.quarantine "$APP_DIR" || true
 
+# =========================
+# Step 5: Package .7z
+# =========================
+echo "[5/5] Packaging .7z archive..."
+
+# Ensure 7z is available (brew install 7zip)
+if ! command -v 7z &> /dev/null; then
+    echo "7z not found. Install with: brew install 7zip"
+    exit 1
+fi
+
+RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
+mkdir -p "$RELEASE_DIR"
+ARCHIVE_NAME="CutTheRopeDX-v${VERSION}-macOS-arm64-ffmpeg.7z"
+ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_NAME"
+
+# Remove old archive if exists
+rm -f "$ARCHIVE_PATH"
+
+(cd "$PUBLISH_DIR" && 7z a -t7z -m0=lzma -mx=9 "$ARCHIVE_PATH" "$APP_NAME.app")
+
 echo ""
 echo "=== Build complete! ==="
-echo "App bundle created: $APP_DIR"
-echo ""
-echo "To run: open $APP_DIR"
+echo "App bundle: $APP_DIR"
+echo "Archive:    $ARCHIVE_PATH"
