@@ -109,31 +109,21 @@ echo "Codesigning .app bundle..."
 codesign --force --deep --sign - "$APP_DIR"
 
 # =========================
-# Step 5: Package .7z
+# Step 5: Package .dmg
 # =========================
-echo "[5/5] Packaging .7z archive..."
-
-# Ensure 7z/7zz is available (brew install 7zip)
-if command -v 7zz &> /dev/null; then
-    SEVENZIP="7zz"
-elif command -v 7z &> /dev/null; then
-    SEVENZIP="7z"
-else
-    echo "7z not found. Install with: brew install 7zip"
-    exit 1
-fi
+echo "[5/5] Packaging .dmg archive..."
 
 RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
 mkdir -p "$RELEASE_DIR"
-ARCHIVE_NAME="CutTheRopeDX-v${VERSION}-macOS-arm64-ffmpeg.7z"
+ARCHIVE_NAME="CutTheRopeDX-v${VERSION}-macOS-arm64-ffmpeg.dmg"
 ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_NAME"
 
 # Remove old archive if exists
 rm -f "$ARCHIVE_PATH"
 
-(cd "$PUBLISH_DIR" && "$SEVENZIP" a -t7z -m0=lzma -mx=9 "$ARCHIVE_PATH" "$APP_NAME.app")
+hdiutil create -volname "$APP_NAME" -srcfolder "$APP_DIR" -ov -format UDZO "$ARCHIVE_PATH"
 
 echo ""
 echo "=== Build complete! ==="
 echo "App bundle: $APP_DIR"
-echo "Archive:    $ARCHIVE_PATH"
+echo "DMG:        $ARCHIVE_PATH"
