@@ -30,10 +30,8 @@ TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
 # Resolve version (from arg or csproj)
 VERSION="$1"
 if [ -z "$VERSION" ]; then
-    VERSION=$(dotnet msbuild "$PROJECT" \
-      -nologo -v:q \
-      -getProperty:InformationalVersion \
-      -p:Configuration=Release)
+    echo "Error: version is required. Usage: $0 <version>"
+    exit 1
 fi
 
 echo "=== Building Cut The Rope: DX v$VERSION AppImage ==="
@@ -135,9 +133,15 @@ rm -rf "$BUILD_DIR"
 APPIMAGE_FILE="$PUBLISH_DIR/${APP_NAME}-${VERSION}-x86_64.AppImage"
 APPIMAGE_SIZE=$(ls -lh "$APPIMAGE_FILE" | awk '{print $5}')
 
+# Copy to release_github
+RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
+mkdir -p "$RELEASE_DIR"
+cp "$APPIMAGE_FILE" "$RELEASE_DIR/"
+
 echo ""
 echo "=== Build complete! ==="
 echo "AppImage created: $APPIMAGE_FILE ($APPIMAGE_SIZE)"
+echo "Copied to:        $RELEASE_DIR/"
 echo ""
 echo "To run: chmod +x $APPIMAGE_FILE && $APPIMAGE_FILE"
 echo "Or simply double-click the AppImage file in your file manager."

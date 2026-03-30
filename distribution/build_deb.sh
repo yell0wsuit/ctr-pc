@@ -28,10 +28,8 @@ TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
 # Resolve version (from arg or csproj)
 VERSION="$1"
 if [ -z "$VERSION" ]; then
-    VERSION=$(dotnet msbuild "$PROJECT" \
-      -nologo -v:q \
-      -getProperty:InformationalVersion \
-      -p:Configuration=Release)
+    echo "Error: version is required. Usage: $0 <version>"
+    exit 1
 fi
 
 DEB_ROOT="$BUILD_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}"
@@ -133,9 +131,15 @@ rm -rf "$BUILD_DIR"
 DEB_FILE="$PUBLISH_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb"
 DEB_SIZE=$(ls -lh "$DEB_FILE" | awk '{print $5}')
 
+# Copy to release_github
+RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
+mkdir -p "$RELEASE_DIR"
+cp "$DEB_FILE" "$RELEASE_DIR/"
+
 echo ""
 echo "=== Build complete! ==="
 echo "Package created: $DEB_FILE ($DEB_SIZE)"
+echo "Copied to:       $RELEASE_DIR/"
 echo ""
 echo "To install: sudo apt install $PUBLISH_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb"
 echo "To uninstall: sudo apt remove $APP_NAME"

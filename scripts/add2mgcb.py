@@ -5,7 +5,7 @@ Script to automatically detect and add assets to MonoGame's ContentManager
 import re
 from pathlib import Path
 
-CONTENT_DIR = Path(__file__).parent / "content"
+CONTENT_DIR = Path(__file__).parent.parent / "content"
 MGCB_FILE = CONTENT_DIR / "content.mgcb"
 
 # Asset type groups and their importer/processor configs
