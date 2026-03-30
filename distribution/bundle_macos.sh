@@ -28,7 +28,14 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-echo "=== Building Cut The Rope: DX v$VERSION for macOS ==="
+printf "Use NativeAOT? [Y/n]: "
+read -r AOT_INPUT
+case "$AOT_INPUT" in
+    [nN]) USE_AOT="false" ;;
+    *)    USE_AOT="true" ;;
+esac
+
+echo "=== Building Cut The Rope: DX v$VERSION for macOS (NativeAOT: $USE_AOT) ==="
 
 # =========================
 # Step 1: Build the application
@@ -38,7 +45,7 @@ rm -rf "$PUBLISH_DIR"
 dotnet publish "$PROJECT" \
     -c Release \
     -f net10.0 \
-    -p:PublishAot=true \
+    -p:PublishAot="$USE_AOT" \
     -r osx-arm64 \
     ${1:+-p:VersionPrefix="$1" -p:VersionSuffix=} \
     -o "$PUBLISH_DIR"
@@ -89,12 +96,6 @@ sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
 echo "[3/5] Bundling FFmpeg dylibs into Frameworks..."
 "$SCRIPT_DIR/bundle_ffmpeg_macos.sh" "$APP_DIR/Contents/Frameworks"
 
-# Codesign the bundled dylibs (required on macOS to avoid crashes)
-echo "Codesigning bundled dylibs..."
-for dylib in "$APP_DIR/Contents/Frameworks"/*.dylib; do
-    codesign --force --sign - "$dylib"
-done
-
 # =========================
 # Step 4: Finalize
 # =========================
@@ -103,28 +104,26 @@ echo "[4/5] Finalizing..."
 # Dev convenience: remove quarantine attribute
 xattr -dr com.apple.quarantine "$APP_DIR" || true
 
-# =========================
-# Step 5: Package .7z
-# =========================
-echo "[5/5] Packaging .7z archive..."
+# Ad-hoc codesign the entire .app bundle (deep signs all binaries and dylibs)
+echo "Codesigning .app bundle..."
+codesign --force --deep --sign - "$APP_DIR"
 
-# Ensure 7z is available (brew install 7zip)
-if ! command -v 7z &> /dev/null; then
-    echo "7z not found. Install with: brew install 7zip"
-    exit 1
-fi
+# =========================
+# Step 5: Package .dmg
+# =========================
+echo "[5/5] Packaging .dmg archive..."
 
 RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
 mkdir -p "$RELEASE_DIR"
-ARCHIVE_NAME="CutTheRopeDX-v${VERSION}-macOS-arm64-ffmpeg.7z"
+ARCHIVE_NAME="CutTheRopeDX-v${VERSION}-macOS-arm64-ffmpeg.dmg"
 ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_NAME"
 
 # Remove old archive if exists
 rm -f "$ARCHIVE_PATH"
 
-(cd "$PUBLISH_DIR" && 7z a -t7z -m0=lzma -mx=9 "$ARCHIVE_PATH" "$APP_NAME.app")
+hdiutil create -volname "$APP_NAME" -srcfolder "$APP_DIR" -ov -format UDZO "$ARCHIVE_PATH"
 
 echo ""
 echo "=== Build complete! ==="
 echo "App bundle: $APP_DIR"
-echo "Archive:    $ARCHIVE_PATH"
+echo "DMG:        $ARCHIVE_PATH"
