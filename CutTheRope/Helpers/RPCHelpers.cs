@@ -129,7 +129,7 @@ namespace CutTheRope.Helpers
         /// <param name="isWon">Whether the level has been completed.</param>
         /// <param name="score">Final score if the level was won.</param>
         /// <param name="time">Elapsed time in seconds if the level was won.</param>
-        public void SetLevelPresence(int pack, int level, int stars, bool isWon = false, int? score = null, int? time = null)
+        public void SetLevelPresence(int pack, int level, int stars, bool isWon = false, string levelName = null, int? score = null, int? time = null)
         {
             DiscordIpcClient client = Volatile.Read(ref _client);
             if (client == null || !IsRpcEnabled || !client.IsConnected || Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true) == null)
@@ -161,7 +161,7 @@ namespace CutTheRope.Helpers
             }
 
             client.SetActivity(
-                details: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
+                details: levelName == null ? $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}" : $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString(levelName, forceEnglish: true)}",
                 state: state,
                 startTimestamp: GetOrCreateEpochSeconds(),
                 smallImageKey: $"pack_{pack + 1}",

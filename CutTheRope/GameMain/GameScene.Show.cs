@@ -58,7 +58,7 @@ namespace CutTheRope.GameMain
             tummyTeasers = 0;
             starsCollected = 0;
             // Update RPC with current level info (on start/restart)
-            Game1.RPC?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false);
+            Game1.RPC?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false, levelName);
             candyBubble = null;
             candyBubbleL = null;
             candyBubbleR = null;
@@ -76,9 +76,10 @@ namespace CutTheRope.GameMain
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1);
-            Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture));
+            string packAndLevelNumbers = (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture);
+            Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelName == null ? packAndLevelNumbers : Application.GetString(levelName));
+            Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelName == null ? Application.GetString("LEVEL") : Application.GetString("LEVEL") + " " + packAndLevelNumbers);
             text.anchor = 33;
-            Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, Application.GetString("LEVEL"));
             text2.anchor = 33;
             text2.parentAnchor = 9;
             text.SetName("levelLabel");

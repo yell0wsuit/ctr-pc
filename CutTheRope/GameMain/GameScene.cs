@@ -1166,6 +1166,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         public float partsDist;
 
+        public string levelName;
+
         /// <summary>
         /// Earth animation images used by gravity-switch levels.
         /// </summary>
