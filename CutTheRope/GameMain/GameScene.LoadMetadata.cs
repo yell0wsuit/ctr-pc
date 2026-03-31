@@ -101,6 +101,9 @@ namespace CutTheRope.GameMain
                             }
                             ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
                             break;
+                        case "extra":
+                            levelName = item2.Attribute("levelName")?.Value ?? string.Empty;
+                            break;
                         case "candyL":
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
                             starL.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
