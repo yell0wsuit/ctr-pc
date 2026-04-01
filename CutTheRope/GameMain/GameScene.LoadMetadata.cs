@@ -43,6 +43,7 @@ namespace CutTheRope.GameMain
                             offsetX = (2560f - (mapWidth * scale)) / 2f;
                             mapWidth *= scale;
                             mapHeight *= scale;
+                            levelName = item2.Attribute("levelName")?.Value ?? null;
 
                             if (PackConfig.GetEarthBg(rc.GetPack()))
                             {
@@ -99,9 +100,6 @@ namespace CutTheRope.GameMain
                                 }
                             }
                             ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
-                            break;
-                        case "extra":
-                            levelName = item2.Attribute("levelName")?.Value ?? string.Empty;
                             break;
                         case "candyL":
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

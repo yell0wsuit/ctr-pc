@@ -77,8 +77,9 @@ namespace CutTheRope.GameMain
             ropeAtOnceTimer = 0f;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1);
             string packAndLevelNumbers = (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture);
-            Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelName == null ? packAndLevelNumbers : Application.GetString(levelName));
-            Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelName == null ? Application.GetString("LEVEL") : Application.GetString("LEVEL") + " " + packAndLevelNumbers);
+            bool useCustomLevelName = levelName != null && Application.GetString(levelName) != string.Empty;
+            Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, useCustomLevelName ? Application.GetString(levelName) : packAndLevelNumbers);
+            Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, useCustomLevelName ? Application.GetString("LEVEL") + " " + packAndLevelNumbers : Application.GetString("LEVEL"));
             text.anchor = 33;
             text2.anchor = 33;
             text2.parentAnchor = 9;

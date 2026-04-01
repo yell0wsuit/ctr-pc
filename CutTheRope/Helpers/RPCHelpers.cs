@@ -160,8 +160,10 @@ namespace CutTheRope.Helpers
                 }
             }
 
+            bool useCustomLevelName = levelName != null && Application.GetString(levelName) != string.Empty;
+
             client.SetActivity(
-                details: levelName == null ? $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}" : $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString(levelName, forceEnglish: true)}",
+                details: useCustomLevelName ? $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString(levelName, forceEnglish: true)}" : $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
                 state: state,
                 startTimestamp: GetOrCreateEpochSeconds(),
                 smallImageKey: $"pack_{pack + 1}",
