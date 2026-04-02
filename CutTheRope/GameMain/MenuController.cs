@@ -1177,6 +1177,7 @@ namespace CutTheRope.GameMain
             if (levelsInPack > 25)
             {
                 vBox.y = 0f;
+                vBox.height += (int)levelsTopY;
                 levelContainer = new ScrollableContainer().InitWithWidthHeightContainer(SCREEN_WIDTH, availableHeight, vBox);
                 levelContainer.shouldBounceVertically = true;
                 levelContainer.y = levelsTopY;
@@ -1185,15 +1186,9 @@ namespace CutTheRope.GameMain
             else
             {
                 levelContainer = null;
-                if (levelsInPack <= 20)
-                {
-                    float verticalOffset = (availableHeight - vBox.height) / 2f;
-                    vBox.y = levelsTopY + verticalOffset;
-                }
-                else
-                {
-                    vBox.y = levelsTopY;
-                }
+                float fillRatio = vBox.height / availableHeight;
+                float verticalOffset = (availableHeight - vBox.height) / 2f * MathF.Cbrt(1f - fillRatio);
+                vBox.y = levelsTopY + verticalOffset;
                 levelsElement = vBox;
             }
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
