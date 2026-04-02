@@ -1136,8 +1136,8 @@ namespace CutTheRope.GameMain
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
             HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
-            hBox.x = -20f;
-            hBox.y = 20f;
+            hBox.x = -30f;
+            hBox.y = 40f;
             int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
             int columnsPerRow;
             float horizontalSpacing;
@@ -1209,7 +1209,7 @@ namespace CutTheRope.GameMain
             _ = levelsElement.AddTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.SetName("starText");
-            hBox.x = -Canvas.xOffsetScaled;
+            hBox.x = -30f - Canvas.xOffsetScaled;
             Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
