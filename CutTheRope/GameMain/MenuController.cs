@@ -1141,23 +1141,27 @@ namespace CutTheRope.GameMain
             int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
             int columnsPerRow;
             float horizontalSpacing;
+            float buttonScale;
             if (levelsInPack <= 9)
             {
                 columnsPerRow = 3;
                 horizontalSpacing = 100f;
+                buttonScale = 1.5f;
             }
             else if (levelsInPack <= 12)
             {
                 columnsPerRow = 4;
                 horizontalSpacing = 60f;
+                buttonScale = 1.25f;
             }
             else
             {
                 columnsPerRow = 5;
                 horizontalSpacing = 10f;
+                buttonScale = 1f;
             }
             float verticalSpacing = 55f;
-            float rowHeight = 202.79999f;
+            float rowHeight = 202.79999f * buttonScale;
             VBox vBox = new VBox().InitWithOffsetAlignWidth(verticalSpacing, 2, SCREEN_WIDTH);
             vBox.SetName("levelsBox");
             vBox.x = 0f;
@@ -1167,7 +1171,15 @@ namespace CutTheRope.GameMain
                 HBox hBox2 = new HBox().InitWithOffsetAlignHeight(horizontalSpacing, 16, rowHeight);
                 for (int j = 0; j < columnsPerRow && levelIndex < levelsInPack; j++)
                 {
-                    _ = hBox2.AddChild(CreateButtonForLevelPack(levelIndex++, pack));
+                    BaseElement levelButton = CreateButtonForLevelPack(levelIndex++, pack);
+                    if (buttonScale != 1f)
+                    {
+                        levelButton.scaleX = buttonScale;
+                        levelButton.scaleY = buttonScale;
+                        levelButton.width = (int)(levelButton.width * buttonScale);
+                        levelButton.height = (int)(levelButton.height * buttonScale);
+                    }
+                    _ = hBox2.AddChild(levelButton);
                 }
                 _ = vBox.AddChild(hBox2);
             }
