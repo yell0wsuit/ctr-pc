@@ -1136,30 +1136,33 @@ namespace CutTheRope.GameMain
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
             HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
+
             hBox.x = -30f;
             hBox.y = 40f;
             int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
             int columnsPerRow;
             float horizontalSpacing;
             float buttonScale;
-            if (levelsInPack <= 9)
+
+            switch (levelsInPack)
             {
-                columnsPerRow = 3;
-                horizontalSpacing = 100f;
-                buttonScale = 1.25f;
+                case <= 9:
+                    columnsPerRow = 3;
+                    horizontalSpacing = 100f;
+                    buttonScale = 1.25f;
+                    break;
+                case <= 12:
+                    columnsPerRow = 4;
+                    horizontalSpacing = 60f;
+                    buttonScale = 1.25f;
+                    break;
+                default:
+                    columnsPerRow = 5;
+                    horizontalSpacing = 10f;
+                    buttonScale = 1f;
+                    break;
             }
-            else if (levelsInPack <= 12)
-            {
-                columnsPerRow = 4;
-                horizontalSpacing = 60f;
-                buttonScale = 1.25f;
-            }
-            else
-            {
-                columnsPerRow = 5;
-                horizontalSpacing = 10f;
-                buttonScale = 1f;
-            }
+
             float verticalSpacing = 55f;
             float rowHeight = 202.79999f * buttonScale;
             VBox vBox = new VBox().InitWithOffsetAlignWidth(verticalSpacing, 2, SCREEN_WIDTH);
