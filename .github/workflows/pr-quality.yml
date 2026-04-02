@@ -6,6 +6,9 @@ on:
         paths:
             - "**/*.cs"
 
+permissions:
+    contents: read
+
 jobs:
     code-quality:
         runs-on: ubuntu-latest
