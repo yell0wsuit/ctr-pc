@@ -1185,8 +1185,15 @@ namespace CutTheRope.GameMain
             else
             {
                 levelContainer = null;
-                float verticalOffset = (availableHeight - vBox.height) / 2f;
-                vBox.y = levelsTopY + verticalOffset;
+                if (levelsInPack <= 20)
+                {
+                    float verticalOffset = (availableHeight - vBox.height) / 2f;
+                    vBox.y = levelsTopY + verticalOffset;
+                }
+                else
+                {
+                    vBox.y = levelsTopY;
+                }
                 levelsElement = vBox;
             }
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
