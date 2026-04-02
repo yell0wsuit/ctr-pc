@@ -1146,7 +1146,7 @@ namespace CutTheRope.GameMain
             {
                 columnsPerRow = 3;
                 horizontalSpacing = 100f;
-                buttonScale = 1.5f;
+                buttonScale = 1.25f;
             }
             else if (levelsInPack <= 12)
             {
