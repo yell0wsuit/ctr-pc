@@ -11,7 +11,6 @@ namespace CutTheRope.Framework.Platform
 {
     internal sealed class GLCanvas : FrameworkTypes
     {
-        // (get) Token: 0x060002F3 RID: 755 RVA: 0x00011F34 File Offset: 0x00010134
         public Rectangle Bounds
         {
             get
