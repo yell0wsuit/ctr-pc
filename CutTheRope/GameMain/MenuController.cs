@@ -1136,40 +1136,89 @@ namespace CutTheRope.GameMain
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
             HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
-            hBox.x = -20f;
-            hBox.y = 20f;
-            float of = 55f;
-            float of2 = 10f;
-            float h = 202.79999f;
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(of, 2, SCREEN_WIDTH);
+
+            hBox.x = -30f;
+            hBox.y = 40f;
+            int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
+            int columnsPerRow;
+            float horizontalSpacing;
+            float buttonScale;
+
+            switch (levelsInPack)
+            {
+                case <= 9:
+                    columnsPerRow = 3;
+                    horizontalSpacing = 100f;
+                    buttonScale = 1.25f;
+                    break;
+                case <= 12:
+                    columnsPerRow = 4;
+                    horizontalSpacing = 60f;
+                    buttonScale = 1.25f;
+                    break;
+                default:
+                    columnsPerRow = 5;
+                    horizontalSpacing = 10f;
+                    buttonScale = 1f;
+                    break;
+            }
+
+            float verticalSpacing = 55f;
+            float rowHeight = 203f * buttonScale;
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(verticalSpacing, 2, SCREEN_WIDTH);
             vBox.SetName("levelsBox");
             vBox.x = 0f;
-            vBox.y = 110f;
-            int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
-            int columnsPerRow = 5;
             int levelIndex = 0;
             for (int i = 0; i < levelsInPack; i += columnsPerRow)
             {
-                HBox hBox2 = new HBox().InitWithOffsetAlignHeight(of2, 16, h);
+                HBox hBox2 = new HBox().InitWithOffsetAlignHeight(horizontalSpacing, 16, rowHeight);
                 for (int j = 0; j < columnsPerRow && levelIndex < levelsInPack; j++)
                 {
-                    _ = hBox2.AddChild(CreateButtonForLevelPack(levelIndex++, pack));
+                    BaseElement levelButton = CreateButtonForLevelPack(levelIndex++, pack);
+                    if (buttonScale != 1f)
+                    {
+                        levelButton.scaleX = buttonScale;
+                        levelButton.scaleY = buttonScale;
+                        levelButton.width = (int)(levelButton.width * buttonScale);
+                        levelButton.height = (int)(levelButton.height * buttonScale);
+                    }
+                    _ = hBox2.AddChild(levelButton);
                 }
                 _ = vBox.AddChild(hBox2);
+            }
+            float levelsTopY = 110f;
+            float availableHeight = SCREEN_HEIGHT - levelsTopY;
+            BaseElement levelsElement;
+            if (levelsInPack > 25)
+            {
+                vBox.y = 0f;
+                vBox.height += (int)levelsTopY - 15;
+                levelContainer = new ScrollableContainer().InitWithWidthHeightContainer(SCREEN_WIDTH, availableHeight, vBox);
+                levelContainer.shouldBounceVertically = true;
+                levelContainer.y = levelsTopY;
+                levelsElement = levelContainer;
+            }
+            else
+            {
+                levelContainer = null;
+                float fillRatio = vBox.height / availableHeight;
+                float verticalOffset = (availableHeight - vBox.height) / 2f * MathF.Cbrt(1f - fillRatio);
+                vBox.y = levelsTopY + verticalOffset;
+                levelsElement = vBox;
             }
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
-            _ = vBox.AddTimeline(timeline4);
+            _ = levelsElement.AddTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.SetName("starText");
-            hBox.x = -Canvas.xOffsetScaled;
+            hBox.x = -30f - Canvas.xOffsetScaled;
             Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = hBox.AddTimeline(timeline5);
             _ = menuView.AddChild(hBox);
-            _ = menuView.AddChild(vBox);
+            _ = menuView.AddChild(levelsElement);
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.PackSelect);
             button.SetName("backButton");
             Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
@@ -1822,6 +1871,13 @@ namespace CutTheRope.GameMain
                 }
             }
 
+            // Handle scroll wheel for level selection view
+            if (activeViewID == VIEW_LEVEL_SELECT && levelContainer != null)
+            {
+                levelContainer.HandleMouseWheel(scrollDelta);
+                return true;
+            }
+
             // Handle scroll wheel for candy selection view
             if (activeViewID == VIEW_CANDY_SELECT && candyContainer != null)
             {
@@ -2005,6 +2061,8 @@ namespace CutTheRope.GameMain
         private ScrollableContainer candyContainer;
 
         private ScrollableContainer packContainer;
+
+        private ScrollableContainer levelContainer;
 
         private readonly BaseElement[] boxes = new BaseElement[CTRPreferences.GetPacksCount() + 1];
 
