@@ -1192,7 +1192,7 @@ namespace CutTheRope.GameMain
             if (levelsInPack > 25)
             {
                 vBox.y = 0f;
-                vBox.height += (int)levelsTopY;
+                vBox.height += (int)levelsTopY - 15;
                 levelContainer = new ScrollableContainer().InitWithWidthHeightContainer(SCREEN_WIDTH, availableHeight, vBox);
                 levelContainer.shouldBounceVertically = true;
                 levelContainer.y = levelsTopY;
