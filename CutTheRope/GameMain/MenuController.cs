@@ -1164,7 +1164,7 @@ namespace CutTheRope.GameMain
             }
 
             float verticalSpacing = 55f;
-            float rowHeight = 202.79999f * buttonScale;
+            float rowHeight = 203f * buttonScale;
             VBox vBox = new VBox().InitWithOffsetAlignWidth(verticalSpacing, 2, SCREEN_WIDTH);
             vBox.SetName("levelsBox");
             vBox.x = 0f;
