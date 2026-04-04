@@ -45,6 +45,9 @@ namespace CutTheRope.Framework.Visual
         }
     }
 
+    /// <summary>
+    /// Receives button press events identified by a <see cref="ButtonId"/>.
+    /// </summary>
     public interface IButtonDelegation
     {
         /// <summary>
