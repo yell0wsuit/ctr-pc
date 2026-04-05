@@ -91,7 +91,10 @@ namespace CutTheRope.Framework.Visual
             e.y = relativeQuadOffset.Y;
         }
 
-        /// <summary>Creates an image from the specified texture.</summary>
+        /// <summary>
+        /// Creates an image from the specified texture.
+        /// </summary>
+        /// <param name="t">Texture to create the image from.</param>
         public static Image Image_create(CTRTexture2D t)
         {
             return new Image().InitWithTexture(t);
@@ -118,7 +121,10 @@ namespace CutTheRope.Framework.Visual
             return image;
         }
 
-        /// <summary>Initializes the image with the given texture, setting the first quad or full image.</summary>
+        /// <summary>
+        /// Initializes the image with the given texture, setting the first quad or full image.
+        /// </summary>
+        /// <param name="t">Texture to initialize with.</param>
         public virtual Image InitWithTexture(CTRTexture2D t)
         {
             texture = t ?? throw new InvalidOperationException("Failed to initialize Image: texture is null. The texture resource may not exist or failed to load.");
@@ -134,7 +140,9 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
-        /// <summary>Switches to drawing the entire texture instead of a single quad.</summary>
+        /// <summary>
+        /// Switches to drawing the entire texture instead of a single quad.
+        /// </summary>
         public virtual void SetDrawFullImage()
         {
             quadToDraw = -1;
@@ -142,7 +150,10 @@ namespace CutTheRope.Framework.Visual
             height = texture._realHeight;
         }
 
-        /// <summary>Sets the quad index to draw and updates width/height accordingly.</summary>
+        /// <summary>
+        /// Sets the quad index to draw and updates width/height accordingly.
+        /// </summary>
+        /// <param name="n">Quad index to draw.</param>
         public virtual void SetDrawQuad(int n)
         {
             quadToDraw = n;
@@ -157,7 +168,9 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Restores the pre-cut size so that trimmed transparency is accounted for in positioning.</summary>
+        /// <summary>
+        /// Restores the pre-cut size so that trimmed transparency is accounted for in positioning.
+        /// </summary>
         public virtual void DoRestoreCutTransparency()
         {
             if (texture.preCutSize.X != vectUndefined.X)
@@ -171,7 +184,10 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Applies the pre-cut size for the given quad if available. Returns true if applied.</summary>
+        /// <summary>
+        /// Applies the pre-cut size for the given quad if available. Returns true if applied.
+        /// </summary>
+        /// <param name="quad">Quad index to apply pre-cut size for.</param>
         private bool ApplyPerQuadPreCutSize(int quad)
         {
             if (quad >= 0 && texture.preCutSizes != null && quad < texture.preCutSizes.Length)
@@ -202,7 +218,10 @@ namespace CutTheRope.Framework.Visual
             PostDraw();
         }
 
-        /// <summary>Draws the specified quad from the bound texture.</summary>
+        /// <summary>
+        /// Draws the specified quad from the bound texture.
+        /// </summary>
+        /// <param name="n">Quad index to draw.</param>
         public virtual void DrawQuad(int n)
         {
             float w = texture.quadRects[n].w;
@@ -238,7 +257,10 @@ namespace CutTheRope.Framework.Visual
             return false;
         }
 
-        /// <summary>Creates a <see cref="BaseElement"/> from an XML definition. Not implemented in this class.</summary>
+        /// <summary>
+        /// Creates a <see cref="BaseElement"/> from an XML definition. Not implemented in this class.
+        /// </summary>
+        /// <param name="xml">XML element to create from.</param>
         public virtual BaseElement CreateFromXML(XElement xml)
         {
             throw new NotImplementedException();
@@ -255,16 +277,24 @@ namespace CutTheRope.Framework.Visual
         }
 
 
-        /// <summary>Timeline action name for setting the draw quad index.</summary>
+        /// <summary>
+        /// Timeline action name for setting the draw quad index.
+        /// </summary>
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";
 
-        /// <summary>The texture used for drawing this image.</summary>
+        /// <summary>
+        /// The texture used for drawing this image.
+        /// </summary>
         public CTRTexture2D texture;
 
-        /// <summary>Whether to restore trimmed transparency offsets when drawing quads.</summary>
+        /// <summary>
+        /// Whether to restore trimmed transparency offsets when drawing quads.
+        /// </summary>
         public bool restoreCutTransparency;
 
-        /// <summary>Index of the quad to draw, or -1 to draw the full image.</summary>
+        /// <summary>
+        /// Index of the quad to draw, or -1 to draw the full image.
+        /// </summary>
         public int quadToDraw;
     }
 }
