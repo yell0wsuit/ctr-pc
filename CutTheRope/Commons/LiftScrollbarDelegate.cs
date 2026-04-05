@@ -5,7 +5,11 @@ namespace CutTheRope.Commons
     /// </summary>
     internal interface ILiftScrollbarDelegate
     {
-        /// <summary>Called when the active scroll point changes from <paramref name="pp"/> to <paramref name="cp"/>.</summary>
+        /// <summary>
+        /// Called when the active scroll point changes from <paramref name="pp"/> to <paramref name="cp"/>.
+        /// </summary>
+        /// <param name="pp">Previous scroll point.</param>
+        /// <param name="cp">Current scroll point.</param>
         void ChangedActiveSpointFromTo(int pp, int cp);
     }
 }

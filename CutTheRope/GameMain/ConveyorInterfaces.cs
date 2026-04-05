@@ -7,28 +7,45 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal interface ITransporterItem
     {
-        /// <summary>Normalized position along the transporter path (0–1).</summary>
+        /// <summary>
+        /// Normalized position along the transporter path (0–1).
+        /// </summary>
         float PositionOnTransporter { get; set; }
 
-        /// <summary>World-space point where the item attaches to the transporter.</summary>
+        /// <summary>
+        /// World-space point where the item attaches to the transporter.
+        /// </summary>
         Vector BindPoint { get; }
 
-        /// <summary>Sets the bind point to <paramref name="point"/>.</summary>
+        /// <summary>
+        /// Sets the bind point to <paramref name="point"/>.
+        /// </summary>
+        /// <param name="point">New bind point.</param>
         void SetBindPoint(Vector point);
 
-        /// <summary>Collision radius used for transporter interaction.</summary>
+        /// <summary>
+        /// Collision radius used for transporter interaction.
+        /// </summary>
         float CollisionRadius { get; }
 
-        /// <summary>Minimum scale applied while on the transporter.</summary>
+        /// <summary>
+        /// Minimum scale applied while on the transporter.
+        /// </summary>
         float MinScale { get; }
 
-        /// <summary>Maximum scale applied while on the transporter.</summary>
+        /// <summary>
+        /// Maximum scale applied while on the transporter.
+        /// </summary>
         float MaxScale { get; }
 
-        /// <summary>Current scale factor applied by the transporter.</summary>
+        /// <summary>
+        /// Current scale factor applied by the transporter.
+        /// </summary>
         float TransporterScale { get; set; }
 
-        /// <summary>Whether the transporter is responsible for drawing this item.</summary>
+        /// <summary>
+        /// Whether the transporter is responsible for drawing this item.
+        /// </summary>
         bool IsDrawnByTransporter { get; set; }
     }
 
@@ -56,6 +73,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal interface ITransporterScaleAware
     {
+        /// <param name="scale">Scale factor to apply.</param>
         void SetTransporterScale(float scale);
     }
 }
