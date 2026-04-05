@@ -12,22 +12,33 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal class BaseElement : FrameworkTypes
     {
-        /// <summary>True if this element has a parent in the scene graph.</summary>
+        /// <summary>
+        /// True if this element has a parent in the scene graph.
+        /// </summary>
         public bool HasParent => parent != null;
 
-        /// <summary>Returns true if <paramref name="f"/> is set in the element's anchor flags.</summary>
+        /// <summary>
+        /// Returns true if <paramref name="f"/> is set in the element's anchor flags.
+        /// </summary>
+        /// <param name="f">Anchor flag bitmask to test.</param>
         public bool AnchorHas(int f)
         {
             return (anchor & f) != 0;
         }
 
-        /// <summary>Returns true if <paramref name="f"/> is set in the parent-anchor flags.</summary>
+        /// <summary>
+        /// Returns true if <paramref name="f"/> is set in the parent-anchor flags.
+        /// </summary>
+        /// <param name="f">Parent-anchor flag bitmask to test.</param>
         public bool ParentAnchorHas(int f)
         {
             return (parentAnchor & f) != 0;
         }
 
-        /// <summary>Computes <see cref="drawX"/>/<see cref="drawY"/> for <paramref name="e"/> based on its anchor, parent-anchor, and parent position.</summary>
+        /// <summary>
+        /// Computes <see cref="drawX"/>/<see cref="drawY"/> for <paramref name="e"/> based on its anchor, parent-anchor, and parent position.
+        /// </summary>
+        /// <param name="e">Element to compute draw position for.</param>
         public static void CalculateTopLeft(BaseElement e)
         {
             float parentDrawX = e.HasParent ? e.parent.drawX : 0f;
@@ -96,7 +107,10 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Pops the matrix stack if any transforms were applied to <paramref name="t"/>.</summary>
+        /// <summary>
+        /// Pops the matrix stack if any transforms were applied to <paramref name="t"/>.
+        /// </summary>
+        /// <param name="t">Element whose transforms to restore.</param>
         protected static void RestoreTransformations(BaseElement t)
         {
             if (t.pushM
@@ -113,7 +127,10 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Resets the renderer color to solid opaque if <paramref name="t"/> has a custom color.</summary>
+        /// <summary>
+        /// Resets the renderer color to solid opaque if <paramref name="t"/> has a custom color.
+        /// </summary>
+        /// <param name="t">Element whose color to restore.</param>
         protected static void RestoreColor(BaseElement t)
         {
             if (!RGBAColor.RGBAEqual(t.color, RGBAColor.solidOpaqueRGBA))
@@ -122,7 +139,9 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Initializes a new <see cref="BaseElement"/> with default values.</summary>
+        /// <summary>
+        /// Initializes a new <see cref="BaseElement"/> with default values.
+        /// </summary>
         public BaseElement()
         {
             visible = true;
@@ -161,7 +180,9 @@ namespace CutTheRope.Framework.Visual
             blendingMode = -1;
         }
 
-        /// <summary>Applies transforms, color, and blending before drawing.</summary>
+        /// <summary>
+        /// Applies transforms, color, and blending before drawing.
+        /// </summary>
         public virtual void PreDraw()
         {
             CalculateTopLeft(this);
@@ -220,14 +241,18 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Draws this element by calling <see cref="PreDraw"/> and <see cref="PostDraw"/>.</summary>
+        /// <summary>
+        /// Draws this element by calling <see cref="PreDraw"/> and <see cref="PostDraw"/>.
+        /// </summary>
         public virtual void Draw()
         {
             PreDraw();
             PostDraw();
         }
 
-        /// <summary>Draws visible children and restores transforms/color.</summary>
+        /// <summary>
+        /// Draws visible children and restores transforms/color.
+        /// </summary>
         public virtual void PostDraw()
         {
             if (!passTransformationsToChilds)
@@ -262,7 +287,10 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Updates children and advances the current timeline by <paramref name="delta"/> seconds.</summary>
+        /// <summary>
+        /// Updates children and advances the current timeline by <paramref name="delta"/> seconds.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
         public virtual void Update(float delta)
         {
             int processedChildren = 0;
@@ -285,7 +313,10 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Recursively searches for a child element with the given name.</summary>
+        /// <summary>
+        /// Recursively searches for a child element with the given name.
+        /// </summary>
+        /// <param name="n">Name to search for.</param>
         public BaseElement GetChildWithName(string n)
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
@@ -307,7 +338,9 @@ namespace CutTheRope.Framework.Visual
             return null;
         }
 
-        /// <summary>Expands this element's size to encompass all children.</summary>
+        /// <summary>
+        /// Expands this element's size to encompass all children.
+        /// </summary>
         public void SetSizeToChildsBounds()
         {
             CalculateTopLeft(this);
@@ -343,7 +376,10 @@ namespace CutTheRope.Framework.Visual
             height = (int)(maxY - minY);
         }
 
-        /// <summary>Handles a timeline action. Returns true if the action was recognized.</summary>
+        /// <summary>
+        /// Handles a timeline action. Returns true if the action was recognized.
+        /// </summary>
+        /// <param name="a">Action data to process.</param>
         public virtual bool HandleAction(ActionData a)
         {
             if (a.actionName == ACTION_SET_VISIBLE)
@@ -392,13 +428,20 @@ namespace CutTheRope.Framework.Visual
             return true;
         }
 
-        /// <summary>Adds a child element and returns its assigned ID.</summary>
+        /// <summary>
+        /// Adds a child element and returns its assigned ID.
+        /// </summary>
+        /// <param name="c">Child element to add.</param>
         public virtual int AddChild(BaseElement c)
         {
             return AddChildwithID(c, -1);
         }
 
-        /// <summary>Adds a child element at the specified ID slot, disposing any existing child at that slot.</summary>
+        /// <summary>
+        /// Adds a child element at the specified ID slot, disposing any existing child at that slot.
+        /// </summary>
+        /// <param name="c">Child element to add.</param>
+        /// <param name="i">Slot ID, or -1 to auto-assign.</param>
         public virtual int AddChildwithID(BaseElement c, int i)
         {
             c.parent = this;
@@ -431,7 +474,10 @@ namespace CutTheRope.Framework.Visual
             return i;
         }
 
-        /// <summary>Removes the child at slot <paramref name="i"/> without disposing it.</summary>
+        /// <summary>
+        /// Removes the child at slot <paramref name="i"/> without disposing it.
+        /// </summary>
+        /// <param name="i">Slot ID of the child to remove.</param>
         public virtual void RemoveChildWithID(int i)
         {
             if (childs.TryGetValue(i, out BaseElement value))
@@ -441,13 +487,18 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Removes all children without disposing them.</summary>
+        /// <summary>
+        /// Removes all children without disposing them.
+        /// </summary>
         public void RemoveAllChilds()
         {
             childs.Clear();
         }
 
-        /// <summary>Removes the specified child element by reference.</summary>
+        /// <summary>
+        /// Removes the specified child element by reference.
+        /// </summary>
+        /// <param name="c">Child element to remove.</param>
         public virtual void RemoveChild(BaseElement c)
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
@@ -460,14 +511,20 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Returns the child at slot <paramref name="i"/>, or null.</summary>
+        /// <summary>
+        /// Returns the child at slot <paramref name="i"/>, or null.
+        /// </summary>
+        /// <param name="i">Slot ID to look up.</param>
         public virtual BaseElement GetChild(int i)
         {
             _ = childs.TryGetValue(i, out BaseElement value);
             return value;
         }
 
-        /// <summary>Returns the slot ID of the specified child, or -1 if not found.</summary>
+        /// <summary>
+        /// Returns the slot ID of the specified child, or -1 if not found.
+        /// </summary>
+        /// <param name="c">Child element to find.</param>
         public virtual int GetChildId(BaseElement c)
         {
             int result = -1;
@@ -481,19 +538,26 @@ namespace CutTheRope.Framework.Visual
             return result;
         }
 
-        /// <summary>Returns the number of children.</summary>
+        /// <summary>
+        /// Returns the number of children.
+        /// </summary>
         public virtual int ChildsCount()
         {
             return childs.Count;
         }
 
-        /// <summary>Returns the children dictionary.</summary>
+        /// <summary>
+        /// Returns the children dictionary.
+        /// </summary>
         public virtual Dictionary<int, BaseElement> GetChilds()
         {
             return childs;
         }
 
-        /// <summary>Adds a timeline and returns its auto-assigned ID.</summary>
+        /// <summary>
+        /// Adds a timeline and returns its auto-assigned ID.
+        /// </summary>
+        /// <param name="t">Timeline to add.</param>
         public virtual int AddTimeline(Timeline t)
         {
             int count = timelines.Count;
@@ -501,14 +565,21 @@ namespace CutTheRope.Framework.Visual
             return count;
         }
 
-        /// <summary>Adds a timeline at the specified ID slot.</summary>
+        /// <summary>
+        /// Adds a timeline at the specified ID slot.
+        /// </summary>
+        /// <param name="t">Timeline to add.</param>
+        /// <param name="i">Slot ID to assign.</param>
         public virtual void AddTimelinewithID(Timeline t, int i)
         {
             t.element = this;
             timelines[i] = t;
         }
 
-        /// <summary>Removes the timeline at slot <paramref name="i"/>, stopping it if active.</summary>
+        /// <summary>
+        /// Removes the timeline at slot <paramref name="i"/>, stopping it if active.
+        /// </summary>
+        /// <param name="i">Slot ID of the timeline to remove.</param>
         public virtual void RemoveTimeline(int i)
         {
             if (currentTimelineIndex == i)
@@ -518,7 +589,10 @@ namespace CutTheRope.Framework.Visual
             _ = timelines.Remove(i);
         }
 
-        /// <summary>Starts playback of the timeline at slot <paramref name="t"/>, stopping any active timeline.</summary>
+        /// <summary>
+        /// Starts playback of the timeline at slot <paramref name="t"/>, stopping any active timeline.
+        /// </summary>
+        /// <param name="t">Slot ID of the timeline to play.</param>
         public virtual void PlayTimeline(int t)
         {
             _ = timelines.TryGetValue(t, out Timeline value);
@@ -534,13 +608,17 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Pauses the currently playing timeline.</summary>
+        /// <summary>
+        /// Pauses the currently playing timeline.
+        /// </summary>
         public virtual void PauseCurrentTimeline()
         {
             currentTimeline.PauseTimeline();
         }
 
-        /// <summary>Stops the currently playing timeline and clears it.</summary>
+        /// <summary>
+        /// Stops the currently playing timeline and clears it.
+        /// </summary>
         public virtual void StopCurrentTimeline()
         {
             currentTimeline.StopTimeline();
@@ -548,26 +626,37 @@ namespace CutTheRope.Framework.Visual
             currentTimelineIndex = -1;
         }
 
-        /// <summary>Returns the currently active timeline, or null.</summary>
+        /// <summary>
+        /// Returns the currently active timeline, or null.
+        /// </summary>
         public virtual Timeline GetCurrentTimeline()
         {
             return currentTimeline;
         }
 
-        /// <summary>Returns the ID of the currently active timeline, or -1.</summary>
+        /// <summary>
+        /// Returns the ID of the currently active timeline, or -1.
+        /// </summary>
         public int GetCurrentTimelineIndex()
         {
             return currentTimelineIndex;
         }
 
-        /// <summary>Returns the timeline at slot <paramref name="n"/>, or null.</summary>
+        /// <summary>
+        /// Returns the timeline at slot <paramref name="n"/>, or null.
+        /// </summary>
+        /// <param name="n">Slot ID to look up.</param>
         public virtual Timeline GetTimeline(int n)
         {
             _ = timelines.TryGetValue(n, out Timeline value);
             return value;
         }
 
-        /// <summary>Dispatches a touch-down event to children. Returns true if handled.</summary>
+        /// <summary>
+        /// Dispatches a touch-down event to children. Returns true if handled.
+        /// </summary>
+        /// <param name="tx">Touch X coordinate.</param>
+        /// <param name="ty">Touch Y coordinate.</param>
         public virtual bool OnTouchDownXY(float tx, float ty)
         {
             bool handled = false;
@@ -586,7 +675,11 @@ namespace CutTheRope.Framework.Visual
             return handled;
         }
 
-        /// <summary>Dispatches a touch-up event to children. Returns true if handled.</summary>
+        /// <summary>
+        /// Dispatches a touch-up event to children. Returns true if handled.
+        /// </summary>
+        /// <param name="tx">Touch X coordinate.</param>
+        /// <param name="ty">Touch Y coordinate.</param>
         public virtual bool OnTouchUpXY(float tx, float ty)
         {
             bool handled = false;
@@ -605,7 +698,11 @@ namespace CutTheRope.Framework.Visual
             return handled;
         }
 
-        /// <summary>Dispatches a touch-move event to children. Returns true if handled.</summary>
+        /// <summary>
+        /// Dispatches a touch-move event to children. Returns true if handled.
+        /// </summary>
+        /// <param name="tx">Touch X coordinate.</param>
+        /// <param name="ty">Touch Y coordinate.</param>
         public virtual bool OnTouchMoveXY(float tx, float ty)
         {
             bool handled = false;
@@ -624,7 +721,10 @@ namespace CutTheRope.Framework.Visual
             return handled;
         }
 
-        /// <summary>Sets visible, touchable, and updateable to <paramref name="e"/>.</summary>
+        /// <summary>
+        /// Sets visible, touchable, and updateable to <paramref name="e"/>.
+        /// </summary>
+        /// <param name="e">Whether to enable or disable.</param>
         public void SetEnabled(bool e)
         {
             visible = e;
@@ -632,19 +732,26 @@ namespace CutTheRope.Framework.Visual
             updateable = e;
         }
 
-        /// <summary>Returns true if visible, touchable, and updateable are all true.</summary>
+        /// <summary>
+        /// Returns true if visible, touchable, and updateable are all true.
+        /// </summary>
         public bool IsEnabled()
         {
             return visible && touchable && updateable;
         }
 
-        /// <summary>Sets the element's name used by <see cref="GetChildWithName"/>.</summary>
+        /// <summary>
+        /// Sets the element's name used by <see cref="GetChildWithName"/>.
+        /// </summary>
+        /// <param name="n">Name to assign.</param>
         public void SetName(string n)
         {
             name = n;
         }
 
-        /// <summary>Recursively shows all visible children.</summary>
+        /// <summary>
+        /// Recursively shows all visible children.
+        /// </summary>
         public virtual void Show()
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
@@ -657,7 +764,9 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Recursively hides all visible children.</summary>
+        /// <summary>
+        /// Recursively hides all visible children.
+        /// </summary>
         public virtual void Hide()
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
@@ -670,7 +779,9 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>Releases children and timeline collections when disposing.</summary>
+        /// <summary>
+        /// Releases children and timeline collections when disposing.
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -683,136 +794,224 @@ namespace CutTheRope.Framework.Visual
             base.Dispose(disposing);
         }
 
-        /// <summary>Timeline action name for setting visibility.</summary>
+        /// <summary>
+        /// Timeline action name for setting visibility.
+        /// </summary>
         public const string ACTION_SET_VISIBLE = "ACTION_SET_VISIBLE";
 
-        /// <summary>Timeline action name for setting touchability.</summary>
+        /// <summary>
+        /// Timeline action name for setting touchability.
+        /// </summary>
         public const string ACTION_SET_TOUCHABLE = "ACTION_SET_TOUCHABLE";
 
-        /// <summary>Timeline action name for setting updateability.</summary>
+        /// <summary>
+        /// Timeline action name for setting updateability.
+        /// </summary>
         public const string ACTION_SET_UPDATEABLE = "ACTION_SET_UPDATEABLE";
 
-        /// <summary>Timeline action name for playing a timeline by index.</summary>
+        /// <summary>
+        /// Timeline action name for playing a timeline by index.
+        /// </summary>
         public const string ACTION_PLAY_TIMELINE = "ACTION_PLAY_TIMELINE";
 
-        /// <summary>Timeline action name for pausing the current timeline.</summary>
+        /// <summary>
+        /// Timeline action name for pausing the current timeline.
+        /// </summary>
         public const string ACTION_PAUSE_TIMELINE = "ACTION_PAUSE_TIMELINE";
 
-        /// <summary>Timeline action name for stopping the current timeline.</summary>
+        /// <summary>
+        /// Timeline action name for stopping the current timeline.
+        /// </summary>
         public const string ACTION_STOP_TIMELINE = "ACTION_STOP_TIMELINE";
 
-        /// <summary>Timeline action name for jumping to a specific keyframe.</summary>
+        /// <summary>
+        /// Timeline action name for jumping to a specific keyframe.
+        /// </summary>
         public const string ACTION_JUMP_TO_TIMELINE_FRAME = "ACTION_JUMP_TO_TIMELINE_FRAME";
 
-        /// <summary>Timeline action name for setting a custom anchor point.</summary>
+        /// <summary>
+        /// Timeline action name for setting a custom anchor point.
+        /// </summary>
         public const string ACTION_SET_CUSTOM_ANCHOR = "ACTION_SET_CUSTOM_ANCHOR";
 
-        /// <summary>Timeline action name for setting the rotation center offset.</summary>
+        /// <summary>
+        /// Timeline action name for setting the rotation center offset.
+        /// </summary>
         public const string ACTION_SET_ROTATION_CENTER = "ACTION_SET_ROTATION_CENTER";
 
-        /// <summary>Whether a matrix push is pending and needs to be popped.</summary>
+        /// <summary>
+        /// Whether a matrix push is pending and needs to be popped.
+        /// </summary>
         private bool pushM;
 
-        /// <summary>Whether this element is drawn.</summary>
+        /// <summary>
+        /// Whether this element is drawn.
+        /// </summary>
         public bool visible;
 
-        /// <summary>Whether this element receives touch events.</summary>
+        /// <summary>
+        /// Whether this element receives touch events.
+        /// </summary>
         public bool touchable;
 
-        /// <summary>Whether this element is updated each frame.</summary>
+        /// <summary>
+        /// Whether this element is updated each frame.
+        /// </summary>
         public bool updateable;
 
-        /// <summary>Optional name used for lookup via <see cref="GetChildWithName"/>.</summary>
+        /// <summary>
+        /// Optional name used for lookup via <see cref="GetChildWithName"/>.
+        /// </summary>
         private string name;
 
-        /// <summary>Local X position relative to the parent.</summary>
+        /// <summary>
+        /// Local X position relative to the parent.
+        /// </summary>
         public float x;
 
-        /// <summary>Local Y position relative to the parent.</summary>
+        /// <summary>
+        /// Local Y position relative to the parent.
+        /// </summary>
         public float y;
 
-        /// <summary>Computed draw X position in screen coordinates.</summary>
+        /// <summary>
+        /// Computed draw X position in screen coordinates.
+        /// </summary>
         public float drawX;
 
-        /// <summary>Computed draw Y position in screen coordinates.</summary>
+        /// <summary>
+        /// Computed draw Y position in screen coordinates.
+        /// </summary>
         public float drawY;
 
-        /// <summary>Width of this element in pixels.</summary>
+        /// <summary>
+        /// Width of this element in pixels.
+        /// </summary>
         public int width;
 
-        /// <summary>Height of this element in pixels.</summary>
+        /// <summary>
+        /// Height of this element in pixels.
+        /// </summary>
         public int height;
 
-        /// <summary>Rotation angle in degrees.</summary>
+        /// <summary>
+        /// Rotation angle in degrees.
+        /// </summary>
         public float rotation;
 
-        /// <summary>X offset of the rotation center from the element's center.</summary>
+        /// <summary>
+        /// X offset of the rotation center from the element's center.
+        /// </summary>
         public float rotationCenterX;
 
-        /// <summary>Y offset of the rotation center from the element's center.</summary>
+        /// <summary>
+        /// Y offset of the rotation center from the element's center.
+        /// </summary>
         public float rotationCenterY;
 
-        /// <summary>Custom anchor X offset applied when <see cref="useCustomAnchor"/> is true.</summary>
+        /// <summary>
+        /// Custom anchor X offset applied when <see cref="useCustomAnchor"/> is true.
+        /// </summary>
         public float customAnchorX;
 
-        /// <summary>Custom anchor Y offset applied when <see cref="useCustomAnchor"/> is true.</summary>
+        /// <summary>
+        /// Custom anchor Y offset applied when <see cref="useCustomAnchor"/> is true.
+        /// </summary>
         public float customAnchorY;
 
-        /// <summary>Whether to apply <see cref="customAnchorX"/> and <see cref="customAnchorY"/>.</summary>
+        /// <summary>
+        /// Whether to apply <see cref="customAnchorX"/> and <see cref="customAnchorY"/>.
+        /// </summary>
         public bool useCustomAnchor;
 
-        /// <summary>Horizontal scale factor (1 = no scaling).</summary>
+        /// <summary>
+        /// Horizontal scale factor (1 = no scaling).
+        /// </summary>
         public float scaleX;
 
-        /// <summary>Vertical scale factor (1 = no scaling).</summary>
+        /// <summary>
+        /// Vertical scale factor (1 = no scaling).
+        /// </summary>
         public float scaleY;
 
-        /// <summary>Horizontal skew factor.</summary>
+        /// <summary>
+        /// Horizontal skew factor.
+        /// </summary>
         public float skewX;
 
-        /// <summary>Vertical skew factor.</summary>
+        /// <summary>
+        /// Vertical skew factor.
+        /// </summary>
         public float skewY;
 
-        /// <summary>Tint color applied when drawing.</summary>
+        /// <summary>
+        /// Tint color applied when drawing.
+        /// </summary>
         public RGBAColor color;
 
-        /// <summary>Horizontal translation offset applied during drawing.</summary>
+        /// <summary>
+        /// Horizontal translation offset applied during drawing.
+        /// </summary>
         private readonly float translateX;
 
-        /// <summary>Vertical translation offset applied during drawing.</summary>
+        /// <summary>
+        /// Vertical translation offset applied during drawing.
+        /// </summary>
         public float translateY;
 
-        /// <summary>Bitmask controlling how this element anchors within its own bounds.</summary>
+        /// <summary>
+        /// Bitmask controlling how this element anchors within its own bounds.
+        /// </summary>
         public sbyte anchor;
 
-        /// <summary>Bitmask controlling how this element anchors relative to its parent.</summary>
+        /// <summary>
+        /// Bitmask controlling how this element anchors relative to its parent.
+        /// </summary>
         public sbyte parentAnchor;
 
-        /// <summary>Whether transforms are passed down to children during drawing.</summary>
+        /// <summary>
+        /// Whether transforms are passed down to children during drawing.
+        /// </summary>
         public bool passTransformationsToChilds;
 
-        /// <summary>Whether color tint is passed down to children during drawing.</summary>
+        /// <summary>
+        /// Whether color tint is passed down to children during drawing.
+        /// </summary>
         public bool passColorToChilds;
 
-        /// <summary>Whether touch events are dispatched to all children instead of stopping at the first handler.</summary>
+        /// <summary>
+        /// Whether touch events are dispatched to all children instead of stopping at the first handler.
+        /// </summary>
         private readonly bool passTouchEventsToAllChilds;
 
-        /// <summary>Blending mode index (-1 = default, 0 = alpha, 1 = premultiplied, 2 = additive).</summary>
+        /// <summary>
+        /// Blending mode index (-1 = default, 0 = alpha, 1 = premultiplied, 2 = additive).
+        /// </summary>
         public int blendingMode;
 
-        /// <summary>Parent element in the scene graph, or null if this is a root element.</summary>
+        /// <summary>
+        /// Parent element in the scene graph, or null if this is a root element.
+        /// </summary>
         public BaseElement parent;
 
-        /// <summary>Child elements keyed by slot ID.</summary>
+        /// <summary>
+        /// Child elements keyed by slot ID.
+        /// </summary>
         protected Dictionary<int, BaseElement> childs;
 
-        /// <summary>Timelines keyed by slot ID.</summary>
+        /// <summary>
+        /// Timelines keyed by slot ID.
+        /// </summary>
         protected Dictionary<int, Timeline> timelines;
 
-        /// <summary>Index of the currently active timeline, or -1 if none.</summary>
+        /// <summary>
+        /// Index of the currently active timeline, or -1 if none.
+        /// </summary>
         private int currentTimelineIndex;
 
-        /// <summary>The currently active timeline, or null if none.</summary>
+        /// <summary>
+        /// The currently active timeline, or null if none.
+        /// </summary>
         private Timeline currentTimeline;
     }
 }
