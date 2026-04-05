@@ -7,7 +7,7 @@ namespace CutTheRope.GameMain
     internal sealed partial class GameScene
     {
         /// <summary>
-        /// Loads a rotated circle object from XML node data
+        /// Loads a rotated circle (vinyl) object from XML node data
         /// </summary>
         /// <param name="xmlNode">The XML node describing the rotated circle.</param>
         /// <param name="scale">The level scale factor applied to object coordinates.</param>
