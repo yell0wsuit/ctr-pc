@@ -11,6 +11,10 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.Framework.Helpers
 {
+    /// <summary>
+    /// An <see cref="Animation"/> with a bounding box, mover support, and collision testing.
+    /// Base class for all interactive game objects.
+    /// </summary>
     internal class GameObject : Animation
     {
         private static GameObject GameObject_create(CTRTexture2D texture)
@@ -20,6 +24,7 @@ namespace CutTheRope.Framework.Helpers
             return gameObject;
         }
 
+        /// <summary>Creates a game object from the specified texture resource and quad index.</summary>
         public static GameObject GameObject_createWithResIDQuad(string resourceName, int quadIndex)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));
@@ -81,6 +86,7 @@ namespace CutTheRope.Framework.Helpers
             base.Dispose(disposing);
         }
 
+        /// <summary>Parses mover path and speed attributes from the XML element.</summary>
         public virtual void ParseMover(XElement xml)
         {
             rotation = ParseFloatOrZero(xml.Attribute("angle")?.Value);
@@ -105,17 +111,20 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <summary>Assigns a mover to control this object's position and rotation.</summary>
         public virtual void SetMover(Mover moverValue)
         {
             mover = moverValue;
         }
 
+        /// <summary>Sets the bounding box from the first quad's offset and size.</summary>
         public virtual void SetBBFromFirstQuad()
         {
             bb = new CTRRectangle(MathF.Round(texture.quadOffsets[0].X), MathF.Round(texture.quadOffsets[0].Y), texture.quadRects[0].w, texture.quadRects[0].h);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
+        /// <summary>Rotates the object and its bounding box by the specified angle in degrees.</summary>
         public virtual void RotateWithBB(float angle)
         {
             if (!rotatedBB)
@@ -141,6 +150,7 @@ namespace CutTheRope.Framework.Helpers
             rbb.blY = bottomLeft.Y;
         }
 
+        /// <summary>Draws the bounding box outline for debugging.</summary>
         public virtual void DrawBB()
         {
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
@@ -159,6 +169,7 @@ namespace CutTheRope.Framework.Helpers
             Renderer.SetColor(Color.White);
         }
 
+        /// <summary>Tests axis-aligned bounding box intersection between two objects.</summary>
         public static bool ObjectsIntersect(GameObject o1, GameObject o2)
         {
             float o1x = o1.drawX + o1.bb.x;
@@ -168,6 +179,7 @@ namespace CutTheRope.Framework.Helpers
             return RectInRect(o1x, o1y, o1x + o1.bb.w, o1y + o1.bb.h, o2x, o2y, o2x + o2.bb.w, o2y + o2.bb.h);
         }
 
+        /// <summary>Tests OBB intersection between a rotated object <paramref name="o1"/> and an unrotated object <paramref name="o2"/>.</summary>
         public static bool ObjectsIntersectRotatedWithUnrotated(GameObject o1, GameObject o2)
         {
             Vector o1TopLeft = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
@@ -181,6 +193,7 @@ namespace CutTheRope.Framework.Helpers
             return ObbInOBB(o1TopLeft, o1TopRight, o1BottomRight, o1BottomLeft, o2TopLeft, o2TopRight, o2BottomRight, o2BottomLeft);
         }
 
+        /// <summary>Tests whether point <paramref name="p"/> is inside the bounding box of <paramref name="o"/>.</summary>
         public static bool PointInObject(Vector p, GameObject o)
         {
             float checkX = o.drawX + o.bb.x;
@@ -188,6 +201,7 @@ namespace CutTheRope.Framework.Helpers
             return PointInRect(p.X, p.Y, checkX, checkY, o.bb.w, o.bb.h);
         }
 
+        /// <summary>Tests whether the rectangle defined by corners (<paramref name="r1x"/>,<paramref name="r1y"/>)–(<paramref name="r2x"/>,<paramref name="r2y"/>) intersects the bounding box of <paramref name="o"/>.</summary>
         public static bool RectInObject(float r1x, float r1y, float r2x, float r2y, GameObject o)
         {
             float objectX = o.drawX + o.bb.x;

@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="BaseElement"/> backed by a texture, supporting full-image or quad-based drawing.
+    /// </summary>
     internal class Image : BaseElement
     {
         /// <summary>
@@ -88,6 +91,7 @@ namespace CutTheRope.Framework.Visual
             e.y = relativeQuadOffset.Y;
         }
 
+        /// <summary>Creates an image from the specified texture.</summary>
         public static Image Image_create(CTRTexture2D t)
         {
             return new Image().InitWithTexture(t);
@@ -114,6 +118,7 @@ namespace CutTheRope.Framework.Visual
             return image;
         }
 
+        /// <summary>Initializes the image with the given texture, setting the first quad or full image.</summary>
         public virtual Image InitWithTexture(CTRTexture2D t)
         {
             texture = t ?? throw new InvalidOperationException("Failed to initialize Image: texture is null. The texture resource may not exist or failed to load.");
@@ -129,6 +134,7 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <summary>Switches to drawing the entire texture instead of a single quad.</summary>
         public virtual void SetDrawFullImage()
         {
             quadToDraw = -1;
@@ -136,6 +142,7 @@ namespace CutTheRope.Framework.Visual
             height = texture._realHeight;
         }
 
+        /// <summary>Sets the quad index to draw and updates width/height accordingly.</summary>
         public virtual void SetDrawQuad(int n)
         {
             quadToDraw = n;
@@ -150,6 +157,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>Restores the pre-cut size so that trimmed transparency is accounted for in positioning.</summary>
         public virtual void DoRestoreCutTransparency()
         {
             if (texture.preCutSize.X != vectUndefined.X)
@@ -192,6 +200,7 @@ namespace CutTheRope.Framework.Visual
             PostDraw();
         }
 
+        /// <summary>Draws the specified quad from the bound texture.</summary>
         public virtual void DrawQuad(int n)
         {
             float w = texture.quadRects[n].w;

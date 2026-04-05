@@ -4,8 +4,12 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// An <see cref="Image"/> that supports frame-based animation via timeline-driven quad switching.
+    /// </summary>
     internal class Animation : Image
     {
+        /// <summary>Creates an animation from the specified texture.</summary>
         public static Animation Animation_create(CTRTexture2D texture)
         {
             return (Animation)new Animation().InitWithTexture(texture);
@@ -19,6 +23,7 @@ namespace CutTheRope.Framework.Visual
             return Animation_create(Application.GetTexture(resourceName));
         }
 
+        /// <summary>Adds a sequential frame animation from quad <paramref name="start"/> to <paramref name="end"/>.</summary>
         public virtual void AddAnimationWithIDDelayLoopFirstLast(
             int animationId,
             float delay,
@@ -30,6 +35,7 @@ namespace CutTheRope.Framework.Visual
             AddAnimationWithIDDelayLoopCountFirstLastArgumentList(animationId, delay, loopType, count, start, end);
         }
 
+        /// <summary>Adds a sequential frame animation with explicit frame count.</summary>
         public virtual void AddAnimationWithIDDelayLoopCountFirstLastArgumentList(
             int animationId,
             float delay,
@@ -58,6 +64,7 @@ namespace CutTheRope.Framework.Visual
             AddTimelinewithID(timeline, animationId);
         }
 
+        /// <summary>Adds an animation with an explicit frame sequence list.</summary>
         public virtual void AddAnimationWithIDDelayLoopCountSequence(
             int animationId,
             float delay,
@@ -69,6 +76,7 @@ namespace CutTheRope.Framework.Visual
             AddAnimationWithIDDelayLoopCountFirstLastArgumentList(animationId, delay, loopType, count, start, -1, argumentList);
         }
 
+        /// <summary>Adds a frame animation with an explicit frame sequence list and frame range.</summary>
         public virtual void AddAnimationWithIDDelayLoopCountFirstLastArgumentList(
             int animationId,
             float delay,
@@ -98,17 +106,20 @@ namespace CutTheRope.Framework.Visual
             AddTimelinewithID(timeline, animationId);
         }
 
+        /// <summary>Appends a keyframe to <paramref name="sourceAnimationId"/> that switches to <paramref name="targetAnimationId"/> after <paramref name="delay"/>.</summary>
         public virtual void SwitchToAnimationatEndOfAnimationDelay(int targetAnimationId, int sourceAnimationId, float delay)
         {
             GetTimeline(sourceAnimationId).AddKeyFrame(
                 KeyFrame.MakeAction([CTRAction.CreateAction(this, "ACTION_PLAY_TIMELINE", 0, targetAnimationId)], delay));
         }
 
+        /// <summary>Inserts a pause action at the specified keyframe index in the given animation.</summary>
         public virtual void SetPauseAtIndexforAnimation(int keyframeIndex, int animationId)
         {
             SetActionTargetParamSubParamAtIndexforAnimation("ACTION_PAUSE_TIMELINE", this, 0, 0, keyframeIndex, animationId);
         }
 
+        /// <summary>Appends an action to an existing keyframe in the specified animation.</summary>
         public virtual void SetActionTargetParamSubParamAtIndexforAnimation(
             string action,
             BaseElement target,
@@ -126,6 +137,7 @@ namespace CutTheRope.Framework.Visual
                 .Add(CTRAction.CreateAction(target, action, param, subParam));
         }
 
+        /// <summary>Adds an animation with a frame sequence and returns its auto-assigned ID.</summary>
         public virtual int AddAnimationWithDelayLoopedCountSequence(
             float delay,
             Timeline.LoopType loopType,
@@ -138,11 +150,13 @@ namespace CutTheRope.Framework.Visual
             return animationId;
         }
 
+        /// <summary>Sets the time offset of a keyframe in the specified animation.</summary>
         public void SetDelayatIndexforAnimation(float delay, int keyframeIndex, int animationId)
         {
             GetTimeline(animationId).GetTrack(Track.TrackType.TRACK_ACTION).keyFrames[keyframeIndex].timeOffset = delay;
         }
 
+        /// <summary>Adds a sequential frame animation and returns its auto-assigned ID.</summary>
         public int AddAnimationDelayLoopFirstLast(float delay, Timeline.LoopType loopType, int start, int end)
         {
             int animationId = timelines.Count;
@@ -150,6 +164,7 @@ namespace CutTheRope.Framework.Visual
             return animationId;
         }
 
+        /// <summary>Jumps the current timeline's action track to the specified keyframe index.</summary>
         public void JumpTo(int index)
         {
             GetCurrentTimeline().JumpToTrackKeyFrame((int)Track.TrackType.TRACK_ACTION, index);
