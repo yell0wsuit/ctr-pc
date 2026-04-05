@@ -2,12 +2,25 @@ using System.Collections.Generic;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// Manages a pool of child animations, automatically removing them when their timelines or particles finish.
+    /// </summary>
     internal sealed class AnimationsPool : BaseElement, ITimelineDelegate
     {
+        /// <summary>
+        /// Called when a timeline reaches a keyframe. No-op in this implementation.
+        /// </summary>
+        /// <param name="t">Timeline that reached the keyframe.</param>
+        /// <param name="k">Keyframe that was reached.</param>
+        /// <param name="i">Index of the keyframe.</param>
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <summary>
+        /// Called when a timeline finishes; schedules the timeline's element for removal.
+        /// </summary>
+        /// <param name="t">Timeline that finished.</param>
         public void TimelineFinished(Timeline t)
         {
             if (GetChildId(t.element) != -1)
@@ -16,6 +29,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             int count = removeList.Count;
@@ -27,11 +41,16 @@ namespace CutTheRope.Framework.Visual
             base.Update(delta);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             base.Draw();
         }
 
+        /// <summary>
+        /// Called when a particle system finishes; schedules it for removal.
+        /// </summary>
+        /// <param name="p">Particle system that finished.</param>
         public void ParticlesFinished(Particles p)
         {
             if (GetChildId(p) != -1)
@@ -40,6 +59,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -50,6 +70,9 @@ namespace CutTheRope.Framework.Visual
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Elements scheduled for removal on the next update.
+        /// </summary>
         private List<BaseElement> removeList = [];
     }
 }
