@@ -31,7 +31,6 @@ namespace CutTheRope.Desktop
 
         public bool SkipSizeChanges { get; private set; }
 
-        // (set) Token: 0x060000BA RID: 186 RVA: 0x00004C05 File Offset: 0x00002E05
         public bool FullScreenCropWidth
         {
             set

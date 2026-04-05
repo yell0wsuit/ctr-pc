@@ -655,7 +655,6 @@ namespace CutTheRope.GameMain
 
         public boxClosed delegateboxClosed;
 
-        // (Invoke) Token: 0x06000674 RID: 1652
         public delegate void boxClosed();
 
         private sealed class Confetti : Animation

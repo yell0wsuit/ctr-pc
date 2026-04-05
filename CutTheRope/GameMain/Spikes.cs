@@ -254,7 +254,6 @@ namespace CutTheRope.GameMain
             BUTTON
         }
 
-        // (Invoke) Token: 0x06000689 RID: 1673
         public delegate void rotateAllSpikesWithID(int sid);
     }
 }
