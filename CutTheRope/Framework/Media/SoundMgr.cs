@@ -41,6 +41,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Removes a cached sound effect from memory by resource name.
         /// </summary>
+        /// <param name="soundResourceName">Logical sound resource name to remove from the cache.</param>
         public void FreeSound(string soundResourceName)
         {
             string localizedName = CTRResourceMgr.HandleLocalizedResource(soundResourceName);
@@ -53,6 +54,8 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Gets or loads a sound effect by its resource name.
         /// </summary>
+        /// <param name="soundResourceName">Logical sound resource name to resolve and load.</param>
+        /// <returns>The loaded sound effect, or <c>null</c> when the name is invalid, localized lookup fails, or the resource is music.</returns>
         public SoundEffect GetSound(string soundResourceName)
         {
             if (string.IsNullOrEmpty(soundResourceName))
@@ -112,6 +115,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Plays a one-shot sound effect by its resource name.
         /// </summary>
+        /// <param name="soundResourceName">Logical sound resource name to play once.</param>
         public void PlaySound(string soundResourceName)
         {
             ClearStopped();
@@ -121,6 +125,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Plays a looping sound effect by its resource name.
         /// </summary>
+        /// <param name="soundResourceName">Logical sound resource name to play in a loop.</param>
         /// <returns>The sound effect instance for controlling playback, or <c>null</c> on failure.</returns>
         public SoundEffectInstance PlaySoundLooped(string soundResourceName)
         {
@@ -133,6 +138,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Plays background music by its resource name. Stops any currently playing music first.
         /// </summary>
+        /// <param name="musicResourceName">Logical music resource name to load and play.</param>
         public static void PlayMusic(string musicResourceName)
         {
             string localizedName = CTRResourceMgr.HandleLocalizedResource(musicResourceName);
@@ -237,6 +243,12 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Creates and plays a sound effect instance for the specified resource.
+        /// </summary>
+        /// <param name="resourceName">Logical sound resource name to resolve.</param>
+        /// <param name="loop">Whether the created instance should loop.</param>
+        /// <returns>The playing sound effect instance, or <c>null</c> if playback could not be started.</returns>
         private SoundEffectInstance Play(string resourceName, bool loop)
         {
             SoundEffectInstance soundEffectInstance = null;
@@ -294,12 +306,24 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        /// <summary>
+        /// Content manager used to load sound effects and songs.
+        /// </summary>
         private static ContentManager _contentManager;
 
+        /// <summary>
+        /// Cache of loaded sound effects keyed by localized resource name.
+        /// </summary>
         private readonly Dictionary<string, SoundEffect> LoadedSounds;
 
+        /// <summary>
+        /// Active one-shot sound instances that may still be playing.
+        /// </summary>
         private List<SoundEffectInstance> activeSounds;
 
+        /// <summary>
+        /// Active looped sound instances managed by pause and stop operations.
+        /// </summary>
         private readonly List<SoundEffectInstance> activeLoopedSounds;
     }
 }
