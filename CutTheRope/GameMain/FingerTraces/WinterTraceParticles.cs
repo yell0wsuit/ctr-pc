@@ -11,17 +11,34 @@ namespace CutTheRope.GameMain.FingerTraces
     /// </summary>
     internal sealed class WinterTraceParticles : FrameworkTypes
     {
+        /// <summary>The maximum number of live particles the emitter keeps at once.</summary>
         private const int Capacity = 100;
+
+        /// <summary>The first particle quad index in the finger-trace atlas.</summary>
         private const int FirstQuad = 9;
+
+        /// <summary>The number of particle quads available in the atlas.</summary>
         private const int QuadCount = 5;
+
+        /// <summary>The inward radial acceleration applied after spawn.</summary>
         private const float RadialAcceleration = -200f;
+
+        /// <summary>The downward acceleration applied after the radial pull.</summary>
         private const float GravityY = 500f;
 
+        /// <summary>The live particle list in age order.</summary>
         private readonly List<WinterParticle> particles = [];
 
+        /// <summary>The current emitter position used for newly spawned particles.</summary>
         private Vector emitterPosition;
+
+        /// <summary>The center emission rotation in degrees.</summary>
         private float emitterRotation;
+
+        /// <summary>The requested particle emission rate in particles per second.</summary>
         private float emissionRate;
+
+        /// <summary>The accumulated time toward the next emitted particle.</summary>
         private float emitCounter;
 
         /// <summary>
@@ -125,6 +142,10 @@ namespace CutTheRope.GameMain.FingerTraces
             }
         }
 
+        /// <summary>
+        /// Creates a newly emitted winter particle from the current emitter state.
+        /// </summary>
+        /// <returns>The initialized particle state.</returns>
         private WinterParticle CreateParticle()
         {
             float angle = DEGREES_TO_RADIANS(emitterRotation + (90f * RND_MINUS1_1));
@@ -147,6 +168,11 @@ namespace CutTheRope.GameMain.FingerTraces
             };
         }
 
+        /// <summary>
+        /// Returns a random integer in the range <c>[0, upperExclusive)</c>.
+        /// </summary>
+        /// <param name="upperExclusive">The exclusive upper bound.</param>
+        /// <returns>A random integer less than <paramref name="upperExclusive"/>.</returns>
         private static int NextInt(int upperExclusive)
         {
             return upperExclusive <= 1
@@ -154,17 +180,39 @@ namespace CutTheRope.GameMain.FingerTraces
                 : (int)(Arc4random() % (uint)upperExclusive);
         }
 
+        /// <summary>
+        /// Stores the state of one live winter particle.
+        /// </summary>
         private struct WinterParticle
         {
+            /// <summary>The current particle position.</summary>
             public Vector Position;
+
+            /// <summary>The original spawn position used for radial acceleration.</summary>
             public Vector SpawnPosition;
+
+            /// <summary>The current particle velocity.</summary>
             public Vector Velocity;
+
+            /// <summary>The current particle rotation in radians.</summary>
             public float Rotation;
+
+            /// <summary>The per-second particle rotation speed.</summary>
             public float RotationVelocity;
+
+            /// <summary>The initial sprite scale.</summary>
             public float StartScale;
+
+            /// <summary>The final sprite scale at the end of life.</summary>
             public float EndScale;
+
+            /// <summary>The remaining particle lifetime in seconds.</summary>
             public float Life;
+
+            /// <summary>The starting particle lifetime in seconds.</summary>
             public float MaxLife;
+
+            /// <summary>The selected atlas quad index.</summary>
             public int QuadIndex;
         }
     }

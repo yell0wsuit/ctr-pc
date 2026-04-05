@@ -14,11 +14,18 @@ namespace CutTheRope.GameMain.FingerTraces
     /// </summary>
     internal sealed class ClassicFingerTrace : FingerTrace
     {
+        /// <summary>The base half-width contribution of the ribbon body.</summary>
         private const float RibbonBaseWidth = 12f;
+
+        /// <summary>The minimum half-width preserved at the ribbon tip.</summary>
         private const float MinimumRibbonHalfWidth = 1f;
 
+        /// <summary>The reusable ribbon vertex cache.</summary>
         private VertexPositionColor[] ribbonVerticesCache;
 
+        /// <summary>
+        /// Initializes a classic finger trace.
+        /// </summary>
         public ClassicFingerTrace()
         {
         }
@@ -34,9 +41,7 @@ namespace CutTheRope.GameMain.FingerTraces
         {
         }
 
-        /// <summary>
-        /// Draws the solid white ribbon strip.
-        /// </summary>
+        /// <inheritdoc />
         public override void Draw()
         {
             DrawRibbon();
@@ -45,14 +50,15 @@ namespace CutTheRope.GameMain.FingerTraces
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
-        /// <summary>
-        /// Publishes the classic ribbon path for snapshot rendering.
-        /// </summary>
+        /// <inheritdoc />
         protected override void BuildSnapshot(List<Vector> sampledPoints, List<FingerTraceSpritePose> sprites)
         {
             AppendRibbonSampledPoints(sampledPoints);
         }
 
+        /// <summary>
+        /// Draws the sampled classic ribbon as a solid triangle strip.
+        /// </summary>
         private void DrawRibbon()
         {
             if (!TryBuildRibbonGeometry(out List<Vector> sampledPoints))
@@ -84,6 +90,10 @@ namespace CutTheRope.GameMain.FingerTraces
             Renderer.DrawTriangleStrip(ribbonVerticesCache, sampledPoints.Count * 2);
         }
 
+        /// <summary>
+        /// Appends the sampled ribbon center line to the snapshot path.
+        /// </summary>
+        /// <param name="sampledPoints">The destination sampled-point list.</param>
         private void AppendRibbonSampledPoints(List<Vector> sampledPoints)
         {
             if (!TryBuildRibbonGeometry(out List<Vector> centerLine))
@@ -94,6 +104,11 @@ namespace CutTheRope.GameMain.FingerTraces
             sampledPoints.AddRange(centerLine);
         }
 
+        /// <summary>
+        /// Builds the sampled ribbon center line from the stored trace segments.
+        /// </summary>
+        /// <param name="sampledPoints">Receives the sampled center-line points.</param>
+        /// <returns><see langword="true"/> when enough points exist to draw the ribbon; otherwise, <see langword="false"/>.</returns>
         private bool TryBuildRibbonGeometry(out List<Vector> sampledPoints)
         {
             sampledPoints = [];
@@ -114,6 +129,10 @@ namespace CutTheRope.GameMain.FingerTraces
             return sampledPoints.Count >= 2;
         }
 
+        /// <summary>
+        /// Collects the bezier control points implied by the live trace segments.
+        /// </summary>
+        /// <returns>The control-point list for ribbon sampling.</returns>
         private List<Vector> GetControlPoints()
         {
             List<Vector> controlPoints = [];
@@ -131,6 +150,12 @@ namespace CutTheRope.GameMain.FingerTraces
             return controlPoints;
         }
 
+        /// <summary>
+        /// Returns the local tangent direction for a sampled ribbon point.
+        /// </summary>
+        /// <param name="sampledPoints">The sampled ribbon points.</param>
+        /// <param name="index">The point index to evaluate.</param>
+        /// <returns>The tangent direction at the requested sample.</returns>
         private static Vector GetPointDirection(List<Vector> sampledPoints, int index)
         {
             return sampledPoints.Count == 1
@@ -142,6 +167,10 @@ namespace CutTheRope.GameMain.FingerTraces
                 : VectSub(sampledPoints[index + 1], sampledPoints[index - 1]);
         }
 
+        /// <summary>
+        /// Ensures the reusable ribbon vertex cache can hold the requested number of vertices.
+        /// </summary>
+        /// <param name="vertexCount">The required vertex capacity.</param>
         private void EnsureRibbonCache(int vertexCount)
         {
             if (ribbonVerticesCache == null || ribbonVerticesCache.Length < vertexCount)
