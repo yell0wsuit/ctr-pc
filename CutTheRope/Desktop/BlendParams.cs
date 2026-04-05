@@ -3,13 +3,24 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Desktop
 {
+    /// <summary>
+    /// Encapsulates the desktop renderer's current blend configuration and cached blend states.
+    /// </summary>
     internal sealed class BlendParams
     {
+        /// <summary>
+        /// Initializes a blend configuration that uses the default opaque blend state.
+        /// </summary>
         public BlendParams()
         {
             defaultBlending = true;
         }
 
+        /// <summary>
+        /// Initializes a blend configuration with explicit source and destination factors.
+        /// </summary>
+        /// <param name="s">The source blend factor.</param>
+        /// <param name="d">The destination blend factor.</param>
         public BlendParams(BlendingFactor s, BlendingFactor d)
         {
             sfactor = s;
@@ -18,16 +29,25 @@ namespace CutTheRope.Desktop
             enabled = true;
         }
 
+        /// <summary>
+        /// Enables this blend configuration for subsequent draw calls.
+        /// </summary>
         public void Enable()
         {
             enabled = true;
         }
 
+        /// <summary>
+        /// Disables this blend configuration and restores default blending when applied.
+        /// </summary>
         public void Disable()
         {
             enabled = false;
         }
 
+        /// <summary>
+        /// Applies the default opaque blend state to the graphics device.
+        /// </summary>
         public static void ApplyDefault()
         {
             if (states[0] == null)
@@ -38,6 +58,9 @@ namespace CutTheRope.Desktop
             Global.GraphicsDevice.BlendFactor = Color.White;
         }
 
+        /// <summary>
+        /// Applies the current blend configuration to the graphics device.
+        /// </summary>
         public void Apply()
         {
             if (defaultBlending || !enabled)
@@ -107,6 +130,10 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Returns a debug representation of the current blend configuration.
+        /// </summary>
+        /// <returns>A string describing the blend configuration.</returns>
         public override string ToString()
         {
             return !defaultBlending
@@ -114,24 +141,64 @@ namespace CutTheRope.Desktop
                 : "BlendParams(default)";
         }
 
+        /// <summary>
+        /// Caches reusable MonoGame blend states keyed by <see cref="BlendType"/>.
+        /// </summary>
         private static readonly BlendState[] states = new BlendState[4];
 
+        /// <summary>
+        /// Tracks the last applied blend mode to avoid redundant state changes.
+        /// </summary>
         private BlendType lastBlend = BlendType.Unknown;
 
+        /// <summary>
+        /// Indicates whether the custom blend parameters are enabled.
+        /// </summary>
         private bool enabled;
 
+        /// <summary>
+        /// Indicates whether this instance represents the renderer's default blend behavior.
+        /// </summary>
         private readonly bool defaultBlending;
 
+        /// <summary>
+        /// The source blend factor for custom blending.
+        /// </summary>
         private readonly BlendingFactor sfactor;
 
+        /// <summary>
+        /// The destination blend factor for custom blending.
+        /// </summary>
         private readonly BlendingFactor dfactor;
 
+        /// <summary>
+        /// Identifies the cached blend-state variants supported by the desktop renderer.
+        /// </summary>
         private enum BlendType
         {
+            /// <summary>
+            /// No cached blend state has been applied yet.
+            /// </summary>
             Unknown = -1,
+
+            /// <summary>
+            /// The default opaque blend state.
+            /// </summary>
             Default,
+
+            /// <summary>
+            /// Source alpha blended against inverse source alpha.
+            /// </summary>
             SourceAlpha_InverseSourceAlpha,
+
+            /// <summary>
+            /// One blended against inverse source alpha.
+            /// </summary>
             One_InverseSourceAlpha,
+
+            /// <summary>
+            /// Source alpha blended additively against one.
+            /// </summary>
             SourceAlpha_One
         }
     }
