@@ -2,8 +2,12 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="ScalableMultiParticles"/> variant that adds per-particle rotation and size scaling over lifetime.
+    /// </summary>
     internal class RotatableScalableMultiParticles : ScalableMultiParticles
     {
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -12,6 +16,7 @@ namespace CutTheRope.Framework.Visual
             particle.deltaSize = (endSize - size) / particle.life;
         }
 
+        /// <inheritdoc />
         public override void UpdateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -80,6 +85,7 @@ namespace CutTheRope.Framework.Visual
             particleCount--;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -105,9 +111,18 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Initial rotation angle for new particles in radians.
+        /// </summary>
         public float initialAngle;
+
         // public float rotateSpeed;
+
         // public float rotateSpeedVar;
+
+        /// <summary>
+        /// Target size at end of particle lifetime.
+        /// </summary>
         public float endSize;
     }
 }

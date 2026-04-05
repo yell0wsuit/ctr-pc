@@ -1,7 +1,11 @@
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="MultiParticles"/> variant that uses the raw quad size without the particle size multiplier.
+    /// </summary>
     internal class ScalableMultiParticles : MultiParticles
     {
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             Image imageGrid = this.imageGrid;
