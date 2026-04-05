@@ -49,6 +49,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Checks if the given language matches the current language.
         /// </summary>
+        /// <param name="language">Language to check.</param>
         public static bool IsCurrent(Language language)
         {
             return Current == language;
@@ -57,6 +58,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Checks if the current language matches any of the given languages.
         /// </summary>
+        /// <param name="languages">Languages to check against.</param>
         public static bool IsCurrentAny(params Language[] languages)
         {
             foreach (Language lang in languages)
@@ -72,6 +74,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Checks if the given language is available in the UI.
         /// </summary>
+        /// <param name="language">Language to check.</param>
         public static bool IsUiLanguage(Language language)
         {
             return IsUiLanguageCode(ToCode(language));
@@ -80,6 +83,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Checks if the given language code is available in the UI.
         /// </summary>
+        /// <param name="code">Language code to check.</param>
         public static bool IsUiLanguageCode(string code)
         {
             if (string.IsNullOrEmpty(code))
@@ -101,6 +105,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Gets the next language code in the UI cycle.
         /// </summary>
+        /// <param name="currentCode">Current language code.</param>
         public static string GetNextUiLanguageCode(string currentCode)
         {
             for (int i = 0; i < uiLanguageCodes.Length; i++)
@@ -117,6 +122,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Converts a Language enum to its ISO 639-1 two-letter code.
         /// </summary>
+        /// <param name="language">Language to convert.</param>
         public static string ToCode(Language language)
         {
             return language switch
@@ -141,6 +147,7 @@ namespace CutTheRope.Framework
         /// Converts an ISO 639-1 two-letter code to a Language enum.
         /// Returns LANGEN for unrecognized codes.
         /// </summary>
+        /// <param name="code">Language code to convert.</param>
         public static Language FromCode(string code)
         {
             return code switch
@@ -194,6 +201,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Gets the English display name for a language code (e.g. "ru" → "Russian").
         /// </summary>
+        /// <param name="code">Language code to look up.</param>
         public static string GetLanguageDisplayName(string code)
         {
             return code switch
