@@ -11,16 +11,42 @@ namespace CutTheRope.Helpers.Discord
     /// <summary>
     /// Minimal Discord IPC client supporting only Rich Presence (SET_ACTIVITY).
     /// </summary>
+    /// <param name="clientId">Discord application (client) ID.</param>
     internal sealed class DiscordIpcClient(string clientId) : IDisposable
     {
+        /// <summary>
+        /// IPC opcode for the initial handshake frame.
+        /// </summary>
         private const int OP_HANDSHAKE = 0;
+
+        /// <summary>
+        /// IPC opcode for a standard command/response frame.
+        /// </summary>
         private const int OP_FRAME = 1;
+
+        /// <summary>
+        /// IPC opcode for a connection close frame.
+        /// </summary>
         private const int OP_CLOSE = 2;
 
+        /// <summary>
+        /// Discord application (client) ID sent during the handshake.
+        /// </summary>
         private readonly string _clientId = clientId;
+
+        /// <summary>
+        /// The underlying IPC connection to Discord.
+        /// </summary>
         private DiscordIpcConnection _connection;
+
+        /// <summary>
+        /// Incrementing nonce used to uniquely identify each JSON-RPC request.
+        /// </summary>
         private int _nonce;
 
+        /// <summary>
+        /// Gets whether the client is currently connected and has completed the handshake.
+        /// </summary>
         public bool IsConnected { get; private set; }
 
         /// <summary>
@@ -124,6 +150,7 @@ namespace CutTheRope.Helpers.Discord
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             if (_connection != null)
