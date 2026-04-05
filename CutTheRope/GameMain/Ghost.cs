@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain

@@ -2,7 +2,7 @@ using System;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 
 using static CutTheRope.Helpers.ParsingHelpers;
 

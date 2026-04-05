@@ -1,7 +1,7 @@
 using System;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 
 namespace CutTheRope.GameMain
 {
