@@ -21,13 +21,16 @@ namespace CutTheRope.Helpers
         /// </summary>
         private static readonly Dictionary<string, Dictionary<string, string>> langStrings_ = [];
 
+        /// <summary>
+        /// Lock protecting concurrent access to <see cref="langStrings_"/>.
+        /// </summary>
         private static readonly Lock langStringsLock_ = new();
 
         /// <summary>
         /// Gets a localized string for the given key and language.
         /// </summary>
-        /// <param name="key">The string key (e.g., "PLAY", "OPTIONS")</param>
-        /// <param name="languageCode">The language code (e.g., "en", "ru", "de", "fr")</param>
+        /// <param name="key">The string key (e.g., <c>PLAY</c>, <c>OPTIONS</c>)</param>
+        /// <param name="languageCode">The language code (e.g., <c>en</c>, <c>ru</c>, <c>de</c>, <c>fr</c>)</param>
         /// <returns>The localized string, or empty string if not found.</returns>
         public static string GetString(string key, string languageCode)
         {
@@ -69,6 +72,7 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Checks if a string key exists in the localization data.
         /// </summary>
+        /// <param name="key">The string key to look up.</param>
         public static bool HasString(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -110,6 +114,10 @@ namespace CutTheRope.Helpers
             }
         }
 
+        /// <summary>
+        /// Returns the cached string dictionary for the given language, loading it from disk if necessary.
+        /// </summary>
+        /// <param name="languageCode">The language code to retrieve.</param>
         private static Dictionary<string, string> GetLanguageStrings(string languageCode)
         {
             lock (langStringsLock_)
@@ -130,6 +138,10 @@ namespace CutTheRope.Helpers
             return loaded;
         }
 
+        /// <summary>
+        /// Loads and parses a localization JSON file for the given language.
+        /// </summary>
+        /// <param name="languageCode">The language code (e.g., "en", "ru").</param>
         private static Dictionary<string, string> LoadLanguageFile(string languageCode)
         {
             Dictionary<string, string> result = [];
@@ -178,6 +190,10 @@ namespace CutTheRope.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Opens a content stream for the given file name, returning <see langword="null"/> on failure.
+        /// </summary>
+        /// <param name="fileName">Relative path within the content root.</param>
         private static Stream OpenStream(string fileName)
         {
             try
