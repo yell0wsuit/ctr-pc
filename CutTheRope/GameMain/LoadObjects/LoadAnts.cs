@@ -10,8 +10,14 @@ namespace CutTheRope.GameMain
     {
         /// <summary>
         /// Parses an ant-path XML node and adds the resulting <see cref="AntsPath"/> and its segments
-        /// to the scene's conveyor lists.
+        /// to the scene's ant conveyor lists.
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the ants path.</param>
+        /// <param name="scale">The level scale factor applied to path coordinates and speed.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadAnts(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             float moveSpeed = ParseFloatOrZero(xmlNode.Attribute("moveSpeed")?.Value);

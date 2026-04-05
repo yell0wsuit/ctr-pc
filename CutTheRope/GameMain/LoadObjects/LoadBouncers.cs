@@ -4,15 +4,17 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading bouncer objects from XML level data
-    /// Bouncers propel the candy upward or in directions
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads a bouncer object from XML node data
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the bouncer.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadBouncer(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             float px2 = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

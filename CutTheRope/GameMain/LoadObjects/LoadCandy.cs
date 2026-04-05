@@ -2,9 +2,6 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading split candy bubble animations
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
