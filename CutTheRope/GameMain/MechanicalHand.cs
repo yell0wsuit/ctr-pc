@@ -233,6 +233,7 @@ namespace CutTheRope.GameMain
             return (MechanicalHandClaw)LastSegment().GetChild(0);
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -240,6 +241,7 @@ namespace CutTheRope.GameMain
             _ = Mover.MoveVariableToTarget(ref clapTimer, 0f, 1f, delta);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

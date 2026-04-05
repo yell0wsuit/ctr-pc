@@ -7,6 +7,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class GhostBouncer : Bouncer
     {
+        /// <inheritdoc />
         public override Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, float angle)
         {
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)
@@ -100,6 +101,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void PlayTimeline(int timelineIndex)
         {
             if (GetCurrentTimelineIndex() == 11)
@@ -113,6 +115,7 @@ namespace CutTheRope.GameMain
             base.PlayTimeline(timelineIndex);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             backCloud.Draw();
@@ -120,6 +123,7 @@ namespace CutTheRope.GameMain
             base.Draw();
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

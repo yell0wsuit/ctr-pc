@@ -16,6 +16,7 @@ namespace CutTheRope.GameMain
             return CharAnimation_create(Application.GetTexture(resourceName));
         }
 
+        /// <inheritdoc />
         public override bool HandleAction(ActionData a)
         {
             if (a.actionName == "ACTION_PLAY_TIMELINE")

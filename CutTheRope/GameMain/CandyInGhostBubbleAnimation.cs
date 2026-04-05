@@ -123,6 +123,7 @@ namespace CutTheRope.GameMain
             image2.PlayTimeline(0);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

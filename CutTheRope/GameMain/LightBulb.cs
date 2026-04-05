@@ -231,15 +231,7 @@ namespace CutTheRope.GameMain
             CalculateTopLeft(this);
         }
 
-        /// <summary>
-        /// Draws all visual components of the light bulb.
-        /// </summary>
-        /// <remarks>
-        /// This method draws in a specific order for proper layering:
-        /// light glow first (background), then bottle, top, firefly, and bubble animations.
-        /// For scenes with stars, use <see cref="DrawLight"/> and <see cref="DrawBottleAndFirefly"/>
-        /// separately to render stars between the glow and bottle layers.
-        /// </remarks>
+        /// <inheritdoc />
         public override void Draw()
         {
             if (!visible)
@@ -341,18 +333,7 @@ namespace CutTheRope.GameMain
             IsDrawnByTransporter = true;
         }
 
-        /// <summary>
-        /// Updates the light bulb's state each frame.
-        /// </summary>
-        /// <param name="delta">Time elapsed since the last update in seconds.</param>
-        /// <remarks>
-        /// Handles:
-        /// <list type="bullet">
-        ///   <item><description>Visibility based on hat/sock attachment</description></item>
-        ///   <item><description>Bubble animation visibility based on capture state</description></item>
-        ///   <item><description>Rotational velocity decay (friction)</description></item>
-        /// </list>
-        /// </remarks>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

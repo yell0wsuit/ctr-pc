@@ -38,6 +38,7 @@ namespace CutTheRope.GameMain
             charAnimation.SetEnabled(false);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -116,6 +117,7 @@ namespace CutTheRope.GameMain
             animation.PlayTimeline(t);
         }
 
+        /// <inheritdoc />
         public override void PlayTimeline(int t)
         {
             foreach (object obj in animations)

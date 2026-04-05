@@ -8,6 +8,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CandyBreak : RotateableMultiParticles
     {
+        /// <inheritdoc />
         public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {
             if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -54,6 +55,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -66,6 +68,7 @@ namespace CutTheRope.GameMain
             particle.height = rectangle.h * particle.size;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();

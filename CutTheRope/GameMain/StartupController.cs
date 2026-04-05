@@ -22,6 +22,7 @@ namespace CutTheRope.GameMain
             AddViewwithID(new StartupView(this), 1);
         }
 
+        /// <inheritdoc />
         public override void Update(float t)
         {
             base.Update(t);
@@ -117,6 +118,7 @@ namespace CutTheRope.GameMain
             ctrresourceMgr.StartLoading();
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             base.Activate();
@@ -138,6 +140,7 @@ namespace CutTheRope.GameMain
             resourcesLoaded = true;
         }
 
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             if (currentPhase == Phase.Animating)
@@ -268,6 +271,7 @@ namespace CutTheRope.GameMain
         {
             private readonly StartupController controller = ctrl;
 
+            /// <inheritdoc />
             public override void Draw()
             {
                 Renderer.Enable(Renderer.GL_BLEND);

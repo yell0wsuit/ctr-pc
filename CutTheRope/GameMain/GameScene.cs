@@ -113,9 +113,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Hides scene-owned transient objects and clears cached level references.
-        /// </summary>
+        /// <inheritdoc />
         public override void Hide()
         {
             if (gravityButton != null)
@@ -138,10 +136,7 @@ namespace CutTheRope.GameMain
             isCandyInLantern = false;
         }
 
-        /// <summary>
-        /// Releases managed scene resources during disposal.
-        /// </summary>
-        /// <param name="disposing"><see langword="true"/> when disposing managed resources; otherwise, <see langword="false"/>.</param>
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

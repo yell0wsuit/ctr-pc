@@ -130,6 +130,7 @@ namespace CutTheRope.GameMain
             passTransformationsToChilds = true;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -152,6 +153,7 @@ namespace CutTheRope.GameMain
             RestoreColor(this);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

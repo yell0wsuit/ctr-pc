@@ -42,24 +42,28 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             _ = base.OnTouchDownXY(tx, ty);
             return true;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchUpXY(float tx, float ty)
         {
             _ = base.OnTouchUpXY(tx, ty);
             return true;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchMoveXY(float tx, float ty)
         {
             _ = base.OnTouchMoveXY(tx, ty);
             return true;
         }
 
+        /// <inheritdoc />
         public override void PlayTimeline(int t)
         {
             if (t == 0)

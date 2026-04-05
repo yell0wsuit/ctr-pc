@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
             _ = loadingView.AddChild(text);
         }
 
+        /// <inheritdoc />
         public override void Update(float t)
         {
             base.Update(t);
@@ -34,6 +35,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             AndroidAPI.ShowBanner();
@@ -43,6 +45,7 @@ namespace CutTheRope.GameMain
             ShowView(0);
         }
 
+        /// <inheritdoc />
         public override void DeactivateImmediately()
         {
             resourcesLoaded = false; // Clear state
@@ -55,6 +58,7 @@ namespace CutTheRope.GameMain
             resourcesLoaded = true;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

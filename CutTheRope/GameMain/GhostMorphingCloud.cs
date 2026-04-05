@@ -5,6 +5,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class GhostMorphingCloud : MultiParticles
     {
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             angle += 360f / totalParticles;
@@ -35,6 +36,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

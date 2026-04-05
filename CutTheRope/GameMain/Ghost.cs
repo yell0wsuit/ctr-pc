@@ -83,6 +83,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -99,6 +100,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             if (bubble != null && bubble.GetCurrentTimelineIndex() == 11 && bubble.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
@@ -300,6 +302,7 @@ namespace CutTheRope.GameMain
             ResetToState(state);
         }
 
+        /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             float distance = VectLength(VectSub(Vect(tx, ty), Vect(x, y)));

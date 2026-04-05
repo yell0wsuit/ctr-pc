@@ -110,9 +110,7 @@ namespace CutTheRope.GameMain
                 }
             }
 
-            /// <summary>
-            /// Draws the conveyor plate using the same slice/repeat/slice pattern as the iOS TransporterPlate.
-            /// </summary>
+            /// <inheritdoc />
             public override void Draw()
             {
                 PreDraw();
@@ -345,11 +343,7 @@ namespace CutTheRope.GameMain
             _ = boundObjects.Remove(item);
         }
 
-        /// <summary>
-        /// Updates the belt and all bound items each frame. Handles movement, wrapping,
-        /// and scale transitions at belt edges.
-        /// </summary>
-        /// <param name="deltaTime">The time elapsed since the last frame in seconds.</param>
+        /// <inheritdoc />
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);

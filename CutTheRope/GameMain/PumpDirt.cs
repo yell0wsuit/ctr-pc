@@ -82,6 +82,7 @@ namespace CutTheRope.GameMain
             return result;
         }
 
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -94,6 +95,7 @@ namespace CutTheRope.GameMain
             particle.height = rectangle.h * particle.size;
         }
 
+        /// <inheritdoc />
         public override void UpdateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -151,9 +153,7 @@ namespace CutTheRope.GameMain
             speed = travel * TargetFps / sum;
         }
 
-        /// <summary>
-        /// Updates the particle system and emits new particles while active.
-        /// </summary>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

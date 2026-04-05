@@ -78,10 +78,12 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void DrawBack()
         {
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (!visible)

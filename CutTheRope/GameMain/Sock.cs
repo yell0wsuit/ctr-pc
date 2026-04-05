@@ -61,6 +61,7 @@ namespace CutTheRope.GameMain
             b2 = VectRotateAround(b2, angle, x, y);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Timeline timeline = light.GetCurrentTimeline();
@@ -71,10 +72,12 @@ namespace CutTheRope.GameMain
             base.Draw();
         }
 
+        /// <inheritdoc />
         public override void DrawBB()
         {
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

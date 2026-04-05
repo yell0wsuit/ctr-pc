@@ -5,6 +5,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class GhostMorphingParticles : RotateableMultiParticles
     {
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -20,6 +21,7 @@ namespace CutTheRope.GameMain
             particle.deltaColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0f);
         }
 
+        /// <inheritdoc />
         public override GhostMorphingParticles InitWithTotalParticles(int numberOfParticles)
         {
             if (InitWithTotalParticlesandImageGrid(numberOfParticles, Image.Image_createWithResID(Resources.Img.ObjGhost)) != null)
@@ -40,6 +42,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

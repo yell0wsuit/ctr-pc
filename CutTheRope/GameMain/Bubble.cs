@@ -23,6 +23,7 @@ namespace CutTheRope.GameMain
             return bubble;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();

@@ -32,6 +32,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

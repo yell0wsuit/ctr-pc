@@ -121,6 +121,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (drawBase)
@@ -167,6 +168,7 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             prevRotation = rotation;
@@ -188,6 +190,7 @@ namespace CutTheRope.GameMain
             armImage.y = drawY;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -107,6 +107,7 @@ namespace CutTheRope.GameMain
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
+        /// <inheritdoc />
         public override Image InitWithTexture(CTRTexture2D t)
         {
             if (base.InitWithTexture(t) == null)
@@ -185,12 +186,14 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             backContainer?.Draw();
             base.Draw();
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -213,6 +216,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override bool HandleAction(ActionData a)
         {
             if (base.HandleAction(a))

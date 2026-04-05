@@ -7,6 +7,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class StarsBreak : RotateableMultiParticles
     {
+        /// <inheritdoc />
         public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {
             if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -55,6 +56,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();

@@ -10,6 +10,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CTRMover(int l, float m_, float r_) : Mover(l, m_, r_)
     {
+        /// <inheritdoc />
         public override void SetPathFromStringandStart(string p, Vector s)
         {
             if (p[0] == 'R')

@@ -29,6 +29,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class FlashXmlImage : Image
     {
+        /// <inheritdoc />
         public override void SetDrawQuad(int n)
         {
             base.SetDrawQuad(n);
@@ -39,6 +40,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void DoRestoreCutTransparency()
         {
             if (texture.preCutSize.X != vectUndefined.X)
@@ -49,6 +51,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void DrawQuad(int n)
         {
             float w = FlashXmlScale.NormalizeAtlasValue(texture.quadRects[n].w);

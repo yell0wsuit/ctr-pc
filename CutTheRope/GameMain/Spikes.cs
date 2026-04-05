@@ -116,6 +116,7 @@ namespace CutTheRope.GameMain
             return toggled;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

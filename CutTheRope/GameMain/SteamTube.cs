@@ -97,6 +97,7 @@ namespace CutTheRope.GameMain
             return heightScale;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -104,6 +105,7 @@ namespace CutTheRope.GameMain
             phase += delta;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -118,6 +120,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));

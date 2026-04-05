@@ -25,6 +25,7 @@ namespace CutTheRope.GameMain
             colors = new RGBAColor[4 * totalCapacity];
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -108,6 +109,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -137,6 +139,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (pollenCount >= 2)

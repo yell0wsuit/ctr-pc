@@ -67,10 +67,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Ticks the particle system and gradually decays the horizontal gravity bias to zero.
-        /// Guards against division by zero when <c>life</c> has expired.
-        /// </summary>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -80,11 +77,7 @@ namespace CutTheRope.GameMain
             gravity.X = gravityX;
         }
 
-        /// <summary>
-        /// Overrides the base particle initialisation to select the debris quad (index 3)
-        /// from the atlas and randomise the particle size.
-        /// Desktop note: size is scaled 3× versus iOS to compensate for higher pixel density.
-        /// </summary>
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);

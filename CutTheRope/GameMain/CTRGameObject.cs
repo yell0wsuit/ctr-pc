@@ -9,6 +9,7 @@ namespace CutTheRope.GameMain
 {
     internal class CTRGameObject : GameObject
     {
+        /// <inheritdoc />
         public override void ParseMover(XElement xml)
         {
             rotation = 0f;

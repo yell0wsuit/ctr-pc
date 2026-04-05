@@ -528,6 +528,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             Update(delta, 1f);
@@ -562,6 +563,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             int count = parts.Count;
@@ -718,6 +720,7 @@ namespace CutTheRope.GameMain
             Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

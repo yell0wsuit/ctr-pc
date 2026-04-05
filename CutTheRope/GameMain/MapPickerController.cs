@@ -57,6 +57,7 @@ namespace CutTheRope.GameMain
             AddViewwithID(view, 0);
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             base.Activate();
@@ -75,6 +76,7 @@ namespace CutTheRope.GameMain
         {
         }
 
+        /// <inheritdoc />
         public override void Deactivate()
         {
             base.Deactivate();

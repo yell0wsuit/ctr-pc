@@ -11,15 +11,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class RocketClouds : RocketSparks
     {
-        /// <summary>
-        /// Initializes the cloud particle system with the given particle count, emission angle,
-        /// and image grid. Configures wider spread, shorter lifetime, and growing particle size
-        /// compared to the base spark system.
-        /// </summary>
-        /// <param name="p">The maximum number of particles.</param>
-        /// <param name="a">The base emission angle in radians.</param>
-        /// <param name="grid">The image grid containing cloud particle quads.</param>
-        /// <returns>This instance if initialization succeeds; otherwise, <c>null</c>.</returns>
+        /// <inheritdoc />
         public override Particles InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -65,11 +57,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Initializes an individual cloud particle using quad index 5 from the rocket sprite
-        /// sheet and sets its dimensions accordingly.
-        /// </summary>
-        /// <param name="particle">The particle to initialize.</param>
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);

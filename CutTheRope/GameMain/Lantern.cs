@@ -168,6 +168,7 @@ namespace CutTheRope.GameMain
             GetAllLanterns().Clear();
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             prevPos = Vect(x, y);

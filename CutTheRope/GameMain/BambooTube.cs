@@ -38,9 +38,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Animates the tube smoothly toward its target rotation when a snap is in progress.
-        /// </summary>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

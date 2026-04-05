@@ -5,6 +5,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class ScissorElement : BaseElement
     {
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();

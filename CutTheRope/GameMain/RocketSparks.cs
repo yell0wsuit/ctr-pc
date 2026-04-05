@@ -63,11 +63,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Initializes an individual spark particle by assigning it a random quad (indices 6–9)
-        /// from the rocket sprite sheet and setting its dimensions accordingly.
-        /// </summary>
-        /// <param name="particle">The particle to initialize.</param>
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);

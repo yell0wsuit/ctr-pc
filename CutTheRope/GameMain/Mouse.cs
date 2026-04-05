@@ -379,11 +379,7 @@ namespace CutTheRope.GameMain
             PlayAnimation(hasCandy ? MouseAnimationId.ExitWithCandy : MouseAnimationId.ExitEmpty);
         }
 
-        /// <summary>
-        /// Updates the mouse's state, animations, and carried candy position each frame.
-        /// Handles automatic retreat when active duration expires.
-        /// </summary>
-        /// <param name="delta">Elapsed time since the last update, in seconds.</param>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

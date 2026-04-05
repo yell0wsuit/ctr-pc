@@ -47,6 +47,7 @@ namespace CutTheRope.GameMain
             return element as MechanicalHand;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -149,6 +150,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             clawActive.x = drawX;
@@ -163,6 +165,7 @@ namespace CutTheRope.GameMain
             clawIdle.Update(delta);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

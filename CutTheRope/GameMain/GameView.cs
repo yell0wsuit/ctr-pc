@@ -9,16 +9,19 @@ namespace CutTheRope.GameMain
 {
     internal sealed class GameView : View
     {
+        /// <inheritdoc />
         public override void Show()
         {
             base.Show();
         }
 
+        /// <inheritdoc />
         public override void Hide()
         {
             base.Hide();
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Global.MouseCursor.Enable(true);

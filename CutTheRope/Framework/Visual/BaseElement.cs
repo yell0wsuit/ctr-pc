@@ -779,9 +779,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
-        /// <summary>
-        /// Releases children and timeline collections when disposing.
-        /// </summary>
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

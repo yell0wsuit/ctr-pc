@@ -106,6 +106,7 @@ namespace CutTheRope.GameMain
             lastWheelTouch = v;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -268,6 +269,7 @@ namespace CutTheRope.GameMain
             bungee?.Draw();
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (invisible)
@@ -630,6 +632,7 @@ namespace CutTheRope.GameMain
 
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

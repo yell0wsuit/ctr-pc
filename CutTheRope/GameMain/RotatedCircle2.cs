@@ -151,6 +151,7 @@ namespace CutTheRope.GameMain
             return rotatedCircle;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (IsRightControllerActive() || IsLeftControllerActive())
@@ -207,6 +208,7 @@ namespace CutTheRope.GameMain
             vinilCenter.Draw();
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

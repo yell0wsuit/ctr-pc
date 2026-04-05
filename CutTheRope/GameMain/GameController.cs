@@ -15,6 +15,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
     {
+        /// <inheritdoc />
         public override void Update(float t)
         {
             if (!isGamePaused && Global.XnaGame.IsKeyPressed(Keys.F5))
@@ -30,6 +31,7 @@ namespace CutTheRope.GameMain
             CreateGameView();
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             PostFlurryLevelEvent("LEVEL_STARTED");
@@ -506,6 +508,7 @@ namespace CutTheRope.GameMain
             mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
         }
 
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             View view = GetView(0);
@@ -541,6 +544,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override bool TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
             GameScene gameScene = (GameScene)GetView(0).GetChild(0);
@@ -579,6 +583,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override bool TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
             GameScene gameScene = (GameScene)GetView(0).GetChild(0);
@@ -616,6 +621,7 @@ namespace CutTheRope.GameMain
         {
         }
 
+        /// <inheritdoc />
         public override bool BackButtonPressed()
         {
             View view = GetView(0);
@@ -634,6 +640,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override bool MenuButtonPressed()
         {
             View view = GetView(0);
@@ -677,6 +684,7 @@ namespace CutTheRope.GameMain
             _ = (GameView)GetView(0);
         }
 
+        /// <inheritdoc />
         public override bool MouseMoved(float x, float y)
         {
             View view = GetView(0);
@@ -693,6 +701,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override void FullscreenToggled(bool isFullscreen)
         {
             View view = GetView(0);

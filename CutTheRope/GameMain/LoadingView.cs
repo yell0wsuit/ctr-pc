@@ -8,6 +8,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class LoadingView : View
     {
+        /// <inheritdoc />
         public override void Show()
         {
             // Reset animation state when loading screen is shown
@@ -22,6 +23,7 @@ namespace CutTheRope.GameMain
             return animationComplete;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Global.MouseCursor.Enable(true);

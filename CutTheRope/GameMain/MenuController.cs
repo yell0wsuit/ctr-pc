@@ -1251,6 +1251,7 @@ namespace CutTheRope.GameMain
             AddChildwithID(c, 0);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1271,6 +1272,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             showNextPackStatus = false;
@@ -1326,6 +1328,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);
@@ -1781,6 +1784,7 @@ namespace CutTheRope.GameMain
             return moveToPack;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -1834,31 +1838,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Handles mouse wheel scrolling for menu views with scrollable content.
-        /// </summary>
-        /// <param name="scrollDelta">The mouse wheel scroll delta from the input system.</param>
-        /// <returns>True if the scroll was handled by this controller, false otherwise.</returns>
-        /// <remarks>
-        /// Currently handles scrolling for:
-        /// <list type="bullet">
-        /// <item>
-        ///      <description>About/Credits view (activeViewID == VIEW_ABOUT): Forwards to <see cref="AboutView"/> and disables auto-scroll</description>
-        /// </item>
-        /// </list>
-        /// To add scrolling support for additional views:
-        /// <list type="bullet">
-        ///  <item>
-        ///      <description>Store a reference to the view's ScrollableContainer field.</description>
-        ///  </item>
-        ///  <item>
-        ///       <description>Add a new <c>if</c> block checking <c>activeViewID</c>.</description>
-        ///   </item>
-        ///   <item>
-        ///      <description>Call <c>container.HandleMouseWheel(scrollDelta)</c> and return <c>true</c>.</description>
-        ///  </item>
-        /// </list>
-        /// </remarks>
+        /// <inheritdoc />
         public override bool HandleMouseWheel(int scrollDelta)
         {
             // Give popup scrollable content first chance to handle mouse wheel.
@@ -1895,6 +1875,7 @@ namespace CutTheRope.GameMain
             return base.HandleMouseWheel(scrollDelta);
         }
 
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             bool flag = base.TouchesBeganwithEvent(touches);
@@ -1909,6 +1890,7 @@ namespace CutTheRope.GameMain
         {
         }
 
+        /// <inheritdoc />
         public override void FullscreenToggled(bool isFullscreen)
         {
             DeleteView(5);
@@ -1939,6 +1921,7 @@ namespace CutTheRope.GameMain
             RecreateOptions();
         }
 
+        /// <inheritdoc />
         public override bool BackButtonPressed()
         {
             int currentViewId = activeViewID;
@@ -2101,6 +2084,7 @@ namespace CutTheRope.GameMain
 
         public sealed class TouchBaseElement : BaseElement
         {
+            /// <inheritdoc />
             public override bool OnTouchDownXY(float tx, float ty)
             {
                 _ = base.OnTouchDownXY(tx, ty);

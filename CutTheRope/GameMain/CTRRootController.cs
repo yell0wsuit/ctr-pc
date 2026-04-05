@@ -106,6 +106,7 @@ namespace CutTheRope.GameMain
             viewTransition = -1;
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             _ = CTRPreferences.IsFirstLaunch();
@@ -132,11 +133,13 @@ namespace CutTheRope.GameMain
         {
         }
 
+        /// <inheritdoc />
         public override void Suspend()
         {
             suspended = true;
         }
 
+        /// <inheritdoc />
         public override void Resume()
         {
             if (!inCrystal)
@@ -145,6 +148,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);
@@ -278,6 +282,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

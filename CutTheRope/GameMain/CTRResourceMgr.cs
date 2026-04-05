@@ -98,6 +98,7 @@ namespace CutTheRope.GameMain
             return mgr.LoadResource(resourceName, resType);
         }
 
+        /// <inheritdoc />
         protected override TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
             // Background images don't need JSON atlas - dimensions auto-detected from texture
@@ -117,6 +118,7 @@ namespace CutTheRope.GameMain
             };
         }
 
+        /// <inheritdoc />
         protected override float GetAspectRatioScaleX()
         {
             int width = Global.ScreenSizeManager.CurrentSize.Width;

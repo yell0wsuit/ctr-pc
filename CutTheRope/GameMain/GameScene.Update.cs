@@ -11,6 +11,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             delta = 0.016f;

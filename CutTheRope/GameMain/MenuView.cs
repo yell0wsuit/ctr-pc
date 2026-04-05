@@ -7,12 +7,14 @@ namespace CutTheRope.GameMain
 {
     internal class MenuView : View
     {
+        /// <inheritdoc />
         public override void Update(float t)
         {
             Global.MouseCursor.Enable(true);
             base.Update(t);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Renderer.SetColor(Color.White);

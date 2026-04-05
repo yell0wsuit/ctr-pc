@@ -11,6 +11,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class BoxOpenClose : BaseElement, ITimelineDelegate
     {
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -669,6 +670,7 @@ namespace CutTheRope.GameMain
                 return (Confetti)new Confetti().InitWithTexture(t);
             }
 
+            /// <inheritdoc />
             public override void Update(float delta)
             {
                 base.Update(delta);

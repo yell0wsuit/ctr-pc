@@ -144,10 +144,7 @@ namespace CutTheRope.GameMain
             return SpecialEvents.IsXmas ? new SnowfallOverlay() : null;
         }
 
-        /// <summary>
-        /// Updates snowflake positions, animations, and fade transitions each frame.
-        /// </summary>
-        /// <param name="delta">Time elapsed since last update in seconds.</param>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -161,10 +158,7 @@ namespace CutTheRope.GameMain
             UpdateFade(delta);
         }
 
-        /// <summary>
-        /// Renders all active snowflakes with proper blending and transformations.
-        /// Uses additive blending for a soft, glowing appearance.
-        /// </summary>
+        /// <inheritdoc />
         public override void Draw()
         {
             if (!running || texture == null || snowflakes.Count == 0)

@@ -45,6 +45,7 @@ namespace CutTheRope.GameMain
             lightDownAnim = null;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             if (timeout > 0 && time > 0)
@@ -69,6 +70,7 @@ namespace CutTheRope.GameMain
             base.Update(delta);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (timedAnim != null && timeout > 0)
