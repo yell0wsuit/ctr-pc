@@ -11,9 +11,19 @@ using Foundation;
 
 namespace CutTheRope.Framework.Core
 {
+    /// <summary>
+    /// Stores global and per-box preferences, persists them as JSON, and handles migration from older save layouts.
+    /// </summary>
     internal class Preferences : FrameworkTypes
     {
+        /// <summary>
+        /// Prefix used by legacy numeric unlocked-state keys that are migrated to booleans.
+        /// </summary>
         private const string UnlockedKeyPrefix = "UNLOCKED_";
+
+        /// <summary>
+        /// Preference keys that should be interpreted as booleans during JSON migration.
+        /// </summary>
         private static readonly HashSet<string> BooleanPreferenceKeys =
         [
             "PREFS_EXIST",
@@ -35,18 +45,37 @@ namespace CutTheRope.Framework.Core
         private const string DynamicBoxSaveFileExtension = ".json";
         private const string SaveFolderName = "CutTheRopeDX_SaveData";
 
+        /// <summary>
+        /// Gets the full path to the global preferences JSON file.
+        /// </summary>
         private static string GlobalSaveFilePath => Path.Combine(SaveDirectory, GlobalSaveFileName);
 
+        /// <summary>
+        /// Returns the JSON file name for the specified box slot.
+        /// </summary>
+        /// <param name="slot">Box slot index.</param>
+        /// <returns>Box save file name.</returns>
         private static string GetBoxSaveFileName(int slot)
         {
             return $"{DynamicBoxSaveFilePrefix}{slot:D2}{DynamicBoxSaveFileExtension}";
         }
 
+        /// <summary>
+        /// Returns the full path to the JSON file for the specified box slot.
+        /// </summary>
+        /// <param name="slot">Box slot index.</param>
+        /// <returns>Box save file path.</returns>
         private static string GetBoxSaveFilePath(int slot)
         {
             return Path.Combine(SaveDirectory, GetBoxSaveFileName(slot));
         }
 
+        /// <summary>
+        /// Attempts to parse a box slot index from a save file name.
+        /// </summary>
+        /// <param name="fileName">File name to parse.</param>
+        /// <param name="slot">Parsed slot index when successful.</param>
+        /// <returns><c>true</c> if the file name matches the expected slot pattern; otherwise <c>false</c>.</returns>
         private static bool TryParseBoxSlotFromFileName(string fileName, out int slot)
         {
             slot = 0;
@@ -74,6 +103,9 @@ namespace CutTheRope.Framework.Core
         // Per-box game data (STARS_, SCORE_, UNLOCKED_) — indexed by box index
         private static readonly List<Dictionary<string, object>> BoxData = [];
 
+        /// <summary>
+        /// Gets or sets a value indicating whether preferences should be written to disk on the next update.
+        /// </summary>
         public static bool GameSaveRequested { get; set; }
 
         /// <summary>
@@ -283,6 +315,9 @@ namespace CutTheRope.Framework.Core
         }
 #endif
 
+        /// <summary>
+        /// Initializes a preferences instance and loads saved preference data from disk.
+        /// </summary>
         public Preferences()
         {
             LoadPreferences();
@@ -293,6 +328,9 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Sets an integer preference and optionally saves to disk.
         /// </summary>
+        /// <param name="value">Integer value to store.</param>
+        /// <param name="key">Preference key.</param>
+        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
         public static void SetIntForKey(int value, string key, bool commit = false)
         {
             GlobalData[key] = value;
@@ -305,6 +343,9 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Sets a boolean preference and optionally saves to disk.
         /// </summary>
+        /// <param name="value">Boolean value to store.</param>
+        /// <param name="key">Preference key.</param>
+        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
         public static void SetBooleanForKey(bool value, string key, bool commit = false)
         {
             GlobalData[key] = value;
@@ -317,6 +358,9 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Sets a string preference and optionally saves to disk.
         /// </summary>
+        /// <param name="value">String value to store.</param>
+        /// <param name="key">Preference key.</param>
+        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
         public static void SetStringForKey(string value, string key, bool commit = false)
         {
             GlobalData[key] = value;
@@ -329,6 +373,8 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets an integer preference. Returns 0 if not found.
         /// </summary>
+        /// <param name="key">Preference key.</param>
+        /// <returns>Stored integer value, or <c>0</c> if missing or not numeric.</returns>
         public static int GetIntForKey(string key)
         {
             return GlobalData.TryGetValue(key, out object value)
@@ -344,6 +390,8 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets a boolean preference. Returns false if not found.
         /// </summary>
+        /// <param name="key">Preference key.</param>
+        /// <returns>Stored boolean value, or <c>false</c> if missing.</returns>
         public static bool GetBooleanForKey(string key)
         {
             return GlobalData.TryGetValue(key, out object value) && value is bool boolVal && boolVal;
@@ -352,6 +400,8 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets a string preference. Returns empty string if not found.
         /// </summary>
+        /// <param name="key">Preference key.</param>
+        /// <returns>Stored string value, or an empty string if missing.</returns>
         public static string GetStringForKey(string key)
         {
             return GlobalData.TryGetValue(key, out object value) && value is string strVal ? strVal : "";
@@ -360,11 +410,17 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Checks if a global preference key exists in memory.
         /// </summary>
+        /// <param name="key">Preference key to check.</param>
+        /// <returns><c>true</c> if the key exists; otherwise <c>false</c>.</returns>
         protected static bool ContainsKey(string key)
         {
             return GlobalData.ContainsKey(key);
         }
 
+        /// <summary>
+        /// Removes a global preference key from memory.
+        /// </summary>
+        /// <param name="key">Preference key to remove.</param>
         protected static void RemoveKey(string key)
         {
             _ = GlobalData.Remove(key);
@@ -372,6 +428,13 @@ namespace CutTheRope.Framework.Core
 
         // ── Box-scoped accessors (STARS_, SCORE_, UNLOCKED_ per box) ─────────────
 
+        /// <summary>
+        /// Sets an integer preference for a specific box slot and optionally requests a save.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <param name="value">Integer value to store.</param>
+        /// <param name="key">Preference key.</param>
+        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
         public static void SetBoxIntForKey(int box, int value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
@@ -381,6 +444,12 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Gets an integer preference for a specific box slot.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <param name="key">Preference key.</param>
+        /// <returns>Stored integer value, or <c>0</c> if missing or invalid.</returns>
         public static int GetBoxIntForKey(int box, string key)
         {
             return box >= BoxData.Count
@@ -395,6 +464,13 @@ namespace CutTheRope.Framework.Core
                 : 0;
         }
 
+        /// <summary>
+        /// Sets a boolean preference for a specific box slot and optionally requests a save.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <param name="value">Boolean value to store.</param>
+        /// <param name="key">Preference key.</param>
+        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
         public static void SetBoxBoolForKey(int box, bool value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
@@ -404,11 +480,24 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Gets a boolean preference for a specific box slot.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <param name="key">Preference key.</param>
+        /// <returns>Stored boolean value, or <c>false</c> if missing.</returns>
         public static bool GetBoxBoolForKey(int box, string key)
         {
             return box < BoxData.Count && BoxData[box].TryGetValue(key, out object value) && value is bool boolVal && boolVal;
         }
 
+        /// <summary>
+        /// Sets a string preference for a specific box slot and optionally requests a save.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <param name="value">String value to store.</param>
+        /// <param name="key">Preference key.</param>
+        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
         public static void SetBoxStringForKey(int box, string value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
@@ -418,11 +507,22 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Gets a string preference for a specific box slot.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <param name="key">Preference key.</param>
+        /// <returns>Stored string value, or an empty string if missing.</returns>
         public static string GetBoxStringForKey(int box, string key)
         {
             return box >= BoxData.Count ? "" : BoxData[box].TryGetValue(key, out object value) && value is string strVal ? strVal : "";
         }
 
+        /// <summary>
+        /// Removes a preference key from a specific box slot.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <param name="key">Preference key to remove.</param>
         public static void RemoveBoxKey(int box, string key)
         {
             if (box < BoxData.Count)
@@ -442,6 +542,11 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Ensures that a dictionary exists for the specified box slot and returns it.
+        /// </summary>
+        /// <param name="box">Box slot index.</param>
+        /// <returns>Dictionary backing the specified box slot.</returns>
         private static Dictionary<string, object> EnsureBoxData(int box)
         {
             while (BoxData.Count <= box)
@@ -457,6 +562,8 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Serializes a preferences dictionary to JSON string (AOT-safe).
         /// </summary>
+        /// <param name="data">Dictionary to serialize.</param>
+        /// <returns>JSON representation of the supplied dictionary.</returns>
         private static string SerializeToJson(Dictionary<string, object> data)
         {
             using MemoryStream stream = new();
@@ -493,6 +600,8 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Returns true if key belongs to per-box game data (STARS_, SCORE_, UNLOCKED_).
         /// </summary>
+        /// <param name="key">Preference key to inspect.</param>
+        /// <returns><c>true</c> if the key belongs to box-scoped game data; otherwise <c>false</c>.</returns>
         private static bool IsGameDataKey(string key)
         {
             return key.StartsWith("STARS_", StringComparison.Ordinal) ||
@@ -500,6 +609,9 @@ namespace CutTheRope.Framework.Core
             key.StartsWith("UNLOCKED_", StringComparison.Ordinal);
         }
 
+        /// <summary>
+        /// Writes the global preferences file and all current box-slot preference files to disk.
+        /// </summary>
         private static void WritePreferenceFiles()
         {
             File.WriteAllText(GlobalSaveFilePath, SerializeToJson(GlobalData));
@@ -512,6 +624,9 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Deserializes JSON into the destination dictionary (AOT-safe).
         /// </summary>
+        /// <param name="json">JSON document to deserialize.</param>
+        /// <param name="dest">Destination dictionary.</param>
+        /// <returns><c>true</c> if any boolean migration occurred; otherwise <c>false</c>.</returns>
         private static bool DeserializeFromJson(string json, Dictionary<string, object> dest)
         {
             bool didMigrate = false;
@@ -538,6 +653,10 @@ namespace CutTheRope.Framework.Core
         /// and all other keys to <paramref name="globalDest"/>. Used for migration of old
         /// save files that mixed global prefs and game data in one file.
         /// </summary>
+        /// <param name="json">JSON document to deserialize.</param>
+        /// <param name="globalDest">Destination for global preference keys.</param>
+        /// <param name="gameDataDest">Destination for box-scoped game-data keys.</param>
+        /// <returns><c>true</c> if any migration occurred; otherwise <c>false</c>.</returns>
         private static bool DeserializeFromJsonRouted(
             string json,
             Dictionary<string, object> globalDest,
@@ -563,6 +682,14 @@ namespace CutTheRope.Framework.Core
             return didMigrate;
         }
 
+        /// <summary>
+        /// Attempts to parse a JSON value into one of the supported preference value types.
+        /// </summary>
+        /// <param name="key">Preference key associated with the JSON value.</param>
+        /// <param name="element">JSON element to parse.</param>
+        /// <param name="parsedValue">Parsed CLR value when successful.</param>
+        /// <param name="migratedBooleanValue">Whether numeric legacy data was migrated to a boolean value.</param>
+        /// <returns><c>true</c> if the value was parsed successfully; otherwise <c>false</c>.</returns>
         private static bool TryReadJsonValue(string key, JsonElement element, out object parsedValue, out bool migratedBooleanValue)
         {
             migratedBooleanValue = false;
@@ -653,6 +780,8 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Serializes all preferences to a JSON stream (global prefs only).
         /// </summary>
+        /// <param name="stream">Destination stream to write.</param>
+        /// <returns><c>true</c> if serialization succeeded; otherwise <c>false</c>.</returns>
         public static bool SaveToStream(Stream stream)
         {
             try
@@ -671,6 +800,8 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Deserializes all preferences from a JSON stream (global prefs only).
         /// </summary>
+        /// <param name="stream">Source stream to read.</param>
+        /// <returns><c>true</c> if deserialization succeeded; otherwise <c>false</c>.</returns>
         public static bool LoadFromStream(Stream stream)
         {
             try
