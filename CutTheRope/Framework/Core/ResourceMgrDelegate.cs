@@ -5,7 +5,9 @@ namespace CutTheRope.Framework.Core
     /// </summary>
     internal interface IResourceMgrDelegate
     {
-        /// <summary>Called when all queued resources have been loaded.</summary>
+        /// <summary>
+        /// Called when all queued resources have been loaded.
+        /// </summary>
         void AllResourcesLoaded();
     }
 }
