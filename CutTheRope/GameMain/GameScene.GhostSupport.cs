@@ -3,10 +3,6 @@ using CutTheRope.Framework.Physics;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Ghost-specific helpers for GameScene.
-    /// Provides utilities for auto-attaching ghost grabs to the active candy constraint.
-    /// </summary>
     internal sealed partial class GameScene
     {
         internal ConstraintedPoint GetGhostRopeAnchor(Vector ghostPosition)

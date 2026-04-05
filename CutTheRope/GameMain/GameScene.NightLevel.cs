@@ -5,13 +5,6 @@ using CutTheRope.Framework.Physics;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Partial class containing night level specific logic for the game scene.
-    /// </summary>
-    /// <remarks>
-    /// Night levels feature a sleeping Om Nom that must be illuminated by light bulbs
-    /// to wake up. Stars also require illumination to be collected.
-    /// </remarks>
     internal sealed partial class GameScene
     {
         /// <summary>

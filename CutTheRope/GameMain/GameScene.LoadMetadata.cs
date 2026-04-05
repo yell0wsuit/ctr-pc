@@ -8,10 +8,6 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// GameScene.LoadMetadata - Partial class handling level metadata loading
-    /// Loads map dimensions, Game design settings, and candy positions from XML
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>

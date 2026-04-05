@@ -5,10 +5,6 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// GameScene.Initialize - Partial class handling Game state initialization
-    /// Initializes Game state and collections for each new level
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
