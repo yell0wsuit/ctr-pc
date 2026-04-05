@@ -9,8 +9,17 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.Framework.Core
 {
+    /// <summary>
+    /// Top-level controller that owns the currently active controller, routes input,
+    /// and manages screen-transition capture/drawing.
+    /// </summary>
+    /// <param name="parent">Parent controller reference passed to the base controller.</param>
     internal class RootController(ViewController parent) : ViewController(parent)
     {
+        /// <summary>
+        /// Advances the active controller and applies any pending deactivation requests.
+        /// </summary>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
         public void PerformTick(float delta)
         {
             lastTime += delta;
@@ -25,11 +34,18 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Returns whether a view transition is currently in progress.
+        /// </summary>
+        /// <returns><c>true</c> if a transition is active; otherwise <c>false</c>.</returns>
         public bool IsTransitionActive()
         {
             return transitionTime != -1f;
         }
 
+        /// <summary>
+        /// Draws the active controller view or the current transition frame.
+        /// </summary>
         public void PerformDraw()
         {
             if (currentController.activeViewID == -1)
@@ -59,15 +75,26 @@ namespace CutTheRope.Framework.Core
             GLCanvas.AfterRender();
         }
 
+        /// <summary>
+        /// Applies any renderer transforms required for landscape orientation.
+        /// Retained as a compatibility hook.
+        /// </summary>
         private static void ApplyLandscape()
         {
         }
 
+        /// <summary>
+        /// Sets the transition effect used when switching views.
+        /// </summary>
+        /// <param name="transition">Transition type constant to use.</param>
         public virtual void SetViewTransition(int transition)
         {
             viewTransition = transition;
         }
 
+        /// <summary>
+        /// Draws the current transition frame using the captured previous and next view images.
+        /// </summary>
         private void DrawViewTransition()
         {
             Renderer.SetColor(Color.White);
@@ -136,36 +163,62 @@ namespace CutTheRope.Framework.Core
             Renderer.Disable(Renderer.GL_BLEND);
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             base.Activate();
         }
 
+        /// <summary>
+        /// Called when a controller becomes active and should become the current routed controller.
+        /// </summary>
+        /// <param name="controller">Controller that was activated.</param>
         public virtual void OnControllerActivated(ViewController controller)
         {
             SetCurrentController(controller);
         }
 
+        /// <summary>
+        /// Called when a controller has deactivated and should no longer receive routed input.
+        /// </summary>
+        /// <param name="controller">Controller that was deactivated.</param>
         public virtual void OnControllerDeactivated(ViewController controller)
         {
             SetCurrentController(null);
         }
 
+        /// <summary>
+        /// Called when a controller pauses and should temporarily stop receiving routed input.
+        /// </summary>
+        /// <param name="controller">Controller that was paused.</param>
         public virtual void OnControllerPaused(ViewController controller)
         {
             SetCurrentController(null);
         }
 
+        /// <summary>
+        /// Called when a controller resumes and should once again receive routed input.
+        /// </summary>
+        /// <param name="controller">Controller that was unpaused.</param>
         public virtual void OnControllerUnpaused(ViewController controller)
         {
             SetCurrentController(controller);
         }
 
+        /// <summary>
+        /// Marks the current controller for deferred deactivation on the next tick.
+        /// </summary>
+        /// <param name="controller">Controller requesting deactivation.</param>
         public virtual void OnControllerDeactivationRequest(ViewController controller)
         {
             deactivateCurrentController = true;
         }
 
+        /// <summary>
+        /// Called before a controller view is shown.
+        /// Captures the incoming view image when transitions are enabled.
+        /// </summary>
+        /// <param name="view">View that is about to be shown.</param>
         public virtual void OnControllerViewShow(View view)
         {
             if (viewTransition != -1 && previousView != null)
@@ -182,6 +235,11 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Called before a controller view is hidden.
+        /// Captures the outgoing view image when transitions are enabled.
+        /// </summary>
+        /// <param name="view">View that is about to be hidden.</param>
         public virtual void OnControllerViewHide(View view)
         {
             previousView = view;
@@ -198,21 +256,32 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Returns whether the root controller is currently suspended.
+        /// </summary>
+        /// <returns><c>true</c> if suspended; otherwise <c>false</c>.</returns>
         public virtual bool IsSuspended()
         {
             return suspended;
         }
 
+        /// <summary>
+        /// Suspends input routing and other root-controller activity.
+        /// </summary>
         public virtual void Suspend()
         {
             suspended = true;
         }
 
+        /// <summary>
+        /// Resumes input routing and other root-controller activity.
+        /// </summary>
         public virtual void Resume()
         {
             suspended = false;
         }
 
+        /// <inheritdoc />
         public override bool MouseMoved(float x, float y)
         {
             return currentController.MouseMoved(x, y);
@@ -238,89 +307,161 @@ namespace CutTheRope.Framework.Core
             return currentController != null && !suspended && transitionTime == -1f && currentController.HandleMouseWheel(scrollDelta);
         }
 
+        /// <inheritdoc />
         public override bool BackButtonPressed()
         {
             return suspended || transitionTime != -1f || currentController.BackButtonPressed();
         }
 
+        /// <inheritdoc />
         public override bool MenuButtonPressed()
         {
             return suspended || transitionTime != -1f || currentController.MenuButtonPressed();
         }
 
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             return !suspended && (transitionTime != -1f || currentController.TouchesBeganwithEvent(touches));
         }
 
+        /// <inheritdoc />
         public override bool TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
             return !suspended && (transitionTime != -1f || currentController.TouchesMovedwithEvent(touches));
         }
 
+        /// <inheritdoc />
         public override bool TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
             return !suspended && (transitionTime != -1f || currentController.TouchesEndedwithEvent(touches));
         }
 
+        /// <inheritdoc />
         public override bool TouchesCancelledwithEvent(IList<TouchLocation> touches)
         {
             return currentController.TouchesCancelledwithEvent(touches);
         }
 
+        /// <summary>
+        /// Sets the controller that currently receives routed updates and input.
+        /// </summary>
+        /// <param name="controller">Controller to make current, or <c>null</c> to clear routing.</param>
         public virtual void SetCurrentController(ViewController controller)
         {
             currentController = controller;
         }
 
+        /// <summary>
+        /// Returns the controller that currently receives routed updates and input.
+        /// </summary>
+        /// <returns>Current controller, or <c>null</c> if none is active.</returns>
         public virtual ViewController GetCurrentController()
         {
             return currentController;
         }
 
+        /// <inheritdoc />
         public override void FullscreenToggled(bool isFullscreen)
         {
             currentController?.FullscreenToggled(isFullscreen);
         }
 
+        /// <summary>
+        /// Horizontal slide transition entering from the right.
+        /// </summary>
         public const int TRANSITION_SLIDE_HORIZONTAL_RIGHT = 0;
 
+        /// <summary>
+        /// Horizontal slide transition entering from the left.
+        /// </summary>
         public const int TRANSITION_SLIDE_HORIZONTAL_LEFT = 1;
 
+        /// <summary>
+        /// Vertical slide transition moving upward.
+        /// </summary>
         public const int TRANSITION_SLIDE_VERTICAL_UP = 2;
 
+        /// <summary>
+        /// Vertical slide transition moving downward.
+        /// </summary>
         public const int TRANSITION_SLIDE_VERTICAL_DON = 3;
 
+        /// <summary>
+        /// Fade-out transition using a black overlay.
+        /// </summary>
         public const int TRANSITION_FADE_OUT_BLACK = 4;
 
+        /// <summary>
+        /// Fade-out transition using a white overlay.
+        /// </summary>
         public const int TRANSITION_FADE_OUT_WHITE = 5;
 
+        /// <summary>
+        /// Reveal transition identifier.
+        /// </summary>
         public const int TRANSITION_REVEAL = 6;
 
+        /// <summary>
+        /// Total number of transition identifiers.
+        /// </summary>
         public const int TRANSITIONS_COUNT = 7;
 
+        /// <summary>
+        /// Default transition duration in seconds.
+        /// </summary>
         public const float TRANSITION_DEFAULT_DELAY = 0.4f;
 
+        /// <summary>
+        /// Currently selected transition type, or <c>-1</c> when transitions are disabled.
+        /// </summary>
         public int viewTransition = -1;
 
+        /// <summary>
+        /// Absolute time when the current transition should finish, or <c>-1</c> when inactive.
+        /// </summary>
         public float transitionTime = -1f;
 
+        /// <summary>
+        /// Duration of each transition in seconds.
+        /// </summary>
         private readonly float transitionDelay = 0.4f;
 
+        /// <summary>
+        /// Last view hidden by the root controller, used for transition capture.
+        /// </summary>
         private View previousView;
 
+        /// <summary>
+        /// Captured image of the previous view during transitions.
+        /// </summary>
         private CTRTexture2D prevScreenImage;
 
+        /// <summary>
+        /// Captured image of the next view during transitions.
+        /// </summary>
         private CTRTexture2D nextScreenImage;
 
         // private readonly Grabber screenGrabber = new();
 
+        /// <summary>
+        /// Whether the current controller should be deactivated on the next tick.
+        /// </summary>
         private bool deactivateCurrentController;
 
+        /// <summary>
+        /// Controller currently receiving routed updates and input.
+        /// </summary>
         private ViewController currentController;
 
+        /// <summary>
+        /// Accumulated root-controller time in seconds.
+        /// </summary>
         private float lastTime;
 
+        /// <summary>
+        /// Whether the root controller is suspended.
+        /// </summary>
         public bool suspended;
     }
 }
