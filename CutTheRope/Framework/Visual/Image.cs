@@ -171,6 +171,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>Applies the pre-cut size for the given quad if available. Returns true if applied.</summary>
         private bool ApplyPerQuadPreCutSize(int quad)
         {
             if (quad >= 0 && texture.preCutSizes != null && quad < texture.preCutSizes.Length)
@@ -186,6 +187,7 @@ namespace CutTheRope.Framework.Visual
             return false;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -221,6 +223,7 @@ namespace CutTheRope.Framework.Visual
             Renderer.DrawTriangleStrip(vertices);
         }
 
+        /// <inheritdoc />
         public override bool HandleAction(ActionData a)
         {
             if (base.HandleAction(a))
@@ -235,11 +238,13 @@ namespace CutTheRope.Framework.Visual
             return false;
         }
 
+        /// <summary>Creates a <see cref="BaseElement"/> from an XML definition. Not implemented in this class.</summary>
         public virtual BaseElement CreateFromXML(XElement xml)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -250,12 +255,16 @@ namespace CutTheRope.Framework.Visual
         }
 
 
+        /// <summary>Timeline action name for setting the draw quad index.</summary>
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";
 
+        /// <summary>The texture used for drawing this image.</summary>
         public CTRTexture2D texture;
 
+        /// <summary>Whether to restore trimmed transparency offsets when drawing quads.</summary>
         public bool restoreCutTransparency;
 
+        /// <summary>Index of the quad to draw, or -1 to draw the full image.</summary>
         public int quadToDraw;
     }
 }
