@@ -15,22 +15,53 @@ namespace CutTheRope.GameMain
     internal sealed class ConveyorBelt : BaseElement
     {
         // PC conveyor tuning uses base iOS values scaled by 3x world scale.
+
+        /// <summary>World-scale multiplier applied to all iOS-derived tuning constants.</summary>
         private const float ConveyorScale = 3f;
+
+        /// <summary>Minimum <see cref="offsetDelta"/> magnitude to consider the belt active.</summary>
         private const float ActiveThreshold = 1f * ConveyorScale;
+
+        /// <summary>Below this delta the manual belt stops and alignment begins.</summary>
         private const float ManualStopThreshold = 1f * ConveyorScale;
+
+        /// <summary>Accumulated drag distance between manual-move sound effects.</summary>
         private const float ManualMoveSoundDistance = 15f * ConveyorScale;
+
+        /// <summary>Speed at which items are pushed out of the transition zone during alignment.</summary>
         private const float AlignmentSpeed = 80f * ConveyorScale;
+
+        /// <summary>Minimum gap between two items when distributing overlapping objects.</summary>
         private const float DistributionMinSpacing = 2f * ConveyorScale;
+
+        /// <summary>Side-offset below which an item is snapped exactly onto the belt centreline.</summary>
         private const float CenterlineSnapThreshold = 0.01f;
+
+        /// <summary>Side-offset below which the item hard-snaps to zero instead of lerping.</summary>
         private const float CenterlineHardSnapDistance = 2f;
+
+        /// <summary>Lerp factor applied each frame to return items to the belt centreline.</summary>
         private const float CenterlineReturnFactor = 0.8f;
 
+        /// <summary>Quad index for the conveyor end-cap sprite.</summary>
         private const int ImgObjConveyorEnd = 0;
+
+        /// <summary>Quad index for the conveyor end-cap side corner sprite.</summary>
         private const int ImgObjConveyorEndSide = 1;
+
+        /// <summary>Quad index for the conveyor middle background sprite.</summary>
         private const int ImgObjConveyorMiddle = 2;
+
+        /// <summary>Quad index for the conveyor middle side rail sprite.</summary>
         private const int ImgObjConveyorMiddleSide = 3;
+
+        /// <summary>Quad index for the conveyor plate (moving surface tile) sprite.</summary>
         private const int ImgObjConveyorPlate = 4;
+
+        /// <summary>Quad index for the directional arrow overlay on the plate sprite.</summary>
         private const int ImgObjConveyorPlateArrow = 5;
+
+        /// <summary>Quad index for the conveyor highlight overlay sprite.</summary>
         private const int ImgObjConveyorHighlight = 6;
 
         /// <summary>
@@ -38,8 +69,13 @@ namespace CutTheRope.GameMain
         /// </summary>
         private sealed class ConveyorBeltVisual : BaseElement
         {
+            /// <summary>The tiled plate image drawn repeatedly along the belt surface.</summary>
             private readonly Image plateSection;
+
+            /// <summary>Optional directional arrow overlay, or <see langword="null"/> if the belt is manual.</summary>
             private readonly Image plateArrow;
+
+            /// <summary>Height of a single plate tile in pixels.</summary>
             private readonly float tileHeight;
 
             /// <summary>The current visual offset for the scrolling belt texture.</summary>
@@ -154,6 +190,9 @@ namespace CutTheRope.GameMain
                 PostDraw();
             }
 
+            /// <summary>Draws one tile of the belt surface at the given Y offset, scaled to <paramref name="visibleHeight"/>.</summary>
+            /// <param name="y">Y position of the tile relative to the visual root.</param>
+            /// <param name="visibleHeight">Visible portion of the tile height to draw.</param>
             private void DrawSegment(float y, float visibleHeight)
             {
                 plateSection.y = y;
@@ -761,6 +800,9 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a visual piece for the belt frame from the transporter sprite sheet.
         /// </summary>
+        /// <param name="quad">Texture quad index from the conveyor sprite sheet.</param>
+        /// <param name="anchors">The anchor value for both anchor and parentAnchor.</param>
+        /// <returns>The configured <see cref="Image"/> piece.</returns>
         private static Image CreatePiece(int quad, int anchors)
         {
             Image piece = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, quad);
@@ -813,6 +855,7 @@ namespace CutTheRope.GameMain
         /// Separates overlapping items on the belt by pushing them apart.
         /// Matches iOS distributeObjects:/pushObject:.
         /// </summary>
+        /// <param name="deltaTime">Elapsed seconds since the last frame.</param>
         private void DistributeObjects(float deltaTime)
         {
             if (objectsDistributed || boundObjects.Count < 2)
@@ -852,8 +895,10 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Pushes an item along the belt, clamping to transition zone boundaries.
-        /// Matches iOS pushObject:withLocalCoordinate:distance:.
         /// </summary>
+        /// <param name="item">The item to push.</param>
+        /// <param name="currentPos">The item's current position along the belt.</param>
+        /// <param name="distance">Signed push distance in belt-local units.</param>
         private void PushObject(ITransporterItem item, float currentPos, float distance)
         {
             float newPos = currentPos + distance;
@@ -864,6 +909,12 @@ namespace CutTheRope.GameMain
             item.PositionOnTransporter = newPos;
         }
 
+        /// <summary>
+        /// Applies a uniform scale to <paramref name="item"/>, delegating to
+        /// <see cref="ITransporterScaleAware"/> if implemented, otherwise setting scaleX/scaleY directly.
+        /// </summary>
+        /// <param name="item">The item to scale.</param>
+        /// <param name="scale">The scale factor to apply.</param>
         private static void ApplyItemScale(ITransporterItem item, float scale)
         {
             if (item is ITransporterScaleAware scaleAware)
@@ -887,7 +938,7 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Callback invoked when a Grab wraps around the belt edge, requesting all other
-        /// ropes for the same candy to be cut. Matches iOS destroyRopesForCandy:except:.
+        /// ropes for the same candy to be cut.
         /// Parameters: candyNumber, the Grab that wrapped (excluded from cutting).
         /// </summary>
         public Action<int, Grab> OnDestroyRopesForCandy;
@@ -897,21 +948,52 @@ namespace CutTheRope.GameMain
         /// </summary>
         public IReadOnlyList<ITransporterItem> BoundObjects => boundObjects;
 
+        /// <summary>Automatic movement speed in world units per second.</summary>
         private float velocity;
+
+        /// <summary>Accumulated manual drag distance since the last move sound was played.</summary>
         private float manualTravelDistance;
+
+        /// <summary>Belt rotation in radians (derived from the degree-based <c>rotation</c> property).</summary>
         private float rotationRad;
+
+        /// <summary>Movement delta applied this frame, in local belt units.</summary>
         private float offsetDelta;
+
+        /// <summary>Unit direction vector along the belt's length in world space.</summary>
         private Vector direction;
+
+        /// <summary>Whether the belt is currently moving.</summary>
         private bool active;
+
+        /// <summary>Platform pointer ID currently dragging this manual belt, or −1 if idle.</summary>
         private int activePointerId = -1;
+
+        /// <summary>Local-space position of the pointer at the last drag event.</summary>
         private Vector lastDragPosition;
+
+        /// <summary>The scrolling plate visual that renders the belt surface.</summary>
         private ConveyorBeltVisual beltVisual;
+
+        /// <summary>Items currently bound to and riding on this belt.</summary>
         private readonly List<ITransporterItem> boundObjects = [];
+
+        /// <summary>Distance from each belt edge defining the wrap-around transition zone.</summary>
         private float transitionDist;
+
+        /// <summary>Length of the belt along its direction in world units.</summary>
         private float beltWidth;
+
+        /// <summary>Thickness of the belt perpendicular to its direction in world units.</summary>
         private float beltHeight;
+
+        /// <summary>When <see langword="true"/>, an alignment push is applied next update to clear the transition zone.</summary>
         private bool needsAlignment;
+
+        /// <summary>Direction of the alignment push: 1 pushes toward the right end, −1 toward the left.</summary>
         private int alignmentSign;
+
+        /// <summary>When <see langword="true"/>, bound objects are sufficiently separated and no distribution is needed.</summary>
         private bool objectsDistributed;
     }
 }
