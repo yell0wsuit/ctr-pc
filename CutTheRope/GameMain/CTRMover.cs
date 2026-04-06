@@ -8,6 +8,13 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Game-specific <see cref="Mover"/> subclass that parses path strings from level data,
+    /// supporting both circular ("R…") and polyline ("x,y,…") path definitions.
+    /// </summary>
+    /// <param name="l">Loop mode for the mover animation.</param>
+    /// <param name="m_">Movement speed magnitude.</param>
+    /// <param name="r_">Rotation speed in degrees per second.</param>
     internal sealed class CTRMover(int l, float m_, float r_) : Mover(l, m_, r_)
     {
         /// <inheritdoc />
