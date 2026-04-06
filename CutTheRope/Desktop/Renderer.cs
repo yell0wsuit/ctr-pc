@@ -274,6 +274,9 @@ namespace CutTheRope.Desktop
         /// Applies a rotation transformation around the Z axis (2D rotation).
         /// </summary>
         /// <param name="angle">Rotation angle in degrees.</param>
+        /// <param name="_">Unused X axis component (kept for API compatibility).</param>
+        /// <param name="_1">Unused Y axis component (kept for API compatibility).</param>
+        /// <param name="_2">Unused Z axis component (kept for API compatibility).</param>
         public static void Rotate(float angle, float _, float _1, float _2)
         {
             s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
@@ -357,7 +360,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Clears the screen with the current clear color.
         /// </summary>
-        /// <param name="mask_NotUsedParam">OpenGL clear mask (ignored, always clears color buffer).</param>
+        /// <param name="_">OpenGL clear mask (ignored, always clears color buffer).</param>
         public static void Clear(int _)
         {
             BlendParams.ApplyDefault();
