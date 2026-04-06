@@ -154,7 +154,6 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Handles transporter-to-transporter handoff. Called after a belt moves its items.
         /// Checks if any item bound to another belt now overlaps this belt and should transfer.
-        /// Matches iOS transporterMoves: delegate.
         /// </summary>
         /// <param name="movingBelt">The belt that just moved its items.</param>
         private void TransporterMoves(ConveyorBelt movingBelt)

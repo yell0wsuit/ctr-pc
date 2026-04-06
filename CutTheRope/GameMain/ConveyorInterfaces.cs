@@ -51,7 +51,6 @@ namespace CutTheRope.GameMain
 
     /// <summary>
     /// Optional callback invoked right before an object is bound to a transporter.
-    /// Mirrors iOS willBind selector semantics.
     /// </summary>
     internal interface ITransporterBindAware
     {
@@ -61,7 +60,6 @@ namespace CutTheRope.GameMain
 
     /// <summary>
     /// Optional callback invoked when an object wraps to the opposite transporter side.
-    /// Mirrors iOS didMoveToOtherSide selector semantics.
     /// </summary>
     internal interface ITransporterSideSwitchAware
     {
@@ -71,7 +69,6 @@ namespace CutTheRope.GameMain
 
     /// <summary>
     /// Optional callback for custom transporter scaling.
-    /// Mirrors iOS classes that override setScale: (e.g., Grab, SteamTube).
     /// </summary>
     internal interface ITransporterScaleAware
     {
