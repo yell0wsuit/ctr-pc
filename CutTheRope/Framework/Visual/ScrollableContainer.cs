@@ -572,7 +572,7 @@ namespace CutTheRope.Framework.Visual
         /// Selects the nearest valid scroll point, preferring points that lie in the supplied direction.
         /// Updates the target scroll-point state and delegate notifications.
         /// </summary>
-        /// <param name="d">Preferred movement direction. Use <see cref="vectZero"/> to ignore direction.</param>
+        /// <param name="d">Preferred movement direction. Use <c>vectZero</c> to ignore direction.</param>
         public void CalculateNearsetScrollPointInDirection(Vector d)
         {
             // spointMoveDirection = d;
