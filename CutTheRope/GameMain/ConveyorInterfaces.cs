@@ -55,6 +55,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal interface ITransporterBindAware
     {
+        /// <summary>Called right before the object is bound to a transporter.</summary>
         void WillBind();
     }
 
@@ -64,6 +65,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal interface ITransporterSideSwitchAware
     {
+        /// <summary>Called when the object wraps to the opposite transporter side.</summary>
         void DidMoveToOtherSide();
     }
 
@@ -73,6 +75,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal interface ITransporterScaleAware
     {
+        /// <summary>Applies a custom transporter scale to the object.</summary>
         /// <param name="scale">Scale factor to apply.</param>
         void SetTransporterScale(float scale);
     }
