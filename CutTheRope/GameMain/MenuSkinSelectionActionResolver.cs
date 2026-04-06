@@ -34,25 +34,25 @@ namespace CutTheRope.GameMain
                 var _ when buttonId.IsCandySlotButton() => new(
                     MenuSkinSelectionActionKind.SelectSlot,
                     SkinSelectionMode.Candy,
-                    CTRPreferences.PREFS_SELECTED_CANDY,
+                    "PREFS_SELECTED_CANDY",
                     buttonId.GetCandyIndex()
                 ),
                 var _ when buttonId.IsRopeSlotButton() => new(
                     MenuSkinSelectionActionKind.SelectSlot,
                     SkinSelectionMode.Rope,
-                    CTRPreferences.PREFS_SELECTED_ROPE,
+                    "PREFS_SELECTED_ROPE",
                     buttonId.GetRopeIndex()
                 ),
                 var _ when buttonId.IsOmNomSlotButton() => new(
                     MenuSkinSelectionActionKind.SelectSlot,
                     SkinSelectionMode.OmNom,
-                    CTRPreferences.PREFS_SELECTED_OMNOM,
+                    "PREFS_SELECTED_OMNOM",
                     buttonId.GetOmNomIndex()
                 ),
                 var _ when buttonId.IsTraceSlotButton() => new(
                     MenuSkinSelectionActionKind.SelectSlot,
                     SkinSelectionMode.Trace,
-                    CTRPreferences.PREFS_SELECTED_TRACE,
+                    "PREFS_SELECTED_TRACE",
                     buttonId.GetTraceIndex()
                 ),
                 _ => new(MenuSkinSelectionActionKind.None, SkinSelectionMode.Candy, null, null),

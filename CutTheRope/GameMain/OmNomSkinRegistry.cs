@@ -36,7 +36,7 @@ namespace CutTheRope.GameMain
         /// <summary>Gets the currently selected skin index from preferences.</summary>
         public static int GetSelectedSkinIndex()
         {
-            int index = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_OMNOM);
+            int index = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM");
             return index >= 0 && index < TotalSkinCount ? index : 0;
         }
 
