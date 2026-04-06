@@ -427,7 +427,7 @@ namespace CutTheRope.Framework.Visual
         public float _invHeight;
 
         /// <summary>
-        /// Original size before transparency was trimmed, or <see cref="FrameworkTypes.vectUndefined"/> if not trimmed.
+        /// Original size before transparency was trimmed, or <c>vectUndefined</c> if not trimmed.
         /// </summary>
         public Vector preCutSize;
 
