@@ -2,6 +2,9 @@ using System.Globalization;
 
 namespace CutTheRope.Helpers
 {
+    /// <summary>
+    /// Provides safe parsing methods that return default values instead of throwing on invalid input.
+    /// </summary>
     public static class ParsingHelpers
     {
         /// <summary>
