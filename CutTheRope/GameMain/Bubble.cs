@@ -4,8 +4,16 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Bubble game object that can be bound to a transporter and optionally draw itself with a shadow.
+    /// </summary>
     internal class Bubble : GameObject, ITransporterItem, ITransporterBindAware
     {
+        /// <summary>
+        /// Creates a bubble from a texture.
+        /// </summary>
+        /// <param name="t">Texture used by the bubble.</param>
+        /// <returns>The initialized bubble.</returns>
         public static Bubble Bubble_create(CTRTexture2D t)
         {
             return (Bubble)new Bubble().InitWithTexture(t);
@@ -16,6 +24,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="q">Quad index to draw.</param>
+        /// <returns>The initialized bubble.</returns>
         public static Bubble Bubble_createWithResIDQuad(string resourceName, int q)
         {
             Bubble bubble = Bubble_create(Application.GetTexture(resourceName));
@@ -41,18 +50,25 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <summary>Whether the bubble has been popped.</summary>
         public bool popped;
 
+        /// <summary>Initial bubble rotation used when restoring state.</summary>
         public float initial_rotation;
 
+        /// <summary>Initial X position used when restoring state.</summary>
         public float initial_x;
 
+        /// <summary>Initial Y position used when restoring state.</summary>
         public float initial_y;
 
+        /// <summary>Initial rotated-circle binding used when restoring state.</summary>
         public RotatedCircle initial_rotatedCircle;
 
+        /// <summary>Whether the bubble should skip drawing its own shadow.</summary>
         public bool withoutShadow;
 
+        /// <summary>Whether the bubble is currently captured by a light bulb.</summary>
         public bool capturedByBulb;
 
         /// <inheritdoc />
