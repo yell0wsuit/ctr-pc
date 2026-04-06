@@ -221,7 +221,7 @@ namespace CutTheRope.GameMain
 
                 // Candy on rope (positioned under the logo)
                 // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
-                int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
                 Image candyUp = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, selectedCandySkin);
                 Image candyDown = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, selectedCandySkin);
                 candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
@@ -1709,7 +1709,7 @@ namespace CutTheRope.GameMain
                         }
                         else if (skinAction.Mode == SkinSelectionMode.Candy)
                         {
-                            Preferences.SetBooleanForKey(true, CTRPreferences.PREFS_CANDY_WAS_CHANGED, true);
+                            Preferences.SetBooleanForKey(true, "PREFS_CANDY_WAS_CHANGED", true);
                             ShowView(VIEW_CANDY_SELECT);
                         }
 

@@ -102,7 +102,7 @@ namespace CutTheRope.GameMain
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
                             starL.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
-                                int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
                                 candyL = GameObject.GameObject_createWithResIDQuad(candyResource, 8);
                             }
@@ -118,7 +118,7 @@ namespace CutTheRope.GameMain
                             starR.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
                             starR.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
-                                int selectedCandySkin = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
                                 candyR = GameObject.GameObject_createWithResIDQuad(candyResource, 9);
                             }
