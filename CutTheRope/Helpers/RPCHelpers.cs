@@ -19,7 +19,7 @@ namespace CutTheRope.Helpers
         // By default, RPC is enabled
         // Exposing in a save file is to make way for later setting UI integration
         private static bool IsRpcEnabled =>
-            Preferences.GetBooleanForKey(CTRPreferences.PREFS_RPC_ENABLED);
+            Preferences.GetBooleanForKey("PREFS_RPC_ENABLED");
 
         // Replace with your own Discord Application ID if needed
         private readonly string DISCORD_APP_ID = "1457063659724603457";
