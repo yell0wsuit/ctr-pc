@@ -36,6 +36,8 @@
 
     <!-- Auto-disable in CI (GitHub Actions, GitLab, Azure, etc. set CI=true) -->
     <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!-- Output type -->
