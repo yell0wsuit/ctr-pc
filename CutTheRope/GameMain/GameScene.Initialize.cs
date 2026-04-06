@@ -122,7 +122,7 @@ namespace CutTheRope.GameMain
             starR.SetWeight(1f);
 
             // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
-            int selectedCandySkin = Framework.Core.Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+            int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
 
             // Initialize main candy

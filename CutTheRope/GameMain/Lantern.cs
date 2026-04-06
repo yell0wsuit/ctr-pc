@@ -72,7 +72,7 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             activeForm.AddTimelinewithID(timeline, (int)LanternActivation.Deactivation);
 
-            int candyVariant = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+            int candyVariant = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
 
             // First 3 candy variants are in obj_lantern texture (quads 3, 4, 5)
             // Variants 3+ use the _lantern quad (quad 10) from their respective candy textures

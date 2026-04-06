@@ -329,7 +329,7 @@ namespace CutTheRope.GameMain
             {
                 case CandySelectionMode.Rope:
                     totalItems = RopeColorHelper.TotalRopeColors;
-                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_ROPE);
+                    selectedIndex = Preferences.GetIntForKey("PREFS_SELECTED_ROPE");
                     baseQuadIndex = 60; // rope01-rope09 are quads 60-68
                     getButtonId = MenuButtonId.ForRopeSlot;
                     break;
@@ -337,7 +337,7 @@ namespace CutTheRope.GameMain
                     throw new InvalidOperationException("Om Nom grids are built through the warmup pipeline.");
                 case CandySelectionMode.Trace:
                     totalItems = FingerTraceFactory.TotalTraceSkins;
-                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_TRACE);
+                    selectedIndex = Preferences.GetIntForKey("PREFS_SELECTED_TRACE");
                     baseQuadIndex = 0;
                     itemResourceName = Resources.Img.FingerTraceSkinOptions;
                     itemYOffset = -20f;
@@ -348,7 +348,7 @@ namespace CutTheRope.GameMain
                 default: // Candy
                     const int TOTAL_CANDIES = 52;
                     totalItems = TOTAL_CANDIES;
-                    selectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_CANDY);
+                    selectedIndex = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
                     baseQuadIndex = 6; // candy01-candy52 are quads 6-57
                     getButtonId = MenuButtonId.ForCandySlot;
                     break;
@@ -449,7 +449,7 @@ namespace CutTheRope.GameMain
             return new OmNomWarmupState
             {
                 Grid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.ContainerWidth),
-                SelectedIndex = Preferences.GetIntForKey(CTRPreferences.PREFS_SELECTED_OMNOM),
+                SelectedIndex = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM"),
                 SlotScale = layout.SlotScale,
                 ColumnSpacing = layout.ColumnSpacing,
                 RowHeight = layout.RowHeight,
