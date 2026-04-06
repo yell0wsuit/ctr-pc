@@ -10,6 +10,9 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Target animation backend that builds Om Nom animation timelines from Flash XML exports.
+    /// </summary>
     internal sealed class FlashXmlTargetAnimationBackend : ITargetAnimationBackend, ITimelineDelegate
     {
         private const float BaseTargetScale = 1.73f;
@@ -38,6 +41,10 @@ namespace CutTheRope.GameMain
         private float _pendingPirateBubbleDelaySeconds = -1f;
         private bool _skipIdleToSleepTransitionUntilWake = true;
 
+        /// <summary>
+        /// Initializes a new Flash XML target animation backend for a skin.
+        /// </summary>
+        /// <param name="skinDefinition">Skin definition that provides animation paths and timeline IDs.</param>
         public FlashXmlTargetAnimationBackend(OmNomSkinDefinition skinDefinition)
         {
             _skinDefinition = skinDefinition;
@@ -63,6 +70,7 @@ namespace CutTheRope.GameMain
                 : null;
         }
 
+        /// <summary>Root object that owns the target animation parts and timelines.</summary>
         public GameObject TargetObject { get; }
 
         private static FlashXmlStageRoot CreateStageRoot(FlashXmlAnimationDefinition definition)
@@ -88,18 +96,31 @@ namespace CutTheRope.GameMain
             return stageRoot;
         }
 
+        /// <summary>
+        /// Gets the base X scale applied to the target root.
+        /// </summary>
+        /// <returns>The target root's base X scale.</returns>
         public float GetTargetBaseScaleX()
         {
             return BaseTargetScale;
         }
 
+        /// <summary>
+        /// Gets the base Y scale applied to the target root.
+        /// </summary>
+        /// <returns>The target root's base Y scale.</returns>
         public float GetTargetBaseScaleY()
         {
             return BaseTargetScale;
         }
 
+        /// <summary>Whether this skin should start by playing its greeting animation.</summary>
         public bool StartsWithGreeting => _skinDefinition.StartWithGreeting;
 
+        /// <summary>
+        /// Initializes playback and binds the external timeline delegate.
+        /// </summary>
+        /// <param name="timelineDelegate">Delegate that receives timeline callbacks from the target animation.</param>
         public void Initialize(ITimelineDelegate timelineDelegate)
         {
             _externalTimelineDelegate = timelineDelegate;
@@ -114,6 +135,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Plays the timeline mapped to a target animation state.
+        /// </summary>
+        /// <param name="state">Target animation state to play.</param>
         public void Play(TargetAnimationState state)
         {
             if (state == TargetAnimationState.Sleeping && TryPlayIdleToSleepTransition())
@@ -132,6 +157,10 @@ namespace CutTheRope.GameMain
             UpdatePirateBubbleScheduleForState(state);
         }
 
+        /// <summary>
+        /// Plays one of the configured idle variant timelines.
+        /// </summary>
+        /// <param name="rng">Random integer provider called with inclusive minimum and maximum indexes.</param>
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
             if (_skinDefinition.IdleVariants.Length == 0)
@@ -143,6 +172,10 @@ namespace CutTheRope.GameMain
             PlayTimelineById(_skinDefinition.IdleVariants[index]);
         }
 
+        /// <summary>
+        /// Skips forward in the active timeline by a number of Flash frames.
+        /// </summary>
+        /// <param name="frameCount">Number of 30 FPS Flash frames to skip.</param>
         internal void SkipCurrentTimelineFrames(int frameCount)
         {
             if (_activeTimelineId < 0 || frameCount <= 0)
@@ -167,6 +200,11 @@ namespace CutTheRope.GameMain
             BindDriverDelegateForTimeline(timelineId);
         }
 
+        /// <summary>
+        /// Determines whether the timeline for a target animation state is currently playing.
+        /// </summary>
+        /// <param name="state">Target animation state to inspect.</param>
+        /// <returns><c>true</c> if the mapped timeline is active and playing; otherwise, <c>false</c>.</returns>
         public bool IsPlaying(TargetAnimationState state)
         {
             if (!TryMapState(state, out int timelineId))
@@ -186,6 +224,10 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Gets the delay before the sleep pulse overlay should be triggered.
+        /// </summary>
+        /// <returns>Delay in seconds before the sleep pulse overlay should play.</returns>
         public float GetSleepPulseDelaySeconds()
         {
             int sleepingTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
@@ -206,14 +248,24 @@ namespace CutTheRope.GameMain
             return MathF.Max(0f, idleToSleepDuration - idleToSleepSkipSeconds) + sleepingDuration;
         }
 
+        /// <summary>
+        /// Resets blink state for backends that synthesize blinks.
+        /// </summary>
         public void ResetBlink()
         {
         }
 
+        /// <summary>
+        /// Triggers a blink for backends that synthesize blinks.
+        /// </summary>
         public void TriggerBlink()
         {
         }
 
+        /// <summary>
+        /// Updates sleep overlay animations.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds since the last update.</param>
         public void UpdateSleepOverlays(float delta)
         {
             if (_sleepOverlayObject.visible)
@@ -222,23 +274,41 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Synchronizes the sleep overlay root position to the target.
+        /// </summary>
+        /// <param name="x">Screen-space X position for the overlay root.</param>
+        /// <param name="y">Screen-space Y position for the overlay root.</param>
         public void SyncSleepOverlayPosition(float x, float y)
         {
             _sleepOverlayObject.x = x;
             _sleepOverlayObject.y = y;
         }
 
+        /// <summary>
+        /// Updates non-sleep overlay animations owned by the backend.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds since the last update.</param>
         public void UpdateAdditionalOverlays(float delta)
         {
             UpdatePirateBubbleOverlays(delta);
         }
 
+        /// <summary>
+        /// Synchronizes non-sleep overlay roots to the target.
+        /// </summary>
+        /// <param name="x">Screen-space X position for additional overlay roots.</param>
+        /// <param name="y">Screen-space Y position for additional overlay roots.</param>
         public void SyncAdditionalOverlayPosition(float x, float y)
         {
             _additionalOverlayX = x;
             _additionalOverlayY = y;
         }
 
+        /// <summary>
+        /// Sets whether the sleep overlay is visible and playing.
+        /// </summary>
+        /// <param name="visible"><c>true</c> to show and restart the sleep overlay; otherwise, <c>false</c>.</param>
         public void SetSleepOverlayVisible(bool visible)
         {
             _sleepOverlayObject.visible = visible;
@@ -251,6 +321,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Draws sleep overlays when they are visible.
+        /// </summary>
         public void DrawSleepOverlays()
         {
             if (_sleepOverlayObject.visible)
@@ -264,8 +337,15 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Whether this backend owns sleep pulse overlay playback.</summary>
         public bool HandlesOwnSleepPulse => true;
 
+        /// <summary>
+        /// Handles a keyframe callback from the active driver timeline.
+        /// </summary>
+        /// <param name="t">Timeline that reached the keyframe.</param>
+        /// <param name="k">Keyframe that was reached.</param>
+        /// <param name="i">Index of the keyframe within the timeline.</param>
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
             if (_driverTimeline == null || !ReferenceEquals(t, _driverTimeline))
@@ -291,6 +371,10 @@ namespace CutTheRope.GameMain
 
         }
 
+        /// <summary>
+        /// Handles completion of the active driver timeline.
+        /// </summary>
+        /// <param name="t">Timeline that finished playback.</param>
         public void TimelineFinished(Timeline t)
         {
             if (_driverTimeline == null || !ReferenceEquals(t, _driverTimeline))
@@ -325,6 +409,14 @@ namespace CutTheRope.GameMain
                 : 1f;
         }
 
+        /// <summary>
+        /// Creates Flash XML image parts and attaches their timelines to a root object.
+        /// </summary>
+        /// <param name="definition">Parsed Flash XML animation definition.</param>
+        /// <param name="rootObject">Root object that will own the created parts.</param>
+        /// <param name="targetParts">Collection that receives the created image parts.</param>
+        /// <param name="idleLoopTimelineId">Timeline ID that should loop as the idle animation.</param>
+        /// <param name="sleepingTimelineId">Timeline ID that should loop as the sleeping animation.</param>
         internal static void BuildParts(FlashXmlAnimationDefinition definition, GameObject rootObject,
             List<Image> targetParts, int idleLoopTimelineId, int sleepingTimelineId)
         {
@@ -364,6 +456,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Creates root driver timelines and attaches them to a root object.
+        /// </summary>
+        /// <param name="definition">Parsed Flash XML animation definition.</param>
+        /// <param name="rootObject">Root object that receives the root timelines.</param>
+        /// <param name="idleLoopTimelineId">Timeline ID that should loop as the idle animation.</param>
+        /// <param name="sleepingTimelineId">Timeline ID that should loop as the sleeping animation.</param>
         internal static void BuildRootTimelines(FlashXmlAnimationDefinition definition, GameObject rootObject,
             int idleLoopTimelineId, int sleepingTimelineId)
         {
@@ -379,6 +478,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Plays a timeline across all parts, hiding parts that do not contain the requested timeline.
+        /// </summary>
+        /// <param name="targetParts">Parts that should play or stop the timeline.</param>
+        /// <param name="timelineId">Flash timeline ID to play.</param>
         internal static void PlayTimeline(List<Image> targetParts, int timelineId)
         {
             for (int i = 0; i < targetParts.Count; i++)
@@ -404,6 +508,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Plays a root timeline if present, or stops the current root timeline otherwise.
+        /// </summary>
+        /// <param name="rootObject">Root object that owns the timeline.</param>
+        /// <param name="timelineId">Flash timeline ID to play.</param>
         internal static void PlayRootTimeline(GameObject rootObject, int timelineId)
         {
             if (rootObject.GetTimeline(timelineId) != null)
@@ -986,6 +1095,9 @@ namespace CutTheRope.GameMain
             return timelineId >= 0;
         }
 
+        /// <summary>
+        /// Converts looping idle timeline progress into wall-clock cadence ticks.
+        /// </summary>
         private sealed class FlashXmlIdleCadenceClock
         {
             private const float IdleTickSeconds = 1f;
@@ -994,6 +1106,13 @@ namespace CutTheRope.GameMain
             private float _lastTimelineTime;
             private bool _initialized;
 
+            /// <summary>
+            /// Advances the cadence clock from the current timeline time.
+            /// </summary>
+            /// <param name="currentTimelineTime">Current time within the timeline, in seconds.</param>
+            /// <param name="loopDurationSeconds">Loop duration used to account for wraparound, in seconds.</param>
+            /// <param name="playbackRate">Timeline playback-rate multiplier.</param>
+            /// <returns>The number of whole idle cadence ticks elapsed since the previous advance.</returns>
             public int Advance(float currentTimelineTime, float loopDurationSeconds, float playbackRate)
             {
                 float timelineDelta;
@@ -1033,6 +1152,9 @@ namespace CutTheRope.GameMain
                 return tickCount;
             }
 
+            /// <summary>
+            /// Resets accumulated cadence state.
+            /// </summary>
             public void Reset()
             {
                 _accumulatedWallSeconds = 0f;

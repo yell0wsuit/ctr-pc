@@ -8,94 +8,210 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Parsed Flash XML animation data, including stage size, texture resources, parts, and root timelines.
+    /// </summary>
     public sealed class FlashXmlAnimationDefinition
     {
+        /// <summary>Width of the Flash stage in Flash point units.</summary>
         public float StageWidth { get; init; }
+
+        /// <summary>Height of the Flash stage in Flash point units.</summary>
         public float StageHeight { get; init; }
+
+        /// <summary>Texture resource name referenced by the animation root.</summary>
         public string TextureResourceName { get; init; } = string.Empty;
+
+        /// <summary>Image parts that make up the animation.</summary>
         public IReadOnlyList<FlashXmlPartDefinition> Parts { get; init; } = [];
+
+        /// <summary>Root timeline durations keyed by Flash timeline ID.</summary>
         public IReadOnlyDictionary<int, float> RootTimelines { get; init; } = new Dictionary<int, float>();
+
+        /// <summary>Root timeline definitions keyed by Flash timeline ID.</summary>
         public IReadOnlyDictionary<int, FlashXmlRootTimelineDefinition> RootTimelineDefinitions { get; init; }
             = new Dictionary<int, FlashXmlRootTimelineDefinition>();
     }
 
+    /// <summary>
+    /// Parsed Flash XML image part and the timelines attached to that part.
+    /// </summary>
     public sealed class FlashXmlPartDefinition
     {
+        /// <summary>Name used by action keyframes to target this part.</summary>
         public string Name { get; init; } = string.Empty;
+
+        /// <summary>Texture resource name that contains this part's quad.</summary>
         public string TextureResourceName { get; init; } = string.Empty;
+
+        /// <summary>Atlas quad index to draw for the part's default pose.</summary>
         public int QuadToDraw { get; init; }
+
+        /// <summary>Custom anchor X coordinate exported by Flash.</summary>
         public float AnchorX { get; init; }
+
+        /// <summary>Custom anchor Y coordinate exported by Flash.</summary>
         public float AnchorY { get; init; }
+
+        /// <summary>Rotation center X coordinate exported by Flash.</summary>
         public float RotationCenterX { get; init; }
+
+        /// <summary>Rotation center Y coordinate exported by Flash.</summary>
         public float RotationCenterY { get; init; }
+
+        /// <summary>Part timelines keyed by Flash timeline ID.</summary>
         public IReadOnlyDictionary<int, FlashXmlTimelineDefinition> Timelines { get; init; } = new Dictionary<int, FlashXmlTimelineDefinition>();
+
+        /// <summary>Timeline IDs exported as empty timelines for this part.</summary>
         public IReadOnlyList<int> EmptyTimelineIds { get; init; } = [];
     }
 
+    /// <summary>
+    /// Root-level timeline used as a driver for timeline completion and action cadence.
+    /// </summary>
     public sealed class FlashXmlRootTimelineDefinition
     {
+        /// <summary>Flash timeline ID.</summary>
         public int Id { get; init; }
+
+        /// <summary>Total timeline duration in seconds.</summary>
         public float DurationSeconds { get; init; }
+
+        /// <summary>Action keyframes emitted on the root timeline.</summary>
         public IReadOnlyList<FlashXmlActionGroupKeyFrame> ActionKeyFrames { get; init; } = [];
     }
 
+    /// <summary>
+    /// Parsed per-part Flash timeline tracks.
+    /// </summary>
     public sealed class FlashXmlTimelineDefinition
     {
+        /// <summary>Flash timeline ID.</summary>
         public int Id { get; init; }
+
+        /// <summary>Position keyframes for this timeline.</summary>
         public IReadOnlyList<FlashXmlFloat2KeyFrame> PositionKeyFrames { get; init; } = [];
+
+        /// <summary>Scale keyframes for this timeline.</summary>
         public IReadOnlyList<FlashXmlFloat2KeyFrame> ScaleKeyFrames { get; init; } = [];
+
+        /// <summary>Rotation keyframes for this timeline.</summary>
         public IReadOnlyList<FlashXmlFloat1KeyFrame> RotationKeyFrames { get; init; } = [];
+
+        /// <summary>Skew keyframes for this timeline.</summary>
         public IReadOnlyList<FlashXmlFloat2KeyFrame> SkewKeyFrames { get; init; } = [];
+
+        /// <summary>Color keyframes for this timeline.</summary>
         public IReadOnlyList<FlashXmlFloat4KeyFrame> ColorKeyFrames { get; init; } = [];
+
+        /// <summary>Action keyframes for this timeline.</summary>
         public IReadOnlyList<FlashXmlActionGroupKeyFrame> ActionKeyFrames { get; init; } = [];
     }
 
+    /// <summary>
+    /// Single-value Flash keyframe.
+    /// </summary>
     public sealed class FlashXmlFloat1KeyFrame
     {
+        /// <summary>Keyframe value.</summary>
         public float Value { get; init; }
+
+        /// <summary>Flash interpolation code.</summary>
         public int Interpolation { get; init; }
+
+        /// <summary>Delay from the previous keyframe in seconds.</summary>
         public float TimeOffset { get; init; }
     }
 
+    /// <summary>
+    /// Two-value Flash keyframe.
+    /// </summary>
     public sealed class FlashXmlFloat2KeyFrame
     {
+        /// <summary>First keyframe value.</summary>
         public float X { get; init; }
+
+        /// <summary>Second keyframe value.</summary>
         public float Y { get; init; }
+
+        /// <summary>Flash interpolation code.</summary>
         public int Interpolation { get; init; }
+
+        /// <summary>Delay from the previous keyframe in seconds.</summary>
         public float TimeOffset { get; init; }
     }
 
+    /// <summary>
+    /// Four-value Flash keyframe.
+    /// </summary>
     public sealed class FlashXmlFloat4KeyFrame
     {
+        /// <summary>First keyframe value.</summary>
         public float A { get; init; }
+
+        /// <summary>Second keyframe value.</summary>
         public float B { get; init; }
+
+        /// <summary>Third keyframe value.</summary>
         public float C { get; init; }
+
+        /// <summary>Fourth keyframe value.</summary>
         public float D { get; init; }
+
+        /// <summary>Flash interpolation code.</summary>
         public int Interpolation { get; init; }
+
+        /// <summary>Delay from the previous keyframe in seconds.</summary>
         public float TimeOffset { get; init; }
     }
 
+    /// <summary>
+    /// Group of Flash XML actions that should run on the same keyframe.
+    /// </summary>
     public sealed class FlashXmlActionGroupKeyFrame
     {
+        /// <summary>Flash interpolation code for the action keyframe.</summary>
         public int Interpolation { get; init; }
+
+        /// <summary>Delay from the previous keyframe in seconds.</summary>
         public float TimeOffset { get; init; }
+
+        /// <summary>Actions to execute on the keyframe.</summary>
         public IReadOnlyList<FlashXmlActionCommand> Actions { get; init; } = [];
     }
 
+    /// <summary>
+    /// Flash XML action command exported in an action track.
+    /// </summary>
     public sealed class FlashXmlActionCommand
     {
+        /// <summary>Flash action command identifier.</summary>
         public string Command { get; init; } = string.Empty;
+
+        /// <summary>Action target name, or <c>self</c> for the current part.</summary>
         public string Target { get; init; } = string.Empty;
+
+        /// <summary>First exported action parameter.</summary>
         public string Param1 { get; init; } = string.Empty;
+
+        /// <summary>Second exported action parameter.</summary>
         public string Param2 { get; init; } = string.Empty;
     }
 
+    /// <summary>
+    /// Parser for Flash XML animation exports.
+    /// </summary>
     public static class FlashXmlImporter
     {
         private const float GroupEpsilon = 0.0001f;
 
         private static readonly ConcurrentDictionary<string, Lazy<FlashXmlAnimationDefinition>> parseCache = new();
 
+        /// <summary>
+        /// Parses a Flash XML animation file, using a process-local cache for repeated paths.
+        /// </summary>
+        /// <param name="xmlPath">Absolute or relative path to the Flash XML file.</param>
+        /// <returns>The parsed Flash XML animation definition.</returns>
         public static FlashXmlAnimationDefinition ParseFile(string xmlPath)
         {
             if (string.IsNullOrWhiteSpace(xmlPath))
@@ -396,12 +512,24 @@ namespace CutTheRope.GameMain
             public float TimeOffset { get; } = timeOffset;
         }
 
+        /// <summary>
+        /// Mutable builder for action groups that are finalized as immutable keyframes.
+        /// </summary>
         private sealed class FlashXmlActionGroupBuilder
         {
+            /// <summary>Flash interpolation code for the action keyframe.</summary>
             public int Interpolation { get; init; }
+
+            /// <summary>Delay from the previous keyframe in seconds.</summary>
             public float TimeOffset { get; init; }
+
+            /// <summary>Actions accumulated for the keyframe.</summary>
             public List<FlashXmlActionCommand> Actions { get; } = [];
 
+            /// <summary>
+            /// Creates an immutable action keyframe from the accumulated actions.
+            /// </summary>
+            /// <returns>The finalized Flash XML action group keyframe.</returns>
             public FlashXmlActionGroupKeyFrame Build()
             {
                 return new FlashXmlActionGroupKeyFrame
