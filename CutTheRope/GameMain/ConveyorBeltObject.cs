@@ -11,11 +11,14 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class ConveyorBeltObject
     {
+        /// <summary>All conveyor belts managed by this object.</summary>
         private readonly List<ConveyorBelt> list = [];
+
+        /// <summary>Reusable scratch list for sorting manual belts during draw and input handling.</summary>
         private readonly List<ConveyorBelt> touchCandidates = [];
 
         /// <summary>
-        /// Set by GameScene. Called when a Grab wraps and other ropes for the same candy should be cut.
+        /// Set by <see cref="GameScene"/>. Called when a Grab wraps and other ropes for the same candy should be cut.
         /// Parameters: candyNumber, the Grab that wrapped.
         /// </summary>
         public Action<int, Grab> OnDestroyRopesForCandy;
@@ -94,6 +97,8 @@ namespace CutTheRope.GameMain
         /// For each belt, checks each item for collision and binds if matching.
         /// Items already bound to any belt are skipped.
         /// </summary>
+        /// <typeparam name="T">The element type; only elements implementing <see cref="ITransporterItem"/> are processed.</typeparam>
+        /// <param name="items">The items to check for collision and bind.</param>
         public void ProcessItems<T>(IEnumerable<T> items)
         {
             foreach (T obj in items)
@@ -151,6 +156,7 @@ namespace CutTheRope.GameMain
         /// Checks if any item bound to another belt now overlaps this belt and should transfer.
         /// Matches iOS transporterMoves: delegate.
         /// </summary>
+        /// <param name="movingBelt">The belt that just moved its items.</param>
         private void TransporterMoves(ConveyorBelt movingBelt)
         {
             foreach (ConveyorBelt ownerBelt in list)
@@ -299,6 +305,11 @@ namespace CutTheRope.GameMain
             SortByManualFlag();
         }
 
+        /// <summary>
+        /// Returns <see langword="true"/> if any non-manual (automatic) belt currently owns <paramref name="item"/>.
+        /// </summary>
+        /// <param name="item">The item to check.</param>
+        /// <returns><see langword="true"/> if an automatic belt owns the item; otherwise <see langword="false"/>.</returns>
         private bool AutoTransportersOwnObject(ITransporterItem item)
         {
             foreach (ConveyorBelt belt in list)
@@ -312,6 +323,11 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Removes <paramref name="item"/> from every belt that currently owns it.
+        /// </summary>
+        /// <param name="item">The item to unbind.</param>
+        /// <returns><see langword="true"/> if the item was removed from at least one belt; otherwise <see langword="false"/>.</returns>
         private bool UnbindObjectFromTransporters(ITransporterItem item)
         {
             bool removed = false;
@@ -349,6 +365,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Swaps two belts in the list by their indices.
         /// </summary>
+        /// <param name="fromIndex">Index of the first belt.</param>
+        /// <param name="toIndex">Index of the second belt.</param>
         private void SwapBelts(int fromIndex, int toIndex)
         {
             (list[toIndex], list[fromIndex]) = (list[fromIndex], list[toIndex]);
