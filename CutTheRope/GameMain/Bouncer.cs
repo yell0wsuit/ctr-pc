@@ -78,7 +78,7 @@ namespace CutTheRope.GameMain
             b2 = VectRotateAround(b2, angle, x, y);
         }
 
-        /// <summary>Current rotation in radians, derived from <see cref="CTRGameObject.rotation"/>.</summary>
+        /// <summary>Current rotation in radians, derived from <see cref="BaseElement.rotation"/>.</summary>
         public float angle;
 
         /// <summary>Top-left corner of the bouncer rectangle in world space (after rotation).</summary>
