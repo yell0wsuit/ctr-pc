@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Particle effect that breaks the candy into spinning fragments when it is destroyed.
+    /// </summary>
     internal sealed class CandyBreak : RotateableMultiParticles
     {
         /// <inheritdoc />
@@ -85,8 +88,14 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <summary>Cached vertex array reused across draw calls to avoid per-frame allocation.</summary>
         private VertexPositionNormalTexture[] verticesCache;
 
+        /// <summary>
+        /// Returns a cached vertex array, reallocating if the cache is too small.
+        /// </summary>
+        /// <param name="vertexCount">Minimum required capacity.</param>
+        /// <returns>The cached or newly allocated array.</returns>
         private VertexPositionNormalTexture[] GetVertexBuffer(int vertexCount)
         {
             if (verticesCache == null || verticesCache.Length < vertexCount)
