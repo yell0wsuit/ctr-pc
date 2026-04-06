@@ -307,10 +307,13 @@ namespace CutTheRope.GameMain
             RestoreTransformations(this);
         }
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint => Vect(x, y);
 
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             x = point.X;
@@ -318,16 +321,22 @@ namespace CutTheRope.GameMain
             constraint.pos = point;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => width * 0.15f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;

@@ -611,10 +611,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint => Vect(x, y);
 
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             x = point.X;
@@ -622,14 +625,19 @@ namespace CutTheRope.GameMain
             ReCalcCircle();
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => 40f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
         /// <inheritdoc />
@@ -672,6 +680,7 @@ namespace CutTheRope.GameMain
 
         public const int MAX_STAINS = 10;
 
+        /// <inheritdoc />
         public void DidMoveToOtherSide()
         {
             if (candyNumber != -1 && rope != null && rope.cut == -1)
@@ -680,11 +689,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;
         }
 
+        /// <inheritdoc />
         public void SetTransporterScale(float scale)
         {
             if (back != null)

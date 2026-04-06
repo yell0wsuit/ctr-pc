@@ -146,14 +146,19 @@ namespace CutTheRope.GameMain
 
         public float CollisionRadius => GetCollisionRadius();
 
+        /// <inheritdoc />
         public float MinScale => 0.35f;
 
+        /// <inheritdoc />
         public float MaxScale => 0.7f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;

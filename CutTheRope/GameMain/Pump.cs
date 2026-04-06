@@ -96,12 +96,10 @@ namespace CutTheRope.GameMain
 
         public RotatedCircle initial_rotatedCircle;
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
-        /// <summary>
-        /// Returns the effective position of the pump for transporter calculations,
-        /// applying a rotated ConveyorOffset from the pump's origin.
-        /// </summary>
+        /// <inheritdoc />
         public Vector BindPoint
         {
             get
@@ -112,10 +110,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Sets the pump's position such that its effective transporter bind point
-        /// matches the given position, accounting for the rotated offset.
-        /// </summary>
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             float angleRad = DEGREES_TO_RADIANS(rotation);
@@ -125,16 +120,22 @@ namespace CutTheRope.GameMain
             y = adjusted.Y;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => width * 0.13f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;

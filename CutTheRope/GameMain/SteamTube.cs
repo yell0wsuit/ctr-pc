@@ -158,18 +158,22 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             BaseElement element = t.element;
             element.parent.RemoveChild(element);
         }
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint
         {
             get
@@ -180,10 +184,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Sets the steam tube's position so its transporter bind point matches
-        /// the given world point (inverse of <see cref="BindPoint"/>).
-        /// </summary>
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             float angle = DEGREES_TO_RADIANS(rotation);
@@ -193,21 +194,28 @@ namespace CutTheRope.GameMain
             y = adjusted.Y;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => 52.5f;
 
+        /// <inheritdoc />
         public float MinScale => 0.7f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;
         }
 
+        /// <inheritdoc />
         public void SetTransporterScale(float scale)
         {
             scaleX = scale;

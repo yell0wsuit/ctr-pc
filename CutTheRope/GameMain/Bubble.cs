@@ -55,26 +55,35 @@ namespace CutTheRope.GameMain
 
         public bool capturedByBulb;
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint => Vect(x, y);
 
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             x = point.X;
             y = point.Y;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => 85f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;
