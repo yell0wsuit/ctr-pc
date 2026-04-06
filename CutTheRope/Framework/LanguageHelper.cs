@@ -222,10 +222,10 @@ namespace CutTheRope.Framework
             };
         }
 
-        /// <summary>
-        /// Gets the quad index for the current language's flag icon in MenuExtraButtons.
-        /// </summary>
-        /*public static int GetLanguageFlagQuadIndex()
+        /* <summary> */
+        /* Gets the quad index for the current language's flag icon in MenuExtraButtons. */
+        /* </summary> */
+        /* public static int GetLanguageFlagQuadIndex()
         {
             return Current switch
             {
@@ -235,6 +235,6 @@ namespace CutTheRope.Framework
                 Language.LANGEN => 7, // English flag quad
                 _ => 15, // Worldwide flag for all other languages
             };
-        }*/
+        } */
     }
 }
