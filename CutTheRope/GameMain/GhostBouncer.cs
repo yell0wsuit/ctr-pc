@@ -5,6 +5,9 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Ghost-transformed bouncer variant with ambient supporting cloud visuals.
+    /// </summary>
     internal sealed class GhostBouncer : Bouncer
     {
         /// <inheritdoc />
@@ -134,7 +137,10 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Primary background ghost cloud element.</summary>
         public Image backCloud;
+
+        /// <summary>Secondary background ghost cloud element.</summary>
         public Image backCloud2;
     }
 }
