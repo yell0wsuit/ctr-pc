@@ -5,6 +5,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Particle effect used for the star break burst.
+    /// </summary>
+    /// <remarks>
+    /// Unused in the game.
+    /// </remarks>
     internal sealed class StarsBreak : RotateableMultiParticles
     {
         /// <inheritdoc />
@@ -73,8 +79,14 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <summary>Reusable vertex buffer for drawing the active particle quads.</summary>
         private VertexPositionColorTexture[] verticesCache;
 
+        /// <summary>
+        /// Gets a reusable vertex buffer with at least the requested capacity.
+        /// </summary>
+        /// <param name="vertexCount">Minimum number of vertices required.</param>
+        /// <returns>A vertex buffer with at least <paramref name="vertexCount"/> entries.</returns>
         private VertexPositionColorTexture[] GetVertexBuffer(int vertexCount)
         {
             if (verticesCache == null || verticesCache.Length < vertexCount)
