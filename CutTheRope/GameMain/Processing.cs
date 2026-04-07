@@ -4,8 +4,16 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Full-screen processing overlay that blocks input while fading in or out.
+    /// </summary>
     internal sealed class Processing : RectangleElement, ITimelineDelegate
     {
+        /// <summary>
+        /// Initializes the processing overlay.
+        /// </summary>
+        /// <param name="loading">Whether to include the spinning loading indicator and processing text.</param>
+        /// <returns>The initialized processing overlay.</returns>
         public Processing InitWithLoading(bool loading)
         {
             width = (int)SCREEN_WIDTH_EXPANDED;
