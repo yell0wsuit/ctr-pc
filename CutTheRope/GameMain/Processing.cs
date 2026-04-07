@@ -73,11 +73,13 @@ namespace CutTheRope.GameMain
             base.PlayTimeline(t);
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             SetEnabled(false);
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }

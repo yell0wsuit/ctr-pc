@@ -233,6 +233,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             if (t?.element == wakeUp)
@@ -250,6 +251,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }

@@ -7,20 +7,12 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal sealed class AnimationsPool : BaseElement, ITimelineDelegate
     {
-        /// <summary>
-        /// Called when a timeline reaches a keyframe. No-op in this implementation.
-        /// </summary>
-        /// <param name="t">Timeline that reached the keyframe.</param>
-        /// <param name="k">Keyframe that was reached.</param>
-        /// <param name="i">Index of the keyframe.</param>
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        /// <summary>
-        /// Called when a timeline finishes; schedules the timeline's element for removal.
-        /// </summary>
-        /// <param name="t">Timeline that finished.</param>
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             if (GetChildId(t.element) != -1)

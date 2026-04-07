@@ -102,16 +102,12 @@ namespace CutTheRope.GameMain
             return rotation - prevRotation;
         }
 
-        /// <summary>
-        /// Timeline callback invoked when a key frame is reached.
-        /// </summary>
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        /// <summary>
-        /// Timeline callback invoked after segment rotation animation completes.
-        /// </summary>
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             RemoveTimeline(0);

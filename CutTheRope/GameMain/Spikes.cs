@@ -151,6 +151,7 @@ namespace CutTheRope.GameMain
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             updateRotationFlag = false;

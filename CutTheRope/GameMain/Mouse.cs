@@ -524,21 +524,12 @@ namespace CutTheRope.GameMain
             return (star, candy);
         }
 
-        /// <summary>
-        /// Called when a timeline reaches a specific keyframe. Currently not implemented.
-        /// </summary>
-        /// <param name="t">The timeline that reached the keyframe.</param>
-        /// <param name="k">The keyframe that was reached.</param>
-        /// <param name="i">The index of the keyframe.</param>
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        /// <summary>
-        /// Called when a timeline animation finishes. Handles state transitions
-        /// after entry and exit animations complete.
-        /// </summary>
-        /// <param name="t">The timeline that finished.</param>
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             SharedMouseSprites? sprites = sharedSprites;

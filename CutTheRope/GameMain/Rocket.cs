@@ -185,10 +185,6 @@ namespace CutTheRope.GameMain
         }
 
         /// <inheritdoc />
-        /// <remarks>
-        /// When the scale-down timeline (ID 2) finishes, notifies the <see cref="delegateRocketDelegate"/>
-        /// that the rocket has been exhausted.
-        /// </remarks>
         public void TimelineFinished(Timeline t)
         {
             RotateWithBB(rotation);

@@ -340,12 +340,7 @@ namespace CutTheRope.GameMain
         /// <summary>Whether this backend owns sleep pulse overlay playback.</summary>
         public bool HandlesOwnSleepPulse => true;
 
-        /// <summary>
-        /// Handles a keyframe callback from the active driver timeline.
-        /// </summary>
-        /// <param name="t">Timeline that reached the keyframe.</param>
-        /// <param name="k">Keyframe that was reached.</param>
-        /// <param name="i">Index of the keyframe within the timeline.</param>
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
             if (_driverTimeline == null || !ReferenceEquals(t, _driverTimeline))
@@ -371,10 +366,7 @@ namespace CutTheRope.GameMain
 
         }
 
-        /// <summary>
-        /// Handles completion of the active driver timeline.
-        /// </summary>
-        /// <param name="t">Timeline that finished playback.</param>
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             if (_driverTimeline == null || !ReferenceEquals(t, _driverTimeline))

@@ -314,10 +314,12 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline timeline, KeyFrame keyFrame, int index)
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline timeline)
         {
             if (timeline.element == ghostImageFace)

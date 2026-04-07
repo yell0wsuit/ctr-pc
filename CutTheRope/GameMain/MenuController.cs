@@ -1402,6 +1402,7 @@ namespace CutTheRope.GameMain
             CreateLevelSelect();
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             CTRSoundMgr.StopMusic();
@@ -1886,6 +1887,7 @@ namespace CutTheRope.GameMain
             return flag;
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }

@@ -152,10 +152,12 @@ namespace CutTheRope.GameMain
             return base.TouchesBeganwithEvent(touches);
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             animFinished = true;
