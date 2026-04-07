@@ -113,6 +113,9 @@ namespace CutTheRope.GameMain
             CTRRootController.LogEvent("IG_SHOWN");
         }
 
+        /// <summary>
+        /// Positions the camera for the newly loaded map and sets the initial camera movement mode.
+        /// </summary>
         public void StartCamera()
         {
             if (mapWidth > SCREEN_WIDTH || mapHeight > SCREEN_HEIGHT)
@@ -160,6 +163,9 @@ namespace CutTheRope.GameMain
             camera.MoveToXYImmediate(0f, 0f, true);
         }
 
+        /// <summary>
+        /// Plays the candy blink animation.
+        /// </summary>
         public void DoCandyBlink()
         {
             candyBlink.PlayTimeline(0);
