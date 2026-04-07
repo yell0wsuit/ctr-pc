@@ -19,9 +19,24 @@ namespace CutTheRope.GameMain
         /// </summary>
         private sealed class MouthPathPlayer
         {
+            /// <summary>
+            /// Path points currently being played.
+            /// </summary>
             private readonly List<PathPoint> path = [];
+
+            /// <summary>
+            /// Total path duration in seconds.
+            /// </summary>
             private float duration;
+
+            /// <summary>
+            /// Elapsed path playback time in seconds.
+            /// </summary>
             private float elapsed;
+
+            /// <summary>
+            /// Current interpolated offset along the path.
+            /// </summary>
             private Vector currentOffset;
 
             /// <summary>
@@ -112,6 +127,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Represents a point along a movement path with timing information.
         /// </summary>
+        /// <param name="offset">Position offset at this path point.</param>
+        /// <param name="time">Time in seconds when this path point should be reached.</param>
         private readonly struct PathPoint(Vector offset, float time)
         {
             /// <summary>
@@ -130,12 +147,25 @@ namespace CutTheRope.GameMain
         /// </summary>
         private enum MouseAnimationId
         {
+            /// <summary>Entry animation without candy.</summary>
             EntryEmpty = 0,
+
+            /// <summary>Entry animation while carrying candy.</summary>
             EntryWithCandy = 1,
+
+            /// <summary>Idle animation without candy.</summary>
             IdleEmpty = 2,
+
+            /// <summary>Idle animation while carrying candy.</summary>
             Idle = 3,
+
+            /// <summary>Exit animation without candy.</summary>
             ExitEmpty = 4,
+
+            /// <summary>Exit animation while carrying candy.</summary>
             ExitWithCandy = 5,
+
+            /// <summary>Bounce animation used while active.</summary>
             Bounce = 6
         }
 
@@ -513,7 +543,7 @@ namespace CutTheRope.GameMain
         /// internal references. Used when transferring candy between mice.
         /// </summary>
         /// <returns>
-        /// A tuple containing the carried star point and candy object, both may be null.
+        /// A tuple containing the carried star point and candy object, both of which may be <see langword="null"/>.
         /// </returns>
         public (ConstraintedPoint star, GameObject candy) DetachCarriedCandy()
         {
@@ -583,6 +613,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Checks whether the bounce timeline (ID 6) is currently playing on the container.
         /// </summary>
+        /// <returns><see langword="true" /> when the bounce timeline is playing; otherwise, <see langword="false" />.</returns>
         private bool IsBounceTimelinePlaying()
         {
             SharedMouseSprites? sprites = sharedSprites;
@@ -663,20 +694,69 @@ namespace CutTheRope.GameMain
         /// </summary>
         public bool IsActive { get; private set; }
 
-        // Quad indices for obj_mouse sprite sheet
+        /// <summary>
+        /// Quad index for the mouse hole sprite.
+        /// </summary>
         internal const int HoleQuad = 0;
+
+        /// <summary>
+        /// Quad index for the idle mouse body sprite.
+        /// </summary>
         internal const int IdleQuad = 4;
+
+        /// <summary>
+        /// First quad index in the mouse eye blink sequence.
+        /// </summary>
         internal const int EyesStartQuad = 5;
+
+        /// <summary>
+        /// Last quad index in the mouse eye blink sequence.
+        /// </summary>
         internal const int EyesEndQuad = 13;
+
+        /// <summary>
+        /// Quad index for the body frame with candy in the mouse mouth.
+        /// </summary>
         internal const int CandyInMouthQuad = 24;
+
+        /// <summary>
+        /// Quad index used to hide the mouse body.
+        /// </summary>
         internal const int BlankQuad = 18;
 
+        /// <summary>
+        /// Candy offsets used while entering the mouse mouth.
+        /// </summary>
         private readonly Vector[] entryOffsets;
+
+        /// <summary>
+        /// Candy offsets used while exiting with the mouse.
+        /// </summary>
         private readonly Vector[] exitOffsets;
+
+        /// <summary>
+        /// Path player that animates the carried candy through the mouse mouth.
+        /// </summary>
         private readonly MouthPathPlayer mouthPathPlayer;
+
+        /// <summary>
+        /// Container that positions the shared mouse sprites at this mouse hole.
+        /// </summary>
         private readonly BaseElement mouseGroup;
+
+        /// <summary>
+        /// Sprite used to draw the mouse hole.
+        /// </summary>
         private readonly Image holeSprite;
+
+        /// <summary>
+        /// Manager that owns and sequences this mouse.
+        /// </summary>
         private readonly MiceObject manager;
+
+        /// <summary>
+        /// Timeline used for the short active-state bounce.
+        /// </summary>
         private Timeline bounceTimeline;
 
         /// <summary>
@@ -695,11 +775,35 @@ namespace CutTheRope.GameMain
         /// The angle in degrees for the mouse's orientation.
         /// </summary>
         public float angleDeg;
+
+        /// <summary>
+        /// Elapsed active time since the mouse became interactive.
+        /// </summary>
         private float elapsedActive;
+
+        /// <summary>
+        /// Star point currently carried by the mouse.
+        /// </summary>
         private ConstraintedPoint carriedStar;
+
+        /// <summary>
+        /// Candy object currently carried by the mouse.
+        /// </summary>
         private GameObject carriedCandy;
+
+        /// <summary>
+        /// Shared sprite set currently attached to this mouse.
+        /// </summary>
         private SharedMouseSprites? sharedSprites;
+
+        /// <summary>
+        /// Whether the mouse is currently retreating into its hole.
+        /// </summary>
         private bool retreating;
+
+        /// <summary>
+        /// Whether the candy grab path animation is still playing.
+        /// </summary>
         private bool grabAnimating;
     }
 }
