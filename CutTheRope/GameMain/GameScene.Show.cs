@@ -165,6 +165,7 @@ namespace CutTheRope.GameMain
             candyBlink.PlayTimeline(0);
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
             if (t.element is RotatedCircle rotatedCircle && rotatedCircles.IndexOf(rotatedCircle) != -1)
@@ -192,6 +193,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             if (t.element == candy)
