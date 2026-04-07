@@ -14,6 +14,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="up">Texture for the unpressed state.</param>
         /// <param name="down">Texture for the pressed state.</param>
         /// <param name="bID">Typed button identifier.</param>
+        /// <returns>A new <see cref="Button"/> initialized with the given textures and identifier.</returns>
         public static Button CreateWithTextureUpDownID(CTRTexture2D up, CTRTexture2D down, ButtonId bID)
         {
             Image up2 = Image.Image_create(up);
@@ -25,6 +26,7 @@ namespace CutTheRope.Framework.Visual
         /// Initializes the button with its identifier.
         /// </summary>
         /// <param name="n">Typed button identifier.</param>
+        /// <returns>This button instance for chaining.</returns>
         public virtual Button InitWithID(ButtonId n)
         {
             buttonID = n;
@@ -43,6 +45,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="up">Element to render while the button is up.</param>
         /// <param name="down">Element to render while the button is pressed.</param>
         /// <param name="n">Typed button identifier.</param>
+        /// <returns>This button instance for chaining.</returns>
         public virtual Button InitWithUpElementDownElementandID(BaseElement up, BaseElement down, ButtonId n)
         {
             if (InitWithID(n) != null)
@@ -85,6 +88,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
         /// <param name="td">True for touch-down (no padding); false for move/up (adds padding).</param>
+        /// <returns><see langword="true"/> if the touch point lies within the button's touch zone.</returns>
         public virtual bool IsInTouchZoneXYforTouchDown(float tx, float ty, bool td)
         {
             float touchPadding = td ? 0f : 15f;
@@ -167,6 +171,8 @@ namespace CutTheRope.Framework.Visual
         /// Creates a <see cref="BaseElement"/> from an XML definition. Not implemented in this class.
         /// </summary>
         /// <param name="xml">XML element to create from.</param>
+        /// <returns>The created element.</returns>
+        /// <exception cref="NotImplementedException">Always thrown by this base implementation.</exception>
         public virtual BaseElement CreateFromXML(XElement xml)
         {
             throw new NotImplementedException();
