@@ -3,6 +3,9 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Menu view variant that drives and draws movie playback.
+    /// </summary>
     internal sealed class MovieView : MenuView
     {
         /// <inheritdoc />
