@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Base menu view that applies standard menu rendering state.
+    /// </summary>
     internal class MenuView : View
     {
         /// <inheritdoc />
