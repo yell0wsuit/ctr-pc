@@ -11,21 +11,68 @@ using Microsoft.Xna.Framework;
 namespace CutTheRope.GameMain
 {
     /// <summary>
-    /// The main water body element
+    /// The main water body element.
     /// </summary>
     internal sealed class WaterElement : Image, ITimelineDelegate
     {
+        /// <summary>
+        /// Size of the top shadow tile.
+        /// </summary>
         private Vector topShadowSize;
+
+        /// <summary>
+        /// Size of the bottom shadow tile.
+        /// </summary>
         private Vector bottomShadowSize;
+
+        /// <summary>
+        /// Size of the front water tile.
+        /// </summary>
         private Vector topTileSize;
+
+        /// <summary>
+        /// Size of the back water tile.
+        /// </summary>
         private Vector backTileSize;
+
+        /// <summary>
+        /// Horizontal scroll offset for the front water tile.
+        /// </summary>
         private float xOffsetTop;
+
+        /// <summary>
+        /// Horizontal scroll offset for the back water tile.
+        /// </summary>
         private float xOffsetBack;
+
+        /// <summary>
+        /// Bubble particle system clipped inside the water area.
+        /// </summary>
         private WaterBubbles bubbles;
+
+        /// <summary>
+        /// Animation pool used for water particles and particle completion callbacks.
+        /// </summary>
         private AnimationsPool aniPool;
+
+        /// <summary>
+        /// Scissor element used to clip the bubble particle system.
+        /// </summary>
         private ScissorElement scissorElement;
+
+        /// <summary>
+        /// Dispatcher used to restart light timelines after randomized delays.
+        /// </summary>
         private DelayedDispatcher dd;
+
+        /// <summary>
+        /// Randomly repositioned spotlight element.
+        /// </summary>
         private Image spotLight;
+
+        /// <summary>
+        /// Whether this water element is being released and should stop drawing or updating.
+        /// </summary>
         private bool isReleasing;
 
         /// <summary>
