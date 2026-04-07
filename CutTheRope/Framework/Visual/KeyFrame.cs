@@ -20,6 +20,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="actions">Actions to execute at this keyframe.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new action keyframe.</returns>
         public static KeyFrame MakeAction(List<CTRAction> actions, float time)
         {
             KeyFrameValue keyFrameValue = new();
@@ -41,6 +42,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="p">Primary action parameter.</param>
         /// <param name="sp">Secondary action parameter.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new action keyframe wrapping a single action.</returns>
         public static KeyFrame MakeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
             return MakeAction([CTRAction.CreateAction(target, action, p, sp)], time);
@@ -53,6 +55,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="y">Y position.</param>
         /// <param name="transition">Transition type.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new position keyframe.</returns>
         public static KeyFrame MakePos(int x, int y, TransitionType transition, float time)
         {
             return MakePosCore(x, y, transition, time);
@@ -65,6 +68,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="y">Y position.</param>
         /// <param name="transition">Transition type.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new position keyframe.</returns>
         public static KeyFrame MakePos(float x, float y, TransitionType transition, float time)
         {
             return MakePosCore(x, y, transition, time);
@@ -73,6 +77,11 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Creates a position keyframe.
         /// </summary>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
+        /// <param name="transition">Transition type.</param>
+        /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new position keyframe.</returns>
         private static KeyFrame MakePosCore(float x, float y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
@@ -94,6 +103,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="y">Vertical scale factor.</param>
         /// <param name="transition">Transition type.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new scale keyframe.</returns>
         public static KeyFrame MakeScale(float x, float y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
@@ -114,6 +124,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="r">Rotation angle in degrees.</param>
         /// <param name="transition">Transition type.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new rotation keyframe.</returns>
         public static KeyFrame MakeRotation(int r, TransitionType transition, float time)
         {
             return MakeRotationCore(r, transition, time);
@@ -125,6 +136,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="r">Rotation angle in degrees.</param>
         /// <param name="transition">Transition type.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new rotation keyframe.</returns>
         public static KeyFrame MakeRotation(float r, TransitionType transition, float time)
         {
             return MakeRotationCore(r, transition, time);
@@ -133,6 +145,10 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Creates a rotation keyframe.
         /// </summary>
+        /// <param name="r">Rotation angle in degrees.</param>
+        /// <param name="transition">Transition type.</param>
+        /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new rotation keyframe.</returns>
         private static KeyFrame MakeRotationCore(float r, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
@@ -153,6 +169,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="y">Vertical skew factor.</param>
         /// <param name="transition">Transition type.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new skew keyframe.</returns>
         public static KeyFrame MakeSkew(float x, float y, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
@@ -173,6 +190,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="c">Target color.</param>
         /// <param name="transition">Transition type.</param>
         /// <param name="time">Time offset in seconds.</param>
+        /// <returns>A new color keyframe.</returns>
         public static KeyFrame MakeColor(RGBAColor c, TransitionType transition, float time)
         {
             KeyFrameValue keyFrameValue = new();
