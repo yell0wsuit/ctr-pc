@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Loading screen view that draws the pack cover background and progress animation.
+    /// </summary>
     internal sealed class LoadingView : View
     {
         /// <inheritdoc />
@@ -18,6 +21,10 @@ namespace CutTheRope.GameMain
             base.Show();
         }
 
+        /// <summary>
+        /// Gets whether the smoothed loading animation has reached completion.
+        /// </summary>
+        /// <returns><see langword="true"/> when the progress animation is complete; otherwise, <see langword="false"/>.</returns>
         public bool IsAnimationComplete()
         {
             return animationComplete;
@@ -104,12 +111,19 @@ namespace CutTheRope.GameMain
             Renderer.Disable(Renderer.GL_BLEND);
         }
 
+        /// <summary>Whether the view is loading into gameplay instead of the menu flow.</summary>
         public bool game;
 
+        /// <summary>Smoothed loading percentage currently displayed by the progress animation.</summary>
         private float currentPercent;
+
+        /// <summary>Whether the progress animation has been initialized from the resource manager.</summary>
         private bool initialized;
+
+        /// <summary>Whether the progress animation has reached its completion threshold.</summary>
         private bool animationComplete;
 
+        /// <summary>Tint used for the mirrored pack-cover background.</summary>
         private static Color s_Color1 = new(0.85f, 0.85f, 0.85f, 1f);
     }
 }
