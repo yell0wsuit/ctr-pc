@@ -207,6 +207,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
         {
             OnButtonPressed(SpikesButtonId.FromButtonId(buttonId));
