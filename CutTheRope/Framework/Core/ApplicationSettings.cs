@@ -23,7 +23,7 @@ namespace CutTheRope.Framework.Core
         /// Gets a boolean application setting.
         /// </summary>
         /// <param name="s">The setting identifier (see <see cref="AppSettings"/>).</param>
-        /// <returns>The configured boolean value for the requested setting, or <c>false</c> if the key is not present.</returns>
+        /// <returns>The configured boolean value for the requested setting, or <see langword="false" /> if the key is not present.</returns>
         public static bool GetBool(int s)
         {
             _ = DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out bool value);

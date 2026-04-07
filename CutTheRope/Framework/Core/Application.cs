@@ -173,7 +173,7 @@ namespace CutTheRope.Framework.Core
         /// Gets a font by its resource name.
         /// </summary>
         /// <param name="fontResourceName">Logical font resource name.</param>
-        /// <returns>Loaded font resource, or <c>null</c> if loading failed.</returns>
+        /// <returns>Loaded font resource, or <see langword="null" /> if loading failed.</returns>
         internal static FontGeneric GetFont(string fontResourceName)
         {
             object resource = SharedResourceMgr().LoadResource(fontResourceName, ResourceMgr.ResourceType.FONT);
@@ -216,7 +216,7 @@ namespace CutTheRope.Framework.Core
         /// Gets a localized string by its key.
         /// </summary>
         /// <param name="stringKey">Localization key to resolve.</param>
-        /// <param name="forceEnglish"><c>true</c> to always use English; otherwise uses the current language.</param>
+        /// <param name="forceEnglish"><see langword="true" /> to always use English; otherwise uses the current language.</param>
         /// <returns>Localized string, or an empty string when the key is null or empty.</returns>
         internal static string GetString(string stringKey, bool forceEnglish = false)
         {

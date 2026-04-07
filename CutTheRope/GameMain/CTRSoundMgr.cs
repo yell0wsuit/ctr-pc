@@ -43,7 +43,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Enables or disables looped sound playback globally.
         /// </summary>
-        /// <param name="bEnable">If <c>true</c>, looped sounds are enabled; otherwise, they are stopped and disabled.</param>
+        /// <param name="bEnable">If <see langword="true" />, looped sounds are enabled; otherwise, they are stopped and disabled.</param>
         public static void EnableLoopedSounds(bool bEnable)
         {
             s_EnableLoopedSounds = bEnable;

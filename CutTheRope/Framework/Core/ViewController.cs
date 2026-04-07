@@ -174,7 +174,7 @@ namespace CutTheRope.Framework.Core
         /// Returns the view registered under the specified identifier.
         /// </summary>
         /// <param name="n">View identifier.</param>
-        /// <returns>Registered view, or <c>null</c> if not found.</returns>
+        /// <returns>Registered view, or <see langword="null" /> if not found.</returns>
         public virtual View GetView(int n)
         {
             _ = views.TryGetValue(n, out View value);
@@ -277,7 +277,7 @@ namespace CutTheRope.Framework.Core
         /// Forwards the first pressed touch in the collection to the active view.
         /// </summary>
         /// <param name="touches">Touch collection to inspect.</param>
-        /// <returns><c>true</c> if the active view handled the touch; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the active view handled the touch; otherwise <see langword="false" />.</returns>
         public virtual bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             if (activeViewID == -1)
@@ -327,7 +327,7 @@ namespace CutTheRope.Framework.Core
         /// Forwards the first released touch in the collection to the active view.
         /// </summary>
         /// <param name="touches">Touch collection to inspect.</param>
-        /// <returns><c>true</c> if the active view handled the touch; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the active view handled the touch; otherwise <see langword="false" />.</returns>
         public virtual bool TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
             if (activeViewID == -1)
@@ -356,7 +356,7 @@ namespace CutTheRope.Framework.Core
         /// Forwards the first moved touch in the collection to the active view.
         /// </summary>
         /// <param name="touches">Touch collection to inspect.</param>
-        /// <returns><c>true</c> if the active view handled the touch; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the active view handled the touch; otherwise <see langword="false" />.</returns>
         public virtual bool TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
             if (activeViewID == -1)
@@ -385,9 +385,9 @@ namespace CutTheRope.Framework.Core
         /// Handles touch-cancel notifications.
         /// </summary>
         /// <param name="touches">Cancelled touches.</param>
-        /// <returns>Always <c>false</c>.</returns>
+        /// <returns>Always <see langword="false" />.</returns>
         /// <remarks>
-        /// The base implementation performs no action and returns <c>false</c>.
+        /// The base implementation performs no action and returns <see langword="false" />.
         /// </remarks>
         public virtual bool TouchesCancelledwithEvent(IList<TouchLocation> touches)
         {
@@ -428,7 +428,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Handles a back-button press.
         /// </summary>
-        /// <returns>Always <c>false</c>.</returns>
+        /// <returns>Always <see langword="false" />.</returns>
         /// <remarks>
         /// Present as a platform-compatibility hook. The base implementation does not handle the input.
         /// </remarks>
@@ -440,7 +440,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Handles a menu-button press.
         /// </summary>
-        /// <returns>Always <c>false</c>.</returns>
+        /// <returns>Always <see langword="false" />.</returns>
         /// <remarks>
         /// Present as a platform-compatibility hook. The base implementation does not handle the input.
         /// </remarks>
@@ -454,7 +454,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="x">Mouse X coordinate.</param>
         /// <param name="y">Mouse Y coordinate.</param>
-        /// <returns>Always <c>false</c>.</returns>
+        /// <returns>Always <see langword="false" />.</returns>
         public virtual bool MouseMoved(float x, float y)
         {
             return false;

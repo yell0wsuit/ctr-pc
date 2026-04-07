@@ -55,7 +55,7 @@ namespace CutTheRope.Framework.Media
         /// Gets or loads a sound effect by its resource name.
         /// </summary>
         /// <param name="soundResourceName">Logical sound resource name to resolve and load.</param>
-        /// <returns>The loaded sound effect, or <c>null</c> when the name is invalid, localized lookup fails, or the resource is music.</returns>
+        /// <returns>The loaded sound effect, or <see langword="null" /> when the name is invalid, localized lookup fails, or the resource is music.</returns>
         public SoundEffect GetSound(string soundResourceName)
         {
             if (string.IsNullOrEmpty(soundResourceName))
@@ -126,7 +126,7 @@ namespace CutTheRope.Framework.Media
         /// Plays a looping sound effect by its resource name.
         /// </summary>
         /// <param name="soundResourceName">Logical sound resource name to play in a loop.</param>
-        /// <returns>The sound effect instance for controlling playback, or <c>null</c> on failure.</returns>
+        /// <returns>The sound effect instance for controlling playback, or <see langword="null" /> on failure.</returns>
         public SoundEffectInstance PlaySoundLooped(string soundResourceName)
         {
             ClearStopped();
@@ -248,7 +248,7 @@ namespace CutTheRope.Framework.Media
         /// </summary>
         /// <param name="resourceName">Logical sound resource name to resolve.</param>
         /// <param name="loop">Whether the created instance should loop.</param>
-        /// <returns>The playing sound effect instance, or <c>null</c> if playback could not be started.</returns>
+        /// <returns>The playing sound effect instance, or <see langword="null" /> if playback could not be started.</returns>
         private SoundEffectInstance Play(string resourceName, bool loop)
         {
             SoundEffectInstance soundEffectInstance = null;

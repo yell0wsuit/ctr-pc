@@ -77,8 +77,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="target">The constrained point to test against.</param>
         /// <returns>
-        /// <c>true</c> if the active mouse exists, is active, and within grab radius;
-        /// otherwise <c>false</c>.
+        /// <see langword="true" /> if the active mouse exists, is active, and within grab radius;
+        /// otherwise <see langword="false" />.
         /// </returns>
         public bool IsActiveMouseInRange(ConstraintedPoint target)
         {
@@ -112,7 +112,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Indicates whether the active mouse is currently holding candy.
         /// </summary>
-        /// <returns><c>true</c> if the active mouse has candy; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the active mouse has candy; otherwise <see langword="false" />.</returns>
         public bool ActiveMouseHasCandy()
         {
             return activeMouse?.HasCandy ?? false;
@@ -139,8 +139,8 @@ namespace CutTheRope.GameMain
         /// <param name="x">X coordinate of the click.</param>
         /// <param name="y">Y coordinate of the click.</param>
         /// <returns>
-        /// <c>true</c> if the click was handled and candy was dropped;
-        /// otherwise <c>false</c>.
+        /// <see langword="true" /> if the click was handled and candy was dropped;
+        /// otherwise <see langword="false" />.
         /// </returns>
         public bool HandleClick(float x, float y)
         {

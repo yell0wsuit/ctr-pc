@@ -265,7 +265,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="element">JSON object element to inspect.</param>
         /// <param name="propertyName">Property name to read.</param>
-        /// <returns>String property value, or <c>null</c> when missing or not a string.</returns>
+        /// <returns>String property value, or <see langword="null" /> when missing or not a string.</returns>
         private static string TryGetString(JsonElement element, string propertyName)
         {
             return element.TryGetProperty(propertyName, out JsonElement value) && value.ValueKind == JsonValueKind.String

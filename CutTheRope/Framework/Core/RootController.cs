@@ -37,7 +37,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Returns whether a view transition is currently in progress.
         /// </summary>
-        /// <returns><c>true</c> if a transition is active; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if a transition is active; otherwise <see langword="false" />.</returns>
         public bool IsTransitionActive()
         {
             return transitionTime != -1f;
@@ -259,7 +259,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Returns whether the root controller is currently suspended.
         /// </summary>
-        /// <returns><c>true</c> if suspended; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if suspended; otherwise <see langword="false" />.</returns>
         public virtual bool IsSuspended()
         {
             return suspended;
@@ -332,7 +332,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Sets the controller that currently receives routed updates and input.
         /// </summary>
-        /// <param name="controller">Controller to make current, or <c>null</c> to clear routing.</param>
+        /// <param name="controller">Controller to make current, or <see langword="null" /> to clear routing.</param>
         public virtual void SetCurrentController(ViewController controller)
         {
             currentController = controller;
@@ -341,7 +341,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Returns the controller that currently receives routed updates and input.
         /// </summary>
-        /// <returns>Current controller, or <c>null</c> if none is active.</returns>
+        /// <returns>Current controller, or <see langword="null" /> if none is active.</returns>
         public virtual ViewController GetCurrentController()
         {
             return currentController;

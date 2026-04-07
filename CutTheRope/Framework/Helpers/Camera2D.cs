@@ -26,7 +26,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         /// <param name="x">Target X coordinate.</param>
         /// <param name="y">Target Y coordinate.</param>
-        /// <param name="immediate"><c>true</c> to snap instantly; <c>false</c> to move using the current camera mode.</param>
+        /// <param name="immediate"><see langword="true" /> to snap instantly; <see langword="false" /> to move using the current camera mode.</param>
         public void MoveToXYImmediate(float x, float y, bool immediate)
         {
             target.X = x;

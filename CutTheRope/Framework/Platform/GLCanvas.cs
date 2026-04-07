@@ -193,7 +193,7 @@ namespace CutTheRope.Framework.Platform
         /// <summary>
         /// Returns whether the active touch delegate handled a back-button press.
         /// </summary>
-        /// <returns><c>true</c> if the press was handled; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the press was handled; otherwise <see langword="false" />.</returns>
         public bool BackButtonPressed()
         {
             return touchDelegate != null && touchDelegate.BackButtonPressed();
@@ -202,7 +202,7 @@ namespace CutTheRope.Framework.Platform
         /// <summary>
         /// Returns whether the active touch delegate handled a menu-button press.
         /// </summary>
-        /// <returns><c>true</c> if the press was handled; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the press was handled; otherwise <see langword="false" />.</returns>
         public bool MenuButtonPressed()
         {
             return touchDelegate != null && touchDelegate.MenuButtonPressed();
@@ -222,7 +222,7 @@ namespace CutTheRope.Framework.Platform
         /// <summary>
         /// Returns whether the canvas can become the first responder for input.
         /// </summary>
-        /// <returns>Always <c>true</c>.</returns>
+        /// <returns>Always <see langword="true" />.</returns>
         public static bool AcceptsFirstResponder()
         {
             return true;
@@ -231,7 +231,7 @@ namespace CutTheRope.Framework.Platform
         /// <summary>
         /// Requests first-responder status for input handling.
         /// </summary>
-        /// <returns>Always <c>true</c>.</returns>
+        /// <returns>Always <see langword="true" />.</returns>
         public static bool BecomeFirstResponder()
         {
             return true;

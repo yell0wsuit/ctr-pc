@@ -280,7 +280,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="target">The constrained point to check.</param>
         /// <returns>
-        /// <c>true</c> if the target is within grab range; otherwise <c>false</c>.
+        /// <see langword="true" /> if the target is within grab range; otherwise <see langword="false" />.
         /// </returns>
         public bool IsWithinGrabRadius(ConstraintedPoint target)
         {
@@ -449,8 +449,8 @@ namespace CutTheRope.GameMain
         /// <param name="clickX">X-coordinate of the click.</param>
         /// <param name="clickY">Y-coordinate of the click.</param>
         /// <returns>
-        /// <c>true</c> if the mouse is active, has candy, not retreating, and the
-        /// click is within grab radius; otherwise <c>false</c>.
+        /// <see langword="true" /> if the mouse is active, has candy, not retreating, and the
+        /// click is within grab radius; otherwise <see langword="false" />.
         /// </returns>
         public bool IsClickable(float clickX, float clickY)
         {

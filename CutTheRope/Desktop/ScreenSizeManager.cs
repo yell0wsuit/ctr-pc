@@ -135,7 +135,7 @@ namespace CutTheRope.Desktop
         /// </summary>
         /// <param name="displayMode">Current display mode.</param>
         /// <param name="windowWidth">Preferred window width, or a non-positive value to derive one automatically.</param>
-        /// <param name="isFullScreen"><c>true</c> to start in fullscreen mode.</param>
+        /// <param name="isFullScreen"><see langword="true" /> to start in fullscreen mode.</param>
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
             FullScreenRectChanged(displayMode);
@@ -361,7 +361,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Updates the tracked fullscreen state and recomputes the scaled view rectangle.
         /// </summary>
-        /// <param name="bFull"><c>true</c> to mark fullscreen as enabled; otherwise <c>false</c>.</param>
+        /// <param name="bFull"><see langword="true" /> to mark fullscreen as enabled; otherwise <see langword="false" />.</param>
         private void EnableFullScreen(bool bFull)
         {
             if (!SkipSizeChanges)

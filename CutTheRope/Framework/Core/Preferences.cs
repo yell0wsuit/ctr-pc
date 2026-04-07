@@ -75,7 +75,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="fileName">File name to parse.</param>
         /// <param name="slot">Parsed slot index when successful.</param>
-        /// <returns><c>true</c> if the file name matches the expected slot pattern; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the file name matches the expected slot pattern; otherwise <see langword="false" />.</returns>
         private static bool TryParseBoxSlotFromFileName(string fileName, out int slot)
         {
             slot = 0;
@@ -240,7 +240,7 @@ namespace CutTheRope.Framework.Core
         /// Tests whether a directory is writable by creating and deleting a temporary file.
         /// </summary>
         /// <param name="path">The directory path to test.</param>
-        /// <returns><c>true</c> if the directory is writable; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the directory is writable; otherwise, <see langword="false" />.</returns>
         private static bool IsDirectoryWritable(string path)
         {
             try
@@ -260,7 +260,7 @@ namespace CutTheRope.Framework.Core
         /// Attempts to create a directory and verifies it is writable.
         /// </summary>
         /// <param name="path">The directory path to create.</param>
-        /// <returns><c>true</c> if the directory exists and is writable; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the directory exists and is writable; otherwise, <see langword="false" />.</returns>
         private static bool TryCreateDirectory(string path)
         {
             try
@@ -281,7 +281,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Determines whether the app is running from inside a macOS .app bundle using NSBundle.
         /// </summary>
-        /// <returns><c>true</c> if running from a .app bundle; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if running from a .app bundle; otherwise, <see langword="false" />.</returns>
         private static bool IsInsideMacAppBundle()
         {
             string bundlePath = NSBundle.MainBundle.BundlePath;
@@ -294,7 +294,7 @@ namespace CutTheRope.Framework.Core
         /// Checks for the standard bundle structure: *.app/Contents/MacOS/
         /// </summary>
         /// <param name="path">The path to check.</param>
-        /// <returns><c>true</c> if the path is inside a macOS .app bundle; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the path is inside a macOS .app bundle; otherwise, <see langword="false" />.</returns>
         private static bool IsInsideMacAppBundle(string path)
         {
             DirectoryInfo dir = new(path);
@@ -330,7 +330,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="value">Integer value to store.</param>
         /// <param name="key">Preference key.</param>
-        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
+        /// <param name="commit"><see langword="true" /> to request an immediate save; otherwise <see langword="false" />.</param>
         public static void SetIntForKey(int value, string key, bool commit = false)
         {
             GlobalData[key] = value;
@@ -345,7 +345,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="value">Boolean value to store.</param>
         /// <param name="key">Preference key.</param>
-        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
+        /// <param name="commit"><see langword="true" /> to request an immediate save; otherwise <see langword="false" />.</param>
         public static void SetBooleanForKey(bool value, string key, bool commit = false)
         {
             GlobalData[key] = value;
@@ -360,7 +360,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="value">String value to store.</param>
         /// <param name="key">Preference key.</param>
-        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
+        /// <param name="commit"><see langword="true" /> to request an immediate save; otherwise <see langword="false" />.</param>
         public static void SetStringForKey(string value, string key, bool commit = false)
         {
             GlobalData[key] = value;
@@ -391,7 +391,7 @@ namespace CutTheRope.Framework.Core
         /// Gets a boolean preference. Returns false if not found.
         /// </summary>
         /// <param name="key">Preference key.</param>
-        /// <returns>Stored boolean value, or <c>false</c> if missing.</returns>
+        /// <returns>Stored boolean value, or <see langword="false" /> if missing.</returns>
         public static bool GetBooleanForKey(string key)
         {
             return GlobalData.TryGetValue(key, out object value) && value is bool boolVal && boolVal;
@@ -411,7 +411,7 @@ namespace CutTheRope.Framework.Core
         /// Checks if a global preference key exists in memory.
         /// </summary>
         /// <param name="key">Preference key to check.</param>
-        /// <returns><c>true</c> if the key exists; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the key exists; otherwise <see langword="false" />.</returns>
         protected static bool ContainsKey(string key)
         {
             return GlobalData.ContainsKey(key);
@@ -434,7 +434,7 @@ namespace CutTheRope.Framework.Core
         /// <param name="box">Box slot index.</param>
         /// <param name="value">Integer value to store.</param>
         /// <param name="key">Preference key.</param>
-        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
+        /// <param name="commit"><see langword="true" /> to request an immediate save; otherwise <see langword="false" />.</param>
         public static void SetBoxIntForKey(int box, int value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
@@ -470,7 +470,7 @@ namespace CutTheRope.Framework.Core
         /// <param name="box">Box slot index.</param>
         /// <param name="value">Boolean value to store.</param>
         /// <param name="key">Preference key.</param>
-        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
+        /// <param name="commit"><see langword="true" /> to request an immediate save; otherwise <see langword="false" />.</param>
         public static void SetBoxBoolForKey(int box, bool value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
@@ -485,7 +485,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="key">Preference key.</param>
-        /// <returns>Stored boolean value, or <c>false</c> if missing.</returns>
+        /// <returns>Stored boolean value, or <see langword="false" /> if missing.</returns>
         public static bool GetBoxBoolForKey(int box, string key)
         {
             return box < BoxData.Count && BoxData[box].TryGetValue(key, out object value) && value is bool boolVal && boolVal;
@@ -497,7 +497,7 @@ namespace CutTheRope.Framework.Core
         /// <param name="box">Box slot index.</param>
         /// <param name="value">String value to store.</param>
         /// <param name="key">Preference key.</param>
-        /// <param name="commit"><c>true</c> to request an immediate save; otherwise <c>false</c>.</param>
+        /// <param name="commit"><see langword="true" /> to request an immediate save; otherwise <see langword="false" />.</param>
         public static void SetBoxStringForKey(int box, string value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
@@ -601,7 +601,7 @@ namespace CutTheRope.Framework.Core
         /// Returns true if key belongs to per-box game data (STARS_, SCORE_, UNLOCKED_).
         /// </summary>
         /// <param name="key">Preference key to inspect.</param>
-        /// <returns><c>true</c> if the key belongs to box-scoped game data; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the key belongs to box-scoped game data; otherwise <see langword="false" />.</returns>
         private static bool IsGameDataKey(string key)
         {
             return key.StartsWith("STARS_", StringComparison.Ordinal) ||
@@ -626,7 +626,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="json">JSON document to deserialize.</param>
         /// <param name="dest">Destination dictionary.</param>
-        /// <returns><c>true</c> if any boolean migration occurred; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if any boolean migration occurred; otherwise <see langword="false" />.</returns>
         private static bool DeserializeFromJson(string json, Dictionary<string, object> dest)
         {
             bool didMigrate = false;
@@ -656,7 +656,7 @@ namespace CutTheRope.Framework.Core
         /// <param name="json">JSON document to deserialize.</param>
         /// <param name="globalDest">Destination for global preference keys.</param>
         /// <param name="gameDataDest">Destination for box-scoped game-data keys.</param>
-        /// <returns><c>true</c> if any migration occurred; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if any migration occurred; otherwise <see langword="false" />.</returns>
         private static bool DeserializeFromJsonRouted(
             string json,
             Dictionary<string, object> globalDest,
@@ -689,7 +689,7 @@ namespace CutTheRope.Framework.Core
         /// <param name="element">JSON element to parse.</param>
         /// <param name="parsedValue">Parsed CLR value when successful.</param>
         /// <param name="migratedBooleanValue">Whether numeric legacy data was migrated to a boolean value.</param>
-        /// <returns><c>true</c> if the value was parsed successfully; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the value was parsed successfully; otherwise <see langword="false" />.</returns>
         private static bool TryReadJsonValue(string key, JsonElement element, out object parsedValue, out bool migratedBooleanValue)
         {
             migratedBooleanValue = false;
@@ -781,7 +781,7 @@ namespace CutTheRope.Framework.Core
         /// Serializes all preferences to a JSON stream (global prefs only).
         /// </summary>
         /// <param name="stream">Destination stream to write.</param>
-        /// <returns><c>true</c> if serialization succeeded; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if serialization succeeded; otherwise <see langword="false" />.</returns>
         public static bool SaveToStream(Stream stream)
         {
             try
@@ -801,7 +801,7 @@ namespace CutTheRope.Framework.Core
         /// Deserializes all preferences from a JSON stream (global prefs only).
         /// </summary>
         /// <param name="stream">Source stream to read.</param>
-        /// <returns><c>true</c> if deserialization succeeded; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if deserialization succeeded; otherwise <see langword="false" />.</returns>
         public static bool LoadFromStream(Stream stream)
         {
             try

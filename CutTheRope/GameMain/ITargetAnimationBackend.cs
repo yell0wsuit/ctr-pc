@@ -44,7 +44,7 @@ namespace CutTheRope.GameMain
         /// Checks whether the requested target animation state is currently active.
         /// </summary>
         /// <param name="state">Animation state to query.</param>
-        /// <returns><c>true</c> if the state is active; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the state is active; otherwise <see langword="false" />.</returns>
         bool IsPlaying(TargetAnimationState state);
 
         /// <summary>

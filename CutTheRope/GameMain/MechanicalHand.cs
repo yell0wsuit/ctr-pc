@@ -137,7 +137,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Indicates whether any segment is currently playing a rotation timeline.
         /// </summary>
-        /// <returns><c>true</c> when at least one segment is animating.</returns>
+        /// <returns><see langword="true" /> when at least one segment is animating.</returns>
         public bool IsRotating()
         {
             if (segments == null)

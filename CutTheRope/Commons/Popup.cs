@@ -104,7 +104,7 @@ namespace CutTheRope.Commons
         /// Forwards mouse wheel input to the registered scroll container, if present.
         /// </summary>
         /// <param name="scrollDelta">Mouse wheel delta.</param>
-        /// <returns><c>true</c> if the popup consumed the scroll input; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the popup consumed the scroll input; otherwise <see langword="false" />.</returns>
         public bool HandleMouseWheel(int scrollDelta)
         {
             if (!isShow || scrollContainer == null)

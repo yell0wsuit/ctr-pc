@@ -131,7 +131,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Checks whether the idle loop animation is currently active.
         /// </summary>
-        /// <returns><c>true</c> when idle loop is currently playing; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> when idle loop is currently playing; otherwise <see langword="false" />.</returns>
         public bool IsIdleLoopPlaying()
         {
             return backend.IsPlaying(TargetAnimationState.IdleLoop);
@@ -140,7 +140,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Checks whether the sleeping animation is currently active.
         /// </summary>
-        /// <returns><c>true</c> when sleeping animation is currently playing; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> when sleeping animation is currently playing; otherwise <see langword="false" />.</returns>
         public bool IsSleepingAnimationPlaying()
         {
             return backend.IsPlaying(TargetAnimationState.Sleeping);

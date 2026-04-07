@@ -58,7 +58,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="resourceName">Logical resource name to load.</param>
         /// <param name="resType">Expected resource type.</param>
-        /// <returns>Loaded resource instance, or <c>null</c> when the name cannot be resolved.</returns>
+        /// <returns>Loaded resource instance, or <see langword="null" /> when the name cannot be resolved.</returns>
         public virtual object LoadResource(string resourceName, ResourceType resType)
         {
             return !TryResolveResource(resourceName, out string localizedName)
@@ -71,7 +71,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="resourceName">Resolved resource name.</param>
         /// <param name="resType">Expected resource type.</param>
-        /// <returns>Loaded resource instance, or <c>null</c> on failure.</returns>
+        /// <returns>Loaded resource instance, or <see langword="null" /> on failure.</returns>
         private object LoadResourceInternal(string resourceName, ResourceType resType)
         {
             if (s_Resources.TryGetValue(resourceName, out object value))
@@ -113,7 +113,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="resourceName">Logical resource name.</param>
         /// <param name="localizedName">Resolved localized resource name when successful.</param>
-        /// <returns><c>true</c> when the resource name is valid and resolved; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> when the resource name is valid and resolved; otherwise <see langword="false" />.</returns>
         private static bool TryResolveResource(string resourceName, out string localizedName)
         {
             localizedName = string.IsNullOrEmpty(resourceName)
@@ -290,7 +290,7 @@ namespace CutTheRope.Framework.Core
         /// Returns atlas configuration for the specified texture resource, if any.
         /// </summary>
         /// <param name="resourceName">Logical texture resource name.</param>
-        /// <returns>Atlas configuration, or <c>null</c> when the texture is not atlas-backed.</returns>
+        /// <returns>Atlas configuration, or <see langword="null" /> when the texture is not atlas-backed.</returns>
         protected virtual TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
             return null;
@@ -301,7 +301,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="config">Atlas configuration for the resource.</param>
         /// <param name="resourceName">Logical texture resource name.</param>
-        /// <returns>Parsed atlas metadata, or <c>null</c> when no atlas is configured.</returns>
+        /// <returns>Parsed atlas metadata, or <see langword="null" /> when no atlas is configured.</returns>
         /// <exception cref="FileNotFoundException">Thrown when the expected atlas JSON file is missing.</exception>
         /// <exception cref="InvalidDataException">Thrown when the atlas JSON is empty.</exception>
         private static ParsedTexturePackerAtlas LoadTexturePackerAtlas(TextureAtlasConfig config, string resourceName)

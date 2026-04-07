@@ -36,7 +36,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Resolves the owning mechanical hand by walking up the segment chain.
         /// </summary>
-        /// <returns>Owning hand instance, or <c>null</c> when detached.</returns>
+        /// <returns>Owning hand instance, or <see langword="null" /> when detached.</returns>
         public MechanicalHand TheHand()
         {
             BaseElement element = parent;

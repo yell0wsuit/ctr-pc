@@ -185,7 +185,7 @@ namespace CutTheRope.Framework.Helpers
         /// <summary>
         /// Sets whether the path is traversed in reverse order.
         /// </summary>
-        /// <param name="r"><c>true</c> to move backward through the path; otherwise <c>false</c>.</param>
+        /// <param name="r"><see langword="true" /> to move backward through the path; otherwise <see langword="false" />.</param>
         public virtual void SetMoveReverse(bool r)
         {
             reverse = r;
@@ -301,7 +301,7 @@ namespace CutTheRope.Framework.Helpers
         /// <param name="t">Target value.</param>
         /// <param name="speed">Movement speed in units per second.</param>
         /// <param name="delta">Elapsed frame time in seconds.</param>
-        /// <returns><c>true</c> if the target was reached; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the target was reached; otherwise <see langword="false" />.</returns>
         public static bool MoveVariableToTarget(ref float v, float t, float speed, float delta)
         {
             if (t != v)

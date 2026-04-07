@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Media
         /// <param name="appBaseDirectory">The application's base directory.</param>
         /// <param name="directoryExists">Function to check if a directory exists.</param>
         /// <returns>
-        /// The path to the directory containing FFmpeg libraries, or <c>null</c> if not found.
+        /// The path to the directory containing FFmpeg libraries, or <see langword="null" /> if not found.
         /// </returns>
         public static string Resolve(
             string appBaseDirectory,

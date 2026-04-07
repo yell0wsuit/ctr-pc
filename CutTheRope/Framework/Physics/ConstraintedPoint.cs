@@ -136,7 +136,7 @@ namespace CutTheRope.Framework.Physics
         /// Returns whether this point has a constraint to the specified point.
         /// </summary>
         /// <param name="p">Point to test.</param>
-        /// <returns><c>true</c> if a matching constraint exists; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if a matching constraint exists; otherwise <see langword="false" />.</returns>
         public bool HasConstraintTo(ConstraintedPoint p)
         {
             int count = constraints.Count;
