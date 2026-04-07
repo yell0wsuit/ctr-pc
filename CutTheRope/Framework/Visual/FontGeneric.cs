@@ -9,6 +9,7 @@ namespace CutTheRope.Framework.Visual
         /// Computes the total pixel width of the given string.
         /// </summary>
         /// <param name="str">String to measure.</param>
+        /// <returns>The total width of <paramref name="str"/> in pixels.</returns>
         public virtual float StringWidth(string str)
         {
             float totalWidth = 0f;
@@ -34,30 +35,35 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the font height in pixels.
         /// </summary>
+        /// <returns>The line height of the font in pixels.</returns>
         public abstract float FontHeight();
 
         /// <summary>
         /// Returns true if the font can draw the specified character.
         /// </summary>
         /// <param name="c">Character to check.</param>
+        /// <returns><see langword="true"/> if the font has a glyph for <paramref name="c"/>.</returns>
         public abstract bool CanDraw(char c);
 
         /// <summary>
         /// Returns the pixel width of the specified character.
         /// </summary>
         /// <param name="c">Character to measure.</param>
+        /// <returns>The width of <paramref name="c"/> in pixels.</returns>
         public abstract float GetCharWidth(char c);
 
         /// <summary>
         /// Returns the charmap index for the specified character.
         /// </summary>
         /// <param name="c">Character to look up.</param>
+        /// <returns>The index of the charmap containing <paramref name="c"/>.</returns>
         public abstract int GetCharmapIndex(char c);
 
         /// <summary>
         /// Returns the quad index for the specified character.
         /// </summary>
         /// <param name="c">Character to look up.</param>
+        /// <returns>The quad index for <paramref name="c"/> within its charmap.</returns>
         public abstract int GetCharQuad(char c);
 
         /// <summary>
@@ -66,11 +72,13 @@ namespace CutTheRope.Framework.Visual
         /// <param name="s">Character array of the string.</param>
         /// <param name="c">Index of the current character.</param>
         /// <param name="len">Total length of the string.</param>
+        /// <returns>The spacing in pixels to apply after the character at index <paramref name="c"/>.</returns>
         public abstract float GetCharOffset(char[] s, int c, int len);
 
         /// <summary>
         /// Returns the line offset (spacing between lines).
         /// </summary>
+        /// <returns>The vertical spacing between lines in pixels.</returns>
         public virtual float GetLineOffset()
         {
             return lineOffset;
@@ -79,6 +87,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the top spacing above the first line.
         /// </summary>
+        /// <returns>The extra spacing above the first line in pixels.</returns>
         public virtual float GetTopSpacing()
         {
             return topSpacing;
@@ -111,12 +120,14 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the total number of charmaps in this font.
         /// </summary>
+        /// <returns>The number of charmap textures used by this font.</returns>
         public abstract int TotalCharmaps();
 
         /// <summary>
         /// Returns the charmap <see cref="Image"/> at the specified index.
         /// </summary>
         /// <param name="i">Charmap index.</param>
+        /// <returns>The charmap <see cref="Image"/> at index <paramref name="i"/>.</returns>
         public abstract Image GetCharmap(int i);
 
         /// <summary>
