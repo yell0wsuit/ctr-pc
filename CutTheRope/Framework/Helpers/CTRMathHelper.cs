@@ -171,6 +171,8 @@ namespace CutTheRope.Framework.Helpers
         /// Fast table-based sine. Quantizes <paramref name="angle"/> (radians) to
         /// <see cref="FM_TRIG_TABLE_SIZE"/> steps.
         /// </summary>
+        /// <param name="angle">Angle in radians.</param>
+        /// <returns>The approximate sine of <paramref name="angle"/>.</returns>
         public static float FmSin(float angle)
         {
             int index = (int)(angle * FM_TRIG_TABLE_SIZE / MathF.Tau);
@@ -182,6 +184,8 @@ namespace CutTheRope.Framework.Helpers
         /// Fast table-based cosine. Quantizes <paramref name="angle"/> (radians) to
         /// <see cref="FM_TRIG_TABLE_SIZE"/> steps.
         /// </summary>
+        /// <param name="angle">Angle in radians.</param>
+        /// <returns>The approximate cosine of <paramref name="angle"/>.</returns>
         public static float FmCos(float angle)
         {
             int index = (int)(angle * FM_TRIG_TABLE_SIZE / MathF.Tau);
@@ -370,60 +374,87 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>Creates a <see cref="Vector"/> from the given x and y components.</summary>
+        /// <param name="x">The X component.</param>
+        /// <param name="y">The Y component.</param>
+        /// <returns>A new vector with the specified components.</returns>
         public static Vector Vect(float x, float y)
         {
             return new Vector(x, y);
         }
 
         /// <summary>Returns <see langword="true"/> if both components of <paramref name="v1"/> and <paramref name="v2"/> are equal.</summary>
+        /// <param name="v1">First vector.</param>
+        /// <param name="v2">Second vector.</param>
+        /// <returns><see langword="true"/> if the vectors have identical components.</returns>
         public static bool VectEqual(Vector v1, Vector v2)
         {
             return v1.X == v2.X && v1.Y == v2.Y;
         }
 
         /// <summary>Returns the component-wise sum of <paramref name="v1"/> and <paramref name="v2"/>.</summary>
+        /// <param name="v1">First vector.</param>
+        /// <param name="v2">Second vector.</param>
+        /// <returns>The sum of the two vectors.</returns>
         public static Vector VectAdd(Vector v1, Vector v2)
         {
             return new Vector(v1.X + v2.X, v1.Y + v2.Y);
         }
 
         /// <summary>Returns the negation of <paramref name="v"/>.</summary>
+        /// <param name="v">The vector to negate.</param>
+        /// <returns>The negated vector.</returns>
         public static Vector VectNeg(Vector v)
         {
             return new Vector(0f - v.X, 0f - v.Y);
         }
 
         /// <summary>Returns the component-wise difference <paramref name="v1"/> − <paramref name="v2"/>.</summary>
+        /// <param name="v1">Minuend vector.</param>
+        /// <param name="v2">Subtrahend vector.</param>
+        /// <returns>The difference of the two vectors.</returns>
         public static Vector VectSub(Vector v1, Vector v2)
         {
             return new Vector(v1.X - v2.X, v1.Y - v2.Y);
         }
 
         /// <summary>Returns <paramref name="v"/> scaled by scalar <paramref name="s"/>.</summary>
+        /// <param name="v">The vector to scale.</param>
+        /// <param name="s">The scalar multiplier.</param>
+        /// <returns>The scaled vector.</returns>
         public static Vector VectMult(Vector v, float s)
         {
             return new Vector(v.X * s, v.Y * s);
         }
 
         /// <summary>Returns <paramref name="v"/> divided by scalar <paramref name="s"/>.</summary>
+        /// <param name="v">The vector to divide.</param>
+        /// <param name="s">The scalar divisor.</param>
+        /// <returns>The divided vector.</returns>
         public static Vector VectDiv(Vector v, float s)
         {
             return new Vector(v.X / s, v.Y / s);
         }
 
         /// <summary>Returns the dot product of <paramref name="v1"/> and <paramref name="v2"/>.</summary>
+        /// <param name="v1">First vector.</param>
+        /// <param name="v2">Second vector.</param>
+        /// <returns>The dot product of the two vectors.</returns>
         public static float VectDot(Vector v1, Vector v2)
         {
             return (v1.X * v2.X) + (v1.Y * v2.Y);
         }
 
         /// <summary>Returns the left perpendicular of <paramref name="v"/>: (-y, x).</summary>
+        /// <param name="v">The input vector.</param>
+        /// <returns>The left perpendicular vector.</returns>
         public static Vector VectPerp(Vector v)
         {
             return new Vector(0f - v.Y, v.X);
         }
 
         /// <summary>Returns the right perpendicular of <paramref name="v"/>: (y, -x).</summary>
+        /// <param name="v">The input vector.</param>
+        /// <returns>The right perpendicular vector.</returns>
         public static Vector VectRperp(Vector v)
         {
             return new Vector(v.Y, 0f - v.X);
@@ -433,48 +464,66 @@ namespace CutTheRope.Framework.Helpers
         /// Returns the angle of <paramref name="v"/> in radians using <c>atan(y/x)</c>.
         /// Prefer <see cref="VectAngleNormalized"/> to handle all quadrants correctly.
         /// </summary>
+        /// <param name="v">The input vector.</param>
+        /// <returns>The angle in radians.</returns>
         public static float VectAngle(Vector v)
         {
             return MathF.Atan(v.Y / v.X);
         }
 
         /// <summary>Returns the angle of <paramref name="v"/> in radians using <c>atan2(y, x)</c>, covering all quadrants.</summary>
+        /// <param name="v">The input vector.</param>
+        /// <returns>The angle in radians in the range [-π, π].</returns>
         public static float VectAngleNormalized(Vector v)
         {
             return MathF.Atan2(v.Y, v.X);
         }
 
         /// <summary>Returns the magnitude (Euclidean length) of <paramref name="v"/>.</summary>
+        /// <param name="v">The input vector.</param>
+        /// <returns>The length of the vector.</returns>
         public static float VectLength(Vector v)
         {
             return MathF.Sqrt(VectDot(v, v));
         }
 
         /// <summary>Returns the squared magnitude of <paramref name="v"/>. Cheaper than <see cref="VectLength"/> when only relative comparisons are needed.</summary>
+        /// <param name="v">The input vector.</param>
+        /// <returns>The squared length of the vector.</returns>
         public static float VectLengthsq(Vector v)
         {
             return VectDot(v, v);
         }
 
         /// <summary>Returns a unit vector in the same direction as <paramref name="v"/>.</summary>
+        /// <param name="v">The vector to normalize.</param>
+        /// <returns>A unit vector in the direction of <paramref name="v"/>.</returns>
         public static Vector VectNormalize(Vector v)
         {
             return VectMult(v, 1f / VectLength(v));
         }
 
         /// <summary>Returns a unit vector pointing in the direction of angle <paramref name="a"/> (radians).</summary>
+        /// <param name="a">Angle in radians.</param>
+        /// <returns>A unit vector pointing at the specified angle.</returns>
         public static Vector VectForAngle(float a)
         {
             return new Vector(FmCos(a), FmSin(a));
         }
 
         /// <summary>Returns the Euclidean distance between <paramref name="v1"/> and <paramref name="v2"/>.</summary>
+        /// <param name="v1">First point.</param>
+        /// <param name="v2">Second point.</param>
+        /// <returns>The distance between the two points.</returns>
         public static float VectDistance(Vector v1, Vector v2)
         {
             return VectLength(VectSub(v1, v2));
         }
 
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the origin.</summary>
+        /// <param name="v">The vector to rotate.</param>
+        /// <param name="rad">Rotation angle in radians.</param>
+        /// <returns>The rotated vector.</returns>
         public static Vector VectRotate(Vector v, float rad)
         {
             float cosA = FmCos(rad);
@@ -485,6 +534,11 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>Rotates <paramref name="v"/> by <paramref name="rad"/> radians around the point (<paramref name="cx"/>, <paramref name="cy"/>).</summary>
+        /// <param name="v">The vector to rotate.</param>
+        /// <param name="rad">Rotation angle in radians.</param>
+        /// <param name="cx">Pivot point X coordinate.</param>
+        /// <param name="cy">Pivot point Y coordinate.</param>
+        /// <returns>The rotated vector.</returns>
         public static Vector VectRotateAround(Vector v, float rad, float cx, float cy)
         {
             Vector v2 = v;
