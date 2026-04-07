@@ -204,7 +204,7 @@ namespace CutTheRope.GameMain
         /// Determines whether the timeline for a target animation state is currently playing.
         /// </summary>
         /// <param name="state">Target animation state to inspect.</param>
-        /// <returns><c>true</c> if the mapped timeline is active and playing; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true"/> if the mapped timeline is active and playing; otherwise, <see langword="false"/>.</returns>
         public bool IsPlaying(TargetAnimationState state)
         {
             if (!TryMapState(state, out int timelineId))
@@ -308,7 +308,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Sets whether the sleep overlay is visible and playing.
         /// </summary>
-        /// <param name="visible"><c>true</c> to show and restart the sleep overlay; otherwise, <c>false</c>.</param>
+        /// <param name="visible"><see langword="true"/> to show and restart the sleep overlay; otherwise, <see langword="false"/>.</param>
         public void SetSleepOverlayVisible(bool visible)
         {
             _sleepOverlayObject.visible = visible;

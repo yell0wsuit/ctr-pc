@@ -398,7 +398,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Builds and plays the animated box cover used for opening and closing transitions.
         /// </summary>
-        /// <param name="open"><c>true</c> to play the opening animation; <c>false</c> to play the closing animation.</param>
+        /// <param name="open"><see langword="true"/> to play the opening animation; <see langword="false"/> to play the closing animation.</param>
         public void ShowOpenCloseAnim(bool open)
         {
             CreateOpenCloseAnims();

@@ -373,10 +373,10 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Initializes a bungee rope between head and tail constraint points.
         /// </summary>
-        /// <param name="h">Optional existing head constraint point; a new anchor is created when this is <c>null</c>.</param>
+        /// <param name="h">Optional existing head constraint point; a new anchor is created when this is <see langword="null"/>.</param>
         /// <param name="hx">Initial head X position.</param>
         /// <param name="hy">Initial head Y position.</param>
-        /// <param name="t">Optional existing tail constraint point; a new tail is created when this is <c>null</c>.</param>
+        /// <param name="t">Optional existing tail constraint point; a new tail is created when this is <see langword="null"/>.</param>
         /// <param name="tx">Initial tail X position.</param>
         /// <param name="ty">Initial tail Y position.</param>
         /// <param name="len">Initial rope length used to roll out intermediate rope segments.</param>
