@@ -24,6 +24,10 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Initializes the pump dirt system with default parameters.
         /// </summary>
+        /// <param name="p">Maximum number of particles managed by the system.</param>
+        /// <param name="a">Emission angle in degrees.</param>
+        /// <param name="grid">Image grid that supplies particle texture quads.</param>
+        /// <returns>The initialized pump dirt system, or <see langword="null"/> if initialization failed.</returns>
         public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -71,6 +75,11 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Initializes the pump dirt system and configures the travel length.
         /// </summary>
+        /// <param name="p">Maximum number of particles managed by the system.</param>
+        /// <param name="a">Emission angle in degrees.</param>
+        /// <param name="grid">Image grid that supplies particle texture quads.</param>
+        /// <param name="flowLength">Approximate world-space distance particles should travel.</param>
+        /// <returns>The initialized pump dirt system, or <see langword="null"/> if initialization failed.</returns>
         public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid, float flowLength)
         {
             PumpDirt result = InitWithTotalParticlesAngleandImageGrid(p, a, grid);
@@ -130,6 +139,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Adjusts speed so particles travel approximately the requested flow length.
         /// </summary>
+        /// <param name="flowLength">Approximate world-space distance particles should travel.</param>
         private void ConfigureForFlowLength(float flowLength)
         {
             if (life <= 0f)
