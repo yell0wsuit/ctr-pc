@@ -39,6 +39,7 @@ namespace CutTheRope.Framework
         /// Converts an array of <see cref="Quad2D"/> into a flat float array.
         /// </summary>
         /// <param name="quads">Quads to convert.</param>
+        /// <returns>A flat float array containing 8 floats per quad.</returns>
         public static float[] ToFloatArray(Quad2D[] quads)
         {
             float[] array = new float[quads.Length * 8];
@@ -53,6 +54,7 @@ namespace CutTheRope.Framework
         /// Converts an array of <see cref="Quad3D"/> into a flat float array.
         /// </summary>
         /// <param name="quads">Quads to convert.</param>
+        /// <returns>A flat float array containing 12 floats per quad.</returns>
         public static float[] ToFloatArray(Quad3D[] quads)
         {
             float[] array = new float[quads.Length * 12];
@@ -70,6 +72,7 @@ namespace CutTheRope.Framework
         /// <param name="yParam">Y position.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
+        /// <returns>A new <see cref="CTRRectangle"/> with the given position and size.</returns>
         public static CTRRectangle MakeRectangle(float xParam, float yParam, float width, float height)
         {
             return new CTRRectangle(xParam, yParam, width, height);
@@ -79,6 +82,7 @@ namespace CutTheRope.Framework
         /// Transforms a logical X coordinate to a real screen X coordinate.
         /// </summary>
         /// <param name="x">Logical X coordinate.</param>
+        /// <returns>The corresponding real screen X coordinate.</returns>
         public static float TransformToRealX(float x)
         {
             return (x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH) + VIEW_OFFSET_X;
@@ -88,6 +92,7 @@ namespace CutTheRope.Framework
         /// Transforms a logical Y coordinate to a real screen Y coordinate.
         /// </summary>
         /// <param name="y">Logical Y coordinate.</param>
+        /// <returns>The corresponding real screen Y coordinate.</returns>
         public static float TransformToRealY(float y)
         {
             return (y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT) + VIEW_OFFSET_Y;
@@ -97,6 +102,7 @@ namespace CutTheRope.Framework
         /// Transforms a real screen X coordinate to a logical X coordinate.
         /// </summary>
         /// <param name="x">Real screen X coordinate.</param>
+        /// <returns>The corresponding logical X coordinate.</returns>
         public static float TransformFromRealX(float x)
         {
             return (x - VIEW_OFFSET_X) * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
@@ -106,6 +112,7 @@ namespace CutTheRope.Framework
         /// Transforms a real screen Y coordinate to a logical Y coordinate.
         /// </summary>
         /// <param name="y">Real screen Y coordinate.</param>
+        /// <returns>The corresponding logical Y coordinate.</returns>
         public static float TransformFromRealY(float y)
         {
             return (y - VIEW_OFFSET_Y) * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
@@ -115,6 +122,7 @@ namespace CutTheRope.Framework
         /// Transforms a logical width to a real screen width.
         /// </summary>
         /// <param name="w">Logical width.</param>
+        /// <returns>The corresponding real screen width.</returns>
         public static float TransformToRealW(float w)
         {
             return w * VIEW_SCREEN_WIDTH / SCREEN_WIDTH;
@@ -124,6 +132,7 @@ namespace CutTheRope.Framework
         /// Transforms a logical height to a real screen height.
         /// </summary>
         /// <param name="h">Logical height.</param>
+        /// <returns>The corresponding real screen height.</returns>
         public static float TransformToRealH(float h)
         {
             return h * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT;
@@ -133,6 +142,7 @@ namespace CutTheRope.Framework
         /// Transforms a real screen width to a logical width.
         /// </summary>
         /// <param name="w">Real screen width.</param>
+        /// <returns>The corresponding logical width.</returns>
         public static float TransformFromRealW(float w)
         {
             return w * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
@@ -142,6 +152,7 @@ namespace CutTheRope.Framework
         /// Transforms a real screen height to a logical height.
         /// </summary>
         /// <param name="h">Real screen height.</param>
+        /// <returns>The corresponding logical height.</returns>
         public static float TransformFromRealH(float h)
         {
             return h * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
@@ -151,6 +162,7 @@ namespace CutTheRope.Framework
         /// Returns the achievement identifier string unchanged (pass-through).
         /// </summary>
         /// <param name="s">Achievement identifier string.</param>
+        /// <returns>The same string passed in.</returns>
         public static string ACHIEVEMENT_STRING(string s)
         {
             return s;
@@ -168,6 +180,7 @@ namespace CutTheRope.Framework
         /// </summary>
         /// <param name="H">Value for WVGA resolution.</param>
         /// <param name="L">Value for non-WVGA resolution.</param>
+        /// <returns><paramref name="H"/> when running at WVGA; otherwise <paramref name="L"/>.</returns>
         public static float WVGAH(float H, float L)
         {
             return IS_WVGA ? H : L;
@@ -177,6 +190,7 @@ namespace CutTheRope.Framework
         /// Doubles <paramref name="V"/> on WVGA displays; returns it unchanged otherwise.
         /// </summary>
         /// <param name="V">Value to scale.</param>
+        /// <returns><c>V * 2</c> on WVGA; otherwise <paramref name="V"/>.</returns>
         public static float WVGAD(float V)
         {
             return IS_WVGA ? V * 2 : V;
@@ -187,6 +201,7 @@ namespace CutTheRope.Framework
         /// </summary>
         /// <param name="H">Value for retina resolution.</param>
         /// <param name="L">Value for non-retina resolution.</param>
+        /// <returns><paramref name="H"/> on retina displays; otherwise <paramref name="L"/>.</returns>
         public static float RT(float H, float L)
         {
             return IS_RETINA ? H : L;
@@ -196,6 +211,7 @@ namespace CutTheRope.Framework
         /// Doubles <paramref name="V"/> on retina displays; returns it unchanged otherwise.
         /// </summary>
         /// <param name="V">Value to scale.</param>
+        /// <returns><c>V * 2</c> on retina displays; otherwise <paramref name="V"/>.</returns>
         public static float RTD(float V)
         {
             return IS_RETINA ? V * 2 : V;
@@ -205,6 +221,7 @@ namespace CutTheRope.Framework
         /// Doubles <paramref name="V"/> on retina or iPad displays; returns it unchanged otherwise.
         /// </summary>
         /// <param name="V">Value to scale.</param>
+        /// <returns><c>V * 2</c> on retina or iPad displays; otherwise <paramref name="V"/>.</returns>
         public static float RTPD(float V)
         {
             return IS_RETINA | IS_IPAD ? V * 2 : V;
@@ -215,6 +232,7 @@ namespace CutTheRope.Framework
         /// </summary>
         /// <param name="P1">Value for non-WVGA resolution.</param>
         /// <param name="P2">Value for WVGA resolution.</param>
+        /// <returns><paramref name="P2"/> on WVGA; otherwise <paramref name="P1"/>.</returns>
         public static float CHOOSE3(float P1, float P2)
         {
             return WVGAH(P2, P1);
