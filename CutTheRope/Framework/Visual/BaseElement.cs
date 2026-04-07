@@ -21,6 +21,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns true if <paramref name="f"/> is set in the element's anchor flags.
         /// </summary>
         /// <param name="f">Anchor flag bitmask to test.</param>
+        /// <returns><see langword="true"/> if any of the bits in <paramref name="f"/> are set in <see cref="anchor"/>.</returns>
         public bool AnchorHas(int f)
         {
             return (anchor & f) != 0;
@@ -30,6 +31,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns true if <paramref name="f"/> is set in the parent-anchor flags.
         /// </summary>
         /// <param name="f">Parent-anchor flag bitmask to test.</param>
+        /// <returns><see langword="true"/> if any of the bits in <paramref name="f"/> are set in <see cref="parentAnchor"/>.</returns>
         public bool ParentAnchorHas(int f)
         {
             return (parentAnchor & f) != 0;
@@ -317,6 +319,7 @@ namespace CutTheRope.Framework.Visual
         /// Recursively searches for a child element with the given name.
         /// </summary>
         /// <param name="n">Name to search for.</param>
+        /// <returns>The first matching child, or <see langword="null"/> if no match is found.</returns>
         public BaseElement GetChildWithName(string n)
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
@@ -380,6 +383,7 @@ namespace CutTheRope.Framework.Visual
         /// Handles a timeline action. Returns true if the action was recognized.
         /// </summary>
         /// <param name="a">Action data to process.</param>
+        /// <returns><see langword="true"/> if the action was recognized and handled.</returns>
         public virtual bool HandleAction(ActionData a)
         {
             if (a.actionName == ACTION_SET_VISIBLE)
@@ -432,6 +436,7 @@ namespace CutTheRope.Framework.Visual
         /// Adds a child element and returns its assigned ID.
         /// </summary>
         /// <param name="c">Child element to add.</param>
+        /// <returns>The slot ID assigned to the child.</returns>
         public virtual int AddChild(BaseElement c)
         {
             return AddChildwithID(c, -1);
@@ -442,6 +447,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="c">Child element to add.</param>
         /// <param name="i">Slot ID, or -1 to auto-assign.</param>
+        /// <returns>The slot ID at which the child was inserted.</returns>
         public virtual int AddChildwithID(BaseElement c, int i)
         {
             c.parent = this;
@@ -515,6 +521,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns the child at slot <paramref name="i"/>, or null.
         /// </summary>
         /// <param name="i">Slot ID to look up.</param>
+        /// <returns>The child at the slot, or <see langword="null"/> if no child exists there.</returns>
         public virtual BaseElement GetChild(int i)
         {
             _ = childs.TryGetValue(i, out BaseElement value);
@@ -525,6 +532,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns the slot ID of the specified child, or -1 if not found.
         /// </summary>
         /// <param name="c">Child element to find.</param>
+        /// <returns>The slot ID of <paramref name="c"/>, or -1 if it is not a child.</returns>
         public virtual int GetChildId(BaseElement c)
         {
             int result = -1;
@@ -541,6 +549,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the number of children.
         /// </summary>
+        /// <returns>The number of children currently attached to this element.</returns>
         public virtual int ChildsCount()
         {
             return childs.Count;
@@ -549,6 +558,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the children dictionary.
         /// </summary>
+        /// <returns>The dictionary mapping slot IDs to child elements.</returns>
         public virtual Dictionary<int, BaseElement> GetChilds()
         {
             return childs;
@@ -558,6 +568,7 @@ namespace CutTheRope.Framework.Visual
         /// Adds a timeline and returns its auto-assigned ID.
         /// </summary>
         /// <param name="t">Timeline to add.</param>
+        /// <returns>The slot ID assigned to the timeline.</returns>
         public virtual int AddTimeline(Timeline t)
         {
             int count = timelines.Count;
@@ -629,6 +640,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the currently active timeline, or null.
         /// </summary>
+        /// <returns>The currently active timeline, or <see langword="null"/> if none is playing.</returns>
         public virtual Timeline GetCurrentTimeline()
         {
             return currentTimeline;
@@ -637,6 +649,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the ID of the currently active timeline, or -1.
         /// </summary>
+        /// <returns>The slot ID of the active timeline, or -1 if none is playing.</returns>
         public int GetCurrentTimelineIndex()
         {
             return currentTimelineIndex;
@@ -646,6 +659,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns the timeline at slot <paramref name="n"/>, or null.
         /// </summary>
         /// <param name="n">Slot ID to look up.</param>
+        /// <returns>The timeline at the slot, or <see langword="null"/> if no timeline exists there.</returns>
         public virtual Timeline GetTimeline(int n)
         {
             _ = timelines.TryGetValue(n, out Timeline value);
@@ -657,6 +671,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
+        /// <returns><see langword="true"/> if the event was handled by a child.</returns>
         public virtual bool OnTouchDownXY(float tx, float ty)
         {
             bool handled = false;
@@ -680,6 +695,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
+        /// <returns><see langword="true"/> if the event was handled by a child.</returns>
         public virtual bool OnTouchUpXY(float tx, float ty)
         {
             bool handled = false;
@@ -703,6 +719,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
+        /// <returns><see langword="true"/> if the event was handled by a child.</returns>
         public virtual bool OnTouchMoveXY(float tx, float ty)
         {
             bool handled = false;
@@ -735,6 +752,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns true if visible, touchable, and updateable are all true.
         /// </summary>
+        /// <returns><see langword="true"/> if the element is fully enabled.</returns>
         public bool IsEnabled()
         {
             return visible && touchable && updateable;
