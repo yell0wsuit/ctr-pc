@@ -188,7 +188,7 @@ namespace CutTheRope.GameMain
         /// <summary>Flash action command identifier.</summary>
         public string Command { get; init; } = string.Empty;
 
-        /// <summary>Action target name, or <c>self</c> for the current part.</summary>
+        /// <summary>Action target name, or self for the current part.</summary>
         public string Target { get; init; } = string.Empty;
 
         /// <summary>First exported action parameter.</summary>
@@ -203,8 +203,14 @@ namespace CutTheRope.GameMain
     /// </summary>
     public static class FlashXmlImporter
     {
+        /// <summary>
+        /// Time offset threshold used to decide when action tokens belong to the same keyframe group.
+        /// </summary>
         private const float GroupEpsilon = 0.0001f;
 
+        /// <summary>
+        /// Process-local cache of parsed Flash XML animation definitions keyed by XML path.
+        /// </summary>
         private static readonly ConcurrentDictionary<string, Lazy<FlashXmlAnimationDefinition>> parseCache = new();
 
         /// <summary>
@@ -236,6 +242,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Parses a Flash XML animation file without consulting the parse cache.
+        /// </summary>
+        /// <param name="xmlPath">Absolute or relative path to the Flash XML file.</param>
+        /// <returns>The parsed Flash XML animation definition.</returns>
         private static FlashXmlAnimationDefinition ParseFileCore(string xmlPath)
         {
             XElement root = XDocument.Load(xmlPath).Root
@@ -285,6 +296,11 @@ namespace CutTheRope.GameMain
             };
         }
 
+        /// <summary>
+        /// Parses an image node into a part definition.
+        /// </summary>
+        /// <param name="imageNode">Flash XML image element to parse.</param>
+        /// <returns>The parsed image part definition.</returns>
         private static FlashXmlPartDefinition ParseImageNode(XElement imageNode)
         {
             Dictionary<int, FlashXmlTimelineDefinition> timelines = [];
@@ -308,6 +324,11 @@ namespace CutTheRope.GameMain
             };
         }
 
+        /// <summary>
+        /// Parses the semicolon-separated list of exported empty timeline IDs.
+        /// </summary>
+        /// <param name="rawEmptyTimelines">Raw empty timeline ID string from the XML node.</param>
+        /// <returns>The parsed timeline IDs, or an empty list when no IDs are present.</returns>
         private static List<int> ParseEmptyTimelineIds(string rawEmptyTimelines)
         {
             if (string.IsNullOrWhiteSpace(rawEmptyTimelines))
@@ -325,6 +346,12 @@ namespace CutTheRope.GameMain
             return timelineIds;
         }
 
+        /// <summary>
+        /// Resolves and validates a texture resource name exported by Flash XML.
+        /// </summary>
+        /// <param name="rawSourceId">Raw source identifier from the XML attribute.</param>
+        /// <param name="sourceKind">Source kind used in error messages.</param>
+        /// <returns>The validated texture resource name.</returns>
         private static string ResolveTextureResourceName(string rawSourceId, string sourceKind)
         {
             rawSourceId = string.IsNullOrWhiteSpace(rawSourceId)
@@ -336,6 +363,11 @@ namespace CutTheRope.GameMain
                 : throw new InvalidOperationException($"Unsupported Flash XML {sourceKind} src '{rawSourceId}'.");
         }
 
+        /// <summary>
+        /// Parses an image timeline node into per-track keyframe lists.
+        /// </summary>
+        /// <param name="timelineNode">Flash XML timeline element to parse.</param>
+        /// <returns>The parsed image timeline definition.</returns>
         private static FlashXmlTimelineDefinition ParseImageTimeline(XElement timelineNode)
         {
             return new FlashXmlTimelineDefinition
@@ -350,6 +382,11 @@ namespace CutTheRope.GameMain
             };
         }
 
+        /// <summary>
+        /// Parses a single-value Flash track into keyframes.
+        /// </summary>
+        /// <param name="rawTrack">Raw track string from the XML element.</param>
+        /// <returns>The parsed single-value keyframes, or an empty list when the track is empty.</returns>
         private static List<FlashXmlFloat1KeyFrame> ParseFloat1Track(string rawTrack)
         {
             if (string.IsNullOrWhiteSpace(rawTrack))
@@ -373,6 +410,12 @@ namespace CutTheRope.GameMain
             return keyFrames;
         }
 
+        /// <summary>
+        /// Parses a two-value Flash track into keyframes when each token has the expected arity.
+        /// </summary>
+        /// <param name="rawTrack">Raw track string from the XML element.</param>
+        /// <param name="expectedArity">Number of comma-separated values expected in each token.</param>
+        /// <returns>The parsed two-value keyframes, or an empty list when the track is empty.</returns>
         private static List<FlashXmlFloat2KeyFrame> ParseFloat2Track(string rawTrack, int expectedArity)
         {
             if (string.IsNullOrWhiteSpace(rawTrack))
@@ -403,6 +446,11 @@ namespace CutTheRope.GameMain
             return keyFrames;
         }
 
+        /// <summary>
+        /// Parses a four-value Flash track into keyframes.
+        /// </summary>
+        /// <param name="rawTrack">Raw track string from the XML element.</param>
+        /// <returns>The parsed four-value keyframes, or an empty list when the track is empty.</returns>
         private static List<FlashXmlFloat4KeyFrame> ParseFloat4Track(string rawTrack)
         {
             if (string.IsNullOrWhiteSpace(rawTrack))
@@ -435,6 +483,11 @@ namespace CutTheRope.GameMain
             return keyFrames;
         }
 
+        /// <summary>
+        /// Parses a Flash action track and groups actions that belong to the same keyframe.
+        /// </summary>
+        /// <param name="rawTrack">Raw action track string from the XML element.</param>
+        /// <returns>The parsed action keyframe groups, or an empty list when the track is empty.</returns>
         private static List<FlashXmlActionGroupKeyFrame> ParseActionTrack(string rawTrack)
         {
             if (string.IsNullOrWhiteSpace(rawTrack))
@@ -489,6 +542,11 @@ namespace CutTheRope.GameMain
             return groups;
         }
 
+        /// <summary>
+        /// Parses a Flash keyframe token into payload, interpolation, and time offset parts.
+        /// </summary>
+        /// <param name="token">Raw token to parse.</param>
+        /// <returns>The parsed token parts.</returns>
         private static ParsedToken ParseToken(string token)
         {
             int interpolationStart = token.LastIndexOf('(');
@@ -505,10 +563,21 @@ namespace CutTheRope.GameMain
             return new ParsedToken(payload, ParseIntOrZero(interpolationRaw), ParseFloatOrZero(timeRaw));
         }
 
+        /// <summary>
+        /// Parsed payload, interpolation, and timing data from a Flash track token.
+        /// </summary>
+        /// <param name="payload">Payload before the interpolation marker.</param>
+        /// <param name="interpolation">Flash interpolation code.</param>
+        /// <param name="timeOffset">Delay from the previous keyframe in seconds.</param>
         private readonly struct ParsedToken(string payload, int interpolation, float timeOffset)
         {
+            /// <summary>Payload before the interpolation marker.</summary>
             public string Payload { get; } = payload;
+
+            /// <summary>Flash interpolation code.</summary>
             public int Interpolation { get; } = interpolation;
+
+            /// <summary>Delay from the previous keyframe in seconds.</summary>
             public float TimeOffset { get; } = timeOffset;
         }
 
