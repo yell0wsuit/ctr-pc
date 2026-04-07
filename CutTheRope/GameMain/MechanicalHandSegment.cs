@@ -200,36 +200,52 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Seconds after a rotation starts when one queued extra rotation may be accepted.</summary>
         private const float ROTATE_ONCE_AGAIN_TIME = 0.125f;
 
+        /// <summary>Base joint visual for the first segment.</summary>
         private Image _base;
 
+        /// <summary>Non-rotatable joint button visual.</summary>
         private Image buttonNone;
 
+        /// <summary>Tiled arm visual stretched to the segment length.</summary>
         private TiledImage armImage;
 
+        /// <summary>Segment length in world units.</summary>
         private float length;
 
+        /// <summary>Rotation from the previous update.</summary>
         private float prevRotation;
 
+        /// <summary>Local end position of this segment relative to its origin.</summary>
         public Vector endPosition;
 
+        /// <summary>Whether this segment exposes a rotate button.</summary>
         private bool rotatable;
 
+        /// <summary>Whether this segment currently owns the claw child at its end.</summary>
         public bool endsWithHand;
 
+        /// <summary>Whether this segment should draw the base joint visual.</summary>
         public bool drawBase;
 
+        /// <summary>Whether one additional rotation can be queued during the current rotation.</summary>
         private bool canRotateOnceAgain;
 
+        /// <summary>Whether another 90-degree rotation should start after the current one finishes.</summary>
         private bool rotateOnceAgain;
 
+        /// <summary>Elapsed time since the current rotation animation started.</summary>
         private float rotationTime;
 
+        /// <summary>Target rotation in degrees for the current rotation animation.</summary>
         public float targetRotation;
 
+        /// <summary>Rotate button attached to this segment, if the segment is rotatable.</summary>
         public MechanicalHandButton button;
 
+        /// <summary>Mechanical hand that owns this segment.</summary>
         public MechanicalHand theHand;
     }
 }

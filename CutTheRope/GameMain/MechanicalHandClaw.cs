@@ -178,19 +178,27 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Caches the owning mechanical hand reference when it has not been resolved yet.
+        /// </summary>
         private void EnsureHandReference()
         {
             mechanicalHand ??= TheHand();
         }
 
+        /// <summary>Idle claw visual.</summary>
         public Image clawIdle;
 
+        /// <summary>Active claw body visual.</summary>
         public Image clawActive;
 
+        /// <summary>Active claw fingers overlay visual.</summary>
         public Image clawActiveFingers;
 
+        /// <summary>Cached owning mechanical hand.</summary>
         private MechanicalHand mechanicalHand;
 
+        /// <summary>Number of previous parent segments to walk when resolving the owning hand.</summary>
         public int prevSegments;
     }
 }
