@@ -1833,6 +1833,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Updates mechanical hand behavior, candy attachment, hand claps, and hand ordering.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds since the last update.</param>
         private void UpdateHands(float delta)
         {
             if (hands == null || hands.Count <= 0)
@@ -1999,9 +2003,9 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Handle special tutorial IDs
+        /// Plays the matching special tutorial and hides all other special tutorial prompts.
         /// </summary>
-        /// <param name="tutorialId"></param>
+        /// <param name="tutorialId">Special tutorial identifier to trigger.</param>
         private void TriggerSpecialTutorial(int tutorialId)
         {
             if (special != tutorialId)
