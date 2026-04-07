@@ -465,7 +465,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Builds tail frames for the complex idle sequence after the first frame.
         /// </summary>
-        /// <returns>Frame list consumed by <c>AddAnimationWithIDDelayLoopCountSequence</c>.</returns>
+        /// <returns>Frame list consumed by <see cref="Animation.AddAnimationWithIDDelayLoopCountSequence" />.</returns>
         private static List<int> BuildComplexIdleTailSequence()
         {
             const int frameRangeLength = 15;
