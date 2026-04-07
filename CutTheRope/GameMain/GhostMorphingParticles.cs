@@ -3,6 +3,9 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Rotating particle effect used around a ghost while it morphs between states.
+    /// </summary>
     internal sealed class GhostMorphingParticles : RotateableMultiParticles
     {
         /// <inheritdoc />
