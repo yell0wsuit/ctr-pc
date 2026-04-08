@@ -16,7 +16,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Creates an action keyframe with the specified actions and time offset.
+        /// Creates an action keyframe with the specified <paramref name="actions"/> and <paramref name="time"/> offset.
         /// </summary>
         /// <param name="actions">Actions to execute at this keyframe.</param>
         /// <param name="time">Time offset in seconds.</param>
@@ -35,14 +35,14 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Creates an action keyframe with a single action.
+        /// Creates an action keyframe with a single <paramref name="action"/>.
         /// </summary>
         /// <param name="target">Target element for the action.</param>
         /// <param name="action">Action name.</param>
         /// <param name="p">Primary action parameter.</param>
         /// <param name="sp">Secondary action parameter.</param>
         /// <param name="time">Time offset in seconds.</param>
-        /// <returns>A new action keyframe wrapping a single action.</returns>
+        /// <returns>A new action keyframe wrapping a single <paramref name="action"/>.</returns>
         public static KeyFrame MakeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
             return MakeAction([CTRAction.CreateAction(target, action, p, sp)], time);

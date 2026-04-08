@@ -268,7 +268,7 @@ namespace CutTheRope.Framework.Media
         }
 
         /// <summary>
-        /// Stops all sound effect instances in the specified list.
+        /// Stops all sound effect instances in the specified <paramref name="list"/>.
         /// </summary>
         /// <param name="list">The list of sound effect instances to stop.</param>
         private static void StopList(List<SoundEffectInstance> list)
@@ -280,7 +280,7 @@ namespace CutTheRope.Framework.Media
         }
 
         /// <summary>
-        /// Changes the playback state of all sound effect instances in the specified list.
+        /// Changes the playback state of all sound effect instances in the specified <paramref name="list"/>.
         /// </summary>
         /// <param name="list">The list of sound effect instances to modify.</param>
         /// <param name="fromState">The current state to match.</param>

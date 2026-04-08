@@ -234,7 +234,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns the track for the specified type, or null if not created.
+        /// Returns the track for the specified type, or <see langword="null"/> if not created.
         /// </summary>
         /// <param name="tt">Track type to retrieve.</param>
         public Track GetTrack(Track.TrackType tt)

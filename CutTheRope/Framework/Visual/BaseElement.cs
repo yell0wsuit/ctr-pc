@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Visual
         public bool HasParent => parent != null;
 
         /// <summary>
-        /// Returns true if <paramref name="f"/> is set in the element's anchor flags.
+        /// Returns <see langword="true"/> if <paramref name="f"/> is set in the element's anchor flags.
         /// </summary>
         /// <param name="f">Anchor flag bitmask to test.</param>
         /// <returns><see langword="true"/> if any of the bits in <paramref name="f"/> are set in <see cref="anchor"/>.</returns>
@@ -28,7 +28,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns true if <paramref name="f"/> is set in the parent-anchor flags.
+        /// Returns <see langword="true"/> if <paramref name="f"/> is set in the parent-anchor flags.
         /// </summary>
         /// <param name="f">Parent-anchor flag bitmask to test.</param>
         /// <returns><see langword="true"/> if any of the bits in <paramref name="f"/> are set in <see cref="parentAnchor"/>.</returns>
@@ -380,7 +380,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Handles a timeline action. Returns true if the action was recognized.
+        /// Handles a timeline action. Returns <see langword="true"/> if the action was recognized.
         /// </summary>
         /// <param name="a">Action data to process.</param>
         /// <returns><see langword="true"/> if the action was recognized and handled.</returns>
@@ -518,7 +518,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns the child at slot <paramref name="i"/>, or null.
+        /// Returns the child at slot <paramref name="i"/>, or <see langword="null"/>.
         /// </summary>
         /// <param name="i">Slot ID to look up.</param>
         /// <returns>The child at the slot, or <see langword="null"/> if no child exists there.</returns>
@@ -638,7 +638,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns the currently active timeline, or null.
+        /// Returns the currently active timeline, or <see langword="null"/>.
         /// </summary>
         /// <returns>The currently active timeline, or <see langword="null"/> if none is playing.</returns>
         public virtual Timeline GetCurrentTimeline()
@@ -656,7 +656,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns the timeline at slot <paramref name="n"/>, or null.
+        /// Returns the timeline at slot <paramref name="n"/>, or <see langword="null"/>.
         /// </summary>
         /// <param name="n">Slot ID to look up.</param>
         /// <returns>The timeline at the slot, or <see langword="null"/> if no timeline exists there.</returns>
@@ -667,7 +667,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Dispatches a touch-down event to children. Returns true if handled.
+        /// Dispatches a touch-down event to children. Returns <see langword="true"/> if handled.
         /// </summary>
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
@@ -691,7 +691,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Dispatches a touch-up event to children. Returns true if handled.
+        /// Dispatches a touch-up event to children. Returns <see langword="true"/> if handled.
         /// </summary>
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
@@ -715,7 +715,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Dispatches a touch-move event to children. Returns true if handled.
+        /// Dispatches a touch-move event to children. Returns <see langword="true"/> if handled.
         /// </summary>
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
@@ -750,7 +750,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns true if visible, touchable, and updateable are all true.
+        /// Returns <see langword="true"/> if visible, touchable, and updateable are all <see langword="true"/>.
         /// </summary>
         /// <returns><see langword="true"/> if the element is fully enabled.</returns>
         public bool IsEnabled()
@@ -926,12 +926,12 @@ namespace CutTheRope.Framework.Visual
         public float rotationCenterY;
 
         /// <summary>
-        /// Custom anchor X offset applied when <see cref="useCustomAnchor"/> is true.
+        /// Custom anchor X offset applied when <see cref="useCustomAnchor"/> is <see langword="true"/>.
         /// </summary>
         public float customAnchorX;
 
         /// <summary>
-        /// Custom anchor Y offset applied when <see cref="useCustomAnchor"/> is true.
+        /// Custom anchor Y offset applied when <see cref="useCustomAnchor"/> is <see langword="true"/>.
         /// </summary>
         public float customAnchorY;
 
@@ -1006,7 +1006,7 @@ namespace CutTheRope.Framework.Visual
         public int blendingMode;
 
         /// <summary>
-        /// Parent element in the scene graph, or null if this is a root element.
+        /// Parent element in the scene graph, or <see langword="null"/> if this is a root element.
         /// </summary>
         public BaseElement parent;
 
@@ -1026,7 +1026,7 @@ namespace CutTheRope.Framework.Visual
         private int currentTimelineIndex;
 
         /// <summary>
-        /// The currently active timeline, or null if none.
+        /// The currently active timeline, or <see langword="null"/> if none.
         /// </summary>
         private Timeline currentTimeline;
     }

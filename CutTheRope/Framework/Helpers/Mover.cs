@@ -295,7 +295,7 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>
-        /// Moves a scalar value toward a target at the given speed and frame delta.
+        /// Moves a scalar value toward a target at the given <paramref name="speed"/> and frame <paramref name="delta"/>.
         /// </summary>
         /// <param name="v">Value to update.</param>
         /// <param name="t">Target value.</param>

@@ -40,7 +40,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns true if this texture uses WVGA scaling.
+        /// Returns <see langword="true"/> if this texture uses WVGA scaling.
         /// </summary>
         public bool IsWvga()
         {
@@ -222,7 +222,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns the size unchanged (no power-of-two rounding needed).
+        /// Returns the <paramref name="size"/> unchanged (no power-of-two rounding needed).
         /// </summary>
         /// <param name="size">Input size in pixels.</param>
         private static int CalcRealSize(int size)

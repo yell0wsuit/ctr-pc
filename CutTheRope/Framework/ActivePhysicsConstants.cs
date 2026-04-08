@@ -22,10 +22,10 @@ namespace CutTheRope.Framework
         public const float DesktopMoverSpeedScale = 3.3f;
 
         /// <summary>
-        /// Converts a Windows Phone coordinate-space value to desktop world units.
+        /// Converts a Windows Phone coordinate-space <paramref name="value"/> to desktop world units.
         /// </summary>
         /// <param name="value">Value in Windows Phone coordinate units.</param>
-        /// <returns>The value scaled into desktop world units.</returns>
+        /// <returns>The <paramref name="value"/> scaled into desktop world units.</returns>
         private static float ToWorld(float value)
         {
             return value * Wp7ToWorldScale;
@@ -43,7 +43,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Selects a floating-point tuning value, scaling mobile values to desktop world units.
+        /// Selects a floating-point tuning value, scaling <paramref name="mobile"/> values to desktop world units.
         /// </summary>
         /// <param name="pc">Desktop tuning value.</param>
         /// <param name="mobile">Mobile tuning value.</param>

@@ -32,7 +32,7 @@ namespace CutTheRope.Framework.Visual
         private static GraphicsDevice graphicsDevice;
 
         /// <summary>
-        /// Initializes the font manager with the specified graphics device.
+        /// Initializes the font manager with the specified graphics <paramref name="device"/>.
         /// </summary>
         /// <param name="device">Graphics device for font rendering.</param>
         public static void Initialize(GraphicsDevice device)

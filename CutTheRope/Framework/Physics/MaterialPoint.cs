@@ -62,7 +62,7 @@ namespace CutTheRope.Framework.Physics
         }
 
         /// <summary>
-        /// Stores an external force in the specified slot.
+        /// Stores an external <paramref name="force"/> in the specified slot.
         /// </summary>
         /// <param name="force">Force vector to apply each update.</param>
         /// <param name="index">Force slot index.</param>
@@ -95,7 +95,7 @@ namespace CutTheRope.Framework.Physics
         }
 
         /// <summary>
-        /// Applies an instantaneous positional impulse scaled by frame time.
+        /// Applies an instantaneous positional <paramref name="impulse"/> scaled by frame time.
         /// </summary>
         /// <param name="impulse">Impulse vector to apply.</param>
         /// <param name="delta">Elapsed frame time in seconds.</param>
@@ -109,7 +109,7 @@ namespace CutTheRope.Framework.Physics
         }
 
         /// <summary>
-        /// Advances the point by subdividing the frame into fixed-precision steps.
+        /// Advances the point by subdividing the frame into fixed-<paramref name="precision"/> steps.
         /// </summary>
         /// <param name="delta">Total elapsed time to simulate.</param>
         /// <param name="precision">Maximum time step size for each substep.</param>

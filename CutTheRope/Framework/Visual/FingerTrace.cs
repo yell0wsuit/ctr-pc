@@ -57,7 +57,7 @@ namespace CutTheRope.Framework.Visual
     }
 
     /// <summary>
-    /// Represents a single live trace segment with a start point, end point, and remaining lifetime.
+    /// Represents a single live trace segment with a <paramref name="start"/> point, <paramref name="end"/> point, and remaining lifetime.
     /// </summary>
     internal struct TraceSegment(Vector start, Vector end, float life)
     {
@@ -118,7 +118,7 @@ namespace CutTheRope.Framework.Visual
         public bool IsAlive => isActive || segments.Count > 0 || HasLiveParticles;
 
         /// <summary>
-        /// Starts a new trace at the specified world position, clearing any previous segments.
+        /// Starts a new trace at the specified world <paramref name="position"/>, clearing any previous segments.
         /// </summary>
         /// <param name="position">The initial touch position in world space.</param>
         public void Begin(Vector position)
@@ -131,7 +131,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Appends a new touch position to the trace, generating a segment from the last point.
+        /// Appends a new touch <paramref name="position"/> to the trace, generating a segment from the last point.
         /// </summary>
         /// <param name="position">The next touch position in world space.</param>
         public void Append(Vector position)
@@ -272,7 +272,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Sets the maximum size hint used by subclasses that scale their trace visuals.
+        /// Sets the maximum <paramref name="size"/> hint used by subclasses that scale their trace visuals.
         /// </summary>
         /// <param name="size">Maximum trace size in world units.</param>
         public void SetMaxSize(float size)
@@ -357,7 +357,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Draws a single cached sprite pose using the standard image-based trace path.
+        /// Draws a single cached <paramref name="sprite"/> pose using the standard image-based trace path.
         /// </summary>
         /// <param name="sprite">The sprite pose to draw.</param>
         protected void DrawSpritePose(FingerTraceSpritePose sprite)

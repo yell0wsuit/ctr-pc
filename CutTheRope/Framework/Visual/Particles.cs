@@ -153,7 +153,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Adds a new particle if the system is not full. Returns true if added.
+        /// Adds a new particle if the system is not full. Returns <see langword="true"/> if added.
         /// </summary>
         public virtual bool AddParticle()
         {
@@ -167,7 +167,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Initializes a particle with randomized values based on emitter settings.
+        /// Initializes a <paramref name="particle"/> with randomized values based on emitter settings.
         /// </summary>
         /// <param name="particle">Particle to initialize.</param>
         public virtual void InitParticle(ref Particle particle)
@@ -236,7 +236,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns true if the particle count has reached the maximum capacity.
+        /// Returns <see langword="true"/> if the particle count has reached the maximum capacity.
         /// </summary>
         public virtual bool IsFull()
         {

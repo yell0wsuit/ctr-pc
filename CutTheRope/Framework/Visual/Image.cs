@@ -14,11 +14,11 @@ namespace CutTheRope.Framework.Visual
     internal class Image : BaseElement
     {
         /// <summary>
-        /// Gets the quad size for the specified texture name.
+        /// Gets the <paramref name="quad"/> size for the specified texture name.
         /// </summary>
         /// <param name="textureResourceName">Texture resource name.</param>
         /// <param name="quad">Index of the quad.</param>
-        /// <returns>The width and height of the quad as a vector.</returns>
+        /// <returns>The width and height of the <paramref name="quad"/> as a vector.</returns>
         public static Vector GetQuadSize(string textureResourceName, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
@@ -28,11 +28,11 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Gets the quad offset for the specified texture name.
+        /// Gets the <paramref name="quad"/> offset for the specified texture name.
         /// </summary>
         /// <param name="textureResourceName">Texture resource name.</param>
         /// <param name="quad">Index of the quad.</param>
-        /// <returns>The offset of the quad, or (0, 0) if no offsets are defined.</returns>
+        /// <returns>The offset of the <paramref name="quad"/>, or (0, 0) if no offsets are defined.</returns>
         public static Vector GetQuadOffset(string textureResourceName, int quad)
         {
             CTRTexture2D texture = Application.GetTexture(textureResourceName);
@@ -40,11 +40,11 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Gets the quad center for the specified texture name.
+        /// Gets the <paramref name="quad"/> center for the specified texture name.
         /// </summary>
         /// <param name="textureResourceName">Texture resource name.</param>
         /// <param name="quad">Index of the quad.</param>
-        /// <returns>The center point of the quad in texture space.</returns>
+        /// <returns>The center point of the <paramref name="quad"/> in texture space.</returns>
         public static Vector GetQuadCenter(string textureResourceName, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
@@ -56,7 +56,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Gets the quad offset relative to another quad for the specified texture name.
+        /// Gets the <paramref name="quad"/> offset relative to <paramref name="quadToCountFrom"/> for the specified texture name.
         /// </summary>
         /// <param name="textureResourceName">Texture resource name.</param>
         /// <param name="quadToCountFrom">Base quad index.</param>
@@ -69,7 +69,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Positions an element using the offset of the specified quad and texture name.
+        /// Positions an element using the offset of the specified <paramref name="quad"/> and texture name.
         /// </summary>
         /// <param name="e">Element to position.</param>
         /// <param name="textureResourceName">Texture resource name.</param>
@@ -82,7 +82,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Positions an element using the relative offset of the specified quad and texture name.
+        /// Positions an element using the relative offset of the specified <paramref name="quad"/> and texture name.
         /// </summary>
         /// <param name="e">Element to position.</param>
         /// <param name="textureResourceName">Texture resource name.</param>
@@ -194,7 +194,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Applies the pre-cut size for the given quad if available. Returns true if applied.
+        /// Applies the pre-cut size for the given <paramref name="quad"/> if available. Returns <see langword="true"/> if applied.
         /// </summary>
         /// <param name="quad">Quad index to apply pre-cut size for.</param>
         /// <returns><see langword="true"/> if a pre-cut size was applied; otherwise <see langword="false"/>.</returns>

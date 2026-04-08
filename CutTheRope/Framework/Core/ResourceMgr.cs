@@ -124,7 +124,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Loads sound metadata for the specified content path.
+        /// Loads sound metadata for the specified content <paramref name="path"/>.
         /// The base implementation returns a placeholder object.
         /// </summary>
         /// <param name="path">Resolved content path.</param>
@@ -353,7 +353,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Applies parsed atlas rectangles, offsets, and source sizes to a texture.
+        /// Applies parsed <paramref name="atlas"/> rectangles, offsets, and source sizes to a <paramref name="texture"/>.
         /// </summary>
         /// <param name="texture">Texture to update.</param>
         /// <param name="atlas">Parsed atlas metadata.</param>
@@ -419,7 +419,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Converts parsed atlas rectangle data into engine quad information on the texture.
+        /// Converts parsed atlas rectangle <paramref name="data"/> into engine quad information on the <paramref name="texture"/>.
         /// </summary>
         /// <param name="texture">Texture to update.</param>
         /// <param name="data">Flat quad rectangle data array.</param>
@@ -452,7 +452,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Applies parsed atlas offset data to texture quad offsets.
+        /// Applies parsed atlas offset <paramref name="data"/> to <paramref name="texture"/> quad offsets.
         /// </summary>
         /// <param name="texture">Texture to update.</param>
         /// <param name="data">Flat offset data array.</param>
@@ -513,7 +513,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Queues each resource in a null-terminated pack array for loading.
+        /// Queues each resource in a <see langword="null"/>-terminated <paramref name="pack"/> array for loading.
         /// </summary>
         /// <param name="pack">Pack array of logical resource names.</param>
         public virtual void LoadPack(string[] pack)
@@ -613,7 +613,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Frees each resource in a null-terminated pack array.
+        /// Frees each resource in a <see langword="null"/>-terminated <paramref name="pack"/> array.
         /// </summary>
         /// <param name="pack">Pack array of logical resource names.</param>
         public virtual void FreePack(string[] pack)

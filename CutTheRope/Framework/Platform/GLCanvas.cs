@@ -48,7 +48,7 @@ namespace CutTheRope.Framework.Platform
         }
 
         /// <summary>
-        /// Enables FPS text rendering using the supplied font.
+        /// Enables FPS text rendering using the supplied <paramref name="font"/>.
         /// </summary>
         /// <param name="font">Font used to draw the FPS overlay.</param>
         public void InitFPSMeterWithFont(Font font)
@@ -209,7 +209,7 @@ namespace CutTheRope.Framework.Platform
         }
 
         /// <summary>
-        /// Converts raw platform touches into the canvas touch format.
+        /// Converts raw platform <paramref name="touches"/> into the canvas touch format.
         /// Currently returns the input list unchanged.
         /// </summary>
         /// <param name="touches">Touch list to convert.</param>

@@ -22,7 +22,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Initializes a controller with the specified parent controller.
+        /// Initializes a controller with the specified <paramref name="parent"/> controller.
         /// </summary>
         /// <param name="parent">Parent controller that owns this controller as a child.</param>
         protected ViewController(ViewController parent)
@@ -469,10 +469,10 @@ namespace CutTheRope.Framework.Core
         /// </param>
         /// <remarks>
         /// Override this method in derived controllers to handle mouse wheel input for scrollable views.
-        /// The default implementation returns false (no handling).
+        /// The default implementation returns <see langword="false"/> (no handling).
         /// </remarks>
         /// <returns>
-        /// True if the scroll input was handled by this controller or its active view, false otherwise.
+        /// True if the scroll input was handled by this controller or its active view, <see langword="false"/> otherwise.
         /// </returns>
         public virtual bool HandleMouseWheel(int scrollDelta)
         {

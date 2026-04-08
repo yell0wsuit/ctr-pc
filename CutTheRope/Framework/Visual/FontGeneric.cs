@@ -39,7 +39,7 @@ namespace CutTheRope.Framework.Visual
         public abstract float FontHeight();
 
         /// <summary>
-        /// Returns true if the font can draw the specified character.
+        /// Returns <see langword="true"/> if the font can draw the specified character.
         /// </summary>
         /// <param name="c">Character to check.</param>
         /// <returns><see langword="true"/> if the font has a glyph for <paramref name="c"/>.</returns>

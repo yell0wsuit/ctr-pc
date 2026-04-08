@@ -205,7 +205,7 @@ namespace CutTheRope.Framework.Visual
         public int numberOfQuadsToDraw;
 
         /// <summary>
-        /// Pre-built optimized vertex array, or null.
+        /// Pre-built optimized vertex array, or <see langword="null"/>.
         /// </summary>
         private VertexPositionNormalTexture[] verticesOptimized;
 

@@ -48,7 +48,7 @@ namespace CutTheRope.Framework
         public static int CurrentAsInt => (int)Current;
 
         /// <summary>
-        /// Checks if the given language matches the current language.
+        /// Checks if the given <paramref name="language"/> matches the current language.
         /// </summary>
         /// <param name="language">Language to check.</param>
         public static bool IsCurrent(Language language)
@@ -57,7 +57,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Checks if the current language matches any of the given languages.
+        /// Checks if the current language matches any of the given <paramref name="languages"/>.
         /// </summary>
         /// <param name="languages">Languages to check against.</param>
         public static bool IsCurrentAny(params Language[] languages)
@@ -73,7 +73,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Checks if the given language is available in the UI.
+        /// Checks if the given <paramref name="language"/> is available in the UI.
         /// </summary>
         /// <param name="language">Language to check.</param>
         public static bool IsUiLanguage(Language language)
@@ -82,7 +82,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Checks if the given language code is available in the UI.
+        /// Checks if the given language <paramref name="code"/> is available in the UI.
         /// </summary>
         /// <param name="code">Language code to check.</param>
         public static bool IsUiLanguageCode(string code)
@@ -121,7 +121,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Converts a <see cref="Language"/> value to the game's language code.
+        /// Converts <paramref name="language"/> to the game's language code.
         /// </summary>
         /// <param name="language">Language to convert.</param>
         public static string ToCode(Language language)
@@ -145,7 +145,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Converts a game language code to a <see cref="Language"/> value.
+        /// Converts a game language <paramref name="code"/> to a <see cref="Language"/> value.
         /// Returns <see cref="Language.LANGEN"/> for unrecognized codes.
         /// </summary>
         /// <param name="code">Language code to convert.</param>
@@ -200,7 +200,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Gets the English display name for a language code (e.g. "ru" → "Russian").
+        /// Gets the English display name for a language <paramref name="code"/> (e.g. "ru" → "Russian").
         /// </summary>
         /// <param name="code">Language code to look up.</param>
         public static string GetLanguageDisplayName(string code)

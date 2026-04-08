@@ -38,7 +38,7 @@ namespace CutTheRope.Framework.Visual
         private readonly Dictionary<char, Image> charImageCache = [];
 
         /// <summary>
-        /// Initializes the font with the specified dynamic font, size, color, and effects.
+        /// Initializes the font with the specified dynamic font, <paramref name="size"/>, <paramref name="color"/>, and <paramref name="effects"/>.
         /// </summary>
         /// <param name="dynamicFont">FontStashSharp dynamic font instance.</param>
         /// <param name="size">Font size in pixels.</param>
@@ -63,7 +63,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Sets the text rendering color.
+        /// Sets the text rendering <paramref name="color"/>.
         /// </summary>
         /// <param name="color">New text color.</param>
         public void SetColor(Color color)
@@ -80,7 +80,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns the underlying FontStashSharp dynamic font, or null if disposed.
+        /// Returns the underlying FontStashSharp dynamic font, or <see langword="null"/> if disposed.
         /// </summary>
         public DynamicSpriteFont GetInternalFont()
         {

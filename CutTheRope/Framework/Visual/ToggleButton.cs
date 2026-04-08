@@ -62,7 +62,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns true if the toggle is in its second (on) state.
+        /// Returns <see langword="true"/> if the toggle is in its second (on) state.
         /// </summary>
         public bool On()
         {

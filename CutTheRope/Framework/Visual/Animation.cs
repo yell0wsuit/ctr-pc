@@ -10,7 +10,7 @@ namespace CutTheRope.Framework.Visual
     internal class Animation : Image
     {
         /// <summary>
-        /// Creates an animation from the specified texture.
+        /// Creates an animation from the specified <paramref name="texture"/>.
         /// </summary>
         /// <param name="texture">Texture to create the animation from.</param>
         public static Animation Animation_create(CTRTexture2D texture)
@@ -47,7 +47,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Adds a sequential frame animation with explicit frame count.
+        /// Adds a sequential frame animation with explicit frame <paramref name="count"/>.
         /// </summary>
         /// <param name="animationId">Timeline slot ID for the animation.</param>
         /// <param name="delay">Delay in seconds between frames.</param>
@@ -165,7 +165,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Appends an action to an existing keyframe in the specified animation.
+        /// Appends an <paramref name="action"/> to an existing keyframe in the specified animation.
         /// </summary>
         /// <param name="action">Action name to add.</param>
         /// <param name="target">Target element for the action.</param>
@@ -236,7 +236,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Jumps the current timeline's action track to the specified keyframe index.
+        /// Jumps the current timeline's action track to the specified keyframe <paramref name="index"/>.
         /// </summary>
         /// <param name="index">Keyframe index to jump to.</param>
         public void JumpTo(int index)

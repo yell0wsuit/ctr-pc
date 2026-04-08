@@ -16,7 +16,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Creates an action targeting <paramref name="target"/> with integer parameters.
+        /// Creates an <paramref name="action"/> targeting <paramref name="target"/> with integer parameters.
         /// </summary>
         /// <param name="target">Element that will handle the action.</param>
         /// <param name="action">Action name.</param>
@@ -37,7 +37,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Creates an action targeting <paramref name="target"/> with float parameters.
+        /// Creates an <paramref name="action"/> targeting <paramref name="target"/> with float parameters.
         /// </summary>
         /// <param name="target">Element that will handle the action.</param>
         /// <param name="action">Action name.</param>

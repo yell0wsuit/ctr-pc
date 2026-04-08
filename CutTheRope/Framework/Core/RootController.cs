@@ -84,7 +84,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Sets the transition effect used when switching views.
+        /// Sets the <paramref name="transition"/> effect used when switching views.
         /// </summary>
         /// <param name="transition">Transition type constant to use.</param>
         public virtual void SetViewTransition(int transition)
@@ -170,7 +170,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Called when a controller becomes active and should become the current routed controller.
+        /// Called when a <paramref name="controller"/> becomes active and should become the current routed controller.
         /// </summary>
         /// <param name="controller">Controller that was activated.</param>
         public virtual void OnControllerActivated(ViewController controller)
@@ -179,7 +179,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Called when a controller has deactivated and should no longer receive routed input.
+        /// Called when a <paramref name="controller"/> has deactivated and should no longer receive routed input.
         /// </summary>
         /// <param name="controller">Controller that was deactivated.</param>
         public virtual void OnControllerDeactivated(ViewController controller)
@@ -188,7 +188,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Called when a controller pauses and should temporarily stop receiving routed input.
+        /// Called when a <paramref name="controller"/> pauses and should temporarily stop receiving routed input.
         /// </summary>
         /// <param name="controller">Controller that was paused.</param>
         public virtual void OnControllerPaused(ViewController controller)
@@ -197,7 +197,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Called when a controller resumes and should once again receive routed input.
+        /// Called when a <paramref name="controller"/> resumes and should once again receive routed input.
         /// </summary>
         /// <param name="controller">Controller that was unpaused.</param>
         public virtual void OnControllerUnpaused(ViewController controller)
@@ -206,7 +206,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Marks the current controller for deferred deactivation on the next tick.
+        /// Marks the current <paramref name="controller"/> for deferred deactivation on the next tick.
         /// </summary>
         /// <param name="controller">Controller requesting deactivation.</param>
         public virtual void OnControllerDeactivationRequest(ViewController controller)
@@ -215,8 +215,8 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Called before a controller view is shown.
-        /// Captures the incoming view image when transitions are enabled.
+        /// Called before a controller <paramref name="view"/> is shown.
+        /// Captures the incoming <paramref name="view"/> image when transitions are enabled.
         /// </summary>
         /// <param name="view">View that is about to be shown.</param>
         public virtual void OnControllerViewShow(View view)
@@ -236,8 +236,8 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Called before a controller view is hidden.
-        /// Captures the outgoing view image when transitions are enabled.
+        /// Called before a controller <paramref name="view"/> is hidden.
+        /// Captures the outgoing <paramref name="view"/> image when transitions are enabled.
         /// </summary>
         /// <param name="view">View that is about to be hidden.</param>
         public virtual void OnControllerViewHide(View view)
@@ -330,7 +330,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Sets the controller that currently receives routed updates and input.
+        /// Sets the <paramref name="controller"/> that currently receives routed updates and input.
         /// </summary>
         /// <param name="controller">Controller to make current, or <see langword="null" /> to clear routing.</param>
         public virtual void SetCurrentController(ViewController controller)

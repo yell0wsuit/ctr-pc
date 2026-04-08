@@ -10,7 +10,7 @@ namespace CutTheRope.Framework
     internal struct CTRRectangle(float xParam, float yParam, float width, float height)
     {
         /// <summary>
-        /// Returns true if any component is non-zero.
+        /// Returns <see langword="true"/> if any component is non-zero.
         /// </summary>
         public readonly bool IsValid()
         {

@@ -37,7 +37,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Draws a specific quad from the texture, or the full image if <paramref name="quadIndex"/> is -1.
+        /// Draws a specific quad from the texture, or the full <paramref name="image"/> if <paramref name="quadIndex"/> is -1.
         /// </summary>
         /// <param name="image">Texture to draw from.</param>
         /// <param name="quadIndex">Quad index, or -1 for full image.</param>
@@ -121,7 +121,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Attempts to draw tiled quads in a single batched draw call. Returns false if the batch is too large.
+        /// Attempts to draw tiled quads in a single batched draw call. Returns <see langword="false"/> if the batch is too large.
         /// </summary>
         private static bool TryDrawImageTiledBatch(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
         {
@@ -223,7 +223,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Computes UV texture coordinates for the given source rectangle.
+        /// Computes UV <paramref name="texture"/> coordinates for the given source rectangle.
         /// </summary>
         /// <param name="texture">Texture to compute coordinates for.</param>
         /// <param name="rect">Source rectangle in pixel coordinates.</param>
@@ -486,7 +486,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Draws a filled rectangle with a border.
+        /// Draws a filled rectangle with a <paramref name="border"/>.
         /// </summary>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position.</param>
@@ -545,7 +545,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Draws a filled polygon with a border.
+        /// Draws a filled polygon with a <paramref name="border"/>.
         /// </summary>
         /// <param name="vertices">Interleaved X/Y vertex positions.</param>
         /// <param name="vertexCount">Number of vertices.</param>
@@ -572,7 +572,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Builds colored vertices from positions and per-vertex colors.
+        /// Builds colored vertices from <paramref name="positions"/> and per-vertex <paramref name="colors"/>.
         /// </summary>
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
         {
@@ -587,7 +587,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Builds colored vertices from positions with a uniform color.
+        /// Builds colored vertices from <paramref name="positions"/> with a uniform <paramref name="color"/>.
         /// </summary>
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, int vertexCount, Color color)
         {
@@ -602,7 +602,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Builds a closed line loop from positions with a uniform color.
+        /// Builds a closed line loop from <paramref name="positions"/> with a uniform <paramref name="color"/>.
         /// </summary>
         private static VertexPositionColor[] BuildClosedLineVertices(float[] positions, int vertexCount, Color color)
         {

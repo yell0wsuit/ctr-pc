@@ -105,7 +105,7 @@ namespace CutTheRope.Framework.Helpers
 
         /// <summary>Returns <paramref name="value"/> rounded to the nearest integer as a float.</summary>
         /// <param name="value">The input value.</param>
-        /// <returns>The rounded value.</returns>
+        /// <returns>The rounded <paramref name="value"/>.</returns>
         public static float Round(float value)
         {
             return MathF.Round(value);
@@ -356,9 +356,9 @@ namespace CutTheRope.Framework.Helpers
             return result;
         }
 
-        /// <summary>Normalizes an angle in degrees to the range [0, 360).</summary>
+        /// <summary>Normalizes an <paramref name="angle"/> in degrees to the range [0, 360).</summary>
         /// <param name="angle">Angle in degrees.</param>
-        /// <returns>The normalized angle.</returns>
+        /// <returns>The normalized <paramref name="angle"/>.</returns>
         public static float AngleTo0_360(float angle)
         {
             float result = angle;

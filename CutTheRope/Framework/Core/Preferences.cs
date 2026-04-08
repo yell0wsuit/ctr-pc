@@ -66,7 +66,7 @@ namespace CutTheRope.Framework.Core
         private static string GlobalSaveFilePath => Path.Combine(SaveDirectory, GlobalSaveFileName);
 
         /// <summary>
-        /// Returns the JSON file name for the specified box slot.
+        /// Returns the JSON file name for the specified box <paramref name="slot"/>.
         /// </summary>
         /// <param name="slot">Box slot index.</param>
         /// <returns>Box save file name.</returns>
@@ -76,7 +76,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Returns the full path to the JSON file for the specified box slot.
+        /// Returns the full path to the JSON file for the specified box <paramref name="slot"/>.
         /// </summary>
         /// <param name="slot">Box slot index.</param>
         /// <returns>Box save file path.</returns>
@@ -86,11 +86,11 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Attempts to parse a box slot index from a save file name.
+        /// Attempts to parse a box <paramref name="slot"/> index from a save file name.
         /// </summary>
         /// <param name="fileName">File name to parse.</param>
         /// <param name="slot">Parsed slot index when successful.</param>
-        /// <returns><see langword="true" /> if the file name matches the expected slot pattern; otherwise <see langword="false" />.</returns>
+        /// <returns><see langword="true" /> if the file name matches the expected <paramref name="slot"/> pattern; otherwise <see langword="false" />.</returns>
         private static bool TryParseBoxSlotFromFileName(string fileName, out int slot)
         {
             slot = 0;
@@ -309,11 +309,11 @@ namespace CutTheRope.Framework.Core
 
 #else
         /// <summary>
-        /// Determines whether the given path is inside a macOS .app bundle.
+        /// Determines whether the given <paramref name="path"/> is inside a macOS .app bundle.
         /// Checks for the standard bundle structure: *.app/Contents/MacOS/
         /// </summary>
         /// <param name="path">The path to check.</param>
-        /// <returns><see langword="true" /> if the path is inside a macOS .app bundle; otherwise, <see langword="false" />.</returns>
+        /// <returns><see langword="true" /> if the <paramref name="path"/> is inside a macOS .app bundle; otherwise, <see langword="false" />.</returns>
         private static bool IsInsideMacAppBundle(string path)
         {
             DirectoryInfo dir = new(path);
@@ -407,7 +407,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Gets a boolean preference. Returns false if not found.
+        /// Gets a boolean preference. Returns <see langword="false"/> if not found.
         /// </summary>
         /// <param name="key">Preference key.</param>
         /// <returns>Stored boolean value, or <see langword="false" /> if missing.</returns>
@@ -427,17 +427,17 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Checks if a global preference key exists in memory.
+        /// Checks if a global preference <paramref name="key"/> exists in memory.
         /// </summary>
         /// <param name="key">Preference key to check.</param>
-        /// <returns><see langword="true" /> if the key exists; otherwise <see langword="false" />.</returns>
+        /// <returns><see langword="true" /> if the <paramref name="key"/> exists; otherwise <see langword="false" />.</returns>
         protected static bool ContainsKey(string key)
         {
             return GlobalData.ContainsKey(key);
         }
 
         /// <summary>
-        /// Removes a global preference key from memory.
+        /// Removes a global preference <paramref name="key"/> from memory.
         /// </summary>
         /// <param name="key">Preference key to remove.</param>
         protected static void RemoveKey(string key)
@@ -448,7 +448,7 @@ namespace CutTheRope.Framework.Core
         // ── Box-scoped accessors (STARS_, SCORE_, UNLOCKED_ per box) ─────────────
 
         /// <summary>
-        /// Sets an integer preference for a specific box slot and optionally requests a save.
+        /// Sets an integer preference for a specific <paramref name="box"/> slot and optionally requests a save.
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="value">Integer value to store.</param>
@@ -464,7 +464,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Gets an integer preference for a specific box slot.
+        /// Gets an integer preference for a specific <paramref name="box"/> slot.
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="key">Preference key.</param>
@@ -484,7 +484,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Sets a boolean preference for a specific box slot and optionally requests a save.
+        /// Sets a boolean preference for a specific <paramref name="box"/> slot and optionally requests a save.
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="value">Boolean value to store.</param>
@@ -500,7 +500,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Gets a boolean preference for a specific box slot.
+        /// Gets a boolean preference for a specific <paramref name="box"/> slot.
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="key">Preference key.</param>
@@ -511,7 +511,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Sets a string preference for a specific box slot and optionally requests a save.
+        /// Sets a string preference for a specific <paramref name="box"/> slot and optionally requests a save.
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="value">String value to store.</param>
@@ -527,7 +527,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Gets a string preference for a specific box slot.
+        /// Gets a string preference for a specific <paramref name="box"/> slot.
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="key">Preference key.</param>
@@ -538,7 +538,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Removes a preference key from a specific box slot.
+        /// Removes a preference <paramref name="key"/> from a specific <paramref name="box"/> slot.
         /// </summary>
         /// <param name="box">Box slot index.</param>
         /// <param name="key">Preference key to remove.</param>
@@ -562,10 +562,10 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Ensures that a dictionary exists for the specified box slot and returns it.
+        /// Ensures that a dictionary exists for the specified <paramref name="box"/> slot and returns it.
         /// </summary>
         /// <param name="box">Box slot index.</param>
-        /// <returns>Dictionary backing the specified box slot.</returns>
+        /// <returns>Dictionary backing the specified <paramref name="box"/> slot.</returns>
         private static Dictionary<string, object> EnsureBoxData(int box)
         {
             while (BoxData.Count <= box)
@@ -617,10 +617,10 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Returns true if key belongs to per-box game data (STARS_, SCORE_, UNLOCKED_).
+        /// Returns <see langword="true"/> if <paramref name="key"/> belongs to per-box game data (STARS_, SCORE_, UNLOCKED_).
         /// </summary>
         /// <param name="key">Preference key to inspect.</param>
-        /// <returns><see langword="true" /> if the key belongs to box-scoped game data; otherwise <see langword="false" />.</returns>
+        /// <returns><see langword="true" /> if the <paramref name="key"/> belongs to box-scoped game data; otherwise <see langword="false" />.</returns>
         private static bool IsGameDataKey(string key)
         {
             return key.StartsWith("STARS_", StringComparison.Ordinal) ||
@@ -797,7 +797,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Serializes all preferences to a JSON stream (global prefs only).
+        /// Serializes all preferences to a JSON <paramref name="stream"/> (global prefs only).
         /// </summary>
         /// <param name="stream">Destination stream to write.</param>
         /// <returns><see langword="true" /> if serialization succeeded; otherwise <see langword="false" />.</returns>
@@ -817,7 +817,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Deserializes all preferences from a JSON stream (global prefs only).
+        /// Deserializes all preferences from a JSON <paramref name="stream"/> (global prefs only).
         /// </summary>
         /// <param name="stream">Source stream to read.</param>
         /// <returns><see langword="true" /> if deserialization succeeded; otherwise <see langword="false" />.</returns>

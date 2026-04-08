@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Helpers
     internal class GameObject : Animation
     {
         /// <summary>
-        /// Creates a game object from the specified texture.
+        /// Creates a game object from the specified <paramref name="texture"/>.
         /// </summary>
         /// <param name="texture">Texture to create the object from.</param>
         private static GameObject GameObject_create(CTRTexture2D texture)
@@ -145,7 +145,7 @@ namespace CutTheRope.Framework.Helpers
         }
 
         /// <summary>
-        /// Rotates the object and its bounding box by the specified angle in degrees.
+        /// Rotates the object and its bounding box by the specified <paramref name="angle"/> in degrees.
         /// </summary>
         /// <param name="angle">Rotation angle in degrees.</param>
         public virtual void RotateWithBB(float angle)
@@ -264,7 +264,7 @@ namespace CutTheRope.Framework.Helpers
         public int state;
 
         /// <summary>
-        /// Mover controlling this object's position and rotation, or null.
+        /// Mover controlling this object's position and rotation, or <see langword="null"/>.
         /// </summary>
         public Mover mover;
 
@@ -274,7 +274,7 @@ namespace CutTheRope.Framework.Helpers
         public CTRRectangle bb;
 
         /// <summary>
-        /// Rotated bounding box quad, updated when <see cref="rotatedBB"/> is true.
+        /// Rotated bounding box quad, updated when <see cref="rotatedBB"/> is <see langword="true"/>.
         /// </summary>
         public Quad2D rbb;
 

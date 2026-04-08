@@ -21,7 +21,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Initializes the track with a timeline, type, and keyframe capacity.
+        /// Initializes the track with a <paramref name="timeline"/>, type, and keyframe capacity.
         /// </summary>
         /// <param name="timeline">Parent timeline.</param>
         /// <param name="trackType">Property type this track animates.</param>
@@ -44,7 +44,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Initializes an action keyframe and sets the remaining time.
+        /// Initializes an action keyframe and sets the remaining <paramref name="time"/>.
         /// </summary>
         /// <param name="kf">Action keyframe to apply.</param>
         /// <param name="time">Time until the next keyframe.</param>
@@ -402,7 +402,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Returns true if the transition type uses Flash XML interpolation.
+        /// Returns <see langword="true"/> if the <paramref name="transition"/> type uses Flash XML interpolation.
         /// </summary>
         private static bool IsFlashInterpolationTransition(KeyFrame.TransitionType transition)
         {
@@ -416,7 +416,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Computes the interpolation factor for Flash XML transition types.
+        /// Computes the interpolation factor for Flash XML <paramref name="transition"/> types.
         /// </summary>
         private static float ComputeFlashInterpolationFactor(Track track, KeyFrame.TransitionType transition)
         {
@@ -453,7 +453,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Evaluates a Flash ease-in-out curve at the given progress.
+        /// Evaluates a Flash ease-in-out curve at the given <paramref name="progress"/>.
         /// </summary>
         private static float EvaluateFlashEaseInOut(float progress)
         {
@@ -468,7 +468,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Evaluates a Flash mirrored ease curve at the given progress.
+        /// Evaluates a Flash mirrored ease curve at the given <paramref name="progress"/>.
         /// </summary>
         private static float EvaluateFlashEaseMirrored(float progress)
         {
@@ -481,7 +481,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Applies an interpolated value to the element based on the given factor (0–1).
+        /// Applies an interpolated value to the element based on the given <paramref name="factor"/> (0–1).
         /// </summary>
         private void ApplyInterpolatedStep(float factor)
         {

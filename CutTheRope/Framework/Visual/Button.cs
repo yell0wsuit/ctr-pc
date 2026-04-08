@@ -9,7 +9,7 @@ namespace CutTheRope.Framework.Visual
     internal class Button : BaseElement
     {
         /// <summary>
-        /// Creates a button using separate up/down textures and assigns the provided identifier.
+        /// Creates a button using separate <paramref name="up"/>/<paramref name="down"/> textures and assigns the provided identifier.
         /// </summary>
         /// <param name="up">Texture for the unpressed state.</param>
         /// <param name="down">Texture for the pressed state.</param>
@@ -40,7 +40,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Initializes the button with separate elements for up/down states and an identifier.
+        /// Initializes the button with separate elements for <paramref name="up"/>/<paramref name="down"/> states and an identifier.
         /// </summary>
         /// <param name="up">Element to render while the button is up.</param>
         /// <param name="down">Element to render while the button is pressed.</param>

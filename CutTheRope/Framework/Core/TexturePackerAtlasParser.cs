@@ -143,12 +143,12 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Reorders parsed frame entries according to an explicit frame-order list.
-        /// Unlisted frames remain sorted by name after listed entries.
+        /// Reorders parsed frame <paramref name="entries"/> according to an explicit frame-order list.
+        /// Unlisted frames remain sorted by name after listed <paramref name="entries"/>.
         /// </summary>
         /// <param name="entries">Frame entries to reorder.</param>
         /// <param name="frameOrder">Preferred frame order.</param>
-        /// <returns>Reordered frame entries.</returns>
+        /// <returns>Reordered frame <paramref name="entries"/>.</returns>
         private static List<FrameEntry> OrderFrameEntries(List<FrameEntry> entries, IReadOnlyList<string> frameOrder)
         {
             Dictionary<string, int> order = new(StringComparer.Ordinal);
@@ -172,7 +172,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Parses a single frame entry and appends its data to the output atlas.
+        /// Parses a single frame <paramref name="entry"/> and appends its data to the output <paramref name="atlas"/>.
         /// </summary>
         /// <param name="entry">Frame entry to parse.</param>
         /// <param name="atlas">Output atlas receiving parsed frame data.</param>
@@ -261,7 +261,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Attempts to read a string property from a JSON object element.
+        /// Attempts to read a string property from a JSON object <paramref name="element"/>.
         /// </summary>
         /// <param name="element">JSON object element to inspect.</param>
         /// <param name="propertyName">Property name to read.</param>
@@ -274,7 +274,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Reads a numeric property from a JSON object element as a float.
+        /// Reads a numeric property from a JSON object <paramref name="element"/> as a float.
         /// </summary>
         /// <param name="element">JSON object element to inspect.</param>
         /// <param name="propertyName">Property name to read.</param>
@@ -287,7 +287,7 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Lightweight pairing of a frame name with its JSON data block.
+        /// Lightweight pairing of a frame <paramref name="name"/> with its JSON <paramref name="data"/> block.
         /// </summary>
         /// <param name="name">Frame name.</param>
         /// <param name="data">JSON data for the frame.</param>

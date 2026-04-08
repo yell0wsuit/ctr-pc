@@ -185,7 +185,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="textureResourceName">Logical texture resource name.</param>
         /// <returns>Loaded texture resource.</returns>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="textureResourceName"/> is null or empty.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="textureResourceName"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="InvalidOperationException">Thrown when the texture could not be loaded.</exception>
         internal static CTRTexture2D GetTexture(string textureResourceName)
         {
@@ -217,7 +217,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         /// <param name="stringKey">Localization key to resolve.</param>
         /// <param name="forceEnglish"><see langword="true" /> to always use English; otherwise uses the current language.</param>
-        /// <returns>Localized string, or an empty string when the key is null or empty.</returns>
+        /// <returns>Localized string, or an empty string when the key is <see langword="null"/> or empty.</returns>
         internal static string GetString(string stringKey, bool forceEnglish = false)
         {
             if (string.IsNullOrEmpty(stringKey))

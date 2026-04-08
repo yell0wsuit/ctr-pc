@@ -636,7 +636,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Advances the content container toward a target position at the provided speed for the current frame.
+        /// Advances the content container toward a target position at the provided <paramref name="speed"/> for the current frame.
         /// </summary>
         /// <param name="tsp">Target position in container space.</param>
         /// <param name="delta">Elapsed frame time in seconds.</param>

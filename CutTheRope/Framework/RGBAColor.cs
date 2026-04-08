@@ -57,7 +57,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Returns true if all four channels of <paramref name="a"/> and <paramref name="b"/> are equal.
+        /// Returns <see langword="true"/> if all four channels of <paramref name="a"/> and <paramref name="b"/> are equal.
         /// </summary>
         /// <param name="a">First color.</param>
         /// <param name="b">Second color.</param>
@@ -75,7 +75,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Converts an array of colors to a flat float array of channel values.
+        /// Converts an array of <paramref name="colors"/> to a flat float array of channel values.
         /// </summary>
         /// <param name="colors">Colors to convert.</param>
         public static float[] ToFloatArray(RGBAColor[] colors)
