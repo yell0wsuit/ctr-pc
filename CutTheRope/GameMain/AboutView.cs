@@ -98,6 +98,11 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <summary>
+        /// Builds the scrollable About/Credits content container.
+        /// </summary>
+        /// <param name="buttonDelegate">Button delegate used by controls embedded in the about content.</param>
+        /// <returns>The configured scrollable content container.</returns>
         private static ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate)
         {
             float containerWidth = 1300f;

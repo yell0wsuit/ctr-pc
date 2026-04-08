@@ -633,11 +633,19 @@ namespace CutTheRope.GameMain
             _ = AddChildwithID(openCloseAnims, 0);
         }
 
+        /// <summary>
+        /// Delayed-dispatcher callback that removes box open/close animation elements.
+        /// </summary>
+        /// <param name="obj">Box transition instance to update.</param>
         private static void Selector_removeOpenCloseAnims(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).RemoveOpenCloseAnims();
         }
 
+        /// <summary>
+        /// Delayed-dispatcher callback that finalizes the closed-box state.
+        /// </summary>
+        /// <param name="obj">Box transition instance to update.</param>
         private static void Selector_postBoxClosed(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).PostBoxClosed();

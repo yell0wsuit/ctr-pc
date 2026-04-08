@@ -191,6 +191,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Ensures candy ghost-bubble overlay animations exist for each active candy sprite.
+        /// </summary>
         private void EnsureCandyGhostBubbleAnimations()
         {
             if (!isCandyInGhostBubbleAnimationLoaded && candy != null)

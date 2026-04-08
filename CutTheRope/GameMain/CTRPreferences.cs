@@ -77,7 +77,12 @@ namespace CutTheRope.GameMain
             SetBooleanForKey(true, "MUSIC_ON", true);
         }
 
-        // temporary hack, remove after setting UI is implemented
+        /// <summary>
+        /// Ensures the Discord RPC preference exists until settings UI can create it.
+        /// </summary>
+        /// <remarks>
+        /// Todo: Remove after setting UI is implemented
+        /// </remarks>
         private static void SetRpcPreferenceInJson()
         {
             if (!ContainsKey("PREFS_RPC_ENABLED"))
@@ -86,7 +91,12 @@ namespace CutTheRope.GameMain
             }
         }
 
-        // temporary hack, remove after setting UI is implemented
+        /// <summary>
+        /// Ensures the update-check preference exists until settings UI can create it.
+        /// </summary>
+        /// <remarks>
+        /// Todo: Remove after setting UI is implemented
+        /// </remarks>
         private static void SetUpdateCheckPreferenceInJson()
         {
             if (!ContainsKey("PREFS_UPDATE_CHECK"))

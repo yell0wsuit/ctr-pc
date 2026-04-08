@@ -162,6 +162,11 @@ namespace CutTheRope.GameMain
             return [.. resources.Where(static resourceName => !string.IsNullOrWhiteSpace(resourceName))];
         }
 
+        /// <summary>
+        /// Scans all levels in a pack and returns every required image resource.
+        /// </summary>
+        /// <param name="pack">Pack index to scan.</param>
+        /// <returns>Unique image resource names required by the pack's levels.</returns>
         public static HashSet<string> GetBoxResources(int pack)
         {
             HashSet<string> resources = [];
