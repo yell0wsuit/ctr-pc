@@ -58,6 +58,7 @@ namespace CutTheRope
         /// <summary>
         /// Returns the current mouse state captured during the last update.
         /// </summary>
+        /// <returns>The most recently polled <see cref="MouseState"/>.</returns>
         public MouseState GetMouseState()
         {
             return _currentMouseState;
@@ -66,6 +67,8 @@ namespace CutTheRope
         /// <summary>
         /// Disables the depth-stencil buffer since the game is 2D only.
         /// </summary>
+        /// <param name="sender">The graphics device manager raising the event.</param>
+        /// <param name="e">Event arguments containing the device settings being prepared.</param>
         private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.DepthStencilFormat = DepthFormat.None;
@@ -74,6 +77,8 @@ namespace CutTheRope
         /// <summary>
         /// Handles window resize events, adjusting the viewport while ignoring fullscreen and minimized states.
         /// </summary>
+        /// <param name="sender">The window raising the event.</param>
+        /// <param name="e">Event arguments for the size change.</param>
         private void Window_ClientSizeChanged(object sender, EventArgs e)
         {
             // Ignore size changes when in fullscreen mode
@@ -97,6 +102,8 @@ namespace CutTheRope
         /// <summary>
         /// Saves preferences and disposes resources when the game is closing.
         /// </summary>
+        /// <param name="sender">The game instance raising the event.</param>
+        /// <param name="e">Event arguments for the exit notification.</param>
         private void Game1_Exiting(object sender, EventArgs e)
         {
             UpdateChecker.Cancel();
@@ -110,6 +117,8 @@ namespace CutTheRope
         /// <summary>
         /// Pauses the game when the window loses focus.
         /// </summary>
+        /// <param name="sender">The game instance raising the event.</param>
+        /// <param name="e">Event arguments for the deactivation notification.</param>
         private void Game1_Deactivated(object sender, EventArgs e)
         {
             _ignoreMouseClick = 60;
@@ -119,6 +128,8 @@ namespace CutTheRope
         /// <summary>
         /// Resumes the game when the window regains focus.
         /// </summary>
+        /// <param name="sender">The game instance raising the event.</param>
+        /// <param name="e">Event arguments for the activation notification.</param>
         private void Game1_Activated(object sender, EventArgs e)
         {
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
@@ -170,6 +181,7 @@ namespace CutTheRope
         /// <summary>
         /// Returns the system language detected from the current culture.
         /// </summary>
+        /// <returns>The <see cref="Language"/> matching the current system culture.</returns>
         private static Language GetSystemLanguage()
         {
             return LanguageHelper.FromSystemCulture();
@@ -179,6 +191,7 @@ namespace CutTheRope
         /// Returns whether the specified key was just pressed this frame (not held).
         /// </summary>
         /// <param name="key">The key to check.</param>
+        /// <returns><see langword="true"/> if <paramref name="key"/> transitioned from up to down this frame; otherwise <see langword="false"/>.</returns>
         public bool IsKeyPressed(Keys key)
         {
             _ = keyState.TryGetValue(key, out bool value);
@@ -191,6 +204,7 @@ namespace CutTheRope
         /// Returns whether the specified key is currently held down.
         /// </summary>
         /// <param name="key">The key to check.</param>
+        /// <returns><see langword="true"/> if <paramref name="key"/> is currently held; otherwise <see langword="false"/>.</returns>
         public bool IsKeyDown(Keys key)
         {
             return keyboardStateXna.IsKeyDown(key);
