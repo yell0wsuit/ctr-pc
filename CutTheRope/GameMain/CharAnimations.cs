@@ -172,8 +172,19 @@ namespace CutTheRope.GameMain
             base.PlayTimeline(t);
         }
 
+        /// <summary>
+        /// Animation layers managed by this character animation container.
+        /// </summary>
         private List<Animation> animations;
+
+        /// <summary>
+        /// Maps animation names to their layer indexes.
+        /// </summary>
         private Dictionary<string, int> animationNameToIndex;
+
+        /// <summary>
+        /// Next available animation layer index.
+        /// </summary>
         private int nextAnimationIndex;
     }
 }

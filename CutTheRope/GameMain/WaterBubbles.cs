@@ -10,9 +10,19 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class WaterBubbles : MultiParticles
     {
+        /// <summary>
+        /// Bubble quad indexes used when initializing particles.
+        /// </summary>
         private static readonly int[] s_bubbleQuads = [5, 4];
 
+        /// <summary>
+        /// Initial bubble particle size.
+        /// </summary>
         private float startSize;
+
+        /// <summary>
+        /// Final bubble particle size.
+        /// </summary>
         private float endSize;
 
         /// <inheritdoc />

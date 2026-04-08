@@ -12,6 +12,9 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class PopUpMenu(MenuController controller)
     {
+        /// <summary>
+        /// Popup builder bound to the owning menu controller.
+        /// </summary>
         internal readonly PopupBuilder builder = new(controller);
 
         /// <summary>

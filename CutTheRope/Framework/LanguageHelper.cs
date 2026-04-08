@@ -9,8 +9,9 @@ namespace CutTheRope.Framework
     /// </summary>
     public static class LanguageHelper
     {
-        // Available languages code for the UI
-        // More languages go here
+        /// <summary>
+        /// Language codes available in the UI language selector.
+        /// </summary>
         private static readonly string[] uiLanguageCodes = [
             "en", // English
             "ru", // Russian

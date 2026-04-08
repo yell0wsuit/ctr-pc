@@ -10,6 +10,9 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class TargetAnimationController
     {
+        /// <summary>
+        /// Backend implementation used for all target animation operations.
+        /// </summary>
         private readonly ITargetAnimationBackend backend;
 
         /// <summary>
