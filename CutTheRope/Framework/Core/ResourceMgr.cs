@@ -15,11 +15,15 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.Framework.Core
 {
+    /// <summary>
+    /// Loads, caches, frees, and background-prefetches framework resources such as textures, fonts, and sounds.
+    /// </summary>
     internal class ResourceMgr : FrameworkTypes
     {
         /// <summary>
         /// Adds a resource to the load queue by resource name.
         /// </summary>
+        /// <param name="resourceName">Logical resource name to enqueue.</param>
         public void AddResourceToLoadQueue(string resourceName)
         {
             if (TryResolveResource(resourceName, out string localizedName))
@@ -29,6 +33,9 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Removes cached font resources and clears the shared font cache.
+        /// </summary>
         public void ClearCachedFonts()
         {
             List<string> fontKeys = [];
@@ -49,6 +56,9 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Loads a resource using its string identifier while preserving caching semantics.
         /// </summary>
+        /// <param name="resourceName">Logical resource name to load.</param>
+        /// <param name="resType">Expected resource type.</param>
+        /// <returns>Loaded resource instance, or <see langword="null" /> when the name cannot be resolved.</returns>
         public virtual object LoadResource(string resourceName, ResourceType resType)
         {
             return !TryResolveResource(resourceName, out string localizedName)
@@ -56,6 +66,12 @@ namespace CutTheRope.Framework.Core
                 : LoadResourceInternal(localizedName, resType);
         }
 
+        /// <summary>
+        /// Loads or retrieves a cached resource using a resolved resource name.
+        /// </summary>
+        /// <param name="resourceName">Resolved resource name.</param>
+        /// <param name="resType">Expected resource type.</param>
+        /// <returns>Loaded resource instance, or <see langword="null" /> on failure.</returns>
         private object LoadResourceInternal(string resourceName, ResourceType resType)
         {
             if (s_Resources.TryGetValue(resourceName, out object value))
@@ -92,6 +108,12 @@ namespace CutTheRope.Framework.Core
             return value;
         }
 
+        /// <summary>
+        /// Resolves a logical resource name to its localized runtime resource name and validates it.
+        /// </summary>
+        /// <param name="resourceName">Logical resource name.</param>
+        /// <param name="localizedName">Resolved localized resource name when successful.</param>
+        /// <returns><see langword="true" /> when the resource name is valid and resolved; otherwise <see langword="false" />.</returns>
         private static bool TryResolveResource(string resourceName, out string localizedName)
         {
             localizedName = string.IsNullOrEmpty(resourceName)
@@ -101,11 +123,24 @@ namespace CutTheRope.Framework.Core
             return !string.IsNullOrEmpty(localizedName) && Resources.IsValidResourceName(localizedName);
         }
 
+        /// <summary>
+        /// Loads sound metadata for the specified content <paramref name="path"/>.
+        /// The base implementation returns a placeholder object.
+        /// </summary>
+        /// <param name="path">Resolved content path.</param>
+        /// <returns>Loaded sound metadata object.</returns>
         public virtual FrameworkTypes LoadSoundInfo(string path)
         {
             return new FrameworkTypes();
         }
 
+        /// <summary>
+        /// Loads a variable font resource using the configured font system.
+        /// </summary>
+        /// <param name="path">Resolved content path.</param>
+        /// <param name="resourceName">Logical font resource name.</param>
+        /// <param name="isWvga">Whether WVGA scaling rules should be applied.</param>
+        /// <returns>Loaded font resource.</returns>
         public virtual FontGeneric LoadVariableFontInfo(string path, string resourceName, bool isWvga)
         {
             // Check if user prefers old font system for supported languages (en, de, fr, ru)
@@ -147,6 +182,9 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Legacy sprite font loading (kept for backward compatibility).
         /// </summary>
+        /// <param name="path">Resolved XML font definition path.</param>
+        /// <param name="resourceName">Logical texture resource name that backs the sprite font.</param>
+        /// <returns>Loaded sprite-font instance.</returns>
         private static Font LoadSpriteFontInfo(string path, string resourceName)
         {
             XElement xmlNode = ContentPaths.LoadXml(path);
@@ -165,6 +203,16 @@ namespace CutTheRope.Framework.Core
             return font;
         }
 
+        /// <summary>
+        /// Loads a texture resource together with optional atlas/quad metadata.
+        /// </summary>
+        /// <param name="resourceName">Logical texture resource name.</param>
+        /// <param name="path">Resolved content path.</param>
+        /// <param name="i">Legacy XML metadata node, unused by the current implementation.</param>
+        /// <param name="isWvga">Whether WVGA scaling rules should be applied.</param>
+        /// <param name="scaleX">Horizontal texture scale.</param>
+        /// <param name="scaleY">Vertical texture scale.</param>
+        /// <returns>Loaded texture resource.</returns>
         public virtual CTRTexture2D LoadTextureImageInfo(string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
             TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
@@ -206,6 +254,14 @@ namespace CutTheRope.Framework.Core
             return texture2D;
         }
 
+        /// <summary>
+        /// Adjusts texture scales according to atlas configuration and aspect-ratio rules.
+        /// </summary>
+        /// <param name="defaultScaleX">Default horizontal scale.</param>
+        /// <param name="defaultScaleY">Default vertical scale.</param>
+        /// <param name="scaleRes">Optional atlas scale mode.</param>
+        /// <param name="aspectRatioScaleX">Aspect-ratio X scale used by legacy assets.</param>
+        /// <returns>Resolved texture scales.</returns>
         private static (float scaleX, float scaleY) ResolveTextureScales(
             float defaultScaleX,
             float defaultScaleY,
@@ -221,16 +277,33 @@ namespace CutTheRope.Framework.Core
             return (defaultScaleX, defaultScaleY);
         }
 
+        /// <summary>
+        /// Returns the aspect-ratio compensation scale applied to the X axis.
+        /// </summary>
+        /// <returns>Aspect-ratio scale factor.</returns>
         protected virtual float GetAspectRatioScaleX()
         {
             return 1f;
         }
 
+        /// <summary>
+        /// Returns atlas configuration for the specified texture resource, if any.
+        /// </summary>
+        /// <param name="resourceName">Logical texture resource name.</param>
+        /// <returns>Atlas configuration, or <see langword="null" /> when the texture is not atlas-backed.</returns>
         protected virtual TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
             return null;
         }
 
+        /// <summary>
+        /// Loads and parses TexturePacker atlas metadata for the specified resource.
+        /// </summary>
+        /// <param name="config">Atlas configuration for the resource.</param>
+        /// <param name="resourceName">Logical texture resource name.</param>
+        /// <returns>Parsed atlas metadata, or <see langword="null" /> when no atlas is configured.</returns>
+        /// <exception cref="FileNotFoundException">Thrown when the expected atlas JSON file is missing.</exception>
+        /// <exception cref="InvalidDataException">Thrown when the atlas JSON is empty.</exception>
         private static ParsedTexturePackerAtlas LoadTexturePackerAtlas(TextureAtlasConfig config, string resourceName)
         {
             // No atlas config means use full texture (e.g., background images)
@@ -279,6 +352,14 @@ namespace CutTheRope.Framework.Core
             return TexturePackerAtlasParser.Parse(json, options);
         }
 
+        /// <summary>
+        /// Applies parsed <paramref name="atlas"/> rectangles, offsets, and source sizes to a <paramref name="texture"/>.
+        /// </summary>
+        /// <param name="texture">Texture to update.</param>
+        /// <param name="atlas">Parsed atlas metadata.</param>
+        /// <param name="isWvga">Whether WVGA scaling rules should be applied.</param>
+        /// <param name="scaleX">Horizontal texture scale.</param>
+        /// <param name="scaleY">Vertical texture scale.</param>
         private static void ApplyTexturePackerInfo(CTRTexture2D texture, ParsedTexturePackerAtlas atlas, bool isWvga, float scaleX, float scaleY)
         {
             texture.preCutSize = vectUndefined;
@@ -337,6 +418,13 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Converts parsed atlas rectangle <paramref name="data"/> into engine quad information on the <paramref name="texture"/>.
+        /// </summary>
+        /// <param name="texture">Texture to update.</param>
+        /// <param name="data">Flat quad rectangle data array.</param>
+        /// <param name="scaleX">Horizontal texture scale.</param>
+        /// <param name="scaleY">Vertical texture scale.</param>
         private static void SetQuadsInfo(CTRTexture2D texture, float[] data, float scaleX, float scaleY)
         {
             int quadCount = data.Length / 4;
@@ -363,6 +451,14 @@ namespace CutTheRope.Framework.Core
             CTRTexture2D.OptimizeMemory();
         }
 
+        /// <summary>
+        /// Applies parsed atlas offset <paramref name="data"/> to <paramref name="texture"/> quad offsets.
+        /// </summary>
+        /// <param name="texture">Texture to update.</param>
+        /// <param name="data">Flat offset data array.</param>
+        /// <param name="offsetDataSize">Number of float entries stored in <paramref name="data"/>.</param>
+        /// <param name="scaleX">Horizontal texture scale.</param>
+        /// <param name="scaleY">Vertical texture scale.</param>
         private static void SetOffsetsInfo(CTRTexture2D texture, float[] data, int offsetDataSize, float scaleX, float scaleY)
         {
             int offsetCount = offsetDataSize / 2;
@@ -377,16 +473,29 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Returns the default horizontal scale used for the specified resource.
+        /// </summary>
+        /// <param name="resourceName">Logical resource name.</param>
+        /// <returns>Horizontal scale factor.</returns>
         public virtual float GetNormalScaleX(string resourceName)
         {
             return 1f;
         }
 
+        /// <summary>
+        /// Returns the default vertical scale used for the specified resource.
+        /// </summary>
+        /// <param name="resourceName">Logical resource name.</param>
+        /// <returns>Vertical scale factor.</returns>
         public virtual float GetNormalScaleY(string resourceName)
         {
             return 1f;
         }
 
+        /// <summary>
+        /// Resets queued loading state before building a new load batch.
+        /// </summary>
         public virtual void InitLoading()
         {
             loadQueue.Clear();
@@ -394,11 +503,19 @@ namespace CutTheRope.Framework.Core
             loadCount = 0;
         }
 
+        /// <summary>
+        /// Returns the percentage of queued resources that have completed loading.
+        /// </summary>
+        /// <returns>Load completion percentage from 0 to 100.</returns>
         public virtual int GetPercentLoaded()
         {
             return loadCount == 0 ? 100 : 100 * loaded / GetLoadCount();
         }
 
+        /// <summary>
+        /// Queues each resource in a <see langword="null"/>-terminated <paramref name="pack"/> array for loading.
+        /// </summary>
+        /// <param name="pack">Pack array of logical resource names.</param>
         public virtual void LoadPack(string[] pack)
         {
             if (pack == null)
@@ -495,6 +612,10 @@ namespace CutTheRope.Framework.Core
             prefetchQueueSet.Clear();
         }
 
+        /// <summary>
+        /// Frees each resource in a <see langword="null"/>-terminated <paramref name="pack"/> array.
+        /// </summary>
+        /// <param name="pack">Pack array of logical resource names.</param>
         public virtual void FreePack(string[] pack)
         {
             if (pack == null)
@@ -510,6 +631,9 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Loads every currently queued resource immediately on the calling thread.
+        /// </summary>
         public virtual void LoadImmediately()
         {
             while (loadQueue.Count != 0)
@@ -521,6 +645,9 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Starts timer-driven incremental loading when a resource delegate is available.
+        /// </summary>
         public virtual void StartLoading()
         {
             if (resourcesDelegate != null)
@@ -530,11 +657,18 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Returns the number of resources currently queued for loading.
+        /// </summary>
+        /// <returns>Queued resource count.</returns>
         private int GetLoadCount()
         {
             return loadCount;
         }
 
+        /// <summary>
+        /// Loads the next queued resource and notifies the delegate when the batch is complete.
+        /// </summary>
         public void Update()
         {
             if (loadQueue.Count > 0)
@@ -555,11 +689,19 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Timer callback adapter that forwards timer updates to the resource manager instance.
+        /// </summary>
+        /// <param name="obj">Resource manager instance to update.</param>
         private static void Rmgr_internalUpdate(FrameworkTypes obj)
         {
             ((ResourceMgr)obj).Update();
         }
 
+        /// <summary>
+        /// Loads a single resource by logical name using the application-level resource entry points.
+        /// </summary>
+        /// <param name="resourceName">Logical resource name to load.</param>
         private static void LoadResource(string resourceName)
         {
             if (!TryResolveResource(resourceName, out string localizedName))
@@ -594,6 +736,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Frees a cached resource by its string identifier if it has been loaded.
         /// </summary>
+        /// <param name="resourceName">Logical resource name to free.</param>
         public void FreeResource(string resourceName)
         {
             if (!TryResolveResource(resourceName, out string localizedName))
@@ -621,29 +764,74 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Delegate notified when asynchronous loading completes.
+        /// </summary>
         public IResourceMgrDelegate resourcesDelegate;
 
-        /// <summary>Stores all cached resources (textures, fonts, sounds, strings)</summary>
+        /// <summary>
+        /// Stores all cached resources (textures, fonts, sounds, strings)
+        /// </summary>
         private readonly Dictionary<string, object> s_Resources = [];
 
+        /// <summary>
+        /// Number of resources loaded in the current batch.
+        /// </summary>
         private int loaded;
 
+        /// <summary>
+        /// Total number of resources queued in the current batch.
+        /// </summary>
         private int loadCount;
 
+        /// <summary>
+        /// Pending resource names for batch loading.
+        /// </summary>
         private readonly List<string> loadQueue = [];
 
+        /// <summary>
+        /// Pending resource names for background prefetch.
+        /// </summary>
         private readonly List<string> prefetchQueue = [];
 
+        /// <summary>
+        /// Set mirror used to avoid duplicate entries in <see cref="prefetchQueue"/>.
+        /// </summary>
         private readonly HashSet<string> prefetchQueueSet = [];
 
+        /// <summary>
+        /// Timer identifier used for incremental loading.
+        /// </summary>
         private int Timer;
 
+        /// <summary>
+        /// Resource categories supported by the resource manager.
+        /// </summary>
         public enum ResourceType
         {
+            /// <summary>
+            /// Image or texture resource.
+            /// </summary>
             IMAGE,
+
+            /// <summary>
+            /// Font resource.
+            /// </summary>
             FONT,
+
+            /// <summary>
+            /// Sound resource.
+            /// </summary>
             SOUND,
+
+            /// <summary>
+            /// Binary data resource.
+            /// </summary>
             BINARY,
+
+            /// <summary>
+            /// Structured element resource.
+            /// </summary>
             ELEMENT
         }
     }

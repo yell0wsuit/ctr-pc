@@ -7,8 +7,12 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Game-specific <see cref="GameObject"/> subclass that parses mover paths and rotation from level XML.
+    /// </summary>
     internal class CTRGameObject : GameObject
     {
+        /// <inheritdoc />
         public override void ParseMover(XElement xml)
         {
             rotation = 0f;

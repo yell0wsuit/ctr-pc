@@ -6,30 +6,70 @@ using System.Text.Json;
 
 namespace CutTheRope.Framework.Core
 {
+    /// <summary>
+    /// Parsed TexturePacker atlas data prepared for the engine's rectangle/offset-based consumers.
+    /// </summary>
     internal sealed class ParsedTexturePackerAtlas
     {
+        /// <summary>
+        /// Parsed frame rectangles in atlas texture coordinates.
+        /// </summary>
         public List<CTRRectangle> Rects { get; } = [];
 
+        /// <summary>
+        /// Per-frame offsets applied when drawing trimmed sprites.
+        /// </summary>
         public List<Vector> Offsets { get; } = [];
 
+        /// <summary>
+        /// Original untrimmed source size for each frame.
+        /// </summary>
         public List<Vector> SourceSizes { get; } = [];
 
+        /// <summary>
+        /// Whether any parsed frame has a non-zero offset.
+        /// </summary>
         public bool HasNonZeroOffset { get; set; }
 
+        /// <summary>
+        /// Maximum original source width observed across all frames.
+        /// </summary>
         public float PreCutWidth { get; set; }
 
+        /// <summary>
+        /// Maximum original source height observed across all frames.
+        /// </summary>
         public float PreCutHeight { get; set; }
     }
 
+    /// <summary>
+    /// Options that control TexturePacker atlas parsing and post-processing.
+    /// </summary>
     internal sealed class TexturePackerParserOptions
     {
+        /// <summary>
+        /// Optional explicit frame ordering applied after parsing.
+        /// </summary>
         public IReadOnlyList<string> FrameOrder { get; init; }
 
+        /// <summary>
+        /// Whether frame offsets should be normalized to centered trim offsets.
+        /// </summary>
         public bool NormalizeOffsetsToCenter { get; init; }
     }
 
+    /// <summary>
+    /// Parses TexturePacker JSON atlas data into the engine's runtime atlas representation.
+    /// </summary>
     internal static class TexturePackerAtlasParser
     {
+        /// <summary>
+        /// Parses TexturePacker atlas JSON into rectangle, offset, and source-size data.
+        /// </summary>
+        /// <param name="json">TexturePacker atlas JSON text.</param>
+        /// <param name="options">Optional parsing and post-processing options.</param>
+        /// <returns>Parsed atlas data.</returns>
+        /// <exception cref="InvalidDataException">Thrown when the JSON is empty or required TexturePacker blocks are missing.</exception>
         public static ParsedTexturePackerAtlas Parse(string json, TexturePackerParserOptions options)
         {
             if (string.IsNullOrWhiteSpace(json))
@@ -70,6 +110,11 @@ namespace CutTheRope.Framework.Core
             return atlas;
         }
 
+        /// <summary>
+        /// Creates a normalized list of named frame entries from the TexturePacker <c>frames</c> block.
+        /// </summary>
+        /// <param name="framesElement">JSON element representing the <c>frames</c> block.</param>
+        /// <returns>Parsed frame entries.</returns>
         private static List<FrameEntry> CreateFrameEntries(JsonElement framesElement)
         {
             List<FrameEntry> entries = [];
@@ -97,6 +142,13 @@ namespace CutTheRope.Framework.Core
             return entries;
         }
 
+        /// <summary>
+        /// Reorders parsed frame <paramref name="entries"/> according to an explicit frame-order list.
+        /// Unlisted frames remain sorted by name after listed <paramref name="entries"/>.
+        /// </summary>
+        /// <param name="entries">Frame entries to reorder.</param>
+        /// <param name="frameOrder">Preferred frame order.</param>
+        /// <returns>Reordered frame <paramref name="entries"/>.</returns>
         private static List<FrameEntry> OrderFrameEntries(List<FrameEntry> entries, IReadOnlyList<string> frameOrder)
         {
             Dictionary<string, int> order = new(StringComparer.Ordinal);
@@ -119,6 +171,12 @@ namespace CutTheRope.Framework.Core
             return entries;
         }
 
+        /// <summary>
+        /// Parses a single frame <paramref name="entry"/> and appends its data to the output <paramref name="atlas"/>.
+        /// </summary>
+        /// <param name="entry">Frame entry to parse.</param>
+        /// <param name="atlas">Output atlas receiving parsed frame data.</param>
+        /// <param name="rectSizes">List tracking parsed rectangle sizes for later offset normalization.</param>
         private static void ParseFrame(FrameEntry entry, ParsedTexturePackerAtlas atlas, List<(float w, float h)> rectSizes)
         {
             if (!entry.Data.TryGetProperty("frame", out JsonElement frameElement) || frameElement.ValueKind != JsonValueKind.Object)
@@ -173,6 +231,11 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        /// <summary>
+        /// Replaces parsed offsets with centered trim offsets derived from source size and trimmed rectangle size.
+        /// </summary>
+        /// <param name="atlas">Atlas whose offsets should be updated.</param>
+        /// <param name="rectSizes">Trimmed rectangle sizes corresponding to atlas frames.</param>
         private static void ApplyCenteredOffsets(ParsedTexturePackerAtlas atlas, List<(float w, float h)> rectSizes)
         {
             if (atlas.Rects.Count == 0 || rectSizes.Count != atlas.Rects.Count)
@@ -197,6 +260,12 @@ namespace CutTheRope.Framework.Core
             atlas.HasNonZeroOffset = hasOffset;
         }
 
+        /// <summary>
+        /// Attempts to read a string property from a JSON object <paramref name="element"/>.
+        /// </summary>
+        /// <param name="element">JSON object element to inspect.</param>
+        /// <param name="propertyName">Property name to read.</param>
+        /// <returns>String property value, or <see langword="null" /> when missing or not a string.</returns>
         private static string TryGetString(JsonElement element, string propertyName)
         {
             return element.TryGetProperty(propertyName, out JsonElement value) && value.ValueKind == JsonValueKind.String
@@ -204,6 +273,12 @@ namespace CutTheRope.Framework.Core
                 : null;
         }
 
+        /// <summary>
+        /// Reads a numeric property from a JSON object <paramref name="element"/> as a float.
+        /// </summary>
+        /// <param name="element">JSON object element to inspect.</param>
+        /// <param name="propertyName">Property name to read.</param>
+        /// <returns>Numeric property value, or <c>0</c> when missing or not numeric.</returns>
         private static float ReadFloat(JsonElement element, string propertyName)
         {
             return !element.TryGetProperty(propertyName, out JsonElement value) || value.ValueKind != JsonValueKind.Number
@@ -211,10 +286,21 @@ namespace CutTheRope.Framework.Core
                 : (float)value.GetDouble();
         }
 
+        /// <summary>
+        /// Lightweight pairing of a frame <paramref name="name"/> with its JSON <paramref name="data"/> block.
+        /// </summary>
+        /// <param name="name">Frame name.</param>
+        /// <param name="data">JSON data for the frame.</param>
         private readonly struct FrameEntry(string name, JsonElement data)
         {
+            /// <summary>
+            /// Gets the frame name.
+            /// </summary>
             public string Name { get; } = name;
 
+            /// <summary>
+            /// Gets the JSON data block for the frame.
+            /// </summary>
             public JsonElement Data { get; } = data;
         }
     }

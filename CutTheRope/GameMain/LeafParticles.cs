@@ -19,6 +19,7 @@ namespace CutTheRope.GameMain
         /// Optional horizontal gravity bias. The magnitude is stored in <c>baseGravityX</c>
         /// and is smoothly reduced to zero over the system lifetime by <see cref="Update"/>.
         /// </param>
+        /// <returns>The initialized particle system instance, or <see langword="null"/> if initialization fails.</returns>
         public LeafParticles Init(int totalParticles, float angle, Image grid, float bgx = 0f)
         {
             if (InitWithTotalParticlesandImageGrid(totalParticles, grid) == null)
@@ -67,10 +68,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Ticks the particle system and gradually decays the horizontal gravity bias to zero.
-        /// Guards against division by zero when <c>life</c> has expired.
-        /// </summary>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -80,11 +78,7 @@ namespace CutTheRope.GameMain
             gravity.X = gravityX;
         }
 
-        /// <summary>
-        /// Overrides the base particle initialisation to select the debris quad (index 3)
-        /// from the atlas and randomise the particle size.
-        /// Desktop note: size is scaled 3× versus iOS to compensate for higher pixel density.
-        /// </summary>
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);

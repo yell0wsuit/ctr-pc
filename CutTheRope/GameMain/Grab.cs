@@ -11,8 +11,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Rope anchor hook object that can appear as a fixed hook, movable hook, wheel hook, gun hook, spider hook, or suction cup hook.
+    /// </summary>
     internal class Grab : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware, ITransporterScaleAware
     {
+        /// <summary>
+        /// Draws the circular grab radius using the cached antialiased line vertex buffer.
+        /// </summary>
+        /// <param name="s">Grab whose radius vertices should be drawn.</param>
+        /// <param name="color">Color used for the radius outline.</param>
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
             int segmentCount = s.vertexCount / 2;
@@ -37,6 +45,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Initializes a new grab with default rope, gun, balloon, suction cup, and stick state.
+        /// </summary>
         public Grab()
         {
             rope = null;
@@ -51,17 +62,32 @@ namespace CutTheRope.GameMain
             stickTimer = -1f;
         }
 
+        /// <summary>
+        /// Calculates the signed angle from one point to another around a center point.
+        /// </summary>
+        /// <param name="v1">Starting point.</param>
+        /// <param name="v2">Ending point.</param>
+        /// <param name="c">Rotation center.</param>
+        /// <returns>The rotation angle in degrees.</returns>
         public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
             Vector v3 = VectSub(v1, c);
             return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(v3));
         }
 
+        /// <summary>
+        /// Records the starting touch point for wheel rotation.
+        /// </summary>
+        /// <param name="v">World-space touch point.</param>
         public void HandleWheelTouch(Vector v)
         {
             lastWheelTouch = v;
         }
 
+        /// <summary>
+        /// Rotates a wheel hook from the last touch point and rolls the attached rope when possible.
+        /// </summary>
+        /// <param name="v">Current world-space touch point.</param>
         public void HandleWheelRotate(Vector v)
         {
             if (lastWheelTouch.X - v.X == 0f && lastWheelTouch.Y - v.Y == 0f)
@@ -106,6 +132,7 @@ namespace CutTheRope.GameMain
             lastWheelTouch = v;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -171,6 +198,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Updates spider movement along the attached rope.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds since the previous update.</param>
         public void UpdateSpider(float delta)
         {
             if (hasSpider && shouldActivate)
@@ -229,6 +260,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Draws the hook background layer and optional grab-radius outline.
+        /// </summary>
         public virtual void DrawBack()
         {
             if (invisible)
@@ -262,12 +296,16 @@ namespace CutTheRope.GameMain
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
         }
 
+        /// <summary>
+        /// Draws the attached rope behind the grab.
+        /// </summary>
         public void DrawBungee()
         {
             Bungee bungee = rope;
             bungee?.Draw();
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (invisible)
@@ -329,11 +367,17 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <summary>
+        /// Draws the spider attachment animation.
+        /// </summary>
         public void DrawSpider()
         {
             spider.Draw();
         }
 
+        /// <summary>
+        /// Draws the fired gun cup overlay.
+        /// </summary>
         public void DrawGunCup()
         {
             if (!gunFired)
@@ -344,6 +388,10 @@ namespace CutTheRope.GameMain
             gunCup?.Draw();
         }
 
+        /// <summary>
+        /// Attaches a rope to this grab and activates spider startup when needed.
+        /// </summary>
+        /// <param name="r">Rope to attach.</param>
         public void SetRope(Bungee r)
         {
             rope = r;
@@ -354,6 +402,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Configures this grab as a launcher that oscillates along a circular path.
+        /// </summary>
         public void SetLauncher()
         {
             launcher = true;
@@ -365,11 +416,18 @@ namespace CutTheRope.GameMain
             mover.Start();
         }
 
+        /// <summary>
+        /// Recomputes the cached grab-radius circle vertices.
+        /// </summary>
         public void ReCalcCircle()
         {
             DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
         }
 
+        /// <summary>
+        /// Configures this grab's radius and creates the visual resources for its active mode.
+        /// </summary>
+        /// <param name="r">Grab radius, or -1 for a fixed hook without a visible radius.</param>
         public void SetRadius(float r)
         {
             radius = r;
@@ -485,6 +543,12 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Configures this grab as a movable hook along a horizontal or vertical rail.
+        /// </summary>
+        /// <param name="l">Movable rail length.</param>
+        /// <param name="v">Whether the rail is vertical.</param>
+        /// <param name="o">Offset of the grab along the rail.</param>
         public void SetMoveLengthVerticalOffset(float l, bool v, float o)
         {
             moveLength = l;
@@ -534,6 +598,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Adds the bee visual overlay to this grab.
+        /// </summary>
         public void SetBee()
         {
             bee = Image_createWithResIDQuad(Resources.Img.ObjBee, BeeQuad);
@@ -566,6 +633,10 @@ namespace CutTheRope.GameMain
             _ = AddChild(bee);
         }
 
+        /// <summary>
+        /// Configures spider support for this grab.
+        /// </summary>
+        /// <param name="s">Whether this grab has an attached spider.</param>
         public void SetSpider(bool s)
         {
             hasSpider = s;
@@ -584,12 +655,18 @@ namespace CutTheRope.GameMain
             _ = AddChild(spider);
         }
 
+        /// <summary>
+        /// Disposes the attached rope and clears the rope reference.
+        /// </summary>
         public void DestroyRope()
         {
             rope?.Dispose();
             rope = null;
         }
 
+        /// <summary>
+        /// Updates suction cup visuals and synchronizes position to the attached rope.
+        /// </summary>
         public void UpdateKickState()
         {
             if (kicked)
@@ -609,10 +686,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint => Vect(x, y);
 
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             x = point.X;
@@ -620,16 +700,22 @@ namespace CutTheRope.GameMain
             ReCalcCircle();
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => 40f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -647,28 +733,40 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Base spider traversal speed along the rope.</summary>
         public const float SPIDER_SPEED = 117f;
 
+        /// <summary>Timeline ID for showing the gun cup.</summary>
         public const int GUN_CUP_SHOW = 0;
 
+        /// <summary>Timeline ID for hiding the gun cup in place.</summary>
         public const int GUN_CUP_HIDE = 1;
 
+        /// <summary>Timeline ID for dropping and hiding the gun cup.</summary>
         public const int GUN_CUP_DROP_AND_HIDE = 2;
 
+        /// <summary>Movement length used by suction cup behavior.</summary>
         public const int KICK_MOVE_LENGTH = 10;
 
+        /// <summary>Cut radius used by suction cup behavior.</summary>
         public const int KICK_CUT_RADIUS = 15;
 
+        /// <summary>Cut radius used by the gun hook.</summary>
         public const int GUN_CUT_RADIUS = 15;
 
+        /// <summary>Tap radius used by suction cup behavior.</summary>
         public const int KICK_TAP_RADIUS = 70;
 
+        /// <summary>Tap radius used by the gun hook.</summary>
         public const int GUN_TAP_RADIUS = 75;
 
+        /// <summary>Delay before a sticking suction cup grab becomes active.</summary>
         public const float STICK_DELAY = 0.05f;
 
+        /// <summary>Maximum number of stain marks available to suction cup grabs.</summary>
         public const int MAX_STAINS = 10;
 
+        /// <inheritdoc />
         public void DidMoveToOtherSide()
         {
             if (candyNumber != -1 && rope != null && rope.cut == -1)
@@ -677,11 +775,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;
         }
 
+        /// <inheritdoc />
         public void SetTransporterScale(float scale)
         {
             if (back != null)
@@ -697,28 +797,43 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Back visual layer for the hook.</summary>
         public Image back;
 
+        /// <summary>Front visual layer for the hook.</summary>
         public Image front;
 
         // public Image dot;
 
+        /// <summary>Rope attached to this grab.</summary>
         public Bungee rope;
 
+        /// <summary>Index of the candy attached to this grab, or -1 when no candy is attached.</summary>
         public int candyNumber = -1;
 
+        /// <summary>Grab radius used for rope creation and radius visualization.</summary>
         public float radius;
 
+        /// <summary>Alpha multiplier for the grab-radius visualization.</summary>
         public float radiusAlpha;
 
+        /// <summary>Whether the grab-radius visualization is fading out.</summary>
         public bool hideRadius;
 
+        /// <summary>Cached radius circle vertex positions.</summary>
         public float[] vertices;
 
+        /// <summary>Number of radius circle vertices stored in <see cref="vertices"/>.</summary>
         public int vertexCount;
 
+        /// <summary>Reusable vertex buffer used when drawing grab radius circles.</summary>
         private static VertexPositionColor[] s_grabCircleVerticesCache;
 
+        /// <summary>
+        /// Gets a reusable vertex buffer with at least the requested capacity.
+        /// </summary>
+        /// <param name="vertexCount">Minimum number of vertices required.</param>
+        /// <returns>A reusable vertex buffer.</returns>
         private static VertexPositionColor[] GetGrabCircleVertexCache(int vertexCount)
         {
             if (s_grabCircleVerticesCache == null || s_grabCircleVerticesCache.Length < vertexCount)
@@ -728,124 +843,200 @@ namespace CutTheRope.GameMain
             return s_grabCircleVerticesCache;
         }
 
+        /// <summary>Whether this grab uses the regulated wheel hook behavior.</summary>
         public bool wheel;
 
+        /// <summary>Highlight visual shown while the wheel hook is being operated.</summary>
         public Image wheelHighlight;
 
+        /// <summary>Base wheel hook visual.</summary>
         public Image wheelImage;
 
+        /// <summary>Wheel hook arm visual.</summary>
         public Image wheelImage2;
 
+        /// <summary>Wheel hook indicator visual.</summary>
         public Image wheelImage3;
 
+        /// <summary>Identifier for the active wheel touch, or -1 when idle.</summary>
         public int wheelOperating;
 
+        /// <summary>Last touch point used to compute wheel rotation deltas.</summary>
         public Vector lastWheelTouch;
 
+        /// <summary>Length of the movable hook rail.</summary>
         public float moveLength;
 
+        /// <summary>Whether the movable hook rail is vertical.</summary>
         public bool moveVertical;
 
+        /// <summary>Offset of the grab along its movable rail.</summary>
         public float moveOffset;
 
+        /// <summary>Tiled rail background for a movable hook.</summary>
         public HorizontallyTiledImage moveBackground;
 
+        /// <summary>Movable hook highlight visual.</summary>
         public Image grabMoverHighlight;
 
+        /// <summary>Movable hook foreground visual.</summary>
         public Image grabMover;
 
+        /// <summary>Identifier for the active movable-hook drag, or -1 when idle.</summary>
         public int moverDragging;
 
+        /// <summary>Minimum coordinate value allowed while moving along the rail.</summary>
         public float minMoveValue;
 
+        /// <summary>Maximum coordinate value allowed while moving along the rail.</summary>
         public float maxMoveValue;
 
+        /// <summary>Whether this grab has a spider attachment.</summary>
         public bool hasSpider;
 
+        /// <summary>Whether the spider attachment is currently walking along the rope.</summary>
         public bool spiderActive;
 
+        /// <summary>Spider attachment animation.</summary>
         public Animation spider;
 
+        /// <summary>Current spider traversal distance along the rope.</summary>
         public float spiderPos;
 
+        /// <summary>Whether the spider should activate on the next update.</summary>
         public bool shouldActivate;
 
+        /// <summary>Whether the wheel arm scale needs to be recomputed.</summary>
         public bool wheelDirty;
 
+        /// <summary>Whether this grab moves as a launcher.</summary>
         public bool launcher;
 
+        /// <summary>Current launcher movement speed.</summary>
         public float launcherSpeed;
 
+        /// <summary>Whether launcher speed is currently increasing.</summary>
         public bool launcherIncreaseSpeed;
 
+        /// <summary>Initial grab rotation used when restoring state.</summary>
         public float initial_rotation;
 
+        /// <summary>Initial X position used when restoring state.</summary>
         public float initial_x;
 
+        /// <summary>Initial Y position used when restoring state.</summary>
         public float initial_y;
 
+        /// <summary>Initial rotated-circle binding used when restoring state.</summary>
         public RotatedCircle initial_rotatedCircle;
 
+        /// <summary>Whether this grab uses survival balloon behavior.</summary>
         public bool baloon;
 
+        /// <summary>Whether this grab uses gun hook behavior.</summary>
         public bool gun;
 
+        /// <summary>Whether the gun hook has fired its cup.</summary>
         public bool gunFired;
 
+        /// <summary>Back visual layer for the gun hook.</summary>
         private Image gunBack;
 
+        /// <summary>Aim arrow visual for the gun hook.</summary>
         public Image gunArrow;
 
+        /// <summary>Front visual layer for the gun hook.</summary>
         public Image gunFront;
 
+        /// <summary>Animated suction cup fired by the gun hook.</summary>
         public Animation gunCup;
 
+        /// <summary>Initial gun hook rotation used when restoring state.</summary>
         public float gunInitialRotation;
 
+        /// <summary>Initial candy rotation captured when the gun hook fires.</summary>
         public float gunCandyInitialRotation;
 
+        /// <summary>Remaining stain marks available to the suction cup hook.</summary>
         public int stainCounter;
 
+        /// <summary>Whether this grab uses suction cup behavior.</summary>
         public bool kickable;
 
+        /// <summary>Whether suction cup behavior has been triggered.</summary>
         public bool kicked;
 
+        /// <summary>Whether suction cup behavior is active.</summary>
         public bool kickActive;
 
+        /// <summary>Whether this grab should skip drawing.</summary>
         public bool invisible;
+
+        /// <summary>Timer used by suction cup sticking behavior.</summary>
         public float stickTimer;
 
+        /// <summary>Bee visual attached to this grab.</summary>
         public Image bee;
 
-        // Combined obj_hook quad indices
+        /// <summary>First random fixed hook back quad.</summary>
         private const int Hook01BackQuad = 0;
+
+        /// <summary>Second random fixed hook back quad.</summary>
         private const int Hook02BackQuad = 2;
+
+        /// <summary>Automatic-radius hook back quad.</summary>
         private const int HookAutoBackQuad = 4;
+
+        /// <summary>Automatic-radius hook front quad.</summary>
         private const int HookAutoFrontQuad = 5;
+
+        /// <summary>Movable rail left cap quad.</summary>
         private const int MovableRailLeftQuad = 6;
+
+        /// <summary>Movable rail right cap quad.</summary>
         private const int MovableRailRightQuad = 7;
+
+        /// <summary>Movable rail center tile quad.</summary>
         private const int MovableRailCenterQuad = 8;
+
+        /// <summary>Movable hook highlight quad.</summary>
         private const int MovableHookHighlightQuad = 9;
+
+        /// <summary>Movable hook foreground quad.</summary>
         private const int MovableHookQuad = 10;
+
+        /// <summary>Regulated wheel base quad.</summary>
         private const int RegulatedWheelQuadBase = 11;
+
+        /// <summary>Regulated wheel arm quad.</summary>
         private const int RegulatedWheelQuadArm = 12;
+
+        /// <summary>Regulated wheel highlight quad.</summary>
         private const int RegulatedWheelQuadHighlight = 13;
+
+        /// <summary>Regulated wheel indicator quad.</summary>
         private const int RegulatedWheelQuadIndicator = 14;
 
+        /// <summary>Bee body quad.</summary>
         private const int BeeQuad = 1;
 
+        /// <summary>Gun hook back quad.</summary>
         private const int GunBackQuad = 0;
 
+        /// <summary>Gun hook arrow quad.</summary>
         private const int GunArrowQuad = 1;
 
+        /// <summary>Gun hook front quad.</summary>
         private const int GunFrontQuad = 2;
 
+        /// <summary>Whether the shared movable rail texture quads have been trimmed.</summary>
         private static bool s_movableRailTrimmed;
 
         /// <summary>
         /// Trims 1px transparent edges from movable rail tiles to prevent tiling seams.
         /// Only applies once to avoid compounding mutations on the shared texture.
         /// </summary>
+        /// <param name="texture">Hook texture containing movable rail quads.</param>
         private static void TrimMovableRailTileEdges(CTRTexture2D texture)
         {
             if (s_movableRailTrimmed)
@@ -870,16 +1061,30 @@ namespace CutTheRope.GameMain
             texture.quads[MovableRailCenterQuad] = DrawHelper.GetTextureCoordinates(texture, center);
         }
 
+        /// <summary>
+        /// Selects one of the fixed hook back quad variants.
+        /// </summary>
+        /// <returns>The selected fixed hook back quad index.</returns>
         private static int RandomHookBaseQuad()
         {
             return RND_RANGE(0, 1) == 0 ? Hook01BackQuad : Hook02BackQuad;
         }
 
+        /// <summary>
+        /// Spider animation identifiers.
+        /// </summary>
         private enum SPIDER_ANI
         {
+            /// <summary>Spider start animation.</summary>
             SPIDER_START_ANI,
+
+            /// <summary>Spider walk animation.</summary>
             SPIDER_WALK_ANI,
+
+            /// <summary>Spider busted animation.</summary>
             SPIDER_BUSTED_ANI,
+
+            /// <summary>Spider catch animation.</summary>
             SPIDER_CATCH_ANI
         }
     }

@@ -7,18 +7,24 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Gameplay view that draws the active scene, pause overlay, restart controls, and results elements.
+    /// </summary>
     internal sealed class GameView : View
     {
+        /// <inheritdoc />
         public override void Show()
         {
             base.Show();
         }
 
+        /// <inheritdoc />
         public override void Hide()
         {
             base.Hide();
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Global.MouseCursor.Enable(true);
@@ -57,14 +63,19 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Child index for the active game scene.</summary>
         public const int VIEW_ELEMENT_GAME_SCENE = 0;
 
+        /// <summary>Child index for the pause button.</summary>
         public const int VIEW_ELEMENT_PAUSE_BUTTON = 1;
 
+        /// <summary>Child index for the restart button.</summary>
         public const int VIEW_ELEMENT_RESTART_BUTTON = 2;
 
+        /// <summary>Child index for the pause menu overlay.</summary>
         public const int VIEW_ELEMENT_PAUSE_MENU = 3;
 
+        /// <summary>Child index for the results view.</summary>
         public const int VIEW_ELEMENT_RESULTS = 4;
     }
 }

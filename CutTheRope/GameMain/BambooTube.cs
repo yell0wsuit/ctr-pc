@@ -1,5 +1,5 @@
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -15,6 +15,10 @@ namespace CutTheRope.GameMain
         /// <paramref name="angle"/> (degrees) and an optional <paramref name="scale"/> factor
         /// that drives the bounding-box size and capture radius.
         /// </summary>
+        /// <param name="position">World-space centre position of the tube.</param>
+        /// <param name="angle">Initial rotation in degrees.</param>
+        /// <param name="scale">Interaction scale factor that drives bounding-box size and capture radius.</param>
+        /// <returns>This instance, for fluent initialisation.</returns>
         public BambooTube InitWithPositionAngle(Vector position, float angle, float scale = 1f)
         {
             _ = InitWithTexture(Application.GetTexture(Resources.Img.ObjBambooTube));
@@ -38,9 +42,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Animates the tube smoothly toward its target rotation when a snap is in progress.
-        /// </summary>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -69,6 +71,8 @@ namespace CutTheRope.GameMain
         /// Tapping the inner zone (r &lt; bb.w/3) triggers a CCW snap.
         /// Touching the ring zone (bb.w/3 &lt; r &lt; bb.w/1.5) begins a free rotation drag.
         /// </summary>
+        /// <param name="touchPoint">World-space touch position.</param>
+        /// <param name="touchIndex">Platform touch index identifying this finger.</param>
         /// <returns><see langword="true"/> if the caller should track subsequent move/end events for this touch index.</returns>
         public bool HandleBambooTouchWithIndex(Vector touchPoint, int touchIndex)
         {
@@ -101,6 +105,7 @@ namespace CutTheRope.GameMain
         /// Advances <c>bambooStartRotation</c> by 90° steps so the snap on release
         /// always targets the nearest 90° boundary from the gesture origin.
         /// </summary>
+        /// <param name="touchPoint">Current world-space touch position.</param>
         public void HandleBambooRotate(Vector touchPoint)
         {
             float angleDelta = GetRotateAngleForStartEndCenter(bambooLastTouch, touchPoint, Vect(x, y));
@@ -145,6 +150,8 @@ namespace CutTheRope.GameMain
         /// Tests whether <paramref name="candyPoint"/> has entered either hole.
         /// If so, records the exit hole in <see cref="HoleOut"/> and returns <see langword="true"/>.
         /// </summary>
+        /// <param name="candyPoint">The candy physics point to test, or <see langword="null"/>.</param>
+        /// <returns><see langword="true"/> if the candy entered a hole; otherwise <see langword="false"/>.</returns>
         public bool TryCatchCandy(ConstraintedPoint candyPoint)
         {
             if (candyPoint == null)
@@ -172,6 +179,7 @@ namespace CutTheRope.GameMain
         /// Teleports <paramref name="candyPoint"/> to the exit hole and applies a Verlet
         /// impulse so the physics integrator launches it outward at <see cref="BambooThrowSpeed"/>.
         /// </summary>
+        /// <param name="candyPoint">The candy physics point to teleport, or <see langword="null"/>.</param>
         public void ThrowCandy(ConstraintedPoint candyPoint)
         {
             if (candyPoint == null)
@@ -198,6 +206,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Spawns a <see cref="LeafParticles"/> burst at the exit hole.
         /// </summary>
+        /// <param name="pool">The animations pool that will own the spawned particle system.</param>
         public void ThrowParticlesOut(AnimationsPool pool)
         {
             if (pool == null)
@@ -246,6 +255,10 @@ namespace CutTheRope.GameMain
         /// Returns the signed angle (degrees) needed to rotate from <paramref name="start"/>
         /// to <paramref name="end"/> about <paramref name="center"/>.
         /// </summary>
+        /// <param name="start">Starting touch position.</param>
+        /// <param name="end">Ending touch position.</param>
+        /// <param name="center">Centre of rotation.</param>
+        /// <returns>Signed rotation angle in degrees.</returns>
         private static float GetRotateAngleForStartEndCenter(Vector start, Vector end, Vector center)
         {
             Vector startOffset = VectSub(start, center);
@@ -257,6 +270,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Normalises <paramref name="angle"/> into (-180, 180].
         /// </summary>
+        /// <param name="angle">Angle in degrees to normalise.</param>
+        /// <returns>The normalised angle in the range (-180, 180].</returns>
         private static float AngleTo180(float angle)
         {
             float normalized = AngleTo0_360(angle);
@@ -273,6 +288,9 @@ namespace CutTheRope.GameMain
         /// <paramref name="holePosition"/> (i.e. into the tube rather than away from it).
         /// Uses <c>posDelta</c> as a fallback when <c>prevPos</c> is not yet initialised.
         /// </summary>
+        /// <param name="candyPoint">The candy physics point to test.</param>
+        /// <param name="holePosition">World-space position of the hole being tested.</param>
+        /// <returns><see langword="true"/> if the candy is moving toward the hole; otherwise <see langword="false"/>.</returns>
         private bool IsCandyMovingInside(ConstraintedPoint candyPoint, Vector holePosition)
         {
             Vector movement = candyPoint.prevPos.X == UNDEFINED_COORDINATE
@@ -321,26 +339,56 @@ namespace CutTheRope.GameMain
 
         /// <summary>Bounding-box half-size in unscaled points.</summary>
         private const float BambooBaseBbSize = 75f;
+
         /// <summary>Capture radius in unscaled points. Scaled by <see cref="interactionScale"/> at runtime.</summary>
         private const float BambooCaptureRadius = 17.5f;
+
         /// <summary>Launch speed in points per physics step (Verlet impulse magnitude).</summary>
         private const float BambooThrowSpeed = 7.5f;
+
         /// <summary>Snap threshold: rotation within this many degrees of the target snaps immediately.</summary>
         private const float BambooRotationSnapThreshold = 5f;
+
+        /// <summary>Texture quad index for the core (centre) sprite.</summary>
         private const int BambooCoreQuad = 0;
+
+        /// <summary>Texture quad index for the back shell sprite.</summary>
         private const int BambooBackQuad = 1;
+
+        /// <summary>Texture quad index for the front shell sprite.</summary>
         private const int BambooFrontQuad = 2;
 
+        /// <summary>Scale factor applied to bounding box and capture radius.</summary>
         private float interactionScale = 1f;
+
+        /// <summary><see langword="true"/> while the tube is animating toward <see cref="bambooTargetRotation"/>.</summary>
         private bool isRotatingBamboo;
+
+        /// <summary>Rotation at the start of the current drag gesture, in degrees.</summary>
         private float bambooStartRotation;
+
+        /// <summary>Target rotation the snap animation is converging toward, in degrees.</summary>
         private float bambooTargetRotation;
+
+        /// <summary>Current visual rotation of the tube, in degrees.</summary>
         private float bambooVisualRotation;
+
+        /// <summary>Last recorded touch position during a drag gesture.</summary>
         private Vector bambooLastTouch;
+
+        /// <summary>World-space position of hole 1 (recomputed on rotation).</summary>
         private Vector bambooHole1;
+
+        /// <summary>World-space position of hole 2 (recomputed on rotation).</summary>
         private Vector bambooHole2;
+
+        /// <summary>World-space position of the exit hole after a successful <see cref="TryCatchCandy"/>.</summary>
         private Vector bambooHoleOut;
+
+        /// <summary>Back shell child sprite.</summary>
         private Image bambooBackSprite;
+
+        /// <summary>Front shell child sprite.</summary>
         private Image bambooFrontSprite;
     }
 }

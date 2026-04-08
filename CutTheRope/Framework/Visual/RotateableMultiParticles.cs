@@ -2,8 +2,12 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="MultiParticles"/> variant that adds per-particle rotation.
+    /// </summary>
     internal class RotateableMultiParticles : MultiParticles
     {
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -11,6 +15,7 @@ namespace CutTheRope.Framework.Visual
             particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
         }
 
+        /// <inheritdoc />
         public override void UpdateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -76,6 +81,7 @@ namespace CutTheRope.Framework.Visual
             particleCount--;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -101,8 +107,14 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Rotation speed in degrees per second.
+        /// </summary>
         public float rotateSpeed;
 
+        /// <summary>
+        /// Rotation speed variance in degrees per second.
+        /// </summary>
         public float rotateSpeedVar;
     }
 }

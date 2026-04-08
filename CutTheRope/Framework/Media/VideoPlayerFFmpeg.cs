@@ -315,7 +315,7 @@ namespace CutTheRope.Framework.Media
         /// Initializes FFmpeg contexts and opens the video file for decoding.
         /// </summary>
         /// <param name="filePath">Full path to the video file.</param>
-        /// <returns><c>true</c> if initialization succeeded; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if initialization succeeded; otherwise, <see langword="false" />.</returns>
         private bool InitializeFfmpeg(string filePath)
         {
             AVFormatContext* openedContext = null;
@@ -555,7 +555,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Initializes audio decoding and playback components.
         /// </summary>
-        /// <returns><c>true</c> if audio initialization succeeded or no audio stream exists; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if audio initialization succeeded or no audio stream exists; otherwise, <see langword="false" />.</returns>
         private bool InitializeAudio()
         {
             audioStreamIndex = -1;
@@ -816,7 +816,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Checks whether all decoded audio has fully finished playing.
         /// </summary>
-        /// <returns><c>true</c> when no queued or pending audio buffers remain.</returns>
+        /// <returns><see langword="true" /> when no queued or pending audio buffers remain.</returns>
         private bool IsAudioPlaybackDrained()
         {
             if (mute || audioInstance == null)

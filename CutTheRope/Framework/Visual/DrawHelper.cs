@@ -8,18 +8,41 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// Static utility methods for drawing textures, shapes, curves, and polygons.
+    /// </summary>
     internal sealed class DrawHelper : FrameworkTypes
     {
+        /// <summary>
+        /// Draws the full texture at the specified position.
+        /// </summary>
+        /// <param name="image">Texture to draw.</param>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
         public static void DrawImage(CTRTexture2D image, float x, float y)
         {
             CTRTexture2D.DrawAtPoint(image, Vect(x, y));
         }
 
+        /// <summary>
+        /// Draws a rectangular region of the texture at the specified position.
+        /// </summary>
+        /// <param name="image">Texture to draw from.</param>
+        /// <param name="rect">Source rectangle within the texture.</param>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
         public static void DrawImagePart(CTRTexture2D image, CTRRectangle rect, float x, float y)
         {
             CTRTexture2D.DrawRectAtPoint(image, rect, Vect(x, y));
         }
 
+        /// <summary>
+        /// Draws a specific quad from the texture, or the full <paramref name="image"/> if <paramref name="quadIndex"/> is -1.
+        /// </summary>
+        /// <param name="image">Texture to draw from.</param>
+        /// <param name="quadIndex">Quad index, or -1 for full image.</param>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
         public static void DrawImageQuad(CTRTexture2D image, int quadIndex, float x, float y)
         {
             if (quadIndex == -1)
@@ -30,16 +53,44 @@ namespace CutTheRope.Framework.Visual
             CTRTexture2D.DrawQuadAtPoint(image, quadIndex, Vect(x, y));
         }
 
+        /// <summary>
+        /// Draws a texture quad tiled to fill the specified area.
+        /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="quadIndex">Quad index, or -1 for full image.</param>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
+        /// <param name="width">Width of the tiled area.</param>
+        /// <param name="height">Height of the tiled area.</param>
         public static void DrawImageTiledCool(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
         {
             DrawImageTiledInternal(image, quadIndex, x, y, width, height, allowLegacyFallback: true);
         }
 
+        /// <summary>
+        /// Draws a texture quad tiled to fill the specified area.
+        /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="quadIndex">Quad index, or -1 for full image.</param>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
+        /// <param name="width">Width of the tiled area.</param>
+        /// <param name="height">Height of the tiled area.</param>
         public static void DrawImageTiled(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
         {
             DrawImageTiledInternal(image, quadIndex, x, y, width, height, allowLegacyFallback: true);
         }
 
+        /// <summary>
+        /// Internal tiled drawing implementation with optional legacy fallback.
+        /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="quadIndex">Quad index, or -1 for full image.</param>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
+        /// <param name="width">Width of the tiled area.</param>
+        /// <param name="height">Height of the tiled area.</param>
+        /// <param name="allowLegacyFallback">Whether to use the per-tile fallback if batching is not possible.</param>
         private static void DrawImageTiledInternal(CTRTexture2D image, int quadIndex, float x, float y, float width, float height, bool allowLegacyFallback)
         {
             float texX = 0f;
@@ -76,6 +127,19 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Attempts to draw tiled quads in a single batched draw call. Returns <see langword="false"/> if the batch is too large.
+        /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="texX">Source X offset in texture pixels.</param>
+        /// <param name="texY">Source Y offset in texture pixels.</param>
+        /// <param name="tileWidth">Tile width in pixels.</param>
+        /// <param name="tileHeight">Tile height in pixels.</param>
+        /// <param name="x">Destination X position.</param>
+        /// <param name="y">Destination Y position.</param>
+        /// <param name="width">Destination tiled width.</param>
+        /// <param name="height">Destination tiled height.</param>
+        /// <returns><see langword="true"/> when the tile batch was submitted; otherwise <see langword="false"/>.</returns>
         private static bool TryDrawImageTiledBatch(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
         {
             int tileColumns = (int)MathF.Ceiling(width / tileWidth);
@@ -150,6 +214,18 @@ namespace CutTheRope.Framework.Visual
             return true;
         }
 
+        /// <summary>
+        /// Fallback tiled drawing using individual draw calls per tile.
+        /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="texX">Source X offset in texture pixels.</param>
+        /// <param name="texY">Source Y offset in texture pixels.</param>
+        /// <param name="tileWidth">Tile width in pixels.</param>
+        /// <param name="tileHeight">Tile height in pixels.</param>
+        /// <param name="x">Destination X position.</param>
+        /// <param name="y">Destination Y position.</param>
+        /// <param name="width">Destination tiled width.</param>
+        /// <param name="height">Destination tiled height.</param>
         private static void DrawImageTiledFallback(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
         {
             for (float currentY = 0f; currentY < height; currentY += tileHeight)
@@ -172,6 +248,12 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Computes UV <paramref name="texture"/> coordinates for the given source rectangle.
+        /// </summary>
+        /// <param name="texture">Texture to compute coordinates for.</param>
+        /// <param name="rect">Source rectangle in pixel coordinates.</param>
+        /// <returns>UV coordinates normalized to the texture size.</returns>
         public static Quad2D GetTextureCoordinates(CTRTexture2D texture, CTRRectangle rect)
         {
             return Quad2D.MakeQuad2D(
@@ -181,6 +263,13 @@ namespace CutTheRope.Framework.Visual
                 texture._invHeight * rect.h);
         }
 
+        /// <summary>
+        /// Recursively evaluates a multi-point Bezier curve at <paramref name="delta"/>.
+        /// </summary>
+        /// <param name="p">Control points.</param>
+        /// <param name="count">Number of control points.</param>
+        /// <param name="delta">Interpolation parameter (0–1).</param>
+        /// <returns>The interpolated point on the curve.</returns>
         public static Vector CalcPathBezier(Vector[] p, int count, float delta)
         {
             Vector[] array = new Vector[count - 1];
@@ -195,6 +284,13 @@ namespace CutTheRope.Framework.Visual
             return count == 2 ? Calc2PointBezier(ref p[0], ref p[1], delta) : default;
         }
 
+        /// <summary>
+        /// Linearly interpolates between two points at <paramref name="delta"/>.
+        /// </summary>
+        /// <param name="a">Start point.</param>
+        /// <param name="b">End point.</param>
+        /// <param name="delta">Interpolation parameter (0–1).</param>
+        /// <returns>The interpolated point.</returns>
         public static Vector Calc2PointBezier(ref Vector a, ref Vector b, float delta)
         {
             float inverseDelta = 1f - delta;
@@ -205,6 +301,14 @@ namespace CutTheRope.Framework.Visual
             };
         }
 
+        /// <summary>
+        /// Computes vertices for a circle approximation.
+        /// </summary>
+        /// <param name="x">Center X.</param>
+        /// <param name="y">Center Y.</param>
+        /// <param name="radius">Circle radius.</param>
+        /// <param name="vertexCount">Number of vertices.</param>
+        /// <param name="glVertices">Output array of interleaved X/Y pairs.</param>
         public static void CalcCircle(float x, float y, float radius, int vertexCount, float[] glVertices)
         {
             float angleStep = MathF.Tau / vertexCount;
@@ -217,6 +321,18 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Draws the arc where two circles intersect.
+        /// </summary>
+        /// <param name="cx1">Center X of the first circle.</param>
+        /// <param name="cy1">Center Y of the first circle.</param>
+        /// <param name="radius1">Radius of the first circle.</param>
+        /// <param name="cx2">Center X of the second circle.</param>
+        /// <param name="cy2">Center Y of the second circle.</param>
+        /// <param name="radius2">Radius of the second circle.</param>
+        /// <param name="vertexCount">Number of vertices for the arc.</param>
+        /// <param name="width">Line width.</param>
+        /// <param name="fill">Fill color.</param>
         public static void DrawCircleIntersection(float cx1, float cy1, float radius1, float cx2, float cy2, float radius2, int vertexCount, float width, RGBAColor fill)
         {
             float centerDistance = VectDistance(Vect(cx1, cy1), Vect(cx2, cy2));
@@ -237,6 +353,18 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Draws an antialiased arc with inner/outer fade.
+        /// </summary>
+        /// <param name="cx">Center X.</param>
+        /// <param name="cy">Center Y.</param>
+        /// <param name="radius">Arc radius.</param>
+        /// <param name="startAngle">Start angle in radians.</param>
+        /// <param name="endAngle">End angle in radians.</param>
+        /// <param name="vertexCount">Number of vertices for the arc.</param>
+        /// <param name="width">Stroke width.</param>
+        /// <param name="fadeWidth">Fade width for antialiasing.</param>
+        /// <param name="fill">Stroke color.</param>
         public static void DrawAntialiasedCurve2(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float width, float fadeWidth, RGBAColor fill)
         {
             float[] array = GetFloatCache(ref s_curveVerticesCache, ((vertexCount - 1) * 12) + 4);
@@ -299,6 +427,16 @@ namespace CutTheRope.Framework.Visual
             Renderer.DrawTriangleStrip(vertices, stripVertexCount);
         }
 
+        /// <summary>
+        /// Computes vertices for a circular arc using an incremental rotation approach.
+        /// </summary>
+        /// <param name="cx">Center X.</param>
+        /// <param name="cy">Center Y.</param>
+        /// <param name="radius">Arc radius.</param>
+        /// <param name="startAngle">Arc start angle in radians.</param>
+        /// <param name="endAngle">Arc end angle in radians.</param>
+        /// <param name="vertexCount">Number of output vertices.</param>
+        /// <param name="glVertices">Output array of interleaved X/Y pairs.</param>
         private static void CalcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
             float angleStep = (endAngle - startAngle) / (vertexCount - 1);
@@ -319,6 +457,16 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Builds vertices for an antialiased line segment with fade-out edges.
+        /// </summary>
+        /// <param name="x1">Start X.</param>
+        /// <param name="y1">Start Y.</param>
+        /// <param name="x2">End X.</param>
+        /// <param name="y2">End Y.</param>
+        /// <param name="size">Half-width of the line.</param>
+        /// <param name="color">Line color.</param>
+        /// <returns>An 8-vertex strip suitable for antialiased line rendering.</returns>
         public static VertexPositionColor[] BuildAntialiasedLineVertices(float x1, float y1, float x2, float y2, float size, RGBAColor color)
         {
             Vector v = Vect(x1, y1);
@@ -351,6 +499,14 @@ namespace CutTheRope.Framework.Visual
             return vertices;
         }
 
+        /// <summary>
+        /// Draws a rectangle outline.
+        /// </summary>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
+        /// <param name="w">Width.</param>
+        /// <param name="h">Height.</param>
+        /// <param name="color">Outline color.</param>
         public static void DrawRect(float x, float y, float w, float h, RGBAColor color)
         {
             DrawPolygon(
@@ -366,6 +522,15 @@ namespace CutTheRope.Framework.Visual
             ], 4, color);
         }
 
+        /// <summary>
+        /// Draws a filled rectangle with a <paramref name="border"/>.
+        /// </summary>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
+        /// <param name="w">Width.</param>
+        /// <param name="h">Height.</param>
+        /// <param name="border">Border color.</param>
+        /// <param name="fill">Fill color.</param>
         public static void DrawSolidRect(float x, float y, float w, float h, RGBAColor border, RGBAColor fill)
         {
             DrawSolidPolygon(
@@ -399,15 +564,30 @@ namespace CutTheRope.Framework.Visual
             Renderer.DrawTriangleStrip(s_rectVertices, 4);
         }
 
-        // Cached vertex array for rectangle drawing
+        /// <summary>
+        /// Cached vertex array for rectangle drawing.
+        /// </summary>
         private static readonly VertexPositionColor[] s_rectVertices = new VertexPositionColor[4];
 
+        /// <summary>
+        /// Draws a polygon outline from interleaved X/Y vertex pairs.
+        /// </summary>
+        /// <param name="vertices">Interleaved X/Y vertex positions.</param>
+        /// <param name="vertexCount">Number of vertices.</param>
+        /// <param name="color">Outline color.</param>
         public static void DrawPolygon(float[] vertices, int vertexCount, RGBAColor color)
         {
             VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, color.ToXNA());
             Renderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
+        /// <summary>
+        /// Draws a filled polygon with a <paramref name="border"/>.
+        /// </summary>
+        /// <param name="vertices">Interleaved X/Y vertex positions.</param>
+        /// <param name="vertexCount">Number of vertices.</param>
+        /// <param name="border">Border color.</param>
+        /// <param name="fill">Fill color.</param>
         public static void DrawSolidPolygon(float[] vertices, int vertexCount, RGBAColor border, RGBAColor fill)
         {
             VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
@@ -416,12 +596,25 @@ namespace CutTheRope.Framework.Visual
             Renderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
+        /// <summary>
+        /// Draws a filled polygon without a border.
+        /// </summary>
+        /// <param name="vertices">Interleaved X/Y vertex positions.</param>
+        /// <param name="vertexCount">Number of vertices.</param>
+        /// <param name="fill">Fill color.</param>
         public static void DrawSolidPolygonWOBorder(float[] vertices, int vertexCount, RGBAColor fill)
         {
             VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
             Renderer.DrawTriangleStrip(fillVertices, vertexCount);
         }
 
+        /// <summary>
+        /// Builds colored vertices from <paramref name="positions"/> and per-vertex <paramref name="colors"/>.
+        /// </summary>
+        /// <param name="positions">Interleaved X/Y vertex positions.</param>
+        /// <param name="colors">Per-vertex colors.</param>
+        /// <param name="vertexCount">Number of vertices to build.</param>
+        /// <returns>The cached vertex array containing the requested vertices.</returns>
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
         {
             VertexPositionColor[] vertices = GetVertexCache(ref s_coloredVerticesCache, vertexCount);
@@ -434,6 +627,13 @@ namespace CutTheRope.Framework.Visual
             return vertices;
         }
 
+        /// <summary>
+        /// Builds colored vertices from <paramref name="positions"/> with a uniform <paramref name="color"/>.
+        /// </summary>
+        /// <param name="positions">Interleaved X/Y vertex positions.</param>
+        /// <param name="vertexCount">Number of vertices to build.</param>
+        /// <param name="color">Uniform color for all vertices.</param>
+        /// <returns>The cached vertex array containing the requested vertices.</returns>
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, int vertexCount, Color color)
         {
             VertexPositionColor[] vertices = GetVertexCache(ref s_coloredVerticesCache, vertexCount);
@@ -446,6 +646,13 @@ namespace CutTheRope.Framework.Visual
             return vertices;
         }
 
+        /// <summary>
+        /// Builds a closed line loop from <paramref name="positions"/> with a uniform <paramref name="color"/>.
+        /// </summary>
+        /// <param name="positions">Interleaved X/Y vertex positions.</param>
+        /// <param name="vertexCount">Number of source vertices before closing the loop.</param>
+        /// <param name="color">Uniform color for all vertices.</param>
+        /// <returns>The cached vertex array with an extra closing vertex.</returns>
         private static VertexPositionColor[] BuildClosedLineVertices(float[] positions, int vertexCount, Color color)
         {
             VertexPositionColor[] vertices = GetVertexCache(ref s_lineVerticesCache, vertexCount + 1);
@@ -459,6 +666,12 @@ namespace CutTheRope.Framework.Visual
             return vertices;
         }
 
+        /// <summary>
+        /// Returns a cached <see cref="VertexPositionColor"/> array, resizing if needed.
+        /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="vertexCount">Minimum number of vertices required.</param>
+        /// <returns>A cached array with at least <paramref name="vertexCount"/> elements.</returns>
         private static VertexPositionColor[] GetVertexCache(ref VertexPositionColor[] cache, int vertexCount)
         {
             if (cache == null || cache.Length < vertexCount)
@@ -468,6 +681,12 @@ namespace CutTheRope.Framework.Visual
             return cache;
         }
 
+        /// <summary>
+        /// Returns a cached <see cref="VertexPositionNormalTexture"/> array, resizing if needed.
+        /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="vertexCount">Minimum number of vertices required.</param>
+        /// <returns>A cached array with at least <paramref name="vertexCount"/> elements.</returns>
         private static VertexPositionNormalTexture[] GetVertexCache(ref VertexPositionNormalTexture[] cache, int vertexCount)
         {
             if (cache == null || cache.Length < vertexCount)
@@ -477,6 +696,12 @@ namespace CutTheRope.Framework.Visual
             return cache;
         }
 
+        /// <summary>
+        /// Returns a cached float array, resizing if needed.
+        /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="length">Minimum required length.</param>
+        /// <returns>A cached array with at least <paramref name="length"/> elements.</returns>
         private static float[] GetFloatCache(ref float[] cache, int length)
         {
             if (cache == null || cache.Length < length)
@@ -486,6 +711,12 @@ namespace CutTheRope.Framework.Visual
             return cache;
         }
 
+        /// <summary>
+        /// Returns a cached <see cref="RGBAColor"/> array, resizing if needed.
+        /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="length">Minimum required length.</param>
+        /// <returns>A cached array with at least <paramref name="length"/> elements.</returns>
         private static RGBAColor[] GetColorCache(ref RGBAColor[] cache, int length)
         {
             if (cache == null || cache.Length < length)
@@ -495,6 +726,12 @@ namespace CutTheRope.Framework.Visual
             return cache;
         }
 
+        /// <summary>
+        /// Returns a cached short array, resizing if needed.
+        /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="length">Minimum required length.</param>
+        /// <returns>A cached array with at least <paramref name="length"/> elements.</returns>
         private static short[] GetShortCache(ref short[] cache, int length)
         {
             if (cache == null || cache.Length < length)
@@ -618,19 +855,74 @@ namespace CutTheRope.Framework.Visual
             Renderer.DrawTriangleList(vertices, indices, indexCount);
         }
 
+        /// <summary>
+        /// Cache for colored polygon/fill vertices.
+        /// </summary>
         private static VertexPositionColor[] s_coloredVerticesCache;
+
+        /// <summary>
+        /// Cache for line strip vertices.
+        /// </summary>
         private static VertexPositionColor[] s_lineVerticesCache;
+
+        /// <summary>
+        /// Cache for antialiased line vertices.
+        /// </summary>
         private static VertexPositionColor[] s_antialiasedLineVerticesCache;
+
+        /// <summary>
+        /// Cache for tiled draw vertices.
+        /// </summary>
         private static VertexPositionNormalTexture[] s_tiledVerticesCache;
+
+        /// <summary>
+        /// Cache for tiled draw indices.
+        /// </summary>
         private static short[] s_tiledIndicesCache;
+
+        /// <summary>
+        /// Cache for radial clipped quad vertices.
+        /// </summary>
         private static VertexPositionNormalTexture[] s_radialVerticesCache;
+
+        /// <summary>
+        /// Cache for radial clipped quad indices.
+        /// </summary>
         private static short[] s_radialIndicesCache;
+
+        /// <summary>
+        /// Cache for curve strip vertex positions.
+        /// </summary>
         private static float[] s_curveVerticesCache;
+
+        /// <summary>
+        /// Cache for outer curve positions.
+        /// </summary>
         private static float[] s_curveOuterCache;
+
+        /// <summary>
+        /// Cache for inner curve positions.
+        /// </summary>
         private static float[] s_curveInnerCache;
+
+        /// <summary>
+        /// Cache for inner edge curve positions.
+        /// </summary>
         private static float[] s_curveInnerEdgeCache;
+
+        /// <summary>
+        /// Cache for inner fade curve positions.
+        /// </summary>
         private static float[] s_curveInnerFadeCache;
+
+        /// <summary>
+        /// Cache for curve vertex colors.
+        /// </summary>
         private static RGBAColor[] s_curveColorCache;
+
+        /// <summary>
+        /// Maximum number of quads in a single tiled batch.
+        /// </summary>
         private const int MaxBatchQuads = short.MaxValue / 4;
 
     }

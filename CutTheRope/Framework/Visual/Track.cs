@@ -3,8 +3,14 @@ using System.Collections.Generic;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A single animation track within a <see cref="Timeline"/>, interpolating a specific property (position, scale, rotation, skew, color, or action) across keyframes.
+    /// </summary>
     internal sealed class Track : FrameworkTypes
     {
+        /// <summary>
+        /// Initializes a new <see cref="Track"/> with default keyframe state objects.
+        /// </summary>
         public Track()
         {
             elementPrevState = new KeyFrame();
@@ -14,6 +20,13 @@ namespace CutTheRope.Framework.Visual
             currentStepDestination = new KeyFrame();
         }
 
+        /// <summary>
+        /// Initializes the track with a <paramref name="timeline"/>, type, and keyframe capacity.
+        /// </summary>
+        /// <param name="timeline">Parent timeline.</param>
+        /// <param name="trackType">Property type this track animates.</param>
+        /// <param name="m">Maximum number of keyframes.</param>
+        /// <returns>The initialized track instance.</returns>
         public Track InitWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
         {
             t = timeline;
@@ -31,6 +44,11 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Initializes an action keyframe and sets the remaining <paramref name="time"/>.
+        /// </summary>
+        /// <param name="kf">Action keyframe to apply.</param>
+        /// <param name="time">Time until the next keyframe.</param>
         public void InitActionKeyFrameandTime(KeyFrame kf, float time)
         {
             keyFrameTimeLeft = time;
@@ -42,6 +60,11 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Sets a keyframe at the specified index.
+        /// </summary>
+        /// <param name="k">Keyframe to set.</param>
+        /// <param name="i">Index in the keyframe array.</param>
         public void SetKeyFrameAt(KeyFrame k, int i)
         {
             keyFrames[i] = k;
@@ -55,6 +78,11 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Returns the cumulative time up to and including keyframe <paramref name="f"/>.
+        /// </summary>
+        /// <param name="f">Keyframe index.</param>
+        /// <returns>Cumulative time in seconds from the first keyframe through <paramref name="f"/>.</returns>
         public float GetFrameTime(int f)
         {
             float totalTime = 0f;
@@ -65,12 +93,21 @@ namespace CutTheRope.Framework.Visual
             return totalTime;
         }
 
+        /// <summary>
+        /// Recalculates <see cref="startTime"/> and <see cref="endTime"/> from the keyframes.
+        /// </summary>
         public void UpdateRange()
         {
             startTime = GetFrameTime(0);
             endTime = GetFrameTime(keyFramesCount - 1);
         }
 
+        /// <summary>
+        /// Initializes interpolation state between two keyframes over the given duration.
+        /// </summary>
+        /// <param name="src">Source keyframe.</param>
+        /// <param name="dst">Destination keyframe.</param>
+        /// <param name="time">Interpolation duration in seconds.</param>
         private void InitKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
         {
             keyFrameTimeLeft = time;
@@ -225,6 +262,10 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Applies the keyframe values to the timeline's element.
+        /// </summary>
+        /// <param name="kf">Keyframe to apply.</param>
         public void SetElementFromKeyFrame(KeyFrame kf)
         {
             switch (type)
@@ -295,6 +336,10 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Captures the element's current values into the given keyframe.
+        /// </summary>
+        /// <param name="kf">Keyframe receiving the current element values.</param>
         private void SetKeyFrameFromElement(KeyFrame kf)
         {
             switch (type)
@@ -326,6 +371,11 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Copies the track-specific values from one keyframe to another.
+        /// </summary>
+        /// <param name="src">Source keyframe.</param>
+        /// <param name="dst">Destination keyframe.</param>
         private void CopyTrackValue(KeyFrame src, KeyFrame dst)
         {
             switch (type)
@@ -359,6 +409,11 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Returns <see langword="true"/> if the <paramref name="transition"/> type uses Flash XML interpolation.
+        /// </summary>
+        /// <param name="transition">Transition type to check.</param>
+        /// <returns><see langword="true"/> when the transition follows Flash interpolation rules.</returns>
         private static bool IsFlashInterpolationTransition(KeyFrame.TransitionType transition)
         {
             return transition is KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_LINEAR
@@ -370,6 +425,12 @@ namespace CutTheRope.Framework.Visual
                 or KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_IMMEDIATE;
         }
 
+        /// <summary>
+        /// Computes the interpolation factor for Flash XML <paramref name="transition"/> types.
+        /// </summary>
+        /// <param name="track">Track that provides elapsed and remaining keyframe timing.</param>
+        /// <param name="transition">Transition curve type.</param>
+        /// <returns>A clamped interpolation factor in the range [0, 1].</returns>
         private static float ComputeFlashInterpolationFactor(Track track, KeyFrame.TransitionType transition)
         {
             float clampedTimeLeft = MathF.Max(0f, track.keyFrameTimeLeft);
@@ -404,6 +465,11 @@ namespace CutTheRope.Framework.Visual
             return factor;
         }
 
+        /// <summary>
+        /// Evaluates a Flash ease-in-out curve at the given <paramref name="progress"/>.
+        /// </summary>
+        /// <param name="progress">Normalized progress in the range [0, 1].</param>
+        /// <returns>Ease-in-out curve value in the range [0, 1].</returns>
         private static float EvaluateFlashEaseInOut(float progress)
         {
             float doubled = progress + progress;
@@ -416,6 +482,11 @@ namespace CutTheRope.Framework.Visual
             return -0.5f * ((shifted * shifted) - 2f);
         }
 
+        /// <summary>
+        /// Evaluates a Flash mirrored ease curve at the given <paramref name="progress"/>.
+        /// </summary>
+        /// <param name="progress">Normalized progress in the range [0, 1].</param>
+        /// <returns>Mirrored ease curve value in the range [0, 1].</returns>
         private static float EvaluateFlashEaseMirrored(float progress)
         {
             float doubled = progress + progress;
@@ -426,6 +497,10 @@ namespace CutTheRope.Framework.Visual
                 : 0.5f * (1f + squared);
         }
 
+        /// <summary>
+        /// Applies an interpolated value to the element based on the given <paramref name="factor"/> (0–1).
+        /// </summary>
+        /// <param name="factor">Interpolation factor in the range [0, 1].</param>
         private void ApplyInterpolatedStep(float factor)
         {
             switch (type)
@@ -526,6 +601,11 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Advances an action track by <paramref name="delta"/> seconds, triggering keyframes as needed.
+        /// </summary>
+        /// <param name="thiss">Track to update.</param>
+        /// <param name="delta">Elapsed time in seconds.</param>
         public static void UpdateActionTrack(Track thiss, float delta)
         {
             if (thiss == null)
@@ -597,6 +677,11 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Advances an interpolating track by <paramref name="delta"/> seconds.
+        /// </summary>
+        /// <param name="thiss">Track to update.</param>
+        /// <param name="delta">Elapsed time in seconds.</param>
         public static void UpdateTrack(Track thiss, float delta)
         {
             Timeline timeline = thiss.t;
@@ -779,60 +864,160 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Property type this track animates.
+        /// </summary>
         public TrackType type;
 
+        /// <summary>
+        /// Current activation state of this track.
+        /// </summary>
         public TrackState state;
 
+        /// <summary>
+        /// Whether keyframe values are applied relative to the element's initial state.
+        /// </summary>
         public bool relative;
 
+        /// <summary>
+        /// Cumulative time of the first keyframe.
+        /// </summary>
         public float startTime;
 
+        /// <summary>
+        /// Cumulative time of the last keyframe.
+        /// </summary>
         public float endTime;
 
+        /// <summary>
+        /// Number of keyframes in this track.
+        /// </summary>
         public int keyFramesCount;
 
+        /// <summary>
+        /// Array of keyframes.
+        /// </summary>
         public KeyFrame[] keyFrames;
 
+        /// <summary>
+        /// Parent timeline this track belongs to.
+        /// </summary>
         public Timeline t;
 
+        /// <summary>
+        /// Index of the next keyframe to process.
+        /// </summary>
         public int nextKeyFrame;
 
+        /// <summary>
+        /// Allocated capacity of the keyframes array.
+        /// </summary>
         public int keyFramesCapacity;
 
+        /// <summary>
+        /// Per-second interpolation step for the current keyframe pair.
+        /// </summary>
         public KeyFrame currentStepPerSecond;
 
+        /// <summary>
+        /// Per-second acceleration for ease-in/ease-out transitions.
+        /// </summary>
         public KeyFrame currentStepAcceleration;
 
+        /// <summary>
+        /// Time remaining until the next keyframe.
+        /// </summary>
         public float keyFrameTimeLeft;
 
+        /// <summary>
+        /// Total duration of the current keyframe transition.
+        /// </summary>
         public float keyFrameDuration;
 
+        /// <summary>
+        /// Elapsed time within the current keyframe transition.
+        /// </summary>
         public float keyFrameElapsed;
 
+        /// <summary>
+        /// Element state captured before the current keyframe began.
+        /// </summary>
         public KeyFrame elementPrevState;
 
+        /// <summary>
+        /// Source keyframe values for Flash interpolation.
+        /// </summary>
         public KeyFrame currentStepSource;
 
+        /// <summary>
+        /// Destination keyframe values for Flash interpolation.
+        /// </summary>
         public KeyFrame currentStepDestination;
 
+        /// <summary>
+        /// Time overrun past the current keyframe, carried to the next step.
+        /// </summary>
         public float overrun;
 
+        /// <summary>
+        /// Collected action sets from action keyframes.
+        /// </summary>
         public List<List<CTRAction>> actionSets;
 
+        /// <summary>
+        /// Types of properties a track can animate.
+        /// </summary>
         public enum TrackType
         {
+            /// <summary>
+            /// Position (X/Y) track.
+            /// </summary>
             TRACK_POSITION,
+
+            /// <summary>
+            /// Scale (X/Y) track.
+            /// </summary>
             TRACK_SCALE,
+
+            /// <summary>
+            /// Rotation angle track.
+            /// </summary>
             TRACK_ROTATION,
+
+            /// <summary>
+            /// Color (RGBA) track.
+            /// </summary>
             TRACK_COLOR,
+
+            /// <summary>
+            /// Skew (X/Y) track.
+            /// </summary>
             TRACK_SKEW,
+
+            /// <summary>
+            /// Action dispatch track.
+            /// </summary>
             TRACK_ACTION,
+
+            /// <summary>
+            /// Sentinel value for the total number of track types.
+            /// </summary>
             TRACKS_COUNT
         }
 
+        /// <summary>
+        /// Activation states for a track.
+        /// </summary>
         public enum TrackState
         {
+            /// <summary>
+            /// Track is not currently active.
+            /// </summary>
             TRACK_NOT_ACTIVE,
+
+            /// <summary>
+            /// Track is actively interpolating.
+            /// </summary>
             TRACK_ACTIVE
         }
     }

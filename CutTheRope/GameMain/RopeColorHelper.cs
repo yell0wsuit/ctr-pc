@@ -10,6 +10,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Represents a rope color scheme with two base colors.
         /// </summary>
+        /// <param name="Color1">The primary rope color.</param>
+        /// <param name="Color2">The secondary rope color used for alternating segments.</param>
         public readonly record struct RopeColors(
             RGBAColor Color1,
             RGBAColor Color2
@@ -18,6 +20,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Gets the rope color scheme for a given rope index (0-8).
         /// </summary>
+        /// <param name="ropeIndex">The rope skin index. Values outside 0–8 return the default scheme.</param>
+        /// <returns>The <see cref="RopeColors"/> for the specified index.</returns>
         public static RopeColors GetRopeColors(int ropeIndex)
         {
             return ropeIndex switch

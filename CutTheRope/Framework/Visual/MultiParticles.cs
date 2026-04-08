@@ -5,8 +5,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="Particles"/> system that renders each particle as a textured quad via an <see cref="ImageMultiDrawer"/>.
+    /// </summary>
     internal class MultiParticles : Particles
     {
+        /// <summary>
+        /// Initializes the particle system with a texture atlas for quad-based rendering.
+        /// </summary>
+        /// <param name="numberOfParticles">Maximum number of particles.</param>
+        /// <param name="image">Image containing the particle texture quads.</param>
+        /// <returns>The initialized particle system instance, or <see langword="null"/> when allocation fails.</returns>
         public virtual Particles InitWithTotalParticlesandImageGrid(int numberOfParticles, Image image)
         {
             imageGrid = image;
@@ -27,6 +36,7 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             Image image = imageGrid;
@@ -40,6 +50,7 @@ namespace CutTheRope.Framework.Visual
             particle.height = textureRect.h * particle.size;
         }
 
+        /// <inheritdoc />
         public override void UpdateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -82,6 +93,7 @@ namespace CutTheRope.Framework.Visual
             particleCount--;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -107,6 +119,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -131,6 +144,7 @@ namespace CutTheRope.Framework.Visual
             PostDraw();
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -142,12 +156,26 @@ namespace CutTheRope.Framework.Visual
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Multi-drawer used to batch-render particle quads.
+        /// </summary>
         public ImageMultiDrawer drawer;
 
+        /// <summary>
+        /// Image containing the particle texture atlas.
+        /// </summary>
         public Image imageGrid;
 
+        /// <summary>
+        /// Cached vertex buffer for colored textured rendering.
+        /// </summary>
         private VertexPositionColorTexture[] verticesCache;
 
+        /// <summary>
+        /// Returns a vertex buffer of at least <paramref name="vertexCount"/> elements, reusing the cache.
+        /// </summary>
+        /// <param name="vertexCount">Minimum number of vertices needed.</param>
+        /// <returns>A reusable vertex buffer with at least the requested capacity.</returns>
         private VertexPositionColorTexture[] GetVertexBuffer(int vertexCount)
         {
             if (verticesCache == null || verticesCache.Length < vertexCount)

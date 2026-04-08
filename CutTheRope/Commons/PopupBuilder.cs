@@ -13,12 +13,22 @@ namespace CutTheRope.Commons
     /// <param name="controller">The menu controller that owns the active view for popup display.</param>
     internal sealed class PopupBuilder(MenuController controller)
     {
+        /// <summary>Scale multiplier for large popup templates.</summary>
         internal const float LargeScale = 1.2f;
+
+        /// <summary>Scale multiplier for extra-large popup templates.</summary>
         internal const float XLargeScale = 1.5f;
+
+        /// <summary>Default width for scrollable popup text blocks.</summary>
         internal const float DefaultScrollableWidth = 700f;
+
+        /// <summary>Default height for scrollable popup text blocks.</summary>
         internal const float DefaultScrollableHeight = 300f;
+
+        /// <summary>Default spacing between popup buttons.</summary>
         internal const float DefaultButtonSpacing = 0f;
 
+        /// <summary>Menu controller that owns the active view receiving popups.</summary>
         private readonly MenuController menuController = controller;
 
         /// <summary>
@@ -125,6 +135,7 @@ namespace CutTheRope.Commons
         /// Creates a text element from a text block definition.
         /// </summary>
         /// <param name="textBlock">The text block defining content, font, alignment, and wrapping.</param>
+        /// <returns>The configured text element.</returns>
         private static Text CreateText(PopupTextBlock textBlock)
         {
             Text text = new Text().InitWithFont(Application.GetFont(textBlock.FontResourceName));
@@ -147,6 +158,7 @@ namespace CutTheRope.Commons
         /// <param name="popup">The popup to register the scrollable container with.</param>
         /// <param name="textBlock">The text block defining content, font, and scroll dimensions.</param>
         /// <param name="layout">The popup layout used for positioning.</param>
+        /// <returns>The configured scrollable text container.</returns>
         private static ScrollableContainer CreateScrollableText(Popup popup, PopupTextBlock textBlock, PopupLayout layout)
         {
             float width = textBlock.WrapWidth > 0f ? textBlock.WrapWidth : DefaultScrollableWidth;
@@ -246,10 +258,19 @@ namespace CutTheRope.Commons
         /// </summary>
         internal enum PopupAnchor
         {
+            /// <summary>First text anchor point.</summary>
             Text1 = 1,
+
+            /// <summary>Second text anchor point.</summary>
             Text2 = 2,
+
+            /// <summary>Third text anchor point.</summary>
             Text3 = 3,
+
+            /// <summary>Button group anchor point.</summary>
             Button = 4,
+
+            /// <summary>Stars value anchor point.</summary>
             StarsValue = 5
         }
 
@@ -258,8 +279,13 @@ namespace CutTheRope.Commons
         /// </summary>
         internal enum PopupSize
         {
+            /// <summary>Default popup size.</summary>
             Normal,
+
+            /// <summary>Large popup size.</summary>
             Large,
+
+            /// <summary>Extra-large popup size.</summary>
             XLarge
         }
 
@@ -268,7 +294,10 @@ namespace CutTheRope.Commons
         /// </summary>
         internal enum PopupScaleMode
         {
+            /// <summary>Scale the popup content root.</summary>
             Content,
+
+            /// <summary>Scale only the popup background image.</summary>
             Background
         }
 
@@ -277,7 +306,10 @@ namespace CutTheRope.Commons
         /// </summary>
         internal enum PopupButtonLayout
         {
+            /// <summary>Stack popup buttons vertically.</summary>
             Vertical,
+
+            /// <summary>Lay popup buttons out horizontally.</summary>
             Horizontal
         }
 
@@ -287,23 +319,39 @@ namespace CutTheRope.Commons
         /// <param name="size">The sizing preset for the popup.</param>
         internal sealed class PopupTemplate(PopupSize size)
         {
+            /// <summary>Sizing preset for the popup.</summary>
             public PopupSize Size = size;
+
+            /// <summary>Scale mode used by this popup.</summary>
             public PopupScaleMode ScaleMode = PopupScaleMode.Content;
             // public float ScaleXOverride;
             // public float ScaleYOverride;
+
+            /// <summary>Layout direction for popup buttons.</summary>
             public PopupButtonLayout ButtonLayout = PopupButtonLayout.Vertical;
+
+            /// <summary>Spacing between popup buttons.</summary>
             public float ButtonSpacing = DefaultButtonSpacing;
+
+            /// <summary>Named anchor used for popup button layout.</summary>
             public PopupAnchor ButtonAnchor = PopupAnchor.Button;
             // public float ButtonOffsetX;
             // public float ButtonOffsetY;
+
+            /// <summary>Text blocks included in the popup.</summary>
             public readonly List<PopupTextBlock> TextBlocks = [];
+
+            /// <summary>Custom elements included in the popup.</summary>
             public readonly List<PopupElementBlock> Elements = [];
+
+            /// <summary>Button specifications included in the popup.</summary>
             public readonly List<PopupButtonSpec> Buttons = [];
 
             /// <summary>
             /// Creates a new popup template with the specified size.
             /// </summary>
             /// <param name="size">The sizing preset for the popup.</param>
+            /// <returns>The created popup template.</returns>
             public static PopupTemplate Create(PopupSize size = PopupSize.Normal)
             {
                 return new(size);
@@ -313,6 +361,7 @@ namespace CutTheRope.Commons
             /// Sets the scale mode for this popup.
             /// </summary>
             /// <param name="mode">Whether scaling applies to content or only the background.</param>
+            /// <returns>This popup template.</returns>
             public PopupTemplate WithScaleMode(PopupScaleMode mode)
             {
                 ScaleMode = mode;
@@ -324,6 +373,7 @@ namespace CutTheRope.Commons
             /// </summary>
             /// <param name="layout">Vertical or horizontal button arrangement.</param>
             /// <param name="spacing">Spacing between buttons in pixels.</param>
+            /// <returns>This popup template.</returns>
             public PopupTemplate WithButtonLayout(PopupButtonLayout layout, float spacing = DefaultButtonSpacing)
             {
                 ButtonLayout = layout;
@@ -340,6 +390,7 @@ namespace CutTheRope.Commons
             /// <param name="wrapWidth">Maximum width before wrapping, or -1 for no wrap.</param>
             /// <param name="offsetX">Horizontal offset from the anchor position.</param>
             /// <param name="offsetY">Vertical offset from the anchor position.</param>
+            /// <returns>This popup template.</returns>
             public PopupTemplate AddText(
                 string text,
                 string font,
@@ -362,6 +413,7 @@ namespace CutTheRope.Commons
             /// <param name="scrollHeight">Visible height of the scroll area, or 0 for default.</param>
             /// <param name="offsetX">Horizontal offset from the anchor position.</param>
             /// <param name="offsetY">Vertical offset from the anchor position.</param>
+            /// <returns>This popup template.</returns>
             public PopupTemplate AddScrollableText(
                 string text,
                 string font,
@@ -386,6 +438,7 @@ namespace CutTheRope.Commons
             /// <param name="anchor">The named anchor point for positioning.</param>
             /// <param name="offsetX">Horizontal offset from the anchor position.</param>
             /// <param name="offsetY">Vertical offset from the anchor position.</param>
+            /// <returns>This popup template.</returns>
             public PopupTemplate AddElement(BaseElement element, PopupAnchor anchor, float offsetX = 0f, float offsetY = 0f)
             {
                 Elements.Add(new PopupElementBlock(element, anchor, offsetX, offsetY));
@@ -398,6 +451,7 @@ namespace CutTheRope.Commons
             /// <param name="label">The button's display text.</param>
             /// <param name="buttonId">The menu button identifier for click handling.</param>
             /// <param name="useShortButton">Whether to use the short button style.</param>
+            /// <returns>This popup template.</returns>
             public PopupTemplate AddButton(string label, MenuButtonId buttonId, bool useShortButton = false)
             {
                 Buttons.Add(new PopupButtonSpec(label, buttonId) { UseShortButton = useShortButton });
@@ -422,15 +476,34 @@ namespace CutTheRope.Commons
             float offsetX,
             float offsetY)
         {
+            /// <summary>Text string displayed by the block.</summary>
             public string Text = text;
+
+            /// <summary>Font resource name used by the block.</summary>
             public string FontResourceName = fontResourceName;
+
+            /// <summary>Maximum text wrapping width.</summary>
             public float WrapWidth = wrapWidth;
+
+            /// <summary>Named anchor point used to position the block.</summary>
             public PopupAnchor Anchor = anchor;
+
+            /// <summary>Horizontal offset from the anchor position.</summary>
             public float OffsetX = offsetX;
+
+            /// <summary>Vertical offset from the anchor position.</summary>
             public float OffsetY = offsetY;
+
+            /// <summary>Text alignment value used by the block.</summary>
             public int Alignment = 2;
+
+            /// <summary>Element anchor applied to the created text or scrollable container.</summary>
             public sbyte ElementAnchor = FrameworkTypes.CENTER;
+
+            /// <summary>Whether this text block should be placed inside a scrollable container.</summary>
             public bool Scrollable;
+
+            /// <summary>Visible height of the scrollable area.</summary>
             public float ScrollHeight;
         }
 
@@ -443,10 +516,19 @@ namespace CutTheRope.Commons
         /// <param name="offsetY">Vertical offset from the anchor position.</param>
         internal sealed class PopupElementBlock(BaseElement element, PopupAnchor anchor, float offsetX, float offsetY)
         {
+            /// <summary>Element to place in the popup.</summary>
             public BaseElement Element = element;
+
+            /// <summary>Named anchor point used to position the element.</summary>
             public PopupAnchor Anchor = anchor;
+
+            /// <summary>Horizontal offset from the anchor position.</summary>
             public float OffsetX = offsetX;
+
+            /// <summary>Vertical offset from the anchor position.</summary>
             public float OffsetY = offsetY;
+
+            /// <summary>Anchor applied to the custom element before positioning.</summary>
             public sbyte ElementAnchor = FrameworkTypes.CENTER;
         }
 
@@ -457,8 +539,13 @@ namespace CutTheRope.Commons
         /// <param name="buttonId">The menu button identifier for click handling.</param>
         internal sealed class PopupButtonSpec(string label, MenuButtonId buttonId)
         {
+            /// <summary>Button display text.</summary>
             public string Label = label;
+
+            /// <summary>Menu button identifier used for click handling.</summary>
             public MenuButtonId ButtonId = buttonId;
+
+            /// <summary>Whether the button should use the short menu button style.</summary>
             public bool UseShortButton;
         }
 
@@ -471,9 +558,16 @@ namespace CutTheRope.Commons
         /// <param name="scaleY">Vertical scale factor applied to the background.</param>
         internal readonly struct PopupLayout(float width, float height, float scaleX, float scaleY)
         {
+            /// <summary>Unscaled popup background width.</summary>
             public readonly float Width = width;
+
+            /// <summary>Unscaled popup background height.</summary>
             public readonly float Height = height;
+
+            /// <summary>Horizontal scale factor applied to the popup background.</summary>
             public readonly float ScaleX = scaleX;
+
+            /// <summary>Vertical scale factor applied to the popup background.</summary>
             public readonly float ScaleY = scaleY;
 
             /// <summary>
@@ -482,6 +576,7 @@ namespace CutTheRope.Commons
             /// <param name="anchor">The named anchor point to resolve.</param>
             /// <param name="offsetX">Additional horizontal offset.</param>
             /// <param name="offsetY">Additional vertical offset.</param>
+            /// <returns>The scaled anchor position with offsets applied.</returns>
             public readonly Vector GetScaledPosition(PopupAnchor anchor, float offsetX = 0f, float offsetY = 0f)
             {
                 Vector offset = Image.GetQuadOffset(Resources.Img.MenuPopup, (int)anchor);

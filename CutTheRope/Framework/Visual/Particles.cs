@@ -4,8 +4,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="BaseElement"/> that emits and simulates point-sprite particles with gravity, acceleration, and color transitions.
+    /// </summary>
     internal class Particles : BaseElement
     {
+        /// <summary>
+        /// Rotates a vector around a center point using precomputed cos/sin values.
+        /// </summary>
+        /// <param name="v">Vector to rotate.</param>
+        /// <param name="cosA">Cosine of the rotation angle.</param>
+        /// <param name="sinA">Sine of the rotation angle.</param>
+        /// <param name="cx">Center X.</param>
+        /// <param name="cy">Center Y.</param>
+        /// <returns>The rotated vector.</returns>
         public static Vector RotatePreCalc(Vector v, float cosA, float sinA, float cx, float cy)
         {
             Vector result = v;
@@ -18,6 +30,11 @@ namespace CutTheRope.Framework.Visual
             return result;
         }
 
+        /// <summary>
+        /// Updates a single particle's physics, color, and lifetime. Removes it if dead.
+        /// </summary>
+        /// <param name="p">Particle to update.</param>
+        /// <param name="delta">Elapsed time in seconds.</param>
         public virtual void UpdateParticle(ref Particle p, float delta)
         {
             if (p.life > 0f)
@@ -57,6 +74,7 @@ namespace CutTheRope.Framework.Visual
             particleCount--;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -91,6 +109,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -103,12 +122,18 @@ namespace CutTheRope.Framework.Visual
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
             PostDraw();
         }
 
+        /// <summary>
+        /// Initializes the particle system with the specified capacity.
+        /// </summary>
+        /// <param name="numberOfParticles">Maximum number of particles.</param>
+        /// <returns>The initialized particle system, or <see langword="null"/> if allocation fails.</returns>
         public virtual Particles InitWithTotalParticles(int numberOfParticles)
         {
             width = (int)SCREEN_WIDTH;
@@ -129,6 +154,10 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Adds a new particle if the system is not full. Returns <see langword="true"/> if added.
+        /// </summary>
+        /// <returns><see langword="true"/> when a particle was added; otherwise <see langword="false"/>.</returns>
         public virtual bool AddParticle()
         {
             if (IsFull())
@@ -140,6 +169,10 @@ namespace CutTheRope.Framework.Visual
             return true;
         }
 
+        /// <summary>
+        /// Initializes a <paramref name="particle"/> with randomized values based on emitter settings.
+        /// </summary>
+        /// <param name="particle">Particle to initialize.</param>
         public virtual void InitParticle(ref Particle particle)
         {
             particle.pos.X = x + (posVar.X * RND_MINUS1_1);
@@ -172,6 +205,10 @@ namespace CutTheRope.Framework.Visual
             particle.size = size + (sizeVar * RND_MINUS1_1);
         }
 
+        /// <summary>
+        /// Starts the particle system, spawning an initial batch of particles.
+        /// </summary>
+        /// <param name="initialParticles">Number of particles to spawn immediately.</param>
         public virtual void StartSystem(int initialParticles)
         {
             particleCount = 0;
@@ -182,6 +219,9 @@ namespace CutTheRope.Framework.Visual
             active = true;
         }
 
+        /// <summary>
+        /// Stops emitting new particles. Existing particles continue until they expire.
+        /// </summary>
         public virtual void StopSystem()
         {
             active = false;
@@ -189,90 +229,201 @@ namespace CutTheRope.Framework.Visual
             emitCounter = 0f;
         }
 
+        /// <summary>
+        /// Resets the elapsed time and emission counter without stopping the system.
+        /// </summary>
         public virtual void ResetSystem()
         {
             elapsed = 0f;
             emitCounter = 0f;
         }
 
+        /// <summary>
+        /// Returns <see langword="true"/> if the particle count has reached the maximum capacity.
+        /// </summary>
+        /// <returns><see langword="true"/> when the system is full; otherwise <see langword="false"/>.</returns>
         public virtual bool IsFull()
         {
             return particleCount == totalParticles;
         }
 
+        /// <summary>
+        /// Sets whether particles use additive blending.
+        /// </summary>
+        /// <param name="b"><see langword="true"/> for additive blending, <see langword="false"/> for alpha blending.</param>
         public virtual void SetBlendAdditive(bool b)
         {
             blendAdditive = b;
         }
 
+        /// <summary>
+        /// Whether the system is currently emitting particles.
+        /// </summary>
         public bool active;
 
+        /// <summary>
+        /// Emission duration in seconds, or -1 for infinite.
+        /// </summary>
         public float duration;
 
+        /// <summary>
+        /// Elapsed time since the system started.
+        /// </summary>
         public float elapsed;
 
+        /// <summary>
+        /// Gravity vector applied to all particles.
+        /// </summary>
         public Vector gravity;
 
+        /// <summary>
+        /// Position variance for randomized spawn offsets.
+        /// </summary>
         public Vector posVar;
 
+        /// <summary>
+        /// Emission angle in degrees.
+        /// </summary>
         public float angle;
 
+        /// <summary>
+        /// Emission angle variance in degrees.
+        /// </summary>
         public float angleVar;
 
+        /// <summary>
+        /// Initial particle speed.
+        /// </summary>
         public float speed;
 
+        /// <summary>
+        /// Speed variance.
+        /// </summary>
         public float speedVar;
 
+        /// <summary>
+        /// Tangential acceleration.
+        /// </summary>
         public float tangentialAccel;
 
+        /// <summary>
+        /// Tangential acceleration variance.
+        /// </summary>
         public float tangentialAccelVar;
 
+        /// <summary>
+        /// Radial acceleration.
+        /// </summary>
         public float radialAccel;
 
+        /// <summary>
+        /// Radial acceleration variance.
+        /// </summary>
         public float radialAccelVar;
 
+        /// <summary>
+        /// Initial particle size.
+        /// </summary>
         public float size;
 
         // public float endSize;
 
+        /// <summary>
+        /// Size variance.
+        /// </summary>
         public float sizeVar;
 
+        /// <summary>
+        /// Particle lifetime in seconds.
+        /// </summary>
         public float life;
 
+        /// <summary>
+        /// Lifetime variance in seconds.
+        /// </summary>
         public float lifeVar;
 
+        /// <summary>
+        /// Start color for new particles.
+        /// </summary>
         public RGBAColor startColor;
 
+        /// <summary>
+        /// Start color variance.
+        /// </summary>
         public RGBAColor startColorVar;
 
+        /// <summary>
+        /// End color particles transition to over their lifetime.
+        /// </summary>
         public RGBAColor endColor;
 
+        /// <summary>
+        /// End color variance.
+        /// </summary>
         public RGBAColor endColorVar;
 
+        /// <summary>
+        /// Array of all particle instances.
+        /// </summary>
         public Particle[] particles;
 
+        /// <summary>
+        /// Maximum number of particles.
+        /// </summary>
         public int totalParticles;
 
+        /// <summary>
+        /// Current number of live particles.
+        /// </summary>
         public int particleCount;
 
+        /// <summary>
+        /// Whether additive blending is enabled.
+        /// </summary>
         public bool blendAdditive;
 
         // public bool colorModulate;
 
+        /// <summary>
+        /// Number of particles emitted per second.
+        /// </summary>
         public float emissionRate;
 
+        /// <summary>
+        /// Accumulated time for emission rate tracking.
+        /// </summary>
         public float emitCounter;
 
+        /// <summary>
+        /// Texture used for rendering particles.
+        /// </summary>
         public Texture2D texture;
 
+        /// <summary>
+        /// Point sprite positions and sizes for rendering.
+        /// </summary>
         public PointSprite[] vertices;
 
+        /// <summary>
+        /// Per-particle colors for rendering.
+        /// </summary>
         public RGBAColor[] colors;
 
+        /// <summary>
+        /// Current particle index during update iteration.
+        /// </summary>
         public int particleIdx;
 
+        /// <summary>
+        /// Callback invoked when all particles have expired after the system stops.
+        /// </summary>
         public ParticlesFinished particlesDelegate;
 
+        /// <summary>
+        /// Delegate type for particle system completion callbacks.
+        /// </summary>
+        /// <param name="p">Particle system that finished.</param>
         public delegate void ParticlesFinished(Particles p);
     }
 }

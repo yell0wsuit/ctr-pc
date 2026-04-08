@@ -4,7 +4,7 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Reference to a hat/sock that has captured this light bulb.
-        /// When not null, the light bulb becomes invisible.
+        /// When not <see langword="null"/>, the light bulb becomes invisible.
         /// </summary>
         public Sock attachedSock;
 
@@ -231,15 +231,7 @@ namespace CutTheRope.GameMain
             CalculateTopLeft(this);
         }
 
-        /// <summary>
-        /// Draws all visual components of the light bulb.
-        /// </summary>
-        /// <remarks>
-        /// This method draws in a specific order for proper layering:
-        /// light glow first (background), then bottle, top, firefly, and bubble animations.
-        /// For scenes with stars, use <see cref="DrawLight"/> and <see cref="DrawBottleAndFirefly"/>
-        /// separately to render stars between the glow and bottle layers.
-        /// </remarks>
+        /// <inheritdoc />
         public override void Draw()
         {
             if (!visible)
@@ -315,10 +307,13 @@ namespace CutTheRope.GameMain
             RestoreTransformations(this);
         }
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint => Vect(x, y);
 
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             x = point.X;
@@ -326,33 +321,28 @@ namespace CutTheRope.GameMain
             constraint.pos = point;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => width * 0.15f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;
         }
 
-        /// <summary>
-        /// Updates the light bulb's state each frame.
-        /// </summary>
-        /// <param name="delta">Time elapsed since the last update in seconds.</param>
-        /// <remarks>
-        /// Handles:
-        /// <list type="bullet">
-        ///   <item><description>Visibility based on hat/sock attachment</description></item>
-        ///   <item><description>Bubble animation visibility based on capture state</description></item>
-        ///   <item><description>Rotational velocity decay (friction)</description></item>
-        /// </list>
-        /// </remarks>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

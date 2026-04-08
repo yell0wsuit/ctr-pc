@@ -15,6 +15,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Plays a sound effect identified by its resource name.
         /// </summary>
+        /// <param name="soundResourceName">The sound resource name to play.</param>
         public static void PlaySound(string soundResourceName)
         {
             if (!string.IsNullOrWhiteSpace(soundResourceName)
@@ -27,6 +28,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Plays an Om Nom sound, swapping to a skin-specific variant when available.
         /// </summary>
+        /// <param name="soundResourceName">The base sound resource name to resolve and play.</param>
         public static void PlayOmNomSound(string soundResourceName)
         {
             if (soundResourceName is Resources.Snd.MonsterExcited or Resources.Snd.MonsterGreeting
@@ -41,7 +43,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Enables or disables looped sound playback globally.
         /// </summary>
-        /// <param name="bEnable">If <c>true</c>, looped sounds are enabled; otherwise, they are stopped and disabled.</param>
+        /// <param name="bEnable">If <see langword="true" />, looped sounds are enabled; otherwise, they are stopped and disabled.</param>
         public static void EnableLoopedSounds(bool bEnable)
         {
             s_EnableLoopedSounds = bEnable;
@@ -54,6 +56,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Plays a looped sound effect identified by its resource name.
         /// </summary>
+        /// <param name="soundResourceName">The sound resource name to loop.</param>
+        /// <returns>The looping <see cref="SoundEffectInstance"/>, or <see langword="null"/> if looped sounds are disabled.</returns>
         public static SoundEffectInstance PlaySoundLooped(string soundResourceName)
         {
             return !s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON")
@@ -64,6 +68,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Plays a random sound from the provided list of sound resource names.
         /// </summary>
+        /// <param name="soundNames">One or more sound resource names to choose from.</param>
         public static void PlayRandomSound(params string[] soundNames)
         {
             if (soundNames == null || soundNames.Length == 0)
@@ -102,6 +107,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Plays a random Om Nom sound, resolving candidates for the selected skin first.
         /// </summary>
+        /// <param name="soundNames">One or more base sound resource names to resolve and choose from.</param>
         public static void PlayRandomOmNomSound(params string[] soundNames)
         {
             if (soundNames == null || soundNames.Length == 0)
@@ -121,6 +127,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Plays background music identified by its resource name.
         /// </summary>
+        /// <param name="musicResourceName">The music resource name to play.</param>
         public static void PlayMusic(string musicResourceName)
         {
             if (Preferences.GetBooleanForKey("MUSIC_ON") && !string.IsNullOrWhiteSpace(musicResourceName))
@@ -132,6 +139,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Plays a random music track from the supplied resource names, avoiding immediate repetition.
         /// </summary>
+        /// <param name="musicNames">One or more music resource names to choose from.</param>
         public static void PlayRandomMusic(params string[] musicNames)
         {
             if (musicNames == null || musicNames.Length == 0)

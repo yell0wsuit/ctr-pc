@@ -44,13 +44,12 @@ namespace CutTheRope.Commons
             _ = AddChild(ContentRoot);
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        /// <summary>
-        /// Called when a popup timeline finishes; removes the popup from its parent view.
-        /// </summary>
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             View view = (View)parent;
@@ -105,7 +104,7 @@ namespace CutTheRope.Commons
         /// Forwards mouse wheel input to the registered scroll container, if present.
         /// </summary>
         /// <param name="scrollDelta">Mouse wheel delta.</param>
-        /// <returns><c>true</c> if the popup consumed the scroll input; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the popup consumed the scroll input; otherwise <see langword="false" />.</returns>
         public bool HandleMouseWheel(int scrollDelta)
         {
             if (!isShow || scrollContainer == null)
@@ -117,6 +116,7 @@ namespace CutTheRope.Commons
             return true;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             if (isShow)
@@ -126,6 +126,7 @@ namespace CutTheRope.Commons
             return true;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchUpXY(float tx, float ty)
         {
             if (isShow)
@@ -135,6 +136,7 @@ namespace CutTheRope.Commons
             return true;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchMoveXY(float tx, float ty)
         {
             if (isShow)
@@ -144,6 +146,7 @@ namespace CutTheRope.Commons
             return true;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Renderer.Enable(Renderer.GL_BLEND);
@@ -157,12 +160,29 @@ namespace CutTheRope.Commons
             Renderer.Disable(Renderer.GL_BLEND);
         }
 
+        /// <summary>
+        /// Indicates whether the popup is currently shown and should accept input.
+        /// </summary>
         private bool isShow;
+
+        /// <summary>
+        /// The optional scroll container that receives mouse-wheel forwarding while the popup is visible.
+        /// </summary>
         private ScrollableContainer scrollContainer;
 
+        /// <summary>
+        /// Identifies the built-in popup timelines.
+        /// </summary>
         private enum POPUP
         {
+            /// <summary>
+            /// The popup show animation timeline.
+            /// </summary>
             SHOW_ANIM,
+
+            /// <summary>
+            /// The popup hide animation timeline.
+            /// </summary>
             HIDE_ANIM
         }
     }

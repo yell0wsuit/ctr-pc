@@ -5,14 +5,19 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Base menu view that applies standard menu rendering state.
+    /// </summary>
     internal class MenuView : View
     {
+        /// <inheritdoc />
         public override void Update(float t)
         {
             Global.MouseCursor.Enable(true);
             base.Update(t);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Renderer.SetColor(Color.White);

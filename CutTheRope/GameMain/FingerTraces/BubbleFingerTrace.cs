@@ -11,17 +11,33 @@ namespace CutTheRope.GameMain.FingerTraces
     /// </summary>
     internal sealed class BubbleFingerTrace : FingerTrace
     {
+        /// <summary>The lifetime of each stored segment in seconds.</summary>
         private const float SegmentLife = 0.15f;
+
+        /// <summary>The duration of the particle burst after each appended segment.</summary>
         private const float ParticleBurstDuration = 0.1f;
+
+        /// <summary>The emission rate used while the burst timer is active.</summary>
         private const float ParticleEmissionRate = 80f;
 
+        /// <summary>The bubble particle emitter.</summary>
         private readonly BubbleTraceParticles particles = new();
+
+        /// <summary>Recent segment directions used to smooth the emitter rotation.</summary>
         private readonly List<Vector> directionHistory = [];
+
+        /// <summary>The number of direction samples kept for smoothing.</summary>
         private const int MaximumDirectionHistory = 10;
 
+        /// <summary>The remaining time in the active particle burst.</summary>
         private float particleTimer;
+
+        /// <summary>The smoothed head rotation in degrees.</summary>
         private float averageRotation;
 
+        /// <summary>
+        /// Initializes a bubble finger trace.
+        /// </summary>
         public BubbleFingerTrace()
         {
         }
@@ -37,11 +53,10 @@ namespace CutTheRope.GameMain.FingerTraces
         {
         }
 
+        /// <inheritdoc />
         protected override bool HasLiveParticles => particles.HasLiveParticles;
 
-        /// <summary>
-        /// Adds a new bubble segment with the fixed CTR2 bubble lifetime.
-        /// </summary>
+        /// <inheritdoc />
         public override void AddSegment(float startX, float startY, float endX, float endY)
         {
             Vector start = new(startX, startY);
@@ -55,9 +70,7 @@ namespace CutTheRope.GameMain.FingerTraces
             particles.SetPosition(end);
         }
 
-        /// <summary>
-        /// Advances particle emission and the averaged head direction state.
-        /// </summary>
+        /// <inheritdoc />
         protected override void UpdateCore(float delta)
         {
             particleTimer -= delta;
@@ -66,9 +79,7 @@ namespace CutTheRope.GameMain.FingerTraces
             particles.Update(delta);
         }
 
-        /// <summary>
-        /// Clears bubble-specific transient state.
-        /// </summary>
+        /// <inheritdoc />
         protected override void ResetCore()
         {
             directionHistory.Clear();
@@ -77,15 +88,17 @@ namespace CutTheRope.GameMain.FingerTraces
             averageRotation = 0f;
         }
 
-        /// <summary>
-        /// Publishes the bubble particle sprite metadata for snapshot rendering.
-        /// </summary>
+        /// <inheritdoc />
         protected override void BuildSnapshot(List<Vector> sampledPoints, List<FingerTraceSpritePose> sprites)
         {
             AppendSampledPoints(sampledPoints);
             particles.AppendSprites(sprites);
         }
 
+        /// <summary>
+        /// Appends the trace center line implied by the live segments.
+        /// </summary>
+        /// <param name="sampledPoints">The destination sampled-point list.</param>
         private void AppendSampledPoints(List<Vector> sampledPoints)
         {
             if (Segments.Count == 0)
@@ -101,6 +114,10 @@ namespace CutTheRope.GameMain.FingerTraces
             sampledPoints.Add(Segments[^1].End);
         }
 
+        /// <summary>
+        /// Returns the averaged head direction derived from recent segment deltas.
+        /// </summary>
+        /// <returns>The averaged direction vector.</returns>
         private Vector GetAverageDirection()
         {
             if (directionHistory.Count == 0)
@@ -117,6 +134,9 @@ namespace CutTheRope.GameMain.FingerTraces
             return VectDiv(total, directionHistory.Count);
         }
 
+        /// <summary>
+        /// Refreshes the emitter rotation from the recent direction history.
+        /// </summary>
         private void RefreshHeadState()
         {
             while (directionHistory.Count > MaximumDirectionHistory)

@@ -4,8 +4,14 @@ using CutTheRope.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Provides generated level map filenames indexed by pack and level.
+    /// </summary>
     internal sealed class LevelsList : FrameworkTypes
     {
+        /// <summary>
+        /// Builds the level filename table from the configured pack and level counts.
+        /// </summary>
         static LevelsList()
         {
             int packCount = PackConfig.GetPackCount();
@@ -23,6 +29,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Level map filenames indexed by zero-based pack and zero-based level.
+        /// </summary>
         public static string[,] LEVEL_NAMES;
     }
 }

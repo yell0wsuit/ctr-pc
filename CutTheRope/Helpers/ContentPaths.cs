@@ -147,6 +147,8 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Gets the full path to a per-language localization JSON file.
         /// </summary>
+        /// <param name="languageCode">Language code used to resolve the strings file.</param>
+        /// <returns>The full path to the requested localization file.</returns>
         public static string GetStringsFullPath(string languageCode)
         {
             return GetContentPath(GetStringsPath(languageCode));
@@ -155,6 +157,7 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Gets the absolute path to the content root directory for the current runtime context.
         /// </summary>
+        /// <returns>The absolute content root path for the active platform/runtime.</returns>
         public static string GetContentRootAbsolute()
         {
 #if MACOS_AVFOUNDATION
@@ -227,8 +230,10 @@ namespace CutTheRope.Helpers
 
         /// <summary>
         /// Loads an XML file from the content directory and returns the root element.
-        /// Returns null on failure or if <paramref name="fileName"/> is empty.
+        /// Returns <see langword="null"/> on failure or if <paramref name="fileName"/> is empty.
         /// </summary>
+        /// <param name="fileName">Relative file name under the content root.</param>
+        /// <returns>The root XML element, or <see langword="null"/> when loading fails.</returns>
         public static XElement LoadXml(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))

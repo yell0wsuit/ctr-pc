@@ -7,8 +7,17 @@ using CutTheRope.Framework.Helpers;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="BaseElement"/> that provides scrollable, clipped content with touch-based drag, inertia, bounce, and scroll-point snapping.
+    /// </summary>
     internal sealed class ScrollableContainer : BaseElement
     {
+        /// <summary>
+        /// Outputs the current scroll position, maximum scroll position, and scroll coefficients.
+        /// </summary>
+        /// <param name="sp">Receives the current scroll position.</param>
+        /// <param name="mp">Receives the maximum scroll position.</param>
+        /// <param name="sc">Receives the scroll coefficients (container/viewport ratio).</param>
         public void ProvideScrollPosMaxScrollPosScrollCoeff(ref Vector sp, ref Vector mp, ref Vector sc)
         {
             sp = GetScroll();
@@ -18,6 +27,7 @@ namespace CutTheRope.Framework.Visual
             sc = Vect(scrollCoeffX, scrollCoeffY);
         }
 
+        /// <inheritdoc />
         public override int AddChildwithID(BaseElement c, int i)
         {
             int childId = container.AddChildwithID(c, i);
@@ -25,32 +35,38 @@ namespace CutTheRope.Framework.Visual
             return childId;
         }
 
+        /// <inheritdoc />
         public override int AddChild(BaseElement c)
         {
             c.parentAnchor = 9;
             return container.AddChild(c);
         }
 
+        /// <inheritdoc />
         public override void RemoveChildWithID(int i)
         {
             container.RemoveChildWithID(i);
         }
 
+        /// <inheritdoc />
         public override void RemoveChild(BaseElement c)
         {
             container.RemoveChild(c);
         }
 
+        /// <inheritdoc />
         public override BaseElement GetChild(int i)
         {
             return container.GetChild(i);
         }
 
+        /// <inheritdoc />
         public override int ChildsCount()
         {
             return container.ChildsCount();
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -60,6 +76,7 @@ namespace CutTheRope.Framework.Visual
             Renderer.Disable(Renderer.GL_SCISSOR_TEST);
         }
 
+        /// <inheritdoc />
         public override void PostDraw()
         {
             if (!passTransformationsToChilds)
@@ -99,6 +116,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -197,6 +215,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         public override void Show()
         {
             touchTimer = 0f;
@@ -209,6 +228,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             if (!PointInRect(tx, ty, drawX, drawY, width, height))
@@ -238,6 +258,7 @@ namespace CutTheRope.Framework.Visual
             return true;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchMoveXY(float tx, float ty)
         {
             if (touchPassTimeout == 0f || passTouches)
@@ -295,6 +316,7 @@ namespace CutTheRope.Framework.Visual
             return false;
         }
 
+        /// <inheritdoc />
         public override bool OnTouchUpXY(float tx, float ty)
         {
             if (tx == -10000f && ty == -10000f)
@@ -352,6 +374,7 @@ namespace CutTheRope.Framework.Visual
             return true;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -361,6 +384,14 @@ namespace CutTheRope.Framework.Visual
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Initializes the container with the specified viewport size and content element.
+        /// Resets scroll-point state, touch handling, and scrolling behavior to defaults.
+        /// </summary>
+        /// <param name="w">Viewport width.</param>
+        /// <param name="h">Viewport height.</param>
+        /// <param name="c">Content element that will be clipped and scrolled inside the viewport.</param>
+        /// <returns>The initialized container instance.</returns>
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
             // float fixedDeltaSetting = ApplicationSettings.GetInt(5);
@@ -400,6 +431,14 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Initializes the container with an empty content element sized to the specified content bounds.
+        /// </summary>
+        /// <param name="w">Viewport width.</param>
+        /// <param name="h">Viewport height.</param>
+        /// <param name="cw">Scrollable content width.</param>
+        /// <param name="ch">Scrollable content height.</param>
+        /// <returns>The initialized container instance.</returns>
         public ScrollableContainer InitWithWidthHeightContainerWidthHeight(float w, float h, float cw, float ch)
         {
             container = new BaseElement
@@ -411,6 +450,10 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Enables scroll-point support and allocates storage for up to <paramref name="n"/> points.
+        /// </summary>
+        /// <param name="n">Maximum number of scroll points to store.</param>
         public void TurnScrollPointsOnWithCapacity(int n)
         {
             spointsCapacity = n;
@@ -418,12 +461,24 @@ namespace CutTheRope.Framework.Visual
             spointsNum = 0;
         }
 
+        /// <summary>
+        /// Adds a scroll point using logical scroll coordinates.
+        /// </summary>
+        /// <param name="sx">Horizontal scroll position associated with the point.</param>
+        /// <param name="sy">Vertical scroll position associated with the point.</param>
+        /// <returns>The index assigned to the new scroll point.</returns>
         public int AddScrollPointAtXY(float sx, float sy)
         {
             AddScrollPointAtXYwithID(sx, sy, spointsNum);
             return spointsNum - 1;
         }
 
+        /// <summary>
+        /// Stores a scroll point at the specified index.
+        /// </summary>
+        /// <param name="sx">Horizontal scroll position associated with the point.</param>
+        /// <param name="sy">Vertical scroll position associated with the point.</param>
+        /// <param name="i">Target scroll point index.</param>
         public void AddScrollPointAtXYwithID(float sx, float sy, int i)
         {
             spoints[i] = Vect(0f - sx, 0f - sy);
@@ -433,26 +488,47 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Returns the number of registered scroll points.
+        /// </summary>
+        /// <returns>Total registered scroll points.</returns>
         public int GetTotalScrollPoints()
         {
             return spointsNum;
         }
 
+        /// <summary>
+        /// Returns the stored container offset for the specified scroll point.
+        /// </summary>
+        /// <param name="i">Scroll point index.</param>
+        /// <returns>Container offset used when snapping to the scroll point.</returns>
         public Vector GetScrollPoint(int i)
         {
             return spoints[i];
         }
 
+        /// <summary>
+        /// Returns the current logical scroll offset.
+        /// </summary>
+        /// <returns>Current horizontal and vertical scroll offset.</returns>
         public Vector GetScroll()
         {
             return Vect(0f - container.x, 0f - container.y);
         }
 
+        /// <summary>
+        /// Returns the maximum logical scroll offset allowed by the current content size.
+        /// </summary>
+        /// <returns>Maximum horizontal and vertical scroll offset.</returns>
         public Vector GetMaxScroll()
         {
             return Vect(container.width - width, container.height - height);
         }
 
+        /// <summary>
+        /// Sets the current scroll offset immediately and cancels inertial or snap-to-point movement.
+        /// </summary>
+        /// <param name="s">Logical scroll offset to apply.</param>
         public void SetScroll(Vector s)
         {
             move = vectZero;
@@ -463,6 +539,10 @@ namespace CutTheRope.Framework.Visual
             lastTargetSpoint = -1;
         }
 
+        /// <summary>
+        /// Jumps directly to the specified scroll point and notifies the delegate that it was reached.
+        /// </summary>
+        /// <param name="sp">Scroll point index.</param>
         public void PlaceToScrollPoint(int sp)
         {
             move = vectZero;
@@ -474,6 +554,11 @@ namespace CutTheRope.Framework.Visual
             delegateScrollableContainerProtocol?.ScrollableContainerreachedScrollPoint(this, sp);
         }
 
+        /// <summary>
+        /// Starts animating toward the specified scroll point.
+        /// </summary>
+        /// <param name="sp">Target scroll point index.</param>
+        /// <param name="m">Speed multiplier applied while moving toward the point.</param>
         public void MoveToScrollPointmoveMultiplier(int sp, float m)
         {
             movingToSpoint = true;
@@ -483,6 +568,11 @@ namespace CutTheRope.Framework.Visual
             lastTargetSpoint = targetSpoint;
         }
 
+        /// <summary>
+        /// Selects the nearest valid scroll point, preferring points that lie in the supplied direction.
+        /// Updates the target scroll-point state and delegate notifications.
+        /// </summary>
+        /// <param name="d">Preferred movement direction. Use <c>vectZero</c> to ignore direction.</param>
         public void CalculateNearsetScrollPointInDirection(Vector d)
         {
             // spointMoveDirection = d;
@@ -522,6 +612,11 @@ namespace CutTheRope.Framework.Visual
             lastTargetSpoint = targetSpoint;
         }
 
+        /// <summary>
+        /// Moves the content container by the requested offset, clamping to bounds unless bounce is enabled.
+        /// </summary>
+        /// <param name="off">Requested movement offset in container space.</param>
+        /// <returns>The actual applied movement after bounds checks.</returns>
         public Vector MoveContainerBy(Vector off)
         {
             float val = container.x + off.X;
@@ -540,6 +635,12 @@ namespace CutTheRope.Framework.Visual
             return vector;
         }
 
+        /// <summary>
+        /// Advances the content container toward a target position at the provided <paramref name="speed"/> for the current frame.
+        /// </summary>
+        /// <param name="tsp">Target position in container space.</param>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
+        /// <param name="speed">Movement speed applied toward the target.</param>
         public void MoveToPointDeltaSpeed(Vector tsp, float delta, float speed)
         {
             Vector v = VectSub(tsp, Vect(container.x, container.y));
@@ -551,6 +652,10 @@ namespace CutTheRope.Framework.Visual
             move = vectZero;
         }
 
+        /// <summary>
+        /// Starts snap-to-point movement by selecting the nearest scroll point in the supplied direction.
+        /// </summary>
+        /// <param name="d">Preferred movement direction used to choose a scroll point.</param>
         public void StartMovingToSpointInDirection(Vector d)
         {
             movingToSpoint = true;
@@ -558,37 +663,13 @@ namespace CutTheRope.Framework.Visual
             CalculateNearsetScrollPointInDirection(d);
         }
 
-        /// <remarks>
-        /// This method provides smooth momentum-based scrolling with quick deceleration.
-        /// <para>The scrolling behavior:</para>
-        /// <list type="bullet">
-        ///   <item>
-        ///     <description>Adds velocity to the existing momentum (allows smooth acceleration).</description>
-        ///   </item>
-        ///   <item>
-        ///     <description>Velocity is automatically decelerated by the Update loop.</description>
-        ///   </item>
-        ///   <item>
-        ///     <description>Scroll speed multiplier is <c>4f</c>.</description>
-        ///   </item>
-        ///   <item>
-        ///     <description>No scrolling occurs if content height fits within the container.</description>
-        ///   </item>
-        /// </list>
-        ///
-        /// <para>Implementation notes:</para>
-        /// <list type="bullet">
-        ///   <item>
-        ///     <description>The momentum system reuses existing drag/touch physics.</description>
-        ///   </item>
-        ///   <item>
-        ///     <description>Deceleration factor (<c>7f</c>) balances smoothness and quick stopping.</description>
-        ///   </item>
-        ///   <item>
-        ///     <description>Higher multiplier increases speed; higher deceleration stops faster.</description>
-        ///   </item>
-        /// </list>
-        /// </remarks>
+        /// <summary>
+        /// Provides smooth, momentum-based scrolling in response to mouse wheel input.
+        /// </summary>
+        /// <param name="scrollDelta">
+        /// The mouse wheel delta value. Positive values scroll up (content moves down),
+        /// negative values scroll down (content moves up).
+        /// </param>
         public void HandleMouseWheel(int scrollDelta)
         {
             if (container.height <= height)
@@ -597,7 +678,6 @@ namespace CutTheRope.Framework.Visual
             }
 
             // Convert scroll wheel delta to scroll velocity for smooth scrolling
-            // Positive scrollDelta = scroll up (content moves down), negative = scroll down (content moves up)
             float scrollVelocity = scrollDelta * 4f;
 
             // Add to existing momentum for smooth, accumulating scrolling
@@ -605,88 +685,205 @@ namespace CutTheRope.Framework.Visual
             move = VectAdd(move, Vect(0f, scrollVelocity));
         }
 
+        /// <summary>
+        /// Receives notifications when the active target or reached scroll point changes.
+        /// </summary>
         public IScrollableContainerProtocol delegateScrollableContainerProtocol;
 
+        /// <summary>
+        /// Sentinel touch position used to mark the absence of an active drag gesture.
+        /// </summary>
         private static readonly Vector impossibleTouch = new(-1000f, -1000f);
 
+        /// <summary>
+        /// Root content element that is clipped and translated during scrolling.
+        /// </summary>
         private BaseElement container;
 
+        /// <summary>
+        /// Last touch position used to measure incremental drag movement.
+        /// </summary>
         private Vector dragStart;
 
+        /// <summary>
+        /// Most recent drag displacement, reused to seed inertial scrolling on release.
+        /// </summary>
         private Vector staticMove;
 
+        /// <summary>
+        /// Current scrolling velocity used for inertia and mouse-wheel momentum.
+        /// </summary>
         private Vector move;
 
         // private bool movingByInertion;
 
+        /// <summary>
+        /// Remaining time window during which drag motion can be converted into inertial movement.
+        /// </summary>
         private float inertiaTimeoutLeft;
 
+        /// <summary>
+        /// Whether the container is currently animating toward a snap point.
+        /// </summary>
         private bool movingToSpoint;
 
+        /// <summary>
+        /// Index of the current snap-point target, or <c>-1</c> when no target is active.
+        /// </summary>
         private int targetSpoint;
 
+        /// <summary>
+        /// Index of the previously selected snap point.
+        /// </summary>
         private int lastTargetSpoint;
 
+        /// <summary>
+        /// Speed multiplier applied while animating toward the selected snap point.
+        /// </summary>
         private float spointMoveMultiplier;
 
+        /// <summary>
+        /// Stored snap-point container offsets.
+        /// </summary>
         private Vector[] spoints;
 
+        /// <summary>
+        /// Number of snap points currently registered in <see cref="spoints"/>.
+        /// </summary>
         private int spointsNum;
 
+        /// <summary>
+        /// Allocated capacity of the snap-point storage array.
+        /// </summary>
         private int spointsCapacity;
 
         // private Vector spointMoveDirection;
 
+        /// <summary>
+        /// Most recent explicit movement target used by helper movement routines.
+        /// </summary>
         private Vector targetPoint;
 
+        /// <summary>
+        /// Current touch interaction phase for the container.
+        /// </summary>
         private TOUCH_STATE touchState;
 
+        /// <summary>
+        /// Remaining delay before touch input is forwarded to child elements.
+        /// </summary>
         public float touchTimer;
 
+        /// <summary>
+        /// Delay before a deferred child touch-up event is replayed.
+        /// </summary>
         private float touchReleaseTimer;
 
+        /// <summary>
+        /// Cached touch position used when touch delivery to children is deferred.
+        /// </summary>
         private Vector savedTouch;
 
+        /// <summary>
+        /// Total drag distance accumulated during the current gesture.
+        /// </summary>
         private Vector totalDrag;
 
+        /// <summary>
+        /// Whether touch events should currently be forwarded to child elements.
+        /// </summary>
         public bool passTouches;
 
         // private float fixedDelta;
 
         // private float deaccelerationSpeed;
 
+        /// <summary>
+        /// Maximum time after a drag movement during which inertia can still be applied on release.
+        /// </summary>
         private float inertiaTimeout;
 
         // private float scrollToPointDuration;
 
+        /// <summary>
+        /// Whether snap selection may skip intermediate scroll points instead of moving point-by-point.
+        /// </summary>
         private bool canSkipScrollPoints;
 
+        /// <summary>
+        /// Whether horizontal overscroll is allowed and springs back after release.
+        /// </summary>
         public bool shouldBounceHorizontally;
 
+        /// <summary>
+        /// Whether vertical overscroll is allowed and springs back after release.
+        /// </summary>
         public bool shouldBounceVertically;
 
+        /// <summary>
+        /// Drag distance required before pending child touches are cancelled and scrolling takes control.
+        /// </summary>
         public float touchMoveIgnoreLength;
 
+        /// <summary>
+        /// Maximum per-frame drag delta applied from touch movement before clamping.
+        /// </summary>
         private float maxTouchMoveLength;
 
+        /// <summary>
+        /// Delay before touch events are passed through to child elements.
+        /// </summary>
         private float touchPassTimeout;
 
+        /// <summary>
+        /// Whether <see cref="Show"/> resets the scroll offset to the origin.
+        /// </summary>
         public bool resetScrollOnShow;
 
+        /// <summary>
+        /// Whether the container stops processing touch-down events already handled by a child.
+        /// </summary>
         public bool dontHandleTouchDownsHandledByChilds;
 
+        /// <summary>
+        /// Whether the container stops processing touch-move events already handled by a child.
+        /// </summary>
         public bool dontHandleTouchMovesHandledByChilds;
 
+        /// <summary>
+        /// Whether the container stops processing touch-up events already handled by a child.
+        /// </summary>
         public bool dontHandleTouchUpsHandledByChilds;
 
+        /// <summary>
+        /// Whether dragging should explicitly cancel touches already delivered to children.
+        /// </summary>
         private bool untouchChildsOnMove;
 
+        /// <summary>
+        /// Minimum release movement length required to choose a snap target from release direction.
+        /// Use <c>-1</c> to disable the directional threshold.
+        /// </summary>
         public float minAutoScrollToSpointLength;
 
+        /// <summary>
+        /// Touch interaction states used to track dragging lifecycle.
+        /// </summary>
         private enum TOUCH_STATE
         {
+            /// <summary>
+            /// No active touch is being tracked.
+            /// </summary>
             UP,
+
+            /// <summary>
+            /// A touch has started but has not yet moved.
+            /// </summary>
             DOWN,
+
+            /// <summary>
+            /// An active touch is dragging the container.
+            /// </summary>
             MOVING
         }
     }

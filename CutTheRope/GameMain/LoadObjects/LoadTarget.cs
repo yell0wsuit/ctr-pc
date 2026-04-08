@@ -8,16 +8,18 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading Om Nom from XML level data
-    /// Om Nom is the objective the candy must reach to complete the level
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads Om Nom from XML node data
         /// Sets up Om Nom animations, blink animation, and greeting if needed
         /// </summary>
+        /// <param name="xmlNode">The XML node describing Om Nom.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadTarget(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();

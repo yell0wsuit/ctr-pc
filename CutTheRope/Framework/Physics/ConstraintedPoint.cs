@@ -2,10 +2,14 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
 
-namespace CutTheRope.Framework.Sfe
+namespace CutTheRope.Framework.Physics
 {
+    /// <summary>
+    /// Verlet-style physics point that can be pinned and linked to other points through constraints.
+    /// </summary>
     internal sealed class ConstraintedPoint : MaterialPoint
     {
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -15,6 +19,9 @@ namespace CutTheRope.Framework.Sfe
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Initializes a new constrained point with no previous position, pin, or constraints.
+        /// </summary>
         public ConstraintedPoint()
         {
             prevPos = vectUndefined;
@@ -22,6 +29,12 @@ namespace CutTheRope.Framework.Sfe
             constraints = [];
         }
 
+        /// <summary>
+        /// Adds a constraint from this point to another point.
+        /// </summary>
+        /// <param name="constrainedPoint">Other point referenced by the constraint.</param>
+        /// <param name="restLength">Target distance for the relationship.</param>
+        /// <param name="constraintType">Constraint rule to enforce.</param>
         public void AddConstraintwithRestLengthofType(
             ConstraintedPoint constrainedPoint,
             float restLength,
@@ -36,6 +49,10 @@ namespace CutTheRope.Framework.Sfe
             constraints.Add(constraint);
         }
 
+        /// <summary>
+        /// Removes the first constraint that targets the specified point.
+        /// </summary>
+        /// <param name="constrainedPoint">Target point to remove.</param>
         public void RemoveConstraint(ConstraintedPoint constrainedPoint)
         {
             for (int i = 0; i < constraints.Count; i++)
@@ -48,11 +65,19 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
+        /// <summary>
+        /// Removes all constraints owned by this point.
+        /// </summary>
         public void RemoveConstraints()
         {
             constraints = [];
         }
 
+        /// <summary>
+        /// Redirects a constraint from one target point to another.
+        /// </summary>
+        /// <param name="fromPoint">Existing target point.</param>
+        /// <param name="toPoint">Replacement target point.</param>
         public void ChangeConstraintFromTo(ConstraintedPoint fromPoint, ConstraintedPoint toPoint)
         {
             int count = constraints.Count;
@@ -67,6 +92,12 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
+        /// <summary>
+        /// Redirects a constraint to a new target point and updates its rest length.
+        /// </summary>
+        /// <param name="fromPoint">Existing target point.</param>
+        /// <param name="toPoint">Replacement target point.</param>
+        /// <param name="restLength">New rest length to store.</param>
         public void ChangeConstraintFromTowithRestLength(ConstraintedPoint fromPoint, ConstraintedPoint toPoint, float restLength)
         {
             int count = constraints.Count;
@@ -82,6 +113,11 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
+        /// <summary>
+        /// Changes the rest length for the constraint that targets the specified point.
+        /// </summary>
+        /// <param name="restLength">New rest length.</param>
+        /// <param name="constrainedPoint">Target point whose constraint should be updated.</param>
         public void ChangeRestLengthToFor(float restLength, ConstraintedPoint constrainedPoint)
         {
             int count = constraints.Count;
@@ -96,6 +132,11 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
+        /// <summary>
+        /// Returns whether this point has a constraint to the specified point.
+        /// </summary>
+        /// <param name="p">Point to test.</param>
+        /// <returns><see langword="true" /> if a matching constraint exists; otherwise <see langword="false" />.</returns>
         public bool HasConstraintTo(ConstraintedPoint p)
         {
             int count = constraints.Count;
@@ -110,6 +151,11 @@ namespace CutTheRope.Framework.Sfe
             return false;
         }
 
+        /// <summary>
+        /// Returns the stored rest length for the constraint that targets the specified point.
+        /// </summary>
+        /// <param name="constrainedPoint">Target point to look up.</param>
+        /// <returns>The configured rest length, or <c>-1</c> when no constraint exists.</returns>
         public float RestLengthFor(ConstraintedPoint constrainedPoint)
         {
             int count = constraints.Count;
@@ -124,6 +170,7 @@ namespace CutTheRope.Framework.Sfe
             return MISSING_REST_LENGTH;
         }
 
+        /// <inheritdoc />
         public override void ResetAll()
         {
             base.ResetAll();
@@ -131,6 +178,7 @@ namespace CutTheRope.Framework.Sfe
             RemoveConstraints();
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             totalForce = vectZero;
@@ -161,6 +209,10 @@ namespace CutTheRope.Framework.Sfe
             pos = VectAdd(pos, posDelta);
         }
 
+        /// <summary>
+        /// Enforces all constraints owned by the specified point, including optional pinning.
+        /// </summary>
+        /// <param name="constrainedPoint">Point whose constraints should be satisfied.</param>
         public static void SatisfyConstraints(ConstraintedPoint constrainedPoint)
         {
             if (constrainedPoint == null)
@@ -219,6 +271,12 @@ namespace CutTheRope.Framework.Sfe
             }
         }
 
+        /// <summary>
+        /// Updates a constrained point using the QCP timestep variant used by rope simulation.
+        /// </summary>
+        /// <param name="constrainedPoint">Point to update.</param>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
+        /// <param name="coefficient">Additional timestep scaling coefficient.</param>
         public static void Qcpupdate(ConstraintedPoint constrainedPoint, float delta, float coefficient)
         {
             constrainedPoint.totalForce = vectZero;
@@ -248,16 +306,44 @@ namespace CutTheRope.Framework.Sfe
             constrainedPoint.pos = VectAdd(constrainedPoint.pos, constrainedPoint.posDelta);
         }
 
+        /// <summary>
+        /// Sentinel coordinate used when a point is not pinned.
+        /// </summary>
         private const float PIN_UNSET_COORDINATE = -1f;
+
+        /// <summary>
+        /// Sentinel rest length used before a constraint distance has been initialized.
+        /// </summary>
         private const float MISSING_REST_LENGTH = -1f;
+
+        /// <summary>
+        /// Minimum distance used when normalizing near-overlapping constraints.
+        /// </summary>
         private const float MIN_CONSTRAINT_DISTANCE = 1f;
+
+        /// <summary>
+        /// Fixed timestep multiplier used by constrained point integration.
+        /// </summary>
         private const float QCP_FIXED_TIMESTEP = 0.016f;
+
+        /// <summary>
+        /// Fallback constraint direction used when two points overlap exactly.
+        /// </summary>
         private static readonly Vector DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION = new(1f, 1f);
 
+        /// <summary>
+        /// Previous position used by Verlet integration.
+        /// </summary>
         public Vector prevPos;
 
+        /// <summary>
+        /// Optional pinned world position. An unset pin leaves the point free to move.
+        /// </summary>
         public Vector pin;
 
+        /// <summary>
+        /// Outgoing constraints owned by this point.
+        /// </summary>
         public List<Constraint> constraints;
     }
 }

@@ -20,7 +20,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Enables or disables cursor rendering and native cursor overrides.
         /// </summary>
-        /// <param name="b">True to enable the custom cursor, false to hide it.</param>
+        /// <param name="b"><see langword="true"/> to enable the custom cursor, <see langword="false"/> to hide it.</param>
         public void Enable(bool b)
         {
             _enabled = b;
@@ -39,6 +39,9 @@ namespace CutTheRope.Desktop
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes any native cursor handles created from the scaled cursor textures.
+        /// </summary>
         private void DisposeNativeCursors()
         {
             _nativeCursor?.Dispose();
@@ -75,6 +78,10 @@ namespace CutTheRope.Desktop
             _currentScale = 0;
         }
 
+        /// <summary>
+        /// Rebuilds the scaled cursor textures and native cursor handles when the UI <paramref name="scale"/> changes.
+        /// </summary>
+        /// <param name="scale">The screen scale factor to apply to the cursor textures.</param>
         private void UpdateScaledCursors(double scale)
         {
             if (Math.Abs(_currentScale - scale) < 0.01)
@@ -107,6 +114,12 @@ namespace CutTheRope.Desktop
             _usingActiveCursor = !_usingActiveCursor;
         }
 
+        /// <summary>
+        /// Creates a scaled copy of a cursor texture using bilinear interpolation.
+        /// </summary>
+        /// <param name="source">The source texture to scale.</param>
+        /// <param name="scale">The scale factor to apply.</param>
+        /// <returns>A newly allocated scaled texture.</returns>
         private static Texture2D ScaleTexture(Texture2D source, double scale)
         {
             ArgumentNullException.ThrowIfNull(source);
@@ -157,6 +170,13 @@ namespace CutTheRope.Desktop
             return scaledTexture;
         }
 
+        /// <summary>
+        /// Linearly interpolates between two values.
+        /// </summary>
+        /// <param name="a">The starting value.</param>
+        /// <param name="b">The ending value.</param>
+        /// <param name="t">The interpolation factor.</param>
+        /// <returns>The interpolated value.</returns>
         private static float Lerp(float a, float b, float t)
         {
             return a + ((b - a) * t);
@@ -211,16 +231,29 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Gets the current mouse state transformed into view coordinates.
+        /// </summary>
+        /// <returns>The transformed mouse state.</returns>
         public static MouseState GetMouseState()
         {
             return TransformMouseState(Global.XnaGame.GetMouseState());
         }
 
+        /// <summary>
+        /// Converts a window-space mouse state into the game's logical view space.
+        /// </summary>
+        /// <param name="mouseState">The source mouse state in window coordinates.</param>
+        /// <returns>The transformed mouse state.</returns>
         private static MouseState TransformMouseState(MouseState mouseState)
         {
             return new MouseState(Global.ScreenSizeManager.TransformWindowToViewX(mouseState.X), Global.ScreenSizeManager.TransformWindowToViewY(mouseState.Y), mouseState.ScrollWheelValue, mouseState.LeftButton, mouseState.MiddleButton, mouseState.RightButton, mouseState.XButton1, mouseState.XButton2);
         }
 
+        /// <summary>
+        /// Translates mouse button activity into touch events for desktop input emulation.
+        /// </summary>
+        /// <returns>The current touch locations derived from mouse input.</returns>
         public List<TouchLocation> GetTouchLocation()
         {
             List<TouchLocation> list = [];
@@ -263,30 +296,69 @@ namespace CutTheRope.Desktop
             return GLCanvas.ConvertTouches(list);
         }
 
+        /// <summary>
+        /// The base cursor texture used when the mouse button is not pressed.
+        /// </summary>
         private Texture2D _cursor;
 
+        /// <summary>
+        /// The cursor texture used while the primary mouse button is pressed.
+        /// </summary>
         private Texture2D _cursorActive;
 
+        /// <summary>
+        /// The cached scaled version of <see cref="_cursor"/>.
+        /// </summary>
         private Texture2D _scaledCursor;
 
+        /// <summary>
+        /// The cached scaled version of <see cref="_cursorActive"/>.
+        /// </summary>
         private Texture2D _scaledCursorActive;
 
+        /// <summary>
+        /// The native cursor handle created from <see cref="_scaledCursor"/>.
+        /// </summary>
         private Microsoft.Xna.Framework.Input.MouseCursor _nativeCursor;
 
+        /// <summary>
+        /// The native cursor handle created from <see cref="_scaledCursorActive"/>.
+        /// </summary>
         private Microsoft.Xna.Framework.Input.MouseCursor _nativeCursorActive;
 
+        /// <summary>
+        /// The last transformed mouse state used for touch emulation.
+        /// </summary>
         private MouseState _mouseStateTransformed;
 
+        /// <summary>
+        /// The last raw mouse state read from the platform window.
+        /// </summary>
         private MouseState _mouseStateOriginal;
 
+        /// <summary>
+        /// Tracks the current synthetic touch identifier for mouse-driven touch events.
+        /// </summary>
         private int _touchID;
 
+        /// <summary>
+        /// Stores the screen scale used to build the current cursor textures.
+        /// </summary>
         private double _currentScale;
 
+        /// <summary>
+        /// Indicates whether the custom cursor system is enabled.
+        /// </summary>
         private bool _enabled;
 
+        /// <summary>
+        /// Indicates whether the active cursor variant is currently selected.
+        /// </summary>
         private bool _usingActiveCursor;
 
+        /// <summary>
+        /// Indicates whether a native cursor override is currently applied.
+        /// </summary>
         private bool _cursorOverrideActive;
     }
 }

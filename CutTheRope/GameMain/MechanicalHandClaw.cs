@@ -36,7 +36,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Resolves the owning mechanical hand by walking up the segment chain.
         /// </summary>
-        /// <returns>Owning hand instance, or <c>null</c> when detached.</returns>
+        /// <returns>Owning hand instance, or <see langword="null" /> when detached.</returns>
         public MechanicalHand TheHand()
         {
             BaseElement element = parent;
@@ -47,6 +47,7 @@ namespace CutTheRope.GameMain
             return element as MechanicalHand;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -149,6 +150,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             clawActive.x = drawX;
@@ -163,6 +165,7 @@ namespace CutTheRope.GameMain
             clawIdle.Update(delta);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -175,19 +178,27 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Caches the owning mechanical hand reference when it has not been resolved yet.
+        /// </summary>
         private void EnsureHandReference()
         {
             mechanicalHand ??= TheHand();
         }
 
+        /// <summary>Idle claw visual.</summary>
         public Image clawIdle;
 
+        /// <summary>Active claw body visual.</summary>
         public Image clawActive;
 
+        /// <summary>Active claw fingers overlay visual.</summary>
         public Image clawActiveFingers;
 
+        /// <summary>Cached owning mechanical hand.</summary>
         private MechanicalHand mechanicalHand;
 
+        /// <summary>Number of previous parent segments to walk when resolving the owning hand.</summary>
         public int prevSegments;
     }
 }

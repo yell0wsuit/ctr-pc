@@ -9,6 +9,9 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal static class QuadVertexCache
     {
+        /// <summary>
+        /// Reused vertex buffer for a single textured quad.
+        /// </summary>
         private static readonly VertexPositionNormalTexture[] s_quadVertices = new VertexPositionNormalTexture[4];
 
         /// <summary>

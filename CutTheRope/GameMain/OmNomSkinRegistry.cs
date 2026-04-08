@@ -18,10 +18,19 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal static class OmNomSkinRegistry
     {
+        /// <summary>
+        /// File name of the Om Nom skin manifest within the animations content directory.
+        /// </summary>
         private const string ManifestFileName = "om_nom_skins.json";
 
+        /// <summary>
+        /// XML-based skin definitions loaded from the manifest.
+        /// </summary>
         private static readonly List<OmNomSkinDefinition> xmlSkins;
 
+        /// <summary>
+        /// Initializes the skin registry from the manifest.
+        /// </summary>
         static OmNomSkinRegistry()
         {
             xmlSkins = LoadManifest();
@@ -34,6 +43,7 @@ namespace CutTheRope.GameMain
         public static int TotalSkinCount => xmlSkins.Count + 1;
 
         /// <summary>Gets the currently selected skin index from preferences.</summary>
+        /// <returns>The selected skin index, or 0 when the saved value is out of range.</returns>
         public static int GetSelectedSkinIndex()
         {
             int index = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM");
@@ -41,12 +51,16 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>Whether the given index is the classic sprite-frame skin.</summary>
+        /// <param name="skinIndex">Skin slot index to inspect.</param>
+        /// <returns><see langword="true"/> when <paramref name="skinIndex"/> is the classic skin slot; otherwise, <see langword="false"/>.</returns>
         public static bool IsClassicSkin(int skinIndex)
         {
             return skinIndex == 0;
         }
 
         /// <summary>Gets the XML skin definition for a non-classic skin index.</summary>
+        /// <param name="skinIndex">Non-classic skin slot index.</param>
+        /// <returns>The XML skin definition for <paramref name="skinIndex"/>.</returns>
         public static OmNomSkinDefinition GetXmlSkinDefinition(int skinIndex)
         {
             int xmlIndex = skinIndex - 1;
@@ -56,6 +70,10 @@ namespace CutTheRope.GameMain
                     $"Skin index {skinIndex} is out of range. Valid range: 1-{xmlSkins.Count}.");
         }
 
+        /// <summary>
+        /// Loads XML-based skin definitions from the manifest.
+        /// </summary>
+        /// <returns>The skin definitions loaded from the manifest, or an empty list when the manifest is missing or invalid.</returns>
         private static List<OmNomSkinDefinition> LoadManifest()
         {
             List<OmNomSkinDefinition> skins = [];
@@ -93,6 +111,11 @@ namespace CutTheRope.GameMain
             return skins;
         }
 
+        /// <summary>
+        /// Parses a single skin manifest entry.
+        /// </summary>
+        /// <param name="entry">JSON object that describes an Om Nom skin.</param>
+        /// <returns>The parsed skin definition, or <see langword="null"/> when the entry is invalid.</returns>
         internal static OmNomSkinDefinition ParseSkinEntry(JsonElement entry)
         {
             if (entry.ValueKind != JsonValueKind.Object)
@@ -210,6 +233,12 @@ namespace CutTheRope.GameMain
                 [.. uniqueSounds]);
         }
 
+        /// <summary>
+        /// Reads and trims a string property from a JSON object.
+        /// </summary>
+        /// <param name="element">JSON object that owns the property.</param>
+        /// <param name="propertyName">Property name to read.</param>
+        /// <returns>The trimmed string value, or <see langword="null"/> when the property is missing or not a string.</returns>
         private static string GetStringProperty(JsonElement element, string propertyName)
         {
             return element.TryGetProperty(propertyName, out JsonElement value)

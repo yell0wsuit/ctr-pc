@@ -1,7 +1,7 @@
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -12,11 +12,16 @@ namespace CutTheRope.GameMain
         /// Checks if the given constraint point is a candy (star, starL, or starR).
         /// Used to distinguish candy from other objects like light bulbs.
         /// </summary>
+        /// <param name="point">Constraint point to test.</param>
+        /// <returns><see langword="true"/> if the point belongs to a candy body; otherwise, <see langword="false"/>.</returns>
         private bool IsCandyPoint(ConstraintedPoint point)
         {
             return point == star || point == starL || point == starR;
         }
 
+        /// <summary>
+        /// Completes pending candy teleportation through a bamboo tube or sock.
+        /// </summary>
         public void Teleport()
         {
             if (targetBambooTube != null)
@@ -86,6 +91,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Releases a light bulb from its attached sock and applies the sock exit velocity.
+        /// </summary>
+        /// <param name="bulb">Light bulb to drop from its attached sock.</param>
         private static void DropLightBulbFromSock(LightBulb bulb)
         {
             if (bulb == null || bulb.attachedSock == null)
@@ -115,12 +124,19 @@ namespace CutTheRope.GameMain
             bulb.SyncToConstraint();
         }
 
+        /// <summary>
+        /// Starts the level restart dimming animation.
+        /// </summary>
         public void AnimateLevelRestart()
         {
             restartState = 0;
             dimTime = 0.15f;
         }
 
+        /// <summary>
+        /// Cuts or hides ropes attached to a light bulb.
+        /// </summary>
+        /// <param name="bulb">Light bulb whose ropes should be released.</param>
         private void ReleaseLightBulbRopes(LightBulb bulb)
         {
             if (bulb == null)
@@ -151,6 +167,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Releases all ropes attached to the active candy body or candy half.
+        /// </summary>
+        /// <param name="left"><see langword="true"/> to release ropes attached to the left candy half; <see langword="false"/> to release the right half or whole candy.</param>
         public void ReleaseAllRopes(bool left)
         {
             int grabCount = bungees.Count;
@@ -180,6 +200,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Calculates time, star, and total score bonuses for the completed level.
+        /// </summary>
         public void CalculateScore()
         {
             timeBonus = (int)MAX(0f, 30f - time) * 100;
@@ -189,6 +212,9 @@ namespace CutTheRope.GameMain
             score = (int)Ceil(timeBonus + starBonus);
         }
 
+        /// <summary>
+        /// Handles the level-won sequence, including candy consumption, scoring, cleanup, and delegate notification.
+        /// </summary>
         public void GameWon()
         {
             dd.CancelAllDispatches();
@@ -254,6 +280,9 @@ namespace CutTheRope.GameMain
             miceManager?.LockActiveMouse();
         }
 
+        /// <summary>
+        /// Handles the level-lost sequence and schedules the restart animation.
+        /// </summary>
         public void GameLost()
         {
             if (gameLostTriggered)
@@ -302,6 +331,10 @@ namespace CutTheRope.GameMain
             miceManager?.LockActiveMouse();
         }
 
+        /// <summary>
+        /// Pops the bubble currently holding the candy or one of its split halves.
+        /// </summary>
+        /// <param name="left"><see langword="true"/> to pop the left candy bubble when the candy is split; <see langword="false"/> to pop the right or whole-candy bubble.</param>
         public void PopCandyBubble(bool left)
         {
             if (twoParts == 2)
@@ -378,6 +411,11 @@ namespace CutTheRope.GameMain
             PopBubbleAtXY(candyR.x, candyR.y);
         }
 
+        /// <summary>
+        /// Plays bubble-pop effects at a world position.
+        /// </summary>
+        /// <param name="bx">World-space X position for the pop effect.</param>
+        /// <param name="by">World-space Y position for the pop effect.</param>
         public void PopBubbleAtXY(float bx, float by)
         {
             CTRSoundMgr.PlaySound(Resources.Snd.BubbleBreak);
@@ -392,6 +430,10 @@ namespace CutTheRope.GameMain
             _ = aniPool.AddChild(animation);
         }
 
+        /// <summary>
+        /// Pops the bubble captured by a light bulb and restores any ghost cycling state.
+        /// </summary>
+        /// <param name="bulb">Light bulb whose captured bubble should be popped.</param>
         private void PopLightBulbBubble(LightBulb bulb)
         {
             if (bulb?.capturingBubble == null)
@@ -414,6 +456,8 @@ namespace CutTheRope.GameMain
         /// Cuts all ropes for the specified candy number, except the one belonging to the given Grab.
         /// Matches iOS destroyRopesForCandy:except:.
         /// </summary>
+        /// <param name="candyNumber">Candy number whose ropes should be destroyed.</param>
+        /// <param name="except">Grab whose rope should be preserved.</param>
         private void DestroyRopesForCandy(int candyNumber, Grab except)
         {
             for (int i = 0; i < bungees.Count; i++)
@@ -426,6 +470,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Clears the highlighted state from all uncut bungee ropes.
+        /// </summary>
         public void ResetBungeeHighlight()
         {
             for (int i = 0; i < bungees.Count; i++)
@@ -438,6 +485,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Detaches all active snails from the candy.
+        /// </summary>
         public void DetachActiveSnails()
         {
             if (snailobjects == null || snailobjects.Count <= 0)
@@ -455,6 +505,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Releases all mechanical hands currently holding the candy and unblocks conveyors if needed.
+        /// </summary>
         public void DetachActiveHands()
         {
             if (hands == null || hands.Count <= 0)
@@ -483,6 +536,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Handles game-scene button actions such as toggling gravity.
+        /// </summary>
+        /// <param name="_">Game scene button identifier.</param>
         public void OnButtonPressed(GameSceneButtonId _)
         {
             if (MaterialPoint.globalGravity.Y == ActivePhysicsConstants.GravityEarthY)
@@ -515,11 +572,16 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
         {
             OnButtonPressed(GameSceneButtonId.FromButtonId(buttonId));
         }
 
+        /// <summary>
+        /// Rotates every spike object matching the supplied toggle ID.
+        /// </summary>
+        /// <param name="sid">Spike toggle identifier to match.</param>
         public void RotateAllSpikesWithID(int sid)
         {
             foreach (object obj in spikes)
@@ -532,6 +594,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Re-enables ghost cycling for any ghost that owns the specified bubble.
+        /// </summary>
+        /// <param name="bubbleObj">Bubble object whose owning ghost should resume cycling.</param>
         private void EnableGhostCycleForBubble(GameObject bubbleObj)
         {
             if (bubbleObj is not Bubble bubble || ghosts == null)
@@ -549,6 +615,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Disables ghost cycling for any ghost that owns the specified bubble.
+        /// </summary>
+        /// <param name="bubbleObj">Bubble object whose owning ghost should stop cycling.</param>
+        /// <returns><see langword="true"/> if at least one ghost was affected; otherwise, <see langword="false"/>.</returns>
         private bool DisableGhostCycleForBubble(GameObject bubbleObj)
         {
             if (bubbleObj is not Bubble bubble || ghosts == null)

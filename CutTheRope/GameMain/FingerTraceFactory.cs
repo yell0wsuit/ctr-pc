@@ -3,10 +3,20 @@ using CutTheRope.GameMain.FingerTraces;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Factory for finger trace skin instances.
+    /// </summary>
     internal static class FingerTraceFactory
     {
+        /// <summary>Total number of selectable finger trace skins.</summary>
         public const int TotalTraceSkins = 11;
 
+        /// <summary>
+        /// Creates a finger trace instance for a trace skin slot.
+        /// </summary>
+        /// <param name="traceIndex">Trace skin index.</param>
+        /// <param name="touchSlot">Touch slot that owns the trace.</param>
+        /// <returns>The finger trace for the requested skin index, or the classic trace for unknown indices.</returns>
         public static FingerTrace CreateForSlot(int traceIndex, int touchSlot)
         {
             return traceIndex switch

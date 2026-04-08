@@ -10,18 +10,35 @@ using CutTheRope.Helpers.Discord;
 
 namespace CutTheRope.Helpers
 {
+    /// <summary>
+    /// Manages Discord Rich Presence integration, showing menu browsing and level progress.
+    /// </summary>
     public class RPCHelpers : IDisposable
     {
+        /// <summary>
+        /// The active Discord IPC client, or <see langword="null"/> if not connected.
+        /// </summary>
         private DiscordIpcClient _client;
+
+        /// <summary>
+        /// UTC timestamp of when the session started, used for the "elapsed" display in Discord.
+        /// </summary>
         private DateTime? startTimestamp;
 
-        // Check if RPC is enabled in the save file
-        // By default, RPC is enabled
-        // Exposing in a save file is to make way for later setting UI integration
+        /// <summary>
+        /// Check if RPC is enabled in the save file.
+        /// By default, RPC is enabled.
+        /// </summary>
+        /// <remarks>Exposing in a save file is to make way for later setting UI integration.</remarks>
         private static bool IsRpcEnabled =>
             Preferences.GetBooleanForKey("PREFS_RPC_ENABLED");
 
-        // Replace with your own Discord Application ID if needed
+        /// <summary>
+        /// Discord Application ID used for Rich Presence.
+        /// </summary>
+        /// <remarks>
+        /// Replace with your own if needed.
+        /// </remarks>
         private readonly string DISCORD_APP_ID = "1457063659724603457";
 
         /// <summary>
@@ -82,6 +99,7 @@ namespace CutTheRope.Helpers
             return new DateTimeOffset(startTimestamp.Value, TimeSpan.Zero).ToUnixTimeSeconds();
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             DiscordIpcClient client = Interlocked.Exchange(ref _client, null);

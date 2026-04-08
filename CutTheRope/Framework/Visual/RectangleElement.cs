@@ -4,13 +4,20 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="BaseElement"/> that draws a colored rectangle, either filled or outline.
+    /// </summary>
     internal class RectangleElement : BaseElement
     {
+        /// <summary>
+        /// Initializes a new <see cref="RectangleElement"/> with solid fill enabled.
+        /// </summary>
         public RectangleElement()
         {
             solid = true;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             base.PreDraw();
@@ -28,6 +35,9 @@ namespace CutTheRope.Framework.Visual
             base.PostDraw();
         }
 
+        /// <summary>
+        /// Whether the rectangle is drawn filled or as an outline.
+        /// </summary>
         public bool solid;
     }
 }

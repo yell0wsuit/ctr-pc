@@ -2,8 +2,12 @@ using System;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// An <see cref="Image"/> that draws three quads (top, center, bottom) with the center tiled vertically to fill the height.
+    /// </summary>
     internal sealed class VerticallyTiledImage : Image
     {
+        /// <inheritdoc />
         public override Image InitWithTexture(CTRTexture2D t)
         {
             if (base.InitWithTexture(t) != null)
@@ -17,6 +21,7 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -42,6 +47,12 @@ namespace CutTheRope.Framework.Visual
             PostDraw();
         }
 
+        /// <summary>
+        /// Sets the top, center, and bottom tile quad indices and computes horizontal offsets.
+        /// </summary>
+        /// <param name="t">Top tile quad index.</param>
+        /// <param name="c">Center tile quad index (tiled vertically).</param>
+        /// <param name="b">Bottom tile quad index.</param>
         public void SetTileVerticallyTopCenterBottom(int t, int c, int b)
         {
             tiles[0] = t;
@@ -56,10 +67,19 @@ namespace CutTheRope.Framework.Visual
             offsets[2] = (width - w3) / 2f;
         }
 
+        /// <summary>
+        /// Quad indices for the top, center, and bottom tiles.
+        /// </summary>
         public int[] tiles = new int[3];
 
+        /// <summary>
+        /// Horizontal offsets for each tile to center them within the element width.
+        /// </summary>
         public float[] offsets = new float[3];
 
+        /// <summary>
+        /// Alignment flag for the tiled image.
+        /// </summary>
         public int align;
     }
 }

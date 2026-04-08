@@ -3,13 +3,20 @@ using System;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
+        /// <summary>
+        /// Handles tapping a candy bubble and pops it when the touch is inside the bubble touch area.
+        /// </summary>
+        /// <param name="s">Candy constraint point associated with the bubble.</param>
+        /// <param name="tx">Touch x-coordinate in screen space.</param>
+        /// <param name="ty">Touch y-coordinate in screen space.</param>
+        /// <returns><see langword="true"/> when the bubble was touched and popped; otherwise, <see langword="false"/>.</returns>
         public bool HandleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
         {
             if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, s.pos.X - 60f, s.pos.Y - 60f, 120f, 120f))
@@ -30,6 +37,13 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Handles tapping a bubble captured by a light bulb.
+        /// </summary>
+        /// <param name="bulb">Light bulb that may currently hold a bubble.</param>
+        /// <param name="tx">Touch x-coordinate in screen space.</param>
+        /// <param name="ty">Touch y-coordinate in screen space.</param>
+        /// <returns><see langword="true"/> when the captured bubble was touched and popped; otherwise, <see langword="false"/>.</returns>
         private bool HandleLightBulbBubbleTouch(LightBulb bulb, float tx, float ty)
         {
             if (bulb?.capturingBubble == null)
@@ -44,6 +58,13 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Handles a touch-down event for gameplay objects and rope-cut gestures.
+        /// </summary>
+        /// <param name="tx">Touch x-coordinate in screen space.</param>
+        /// <param name="ty">Touch y-coordinate in screen space.</param>
+        /// <param name="ti">Touch index.</param>
+        /// <returns><see langword="true"/> when the touch-down event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
@@ -423,6 +444,13 @@ namespace CutTheRope.GameMain
         }
 
 
+        /// <summary>
+        /// Handles a touch-up event for gameplay objects and active touch gestures.
+        /// </summary>
+        /// <param name="tx">Touch x-coordinate in screen space.</param>
+        /// <param name="ty">Touch y-coordinate in screen space.</param>
+        /// <param name="ti">Touch index.</param>
+        /// <returns><see langword="true"/> when the touch-up event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchUpXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
@@ -577,6 +605,13 @@ namespace CutTheRope.GameMain
         }
 
 
+        /// <summary>
+        /// Handles a touch-move event for active gameplay gestures, draggable objects, and rope cutting.
+        /// </summary>
+        /// <param name="tx">Touch x-coordinate in screen space.</param>
+        /// <param name="ty">Touch y-coordinate in screen space.</param>
+        /// <param name="ti">Touch index.</param>
+        /// <returns><see langword="true"/> when the touch-move event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchMoveXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
@@ -860,6 +895,13 @@ namespace CutTheRope.GameMain
         }
 
 
+        /// <summary>
+        /// Records the latest dragged touch location.
+        /// </summary>
+        /// <param name="tx">Touch x-coordinate in screen space.</param>
+        /// <param name="ty">Touch y-coordinate in screen space.</param>
+        /// <param name="index">Touch index.</param>
+        /// <returns><see langword="true"/> when the drag was recorded; otherwise, <see langword="false"/>.</returns>
         public bool TouchDraggedXYIndex(float tx, float ty, int index)
         {
             if (index > 5)

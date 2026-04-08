@@ -10,10 +10,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Batches and animates pollen particles along bee movement paths.
+    /// </summary>
     internal sealed class PollenDrawer : BaseElement
     {
+        /// <summary>Quad index for the pollen sprite in the bee texture.</summary>
         private const int PollenQuad = 5;
 
+        /// <summary>
+        /// Initializes the pollen drawer, source sprite, particle storage, and color buffers.
+        /// </summary>
         public PollenDrawer()
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjBee, PollenQuad);
@@ -25,6 +32,7 @@ namespace CutTheRope.GameMain
             colors = new RGBAColor[4 * totalCapacity];
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -37,6 +45,11 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Adds one pollen particle at a world position.
+        /// </summary>
+        /// <param name="v">World-space particle position.</param>
+        /// <param name="pi">Path point index that owns or originated the particle.</param>
         public void AddPollenAtparentIndex(Vector v, int pi)
         {
             float scaleX = 1f;
@@ -92,6 +105,12 @@ namespace CutTheRope.GameMain
             pollenCount++;
         }
 
+        /// <summary>
+        /// Fills a mover path segment with pollen particles.
+        /// </summary>
+        /// <param name="p1">Starting mover path point index.</param>
+        /// <param name="p2">Ending mover path point index.</param>
+        /// <param name="g">Grab whose mover path supplies the particle segment.</param>
         public void FillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
         {
             int segmentSpacing = 44;
@@ -108,6 +127,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -137,6 +157,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (pollenCount >= 2)
@@ -157,22 +178,35 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Drawer that owns shared image, texture coordinates, vertex, and index data.</summary>
         private ImageMultiDrawer drawer;
 
+        /// <summary>Number of active pollen particles.</summary>
         private int pollenCount;
 
+        /// <summary>Current storage capacity for pollen particles.</summary>
         private int totalCapacity;
 
+        /// <summary>Particle state array.</summary>
         private Pollen[] pollens;
 
+        /// <summary>Base pollen quad width before per-particle scaling.</summary>
         private readonly float qw;
 
+        /// <summary>Base pollen quad height before per-particle scaling.</summary>
         private readonly float qh;
 
+        /// <summary>Per-vertex colors used for pollen particle rendering.</summary>
         private RGBAColor[] colors;
 
+        /// <summary>Reusable vertex buffer used for pollen draw calls.</summary>
         private VertexPositionColorTexture[] verticesCache;
 
+        /// <summary>
+        /// Gets a reusable vertex buffer with at least the requested capacity.
+        /// </summary>
+        /// <param name="vertexCount">Minimum vertex count required.</param>
+        /// <returns>A reusable vertex buffer.</returns>
         private VertexPositionColorTexture[] GetVertexBuffer(int vertexCount)
         {
             if (verticesCache == null || verticesCache.Length < vertexCount)

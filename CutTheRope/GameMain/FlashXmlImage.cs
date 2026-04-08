@@ -7,12 +7,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Scale conversion constants and helpers for Flash XML atlas coordinates.
+    /// </summary>
     internal static class FlashXmlScale
     {
+        /// <summary>Scale factor used by the iOS retina atlas export.</summary>
         internal const float IosRetinaAtlasScale = 2f;
+
+        /// <summary>Scale factor used by the PC output assets.</summary>
         internal const float PcOutputScale = 0.78f;
+
+        /// <summary>Combined conversion factor from atlas pixels to Flash point units.</summary>
         internal const float AtlasToFlashPointScale = IosRetinaAtlasScale * PcOutputScale;
 
+        /// <summary>
+        /// Converts an atlas-space value to Flash point space.
+        /// </summary>
+        /// <param name="rawValue">Atlas-space value to normalize.</param>
+        /// <returns>The value in Flash point space, or zero when <paramref name="rawValue" /> is zero.</returns>
         internal static float NormalizeAtlasValue(float rawValue)
         {
             return rawValue == 0f
@@ -29,6 +42,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class FlashXmlImage : Image
     {
+        /// <inheritdoc />
         public override void SetDrawQuad(int n)
         {
             base.SetDrawQuad(n);
@@ -39,6 +53,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void DoRestoreCutTransparency()
         {
             if (texture.preCutSize.X != vectUndefined.X)
@@ -49,6 +64,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void DrawQuad(int n)
         {
             float w = FlashXmlScale.NormalizeAtlasValue(texture.quadRects[n].w);
@@ -69,6 +85,11 @@ namespace CutTheRope.GameMain
             Renderer.DrawTriangleStrip(vertices);
         }
 
+        /// <summary>
+        /// Creates a Flash XML image for the specified texture resource.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name to load.</param>
+        /// <returns>The initialized Flash XML image.</returns>
         public static FlashXmlImage CreateWithResID(string resourceName)
         {
             FlashXmlImage image = new();
@@ -76,6 +97,11 @@ namespace CutTheRope.GameMain
             return image;
         }
 
+        /// <summary>
+        /// Converts an atlas-space dimension to an integer Flash point dimension.
+        /// </summary>
+        /// <param name="rawValue">Atlas-space dimension to normalize.</param>
+        /// <returns>The normalized Flash point dimension.</returns>
         internal static int NormalizeAtlasDimension(float rawValue)
         {
             return (int)FlashXmlScale.NormalizeAtlasValue(rawValue);

@@ -3,18 +3,34 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Animation for candy inside a ghost-transformed bubble, including supporting ghost cloud elements.
+    /// </summary>
     internal sealed class CandyInGhostBubbleAnimation : Animation
     {
+        /// <summary>
+        /// Creates a candy-in-ghost-bubble animation from a texture resource name.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name to load.</param>
+        /// <returns>The initialized candy-in-ghost-bubble animation.</returns>
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(string resourceName)
         {
             return CIGBAnimation_create(Application.GetTexture(resourceName));
         }
 
+        /// <summary>
+        /// Creates a candy-in-ghost-bubble animation from a texture.
+        /// </summary>
+        /// <param name="texture">Texture used by the animation.</param>
+        /// <returns>The initialized candy-in-ghost-bubble animation.</returns>
         public static CandyInGhostBubbleAnimation CIGBAnimation_create(CTRTexture2D texture)
         {
             return (CandyInGhostBubbleAnimation)new CandyInGhostBubbleAnimation().InitWithTexture(texture);
         }
 
+        /// <summary>
+        /// Adds looping background cloud animations that support the ghost bubble visual.
+        /// </summary>
         public void AddSupportingCloudsTimelines()
         {
             backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
@@ -123,6 +139,7 @@ namespace CutTheRope.GameMain
             image2.PlayTimeline(0);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -134,8 +151,13 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Primary background ghost cloud element.</summary>
         public Image backCloud;
+
+        /// <summary>Secondary background ghost cloud element.</summary>
         public Image backCloud2;
+
+        /// <summary>Tertiary background ghost cloud element.</summary>
         public Image backCloud3;
     }
 }

@@ -30,6 +30,14 @@ namespace CutTheRope.Framework.Visual
     /// <summary>
     /// Captures one sprite draw request produced by a trace for rendering or inspection.
     /// </summary>
+    /// <param name="Kind">Logical sprite role for rendering behavior.</param>
+    /// <param name="TextureResourceName">Texture resource containing the sprite quad.</param>
+    /// <param name="QuadIndex">Quad index in the texture atlas.</param>
+    /// <param name="Position">World-space sprite position.</param>
+    /// <param name="Rotation">Sprite rotation.</param>
+    /// <param name="Scale">Uniform sprite scale factor.</param>
+    /// <param name="Alpha">Sprite opacity multiplier.</param>
+    /// <param name="BlendMode">Blend mode used to draw the sprite.</param>
     internal readonly record struct FingerTraceSpritePose(
         FingerTraceSpriteKind Kind,
         string TextureResourceName,
@@ -57,12 +65,23 @@ namespace CutTheRope.Framework.Visual
     }
 
     /// <summary>
-    /// Represents a single live trace segment with a start point, end point, and remaining lifetime.
+    /// Represents a single live trace segment with a <paramref name="start"/> point, <paramref name="end"/> point, and remaining lifetime.
     /// </summary>
     internal struct TraceSegment(Vector start, Vector end, float life)
     {
+        /// <summary>
+        /// Segment start point in world space.
+        /// </summary>
         public Vector Start = start;
+
+        /// <summary>
+        /// Segment end point in world space.
+        /// </summary>
         public Vector End = end;
+
+        /// <summary>
+        /// Remaining segment lifetime in seconds.
+        /// </summary>
         public float Life = life;
     }
 
@@ -71,12 +90,34 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal abstract class FingerTrace : FrameworkTypes
     {
+        /// <summary>
+        /// Cached trace sprite images keyed by texture resource name.
+        /// </summary>
         private readonly Dictionary<string, Image> imageCache = [];
+
+        /// <summary>
+        /// Live trace segments currently fading out.
+        /// </summary>
         private readonly List<TraceSegment> segments = [];
 
+        /// <summary>
+        /// Whether the trace is currently accepting appended points.
+        /// </summary>
         private bool isActive;
+
+        /// <summary>
+        /// Whether <see cref="lastPoint" /> contains a valid previous touch position.
+        /// </summary>
         private bool hasLastPoint;
+
+        /// <summary>
+        /// Last touch position used to create the next segment.
+        /// </summary>
         private Vector lastPoint;
+
+        /// <summary>
+        /// Most recent immutable snapshot of sampled trace points and sprites.
+        /// </summary>
         private FingerTraceSnapshot snapshot = new([], []);
 
         /// <summary>
@@ -85,7 +126,7 @@ namespace CutTheRope.Framework.Visual
         public bool IsAlive => isActive || segments.Count > 0 || HasLiveParticles;
 
         /// <summary>
-        /// Starts a new trace at the specified world position, clearing any previous segments.
+        /// Starts a new trace at the specified world <paramref name="position"/>, clearing any previous segments.
         /// </summary>
         /// <param name="position">The initial touch position in world space.</param>
         public void Begin(Vector position)
@@ -98,7 +139,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Appends a new touch position to the trace, generating a segment from the last point.
+        /// Appends a new touch <paramref name="position"/> to the trace, generating a segment from the last point.
         /// </summary>
         /// <param name="position">The next touch position in world space.</param>
         public void Append(Vector position)
@@ -212,6 +253,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the most recently built immutable snapshot for testing or preview use.
         /// </summary>
+        /// <returns>The latest immutable trace snapshot.</returns>
         public FingerTraceSnapshot GetSnapshot()
         {
             return snapshot;
@@ -239,7 +281,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Sets the maximum size hint used by subclasses that scale their trace visuals.
+        /// Sets the maximum <paramref name="size"/> hint used by subclasses that scale their trace visuals.
         /// </summary>
         /// <param name="size">Maximum trace size in world units.</param>
         public void SetMaxSize(float size)
@@ -299,6 +341,7 @@ namespace CutTheRope.Framework.Visual
         /// Gets or creates the cached image used to draw sprites from the specified resource.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
+        /// <returns>The cached or newly created image for <paramref name="resourceName"/>.</returns>
         protected Image GetImage(string resourceName)
         {
             if (!imageCache.TryGetValue(resourceName, out Image image))
@@ -312,6 +355,9 @@ namespace CutTheRope.Framework.Visual
             return image;
         }
 
+        /// <summary>
+        /// Rebuilds the immutable trace snapshot from the current live trace state.
+        /// </summary>
         private void RefreshSnapshot()
         {
             List<Vector> sampledPoints = [];
@@ -321,7 +367,7 @@ namespace CutTheRope.Framework.Visual
         }
 
         /// <summary>
-        /// Draws a single cached sprite pose using the standard image-based trace path.
+        /// Draws a single cached <paramref name="sprite"/> pose using the standard image-based trace path.
         /// </summary>
         /// <param name="sprite">The sprite pose to draw.</param>
         protected void DrawSpritePose(FingerTraceSpritePose sprite)
