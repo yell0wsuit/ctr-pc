@@ -12,6 +12,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Captures the current screen contents into a new texture.
         /// </summary>
+        /// <returns>A texture containing the captured frame.</returns>
         public static CTRTexture2D Grab()
         {
             return new CTRTexture2D().InitFromPixels((int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);

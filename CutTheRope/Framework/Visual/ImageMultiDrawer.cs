@@ -14,6 +14,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="i">Source image containing the texture.</param>
         /// <param name="n">Initial number of quads to allocate.</param>
+        /// <returns>The initialized drawer instance.</returns>
         public ImageMultiDrawer InitWithImageandCapacity(Image i, int n)
         {
             image = i;
@@ -218,6 +219,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns a vertex buffer of at least <paramref name="vertexCount"/> elements, reusing the cache.
         /// </summary>
         /// <param name="vertexCount">Minimum number of vertices needed.</param>
+        /// <returns>A reusable vertex buffer with at least the requested capacity.</returns>
         private VertexPositionNormalTexture[] GetVertexBuffer(int vertexCount)
         {
             if (verticesCache == null || verticesCache.Length < vertexCount)

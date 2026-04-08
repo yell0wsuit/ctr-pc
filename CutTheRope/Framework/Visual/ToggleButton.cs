@@ -23,6 +23,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="u2">Up element for state 2.</param>
         /// <param name="d2">Down element for state 2.</param>
         /// <param name="bid">Button identifier forwarded to the delegate.</param>
+        /// <returns>The initialized toggle button instance.</returns>
         public ToggleButton InitWithUpElement1DownElement1UpElement2DownElement2andID(BaseElement u1, BaseElement d1, BaseElement u2, BaseElement d2, ButtonId bid)
         {
             buttonID = bid;
@@ -64,6 +65,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns <see langword="true"/> if the toggle is in its second (on) state.
         /// </summary>
+        /// <returns><see langword="true"/> when the toggle is on; otherwise <see langword="false"/>.</returns>
         public bool On()
         {
             return b2.IsEnabled();

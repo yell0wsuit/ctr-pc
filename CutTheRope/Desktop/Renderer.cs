@@ -423,6 +423,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Draws a triangle strip using colored <paramref name="vertices"/> (no texture).
         /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices)
         {
             DrawTriangleStrip(vertices, vertices.Length);
@@ -455,6 +456,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Draws a triangle strip using textured <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The textured vertex data to draw.</param>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices)
         {
             DrawTriangleStrip(vertices, vertices.Length);
@@ -487,6 +489,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Draws a triangle strip using textured and colored <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The textured and colored vertex data to draw.</param>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices)
         {
             DrawTriangleStrip(vertices, vertices.Length);
@@ -583,6 +586,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Draws a line strip using colored <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
         public static void DrawLineStrip(VertexPositionColor[] vertices)
         {
             DrawLineStrip(vertices, vertices.Length);
@@ -615,6 +619,11 @@ namespace CutTheRope.Desktop
         /// Draws a line segment (stub - not implemented).
         /// Used for debug visualization.
         /// </summary>
+        /// <param name="_">Segment start X.</param>
+        /// <param name="__">Segment start Y.</param>
+        /// <param name="___">Segment end X.</param>
+        /// <param name="____">Segment end Y.</param>
+        /// <param name="_____">Segment color.</param>
         public static void DrawSegment(float _, float __, float ___, float ____, RGBAColor _____)
         {
             // Stub: Debug visualization not implemented

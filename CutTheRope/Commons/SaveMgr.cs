@@ -23,6 +23,7 @@ namespace CutTheRope.Commons
         /// <summary>
         /// Returns whether a saved backup exists and can be restored.
         /// </summary>
+        /// <returns><see langword="true"/> when a recoverable save exists; otherwise <see langword="false"/>.</returns>
         public static bool IsSaveAvailable()
         {
             return false;

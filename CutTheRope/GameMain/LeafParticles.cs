@@ -19,6 +19,7 @@ namespace CutTheRope.GameMain
         /// Optional horizontal gravity bias. The magnitude is stored in <c>baseGravityX</c>
         /// and is smoothly reduced to zero over the system lifetime by <see cref="Update"/>.
         /// </param>
+        /// <returns>The initialized particle system instance, or <see langword="null"/> if initialization fails.</returns>
         public LeafParticles Init(int totalParticles, float angle, Image grid, float bgx = 0f)
         {
             if (InitWithTotalParticlesandImageGrid(totalParticles, grid) == null)

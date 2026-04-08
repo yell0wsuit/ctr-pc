@@ -33,6 +33,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="of">Spacing between children in pixels.</param>
         /// <param name="a">Vertical alignment flag (TOP, VCENTER, or BOTTOM).</param>
         /// <param name="h">Height of the box.</param>
+        /// <returns>The initialized horizontal box instance.</returns>
         public HBox InitWithOffsetAlignHeight(float of, int a, float h)
         {
             offset = of;

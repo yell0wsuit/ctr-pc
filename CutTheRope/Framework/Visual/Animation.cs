@@ -13,6 +13,7 @@ namespace CutTheRope.Framework.Visual
         /// Creates an animation from the specified <paramref name="texture"/>.
         /// </summary>
         /// <param name="texture">Texture to create the animation from.</param>
+        /// <returns>A new animation initialized with <paramref name="texture"/>.</returns>
         public static Animation Animation_create(CTRTexture2D texture)
         {
             return (Animation)new Animation().InitWithTexture(texture);
@@ -22,6 +23,7 @@ namespace CutTheRope.Framework.Visual
         /// Creates an animation using a texture resource name.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
+        /// <returns>A new animation initialized from the specified texture resource.</returns>
         public static Animation Animation_createWithResID(string resourceName)
         {
             return Animation_create(Application.GetTexture(resourceName));
@@ -198,6 +200,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="count">Number of frames in the animation.</param>
         /// <param name="start">First quad index in the sequence.</param>
         /// <param name="argumentList">List of quad indices defining the frame order.</param>
+        /// <returns>The auto-assigned timeline ID.</returns>
         public virtual int AddAnimationWithDelayLoopedCountSequence(
             float delay,
             Timeline.LoopType loopType,
@@ -228,6 +231,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="loopType">Loop behavior for the animation.</param>
         /// <param name="start">First quad index in the sequence.</param>
         /// <param name="end">Last quad index in the sequence.</param>
+        /// <returns>The auto-assigned timeline ID.</returns>
         public int AddAnimationDelayLoopFirstLast(float delay, Timeline.LoopType loopType, int start, int end)
         {
             int animationId = timelines.Count;

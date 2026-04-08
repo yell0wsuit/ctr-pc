@@ -47,6 +47,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="r">Number of rows.</param>
         /// <param name="c">Number of columns.</param>
+        /// <returns>The initialized tile map instance.</returns>
         public TileMap InitWithRowsColumns(int r, int c)
         {
             rows = r;

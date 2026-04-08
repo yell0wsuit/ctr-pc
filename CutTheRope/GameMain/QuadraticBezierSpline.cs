@@ -27,6 +27,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates the default multi-segment preview path used by the non-lightning trace skins.
         /// </summary>
+        /// <returns>The default preview spline path.</returns>
         public static QuadraticBezierSpline CreateDefaultTracePath()
         {
             return new(
@@ -38,6 +39,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates the single quadratic segment used by the CTR2 lightning trace preview.
         /// </summary>
+        /// <returns>The lightning preview spline path.</returns>
         public static QuadraticBezierSpline CreateLightningTracePath()
         {
             return new(new SplineSegment(-500f, -40f, 250f, 90f, 10f, 20f));
@@ -50,6 +52,7 @@ namespace CutTheRope.GameMain
         /// Segment-local parameter. Values greater than <c>1</c> advance across segments and, once the
         /// last segment is reached, continue evaluating that last segment with the overflow preserved.
         /// </param>
+        /// <returns>The evaluated spline point.</returns>
         public Vector GetPointForParam(float param)
         {
             uint index = 0;
@@ -74,6 +77,11 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Evaluates a standard quadratic Bezier curve for the given control points.
         /// </summary>
+        /// <param name="start">Curve start point.</param>
+        /// <param name="control">Quadratic control point.</param>
+        /// <param name="end">Curve end point.</param>
+        /// <param name="t">Normalized interpolation parameter.</param>
+        /// <returns>The evaluated curve point.</returns>
         public static Vector Evaluate(Vector start, Vector control, Vector end, float t)
         {
             float clampedT = Math.Clamp(t, 0f, 1f);
@@ -92,6 +100,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="controlPoints">The points to interpolate through.</param>
         /// <param name="subdivisionsPerCurve">How many samples to emit for each curve span.</param>
+        /// <returns>Sampled points along the generated path.</returns>
         public static Vector[] SamplePath(IReadOnlyList<Vector> controlPoints, int subdivisionsPerCurve)
         {
             ArgumentNullException.ThrowIfNull(controlPoints);

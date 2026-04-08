@@ -12,6 +12,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Returns the eight corner coordinates as a flat float array.
         /// </summary>
+        /// <returns>A flat array containing all quad coordinates.</returns>
         public readonly float[] ToFloatArray()
         {
             return [tlX, tlY, trX, trY, blX, blY, brX, brY];
@@ -24,6 +25,7 @@ namespace CutTheRope.Framework
         /// <param name="y">Y position of the top-left corner.</param>
         /// <param name="w">Width of the quad.</param>
         /// <param name="h">Height of the quad.</param>
+        /// <returns>The constructed quad.</returns>
         public static Quad2D MakeQuad2D(float x, float y, float w, float h)
         {
             return new Quad2D(x, y, w, h);

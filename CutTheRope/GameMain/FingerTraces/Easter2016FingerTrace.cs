@@ -287,6 +287,8 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Golden yellow (1.0, 0.87451, 0.05490) fading to white by t=1/3.
         /// </summary>
+        /// <param name="t">Normalized position along the ribbon.</param>
+        /// <returns>The ribbon color at <paramref name="t"/>.</returns>
         private static RGBAColor GetRibbonColor(float t)
         {
             if (t < 0.5f)

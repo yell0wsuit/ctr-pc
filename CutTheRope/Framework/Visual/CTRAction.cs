@@ -22,6 +22,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="action">Action name.</param>
         /// <param name="p">Primary integer parameter.</param>
         /// <param name="sp">Secondary integer parameter.</param>
+        /// <returns>The created action instance.</returns>
         public static CTRAction CreateAction(BaseElement target, string action, int p, int sp)
         {
             CTRAction action2 = new()
@@ -43,6 +44,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="action">Action name.</param>
         /// <param name="p">Primary float parameter.</param>
         /// <param name="sp">Secondary float parameter.</param>
+        /// <returns>The created action instance.</returns>
         public static CTRAction CreateAction(BaseElement target, string action, float p, float sp)
         {
             CTRAction action2 = new()

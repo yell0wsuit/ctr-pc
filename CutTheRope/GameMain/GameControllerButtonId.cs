@@ -5,6 +5,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Identifier set for in-game HUD and pause menu controls.
     /// </summary>
+    /// <param name="Value">Underlying numeric button identifier.</param>
     internal readonly record struct GameControllerButtonId(int Value) : IButtonIdentifier
     {
         /// <summary>

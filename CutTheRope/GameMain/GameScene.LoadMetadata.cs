@@ -14,6 +14,12 @@ namespace CutTheRope.GameMain
         /// Loads all level metadata from XML in a single pass
         /// Extracts map dimensions, Game design settings, and candy positions
         /// </summary>
+        /// <param name="mapNode">Root XML node for the current map.</param>
+        /// <param name="scale">Level scale factor.</param>
+        /// <param name="offsetY">Vertical offset applied to map coordinates.</param>
+        /// <param name="offsetX">Computed horizontal offset for map coordinates.</param>
+        /// <param name="mapOffsetX">Computed integer map X offset.</param>
+        /// <param name="mapOffsetY">Computed integer map Y offset.</param>
         private void LoadAllLevelMetadata(XElement mapNode, float scale, float offsetY, out float offsetX, out int mapOffsetX, out int mapOffsetY)
         {
             offsetX = 0f;

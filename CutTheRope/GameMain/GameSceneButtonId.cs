@@ -5,6 +5,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Identifier set for in-level scene specific controls.
     /// </summary>
+    /// <param name="Value">Underlying numeric button identifier.</param>
     internal readonly record struct GameSceneButtonId(int Value) : IButtonIdentifier
     {
         /// <summary>

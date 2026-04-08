@@ -30,6 +30,14 @@ namespace CutTheRope.Framework.Visual
     /// <summary>
     /// Captures one sprite draw request produced by a trace for rendering or inspection.
     /// </summary>
+    /// <param name="Kind">Logical sprite role for rendering behavior.</param>
+    /// <param name="TextureResourceName">Texture resource containing the sprite quad.</param>
+    /// <param name="QuadIndex">Quad index in the texture atlas.</param>
+    /// <param name="Position">World-space sprite position.</param>
+    /// <param name="Rotation">Sprite rotation.</param>
+    /// <param name="Scale">Uniform sprite scale factor.</param>
+    /// <param name="Alpha">Sprite opacity multiplier.</param>
+    /// <param name="BlendMode">Blend mode used to draw the sprite.</param>
     internal readonly record struct FingerTraceSpritePose(
         FingerTraceSpriteKind Kind,
         string TextureResourceName,
@@ -245,6 +253,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the most recently built immutable snapshot for testing or preview use.
         /// </summary>
+        /// <returns>The latest immutable trace snapshot.</returns>
         public FingerTraceSnapshot GetSnapshot()
         {
             return snapshot;
@@ -332,6 +341,7 @@ namespace CutTheRope.Framework.Visual
         /// Gets or creates the cached image used to draw sprites from the specified resource.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
+        /// <returns>The cached or newly created image for <paramref name="resourceName"/>.</returns>
         protected Image GetImage(string resourceName)
         {
             if (!imageCache.TryGetValue(resourceName, out Image image))

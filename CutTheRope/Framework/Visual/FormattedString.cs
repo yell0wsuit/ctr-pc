@@ -10,6 +10,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="str">Text content.</param>
         /// <param name="w">Pre-measured pixel width of the text.</param>
+        /// <returns>The initialized formatted string instance.</returns>
         public FormattedString InitWithStringAndWidth(string str, float w)
         {
             string_ = str;

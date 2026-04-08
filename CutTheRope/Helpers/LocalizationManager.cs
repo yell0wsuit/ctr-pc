@@ -73,6 +73,7 @@ namespace CutTheRope.Helpers
         /// Checks if a string key exists in the localization data.
         /// </summary>
         /// <param name="key">The string key to look up.</param>
+        /// <returns><see langword="true"/> when the key exists in the current language or English fallback; otherwise <see langword="false"/>.</returns>
         public static bool HasString(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -118,6 +119,7 @@ namespace CutTheRope.Helpers
         /// Returns the cached string dictionary for the given language, loading it from disk if necessary.
         /// </summary>
         /// <param name="languageCode">The language code to retrieve.</param>
+        /// <returns>The cached or newly loaded string dictionary for the requested language.</returns>
         private static Dictionary<string, string> GetLanguageStrings(string languageCode)
         {
             lock (langStringsLock_)
@@ -142,6 +144,7 @@ namespace CutTheRope.Helpers
         /// Loads and parses a localization JSON file for the given language.
         /// </summary>
         /// <param name="languageCode">The language code (e.g., "en", "ru").</param>
+        /// <returns>A dictionary containing all parsed localized strings for the language.</returns>
         private static Dictionary<string, string> LoadLanguageFile(string languageCode)
         {
             Dictionary<string, string> result = [];
@@ -194,6 +197,7 @@ namespace CutTheRope.Helpers
         /// Opens a content stream for the given file name, returning <see langword="null"/> on failure.
         /// </summary>
         /// <param name="fileName">Relative path within the content root.</param>
+        /// <returns>An open content stream, or <see langword="null"/> if opening fails.</returns>
         private static Stream OpenStream(string fileName)
         {
             try

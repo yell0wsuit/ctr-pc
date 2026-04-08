@@ -14,6 +14,7 @@ namespace CutTheRope.Framework.Visual
     /// <summary>
     /// Strongly typed identifier passed alongside button press events.
     /// </summary>
+    /// <param name="Value">Underlying numeric button identifier.</param>
     public readonly record struct ButtonId(int Value) : IButtonIdentifier
     {
         /// <summary>

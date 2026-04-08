@@ -189,6 +189,7 @@ namespace CutTheRope.Framework.Visual
         /// Initializes the timeline with the specified maximum keyframes per track.
         /// </summary>
         /// <param name="m">Maximum number of keyframes per track.</param>
+        /// <returns>The initialized timeline instance.</returns>
         public Timeline InitWithMaxKeyFramesOnTrack(int m)
         {
             maxKeyFrames = m;
@@ -237,6 +238,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns the track for the specified type, or <see langword="null"/> if not created.
         /// </summary>
         /// <param name="tt">Track type to retrieve.</param>
+        /// <returns>The matching track instance, or <see langword="null"/> when unavailable.</returns>
         public Track GetTrack(Track.TrackType tt)
         {
             return tracks[(int)tt];

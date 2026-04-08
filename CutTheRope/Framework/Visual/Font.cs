@@ -12,6 +12,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="strParam">String of characters in the order they appear in the atlas.</param>
         /// <param name="charmapfile">Texture atlas containing character quads.</param>
+        /// <returns>The initialized font instance.</returns>
         public Font InitWithVariableSizeCharscharMapFileKerning(string strParam, CTRTexture2D charmapfile)
         {
             _isWvga = charmapfile.IsWvga();

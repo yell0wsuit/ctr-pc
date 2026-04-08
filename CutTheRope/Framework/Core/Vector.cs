@@ -33,6 +33,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Converts this vector to an XNA <see cref="Vector2"/>.
         /// </summary>
+        /// <returns>The converted XNA vector.</returns>
         public readonly Vector2 ToXNA()
         {
             return new Vector2(X, Y);

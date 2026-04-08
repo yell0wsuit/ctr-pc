@@ -21,6 +21,7 @@ namespace CutTheRope.Framework.Helpers
         /// Creates a game object from the specified <paramref name="texture"/>.
         /// </summary>
         /// <param name="texture">Texture to create the object from.</param>
+        /// <returns>A new game object initialized with <paramref name="texture"/>.</returns>
         private static GameObject GameObject_create(CTRTexture2D texture)
         {
             GameObject gameObject = new();
@@ -33,6 +34,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="quadIndex">Quad index to draw.</param>
+        /// <returns>A new game object configured to draw the selected quad.</returns>
         public static GameObject GameObject_createWithResIDQuad(string resourceName, int quadIndex)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));
@@ -199,6 +201,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         /// <param name="o1">First object.</param>
         /// <param name="o2">Second object.</param>
+        /// <returns><see langword="true"/> when the objects' AABBs intersect; otherwise <see langword="false"/>.</returns>
         public static bool ObjectsIntersect(GameObject o1, GameObject o2)
         {
             float o1x = o1.drawX + o1.bb.x;
@@ -213,6 +216,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         /// <param name="o1">Rotated object.</param>
         /// <param name="o2">Unrotated object.</param>
+        /// <returns><see langword="true"/> when the objects intersect; otherwise <see langword="false"/>.</returns>
         public static bool ObjectsIntersectRotatedWithUnrotated(GameObject o1, GameObject o2)
         {
             Vector o1TopLeft = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
@@ -231,6 +235,7 @@ namespace CutTheRope.Framework.Helpers
         /// </summary>
         /// <param name="p">Point to test.</param>
         /// <param name="o">Object whose bounding box to test against.</param>
+        /// <returns><see langword="true"/> when the point is inside the object bounds; otherwise <see langword="false"/>.</returns>
         public static bool PointInObject(Vector p, GameObject o)
         {
             float checkX = o.drawX + o.bb.x;
@@ -246,6 +251,7 @@ namespace CutTheRope.Framework.Helpers
         /// <param name="r2x">Right X of the rectangle.</param>
         /// <param name="r2y">Bottom Y of the rectangle.</param>
         /// <param name="o">Object whose bounding box to test against.</param>
+        /// <returns><see langword="true"/> when the rectangles intersect; otherwise <see langword="false"/>.</returns>
         public static bool RectInObject(float r1x, float r1y, float r2x, float r2y, GameObject o)
         {
             float objectX = o.drawX + o.bb.x;

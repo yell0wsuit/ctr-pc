@@ -13,6 +13,7 @@ namespace CutTheRope.Framework
         /// <param name="z">Z depth for all corners.</param>
         /// <param name="w">Width of the quad.</param>
         /// <param name="h">Height of the quad.</param>
+        /// <returns>The constructed quad.</returns>
         public static Quad3D MakeQuad3D(float x, float y, float z, float w, float h)
         {
             return new Quad3D
@@ -43,6 +44,7 @@ namespace CutTheRope.Framework
         /// <param name="y3">Top-left Y.</param>
         /// <param name="x4">Top-right X.</param>
         /// <param name="y4">Top-right Y.</param>
+        /// <returns>The constructed quad.</returns>
         public static Quad3D MakeQuad3DEx(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
             return new Quad3D
@@ -65,6 +67,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Returns the twelve corner coordinates as a flat float array.
         /// </summary>
+        /// <returns>A flat array containing all 4 corner coordinates in XYZ order.</returns>
         public float[] ToFloatArray()
         {
             _array ??=

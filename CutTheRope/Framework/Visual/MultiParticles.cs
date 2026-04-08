@@ -15,6 +15,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="numberOfParticles">Maximum number of particles.</param>
         /// <param name="image">Image containing the particle texture quads.</param>
+        /// <returns>The initialized particle system instance, or <see langword="null"/> when allocation fails.</returns>
         public virtual Particles InitWithTotalParticlesandImageGrid(int numberOfParticles, Image image)
         {
             imageGrid = image;
@@ -174,6 +175,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns a vertex buffer of at least <paramref name="vertexCount"/> elements, reusing the cache.
         /// </summary>
         /// <param name="vertexCount">Minimum number of vertices needed.</param>
+        /// <returns>A reusable vertex buffer with at least the requested capacity.</returns>
         private VertexPositionColorTexture[] GetVertexBuffer(int vertexCount)
         {
             if (verticesCache == null || verticesCache.Length < vertexCount)

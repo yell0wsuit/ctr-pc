@@ -303,6 +303,8 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Returns a 3-stop rainbow gradient: purple → orange → yellow → white.
         /// </summary>
+        /// <param name="t">Normalized position along the ribbon.</param>
+        /// <returns>The ribbon color at <paramref name="t"/>.</returns>
         private static RGBAColor GetRibbonColor(float t)
         {
             if (t < 0.33f)

@@ -34,6 +34,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns this texture instance (identity helper for renderer binding).
         /// </summary>
+        /// <returns>This texture instance.</returns>
         public CTRTexture2D Name()
         {
             return this;
@@ -42,6 +43,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns <see langword="true"/> if this texture uses WVGA scaling.
         /// </summary>
+        /// <returns><see langword="true"/> when WVGA scaling is enabled; otherwise <see langword="false"/>.</returns>
         public bool IsWvga()
         {
             return _isWvga;
@@ -204,6 +206,7 @@ namespace CutTheRope.Framework.Visual
         /// Loads the texture from the given resource <paramref name="path"/> and registers it.
         /// </summary>
         /// <param name="path">Resource path to load from.</param>
+        /// <returns>The initialized texture instance, or <see langword="null"/> if loading fails.</returns>
         public CTRTexture2D InitWithPath(string path)
         {
             _resName = path;
@@ -225,6 +228,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns the <paramref name="size"/> unchanged (no power-of-two rounding needed).
         /// </summary>
         /// <param name="size">Input size in pixels.</param>
+        /// <returns>The real texture dimension used by the renderer.</returns>
         private static int CalcRealSize(int size)
         {
             return size;
@@ -296,6 +300,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="w">Width of the render target in pixels.</param>
         /// <param name="h">Height of the render target in pixels.</param>
+        /// <returns>The initialized texture instance.</returns>
         public CTRTexture2D InitFromPixels(int w, int h)
         {
             _lowypoint = -1;

@@ -109,6 +109,7 @@ namespace CutTheRope.Helpers
         /// Determines if the version string represents a dirty/dev build.
         /// </summary>
         /// <param name="version">The version to check.</param>
+        /// <returns><see langword="true"/> when the version indicates a dirty/dev build; otherwise <see langword="false"/>.</returns>
         public static bool IsDirtyVersion(string version)
         {
             // Avoids treating missing/blank version strings as "dirty" version
@@ -131,6 +132,7 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Gets the current assembly informational version string.
         /// </summary>
+        /// <returns>The current assembly version string.</returns>
         private static string GetCurrentVersionString()
         {
             string version =
@@ -147,6 +149,7 @@ namespace CutTheRope.Helpers
         /// </summary>
         /// <param name="currentVersionString">The current version string used for comparison.</param>
         /// <param name="cancellationToken">Token used to cancel the HTTP request.</param>
+        /// <returns>Update information when a newer release exists; otherwise <see langword="null"/>.</returns>
         private static async Task<UpdateInfo> FetchLatestReleaseAsync(string currentVersionString, CancellationToken cancellationToken)
         {
             if (!TryParseVersion(currentVersionString, out Version currentVersion))

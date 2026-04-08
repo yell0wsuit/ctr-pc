@@ -518,6 +518,14 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Describes one lightning quad ready for batched rendering.
         /// </summary>
+        /// <param name="QuadIndex">Texture quad index used for this segment.</param>
+        /// <param name="Start">Segment start point.</param>
+        /// <param name="End">Segment end point.</param>
+        /// <param name="BottomLeft">Bottom-left corner of the rendered quad.</param>
+        /// <param name="BottomRight">Bottom-right corner of the rendered quad.</param>
+        /// <param name="TopLeft">Top-left corner of the rendered quad.</param>
+        /// <param name="TopRight">Top-right corner of the rendered quad.</param>
+        /// <param name="Center">Quad center point.</param>
         private readonly record struct LightningQuad(
             int QuadIndex,
             Vector Start,

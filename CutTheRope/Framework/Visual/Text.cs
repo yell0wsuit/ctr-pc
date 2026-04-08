@@ -31,6 +31,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="fontResourceName">Font resource name.</param>
         /// <param name="str">Text to display.</param>
+        /// <returns>A new text element initialized with the requested font and string.</returns>
         public static Text CreateWithFontandString(string fontResourceName, string str)
         {
             Text text = new Text().InitWithFont(Application.GetFont(fontResourceName));
@@ -42,6 +43,7 @@ namespace CutTheRope.Framework.Visual
         /// Initializes the text element with the specified font.
         /// </summary>
         /// <param name="i">Font to use for rendering.</param>
+        /// <returns>The initialized text instance.</returns>
         public virtual Text InitWithFont(FontGeneric i)
         {
             font = i;
@@ -232,6 +234,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the current display text.
         /// </summary>
+        /// <returns>The currently assigned display text.</returns>
         public virtual string GetString()
         {
             return string_;
@@ -284,6 +287,8 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
         /// </summary>
+        /// <param name="fontStashFont">FontStash-backed font used for glyph rendering.</param>
+        /// <param name="parentColor">Inherited parent color modulation.</param>
         private void DrawFontStashText(FontStashFont fontStashFont, Color parentColor)
         {
             SpriteBatch spriteBatch = Renderer.GetSpriteBatch();

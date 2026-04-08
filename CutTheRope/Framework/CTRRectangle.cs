@@ -12,6 +12,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Returns <see langword="true"/> if any component is non-zero.
         /// </summary>
+        /// <returns><see langword="true"/> when at least one rectangle component is non-zero; otherwise <see langword="false"/>.</returns>
         public readonly bool IsValid()
         {
             return x != 0f || y != 0f || w != 0f || h != 0f;

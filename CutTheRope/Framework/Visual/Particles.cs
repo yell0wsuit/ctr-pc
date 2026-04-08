@@ -17,6 +17,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="sinA">Sine of the rotation angle.</param>
         /// <param name="cx">Center X.</param>
         /// <param name="cy">Center Y.</param>
+        /// <returns>The rotated vector.</returns>
         public static Vector RotatePreCalc(Vector v, float cosA, float sinA, float cx, float cy)
         {
             Vector result = v;
@@ -132,6 +133,7 @@ namespace CutTheRope.Framework.Visual
         /// Initializes the particle system with the specified capacity.
         /// </summary>
         /// <param name="numberOfParticles">Maximum number of particles.</param>
+        /// <returns>The initialized particle system, or <see langword="null"/> if allocation fails.</returns>
         public virtual Particles InitWithTotalParticles(int numberOfParticles)
         {
             width = (int)SCREEN_WIDTH;
@@ -155,6 +157,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Adds a new particle if the system is not full. Returns <see langword="true"/> if added.
         /// </summary>
+        /// <returns><see langword="true"/> when a particle was added; otherwise <see langword="false"/>.</returns>
         public virtual bool AddParticle()
         {
             if (IsFull())
@@ -238,6 +241,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns <see langword="true"/> if the particle count has reached the maximum capacity.
         /// </summary>
+        /// <returns><see langword="true"/> when the system is full; otherwise <see langword="false"/>.</returns>
         public virtual bool IsFull()
         {
             return particleCount == totalParticles;

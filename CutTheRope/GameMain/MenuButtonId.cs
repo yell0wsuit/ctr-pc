@@ -50,6 +50,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Identifier set for menu-related buttons.
     /// </summary>
+    /// <param name="Value">Underlying numeric button identifier.</param>
     internal readonly record struct MenuButtonId(int Value) : IButtonIdentifier
     {
         /// <summary>

@@ -33,6 +33,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="of">Spacing between children in pixels.</param>
         /// <param name="a">Horizontal alignment flag (LEFT, HCENTER, or RIGHT).</param>
         /// <param name="w">Width of the box.</param>
+        /// <returns>The initialized vertical box instance.</returns>
         public VBox InitWithOffsetAlignWidth(float of, int a, float w)
         {
             offset = of;
