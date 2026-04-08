@@ -38,7 +38,7 @@ namespace CutTheRope.Framework
         public static Language Current { get; set; } = Language.LANGEN;
 
         /// <summary>
-        /// Gets the current language as an ISO 639-1 two-letter code.
+        /// Gets the current language as the game's language code (for example: <c>en</c>, <c>pt_br</c>, <c>zh_tw</c>).
         /// </summary>
         public static string CurrentCode => ToCode(Current);
 
@@ -121,7 +121,7 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Converts a Language enum to its ISO 639-1 two-letter code.
+        /// Converts a <see cref="Language"/> value to the game's language code.
         /// </summary>
         /// <param name="language">Language to convert.</param>
         public static string ToCode(Language language)
@@ -145,8 +145,8 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Converts an ISO 639-1 two-letter code to a Language enum.
-        /// Returns LANGEN for unrecognized codes.
+        /// Converts a game language code to a <see cref="Language"/> value.
+        /// Returns <see cref="Language.LANGEN"/> for unrecognized codes.
         /// </summary>
         /// <param name="code">Language code to convert.</param>
         public static Language FromCode(string code)
