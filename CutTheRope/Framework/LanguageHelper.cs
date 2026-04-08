@@ -51,6 +51,7 @@ namespace CutTheRope.Framework
         /// Checks if the given <paramref name="language"/> matches the current language.
         /// </summary>
         /// <param name="language">Language to check.</param>
+        /// <returns><see langword="true"/> when <paramref name="language"/> equals <see cref="Current"/>.</returns>
         public static bool IsCurrent(Language language)
         {
             return Current == language;
@@ -60,6 +61,7 @@ namespace CutTheRope.Framework
         /// Checks if the current language matches any of the given <paramref name="languages"/>.
         /// </summary>
         /// <param name="languages">Languages to check against.</param>
+        /// <returns><see langword="true"/> when any provided language equals <see cref="Current"/>.</returns>
         public static bool IsCurrentAny(params Language[] languages)
         {
             foreach (Language lang in languages)
@@ -76,6 +78,7 @@ namespace CutTheRope.Framework
         /// Checks if the given <paramref name="language"/> is available in the UI.
         /// </summary>
         /// <param name="language">Language to check.</param>
+        /// <returns><see langword="true"/> when the language is present in the UI language list.</returns>
         public static bool IsUiLanguage(Language language)
         {
             return IsUiLanguageCode(ToCode(language));
@@ -85,6 +88,7 @@ namespace CutTheRope.Framework
         /// Checks if the given language <paramref name="code"/> is available in the UI.
         /// </summary>
         /// <param name="code">Language code to check.</param>
+        /// <returns><see langword="true"/> when <paramref name="code"/> is present in the UI language list.</returns>
         public static bool IsUiLanguageCode(string code)
         {
             if (string.IsNullOrEmpty(code))
@@ -107,6 +111,7 @@ namespace CutTheRope.Framework
         /// Gets the next language code in the UI cycle.
         /// </summary>
         /// <param name="currentCode">Current language code.</param>
+        /// <returns>The next UI language code, or the first entry when <paramref name="currentCode"/> is not found.</returns>
         public static string GetNextUiLanguageCode(string currentCode)
         {
             for (int i = 0; i < uiLanguageCodes.Length; i++)
@@ -124,6 +129,7 @@ namespace CutTheRope.Framework
         /// Converts <paramref name="language"/> to the game's language code.
         /// </summary>
         /// <param name="language">Language to convert.</param>
+        /// <returns>The game language code for <paramref name="language"/>.</returns>
         public static string ToCode(Language language)
         {
             return language switch
@@ -149,6 +155,7 @@ namespace CutTheRope.Framework
         /// Returns <see cref="Language.LANGEN"/> for unrecognized codes.
         /// </summary>
         /// <param name="code">Language code to convert.</param>
+        /// <returns>The corresponding <see cref="Language"/> value.</returns>
         public static Language FromCode(string code)
         {
             return code switch
@@ -171,6 +178,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Detects the appropriate Language from the system's current culture.
         /// </summary>
+        /// <returns>A supported <see cref="Language"/> inferred from the current system culture.</returns>
         public static Language FromSystemCulture()
         {
             CultureInfo culture = CultureInfo.CurrentCulture;
@@ -203,6 +211,7 @@ namespace CutTheRope.Framework
         /// Gets the English display name for a language <paramref name="code"/> (e.g. "ru" → "Russian").
         /// </summary>
         /// <param name="code">Language code to look up.</param>
+        /// <returns>The English display name for <paramref name="code"/>, or the input code when unknown.</returns>
         public static string GetLanguageDisplayName(string code)
         {
             return code switch
