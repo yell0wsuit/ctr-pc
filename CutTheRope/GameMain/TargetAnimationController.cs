@@ -43,12 +43,14 @@ namespace CutTheRope.GameMain
         public bool HandlesOwnSleepPulse => backend.HandlesOwnSleepPulse;
 
         /// <summary>Gets the backend-defined base horizontal scale for Om Nom.</summary>
+        /// <returns>Default X scale for Om Nom.</returns>
         public float GetTargetBaseScaleX()
         {
             return backend.GetTargetBaseScaleX();
         }
 
         /// <summary>Gets the backend-defined base vertical scale for Om Nom.</summary>
+        /// <returns>Default Y scale for Om Nom.</returns>
         public float GetTargetBaseScaleY()
         {
             return backend.GetTargetBaseScaleY();
@@ -171,30 +173,37 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>Advances all sleep overlay animations by <paramref name="delta"/> seconds.</summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
         public void UpdateSleepOverlays(float delta)
         {
             backend.UpdateSleepOverlays(delta);
         }
 
         /// <summary>Advances backend-specific non-sleep overlays by <paramref name="delta"/> seconds.</summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
         public void UpdateAdditionalOverlays(float delta)
         {
             backend.UpdateAdditionalOverlays(delta);
         }
 
         /// <summary>Moves all sleep overlay animations to the given position.</summary>
+        /// <param name="x">Target X position.</param>
+        /// <param name="y">Target Y position.</param>
         public void SyncSleepOverlayPosition(float x, float y)
         {
             backend.SyncSleepOverlayPosition(x, y);
         }
 
         /// <summary>Updates the spawn position used by backend-specific non-sleep overlays.</summary>
+        /// <param name="x">Target X position.</param>
+        /// <param name="y">Target Y position.</param>
         public void SyncAdditionalOverlayPosition(float x, float y)
         {
             backend.SyncAdditionalOverlayPosition(x, y);
         }
 
         /// <summary>Sets visibility and playback state of all sleep overlay animations.</summary>
+        /// <param name="visible"><see langword="true"/> to show overlays; otherwise <see langword="false"/>.</param>
         public void SetSleepOverlayVisible(bool visible)
         {
             backend.SetSleepOverlayVisible(visible);
