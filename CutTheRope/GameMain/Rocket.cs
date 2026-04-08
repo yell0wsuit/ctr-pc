@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 using static CutTheRope.Helpers.ParsingHelpers;
@@ -39,12 +39,7 @@ namespace CutTheRope.GameMain
             return rocket;
         }
 
-        /// <summary>
-        /// Initializes the rocket with a texture, setting up rotation timelines, the scale-down
-        /// (exhaust) timeline, the physics point, the container element, and the spark animation.
-        /// </summary>
-        /// <param name="tx">The texture to initialize the rocket with.</param>
-        /// <returns>This <see cref="Rocket"/> instance after initialization.</returns>
+        /// <inheritdoc />
         public override Image InitWithTexture(CTRTexture2D tx)
         {
             if (base.InitWithTexture(tx) != null)
@@ -109,11 +104,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Updates the rocket each frame: synchronizes position with the physics point,
-        /// updates the container, and repositions the exhaust particle emitters.
-        /// </summary>
-        /// <param name="delta">The elapsed time since the last frame, in seconds.</param>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -156,11 +147,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Parses a mover definition from XML, creating a <see cref="CTRMover"/> that follows the
-        /// specified path with the given move and rotate speeds.
-        /// </summary>
-        /// <param name="xml">The XML element containing <c>path</c>, <c>moveSpeed</c>, and <c>rotateSpeed</c> attributes.</param>
+        /// <inheritdoc />
         public override void ParseMover(XElement xml)
         {
             string path = xml.Attribute("path")?.Value ?? string.Empty;
@@ -185,10 +172,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Draws the rocket by first rendering the container (which holds the spark animation),
-        /// then rendering the rocket sprite itself.
-        /// </summary>
+        /// <inheritdoc />
         public override void Draw()
         {
             container.Draw();
@@ -201,10 +185,6 @@ namespace CutTheRope.GameMain
         }
 
         /// <inheritdoc />
-        /// <remarks>
-        /// When the scale-down timeline (ID 2) finishes, notifies the <see cref="delegateRocketDelegate"/>
-        /// that the rocket has been exhausted.
-        /// </remarks>
         public void TimelineFinished(Timeline t)
         {
             RotateWithBB(rotation);

@@ -1,6 +1,6 @@
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 
 namespace CutTheRope.GameMain
 {
@@ -22,10 +22,10 @@ namespace CutTheRope.GameMain
         /// <summary>Angle of the segment direction in degrees [0, 360), used to orient ant sprites.</summary>
         public float angleDeg;
 
-        /// <summary>When false the segment will not attempt to attach to the candy.</summary>
+        /// <summary>When <see langword="false"/> the segment will not attempt to attach to the candy.</summary>
         public bool canInteract;
 
-        /// <summary>True while the candy is attached and being carried by this segment.</summary>
+        /// <summary><see langword="true"/> while the candy is attached and being carried by this segment.</summary>
         public bool interacting;
 
         /// <summary>Elapsed seconds since the last <see cref="StartInteractionWithConstraitedPoint"/> call.</summary>
@@ -37,7 +37,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public Vector interactionPoint;
 
-        /// <summary>The physics point (candy) currently attached to this segment, or null.</summary>
+        /// <summary>The physics point (candy) currently attached to this segment, or <see langword="null"/>.</summary>
         public ConstraintedPoint targetPoint;
 
         /// <summary>Next segment in the path, or the first segment when the path is looped.</summary>
@@ -56,6 +56,10 @@ namespace CutTheRope.GameMain
         /// Creates a segment from <paramref name="start"/> to <paramref name="end"/> with
         /// the given speed magnitude and device scale.
         /// </summary>
+        /// <param name="start">World-space start point of the segment.</param>
+        /// <param name="end">World-space end point of the segment.</param>
+        /// <param name="speedMagnitude">Speed magnitude in world units per second.</param>
+        /// <param name="deviceScale">Device pixel-density multiplier.</param>
         public AntsPathSegment(Vector start, Vector end, float speedMagnitude, float deviceScale)
         {
             SetupWithStartPointEndPointSpeed(start, end, speedMagnitude, deviceScale);
@@ -66,6 +70,10 @@ namespace CutTheRope.GameMain
         /// (Re)initialises all derived fields from the given endpoints, speed magnitude and device scale.
         /// Called by the constructor and by the path builder.
         /// </summary>
+        /// <param name="start">World-space start point of the segment.</param>
+        /// <param name="end">World-space end point of the segment.</param>
+        /// <param name="speedMagnitude">Speed magnitude in world units per second.</param>
+        /// <param name="deviceScale">Device pixel-density multiplier.</param>
         public void SetupWithStartPointEndPointSpeed(Vector start, Vector end, float speedMagnitude, float deviceScale)
         {
             startPoint = start;
@@ -93,6 +101,7 @@ namespace CutTheRope.GameMain
         /// Advances the carrier marker along the segment by <paramref name="delta"/> seconds.
         /// No-op when not interacting.
         /// </summary>
+        /// <param name="delta">Elapsed seconds since the last frame.</param>
         public void Update(float delta)
         {
             if (!interacting)
@@ -108,6 +117,7 @@ namespace CutTheRope.GameMain
         /// Attaches <paramref name="point"/> to this segment. Places the carrier marker at the
         /// nearest on-segment position to the point and begins the carry update.
         /// </summary>
+        /// <param name="point">The physics point (candy) to attach, or <see langword="null"/>.</param>
         public void StartInteractionWithConstraitedPoint(ConstraintedPoint point)
         {
             targetPoint = point;
@@ -118,9 +128,10 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Detaches the carried point. When <paramref name="slow"/> is true, applies a braking
+        /// Detaches the carried point. When <paramref name="slow"/> is <see langword="true"/>, applies a braking
         /// horizontal impulse to the candy (velocity.X × −0.7 over 0.01 s), matching iOS deceleration.
         /// </summary>
+        /// <param name="slow">When <see langword="true"/>, applies a braking impulse to the candy.</param>
         public void StopInteractionWithCandySlow(bool slow)
         {
             if (slow && targetPoint != null)
@@ -136,6 +147,10 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Returns the closest point on segment AB to point P, clamped to the segment endpoints.
         /// </summary>
+        /// <param name="a">Segment start point.</param>
+        /// <param name="b">Segment end point.</param>
+        /// <param name="p">The point to project onto the segment.</param>
+        /// <returns>The closest point on segment AB to <paramref name="p"/>.</returns>
         public static Vector GetPointOnSegmentFromPointtoPointnearestToPoint(Vector a, Vector b, Vector p)
         {
             Vector ab = VectSub(b, a);
@@ -152,27 +167,30 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Returns true if <paramref name="point"/> lies inside the segment's internal interaction
+        /// Returns <see langword="true"/> if <paramref name="point"/> lies inside the segment's internal interaction
         /// rectangle (equivalent to <see cref="ContainsPoint(Vector, bool)"/> with <c>external = false</c>).
         /// </summary>
+        /// <param name="point">The world-space point to test.</param>
+        /// <returns><see langword="true"/> if <paramref name="point"/> is inside the internal rectangle; otherwise <see langword="false"/>.</returns>
         public bool ContainsPoint(Vector point)
         {
             return ContainsPoint(point, false);
         }
 
         /// <summary>
-        /// Returns true if <paramref name="point"/> lies inside the segment's bounding rectangle.
+        /// Returns <see langword="true"/> if <paramref name="point"/> lies inside the segment's bounding rectangle.
         /// </summary>
         /// <param name="point">The world-space point to test.</param>
         /// <param name="external">
-        /// When false, tests the internal rectangle: longitudinal bounds [0, Length],
+        /// When <see langword="false"/>, tests the internal rectangle: longitudinal bounds [0, Length],
         /// perpendicular half-height = <see cref="AntConveyorLogic.GetSegmentHalfHeight"/>.
         /// Matches the iOS internal bounding box used for candy attach and detach checks.<br/>
-        /// When true, tests the external rectangle: longitudinal bounds
+        /// When <see langword="true"/>, tests the external rectangle: longitudinal bounds
         /// [−halfHeight, Length + halfHeight] (extends past each endpoint by halfHeight),
         /// same perpendicular half-height. Matches the iOS <c>externalBB</c> game object
         /// used for the wait-before-attach check.
         /// </param>
+        /// <returns><see langword="true"/> if <paramref name="point"/> is inside the bounding rectangle; otherwise <see langword="false"/>.</returns>
         public bool ContainsPoint(Vector point, bool external)
         {
             if (Length <= 0f)
@@ -196,6 +214,7 @@ namespace CutTheRope.GameMain
             return proj >= minProj && proj <= maxProj;
         }
 
+        /// <summary>Half-height of the segment's interaction rectangle, perpendicular to the path direction.</summary>
         private float internalHalfHeight;
     }
 }

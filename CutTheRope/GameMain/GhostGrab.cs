@@ -7,8 +7,17 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Ghost-transformed grab variant with ambient cloud visuals and a tinted grab radius.
+    /// </summary>
     internal sealed class GhostGrab : Grab
     {
+        /// <summary>
+        /// Initializes the ghost grab at a level position and creates its supporting cloud visuals.
+        /// </summary>
+        /// <param name="px">World-space X position.</param>
+        /// <param name="py">World-space Y position.</param>
+        /// <returns>The initialized ghost grab.</returns>
         public GhostGrab InitWithPosition(float px, float py)
         {
             x = px;
@@ -78,10 +87,12 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void DrawBack()
         {
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (!visible)

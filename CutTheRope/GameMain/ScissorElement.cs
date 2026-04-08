@@ -3,8 +3,12 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Element that draws its children through the renderer scissor rectangle.
+    /// </summary>
     internal sealed class ScissorElement : BaseElement
     {
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();

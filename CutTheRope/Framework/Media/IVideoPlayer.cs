@@ -23,14 +23,14 @@ namespace CutTheRope.Framework.Media
         /// Prepares a video for playback from the specified path.
         /// </summary>
         /// <param name="moviePath">The relative path to the video file without extension.</param>
-        /// <param name="mute">If <c>true</c>, audio will be muted during playback.</param>
+        /// <param name="mute">If <see langword="true" />, audio will be muted during playback.</param>
         void Play(string moviePath, bool mute);
 
         /// <summary>
         /// Gets the current video frame as a texture.
         /// </summary>
         /// <returns>
-        /// A <see cref="Texture2D"/> containing the current video frame, or <c>null</c>
+        /// A <see cref="Texture2D"/> containing the current video frame, or <see langword="null" />
         /// if no video is playing or playback has finished.
         /// </returns>
         Texture2D GetTexture();
@@ -38,13 +38,13 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Determines whether a video is currently loaded and potentially playing.
         /// </summary>
-        /// <returns><c>true</c> if a video is active; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if a video is active; otherwise, <see langword="false" />.</returns>
         bool IsPlaying();
 
         /// <summary>
         /// Determines whether the video texture is ready for rendering.
         /// </summary>
-        /// <returns><c>true</c> if the texture can be rendered; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the texture can be rendered; otherwise, <see langword="false" />.</returns>
         bool IsTextureReady();
 
         /// <summary>

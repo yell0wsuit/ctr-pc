@@ -10,8 +10,19 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Top-level game controller that manages the startup → menu → loading → gameplay lifecycle,
+    /// resource loading/unloading across transitions, and background prefetch of box-level resources.
+    /// </summary>
     internal sealed class CTRRootController : RootController
     {
+        /// <summary>
+        /// Stub for analytics event logging.
+        /// </summary>
+        /// <param name="_">Event name.</param>
+        /// <remarks>
+        /// No-op on PC.
+        /// </remarks>
         public static void LogEvent(string _)
         {
         }
@@ -84,15 +95,26 @@ namespace CutTheRope.GameMain
             QueueOrPollBoxPrefetch();
         }
 
+        /// <summary>Stub for setting a maps dictionary.</summary>
+        /// <param name="_">Maps dictionary.</param>
+        /// <remarks>
+        /// No-op on PC.
+        /// </remarks>
         public static void SetMapsList(Dictionary<string, XElement> _)
         {
         }
 
+        /// <summary>Gets the current pack (box group) index.</summary>
+        /// <returns>The zero-based pack index.</returns>
         public int GetPack()
         {
             return pack;
         }
 
+        /// <summary>
+        /// Initialises the root controller, loads startup resources, and adds the startup child controller.
+        /// </summary>
+        /// <param name="parent">Parent view controller that hosts this root controller.</param>
         public CTRRootController(ViewController parent)
             : base(parent)
         {
@@ -106,6 +128,7 @@ namespace CutTheRope.GameMain
             viewTransition = -1;
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             _ = CTRPreferences.IsFirstLaunch();
@@ -116,6 +139,7 @@ namespace CutTheRope.GameMain
             GLCanvas.AfterRender();
         }
 
+        /// <summary>Removes the menu child controller and frees menu resources.</summary>
         public void DeleteMenu()
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
@@ -124,19 +148,29 @@ namespace CutTheRope.GameMain
             resourceMgr.FreePack(PackMenu);
         }
 
+        /// <summary>Disabling Game Center.</summary>
+        /// <remarks>
+        /// No-op on PC.
+        /// </remarks>
         public static void DisableGameCenter()
         {
         }
 
+        /// <summary>Enabling Game Center.</summary>
+        /// <remarks>
+        /// No-op on PC.
+        /// </remarks>
         public static void EnableGameCenter()
         {
         }
 
+        /// <inheritdoc />
         public override void Suspend()
         {
             suspended = true;
         }
 
+        /// <inheritdoc />
         public override void Resume()
         {
             if (!inCrystal)
@@ -145,6 +179,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);
@@ -278,6 +313,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -289,6 +325,10 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Map validation.</summary>
+        /// <remarks>
+        /// No-op code.
+        /// </remarks>
         public static void CheckMapIsValid()
         {
         }
@@ -302,79 +342,116 @@ namespace CutTheRope.GameMain
         //{
         //}
 
+        /// <summary>Sets the Chillingo's Crystal overlay state on the shared root controller.</summary>
+        /// <param name="b">Whether the Crystal overlay is active.</param>
         public static void SetInCrystal(bool b)
         {
             ((CTRRootController)Application.SharedRootController()).inCrystal = b;
         }
 
+        /// <summary>Stub for opening the full version store page.</summary>
+        /// <remarks>
+        /// No-op code.
+        /// </remarks>
         public static void OpenFullVersionPage()
         {
         }
 
+        /// <summary>Sets the current box index.</summary>
+        /// <param name="b">Zero-based box index.</param>
         public void SetBox(int b)
         {
             box = b;
         }
 
+        /// <summary>Gets the current box index.</summary>
+        /// <returns>The zero-based box index.</returns>
         public int GetBox()
         {
             return box;
         }
 
+        /// <summary>Sets the current pack (box group) index.</summary>
+        /// <param name="p">Zero-based pack index.</param>
         public void SetPack(int p)
         {
             pack = p;
         }
 
+        /// <summary>Sets the current level index within the active box.</summary>
+        /// <param name="l">Zero-based level index.</param>
         public void SetLevel(int l)
         {
             level = l;
         }
 
+        /// <summary>Gets the current level index within the active box.</summary>
+        /// <returns>The zero-based level index.</returns>
         public int GetLevel()
         {
             return level;
         }
 
+        /// <summary>Sets whether the level picker is active.</summary>
+        /// <param name="p">Whether the level picker should be shown.</param>
         public void SetPicker(bool p)
         {
             picker = p;
         }
 
+        /// <summary>Gets whether the level picker is active.</summary>
+        /// <returns><see langword="true"/> if the level picker is shown; otherwise <see langword="false"/>.</returns>
         public bool IsPicker()
         {
             return picker;
         }
 
+        /// <summary>Sets whether survival mode is active.</summary>
+        /// <param name="s">Whether survival mode is enabled.</param>
         public void SetSurvival(bool s)
         {
             survival = s;
         }
 
+        /// <summary>Gets whether survival mode(?) is active.</summary>
+        /// <returns><see langword="true"/> if survival mode is enabled; otherwise <see langword="false"/>.</returns>
         public bool IsSurvival()
         {
             return survival;
         }
 
+        /// <summary>Gets whether the Om Nom greeting animation should play on the next level start.</summary>
+        /// <returns><see langword="true"/> if the greeting should be shown.</returns>
         public static bool IsShowGreeting()
         {
             return ((CTRRootController)Application.SharedRootController()).showGreeting;
         }
 
+        /// <summary>Sets whether the Om Nom greeting animation should play on the next level start.</summary>
+        /// <param name="s">Whether to show the greeting.</param>
         public static void SetShowGreeting(bool s)
         {
             ((CTRRootController)Application.SharedRootController()).showGreeting = s;
         }
 
+        /// <summary>Stub for posting a named achievement with a value.</summary>
+        /// <param name="_">Achievement name.</param>
+        /// <param name="_1">Achievement value.</param>
+        /// <remarks>
+        /// No-op code.
+        /// </remarks>
         public static void PostAchievementName(string _, string _1)
         {
         }
 
+        /// <summary>Posts a named achievement to the scorer.</summary>
+        /// <param name="name">The achievement identifier.</param>
         public static void PostAchievementName(string name)
         {
             Scorer.PostAchievementName(name);
         }
 
+        /// <summary>Destroys and re-creates the loading controller child (slot 2).</summary>
         internal void RecreateLoadingController()
         {
             DeleteChild(2);
@@ -588,48 +665,68 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Exit code: proceed to the next game level.</summary>
         public const int NEXT_GAME = 0;
 
+        /// <summary>Exit code: return to the main menu.</summary>
         public const int NEXT_MENU = 1;
 
+        /// <summary>Exit code: return to the level picker.</summary>
         public const int NEXT_PICKER = 2;
 
+        /// <summary>Exit code: return to the level picker and advance to the next pack.</summary>
         public const int NEXT_PICKER_NEXT_PACK = 3;
 
+        /// <summary>Exit code: return to the level picker and show the unlock animation.</summary>
         public const int NEXT_PICKER_SHOW_UNLOCK = 4;
 
+        /// <summary>Child slot index for the startup controller.</summary>
         public const int CHILD_START = 0;
 
+        /// <summary>Child slot index for the menu controller.</summary>
         public const int CHILD_MENU = 1;
 
+        /// <summary>Child slot index for the loading controller.</summary>
         public const int CHILD_LOADING = 2;
 
+        /// <summary>Child slot index for the game controller.</summary>
         public const int CHILD_GAME = 3;
 
+        /// <summary>Current box index.</summary>
         public int box;
 
+        /// <summary>Current pack (box group) index.</summary>
         public int pack;
 
+        /// <summary>Filename of the currently loaded map.</summary>
         private string mapName;
 
+        /// <summary>Parsed XML of the currently loaded map, or <see langword="null"/>.</summary>
         private XElement loadedMap;
 
+        /// <summary>Current level index within the active box.</summary>
         private int level;
 
+        /// <summary>Whether the level picker is active.</summary>
         private bool picker;
 
+        /// <summary>Whether survival mode is active.</summary>
         private bool survival;
 
+        /// <summary>Whether the Crystal overlay is currently shown.</summary>
         private bool inCrystal;
 
+        /// <summary>Whether the Om Nom greeting should play on the next level start.</summary>
         private bool showGreeting;
 
+        /// <summary>Resource pack loaded during the startup splash screen.</summary>
         private static readonly string[] PackStartup = [
             Resources.Img.ZeptoLabLogoLoading,
             Resources.Img.ZeptoLabLogoAnim,
             null
         ];
 
+        /// <summary>Resource pack loaded for the main menu.</summary>
         private static readonly string[] PackMenu =
         [
             Resources.Img.MenuBgr,
@@ -644,6 +741,7 @@ namespace CutTheRope.GameMain
             null
         ];
 
+        /// <summary>Resource pack loaded for gameplay (HUD, candy, spider, etc.).</summary>
         private static readonly string[] PackGame = [
             Resources.Img.MenuButtons,
             Resources.Img.HudUi,
@@ -657,14 +755,19 @@ namespace CutTheRope.GameMain
             null
         ];
 
+        /// <summary>Set of resource names loaded during the current gameplay session, freed on exit.</summary>
         private readonly HashSet<string> sessionResources = [];
 
+        /// <summary>Async task scanning all levels in the current box for their resource union.</summary>
         private Task<HashSet<string>> boxResourceScanTask;
 
+        /// <summary>Pack index that <see cref="boxResourceScanTask"/> is scanning, or −1.</summary>
         private int boxResourceScanPack = -1;
 
+        /// <summary>Timer handle polling <see cref="boxResourceScanTask"/> completion, or −1 if inactive.</summary>
         private int boxScanPollTimer = -1;
 
+        /// <summary>Timer handle draining the background prefetch queue, or −1 if inactive.</summary>
         private int prefetchDrainTimer = -1;
     }
 }

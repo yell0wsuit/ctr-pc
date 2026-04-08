@@ -7,42 +7,72 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Desktop
 {
+    /// <summary>
+    /// Manages window, fullscreen, and scaled-view sizing for the desktop renderer.
+    /// Handles aspect-ratio preservation, viewport updates, coordinate transforms, and persisted window settings.
+    /// </summary>
+    /// <param name="gameWidth">Logical game width.</param>
+    /// <param name="gameHeight">Logical game height.</param>
     internal sealed class ScreenSizeManager(int gameWidth, int gameHeight)
     {
-        // (get) Token: 0x060000AF RID: 175 RVA: 0x00004B78 File Offset: 0x00002D78
+        /// <summary>
+        /// Maximum allowed window width for the active graphics profile.
+        /// </summary>
         public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
 
-        // (get) Token: 0x060000B0 RID: 176 RVA: 0x00004B92 File Offset: 0x00002D92
+        /// <summary>
+        /// Gets the current window back-buffer width.
+        /// </summary>
         public int WindowWidth => _windowRect.Width;
 
-        // (get) Token: 0x060000B1 RID: 177 RVA: 0x00004B9F File Offset: 0x00002D9F
+        /// <summary>
+        /// Gets the current window back-buffer height.
+        /// </summary>
         public int WindowHeight => _windowRect.Height;
 
-        // (get) Token: 0x060000B2 RID: 178 RVA: 0x00004BAC File Offset: 0x00002DAC
+        /// <summary>
+        /// Gets the current fullscreen display width.
+        /// </summary>
         public int ScreenWidth => _fullScreenRect.Width;
 
-        // (get) Token: 0x060000B3 RID: 179 RVA: 0x00004BB9 File Offset: 0x00002DB9
+        /// <summary>
+        /// Gets the current fullscreen display height.
+        /// </summary>
         public int ScreenHeight => _fullScreenRect.Height;
 
-        // (get) Token: 0x060000B4 RID: 180 RVA: 0x00004BC6 File Offset: 0x00002DC6
+        /// <summary>
+        /// Gets a value indicating whether fullscreen mode is currently enabled.
+        /// </summary>
         public bool IsFullScreen { get; private set; }
 
-        // (get) Token: 0x060000B5 RID: 181 RVA: 0x00004BCE File Offset: 0x00002DCE
+        /// <summary>
+        /// Gets the active output rectangle, using fullscreen or window bounds as appropriate.
+        /// </summary>
         public Rectangle CurrentSize => IsFullScreen ? _fullScreenRect : _windowRect;
 
-        // (get) Token: 0x060000B6 RID: 182 RVA: 0x00004BE5 File Offset: 0x00002DE5
+        /// <summary>
+        /// Gets the logical game width.
+        /// </summary>
         public int GameWidth { get; } = gameWidth;
 
-        // (get) Token: 0x060000B7 RID: 183 RVA: 0x00004BED File Offset: 0x00002DED
+        /// <summary>
+        /// Gets the logical game height.
+        /// </summary>
         public int GameHeight { get; } = gameHeight;
 
-        // (get) Token: 0x060000B8 RID: 184 RVA: 0x00004BF5 File Offset: 0x00002DF5
+        /// <summary>
+        /// Gets the letterboxed or pillarboxed view rectangle used for rendering the game.
+        /// </summary>
         public Rectangle ScaledViewRect => _scaledViewRect;
 
-        // (get) Token: 0x060000B9 RID: 185 RVA: 0x00004BFD File Offset: 0x00002DFD
+        /// <summary>
+        /// Gets a value indicating whether size-change reactions are temporarily disabled.
+        /// </summary>
         public bool SkipSizeChanges { get; private set; }
 
-        // (set) Token: 0x060000BA RID: 186 RVA: 0x00004C05 File Offset: 0x00002E05
+        /// <summary>
+        /// Sets whether fullscreen view scaling should crop width instead of fitting the full game width.
+        /// </summary>
         public bool FullScreenCropWidth
         {
             set
@@ -55,29 +85,57 @@ namespace CutTheRope.Desktop
             }
         }
 
-        // (get) Token: 0x060000BB RID: 187 RVA: 0x00004C1D File Offset: 0x00002E1D
+        /// <summary>
+        /// Gets the horizontal scale factor from logical game width to the current scaled view width.
+        /// </summary>
         public double WidthAspectRatio => _scaledViewRect.Width / (double)GameWidth;
 
+        /// <summary>
+        /// Converts a window-space X coordinate into scaled-view space.
+        /// </summary>
+        /// <param name="x">Window-space X coordinate.</param>
+        /// <returns>Scaled-view X coordinate.</returns>
         public int TransformWindowToViewX(int x)
         {
             return x - _scaledViewRect.X;
         }
 
+        /// <summary>
+        /// Converts a window-space Y coordinate into scaled-view space.
+        /// </summary>
+        /// <param name="y">Window-space Y coordinate.</param>
+        /// <returns>Scaled-view Y coordinate.</returns>
         public int TransformWindowToViewY(int y)
         {
             return y - _scaledViewRect.Y;
         }
 
+        /// <summary>
+        /// Converts a scaled-view X coordinate into logical game space.
+        /// </summary>
+        /// <param name="x">Scaled-view X coordinate.</param>
+        /// <returns>Logical game-space X coordinate.</returns>
         public float TransformViewToGameX(float x)
         {
             return x * GameWidth / _scaledViewRect.Width;
         }
 
+        /// <summary>
+        /// Converts a scaled-view Y coordinate into logical game space.
+        /// </summary>
+        /// <param name="y">Scaled-view Y coordinate.</param>
+        /// <returns>Logical game-space Y coordinate.</returns>
         public float TransformViewToGameY(float y)
         {
             return y * GameHeight / _scaledViewRect.Height;
         }
 
+        /// <summary>
+        /// Initializes screen sizing from the current display mode, preferred window width, and fullscreen state.
+        /// </summary>
+        /// <param name="displayMode">Current display mode.</param>
+        /// <param name="windowWidth">Preferred window width, or a non-positive value to derive one automatically.</param>
+        /// <param name="isFullScreen"><see langword="true" /> to start in fullscreen mode.</param>
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
             FullScreenRectChanged(displayMode);
@@ -103,16 +161,29 @@ namespace CutTheRope.Desktop
             ApplyWindowSize(WindowWidth);
         }
 
+        /// <summary>
+        /// Returns the logical game width that preserves aspect ratio for the supplied scaled height.
+        /// </summary>
+        /// <param name="scaledHeight">Scaled view height.</param>
+        /// <returns>Aspect-ratio-correct game width.</returns>
         public int ScaledGameWidth(int scaledHeight)
         {
             return (int)((scaledHeight / _gameAspectRatio) + 0.5);
         }
 
+        /// <summary>
+        /// Returns the logical game height that preserves aspect ratio for the supplied scaled width.
+        /// </summary>
+        /// <param name="scaledWidth">Scaled view width.</param>
+        /// <returns>Aspect-ratio-correct game height.</returns>
         public int ScaledGameHeight(int scaledWidth)
         {
             return (int)((scaledWidth * _gameAspectRatio) + 0.5);
         }
 
+        /// <summary>
+        /// Recomputes the scaled render rectangle for the current window or fullscreen bounds.
+        /// </summary>
         private void UpdateScaledView()
         {
             if (SkipSizeChanges)
@@ -133,6 +204,10 @@ namespace CutTheRope.Desktop
             _scaledViewRect = new Rectangle((sourceRect.Width - portraitScaledWidth) / 2, (sourceRect.Height - portraitScaledHeight) / 2, portraitScaledWidth, portraitScaledHeight);
         }
 
+        /// <summary>
+        /// Applies a new window back-buffer <paramref name="width"/> and updates the tracked window rectangle.
+        /// </summary>
+        /// <param name="width">Target window width.</param>
         public void ApplyWindowSize(int width)
         {
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
@@ -142,6 +217,10 @@ namespace CutTheRope.Desktop
             WindowRectChanged(new Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
         }
 
+        /// <summary>
+        /// Toggles between windowed and fullscreen mode, updates the viewport, persists settings,
+        /// and notifies the canvas and root controller.
+        /// </summary>
         public void ToggleFullScreen()
         {
             SkipSizeChanges = true;
@@ -170,6 +249,10 @@ namespace CutTheRope.Desktop
             Application.SharedRootController().FullscreenToggled(!isFullScreen);
         }
 
+        /// <summary>
+        /// Normalizes window size changes to the game's aspect-ratio constraints and persists the result.
+        /// </summary>
+        /// <param name="newWindowRect">New window bounds reported by the host window.</param>
         public void FixWindowSize(Rectangle newWindowRect)
         {
             if (SkipSizeChanges)
@@ -213,6 +296,9 @@ namespace CutTheRope.Desktop
             Application.SharedCanvas().Reshape();
         }
 
+        /// <summary>
+        /// Applies the current scaled view rectangle to the graphics device viewport.
+        /// </summary>
         public void ApplyViewportToDevice()
         {
             Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(_scaledViewRect, _windowRect) : Rectangle.Intersect(_scaledViewRect, _fullScreenRect);
@@ -225,6 +311,9 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Saves window dimensions and fullscreen state to preferences.
+        /// </summary>
         public void Save()
         {
             Preferences.SetIntForKey(_windowRect.Width, "PREFS_WINDOW_WIDTH", false);
@@ -232,6 +321,10 @@ namespace CutTheRope.Desktop
             Preferences.SetBooleanForKey(IsFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
         }
 
+        /// <summary>
+        /// Updates the stored window rectangle and recomputes the scaled view rectangle.
+        /// </summary>
+        /// <param name="newWindowRect">New window rectangle.</param>
         private void WindowRectChanged(Rectangle newWindowRect)
         {
             if (!SkipSizeChanges)
@@ -243,11 +336,19 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Updates the stored fullscreen rectangle from a display mode.
+        /// </summary>
+        /// <param name="d">Display mode to copy.</param>
         private void FullScreenRectChanged(DisplayMode d)
         {
             FullScreenRectChanged(new Rectangle(0, 0, d.Width, d.Height));
         }
 
+        /// <summary>
+        /// Updates the stored fullscreen rectangle and recomputes the scaled view rectangle.
+        /// </summary>
+        /// <param name="r">New fullscreen rectangle.</param>
         private void FullScreenRectChanged(Rectangle r)
         {
             if (!SkipSizeChanges)
@@ -257,6 +358,10 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Updates the tracked fullscreen state and recomputes the scaled view rectangle.
+        /// </summary>
+        /// <param name="bFull"><see langword="true" /> to mark fullscreen as enabled; otherwise <see langword="false" />.</param>
         private void EnableFullScreen(bool bFull)
         {
             if (!SkipSizeChanges)
@@ -266,13 +371,34 @@ namespace CutTheRope.Desktop
             }
         }
 
+        /// <summary>
+        /// Minimum allowed window width.
+        /// </summary>
         public const int MIN_WINDOW_WIDTH = 800;
+
+        /// <summary>
+        /// Current window rectangle.
+        /// </summary>
         private Rectangle _windowRect;
 
+        /// <summary>
+        /// Current fullscreen display rectangle.
+        /// </summary>
         private Rectangle _fullScreenRect;
+
+        /// <summary>
+        /// Cached logical game aspect ratio.
+        /// </summary>
         private readonly double _gameAspectRatio = gameHeight / (double)gameWidth;
 
+        /// <summary>
+        /// Current scaled render rectangle after aspect-ratio fitting or cropping.
+        /// </summary>
         private Rectangle _scaledViewRect;
+
+        /// <summary>
+        /// Whether fullscreen scaling should crop width.
+        /// </summary>
         private bool _fullScreenCropWidth = true;
     }
 }

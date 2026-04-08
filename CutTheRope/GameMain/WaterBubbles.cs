@@ -10,11 +10,22 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class WaterBubbles : MultiParticles
     {
+        /// <summary>
+        /// Bubble quad indexes used when initializing particles.
+        /// </summary>
         private static readonly int[] s_bubbleQuads = [5, 4];
 
+        /// <summary>
+        /// Initial bubble particle size.
+        /// </summary>
         private float startSize;
+
+        /// <summary>
+        /// Final bubble particle size.
+        /// </summary>
         private float endSize;
 
+        /// <inheritdoc />
         public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {
             if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -60,6 +71,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -75,6 +87,7 @@ namespace CutTheRope.GameMain
             particle.deltaSize = endSize;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);

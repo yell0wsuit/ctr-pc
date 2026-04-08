@@ -5,14 +5,21 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.Framework.Core
 {
+    /// <summary>
+    /// Full-screen root view used by controllers to host interactive elements.
+    /// </summary>
     internal class View : BaseElement
     {
+        /// <summary>
+        /// Initializes a view sized to the current logical screen dimensions.
+        /// </summary>
         public View()
         {
             width = (int)SCREEN_WIDTH;
             height = (int)SCREEN_HEIGHT;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             Renderer.SetColor(Color.White);

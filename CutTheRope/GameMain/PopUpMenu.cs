@@ -12,6 +12,9 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class PopUpMenu(MenuController controller)
     {
+        /// <summary>
+        /// Popup builder bound to the owning menu controller.
+        /// </summary>
         internal readonly PopupBuilder builder = new(controller);
 
         /// <summary>
@@ -75,6 +78,7 @@ namespace CutTheRope.GameMain
         /// <param name="latestVersion">The latest available version string.</param>
         /// <param name="buttonDownload">Menu button id for the download action.</param>
         /// <param name="buttonCancel">Menu button id for the cancel/close action.</param>
+        /// <returns>The created update popup instance.</returns>
         public Popup ShowUpdateAvailablePopup(string currentVersion, string latestVersion, MenuButtonId buttonDownload, MenuButtonId buttonCancel)
         {
             string bodyText = Application.GetString("UPDATE_AVAILABLE_TEXT")

@@ -9,15 +9,17 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading tutorial objects from XML level data
-    /// Includes tutorial text and tutorial visual elements
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads a tutorial text element from XML node data
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the tutorial text element.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates and width.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadTutorialText(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             if (!ShouldSkipTutorialElement(xmlNode))
@@ -59,6 +61,12 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Loads a tutorial image element from XML node data
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the tutorial image element.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadTutorialImage(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             if (!ShouldSkipTutorialElement(xmlNode))

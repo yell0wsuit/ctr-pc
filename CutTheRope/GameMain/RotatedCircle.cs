@@ -11,8 +11,14 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Rotatable vinyl circle object that tracks contained game objects and exposes one or two controller handles.
+    /// </summary>
     internal sealed class RotatedCircle : BaseElement
     {
+        /// <summary>
+        /// Creates the vinyl circle visuals, controller handles, and contained-object collection.
+        /// </summary>
         public RotatedCircle()
         {
             containedObjects = [];
@@ -60,6 +66,10 @@ namespace CutTheRope.GameMain
             _ = AddChild(vinilControllerR);
         }
 
+        /// <summary>
+        /// Sets the circle size and rescales all visual parts and controllers.
+        /// </summary>
+        /// <param name="value">Circle size in world units.</param>
         public void SetSize(float value)
         {
             size = value;
@@ -79,36 +89,64 @@ namespace CutTheRope.GameMain
             UpdateChildPositions();
         }
 
+        /// <summary>
+        /// Gets whether the circle is using a single visible controller handle.
+        /// </summary>
+        /// <returns>Whether the left controller handle is hidden.</returns>
         public bool HasOneHandle()
         {
             return !vinilControllerL.visible;
         }
 
+        /// <summary>
+        /// Sets whether the circle should expose only one controller handle.
+        /// </summary>
+        /// <param name="value">Whether to hide the left controller handle.</param>
         public void SetHasOneHandle(bool value)
         {
             vinilControllerL.visible = !value;
         }
 
+        /// <summary>
+        /// Gets whether the left controller handle is active.
+        /// </summary>
+        /// <returns>Whether the left active-controller visual is visible.</returns>
         public bool IsLeftControllerActive()
         {
             return vinilActiveControllerL.visible;
         }
 
+        /// <summary>
+        /// Sets whether the left controller handle is active.
+        /// </summary>
+        /// <param name="value">Whether to show the left active-controller visual.</param>
         public void SetIsLeftControllerActive(bool value)
         {
             vinilActiveControllerL.visible = value;
         }
 
+        /// <summary>
+        /// Gets whether the right controller handle is active.
+        /// </summary>
+        /// <returns>Whether the right active-controller visual is visible.</returns>
         public bool IsRightControllerActive()
         {
             return vinilActiveControllerR.visible;
         }
 
+        /// <summary>
+        /// Sets whether the right controller handle is active.
+        /// </summary>
+        /// <param name="value">Whether to show the right active-controller visual.</param>
         public void SetIsRightControllerActive(bool value)
         {
             vinilActiveControllerR.visible = value;
         }
 
+        /// <summary>
+        /// Checks whether this circle shares any contained object with another circle in <see cref="circlesArray"/>.
+        /// </summary>
+        /// <returns>Whether another circle contains at least one of the same objects.</returns>
         public bool ContainsSameObjectWithAnotherCircle()
         {
             foreach (object obj in circlesArray)
@@ -122,6 +160,7 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (IsRightControllerActive() || IsLeftControllerActive())
@@ -162,6 +201,9 @@ namespace CutTheRope.GameMain
             vinilCenter.Draw();
         }
 
+        /// <summary>
+        /// Updates child visual positions from the current circle position and size.
+        /// </summary>
         public void UpdateChildPositions()
         {
             vinil.x = vinilCenter.x = x;
@@ -181,6 +223,11 @@ namespace CutTheRope.GameMain
             vinilActiveControllerR.y = vinilControllerR.y;
         }
 
+        /// <summary>
+        /// Checks whether this circle and another circle share a contained game object.
+        /// </summary>
+        /// <param name="anotherCircle">Circle to compare against.</param>
+        /// <returns>Whether both circles contain at least one identical game object.</returns>
         public bool ContainsSameObjectWithCircle(RotatedCircle anotherCircle)
         {
             if (x == anotherCircle.x && y == anotherCircle.y && size == anotherCircle.size)
@@ -198,6 +245,10 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Creates a detached copy with the same position, size, handles, contained objects, and circle list.
+        /// </summary>
+        /// <returns>The copied rotated circle.</returns>
         public RotatedCircle Copy()
         {
             RotatedCircle rotatedCircle = new()
@@ -220,6 +271,7 @@ namespace CutTheRope.GameMain
             return rotatedCircle;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -248,74 +300,108 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Pointer multiplier used by rotated circle sizing and placement.</summary>
         public const int PM = 3;
 
+        /// <summary>Minimum controller visual scale.</summary>
         public const float CONTROLLER_MIN_SCALE = 0.75f;
 
+        /// <summary>Minimum sticker visual scale.</summary>
         public const float STICKER_MIN_SCALE = 0.4f;
 
+        /// <summary>Scale factor applied to the center visual relative to sticker scale.</summary>
         public const float CENTER_SCALE_FACTOR = 0.5f;
 
+        /// <summary>Circle size that maps to full texture scale.</summary>
         public const float HUNDRED_PERCENT_SCALE_SIZE = 167f;
 
+        /// <summary>Vertex count used when drawing circle outlines.</summary>
         public const int CIRCLE_VERTEX_COUNT = 80;
 
+        /// <summary>Logical circle size in world units.</summary>
         public float size;
 
+        /// <summary>Rendered circle radius in pixels.</summary>
         public float sizeInPixels;
 
+        /// <summary>Identifier for the controller currently being operated, or -1 when idle.</summary>
         public int operating;
 
+        /// <summary>Identifier for the sound currently playing for this circle, or -1 when idle.</summary>
         public int soundPlaying;
 
+        /// <summary>Last touch position used while rotating the circle.</summary>
         public Vector lastTouch;
 
+        /// <summary>World-space position of the first controller handle.</summary>
         public Vector handle1;
 
+        /// <summary>World-space position of the second controller handle.</summary>
         public Vector handle2;
 
+        /// <summary>Initial world-space position of the first controller handle.</summary>
         public Vector inithanlde1;
 
+        /// <summary>Initial world-space position of the second controller handle.</summary>
         public Vector inithanlde2;
 
+        /// <summary>Shared list of rotated circles in the level.</summary>
         public List<RotatedCircle> circlesArray;
 
+        /// <summary>Game objects currently contained by this circle.</summary>
         public List<GameObject> containedObjects;
 
+        /// <summary>Whether this circle should be removed on the next update.</summary>
         public bool removeOnNextUpdate;
 
+        /// <summary>Left sticker visual.</summary>
         private Image vinilStickerL;
 
+        /// <summary>Right sticker visual.</summary>
         private Image vinilStickerR;
 
+        /// <summary>Left highlight visual.</summary>
         private Image vinilHighlightL;
 
+        /// <summary>Right highlight visual.</summary>
         private Image vinilHighlightR;
 
+        /// <summary>Left controller handle visual.</summary>
         private Image vinilControllerL;
 
+        /// <summary>Right controller handle visual.</summary>
         private Image vinilControllerR;
 
+        /// <summary>Left active-controller handle visual.</summary>
         private Image vinilActiveControllerL;
 
+        /// <summary>Right active-controller handle visual.</summary>
         private Image vinilActiveControllerR;
 
+        /// <summary>Center vinyl visual.</summary>
         private Image vinilCenter;
 
+        /// <summary>Main vinyl body visual.</summary>
         private Image vinil;
 
+        /// <summary>Texture resource used for rotated circle visuals.</summary>
         private const string VinylTexture = Resources.Img.ObjVinil;
 
+        /// <summary>Color used when drawing overlapping circle contours.</summary>
         private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1, 1, 1, 0.2f);
 
         // private readonly float INNER_CIRCLE_WIDTH = RTPD(15) * 3f;
 
+        /// <summary>Width of the outer intersection contour.</summary>
         private readonly float OUTER_CIRCLE_WIDTH = RTPD(7) * 3f;
 
+        /// <summary>Width of the active controller outline.</summary>
         private readonly float ACTIVE_CIRCLE_WIDTH = RTPD(3) * 3f;
 
+        /// <summary>Controller placement offset base parameter.</summary>
         private readonly float CONTROLLER_SHIFT_PARAM1 = 67.5f;
 
+        /// <summary>Controller placement offset size multiplier.</summary>
         private readonly float CONTROLLER_SHIFT_PARAM2 = 0.089999996f;
     }
 }

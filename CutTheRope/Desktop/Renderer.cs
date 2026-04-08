@@ -81,6 +81,9 @@ namespace CutTheRope.Desktop
             };
         }
 
+        /// <summary>
+        /// Creates the rasterizer states used for textured and non-textured draw calls.
+        /// </summary>
         private static void InitRasterizerState()
         {
             s_rasterizerStateSolidColor = new RasterizerState
@@ -135,6 +138,10 @@ namespace CutTheRope.Desktop
         /// Sets the viewport dimensions and manages render target.
         /// Always creates a render target matching the viewport size for proper scaling.
         /// </summary>
+        /// <param name="x">The viewport origin on the X axis.</param>
+        /// <param name="y">The viewport origin on the Y axis.</param>
+        /// <param name="width">The viewport width in pixels.</param>
+        /// <param name="height">The viewport height in pixels.</param>
         public static void SetViewport(int x, int y, int width, int height)
         {
             if (width <= 0 || height <= 0)
@@ -157,9 +164,10 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Detaches and returns the current render target, setting the internal reference to null.
+        /// Detaches and returns the current render target, setting the internal reference to <see langword="null"/>.
         /// Used for screen capture operations.
         /// </summary>
+        /// <returns>The detached render target, or <see langword="null"/> when no render target is active.</returns>
         public static RenderTarget2D DetachRenderTarget()
         {
             RenderTarget2D renderTarget2D = s_RenderTarget;
@@ -187,7 +195,7 @@ namespace CutTheRope.Desktop
         #region Matrix Operations
 
         /// <summary>
-        /// Sets the current matrix mode for subsequent matrix operations.
+        /// Sets the current matrix <paramref name="mode"/> for subsequent matrix operations.
         /// </summary>
         /// <param name="mode">Matrix mode: 14 = GL_MODELVIEW, 15 = GL_PROJECTION</param>
         public static void SetMatrixMode(int mode)
@@ -219,6 +227,12 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets up an orthographic projection matrix.
         /// </summary>
+        /// <param name="left">The left clipping plane.</param>
+        /// <param name="right">The right clipping plane.</param>
+        /// <param name="bottom">The bottom clipping plane.</param>
+        /// <param name="top">The top clipping plane.</param>
+        /// <param name="near">The near clipping plane.</param>
+        /// <param name="far">The far clipping plane.</param>
         public static void SetOrthographic(float left, float right, float bottom, float top, float near, float far)
         {
             s_matrixProjection = Matrix.CreateOrthographicOffCenter(left, right, bottom, top, near, far);
@@ -248,6 +262,9 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Applies a scale transformation to the current model-view matrix.
         /// </summary>
+        /// <param name="x">The scale factor on the X axis.</param>
+        /// <param name="y">The scale factor on the Y axis.</param>
+        /// <param name="z">The scale factor on the Z axis.</param>
         public static void Scale(float x, float y, float z)
         {
             s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
@@ -257,6 +274,9 @@ namespace CutTheRope.Desktop
         /// Applies a rotation transformation around the Z axis (2D rotation).
         /// </summary>
         /// <param name="angle">Rotation angle in degrees.</param>
+        /// <param name="_">Unused X axis component (kept for API compatibility).</param>
+        /// <param name="_1">Unused Y axis component (kept for API compatibility).</param>
+        /// <param name="_2">Unused Z axis component (kept for API compatibility).</param>
         public static void Rotate(float angle, float _, float _1, float _2)
         {
             s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
@@ -265,6 +285,8 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Applies a skew transformation that matches the legacy OpenGL matrix used by iOS.
         /// </summary>
+        /// <param name="skewXDegrees">The skew angle on the X axis, in degrees.</param>
+        /// <param name="skewYDegrees">The skew angle on the Y axis, in degrees.</param>
         public static void Skew(float skewXDegrees, float skewYDegrees)
         {
             float skewX = MathHelper.ToRadians(skewXDegrees);
@@ -287,6 +309,9 @@ namespace CutTheRope.Desktop
         /// Applies a translation transformation to the current model-view matrix.
         /// Z component is ignored for 2D rendering.
         /// </summary>
+        /// <param name="x">The translation on the X axis.</param>
+        /// <param name="y">The translation on the Y axis.</param>
+        /// <param name="_">The translation on the Z axis. Ignored by this 2D renderer.</param>
         public static void Translate(float x, float y, float _)
         {
             s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
@@ -295,6 +320,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Returns the current model-view matrix.
         /// </summary>
+        /// <returns>The current model-view matrix.</returns>
         public static Matrix GetModelViewMatrix()
         {
             return s_matrixModelView;
@@ -307,6 +333,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the current drawing color.
         /// </summary>
+        /// <param name="c">The color to apply to subsequent draw calls.</param>
         public static void SetColor(Color c)
         {
             s_Color = c;
@@ -315,6 +342,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Returns the current drawing color.
         /// </summary>
+        /// <returns>The current draw color.</returns>
         public static Color GetCurrentColor()
         {
             return s_Color;
@@ -323,6 +351,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the clear color for GlClear operations.
         /// </summary>
+        /// <param name="c">The color used by <see cref="Clear(int)"/>.</param>
         public static void SetClearColor(Color c)
         {
             s_glClearColor = c;
@@ -331,7 +360,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Clears the screen with the current clear color.
         /// </summary>
-        /// <param name="mask_NotUsedParam">OpenGL clear mask (ignored, always clears color buffer).</param>
+        /// <param name="_">OpenGL clear mask (ignored, always clears color buffer).</param>
         public static void Clear(int _)
         {
             BlendParams.ApplyDefault();
@@ -341,6 +370,8 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the blending function for alpha blending operations.
         /// </summary>
+        /// <param name="sfactor">The source blend factor.</param>
+        /// <param name="dfactor">The destination blend factor.</param>
         public static void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
             s_Blend = new BlendParams(sfactor, dfactor);
@@ -353,6 +384,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Binds a texture for subsequent rendering operations.
         /// </summary>
+        /// <param name="t">The texture to bind for textured draw calls.</param>
         public static void BindTexture(CTRTexture2D t)
         {
             s_Texture = t;
@@ -365,6 +397,10 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Sets the scissor rectangle for clipping, scaled to match the current viewport.
         /// </summary>
+        /// <param name="x">The left edge of the scissor rectangle.</param>
+        /// <param name="y">The top edge of the scissor rectangle.</param>
+        /// <param name="width">The scissor rectangle width.</param>
+        /// <param name="height">The scissor rectangle height.</param>
         public static void SetScissor(float x, float y, float width, float height)
         {
             try
@@ -385,13 +421,19 @@ namespace CutTheRope.Desktop
         #region Drawing Methods
 
         /// <summary>
-        /// Draws a triangle strip using colored vertices (no texture).
+        /// Draws a triangle strip using colored <paramref name="vertices"/> (no texture).
         /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices)
         {
             DrawTriangleStrip(vertices, vertices.Length);
         }
 
+        /// <summary>
+        /// Draws a triangle strip using colored <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices, int vertexCount)
         {
             if (vertexCount < 3)
@@ -412,13 +454,19 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a triangle strip using textured vertices.
+        /// Draws a triangle strip using textured <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The textured vertex data to draw.</param>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices)
         {
             DrawTriangleStrip(vertices, vertices.Length);
         }
 
+        /// <summary>
+        /// Draws a triangle strip using textured <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The textured vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
         {
             if (vertexCount < 3)
@@ -439,13 +487,19 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a triangle strip using textured and colored vertices.
+        /// Draws a triangle strip using textured and colored <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The textured and colored vertex data to draw.</param>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices)
         {
             DrawTriangleStrip(vertices, vertices.Length);
         }
 
+        /// <summary>
+        /// Draws a triangle strip using textured and colored <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The textured and colored vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
         {
             if (vertexCount < 3)
@@ -465,8 +519,10 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws an indexed triangle list using textured vertices.
+        /// Draws an indexed triangle list using textured <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The textured vertex data to draw.</param>
+        /// <param name="indices">The index buffer describing triangle order.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
             BasicEffect effect = GetEffect(true, false);
@@ -483,8 +539,11 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws an indexed triangle list using textured vertices with explicit index count.
+        /// Draws an indexed triangle list using textured <paramref name="vertices"/> with explicit index count.
         /// </summary>
+        /// <param name="vertices">The textured vertex data to draw.</param>
+        /// <param name="indices">The index buffer describing triangle order.</param>
+        /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
             BasicEffect effect = GetEffect(true, false);
@@ -501,8 +560,11 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws an indexed triangle list using textured and colored vertices.
+        /// Draws an indexed triangle list using textured and colored <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The textured and colored vertex data to draw.</param>
+        /// <param name="indices">The index buffer describing triangle order.</param>
+        /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
         public static void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
         {
             if (indexCount == 0)
@@ -522,13 +584,19 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a line strip using colored vertices.
+        /// Draws a line strip using colored <paramref name="vertices"/>.
         /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
         public static void DrawLineStrip(VertexPositionColor[] vertices)
         {
             DrawLineStrip(vertices, vertices.Length);
         }
 
+        /// <summary>
+        /// Draws a line strip using colored <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
         {
             if (vertexCount < 2)
@@ -551,6 +619,11 @@ namespace CutTheRope.Desktop
         /// Draws a line segment (stub - not implemented).
         /// Used for debug visualization.
         /// </summary>
+        /// <param name="_">Segment start X.</param>
+        /// <param name="__">Segment start Y.</param>
+        /// <param name="___">Segment end X.</param>
+        /// <param name="____">Segment end Y.</param>
+        /// <param name="_____">Segment color.</param>
         public static void DrawSegment(float _, float __, float ___, float ____, RGBAColor _____)
         {
             // Stub: Debug visualization not implemented
@@ -561,7 +634,7 @@ namespace CutTheRope.Desktop
         #region Vertex Buffer Helpers
 
         /// <summary>
-        /// Fills a vertex array with textured quad data from Quad3D positions and Quad2D texture coordinates.
+        /// Fills a vertex array with textured quad data from <paramref name="positions"/> and <paramref name="texCoordinates"/>.
         /// </summary>
         /// <param name="positions">Array of 3D quad positions.</param>
         /// <param name="texCoordinates">Array of 2D texture coordinates.</param>
@@ -652,6 +725,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Returns the last drawn colored vertices (for debugging/inspection).
         /// </summary>
+        /// <returns>The last colored vertex array submitted by a matching draw call.</returns>
         public static VertexPositionColor[] GetLastVertices_PositionColor()
         {
             return s_LastVertices_PositionColor;
@@ -660,6 +734,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Returns the last drawn textured vertices (for debugging/inspection).
         /// </summary>
+        /// <returns>The last textured vertex array submitted by a matching draw call.</returns>
         public static VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
         {
             return s_LastVertices_PositionNormalTexture;
@@ -672,6 +747,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Gets the SpriteBatch instance for text and sprite rendering.
         /// </summary>
+        /// <returns>The shared sprite batch used by the desktop renderer.</returns>
         public static SpriteBatch GetSpriteBatch()
         {
             return Global.SpriteBatch;
@@ -681,6 +757,12 @@ namespace CutTheRope.Desktop
 
         #region Private Rendering Implementation
 
+        /// <summary>
+        /// Selects and configures the effect needed for the current draw call.
+        /// </summary>
+        /// <param name="useTexture">Whether the effect should sample the bound texture.</param>
+        /// <param name="useColor">Whether the effect should use per-vertex color data.</param>
+        /// <returns>The configured effect instance.</returns>
         private static BasicEffect GetEffect(bool useTexture, bool useColor)
         {
             BasicEffect basicEffect = !useTexture ? s_effectColor : useColor ? s_effectTextureColor : s_effectTexture;
@@ -706,6 +788,14 @@ namespace CutTheRope.Desktop
             return basicEffect;
         }
 
+        /// <summary>
+        /// Uploads vertex data and issues a non-indexed primitive draw call.
+        /// </summary>
+        /// <typeparam name="T">The vertex type being uploaded.</typeparam>
+        /// <param name="primitiveType">The primitive topology to draw.</param>
+        /// <param name="vertices">The source vertex data.</param>
+        /// <param name="vertexCount">The number of vertices to upload.</param>
+        /// <param name="primitiveCount">The number of primitives to render.</param>
         private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int vertexCount, int primitiveCount) where T : struct, IVertexType
         {
             DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertexCount);
@@ -715,6 +805,15 @@ namespace CutTheRope.Desktop
             Global.GraphicsDevice.SetVertexBuffer(null);
         }
 
+        /// <summary>
+        /// Uploads vertex and index data and issues an indexed primitive draw call.
+        /// </summary>
+        /// <typeparam name="T">The vertex type being uploaded.</typeparam>
+        /// <param name="primitiveType">The primitive topology to draw.</param>
+        /// <param name="vertices">The source vertex data.</param>
+        /// <param name="indices">The source index data.</param>
+        /// <param name="indexCount">The number of indices to upload.</param>
+        /// <param name="primitiveCount">The number of primitives to render.</param>
         private static void DrawIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertices, short[] indices, int indexCount, int primitiveCount) where T : struct, IVertexType
         {
             DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertices.Length);
@@ -727,6 +826,12 @@ namespace CutTheRope.Desktop
             Global.GraphicsDevice.Indices = null;
         }
 
+        /// <summary>
+        /// Returns a reusable dynamic vertex buffer sized for the requested vertex type and count.
+        /// </summary>
+        /// <typeparam name="T">The vertex type stored in the buffer.</typeparam>
+        /// <param name="vertexCount">The minimum vertex capacity required.</param>
+        /// <returns>A reusable dynamic vertex buffer for <typeparamref name="T"/>.</returns>
         private static DynamicVertexBuffer GetVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
         {
             Type vertexType = typeof(T);
@@ -739,6 +844,12 @@ namespace CutTheRope.Desktop
             return vertexBuffer;
         }
 
+        /// <summary>
+        /// Returns a reusable index buffer filled with the provided <paramref name="indices"/>.
+        /// </summary>
+        /// <param name="indexCount">The number of indices to upload.</param>
+        /// <param name="indices">The source index data.</param>
+        /// <returns>An index buffer containing the requested index data.</returns>
         private static IndexBuffer GetIndexBuffer(int indexCount, short[] indices)
         {
             if (s_indexBuffer == null || s_indexBuffer.IndexCount < indexCount)
@@ -754,44 +865,104 @@ namespace CutTheRope.Desktop
 
         #region Static Fields
 
-        // Render target for fullscreen mode
+        /// <summary>
+        /// Holds the off-screen render target used before the final screen blit.
+        /// </summary>
         private static RenderTarget2D s_RenderTarget;
+
+        /// <summary>
+        /// Stores the logical viewport used by the OpenGL-style API surface.
+        /// </summary>
         private static Viewport s_Viewport;
 
-        // Matrix state
+        /// <summary>
+        /// Tracks the currently selected matrix stack.
+        /// </summary>
         private static int s_glMatrixMode;
+
+        /// <summary>
+        /// Stores pushed model-view matrices for nested transforms.
+        /// </summary>
         private static readonly List<Matrix> s_matrixModelViewStack = [];
+
+        /// <summary>
+        /// Stores the current model-view transform.
+        /// </summary>
         private static Matrix s_matrixModelView = Matrix.Identity;
+
+        /// <summary>
+        /// Stores the current projection transform.
+        /// </summary>
         private static Matrix s_matrixProjection = Matrix.Identity;
 
-        // Texture state
+        /// <summary>
+        /// Stores the texture currently bound for textured draw calls.
+        /// </summary>
         private static CTRTexture2D s_Texture;
 
-        // Color state
+        /// <summary>
+        /// Stores the clear color used by <see cref="Clear(int)"/>.
+        /// </summary>
         private static Color s_glClearColor = Color.White;
+
+        /// <summary>
+        /// Stores the draw color applied to subsequent primitives.
+        /// </summary>
         private static Color s_Color = Color.White;
 
-        // Blend state
+        /// <summary>
+        /// Stores the active blend configuration.
+        /// </summary>
         private static BlendParams s_Blend = new();
 
-        // Shader effects
+        /// <summary>
+        /// Caches the effect used for textured draw calls without per-vertex color.
+        /// </summary>
         private static BasicEffect s_effectTexture;
+
+        /// <summary>
+        /// Caches the effect used for solid-color draw calls.
+        /// </summary>
         private static BasicEffect s_effectColor;
+
+        /// <summary>
+        /// Caches the effect used for textured draw calls with per-vertex color.
+        /// </summary>
         private static BasicEffect s_effectTextureColor;
 
-        // Rasterizer states
+        /// <summary>
+        /// Rasterizer state for non-textured primitives.
+        /// </summary>
         private static RasterizerState s_rasterizerStateSolidColor;
+
+        /// <summary>
+        /// Rasterizer state for textured primitives.
+        /// </summary>
         private static RasterizerState s_rasterizerStateTexture;
 
-        // Vertex buffers (reused for performance, per vertex type)
+        /// <summary>
+        /// Reusable dynamic vertex buffers keyed by vertex type.
+        /// </summary>
         private static readonly Dictionary<Type, DynamicVertexBuffer> s_vertexBuffers = [];
+
+        /// <summary>
+        /// Reusable index buffer for indexed draw calls.
+        /// </summary>
         private static IndexBuffer s_indexBuffer;
 
-        // Last drawn vertices (for debugging)
+        /// <summary>
+        /// Captures the last submitted colored vertices for debugging.
+        /// </summary>
         private static VertexPositionColor[] s_LastVertices_PositionColor;
+
+        /// <summary>
+        /// Captures the last submitted textured vertices for debugging.
+        /// </summary>
         private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
 
-        // Constants
+        /// <summary>
+        /// Shared surface normal used for textured quad vertices.
+        /// </summary>
         private static readonly Vector3 s_normal = new(0f, 0f, 1f);
 
         #endregion

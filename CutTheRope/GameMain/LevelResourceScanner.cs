@@ -19,7 +19,6 @@ namespace CutTheRope.GameMain
         /// Computes the gameplay resources required to instantiate a single parsed map.
         /// </summary>
         /// <param name="map">The parsed level XML.</param>
-        /// <param name="pack">The active pack index for pack-specific resources.</param>
         /// <returns>A de-duplicated array of resource identifiers needed for the map.</returns>
         public static string[] GetRequiredResources(XElement map)
         {
@@ -163,6 +162,11 @@ namespace CutTheRope.GameMain
             return [.. resources.Where(static resourceName => !string.IsNullOrWhiteSpace(resourceName))];
         }
 
+        /// <summary>
+        /// Scans all levels in a pack and returns every required image resource.
+        /// </summary>
+        /// <param name="pack">Pack index to scan.</param>
+        /// <returns>Unique image resource names required by the pack's levels.</returns>
         public static HashSet<string> GetBoxResources(int pack)
         {
             HashSet<string> resources = [];
@@ -229,7 +233,6 @@ namespace CutTheRope.GameMain
         /// Adds Om Nom animation resources, including the pack-specific support sprite.
         /// </summary>
         /// <param name="resources">The destination set being accumulated.</param>
-        /// <param name="pack">The active pack index.</param>
         private static void AddTargetResources(HashSet<string> resources)
         {
             int skinIndex = OmNomSkinRegistry.GetSelectedSkinIndex();

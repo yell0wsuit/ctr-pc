@@ -8,13 +8,16 @@ using CutTheRope.Helpers;
 namespace CutTheRope.GameMain
 {
     /// <summary>
-    /// Resource manager wrapper that preserves legacy numeric identifiers while enabling string-based lookups.
+    /// Game-specific <see cref="ResourceMgr"/> subclass that handles localized resource variants,
+    /// language-dependent quad lookups, and texture atlas configuration.
     /// </summary>
     internal sealed class CTRResourceMgr : ResourceMgr
     {
         /// <summary>
         /// Adjusts a resource name for the active language when localized variants exist.
         /// </summary>
+        /// <param name="resourceName">The string name of the resource to look up.</param>
+        /// <returns>The localized resource name variant, or <paramref name="resourceName"/> unchanged if no variant exists.</returns>
         public static string HandleLocalizedResource(string resourceName)
         {
             return string.IsNullOrEmpty(resourceName)
@@ -44,11 +47,17 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Resolves a localized XNA resource name for a string resource name.
         /// </summary>
+        /// <param name="resourceName">The string name of the resource.</param>
+        /// <returns>The localized resource name.</returns>
         public static string XNA_ResName(string resourceName)
         {
             return HandleLocalizedResource(resourceName);
         }
 
+        /// <summary>
+        /// Returns the texture quad index for the localized result stamp overlay.
+        /// </summary>
+        /// <returns>Quad index for the current language's result stamp.</returns>
         public static int GetResultStampQuad()
         {
             return LanguageHelper.Current switch
@@ -69,6 +78,10 @@ namespace CutTheRope.GameMain
             };
         }
 
+        /// <summary>
+        /// Returns the texture quad offset for the localized HUD button sprite.
+        /// </summary>
+        /// <returns>Quad offset for the current language's HUD button.</returns>
         public static int GetHudButtonQuadOffset()
         {
             return LanguageHelper.Current switch
@@ -92,12 +105,16 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Loads a resource by its string name. Auto-assigns an ID if needed.
         /// </summary>
+        /// <param name="resourceName">The string name of the resource to load.</param>
+        /// <param name="resType">The type of resource to load (image, sound, etc.).</param>
+        /// <returns>The loaded resource object.</returns>
         public static object LoadResourceByName(string resourceName, ResourceType resType)
         {
             CTRResourceMgr mgr = new();
             return mgr.LoadResource(resourceName, resType);
         }
 
+        /// <inheritdoc />
         protected override TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
             // Background images don't need JSON atlas - dimensions auto-detected from texture
@@ -117,6 +134,7 @@ namespace CutTheRope.GameMain
             };
         }
 
+        /// <inheritdoc />
         protected override float GetAspectRatioScaleX()
         {
             int width = Global.ScreenSizeManager.CurrentSize.Width;

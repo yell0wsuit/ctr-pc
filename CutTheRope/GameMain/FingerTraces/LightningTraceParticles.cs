@@ -12,15 +12,28 @@ namespace CutTheRope.GameMain.FingerTraces
     /// </summary>
     internal sealed class LightningTraceParticles : FrameworkTypes
     {
+        /// <summary>The maximum number of live particles the emitter keeps at once.</summary>
         private const int Capacity = 100;
+
+        /// <summary>The first particle quad index in the finger-trace atlas.</summary>
         private const int FirstQuad = 24;
+
+        /// <summary>The number of particle quads available in the atlas.</summary>
         private const int QuadCount = 3;
 
+        /// <summary>The live particle list in age order.</summary>
         private readonly List<SparkParticle> particles = [];
 
+        /// <summary>The current emitter position used for newly spawned particles.</summary>
         private Vector emitterPosition;
+
+        /// <summary>The center emission rotation in degrees.</summary>
         private float emitterRotation;
+
+        /// <summary>The requested particle emission rate in particles per second.</summary>
         private float emissionRate;
+
+        /// <summary>The accumulated time toward the next emitted particle.</summary>
         private float emitCounter;
 
         /// <summary>
@@ -120,6 +133,10 @@ namespace CutTheRope.GameMain.FingerTraces
             }
         }
 
+        /// <summary>
+        /// Creates a newly emitted lightning spark from the current emitter state.
+        /// </summary>
+        /// <returns>The initialized particle state.</returns>
         private SparkParticle CreateParticle()
         {
             float angle = DEGREES_TO_RADIANS(emitterRotation + (70f * RND_MINUS1_1));
@@ -140,6 +157,11 @@ namespace CutTheRope.GameMain.FingerTraces
             };
         }
 
+        /// <summary>
+        /// Returns a random integer in the range <c>[0, upperExclusive)</c>.
+        /// </summary>
+        /// <param name="upperExclusive">The exclusive upper bound.</param>
+        /// <returns>A random integer less than <paramref name="upperExclusive"/>.</returns>
         private static int NextInt(int upperExclusive)
         {
             return upperExclusive <= 1
@@ -147,15 +169,33 @@ namespace CutTheRope.GameMain.FingerTraces
                 : (int)(Arc4random() % (uint)upperExclusive);
         }
 
+        /// <summary>
+        /// Stores the state of one live lightning spark.
+        /// </summary>
         private struct SparkParticle
         {
+            /// <summary>The current particle position.</summary>
             public Vector Position;
+
+            /// <summary>The current particle velocity.</summary>
             public Vector Velocity;
+
+            /// <summary>The current particle rotation in degrees.</summary>
             public float Rotation;
+
+            /// <summary>The initial sprite scale.</summary>
             public float StartScale;
+
+            /// <summary>The final sprite scale at the end of life.</summary>
             public float EndScale;
+
+            /// <summary>The remaining particle lifetime in seconds.</summary>
             public float Life;
+
+            /// <summary>The starting particle lifetime in seconds.</summary>
             public float MaxLife;
+
+            /// <summary>The selected atlas quad index.</summary>
             public int QuadIndex;
         }
     }

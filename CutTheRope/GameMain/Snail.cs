@@ -1,30 +1,65 @@
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Snail object that can attach to the candy point, drag candy down, and vanish when detached.
+    /// </summary>
     internal sealed class Snail : GameObject, ITimelineDelegate
     {
+        /// <summary>Texture quad index for the snail shell.</summary>
         private const int SnailShellQuad = 8;
+
+        /// <summary>Texture quad index for the sleepy eyes overlay.</summary>
         private const int SnailSleepyEyesQuad = 2;
+
+        /// <summary>First texture quad index for the wake-up animation.</summary>
         private const int SnailWakeStartQuad = 3;
+
+        /// <summary>Last texture quad index for the wake-up animation.</summary>
         private const int SnailWakeEndQuad = 5;
+
+        /// <summary>Texture quad index for the first active eye overlay.</summary>
         private const int SnailEye1Quad = 6;
+
+        /// <summary>Texture quad index for the second active eye overlay.</summary>
         private const int SnailEye2Quad = 7;
+
+        /// <summary>First texture quad index for the sleep animation.</summary>
         private const int SnailSleepStartQuad = 5;
+
+        /// <summary>Last texture quad index for the sleep animation.</summary>
         private const int SnailSleepEndQuad = 3;
+
+        /// <summary>Action name fired when the detach vanish timeline finishes.</summary>
         private const string SnailActionDetach = "SNAIL_ACTION_DETACH";
+
+        /// <summary>Preference key that tracks how many snails have been grabbed.</summary>
         private const string PrefsGrabSnails = "PREFS_GRAB_SNAILS";
+
+        /// <summary>Achievement identifier awarded after enough snails are grabbed.</summary>
         private const string AchievementSnailTamer = "acSnailTamer";
 
+        /// <summary>
+        /// Creates a snail from a texture.
+        /// </summary>
+        /// <param name="texture">Texture used by the snail.</param>
+        /// <returns>The initialized snail.</returns>
         private static Snail Snail_create(CTRTexture2D texture)
         {
             return (Snail)new Snail().InitWithTexture(texture);
         }
 
+        /// <summary>
+        /// Creates a snail from a texture resource and applies a draw quad.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <param name="q">Quad index to draw.</param>
+        /// <returns>The initialized snail.</returns>
         public static Snail Snail_createWithResIDQuad(string resourceName, int q)
         {
             Snail snail = Snail_create(Application.GetTexture(resourceName));
@@ -32,6 +67,10 @@ namespace CutTheRope.GameMain
             return snail;
         }
 
+        /// <summary>
+        /// Attaches the snail to a candy physics point and plays the wake-up state transition.
+        /// </summary>
+        /// <param name="p">Candy physics point to follow.</param>
         public void AttachToPoint(ConstraintedPoint p)
         {
             point = p;
@@ -56,6 +95,9 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlaySound(Resources.Snd.ExpSnailIn);
         }
 
+        /// <summary>
+        /// Detaches the snail from the candy point and starts its vanish animation.
+        /// </summary>
         public void Detach()
         {
             point = null;
@@ -85,6 +127,10 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlaySound(Resources.Snd.ExpSnailOut);
         }
 
+        /// <summary>
+        /// Sets the snail bounding box from a texture quad.
+        /// </summary>
+        /// <param name="quad">Texture quad index used to compute the bounding box.</param>
         public void SetBBFromQuad(int quad)
         {
             if (quad == SnailShellQuad)
@@ -107,6 +153,7 @@ namespace CutTheRope.GameMain
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
+        /// <inheritdoc />
         public override Image InitWithTexture(CTRTexture2D t)
         {
             if (base.InitWithTexture(t) == null)
@@ -185,12 +232,14 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             backContainer?.Draw();
             base.Draw();
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -213,6 +262,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override bool HandleAction(ActionData a)
         {
             if (base.HandleAction(a))
@@ -229,6 +279,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             if (t?.element == wakeUp)
@@ -246,23 +297,45 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <summary>Inactive snail state value.</summary>
         public const int SNAIL_STATE_INACTIVE = 0;
+
+        /// <summary>State value used while the snail is attached to candy.</summary>
         public const int SNAIL_STATE_ACTIVE = 1;
+
+        /// <summary>State value used while the snail is playing its vanish animation.</summary>
         public const int SNAIL_STATE_VANISH = 2;
+
+        /// <summary>State value used after the vanish animation has completed.</summary>
         public const int SNAIL_STATE_VANISHED = 3;
 
+        /// <summary>Initial snail rotation used when restoring state.</summary>
         public float startRotation;
 
+        /// <summary>Container for eye and wake/sleep overlay visuals drawn behind the shell.</summary>
         private BaseElement backContainer;
+
+        /// <summary>Candy physics point currently followed by the snail.</summary>
         private ConstraintedPoint point;
+
+        /// <summary>Sleepy eyes overlay visual.</summary>
         private Image sleepyEyes;
+
+        /// <summary>First active eye overlay visual.</summary>
         private Image eye1;
+
+        /// <summary>Second active eye overlay visual.</summary>
         private Image eye2;
+
+        /// <summary>Wake-up animation played when the snail attaches to candy.</summary>
         private Animation wakeUp;
+
+        /// <summary>Sleep animation played when the snail detaches from candy.</summary>
         private Animation sleep;
     }
 }

@@ -50,6 +50,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Identifier set for menu-related buttons.
     /// </summary>
+    /// <param name="Value">Underlying numeric button identifier.</param>
     internal readonly record struct MenuButtonId(int Value) : IButtonIdentifier
     {
         /// <summary>
@@ -244,14 +245,44 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static readonly MenuButtonId BackFromLanguage = MenuButton.BackFromLanguage;
 
-        // Dynamic button IDs encode their type in the high byte and index in the low 24 bits.
+        /// <summary>
+        /// Tag used for dynamically generated level buttons.
+        /// </summary>
         private const int LevelTag = 1 << 24;
+
+        /// <summary>
+        /// Tag used for dynamically generated pack buttons.
+        /// </summary>
         private const int PackTag = 2 << 24;
+
+        /// <summary>
+        /// Tag used for dynamically generated candy skin slot buttons.
+        /// </summary>
         private const int CandySlotTag = 3 << 24;
+
+        /// <summary>
+        /// Tag used for dynamically generated rope skin slot buttons.
+        /// </summary>
         private const int RopeSlotTag = 4 << 24;
+
+        /// <summary>
+        /// Tag used for dynamically generated Om Nom skin slot buttons.
+        /// </summary>
         private const int OmNomSlotTag = 5 << 24;
+
+        /// <summary>
+        /// Tag used for dynamically generated finger trace skin slot buttons.
+        /// </summary>
         private const int TraceSlotTag = 6 << 24;
+
+        /// <summary>
+        /// Tag used for dynamically generated language selection buttons.
+        /// </summary>
         private const int LanguageSelectTag = 7 << 24;
+
+        /// <summary>
+        /// Mask used to extract the dynamic button index from a tagged identifier.
+        /// </summary>
         private const int IndexMask = 0x00FFFFFF;
 
         /// <summary>

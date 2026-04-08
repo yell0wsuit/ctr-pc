@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Lantern object that can capture the candy, hold it in a shared lantern state, and release it on touch.
+    /// </summary>
     internal sealed class Lantern : CTRGameObject
     {
+        /// <summary>
+        /// Initializes the lantern at a level position and creates its idle, active, fire, and candy visuals.
+        /// </summary>
+        /// <param name="position">World-space lantern position.</param>
+        /// <returns>The initialized lantern, or <see langword="null"/> if its texture could not be loaded.</returns>
         public Lantern InitWithPosition(Vector position)
         {
             if (InitWithTexture(Application.GetTexture(Resources.Img.ObjLantern)) == null)
@@ -128,11 +136,19 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Dispatcher callback that captures a candy point.
+        /// </summary>
+        /// <param name="obj">Candy point passed through the dispatcher.</param>
         public void CaptureCandyFromDispatcher(FrameworkTypes obj)
         {
             CaptureCandy((ConstraintedPoint)obj);
         }
 
+        /// <summary>
+        /// Captures the candy into this lantern and activates all lantern visuals.
+        /// </summary>
+        /// <param name="candyPoint">Candy physics point to capture.</param>
         public void CaptureCandy(ConstraintedPoint candyPoint)
         {
             CTRSoundMgr.PlaySound(Resources.Snd.LanternTeleportIn);
@@ -156,18 +172,26 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Gets the shared list of lanterns in the current level.
+        /// </summary>
+        /// <returns>The shared lantern list.</returns>
         public static List<Lantern> GetAllLanterns()
         {
             allLanterns ??= [];
             return allLanterns;
         }
 
+        /// <summary>
+        /// Clears the current level lantern registry and any shared captured candy point.
+        /// </summary>
         public static void RemoveAllLanterns()
         {
             SharedCandyPoint = null;
             GetAllLanterns().Clear();
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             prevPos = Vect(x, y);
@@ -183,6 +207,12 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Handles a touch against the lantern and starts candy release when the lantern is active.
+        /// </summary>
+        /// <param name="tx">Touch X position in world space.</param>
+        /// <param name="ty">Touch Y position in world space.</param>
+        /// <returns><see langword="true"/> if the touch was handled by this lantern; otherwise, <see langword="false"/>.</returns>
         public bool OnTouchDown(float tx, float ty)
         {
             float distance = VectDistance(Vect(tx, ty), Vect(x, y));
@@ -195,6 +225,10 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Dispatcher callback that releases the shared candy point from the lantern.
+        /// </summary>
+        /// <param name="obj">Unused dispatcher parameter.</param>
         private void ReleaseCandy(FrameworkTypes obj)
         {
             if (SharedCandyPoint == null)
@@ -208,11 +242,18 @@ namespace CutTheRope.GameMain
             SharedCandyPoint = null;
         }
 
+        /// <summary>
+        /// Dispatcher callback that returns a lantern to the inactive state.
+        /// </summary>
+        /// <param name="obj">Lantern instance passed through the dispatcher.</param>
         private static void BecomeCandyAware(FrameworkTypes obj)
         {
             ((Lantern)obj).lanternState = LanternStateInactive;
         }
 
+        /// <summary>
+        /// Starts the delayed release animation sequence for the shared captured candy.
+        /// </summary>
         private void InitiateReleasingCandy()
         {
             CTRSoundMgr.PlaySound(Resources.Snd.LanternTeleportOut);
@@ -233,57 +274,111 @@ namespace CutTheRope.GameMain
             delayedDispatcher.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(ReleaseCandy), null, 0.01f);
         }
 
+        /// <summary>
+        /// Dispatcher callback that starts the fire bounce animation.
+        /// </summary>
+        /// <param name="_">Unused dispatcher parameter.</param>
         private void PlayFireBounceTimeline(FrameworkTypes _)
         {
             fire?.PlayTimeline((int)LanternActivation.FireBounce);
         }
 
+        /// <summary>
+        /// Dispatcher callback that starts the inner candy idle animation.
+        /// </summary>
+        /// <param name="_">Unused dispatcher parameter.</param>
         private void PlayInnerCandyIdleTimeline(FrameworkTypes _)
         {
             innerCandy?.PlayTimeline(InnerCandyIdleTimelineId);
         }
 
+        /// <summary>
+        /// Dispatcher callback that forwards a lantern to <see cref="BecomeCandyAware"/>.
+        /// </summary>
+        /// <param name="obj">Lantern instance passed through the dispatcher.</param>
         private void BecomingAwareDispatcher(FrameworkTypes obj)
         {
             BecomeCandyAware(obj);
         }
 
+        /// <summary>Current lantern state.</summary>
         public int lanternState;
 
+        /// <summary>Lantern position from the previous update.</summary>
         public Vector prevPos;
 
+        /// <summary>Inactive lantern visual.</summary>
         private Image idleForm;
 
+        /// <summary>Active lantern visual.</summary>
         private Image activeForm;
 
+        /// <summary>Candy visual shown inside an active lantern.</summary>
         private Image innerCandy;
 
+        /// <summary>Fire visual shown while a lantern is active.</summary>
         private Image fire;
 
+        /// <summary>Dispatcher for delayed lantern animation and release callbacks.</summary>
         private DelayedDispatcher delayedDispatcher;
 
+        /// <summary>Shared candy point currently captured by any lantern.</summary>
         private static ConstraintedPoint SharedCandyPoint { get; set; }
 
+        /// <summary>Shared lantern registry for the current level.</summary>
         private static List<Lantern> allLanterns;
 
+        /// <summary>Texture quad index for the fire visual.</summary>
         private const int FireQuad = 0;
+
+        /// <summary>Texture quad index for the active lantern visual.</summary>
         private const int LanternEndQuad = 1;
+
+        /// <summary>Texture quad index for the inactive lantern visual.</summary>
         private const int LanternStartQuad = 2;
+
+        /// <summary>First texture quad index for lantern candy variants stored in the lantern texture.</summary>
         private const int InnerCandyStartQuad = 3;
+
+        /// <summary>Texture quad index for the lantern candy frame in candy-specific textures.</summary>
         private const int LanternQuadInCandyTexture = 10; // frame_10_lantern.png in candy textures
+
+        /// <summary>Timeline ID for showing the inner candy visual.</summary>
         private const int InnerCandyAppearTimelineId = 0;
+
+        /// <summary>Timeline ID for hiding the inner candy visual.</summary>
         private const int InnerCandyHideTimelineId = 1;
+
+        /// <summary>Timeline ID for the inner candy idle animation.</summary>
         private const int InnerCandyIdleTimelineId = 2;
+
+        /// <summary>Delay before candy is revealed after a lantern touch.</summary>
         public const float LanternCandyRevealTime = 0.1f;
+
+        /// <summary>Inactive lantern state value.</summary>
         public const int LanternStateInactive = 0;
+
+        /// <summary>Active lantern state value.</summary>
         public const int LanternStateActive = 1;
+
+        /// <summary>Touch radius used to release candy from an active lantern.</summary>
         private const float LanternTouchRadius = 85f;
+
+        /// <summary>Delay before lanterns return to the inactive state after release begins.</summary>
         private const float LanternInactiveDelay = 0.4f;
 
+        /// <summary>
+        /// Lantern activation timeline identifiers.
+        /// </summary>
         private enum LanternActivation
         {
+            /// <summary>Activation timeline.</summary>
             Activation,
+
+            /// <summary>Deactivation timeline.</summary>
             Deactivation,
+
+            /// <summary>Fire bounce timeline.</summary>
             FireBounce
         }
     }

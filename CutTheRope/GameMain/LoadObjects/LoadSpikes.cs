@@ -4,16 +4,18 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading spike objects from XML level data
-    /// Supports regular spikes (spike1-4) and electro spikes
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads a spike object from XML node data
         /// Supports regular spikes (spike1-4) and electro spikes
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the spikes.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadSpike(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             float px = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

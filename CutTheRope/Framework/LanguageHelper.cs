@@ -9,8 +9,9 @@ namespace CutTheRope.Framework
     /// </summary>
     public static class LanguageHelper
     {
-        // Available languages code for the UI
-        // More languages go here
+        /// <summary>
+        /// Language codes available in the UI language selector.
+        /// </summary>
         private static readonly string[] uiLanguageCodes = [
             "en", // English
             "ru", // Russian
@@ -37,7 +38,7 @@ namespace CutTheRope.Framework
         public static Language Current { get; set; } = Language.LANGEN;
 
         /// <summary>
-        /// Gets the current language as an ISO 639-1 two-letter code.
+        /// Gets the current language as the game's language code (for example: <c>en</c>, <c>pt_br</c>, <c>zh_tw</c>).
         /// </summary>
         public static string CurrentCode => ToCode(Current);
 
@@ -47,16 +48,20 @@ namespace CutTheRope.Framework
         public static int CurrentAsInt => (int)Current;
 
         /// <summary>
-        /// Checks if the given language matches the current language.
+        /// Checks if the given <paramref name="language"/> matches the current language.
         /// </summary>
+        /// <param name="language">Language to check.</param>
+        /// <returns><see langword="true"/> when <paramref name="language"/> equals <see cref="Current"/>.</returns>
         public static bool IsCurrent(Language language)
         {
             return Current == language;
         }
 
         /// <summary>
-        /// Checks if the current language matches any of the given languages.
+        /// Checks if the current language matches any of the given <paramref name="languages"/>.
         /// </summary>
+        /// <param name="languages">Languages to check against.</param>
+        /// <returns><see langword="true"/> when any provided language equals <see cref="Current"/>.</returns>
         public static bool IsCurrentAny(params Language[] languages)
         {
             foreach (Language lang in languages)
@@ -70,16 +75,20 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Checks if the given language is available in the UI.
+        /// Checks if the given <paramref name="language"/> is available in the UI.
         /// </summary>
+        /// <param name="language">Language to check.</param>
+        /// <returns><see langword="true"/> when the language is present in the UI language list.</returns>
         public static bool IsUiLanguage(Language language)
         {
             return IsUiLanguageCode(ToCode(language));
         }
 
         /// <summary>
-        /// Checks if the given language code is available in the UI.
+        /// Checks if the given language <paramref name="code"/> is available in the UI.
         /// </summary>
+        /// <param name="code">Language code to check.</param>
+        /// <returns><see langword="true"/> when <paramref name="code"/> is present in the UI language list.</returns>
         public static bool IsUiLanguageCode(string code)
         {
             if (string.IsNullOrEmpty(code))
@@ -101,6 +110,8 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Gets the next language code in the UI cycle.
         /// </summary>
+        /// <param name="currentCode">Current language code.</param>
+        /// <returns>The next UI language code, or the first entry when <paramref name="currentCode"/> is not found.</returns>
         public static string GetNextUiLanguageCode(string currentCode)
         {
             for (int i = 0; i < uiLanguageCodes.Length; i++)
@@ -115,8 +126,10 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Converts a Language enum to its ISO 639-1 two-letter code.
+        /// Converts <paramref name="language"/> to the game's language code.
         /// </summary>
+        /// <param name="language">Language to convert.</param>
+        /// <returns>The game language code for <paramref name="language"/>.</returns>
         public static string ToCode(Language language)
         {
             return language switch
@@ -138,9 +151,11 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Converts an ISO 639-1 two-letter code to a Language enum.
-        /// Returns LANGEN for unrecognized codes.
+        /// Converts a game language <paramref name="code"/> to a <see cref="Language"/> value.
+        /// Returns <see cref="Language.LANGEN"/> for unrecognized codes.
         /// </summary>
+        /// <param name="code">Language code to convert.</param>
+        /// <returns>The corresponding <see cref="Language"/> value.</returns>
         public static Language FromCode(string code)
         {
             return code switch
@@ -163,6 +178,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Detects the appropriate Language from the system's current culture.
         /// </summary>
+        /// <returns>A supported <see cref="Language"/> inferred from the current system culture.</returns>
         public static Language FromSystemCulture()
         {
             CultureInfo culture = CultureInfo.CurrentCulture;
@@ -192,8 +208,10 @@ namespace CutTheRope.Framework
         }
 
         /// <summary>
-        /// Gets the English display name for a language code (e.g. "ru" → "Russian").
+        /// Gets the English display name for a language <paramref name="code"/> (e.g. "ru" → "Russian").
         /// </summary>
+        /// <param name="code">Language code to look up.</param>
+        /// <returns>The English display name for <paramref name="code"/>, or the input code when unknown.</returns>
         public static string GetLanguageDisplayName(string code)
         {
             return code switch
@@ -214,10 +232,10 @@ namespace CutTheRope.Framework
             };
         }
 
-        /// <summary>
-        /// Gets the quad index for the current language's flag icon in MenuExtraButtons.
-        /// </summary>
-        /*public static int GetLanguageFlagQuadIndex()
+        /* <summary> */
+        /* Gets the quad index for the current language's flag icon in MenuExtraButtons. */
+        /* </summary> */
+        /* public static int GetLanguageFlagQuadIndex()
         {
             return Current switch
             {
@@ -227,6 +245,6 @@ namespace CutTheRope.Framework
                 Language.LANGEN => 7, // English flag quad
                 _ => 15, // Worldwide flag for all other languages
             };
-        }*/
+        } */
     }
 }

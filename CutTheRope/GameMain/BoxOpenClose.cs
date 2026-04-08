@@ -9,8 +9,12 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Manages the level transition, result panel, score countdown, and confetti effects.
+    /// </summary>
     internal sealed class BoxOpenClose : BaseElement, ITimelineDelegate
     {
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -160,6 +164,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Initializes the transition box UI, result panel, buttons, and score labels.
+        /// </summary>
+        /// <param name="b">Button delegate that receives result-panel button events.</param>
+        /// <returns>The initialized transition box instance.</returns>
         public BoxOpenClose InitWithButtonDelegate(IButtonDelegation b)
         {
             result = new BaseElement();
@@ -246,6 +255,10 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Creates one randomized confetti particle near the top of the screen.
+        /// </summary>
+        /// <returns>The configured confetti particle element.</returns>
         public static BaseElement CreateConfettiParticleNear()
         {
             Confetti confetti = Confetti.Confetti_createWithResID(Resources.Img.ConfettiParticles);
@@ -287,6 +300,9 @@ namespace CutTheRope.GameMain
             return confetti;
         }
 
+        /// <summary>
+        /// Starts the first-level opening transition and hides any visible result panel.
+        /// </summary>
         public void LevelFirstStart()
         {
             boxAnim = 0;
@@ -298,6 +314,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Starts the normal level opening transition and hides any visible result panel.
+        /// </summary>
         public void LevelStart()
         {
             boxAnim = 1;
@@ -309,6 +328,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Starts the closing transition for a won level and prepares the result panel countdown.
+        /// </summary>
         public void LevelWon()
         {
             boxAnim = 2;
@@ -325,6 +347,9 @@ namespace CutTheRope.GameMain
             stamp.SetEnabled(false);
         }
 
+        /// <summary>
+        /// Starts the closing transition for a lost level.
+        /// </summary>
         public void LevelLost()
         {
             boxAnim = 3;
@@ -332,6 +357,9 @@ namespace CutTheRope.GameMain
             ShowCloseAnim();
         }
 
+        /// <summary>
+        /// Starts the closing transition for quitting a level.
+        /// </summary>
         public void LevelQuit()
         {
             boxAnim = 4;
@@ -340,16 +368,25 @@ namespace CutTheRope.GameMain
             ShowCloseAnim();
         }
 
+        /// <summary>
+        /// Shows the box opening animation.
+        /// </summary>
         public void ShowOpenAnim()
         {
             ShowOpenCloseAnim(true);
         }
 
+        /// <summary>
+        /// Shows the box closing animation.
+        /// </summary>
         public void ShowCloseAnim()
         {
             ShowOpenCloseAnim(false);
         }
 
+        /// <summary>
+        /// Adds a burst of confetti particles to the result panel.
+        /// </summary>
         public void ShowConfetti()
         {
             for (int i = 0; i < 70; i++)
@@ -358,6 +395,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Builds and plays the animated box cover used for opening and closing transitions.
+        /// </summary>
+        /// <param name="open"><see langword="true"/> to play the opening animation; <see langword="false"/> to play the closing animation.</param>
         public void ShowOpenCloseAnim(bool open)
         {
             CreateOpenCloseAnims();
@@ -516,10 +557,12 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             switch (boxAnim)
@@ -553,6 +596,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Invokes the box-closed callback and optionally starts the confetti burst.
+        /// </summary>
         public void PostBoxClosed()
         {
             delegateboxClosed?.Invoke();
@@ -562,6 +608,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Removes active box transition animation elements and restores result label opacity.
+        /// </summary>
         public void RemoveOpenCloseAnims()
         {
             if (GetChild(0) != null)
@@ -575,107 +624,167 @@ namespace CutTheRope.GameMain
             baseElement.color.AlphaChannel = text2.color.AlphaChannel = text3.color.AlphaChannel = 1f;
         }
 
+        /// <summary>
+        /// Creates the container used to hold box transition animation elements.
+        /// </summary>
         public void CreateOpenCloseAnims()
         {
             openCloseAnims = new BaseElement();
             _ = AddChildwithID(openCloseAnims, 0);
         }
 
+        /// <summary>
+        /// Delayed-dispatcher callback that removes box open/close animation elements.
+        /// </summary>
+        /// <param name="obj">Box transition instance to update.</param>
         private static void Selector_removeOpenCloseAnims(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).RemoveOpenCloseAnims();
         }
 
+        /// <summary>
+        /// Delayed-dispatcher callback that finalizes the closed-box state.
+        /// </summary>
+        /// <param name="obj">Box transition instance to update.</param>
         private static void Selector_postBoxClosed(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).PostBoxClosed();
         }
 
+        /// <summary>Box animation state for the first level start transition.</summary>
         public const int BOX_ANIM_LEVEL_FIRST_START = 0;
 
+        /// <summary>Box animation state for a normal level start transition.</summary>
         public const int BOX_ANIM_LEVEL_START = 1;
 
+        /// <summary>Box animation state for a won level transition.</summary>
         public const int BOX_ANIM_LEVEL_WON = 2;
 
+        /// <summary>Box animation state for a lost level transition.</summary>
         public const int BOX_ANIM_LEVEL_LOST = 3;
 
+        /// <summary>Box animation state for a quit-level transition.</summary>
         public const int BOX_ANIM_LEVEL_QUIT = 4;
 
+        /// <summary>Result panel state before the countdown sequence begins.</summary>
         public const int RESULT_STATE_WAIT = 0;
 
+        /// <summary>Result panel state that fades in the star bonus row.</summary>
         public const int RESULT_STATE_SHOW_STAR_BONUS = 1;
 
+        /// <summary>Result panel state that counts star bonus points into the score.</summary>
         public const int RESULT_STATE_COUNTDOWN_STAR_BONUS = 2;
 
+        /// <summary>Result panel state that fades out the star bonus row.</summary>
         public const int RESULT_STATE_HIDE_STAR_BONUS = 3;
 
+        /// <summary>Result panel state that fades in the time bonus row.</summary>
         public const int RESULT_STATE_SHOW_TIME_BONUS = 4;
 
+        /// <summary>Result panel state that counts time bonus points into the score.</summary>
         public const int RESULT_STATE_COUNTDOWN_TIME_BONUS = 5;
 
+        /// <summary>Result panel state that fades out the time bonus row.</summary>
         public const int RESULT_STATE_HIDE_TIME_BONUS = 6;
 
+        /// <summary>Result panel state that shows the final score label.</summary>
         public const int RESULT_STATE_SHOW_FINAL_SCORE = 7;
 
+        /// <summary>Result panel timeline ID for showing the panel.</summary>
         public const int RESULTS_SHOW_ANIM = 0;
 
+        /// <summary>Result panel timeline ID for hiding the panel.</summary>
         public const int RESULTS_HIDE_ANIM = 1;
 
+        /// <summary>Container for active box cover transition elements.</summary>
         public BaseElement openCloseAnims;
 
+        /// <summary>Container for active confetti particle elements.</summary>
         public BaseElement confettiAnims;
 
+        /// <summary>Result panel root element.</summary>
         public BaseElement result;
 
+        /// <summary>Current box animation state.</summary>
         public int boxAnim;
 
+        /// <summary>Whether confetti should be shown after the box closes.</summary>
         public bool shouldShowConfetti;
 
+        /// <summary>Whether the improved-result stamp should be shown.</summary>
         public bool shouldShowImprovedResult;
 
+        /// <summary>Improved-result stamp image.</summary>
         public Image stamp;
 
+        /// <summary>Current result panel countdown state.</summary>
         public int raState;
 
+        /// <summary>Time bonus score used by the result countdown.</summary>
         public int timeBonus;
 
+        /// <summary>Star bonus score used by the result countdown.</summary>
         public int starBonus;
 
+        /// <summary>Base score before result countdown bonuses are applied.</summary>
         public int score;
 
+        /// <summary>Level completion time used by the result countdown.</summary>
         public float time;
 
+        /// <summary>Displayed countdown time value.</summary>
         public float ctime;
 
+        /// <summary>Displayed countdown star bonus value.</summary>
         public int cstarBonus;
 
+        /// <summary>Displayed countdown score value.</summary>
         public int cscore;
 
+        /// <summary>Delay timer used by the result panel countdown state machine.</summary>
         public float raDelay;
 
+        /// <summary>Callback invoked after the box closing transition completes.</summary>
         public boxClosed delegateboxClosed;
 
-        // (Invoke) Token: 0x06000674 RID: 1652
+        /// <summary>
+        /// Callback invoked after the box closing transition completes.
+        /// </summary>
         public delegate void boxClosed();
 
+        /// <summary>
+        /// Confetti particle animation that advances its sprite animation timeline during updates.
+        /// </summary>
         private sealed class Confetti : Animation
         {
+            /// <summary>
+            /// Creates a confetti particle from a texture resource name.
+            /// </summary>
+            /// <param name="resourceName">Texture resource name to load.</param>
+            /// <returns>The initialized confetti particle.</returns>
             public static Confetti Confetti_createWithResID(string resourceName)
             {
                 return Confetti_create(Application.GetTexture(resourceName));
             }
 
+            /// <summary>
+            /// Creates a confetti particle from a texture.
+            /// </summary>
+            /// <param name="t">Texture used by the confetti particle.</param>
+            /// <returns>The initialized confetti particle.</returns>
             public static Confetti Confetti_create(CTRTexture2D t)
             {
                 return (Confetti)new Confetti().InitWithTexture(t);
             }
 
+            /// <inheritdoc />
             public override void Update(float delta)
             {
                 base.Update(delta);
                 Timeline.UpdateTimeline(ani, delta);
             }
 
+            /// <summary>Sprite animation timeline used by this confetti particle.</summary>
             public Timeline ani;
         }
     }

@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             delta = 0.016f;
@@ -1832,6 +1833,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Updates mechanical hand behavior, candy attachment, hand claps, and hand ordering.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds since the last update.</param>
         private void UpdateHands(float delta)
         {
             if (hands == null || hands.Count <= 0)
@@ -1998,9 +2003,9 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Handle special tutorial IDs
+        /// Plays the matching special tutorial and hides all other special tutorial prompts.
         /// </summary>
-        /// <param name="tutorialId"></param>
+        /// <param name="tutorialId">Special tutorial identifier to trigger.</param>
         private void TriggerSpecialTutorial(int tutorialId)
         {
             if (special != tutorialId)

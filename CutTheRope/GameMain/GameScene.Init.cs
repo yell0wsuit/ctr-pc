@@ -11,6 +11,11 @@ namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
+        /// <summary>
+        /// Creates the gravity toggle button used by the game scene.
+        /// </summary>
+        /// <param name="d">Button delegate that receives gravity button events.</param>
+        /// <returns>The initialized gravity toggle button.</returns>
         public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
             Image u = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
@@ -86,6 +91,9 @@ namespace CutTheRope.GameMain
             clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
         }
 
+        /// <summary>
+        /// Reloads the current map or map-picker scene.
+        /// </summary>
         public void Reload()
         {
             dd.CancelAllDispatches();
@@ -101,6 +109,9 @@ namespace CutTheRope.GameMain
             XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml(mapPath), mapPath, true);
         }
 
+        /// <summary>
+        /// Loads the next map in the active pack or advances the map picker.
+        /// </summary>
         public void LoadNextMap()
         {
             dd.CancelAllDispatches();
@@ -123,12 +134,20 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Restarts the current scene by hiding and showing it again.
+        /// </summary>
         public void Restart()
         {
             Hide();
             Show();
         }
 
+        /// <summary>
+        /// Creates a gravity earth animation image and offsets it from the configured pack position.
+        /// </summary>
+        /// <param name="xs">Additional X offset for the image.</param>
+        /// <param name="ys">Additional Y offset for the image.</param>
         public void CreateEarthImageWithOffsetXY(float xs, float ys)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 23);

@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Media
         /// <param name="appBaseDirectory">The application's base directory.</param>
         /// <param name="directoryExists">Function to check if a directory exists.</param>
         /// <returns>
-        /// The path to the directory containing FFmpeg libraries, or <c>null</c> if not found.
+        /// The path to the directory containing FFmpeg libraries, or <see langword="null" /> if not found.
         /// </returns>
         public static string Resolve(
             string appBaseDirectory,
@@ -46,6 +46,8 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Gets the platform-specific candidate directories to search for FFmpeg libraries.
         /// </summary>
+        /// <param name="appBaseDirectory">Base application directory used to build probe paths.</param>
+        /// <returns>Candidate directories to probe for FFmpeg binaries.</returns>
         private static string[] GetCandidatePaths(string appBaseDirectory)
         {
             if (OperatingSystem.IsMacOS())
@@ -71,6 +73,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Gets a library name pattern to probe for FFmpeg presence.
         /// </summary>
+        /// <returns>A platform-specific library filename pattern.</returns>
         private static string GetProbeLibrary()
         {
             return OperatingSystem.IsWindows() ? "avcodec-*.dll" : OperatingSystem.IsLinux() ? "libavcodec.so*" : "libavcodec*.dylib";

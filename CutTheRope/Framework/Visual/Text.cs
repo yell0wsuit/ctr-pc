@@ -12,14 +12,26 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A <see cref="BaseElement"/> that renders formatted text using either sprite-based or FontStashSharp fonts.
+    /// </summary>
     internal class Text : BaseElement
     {
+        /// <summary>
+        /// Rasterizer state with scissor test enabled for text clipping.
+        /// </summary>
         private static readonly RasterizerState ScissorRasterizerState = new()
         {
             CullMode = CullMode.None,
             ScissorTestEnable = true
         };
 
+        /// <summary>
+        /// Creates a text element from a font resource name and string.
+        /// </summary>
+        /// <param name="fontResourceName">Font resource name.</param>
+        /// <param name="str">Text to display.</param>
+        /// <returns>A new text element initialized with the requested font and string.</returns>
         public static Text CreateWithFontandString(string fontResourceName, string str)
         {
             Text text = new Text().InitWithFont(Application.GetFont(fontResourceName));
@@ -27,6 +39,11 @@ namespace CutTheRope.Framework.Visual
             return text;
         }
 
+        /// <summary>
+        /// Initializes the text element with the specified font.
+        /// </summary>
+        /// <param name="i">Font to use for rendering.</param>
+        /// <returns>The initialized text instance.</returns>
         public virtual Text InitWithFont(FontGeneric i)
         {
             font = i;
@@ -41,11 +58,20 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Sets the display text, auto-wrapping to fit the font's measured width.
+        /// </summary>
+        /// <param name="newString">Text to display.</param>
         public virtual void SetString(string newString)
         {
             SetStringandWidth(newString, -1f);
         }
 
+        /// <summary>
+        /// Sets the display text with an explicit wrap width.
+        /// </summary>
+        /// <param name="newString">Text to display.</param>
+        /// <param name="w">Wrap width in pixels, or -1 to auto-measure.</param>
         public virtual void SetStringandWidth(string newString, float w)
         {
             string_ = newString;
@@ -93,6 +119,9 @@ namespace CutTheRope.Framework.Visual
             stringLength = 0;
         }
 
+        /// <summary>
+        /// Rebuilds the multi-drawer quad data from the formatted strings (sprite font path).
+        /// </summary>
         public virtual void UpdateDrawerValues()
         {
             multiDrawers.Clear();
@@ -202,16 +231,25 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Returns the current display text.
+        /// </summary>
+        /// <returns>The currently assigned display text.</returns>
         public virtual string GetString()
         {
             return string_;
         }
 
+        /// <summary>
+        /// Sets the text alignment (1 = left, 2 = center, 3 = right).
+        /// </summary>
+        /// <param name="a">Alignment value.</param>
         public virtual void SetAlignment(int a)
         {
             align = a;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             // Capture inherited color before we apply this element's own modulation in PreDraw
@@ -246,6 +284,11 @@ namespace CutTheRope.Framework.Visual
             PostDraw();
         }
 
+        /// <summary>
+        /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
+        /// </summary>
+        /// <param name="fontStashFont">FontStash-backed font used for glyph rendering.</param>
+        /// <param name="parentColor">Inherited parent color modulation.</param>
         private void DrawFontStashText(FontStashFont fontStashFont, Color parentColor)
         {
             SpriteBatch spriteBatch = Renderer.GetSpriteBatch();
@@ -469,6 +512,9 @@ namespace CutTheRope.Framework.Visual
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Word-wraps the current string into <see cref="FormattedString"/> lines based on <see cref="wrapWidth"/>.
+        /// </summary>
         public virtual void FormatText()
         {
             short[] array = new short[512];
@@ -541,6 +587,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -555,22 +602,49 @@ namespace CutTheRope.Framework.Visual
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Text alignment (1 = left, 2 = center, 3 = right).
+        /// </summary>
         public int align;
 
+        /// <summary>
+        /// The raw display string.
+        /// </summary>
         public string string_;
 
+        /// <summary>
+        /// Number of rendered characters (sprite font path).
+        /// </summary>
         public int stringLength;
 
+        /// <summary>
+        /// Font used for measuring and rendering.
+        /// </summary>
         public FontGeneric font;
 
+        /// <summary>
+        /// Width at which text wraps to the next line.
+        /// </summary>
         public float wrapWidth;
 
+        /// <summary>
+        /// Word-wrapped lines of text.
+        /// </summary>
         private List<FormattedString> formattedStrings;
 
+        /// <summary>
+        /// Multi-drawers for sprite font character quads.
+        /// </summary>
         private List<ImageMultiDrawer> multiDrawers;
 
+        /// <summary>
+        /// Maximum rendered height in pixels, or -1 for unlimited.
+        /// </summary>
         public float maxHeight;
 
+        /// <summary>
+        /// Whether to break long words that exceed the wrap width.
+        /// </summary>
         public bool wrapLongWords;
     }
 }

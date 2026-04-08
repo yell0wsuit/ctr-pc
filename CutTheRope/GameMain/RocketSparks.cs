@@ -17,7 +17,7 @@ namespace CutTheRope.GameMain
         /// <param name="p">The maximum number of particles.</param>
         /// <param name="a">The base emission angle in radians.</param>
         /// <param name="grid">The image grid containing spark particle quads.</param>
-        /// <returns>This instance if initialization succeeds; otherwise, <c>null</c>.</returns>
+        /// <returns>This instance if initialization succeeds; otherwise, <see langword="null" />.</returns>
         public virtual Particles InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -63,11 +63,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
-        /// <summary>
-        /// Initializes an individual spark particle by assigning it a random quad (indices 6–9)
-        /// from the rocket sprite sheet and setting its dimensions accordingly.
-        /// </summary>
-        /// <param name="particle">The particle to initialize.</param>
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);

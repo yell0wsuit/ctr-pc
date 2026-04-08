@@ -8,31 +8,67 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Collectible star object with optional timed and night-mode visual states.
+    /// </summary>
     internal sealed class Star : CTRGameObject, ITransporterItem, ITransporterBindAware
     {
+        /// <summary>Glow quad index for the normal idle star texture.</summary>
         private const int ImgObjStarIdleGlow = 0;
+
+        /// <summary>Glow quad index for the night-mode star texture.</summary>
         private const int ImgObjStarNightGlow = 0;
+
+        /// <summary>First quad index for the night-mode dim idle animation.</summary>
         private const int ImgObjStarNightIdleOffStart = 1;
+
+        /// <summary>Last quad index for the night-mode dim idle animation.</summary>
         private const int ImgObjStarNightIdleOffEnd = 18;
+
+        /// <summary>First quad index for the night-mode light-down animation.</summary>
         private const int ImgObjStarNightLightDownStart = 19;
+
+        /// <summary>Last quad index for the night-mode light-down animation.</summary>
         private const int ImgObjStarNightLightDownEnd = 24;
+
+        /// <summary>First quad index for the night-mode light-up animation.</summary>
         private const int ImgObjStarNightLightUpStart = 25;
+
+        /// <summary>Last quad index for the night-mode light-up animation.</summary>
         private const int ImgObjStarNightLightUpEnd = 30;
+
+        /// <summary>Alpha step used while fading night-mode visual layers.</summary>
         private const float NightFadeStep = 0.1f;
 
+        /// <summary>Quad index for the full timed-star countdown ring.</summary>
         private const int TimedFullQuad = 19;  // frame_0019: full timed ring
+
+        /// <summary>Quad index for the empty timed-star countdown ring.</summary>
         private const int TimedEmptyQuad = 20; // frame_0055: empty timed ring
 
+        /// <summary>
+        /// Creates a star from a texture.
+        /// </summary>
+        /// <param name="t">Texture used by the star.</param>
+        /// <returns>The initialized star.</returns>
         public static Star Star_create(CTRTexture2D t)
         {
             return (Star)new Star().InitWithTexture(t);
         }
 
+        /// <summary>
+        /// Creates a star from a texture resource name.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <returns>The initialized star.</returns>
         public static Star Star_createWithResID(string resourceName)
         {
             return Star_create(Application.GetTexture(resourceName));
         }
 
+        /// <summary>
+        /// Initializes a star with default timed and night-mode visual state.
+        /// </summary>
         public Star()
         {
             timedAnim = null;
@@ -45,6 +81,7 @@ namespace CutTheRope.GameMain
             lightDownAnim = null;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             if (timeout > 0 && time > 0)
@@ -69,6 +106,7 @@ namespace CutTheRope.GameMain
             base.Update(delta);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (timedAnim != null && timeout > 0)
@@ -93,6 +131,9 @@ namespace CutTheRope.GameMain
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
+        /// <summary>
+        /// Creates star animations, timed-ring visuals, idle glow, and night-mode overlays.
+        /// </summary>
         public void CreateAnimations()
         {
             if (timeout > 0)
@@ -181,11 +222,18 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Enables night-mode visual setup before <see cref="CreateAnimations"/> runs.
+        /// </summary>
         public void EnableNightMode()
         {
             nightMode = true;
         }
 
+        /// <summary>
+        /// Sets the night-mode light state and plays transition animations when needed.
+        /// </summary>
+        /// <param name="lit">Whether the star should be lit.</param>
         public void SetLitState(bool lit)
         {
             if (!nightMode)
@@ -237,8 +285,12 @@ namespace CutTheRope.GameMain
             UpdateNightVisibility();
         }
 
+        /// <summary>
+        /// Gets whether the star is currently lit in night mode.
+        /// </summary>
         public bool IsLit => isLit == true;
 
+        /// <inheritdoc />
         public void WillBind()
         {
             if (GetCurrentTimeline() != null)
@@ -249,6 +301,11 @@ namespace CutTheRope.GameMain
             IsDrawnByTransporter = true;
         }
 
+        /// <summary>
+        /// Adjusts the alpha channel for a night-mode star visual layer.
+        /// </summary>
+        /// <param name="element">Element whose alpha should be adjusted.</param>
+        /// <param name="delta">Alpha adjustment amount.</param>
         private static void AdjustNightAlpha(BaseElement element, float delta)
         {
             if (element == null)
@@ -259,6 +316,9 @@ namespace CutTheRope.GameMain
             element.color = RGBAColor.MakeRGBA(element.color.RedColor, element.color.GreenColor, element.color.BlueColor, next);
         }
 
+        /// <summary>
+        /// Ensures all night-mode star visual layers are visible after a light-state change.
+        /// </summary>
         private void UpdateNightVisibility()
         {
             if (!nightMode)
@@ -270,6 +330,11 @@ namespace CutTheRope.GameMain
             _ = (dimmedIdleSprite?.visible = true);
         }
 
+        /// <summary>
+        /// Draws the remaining portion of the timed-star full countdown ring.
+        /// </summary>
+        /// <param name="quadIndex">Quad index for the full timed ring.</param>
+        /// <param name="fraction">Fraction of the ring to draw.</param>
         private void DrawTimedFullRadial(int quadIndex, float fraction)
         {
             float px = timedAnim.drawX;
@@ -282,44 +347,62 @@ namespace CutTheRope.GameMain
             DrawHelper.DrawRadialClippedQuad(timedAnim.texture, quadIndex, px, py, fraction);
         }
 
+        /// <summary>Remaining time before a timed star expires.</summary>
         public float time;
 
+        /// <summary>Total timeout duration for timed stars, or 0 for untimed stars.</summary>
         public float timeout;
 
+        /// <summary>Timed-star ring animation.</summary>
         public Animation timedAnim;
 
+        /// <summary>Whether this star uses night-mode visuals.</summary>
         private bool nightMode;
 
+        /// <summary>Current night-mode light state, or <see langword="null"/> before initialization.</summary>
         private bool? isLit;
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint => Vect(x, y);
 
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             x = point.X;
             y = point.Y;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => 60f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <summary>Normal idle star animation layer.</summary>
         private Animation idleSprite;
 
+        /// <summary>Dimmed night-mode idle star animation layer.</summary>
         private Animation dimmedIdleSprite;
 
+        /// <summary>Glow visual layer.</summary>
         private GameObject glowSprite;
 
+        /// <summary>Night-mode light-up transition animation.</summary>
         private Animation lightUpAnim;
 
+        /// <summary>Night-mode light-down transition animation.</summary>
         private Animation lightDownAnim;
     }
 }

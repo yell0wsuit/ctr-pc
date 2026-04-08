@@ -2,22 +2,24 @@ using System;
 using System.Xml.Linq;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 
 using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading grab/hook objects from XML level data
-    /// Grabs are rope attachment points and can have spiders or bees
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads a grab/rope object from XML node data
         /// Handles spider and bee variants, path-based movement, and rope physics
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the grab.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadGrab(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             float hx = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -116,6 +118,11 @@ namespace CutTheRope.GameMain
             bungees.Add(grab);
         }
 
+        /// <summary>
+        /// Finds the light bulb that should be bound to a grab by bulb number.
+        /// </summary>
+        /// <param name="bulbNumber">The optional bulb identifier requested by the XML node.</param>
+        /// <returns>The matching light bulb, or the last loaded bulb when no explicit match exists.</returns>
         private LightBulb FindLightBulbForBinding(string bulbNumber)
         {
             if (lightBulbs.Count == 0)

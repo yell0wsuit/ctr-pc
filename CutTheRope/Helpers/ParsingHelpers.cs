@@ -2,10 +2,13 @@ using System.Globalization;
 
 namespace CutTheRope.Helpers
 {
+    /// <summary>
+    /// Provides safe parsing methods that return default values instead of throwing on invalid input.
+    /// </summary>
     public static class ParsingHelpers
     {
         /// <summary>
-        /// Parses an integer from a string, returning 0 if the value is null, empty, or not a valid integer.
+        /// Parses an integer from a string, returning 0 if the value is <see langword="null"/>, empty, or not a valid integer.
         /// </summary>
         /// <param name="value">The string to parse.</param>
         /// <returns>The parsed integer, or 0 if parsing fails.</returns>
@@ -16,7 +19,7 @@ namespace CutTheRope.Helpers
 
         /// <summary>
         /// Parses a floating-point number from a string using invariant culture, returning 0 if the value
-        /// is null, empty, or not a valid number.
+        /// is <see langword="null"/>, empty, or not a valid number.
         /// </summary>
         /// <param name="value">The string to parse.</param>
         /// <returns>The parsed float, or 0 if parsing fails.</returns>

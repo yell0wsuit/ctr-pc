@@ -5,8 +5,12 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Ghost-transformed bouncer variant with ambient supporting cloud visuals.
+    /// </summary>
     internal sealed class GhostBouncer : Bouncer
     {
+        /// <inheritdoc />
         public override Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, float angle)
         {
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)
@@ -100,6 +104,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void PlayTimeline(int timelineIndex)
         {
             if (GetCurrentTimelineIndex() == 11)
@@ -113,6 +118,7 @@ namespace CutTheRope.GameMain
             base.PlayTimeline(timelineIndex);
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             backCloud.Draw();
@@ -120,6 +126,7 @@ namespace CutTheRope.GameMain
             base.Draw();
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -130,7 +137,10 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Primary background ghost cloud element.</summary>
         public Image backCloud;
+
+        /// <summary>Secondary background ghost cloud element.</summary>
         public Image backCloud2;
     }
 }

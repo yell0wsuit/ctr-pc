@@ -7,8 +7,17 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.Framework.Helpers
 {
+    /// <summary>
+    /// Moves a point along a cyclic path with optional per-point speed settings and continuous rotation.
+    /// </summary>
     internal class Mover : FrameworkTypes
     {
+        /// <summary>
+        /// Initializes a mover with path capacity, default move speed, and default rotation speed.
+        /// </summary>
+        /// <param name="l">Maximum number of path points.</param>
+        /// <param name="m_">Default movement speed applied to each path point.</param>
+        /// <param name="r_">Default rotation speed.</param>
         public Mover(int l, float m_, float r_)
         {
             int defaultMoveSpeed = (int)m_;
@@ -32,6 +41,10 @@ namespace CutTheRope.Framework.Helpers
             IsPaused = false;
         }
 
+        /// <summary>
+        /// Sets the movement speed used for all path points.
+        /// </summary>
+        /// <param name="ms">Movement speed to assign.</param>
         public virtual void SetMoveSpeed(float ms)
         {
             for (int i = 0; i < pathCapacity; i++)
@@ -40,6 +53,12 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <summary>
+        /// Builds a path from a serialized string and prepends the supplied start point.
+        /// Supports circular path syntax starting with <c>R</c>.
+        /// </summary>
+        /// <param name="p">Serialized path description.</param>
+        /// <param name="s">Starting position for the generated path.</param>
         public virtual void SetPathFromStringandStart(string p, Vector s)
         {
             if (p[0] == 'R')
@@ -81,6 +100,10 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <summary>
+        /// Appends a point to the movement path.
+        /// </summary>
+        /// <param name="v">Path point to add.</param>
         public virtual void AddPathPoint(Vector v)
         {
             Vector[] array = path;
@@ -89,6 +112,9 @@ namespace CutTheRope.Framework.Helpers
             array[insertIndex] = v;
         }
 
+        /// <summary>
+        /// Starts movement from the first path point and targets the next point in sequence.
+        /// </summary>
         public virtual void Start()
         {
             if (pathLen > 0)
@@ -99,23 +125,40 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <summary>
+        /// Pauses path and rotation updates.
+        /// </summary>
         public virtual void Pause()
         {
             IsPaused = true;
         }
 
+        /// <summary>
+        /// Resumes path and rotation updates.
+        /// </summary>
         public virtual void Unpause()
         {
             IsPaused = false;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether movement updates are currently paused.
+        /// </summary>
         public bool IsPaused { get; private set; }
 
+        /// <summary>
+        /// Sets the continuous rotation speed.
+        /// </summary>
+        /// <param name="rs">Rotation speed to apply.</param>
         public virtual void SetRotateSpeed(float rs)
         {
             rotateSpeed = rs;
         }
 
+        /// <summary>
+        /// Moves immediately to the specified path point and makes it the current target.
+        /// </summary>
+        /// <param name="p">Path point index to jump to.</param>
         public virtual void JumpToPoint(int p)
         {
             targetPoint = p;
@@ -129,16 +172,29 @@ namespace CutTheRope.Framework.Helpers
         // offset = VectMult(VectNormalize(VectSub(v, pos)), moveSpeed[targetPoint]);
         //}
 
+        /// <summary>
+        /// Sets the movement speed for a single path point.
+        /// </summary>
+        /// <param name="ms">Movement speed to assign.</param>
+        /// <param name="i">Path point index.</param>
         public virtual void SetMoveSpeedforPoint(float ms, int i)
         {
             moveSpeed[i] = ms;
         }
 
+        /// <summary>
+        /// Sets whether the path is traversed in reverse order.
+        /// </summary>
+        /// <param name="r"><see langword="true" /> to move backward through the path; otherwise <see langword="false" />.</param>
         public virtual void SetMoveReverse(bool r)
         {
             reverse = r;
         }
 
+        /// <summary>
+        /// Advances the mover along its path and updates rotation for one frame.
+        /// </summary>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
         public virtual void Update(float delta)
         {
             if (IsPaused)
@@ -206,6 +262,9 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <summary>
+        /// Advances the target-path index according to the current traversal direction.
+        /// </summary>
         private void AdvanceTarget()
         {
             if (reverse)
@@ -224,6 +283,7 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -234,6 +294,14 @@ namespace CutTheRope.Framework.Helpers
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Moves a scalar value toward a target at the given <paramref name="speed"/> and frame <paramref name="delta"/>.
+        /// </summary>
+        /// <param name="v">Value to update.</param>
+        /// <param name="t">Target value.</param>
+        /// <param name="speed">Movement speed in units per second.</param>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
+        /// <returns><see langword="true" /> if the target was reached; otherwise <see langword="false" />.</returns>
         public static bool MoveVariableToTarget(ref float v, float t, float speed, float delta)
         {
             if (t != v)
@@ -262,27 +330,64 @@ namespace CutTheRope.Framework.Helpers
             return false;
         }
 
+        /// <summary>
+        /// Per-path-point movement speeds.
+        /// </summary>
         private float[] moveSpeed;
 
+        /// <summary>
+        /// Continuous rotation speed applied during updates.
+        /// </summary>
         private float rotateSpeed;
 
+        /// <summary>
+        /// Path points traversed by the mover.
+        /// </summary>
         public Vector[] path;
 
+        /// <summary>
+        /// Number of valid points currently stored in <see cref="path"/>.
+        /// </summary>
         public int pathLen;
 
+        /// <summary>
+        /// Maximum number of points that can be stored in the path.
+        /// </summary>
         private readonly int pathCapacity;
 
+        /// <summary>
+        /// Current position along the path.
+        /// </summary>
         public Vector pos;
 
+        /// <summary>
+        /// Current rotation angle.
+        /// </summary>
         public float angle_;
 
+        /// <summary>
+        /// Rotation angle used when <see cref="use_angle_initial"/> is enabled.
+        /// </summary>
         public float angle_initial;
 
+        /// <summary>
+        /// Whether the initial angle should be forced while targeting the first path point.
+        /// </summary>
         public bool use_angle_initial;
+
+        /// <summary>
+        /// Index of the current target path point.
+        /// </summary>
         public int targetPoint;
 
+        /// <summary>
+        /// Whether path traversal proceeds in reverse order.
+        /// </summary>
         private bool reverse;
 
+        /// <summary>
+        /// Unused leftover frame time carried into the next update.
+        /// </summary>
         private float overrun;
 
         // private Vector offset;

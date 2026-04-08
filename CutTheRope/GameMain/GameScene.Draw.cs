@@ -12,9 +12,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
-        /// <summary>
-        /// Renders the scene, including background layers and all gameplay elements.
-        /// </summary>
+        /// <inheritdoc />
         public override void Draw()
         {
             Renderer.Clear(0);

@@ -13,8 +13,12 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Coordinates the active game scene, pause menu, level result flow, input routing, and game-view transitions.
+    /// </summary>
     internal sealed class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
     {
+        /// <inheritdoc />
         public override void Update(float t)
         {
             if (!isGamePaused && Global.XnaGame.IsKeyPressed(Keys.F5))
@@ -24,12 +28,17 @@ namespace CutTheRope.GameMain
             base.Update(t);
         }
 
+        /// <summary>
+        /// Initializes a new game controller.
+        /// </summary>
+        /// <param name="parent">Parent view controller.</param>
         public GameController(ViewController parent)
             : base(parent)
         {
             CreateGameView();
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             PostFlurryLevelEvent("LEVEL_STARTED");
@@ -41,6 +50,9 @@ namespace CutTheRope.GameMain
             ShowView(0);
         }
 
+        /// <summary>
+        /// Creates the game scene, HUD buttons, pause menu, result box, and optional overlays.
+        /// </summary>
         public void CreateGameView()
         {
             for (int i = 0; i < 5; i++)
@@ -121,12 +133,18 @@ namespace CutTheRope.GameMain
             AddViewwithID(gameView, 0);
         }
 
+        /// <summary>
+        /// Initializes the game view for a fresh level start.
+        /// </summary>
         public void InitGameView()
         {
             SetPaused(false);
             LevelFirstStart();
         }
 
+        /// <summary>
+        /// Starts the first-level open transition and enables gameplay input.
+        /// </summary>
         public void LevelFirstStart()
         {
             View view = GetView(0);
@@ -138,6 +156,9 @@ namespace CutTheRope.GameMain
             view.GetChild(2).touchable = true;
         }
 
+        /// <summary>
+        /// Starts a normal level open transition and enables gameplay input.
+        /// </summary>
         public void LevelStart()
         {
             View view = GetView(0);
@@ -150,6 +171,9 @@ namespace CutTheRope.GameMain
             view.GetChild(4).touchable = false;
         }
 
+        /// <summary>
+        /// Starts the level quit transition and disables gameplay input.
+        /// </summary>
         public void LevelQuit()
         {
             View view = GetView(0);
@@ -157,6 +181,11 @@ namespace CutTheRope.GameMain
             view.GetChild(0).touchable = false;
         }
 
+        /// <summary>
+        /// Posts the box-perfect achievement when every level in a pack have 3 stars.
+        /// </summary>
+        /// <param name="box">Box index containing the pack.</param>
+        /// <param name="pack">Pack index to check.</param>
         public static void CheckForBoxPerfect(int box, int pack)
         {
             if (CTRPreferences.IsPackPerfect(box, pack) && pack < name.Length)
@@ -165,11 +194,18 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Posts the box-perfect achievement for a pack using its configured box index.
+        /// </summary>
+        /// <param name="pack">Pack index to check.</param>
         public static void CheckForBoxPerfect(int pack)
         {
             CheckForBoxPerfect(CTRPreferences.GetBoxForPack(pack), pack);
         }
 
+        /// <summary>
+        /// Handles result-box close completion, achievements, score persistence, and close state.
+        /// </summary>
         public void BoxClosed()
         {
             _ = Application.SharedPreferences();
@@ -218,6 +254,9 @@ namespace CutTheRope.GameMain
             boxCloseHandled = true;
         }
 
+        /// <summary>
+        /// Updates level result UI, persists improved score data, and starts the level-won result flow.
+        /// </summary>
         public void LevelWon()
         {
             boxCloseHandled = false;
@@ -301,22 +340,35 @@ namespace CutTheRope.GameMain
             UnlockNextLevel();
         }
 
+        /// <summary>
+        /// Starts the level-lost box transition.
+        /// </summary>
         public void LevelLost()
         {
             ((BoxOpenClose)GetView(0).GetChild(4)).LevelLost();
         }
 
+        /// <summary>
+        /// Handles the game-scene win callback.
+        /// </summary>
         public void GameWon()
         {
             PostFlurryLevelEvent("LEVEL_WON");
             LevelWon();
         }
 
+        /// <summary>
+        /// Handles the game-scene loss callback.
+        /// </summary>
         public void GameLost()
         {
             PostFlurryLevelEvent("LEVEL_LOST");
         }
 
+        /// <summary>
+        /// Determines whether the current level is the last level in the active pack.
+        /// </summary>
+        /// <returns><see langword="true"/> when the current level is the final pack level; otherwise, <see langword="false"/>.</returns>
         public bool LastLevelInPack()
         {
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
@@ -329,6 +381,9 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <summary>
+        /// Unlocks the next level in the active pack when one exists and is still locked.
+        /// </summary>
         public static void UnlockNextLevel()
         {
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
@@ -341,6 +396,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Handles pause, result, audio, restart, and navigation buttons for the game controller.
+        /// </summary>
+        /// <param name="n">Game controller button identifier.</param>
         public void OnButtonPressed(GameControllerButtonId n)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -472,11 +531,16 @@ namespace CutTheRope.GameMain
             CTRRootController.LogEvent(n != GameControllerButtonId.ExitFromLose ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
         }
 
+        /// <inheritdoc />
         void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
         {
             OnButtonPressed(GameControllerButtonId.FromButtonId(buttonId));
         }
 
+        /// <summary>
+        /// Sets pause state, toggles HUD/menu visibility, and updates audio pause state.
+        /// </summary>
+        /// <param name="p"><see langword="true"/> to pause the game; <see langword="false"/> to resume it.</param>
         public void SetPaused(bool p)
         {
             if (!p)
@@ -506,6 +570,7 @@ namespace CutTheRope.GameMain
             mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
         }
 
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             View view = GetView(0);
@@ -541,6 +606,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override bool TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
             GameScene gameScene = (GameScene)GetView(0).GetChild(0);
@@ -579,6 +645,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override bool TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
             GameScene gameScene = (GameScene)GetView(0).GetChild(0);
@@ -612,10 +679,18 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <summary>
+        /// Posts a level analytics event.
+        /// </summary>
+        /// <param name="_">Analytics event name.</param>
+        /// <remarks>
+        /// No-op code.
+        /// </remarks>
         private static void PostFlurryLevelEvent(string _)
         {
         }
 
+        /// <inheritdoc />
         public override bool BackButtonPressed()
         {
             View view = GetView(0);
@@ -634,6 +709,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override bool MenuButtonPressed()
         {
             View view = GetView(0);
@@ -648,6 +724,9 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <summary>
+        /// Advances to the next level or deactivates the controller at the end of a non-picker pack.
+        /// </summary>
         public void OnNextLevel()
         {
             CTRPreferences.GameViewChanged("game");
@@ -663,6 +742,10 @@ namespace CutTheRope.GameMain
             SetPaused(false);
         }
 
+        /// <summary>
+        /// Clears all tracked touch slots and sends release events to the game scene.
+        /// </summary>
+        /// <param name="gs">Game scene that should receive synthetic touch releases.</param>
         public void ReleaseAllTouches(GameScene gs)
         {
             for (int i = 0; i < 5; i++)
@@ -672,11 +755,15 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Initializes ad-skipper state for the active game view.
+        /// </summary>
         public void SetAdSkipper()
         {
             _ = (GameView)GetView(0);
         }
 
+        /// <inheritdoc />
         public override bool MouseMoved(float x, float y)
         {
             View view = GetView(0);
@@ -693,6 +780,7 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <inheritdoc />
         public override void FullscreenToggled(bool isFullscreen)
         {
             View view = GetView(0);
@@ -703,6 +791,9 @@ namespace CutTheRope.GameMain
             gameScene?.FullscreenToggled(isFullscreen);
         }
 
+        /// <summary>
+        /// Plays the appropriate gameplay music for the active pack and seasonal event.
+        /// </summary>
         private static void PlayMusic()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -736,27 +827,48 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Button ID for exiting from the win result panel.</summary>
         public const int BUTTON_WIN_EXIT = 5;
+
+        /// <summary>Button ID for restarting from the win result panel.</summary>
         public const int BUTTON_WIN_RESTART = 8;
 
+        /// <summary>Button ID for advancing to the next level from the win result panel.</summary>
         public const int BUTTON_WIN_NEXT_LEVEL = 9;
+
+        /// <summary>Exit code for returning to the main menu from the pause menu.</summary>
         public const int EXIT_CODE_FROM_PAUSE_MENU = 0;
 
+        /// <summary>Exit code for returning to level select from the pause menu.</summary>
         public const int EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT = 1;
 
+        /// <summary>Exit code for returning to level select and advancing to the next pack.</summary>
         public const int EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT_NEXT_PACK = 2;
 
+        /// <summary>Whether gameplay is currently paused.</summary>
         private bool isGamePaused;
 
+        /// <summary>Exit code describing the selected controller deactivation route.</summary>
         public int exitCode;
 
+        /// <summary>Pause-menu label that displays the active map or best score.</summary>
         private Text mapNameLabel;
 
+        /// <summary>Maps tracked touch slots to platform touch IDs.</summary>
         private readonly int[] touchAddressMap = new int[5];
 
+        /// <summary>Temporary dim-time value saved while the pause menu is open.</summary>
         private int tmpDimTime;
 
+        /// <summary>Whether the result box close flow has already persisted score and achievement state.</summary>
         private bool boxCloseHandled;
+
+        /// <summary>
+        /// Achievement identifiers for perfect pack completion by pack index.
+        /// </summary>
+        /// <remarks>
+        /// Todo: Remove
+        /// </remarks>
         internal static readonly string[] name =
                 [
                     "1058364368",
@@ -773,6 +885,13 @@ namespace CutTheRope.GameMain
                     "com.zeptolab.ctr.spookyboxperfect",
                     "com.zeptolab.ctr.steamboxperfect"
                 ];
+
+        /// <summary>
+        /// Achievement identifiers for pack completion by pack index.
+        /// </summary>
+        /// <remarks>
+        /// Todo: Remove
+        /// </remarks>
         internal static readonly string[] nameArray =
                 [
                     "681486798",

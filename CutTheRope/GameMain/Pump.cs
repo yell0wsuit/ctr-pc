@@ -22,6 +22,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a pump from a texture.
         /// </summary>
+        /// <param name="t">Texture used by the pump.</param>
+        /// <returns>The initialized pump.</returns>
         public static Pump Pump_create(CTRTexture2D t)
         {
             return (Pump)new Pump().InitWithTexture(t);
@@ -30,6 +32,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a pump from a texture resource name.
         /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <returns>The initialized pump.</returns>
         public static Pump Pump_createWithResID(string resourceName)
         {
             return Pump_create(Application.GetTexture(resourceName));
@@ -40,6 +44,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="q">Quad index to draw.</param>
+        /// <returns>The initialized pump.</returns>
         public static Pump Pump_createWithResID(string resourceName, int q)
         {
             Pump pump = Pump_create(Application.GetTexture(resourceName));
@@ -65,8 +70,14 @@ namespace CutTheRope.GameMain
         /// </summary>
         public float angle;
 
+        /// <summary>
+        /// Left endpoint of the pump body after rotation.
+        /// </summary>
         public Vector t1;
 
+        /// <summary>
+        /// Right endpoint of the pump body after rotation.
+        /// </summary>
         public Vector t2;
 
         /// <summary>
@@ -94,14 +105,15 @@ namespace CutTheRope.GameMain
         /// </summary>
         public float initial_y;
 
+        /// <summary>
+        /// Initial rotated-circle binding used when restoring state.
+        /// </summary>
         public RotatedCircle initial_rotatedCircle;
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
-        /// <summary>
-        /// Returns the effective position of the pump for transporter calculations,
-        /// applying a rotated ConveyorOffset from the pump's origin.
-        /// </summary>
+        /// <inheritdoc />
         public Vector BindPoint
         {
             get
@@ -112,10 +124,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Sets the pump's position such that its effective transporter bind point
-        /// matches the given position, accounting for the rotated offset.
-        /// </summary>
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             float angleRad = DEGREES_TO_RADIANS(rotation);
@@ -125,16 +134,22 @@ namespace CutTheRope.GameMain
             y = adjusted.Y;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => width * 0.13f;
 
+        /// <inheritdoc />
         public float MinScale => 0.5f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;
