@@ -26,6 +26,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="timeline">Parent timeline.</param>
         /// <param name="trackType">Property type this track animates.</param>
         /// <param name="m">Maximum number of keyframes.</param>
+        /// <returns>The initialized track instance.</returns>
         public Track InitWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
         {
             t = timeline;
@@ -81,6 +82,7 @@ namespace CutTheRope.Framework.Visual
         /// Returns the cumulative time up to and including keyframe <paramref name="f"/>.
         /// </summary>
         /// <param name="f">Keyframe index.</param>
+        /// <returns>Cumulative time in seconds from the first keyframe through <paramref name="f"/>.</returns>
         public float GetFrameTime(int f)
         {
             float totalTime = 0f;
@@ -103,6 +105,9 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Initializes interpolation state between two keyframes over the given duration.
         /// </summary>
+        /// <param name="src">Source keyframe.</param>
+        /// <param name="dst">Destination keyframe.</param>
+        /// <param name="time">Interpolation duration in seconds.</param>
         private void InitKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
         {
             keyFrameTimeLeft = time;
@@ -334,6 +339,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Captures the element's current values into the given keyframe.
         /// </summary>
+        /// <param name="kf">Keyframe receiving the current element values.</param>
         private void SetKeyFrameFromElement(KeyFrame kf)
         {
             switch (type)
@@ -368,6 +374,8 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Copies the track-specific values from one keyframe to another.
         /// </summary>
+        /// <param name="src">Source keyframe.</param>
+        /// <param name="dst">Destination keyframe.</param>
         private void CopyTrackValue(KeyFrame src, KeyFrame dst)
         {
             switch (type)
@@ -404,6 +412,8 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns <see langword="true"/> if the <paramref name="transition"/> type uses Flash XML interpolation.
         /// </summary>
+        /// <param name="transition">Transition type to check.</param>
+        /// <returns><see langword="true"/> when the transition follows Flash interpolation rules.</returns>
         private static bool IsFlashInterpolationTransition(KeyFrame.TransitionType transition)
         {
             return transition is KeyFrame.TransitionType.FRAME_TRANSITION_FLASH_LINEAR
@@ -418,6 +428,9 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Computes the interpolation factor for Flash XML <paramref name="transition"/> types.
         /// </summary>
+        /// <param name="track">Track that provides elapsed and remaining keyframe timing.</param>
+        /// <param name="transition">Transition curve type.</param>
+        /// <returns>A clamped interpolation factor in the range [0, 1].</returns>
         private static float ComputeFlashInterpolationFactor(Track track, KeyFrame.TransitionType transition)
         {
             float clampedTimeLeft = MathF.Max(0f, track.keyFrameTimeLeft);
@@ -455,6 +468,8 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Evaluates a Flash ease-in-out curve at the given <paramref name="progress"/>.
         /// </summary>
+        /// <param name="progress">Normalized progress in the range [0, 1].</param>
+        /// <returns>Ease-in-out curve value in the range [0, 1].</returns>
         private static float EvaluateFlashEaseInOut(float progress)
         {
             float doubled = progress + progress;
@@ -470,6 +485,8 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Evaluates a Flash mirrored ease curve at the given <paramref name="progress"/>.
         /// </summary>
+        /// <param name="progress">Normalized progress in the range [0, 1].</param>
+        /// <returns>Mirrored ease curve value in the range [0, 1].</returns>
         private static float EvaluateFlashEaseMirrored(float progress)
         {
             float doubled = progress + progress;
@@ -483,6 +500,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Applies an interpolated value to the element based on the given <paramref name="factor"/> (0–1).
         /// </summary>
+        /// <param name="factor">Interpolation factor in the range [0, 1].</param>
         private void ApplyInterpolatedStep(float factor)
         {
             switch (type)
