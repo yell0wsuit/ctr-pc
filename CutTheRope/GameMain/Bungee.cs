@@ -942,10 +942,13 @@ namespace CutTheRope.GameMain
 
         /// <summary>Starting coordinate index for Christmas light placement in the current segment.</summary>
         private static int s_lightStartCoord;
+
         /// <summary>Number of coordinate indices to skip at the end of the current segment.</summary>
         private static int s_lightEndSkip;
+
         /// <summary>Running light index counter shared across head/tail draw calls.</summary>
         private static int s_lightCounter;
+
         /// <summary>Saved end overflow used to continue light placement into the tail segment.</summary>
         private static int s_lightSavedEnd;
 
@@ -957,8 +960,10 @@ namespace CutTheRope.GameMain
 
         /// <summary>Cached vertex array for main rope rendering.</summary>
         private static VertexPositionColor[] s_bungeeVerticesCache;
+
         /// <summary>Cached float array for outer glow vertex positions.</summary>
         private static float[] s_bungeePointerCache;
+
         /// <summary>Cached float array for inner rope vertex positions.</summary>
         private static float[] s_bungeePointerCache2;
 
@@ -1000,6 +1005,7 @@ namespace CutTheRope.GameMain
         {
             /// <summary>Normal bungee behavior.</summary>
             NORMAL,
+
             /// <summary>Locked bungee that does not respond to physics updates.</summary>
             LOCKED
         }

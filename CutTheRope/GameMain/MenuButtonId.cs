@@ -244,7 +244,6 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static readonly MenuButtonId BackFromLanguage = MenuButton.BackFromLanguage;
 
-        // Dynamic button IDs encode their type in the high byte and index in the low 24 bits.
         /// <summary>
         /// Tag used for dynamically generated level buttons.
         /// </summary>

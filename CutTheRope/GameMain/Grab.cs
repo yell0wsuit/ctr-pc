@@ -978,7 +978,6 @@ namespace CutTheRope.GameMain
         /// <summary>Bee visual attached to this grab.</summary>
         public Image bee;
 
-        // Combined obj_hook quad indices
         /// <summary>First random fixed hook back quad.</summary>
         private const int Hook01BackQuad = 0;
 

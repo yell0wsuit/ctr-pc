@@ -232,6 +232,7 @@ namespace CutTheRope.Framework.Visual
             /// Button is in the unpressed state.
             /// </summary>
             BUTTON_UP,
+
             /// <summary>
             /// Button is in the pressed state.
             /// </summary>

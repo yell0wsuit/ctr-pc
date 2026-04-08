@@ -476,26 +476,32 @@ namespace CutTheRope.Framework.Visual
             /// 32-bit RGBA (8 bits per channel).
             /// </summary>
             kTexture2DPixelFormat_RGBA8888,
+
             /// <summary>
             /// 16-bit RGB (5-6-5 bits).
             /// </summary>
             kTexture2DPixelFormat_RGB565,
+
             /// <summary>
             /// 16-bit RGBA (4 bits per channel).
             /// </summary>
             kTexture2DPixelFormat_RGBA4444,
+
             /// <summary>
             /// 16-bit RGBA (5-5-5-1 bits).
             /// </summary>
             kTexture2DPixelFormat_RGB5A1,
+
             /// <summary>
             /// 8-bit alpha only.
             /// </summary>
             kTexture2DPixelFormat_A8,
+
             /// <summary>
             /// PVRTC 2 bits per pixel compressed format.
             /// </summary>
             kTexture2DPixelFormat_PVRTC2,
+
             /// <summary>
             /// PVRTC 4 bits per pixel compressed format.
             /// </summary>

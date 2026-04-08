@@ -24,10 +24,12 @@ namespace CutTheRope.Helpers
             /// The currently running version string.
             /// </summary>
             public string CurrentVersion { get; init; }
+
             /// <summary>
             /// The latest available version string.
             /// </summary>
             public string LatestVersion { get; init; }
+
             /// <summary>
             /// URL to the release page for the latest version.
             /// </summary>
@@ -254,6 +256,7 @@ namespace CutTheRope.Helpers
         /// GitHub API endpoint for the latest release.
         /// </summary>
         private const string LatestReleaseUrl = "https://api.github.com/repos/yell0wsuit/cuttherope-dx/releases/latest";
+
         /// <summary>
         /// Fallback release page when API url is missing.
         /// </summary>
@@ -271,14 +274,17 @@ namespace CutTheRope.Helpers
         /// Cancellation token source for the update request.
         /// </summary>
         private static readonly CancellationTokenSource cts = new();
+
         /// <summary>
         /// Ensures the update check only starts once per session.
         /// </summary>
         private static int started;
+
         /// <summary>
         /// Ensures update info is consumed at most once.
         /// </summary>
         private static int consumed;
+
         /// <summary>
         /// Latest update info fetched from the server.
         /// </summary>

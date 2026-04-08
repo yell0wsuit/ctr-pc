@@ -763,14 +763,17 @@ namespace CutTheRope.GameMain
         /// The logical index for this mouse, used for ordering and activation.
         /// </summary>
         public int index;
+
         /// <summary>
         /// The radius within which the mouse can grab candy.
         /// </summary>
         public float grabRadius;
+
         /// <summary>
         /// Maximum time in seconds the mouse stays active before auto-retreating.
         /// </summary>
         public float activeDuration;
+
         /// <summary>
         /// The angle in degrees for the mouse's orientation.
         /// </summary>

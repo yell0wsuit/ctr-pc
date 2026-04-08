@@ -795,54 +795,67 @@ namespace CutTheRope.Framework.Visual
         /// Cache for colored polygon/fill vertices.
         /// </summary>
         private static VertexPositionColor[] s_coloredVerticesCache;
+
         /// <summary>
         /// Cache for line strip vertices.
         /// </summary>
         private static VertexPositionColor[] s_lineVerticesCache;
+
         /// <summary>
         /// Cache for antialiased line vertices.
         /// </summary>
         private static VertexPositionColor[] s_antialiasedLineVerticesCache;
+
         /// <summary>
         /// Cache for tiled draw vertices.
         /// </summary>
         private static VertexPositionNormalTexture[] s_tiledVerticesCache;
+
         /// <summary>
         /// Cache for tiled draw indices.
         /// </summary>
         private static short[] s_tiledIndicesCache;
+
         /// <summary>
         /// Cache for radial clipped quad vertices.
         /// </summary>
         private static VertexPositionNormalTexture[] s_radialVerticesCache;
+
         /// <summary>
         /// Cache for radial clipped quad indices.
         /// </summary>
         private static short[] s_radialIndicesCache;
+
         /// <summary>
         /// Cache for curve strip vertex positions.
         /// </summary>
         private static float[] s_curveVerticesCache;
+
         /// <summary>
         /// Cache for outer curve positions.
         /// </summary>
         private static float[] s_curveOuterCache;
+
         /// <summary>
         /// Cache for inner curve positions.
         /// </summary>
         private static float[] s_curveInnerCache;
+
         /// <summary>
         /// Cache for inner edge curve positions.
         /// </summary>
         private static float[] s_curveInnerEdgeCache;
+
         /// <summary>
         /// Cache for inner fade curve positions.
         /// </summary>
         private static float[] s_curveInnerFadeCache;
+
         /// <summary>
         /// Cache for curve vertex colors.
         /// </summary>
         private static RGBAColor[] s_curveColorCache;
+
         /// <summary>
         /// Maximum number of quads in a single tiled batch.
         /// </summary>

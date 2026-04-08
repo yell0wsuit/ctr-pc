@@ -36,15 +36,19 @@ namespace CutTheRope.GameMain.FingerTraces
 
         /// <summary>The additive glow particle layer.</summary>
         private readonly RedTraceParticles glowParticles = new(0.3f, FingerTraceBlendMode.Additive);
+
         /// <summary>The alpha-blended core particle layer.</summary>
         private readonly RedTraceParticles coreParticles = new(0.75f, FingerTraceBlendMode.Alpha);
+
         /// <summary>Recent segment directions used to smooth the emitter rotation.</summary>
         private readonly List<Vector> directionHistory = [];
 
         /// <summary>The reusable ribbon vertex cache.</summary>
         private VertexPositionColor[] ribbonVerticesCache;
+
         /// <summary>The remaining time in the active particle burst.</summary>
         private float particleTimer;
+
         /// <summary>The smoothed head rotation in degrees.</summary>
         private float averageRotation;
 

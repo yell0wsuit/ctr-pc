@@ -20,10 +20,12 @@ namespace CutTheRope.Framework.Visual
         /// Loaded font systems keyed by font file path.
         /// </summary>
         private static readonly Dictionary<string, FontSystem> fontSystems = [];
+
         /// <summary>
         /// Cached font instances keyed by a composite cache key.
         /// </summary>
         private static readonly Dictionary<string, FontStashFont> fontCache = [];
+
         /// <summary>
         /// The graphics device used for font rendering.
         /// </summary>

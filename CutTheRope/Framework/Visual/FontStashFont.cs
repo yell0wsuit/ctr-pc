@@ -16,14 +16,17 @@ namespace CutTheRope.Framework.Visual
         /// The underlying FontStashSharp dynamic font.
         /// </summary>
         private DynamicSpriteFont font;
+
         /// <summary>
         /// Font size in pixels.
         /// </summary>
         private float fontSize;
+
         /// <summary>
         /// Text rendering color.
         /// </summary>
         private Color textColor;
+
         /// <summary>
         /// Stroke and shadow effect settings.
         /// </summary>
