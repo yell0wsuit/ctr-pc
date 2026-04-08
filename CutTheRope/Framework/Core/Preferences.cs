@@ -40,9 +40,24 @@ namespace CutTheRope.Framework.Core
             "IAP_BANNERS"
         ];
 
+        /// <summary>
+        /// File name used for the global preferences JSON file.
+        /// </summary>
         private const string GlobalSaveFileName = "ctr_preferences.json";
+
+        /// <summary>
+        /// File name prefix used for per-box save slot JSON files.
+        /// </summary>
         private const string DynamicBoxSaveFilePrefix = "ctrsave_slot";
+
+        /// <summary>
+        /// File extension used for per-box save slot JSON files.
+        /// </summary>
         private const string DynamicBoxSaveFileExtension = ".json";
+
+        /// <summary>
+        /// Directory name used for Cut the Rope DX save data.
+        /// </summary>
         private const string SaveFolderName = "CutTheRopeDX_SaveData";
 
         /// <summary>
@@ -97,10 +112,14 @@ namespace CutTheRope.Framework.Core
             return int.TryParse(slotPart, NumberStyles.None, CultureInfo.InvariantCulture, out slot) && slot >= 0;
         }
 
-        // Global preferences (PREFS_*, IAP_*, SOUND_ON, etc.)
+        /// <summary>
+        /// Global preferences keyed by their persisted preference names.
+        /// </summary>
         private static readonly Dictionary<string, object> GlobalData = [];
 
-        // Per-box game data (STARS_, SCORE_, UNLOCKED_) — indexed by box index
+        /// <summary>
+        /// Per-box game data dictionaries indexed by box index.
+        /// </summary>
         private static readonly List<Dictionary<string, object>> BoxData = [];
 
         /// <summary>

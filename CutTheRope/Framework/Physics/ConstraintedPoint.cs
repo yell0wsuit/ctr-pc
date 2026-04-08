@@ -306,11 +306,29 @@ namespace CutTheRope.Framework.Physics
             constrainedPoint.pos = VectAdd(constrainedPoint.pos, constrainedPoint.posDelta);
         }
 
+        /// <summary>
+        /// Sentinel coordinate used when a point is not pinned.
+        /// </summary>
         private const float PIN_UNSET_COORDINATE = -1f;
+
+        /// <summary>
+        /// Sentinel rest length used before a constraint distance has been initialized.
+        /// </summary>
         private const float MISSING_REST_LENGTH = -1f;
+
+        /// <summary>
+        /// Minimum distance used when normalizing near-overlapping constraints.
+        /// </summary>
         private const float MIN_CONSTRAINT_DISTANCE = 1f;
+
+        /// <summary>
+        /// Fixed timestep multiplier used by constrained point integration.
+        /// </summary>
         private const float QCP_FIXED_TIMESTEP = 0.016f;
 
+        /// <summary>
+        /// Fallback constraint direction used when two points overlap exactly.
+        /// </summary>
         private static readonly Vector DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION = new(1f, 1f);
 
         /// <summary>

@@ -61,8 +61,19 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal struct TraceSegment(Vector start, Vector end, float life)
     {
+        /// <summary>
+        /// Segment start point in world space.
+        /// </summary>
         public Vector Start = start;
+
+        /// <summary>
+        /// Segment end point in world space.
+        /// </summary>
         public Vector End = end;
+
+        /// <summary>
+        /// Remaining segment lifetime in seconds.
+        /// </summary>
         public float Life = life;
     }
 
@@ -71,12 +82,34 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal abstract class FingerTrace : FrameworkTypes
     {
+        /// <summary>
+        /// Cached trace sprite images keyed by texture resource name.
+        /// </summary>
         private readonly Dictionary<string, Image> imageCache = [];
+
+        /// <summary>
+        /// Live trace segments currently fading out.
+        /// </summary>
         private readonly List<TraceSegment> segments = [];
 
+        /// <summary>
+        /// Whether the trace is currently accepting appended points.
+        /// </summary>
         private bool isActive;
+
+        /// <summary>
+        /// Whether <see cref="lastPoint" /> contains a valid previous touch position.
+        /// </summary>
         private bool hasLastPoint;
+
+        /// <summary>
+        /// Last touch position used to create the next segment.
+        /// </summary>
         private Vector lastPoint;
+
+        /// <summary>
+        /// Most recent immutable snapshot of sampled trace points and sprites.
+        /// </summary>
         private FingerTraceSnapshot snapshot = new([], []);
 
         /// <summary>
@@ -312,6 +345,9 @@ namespace CutTheRope.Framework.Visual
             return image;
         }
 
+        /// <summary>
+        /// Rebuilds the immutable trace snapshot from the current live trace state.
+        /// </summary>
         private void RefreshSnapshot()
         {
             List<Vector> sampledPoints = [];
