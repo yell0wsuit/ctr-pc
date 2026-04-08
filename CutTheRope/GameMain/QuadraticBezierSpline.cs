@@ -10,8 +10,15 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class QuadraticBezierSpline
     {
+        /// <summary>
+        /// Quadratic Bezier segments that make up this spline.
+        /// </summary>
         private readonly SplineSegment[] segments;
 
+        /// <summary>
+        /// Initializes a spline from one or more precomputed quadratic Bezier segments.
+        /// </summary>
+        /// <param name="segments">Segments to evaluate in order.</param>
         private QuadraticBezierSpline(params SplineSegment[] segments)
         {
             this.segments = segments;
@@ -125,6 +132,13 @@ namespace CutTheRope.GameMain
             return [.. sampled];
         }
 
+        /// <summary>
+        /// Samples evenly spaced points along a straight line.
+        /// </summary>
+        /// <param name="start">Line start point.</param>
+        /// <param name="end">Line end point.</param>
+        /// <param name="subdivisions">Number of line subdivisions to sample.</param>
+        /// <returns>The sampled line points, including both endpoints.</returns>
         private static Vector[] SampleLine(Vector start, Vector end, int subdivisions)
         {
             List<Vector> sampled = [start];
@@ -139,11 +153,26 @@ namespace CutTheRope.GameMain
             return [.. sampled];
         }
 
+        /// <summary>
+        /// Computes the midpoint between two vectors.
+        /// </summary>
+        /// <param name="a">First point.</param>
+        /// <param name="b">Second point.</param>
+        /// <returns>The midpoint between <paramref name="a" /> and <paramref name="b" />.</returns>
         private static Vector Midpoint(Vector a, Vector b)
         {
             return new Vector((a.X + b.X) * 0.5f, (a.Y + b.Y) * 0.5f);
         }
 
+        /// <summary>
+        /// Stores the quadratic coefficients for one spline segment.
+        /// </summary>
+        /// <param name="Ax">Quadratic coefficient for the X axis.</param>
+        /// <param name="Ay">Quadratic coefficient for the Y axis.</param>
+        /// <param name="Bx">Linear coefficient for the X axis.</param>
+        /// <param name="By">Linear coefficient for the Y axis.</param>
+        /// <param name="Cx">Constant coefficient for the X axis.</param>
+        /// <param name="Cy">Constant coefficient for the Y axis.</param>
         private readonly record struct SplineSegment(float Ax, float Ay, float Bx, float By, float Cx, float Cy);
     }
 }
