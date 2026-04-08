@@ -11,7 +11,7 @@ namespace CutTheRope.Framework.Visual
         public RGBAColor FillColor { get; set; }
 
         /// <summary>
-        /// Creates a new <see cref="ColorRect"/> with the specified dimensions and color.
+        /// Creates a new <see cref="ColorRect"/> with the specified dimensions and <paramref name="color"/>.
         /// </summary>
         /// <param name="w">Width of the rectangle in pixels.</param>
         /// <param name="h">Height of the rectangle in pixels.</param>

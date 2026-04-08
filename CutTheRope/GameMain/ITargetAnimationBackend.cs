@@ -14,9 +14,11 @@ namespace CutTheRope.GameMain
         GameObject TargetObject { get; }
 
         /// <summary>Gets the default horizontal scale that should be applied to the target object.</summary>
+        /// <returns>Default X scale for the target object.</returns>
         float GetTargetBaseScaleX();
 
         /// <summary>Gets the default vertical scale that should be applied to the target object.</summary>
+        /// <returns>Default Y scale for the target object.</returns>
         float GetTargetBaseScaleY();
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace CutTheRope.GameMain
         /// Checks whether the requested target animation state is currently active.
         /// </summary>
         /// <param name="state">Animation state to query.</param>
-        /// <returns><c>true</c> if the state is active; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the state is active; otherwise <see langword="false" />.</returns>
         bool IsPlaying(TargetAnimationState state);
 
         /// <summary>
@@ -60,18 +62,25 @@ namespace CutTheRope.GameMain
         void TriggerBlink();
 
         /// <summary>Advances all sleep overlay animations by <paramref name="delta"/> seconds.</summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
         void UpdateSleepOverlays(float delta);
 
         /// <summary>Advances backend-specific non-sleep overlays by <paramref name="delta"/> seconds.</summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
         void UpdateAdditionalOverlays(float delta);
 
         /// <summary>Moves all sleep overlay animations to the given position.</summary>
+        /// <param name="x">Target X position.</param>
+        /// <param name="y">Target Y position.</param>
         void SyncSleepOverlayPosition(float x, float y);
 
         /// <summary>Updates the spawn position used by backend-specific non-sleep overlays.</summary>
+        /// <param name="x">Target X position.</param>
+        /// <param name="y">Target Y position.</param>
         void SyncAdditionalOverlayPosition(float x, float y);
 
         /// <summary>Sets visibility and playback state of all sleep overlay animations.</summary>
+        /// <param name="visible"><see langword="true"/> to show overlays; otherwise <see langword="false"/>.</param>
         void SetSleepOverlayVisible(bool visible);
 
         /// <summary>Draws all sleep overlay animations that are currently visible.</summary>

@@ -6,8 +6,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Particle effect that breaks the candy into spinning fragments when it is destroyed.
+    /// </summary>
     internal sealed class CandyBreak : RotateableMultiParticles
     {
+        /// <inheritdoc />
         public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {
             if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
@@ -54,6 +58,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
@@ -66,6 +71,7 @@ namespace CutTheRope.GameMain
             particle.height = rectangle.h * particle.size;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -82,8 +88,14 @@ namespace CutTheRope.GameMain
             PostDraw();
         }
 
+        /// <summary>Cached vertex array reused across draw calls to avoid per-frame allocation.</summary>
         private VertexPositionNormalTexture[] verticesCache;
 
+        /// <summary>
+        /// Returns a cached vertex array, reallocating if the cache is too small.
+        /// </summary>
+        /// <param name="vertexCount">Minimum required capacity.</param>
+        /// <returns>The cached or newly allocated array.</returns>
         private VertexPositionNormalTexture[] GetVertexBuffer(int vertexCount)
         {
             if (verticesCache == null || verticesCache.Length < vertexCount)

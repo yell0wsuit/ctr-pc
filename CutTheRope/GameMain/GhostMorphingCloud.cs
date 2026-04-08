@@ -3,8 +3,12 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Particle effect used when a ghost morphs between visual states.
+    /// </summary>
     internal sealed class GhostMorphingCloud : MultiParticles
     {
+        /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
             angle += 360f / totalParticles;
@@ -19,6 +23,10 @@ namespace CutTheRope.GameMain
             particle.deltaColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0f);
         }
 
+        /// <summary>
+        /// Initializes the ghost morphing cloud particle system with its texture and default emission settings.
+        /// </summary>
+        /// <returns>The initialized ghost morphing cloud.</returns>
         public GhostMorphingCloud Init()
         {
             if (InitWithTotalParticlesandImageGrid(5, Image.Image_createWithResID(Resources.Img.ObjGhost)) != null)
@@ -35,6 +43,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -64,6 +73,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Starts the ghost morphing cloud using its default particle count.
+        /// </summary>
         public void StartSystem()
         {
             StartSystem(5);

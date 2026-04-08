@@ -4,7 +4,7 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
@@ -12,8 +12,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Physics-backed rope used for bungee connections, rope cutting, and seasonal rope rendering.
+    /// </summary>
     internal sealed class Bungee : ConstraintSystem
     {
+        /// <summary>
+        /// Draws a single antialiased line segment, continuing from the previous segment's edge vertices.
+        /// </summary>
+        /// <param name="x1">Start X coordinate.</param>
+        /// <param name="y1">Start Y coordinate.</param>
+        /// <param name="x2">End X coordinate.</param>
+        /// <param name="y2">End Y coordinate.</param>
+        /// <param name="size">Half-width of the line.</param>
+        /// <param name="color">Line color.</param>
+        /// <param name="lx">Left edge X from the previous segment; set to <c>-1</c> for the first segment.</param>
+        /// <param name="ly">Left edge Y from the previous segment.</param>
+        /// <param name="rx">Right edge X from the previous segment.</param>
+        /// <param name="ry">Right edge Y from the previous segment.</param>
+        /// <param name="highlighted">Whether to render with additive highlight blending.</param>
         private static void DrawAntialiasedLineContinued(float x1, float y1, float x2, float y2, float size, RGBAColor color, ref float lx, ref float ly, ref float rx, ref float ry, bool highlighted)
         {
             Vector v = Vect(x1, y1);
@@ -111,6 +128,13 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Builds an array of colored vertices from parallel position and color arrays.
+        /// </summary>
+        /// <param name="positions">Flat array of X/Y coordinate pairs.</param>
+        /// <param name="colors">Per-vertex colors.</param>
+        /// <param name="vertexCount">Number of vertices to build.</param>
+        /// <returns>The populated vertex array.</returns>
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
         {
             VertexPositionColor[] vertices = GetVertexCache(ref s_bungeeVerticesCache, vertexCount);
@@ -123,6 +147,12 @@ namespace CutTheRope.GameMain
             return vertices;
         }
 
+        /// <summary>
+        /// Returns a cached vertex array, reallocating if the cache is too small.
+        /// </summary>
+        /// <param name="cache">Reference to the cached array.</param>
+        /// <param name="vertexCount">Minimum required capacity.</param>
+        /// <returns>The cached or newly allocated array.</returns>
         private static VertexPositionColor[] GetVertexCache(ref VertexPositionColor[] cache, int vertexCount)
         {
             if (cache == null || cache.Length < vertexCount)
@@ -132,6 +162,12 @@ namespace CutTheRope.GameMain
             return cache;
         }
 
+        /// <summary>
+        /// Returns a cached float array, reallocating if the cache is too small.
+        /// </summary>
+        /// <param name="cache">Reference to the cached array.</param>
+        /// <param name="length">Minimum required capacity.</param>
+        /// <returns>The cached or newly allocated array.</returns>
         private static float[] GetFloatCache(ref float[] cache, int length)
         {
             if (cache == null || cache.Length < length)
@@ -141,12 +177,25 @@ namespace CutTheRope.GameMain
             return cache;
         }
 
+        /// <summary>
+        /// Writes a vector's X and Y components into a float buffer at the current index.
+        /// </summary>
+        /// <param name="buffer">The target float array.</param>
+        /// <param name="index">Write position; advanced by 2 after the call.</param>
+        /// <param name="v">The vector to write.</param>
         private static void WritePair(float[] buffer, ref int index, Vector v)
         {
             buffer[index++] = v.X;
             buffer[index++] = v.Y;
         }
 
+        /// <summary>
+        /// Draws an entire bungee rope by sampling a bezier curve through the given constraint points.
+        /// </summary>
+        /// <param name="b">The bungee instance being drawn.</param>
+        /// <param name="pts">Array of constraint point positions along the rope.</param>
+        /// <param name="count">Number of valid points in <paramref name="pts"/>.</param>
+        /// <param name="points">Number of bezier sample points per segment.</param>
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points)
         {
             float alphaMultiplier = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
@@ -321,6 +370,17 @@ namespace CutTheRope.GameMain
             b.DrawChristmasLights(alphaMultiplier);
         }
 
+        /// <summary>
+        /// Initializes a bungee rope between head and tail constraint points.
+        /// </summary>
+        /// <param name="h">Optional existing head constraint point; a new anchor is created when this is <see langword="null"/>.</param>
+        /// <param name="hx">Initial head X position.</param>
+        /// <param name="hy">Initial head Y position.</param>
+        /// <param name="t">Optional existing tail constraint point; a new tail is created when this is <see langword="null"/>.</param>
+        /// <param name="tx">Initial tail X position.</param>
+        /// <param name="ty">Initial tail Y position.</param>
+        /// <param name="len">Initial rope length used to roll out intermediate rope segments.</param>
+        /// <returns>The initialized bungee instance.</returns>
         public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
         {
             relaxationTimes = 30;
@@ -358,6 +418,10 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Calculates the current polyline length across all bungee constraint points.
+        /// </summary>
+        /// <returns>The approximate current bungee length in world units.</returns>
         public int GetLength()
         {
             int totalLength = 0;
@@ -375,11 +439,20 @@ namespace CutTheRope.GameMain
             return totalLength;
         }
 
+        /// <summary>
+        /// Rolls additional rope length into the bungee without applying a placement offset.
+        /// </summary>
+        /// <param name="rollLen">Amount of rope length to add.</param>
         public void Roll(float rollLen)
         {
             RollplacingWithOffset(rollLen, vectZero);
         }
 
+        /// <summary>
+        /// Rolls additional rope length into the bungee and places new segments using an offset.
+        /// </summary>
+        /// <param name="rollLen">Amount of rope length to add.</param>
+        /// <param name="off">Offset applied when placing new intermediate constraint points.</param>
         public void RollplacingWithOffset(float rollLen, Vector off)
         {
             ConstraintedPoint i = parts[^2];
@@ -415,6 +488,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Removes rope length from the tail side of the bungee.
+        /// </summary>
+        /// <param name="amount">Amount of rope length to remove.</param>
+        /// <returns>Remaining amount that could not be removed.</returns>
         public float RollBack(float amount)
         {
             float remainingAmount = amount;
@@ -460,6 +538,10 @@ namespace CutTheRope.GameMain
             return remainingAmount;
         }
 
+        /// <summary>
+        /// Removes or detaches a bungee segment and weakens the remaining free points.
+        /// </summary>
+        /// <param name="part">Index of the segment part to remove.</param>
         public void RemovePart(int part)
         {
             forceWhite = false;
@@ -497,6 +579,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Marks the bungee as cut at a segment index and starts the cut fade.
+        /// </summary>
+        /// <param name="part">Index of the segment part where the bungee was cut.</param>
         public void SetCut(int part)
         {
             cut = part;
@@ -504,6 +590,9 @@ namespace CutTheRope.GameMain
             forceWhite = true;
         }
 
+        /// <summary>
+        /// Adds constraints that keep rope segments closer to the pinned anchor.
+        /// </summary>
         public void Strengthen()
         {
             int count = parts.Count;
@@ -528,11 +617,17 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             Update(delta, 1f);
         }
 
+        /// <summary>
+        /// Updates bungee physics with a custom Verlet integration coefficient.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds since the last update.</param>
+        /// <param name="koeff">Coefficient passed to constraint-point physics updates.</param>
         public void Update(float delta, float koeff)
         {
             if (cutTime > 0)
@@ -562,6 +657,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             int count = parts.Count;
@@ -632,9 +728,10 @@ namespace CutTheRope.GameMain
         /// Draws Christmas lights along the rope.
         /// Matches the original iOS implementation: lights are placed at every 6 bezier sample points
         /// (12 coord indices), skipping 4 points at the start and end of each segment.
-        /// Uses static state (s_lightStartCoord, s_lightEndSkip, etc.) set by Draw() to coordinate
+        /// Uses static state (<see cref="s_lightStartCoord" />, <see cref="s_lightEndSkip" />, etc.) set by <see cref="Draw" /> to coordinate
         /// light placement across head/tail segments when the rope is cut.
         /// </summary>
+        /// <param name="alpha">Alpha multiplier applied to the light sprites.</param>
         private void DrawChristmasLights(float alpha)
         {
             if (!SpecialEvents.IsXmas || drawPtsCount < 4 || drawPts == null || alpha <= 0f)
@@ -718,6 +815,7 @@ namespace CutTheRope.GameMain
             Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -744,6 +842,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Moves the anchor to a new position, shifting all rope parts by the same delta.
         /// </summary>
+        /// <param name="newPos">New world-space position for the bungee anchor.</param>
         public void MoveAnchor(Vector newPos)
         {
             Vector oldPos = bungeeAnchor != null ? bungeeAnchor.pos : Vect(0f, 0f);
@@ -771,27 +870,40 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Number of constraint relaxation passes used by the bungee solver.</summary>
         public const int BUNGEE_RELAXION_TIMES = 30;
+
+        /// <summary>Whether the bungee should be rendered with highlight brightness.</summary>
         public bool highlighted;
 
+        /// <summary>Rest length used between adjacent bungee constraint points.</summary>
         public static float BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
+        /// <summary>Head anchor constraint point for the bungee.</summary>
         public ConstraintedPoint bungeeAnchor;
 
+        /// <summary>Tail constraint point for the bungee.</summary>
         public ConstraintedPoint tail;
 
+        /// <summary>Cut segment index, or <c>-1</c> when the bungee is uncut.</summary>
         public int cut;
 
+        /// <summary>Current relaxation bucket derived from the bungee stretch distance.</summary>
         public int relaxed;
 
+        /// <summary>Initial candle angle used by candle-related bungee behavior.</summary>
         public float initialCandleAngle;
 
+        /// <summary>Whether this bungee is marked as the selected or active special instance.</summary>
         public bool chosenOne;
 
+        /// <summary>Current bungee behavior mode.</summary>
         public int bungeeMode;
 
+        /// <summary>Whether the bungee should render in white during a cut transition.</summary>
         public bool forceWhite;
 
+        /// <summary>Remaining cut fade time in seconds.</summary>
         public float cutTime;
 
         /// <summary>
@@ -801,16 +913,20 @@ namespace CutTheRope.GameMain
         public float[] drawPts = new float[ActivePhysicsConstants.DrawPtsBufferSize];
 
         /// <summary>
-        /// Number of valid coordinates in the drawPts array (actual length is drawPtsCount * 2).
+        /// Number of valid coordinates in the <see cref="drawPts" /> array.
         /// </summary>
         public int drawPtsCount;
 
+        /// <summary>Base rendered line width for the bungee.</summary>
         public float lineWidth;
 
+        /// <summary>Whether tail-side rope parts should be hidden after the bungee is cut.</summary>
         public bool hideTailParts;
 
+        /// <summary>Random number generator used for Christmas light frame selection.</summary>
         private static readonly Random christmasRandom = new();
 
+        /// <summary>Seed captured on first Christmas light draw for reproducibility.</summary>
         private int? lightRandomSeed;
 
         /// <summary>
@@ -824,20 +940,34 @@ namespace CutTheRope.GameMain
         /// </summary>
         private int lightsCount = -1;
 
-        // Static state for coordinating lights across head/tail segments
+        /// <summary>Starting coordinate index for Christmas light placement in the current segment.</summary>
         private static int s_lightStartCoord;
+
+        /// <summary>Number of coordinate indices to skip at the end of the current segment.</summary>
         private static int s_lightEndSkip;
+
+        /// <summary>Running light index counter shared across head/tail draw calls.</summary>
         private static int s_lightCounter;
+
+        /// <summary>Saved end overflow used to continue light placement into the tail segment.</summary>
         private static int s_lightSavedEnd;
 
+        /// <summary>Whether this bungee owns and should dispose the anchor point.</summary>
         private bool ownsAnchor;
 
+        /// <summary>Whether this bungee owns and should dispose the tail point.</summary>
         private bool ownsTail;
 
+        /// <summary>Cached vertex array for main rope rendering.</summary>
         private static VertexPositionColor[] s_bungeeVerticesCache;
+
+        /// <summary>Cached float array for outer glow vertex positions.</summary>
         private static float[] s_bungeePointerCache;
+
+        /// <summary>Cached float array for inner rope vertex positions.</summary>
         private static float[] s_bungeePointerCache2;
 
+        /// <summary>Per-vertex color array for the outer glow triangle strip.</summary>
         private static readonly RGBAColor[] ccolors =
         [
             RGBAColor.transparentRGBA,
@@ -850,6 +980,7 @@ namespace CutTheRope.GameMain
             RGBAColor.transparentRGBA
         ];
 
+        /// <summary>Per-vertex color array for the inner rope triangle strip.</summary>
         private static readonly RGBAColor[] ccolors2 =
         [
             RGBAColor.transparentRGBA,
@@ -864,11 +995,18 @@ namespace CutTheRope.GameMain
             RGBAColor.transparentRGBA
         ];
 
+        /// <summary>Default dark base color used when setting the renderer before drawing.</summary>
         private static Color s_Color1 = new(0f, 0f, 0.4f, 1f);
 
+        /// <summary>
+        /// Bungee behavior modes.
+        /// </summary>
         private enum BUNGEE_MODE
         {
+            /// <summary>Normal bungee behavior.</summary>
             NORMAL,
+
+            /// <summary>Locked bungee that does not respond to physics updates.</summary>
             LOCKED
         }
     }

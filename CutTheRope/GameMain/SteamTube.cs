@@ -12,6 +12,9 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class SteamTube : BaseElement, ITimelineDelegate, ITransporterItem, ITransporterBindAware, ITransporterScaleAware
     {
+        /// <summary>
+        /// Initializes a new steam tube with default state and an empty delayed dispatcher.
+        /// </summary>
         public SteamTube()
         {
             dd = new DelayedDispatcher();
@@ -28,6 +31,9 @@ namespace CutTheRope.GameMain
         /// base heights (32.9f/94f/141f), and vertical offset (1f).
         /// Does NOT scale: sine wave modulation amplitude (always 1f).
         /// </param>
+        /// <param name="position">World-space position of the tube base.</param>
+        /// <param name="angle">Rotation angle in degrees.</param>
+        /// <returns>This instance for chaining.</returns>
         public SteamTube InitWithPositionAngle(Vector position, float angle, float heightScale = 1f)
         {
             x = position.X;
@@ -67,6 +73,9 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <summary>
+        /// Draws the tube body, valve, and back-layer steam puffs.
+        /// </summary>
         public void DrawBack()
         {
             PreDraw();
@@ -76,6 +85,9 @@ namespace CutTheRope.GameMain
             RestoreTransformations(this);
         }
 
+        /// <summary>
+        /// Draws the front-layer steam puffs.
+        /// </summary>
         public void DrawFront()
         {
             PreDraw();
@@ -86,17 +98,23 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Gets current steam height with sine wave modulation for pulsing effect.
         /// </summary>
+        /// <returns>The modulated steam height in world units.</returns>
         public float GetCurrentHeightModulated()
         {
             float currentHeight = GetCurrentHeight();
             return currentHeight + (heightScale * Sinf(6f * phase));
         }
 
+        /// <summary>
+        /// Gets the height scale factor applied to this steam tube.
+        /// </summary>
+        /// <returns>The height scale multiplier.</returns>
         public float GetHeightScale()
         {
             return heightScale;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -104,6 +122,7 @@ namespace CutTheRope.GameMain
             phase += delta;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -118,6 +137,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
@@ -155,18 +175,22 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             BaseElement element = t.element;
             element.parent.RemoveChild(element);
         }
 
+        /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
 
+        /// <inheritdoc />
         public Vector BindPoint
         {
             get
@@ -177,10 +201,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Sets the steam tube's position so its transporter bind point matches
-        /// the given world point (inverse of <see cref="BindPoint"/>).
-        /// </summary>
+        /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
             float angle = DEGREES_TO_RADIANS(rotation);
@@ -190,21 +211,28 @@ namespace CutTheRope.GameMain
             y = adjusted.Y;
         }
 
+        /// <inheritdoc />
         public float CollisionRadius => 52.5f;
 
+        /// <inheritdoc />
         public float MinScale => 0.7f;
 
+        /// <inheritdoc />
         public float MaxScale => 1.0f;
 
+        /// <inheritdoc />
         public float TransporterScale { get; set; } = 1.0f;
 
+        /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
+        /// <inheritdoc />
         public void WillBind()
         {
             IsDrawnByTransporter = true;
         }
 
+        /// <inheritdoc />
         public void SetTransporterScale(float scale)
         {
             scaleX = scale;
@@ -228,6 +256,7 @@ namespace CutTheRope.GameMain
         /// PC vs Windows Phone: Returns base heights (32.9f/94f/141f) scaled by heightScale.
         /// Windows Phone equivalent returns unscaled values.
         /// </summary>
+        /// <returns>The base steam height in world units.</returns>
         private float GetCurrentHeight()
         {
             float baseHeight = steamState switch
@@ -240,6 +269,9 @@ namespace CutTheRope.GameMain
             return baseHeight * heightScale;
         }
 
+        /// <summary>
+        /// Rebuilds all steam puff animations for the current valve state.
+        /// </summary>
         private void AdjustSteam()
         {
             phase = 0f;
@@ -342,6 +374,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Delayed callback that enables a puff element and starts its float and sprite animation.
+        /// </summary>
+        /// <param name="param">The <see cref="BaseElement"/> wrapping the puff animation.</param>
         private void StartPuffFloatingAndAnimation(FrameworkTypes param)
         {
             BaseElement baseElement = (BaseElement)param;
@@ -351,19 +387,28 @@ namespace CutTheRope.GameMain
             child.PlayTimeline(0);
         }
 
+        /// <summary>Scale factor applied to tube dimensions and steam heights.</summary>
         private float heightScale = 1f;
+
+        /// <summary>Current valve state: 0 = low, 1 = medium, 2 = high.</summary>
         public int steamState;
 
+        /// <summary>Dispatcher for delayed puff animation start callbacks.</summary>
         private DelayedDispatcher dd;
 
+        /// <summary>Tube body image.</summary>
         private Image tube;
 
+        /// <summary>Valve knob image that rotates on touch.</summary>
         private Image valve;
 
+        /// <summary>Container for back-layer steam puff animations.</summary>
         private BaseElement steamBack;
 
+        /// <summary>Container for front-layer steam puff animations.</summary>
         private BaseElement steamFront;
 
+        /// <summary>Elapsed time used for sine wave modulation of steam height.</summary>
         private float phase;
 
     }

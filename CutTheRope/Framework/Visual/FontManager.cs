@@ -16,18 +16,40 @@ namespace CutTheRope.Framework.Visual
     /// </summary>
     internal static class FontManager
     {
+        /// <summary>
+        /// Loaded font systems keyed by font file path.
+        /// </summary>
         private static readonly Dictionary<string, FontSystem> fontSystems = [];
+
+        /// <summary>
+        /// Cached font instances keyed by a composite cache key.
+        /// </summary>
         private static readonly Dictionary<string, FontStashFont> fontCache = [];
+
+        /// <summary>
+        /// The graphics device used for font rendering.
+        /// </summary>
         private static GraphicsDevice graphicsDevice;
 
+        /// <summary>
+        /// Initializes the font manager with the specified graphics <paramref name="device"/>.
+        /// </summary>
+        /// <param name="device">Graphics device for font rendering.</param>
         public static void Initialize(GraphicsDevice device)
         {
             graphicsDevice = device ?? throw new ArgumentNullException(nameof(device));
         }
 
         /// <summary>
-        /// Loads a FontStashSharp font from a TTF file.
+        /// Loads a FontStashSharp font from a TTF/OTF file.
         /// </summary>
+        /// <param name="fontPath">Path to the TTF/OTF font file.</param>
+        /// <param name="fontSize">Font size in pixels.</param>
+        /// <param name="color">Text color.</param>
+        /// <param name="effects">Stroke and shadow effect settings.</param>
+        /// <param name="lineSpacing">Extra spacing between lines.</param>
+        /// <param name="topSpacing">Extra spacing above the first line.</param>
+        /// <returns>A cached or newly created <see cref="FontStashFont"/> instance.</returns>
         public static FontStashFont LoadFont(string fontPath, float fontSize, Color color, FontEffectSettings effects, float lineSpacing = 0f, float topSpacing = 0f)
         {
             if (graphicsDevice == null)
@@ -66,6 +88,11 @@ namespace CutTheRope.Framework.Visual
             return font;
         }
 
+        /// <summary>
+        /// Loads a <see cref="FontSystem"/> from the specified font file path.
+        /// </summary>
+        /// <param name="fontPath">Path to the TTF/OTF font file.</param>
+        /// <returns>The loaded <see cref="FontSystem"/>.</returns>
         private static FontSystem LoadFontSystem(string fontPath)
         {
             string contentFontPath = ContentPaths.GetFontPath(fontPath);
@@ -108,6 +135,11 @@ namespace CutTheRope.Framework.Visual
             return fontSystem;
         }
 
+        /// <summary>
+        /// Computes a hash code for the effect settings used in cache key generation.
+        /// </summary>
+        /// <param name="effects">Font effect settings to hash.</param>
+        /// <returns>A deterministic hash value for the provided settings.</returns>
         private static int GetEffectHash(FontEffectSettings effects)
         {
             if (effects == null)

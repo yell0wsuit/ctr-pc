@@ -5,13 +5,14 @@ using CutTheRope.Desktop;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
+        /// <inheritdoc />
         public override void Show()
         {
             // Initialize game state and load level data
@@ -112,6 +113,9 @@ namespace CutTheRope.GameMain
             CTRRootController.LogEvent("IG_SHOWN");
         }
 
+        /// <summary>
+        /// Positions the camera for the newly loaded map and sets the initial camera movement mode.
+        /// </summary>
         public void StartCamera()
         {
             if (mapWidth > SCREEN_WIDTH || mapHeight > SCREEN_HEIGHT)
@@ -159,11 +163,15 @@ namespace CutTheRope.GameMain
             camera.MoveToXYImmediate(0f, 0f, true);
         }
 
+        /// <summary>
+        /// Plays the candy blink animation.
+        /// </summary>
         public void DoCandyBlink()
         {
             candyBlink.PlayTimeline(0);
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
             if (t.element is RotatedCircle rotatedCircle && rotatedCircles.IndexOf(rotatedCircle) != -1)
@@ -191,6 +199,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             if (t.element == candy)

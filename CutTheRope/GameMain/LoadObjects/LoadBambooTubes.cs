@@ -4,11 +4,17 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading bamboo tube objects from XML level data.
-    /// </summary>
     internal sealed partial class GameScene
     {
+        /// <summary>
+        /// Loads a bamboo tube object from XML node data.
+        /// </summary>
+        /// <param name="xmlNode">The XML node describing the bamboo tube.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadBambooTube(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

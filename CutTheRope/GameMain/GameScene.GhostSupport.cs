@@ -1,14 +1,15 @@
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Ghost-specific helpers for GameScene.
-    /// Provides utilities for auto-attaching ghost grabs to the active candy constraint.
-    /// </summary>
     internal sealed partial class GameScene
     {
+        /// <summary>
+        /// Chooses the best candy constraint point for a ghost-created rope anchor.
+        /// </summary>
+        /// <param name="ghostPosition">World position of the ghost creating the rope.</param>
+        /// <returns>The closest available candy constraint point, or a fallback candy point when none are active.</returns>
         internal ConstraintedPoint GetGhostRopeAnchor(Vector ghostPosition)
         {
             if (twoParts == 2)
@@ -19,6 +20,7 @@ namespace CutTheRope.GameMain
             ConstraintedPoint best = null;
             float bestDistance = float.MaxValue;
 
+            // Local helper for ranking active candy points by distance to the ghost.
             void Consider(ConstraintedPoint candidate, bool candyMissing)
             {
                 if (candidate == null || candyMissing)

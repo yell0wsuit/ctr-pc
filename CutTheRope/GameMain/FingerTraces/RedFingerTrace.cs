@@ -16,21 +16,45 @@ namespace CutTheRope.GameMain.FingerTraces
     /// </summary>
     internal sealed class RedFingerTrace : FingerTrace
     {
+        /// <summary>The lifetime of each stored ribbon segment in seconds.</summary>
         private const float SegmentLife = 0.15f;
+
+        /// <summary>The duration of the particle burst after each appended segment.</summary>
         private const float ParticleBurstDuration = 0.1f;
+
+        /// <summary>The emission rate used while the burst timer is active.</summary>
         private const float ParticleEmissionRate = 35f;
+
+        /// <summary>The base half-width contribution of the ribbon body.</summary>
         private const float RibbonBaseWidth = 12f;
+
+        /// <summary>The minimum half-width preserved at the ribbon tip.</summary>
         private const float MinimumRibbonHalfWidth = 1f;
+
+        /// <summary>The number of direction samples kept for head smoothing.</summary>
         private const int MaximumDirectionHistory = 10;
 
+        /// <summary>The additive glow particle layer.</summary>
         private readonly RedTraceParticles glowParticles = new(0.3f, FingerTraceBlendMode.Additive);
+
+        /// <summary>The alpha-blended core particle layer.</summary>
         private readonly RedTraceParticles coreParticles = new(0.75f, FingerTraceBlendMode.Alpha);
+
+        /// <summary>Recent segment directions used to smooth the emitter rotation.</summary>
         private readonly List<Vector> directionHistory = [];
 
+        /// <summary>The reusable ribbon vertex cache.</summary>
         private VertexPositionColor[] ribbonVerticesCache;
+
+        /// <summary>The remaining time in the active particle burst.</summary>
         private float particleTimer;
+
+        /// <summary>The smoothed head rotation in degrees.</summary>
         private float averageRotation;
 
+        /// <summary>
+        /// Initializes a red finger trace.
+        /// </summary>
         public RedFingerTrace()
         {
         }
@@ -46,11 +70,10 @@ namespace CutTheRope.GameMain.FingerTraces
         {
         }
 
+        /// <inheritdoc />
         protected override bool HasLiveParticles => glowParticles.HasLiveParticles || coreParticles.HasLiveParticles;
 
-        /// <summary>
-        /// Adds a new red segment with the fixed CTR2 red lifetime.
-        /// </summary>
+        /// <inheritdoc />
         public override void AddSegment(float startX, float startY, float endX, float endY)
         {
             Vector start = new(startX, startY);
@@ -65,9 +88,7 @@ namespace CutTheRope.GameMain.FingerTraces
             coreParticles.SetPosition(end);
         }
 
-        /// <summary>
-        /// Draws glow particles, core particles, then the red ribbon strip.
-        /// </summary>
+        /// <inheritdoc />
         public override void Draw()
         {
             List<FingerTraceSpritePose> glowSprites = [];
@@ -98,9 +119,7 @@ namespace CutTheRope.GameMain.FingerTraces
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
-        /// <summary>
-        /// Advances particle emission and the averaged head direction state.
-        /// </summary>
+        /// <inheritdoc />
         protected override void UpdateCore(float delta)
         {
             particleTimer -= delta;
@@ -112,9 +131,7 @@ namespace CutTheRope.GameMain.FingerTraces
             coreParticles.Update(delta);
         }
 
-        /// <summary>
-        /// Clears red-specific transient state.
-        /// </summary>
+        /// <inheritdoc />
         protected override void ResetCore()
         {
             directionHistory.Clear();
@@ -124,9 +141,7 @@ namespace CutTheRope.GameMain.FingerTraces
             averageRotation = 0f;
         }
 
-        /// <summary>
-        /// Publishes the red ribbon path together with particle sprite metadata.
-        /// </summary>
+        /// <inheritdoc />
         protected override void BuildSnapshot(List<Vector> sampledPoints, List<FingerTraceSpritePose> sprites)
         {
             AppendRibbonSampledPoints(sampledPoints);
@@ -134,6 +149,9 @@ namespace CutTheRope.GameMain.FingerTraces
             coreParticles.AppendSprites(sprites);
         }
 
+        /// <summary>
+        /// Draws the sampled red ribbon as a colored triangle strip.
+        /// </summary>
         private void DrawRibbon()
         {
             if (!TryBuildRibbonGeometry(out List<Vector> sampledPoints))
@@ -166,6 +184,10 @@ namespace CutTheRope.GameMain.FingerTraces
             Renderer.DrawTriangleStrip(ribbonVerticesCache, sampledPoints.Count * 2);
         }
 
+        /// <summary>
+        /// Appends the sampled ribbon center line to the snapshot path.
+        /// </summary>
+        /// <param name="sampledPoints">The destination sampled-point list.</param>
         private void AppendRibbonSampledPoints(List<Vector> sampledPoints)
         {
             if (!TryBuildRibbonGeometry(out List<Vector> centerLine))
@@ -176,6 +198,11 @@ namespace CutTheRope.GameMain.FingerTraces
             sampledPoints.AddRange(centerLine);
         }
 
+        /// <summary>
+        /// Builds the sampled ribbon center line from the stored trace segments.
+        /// </summary>
+        /// <param name="sampledPoints">Receives the sampled center-line points.</param>
+        /// <returns><see langword="true"/> when enough points exist to draw the ribbon; otherwise, <see langword="false"/>.</returns>
         private bool TryBuildRibbonGeometry(out List<Vector> sampledPoints)
         {
             sampledPoints = [];
@@ -196,6 +223,10 @@ namespace CutTheRope.GameMain.FingerTraces
             return sampledPoints.Count >= 2;
         }
 
+        /// <summary>
+        /// Collects the bezier control points implied by the live trace segments.
+        /// </summary>
+        /// <returns>The control-point list for ribbon sampling.</returns>
         private List<Vector> GetControlPoints()
         {
             List<Vector> controlPoints = [];
@@ -213,6 +244,10 @@ namespace CutTheRope.GameMain.FingerTraces
             return controlPoints;
         }
 
+        /// <summary>
+        /// Returns the averaged head direction derived from recent segment deltas.
+        /// </summary>
+        /// <returns>The averaged direction vector.</returns>
         private Vector GetAverageDirection()
         {
             if (directionHistory.Count == 0)
@@ -229,6 +264,9 @@ namespace CutTheRope.GameMain.FingerTraces
             return VectDiv(total, directionHistory.Count);
         }
 
+        /// <summary>
+        /// Refreshes the emitter rotation from the recent direction history.
+        /// </summary>
         private void RefreshHeadState()
         {
             while (directionHistory.Count > MaximumDirectionHistory)
@@ -243,6 +281,12 @@ namespace CutTheRope.GameMain.FingerTraces
             coreParticles.SetRotation(particleAngle);
         }
 
+        /// <summary>
+        /// Returns the local tangent direction for a sampled ribbon point.
+        /// </summary>
+        /// <param name="sampledPoints">The sampled ribbon points.</param>
+        /// <param name="index">The point index to evaluate.</param>
+        /// <returns>The tangent direction at the requested sample.</returns>
         private static Vector GetPointDirection(List<Vector> sampledPoints, int index)
         {
             return sampledPoints.Count == 1
@@ -257,6 +301,11 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Returns a 2-phase warm gradient: dark red → bright red → warm orange.
         /// </summary>
+        /// <summary>
+        /// Returns the red ribbon gradient color for the normalized position along the strip.
+        /// </summary>
+        /// <param name="t">The normalized ribbon position in the range <c>[0, 1]</c>.</param>
+        /// <returns>The ribbon color at <paramref name="t"/>.</returns>
         private static RGBAColor GetRibbonColor(float t)
         {
             if (t < 0.7f)
@@ -277,6 +326,10 @@ namespace CutTheRope.GameMain.FingerTraces
                 1f);
         }
 
+        /// <summary>
+        /// Ensures the reusable ribbon vertex cache can hold the requested number of vertices.
+        /// </summary>
+        /// <param name="vertexCount">The required vertex capacity.</param>
         private void EnsureRibbonCache(int vertexCount)
         {
             if (ribbonVerticesCache == null || ribbonVerticesCache.Length < vertexCount)

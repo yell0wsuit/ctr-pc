@@ -11,8 +11,17 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.Framework.Helpers
 {
+    /// <summary>
+    /// An <see cref="Animation"/> with a bounding box, mover support, and collision testing.
+    /// Base class for all interactive game objects.
+    /// </summary>
     internal class GameObject : Animation
     {
+        /// <summary>
+        /// Creates a game object from the specified <paramref name="texture"/>.
+        /// </summary>
+        /// <param name="texture">Texture to create the object from.</param>
+        /// <returns>A new game object initialized with <paramref name="texture"/>.</returns>
         private static GameObject GameObject_create(CTRTexture2D texture)
         {
             GameObject gameObject = new();
@@ -20,6 +29,12 @@ namespace CutTheRope.Framework.Helpers
             return gameObject;
         }
 
+        /// <summary>
+        /// Creates a game object from the specified texture resource and quad index.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <param name="quadIndex">Quad index to draw.</param>
+        /// <returns>A new game object configured to draw the selected quad.</returns>
         public static GameObject GameObject_createWithResIDQuad(string resourceName, int quadIndex)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));
@@ -27,6 +42,7 @@ namespace CutTheRope.Framework.Helpers
             return gameObject;
         }
 
+        /// <inheritdoc />
         public override Image InitWithTexture(CTRTexture2D texture)
         {
             if (base.InitWithTexture(texture) != null)
@@ -40,6 +56,7 @@ namespace CutTheRope.Framework.Helpers
             return this;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -62,6 +79,7 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             base.Draw();
@@ -71,6 +89,7 @@ namespace CutTheRope.Framework.Helpers
             // }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -81,6 +100,10 @@ namespace CutTheRope.Framework.Helpers
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Parses mover path and speed attributes from the XML element.
+        /// </summary>
+        /// <param name="xml">XML element containing mover attributes.</param>
         public virtual void ParseMover(XElement xml)
         {
             rotation = ParseFloatOrZero(xml.Attribute("angle")?.Value);
@@ -105,17 +128,28 @@ namespace CutTheRope.Framework.Helpers
             }
         }
 
+        /// <summary>
+        /// Assigns a mover to control this object's position and rotation.
+        /// </summary>
+        /// <param name="moverValue">Mover instance to assign.</param>
         public virtual void SetMover(Mover moverValue)
         {
             mover = moverValue;
         }
 
+        /// <summary>
+        /// Sets the bounding box from the first quad's offset and size.
+        /// </summary>
         public virtual void SetBBFromFirstQuad()
         {
             bb = new CTRRectangle(MathF.Round(texture.quadOffsets[0].X), MathF.Round(texture.quadOffsets[0].Y), texture.quadRects[0].w, texture.quadRects[0].h);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
+        /// <summary>
+        /// Rotates the object and its bounding box by the specified <paramref name="angle"/> in degrees.
+        /// </summary>
+        /// <param name="angle">Rotation angle in degrees.</param>
         public virtual void RotateWithBB(float angle)
         {
             if (!rotatedBB)
@@ -141,6 +175,9 @@ namespace CutTheRope.Framework.Helpers
             rbb.blY = bottomLeft.Y;
         }
 
+        /// <summary>
+        /// Draws the bounding box outline for debugging.
+        /// </summary>
         public virtual void DrawBB()
         {
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
@@ -159,6 +196,12 @@ namespace CutTheRope.Framework.Helpers
             Renderer.SetColor(Color.White);
         }
 
+        /// <summary>
+        /// Tests axis-aligned bounding box intersection between two objects.
+        /// </summary>
+        /// <param name="o1">First object.</param>
+        /// <param name="o2">Second object.</param>
+        /// <returns><see langword="true"/> when the objects' AABBs intersect; otherwise <see langword="false"/>.</returns>
         public static bool ObjectsIntersect(GameObject o1, GameObject o2)
         {
             float o1x = o1.drawX + o1.bb.x;
@@ -168,6 +211,12 @@ namespace CutTheRope.Framework.Helpers
             return RectInRect(o1x, o1y, o1x + o1.bb.w, o1y + o1.bb.h, o2x, o2y, o2x + o2.bb.w, o2y + o2.bb.h);
         }
 
+        /// <summary>
+        /// Tests OBB intersection between a rotated object <paramref name="o1"/> and an unrotated object <paramref name="o2"/>.
+        /// </summary>
+        /// <param name="o1">Rotated object.</param>
+        /// <param name="o2">Unrotated object.</param>
+        /// <returns><see langword="true"/> when the objects intersect; otherwise <see langword="false"/>.</returns>
         public static bool ObjectsIntersectRotatedWithUnrotated(GameObject o1, GameObject o2)
         {
             Vector o1TopLeft = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
@@ -181,6 +230,12 @@ namespace CutTheRope.Framework.Helpers
             return ObbInOBB(o1TopLeft, o1TopRight, o1BottomRight, o1BottomLeft, o2TopLeft, o2TopRight, o2BottomRight, o2BottomLeft);
         }
 
+        /// <summary>
+        /// Tests whether point <paramref name="p"/> is inside the bounding box of <paramref name="o"/>.
+        /// </summary>
+        /// <param name="p">Point to test.</param>
+        /// <param name="o">Object whose bounding box to test against.</param>
+        /// <returns><see langword="true"/> when the point is inside the object bounds; otherwise <see langword="false"/>.</returns>
         public static bool PointInObject(Vector p, GameObject o)
         {
             float checkX = o.drawX + o.bb.x;
@@ -188,6 +243,15 @@ namespace CutTheRope.Framework.Helpers
             return PointInRect(p.X, p.Y, checkX, checkY, o.bb.w, o.bb.h);
         }
 
+        /// <summary>
+        /// Tests whether the rectangle defined by corners (<paramref name="r1x"/>,<paramref name="r1y"/>)–(<paramref name="r2x"/>,<paramref name="r2y"/>) intersects the bounding box of <paramref name="o"/>.
+        /// </summary>
+        /// <param name="r1x">Left X of the rectangle.</param>
+        /// <param name="r1y">Top Y of the rectangle.</param>
+        /// <param name="r2x">Right X of the rectangle.</param>
+        /// <param name="r2y">Bottom Y of the rectangle.</param>
+        /// <param name="o">Object whose bounding box to test against.</param>
+        /// <returns><see langword="true"/> when the rectangles intersect; otherwise <see langword="false"/>.</returns>
         public static bool RectInObject(float r1x, float r1y, float r2x, float r2y, GameObject o)
         {
             float objectX = o.drawX + o.bb.x;
@@ -195,20 +259,41 @@ namespace CutTheRope.Framework.Helpers
             return RectInRect(r1x, r1y, r2x, r2y, objectX, objectY, objectX + o.bb.w, objectY + o.bb.h);
         }
 
+        /// <summary>
+        /// Maximum number of path points a mover can hold.
+        /// </summary>
         public const int MAX_MOVER_CAPACITY = 100;
 
+        /// <summary>
+        /// Current state of this game object.
+        /// </summary>
         public int state;
 
+        /// <summary>
+        /// Mover controlling this object's position and rotation, or <see langword="null"/>.
+        /// </summary>
         public Mover mover;
 
+        /// <summary>
+        /// Axis-aligned bounding box relative to the element origin.
+        /// </summary>
         public CTRRectangle bb;
 
+        /// <summary>
+        /// Rotated bounding box quad, updated when <see cref="rotatedBB"/> is <see langword="true"/>.
+        /// </summary>
         public Quad2D rbb;
 
+        /// <summary>
+        /// Whether the bounding box has been rotated.
+        /// </summary>
         public bool rotatedBB;
 
         // public bool isDrawBB;
 
+        /// <summary>
+        /// Whether <see cref="BaseElement.CalculateTopLeft"/> has been called this frame.
+        /// </summary>
         public bool topLeftCalculated;
     }
 }

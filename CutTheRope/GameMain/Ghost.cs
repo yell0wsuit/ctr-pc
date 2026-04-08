@@ -2,13 +2,28 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Interactive ghost that can transform between idle, bubble, grab, and bouncer states.
+    /// </summary>
     internal sealed class Ghost : BaseElement, ITimelineDelegate
     {
+        /// <summary>
+        /// Initializes a ghost and its morphing visuals at a level position.
+        /// </summary>
+        /// <param name="position">World position of the ghost.</param>
+        /// <param name="possibleStateMask">Bitmask of ghost states that this ghost may cycle through.</param>
+        /// <param name="grabRadius">Grab radius used when the ghost morphs into a grab.</param>
+        /// <param name="bouncerAngle">Bouncer angle used when the ghost morphs into a bouncer.</param>
+        /// <param name="bubbles">Scene bubble collection that receives ghost-created bubbles.</param>
+        /// <param name="bungees">Scene grab collection that receives ghost-created grabs.</param>
+        /// <param name="bouncers">Scene bouncer collection that receives ghost-created bouncers.</param>
+        /// <param name="owner">Owning game scene.</param>
+        /// <returns>The initialized ghost.</returns>
         public Ghost InitWithPositionPossibleStatesMaskGrabRadiusBouncerAngleBubblesBungeesBouncers(
             Vector position,
             int possibleStateMask,
@@ -83,6 +98,7 @@ namespace CutTheRope.GameMain
             return this;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -99,6 +115,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             if (bubble != null && bubble.GetCurrentTimelineIndex() == 11 && bubble.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
@@ -125,6 +142,10 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Morphs the ghost into a specific allowed state.
+        /// </summary>
+        /// <param name="newState">Ghost state bit to activate.</param>
         public void ResetToState(int newState)
         {
             if ((newState & possibleStatesMask) == 0)
@@ -270,6 +291,9 @@ namespace CutTheRope.GameMain
             CTRSoundMgr.PlaySound(Resources.Snd.GhostPuff);
         }
 
+        /// <summary>
+        /// Cycles the ghost to the next allowed non-idle state.
+        /// </summary>
         public void ResetToNextState()
         {
             // No non-idle states available; nothing to cycle to.
@@ -300,6 +324,7 @@ namespace CutTheRope.GameMain
             ResetToState(state);
         }
 
+        /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             float distance = VectLength(VectSub(Vect(tx, ty), Vect(x, y)));
@@ -311,10 +336,12 @@ namespace CutTheRope.GameMain
             return false;
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline timeline, KeyFrame keyFrame, int index)
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline timeline)
         {
             if (timeline.element == ghostImageFace)
@@ -343,28 +370,70 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>Duration of the ghost morph-in fade, in seconds.</summary>
         private const float GHOST_MORPHING_APPEAR_TIME = 0.36f;
+
+        /// <summary>Duration of the ghost morph-out fade, in seconds.</summary>
         private const float GHOST_MORPHING_DISAPPEAR_TIME = 0.16f;
+
+        /// <summary>Number of particles emitted when the ghost morphs.</summary>
         private const int GHOST_MORPHING_BUBBLES_COUNT = 7;
+
+        /// <summary>Touch radius used for cycling ghost state.</summary>
         private const float GHOST_TOUCH_RADIUS = 80f;
 
+        /// <summary>Current ghost state bit.</summary>
         public int ghostState;
+
+        /// <summary>Bubble object currently owned by the ghost state.</summary>
         public Bubble bubble;
+
+        /// <summary>Grab object currently owned by the ghost state.</summary>
         public Grab grab;
+
+        /// <summary>Bouncer object currently owned by the ghost state.</summary>
         public Bouncer bouncer;
+
+        /// <summary>Whether touch input may cycle this ghost to another state.</summary>
         public bool cyclingEnabled;
+
+        /// <summary>Grab radius used when the ghost morphs into a grab.</summary>
         public float grabRadius;
+
+        /// <summary>Whether the candy has broken and should block ghost cycling.</summary>
         public bool candyBreak;
+
+        /// <summary>Bitmask of ghost states this ghost may cycle through.</summary>
         public int possibleStatesMask;
+
+        /// <summary>Bouncer angle used when the ghost morphs into a bouncer.</summary>
         public float bouncerAngle;
+
+        /// <summary>Root element for the ghost body and face images.</summary>
         public BaseElement ghostImage;
+
+        /// <summary>Ghost body image.</summary>
         public Image ghostImageBody;
+
+        /// <summary>Ghost face image.</summary>
         public Image ghostImageFace;
+
+        /// <summary>Scene bubble collection that receives ghost-created bubbles.</summary>
         public List<Bubble> gsBubbles;
+
+        /// <summary>Scene grab collection that receives ghost-created grabs.</summary>
         public List<Grab> gsBungees;
+
+        /// <summary>Scene bouncer collection that receives ghost-created bouncers.</summary>
         public List<Bouncer> gsBouncers;
+
+        /// <summary>Particles emitted during ghost morph transitions.</summary>
         public GhostMorphingParticles morphingBubbles;
+
+        /// <summary>Cloud effect emitted during ghost morph transitions.</summary>
         public GhostMorphingCloud morphingCloud;
+
+        /// <summary>Owning game scene used for ghost-created rope anchors.</summary>
         private GameScene hostScene;
     }
 }

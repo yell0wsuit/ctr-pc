@@ -16,8 +16,18 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Main menu controller that builds menu views, handles menu buttons, and coordinates transitions into gameplay.
+    /// </summary>
     internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
+        /// <summary>
+        /// Creates a full-width text button using the standard menu button quads.
+        /// </summary>
+        /// <param name="str">Button label text.</param>
+        /// <param name="bid">Button identifier assigned to the created button.</param>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <returns>The configured menu button.</returns>
         public static Button CreateButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
@@ -37,6 +47,14 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Creates a shorter text button, optionally rendering it in the selected state.
+        /// </summary>
+        /// <param name="str">Button label text.</param>
+        /// <param name="bid">Button identifier assigned to the created button.</param>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <param name="selected">Whether the button should render with its selected-state quads.</param>
+        /// <returns>The configured short menu button.</returns>
         public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d, bool selected = false)
         {
             // When selected, swap quads so the "down" look is the default state
@@ -59,6 +77,14 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Creates a two-state text toggle button using the standard menu button quads.
+        /// </summary>
+        /// <param name="str1">Label text for the first toggle state.</param>
+        /// <param name="str2">Label text for the second toggle state.</param>
+        /// <param name="bid">Button identifier assigned to the created toggle.</param>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <returns>The configured toggle button.</returns>
         public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, ButtonId bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
@@ -88,6 +114,12 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        /// <summary>
+        /// Creates the standard back button.
+        /// </summary>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <param name="bid">Button identifier assigned to the back button.</param>
+        /// <returns>The configured back button.</returns>
         public static Button CreateBackButtonWithDelegateID(IButtonDelegation d, ButtonId bid)
         {
             Button button = CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 0, 1, bid, d);
@@ -95,6 +127,13 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Creates an image button from a texture resource.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name for the button image.</param>
+        /// <param name="bid">Button identifier assigned to the created button.</param>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <returns>The configured image button.</returns>
         public static Button CreateButtonWithImageIDDelegate(string resourceName, ButtonId bid, IButtonDelegation d)
         {
             CTRTexture2D texture = Application.GetTexture(resourceName);
@@ -108,6 +147,15 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Creates an image button whose down-state quad is position-adjusted relative to the up-state quad.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name containing both quads.</param>
+        /// <param name="q1">Up-state quad index.</param>
+        /// <param name="q2">Down-state quad index.</param>
+        /// <param name="bid">Button identifier assigned to the created button.</param>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <returns>The configured image button.</returns>
         public static Button CreateButton2WithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, ButtonId bid, IButtonDelegation d)
         {
             Image up = Image.Image_createWithResIDQuad(resourceName, q1);
@@ -120,6 +168,15 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Creates an image button from explicit up and down quad indices.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name containing both quads.</param>
+        /// <param name="q1">Up-state quad index.</param>
+        /// <param name="q2">Down-state quad index.</param>
+        /// <param name="bid">Button identifier assigned to the created button.</param>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <returns>The configured image button.</returns>
         public static Button CreateButtonWithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, ButtonId bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(resourceName, q1);
@@ -131,6 +188,14 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Creates an image button that reuses one quad for both button states.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name containing the quad.</param>
+        /// <param name="quad">Quad index used by the button states.</param>
+        /// <param name="bid">Raw button identifier assigned to the created button.</param>
+        /// <param name="d">Button delegate that receives press events.</param>
+        /// <returns>The configured image button.</returns>
         public static Button CreateButtonWithImageQuadIDDelegate(string resourceName, int quad, int bid, IButtonDelegation d)
         {
             Image up = Image.Image_createWithResIDQuad(resourceName, quad);
@@ -143,6 +208,12 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Creates the menu background with optional logo and rotating shadow layer.
+        /// </summary>
+        /// <param name="l">Whether to include the menu logo and logo candy button.</param>
+        /// <param name="s">Whether to include the rotating shadow layer.</param>
+        /// <returns>The configured background element.</returns>
         public BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s)
         {
             BaseElement baseElement = new()
@@ -306,11 +377,23 @@ namespace CutTheRope.GameMain
             return baseElement;
         }
 
+        /// <summary>
+        /// Creates the menu background with an optional logo and the default shadow layer.
+        /// </summary>
+        /// <param name="l">Whether to include the menu logo and logo candy button.</param>
+        /// <returns>The configured background element.</returns>
         public BaseElement CreateBackgroundWithLogo(bool l)
         {
             return CreateBackgroundWithLogowithShadow(l, true);
         }
 
+        /// <summary>
+        /// Creates an audio option element for a specific icon quad and toggle state.
+        /// </summary>
+        /// <param name="q">Audio icon quad index.</param>
+        /// <param name="b">Whether to draw the disabled cross overlay.</param>
+        /// <param name="p">Whether to use the pressed-state background quad.</param>
+        /// <returns>The configured audio option image.</returns>
         public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p)
         {
             int pressedStateQuad = p ? 1 : 0;
@@ -332,6 +415,13 @@ namespace CutTheRope.GameMain
             return image;
         }
 
+        /// <summary>
+        /// Creates a toggle button for an audio option.
+        /// </summary>
+        /// <param name="q">Audio icon quad index.</param>
+        /// <param name="delegateValue">Button delegate that receives press events.</param>
+        /// <param name="bid">Button identifier assigned to the created toggle.</param>
+        /// <returns>The configured audio toggle button.</returns>
         public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid)
         {
             Image u = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false);
@@ -372,11 +462,26 @@ namespace CutTheRope.GameMain
             return button;
         }*/
 
+        /// <summary>
+        /// Creates an image element for a resource quad, or an empty element when no valid quad is provided.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <param name="quad">Quad index to create, or -1 for an empty element.</param>
+        /// <returns>The created image or empty element.</returns>
         public static BaseElement CreateElementWithResIdquad(string resourceName, int quad)
         {
             return !string.IsNullOrEmpty(resourceName) && quad != -1 ? Image.Image_createWithResIDQuad(resourceName, quad) : new BaseElement();
         }
 
+        /// <summary>
+        /// Creates a toggle button from two resource quads.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name containing both quads.</param>
+        /// <param name="quad">First toggle-state quad index.</param>
+        /// <param name="quad2">Second toggle-state quad index.</param>
+        /// <param name="bId">Raw button identifier assigned to the created toggle.</param>
+        /// <param name="delegateValue">Button delegate that receives press events.</param>
+        /// <returns>The configured toggle button.</returns>
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(string resourceName, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
             BaseElement baseElement = CreateElementWithResIdquad(resourceName, quad);
@@ -395,6 +500,10 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        /// <summary>
+        /// Adds the seasonal snowfall overlay to a menu view when the event is enabled.
+        /// </summary>
+        /// <param name="menuView">View that should receive the overlay.</param>
         private static void AttachSnowfallOverlay(View menuView)
         {
             SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
@@ -406,6 +515,14 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Creates a control illustration with a label and either a check toggle or fixed check mark.
+        /// </summary>
+        /// <param name="q">Illustration quad index in the menu options texture.</param>
+        /// <param name="str">Label text shown under the illustration.</param>
+        /// <param name="bId">Raw button identifier for the toggle, or -1 for a non-interactive check mark.</param>
+        /// <param name="delegateValue">Button delegate that receives toggle events.</param>
+        /// <returns>The configured control option element.</returns>
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
@@ -459,6 +576,12 @@ namespace CutTheRope.GameMain
             return image;
         }
 
+        /// <summary>
+        /// Creates the visual element for an achievement or leaderboard button state.
+        /// </summary>
+        /// <param name="quad">Icon quad index.</param>
+        /// <param name="pressed">Whether to use the pressed-state button background.</param>
+        /// <returns>The configured scores button image.</returns>
         public static Image CreateBlankScoresButtonWithIconpressed(int quad, bool pressed)
         {
             Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonAchivCup, pressed ? 1 : 0);
@@ -469,6 +592,13 @@ namespace CutTheRope.GameMain
             return image3;
         }
 
+        /// <summary>
+        /// Creates an achievement or leaderboard button.
+        /// </summary>
+        /// <param name="quad">Icon quad index.</param>
+        /// <param name="bId">Raw button identifier assigned to the created button.</param>
+        /// <param name="delegateValue">Button delegate that receives press events.</param>
+        /// <returns>The configured scores button.</returns>
         public static Button CreateScoresButtonWithIconbuttonIDdelegate(int quad, int bId, IButtonDelegation delegateValue)
         {
             Image up = CreateBlankScoresButtonWithIconpressed(quad, false);
@@ -479,6 +609,9 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        /// <summary>
+        /// Builds the main menu view.
+        /// </summary>
         public void CreateMainMenu()
         {
             MenuView menuView = new();
@@ -534,6 +667,9 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 0);
         }
 
+        /// <summary>
+        /// Builds the options view.
+        /// </summary>
         public void CreateOptions()
         {
             MenuView menuView = new();
@@ -597,6 +733,9 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 1);
         }
 
+        /// <summary>
+        /// Builds the reset-confirmation view.
+        /// </summary>
         public void CreateReset()
         {
             MenuView menuView = new();
@@ -624,6 +763,9 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 4);
         }
 
+        /// <summary>
+        /// Builds the language selection view from the available UI language list.
+        /// </summary>
         public void CreateLanguageSelection()
         {
             MenuView menuView = new();
@@ -666,6 +808,9 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, VIEW_LANGUAGE_SELECT);
         }
 
+        /// <summary>
+        /// Builds the movie playback view.
+        /// </summary>
         public void CreateMovieView()
         {
             MovieView movieView = new();
@@ -680,6 +825,9 @@ namespace CutTheRope.GameMain
             AddViewwithID(movieView, 7);
         }
 
+        /// <summary>
+        /// Builds the about and credits view.
+        /// </summary>
         public void CreateAbout()
         {
             BaseElement background = CreateBackgroundWithLogo(false);
@@ -689,6 +837,9 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 3);
         }
 
+        /// <summary>
+        /// Builds the candy, rope, Om Nom, and trace skin selection view.
+        /// </summary>
         public void CreateCandySelection()
         {
             MenuView menuView = CandySelectionView.CreateCandySelection(this, out candyContainer);
@@ -696,6 +847,11 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, VIEW_CANDY_SELECT);
         }
 
+        /// <summary>
+        /// Creates a horizontal star-count label.
+        /// </summary>
+        /// <param name="t">Text shown before the star icon.</param>
+        /// <returns>The configured label row.</returns>
         public static HBox CreateTextWithStar(string t)
         {
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0, 16, RTD(50));
@@ -710,12 +866,20 @@ namespace CutTheRope.GameMain
             return hbox;
         }
 
+        /// <summary>
+        /// Gets the rendered width of a pack box in the pack picker.
+        /// </summary>
+        /// <returns>The box width including its quad offset padding.</returns>
         public static float GetBoxWidth()
         {
             PackDefinition firstPack = PackConfig.Packs[0];
             return Image.GetQuadSize(firstPack.PackSpritesheet, firstPack.PackQuadIndex).X + (Image.GetQuadOffset(firstPack.PackSpritesheet, firstPack.PackQuadIndex).X * 2f);
         }
 
+        /// <summary>
+        /// Gets the horizontal pack offset used when the screen can only show two boxes comfortably.
+        /// </summary>
+        /// <returns>The pack offset in screen units.</returns>
         public static float GetPackOffset()
         {
             float availableScreenWidth = SCREEN_WIDTH + (Canvas.xOffset * 2);
@@ -723,6 +887,12 @@ namespace CutTheRope.GameMain
             return boxWidth * 3f > availableScreenWidth - 200f ? boxWidth / 2f : 0f;
         }
 
+        /// <summary>
+        /// Creates one pack tile for the pack selection scroll container.
+        /// </summary>
+        /// <param name="n">Displayed pack index.</param>
+        /// <param name="c">Scrollable container that owns the pack tile.</param>
+        /// <returns>The configured pack tile element.</returns>
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
             TouchBaseElement touchBaseElement = new()
@@ -887,6 +1057,9 @@ namespace CutTheRope.GameMain
             return touchBaseElement;
         }
 
+        /// <summary>
+        /// Builds the pack selection view.
+        /// </summary>
         public void CreatePackSelect()
         {
             MenuView menuView = new();
@@ -984,29 +1157,52 @@ namespace CutTheRope.GameMain
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
 
+        /// <summary>
+        /// Creates the leaderboards view placeholder.
+        /// </summary>
         public static void CreateLeaderboards()
         {
         }
 
+        /// <summary>
+        /// Creates the achievements view placeholder.
+        /// </summary>
         public static void CreateAchievements()
         {
         }
 
+        /// <summary>
+        /// Shows the popup used when the selected pack cannot be unlocked.
+        /// </summary>
         public void ShowCantUnlockPopup()
         {
             popUpMenu.ShowCantUnlockPopup();
         }
 
+        /// <summary>
+        /// Shows the popup displayed after the game is completed.
+        /// </summary>
         public void ShowGameFinishedPopup()
         {
             popUpMenu.ShowGameFinishedPopup();
         }
 
+        /// <summary>
+        /// Shows a generic yes/no popup.
+        /// </summary>
+        /// <param name="str">Popup text.</param>
+        /// <param name="buttonYesId">Button identifier for the yes action.</param>
+        /// <param name="buttonNoId">Button identifier for the no action.</param>
         public void ShowYesNoPopup(string str, MenuButtonId buttonYesId, MenuButtonId buttonNoId)
         {
             ep = popUpMenu.ShowYesNoPopup(str, buttonYesId, buttonNoId);
         }
 
+        /// <summary>
+        /// Handles a pack scroll container reaching a target scroll point.
+        /// </summary>
+        /// <param name="e">Scrollable container that reached the point.</param>
+        /// <param name="i">Reached scroll point index.</param>
         public void ScrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
         {
             currentPack = i;
@@ -1045,6 +1241,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Handles the pack scroll container changing its target scroll point.
+        /// </summary>
+        /// <param name="e">Scrollable container whose target changed.</param>
+        /// <param name="i">Target scroll point index.</param>
         public void ScrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i)
         {
             currentPack = i;
@@ -1053,6 +1254,12 @@ namespace CutTheRope.GameMain
             CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(i));
         }
 
+        /// <summary>
+        /// Creates one level selection button for a pack.
+        /// </summary>
+        /// <param name="l">Level index within the pack.</param>
+        /// <param name="p">Pack index.</param>
+        /// <returns>The configured level button element.</returns>
         public BaseElement CreateButtonForLevelPack(int l, int p)
         {
             bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
@@ -1091,6 +1298,9 @@ namespace CutTheRope.GameMain
             return touchBaseElement;
         }
 
+        /// <summary>
+        /// Builds the level selection view for the current pack.
+        /// </summary>
         public void CreateLevelSelect()
         {
             float transitionDuration = 0.3f;
@@ -1231,6 +1441,10 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 6);
         }
 
+        /// <summary>
+        /// Initializes the menu controller and creates its child views.
+        /// </summary>
+        /// <param name="parent">Parent view controller.</param>
         public MenuController(ViewController parent)
             : base(parent)
         {
@@ -1251,6 +1465,7 @@ namespace CutTheRope.GameMain
             AddChildwithID(c, 0);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1271,6 +1486,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             showNextPackStatus = false;
@@ -1301,6 +1517,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Advances from the current pack to the next pack or outro flow.
+        /// </summary>
         public void ShowNextPack()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -1326,6 +1545,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);
@@ -1333,6 +1553,10 @@ namespace CutTheRope.GameMain
             Deactivate();
         }
 
+        /// <summary>
+        /// Handles completion of intro or outro movie playback.
+        /// </summary>
+        /// <param name="url">Completed movie URL, or <see langword="null"/> when entering the menu flow directly.</param>
         public void MoviePlaybackFinished(string url)
         {
             bool isOutro = url != null && url == PackConfig.OutroVideo;
@@ -1385,6 +1609,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Loads pack cover resources and recreates the level selection view before it is shown.
+        /// </summary>
         public void PreLevelSelect()
         {
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
@@ -1399,6 +1626,7 @@ namespace CutTheRope.GameMain
             CreateLevelSelect();
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             CTRSoundMgr.StopMusic();
@@ -1420,12 +1648,19 @@ namespace CutTheRope.GameMain
             ActivateChild(0);
         }
 
+        /// <summary>
+        /// Recreates the options view after localized resources or settings change.
+        /// </summary>
         public void RecreateOptions()
         {
             DeleteView(1);
             CreateOptions();
         }
 
+        /// <summary>
+        /// Handles a typed menu button press.
+        /// </summary>
+        /// <param name="n">Menu button identifier that was pressed.</param>
         public void OnButtonPressed(MenuButtonId n)
         {
             if (n.Value != -1)
@@ -1763,11 +1998,17 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
         {
             OnButtonPressed(MenuButtonId.FromButtonId(buttonId));
         }
 
+        /// <summary>
+        /// Clamps a requested pack scroll point to the available scroll point range.
+        /// </summary>
+        /// <param name="moveToPack">Requested pack scroll point.</param>
+        /// <returns>The clamped scroll point.</returns>
         private int FixScrollPoint(int moveToPack)
         {
             if (moveToPack >= packContainer.GetTotalScrollPoints())
@@ -1781,6 +2022,7 @@ namespace CutTheRope.GameMain
             return moveToPack;
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -1834,31 +2076,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        /// <summary>
-        /// Handles mouse wheel scrolling for menu views with scrollable content.
-        /// </summary>
-        /// <param name="scrollDelta">The mouse wheel scroll delta from the input system.</param>
-        /// <returns>True if the scroll was handled by this controller, false otherwise.</returns>
-        /// <remarks>
-        /// Currently handles scrolling for:
-        /// <list type="bullet">
-        /// <item>
-        ///      <description>About/Credits view (activeViewID == VIEW_ABOUT): Forwards to <see cref="AboutView"/> and disables auto-scroll</description>
-        /// </item>
-        /// </list>
-        /// To add scrolling support for additional views:
-        /// <list type="bullet">
-        ///  <item>
-        ///      <description>Store a reference to the view's ScrollableContainer field.</description>
-        ///  </item>
-        ///  <item>
-        ///       <description>Add a new <c>if</c> block checking <c>activeViewID</c>.</description>
-        ///   </item>
-        ///   <item>
-        ///      <description>Call <c>container.HandleMouseWheel(scrollDelta)</c> and return <c>true</c>.</description>
-        ///  </item>
-        /// </list>
-        /// </remarks>
+        /// <inheritdoc />
         public override bool HandleMouseWheel(int scrollDelta)
         {
             // Give popup scrollable content first chance to handle mouse wheel.
@@ -1895,6 +2113,7 @@ namespace CutTheRope.GameMain
             return base.HandleMouseWheel(scrollDelta);
         }
 
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             bool flag = base.TouchesBeganwithEvent(touches);
@@ -1905,10 +2124,12 @@ namespace CutTheRope.GameMain
             return flag;
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc />
         public override void FullscreenToggled(bool isFullscreen)
         {
             DeleteView(5);
@@ -1934,11 +2155,16 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Delayed-dispatcher callback that recreates the options view.
+        /// </summary>
+        /// <param name="param">Unused dispatcher parameter.</param>
         public void Selector_recreateOptions(FrameworkTypes param)
         {
             RecreateOptions();
         }
 
+        /// <inheritdoc />
         public override bool BackButtonPressed()
         {
             int currentViewId = activeViewID;
@@ -1980,6 +2206,9 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <summary>
+        /// Shows the outdated Windows popup once when the main menu is active and the platform needs it.
+        /// </summary>
         private void TryShowOutdatedWindowsPopup()
         {
             if (outdatedWindowsPopupShown)
@@ -2001,6 +2230,9 @@ namespace CutTheRope.GameMain
             WindowsVersionChecker.ShowOutdatedWindowsPopup(popUpMenu.builder);
         }
 
+        /// <summary>
+        /// Shows the update-available popup once when update information is ready on the main menu.
+        /// </summary>
         private void TryShowUpdatePopup()
         {
             if (updatePopupShown)
@@ -2028,79 +2260,123 @@ namespace CutTheRope.GameMain
             ep = popUpMenu.ShowUpdateAvailablePopup(info.CurrentVersion, info.LatestVersion, MenuButtonId.UpdateDownload, MenuButtonId.ClosePopup);
         }
 
+        /// <summary>Main menu view identifier.</summary>
         public const int VIEW_MAIN_MENU = 0;
 
+        /// <summary>Options view identifier.</summary>
         public const int VIEW_OPTIONS = 1;
 
+        /// <summary>Help view identifier.</summary>
         public const int VIEW_HELP = 2;
 
+        /// <summary>About and credits view identifier.</summary>
         public const int VIEW_ABOUT = 3;
 
+        /// <summary>Reset-confirmation view identifier.</summary>
         public const int VIEW_RESET = 4;
 
+        /// <summary>Pack selection view identifier.</summary>
         public const int VIEW_PACK_SELECT = 5;
 
+        /// <summary>Level selection view identifier.</summary>
         public const int VIEW_LEVEL_SELECT = 6;
 
+        /// <summary>Whether the game is configured with a single playable pack.</summary>
         private static bool IsSinglePack => CTRPreferences.GetPacksCount() == 1;
 
+        /// <summary>Movie playback view identifier.</summary>
         public const int VIEW_MOVIE = 7;
 
+        /// <summary>Leaderboards view identifier.</summary>
         public const int VIEW_LEADERBOARDS = 8;
 
+        /// <summary>Achievements view identifier.</summary>
         public const int VIEW_ACHIEVEMENTS = 9;
 
+        /// <summary>Candy and skin selection view identifier.</summary>
         public const int VIEW_CANDY_SELECT = 10;
 
+        /// <summary>Language selection view identifier.</summary>
         public const int VIEW_LANGUAGE_SELECT = 11;
+
+        /// <summary>Delayed dispatcher used by the main menu and options view.</summary>
         public DelayedDispatcher ddMainMenu;
 
+        /// <summary>Delayed dispatcher used by the pack selection view.</summary>
         public DelayedDispatcher ddPackSelect;
 
+        /// <summary>Popup menu helper used for menu popups.</summary>
         private readonly PopUpMenu popUpMenu;
+
+        /// <summary>Scrollable container for candy and skin selection.</summary>
         private ScrollableContainer candyContainer;
 
+        /// <summary>Scrollable container for pack selection.</summary>
         private ScrollableContainer packContainer;
 
+        /// <summary>Scrollable container for level selection when a pack has many levels.</summary>
         private ScrollableContainer levelContainer;
 
+        /// <summary>Pack box elements shown in the pack selection container.</summary>
         private readonly BaseElement[] boxes = new BaseElement[CTRPreferences.GetPacksCount() + 1];
 
+        /// <summary>Whether to show the next-pack unlock status after scrolling.</summary>
         private bool showNextPackStatus;
 
+        /// <summary>Whether the intro movie is being replayed before entering gameplay.</summary>
         private bool replayingIntroMovie;
 
+        /// <summary>Currently selected pack index in the pack selection view.</summary>
         private int currentPack;
 
+        /// <summary>Pending leftward pack scroll count from repeated next-button presses.</summary>
         private int scrollPacksLeft;
 
+        /// <summary>Pending rightward pack scroll count from repeated previous-button presses.</summary>
         private int scrollPacksRight;
 
+        /// <summary>Whether the pack container is currently auto-scrolling.</summary>
         private bool bScrolling;
 
+        /// <summary>Next-pack arrow button.</summary>
         private Button nextb;
 
+        /// <summary>Previous-pack arrow button.</summary>
         private Button prevb;
 
+        /// <summary>Current pack index used for level selection and gameplay launch.</summary>
         private int pack;
 
+        /// <summary>Current level index used for gameplay launch.</summary>
         private int level;
 
+        /// <summary>View identifier to show when the menu controller is activated.</summary>
         public int viewToShow;
 
+        /// <summary>Currently displayed popup, if any.</summary>
         private Popup ep;
+
+        /// <summary>Release URL opened by the update popup download button.</summary>
         private string updateReleaseUrl;
 
+        /// <summary>Whether the update-available popup has already been shown.</summary>
         private bool updatePopupShown;
 
+        /// <summary>Whether the outdated Windows popup has already been shown.</summary>
         private bool outdatedWindowsPopupShown;
 
+        /// <summary>Localized menu resource pack reloaded when the UI language changes.</summary>
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
 
+        /// <summary>About view instance used for credits auto-scroll handling.</summary>
         private AboutView aboutView;
 
+        /// <summary>
+        /// Touchable wrapper element that sends menu button IDs through the button delegate.
+        /// </summary>
         public sealed class TouchBaseElement : BaseElement
         {
+            /// <inheritdoc />
             public override bool OnTouchDownXY(float tx, float ty)
             {
                 _ = base.OnTouchDownXY(tx, ty);
@@ -2114,10 +2390,13 @@ namespace CutTheRope.GameMain
                 return false;
             }
 
+            /// <summary>Menu button identifier emitted when this element is touched.</summary>
             public MenuButtonId bid;
 
+            /// <summary>Touch rectangle adjustment applied relative to the element bounds.</summary>
             public CTRRectangle bbc;
 
+            /// <summary>Delegate that receives touch activation events.</summary>
             public IButtonDelegation delegateValue;
         }
 

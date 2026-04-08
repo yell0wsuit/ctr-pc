@@ -19,35 +19,85 @@ namespace CutTheRope.GameMain.FingerTraces
     /// </summary>
     internal sealed class LightningFingerTrace : FingerTrace
     {
+        /// <summary>The first atlas quad used for body segments.</summary>
         private const int BodyQuadStart = 14;
+
+        /// <summary>The number of body atlas quads available.</summary>
         private const int BodyQuadCount = 6;
+
+        /// <summary>The first atlas quad used for the lightning head.</summary>
         private const int HeadQuadStart = 20;
+
+        /// <summary>The number of head atlas quads available.</summary>
         private const int HeadQuadCount = 4;
+
+        /// <summary>The minimum lifetime applied to a lightning segment.</summary>
         private const float MinSegmentLife = 0.01f;
+
+        /// <summary>The maximum lifetime applied to a lightning segment.</summary>
         private const float MaxSegmentLife = 0.25f;
+
+        /// <summary>The length-to-lifetime scale factor.</summary>
         private const float SegmentLifeMultiplier = 0.007f;
+
+        /// <summary>The base lifetime added before clamping.</summary>
         private const float SegmentLifeBase = 0.05f;
+
+        /// <summary>The duration of the spark burst after each appended segment.</summary>
         private const float ParticleBurstDuration = 0.1f;
+
+        /// <summary>The spark emission rate used while the burst timer is active.</summary>
         private const float ParticleEmissionRate = 50f;
+
+        /// <summary>The time between randomized head/body variant refreshes.</summary>
         private const float VariantRefreshSeconds = 0.06f;
+
+        /// <summary>The nominal height used to scale lightning quads.</summary>
         private const float QuadSpacing = 112f;
+
+        /// <summary>The stretch factor applied to lightning quads.</summary>
         private const float QuadStretch = 140f / 112f;
+
+        /// <summary>The lateral offset used to jag the body quads.</summary>
         private const float QuadOffsetAmount = 15f;
 
+        /// <summary>The atlas quad used for the glow sprite.</summary>
         private const int GlowQuadIndex = 0;
+
+        /// <summary>The Y translation applied to the glow sprite pivot.</summary>
         private const float GlowTranslateY = 48f;
 
+        /// <summary>The lightning spark emitter.</summary>
         private readonly LightningTraceParticles particles = new();
+
+        /// <summary>Recent segment directions used to smooth the head rotation.</summary>
         private readonly List<Vector> directionHistory = [];
+
+        /// <summary>The randomized body variant sequence.</summary>
         private readonly int[] bodyVariants = new int[10];
+
+        /// <summary>The glow sprite drawn at the lightning head.</summary>
         private Image glowImage;
 
+        /// <summary>The reusable textured vertex cache for batched lightning quads.</summary>
         private VertexPositionColorTexture[] verticesCache;
+
+        /// <summary>The reusable index cache for batched lightning quads.</summary>
         private short[] indicesCache;
+
+        /// <summary>The currently selected head quad index.</summary>
         private int currentHeadVariant = -1;
+
+        /// <summary>The remaining time in the active spark burst.</summary>
         private float particleTimer;
+
+        /// <summary>The remaining time before the quad variants are randomized again.</summary>
         private float variantTimer;
+
+        /// <summary>The smoothed head rotation in degrees.</summary>
         private float averageRotation;
+
+        /// <summary>The current head glow scale.</summary>
         private float headScale;
 
         /// <summary>
@@ -69,15 +119,10 @@ namespace CutTheRope.GameMain.FingerTraces
         {
         }
 
+        /// <inheritdoc />
         protected override bool HasLiveParticles => particles.HasLiveParticles;
 
-        /// <summary>
-        /// Adds a lightning segment using the CTR2 lifetime rules based on segment length.
-        /// </summary>
-        /// <param name="startX">Segment start X.</param>
-        /// <param name="startY">Segment start Y.</param>
-        /// <param name="endX">Segment end X.</param>
-        /// <param name="endY">Segment end Y.</param>
+        /// <inheritdoc />
         public override void AddSegment(float startX, float startY, float endX, float endY)
         {
             Vector start = new(startX, startY);
@@ -95,9 +140,7 @@ namespace CutTheRope.GameMain.FingerTraces
             glowImage.y = startY;
         }
 
-        /// <summary>
-        /// Draws the batched lightning body quads first, then overlays spark particles.
-        /// </summary>
+        /// <inheritdoc />
         public override void Draw()
         {
             if (Segments.Count >= 2 && currentHeadVariant != -1 && glowImage != null)
@@ -137,10 +180,7 @@ namespace CutTheRope.GameMain.FingerTraces
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
-        /// <summary>
-        /// Updates particle emission, average direction, head/body variant selection, and spark motion.
-        /// </summary>
-        /// <param name="delta">Elapsed time in seconds.</param>
+        /// <inheritdoc />
         protected override void UpdateCore(float delta)
         {
             particleTimer -= delta;
@@ -173,9 +213,7 @@ namespace CutTheRope.GameMain.FingerTraces
             }
         }
 
-        /// <summary>
-        /// Resets the lightning-specific transient state when the trace is cleared.
-        /// </summary>
+        /// <inheritdoc />
         protected override void ResetCore()
         {
             directionHistory.Clear();
@@ -188,11 +226,7 @@ namespace CutTheRope.GameMain.FingerTraces
             ResetVariants();
         }
 
-        /// <summary>
-        /// Builds the snapshot used by tests and debug inspection from the live lightning geometry and sparks.
-        /// </summary>
-        /// <param name="sampledPoints">Receives sampled path points for the current segments.</param>
-        /// <param name="sprites">Receives the sprite poses representing the current lightning frame.</param>
+        /// <inheritdoc />
         protected override void BuildSnapshot(List<Vector> sampledPoints, List<FingerTraceSpritePose> sprites)
         {
             AppendSampledPoints(sampledPoints);
@@ -217,6 +251,9 @@ namespace CutTheRope.GameMain.FingerTraces
             particles.AppendSprites(sprites);
         }
 
+        /// <summary>
+        /// Draws the current lightning head and body quads as a single indexed batch.
+        /// </summary>
         private void DrawLightningBody()
         {
             List<LightningQuad> quads = BuildLightningQuads();
@@ -260,6 +297,10 @@ namespace CutTheRope.GameMain.FingerTraces
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
+        /// <summary>
+        /// Builds the current lightning head/body quad layout from the live segments.
+        /// </summary>
+        /// <returns>The list of quads to draw for the current frame.</returns>
         private List<LightningQuad> BuildLightningQuads()
         {
             List<LightningQuad> quads = [];
@@ -337,6 +378,10 @@ namespace CutTheRope.GameMain.FingerTraces
             return quads;
         }
 
+        /// <summary>
+        /// Appends representative sampled points for the current lightning path.
+        /// </summary>
+        /// <param name="sampledPoints">The destination sampled-point list.</param>
         private void AppendSampledPoints(List<Vector> sampledPoints)
         {
             if (Segments.Count == 0)
@@ -352,6 +397,10 @@ namespace CutTheRope.GameMain.FingerTraces
             sampledPoints.Add(Segments[^1].End);
         }
 
+        /// <summary>
+        /// Returns the averaged head direction derived from recent segment deltas.
+        /// </summary>
+        /// <returns>The averaged direction vector.</returns>
         private Vector GetAverageDirection()
         {
             Vector sum = vectZero;
@@ -365,6 +414,9 @@ namespace CutTheRope.GameMain.FingerTraces
                 : VectDiv(sum, directionHistory.Count);
         }
 
+        /// <summary>
+        /// Refreshes the randomized body variant sequence.
+        /// </summary>
         private void FillBodyVariants()
         {
             for (int i = 0; i < bodyVariants.Length; i++)
@@ -373,6 +425,9 @@ namespace CutTheRope.GameMain.FingerTraces
             }
         }
 
+        /// <summary>
+        /// Resets the current head and body variant selection.
+        /// </summary>
         private void ResetVariants()
         {
             currentHeadVariant = -1;
@@ -382,6 +437,13 @@ namespace CutTheRope.GameMain.FingerTraces
             }
         }
 
+        /// <summary>
+        /// Chooses a quad index from the given range that differs from the previous value when possible.
+        /// </summary>
+        /// <param name="start">The first quad index in the range.</param>
+        /// <param name="count">The number of indices in the range.</param>
+        /// <param name="previous">The previously selected quad index.</param>
+        /// <returns>A quad index within the requested range.</returns>
         private static int NextDifferentVariant(int start, int count, int previous)
         {
             int next;
@@ -394,6 +456,9 @@ namespace CutTheRope.GameMain.FingerTraces
             return next;
         }
 
+        /// <summary>
+        /// Creates the glow sprite on first use.
+        /// </summary>
         private void EnsureGlowImage()
         {
             if (glowImage != null)
@@ -406,6 +471,10 @@ namespace CutTheRope.GameMain.FingerTraces
             glowImage.translateY = GlowTranslateY;
         }
 
+        /// <summary>
+        /// Ensures the reusable vertex and index buffers can hold the requested number of quads.
+        /// </summary>
+        /// <param name="quadCount">The required quad capacity.</param>
         private void EnsureBuffers(int quadCount)
         {
             int requiredVertices = quadCount * 4;
@@ -434,6 +503,11 @@ namespace CutTheRope.GameMain.FingerTraces
             }
         }
 
+        /// <summary>
+        /// Returns a random integer in the range <c>[0, upperExclusive)</c>.
+        /// </summary>
+        /// <param name="upperExclusive">The exclusive upper bound.</param>
+        /// <returns>A random integer less than <paramref name="upperExclusive"/>.</returns>
         private static int NextInt(int upperExclusive)
         {
             return upperExclusive <= 1
@@ -441,6 +515,17 @@ namespace CutTheRope.GameMain.FingerTraces
                 : (int)(Arc4random() % (uint)upperExclusive);
         }
 
+        /// <summary>
+        /// Describes one lightning quad ready for batched rendering.
+        /// </summary>
+        /// <param name="QuadIndex">Texture quad index used for this segment.</param>
+        /// <param name="Start">Segment start point.</param>
+        /// <param name="End">Segment end point.</param>
+        /// <param name="BottomLeft">Bottom-left corner of the rendered quad.</param>
+        /// <param name="BottomRight">Bottom-right corner of the rendered quad.</param>
+        /// <param name="TopLeft">Top-left corner of the rendered quad.</param>
+        /// <param name="TopRight">Top-right corner of the rendered quad.</param>
+        /// <param name="Center">Quad center point.</param>
         private readonly record struct LightningQuad(
             int QuadIndex,
             Vector Start,

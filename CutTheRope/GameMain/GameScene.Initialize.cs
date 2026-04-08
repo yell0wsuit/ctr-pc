@@ -1,14 +1,10 @@
 using CutTheRope.Framework;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// GameScene.Initialize - Partial class handling Game state initialization
-    /// Initializes Game state and collections for each new level
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
@@ -195,6 +191,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Ensures candy ghost-bubble overlay animations exist for each active candy sprite.
+        /// </summary>
         private void EnsureCandyGhostBubbleAnimations()
         {
             if (!isCandyInGhostBubbleAnimationLoaded && candy != null)

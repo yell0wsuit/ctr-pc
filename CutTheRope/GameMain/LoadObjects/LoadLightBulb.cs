@@ -1,19 +1,22 @@
 using System.Xml.Linq;
 
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 
 using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// GameScene.LoadLightBulb - Partial class handling loading of light bulb objects from XML
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads a light bulb object from XML node data
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the light bulb.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates and radius.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadLightBulb(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             float x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

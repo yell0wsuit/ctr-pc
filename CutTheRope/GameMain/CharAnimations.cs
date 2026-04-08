@@ -7,13 +7,26 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Om Nom character animation container that switches between the base texture and named child animations.
+    /// </summary>
     internal sealed class CharAnimations : GameObject
     {
+        /// <summary>
+        /// Creates an Om Nom character animation container from a texture resource name.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name to load.</param>
+        /// <returns>The initialized Om Nom character animation container.</returns>
         public static CharAnimations CharAnimations_createWithResID(string resourceName)
         {
             return CharAnimations_create(Application.GetTexture(resourceName));
         }
 
+        /// <summary>
+        /// Creates an Om Nom character animation container from a texture.
+        /// </summary>
+        /// <param name="t">Texture used by the Om Nom character animation container.</param>
+        /// <returns>The initialized Om Nom character animation container.</returns>
         private static CharAnimations CharAnimations_create(CTRTexture2D t)
         {
             CharAnimations charAnimations = new();
@@ -21,6 +34,10 @@ namespace CutTheRope.GameMain
             return charAnimations;
         }
 
+        /// <summary>
+        /// Adds a named child Om Nom character animation image to the container.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name for the child animation.</param>
         public void AddImage(string resourceName)
         {
             animations ??= [];
@@ -38,6 +55,7 @@ namespace CutTheRope.GameMain
             charAnimation.SetEnabled(false);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -58,6 +76,15 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Adds a frame animation to the base animation or a named child animation.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name that identifies the target animation.</param>
+        /// <param name="aid">Timeline ID to assign to the animation.</param>
+        /// <param name="d">Delay between animation frames, in seconds.</param>
+        /// <param name="l">Loop behavior for the timeline.</param>
+        /// <param name="s">First frame index in the animation range.</param>
+        /// <param name="e">Last frame index in the animation range.</param>
         public void AddAnimationWithIDDelayLoopFirstLast(string resourceName, int aid, float d, Timeline.LoopType l, int s, int e)
         {
             if (resourceName == Resources.Img.CharAnimations)
@@ -70,6 +97,11 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Gets the base animation or a named child animation by texture resource name.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name that identifies the animation.</param>
+        /// <returns>The matching animation, or <see langword="null"/> when no matching child animation exists.</returns>
         public Animation GetAnimation(string resourceName)
         {
             return resourceName == Resources.Img.CharAnimations
@@ -79,6 +111,14 @@ namespace CutTheRope.GameMain
                 : null;
         }
 
+        /// <summary>
+        /// Adds an action keyframe that switches from one animation to another after a delay.
+        /// </summary>
+        /// <param name="resourceName2">Texture resource name for the destination animation.</param>
+        /// <param name="a2">Timeline ID to play on the destination animation.</param>
+        /// <param name="resourceName1">Texture resource name for the source animation.</param>
+        /// <param name="a1">Timeline ID on the source animation that receives the switch action.</param>
+        /// <param name="d">Delay before switching animations, in seconds.</param>
         public void SwitchToAnimationatEndOfAnimationDelay(string resourceName2, int a2, string resourceName1, int a1, float d)
         {
             Animation animation = GetAnimation(resourceName1);
@@ -100,6 +140,11 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeAction(dynamicArray, d));
         }
 
+        /// <summary>
+        /// Plays a timeline on the base animation or a named child animation.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name that identifies the animation to play.</param>
+        /// <param name="t">Timeline ID to play.</param>
         public void PlayAnimationtimeline(string resourceName, int t)
         {
             if (GetCurrentTimeline() != null)
@@ -116,6 +161,7 @@ namespace CutTheRope.GameMain
             animation.PlayTimeline(t);
         }
 
+        /// <inheritdoc />
         public override void PlayTimeline(int t)
         {
             foreach (object obj in animations)
@@ -126,8 +172,19 @@ namespace CutTheRope.GameMain
             base.PlayTimeline(t);
         }
 
+        /// <summary>
+        /// Animation layers managed by this character animation container.
+        /// </summary>
         private List<Animation> animations;
+
+        /// <summary>
+        /// Maps animation names to their layer indexes.
+        /// </summary>
         private Dictionary<string, int> animationNameToIndex;
+
+        /// <summary>
+        /// Next available animation layer index.
+        /// </summary>
         private int nextAnimationIndex;
     }
 }

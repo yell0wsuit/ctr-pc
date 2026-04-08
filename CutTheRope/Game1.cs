@@ -15,11 +15,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CutTheRope
 {
+    /// <summary>
+    /// Main game class that manages the MonoGame lifecycle, input handling, rendering, and Discord Rich Presence.
+    /// </summary>
     public class Game1 : Game
     {
-        //RPC helper instance
+        /// <summary>
+        /// Discord Rich Presence helper instance.
+        /// </summary>
         public static RPCHelpers RPC { get; private set; }
 
+        /// <summary>
+        /// Initializes the game window, graphics device manager, and event handlers.
+        /// </summary>
         public Game1()
         {
             Global.XnaGame = this;
@@ -47,16 +55,30 @@ namespace CutTheRope
             Exiting += Game1_Exiting;
         }
 
+        /// <summary>
+        /// Returns the current mouse state captured during the last update.
+        /// </summary>
+        /// <returns>The most recently polled <see cref="MouseState"/>.</returns>
         public MouseState GetMouseState()
         {
             return _currentMouseState;
         }
 
+        /// <summary>
+        /// Disables the depth-stencil buffer since the game is 2D only.
+        /// </summary>
+        /// <param name="sender">The graphics device manager raising the event.</param>
+        /// <param name="e">Event arguments containing the device settings being prepared.</param>
         private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.DepthStencilFormat = DepthFormat.None;
         }
 
+        /// <summary>
+        /// Handles window resize events, adjusting the viewport while ignoring fullscreen and minimized states.
+        /// </summary>
+        /// <param name="sender">The window raising the event.</param>
+        /// <param name="e">Event arguments for the size change.</param>
         private void Window_ClientSizeChanged(object sender, EventArgs e)
         {
             // Ignore size changes when in fullscreen mode
@@ -77,6 +99,11 @@ namespace CutTheRope
             Window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
+        /// <summary>
+        /// Saves preferences and disposes resources when the game is closing.
+        /// </summary>
+        /// <param name="sender">The game instance raising the event.</param>
+        /// <param name="e">Event arguments for the exit notification.</param>
         private void Game1_Exiting(object sender, EventArgs e)
         {
             UpdateChecker.Cancel();
@@ -87,17 +114,28 @@ namespace CutTheRope
             Global.MouseCursor?.Dispose();
         }
 
+        /// <summary>
+        /// Pauses the game when the window loses focus.
+        /// </summary>
+        /// <param name="sender">The game instance raising the event.</param>
+        /// <param name="e">Event arguments for the deactivation notification.</param>
         private void Game1_Deactivated(object sender, EventArgs e)
         {
             _ignoreMouseClick = 60;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
         }
 
+        /// <summary>
+        /// Resumes the game when the window regains focus.
+        /// </summary>
+        /// <param name="sender">The game instance raising the event.</param>
+        /// <param name="e">Event arguments for the activation notification.</param>
         private void Game1_Activated(object sender, EventArgs e)
         {
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
         }
 
+        /// <inheritdoc />
         protected override void Initialize()
         {
             //Create RPC helper instance
@@ -112,6 +150,7 @@ namespace CutTheRope
             base.Initialize();
         }
 
+        /// <inheritdoc />
         protected override void LoadContent()
         {
             Global.GraphicsDevice = GraphicsDevice;
@@ -134,15 +173,25 @@ namespace CutTheRope
             CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
         }
 
+        /// <inheritdoc />
         protected override void UnloadContent()
         {
         }
 
+        /// <summary>
+        /// Returns the system language detected from the current culture.
+        /// </summary>
+        /// <returns>The <see cref="Language"/> matching the current system culture.</returns>
         private static Language GetSystemLanguage()
         {
             return LanguageHelper.FromSystemCulture();
         }
 
+        /// <summary>
+        /// Returns whether the specified key was just pressed this frame (not held).
+        /// </summary>
+        /// <param name="key">The key to check.</param>
+        /// <returns><see langword="true"/> if <paramref name="key"/> transitioned from up to down this frame; otherwise <see langword="false"/>.</returns>
         public bool IsKeyPressed(Keys key)
         {
             _ = keyState.TryGetValue(key, out bool value);
@@ -151,11 +200,17 @@ namespace CutTheRope
             return flag && value != flag;
         }
 
+        /// <summary>
+        /// Returns whether the specified key is currently held down.
+        /// </summary>
+        /// <param name="key">The key to check.</param>
+        /// <returns><see langword="true"/> if <paramref name="key"/> is currently held; otherwise <see langword="false"/>.</returns>
         public bool IsKeyDown(Keys key)
         {
             return keyboardStateXna.IsKeyDown(key);
         }
 
+        /// <inheritdoc />
         protected override void Update(GameTime gameTime)
         {
             KeyboardState keyboardState = Keyboard.GetState();
@@ -195,6 +250,10 @@ namespace CutTheRope
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Toggles fullscreen mode when <i>Alt</i> + <i>Enter</i> or <i>F11</i> is pressed.
+        /// </summary>
+        /// <param name="keyboardState">Current keyboard state.</param>
         private void HandleFullscreenToggle(KeyboardState keyboardState)
         {
             bool altDown = keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt);
@@ -212,6 +271,9 @@ namespace CutTheRope
             }
         }
 
+        /// <summary>
+        /// Renders the current video frame to the screen, stopping playback on mouse click.
+        /// </summary>
         public void DrawMovie()
         {
             _DrawMovie = true;
@@ -247,6 +309,7 @@ namespace CutTheRope
             Global.SpriteBatch.End();
         }
 
+        /// <inheritdoc />
         protected override void Draw(GameTime gameTime)
         {
             frameCounter++;
@@ -269,26 +332,59 @@ namespace CutTheRope
             bFirstFrame = false;
         }
 
+        /// <summary>
+        /// Whether <i>Alt</i> + <i>Enter</i> was held on the previous frame.
+        /// </summary>
         private bool _altEnterPressed;
 
+        /// <summary>
+        /// Whether <i>F11</i> was held on the previous frame.
+        /// </summary>
         private bool _f11Pressed;
 
+        /// <summary>
+        /// Mouse state captured during the current frame.
+        /// </summary>
         private MouseState _currentMouseState;
 
+        /// <summary>
+        /// Tracks previous-frame key states for edge detection in <see cref="IsKeyPressed"/>.
+        /// </summary>
         private readonly Dictionary<Keys, bool> keyState = [];
 
+        /// <summary>
+        /// Current keyboard state used for input polling.
+        /// </summary>
         private KeyboardState keyboardStateXna;
 
+        /// <summary>
+        /// Whether a movie is currently being drawn instead of the game scene.
+        /// </summary>
         private bool _DrawMovie;
 
+        /// <summary>
+        /// Remaining frames to ignore mouse clicks after the window regains focus.
+        /// </summary>
         private int _ignoreMouseClick;
 
+        /// <summary>
+        /// Measured frames per second from the previous one-second interval.
+        /// </summary>
         private int frameRate;
 
+        /// <summary>
+        /// Number of frames rendered in the current one-second interval.
+        /// </summary>
         private int frameCounter;
 
+        /// <summary>
+        /// Accumulated elapsed time used to measure the one-second FPS interval.
+        /// </summary>
         private TimeSpan elapsedTime = TimeSpan.Zero;
 
+        /// <summary>
+        /// Whether the first frame has not yet been rendered.
+        /// </summary>
         private bool bFirstFrame = true;
     }
 }

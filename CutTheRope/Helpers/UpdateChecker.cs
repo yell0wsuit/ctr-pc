@@ -24,10 +24,12 @@ namespace CutTheRope.Helpers
             /// The currently running version string.
             /// </summary>
             public string CurrentVersion { get; init; }
+
             /// <summary>
             /// The latest available version string.
             /// </summary>
             public string LatestVersion { get; init; }
+
             /// <summary>
             /// URL to the release page for the latest version.
             /// </summary>
@@ -84,7 +86,7 @@ namespace CutTheRope.Helpers
         /// Attempts to consume the latest update info once.
         /// </summary>
         /// <param name="info">Receives the update info if available.</param>
-        /// <returns>True if update info was available and consumed; otherwise false.</returns>
+        /// <returns><see langword="true"/> if update info was available and consumed; otherwise <see langword="false"/>.</returns>
         public static bool TryConsumeUpdate(out UpdateInfo info)
         {
             info = null;
@@ -107,6 +109,7 @@ namespace CutTheRope.Helpers
         /// Determines if the version string represents a dirty/dev build.
         /// </summary>
         /// <param name="version">The version to check.</param>
+        /// <returns><see langword="true"/> when the version indicates a dirty/dev build; otherwise <see langword="false"/>.</returns>
         public static bool IsDirtyVersion(string version)
         {
             // Avoids treating missing/blank version strings as "dirty" version
@@ -129,6 +132,7 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Gets the current assembly informational version string.
         /// </summary>
+        /// <returns>The current assembly version string.</returns>
         private static string GetCurrentVersionString()
         {
             string version =
@@ -145,6 +149,7 @@ namespace CutTheRope.Helpers
         /// </summary>
         /// <param name="currentVersionString">The current version string used for comparison.</param>
         /// <param name="cancellationToken">Token used to cancel the HTTP request.</param>
+        /// <returns>Update information when a newer release exists; otherwise <see langword="null"/>.</returns>
         private static async Task<UpdateInfo> FetchLatestReleaseAsync(string currentVersionString, CancellationToken cancellationToken)
         {
             if (!TryParseVersion(currentVersionString, out Version currentVersion))
@@ -208,7 +213,7 @@ namespace CutTheRope.Helpers
         /// </summary>
         /// <param name="input">The input tag or version string.</param>
         /// <param name="version">The parsed version when successful.</param>
-        /// <returns>True when parsing succeeded; otherwise false.</returns>
+        /// <returns><see langword="true"/> when parsing succeeded; otherwise <see langword="false"/>.</returns>
         private static bool TryParseVersion(string input, out Version version)
         {
             version = null;
@@ -254,6 +259,7 @@ namespace CutTheRope.Helpers
         /// GitHub API endpoint for the latest release.
         /// </summary>
         private const string LatestReleaseUrl = "https://api.github.com/repos/yell0wsuit/cuttherope-dx/releases/latest";
+
         /// <summary>
         /// Fallback release page when API url is missing.
         /// </summary>
@@ -271,14 +277,17 @@ namespace CutTheRope.Helpers
         /// Cancellation token source for the update request.
         /// </summary>
         private static readonly CancellationTokenSource cts = new();
+
         /// <summary>
         /// Ensures the update check only starts once per session.
         /// </summary>
         private static int started;
+
         /// <summary>
         /// Ensures update info is consumed at most once.
         /// </summary>
         private static int consumed;
+
         /// <summary>
         /// Latest update info fetched from the server.
         /// </summary>

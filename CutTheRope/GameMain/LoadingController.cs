@@ -3,8 +3,15 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Controller for the pack loading screen and transition back to the root controller.
+    /// </summary>
     internal sealed class LoadingController : ViewController, IResourceMgrDelegate
     {
+        /// <summary>
+        /// Initializes a loading controller and its loading label.
+        /// </summary>
+        /// <param name="parent">Parent view controller.</param>
         public LoadingController(ViewController parent)
             : base(parent)
         {
@@ -17,6 +24,7 @@ namespace CutTheRope.GameMain
             _ = loadingView.AddChild(text);
         }
 
+        /// <inheritdoc />
         public override void Update(float t)
         {
             base.Update(t);
@@ -34,6 +42,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             AndroidAPI.ShowBanner();
@@ -43,18 +52,23 @@ namespace CutTheRope.GameMain
             ShowView(0);
         }
 
+        /// <inheritdoc />
         public override void DeactivateImmediately()
         {
             resourcesLoaded = false; // Clear state
             base.DeactivateImmediately();
         }
 
+        /// <summary>
+        /// Marks pending resources as loaded so the controller can transition after the loading animation finishes.
+        /// </summary>
         public void AllResourcesLoaded()
         {
             // Just set flag - Update() will handle transition after animation completes
             resourcesLoaded = true;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -65,11 +79,18 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Controller ID to activate after the loading screen completes.</summary>
         public int nextController;
+
+        /// <summary>Whether the resource manager has finished loading the requested resources.</summary>
         private bool resourcesLoaded;
 
+        /// <summary>
+        /// View identifiers owned by the loading controller.
+        /// </summary>
         private enum ViewID
         {
+            /// <summary>Loading view identifier.</summary>
             VIEW_LOADING
         }
     }

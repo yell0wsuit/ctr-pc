@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public float StartAntOffset { get; private set; }
 
-        /// <summary>True when the path's first and last endpoints coincide (within 0.01 units).</summary>
+        /// <summary><see langword="true"/> when the path's first and last endpoints coincide (within 0.01 units).</summary>
         public bool Looped { get; private set; }
 
         /// <summary>The raw level-data scale factor passed to the constructor.</summary>
@@ -84,6 +84,9 @@ namespace CutTheRope.GameMain
         /// Rebuilds all segments and ant instances from the stored path data.
         /// Called by the constructor; can be called again to reinitialise after parameter changes.
         /// </summary>
+        /// <param name="ox">Horizontal world-space map/camera offset.</param>
+        /// <param name="oy">Vertical world-space map/camera offset.</param>
+        /// <param name="scale">Level scale factor.</param>
         public void CreateSegmentsAndAntsOffsetXOffsetYscale(float ox, float oy, float scale)
         {
             segmentsInternal.Clear();
@@ -192,6 +195,8 @@ namespace CutTheRope.GameMain
         /// Returns the world-space position corresponding to <paramref name="offset"/> units along the path.
         /// Extrapolates linearly beyond either endpoint.
         /// </summary>
+        /// <param name="offset">Distance in world units from the path start.</param>
+        /// <returns>The interpolated world-space position.</returns>
         public Vector PositionForOffset(float offset)
         {
             if (segmentsInternal.Count == 0)
@@ -230,6 +235,8 @@ namespace CutTheRope.GameMain
         /// Blends smoothly between adjacent segment angles within <see cref="AntConveyorLogic.GetEdgeFadeDistance"/>
         /// of each junction, matching the iOS angle-lerp behaviour.
         /// </summary>
+        /// <param name="offset">Distance in world units from the path start.</param>
+        /// <returns>The blended heading in degrees [0, 360).</returns>
         public float AngleDegForOffset(float offset)
         {
             if (segmentsInternal.Count == 0)
@@ -270,6 +277,8 @@ namespace CutTheRope.GameMain
         /// Always 1 on looped paths; fades linearly from 0.2 to 1.0 within
         /// <see cref="AntConveyorLogic.GetEdgeFadeDistance"/> of each endpoint on open paths.
         /// </summary>
+        /// <param name="offset">Distance in world units from the path start.</param>
+        /// <returns>Scale factor in the range [0.2, 1.0].</returns>
         public float ScaleForOffset(float offset)
         {
             if (Looped)
@@ -290,6 +299,8 @@ namespace CutTheRope.GameMain
         /// Fully opaque in the middle of open paths and on looped paths;
         /// fades to transparent near the endpoints to match the iOS edge-fade effect.
         /// </summary>
+        /// <param name="offset">Distance in world units from the path start.</param>
+        /// <returns>The RGBA colour with fade applied.</returns>
         public RGBAColor ColorForOffset(float offset)
         {
             if (Looped)
@@ -315,6 +326,7 @@ namespace CutTheRope.GameMain
         /// Advances ant offsets, updates animation and rendering state, spawns new ants at the
         /// tail end of open paths, and steps all segment interaction states.
         /// </summary>
+        /// <param name="delta">Elapsed seconds since the last frame.</param>
         public void Update(float delta)
         {
             float minOffset = antsInternal.Count > 0 ? antsInternal[^1].offset : 0f;
@@ -401,6 +413,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a new ant at the given path offset, randomising its start frame and base scale.
         /// </summary>
+        /// <param name="offset">Path offset in world units where the ant spawns.</param>
+        /// <returns>A newly created <see cref="Ant"/> instance.</returns>
         private Ant CreateAntForOffset(float offset)
         {
             Ant ant = new();
@@ -435,8 +449,10 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Returns the segment containing <paramref name="offset"/>, or null if the offset is past the end.
+        /// Returns the segment containing <paramref name="offset"/>, or <see langword="null"/> if the offset is past the end.
         /// </summary>
+        /// <param name="offset">Distance in world units from the path start.</param>
+        /// <returns>The segment at <paramref name="offset"/>, or <see langword="null"/> if past the end.</returns>
         private AntsPathSegment SegmentForOffset(float offset)
         {
             float accumulated = 0f;
@@ -457,6 +473,10 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Linearly interpolates between two angles in degrees, taking the shortest arc across the 360° wrap.
         /// </summary>
+        /// <param name="from">Start angle in degrees.</param>
+        /// <param name="to">End angle in degrees.</param>
+        /// <param name="t">Interpolation factor in [0, 1].</param>
+        /// <returns>The interpolated angle in degrees.</returns>
         private static float LerpAngleDeg(float from, float to, float t)
         {
             float delta = to - from;
@@ -473,26 +493,46 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>Returns the unit direction vector of <paramref name="segment"/>, or zero for zero-length segments.</summary>
+        /// <param name="segment">The segment to compute the direction for.</param>
+        /// <returns>A unit direction vector, or zero for degenerate segments.</returns>
         private static Vector SegmentDirection(AntsPathSegment segment)
         {
             return segment.Length <= 0f ? vectZero : VectDiv(VectSub(segment.endPoint, segment.startPoint), segment.Length);
         }
 
         /// <summary>Returns the effective scale factor for conveyor geometry (level scale; device multiplier is 1 on PC).</summary>
+        /// <param name="pathScale">The raw level scale factor.</param>
+        /// <returns>The device-scaled factor.</returns>
         private static float GetDeviceScaledFactor(float pathScale)
         {
             return pathScale;
         }
 
+        /// <summary>World-space origin of the path object.</summary>
         private readonly Vector startPos;
+
+        /// <summary>Flat list of X,Y vertex offsets parsed from the level data string.</summary>
         private readonly List<float> path = [];
+
+        /// <summary>Backing list for <see cref="Segments"/>.</summary>
         private readonly List<AntsPathSegment> segmentsInternal = [];
+
+        /// <summary>Backing list for <see cref="Ants"/>.</summary>
         private readonly List<Ant> antsInternal = [];
+
+        /// <summary>Ant march speed in world units per second.</summary>
         private readonly float speed;
+
         // private readonly float offsetX;
         // private readonly float offsetY;
+
+        /// <summary>Number of ants initially spawned on the path.</summary>
         private int numberOfAnts;
+
+        /// <summary>Hole sprite drawn at the path start (open paths only).</summary>
         private Image startHole;
+
+        /// <summary>Hole sprite drawn at the path end (open paths only).</summary>
         private Image endHole;
     }
 }

@@ -5,8 +5,12 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.Framework.Visual
 {
+    /// <summary>
+    /// A grid-based tile map that renders tiles using <see cref="ImageMultiDrawer"/> instances, supporting parallax, repeating, and random tile selection.
+    /// </summary>
     internal sealed class TileMap : BaseElement
     {
+        /// <inheritdoc />
         public override void Draw()
         {
             int count = drawers.Count;
@@ -17,6 +21,7 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -37,6 +42,12 @@ namespace CutTheRope.Framework.Visual
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Initializes the tile map with the specified grid dimensions.
+        /// </summary>
+        /// <param name="r">Number of rows.</param>
+        /// <param name="c">Number of columns.</param>
+        /// <returns>The initialized tile map instance.</returns>
         public TileMap InitWithRowsColumns(int r, int c)
         {
             rows = r;
@@ -62,6 +73,12 @@ namespace CutTheRope.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Registers a tile from a texture quad and assigns it a tile ID.
+        /// </summary>
+        /// <param name="t">Texture containing the tile.</param>
+        /// <param name="q">Quad index within the texture, or -1 for full image.</param>
+        /// <param name="ti">Tile ID used in the matrix.</param>
         public void AddTileQuadwithID(CTRTexture2D t, int q, int ti)
         {
             // If texture has no quads (e.g., background images), use full image dimensions
@@ -104,6 +121,14 @@ namespace CutTheRope.Framework.Visual
             tiles[ti] = tileEntry;
         }
 
+        /// <summary>
+        /// Fills a rectangular region of the matrix with the specified tile ID.
+        /// </summary>
+        /// <param name="r">Starting row.</param>
+        /// <param name="c">Starting column.</param>
+        /// <param name="rs">Number of rows to fill.</param>
+        /// <param name="cs">Number of columns to fill.</param>
+        /// <param name="ti">Tile ID to fill with.</param>
         public void FillStartAtRowColumnRowsColumnswithTile(int r, int c, int rs, int cs, int ti)
         {
             for (int i = c; i < c + cs; i++)
@@ -115,23 +140,39 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Sets the parallax scroll ratio (1 = no parallax).
+        /// </summary>
+        /// <param name="r">Parallax ratio.</param>
         public void SetParallaxRatio(float r)
         {
             parallaxRatio = r;
         }
 
+        /// <summary>
+        /// Sets the horizontal repeat mode.
+        /// </summary>
+        /// <param name="r">Repeat mode.</param>
         public void SetRepeatHorizontally(Repeat r)
         {
             repeatedHorizontally = r;
             UpdateVars();
         }
 
+        /// <summary>
+        /// Sets the vertical repeat mode.
+        /// </summary>
+        /// <param name="r">Repeat mode.</param>
         public void SetRepeatVertically(Repeat r)
         {
             repeatedVertically = r;
             UpdateVars();
         }
 
+        /// <summary>
+        /// Updates visible tiles and populates drawers based on the camera position.
+        /// </summary>
+        /// <param name="pos">Camera position in world coordinates.</param>
         public void UpdateWithCameraPos(Vector pos)
         {
             float cameraX = MathF.Round(pos.X / parallaxRatio);
@@ -255,6 +296,9 @@ namespace CutTheRope.Framework.Visual
             }
         }
 
+        /// <summary>
+        /// Recalculates visible tile counts and total map dimensions.
+        /// </summary>
         public void UpdateVars()
         {
             maxColsOnScreen = 2 + (int)MathF.Floor(cameraViewWidth / (tileWidth + 1));
@@ -271,48 +315,119 @@ namespace CutTheRope.Framework.Visual
             height = tileMapHeight = rows * tileHeight;
         }
 
+        /// <summary>
+        /// 2D grid mapping (column, row) to tile IDs.
+        /// </summary>
         public int[,] matrix;
 
+        /// <summary>
+        /// Number of rows in the grid.
+        /// </summary>
         private int rows;
 
+        /// <summary>
+        /// Number of columns in the grid.
+        /// </summary>
         private int columns;
 
+        /// <summary>
+        /// List of drawers, one per unique texture.
+        /// </summary>
         private List<ImageMultiDrawer> drawers;
 
+        /// <summary>
+        /// Tile definitions keyed by tile ID.
+        /// </summary>
         private Dictionary<int, TileEntry> tiles;
 
+        /// <summary>
+        /// Camera viewport width in pixels.
+        /// </summary>
         private int cameraViewWidth;
 
+        /// <summary>
+        /// Camera viewport height in pixels.
+        /// </summary>
         private int cameraViewHeight;
 
+        /// <summary>
+        /// Total tile map width in pixels.
+        /// </summary>
         private int tileMapWidth;
 
+        /// <summary>
+        /// Total tile map height in pixels.
+        /// </summary>
         private int tileMapHeight;
 
+        /// <summary>
+        /// Maximum number of tile rows visible on screen.
+        /// </summary>
         private int maxRowsOnScreen;
 
+        /// <summary>
+        /// Maximum number of tile columns visible on screen.
+        /// </summary>
         private int maxColsOnScreen;
 
+        /// <summary>
+        /// Seed for random tile selection.
+        /// </summary>
         private int randomSeed;
 
+        /// <summary>
+        /// Vertical repeat mode.
+        /// </summary>
         private Repeat repeatedVertically;
 
+        /// <summary>
+        /// Horizontal repeat mode.
+        /// </summary>
         private Repeat repeatedHorizontally;
 
+        /// <summary>
+        /// Parallax scroll ratio (1 = no parallax).
+        /// </summary>
         private float parallaxRatio;
 
+        /// <summary>
+        /// Width of a single tile in pixels.
+        /// </summary>
         private int tileWidth;
 
+        /// <summary>
+        /// Height of a single tile in pixels.
+        /// </summary>
         private int tileHeight;
 
+        /// <summary>
+        /// Whether columns are selected randomly instead of sequentially.
+        /// </summary>
         private bool horizontalRandom;
 
+        /// <summary>
+        /// Whether rows are selected randomly instead of sequentially.
+        /// </summary>
         private bool verticalRandom;
 
+        /// <summary>
+        /// Tile repeat modes for map edges.
+        /// </summary>
         public enum Repeat
         {
+            /// <summary>
+            /// No repeating.
+            /// </summary>
             NONE,
+
+            /// <summary>
+            /// Repeat all tiles seamlessly.
+            /// </summary>
             ALL,
+
+            /// <summary>
+            /// Repeat only edge tiles.
+            /// </summary>
             EDGES
         }
     }

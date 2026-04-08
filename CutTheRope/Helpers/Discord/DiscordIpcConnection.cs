@@ -12,10 +12,24 @@ namespace CutTheRope.Helpers.Discord
     /// </summary>
     internal sealed class DiscordIpcConnection : IDisposable
     {
+        /// <summary>
+        /// Windows named-pipe stream, set when connected on Windows.
+        /// </summary>
         private NamedPipeClientStream _pipeStream;
+
+        /// <summary>
+        /// Unix domain socket, set when connected on Unix/macOS.
+        /// </summary>
         private Socket _unixSocket;
+
+        /// <summary>
+        /// Network stream wrapping the Unix domain socket.
+        /// </summary>
         private NetworkStream _networkStream;
 
+        /// <summary>
+        /// Gets the connected stream for reading and writing IPC messages.
+        /// </summary>
         public Stream Stream { get; private set; }
 
         /// <summary>
@@ -124,6 +138,7 @@ namespace CutTheRope.Helpers.Discord
             return false;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _networkStream?.Dispose();

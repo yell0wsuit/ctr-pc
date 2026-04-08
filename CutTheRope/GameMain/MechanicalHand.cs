@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -137,7 +137,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Indicates whether any segment is currently playing a rotation timeline.
         /// </summary>
-        /// <returns><c>true</c> when at least one segment is animating.</returns>
+        /// <returns><see langword="true" /> when at least one segment is animating.</returns>
         public bool IsRotating()
         {
             if (segments == null)
@@ -233,6 +233,7 @@ namespace CutTheRope.GameMain
             return (MechanicalHandClaw)LastSegment().GetChild(0);
         }
 
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -240,6 +241,7 @@ namespace CutTheRope.GameMain
             _ = Mover.MoveVariableToTarget(ref clapTimer, 0f, 1f, delta);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -251,6 +253,12 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Creates a short scale bounce timeline used by mechanical hand catch and clap animations.
+        /// </summary>
+        /// <param name="startScale">Base scale to return to after the bounce.</param>
+        /// <param name="amplitude">Bounce amplitude as a multiplier of <paramref name="startScale"/>.</param>
+        /// <returns>The configured bounce timeline.</returns>
         internal static Timeline CatchBounceTimelineWithInitialScaleandAmplitude(float startScale, float amplitude)
         {
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
@@ -260,46 +268,67 @@ namespace CutTheRope.GameMain
             return timeline;
         }
 
+        /// <summary>Claw collision radius before world scaling.</summary>
         public const int MH_CLAW_RADIUS = 17;
 
+        /// <summary>Joint collision radius before world scaling.</summary>
         public const int MH_JOINT_RADIUS = 12;
 
+        /// <summary>World scaling factor used by mechanical hand distances.</summary>
         public const float MH_WORLD_SCALE = 3f;
 
+        /// <summary>Touch radius for releasing candy from the claw.</summary>
         public const float MH_CLAW_TOUCH_RADIUS = MH_CLAW_RADIUS * MH_WORLD_SCALE;
 
+        /// <summary>Touch radius for rotating segment buttons.</summary>
         public const float MH_BUTTON_TOUCH_RADIUS = 30f * MH_WORLD_SCALE;
 
+        /// <summary>Maximum distance at which an idle hand can grab candy.</summary>
         public const float MH_GRAB_DISTANCE = 25.2f * MH_WORLD_SCALE;
 
+        /// <summary>Distance at which a releasing hand returns to idle state.</summary>
         public const float MH_RELEASE_DISTANCE = 34f * MH_WORLD_SCALE;
 
+        /// <summary>Maximum distance at which two idle hands can clap.</summary>
         public const float MH_CLAP_DISTANCE = 40.8f * MH_WORLD_SCALE;
 
+        /// <summary>Cooldown before a hand can play another clap effect.</summary>
         public const float MH_CLAP_COOLDOWN = 0.3f;
 
+        /// <summary>Idle hand state value.</summary>
         public const int STATE_HAND_IDLE = 0;
 
+        /// <summary>State value used while the hand is holding the candy.</summary>
         public const int STATE_HAND_CANDY = 1;
 
+        /// <summary>State value used while the hand is releasing the candy.</summary>
         public const int STATE_HAND_RELEASE = 2;
 
+        /// <summary>Current mechanical hand state.</summary>
         public int state;
 
+        /// <summary>Whether attached candy visuals should rotate with segment movement.</summary>
         public bool doRotateCandy;
 
+        /// <summary>Whether this hand is eligible to play a clap effect.</summary>
         public bool canPlayClap;
 
+        /// <summary>Remaining clap cooldown time in seconds.</summary>
         public float clapTimer;
 
+        /// <summary>Whether the release sound has already played for the current release.</summary>
         public bool releaseSoundPlayed;
 
+        /// <summary>Offset from the terminal joint to the candy anchor in claw local space.</summary>
         private Vector clawOffset;
 
+        /// <summary>Lightweight constrained point used to attach candy to the claw.</summary>
         public ConstraintedPoint cPoint;
 
+        /// <summary>Ordered mechanical hand segment chain.</summary>
         public List<MechanicalHandSegment> segments;
 
+        /// <summary>Segment currently being rotated by input.</summary>
         public MechanicalHandSegment rotatingSegment;
     }
 }

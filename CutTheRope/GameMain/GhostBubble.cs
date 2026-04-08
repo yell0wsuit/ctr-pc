@@ -3,13 +3,27 @@ using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Ghost-transformed bubble variant with supporting cloud visuals and custom draw behavior.
+    /// </summary>
     internal sealed class GhostBubble : Bubble
     {
+        /// <summary>
+        /// Creates a ghost bubble from a texture.
+        /// </summary>
+        /// <param name="texture">Texture used by the bubble.</param>
+        /// <returns>The initialized ghost bubble.</returns>
         public static GhostBubble Create(CTRTexture2D texture)
         {
             return (GhostBubble)new GhostBubble().InitWithTexture(texture);
         }
 
+        /// <summary>
+        /// Creates a ghost bubble from a texture resource and applies a draw quad.
+        /// </summary>
+        /// <param name="resourceName">Texture resource name.</param>
+        /// <param name="quad">Quad index to draw.</param>
+        /// <returns>The initialized ghost bubble.</returns>
         public static GhostBubble CreateWithResIDQuad(string resourceName, int quad)
         {
             GhostBubble bubble = Create(Application.GetTexture(resourceName));
@@ -17,6 +31,9 @@ namespace CutTheRope.GameMain
             return bubble;
         }
 
+        /// <summary>
+        /// Adds looping ghost cloud timelines around the bubble.
+        /// </summary>
         public void AddSupportingCloudsTimelines()
         {
             // first right cloud
@@ -130,6 +147,7 @@ namespace CutTheRope.GameMain
             passTransformationsToChilds = true;
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -152,6 +170,7 @@ namespace CutTheRope.GameMain
             RestoreColor(this);
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -163,8 +182,13 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>Primary background ghost cloud element.</summary>
         public Image backCloud;
+
+        /// <summary>Secondary background ghost cloud element.</summary>
         public Image backCloud2;
+
+        /// <summary>Tertiary background ghost cloud element.</summary>
         public Image backCloud3;
     }
 }

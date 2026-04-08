@@ -49,24 +49,33 @@ namespace CutTheRope.GameMain
         public string[] UniqueSounds { get; } = uniqueSounds;
 
         /// <summary>Gets the timeline ID for a given state, or -1 if unmapped.</summary>
+        /// <param name="state">Animation state to resolve.</param>
+        /// <returns>The timeline ID mapped to <paramref name="state"/>, or -1 when unmapped.</returns>
         public int GetTimelineId(TargetAnimationState state)
         {
             return TimelineMappings.TryGetValue(state, out int id) ? id : -1;
         }
 
         /// <summary>Whether this skin declares a unique behavior for the given Om Nom sound.</summary>
+        /// <param name="soundResourceName">Sound resource name to check.</param>
+        /// <returns><see langword="true"/> when the sound is explicitly listed as unique; otherwise <see langword="false"/>.</returns>
         public bool HasUniqueSound(string soundResourceName)
         {
             return Array.IndexOf(UniqueSounds, soundResourceName) >= 0;
         }
 
         /// <summary>Whether a followup timeline should play after the given timeline finishes.</summary>
+        /// <param name="finishedTimelineId">Timeline that just finished.</param>
+        /// <param name="followupTimelineId">Resolved followup timeline ID when one exists.</param>
+        /// <returns><see langword="true"/> when a followup timeline mapping exists; otherwise <see langword="false"/>.</returns>
         public bool TryGetFollowupTimeline(int finishedTimelineId, out int followupTimelineId)
         {
             return Followups.TryGetValue(finishedTimelineId, out followupTimelineId);
         }
 
         /// <summary>Whether the given timeline should bind a delegate for followup/cadence.</summary>
+        /// <param name="timelineId">Timeline to test for followup binding.</param>
+        /// <returns><see langword="true"/> when the timeline has a configured followup; otherwise <see langword="false"/>.</returns>
         public bool ShouldBindFollowupDelegate(int timelineId)
         {
             return Followups.ContainsKey(timelineId);

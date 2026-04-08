@@ -138,16 +138,13 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Factory method to create a snowfall overlay only when Christmas event is enabled.
         /// </summary>
-        /// <returns>A new <see cref="SnowfallOverlay"/> instance if Christmas event is active; otherwise, null.</returns>
+        /// <returns>A new <see cref="SnowfallOverlay"/> instance if Christmas event is active; otherwise, <see langword="null"/>.</returns>
         public static SnowfallOverlay CreateIfEnabled()
         {
             return SpecialEvents.IsXmas ? new SnowfallOverlay() : null;
         }
 
-        /// <summary>
-        /// Updates snowflake positions, animations, and fade transitions each frame.
-        /// </summary>
-        /// <param name="delta">Time elapsed since last update in seconds.</param>
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -161,10 +158,7 @@ namespace CutTheRope.GameMain
             UpdateFade(delta);
         }
 
-        /// <summary>
-        /// Renders all active snowflakes with proper blending and transformations.
-        /// Uses additive blending for a soft, glowing appearance.
-        /// </summary>
+        /// <inheritdoc />
         public override void Draw()
         {
             if (!running || texture == null || snowflakes.Count == 0)
@@ -256,7 +250,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Stops the snowfall effect, either immediately or with a fade-out transition.
         /// </summary>
-        /// <param name="immediate">If true, stops instantly without fade-out; otherwise fades out over <see cref="FadeDuration"/>.</param>
+        /// <param name="immediate">If <see langword="true"/>, stops instantly without fade-out; otherwise fades out over <see cref="FadeDuration"/>.</param>
         public void Stop(bool immediate = false)
         {
             if (immediate)
@@ -278,7 +272,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Ensures the snowflake texture is loaded, loading it on first call.
         /// </summary>
-        /// <returns>True if texture is available; false if loading failed.</returns>
+        /// <returns><see langword="true"/> if texture is available; <see langword="false"/> if loading failed.</returns>
         private bool EnsureTexture()
         {
             if (texture != null)
@@ -330,7 +324,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a new snowflake with randomized properties for natural variation.
         /// </summary>
-        /// <param name="populateScreen">If true, spawns across entire screen width; if false, spawns at top center.</param>
+        /// <param name="populateScreen">If <see langword="true"/>, spawns across entire screen width; if <see langword="false"/>, spawns at top center.</param>
         /// <returns>A new <see cref="Snowflake"/> with randomized animation parameters.</returns>
         private Snowflake CreateSnowflake(bool populateScreen)
         {
@@ -454,7 +448,7 @@ namespace CutTheRope.GameMain
         /// Checks if a float value is finite (not NaN or infinity).
         /// </summary>
         /// <param name="value">Value to check.</param>
-        /// <returns>True if the value is finite; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the value is finite; <see langword="false"/> otherwise.</returns>
         private static bool IsFinite(float value)
         {
             return !float.IsNaN(value) && !float.IsInfinity(value);

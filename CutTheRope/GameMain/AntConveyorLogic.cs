@@ -7,7 +7,7 @@ namespace CutTheRope.GameMain
     /// <summary>
     /// Pure-math helpers for the ant-conveyor system, ported from decompiled iOS code.
     /// All geometry constants scale linearly with the device pixel-density multiplier
-    /// returned by <see cref="GetDeviceScaleMultiplier"/>.
+    /// returned by <c>deviceScale</c>.
     /// </summary>
     public static class AntConveyorLogic
     {
@@ -34,12 +34,13 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Returns true if <paramref name="touchWorld"/> falls within the square touch zone
+        /// Returns <see langword="true"/> if <paramref name="touchWorld"/> falls within the square touch zone
         /// centred on the candy, used to let the player manually detach the candy from the conveyor.
         /// </summary>
         /// <param name="touchWorld">Touch position in world space.</param>
         /// <param name="candyPoint">Candy centre in world space.</param>
         /// <param name="halfSize">Half the side length of the touch zone (see <see cref="GetCarrierTouchHalfSize"/>).</param>
+        /// <returns><see langword="true"/> if the touch is inside the square zone; otherwise <see langword="false"/>.</returns>
         public static bool IsPointInCarrierTouchZone(Vector touchWorld, Vector candyPoint, float halfSize)
         {
             return touchWorld.X >= candyPoint.X - halfSize
@@ -77,6 +78,8 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>Spacing between spawned ants along the path. iOS constant: 35 × deviceScale.</summary>
+        /// <param name="deviceScale">Device pixel-density multiplier (see <c>deviceScale</c>).</param>
+        /// <returns>The gap distance in world units.</returns>
         public static float GetSpawnGap(float deviceScale)
         {
             return 35f * deviceScale;
@@ -86,6 +89,8 @@ namespace CutTheRope.GameMain
         /// Distance from each path endpoint within which ant sprites fade in or out.
         /// iOS constant: 15 × deviceScale.
         /// </summary>
+        /// <param name="deviceScale">Device pixel-density multiplier (see <c>deviceScale</c>).</param>
+        /// <returns>The fade distance in world units.</returns>
         public static float GetEdgeFadeDistance(float deviceScale)
         {
             return 15f * deviceScale;
@@ -95,6 +100,8 @@ namespace CutTheRope.GameMain
         /// Half-height of the segment interaction rectangle, measured perpendicular to the path direction.
         /// iOS constant: 13.5 × deviceScale.
         /// </summary>
+        /// <param name="deviceScale">Device pixel-density multiplier (see <c>deviceScale</c>).</param>
+        /// <returns>The half-height in world units.</returns>
         public static float GetSegmentHalfHeight(float deviceScale)
         {
             return 13.5f * deviceScale;
@@ -104,6 +111,8 @@ namespace CutTheRope.GameMain
         /// Half-size of the square touch zone the player can tap to manually detach the candy from the conveyor.
         /// iOS constant: 30 × deviceScale.
         /// </summary>
+        /// <param name="deviceScale">Device pixel-density multiplier (see <c>deviceScale</c>).</param>
+        /// <returns>The touch zone half-size in world units.</returns>
         public static float GetCarrierTouchHalfSize(float deviceScale)
         {
             return 30f * deviceScale;
@@ -113,6 +122,8 @@ namespace CutTheRope.GameMain
         /// Distance within which the candy snaps directly to the carrier position without lerping.
         /// iOS constant: 2 × deviceScale.
         /// </summary>
+        /// <param name="deviceScale">Device pixel-density multiplier (see <c>deviceScale</c>).</param>
+        /// <returns>The snap distance in world units.</returns>
         public static float GetCarrierSnapDistance(float deviceScale)
         {
             return 2f * deviceScale;

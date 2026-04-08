@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -11,6 +11,7 @@ namespace CutTheRope.GameMain
     /// Manages all mouse entities within a game scene, including activation,
     /// rendering, candy handoff, and mouse switching logic.
     /// </summary>
+    /// <param name="scene">Game scene that owns the mouse system.</param>
     internal sealed class MiceObject(GameScene scene)
     {
         /// <summary>
@@ -77,8 +78,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="target">The constrained point to test against.</param>
         /// <returns>
-        /// <c>true</c> if the active mouse exists, is active, and within grab radius;
-        /// otherwise <c>false</c>.
+        /// <see langword="true" /> if the active mouse exists, is active, and within grab radius;
+        /// otherwise <see langword="false" />.
         /// </returns>
         public bool IsActiveMouseInRange(ConstraintedPoint target)
         {
@@ -112,7 +113,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Indicates whether the active mouse is currently holding candy.
         /// </summary>
-        /// <returns><c>true</c> if the active mouse has candy; otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if the active mouse has candy; otherwise <see langword="false" />.</returns>
         public bool ActiveMouseHasCandy()
         {
             return activeMouse?.HasCandy ?? false;
@@ -139,8 +140,8 @@ namespace CutTheRope.GameMain
         /// <param name="x">X coordinate of the click.</param>
         /// <param name="y">Y coordinate of the click.</param>
         /// <returns>
-        /// <c>true</c> if the click was handled and candy was dropped;
-        /// otherwise <c>false</c>.
+        /// <see langword="true" /> if the click was handled and candy was dropped;
+        /// otherwise <see langword="false" />.
         /// </returns>
         public bool HandleClick(float x, float y)
         {
@@ -204,6 +205,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates and configures the shared sprite container used by all mice.
         /// </summary>
+        /// <returns>The shared mouse sprite container, body animation, and eye animation.</returns>
         private static Mouse.SharedMouseSprites CreateSharedSprites()
         {
             BaseElement container = new()
@@ -291,24 +293,71 @@ namespace CutTheRope.GameMain
             };
         }
 
+        /// <summary>
+        /// Identifiers for mouse animation timelines on the shared body animation.
+        /// </summary>
         private enum MouseAnimationId
         {
+            /// <summary>Entry animation without candy.</summary>
             EntryEmpty = 0,
+
+            /// <summary>Entry animation while carrying candy.</summary>
             EntryWithCandy = 1,
+
+            /// <summary>Idle animation without candy.</summary>
             IdleEmpty = 2,
+
+            /// <summary>Idle animation while carrying candy.</summary>
             Idle = 3,
+
+            /// <summary>Exit animation without candy.</summary>
             ExitEmpty = 4,
+
+            /// <summary>Exit animation while carrying candy.</summary>
             ExitWithCandy = 5,
+
+            /// <summary>Bounce animation used while a mouse is active.</summary>
             Bounce = 6
         }
 
+        /// <summary>
+        /// Game scene that owns this mouse manager.
+        /// </summary>
         private readonly GameScene scene = scene;
+
+        /// <summary>
+        /// Registered mice controlled by this manager.
+        /// </summary>
         private readonly List<Mouse> mice = [];
+
+        /// <summary>
+        /// Mouse currently active for candy interaction.
+        /// </summary>
         private Mouse activeMouse;
+
+        /// <summary>
+        /// Logical index of the currently active mouse.
+        /// </summary>
         private int activeIndex = -1;
+
+        /// <summary>
+        /// Shared sprite container transferred between active mice.
+        /// </summary>
         private Mouse.SharedMouseSprites? sharedSpriteContainer;
+
+        /// <summary>
+        /// Whether active mouse advancement is locked.
+        /// </summary>
         private bool advanceLocked;
+
+        /// <summary>
+        /// Star point currently being handed off between mice.
+        /// </summary>
         private ConstraintedPoint carriedStar;
+
+        /// <summary>
+        /// Candy object currently being handed off between mice.
+        /// </summary>
         private GameObject carriedCandy;
     }
 }

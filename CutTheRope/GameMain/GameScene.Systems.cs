@@ -3,7 +3,7 @@ using System;
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -13,6 +13,9 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Handles pump physics interaction with a constrained point and game object
         /// </summary>
+        /// <param name="p">Pump producing the flow impulse.</param>
+        /// <param name="s">Constrained point to receive the impulse.</param>
+        /// <param name="c">Game object tested against the pump flow area.</param>
         public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
             float flowLength = Pump.FlowLength;
@@ -42,6 +45,9 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Handles bouncer physics interaction with a constrained point
         /// </summary>
+        /// <param name="b">Bouncer source.</param>
+        /// <param name="s">Constrained point affected by the bounce.</param>
+        /// <param name="delta">Frame delta time used when applying impulse.</param>
         public static void HandleBouncePtDelta(Bouncer b, ConstraintedPoint s, float delta)
         {
             if (!b.skip)
@@ -66,6 +72,8 @@ namespace CutTheRope.GameMain
         /// Applies steam tube forces and interacts with candy pieces inside the flow area.
         /// Uses a dedicated mobile formula when mobile physics model is enabled.
         /// </summary>
+        /// <param name="tube">Steam tube that emits the force field.</param>
+        /// <param name="delta">Frame delta time used when applying impulses.</param>
         public void OperateSteamTube(SteamTube tube, float delta)
         {
             float tubeScale = tube.GetHeightScale();
@@ -214,6 +222,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Operates a pump - creates particles and applies force
         /// </summary>
+        /// <param name="p">Pump to animate and process.</param>
         public void OperatePump(Pump p)
         {
             p.PlayTimeline(0);
@@ -267,6 +276,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Starts bamboo tube teleport sequence for the main candy.
         /// </summary>
+        /// <param name="bambooTube">Bamboo tube that receives the candy.</param>
         public void OperateBambooTube(BambooTube bambooTube)
         {
             if (bambooTube == null || targetBambooTube != null || twoParts != PARTS_NONE || noCandy)
@@ -307,6 +317,11 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Cuts ropes with a razor or line. Returns number of ropes cut.
         /// </summary>
+        /// <param name="r">Razor bounds source; when null, line intersection is used.</param>
+        /// <param name="v1">Line start point when line cutting is used.</param>
+        /// <param name="v2">Line end point when line cutting is used.</param>
+        /// <param name="im">Whether to remove the rope part immediately after cutting.</param>
+        /// <returns>The number of ropes cut during this call.</returns>
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int ropesCutCount = 0;
@@ -371,6 +386,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Called when a spider is busted - handles animation and achievements
         /// </summary>
+        /// <param name="g">Grab whose spider was busted.</param>
         public void SpiderBusted(Grab g)
         {
             int spidersBustedCount = Preferences.GetIntForKey("PREFS_SPIDERS_BUSTED") + 1;
@@ -414,6 +430,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Called when a spider successfully captures the candy
         /// </summary>
+        /// <param name="sg">Grab whose spider captured the candy.</param>
         public void SpiderWon(Grab sg)
         {
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
@@ -499,6 +516,11 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Finds the nearest bungee segment using bezier drawing points
         /// </summary>
+        /// <param name="s">Receives the nearest sampled point on the rope.</param>
+        /// <param name="tx">Query X position.</param>
+        /// <param name="ty">Query Y position.</param>
+        /// <param name="grab">Receives the grab that owns the nearest segment.</param>
+        /// <returns>The nearest bungee segment, or <see langword="null"/> when none is within range.</returns>
         public Bungee GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref Vector s, float tx, float ty, ref Grab grab)
         {
             float maxDistance = 60f;
@@ -531,6 +553,9 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Finds the nearest bungee segment using constraint points
         /// </summary>
+        /// <param name="s">Input query position and output nearest constraint position.</param>
+        /// <param name="g">Grab whose rope is searched.</param>
+        /// <returns>The nearest bungee segment, or <see langword="null"/> when no valid segment is found.</returns>
         public static Bungee GetNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
         {
             float initialDistance = UNDEFINED_COORDINATE;

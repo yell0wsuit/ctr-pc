@@ -18,18 +18,37 @@ namespace CutTheRope.GameMain.FingerTraces
     /// <param name="blend">Blend mode for rendering.</param>
     internal sealed class RedTraceParticles(float alpha, FingerTraceBlendMode blend) : FrameworkTypes
     {
+        /// <summary>The maximum number of live particles the emitter keeps at once.</summary>
         private const int Capacity = 100;
+
+        /// <summary>The first particle quad index in the finger-trace atlas.</summary>
         private const int FirstQuad = 27;
+
+        /// <summary>The number of particle quads available in the atlas.</summary>
         private const int QuadCount = 3;
+
+        /// <summary>The downward acceleration applied to live particles.</summary>
         private const float GravityY = 600f;
 
+        /// <summary>The live particle list in age order.</summary>
         private readonly List<RedParticle> particles = [];
+
+        /// <summary>The constant alpha used for emitted sprites.</summary>
         private readonly float baseAlpha = alpha;
+
+        /// <summary>The blend mode used when drawing emitted sprites.</summary>
         private readonly FingerTraceBlendMode blendMode = blend;
 
+        /// <summary>The current emitter position used for newly spawned particles.</summary>
         private Vector emitterPosition;
+
+        /// <summary>The center emission rotation in degrees.</summary>
         private float emitterRotation;
+
+        /// <summary>The requested particle emission rate in particles per second.</summary>
         private float emissionRate;
+
+        /// <summary>The accumulated time toward the next emitted particle.</summary>
         private float emitCounter;
 
         /// <summary>
@@ -50,6 +69,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Sets the position used for newly emitted particles.
         /// </summary>
+        /// <param name="position">Emitter position for newly spawned particles.</param>
         public void SetPosition(Vector position)
         {
             emitterPosition = position;
@@ -58,6 +78,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Sets the center emission rotation in degrees.
         /// </summary>
+        /// <param name="rotation">Emitter rotation in degrees.</param>
         public void SetRotation(float rotation)
         {
             emitterRotation = rotation;
@@ -66,6 +87,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Sets the requested particle emission rate in particles per second.
         /// </summary>
+        /// <param name="rate">Requested emission rate in particles per second.</param>
         public void SetEmissionRate(float rate)
         {
             emissionRate = MAX(0f, rate);
@@ -74,6 +96,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Advances the emitter and all live particles for one frame.
         /// </summary>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
         public void Update(float delta)
         {
             if (emissionRate > 0f)
@@ -107,6 +130,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Appends the current particle visuals as trace snapshot sprites.
         /// </summary>
+        /// <param name="sprites">Destination list that receives particle sprite poses.</param>
         public void AppendSprites(List<FingerTraceSpritePose> sprites)
         {
             foreach (RedParticle particle in particles)
@@ -125,6 +149,10 @@ namespace CutTheRope.GameMain.FingerTraces
             }
         }
 
+        /// <summary>
+        /// Creates a newly emitted red particle from the current emitter state.
+        /// </summary>
+        /// <returns>The initialized particle state.</returns>
         private RedParticle CreateParticle()
         {
             float angle = DEGREES_TO_RADIANS(emitterRotation + (70f * RND_MINUS1_1));
@@ -146,6 +174,11 @@ namespace CutTheRope.GameMain.FingerTraces
             };
         }
 
+        /// <summary>
+        /// Returns a random integer in the range <c>[0, upperExclusive)</c>.
+        /// </summary>
+        /// <param name="upperExclusive">The exclusive upper bound.</param>
+        /// <returns>A random integer less than <paramref name="upperExclusive"/>.</returns>
         private static int NextInt(int upperExclusive)
         {
             return upperExclusive <= 1
@@ -153,15 +186,33 @@ namespace CutTheRope.GameMain.FingerTraces
                 : (int)(Arc4random() % (uint)upperExclusive);
         }
 
+        /// <summary>
+        /// Stores the state of one live red particle.
+        /// </summary>
         private struct RedParticle
         {
+            /// <summary>The current particle position.</summary>
             public Vector Position;
+
+            /// <summary>The current particle velocity.</summary>
             public Vector Velocity;
+
+            /// <summary>The current particle rotation in degrees.</summary>
             public float Rotation;
+
+            /// <summary>The initial sprite scale.</summary>
             public float StartScale;
+
+            /// <summary>The final sprite scale at the end of life.</summary>
             public float EndScale;
+
+            /// <summary>The remaining particle lifetime in seconds.</summary>
             public float Life;
+
+            /// <summary>The starting particle lifetime in seconds.</summary>
             public float MaxLife;
+
+            /// <summary>The selected atlas quad index.</summary>
             public int QuadIndex;
         }
     }

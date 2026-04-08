@@ -6,14 +6,17 @@ using static CutTheRope.Helpers.ParsingHelpers;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// Handles loading pump objects from XML level data
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads a pump object from XML node data
         /// </summary>
+        /// <param name="xmlNode">The XML node describing the pump.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadPump(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             Pump pump = Pump.Pump_createWithResID(Resources.Img.ObjPump);

@@ -62,7 +62,7 @@ namespace CutTheRope.GameMain
         /// Advances auto-scroll if enabled.
         /// </summary>
         /// <returns>
-        /// True if auto-scroll was applied this frame; otherwise false.
+        /// <see langword="true"/> if auto-scroll was applied this frame; otherwise <see langword="false"/>.
         /// </returns>
         public bool UpdateAutoScroll()
         {
@@ -84,7 +84,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="scrollDelta">Mouse wheel delta value.</param>
         /// <returns>
-        /// True if the scroll was handled by the about container; otherwise false.
+        /// <see langword="true"/> if the scroll was handled by the about container; otherwise <see langword="false"/>.
         /// </returns>
         public bool HandleMouseWheel(int scrollDelta)
         {
@@ -98,6 +98,11 @@ namespace CutTheRope.GameMain
             return true;
         }
 
+        /// <summary>
+        /// Builds the scrollable About/Credits content container.
+        /// </summary>
+        /// <param name="buttonDelegate">Button delegate used by controls embedded in the about content.</param>
+        /// <returns>The configured scrollable content container.</returns>
         private static ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate)
         {
             float containerWidth = 1300f;
@@ -189,6 +194,11 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Creates a centered, clickable text button for URLs or actions.
         /// </summary>
+        /// <param name="text">Button label text.</param>
+        /// <param name="buttonId">Identifier assigned to the button.</param>
+        /// <param name="buttonDelegate">Delegate that handles button events.</param>
+        /// <param name="width">Maximum width used for text layout.</param>
+        /// <returns>A configured centered link button.</returns>
         private static Button CreateCenteredLinkButton(
             string text,
             MenuButtonId buttonId,
@@ -208,6 +218,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Builds the fanwork main text with version substitution.
         /// </summary>
+        /// <returns>The localized fanwork body text with version placeholders resolved.</returns>
         private static string BuildFanworkMainText()
         {
             string text = Application.GetString("ABOUT_FANWORK_MAIN").ToString();
@@ -218,6 +229,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Gets the executing assembly version string.
         /// </summary>
+        /// <returns>The current assembly version string.</returns>
         private static string GetAssemblyVersion()
         {
             string fullName = Assembly.GetExecutingAssembly().FullName;

@@ -1,6 +1,6 @@
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
-using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Physics;
 
 namespace CutTheRope.GameMain
 {
@@ -12,6 +12,7 @@ namespace CutTheRope.GameMain
         /// leaves a segment's internal rectangle, and runs the priority search for a new segment
         /// to carry the candy.
         /// </summary>
+        /// <param name="delta">Elapsed time in seconds since the last frame.</param>
         private void UpdateAntConveyor(float delta)
         {
             if (antsPaths == null || antsPaths.Count == 0)
@@ -149,8 +150,11 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Handles a touch event on the candy while it is being carried by the conveyor.
         /// If the touch lands inside the carrier touch zone the candy is detached and released to physics.
-        /// Returns true if the touch was consumed.
         /// </summary>
+        /// <param name="point">The candy's constraint point.</param>
+        /// <param name="tx">Touch X coordinate in screen space.</param>
+        /// <param name="ty">Touch Y coordinate in screen space.</param>
+        /// <returns><see langword="true"/> if the touch was consumed; otherwise, <see langword="false"/>.</returns>
         private bool HandleConveyorTouchConstraintedPointXY(ConstraintedPoint point, float tx, float ty)
         {
             if (point == null || antsPathSegmentWithCandy == null)
@@ -232,10 +236,13 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Attempts to attach the candy to <paramref name="segment"/>. Returns true and starts the
+        /// Attempts to attach the candy to <paramref name="segment"/>. Returns <see langword="true"/> and starts the
         /// interaction if all preconditions pass: the segment is idle and interactable, the candy is
         /// not in the wait-before-attach state, and the candy lies inside the segment's bounding rectangle.
         /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <param name="useExternalBounds">Whether to use the wider external bounding rectangle.</param>
+        /// <returns><see langword="true"/> if the candy was attached to the segment; otherwise, <see langword="false"/>.</returns>
         private bool TryStartAntInteraction(AntsPathSegment segment, bool useExternalBounds)
         {
             if (segment == null
@@ -280,16 +287,19 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>Returns the scale factor for ant-conveyor sizing. Always 1 on PC.</summary>
+        /// <returns>The device scale multiplier.</returns>
         private static float GetAntConveyorScale()
         {
             return 1f;
         }
 
         /// <summary>
-        /// Calls <see cref="Bungee.Update"/> for <paramref name="rope"/> while preventing rope tension
+        /// Calls <see cref="Bungee.Update(float)"/> for <paramref name="rope"/> while preventing rope tension
         /// from displacing the candy when it is being carried by the ant conveyor.
         /// The candy position is locked before the rope physics step and restored afterward.
         /// </summary>
+        /// <param name="rope">The bungee rope to update.</param>
+        /// <param name="delta">Elapsed time in seconds since the last frame.</param>
         private void UpdateRopeWithAntCarryOverride(Bungee rope, float delta)
         {
             if (rope == null)

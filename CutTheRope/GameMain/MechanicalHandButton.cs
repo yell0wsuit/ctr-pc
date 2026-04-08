@@ -8,13 +8,7 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class MechanicalHandButton : Button
     {
-        /// <summary>
-        /// Checks whether touch input is inside the segment rotate interaction radius.
-        /// </summary>
-        /// <param name="tx">Touch world X coordinate.</param>
-        /// <param name="ty">Touch world Y coordinate.</param>
-        /// <param name="td">Whether this is touch down context.</param>
-        /// <returns><c>true</c> when touch should activate segment rotation.</returns>
+        /// <inheritdoc />
         public override bool IsInTouchZoneXYforTouchDown(float tx, float ty, bool td)
         {
             if (segment?.theHand == null || segment.theHand.segments == null)

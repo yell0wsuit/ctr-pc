@@ -16,16 +16,29 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal static class Resources
     {
+        /// <summary>Cached sound resource names.</summary>
         private static HashSet<string> soundNames_;
+
+        /// <summary>Cached map from sound constant identifiers to sound resource names.</summary>
         private static Dictionary<string, string> soundFieldNames_;
+
+        /// <summary>Cached music resource names.</summary>
         private static HashSet<string> musicNames_;
+
+        /// <summary>Cached font resource names.</summary>
         private static HashSet<string> fontNames_;
+
+        /// <summary>Cached atlas image resource names.</summary>
         private static HashSet<string> imageNames_;
+
+        /// <summary>Cached background image resource names.</summary>
         private static HashSet<string> backgroundImgNames_;
 
         /// <summary>
         /// Checks if a resource name is valid (exists in Resources.cs).
         /// </summary>
+        /// <param name="resourceName">Resource name to check.</param>
+        /// <returns><see langword="true"/> when the resource name is known; otherwise, <see langword="false"/>.</returns>
         public static bool IsValidResourceName(string resourceName)
         {
             if (imageNames_ == null)
@@ -58,6 +71,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Checks if a resource name is a sound.
         /// </summary>
+        /// <param name="resourceName">Resource name to check.</param>
+        /// <returns><see langword="true"/> when the resource name is a known sound; otherwise, <see langword="false"/>.</returns>
         public static bool IsSound(string resourceName)
         {
             if (soundNames_ == null)
@@ -71,6 +86,9 @@ namespace CutTheRope.GameMain
         /// Resolves a sound identifier such as MonsterExcited to the underlying resource name.
         /// Accepts either the constant identifier or the resource value.
         /// </summary>
+        /// <param name="soundIdentifier">Sound constant identifier or resource name to resolve.</param>
+        /// <param name="soundResourceName">Resolved sound resource name when this method returns <see langword="true"/>.</param>
+        /// <returns><see langword="true"/> when the identifier maps to a known sound; otherwise, <see langword="false"/>.</returns>
         public static bool TryResolveSoundIdentifier(string soundIdentifier, out string soundResourceName)
         {
             if (soundNames_ == null || soundFieldNames_ == null)
@@ -102,6 +120,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Checks if a resource name is music.
         /// </summary>
+        /// <param name="resourceName">Resource name to check.</param>
+        /// <returns><see langword="true"/> when the resource name is known music; otherwise, <see langword="false"/>.</returns>
         public static bool IsMusic(string resourceName)
         {
             if (musicNames_ == null)
@@ -114,6 +134,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Checks if a resource name is a font.
         /// </summary>
+        /// <param name="resourceName">Resource name to check.</param>
+        /// <returns><see langword="true"/> when the resource name is a known font; otherwise, <see langword="false"/>.</returns>
         public static bool IsFont(string resourceName)
         {
             if (fontNames_ == null)
@@ -126,6 +148,8 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Checks if a resource name is an image.
         /// </summary>
+        /// <param name="resourceName">Resource name to check.</param>
+        /// <returns><see langword="true"/> when the resource name is a known image or background image; otherwise, <see langword="false"/>.</returns>
         public static bool IsImage(string resourceName)
         {
             if (imageNames_ == null)
@@ -139,6 +163,11 @@ namespace CutTheRope.GameMain
             return imageNames_.Contains(resourceName) || backgroundImgNames_.Contains(resourceName);
         }
 
+        /// <summary>
+        /// Builds a set of resource values from literal public fields on a catalog type.
+        /// </summary>
+        /// <param name="type">Catalog type to inspect.</param>
+        /// <returns>The resource values declared on <paramref name="type"/>.</returns>
         private static HashSet<string> NamesFrom([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type)
         {
             return [.. type.GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -146,6 +175,11 @@ namespace CutTheRope.GameMain
                 .Select(f => (string)f.GetValue(null))];
         }
 
+        /// <summary>
+        /// Builds a map from literal public field names to resource values on a catalog type.
+        /// </summary>
+        /// <param name="type">Catalog type to inspect.</param>
+        /// <returns>A map of field names to resource values declared on <paramref name="type"/>.</returns>
         private static Dictionary<string, string> NameMapFrom(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type)
         {
@@ -154,19 +188,36 @@ namespace CutTheRope.GameMain
                 .ToDictionary(f => f.Name, f => (string)f.GetValue(null));
         }
 
+        /// <summary>
+        /// Initializes the cached atlas image resource name set.
+        /// </summary>
         private static void InitializeImageNames() { imageNames_ = NamesFrom(typeof(Img)); }
+
+        /// <summary>
+        /// Initializes cached sound resource names and sound identifier mapping.
+        /// </summary>
         private static void InitializeSoundNames()
         {
             soundNames_ = NamesFrom(typeof(Snd));
             soundFieldNames_ = NameMapFrom(typeof(Snd));
         }
+
+        /// <summary>
+        /// Initializes the cached music resource name set.
+        /// </summary>
         private static void InitializeMusicNames() { musicNames_ = NamesFrom(typeof(Music)); }
+
+        /// <summary>
+        /// Initializes the cached font resource name set.
+        /// </summary>
         private static void InitializeFontNames() { fontNames_ = NamesFrom(typeof(Fnt)); }
 
         /// <summary>
         /// Checks if a resource name is a background image.
         /// Background images are loaded without JSON atlas files.
         /// </summary>
+        /// <param name="resourceName">Resource name to check.</param>
+        /// <returns><see langword="true"/> when the resource name is a known background image; otherwise, <see langword="false"/>.</returns>
         public static bool IsBackgroundImg(string resourceName)
         {
             if (backgroundImgNames_ == null)
@@ -177,7 +228,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// List all of background image resources.
+        /// Initializes the cached background image resource name set.
         /// </summary>
         private static void InitializeBackgroundImgNames()
         {
@@ -195,7 +246,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Background images
+        /// Background image resource names.
         /// </summary>
         internal static class BackgroundImg
         {
@@ -408,12 +459,26 @@ namespace CutTheRope.GameMain
         /// </summary>
         internal static class FontConfig
         {
+            /// <summary>Default Latin font file.</summary>
             private const string StandardFont = "gooddog_new-webfont.ttf";
+
+            /// <summary>Font file used for Russian text.</summary>
             private const string RussianFont = "PlaypenSans-SemiBold.ttf";
+
+            /// <summary>Font file used for Korean text.</summary>
             private const string KoreanFont = "Cafe24DongdongRegular.otf";
+
+            /// <summary>Font file used for Simplified and Traditional Chinese text.</summary>
             private const string ChineseFont = "KNMaiyuan-Regular.ttf";
+
+            /// <summary>Font file used for Japanese text.</summary>
             private const string JapaneseFont = "MPLUSRounded1c-Medium.ttf";
 
+            /// <summary>
+            /// Gets the font file for a language.
+            /// </summary>
+            /// <param name="language">Language ID from <see cref="Language"/>.</param>
+            /// <returns>The font file name to use for the language.</returns>
             private static string GetFontFile(int language)
             {
                 return language switch
@@ -426,6 +491,11 @@ namespace CutTheRope.GameMain
                 };
             }
 
+            /// <summary>
+            /// Gets the font size scale for a language.
+            /// </summary>
+            /// <param name="language">Language ID from <see cref="Language"/>.</param>
+            /// <returns>The font size multiplier for the language.</returns>
             private static float GetFontSizeScale(int language)
             {
                 return language switch
@@ -438,6 +508,12 @@ namespace CutTheRope.GameMain
                 };
             }
 
+            /// <summary>
+            /// Gets a font rendering configuration for a named game font.
+            /// </summary>
+            /// <param name="fontName">Font resource name from <see cref="Fnt"/>.</param>
+            /// <param name="language">Language ID from <see cref="Language"/>.</param>
+            /// <returns>The rendering configuration for <paramref name="fontName"/>.</returns>
             public static FontConfiguration GetConfiguration(string fontName, int language)
             {
                 return fontName switch
@@ -692,11 +768,34 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class FontConfiguration
     {
+        /// <summary>
+        /// Gets or sets the font file name.
+        /// </summary>
         public string FontFile { get; set; }
+
+        /// <summary>
+        /// Gets or sets the font size in pixels.
+        /// </summary>
         public float Size { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base text color.
+        /// </summary>
         public Color Color { get; set; }
+
+        /// <summary>
+        /// Gets or sets stroke and shadow effects applied while drawing the font.
+        /// </summary>
         public FontEffectSettings Effects { get; set; }
+
+        /// <summary>
+        /// Gets or sets the extra line spacing.
+        /// </summary>
         public float LineSpacing { get; set; }
+
+        /// <summary>
+        /// Gets or sets the top spacing adjustment.
+        /// </summary>
         public float TopSpacing { get; set; }
     }
 }

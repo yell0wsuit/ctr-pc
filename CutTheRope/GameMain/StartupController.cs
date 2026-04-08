@@ -12,16 +12,34 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Coordinates the startup loading screen, ZeptoLab splash animation, and transition into the root controller.
+    /// </summary>
     internal sealed class StartupController : ViewController, IResourceMgrDelegate, IMovieMgrDelegate, ITimelineDelegate
     {
-        private enum Phase { Loading, Animating }
+        /// <summary>
+        /// Startup phases displayed by the controller.
+        /// </summary>
+        private enum Phase
+        {
+            /// <summary>Resource packs are loading and the progress bar is shown.</summary>
+            Loading,
 
+            /// <summary>The splash animation is playing after resources have loaded.</summary>
+            Animating
+        }
+
+        /// <summary>
+        /// Initializes a startup controller.
+        /// </summary>
+        /// <param name="parent">Parent view controller.</param>
         public StartupController(ViewController parent)
             : base(parent)
         {
             AddViewwithID(new StartupView(this), 1);
         }
 
+        /// <inheritdoc />
         public override void Update(float t)
         {
             base.Update(t);
@@ -67,6 +85,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Builds and starts the Flash XML splash animation once loading has completed.
+        /// </summary>
         private void StartSplashAnimation()
         {
             currentPhase = Phase.Animating;
@@ -105,6 +126,10 @@ namespace CutTheRope.GameMain
             animTotalDuration = definition.RootTimelines.TryGetValue(0, out float duration) ? duration : 3.214f;
         }
 
+        /// <summary>
+        /// Starts resource loading after startup movie playback has finished.
+        /// </summary>
+        /// <param name="url">Movie URL reported by the movie manager, or <see langword="null"/> when loading starts directly.</param>
         public void MoviePlaybackFinished(string url)
         {
             CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
@@ -117,6 +142,7 @@ namespace CutTheRope.GameMain
             ctrresourceMgr.StartLoading();
         }
 
+        /// <inheritdoc />
         public override void Activate()
         {
             base.Activate();
@@ -133,11 +159,15 @@ namespace CutTheRope.GameMain
             MoviePlaybackFinished(null);
         }
 
+        /// <summary>
+        /// Marks startup resource loading as complete.
+        /// </summary>
         public void AllResourcesLoaded()
         {
             resourcesLoaded = true;
         }
 
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             if (currentPhase == Phase.Animating)
@@ -149,15 +179,20 @@ namespace CutTheRope.GameMain
             return base.TouchesBeganwithEvent(touches);
         }
 
+        /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
+        /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
             animFinished = true;
         }
 
+        /// <summary>
+        /// Updates the splash animation root and legal disclaimer position for the current screen size.
+        /// </summary>
         private void UpdateSplashLayout()
         {
             if (animRoot == null || animStageWidth <= 0f || animStageHeight <= 0f)
@@ -184,6 +219,9 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Creates or refreshes the legal disclaimer text shown during the splash animation.
+        /// </summary>
         private void EnsureDisclaimerText()
         {
             if (legalDisclaimerText == null)
@@ -198,6 +236,9 @@ namespace CutTheRope.GameMain
             legalDisclaimerText.scaleX = legalDisclaimerText.scaleY = 0.65f;
         }
 
+        /// <summary>
+        /// Applies the legal disclaimer alpha based on the current fade timer.
+        /// </summary>
         private void UpdateDisclaimerAlpha()
         {
             float alpha = DisclaimerTextBaseAlpha;
@@ -215,22 +256,51 @@ namespace CutTheRope.GameMain
             _ = (legalDisclaimerText?.color = RGBAColor.MakeRGBA(0f, 0f, 0f, alpha * 0.9f));
         }
 
+        /// <summary>Current startup phase.</summary>
         private Phase currentPhase;
+
+        /// <summary>Smoothed visible loading percentage for the startup progress bar.</summary>
         internal float currentPercent;
+
+        /// <summary>Whether all requested startup resource packs have finished loading.</summary>
         private bool resourcesLoaded;
+
+        /// <summary>Root node for the Flash XML splash animation.</summary>
         private FlashXmlStageRoot animRoot;
+
+        /// <summary>Flat list of splash animation parts addressed by timeline targets.</summary>
         private List<Image> animParts;
+
+        /// <summary>Whether the splash animation should finish and transition away.</summary>
         private bool animFinished;
+
+        /// <summary>Elapsed splash animation time in seconds.</summary>
         private float animElapsed;
+
+        /// <summary>Total expected splash animation duration in seconds.</summary>
         private float animTotalDuration;
+
+        /// <summary>Original Flash XML stage width for splash layout scaling.</summary>
         private float animStageWidth;
+
+        /// <summary>Original Flash XML stage height for splash layout scaling.</summary>
         private float animStageHeight;
+
+        /// <summary>Legal disclaimer text drawn over the splash animation.</summary>
         private Text legalDisclaimerText;
+
+        /// <summary>Elapsed fade time for the legal disclaimer text.</summary>
         private float disclaimerFadeElapsed;
 
+        /// <summary>Duration of the legal disclaimer fade-out in seconds.</summary>
         private const float DisclaimerFadeDuration = 0.25f;
+
+        /// <summary>Base alpha applied to the legal disclaimer text before fade-out.</summary>
         private const float DisclaimerTextBaseAlpha = 0.85f;
 
+        /// <summary>
+        /// Common startup resources loaded before entering the menu, terminated by <see langword="null"/>.
+        /// </summary>
         private static readonly string[] PackCommon =
         [
             Resources.Snd.Tap,
@@ -240,6 +310,9 @@ namespace CutTheRope.GameMain
             null,
         ];
 
+        /// <summary>
+        /// Shared menu image resources loaded before entering the menu, terminated by <see langword="null"/>.
+        /// </summary>
         private static readonly string[] PackCommonImages =
         [
             Resources.Img.MenuButtons,
@@ -248,6 +321,9 @@ namespace CutTheRope.GameMain
             null
         ];
 
+        /// <summary>
+        /// Main menu image resources loaded before entering the menu, terminated by <see langword="null"/>.
+        /// </summary>
         private static readonly string[] PackMenu =
         [
             Resources.Img.MenuBgr,
@@ -262,12 +338,21 @@ namespace CutTheRope.GameMain
             null
         ];
 
+        /// <summary>
+        /// Localized menu resources loaded before entering the menu, terminated by <see langword="null"/>.
+        /// </summary>
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn, null];
 
+        /// <summary>
+        /// View responsible for drawing the startup loading bar and splash animation.
+        /// </summary>
+        /// <param name="ctrl">Startup controller that owns the view state.</param>
         private sealed class StartupView(StartupController ctrl) : View
         {
+            /// <summary>Controller that owns the startup state drawn by the view.</summary>
             private readonly StartupController controller = ctrl;
 
+            /// <inheritdoc />
             public override void Draw()
             {
                 Renderer.Enable(Renderer.GL_BLEND);

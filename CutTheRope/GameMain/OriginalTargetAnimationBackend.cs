@@ -12,39 +12,85 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal sealed class OriginalTargetAnimationBackend : ITargetAnimationBackend
     {
+        /// <summary>Timeline ID for the default idle loop.</summary>
         public const int IdleLoopTimeline = 0;
+
+        /// <summary>Timeline ID for the first idle variation.</summary>
         public const int IdleVariationOneTimeline = 1;
+
+        /// <summary>Timeline ID for the second idle variation.</summary>
         public const int IdleVariationTwoTimeline = 2;
+
+        /// <summary>Timeline ID for the excited animation.</summary>
         public const int ExcitedTimeline = 3;
+
+        /// <summary>Timeline ID for the cheerful animation.</summary>
         public const int CheerfulTimeline = 4;
+
+        /// <summary>Timeline ID for the sad animation.</summary>
         public const int SadTimeline = 5;
+
+        /// <summary>Timeline ID for the chewing animation.</summary>
         public const int ChewingTimeline = 6;
+
+        /// <summary>Timeline ID for the mouth-opening animation.</summary>
         public const int MouthOpeningTimeline = 7;
+
+        /// <summary>Timeline ID for the mouth-closing animation.</summary>
         public const int MouthClosingTimeline = 8;
+
+        /// <summary>Timeline ID for the opened-mouth loop animation.</summary>
         public const int MouthOpenedLoopTimeline = 9;
+
+        /// <summary>Timeline ID for the default greeting animation.</summary>
         public const int GreetingTimeline = 10;
+
+        /// <summary>Timeline ID for the Christmas greeting animation.</summary>
         public const int XmasGreetingTimeline = 11;
+
+        /// <summary>Timeline ID for the first Christmas idle variation.</summary>
         public const int XmasIdleVariationOneTimeline = 12;
+
+        /// <summary>Timeline ID for the second Christmas idle variation.</summary>
         public const int XmasIdleVariationTwoTimeline = 13;
+
+        /// <summary>Timeline ID for the night-level sleeping animation.</summary>
         public const int SleepingTimeline = 15;
 
+        /// <summary>First frame of the night-level sleeping animation.</summary>
         private const int SleepAnimStartFrame = 0;
+
+        /// <summary>Last frame of the night-level sleeping animation.</summary>
         private const int SleepAnimEndFrame = 6;
+
+        /// <summary>Frame delay used by the night-level sleeping animation.</summary>
         private const float SleepAnimFrameDelay = 0.05f;
 
+        /// <summary>Default frame delay for original Om Nom animations.</summary>
         private const float DefaultFrameDelay = 0.05f;
+
+        /// <summary>First frame in the complex idle animation sequence.</summary>
         private const int ComplexIdleStartFrame = 68;
+
+        /// <summary>Loop count used by the complex idle animation sequence.</summary>
         private const int ComplexIdleLoopCount = 32;
 
-        // ZZZ overlay position offsets from Om Nom's origin
+        /// <summary>X offset for the first ZZZ overlay from Om Nom's origin.</summary>
         private const float ZzzOffsetX1 = 120f;
+
+        /// <summary>Y offset for the first ZZZ overlay from Om Nom's origin.</summary>
         private const float ZzzOffsetY1 = -120f;
+
+        /// <summary>X offset for the second ZZZ overlay from Om Nom's origin.</summary>
         private const float ZzzOffsetX2 = 100f;
+
+        /// <summary>Y offset for the second ZZZ overlay from Om Nom's origin.</summary>
         private const float ZzzOffsetY2 = -100f;
 
-        // Rotation pivot offset — the ZZZ orbits around a point 160 units left of its center
+        /// <summary>Rotation pivot offset that makes ZZZ overlays orbit around a point left of their center.</summary>
         private const float ZzzRotationCenterX = -160f;
 
+        /// <summary>State machine rows used by the ZZZ sleep overlay animation.</summary>
         private static readonly (int Next, bool Visible, float Duration,
             float ScaleStart, float ScaleEnd,
             float RotStart, float RotEnd,
@@ -57,15 +103,34 @@ namespace CutTheRope.GameMain
             (0, false, 0.40f,    0f,   0f,    0f,  0f, 0f, 0f),   // invisible pause
         ];
 
+        /// <summary>Original Om Nom animation object.</summary>
         private readonly CharAnimations target;
+
+        /// <summary>Whether this backend should use night-level sleeping resources and overlays.</summary>
         private readonly bool isNightLevel;
+
+        /// <summary>Whether this backend should use Christmas animation variants.</summary>
         private readonly bool isXmas;
+
+        /// <summary>Blink overlay animation attached to the target.</summary>
         private readonly Animation blink;
+
+        /// <summary>First ZZZ sleep overlay image.</summary>
         private readonly Image zz1;
+
+        /// <summary>Second ZZZ sleep overlay image.</summary>
         private readonly Image zz2;
+
+        /// <summary>Current ZZZ state index for the first sleep overlay.</summary>
         private int _zz1State;
+
+        /// <summary>Current ZZZ state index for the second sleep overlay.</summary>
         private int _zz2State;
+
+        /// <summary>Elapsed time in the current state for the first sleep overlay.</summary>
         private float _zz1Time;
+
+        /// <summary>Elapsed time in the current state for the second sleep overlay.</summary>
         private float _zz2Time;
 
         /// <summary>
@@ -320,6 +385,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <inheritdoc />
         public bool HandlesOwnSleepPulse => false;
 
         /// <summary>
@@ -330,6 +396,10 @@ namespace CutTheRope.GameMain
         /// then transitions to the next state. States loop: 0→1→2→3→4→0.
         /// zz1 starts at state 0 (visible), zz2 starts at state 4 (invisible, 0.4 s phase offset).
         /// </remarks>
+        /// <param name="zzz">ZZZ overlay image to update.</param>
+        /// <param name="state">Current state index for the overlay.</param>
+        /// <param name="time">Elapsed time within the current state.</param>
+        /// <param name="delta">Elapsed time in seconds since the last update.</param>
         private static void AdvanceZzzState(Image zzz, ref int state, ref float time, float delta)
         {
             time += delta;
@@ -465,7 +535,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Builds tail frames for the complex idle sequence after the first frame.
         /// </summary>
-        /// <returns>Frame list consumed by <c>AddAnimationWithIDDelayLoopCountSequence</c>.</returns>
+        /// <returns>Frame list consumed by <see cref="Animation.AddAnimationWithIDDelayLoopCountSequence" />.</returns>
         private static List<int> BuildComplexIdleTailSequence()
         {
             const int frameRangeLength = 15;

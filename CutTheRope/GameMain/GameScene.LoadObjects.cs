@@ -3,16 +3,18 @@ using System.Xml.Linq;
 
 namespace CutTheRope.GameMain
 {
-    /// <summary>
-    /// GameScene.LoadObjects - Partial class coordinating object loading from XML
-    /// Coordinates loading of all game objects and UI elements from XML level data
-    /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads all game objects from XML map data using a dispatch switch
         /// Iterates through XML nodes and calls appropriate Load* method for each object type
         /// </summary>
+        /// <param name="map">The XML map node containing object definitions.</param>
+        /// <param name="scale">The level scale factor applied to object coordinates.</param>
+        /// <param name="offsetX">The base X offset applied to loaded objects.</param>
+        /// <param name="offsetY">The base Y offset applied to loaded objects.</param>
+        /// <param name="mapOffsetX">The additional map X offset applied during loading.</param>
+        /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadObjectsFromMap(XElement map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             List<XElement> list = [.. map.Elements()];
