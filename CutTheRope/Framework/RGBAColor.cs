@@ -16,6 +16,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Converts this color to an XNA <see cref="Color"/>.
         /// </summary>
+        /// <returns>The converted XNA color.</returns>
         public readonly Color ToXNA()
         {
             Color result = default;
@@ -33,6 +34,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Converts to an XNA <see cref="Color"/> with white RGB and this color's alpha.
         /// </summary>
+        /// <returns>An XNA color with white RGB and this instance's alpha channel.</returns>
         public readonly Color ToWhiteAlphaXNA()
         {
             Color result = default;
@@ -51,6 +53,7 @@ namespace CutTheRope.Framework
         /// <param name="g">Green channel.</param>
         /// <param name="b">Blue channel.</param>
         /// <param name="a">Alpha channel.</param>
+        /// <returns>A new <see cref="RGBAColor"/> instance.</returns>
         public static RGBAColor MakeRGBA(float r, float g, float b, float a)
         {
             return new RGBAColor(r, g, b, a);
@@ -61,6 +64,7 @@ namespace CutTheRope.Framework
         /// </summary>
         /// <param name="a">First color.</param>
         /// <param name="b">Second color.</param>
+        /// <returns><see langword="true"/> when all channels match; otherwise <see langword="false"/>.</returns>
         public static bool RGBAEqual(RGBAColor a, RGBAColor b)
         {
             return a.RedColor == b.RedColor && a.GreenColor == b.GreenColor && a.BlueColor == b.BlueColor && a.AlphaChannel == b.AlphaChannel;
@@ -69,6 +73,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Returns the four channel values as a float array [R, G, B, A].
         /// </summary>
+        /// <returns>A float array in RGBA order.</returns>
         public readonly float[] ToFloatArray()
         {
             return [RedColor, GreenColor, BlueColor, AlphaChannel];
@@ -78,6 +83,7 @@ namespace CutTheRope.Framework
         /// Converts an array of <paramref name="colors"/> to a flat float array of channel values.
         /// </summary>
         /// <param name="colors">Colors to convert.</param>
+        /// <returns>A flat float array containing RGBA values for each input color.</returns>
         public static float[] ToFloatArray(RGBAColor[] colors)
         {
             List<float> list = [];
