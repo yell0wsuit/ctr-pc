@@ -84,6 +84,13 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Internal tiled drawing implementation with optional legacy fallback.
         /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="quadIndex">Quad index, or -1 for full image.</param>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position.</param>
+        /// <param name="width">Width of the tiled area.</param>
+        /// <param name="height">Height of the tiled area.</param>
+        /// <param name="allowLegacyFallback">Whether to use the per-tile fallback if batching is not possible.</param>
         private static void DrawImageTiledInternal(CTRTexture2D image, int quadIndex, float x, float y, float width, float height, bool allowLegacyFallback)
         {
             float texX = 0f;
@@ -123,6 +130,16 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Attempts to draw tiled quads in a single batched draw call. Returns <see langword="false"/> if the batch is too large.
         /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="texX">Source X offset in texture pixels.</param>
+        /// <param name="texY">Source Y offset in texture pixels.</param>
+        /// <param name="tileWidth">Tile width in pixels.</param>
+        /// <param name="tileHeight">Tile height in pixels.</param>
+        /// <param name="x">Destination X position.</param>
+        /// <param name="y">Destination Y position.</param>
+        /// <param name="width">Destination tiled width.</param>
+        /// <param name="height">Destination tiled height.</param>
+        /// <returns><see langword="true"/> when the tile batch was submitted; otherwise <see langword="false"/>.</returns>
         private static bool TryDrawImageTiledBatch(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
         {
             int tileColumns = (int)MathF.Ceiling(width / tileWidth);
@@ -200,6 +217,15 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Fallback tiled drawing using individual draw calls per tile.
         /// </summary>
+        /// <param name="image">Texture to tile.</param>
+        /// <param name="texX">Source X offset in texture pixels.</param>
+        /// <param name="texY">Source Y offset in texture pixels.</param>
+        /// <param name="tileWidth">Tile width in pixels.</param>
+        /// <param name="tileHeight">Tile height in pixels.</param>
+        /// <param name="x">Destination X position.</param>
+        /// <param name="y">Destination Y position.</param>
+        /// <param name="width">Destination tiled width.</param>
+        /// <param name="height">Destination tiled height.</param>
         private static void DrawImageTiledFallback(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
         {
             for (float currentY = 0f; currentY < height; currentY += tileHeight)
@@ -227,6 +253,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="texture">Texture to compute coordinates for.</param>
         /// <param name="rect">Source rectangle in pixel coordinates.</param>
+        /// <returns>UV coordinates normalized to the texture size.</returns>
         public static Quad2D GetTextureCoordinates(CTRTexture2D texture, CTRRectangle rect)
         {
             return Quad2D.MakeQuad2D(
@@ -242,6 +269,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="p">Control points.</param>
         /// <param name="count">Number of control points.</param>
         /// <param name="delta">Interpolation parameter (0–1).</param>
+        /// <returns>The interpolated point on the curve.</returns>
         public static Vector CalcPathBezier(Vector[] p, int count, float delta)
         {
             Vector[] array = new Vector[count - 1];
@@ -262,6 +290,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="a">Start point.</param>
         /// <param name="b">End point.</param>
         /// <param name="delta">Interpolation parameter (0–1).</param>
+        /// <returns>The interpolated point.</returns>
         public static Vector Calc2PointBezier(ref Vector a, ref Vector b, float delta)
         {
             float inverseDelta = 1f - delta;
@@ -401,6 +430,13 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Computes vertices for a circular arc using an incremental rotation approach.
         /// </summary>
+        /// <param name="cx">Center X.</param>
+        /// <param name="cy">Center Y.</param>
+        /// <param name="radius">Arc radius.</param>
+        /// <param name="startAngle">Arc start angle in radians.</param>
+        /// <param name="endAngle">Arc end angle in radians.</param>
+        /// <param name="vertexCount">Number of output vertices.</param>
+        /// <param name="glVertices">Output array of interleaved X/Y pairs.</param>
         private static void CalcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
             float angleStep = (endAngle - startAngle) / (vertexCount - 1);
@@ -430,6 +466,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="y2">End Y.</param>
         /// <param name="size">Half-width of the line.</param>
         /// <param name="color">Line color.</param>
+        /// <returns>An 8-vertex strip suitable for antialiased line rendering.</returns>
         public static VertexPositionColor[] BuildAntialiasedLineVertices(float x1, float y1, float x2, float y2, float size, RGBAColor color)
         {
             Vector v = Vect(x1, y1);
@@ -574,6 +611,10 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Builds colored vertices from <paramref name="positions"/> and per-vertex <paramref name="colors"/>.
         /// </summary>
+        /// <param name="positions">Interleaved X/Y vertex positions.</param>
+        /// <param name="colors">Per-vertex colors.</param>
+        /// <param name="vertexCount">Number of vertices to build.</param>
+        /// <returns>The cached vertex array containing the requested vertices.</returns>
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, RGBAColor[] colors, int vertexCount)
         {
             VertexPositionColor[] vertices = GetVertexCache(ref s_coloredVerticesCache, vertexCount);
@@ -589,6 +630,10 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Builds colored vertices from <paramref name="positions"/> with a uniform <paramref name="color"/>.
         /// </summary>
+        /// <param name="positions">Interleaved X/Y vertex positions.</param>
+        /// <param name="vertexCount">Number of vertices to build.</param>
+        /// <param name="color">Uniform color for all vertices.</param>
+        /// <returns>The cached vertex array containing the requested vertices.</returns>
         private static VertexPositionColor[] BuildColoredVertices(float[] positions, int vertexCount, Color color)
         {
             VertexPositionColor[] vertices = GetVertexCache(ref s_coloredVerticesCache, vertexCount);
@@ -604,6 +649,10 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Builds a closed line loop from <paramref name="positions"/> with a uniform <paramref name="color"/>.
         /// </summary>
+        /// <param name="positions">Interleaved X/Y vertex positions.</param>
+        /// <param name="vertexCount">Number of source vertices before closing the loop.</param>
+        /// <param name="color">Uniform color for all vertices.</param>
+        /// <returns>The cached vertex array with an extra closing vertex.</returns>
         private static VertexPositionColor[] BuildClosedLineVertices(float[] positions, int vertexCount, Color color)
         {
             VertexPositionColor[] vertices = GetVertexCache(ref s_lineVerticesCache, vertexCount + 1);
@@ -620,6 +669,9 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns a cached <see cref="VertexPositionColor"/> array, resizing if needed.
         /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="vertexCount">Minimum number of vertices required.</param>
+        /// <returns>A cached array with at least <paramref name="vertexCount"/> elements.</returns>
         private static VertexPositionColor[] GetVertexCache(ref VertexPositionColor[] cache, int vertexCount)
         {
             if (cache == null || cache.Length < vertexCount)
@@ -632,6 +684,9 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns a cached <see cref="VertexPositionNormalTexture"/> array, resizing if needed.
         /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="vertexCount">Minimum number of vertices required.</param>
+        /// <returns>A cached array with at least <paramref name="vertexCount"/> elements.</returns>
         private static VertexPositionNormalTexture[] GetVertexCache(ref VertexPositionNormalTexture[] cache, int vertexCount)
         {
             if (cache == null || cache.Length < vertexCount)
@@ -644,6 +699,9 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns a cached float array, resizing if needed.
         /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="length">Minimum required length.</param>
+        /// <returns>A cached array with at least <paramref name="length"/> elements.</returns>
         private static float[] GetFloatCache(ref float[] cache, int length)
         {
             if (cache == null || cache.Length < length)
@@ -656,6 +714,9 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns a cached <see cref="RGBAColor"/> array, resizing if needed.
         /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="length">Minimum required length.</param>
+        /// <returns>A cached array with at least <paramref name="length"/> elements.</returns>
         private static RGBAColor[] GetColorCache(ref RGBAColor[] cache, int length)
         {
             if (cache == null || cache.Length < length)
@@ -668,6 +729,9 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns a cached short array, resizing if needed.
         /// </summary>
+        /// <param name="cache">Cache slot that stores the reusable array.</param>
+        /// <param name="length">Minimum required length.</param>
+        /// <returns>A cached array with at least <paramref name="length"/> elements.</returns>
         private static short[] GetShortCache(ref short[] cache, int length)
         {
             if (cache == null || cache.Length < length)
