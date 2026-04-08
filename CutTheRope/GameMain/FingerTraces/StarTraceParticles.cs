@@ -59,6 +59,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Sets the position used for newly emitted particles.
         /// </summary>
+        /// <param name="position">Emitter position for newly spawned particles.</param>
         public void SetPosition(Vector position)
         {
             emitterPosition = position;
@@ -67,6 +68,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Sets the center emission rotation in degrees.
         /// </summary>
+        /// <param name="rotation">Emitter rotation in degrees.</param>
         public void SetRotation(float rotation)
         {
             emitterRotation = rotation;
@@ -75,6 +77,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Sets the requested particle emission rate in particles per second.
         /// </summary>
+        /// <param name="rate">Requested emission rate in particles per second.</param>
         public void SetEmissionRate(float rate)
         {
             emissionRate = MAX(0f, rate);
@@ -83,6 +86,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Advances the emitter and all live particles for one frame.
         /// </summary>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
         public void Update(float delta)
         {
             if (emissionRate > 0f)
@@ -123,6 +127,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Appends the current particle visuals as trace snapshot sprites.
         /// </summary>
+        /// <param name="sprites">Destination list that receives particle sprite poses.</param>
         public void AppendSprites(List<FingerTraceSpritePose> sprites)
         {
             foreach (StarParticle particle in particles)
