@@ -205,7 +205,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Applies a new window back-buffer width and updates the tracked window rectangle.
+        /// Applies a new window back-buffer <paramref name="width"/> and updates the tracked window rectangle.
         /// </summary>
         /// <param name="width">Target window width.</param>
         public void ApplyWindowSize(int width)

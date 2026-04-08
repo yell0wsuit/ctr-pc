@@ -164,7 +164,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Detaches and returns the current render target, setting the internal reference to null.
+        /// Detaches and returns the current render target, setting the internal reference to <see langword="null"/>.
         /// Used for screen capture operations.
         /// </summary>
         /// <returns>The detached render target, or <see langword="null"/> when no render target is active.</returns>
@@ -195,7 +195,7 @@ namespace CutTheRope.Desktop
         #region Matrix Operations
 
         /// <summary>
-        /// Sets the current matrix mode for subsequent matrix operations.
+        /// Sets the current matrix <paramref name="mode"/> for subsequent matrix operations.
         /// </summary>
         /// <param name="mode">Matrix mode: 14 = GL_MODELVIEW, 15 = GL_PROJECTION</param>
         public static void SetMatrixMode(int mode)
@@ -421,7 +421,7 @@ namespace CutTheRope.Desktop
         #region Drawing Methods
 
         /// <summary>
-        /// Draws a triangle strip using colored vertices (no texture).
+        /// Draws a triangle strip using colored <paramref name="vertices"/> (no texture).
         /// </summary>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices)
         {
@@ -429,7 +429,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a triangle strip using colored vertices with an explicit vertex count.
+        /// Draws a triangle strip using colored <paramref name="vertices"/> with an explicit vertex count.
         /// </summary>
         /// <param name="vertices">The colored vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
@@ -453,7 +453,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a triangle strip using textured vertices.
+        /// Draws a triangle strip using textured <paramref name="vertices"/>.
         /// </summary>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices)
         {
@@ -461,7 +461,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a triangle strip using textured vertices with an explicit vertex count.
+        /// Draws a triangle strip using textured <paramref name="vertices"/> with an explicit vertex count.
         /// </summary>
         /// <param name="vertices">The textured vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
@@ -485,7 +485,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a triangle strip using textured and colored vertices.
+        /// Draws a triangle strip using textured and colored <paramref name="vertices"/>.
         /// </summary>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices)
         {
@@ -493,7 +493,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a triangle strip using textured and colored vertices with an explicit vertex count.
+        /// Draws a triangle strip using textured and colored <paramref name="vertices"/> with an explicit vertex count.
         /// </summary>
         /// <param name="vertices">The textured and colored vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
@@ -516,7 +516,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws an indexed triangle list using textured vertices.
+        /// Draws an indexed triangle list using textured <paramref name="vertices"/>.
         /// </summary>
         /// <param name="vertices">The textured vertex data to draw.</param>
         /// <param name="indices">The index buffer describing triangle order.</param>
@@ -536,7 +536,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws an indexed triangle list using textured vertices with explicit index count.
+        /// Draws an indexed triangle list using textured <paramref name="vertices"/> with explicit index count.
         /// </summary>
         /// <param name="vertices">The textured vertex data to draw.</param>
         /// <param name="indices">The index buffer describing triangle order.</param>
@@ -557,7 +557,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws an indexed triangle list using textured and colored vertices.
+        /// Draws an indexed triangle list using textured and colored <paramref name="vertices"/>.
         /// </summary>
         /// <param name="vertices">The textured and colored vertex data to draw.</param>
         /// <param name="indices">The index buffer describing triangle order.</param>
@@ -581,7 +581,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a line strip using colored vertices.
+        /// Draws a line strip using colored <paramref name="vertices"/>.
         /// </summary>
         public static void DrawLineStrip(VertexPositionColor[] vertices)
         {
@@ -589,7 +589,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Draws a line strip using colored vertices with an explicit vertex count.
+        /// Draws a line strip using colored <paramref name="vertices"/> with an explicit vertex count.
         /// </summary>
         /// <param name="vertices">The colored vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
@@ -625,7 +625,7 @@ namespace CutTheRope.Desktop
         #region Vertex Buffer Helpers
 
         /// <summary>
-        /// Fills a vertex array with textured quad data from Quad3D positions and Quad2D texture coordinates.
+        /// Fills a vertex array with textured quad data from <paramref name="positions"/> and <paramref name="texCoordinates"/>.
         /// </summary>
         /// <param name="positions">Array of 3D quad positions.</param>
         /// <param name="texCoordinates">Array of 2D texture coordinates.</param>
@@ -836,7 +836,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Returns a reusable index buffer filled with the provided indices.
+        /// Returns a reusable index buffer filled with the provided <paramref name="indices"/>.
         /// </summary>
         /// <param name="indexCount">The number of indices to upload.</param>
         /// <param name="indices">The source index data.</param>

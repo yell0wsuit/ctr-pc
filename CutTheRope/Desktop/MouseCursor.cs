@@ -79,7 +79,7 @@ namespace CutTheRope.Desktop
         }
 
         /// <summary>
-        /// Rebuilds the scaled cursor textures and native cursor handles when the UI scale changes.
+        /// Rebuilds the scaled cursor textures and native cursor handles when the UI <paramref name="scale"/> changes.
         /// </summary>
         /// <param name="scale">The screen scale factor to apply to the cursor textures.</param>
         private void UpdateScaledCursors(double scale)
