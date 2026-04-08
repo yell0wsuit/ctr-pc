@@ -25,7 +25,7 @@ namespace CutTheRope.Framework
         /// <summary>
         /// Releases resources. Override in derived classes to free owned resources.
         /// </summary>
-        /// <param name="disposing">True when called from <see cref="Dispose()"/>; false from finalizer.</param>
+        /// <param name="disposing"><see langword="true"/> when called from <see cref="Dispose()"/>; <see langword="false"/> from finalizer.</param>
         protected virtual void Dispose(bool disposing)
         {
         }
@@ -399,22 +399,22 @@ namespace CutTheRope.Framework
         public static float PORTRAIT_SCREEN_HEIGHT = 320f;
 
         /// <summary>
-        /// True when running at iPad resolution.
+        /// <see langword="true"/> when running at iPad resolution.
         /// </summary>
         public static bool IS_IPAD;
 
         /// <summary>
-        /// True when running on a retina (2x) display.
+        /// <see langword="true"/> when running on a retina (2x) display.
         /// </summary>
         public static bool IS_RETINA;
 
         /// <summary>
-        /// True when running at WVGA (800x480) resolution.
+        /// <see langword="true"/> when running at WVGA (800x480) resolution.
         /// </summary>
         public static bool IS_WVGA;
 
         /// <summary>
-        /// True when running at QVGA (320x240) resolution.
+        /// <see langword="true"/> when running at QVGA (320x240) resolution.
         /// </summary>
         public static bool IS_QVGA;
 

@@ -227,7 +227,7 @@ namespace CutTheRope.Helpers
 
         /// <summary>
         /// Loads an XML file from the content directory and returns the root element.
-        /// Returns null on failure or if <paramref name="fileName"/> is empty.
+        /// Returns <see langword="null"/> on failure or if <paramref name="fileName"/> is empty.
         /// </summary>
         public static XElement LoadXml(string fileName)
         {

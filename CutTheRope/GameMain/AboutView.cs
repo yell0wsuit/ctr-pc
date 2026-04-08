@@ -62,7 +62,7 @@ namespace CutTheRope.GameMain
         /// Advances auto-scroll if enabled.
         /// </summary>
         /// <returns>
-        /// True if auto-scroll was applied this frame; otherwise false.
+        /// <see langword="true"/> if auto-scroll was applied this frame; otherwise <see langword="false"/>.
         /// </returns>
         public bool UpdateAutoScroll()
         {
@@ -84,7 +84,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="scrollDelta">Mouse wheel delta value.</param>
         /// <returns>
-        /// True if the scroll was handled by the about container; otherwise false.
+        /// <see langword="true"/> if the scroll was handled by the about container; otherwise <see langword="false"/>.
         /// </returns>
         public bool HandleMouseWheel(int scrollDelta)
         {

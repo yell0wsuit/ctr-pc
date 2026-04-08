@@ -113,7 +113,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Stores a pre-built optimized vertex array for faster drawing.
         /// </summary>
-        /// <param name="v">Optimized vertex array, or null to skip.</param>
+        /// <param name="v">Optimized vertex array, or <see langword="null"/> to skip.</param>
         public void Optimize(VertexPositionNormalTexture[] v)
         {
             if (v != null && verticesOptimized == null)

@@ -221,7 +221,7 @@ namespace CutTheRope.GameMain
         /// <param name="length">The length of the belt along its direction.</param>
         /// <param name="height">The height (thickness) of the belt.</param>
         /// <param name="rotation">The rotation angle in degrees.</param>
-        /// <param name="isManual">If true, the belt is controlled by user drag; otherwise it moves automatically.</param>
+        /// <param name="isManual">If <see langword="true"/>, the belt is controlled by user drag; otherwise it moves automatically.</param>
         /// <param name="velocity">The automatic movement speed (used only when not manual).</param>
         /// <returns>A fully initialized conveyor belt.</returns>
         public static ConveyorBelt Create(
@@ -248,7 +248,7 @@ namespace CutTheRope.GameMain
         /// <param name="length">The length of the belt along its direction.</param>
         /// <param name="height">The height (thickness) of the belt.</param>
         /// <param name="rotation">The rotation angle in degrees.</param>
-        /// <param name="isManual">If true, the belt is controlled by user drag; otherwise it moves automatically.</param>
+        /// <param name="isManual">If <see langword="true"/>, the belt is controlled by user drag; otherwise it moves automatically.</param>
         /// <param name="velocity">The automatic movement speed (used only when not manual).</param>
         public void InitializeBelt(
             int id,
@@ -300,7 +300,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="center">The center of the circle in world space.</param>
         /// <param name="radius">The radius of the circle.</param>
-        /// <returns>True if the circle overlaps the belt bounds; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the circle overlaps the belt bounds; <see langword="false"/> otherwise.</returns>
         public bool CollidesWithCircle(Vector center, float radius)
         {
             Vector local = ToLocalSpace(center);
@@ -367,7 +367,7 @@ namespace CutTheRope.GameMain
         /// Checks whether an item is currently bound to this belt.
         /// </summary>
         /// <param name="item">The transporter item to check.</param>
-        /// <returns>True if the item is on this belt; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the item is on this belt; <see langword="false"/> otherwise.</returns>
         public bool HasItem(ITransporterItem item)
         {
             return boundObjects.Contains(item);
@@ -554,7 +554,7 @@ namespace CutTheRope.GameMain
         /// <param name="pointerX">The x-coordinate of the pointer in world space.</param>
         /// <param name="pointerY">The y-coordinate of the pointer in world space.</param>
         /// <param name="pointerId">The unique identifier of the pointer.</param>
-        /// <returns>True if the belt captured the pointer; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the belt captured the pointer; <see langword="false"/> otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
             if (!IsManual || activePointerId != -1)
@@ -592,7 +592,7 @@ namespace CutTheRope.GameMain
         /// <param name="pointerX">The x-coordinate of the pointer in world space.</param>
         /// <param name="pointerY">The y-coordinate of the pointer in world space.</param>
         /// <param name="pointerId">The unique identifier of the pointer.</param>
-        /// <returns>True if the belt released its captured pointer; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the belt released its captured pointer; <see langword="false"/> otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
             if (!IsManual)
@@ -627,7 +627,7 @@ namespace CutTheRope.GameMain
         /// <param name="pointerX">The x-coordinate of the pointer in world space.</param>
         /// <param name="pointerY">The y-coordinate of the pointer in world space.</param>
         /// <param name="pointerId">The unique identifier of the pointer.</param>
-        /// <returns>True if the belt handled the movement; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the belt handled the movement; <see langword="false"/> otherwise.</returns>
         public bool OnPointerMove(float pointerX, float pointerY, int pointerId)
         {
             if (!IsManual)
@@ -651,7 +651,7 @@ namespace CutTheRope.GameMain
         /// Determines whether a world-space point is within the belt's bounds.
         /// </summary>
         /// <param name="worldPoint">The point to test in world coordinates.</param>
-        /// <returns>True if the point is inside the belt area; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the point is inside the belt area; <see langword="false"/> otherwise.</returns>
         public bool Contains(Vector worldPoint)
         {
             Vector local = ToLocalSpace(worldPoint);
@@ -663,7 +663,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="worldPoint">The point to test in world coordinates.</param>
         /// <param name="padding">The extra margin around the belt bounds.</param>
-        /// <returns>True if the point is inside the padded belt area; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the point is inside the padded belt area; <see langword="false"/> otherwise.</returns>
         public bool ContainsWithPadding(Vector worldPoint, float padding)
         {
             Vector local = ToLocalSpace(worldPoint);
@@ -688,7 +688,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Determines whether the belt is currently moving.
         /// </summary>
-        /// <returns>True if the belt has non-zero movement delta; false otherwise.</returns>
+        /// <returns><see langword="true"/> if the belt has non-zero movement delta; <see langword="false"/> otherwise.</returns>
         public bool IsActive()
         {
             return active;

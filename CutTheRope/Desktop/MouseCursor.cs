@@ -20,7 +20,7 @@ namespace CutTheRope.Desktop
         /// <summary>
         /// Enables or disables cursor rendering and native cursor overrides.
         /// </summary>
-        /// <param name="b">True to enable the custom cursor, false to hide it.</param>
+        /// <param name="b"><see langword="true"/> to enable the custom cursor, <see langword="false"/> to hide it.</param>
         public void Enable(bool b)
         {
             _enabled = b;

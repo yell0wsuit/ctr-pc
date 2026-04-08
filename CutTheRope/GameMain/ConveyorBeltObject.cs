@@ -219,7 +219,7 @@ namespace CutTheRope.GameMain
         /// <param name="pointerX">The x-coordinate of the pointer.</param>
         /// <param name="pointerY">The y-coordinate of the pointer.</param>
         /// <param name="pointerId">The unique identifier of the pointer.</param>
-        /// <returns>True if a belt captured the pointer; false otherwise.</returns>
+        /// <returns><see langword="true"/> if a belt captured the pointer; <see langword="false"/> otherwise.</returns>
         public bool OnPointerDown(float pointerX, float pointerY, int pointerId)
         {
             touchCandidates.Clear();
@@ -250,7 +250,7 @@ namespace CutTheRope.GameMain
         /// <param name="pointerX">The x-coordinate of the pointer.</param>
         /// <param name="pointerY">The y-coordinate of the pointer.</param>
         /// <param name="pointerId">The unique identifier of the pointer.</param>
-        /// <returns>True if a belt released the pointer; false otherwise.</returns>
+        /// <returns><see langword="true"/> if a belt released the pointer; <see langword="false"/> otherwise.</returns>
         public bool OnPointerUp(float pointerX, float pointerY, int pointerId)
         {
             foreach (ConveyorBelt belt in list)
@@ -269,7 +269,7 @@ namespace CutTheRope.GameMain
         /// <param name="pointerX">The x-coordinate of the pointer.</param>
         /// <param name="pointerY">The y-coordinate of the pointer.</param>
         /// <param name="pointerId">The unique identifier of the pointer.</param>
-        /// <returns>True if a belt handled the movement; false otherwise.</returns>
+        /// <returns><see langword="true"/> if a belt handled the movement; <see langword="false"/> otherwise.</returns>
         public bool OnPointerMove(float pointerX, float pointerY, int pointerId)
         {
             foreach (ConveyorBelt belt in list)

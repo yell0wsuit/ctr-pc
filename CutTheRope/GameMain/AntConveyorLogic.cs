@@ -34,7 +34,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Returns true if <paramref name="touchWorld"/> falls within the square touch zone
+        /// Returns <see langword="true"/> if <paramref name="touchWorld"/> falls within the square touch zone
         /// centred on the candy, used to let the player manually detach the candy from the conveyor.
         /// </summary>
         /// <param name="touchWorld">Touch position in world space.</param>

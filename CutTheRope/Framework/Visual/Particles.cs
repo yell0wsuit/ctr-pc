@@ -246,7 +246,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Sets whether particles use additive blending.
         /// </summary>
-        /// <param name="b">True for additive blending, false for alpha blending.</param>
+        /// <param name="b"><see langword="true"/> for additive blending, <see langword="false"/> for alpha blending.</param>
         public virtual void SetBlendAdditive(bool b)
         {
             blendAdditive = b;

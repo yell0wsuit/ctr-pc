@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public float StartAntOffset { get; private set; }
 
-        /// <summary>True when the path's first and last endpoints coincide (within 0.01 units).</summary>
+        /// <summary><see langword="true"/> when the path's first and last endpoints coincide (within 0.01 units).</summary>
         public bool Looped { get; private set; }
 
         /// <summary>The raw level-data scale factor passed to the constructor.</summary>
@@ -449,7 +449,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Returns the segment containing <paramref name="offset"/>, or null if the offset is past the end.
+        /// Returns the segment containing <paramref name="offset"/>, or <see langword="null"/> if the offset is past the end.
         /// </summary>
         /// <param name="offset">Distance in world units from the path start.</param>
         /// <returns>The segment at <paramref name="offset"/>, or <see langword="null"/> if past the end.</returns>

@@ -16,7 +16,7 @@ namespace CutTheRope.Helpers
         /// <summary>
         /// Check if the current running Windows version is outdated.
         /// </summary>
-        /// <returns>True when running on Windows 8.1 or earlier (i.e. below Windows 10).</returns>
+        /// <returns><see langword="true"/> when running on Windows 8.1 or earlier (i.e. below Windows 10).</returns>
         public static bool IsOutdatedWindows()
         {
             return OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10);

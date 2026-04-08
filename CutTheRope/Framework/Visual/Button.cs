@@ -87,7 +87,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="tx">Touch X coordinate.</param>
         /// <param name="ty">Touch Y coordinate.</param>
-        /// <param name="td">True for touch-down (no padding); false for move/up (adds padding).</param>
+        /// <param name="td"><see langword="true"/> for touch-down (no padding); <see langword="false"/> for move/up (adds padding).</param>
         /// <returns><see langword="true"/> if the touch point lies within the button's touch zone.</returns>
         public virtual bool IsInTouchZoneXYforTouchDown(float tx, float ty, bool td)
         {

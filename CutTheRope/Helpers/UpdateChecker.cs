@@ -86,7 +86,7 @@ namespace CutTheRope.Helpers
         /// Attempts to consume the latest update info once.
         /// </summary>
         /// <param name="info">Receives the update info if available.</param>
-        /// <returns>True if update info was available and consumed; otherwise false.</returns>
+        /// <returns><see langword="true"/> if update info was available and consumed; otherwise <see langword="false"/>.</returns>
         public static bool TryConsumeUpdate(out UpdateInfo info)
         {
             info = null;
@@ -210,7 +210,7 @@ namespace CutTheRope.Helpers
         /// </summary>
         /// <param name="input">The input tag or version string.</param>
         /// <param name="version">The parsed version when successful.</param>
-        /// <returns>True when parsing succeeded; otherwise false.</returns>
+        /// <returns><see langword="true"/> when parsing succeeded; otherwise <see langword="false"/>.</returns>
         private static bool TryParseVersion(string input, out Version version)
         {
             version = null;

@@ -13,7 +13,7 @@ namespace CutTheRope.Framework.Visual
     internal class BaseElement : FrameworkTypes
     {
         /// <summary>
-        /// True if this element has a parent in the scene graph.
+        /// <see langword="true"/> if this element has a parent in the scene graph.
         /// </summary>
         public bool HasParent => parent != null;
 

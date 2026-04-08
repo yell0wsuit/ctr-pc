@@ -472,7 +472,7 @@ namespace CutTheRope.Framework.Core
         /// The default implementation returns <see langword="false"/> (no handling).
         /// </remarks>
         /// <returns>
-        /// True if the scroll input was handled by this controller or its active view, <see langword="false"/> otherwise.
+        /// <see langword="true"/> if the scroll input was handled by this controller or its active view, <see langword="false"/> otherwise.
         /// </returns>
         public virtual bool HandleMouseWheel(int scrollDelta)
         {

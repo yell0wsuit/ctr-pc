@@ -74,7 +74,7 @@ namespace CutTheRope.GameMain
 
         /// <summary>
         /// Reference to a hat/sock that has captured this light bulb.
-        /// When not null, the light bulb becomes invisible.
+        /// When not <see langword="null"/>, the light bulb becomes invisible.
         /// </summary>
         public Sock attachedSock;
 

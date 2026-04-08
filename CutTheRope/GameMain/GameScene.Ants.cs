@@ -236,7 +236,7 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Attempts to attach the candy to <paramref name="segment"/>. Returns true and starts the
+        /// Attempts to attach the candy to <paramref name="segment"/>. Returns <see langword="true"/> and starts the
         /// interaction if all preconditions pass: the segment is idle and interactable, the candy is
         /// not in the wait-before-attach state, and the candy lies inside the segment's bounding rectangle.
         /// </summary>

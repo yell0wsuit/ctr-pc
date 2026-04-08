@@ -361,7 +361,7 @@ namespace CutTheRope.GameMain
         /// <summary>Scale factor applied to bounding box and capture radius.</summary>
         private float interactionScale = 1f;
 
-        /// <summary>True while the tube is animating toward <see cref="bambooTargetRotation"/>.</summary>
+        /// <summary><see langword="true"/> while the tube is animating toward <see cref="bambooTargetRotation"/>.</summary>
         private bool isRotatingBamboo;
 
         /// <summary>Rotation at the start of the current drag gesture, in degrees.</summary>
