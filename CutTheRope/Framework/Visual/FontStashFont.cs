@@ -46,6 +46,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="effects">Stroke and shadow effect settings.</param>
         /// <param name="lineSpacing">Extra spacing between lines.</param>
         /// <param name="topSpacing">Extra spacing above the first line.</param>
+        /// <returns>The initialized <see cref="FontStashFont"/> instance.</returns>
         public FontStashFont InitWithFont(DynamicSpriteFont dynamicFont, float size, Color color, FontEffectSettings effects, float lineSpacing = 0f, float topSpacing = 0f)
         {
             font = dynamicFont ?? throw new ArgumentNullException(nameof(dynamicFont));
@@ -74,6 +75,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the current text rendering color.
         /// </summary>
+        /// <returns>The color currently used for text rendering.</returns>
         public Color GetColor()
         {
             return textColor;
@@ -82,6 +84,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the underlying FontStashSharp dynamic font, or <see langword="null"/> if disposed.
         /// </summary>
+        /// <returns>The internal dynamic font instance, or <see langword="null"/>.</returns>
         public DynamicSpriteFont GetInternalFont()
         {
             return font;
@@ -90,6 +93,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Returns the current effect settings.
         /// </summary>
+        /// <returns>The active stroke and shadow effect settings.</returns>
         public FontEffectSettings GetEffectSettings()
         {
             return effectSettings;
@@ -143,6 +147,7 @@ namespace CutTheRope.Framework.Visual
         /// Measures the pixel width of a single character using FontStashSharp.
         /// </summary>
         /// <param name="c">Character to measure.</param>
+        /// <returns>The measured width in pixels.</returns>
         private float MeasureCharWidth(char c)
         {
             if (font == null)
@@ -242,6 +247,7 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="amount">Stroke thickness in pixels.</param>
         /// <param name="color">Stroke color, defaults to black.</param>
+        /// <returns>A <see cref="FontEffectSettings"/> instance configured with stroke only.</returns>
         public static FontEffectSettings CreateStroke(int amount = 1, Color? color = null)
         {
             return new FontEffectSettings
@@ -258,6 +264,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="offsetX">Shadow horizontal offset.</param>
         /// <param name="offsetY">Shadow vertical offset.</param>
         /// <param name="color">Shadow color, defaults to black.</param>
+        /// <returns>A <see cref="FontEffectSettings"/> instance configured with shadow only.</returns>
         public static FontEffectSettings CreateShadow(int offsetX, int offsetY, Color? color = null)
         {
             return new FontEffectSettings
@@ -275,6 +282,7 @@ namespace CutTheRope.Framework.Visual
         /// <param name="strokeAmount">Stroke thickness in pixels.</param>
         /// <param name="shadowX">Shadow horizontal offset.</param>
         /// <param name="shadowY">Shadow vertical offset.</param>
+        /// <returns>A <see cref="FontEffectSettings"/> instance configured with both stroke and shadow.</returns>
         public static FontEffectSettings CreateStrokeAndShadow(int strokeAmount, int shadowX, int shadowY)
         {
             return new FontEffectSettings
