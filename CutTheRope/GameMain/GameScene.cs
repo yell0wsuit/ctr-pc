@@ -1166,6 +1166,9 @@ namespace CutTheRope.GameMain
         /// </summary>
         public float partsDist;
 
+        /// <summary>
+        /// Optional custom localization key for the current level title.
+        /// </summary>
         public string levelName;
 
         /// <summary>
