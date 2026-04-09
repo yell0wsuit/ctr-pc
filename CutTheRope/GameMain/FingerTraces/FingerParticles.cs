@@ -67,13 +67,34 @@ namespace CutTheRope.GameMain.FingerTraces
     /// <param name="config">The particle-emitter configuration that controls spawn and motion behavior.</param>
     internal sealed class FingerParticles(FingerParticlesConfig config) : FrameworkTypes
     {
+        /// <summary>
+        /// Live particles currently managed by the emitter.
+        /// </summary>
         private readonly List<FingerParticle> particles = [];
 
+        /// <summary>
+        /// Immutable emitter configuration controlling spawn and update behavior.
+        /// </summary>
         private readonly FingerParticlesConfig config = config;
 
+        /// <summary>
+        /// Current emitter position used for newly spawned particles.
+        /// </summary>
         private Vector emitterPosition;
+
+        /// <summary>
+        /// Current emitter rotation in degrees used as the center emission direction.
+        /// </summary>
         private float emitterRotation;
+
+        /// <summary>
+        /// Requested particle emission rate in particles per second.
+        /// </summary>
         private float emissionRate;
+
+        /// <summary>
+        /// Accumulated elapsed time toward the next particle emission.
+        /// </summary>
         private float emitCounter;
 
         /// <summary>
