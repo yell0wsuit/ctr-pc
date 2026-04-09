@@ -24,13 +24,39 @@ namespace CutTheRope.GameMain.FingerTraces
         int maximumDirectionHistory,
         params FingerParticles[] particles) : FingerTrace
     {
+        /// <summary>
+        /// Recent segment directions retained for smoothed head-state calculations.
+        /// </summary>
         private readonly List<Vector> directionHistory = [];
+
+        /// <summary>
+        /// Particle emitters owned by this trace.
+        /// </summary>
         private readonly FingerParticles[] particles = particles;
+
+        /// <summary>
+        /// Duration in seconds that particle emission remains active after a segment is appended.
+        /// </summary>
         private readonly float particleBurstDuration = particleBurstDuration;
+
+        /// <summary>
+        /// Emission rate used while the active particle burst window is running.
+        /// </summary>
         private readonly float particleEmissionRate = particleEmissionRate;
+
+        /// <summary>
+        /// Lifetime in seconds assigned to each appended segment.
+        /// </summary>
         private readonly float segmentLife = segmentLife;
+
+        /// <summary>
+        /// Maximum number of recent segment directions retained for smoothing.
+        /// </summary>
         private readonly int maximumDirectionHistory = maximumDirectionHistory;
 
+        /// <summary>
+        /// Remaining time in seconds before particle emission is disabled again.
+        /// </summary>
         private float particleTimer;
 
         /// <summary>
