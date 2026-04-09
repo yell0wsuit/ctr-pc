@@ -216,7 +216,7 @@ namespace CutTheRope.GameMain.FingerTraces
         /// <summary>
         /// Returns the averaged direction vector derived from the retained segment history.
         /// </summary>
-        /// <returns>The averaged direction vector, or <see cref="vectZero"/> when no history is available.</returns>
+        /// <returns>The averaged direction vector, or the zero vector when no history is available.</returns>
         private Vector GetAverageDirection()
         {
             if (directionHistory.Count == 0)
