@@ -1,6 +1,6 @@
-using Microsoft.Xna.Framework;
-
 using CutTheRope.Framework;
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.GameMain.FingerTraces
 {
