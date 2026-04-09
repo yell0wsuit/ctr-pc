@@ -68,7 +68,7 @@ namespace CutTheRope.GameMain.FingerTraces
         private const float GlowTranslateY = 48f;
 
         /// <summary>The lightning spark emitter.</summary>
-        private readonly LightningTraceParticles particles = new();
+        private readonly FingerParticles particles = NamedTracePresets.CreateLightningParticles();
 
         /// <summary>Recent segment directions used to smooth the head rotation.</summary>
         private readonly List<Vector> directionHistory = [];
