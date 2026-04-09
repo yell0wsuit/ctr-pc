@@ -9,38 +9,29 @@ namespace CutTheRope.GameMain.FingerTraces
     /// <summary>
     /// Shared trace base for traces that only differ by particle configuration and sampled path logic.
     /// </summary>
-    internal abstract class ParticleFingerTrace : FingerTrace
+    /// <remarks>
+    /// Initializes a shared particle-trace base with the supplied segment, burst, and emitter settings.
+    /// </remarks>
+    /// <param name="segmentLife">The lifetime in seconds assigned to each appended segment.</param>
+    /// <param name="particleBurstDuration">The duration in seconds that emission remains enabled after a segment is appended.</param>
+    /// <param name="particleEmissionRate">The particle emission rate used while the burst timer is active.</param>
+    /// <param name="maximumDirectionHistory">The maximum number of recent segment directions retained for head-state smoothing.</param>
+    /// <param name="particles">The emitters owned by this trace.</param>
+    internal abstract class ParticleFingerTrace(
+        float segmentLife,
+        float particleBurstDuration,
+        float particleEmissionRate,
+        int maximumDirectionHistory,
+        params FingerParticles[] particles) : FingerTrace
     {
         private readonly List<Vector> directionHistory = [];
-        private readonly FingerParticles[] particles;
-        private readonly float particleBurstDuration;
-        private readonly float particleEmissionRate;
-        private readonly float segmentLife;
-        private readonly int maximumDirectionHistory;
+        private readonly FingerParticles[] particles = particles;
+        private readonly float particleBurstDuration = particleBurstDuration;
+        private readonly float particleEmissionRate = particleEmissionRate;
+        private readonly float segmentLife = segmentLife;
+        private readonly int maximumDirectionHistory = maximumDirectionHistory;
 
         private float particleTimer;
-
-        /// <summary>
-        /// Initializes a shared particle-trace base with the supplied segment, burst, and emitter settings.
-        /// </summary>
-        /// <param name="segmentLife">The lifetime in seconds assigned to each appended segment.</param>
-        /// <param name="particleBurstDuration">The duration in seconds that emission remains enabled after a segment is appended.</param>
-        /// <param name="particleEmissionRate">The particle emission rate used while the burst timer is active.</param>
-        /// <param name="maximumDirectionHistory">The maximum number of recent segment directions retained for head-state smoothing.</param>
-        /// <param name="particles">The emitters owned by this trace.</param>
-        protected ParticleFingerTrace(
-            float segmentLife,
-            float particleBurstDuration,
-            float particleEmissionRate,
-            int maximumDirectionHistory,
-            params FingerParticles[] particles)
-        {
-            this.segmentLife = segmentLife;
-            this.particleBurstDuration = particleBurstDuration;
-            this.particleEmissionRate = particleEmissionRate;
-            this.maximumDirectionHistory = maximumDirectionHistory;
-            this.particles = particles;
-        }
 
         /// <summary>
         /// Gets the smoothed emitter or head rotation in degrees derived from recent segment directions.
