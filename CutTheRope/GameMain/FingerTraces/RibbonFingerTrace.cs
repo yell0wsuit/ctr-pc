@@ -33,13 +33,39 @@ namespace CutTheRope.GameMain.FingerTraces
         float glowTranslateY,
         params FingerParticles[] particles) : ParticleFingerTrace(segmentLife, particleBurstDuration, particleEmissionRate, 10, particles)
     {
+        /// <summary>
+        /// Optional glow quad index used when appending the glow sprite to the snapshot.
+        /// </summary>
         private readonly int? glowQuadIndex = glowQuadIndex;
+
+        /// <summary>
+        /// Local Y translation applied to the glow sprite pivot.
+        /// </summary>
         private readonly float glowTranslateY = glowTranslateY;
+
+        /// <summary>
+        /// Minimum half-width preserved at the ribbon tip.
+        /// </summary>
         private readonly float minimumRibbonHalfWidth = minimumRibbonHalfWidth;
+
+        /// <summary>
+        /// Base half-width contribution applied along the ribbon body.
+        /// </summary>
         private readonly float ribbonBaseWidth = ribbonBaseWidth;
 
+        /// <summary>
+        /// Reusable ribbon vertex cache used for triangle-strip drawing.
+        /// </summary>
         private VertexPositionColor[] ribbonVerticesCache;
+
+        /// <summary>
+        /// Current glow sprite position derived from the latest segment start point.
+        /// </summary>
         private Vector glowPosition;
+
+        /// <summary>
+        /// Current glow alpha derived from segment count and smoothed direction magnitude.
+        /// </summary>
         private float glowAlpha;
 
         /// <inheritdoc />
