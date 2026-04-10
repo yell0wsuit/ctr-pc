@@ -38,6 +38,7 @@ namespace CutTheRope.Framework.Visual
     /// <param name="Scale">Uniform sprite scale factor.</param>
     /// <param name="Alpha">Sprite opacity multiplier.</param>
     /// <param name="BlendMode">Blend mode used to draw the sprite.</param>
+    /// <param name="TranslateY">Local Y translation applied before drawing.</param>
     internal readonly record struct FingerTraceSpritePose(
         FingerTraceSpriteKind Kind,
         string TextureResourceName,
@@ -46,7 +47,8 @@ namespace CutTheRope.Framework.Visual
         float Rotation,
         float Scale,
         float Alpha,
-        FingerTraceBlendMode BlendMode);
+        FingerTraceBlendMode BlendMode,
+        float TranslateY = 0f);
 
     /// <summary>
     /// Immutable view of a trace after it has built its current sampled path and sprite list.
@@ -380,6 +382,7 @@ namespace CutTheRope.Framework.Visual
             image.rotation = sprite.Rotation;
             image.scaleX = sprite.Scale;
             image.scaleY = sprite.Scale;
+            image.translateY = sprite.TranslateY;
             image.color = RGBAColor.MakeRGBA(1f, 1f, 1f, sprite.Alpha);
             image.Draw();
         }

@@ -68,7 +68,7 @@ namespace CutTheRope.GameMain.FingerTraces
         private const float GlowTranslateY = 48f;
 
         /// <summary>The lightning spark emitter.</summary>
-        private readonly LightningTraceParticles particles = new();
+        private readonly FingerParticles particles = NamedTracePresets.CreateLightningParticles();
 
         /// <summary>Recent segment directions used to smooth the head rotation.</summary>
         private readonly List<Vector> directionHistory = [];
@@ -106,17 +106,6 @@ namespace CutTheRope.GameMain.FingerTraces
         public LightningFingerTrace()
         {
             ResetVariants();
-        }
-
-        /// <summary>
-        /// Initializes a lightning trace for a touch slot.
-        /// </summary>
-        /// <param name="_">
-        /// Unused touch-slot placeholder retained so callers can mirror the original per-touch construction API.
-        /// </param>
-        public LightningFingerTrace(int _)
-            : this()
-        {
         }
 
         /// <inheritdoc />
