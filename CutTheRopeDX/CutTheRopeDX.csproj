@@ -118,13 +118,6 @@
     <DefineConstants>$(DefineConstants);DESKTOPGL_FFMPEG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.manifest" />
-  </ItemGroup>
-
   <!-- Copy content files for non-macOS builds, exclude sounds (handled separately). -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
     <None Include="..\content\**" Exclude="..\content\sounds\**;..\content\**\.DS_Store">
