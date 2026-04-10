@@ -86,7 +86,7 @@ namespace CutTheRope.GameMain
             {
                 fingerCuts[j] = [];
                 int selectedTraceIndex = Preferences.GetIntForKey("PREFS_SELECTED_TRACE");
-                fingerTraces[j] = FingerTraceFactory.CreateForSlot(selectedTraceIndex, j + 1);
+                fingerTraces[j] = FingerTraceFactory.Create(selectedTraceIndex);
             }
             clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
         }
