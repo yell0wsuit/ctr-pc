@@ -23,15 +23,6 @@ namespace CutTheRope.GameMain.FingerTraces
         {
         }
 
-        /// <summary>
-        /// Initializes an Easter 2016 trace for a touch slot.
-        /// </summary>
-        /// <param name="_">Unused touch-slot placeholder retained for compatibility with the existing API.</param>
-        public Easter2016FingerTrace(int _)
-            : this()
-        {
-        }
-
         /// <inheritdoc />
         protected override RGBAColor GetRibbonColor(float t)
         {

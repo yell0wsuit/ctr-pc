@@ -22,15 +22,6 @@ namespace CutTheRope.GameMain.FingerTraces
         {
         }
 
-        /// <summary>
-        /// Initializes a bubble trace for a touch slot.
-        /// </summary>
-        /// <param name="_">Unused touch-slot placeholder retained for compatibility with the existing API.</param>
-        public BubbleFingerTrace(int _)
-            : this()
-        {
-        }
-
         /// <inheritdoc />
         protected override void AppendSampledPoints(List<Vector> sampledPoints)
         {

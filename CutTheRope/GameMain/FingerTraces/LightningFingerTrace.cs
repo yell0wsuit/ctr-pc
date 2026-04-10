@@ -108,17 +108,6 @@ namespace CutTheRope.GameMain.FingerTraces
             ResetVariants();
         }
 
-        /// <summary>
-        /// Initializes a lightning trace for a touch slot.
-        /// </summary>
-        /// <param name="_">
-        /// Unused touch-slot placeholder retained so callers can mirror the original per-touch construction API.
-        /// </param>
-        public LightningFingerTrace(int _)
-            : this()
-        {
-        }
-
         /// <inheritdoc />
         protected override bool HasLiveParticles => particles.HasLiveParticles;
 

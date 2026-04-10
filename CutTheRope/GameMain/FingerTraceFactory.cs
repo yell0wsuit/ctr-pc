@@ -12,27 +12,26 @@ namespace CutTheRope.GameMain
         public const int TotalTraceSkins = 11;
 
         /// <summary>
-        /// Creates a finger trace instance for a trace skin slot.
+        /// Creates a finger trace instance for a selected trace skin.
         /// </summary>
         /// <param name="traceIndex">Trace skin index.</param>
-        /// <param name="touchSlot">Touch slot that owns the trace.</param>
         /// <returns>The finger trace for the requested skin index, or the classic trace for unknown indices.</returns>
-        public static FingerTrace CreateForSlot(int traceIndex, int touchSlot)
+        public static FingerTrace Create(int traceIndex)
         {
             return traceIndex switch
             {
-                0 => new ClassicFingerTrace(touchSlot),
-                1 => new BubbleFingerTrace(touchSlot),
-                2 => new LightningFingerTrace(touchSlot),
-                3 => new StarFingerTrace(touchSlot),
-                4 => new WinterFingerTrace(touchSlot),
-                5 => new RedFingerTrace(touchSlot),
-                6 => new EasterFingerTrace(touchSlot),
-                7 => new OmnomBirthdayFingerTrace(touchSlot),
-                8 => new BackToSchoolFingerTrace(touchSlot),
-                9 => new AlphabetFingerTrace(touchSlot),
-                10 => new Easter2016FingerTrace(touchSlot),
-                _ => new ClassicFingerTrace(touchSlot),
+                0 => new ClassicFingerTrace(),
+                1 => new BubbleFingerTrace(),
+                2 => new LightningFingerTrace(),
+                3 => new StarFingerTrace(),
+                4 => new WinterFingerTrace(),
+                5 => new RedFingerTrace(),
+                6 => new EasterFingerTrace(),
+                7 => new OmnomBirthdayFingerTrace(),
+                8 => new BackToSchoolFingerTrace(),
+                9 => new AlphabetFingerTrace(),
+                10 => new Easter2016FingerTrace(),
+                _ => new ClassicFingerTrace(),
             };
         }
     }

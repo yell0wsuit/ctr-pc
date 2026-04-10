@@ -23,15 +23,6 @@ namespace CutTheRope.GameMain.FingerTraces
         {
         }
 
-        /// <summary>
-        /// Initializes an alphabet trace for a touch slot.
-        /// </summary>
-        /// <param name="_">Unused touch-slot placeholder retained for compatibility with the existing API.</param>
-        public AlphabetFingerTrace(int _)
-            : this()
-        {
-        }
-
         /// <inheritdoc />
         protected override RGBAColor GetRibbonColor(float t)
         {
