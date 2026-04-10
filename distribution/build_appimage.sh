@@ -20,9 +20,9 @@ DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut t
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-PROJECT="$PROJECT_ROOT/CutTheRope/CutTheRope.csproj"
+PROJECT="$PROJECT_ROOT/CutTheRopeDX/CutTheRopeDX.csproj"
 BUILD_DIR="$SCRIPT_DIR/appimage_build"
-PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/linux-x64"
+PUBLISH_DIR="$PROJECT_ROOT/CutTheRopeDX/bin/Publish/linux-x64"
 APPDIR="$BUILD_DIR/$APP_NAME.AppDir"
 TOOLS_DIR="$SCRIPT_DIR/tools"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
@@ -134,7 +134,7 @@ APPIMAGE_FILE="$PUBLISH_DIR/${APP_NAME}-${VERSION}-x86_64.AppImage"
 APPIMAGE_SIZE=$(ls -lh "$APPIMAGE_FILE" | awk '{print $5}')
 
 # Copy to release_github
-RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
+RELEASE_DIR="$PROJECT_ROOT/CutTheRopeDX/bin/release_github"
 mkdir -p "$RELEASE_DIR"
 cp "$APPIMAGE_FILE" "$RELEASE_DIR/"
 

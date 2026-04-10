@@ -33,9 +33,9 @@ Download the latest release from the [Releases page](https://github.com/yell0wsu
 - Support loading custom sprites and animations from [TexturePacker](https://www.codeandweb.com/texturepacker) in JSON array format. This allows easier modding and adding new assets.
 - Improved experience and bug fixes over the original PC version.
 - Better save file format. The save file (`ctr_preferences.json`) is stored in a `CutTheRopeDX_SaveData` folder, with the following fallback priority:
-  - Next to the game executable (preferred for portability)
-  - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
-  - `%LOCALAPPDATA%/CutTheRopeDX_SaveData` (Windows) or equivalent on other platforms
+    - Next to the game executable (preferred for portability)
+    - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
+    - `%LOCALAPPDATA%/CutTheRopeDX_SaveData` (Windows) or equivalent on other platforms
 
 ## Goals
 
@@ -60,7 +60,7 @@ The development of _Cut the Rope: DX_ is an ongoing process, and contributions a
 
 To test the game during the development process, follow these steps:
 
-1. Ensure you have [latest .NET](https://dotnet.microsoft.com/en-us/download/dotnet/) installed on your machine.
+1. Ensure you have [.NET 10 or higher](https://dotnet.microsoft.com/en-us/download/dotnet/) installed on your machine.
 
 2. Clone the repository to your PC:
 
@@ -73,10 +73,13 @@ To test the game during the development process, follow these steps:
 
 3. For most cases, you can build the game using the following commands:
 
+    > Note:  
+    > To make `PublishAot` work, you need to follow the [AOT prerequisites](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=windows%2Cnet8#prerequisites) based on your OS.
+
     a. Windows
 
     ```bash
-    dotnet publish CutTheRope\CutTheRope.csproj -c Release -f net10.0 -p:PublishAot=true -o .\CutTheRope\bin\Publish\win-x64
+    dotnet publish CutTheRopeDX\CutTheRopeDX.csproj -c Release -f net10.0 -p:PublishAot=true -o .\CutTheRopeDX\bin\Publish\win-x64
     ```
 
     b. macOS
@@ -84,7 +87,7 @@ To test the game during the development process, follow these steps:
     _Without AVFoundation (will use FFmpeg for video playback):_
 
     ```bash
-    dotnet publish CutTheRope/CutTheRope.csproj -c Release -f net10.0 -r osx-arm64 -o ./CutTheRope/bin/Publish/osx-arm64
+    dotnet publish CutTheRopeDX/CutTheRopeDX.csproj -c Release -f net10.0 -r osx-arm64 -o ./CutTheRopeDX/bin/Publish/osx-arm64
     ```
 
     Make sure you have installed FFmpeg from [Homebrew](https://formulae.brew.sh/formula/ffmpeg).
@@ -92,7 +95,7 @@ To test the game during the development process, follow these steps:
     _With AVFoundation (only for macOS 26.0 and later, requires Xcode installed):_
 
     ```bash
-    dotnet publish CutTheRope/CutTheRope.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./CutTheRope/bin/Publish/osx-arm64
+    dotnet publish CutTheRopeDX/CutTheRopeDX.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./CutTheRopeDX/bin/Publish/osx-arm64
     ```
 
     > Note:  
@@ -101,7 +104,7 @@ To test the game during the development process, follow these steps:
     c. Linux
 
     ```bash
-    dotnet publish CutTheRope/CutTheRope.csproj -c Release -f net10.0 -p:PublishAot=true -o ./CutTheRope/bin/Publish/linux-x64
+    dotnet publish CutTheRopeDX/CutTheRopeDX.csproj -c Release -f net10.0 -p:PublishAot=true -o ./CutTheRopeDX/bin/Publish/linux-x64
     ```
 
     > Warning:  

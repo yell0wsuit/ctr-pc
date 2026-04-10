@@ -14,9 +14,9 @@ except ImportError:
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR / ".."
-CSPROJ = PROJECT_ROOT / "CutTheRope" / "CutTheRope.csproj"
-OUTPUT_DIR = PROJECT_ROOT / "CutTheRope" / "bin" / "Publish" / "win-x64"
-RELEASE_DIR = PROJECT_ROOT / "CutTheRope" / "bin" / "release_github"
+CSPROJ = PROJECT_ROOT / "CutTheRopeDX" / "CutTheRopeDX.csproj"
+OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "win-x64"
+RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
 
 
 def package(version: str):

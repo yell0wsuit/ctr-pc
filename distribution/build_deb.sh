@@ -20,9 +20,9 @@ DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut t
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-PROJECT="$PROJECT_ROOT/CutTheRope/CutTheRope.csproj"
+PROJECT="$PROJECT_ROOT/CutTheRopeDX/CutTheRopeDX.csproj"
 BUILD_DIR="$SCRIPT_DIR/deb_build"
-PUBLISH_DIR="$PROJECT_ROOT/CutTheRope/bin/Publish/linux-x64"
+PUBLISH_DIR="$PROJECT_ROOT/CutTheRopeDX/bin/Publish/linux-x64"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/linux"
 
 # Resolve version (from arg or csproj)
@@ -132,7 +132,7 @@ DEB_FILE="$PUBLISH_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb"
 DEB_SIZE=$(ls -lh "$DEB_FILE" | awk '{print $5}')
 
 # Copy to release_github
-RELEASE_DIR="$PROJECT_ROOT/CutTheRope/bin/release_github"
+RELEASE_DIR="$PROJECT_ROOT/CutTheRopeDX/bin/release_github"
 mkdir -p "$RELEASE_DIR"
 cp "$DEB_FILE" "$RELEASE_DIR/"
 
