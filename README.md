@@ -60,7 +60,7 @@ The development of _Cut the Rope: DX_ is an ongoing process, and contributions a
 
 To test the game during the development process, follow these steps:
 
-1. Ensure you have [latest .NET](https://dotnet.microsoft.com/en-us/download/dotnet/) installed on your machine.
+1. Ensure you have [.NET 10 or higher](https://dotnet.microsoft.com/en-us/download/dotnet/) installed on your machine.
 
 2. Clone the repository to your PC:
 
