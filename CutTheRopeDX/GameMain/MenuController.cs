@@ -1768,7 +1768,11 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetBooleanForKey(!soundWasOn, "SOUND_ON", true);
                         if (soundWasOn)
                         {
-                            CTRSoundMgr.StopSounds();
+                            CTRSoundMgr.SuspendSoundEffects();
+                        }
+                        else
+                        {
+                            CTRSoundMgr.RestoreSoundEffects();
                         }
                         return;
                     }
