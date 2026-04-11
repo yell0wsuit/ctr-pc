@@ -24,10 +24,18 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public SoundMgr()
         {
-            LoadedSounds = [];
+            loadedSounds = [];
             activeSounds = [];
             activeLoopedSounds = [];
         }
+
+        /// <summary>
+        /// An active sound instance paired with the effect that produced it,
+        /// so the instance can be stopped when the parent effect is freed.
+        /// </summary>
+        /// <param name="Owner">The <see cref="SoundEffect"/> that created <paramref name="Instance"/>.</param>
+        /// <param name="Instance">The playing sound effect instance.</param>
+        private readonly record struct ActiveSound(SoundEffect Owner, SoundEffectInstance Instance);
 
         /// <summary>
         /// Sets the content manager used for loading audio assets.
@@ -40,22 +48,27 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>
         /// Removes a cached sound effect from memory by resource name.
+        /// Any active instances spawned from this effect are stopped and disposed first.
         /// </summary>
         /// <param name="soundResourceName">Logical sound resource name to remove from the cache.</param>
         public void FreeSound(string soundResourceName)
         {
             string localizedName = CTRResourceMgr.HandleLocalizedResource(soundResourceName);
-            if (!string.IsNullOrEmpty(localizedName) && LoadedSounds.Remove(localizedName, out SoundEffect sound))
+            if (string.IsNullOrEmpty(localizedName) || !loadedSounds.Remove(localizedName, out SoundEffect sound))
             {
-                sound.Dispose();
+                return;
             }
+
+            StopAndRemoveByOwner(activeSounds, sound);
+            StopAndRemoveByOwner(activeLoopedSounds, sound);
+            sound.Dispose();
         }
 
         /// <summary>
         /// Gets or loads a sound effect by its resource name.
         /// </summary>
         /// <param name="soundResourceName">Logical sound resource name to resolve and load.</param>
-        /// <returns>The loaded sound effect, or <see langword="null" /> when the name is invalid, localized lookup fails, or the resource is music.</returns>
+        /// <returns>The loaded sound effect, or <see langword="null" /> when the name is invalid, localized lookup fails, the resource is music, or loading fails.</returns>
         public SoundEffect GetSound(string soundResourceName)
         {
             if (string.IsNullOrEmpty(soundResourceName))
@@ -75,32 +88,30 @@ namespace CutTheRopeDX.Framework.Media
                 return null;
             }
 
-            if (LoadedSounds.TryGetValue(localizedName, out SoundEffect value))
+            if (loadedSounds.TryGetValue(localizedName, out SoundEffect cached))
             {
-                return value;
+                return cached;
             }
 
-            SoundEffect soundEffect;
             try
             {
                 string soundPath = ContentPaths.GetSoundEffectPath(CTRResourceMgr.XNA_ResName(localizedName));
-                value = _contentManager.Load<SoundEffect>(soundPath);
-                LoadedSounds.Add(localizedName, value);
-                soundEffect = value;
+                SoundEffect loaded = _contentManager.Load<SoundEffect>(soundPath);
+                loadedSounds.Add(localizedName, loaded);
+                return loaded;
             }
             catch (Exception)
             {
-                soundEffect = value;
+                return null;
             }
-            return soundEffect;
         }
 
         /// <summary>
-        /// Removes stopped sound instances from the active sounds list.
+        /// Removes stopped or null instances from the given active sounds list.
         /// </summary>
-        private void ClearStopped()
+        private static void ClearStopped(List<ActiveSound> list)
         {
-            _ = activeSounds.RemoveAll(static sound => sound == null || sound.State == SoundState.Stopped);
+            _ = list.RemoveAll(static entry => entry.Instance == null || entry.Instance.State == SoundState.Stopped);
         }
 
         /// <summary>
@@ -109,8 +120,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="soundResourceName">Logical sound resource name to play once.</param>
         public void PlaySound(string soundResourceName)
         {
-            ClearStopped();
-            activeSounds.Add(Play(soundResourceName, false));
+            ClearStopped(activeSounds);
+            _ = TryPlay(soundResourceName, loop: false, activeSounds);
         }
 
         /// <summary>
@@ -120,10 +131,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <returns>The sound effect instance for controlling playback, or <see langword="null" /> on failure.</returns>
         public SoundEffectInstance PlaySoundLooped(string soundResourceName)
         {
-            ClearStopped();
-            SoundEffectInstance soundEffectInstance = Play(soundResourceName, true);
-            activeLoopedSounds.Add(soundEffectInstance);
-            return soundEffectInstance;
+            ClearStopped(activeLoopedSounds);
+            return TryPlay(soundResourceName, loop: true, activeLoopedSounds);
         }
 
         /// <summary>
@@ -171,6 +180,37 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
+        /// Stops and disposes any active instances in <paramref name="list"/> that were
+        /// produced by <paramref name="owner"/>, and removes them from the list.
+        /// </summary>
+        private static void StopAndRemoveByOwner(List<ActiveSound> list, SoundEffect owner)
+        {
+            _ = list.RemoveAll(entry =>
+            {
+                if (!ReferenceEquals(entry.Owner, owner))
+                {
+                    return false;
+                }
+                SoundEffectInstance instance = entry.Instance;
+                if (instance != null)
+                {
+                    try
+                    {
+                        if (instance.State != SoundState.Stopped)
+                        {
+                            instance.Stop();
+                        }
+                        instance.Dispose();
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+                return true;
+            });
+        }
+
+        /// <summary>
         /// Stops the currently playing background music.
         /// </summary>
         public static void StopMusic()
@@ -182,20 +222,6 @@ namespace CutTheRopeDX.Framework.Media
             catch (Exception)
             {
             }
-        }
-
-        /// <summary>
-        /// Suspends audio playback. No-op maintained for API compatibility.
-        /// </summary>
-        public static void Suspend()
-        {
-        }
-
-        /// <summary>
-        /// Resumes audio playback after suspension. No-op maintained for API compatibility.
-        /// </summary>
-        public static void Resume()
-        {
         }
 
         /// <summary>
@@ -235,64 +261,76 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
-        /// Creates and plays a sound effect instance for the specified resource.
+        /// Creates and starts a sound effect instance for the specified resource, appending it
+        /// to <paramref name="destination"/> along with its owning <see cref="SoundEffect"/>.
         /// </summary>
         /// <param name="resourceName">Logical sound resource name to resolve.</param>
         /// <param name="loop">Whether the created instance should loop.</param>
+        /// <param name="destination">List that receives the active sound entry on success.</param>
         /// <returns>The playing sound effect instance, or <see langword="null" /> if playback could not be started.</returns>
-        private SoundEffectInstance Play(string resourceName, bool loop)
+        private SoundEffectInstance TryPlay(string resourceName, bool loop, List<ActiveSound> destination)
         {
-            SoundEffectInstance soundEffectInstance = null;
-            SoundEffectInstance soundEffectInstance2;
+            SoundEffect sound = GetSound(resourceName);
+            if (sound == null)
+            {
+                return null;
+            }
+
+            SoundEffectInstance instance;
             try
             {
-                soundEffectInstance = GetSound(resourceName).CreateInstance();
-                soundEffectInstance.IsLooped = loop;
-                soundEffectInstance.Play();
-                soundEffectInstance2 = soundEffectInstance;
+                instance = sound.CreateInstance();
+                instance.IsLooped = loop;
+                instance.Play();
             }
             catch (Exception)
             {
-                soundEffectInstance2 = soundEffectInstance;
+                return null;
             }
-            return soundEffectInstance2;
+
+            destination.Add(new ActiveSound(sound, instance));
+            return instance;
         }
 
         /// <summary>
         /// Stops all sound effect instances in the specified <paramref name="list"/>.
         /// </summary>
-        /// <param name="list">The list of sound effect instances to stop.</param>
-        private static void StopList(List<SoundEffectInstance> list)
+        /// <param name="list">The list of active sound entries to stop.</param>
+        private static void StopList(List<ActiveSound> list)
         {
-            foreach (SoundEffectInstance item in list)
+            foreach (ActiveSound entry in list)
             {
-                item?.Stop();
+                entry.Instance?.Stop();
             }
         }
 
         /// <summary>
         /// Changes the playback state of all sound effect instances in the specified <paramref name="list"/>.
         /// </summary>
-        /// <param name="list">The list of sound effect instances to modify.</param>
+        /// <param name="list">The list of active sound entries to modify.</param>
         /// <param name="fromState">The current state to match.</param>
         /// <param name="toState">The target state to transition to.</param>
-        private static void ChangeListState(List<SoundEffectInstance> list, SoundState fromState, SoundState toState)
+        private static void ChangeListState(List<ActiveSound> list, SoundState fromState, SoundState toState)
         {
-            foreach (SoundEffectInstance item in list)
+            foreach (ActiveSound entry in list)
             {
-                if (item != null && item.State == fromState)
+                SoundEffectInstance instance = entry.Instance;
+                if (instance == null || instance.State != fromState)
                 {
-                    if (toState != SoundState.Playing)
-                    {
-                        if (toState == SoundState.Paused)
-                        {
-                            item.Pause();
-                        }
-                    }
-                    else
-                    {
-                        item.Resume();
-                    }
+                    continue;
+                }
+
+                switch (toState)
+                {
+                    case SoundState.Paused:
+                        instance.Pause();
+                        break;
+                    case SoundState.Playing:
+                        instance.Resume();
+                        break;
+                    case SoundState.Stopped:
+                    default:
+                        break;
                 }
             }
         }
@@ -305,16 +343,16 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>
         /// Cache of loaded sound effects keyed by localized resource name.
         /// </summary>
-        private readonly Dictionary<string, SoundEffect> LoadedSounds;
+        private readonly Dictionary<string, SoundEffect> loadedSounds;
 
         /// <summary>
-        /// Active one-shot sound instances that may still be playing.
+        /// Active one-shot sound instances that may still be playing, tracked with their owning effect.
         /// </summary>
-        private readonly List<SoundEffectInstance> activeSounds;
+        private readonly List<ActiveSound> activeSounds;
 
         /// <summary>
-        /// Active looped sound instances managed by pause and stop operations.
+        /// Active looped sound instances managed by pause and stop operations, tracked with their owning effect.
         /// </summary>
-        private readonly List<SoundEffectInstance> activeLoopedSounds;
+        private readonly List<ActiveSound> activeLoopedSounds;
     }
 }
