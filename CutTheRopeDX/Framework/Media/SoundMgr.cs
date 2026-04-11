@@ -251,6 +251,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>
         /// Decrements the pause stack and, when it reaches zero, resumes all paused looped
         /// sound effects and background music. Calls beyond the outermost pause are ignored.
+        /// Loops stay paused if sound effects have been independently suspended via
+        /// <see cref="SuspendSoundEffects"/>.
         /// </summary>
         public void Unpause()
         {
@@ -264,12 +266,54 @@ namespace CutTheRopeDX.Framework.Media
                 pauseDepth--;
                 if (pauseDepth == 0)
                 {
-                    ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+                    if (!sfxSuspended)
+                    {
+                        ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+                    }
                     if (XnaMediaPlayer.State == XnaMediaState.Paused)
                     {
                         XnaMediaPlayer.Resume();
                     }
                 }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Pauses all active looped sound effects in response to the user disabling sound effects.
+        /// Unlike <see cref="Pause"/>, this is independent of the transient pause stack, so focus
+        /// restores or gameplay unpauses will not implicitly reactivate suspended loops.
+        /// </summary>
+        public void SuspendSoundEffects()
+        {
+            sfxSuspended = true;
+            try
+            {
+                ChangeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Resumes looped sound effects previously suspended by <see cref="SuspendSoundEffects"/>.
+        /// If the game or app is still transiently paused, resumption is deferred until the
+        /// outermost <see cref="Unpause"/> runs.
+        /// </summary>
+        public void RestoreSoundEffects()
+        {
+            sfxSuspended = false;
+            if (pauseDepth > 0)
+            {
+                return;
+            }
+
+            try
+            {
+                ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
             }
             catch (Exception)
             {
@@ -376,5 +420,11 @@ namespace CutTheRopeDX.Framework.Media
         /// so stacked sources (gameplay pause + app deactivation) don't resume prematurely.
         /// </summary>
         private int pauseDepth;
+
+        /// <summary>
+        /// Whether looped sound effects are suspended by the user's sound-effects toggle.
+        /// Independent of <see cref="pauseDepth"/> so transient pauses don't reactivate loops.
+        /// </summary>
+        private bool sfxSuspended;
     }
 }

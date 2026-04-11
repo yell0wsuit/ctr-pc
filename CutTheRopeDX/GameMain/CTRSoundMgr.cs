@@ -207,6 +207,23 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Suspends looped sound effects in response to the user disabling sound. Loops are
+        /// paused (not stopped) so they can be resumed in-place by <see cref="RestoreSoundEffects"/>.
+        /// </summary>
+        public static void SuspendSoundEffects()
+        {
+            Application.SharedSoundMgr().SuspendSoundEffects();
+        }
+
+        /// <summary>
+        /// Resumes looped sound effects that were suspended by <see cref="SuspendSoundEffects"/>.
+        /// </summary>
+        public static void RestoreSoundEffects()
+        {
+            Application.SharedSoundMgr().RestoreSoundEffects();
+        }
+
+        /// <summary>
         /// Indicates whether looped sound playback is currently enabled.
         /// </summary>
         private static bool s_EnableLoopedSounds = true;
