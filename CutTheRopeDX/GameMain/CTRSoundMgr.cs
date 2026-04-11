@@ -147,12 +147,12 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            string name;
-            do
+            // Duplicates in musicNames would otherwise let this loop run forever, so cap retries.
+            string name = musicNames[RND_RANGE(0, musicNames.Length - 1)];
+            for (int attempt = 0; attempt < 4 && name == prevMusic && musicNames.Length > 1; attempt++)
             {
                 name = musicNames[RND_RANGE(0, musicNames.Length - 1)];
             }
-            while (name == prevMusic && musicNames.Length > 1);
             prevMusic = name;
             PlayMusic(name);
         }
@@ -204,6 +204,23 @@ namespace CutTheRopeDX.GameMain
         public static void Unpause()
         {
             Application.SharedSoundMgr().Unpause();
+        }
+
+        /// <summary>
+        /// Suspends looped sound effects in response to the user disabling sound. Loops are
+        /// paused (not stopped) so they can be resumed in-place by <see cref="RestoreSoundEffects"/>.
+        /// </summary>
+        public static void SuspendSoundEffects()
+        {
+            Application.SharedSoundMgr().SuspendSoundEffects();
+        }
+
+        /// <summary>
+        /// Resumes looped sound effects that were suspended by <see cref="SuspendSoundEffects"/>.
+        /// </summary>
+        public static void RestoreSoundEffects()
+        {
+            Application.SharedSoundMgr().RestoreSoundEffects();
         }
 
         /// <summary>

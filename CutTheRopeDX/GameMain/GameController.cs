@@ -511,9 +511,11 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetBooleanForKey(!flag2, "SOUND_ON", true);
                         if (flag2)
                         {
+                            CTRSoundMgr.SuspendSoundEffects();
                             CTRRootController.LogEvent("IM_SOUND_OFF_PRESSED");
                             return;
                         }
+                        CTRSoundMgr.RestoreSoundEffects();
                         CTRRootController.LogEvent("IM_SOUND_ON_PRESSED");
                         return;
                     }
