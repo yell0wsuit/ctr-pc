@@ -1763,8 +1763,15 @@ namespace CutTheRopeDX.GameMain
                     CTRRootController.OpenFullVersionPage();
                     return;
                 case var id when id == MenuButtonId.ToggleSound:
-                    Preferences.SetBooleanForKey(!Preferences.GetBooleanForKey("SOUND_ON"), "SOUND_ON", true);
-                    return;
+                    {
+                        bool soundWasOn = Preferences.GetBooleanForKey("SOUND_ON");
+                        Preferences.SetBooleanForKey(!soundWasOn, "SOUND_ON", true);
+                        if (soundWasOn)
+                        {
+                            CTRSoundMgr.StopSounds();
+                        }
+                        return;
+                    }
                 case var id when id == MenuButtonId.ToggleMusic:
                     {
                         bool flag6 = Preferences.GetBooleanForKey("MUSIC_ON");
