@@ -147,12 +147,12 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            string name;
-            do
+            // Duplicates in musicNames would otherwise let this loop run forever, so cap retries.
+            string name = musicNames[RND_RANGE(0, musicNames.Length - 1)];
+            for (int attempt = 0; attempt < 4 && name == prevMusic && musicNames.Length > 1; attempt++)
             {
                 name = musicNames[RND_RANGE(0, musicNames.Length - 1)];
             }
-            while (name == prevMusic && musicNames.Length > 1);
             prevMusic = name;
             PlayMusic(name);
         }
