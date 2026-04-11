@@ -100,16 +100,7 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private void ClearStopped()
         {
-            List<SoundEffectInstance> list = [];
-            foreach (SoundEffectInstance activeSound in activeSounds)
-            {
-                if (activeSound != null && activeSound.State != SoundState.Stopped)
-                {
-                    list.Add(activeSound);
-                }
-            }
-            activeSounds.Clear();
-            activeSounds = list;
+            _ = activeSounds.RemoveAll(static sound => sound == null || sound.State == SoundState.Stopped);
         }
 
         /// <summary>
@@ -319,7 +310,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>
         /// Active one-shot sound instances that may still be playing.
         /// </summary>
-        private List<SoundEffectInstance> activeSounds;
+        private readonly List<SoundEffectInstance> activeSounds;
 
         /// <summary>
         /// Active looped sound instances managed by pause and stop operations.
