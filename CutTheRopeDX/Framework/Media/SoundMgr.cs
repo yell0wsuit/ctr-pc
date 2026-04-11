@@ -225,17 +225,23 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
-        /// Pauses all looped sound effects and background music.
+        /// Pauses all looped sound effects and background music. Calls stack: if multiple
+        /// independent sources (e.g. gameplay pause and app deactivation) both pause, the same
+        /// number of <see cref="Unpause"/> calls is required before playback actually resumes.
         /// </summary>
         public void Pause()
         {
             try
             {
-                ChangeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
-                if (XnaMediaPlayer.State == XnaMediaState.Playing)
+                if (pauseDepth == 0)
                 {
-                    XnaMediaPlayer.Pause();
+                    ChangeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
+                    if (XnaMediaPlayer.State == XnaMediaState.Playing)
+                    {
+                        XnaMediaPlayer.Pause();
+                    }
                 }
+                pauseDepth++;
             }
             catch (Exception)
             {
@@ -243,16 +249,26 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
-        /// Resumes all paused looped sound effects and background music.
+        /// Decrements the pause stack and, when it reaches zero, resumes all paused looped
+        /// sound effects and background music. Calls beyond the outermost pause are ignored.
         /// </summary>
         public void Unpause()
         {
             try
             {
-                ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
-                if (XnaMediaPlayer.State == XnaMediaState.Paused)
+                if (pauseDepth == 0)
                 {
-                    XnaMediaPlayer.Resume();
+                    return;
+                }
+
+                pauseDepth--;
+                if (pauseDepth == 0)
+                {
+                    ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+                    if (XnaMediaPlayer.State == XnaMediaState.Paused)
+                    {
+                        XnaMediaPlayer.Resume();
+                    }
                 }
             }
             catch (Exception)
@@ -354,5 +370,11 @@ namespace CutTheRopeDX.Framework.Media
         /// Active looped sound instances managed by pause and stop operations, tracked with their owning effect.
         /// </summary>
         private readonly List<ActiveSound> activeLoopedSounds;
+
+        /// <summary>
+        /// Nesting depth of pause calls. Resume only happens when the outermost pause unwinds,
+        /// so stacked sources (gameplay pause + app deactivation) don't resume prematurely.
+        /// </summary>
+        private int pauseDepth;
     }
 }
