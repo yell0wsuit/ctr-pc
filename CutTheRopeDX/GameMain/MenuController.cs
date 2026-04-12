@@ -1411,9 +1411,7 @@ namespace CutTheRopeDX.GameMain
             else
             {
                 levelContainer = null;
-                float fillRatio = vBox.height / availableHeight;
-                float verticalOffset = (availableHeight - vBox.height) / 2f * MathF.Cbrt(1f - fillRatio);
-                vBox.y = levelsTopY + verticalOffset;
+                vBox.y = (SCREEN_HEIGHT - vBox.height) / 2f;
                 levelsElement = vBox;
             }
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
