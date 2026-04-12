@@ -171,12 +171,15 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>
         /// Stops all currently playing sound effects, including looped sounds.
+        /// Resets the pause and SFX-suspension state so subsequent audio starts from a clean slate.
         /// </summary>
         public void StopAllSounds()
         {
             StopList(activeSounds);
             activeSounds.Clear();
             StopLoopedSounds();
+            pauseDepth = 0;
+            sfxSuspended = false;
         }
 
         /// <summary>
