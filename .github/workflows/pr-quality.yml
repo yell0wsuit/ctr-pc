@@ -28,7 +28,7 @@ jobs:
               run: dotnet restore
 
             - name: Check formatting
-              run: dotnet format --verify-no-changes --verbosity diagnostic
+              run: dotnet format CutTheRopeDX/CutTheRopeDX.csproj --verify-no-changes --verbosity diagnostic
 
             - name: Install Roslynator
               run: |
