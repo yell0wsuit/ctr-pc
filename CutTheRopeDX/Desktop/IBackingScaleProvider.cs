@@ -1,4 +1,4 @@
-namespace CutTheRope.Desktop
+namespace CutTheRopeDX.Desktop
 {
     internal interface IBackingScaleProvider
     {

@@ -2,7 +2,7 @@
 using AppKit;
 #endif
 
-namespace CutTheRope.Desktop
+namespace CutTheRopeDX.Desktop
 {
     internal sealed class MacBackingScaleProvider : IBackingScaleProvider
     {

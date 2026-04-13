@@ -2,7 +2,7 @@ using System;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.Desktop
+namespace CutTheRopeDX.Desktop
 {
     internal static class BackingScaleMath
     {
