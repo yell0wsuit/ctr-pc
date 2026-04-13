@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace CutTheRope.Desktop
+namespace CutTheRopeDX.Desktop
 {
     internal sealed partial class DesktopGLBackingScaleProvider : IBackingScaleProvider
     {

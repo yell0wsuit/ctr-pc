@@ -1,6 +1,6 @@
 using System;
 
-namespace CutTheRope.Desktop
+namespace CutTheRopeDX.Desktop
 {
     internal sealed class BackingScaleState(double initialScale, double epsilon = 0.01d, int downscaleToOneConfirmationReadings = 1)
     {
