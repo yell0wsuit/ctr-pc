@@ -18,6 +18,20 @@ namespace CutTheRopeDX.GameMain
         );
 
         /// <summary>
+        /// Represents the fully prepared rope colors used by the bungee renderer.
+        /// </summary>
+        /// <param name="BaseColor1">The primary rope color at full brightness.</param>
+        /// <param name="BaseColor2">The secondary rope color at full brightness.</param>
+        /// <param name="ShadeColor1">The primary rope color used for the darker stripe/stretched ramp.</param>
+        /// <param name="ShadeColor2">The secondary rope color used for the darker stripe/stretched ramp.</param>
+        public readonly record struct RopeDrawColors(
+            RGBAColor BaseColor1,
+            RGBAColor BaseColor2,
+            RGBAColor ShadeColor1,
+            RGBAColor ShadeColor2
+        );
+
+        /// <summary>
         /// Gets the rope color scheme for a given rope index (0-8).
         /// </summary>
         /// <param name="ropeIndex">The rope skin index. Values outside 0–8 return the default scheme.</param>
@@ -67,6 +81,92 @@ namespace CutTheRopeDX.GameMain
                     RGBAColor.MakeRGBA(0.6755555555555556f, 0.44f, 0.27555555555555555f, 1)
                 )
             };
+        }
+
+        /// <summary>
+        /// Creates the rope colors used for bungee rendering after alpha, highlighting, and stretch color are applied.
+        /// </summary>
+        /// <param name="ropeIndex">The selected rope skin index.</param>
+        /// <param name="alphaMultiplier">Alpha applied to all rope colors.</param>
+        /// <param name="highlighted">Whether the rope is in the highlighted state.</param>
+        /// <param name="segmentLength">Current length of the first rope segment.</param>
+        /// <param name="restLength">Rest length used for stretch color calculations.</param>
+        /// <param name="stretchRedThreshold">Stretch threshold that enables the red color state.</param>
+        /// <returns>The prepared bungee draw colors.</returns>
+        public static RopeDrawColors GetDrawColors(
+            int ropeIndex,
+            float alphaMultiplier,
+            bool highlighted,
+            float segmentLength,
+            float restLength,
+            float stretchRedThreshold)
+        {
+            RopeColors ropeColors = GetRopeColors(ropeIndex);
+            bool isStretchColorActive = segmentLength > restLength + stretchRedThreshold;
+
+            // Base colors are the bright end of the gradient.
+            // When the stretch color fires on a custom skin, the iOS code draws toward
+            // the default rope palette (brown) so that green/blue channels drop naturally.
+            // The shade (dark) end keeps the custom skin's own colors.
+            RopeColors baseSource = isStretchColorActive && ropeIndex != 0
+                ? GetRopeColors(0)
+                : ropeColors;
+            RGBAColor baseColor1 = RGBAColor.MakeRGBA(
+                baseSource.Color1.RedColor * alphaMultiplier,
+                baseSource.Color1.GreenColor * alphaMultiplier,
+                baseSource.Color1.BlueColor * alphaMultiplier,
+                alphaMultiplier
+            );
+            RGBAColor baseColor2 = RGBAColor.MakeRGBA(
+                baseSource.Color2.RedColor * alphaMultiplier,
+                baseSource.Color2.GreenColor * alphaMultiplier,
+                baseSource.Color2.BlueColor * alphaMultiplier,
+                alphaMultiplier
+            );
+
+            // The default skin always uses dark shading. Custom skins use full brightness
+            // normally, but when stretched the dark factor is restored so the red channel
+            // boost can dominate over the suppressed green/blue channels.
+            float darkFactor1 = ropeIndex == 0 || isStretchColorActive ? 0.4f : 1f;
+            float darkFactor2 = ropeIndex == 0 || isStretchColorActive ? 0.45f : 1f;
+            RGBAColor shadeColor1 = RGBAColor.MakeRGBA(
+                ropeColors.Color1.RedColor * darkFactor1 * alphaMultiplier,
+                ropeColors.Color1.GreenColor * darkFactor1 * alphaMultiplier,
+                ropeColors.Color1.BlueColor * darkFactor1 * alphaMultiplier,
+                alphaMultiplier
+            );
+            RGBAColor shadeColor2 = RGBAColor.MakeRGBA(
+                ropeColors.Color2.RedColor * darkFactor2 * alphaMultiplier,
+                ropeColors.Color2.GreenColor * darkFactor2 * alphaMultiplier,
+                ropeColors.Color2.BlueColor * darkFactor2 * alphaMultiplier,
+                alphaMultiplier
+            );
+
+            if (highlighted)
+            {
+                float highlightMultiplier = 3f;
+                baseColor1.RedColor *= highlightMultiplier;
+                baseColor1.GreenColor *= highlightMultiplier;
+                baseColor1.BlueColor *= highlightMultiplier;
+                baseColor2.RedColor *= highlightMultiplier;
+                baseColor2.GreenColor *= highlightMultiplier;
+                baseColor2.BlueColor *= highlightMultiplier;
+                shadeColor1.RedColor *= highlightMultiplier;
+                shadeColor1.GreenColor *= highlightMultiplier;
+                shadeColor1.BlueColor *= highlightMultiplier;
+                shadeColor2.RedColor *= highlightMultiplier;
+                shadeColor2.GreenColor *= highlightMultiplier;
+                shadeColor2.BlueColor *= highlightMultiplier;
+            }
+
+            if (isStretchColorActive && !highlighted)
+            {
+                float stretchRedScale = segmentLength / restLength * 2f;
+                shadeColor1.RedColor *= stretchRedScale;
+                shadeColor2.RedColor *= stretchRedScale;
+            }
+
+            return new RopeDrawColors(baseColor1, baseColor2, shadeColor1, shadeColor2);
         }
 
         /// <summary>

@@ -199,73 +199,31 @@ namespace CutTheRopeDX.GameMain
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points)
         {
             float alphaMultiplier = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
+            float stretchRedThreshold = ActivePhysicsConstants.BungeeStretchRedThreshold;
+            float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
 
             // Get selected rope colors from preferences
             int selectedRopeIndex = Preferences.GetIntForKey("PREFS_SELECTED_ROPE");
-            RopeColorHelper.RopeColors ropeColors = RopeColorHelper.GetRopeColors(selectedRopeIndex);
+            RopeColorHelper.RopeDrawColors drawColors = RopeColorHelper.GetDrawColors(
+                selectedRopeIndex,
+                alphaMultiplier,
+                b.highlighted,
+                segmentLength,
+                BUNGEE_REST_LEN,
+                stretchRedThreshold);
+            RGBAColor rgbaColor = drawColors.BaseColor1;
+            RGBAColor rgbaColor2 = drawColors.BaseColor2;
+            RGBAColor rgbaColor3 = drawColors.ShadeColor1;
+            RGBAColor rgbaColor4 = drawColors.ShadeColor2;
 
-            // Apply alpha multiplier to base colors
-            RGBAColor rgbaColor = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * alphaMultiplier,
-                ropeColors.Color1.GreenColor * alphaMultiplier,
-                ropeColors.Color1.BlueColor * alphaMultiplier,
-                alphaMultiplier
-            );
-            RGBAColor rgbaColor2 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * alphaMultiplier,
-                ropeColors.Color2.GreenColor * alphaMultiplier,
-                ropeColors.Color2.BlueColor * alphaMultiplier,
-                alphaMultiplier
-            );
-
-            // Create darker variants for shading
-            // Only the default skin (0) uses dark shading; other skins use full brightness
-            float darkFactor1 = selectedRopeIndex == 0 ? 0.4f : 1f;
-            float darkFactor2 = selectedRopeIndex == 0 ? 0.45f : 1f;
-            RGBAColor rgbaColor3 = RGBAColor.MakeRGBA(
-                ropeColors.Color1.RedColor * darkFactor1 * alphaMultiplier,
-                ropeColors.Color1.GreenColor * darkFactor1 * alphaMultiplier,
-                ropeColors.Color1.BlueColor * darkFactor1 * alphaMultiplier,
-                alphaMultiplier
-            );
-            RGBAColor rgbaColor4 = RGBAColor.MakeRGBA(
-                ropeColors.Color2.RedColor * darkFactor2 * alphaMultiplier,
-                ropeColors.Color2.GreenColor * darkFactor2 * alphaMultiplier,
-                ropeColors.Color2.BlueColor * darkFactor2 * alphaMultiplier,
-                alphaMultiplier
-            );
-            if (b.highlighted)
-            {
-                float highlightMultiplier = 3f;
-                rgbaColor.RedColor *= highlightMultiplier;
-                rgbaColor.GreenColor *= highlightMultiplier;
-                rgbaColor.BlueColor *= highlightMultiplier;
-                rgbaColor2.RedColor *= highlightMultiplier;
-                rgbaColor2.GreenColor *= highlightMultiplier;
-                rgbaColor2.BlueColor *= highlightMultiplier;
-                rgbaColor3.RedColor *= highlightMultiplier;
-                rgbaColor3.GreenColor *= highlightMultiplier;
-                rgbaColor3.BlueColor *= highlightMultiplier;
-                rgbaColor4.RedColor *= highlightMultiplier;
-                rgbaColor4.GreenColor *= highlightMultiplier;
-                rgbaColor4.BlueColor *= highlightMultiplier;
-            }
             float relaxThresholdSoft = ActivePhysicsConstants.BungeeRelaxThresholdSoft;
             float relaxThresholdMedium = ActivePhysicsConstants.BungeeRelaxThresholdMedium;
             float relaxThresholdHard = ActivePhysicsConstants.BungeeRelaxThresholdHard;
-            float stretchRedThreshold = ActivePhysicsConstants.BungeeStretchRedThreshold;
-            float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
             b.relaxed = segmentLength <= BUNGEE_REST_LEN + relaxThresholdSoft
                 ? 0
                 : segmentLength <= BUNGEE_REST_LEN + relaxThresholdMedium
                     ? 1
                     : segmentLength <= BUNGEE_REST_LEN + relaxThresholdHard ? 2 : 3;
-            if (segmentLength > BUNGEE_REST_LEN + stretchRedThreshold)
-            {
-                float stretchRedScale = segmentLength / BUNGEE_REST_LEN * 2f;
-                rgbaColor3.RedColor *= stretchRedScale;
-                rgbaColor4.RedColor *= stretchRedScale;
-            }
             bool flag = false;
             int sampleCount = (count - 1) * points;
             float[] array = new float[sampleCount * 2];
