@@ -39,6 +39,8 @@ namespace CutTheRopeDX.GameMain
             text2.SetString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
+            text.pingPongEnabled = true;
+            text2.pingPongEnabled = true;
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
@@ -69,6 +71,8 @@ namespace CutTheRopeDX.GameMain
             text2.SetString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
+            text.pingPongEnabled = true;
+            text2.pingPongEnabled = true;
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
@@ -104,6 +108,10 @@ namespace CutTheRopeDX.GameMain
             text2.anchor = text2.parentAnchor = 18;
             text3.anchor = text3.parentAnchor = 18;
             text4.anchor = text4.parentAnchor = 18;
+            text.pingPongEnabled = true;
+            text2.pingPongEnabled = true;
+            text3.pingPongEnabled = true;
+            text4.pingPongEnabled = true;
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
             _ = image3.AddChild(text3);
