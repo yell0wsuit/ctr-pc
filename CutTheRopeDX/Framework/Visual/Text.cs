@@ -395,6 +395,11 @@ namespace CutTheRopeDX.Framework.Visual
                 graphicsDevice.Clear(Color.Transparent);
             }
 
+            // Ping-pong clipping: set a scissor rect so overflowing text is clipped
+            float pingPongOverflow = pingPongEnabled ? GetPingPongOverflow() : 0f;
+            bool isPingPonging = pingPongOverflow > 0f;
+            Rectangle previousScissor = graphicsDevice.ScissorRectangle;
+
             spriteBatch.Begin(
                 SpriteSortMode.Immediate,
                 BlendState.AlphaBlend,
@@ -404,6 +409,23 @@ namespace CutTheRopeDX.Framework.Visual
                 null,
                 transformMatrix
             );
+
+            if (isPingPonging)
+            {
+                float clipW = EffectivePingPongClipWidth;
+                float clipH = maxHeight > 0f ? maxHeight : height;
+                // Clip to the parent element's bounds (e.g., button background image)
+                float clipX = HasParent ? parent.drawX + pingPongPadding : drawX;
+                float clipY = drawY;
+                // Transform clip rect corners through the full transform matrix (model-view + viewport scale)
+                Vector2 topLeft = Vector2.Transform(new Vector2(clipX, clipY), transformMatrix);
+                Vector2 bottomRight = Vector2.Transform(new Vector2(clipX + clipW, clipY + clipH), transformMatrix);
+                int sx = (int)topLeft.X;
+                int sy = (int)topLeft.Y;
+                int sw = (int)(bottomRight.X - topLeft.X);
+                int sh = (int)(bottomRight.Y - topLeft.Y);
+                graphicsDevice.ScissorRectangle = new Rectangle(sx, sy, sw, sh);
+            }
 
             // Render each formatted line
             foreach (FormattedString formattedString in formattedStrings)
@@ -422,6 +444,13 @@ namespace CutTheRopeDX.Framework.Visual
                 else if (align == 3) // Right
                 {
                     xPos += wrapWidth - formattedString.width;
+                }
+
+                // When ping-ponging, left-align the text at the clip area's left edge and scroll
+                if (isPingPonging)
+                {
+                    float clipLeft = HasParent ? parent.drawX + pingPongPadding : drawX;
+                    xPos = clipLeft - pingPongOffset;
                 }
 
                 Vector2 position = new(xPos, yPos);
@@ -485,6 +514,11 @@ namespace CutTheRopeDX.Framework.Visual
 
             spriteBatch.End();
 
+            if (isPingPonging)
+            {
+                graphicsDevice.ScissorRectangle = previousScissor;
+            }
+
             // Blit the composite render target to screen with the uniform fade alpha
             if (needsComposite)
             {
@@ -511,6 +545,57 @@ namespace CutTheRopeDX.Framework.Visual
                 );
                 spriteBatch.Draw(s_textCompositeRT, Vector2.Zero, blitColor);
                 spriteBatch.End();
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Update(float delta)
+        {
+            base.Update(delta);
+
+            if (!pingPongEnabled)
+            {
+                return;
+            }
+
+            float overflow = GetPingPongOverflow();
+            if (overflow <= 0f)
+            {
+                pingPongOffset = 0f;
+                return;
+            }
+
+            // Wait for the initial delay before starting the scroll
+            if (!pingPongStarted)
+            {
+                pingPongPauseTimer += delta;
+                if (pingPongPauseTimer >= pingPongPauseDuration)
+                {
+                    pingPongStarted = true;
+                    pingPongPauseTimer = 0f;
+                }
+                return;
+            }
+
+            if (pingPongPauseTimer > 0f)
+            {
+                pingPongPauseTimer -= delta;
+                return;
+            }
+
+            pingPongOffset += pingPongSpeed * delta * pingPongDirection;
+
+            if (pingPongOffset >= overflow)
+            {
+                pingPongOffset = overflow;
+                pingPongDirection = -1;
+                pingPongPauseTimer = pingPongPauseDuration;
+            }
+            else if (pingPongOffset <= 0f)
+            {
+                pingPongOffset = 0f;
+                pingPongDirection = 1;
+                pingPongPauseTimer = pingPongPauseDuration;
             }
         }
 
@@ -648,5 +733,78 @@ namespace CutTheRopeDX.Framework.Visual
         /// Whether to break long words that exceed the wrap width.
         /// </summary>
         public bool wrapLongWords;
+
+        /// <summary>
+        /// Enables the ping-pong scrolling effect for text that overflows <see cref="pingPongClipWidth"/>.
+        /// </summary>
+        public bool pingPongEnabled;
+
+        /// <summary>
+        /// The visible width for ping-pong clipping. Text wider than this scrolls back and forth.
+        /// Defaults to -1 (uses parent element's width, or <see cref="wrapWidth"/> if no parent).
+        /// </summary>
+        public float pingPongClipWidth = -1f;
+
+        /// <summary>
+        /// Horizontal padding on each side within the clip area for the ping-pong effect.
+        /// </summary>
+        public float pingPongPadding = 60f;
+
+        /// <summary>
+        /// Scroll speed in virtual pixels per second for the ping-pong effect.
+        /// </summary>
+        public float pingPongSpeed = 80f;
+
+        /// <summary>
+        /// Pause duration in seconds at each end of the ping-pong scroll.
+        /// </summary>
+        public float pingPongPauseDuration = 2.5f;
+
+        /// <summary>
+        /// Current horizontal scroll offset for the ping-pong effect.
+        /// </summary>
+        private float pingPongOffset;
+
+        /// <summary>
+        /// Current scroll direction: 1 = scrolling left (showing more of the right side), -1 = scrolling back.
+        /// </summary>
+        private int pingPongDirection = 1;
+
+        /// <summary>
+        /// Remaining pause time at the current scroll end.
+        /// </summary>
+        private float pingPongPauseTimer;
+
+        /// <summary>
+        /// Whether the initial delay has elapsed.
+        /// </summary>
+        private bool pingPongStarted;
+
+        /// <summary>
+        /// Returns the effective clip width for ping-pong, falling back to the parent's width or <see cref="wrapWidth"/>.
+        /// </summary>
+        private float EffectivePingPongClipWidth =>
+            pingPongClipWidth > 0f ? pingPongClipWidth :
+            HasParent ? parent.width - (pingPongPadding * 2f) : wrapWidth;
+
+        /// <summary>
+        /// Returns the overflow amount for the widest formatted line, or 0 if no overflow.
+        /// </summary>
+        private float GetPingPongOverflow()
+        {
+            float clipW = EffectivePingPongClipWidth;
+            float maxW = 0f;
+            if (formattedStrings != null)
+            {
+                foreach (FormattedString fs in formattedStrings)
+                {
+                    if (fs.width > maxW)
+                    {
+                        maxW = fs.width;
+                    }
+                }
+            }
+            return maxW > clipW ? maxW - clipW : 0f;
+        }
     }
 }
