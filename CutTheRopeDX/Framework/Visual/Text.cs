@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -285,7 +284,15 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Cached render target for compositing text layers (shadow, stroke, fill) at full
+        /// opacity before applying the fade alpha uniformly. Shared across all Text instances.
+        /// </summary>
+        private static RenderTarget2D s_textCompositeRT;
+
+        /// <summary>
         /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
+        /// When fading, all layers are first composited at full opacity onto a render target,
+        /// then drawn to screen with the fade alpha so shadow/stroke/fill fade in sync.
         /// </summary>
         /// <param name="fontStashFont">FontStash-backed font used for glyph rendering.</param>
         /// <param name="parentColor">Inherited parent color modulation.</param>
@@ -311,31 +318,8 @@ namespace CutTheRopeDX.Framework.Visual
                 return;
             }
 
-            //Debug.WriteLine($"FontStash: Drawing text '{string_}' at ({drawX}, {drawY}) with {formattedStrings.Count} lines");
-
             FontEffectSettings effects = fontStashFont.GetEffectSettings();
             Color textColor = fontStashFont.GetColor();
-            static float CalculatePerPassAlpha(float targetAlpha, int sampleCount)
-            {
-                if (sampleCount <= 1)
-                {
-                    return MathHelper.Clamp(targetAlpha, 0f, 1f);
-                }
-
-                targetAlpha = MathHelper.Clamp(targetAlpha, 0f, 1f);
-                if (targetAlpha <= 0f)
-                {
-                    return 0f;
-                }
-                if (targetAlpha >= 1f)
-                {
-                    return 1f;
-                }
-
-                // Normalize per-sample alpha so stacking multiple draws keeps overall opacity consistent
-                float perSample = 1f - MathF.Pow(1f - targetAlpha, 1f / sampleCount);
-                return MathHelper.Clamp(perSample, 0f, 1f);
-            }
 
             // Apply element and inherited color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
             static byte ScaleByte(byte channel, float factor)
@@ -352,11 +336,10 @@ namespace CutTheRopeDX.Framework.Visual
                 return (byte)scaled;
             }
 
-            static Color MakePremultipliedColor(Color baseColor, float redScale, float greenScale, float blueScale, float alphaScale)
+            static Color MakeColor(Color baseColor, float redScale, float greenScale, float blueScale, float alphaScale)
             {
                 byte finalAlpha = (byte)MathHelper.Clamp(baseColor.A / 255f * alphaScale * 255f, 0f, 255f);
 
-                // Use FromNonPremultiplied so SpriteBatch receives premultiplied channels that honor the alpha timeline
                 return Color.FromNonPremultiplied(
                     ScaleByte(baseColor.R, redScale),
                     ScaleByte(baseColor.G, greenScale),
@@ -365,39 +348,53 @@ namespace CutTheRopeDX.Framework.Visual
                 );
             }
 
-            // BaseElement color only modulates alpha (GL path uses ToWhiteAlphaXNA),
-            // so keep RGB intact and apply timeline alpha once
             float inheritedRed = MathHelper.Clamp(parentColor.R / 255f, 0f, 1f);
             float inheritedGreen = MathHelper.Clamp(parentColor.G / 255f, 0f, 1f);
             float inheritedBlue = MathHelper.Clamp(parentColor.B / 255f, 0f, 1f);
             float inheritedAlpha = MathHelper.Clamp(color.AlphaChannel * (parentColor.A / 255f), 0f, 1f);
 
-            // Premultiply channels for correct blending
-            float effectiveAlpha = MathHelper.Clamp(textColor.A / 255f * inheritedAlpha, 0f, 1f);
-            Color finalColor = MakePremultipliedColor(
-                textColor,
-                MathHelper.Clamp(inheritedRed, 0f, 1f),
-                MathHelper.Clamp(inheritedGreen, 0f, 1f),
-                MathHelper.Clamp(inheritedBlue, 0f, 1f),
-                effectiveAlpha
-            );
+            bool hasEffects = effects?.HasStroke == true || effects?.HasShadow == true;
+            bool needsComposite = hasEffects && inheritedAlpha < 1f;
+
+            // Build colors: when compositing via render target, draw layers at full opacity;
+            // the fade alpha is applied once when blitting the RT to screen.
+            float layerAlpha = needsComposite ? 1f : inheritedAlpha;
+
+            Color finalColor = MakeColor(textColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
 
             float yPos = drawY + font.GetTopSpacing();
             int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
 
-            // Calculate scale from virtual coordinates to physical viewport
             GraphicsDevice graphicsDevice = Global.GraphicsDevice;
             Viewport viewport = graphicsDevice.Viewport;
 
             float viewportScaleX = viewport.Width / SCREEN_WIDTH;
             float viewportScaleY = viewport.Height / SCREEN_HEIGHT;
 
-            // Respect the current OpenGL emulation transform (including parent timelines/animations)
             Matrix transformMatrix =
                 Renderer.GetModelViewMatrix() *
                 Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);
 
-            // Begin SpriteBatch for text rendering with proper scaling
+            // When fading multi-layer text, composite all layers at full opacity onto a
+            // render target, then blit with the fade alpha so every layer fades uniformly.
+            RenderTargetBinding[] previousTargets = null;
+            if (needsComposite)
+            {
+                int rtW = viewport.Width;
+                int rtH = viewport.Height;
+                if (s_textCompositeRT == null || s_textCompositeRT.IsDisposed ||
+                    s_textCompositeRT.Width != rtW || s_textCompositeRT.Height != rtH)
+                {
+                    s_textCompositeRT?.Dispose();
+                    s_textCompositeRT = new RenderTarget2D(graphicsDevice, rtW, rtH, false,
+                        SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                }
+
+                previousTargets = graphicsDevice.GetRenderTargets();
+                graphicsDevice.SetRenderTarget(s_textCompositeRT);
+                graphicsDevice.Clear(Color.Transparent);
+            }
+
             spriteBatch.Begin(
                 SpriteSortMode.Immediate,
                 BlendState.AlphaBlend,
@@ -418,7 +415,6 @@ namespace CutTheRopeDX.Framework.Visual
 
                 float xPos = drawX;
 
-                // Calculate alignment offset
                 if (align == 2) // Center
                 {
                     xPos += (wrapWidth - formattedString.width) / 2f;
@@ -430,32 +426,22 @@ namespace CutTheRopeDX.Framework.Visual
 
                 Vector2 position = new(xPos, yPos);
 
-                // Draw shadow if enabled (with stroke for better backdrop effect)
+                // Draw shadow if enabled
                 if (effects?.HasShadow == true)
                 {
                     Vector2 shadowBasePos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
                     int shadowStrokeAmount = effects.HasStroke ? effects.StrokeAmount : 1;
-                    int shadowSamples = ((shadowStrokeAmount * 2) + 1) * ((shadowStrokeAmount * 2) + 1);
-                    float shadowTargetAlpha = effects.ShadowColor.A / 255f * inheritedAlpha;
-                    float shadowAlpha = CalculatePerPassAlpha(shadowTargetAlpha, shadowSamples);
-                    Color shadowColor = MakePremultipliedColor(
-                        effects.ShadowColor,
-                        MathHelper.Clamp(inheritedRed, 0f, 1f),
-                        MathHelper.Clamp(inheritedGreen, 0f, 1f),
-                        MathHelper.Clamp(inheritedBlue, 0f, 1f),
-                        shadowAlpha
-                    );
+                    Color shadowColor = MakeColor(
+                        effects.ShadowColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
 
-                    // Render shadow with stroke outline for better backdrop effect
                     for (int x = -shadowStrokeAmount; x <= shadowStrokeAmount; x++)
                     {
                         for (int y = -shadowStrokeAmount; y <= shadowStrokeAmount; y++)
                         {
-                            Vector2 shadowPos = shadowBasePos + new Vector2(x, y);
                             _ = internalFont.DrawText(
                                 spriteBatch,
                                 formattedString.string_,
-                                shadowPos,
+                                shadowBasePos + new Vector2(x, y),
                                 shadowColor
                             );
                         }
@@ -465,17 +451,8 @@ namespace CutTheRopeDX.Framework.Visual
                 // Draw stroke if enabled
                 if (effects?.HasStroke == true)
                 {
-                    int strokeSamples = (((effects.StrokeAmount * 2) + 1) * ((effects.StrokeAmount * 2) + 1)) - 1;
-                    strokeSamples = Math.Max(strokeSamples, 1);
-                    float strokeTargetAlpha = effects.StrokeColor.A / 255f * inheritedAlpha;
-                    float strokeAlpha = CalculatePerPassAlpha(strokeTargetAlpha, strokeSamples);
-                    Color strokeColor = MakePremultipliedColor(
-                        effects.StrokeColor,
-                        MathHelper.Clamp(inheritedRed, 0f, 1f),
-                        MathHelper.Clamp(inheritedGreen, 0f, 1f),
-                        MathHelper.Clamp(inheritedBlue, 0f, 1f),
-                        strokeAlpha
-                    );
+                    Color strokeColor = MakeColor(
+                        effects.StrokeColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
                     int strokeAmount = effects.StrokeAmount;
 
                     for (int x = -strokeAmount; x <= strokeAmount; x++)
@@ -484,12 +461,10 @@ namespace CutTheRopeDX.Framework.Visual
                         {
                             if (x != 0 || y != 0)
                             {
-                                Vector2 strokePos = position + new Vector2(x, y);
-                                // Use FontStashSharp's DrawText extension method
                                 _ = internalFont.DrawText(
                                     spriteBatch,
                                     formattedString.string_,
-                                    strokePos,
+                                    position + new Vector2(x, y),
                                     strokeColor
                                 );
                             }
@@ -497,7 +472,7 @@ namespace CutTheRopeDX.Framework.Visual
                     }
                 }
 
-                // Draw main text using FontStashSharp's DrawText extension method
+                // Draw main text
                 _ = internalFont.DrawText(
                     spriteBatch,
                     formattedString.string_,
@@ -508,8 +483,35 @@ namespace CutTheRopeDX.Framework.Visual
                 yPos += lineHeight;
             }
 
-            // End SpriteBatch
             spriteBatch.End();
+
+            // Blit the composite render target to screen with the uniform fade alpha
+            if (needsComposite)
+            {
+                if (previousTargets != null && previousTargets.Length > 0)
+                {
+                    graphicsDevice.SetRenderTargets(previousTargets);
+                }
+                else
+                {
+                    graphicsDevice.SetRenderTarget(null);
+                }
+
+                byte fadeByte = (byte)MathHelper.Clamp(inheritedAlpha * 255f, 0f, 255f);
+                Color blitColor = new(fadeByte, fadeByte, fadeByte, fadeByte); // premultiplied tint
+
+                spriteBatch.Begin(
+                    SpriteSortMode.Immediate,
+                    BlendState.AlphaBlend,
+                    SamplerState.LinearClamp,
+                    null,
+                    null,
+                    null,
+                    null
+                );
+                spriteBatch.Draw(s_textCompositeRT, Vector2.Zero, blitColor);
+                spriteBatch.End();
+            }
         }
 
         /// <summary>
