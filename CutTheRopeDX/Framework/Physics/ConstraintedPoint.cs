@@ -182,7 +182,7 @@ namespace CutTheRopeDX.Framework.Physics
         public override void Update(float delta)
         {
             totalForce = vectZero;
-            if (!disableGravity)
+            if (!disableGravity && !globalDisableGravity)
             {
                 totalForce = !VectEqual(globalGravity, vectZero) ? VectAdd(totalForce, VectMult(globalGravity, weight)) : VectAdd(totalForce, gravity);
             }
@@ -280,7 +280,7 @@ namespace CutTheRopeDX.Framework.Physics
         public static void Qcpupdate(ConstraintedPoint constrainedPoint, float delta, float coefficient)
         {
             constrainedPoint.totalForce = vectZero;
-            if (!constrainedPoint.disableGravity)
+            if (!constrainedPoint.disableGravity && !globalDisableGravity)
             {
                 constrainedPoint.totalForce = !VectEqual(globalGravity, vectZero)
                     ? VectAdd(constrainedPoint.totalForce, VectMult(globalGravity, constrainedPoint.weight))

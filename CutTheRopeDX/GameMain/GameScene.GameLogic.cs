@@ -542,15 +542,15 @@ namespace CutTheRopeDX.GameMain
         /// <param name="_">Game scene button identifier.</param>
         public void OnButtonPressed(GameSceneButtonId _)
         {
-            if (MaterialPoint.globalGravity.Y == ActivePhysicsConstants.GravityEarthY)
+            if (MaterialPoint.globalGravity.Y == globalGravityY)
             {
-                MaterialPoint.globalGravity.Y = -ActivePhysicsConstants.GravityEarthY;
+                MaterialPoint.globalGravity.Y = -globalGravityY;
                 gravityNormal = false;
                 CTRSoundMgr.PlaySound(Resources.Snd.GravityOn);
             }
             else
             {
-                MaterialPoint.globalGravity.Y = ActivePhysicsConstants.GravityEarthY;
+                MaterialPoint.globalGravity.Y = globalGravityY;
                 gravityNormal = true;
                 CTRSoundMgr.PlaySound(Resources.Snd.GravityOff);
             }
