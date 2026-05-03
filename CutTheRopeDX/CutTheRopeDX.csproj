@@ -94,7 +94,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <PackageReference Include="FFmpeg.AutoGen" Version="8.0.0" />
+    <PackageReference Include="FFmpeg.AutoGen" Version="8.1.0" />
   </ItemGroup>
 
   <!-- Windows: bundled native FFmpeg libraries -->
