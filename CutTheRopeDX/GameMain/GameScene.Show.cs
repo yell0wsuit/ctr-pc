@@ -71,7 +71,8 @@ namespace CutTheRopeDX.GameMain
             time = 0f;
             score = 0;
             gravityNormal = true;
-            MaterialPoint.globalGravity = Vect(0f, ActivePhysicsConstants.GravityEarthY);
+            MaterialPoint.globalGravity = Vect(globalGravityX, globalGravityY);
+            MaterialPoint.globalDisableGravity = VectEqual(MaterialPoint.globalGravity, vectZero);
             dimTime = 0f;
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;

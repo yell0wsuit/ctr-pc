@@ -99,6 +99,8 @@ namespace CutTheRopeDX.GameMain
                                 }
                             }
                             ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
+                            globalGravityX = (item2.Attribute("globalGravityX") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityX")?.Value) : 0f;
+                            globalGravityY = (item2.Attribute("globalGravityY") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityY")?.Value) : ActivePhysicsConstants.GravityEarthY;
                             break;
                         case "candyL":
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

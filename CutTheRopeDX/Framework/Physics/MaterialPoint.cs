@@ -133,7 +133,7 @@ namespace CutTheRopeDX.Framework.Physics
         public virtual void Update(float delta)
         {
             totalForce = vectZero;
-            if (!disableGravity)
+            if (!disableGravity && !globalDisableGravity)
             {
                 totalForce = !VectEqual(globalGravity, vectZero) ? VectAdd(totalForce, VectMult(globalGravity, weight)) : VectAdd(totalForce, gravity);
             }
@@ -210,5 +210,10 @@ namespace CutTheRopeDX.Framework.Physics
         /// Whether gravity should be excluded from updates.
         /// </summary>
         public bool disableGravity;
+
+        /// <summary>
+        /// Optional override for whether gravity should be excluded from updates to all material points.
+        /// </summary>
+        public static bool globalDisableGravity;
     }
 }
