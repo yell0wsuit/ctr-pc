@@ -1232,6 +1232,11 @@ namespace CutTheRopeDX.GameMain
         public List<Image> earthAnims;
 
         /// <summary>
+        /// Optional string to load as a name for the level.
+        /// </summary>
+        public string levelName;
+
+        /// <summary>
         /// Count of tummy teaser interactions completed in the scene.
         /// </summary>
         public int tummyTeasers;

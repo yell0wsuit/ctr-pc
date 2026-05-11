@@ -86,6 +86,7 @@ namespace CutTheRopeDX.GameMain
             gameLostTriggered = false;
             gameWonTriggered = false;
             outcomeTransitionActive = false;
+            levelName = null;
         }
 
         /// <summary>
