@@ -101,6 +101,8 @@ namespace CutTheRopeDX.GameMain
             sleepSoundTimer = 0f;
             nightSleepOverlayVisible = false;
             gameLostTriggered = false;
+
+            levelName = null;
         }
 
         /// <summary>
