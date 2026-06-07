@@ -557,7 +557,6 @@ namespace CutTheRopeDX.GameMain
             if (moveLength > 0)
             {
                 moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHook);
-                TrimMovableRailTileEdges(moveBackground.texture);
                 moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
                 moveBackground.width = (int)(l + 142f);
                 moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
@@ -1028,38 +1027,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gun hook front quad.</summary>
         private const int GunFrontQuad = 2;
-
-        /// <summary>Whether the shared movable rail texture quads have been trimmed.</summary>
-        private static bool s_movableRailTrimmed;
-
-        /// <summary>
-        /// Trims 1px transparent edges from movable rail tiles to prevent tiling seams.
-        /// Only applies once to avoid compounding mutations on the shared texture.
-        /// </summary>
-        /// <param name="texture">Hook texture containing movable rail quads.</param>
-        private static void TrimMovableRailTileEdges(CTRTexture2D texture)
-        {
-            if (s_movableRailTrimmed)
-            {
-                return;
-            }
-            s_movableRailTrimmed = true;
-
-            ref CTRRectangle left = ref texture.quadRects[MovableRailLeftQuad];
-            left.w -= 1;
-
-            ref CTRRectangle right = ref texture.quadRects[MovableRailRightQuad];
-            right.x += 1;
-            right.w -= 1;
-
-            ref CTRRectangle center = ref texture.quadRects[MovableRailCenterQuad];
-            center.x += 1;
-            center.w -= 2;
-
-            texture.quads[MovableRailLeftQuad] = DrawHelper.GetTextureCoordinates(texture, left);
-            texture.quads[MovableRailRightQuad] = DrawHelper.GetTextureCoordinates(texture, right);
-            texture.quads[MovableRailCenterQuad] = DrawHelper.GetTextureCoordinates(texture, center);
-        }
 
         /// <summary>
         /// Selects one of the fixed hook back quad variants.

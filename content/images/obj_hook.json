@@ -50,26 +50,26 @@
         },
         {
             "filename": "obj_hook_movable_frame_0000.png",
-            "frame": { "x": 780, "y": 144, "w": 85, "h": 111 },
+            "frame": { "x": 782, "y": 144, "w": 81, "h": 111 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 53, "y": 82, "w": 85, "h": 111 },
+            "spriteSourceSize": { "x": 53, "y": 82, "w": 81, "h": 111 },
             "sourceSize": { "w": 276, "h": 276 }
         },
         {
             "filename": "obj_hook_movable_frame_0001.png",
-            "frame": { "x": 869, "y": 144, "w": 61, "h": 111 },
+            "frame": { "x": 871, "y": 144, "w": 59, "h": 111 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 137, "y": 82, "w": 61, "h": 111 },
+            "spriteSourceSize": { "x": 137, "y": 82, "w": 59, "h": 111 },
             "sourceSize": { "w": 276, "h": 276 }
         },
         {
             "filename": "obj_hook_movable_frame_0002.png",
-            "frame": { "x": 1077, "y": 131, "w": 48, "h": 111 },
+            "frame": { "x": 1079, "y": 131, "w": 44, "h": 111 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 112, "y": 82, "w": 48, "h": 111 },
+            "spriteSourceSize": { "x": 112, "y": 82, "w": 44, "h": 111 },
             "sourceSize": { "w": 276, "h": 276 }
         },
         {
