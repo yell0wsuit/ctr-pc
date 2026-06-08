@@ -1167,6 +1167,16 @@ namespace CutTheRopeDX.GameMain
         public float partsDist;
 
         /// <summary>
+        /// The X value for the global gravity.
+        /// </summary>
+        public float globalGravityX;
+
+        /// <summary>
+        /// The Y value for the global gravity.
+        /// </summary>
+        public float globalGravityY;
+
+        /// <summary>
         /// Earth animation images used by gravity-switch levels.
         /// </summary>
         public List<Image> earthAnims;
