@@ -31,10 +31,6 @@ namespace CutTheRopeDX.GameMain
             mapOriginX = mapOffsetX + mapGridOffsetX;
             mapOriginY = mapOffsetY + mapGridOffsetY;
 
-            gravityNormal = true;
-            MaterialPoint.globalGravity = Vect(globalGravityX, globalGravityY);
-            MaterialPoint.globalDisableGravity = VectEqual(MaterialPoint.globalGravity, vectZero);
-
             // Load all game objects from XML
             LoadObjectsFromMap(map, mapScale, mapOffsetX, mapOffsetY, mapGridOffsetX, mapGridOffsetY);
 
@@ -74,6 +70,9 @@ namespace CutTheRopeDX.GameMain
             // spiderTookCandy = false;
             time = 0f;
             score = 0;
+            gravityNormal = true;
+            MaterialPoint.globalGravity = Vect(globalGravityX, globalGravityY);
+            MaterialPoint.globalDisableGravity = VectEqual(MaterialPoint.globalGravity, vectZero);
             dimTime = 0f;
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;

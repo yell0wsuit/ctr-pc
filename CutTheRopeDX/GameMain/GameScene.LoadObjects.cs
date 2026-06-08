@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-using CutTheRopeDX.Framework.Physics;
-
 namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
@@ -43,10 +41,7 @@ namespace CutTheRopeDX.GameMain
                     switch (item3.Name.LocalName)
                     {
                         case "gravitySwitch":
-                            if (!MaterialPoint.globalDisableGravity)
-                            {
-                                LoadGravityButton(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
-                            }
+                            LoadGravityButton(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "star":
                             LoadStar(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
