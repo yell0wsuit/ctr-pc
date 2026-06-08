@@ -88,9 +88,9 @@ namespace CutTheRopeDX.GameMain
             text2.parentAnchor = 9;
             text.SetName("levelLabel");
             text.x = 15f + Canvas.xOffsetScaled;
-            text.y = SCREEN_HEIGHT + 15f;
             bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-            text2.y = isChinese ? 20f : 30f; // the "Level" label in game
+            text.y = isChinese ? SCREEN_HEIGHT : SCREEN_HEIGHT + 15f; // the box and level number or level name in game
+            text2.y = isChinese ? 3f : 30f; // the "Level" label in game
             text2.rotationCenterX -= text2.width / 2f;
             text2.scaleX = text2.scaleY = 0.7f;
             _ = text.AddChild(text2);
