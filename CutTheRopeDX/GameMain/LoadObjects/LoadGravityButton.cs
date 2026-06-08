@@ -18,16 +18,17 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadGravityButton(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            if (globalGravityY != 0f)
+            if (globalGravityY == 0f)
             {
-                gravityButton = CreateGravityButtonWithDelegate(this);
-                gravityButton.visible = false;
-                gravityButton.touchable = false;
-                _ = AddChild(gravityButton);
-                gravityButton.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                gravityButton.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-                gravityButton.anchor = 18;
+                return;
             }
+            gravityButton = CreateGravityButtonWithDelegate(this);
+            gravityButton.visible = false;
+            gravityButton.touchable = false;
+            _ = AddChild(gravityButton);
+            gravityButton.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            gravityButton.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            gravityButton.anchor = 18;
         }
     }
 }
