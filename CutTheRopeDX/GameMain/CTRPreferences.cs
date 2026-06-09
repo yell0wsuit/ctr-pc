@@ -661,6 +661,8 @@ namespace CutTheRopeDX.GameMain
             CheckForUnlockIAP();
             RequestSave();
             SetScoreHash();
+            // Show menu presence to use the correct total
+            Game1.RPC?.MenuPresence();
         }
 
         /// <summary>
