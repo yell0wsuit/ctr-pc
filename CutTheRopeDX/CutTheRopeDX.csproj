@@ -254,33 +254,15 @@
   </Target>
 
   <!--
-    Local-dev only: download binary content assets if missing.
+    Local-dev only: fetch missing binary content assets before the content build.
     CI sets CI=true and disables MGCB (RunMGCB=false), so it never needs them.
-    The bundle (ctrdx-assets.zip) is a full content/ snapshot, but we copy ONLY the
-    9 binary extensions into content/ — git-tracked json/xml in the bundle are ignored,
-    so a stale bundle can never clobber a tracked text file.
+    Detection + download live in tools/FetchContentAssets/ (a small console
+    project) — see FetchContentAssets.cs for how missing assets are determined.
   -->
   <Target Name="FetchContentAssets"
     BeforeTargets="BuildContent;BeforeBuild"
-    Condition="'$(CI)' != 'true' AND !Exists('$(MSBuildProjectDirectory)/../content/images/CutTheRopeDXLogo.png')">
-    <PropertyGroup>
-      <ContentAssetsUrl>https://github.com/yell0wsuit/ctrdx-assets/releases/latest/download/ctrdx-assets.zip</ContentAssetsUrl>
-      <ContentDir>$(MSBuildProjectDirectory)/../content</ContentDir>
-      <AssetsTmp>$(MSBuildProjectDirectory)/obj/assets-fetch</AssetsTmp>
-    </PropertyGroup>
-
-    <Message Text="Content assets missing — downloading from $(ContentAssetsUrl) (~335 MB, one time)..." Importance="High" />
-    <MakeDir Directories="$(AssetsTmp)" />
-    <DownloadFile SourceUrl="$(ContentAssetsUrl)" DestinationFolder="$(AssetsTmp)" DestinationFileName="ctrdx-assets.zip" Retries="3" />
-    <Unzip SourceFiles="$(AssetsTmp)/ctrdx-assets.zip" DestinationFolder="$(AssetsTmp)/extracted" />
-
-    <ItemGroup>
-      <FetchedBinaries Include="$(AssetsTmp)/extracted/**/*.png;$(AssetsTmp)/extracted/**/*.wav;$(AssetsTmp)/extracted/**/*.ogg;$(AssetsTmp)/extracted/**/*.mp4;$(AssetsTmp)/extracted/**/*.ttf;$(AssetsTmp)/extracted/**/*.otf;$(AssetsTmp)/extracted/**/*.cur;$(AssetsTmp)/extracted/**/*.xnb;$(AssetsTmp)/extracted/**/*.wmv" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(FetchedBinaries)"
-      DestinationFiles="@(FetchedBinaries->'$(ContentDir)/%(RecursiveDir)%(Filename)%(Extension)')" />
-    <RemoveDir Directories="$(AssetsTmp)" />
-    <Message Text="Copied @(FetchedBinaries->Count()) binary assets into $(ContentDir)." Importance="High" />
+    Condition="'$(CI)' != 'true'">
+    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../tools/FetchContentAssets/FetchContentAssets.csproj&quot; -- &quot;$(MSBuildProjectDirectory)/../content&quot;"
+      WorkingDirectory="$(MSBuildProjectDirectory)/.." />
   </Target>
 </Project>
