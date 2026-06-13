@@ -71,22 +71,12 @@ To test the game during the development process, follow these steps:
 
     You can also use [GitHub Desktop](https://desktop.github.com/) for ease of cloning.
 
-    > [!NOTE]
-    > **Content assets** (images, audio, fonts, cursors, video) are no longer stored in
-    > this repository — they live in [ctrdx-assets](https://github.com/yell0wsuit/ctrdx-assets).
+    > ⚠️ **Note:**  
+    > Content assets (images, audio, fonts, cursors, video) are no longer stored in
+    > this repository. They now live in [ctrdx-assets](https://github.com/yell0wsuit/ctrdx-assets).
     > You don't need to do anything: on your first local build, the assets are downloaded
-    > automatically (~335 MB, once) from the latest `ctrdx-assets` release and extracted into
+    > automatically from the latest `ctrdx-assets` release and extracted into
     > `content/`. CI skips this, as it does not compile content.
-    >
-    > **Maintainers — updating assets:** zip the `content/` snapshot (entries must be
-    > `content/`-relative, e.g. `images/…`) and upload it to a new `ctrdx-assets` release with
-    > the asset named **`ctrdx-assets.zip`**. Extra non-binary files in the zip are ignored; the
-    > build copies only binary assets. The build always pulls the latest release.
-    >
-    > ```bash
-    > cd content && zip -r -X ../ctrdx-assets.zip .
-    > gh release create vN --repo yell0wsuit/ctrdx-assets --title "Content assets" ../ctrdx-assets.zip
-    > ```
 
 3. For most cases, you can build the game using the following commands:
 
