@@ -1751,23 +1751,23 @@ namespace CutTheRopeDX.GameMain
                     return;
                 }
             }
-            bool flag9 = twoParts == 2 && PointOutOfScreen(star) && !noCandy;
-            bool flag10 = twoParts != 2 && PointOutOfScreen(starL) && !noCandyL;
-            bool flag11 = twoParts != 2 && PointOutOfScreen(starR) && !noCandyR;
-            if (flag10 || flag11 || flag9)
+            // Lose if any uneaten candy leaves the screen. Mark each leaver consumed-as-lost.
+            bool anyLeft = false;
+            for (int ci = 0; ci < candies.Count; ci++)
             {
-                if (flag9)
+                CandyContext ctx = candies[ci];
+                if (!ctx.noCandy && PointOutOfScreen(ctx.point))
                 {
-                    noCandy = true;
+                    ctx.noCandy = true;
+                    if (ci == 0)
+                    {
+                        noCandy = true;
+                    }
+                    anyLeft = true;
                 }
-                if (flag10)
-                {
-                    noCandyL = true;
-                }
-                if (flag11)
-                {
-                    noCandyR = true;
-                }
+            }
+            if (anyLeft)
+            {
                 if (activeRocket != null)
                 {
                     activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
@@ -1785,10 +1785,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         CTRRootController.PostAchievementName("1058341297", ACHIEVEMENT_STRING("\"Calorie Minimizer\""));
                     }
-                    if (twoParts == 2 || !noCandyL || !noCandyR)
-                    {
-                        GameLost();
-                    }
+                    GameLost();
                     return;
                 }
             }
