@@ -276,8 +276,11 @@ namespace CutTheRopeDX.GameMain
                 targetObject.rotationCenterY = 0f;
             }
 
-            targetAnimationController?.PlayChewing();
-            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing);
+            if (GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targets.Count))
+            {
+                targetAnimationController?.PlayChewing();
+                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing);
+            }
             if (candyBubble != null)
             {
                 PopCandyBubble(false);
