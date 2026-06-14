@@ -267,6 +267,12 @@ namespace CutTheRopeDX.GameMain
                     extra.candy.x = extra.point.pos.X;
                     extra.candy.y = extra.point.pos.Y;
                     extra.candy.Draw();
+                    if (extra.candyBlink != null && extra.candyBlink.GetCurrentTimeline() != null && !isCandyInLantern)
+                    {
+                        Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                        extra.candyBlink.Draw();
+                        Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                    }
                 }
             }
             if (hands != null)

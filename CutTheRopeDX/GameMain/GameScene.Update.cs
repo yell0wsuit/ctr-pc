@@ -653,6 +653,9 @@ namespace CutTheRopeDX.GameMain
                         : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) ||
                         (GameObject.ObjectsIntersect(candyR, star) && !noCandyR);
 
+                    // Track which candy collected the star so only that candy glows.
+                    CandyContext collectingCandy = candyTouchesStar && candies.Count > 0 ? candies[0] : null;
+
                     // Additional independent candies (multi-candy) can also collect stars.
                     for (int ci = 1; ci < candies.Count && !candyTouchesStar; ci++)
                     {
@@ -660,12 +663,13 @@ namespace CutTheRopeDX.GameMain
                         if (!ec.noCandy && GameObject.ObjectsIntersect(ec.candy, star))
                         {
                             candyTouchesStar = true;
+                            collectingCandy = ec;
                         }
                     }
 
                     if (candyTouchesStar)
                     {
-                        candyBlink.PlayTimeline(1);
+                        collectingCandy?.candyBlink?.PlayTimeline(1);
                         starsCollected++;
                         // Update RPC with new star count
                         Game1.RPC?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false);

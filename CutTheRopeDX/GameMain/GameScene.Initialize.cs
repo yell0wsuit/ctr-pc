@@ -231,6 +231,19 @@ namespace CutTheRopeDX.GameMain
             _ = c.AddChild(cTop);
             cTop.scaleX = cTop.scaleY = 0.71f;
 
+            // Per-candy collect glow (mirrors the primary candy's candyBlink) so each candy
+            // glows independently when it collects a star.
+            Animation blink = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
+            blink.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 9);
+            blink.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 10, [10]);
+            Timeline blinkTimeline = blink.GetTimeline(1);
+            blinkTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            blinkTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
+            blink.visible = false;
+            blink.anchor = blink.parentAnchor = 18;
+            blink.scaleX = blink.scaleY = 0.71f;
+            _ = c.AddChild(blink);
+
             CandyContext ctx = new()
             {
                 candyNumber = candyNumber,
@@ -238,6 +251,7 @@ namespace CutTheRopeDX.GameMain
                 candy = c,
                 candyMain = cMain,
                 candyTop = cTop,
+                candyBlink = blink,
                 noCandy = false,
             };
             candies.Add(ctx);
