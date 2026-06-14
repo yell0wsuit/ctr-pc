@@ -284,29 +284,10 @@ namespace CutTheRopeDX.GameMain
         private void Selector_revealCandyFromLantern(FrameworkTypes param)
         {
             ConstraintedPoint releasedPoint = param as ConstraintedPoint;
-            for (int ci = 0; ci < candies.Count; ci++)
+            int releasedIndex = LanternRelease.RestoreReleasedCandy(candies, releasedPoint);
+            if (releasedIndex == 0)
             {
-                CandyContext ctx = candies[ci];
-                if (releasedPoint != null && ctx.point != releasedPoint)
-                {
-                    continue;
-                }
-
-                ctx.inLantern = false;
-                if (ci == 0)
-                {
-                    isCandyInLantern = false;
-                }
-                ctx.candy.color = RGBAColor.solidOpaqueRGBA;
-                ctx.candy.passTransformationsToChilds = false;
-                ctx.candy.scaleX = ctx.candy.scaleY = 0.71f;
-                ctx.candyMain.scaleX = ctx.candyMain.scaleY = 0.71f;
-                ctx.candyTop.scaleX = ctx.candyTop.scaleY = 0.71f;
-
-                if (releasedPoint != null)
-                {
-                    break;
-                }
+                isCandyInLantern = false;
             }
         }
 
