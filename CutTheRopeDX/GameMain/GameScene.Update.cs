@@ -812,6 +812,39 @@ namespace CutTheRopeDX.GameMain
                     conveyors.Remove(bubble3);
                     break;
                 }
+                else
+                {
+                    // Additional independent candies (candies[1+]) capture their own bubble.
+                    // candies[0] is handled by the singleton branch above; legacy single-candy
+                    // levels have candies.Count == 1, so this loop is a no-op for them.
+                    bool capturedExtra = false;
+                    for (int ci = 1; ci < candies.Count; ci++)
+                    {
+                        CandyContext ctx = candies[ci];
+                        if (ctx.noCandy || ctx.bubble != null || bubble3.popped)
+                        {
+                            continue;
+                        }
+                        if (BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
+                        {
+                            ctx.bubble = bubble3;
+                            if (ctx.candyBubbleAnimation != null)
+                            {
+                                ctx.candyBubbleAnimation.visible = true;
+                            }
+                            CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
+                            bubble3.popped = true;
+                            bubble3.RemoveChildWithID(0);
+                            conveyors.Remove(bubble3);
+                            capturedExtra = true;
+                            break;
+                        }
+                    }
+                    if (capturedExtra)
+                    {
+                        break;
+                    }
+                }
                 if (!bubble3.popped && lightBulbs.Count > 0)
                 {
                     foreach (LightBulb bulb in lightBulbs)
