@@ -62,7 +62,6 @@ namespace CutTheRopeDX.GameMain
             candyBubble = null;
             candyBubbleL = null;
             candyBubbleR = null;
-            mouthOpen = false;
             noCandy = twoParts != 2;
             noCandyL = false;
             noCandyR = false;

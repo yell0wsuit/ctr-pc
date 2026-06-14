@@ -956,11 +956,6 @@ namespace CutTheRopeDX.GameMain
         private float mapOriginY;
 
         /// <summary>
-        /// Whether Om Nom's mouth is currently open.
-        /// </summary>
-        private bool mouthOpen;
-
-        /// <summary>
         /// Whether the main candy has been removed from play.
         /// </summary>
         private bool noCandy;
@@ -974,11 +969,6 @@ namespace CutTheRopeDX.GameMain
         /// Frame counter used for idle animation timing.
         /// </summary>
         private int idlesTimer;
-
-        /// <summary>
-        /// Remaining time before the mouth closes.
-        /// </summary>
-        private float mouthCloseTimer;
 
         /// <summary>
         /// Cached rotation delta for the main candy.
