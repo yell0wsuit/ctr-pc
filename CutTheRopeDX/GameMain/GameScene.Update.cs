@@ -645,7 +645,23 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    if (twoParts == 2 ? GameObject.ObjectsIntersect(candy, star) && !noCandy : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) || (GameObject.ObjectsIntersect(candyR, star) && !noCandyR))
+
+                    bool candyTouchesStar = twoParts == 2
+                        ? GameObject.ObjectsIntersect(candy, star) && !noCandy
+                        : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) ||
+                        (GameObject.ObjectsIntersect(candyR, star) && !noCandyR);
+
+                    // Additional independent candies (multi-candy) can also collect stars.
+                    for (int ci = 1; ci < candies.Count && !candyTouchesStar; ci++)
+                    {
+                        CandyContext ec = candies[ci];
+                        if (!ec.noCandy && GameObject.ObjectsIntersect(ec.candy, star))
+                        {
+                            candyTouchesStar = true;
+                        }
+                    }
+
+                    if (candyTouchesStar)
                     {
                         candyBlink.PlayTimeline(1);
                         starsCollected++;

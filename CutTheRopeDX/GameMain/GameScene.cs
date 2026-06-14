@@ -1128,6 +1128,12 @@ namespace CutTheRopeDX.GameMain
         public bool gameLostTriggered;
 
         /// <summary>
+        /// Whether the game-won state has already been triggered (prevents the multi-candy win
+        /// check from re-invoking GameWon every frame, which would cancel the pending win dispatch).
+        /// </summary>
+        public bool gameWonTriggered;
+
+        /// <summary>
         /// Whether gravity is currently in the normal orientation.
         /// </summary>
         public bool gravityNormal;

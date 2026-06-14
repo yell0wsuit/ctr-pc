@@ -243,6 +243,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameWon()
         {
+            if (gameWonTriggered)
+            {
+                return;
+            }
+            gameWonTriggered = true;
+
             dd.CancelAllDispatches();
 
             // Hide sleep animations and reset sleep state for night levels
@@ -331,7 +337,11 @@ namespace CutTheRopeDX.GameMain
                 targetObject.rotationCenterY = 0f;
             }
 
-            targetAnimationController?.PlaySad();
+            // Every Om Nom reacts sad on loss (was: only the primary targetAnimationController).
+            for (int ti = 0; ti < targets.Count; ti++)
+            {
+                targets[ti].controller?.PlaySad();
+            }
             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
