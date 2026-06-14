@@ -1646,28 +1646,44 @@ namespace CutTheRopeDX.GameMain
 
             ApplyAntCarryToCandyPosition();
 
-            bool canInteractWithTarget = !nightLevel || isNightTargetAwake == true;
-            if (!noCandy)
+            // Snapshot candies for pure decisions.
+            List<CandyView> candyViews = new(candies.Count);
+            for (int ci = 0; ci < candies.Count; ci++)
             {
-                if (!mouthOpen && canInteractWithTarget)
+                candyViews.Add(candies[ci].ToView());
+            }
+
+            bool canInteractWithTarget = !nightLevel || isNightTargetAwake == true;
+            for (int ti = 0; ti < targets.Count; ti++)
+            {
+                TargetContext t = targets[ti];
+                if (t.targetObject == null || t.asleep)
                 {
-                    if (!isCandyInLantern && targetObject != null && VectDistance(star.pos, Vect(targetObject.x, targetObject.y)) < 200f)
+                    continue;
+                }
+                Vector targetPos = Vect(t.targetObject.x, t.targetObject.y);
+
+                if (!t.mouthOpen && canInteractWithTarget)
+                {
+                    if (!isCandyInLantern && CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
                     {
-                        mouthOpen = true;
-                        targetAnimationController?.PlayMouthOpening();
+                        t.mouthOpen = true;
+                        t.controller?.PlayMouthOpening();
                         CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen);
-                        mouthCloseTimer = 1f;
+                        t.mouthCloseTimer = 1f;
                     }
                 }
-                else if (mouthCloseTimer > 0 && canInteractWithTarget)
+                else if (t.mouthCloseTimer > 0 && canInteractWithTarget)
                 {
-                    _ = Mover.MoveVariableToTarget(ref mouthCloseTimer, 0, 1, delta);
-                    if (mouthCloseTimer <= 0)
+                    float timer = t.mouthCloseTimer;
+                    _ = Mover.MoveVariableToTarget(ref timer, 0, 1, delta);
+                    t.mouthCloseTimer = timer;
+                    if (t.mouthCloseTimer <= 0)
                     {
-                        if (targetObject == null || isCandyInLantern || VectDistance(star.pos, Vect(targetObject.x, targetObject.y)) > 200f)
+                        if (isCandyInLantern || !CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
                         {
-                            mouthOpen = false;
-                            targetAnimationController?.PlayMouthClosing();
+                            t.mouthOpen = false;
+                            t.controller?.PlayMouthClosing();
                             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
@@ -1677,14 +1693,9 @@ namespace CutTheRopeDX.GameMain
                         }
                         else
                         {
-                            mouthCloseTimer = 1f;
+                            t.mouthCloseTimer = 1f;
                         }
                     }
-                }
-                if (restartState != 0 && canInteractWithTarget && targetObject != null && GameObject.ObjectsIntersect(candy, targetObject))
-                {
-                    GameWon();
-                    return;
                 }
             }
             bool flag9 = twoParts == 2 && PointOutOfScreen(star) && !noCandy;
