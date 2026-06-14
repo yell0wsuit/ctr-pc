@@ -135,8 +135,29 @@ namespace CutTheRopeDX.GameMain
                             candyR.bb = GetSplitCandyBoundingBox();
                             break;
                         case "candy":
-                            star.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                            star.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                            {
+                                float cx = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                                float cy = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                                // Key comes straight from XML; null for legacy single-candy packs (never matched).
+                                string number = item2.Attribute("candyNumber")?.Value;
+
+                                // The first <candy> parsed claims the pre-built primary candy (candies[0])
+                                // and takes its key from XML; later <candy> elements are built fresh.
+                                if (!primaryCandyClaimed)
+                                {
+                                    primaryCandyClaimed = true;
+                                    candies[0].candyNumber = number;
+                                    star.pos.X = cx;
+                                    star.pos.Y = cy;
+                                    star.prevPos = star.pos;
+                                    candy.x = cx;
+                                    candy.y = cy;
+                                }
+                                else
+                                {
+                                    _ = CreateCandyContext(number, cx, cy);
+                                }
+                            }
                             break;
                         default:
                             break;

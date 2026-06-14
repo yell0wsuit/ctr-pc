@@ -250,6 +250,17 @@ namespace CutTheRopeDX.GameMain
                     Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 }
             }
+            // Draw additional independent candies. candies[0] is the primary `candy`.
+            for (int ci = 1; ci < candies.Count; ci++)
+            {
+                CandyContext extra = candies[ci];
+                if (!extra.noCandy)
+                {
+                    extra.candy.x = extra.point.pos.X;
+                    extra.candy.y = extra.point.pos.Y;
+                    extra.candy.Draw();
+                }
+            }
             if (hands != null)
             {
                 foreach (MechanicalHand hand in hands)

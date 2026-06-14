@@ -668,9 +668,7 @@ namespace CutTheRopeDX.GameMain
 #pragma warning restore IDE0052
 
         /// <summary>True once the first &lt;candy&gt; element has claimed the pre-built primary candy (candies[0]).</summary>
-#pragma warning disable CS0414, IDE0052
         private bool primaryCandyClaimed;
-#pragma warning restore CS0414, IDE0052
 
         /// <summary>
         /// All active grab/bungee objects in the loaded level.

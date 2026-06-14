@@ -194,6 +194,55 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Builds one independent candy (point + visual layers) at the given world position and
+        /// registers it as a <see cref="CandyContext"/>. Mirrors the primary-candy setup.
+        /// </summary>
+        private CandyContext CreateCandyContext(string candyNumber, float px, float py)
+        {
+            ConstraintedPoint p = new();
+            p.SetWeight(1f);
+            p.pos.X = px;
+            p.pos.Y = py;
+            p.prevPos = p.pos;
+
+            int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
+            string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+
+            GameObject c = GameObject.GameObject_createWithResIDQuad(candyResource, 0);
+            c.DoRestoreCutTransparency();
+            c.anchor = 18;
+            c.bb = GetCandyBoundingBox();
+            c.passTransformationsToChilds = false;
+            c.scaleX = c.scaleY = 0.71f;
+            c.x = px;
+            c.y = py;
+
+            GameObject cMain = GameObject.GameObject_createWithResIDQuad(candyResource, 1);
+            cMain.DoRestoreCutTransparency();
+            cMain.anchor = cMain.parentAnchor = 18;
+            _ = c.AddChild(cMain);
+            cMain.scaleX = cMain.scaleY = 0.71f;
+
+            GameObject cTop = GameObject.GameObject_createWithResIDQuad(candyResource, 2);
+            cTop.DoRestoreCutTransparency();
+            cTop.anchor = cTop.parentAnchor = 18;
+            _ = c.AddChild(cTop);
+            cTop.scaleX = cTop.scaleY = 0.71f;
+
+            CandyContext ctx = new()
+            {
+                candyNumber = candyNumber,
+                point = p,
+                candy = c,
+                candyMain = cMain,
+                candyTop = cTop,
+                noCandy = false,
+            };
+            candies.Add(ctx);
+            return ctx;
+        }
+
+        /// <summary>
         /// Initializes HUD stars visibility
         /// Resets the HUD star timeline animations
         /// </summary>
