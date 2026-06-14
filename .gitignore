@@ -76,3 +76,5 @@ content/**/*.otf
 content/**/*.cur
 content/**/*.xnb
 content/**/*.wmv
+
+*.zip
