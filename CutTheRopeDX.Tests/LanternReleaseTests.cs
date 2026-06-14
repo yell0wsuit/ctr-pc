@@ -27,7 +27,7 @@ namespace CutTheRopeDX.Tests
             Assert.False(second.inLantern);
             Assert.True(RGBAColor.RGBAEqual(RGBAColor.transparentRGBA, first.candy.color));
             Assert.True(RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, second.candy.color));
-            Assert.True(second.candy.passTransformationsToChilds == false);
+            Assert.False(second.candy.passTransformationsToChilds);
             Assert.Equal(0.71f, second.candy.scaleX);
             Assert.Equal(0.71f, second.candy.scaleY);
             Assert.Equal(0.71f, second.candyMain.scaleX);
