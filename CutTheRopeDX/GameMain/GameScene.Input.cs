@@ -22,19 +22,25 @@ namespace CutTheRopeDX.GameMain
             if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, s.pos.X - 60f, s.pos.Y - 60f, 120f, 120f))
             {
                 PopCandyBubble(s == starL);
-                int bubblesPoppedCount = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
-                Preferences.SetIntForKey(bubblesPoppedCount, "PREFS_BUBBLES_POPPED", false);
-                if (bubblesPoppedCount == 50)
-                {
-                    CTRRootController.PostAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
-                }
-                if (bubblesPoppedCount == 300)
-                {
-                    CTRRootController.PostAchievementName("1058345234", ACHIEVEMENT_STRING("\"Bubble Master\""));
-                }
+                RegisterBubblePopped();
                 return true;
             }
             return false;
+        }
+
+        /// <summary>Bumps the bubbles-popped counter and posts the related achievements.</summary>
+        private static void RegisterBubblePopped()
+        {
+            int bubblesPoppedCount = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
+            Preferences.SetIntForKey(bubblesPoppedCount, "PREFS_BUBBLES_POPPED", false);
+            if (bubblesPoppedCount == 50)
+            {
+                CTRRootController.PostAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
+            }
+            if (bubblesPoppedCount == 300)
+            {
+                CTRRootController.PostAchievementName("1058345234", ACHIEVEMENT_STRING("\"Bubble Master\""));
+            }
         }
 
         /// <summary>

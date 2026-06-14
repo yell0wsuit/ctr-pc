@@ -447,6 +447,21 @@ namespace CutTheRopeDX.GameMain
             PopBubbleAtXY(candyR.x, candyR.y);
         }
 
+        /// <summary>Pops the bubble carrying a specific additional candy (candies[1+]).</summary>
+        public void PopCandyBubble(CandyContext ctx)
+        {
+            if (ctx == null || ctx.bubble == null)
+            {
+                return;
+            }
+            ctx.bubble = null;
+            if (ctx.candyBubbleAnimation != null)
+            {
+                ctx.candyBubbleAnimation.visible = false;
+            }
+            PopBubbleAtXY(ctx.candy.x, ctx.candy.y);
+        }
+
         /// <summary>
         /// Plays bubble-pop effects at a world position.
         /// </summary>
