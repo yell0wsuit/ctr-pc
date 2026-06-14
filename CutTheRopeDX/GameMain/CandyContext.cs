@@ -37,6 +37,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>True when <see cref="bubble"/> belongs to a ghost-transformed bubble.</summary>
         public bool bubbleHasGhost;
 
+        /// <summary>True while this candy is captured in a lantern (was the singleton <c>isCandyInLantern</c>).</summary>
+        public bool inLantern;
+
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {

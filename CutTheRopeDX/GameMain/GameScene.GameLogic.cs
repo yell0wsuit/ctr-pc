@@ -226,6 +226,19 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        /// <summary>True when any candy is currently captured in the lantern group (group single-occupancy).</summary>
+        private bool AnyCandyInLantern()
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (candies[i].inLantern)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// Calculates time, star, and total score bonuses for the completed level.
         /// </summary>
