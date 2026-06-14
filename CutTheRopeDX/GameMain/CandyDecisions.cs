@@ -43,5 +43,29 @@ namespace CutTheRopeDX.GameMain
             }
             return false;
         }
+
+        /// <summary>True when any uneaten candy is within <paramref name="range"/> of the target.</summary>
+        public static bool ShouldOpenMouth(Vector targetPos, IReadOnlyList<CandyView> candies, float range)
+        {
+            if (candies == null)
+            {
+                return false;
+            }
+            float rangeSq = range * range;
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (candies[i].Consumed)
+                {
+                    continue;
+                }
+                float dx = candies[i].Position.X - targetPos.X;
+                float dy = candies[i].Position.Y - targetPos.Y;
+                if ((dx * dx) + (dy * dy) < rangeSq)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

@@ -58,5 +58,29 @@ namespace CutTheRopeDX.Tests
 
             Assert.True(CandyDecisions.AnyUneatenOutOfScreen(candies, IsOut));
         }
+
+        [Fact]
+        public void ShouldOpenMouth_TrueWhenUneatenCandyInRange()
+        {
+            Vector target = new(100, 100);
+            List<CandyView> candies = [Candy(150, 100, false)]; // 50px away
+            Assert.True(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
+        }
+
+        [Fact]
+        public void ShouldOpenMouth_FalseWhenOnlyEatenCandyInRange()
+        {
+            Vector target = new(100, 100);
+            List<CandyView> candies = [Candy(150, 100, true)];
+            Assert.False(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
+        }
+
+        [Fact]
+        public void ShouldOpenMouth_FalseWhenCandyOutOfRange()
+        {
+            Vector target = new(100, 100);
+            List<CandyView> candies = [Candy(400, 100, false)]; // 300px away
+            Assert.False(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
+        }
     }
 }
