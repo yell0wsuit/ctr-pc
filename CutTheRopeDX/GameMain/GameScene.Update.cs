@@ -948,37 +948,59 @@ namespace CutTheRopeDX.GameMain
             foreach (Lantern lantern in lanterns)
             {
                 lantern.Update(delta);
-                if (!noCandy && !isCandyInLantern && lantern.lanternState == Lantern.LanternStateInactive && VectDistance(star.pos, Vect(lantern.x, lantern.y)) < 82f)
+
+                bool lanternInactive = lantern.lanternState == Lantern.LanternStateInactive;
+                bool groupOccupied = AnyCandyInLantern();
+                for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    isCandyInLantern = true;
+                    CandyContext ctx = candies[ci];
+                    bool inRange = VectDistance(ctx.point.pos, Vect(lantern.x, lantern.y)) < 82f;
+                    if (!LanternCapture.ShouldCapture(lanternInactive, groupOccupied, !ctx.noCandy, ctx.inLantern, inRange))
+                    {
+                        continue;
+                    }
+
+                    ctx.inLantern = true;
+                    if (ci == 0)
+                    {
+                        isCandyInLantern = true; // alias for not-yet-converted sock/rocket/hand guards
+                    }
                     if (activeRocket != null)
                     {
                         activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
                         activeRocket.StopAnimation();
                     }
-                    candy.passTransformationsToChilds = true;
-                    candyMain.scaleX = candyMain.scaleY = 1f;
-                    candyTop.scaleX = candyTop.scaleY = 1f;
+                    ctx.candy.passTransformationsToChilds = true;
+                    ctx.candyMain.scaleX = ctx.candyMain.scaleY = 1f;
+                    ctx.candyTop.scaleX = ctx.candyTop.scaleY = 1f;
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                    timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)ctx.candy.x, (int)ctx.candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakePos((int)lantern.x, (int)lantern.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(0.71f, 0.71f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(0.3f, 0.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-                    candy.RemoveTimeline(0);
-                    candy.AddTimelinewithID(timeline, 0);
-                    candy.PlayTimeline(0);
-                    ReleaseAllRopes(false);
+                    ctx.candy.RemoveTimeline(0);
+                    ctx.candy.AddTimelinewithID(timeline, 0);
+                    ctx.candy.PlayTimeline(0);
+                    ReleaseRopesForPoint(ctx.point);
                     DetachActiveHands();
-                    if (candyBubble != null)
+                    if (ci == 0)
                     {
-                        PopCandyBubble(false);
+                        if (candyBubble != null)
+                        {
+                            PopCandyBubble(false);
+                        }
                     }
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), star, 0.05f);
+                    else if (ctx.bubble != null)
+                    {
+                        PopCandyBubble(ctx);
+                    }
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), ctx.point, 0.05f);
 
                     // Trigger special tutorial for lantern
                     TriggerSpecialTutorial(3);
+                    break;
                 }
             }
             RotatedCircle rotatedCircle6 = null;
