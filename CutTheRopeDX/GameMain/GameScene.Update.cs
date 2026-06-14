@@ -827,11 +827,12 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
                         {
+                            bool hasGhost = DisableGhostCycleForBubble(bubble3);
                             ctx.bubble = bubble3;
-                            if (ctx.candyBubbleAnimation != null)
-                            {
-                                ctx.candyBubbleAnimation.visible = true;
-                            }
+                            ctx.bubbleHasGhost = hasGhost;
+                            BubbleVisualState visualState = BubbleVisualState.ForCapture(hasGhost, ctx.candyGhostBubbleAnimation != null);
+                            ctx.candyBubbleAnimation.visible = visualState.ShowNormalBubble;
+                            ctx.candyGhostBubbleAnimation.visible = visualState.ShowGhostBubble;
                             CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                             bubble3.popped = true;
                             bubble3.RemoveChildWithID(0);

@@ -253,6 +253,14 @@ namespace CutTheRopeDX.GameMain
             _ = c.AddChild(bubbleAnim);
             bubbleAnim.visible = false;
 
+            CandyInGhostBubbleAnimation ghostBubbleAnim = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
+            ghostBubbleAnim.parentAnchor = ghostBubbleAnim.anchor = 18;
+            _ = c.AddChild(ghostBubbleAnim);
+            ghostBubbleAnim.visible = false;
+            ghostBubbleAnim.AddSupportingCloudsTimelines();
+            _ = ghostBubbleAnim.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
+            ghostBubbleAnim.PlayTimeline(0);
+
             CandyContext ctx = new()
             {
                 candyNumber = candyNumber,
@@ -262,6 +270,7 @@ namespace CutTheRopeDX.GameMain
                 candyTop = cTop,
                 candyBlink = blink,
                 candyBubbleAnimation = bubbleAnim,
+                candyGhostBubbleAnimation = ghostBubbleAnim,
                 noCandy = false,
             };
             candies.Add(ctx);

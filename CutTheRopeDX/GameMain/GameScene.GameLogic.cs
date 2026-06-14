@@ -454,11 +454,14 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            ctx.bubble = null;
-            if (ctx.candyBubbleAnimation != null)
+            if (ctx.bubbleHasGhost)
             {
-                ctx.candyBubbleAnimation.visible = false;
+                EnableGhostCycleForBubble(ctx.bubble);
             }
+            ctx.bubble = null;
+            ctx.bubbleHasGhost = false;
+            _ = (ctx.candyBubbleAnimation?.visible = false);
+            _ = (ctx.candyGhostBubbleAnimation?.visible = false);
             PopBubbleAtXY(ctx.candy.x, ctx.candy.y);
         }
 

@@ -26,11 +26,16 @@ namespace CutTheRopeDX.GameMain
 
         public Animation candyBubbleAnimation;
 
+        public CandyInGhostBubbleAnimation candyGhostBubbleAnimation;
+
         /// <summary>True once this candy has been eaten/removed.</summary>
         public bool noCandy;
 
         /// <summary>The bubble currently carrying this candy, if any.</summary>
         public GameObject bubble;
+
+        /// <summary>True when <see cref="bubble"/> belongs to a ghost-transformed bubble.</summary>
+        public bool bubbleHasGhost;
 
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
