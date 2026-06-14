@@ -245,13 +245,14 @@ namespace CutTheRopeDX.GameMain
             }
             if (!noCandy && targetSock == null)
             {
-                if (!isCandyInLantern)
+                bool primaryInLantern = candies.Count > 0 && candies[0].inLantern;
+                if (!primaryInLantern)
                 {
                     candy.x = star.pos.X;
                     candy.y = star.pos.Y;
                 }
                 candy.Draw();
-                if (candyBlink.GetCurrentTimeline() != null && !isCandyInLantern)
+                if (candyBlink.GetCurrentTimeline() != null && !primaryInLantern)
                 {
                     Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     candyBlink.Draw();
@@ -264,10 +265,13 @@ namespace CutTheRopeDX.GameMain
                 CandyContext extra = candies[ci];
                 if (!extra.noCandy)
                 {
-                    extra.candy.x = extra.point.pos.X;
-                    extra.candy.y = extra.point.pos.Y;
-                    extra.candy.Draw();
-                    if (extra.candyBlink != null && extra.candyBlink.GetCurrentTimeline() != null && !isCandyInLantern)
+                    if (!extra.inLantern)
+                    {
+                        extra.candy.x = extra.point.pos.X;
+                        extra.candy.y = extra.point.pos.Y;
+                        extra.candy.Draw();
+                    }
+                    if (extra.candyBlink != null && extra.candyBlink.GetCurrentTimeline() != null && !extra.inLantern)
                     {
                         Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                         extra.candyBlink.Draw();
