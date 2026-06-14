@@ -1,0 +1,62 @@
+using System.Collections.Generic;
+
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.GameMain;
+
+using Xunit;
+
+namespace CutTheRopeDX.Tests
+{
+    public class CandyDecisionsTests
+    {
+        private static CandyView Candy(float x, float y, bool consumed)
+        {
+            return new CandyView(new Vector(x, y), consumed);
+        }
+
+        [Fact]
+        public void AllConsumed_TrueWhenEveryCandyEaten()
+        {
+            List<CandyView> candies = [Candy(0, 0, true), Candy(1, 1, true)];
+            Assert.True(CandyDecisions.AllConsumed(candies));
+        }
+
+        [Fact]
+        public void AllConsumed_FalseWhenAnyRemains()
+        {
+            List<CandyView> candies = [Candy(0, 0, true), Candy(1, 1, false)];
+            Assert.False(CandyDecisions.AllConsumed(candies));
+        }
+
+        [Fact]
+        public void AllConsumed_FalseWhenEmpty()
+        {
+            Assert.False(CandyDecisions.AllConsumed([]));
+        }
+
+        [Fact]
+        public void AnyUneatenOutOfScreen_TrueOnlyForUneatenOutside()
+        {
+            List<CandyView> candies = [Candy(0, 0, false), Candy(999, 999, true)];
+            // Out-of-screen predicate: anything with |coord| >= 500.
+            static bool IsOut(Vector p)
+            {
+                return p.X >= 500 || p.Y >= 500 || p.X <= -500 || p.Y <= -500;
+            }
+
+            Assert.False(CandyDecisions.AnyUneatenOutOfScreen(candies, IsOut)); // (0,0) inside; (999,999) eaten
+        }
+
+        [Fact]
+        public void AnyUneatenOutOfScreen_TrueWhenUneatenCandyLeaves()
+        {
+            List<CandyView> candies = [Candy(0, 0, false), Candy(999, 0, false)];
+            static bool IsOut(Vector p)
+            {
+                return p.X >= 500;
+            }
+
+            Assert.True(CandyDecisions.AnyUneatenOutOfScreen(candies, IsOut));
+        }
+    }
+}
