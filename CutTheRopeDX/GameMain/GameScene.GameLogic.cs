@@ -256,7 +256,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameWon()
         {
-            if (gameWonTriggered)
+            if (!GameOutcomeTransition.CanTriggerWin(gameWonTriggered, gameLostTriggered))
             {
                 return;
             }
