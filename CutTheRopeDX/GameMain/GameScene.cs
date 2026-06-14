@@ -659,6 +659,14 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private ConstraintedPoint star;
 
+        /// <summary>All independent candies in the level. Single-candy packs hold one element.</summary>
+        private readonly List<CandyContext> candies = [];
+
+        /// <summary>All Om Noms in the level. Single-target packs hold one element.</summary>
+#pragma warning disable IDE0052
+        private readonly List<TargetContext> targets = [];
+#pragma warning restore IDE0052
+
         /// <summary>
         /// All active grab/bungee objects in the loaded level.
         /// </summary>

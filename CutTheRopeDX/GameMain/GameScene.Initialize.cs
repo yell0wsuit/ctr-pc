@@ -174,6 +174,21 @@ namespace CutTheRopeDX.GameMain
             candyBubbleAnimation.PlayTimeline(0);
             _ = candy.AddChild(candyBubbleAnimation);
             candyBubbleAnimation.visible = false;
+
+            // Register the primary candy as candies[0] so multi-candy logic and legacy
+            // single-candy code share the same objects.
+            candies.Clear();
+            candies.Add(new CandyContext
+            {
+                candyNumber = "first",
+                point = star,
+                candy = candy,
+                candyMain = candyMain,
+                candyTop = candyTop,
+                candyBlink = candyBlink,
+                candyBubbleAnimation = candyBubbleAnimation,
+                noCandy = false,
+            });
         }
 
         /// <summary>
