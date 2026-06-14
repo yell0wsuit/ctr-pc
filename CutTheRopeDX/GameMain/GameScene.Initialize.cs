@@ -176,11 +176,13 @@ namespace CutTheRopeDX.GameMain
             candyBubbleAnimation.visible = false;
 
             // Register the primary candy as candies[0] so multi-candy logic and legacy
-            // single-candy code share the same objects.
+            // single-candy code share the same objects. Its candyNumber is unassigned here;
+            // the first <candy> element claims it and takes the key from XML.
             candies.Clear();
+            primaryCandyClaimed = false;
             candies.Add(new CandyContext
             {
-                candyNumber = "first",
+                candyNumber = null,
                 point = star,
                 candy = candy,
                 candyMain = candyMain,
