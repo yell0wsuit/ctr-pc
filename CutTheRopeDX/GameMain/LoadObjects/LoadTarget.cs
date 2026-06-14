@@ -85,6 +85,16 @@ namespace CutTheRopeDX.GameMain
             }
 
             idlesTimer = RND_RANGE(5, 20);
+
+            // Keep the singleton target fields pointing at the primary Om Nom (targets[0]).
+            // LoadTarget overwrites these fields each call, so without this the fields would
+            // refer to the last-loaded target and the first Om Nom would never be drawn/updated.
+            // Additional Om Noms live only in the targets list and are stepped/drawn by their loops.
+            targetAnimationController = targets[0].controller;
+            targetObject = targets[0].targetObject;
+            support = targets[0].support;
+            targetBaseScaleX = targets[0].baseScaleX;
+            targetBaseScaleY = targets[0].baseScaleY;
         }
     }
 }

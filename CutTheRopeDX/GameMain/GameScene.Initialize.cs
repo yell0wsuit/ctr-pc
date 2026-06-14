@@ -91,6 +91,7 @@ namespace CutTheRopeDX.GameMain
             shouldRestoreSecondGhost = false;
             targetObject = null;
             targetAnimationController = null;
+            targets.Clear();
             targetBaseScaleX = 1f;
             targetBaseScaleY = 1f;
             isNightTargetAwake = null;

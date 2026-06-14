@@ -445,6 +445,20 @@ namespace CutTheRopeDX.GameMain
                 candy.Update(delta);
                 CalculateTopLeft(candy);
             }
+            // Step additional independent candies (multi-candy). candies[0] handled above via `star`/`candy`.
+            for (int ci = 1; ci < candies.Count; ci++)
+            {
+                CandyContext extraCandy = candies[ci];
+                if (extraCandy.noCandy)
+                {
+                    continue;
+                }
+                extraCandy.point.Update(delta * ropePhysicsSpeed);
+                extraCandy.candy.x = extraCandy.point.pos.X;
+                extraCandy.candy.y = extraCandy.point.pos.Y;
+                extraCandy.candy.Update(delta);
+                CalculateTopLeft(extraCandy.candy);
+            }
             if (twoParts != 2)
             {
                 candyL.Update(delta);
@@ -599,6 +613,11 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             targetObject?.Update(delta);
+            // Update additional Om Noms' animations (targets[0] handled above via targetObject).
+            for (int ti = 1; ti < targets.Count; ti++)
+            {
+                targets[ti].targetObject?.Update(delta);
+            }
             UpdateLightBulbPhysics(delta);
             UpdateNightLevel(delta);
             conveyors.Update(delta);
