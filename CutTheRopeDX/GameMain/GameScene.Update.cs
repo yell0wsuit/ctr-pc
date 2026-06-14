@@ -1747,6 +1747,11 @@ namespace CutTheRopeDX.GameMain
             List<CandyView> candyViews = new(candies.Count);
             for (int ci = 0; ci < candies.Count; ci++)
             {
+                // A candy captured in a lantern is not a mouth-open candidate.
+                if (candies[ci].inLantern)
+                {
+                    continue;
+                }
                 candyViews.Add(candies[ci].ToView());
             }
 
@@ -1762,7 +1767,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (!t.mouthOpen && canInteractWithTarget)
                 {
-                    if (!isCandyInLantern && CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
+                    if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
                     {
                         t.mouthOpen = true;
                         t.controller?.PlayMouthOpening();
@@ -1777,7 +1782,7 @@ namespace CutTheRopeDX.GameMain
                     t.mouthCloseTimer = timer;
                     if (t.mouthCloseTimer <= 0)
                     {
-                        if (isCandyInLantern || !CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
+                        if (!CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
                         {
                             t.mouthOpen = false;
                             t.controller?.PlayMouthClosing();
