@@ -334,9 +334,9 @@ namespace CutTheRopeDX.GameMain
 
             foreach (Lantern lantern in Lantern.GetAllLanterns())
             {
-                if (lantern != null && lantern.OnTouchDown(tx + camera.pos.X, ty + camera.pos.Y))
+                if (lantern != null && lantern.OnTouchDown(tx + camera.pos.X, ty + camera.pos.Y, out ConstraintedPoint releasedCandyPoint))
                 {
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_revealCandyFromLantern), null, Lantern.LanternCandyRevealTime);
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_revealCandyFromLantern), releasedCandyPoint, Lantern.LanternCandyRevealTime);
                     return true;
                 }
             }

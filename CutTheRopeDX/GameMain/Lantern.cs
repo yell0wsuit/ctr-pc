@@ -215,9 +215,23 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> if the touch was handled by this lantern; otherwise, <see langword="false"/>.</returns>
         public bool OnTouchDown(float tx, float ty)
         {
+            return OnTouchDown(tx, ty, out _);
+        }
+
+        /// <summary>
+        /// Handles a touch against the lantern and starts candy release when the lantern is active.
+        /// </summary>
+        /// <param name="tx">Touch X position in world space.</param>
+        /// <param name="ty">Touch Y position in world space.</param>
+        /// <param name="releasedCandyPoint">Candy point that is being released, when the touch is handled.</param>
+        /// <returns><see langword="true"/> if the touch was handled by this lantern; otherwise, <see langword="false"/>.</returns>
+        public bool OnTouchDown(float tx, float ty, out ConstraintedPoint releasedCandyPoint)
+        {
+            releasedCandyPoint = null;
             float distance = VectDistance(Vect(tx, ty), Vect(x, y));
             if (lanternState == LanternStateActive && distance < LanternTouchRadius && SharedCandyPoint != null)
             {
+                releasedCandyPoint = SharedCandyPoint;
                 InitiateReleasingCandy();
                 return true;
             }

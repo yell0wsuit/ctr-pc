@@ -280,15 +280,34 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Timeline selector callback that restores the candy after it leaves a lantern.
         /// </summary>
-        /// <param name="param">Unused timeline payload.</param>
+        /// <param name="param">Released candy physics point.</param>
         private void Selector_revealCandyFromLantern(FrameworkTypes param)
         {
-            isCandyInLantern = false;
-            candy.color = RGBAColor.solidOpaqueRGBA;
-            candy.passTransformationsToChilds = false;
-            candy.scaleX = candy.scaleY = 0.71f;
-            candyMain.scaleX = candyMain.scaleY = 0.71f;
-            candyTop.scaleX = candyTop.scaleY = 0.71f;
+            ConstraintedPoint releasedPoint = param as ConstraintedPoint;
+            for (int ci = 0; ci < candies.Count; ci++)
+            {
+                CandyContext ctx = candies[ci];
+                if (releasedPoint != null && ctx.point != releasedPoint)
+                {
+                    continue;
+                }
+
+                ctx.inLantern = false;
+                if (ci == 0)
+                {
+                    isCandyInLantern = false;
+                }
+                ctx.candy.color = RGBAColor.solidOpaqueRGBA;
+                ctx.candy.passTransformationsToChilds = false;
+                ctx.candy.scaleX = ctx.candy.scaleY = 0.71f;
+                ctx.candyMain.scaleX = ctx.candyMain.scaleY = 0.71f;
+                ctx.candyTop.scaleX = ctx.candyTop.scaleY = 0.71f;
+
+                if (releasedPoint != null)
+                {
+                    break;
+                }
+            }
         }
 
         /// <summary>
