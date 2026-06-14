@@ -147,6 +147,21 @@ namespace CutTheRopeDX.GameMain
                     return true;
                 }
             }
+            // Additional independent candies (candies[1+]) can have their bubble tapped to pop.
+            for (int ci = 1; ci < candies.Count; ci++)
+            {
+                CandyContext ctx = candies[ci];
+                if (ctx.bubble == null)
+                {
+                    continue;
+                }
+                if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, ctx.point.pos.X - 60f, ctx.point.pos.Y - 60f, 120f, 120f))
+                {
+                    PopCandyBubble(ctx);
+                    RegisterBubblePopped();
+                    return true;
+                }
+            }
             if (lightBulbs.Count > 0)
             {
                 foreach (LightBulb bulb in lightBulbs)
