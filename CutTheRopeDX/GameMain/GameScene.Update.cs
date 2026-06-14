@@ -1698,6 +1698,59 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
+            // Eat: an uneaten candy entering an open mouth is consumed; that Om Nom sleeps.
+            if (restartState != 0 && canInteractWithTarget)
+            {
+                for (int ti = 0; ti < targets.Count; ti++)
+                {
+                    TargetContext t = targets[ti];
+                    if (t.asleep || !t.mouthOpen || t.targetObject == null)
+                    {
+                        continue;
+                    }
+                    for (int ci = 0; ci < candies.Count; ci++)
+                    {
+                        CandyContext ctx = candies[ci];
+                        if (ctx.noCandy)
+                        {
+                            continue;
+                        }
+                        ctx.candy.x = ctx.point.pos.X;
+                        ctx.candy.y = ctx.point.pos.Y;
+                        if (GameObject.ObjectsIntersect(ctx.candy, t.targetObject))
+                        {
+                            ctx.noCandy = true;
+                            if (ci == 0)
+                            {
+                                noCandy = true;
+                            }
+                            ReleaseRopesForPoint(ctx.point);
+                            ctx.candy.visible = false;
+                            t.asleep = true;
+                            t.mouthOpen = false;
+                            t.controller?.PlayChewing();
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing);
+                            break;
+                        }
+                    }
+                }
+
+                // Win when every candy has been consumed.
+                bool allConsumed = candies.Count > 0;
+                for (int ci = 0; ci < candies.Count; ci++)
+                {
+                    if (!candies[ci].noCandy)
+                    {
+                        allConsumed = false;
+                        break;
+                    }
+                }
+                if (allConsumed)
+                {
+                    GameWon();
+                    return;
+                }
+            }
             bool flag9 = twoParts == 2 && PointOutOfScreen(star) && !noCandy;
             bool flag10 = twoParts != 2 && PointOutOfScreen(starL) && !noCandyL;
             bool flag11 = twoParts != 2 && PointOutOfScreen(starR) && !noCandyR;

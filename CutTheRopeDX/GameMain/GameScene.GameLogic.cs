@@ -200,6 +200,32 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        /// <summary>Cuts/hides all uncut ropes whose tail is the given candy point.</summary>
+        private void ReleaseRopesForPoint(ConstraintedPoint candyPoint)
+        {
+            int grabCount = bungees.Count;
+            for (int i = 0; i < grabCount; i++)
+            {
+                Grab grab = bungees[i];
+                Bungee rope = grab.rope;
+                if (rope != null && rope.tail == candyPoint)
+                {
+                    if (rope.cut == -1)
+                    {
+                        rope.SetCut(rope.parts.Count - 2);
+                    }
+                    else
+                    {
+                        rope.hideTailParts = true;
+                    }
+                    if (grab.hasSpider && grab.spiderActive)
+                    {
+                        SpiderBusted(grab);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Calculates time, star, and total score bonuses for the completed level.
         /// </summary>
