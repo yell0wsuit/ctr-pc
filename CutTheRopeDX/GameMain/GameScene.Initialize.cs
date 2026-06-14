@@ -247,8 +247,6 @@ namespace CutTheRopeDX.GameMain
             // Per-candy bubble animation (mirrors the primary candy's candyBubbleAnimation,
             // GameScene.Initialize.cs:171-178). Child of the candy so it draws with candy.Draw().
             Animation bubbleAnim = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
-            bubbleAnim.x = c.x;
-            bubbleAnim.y = c.y;
             bubbleAnim.parentAnchor = bubbleAnim.anchor = 18;
             _ = bubbleAnim.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
             bubbleAnim.PlayTimeline(0);
