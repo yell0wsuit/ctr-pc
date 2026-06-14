@@ -58,6 +58,20 @@ namespace CutTheRopeDX.GameMain
 
             targetAnimationController.Initialize(this);
 
+            // Register this Om Nom as an independent target. targets[0] stays the primary.
+            _ = xmlNode.Attribute("targetType")?.Value ?? "basic";
+            targets.Add(new TargetContext
+            {
+                controller = targetAnimationController,
+                targetObject = targetObject,
+                support = support,
+                baseScaleX = targetBaseScaleX,
+                baseScaleY = targetBaseScaleY,
+                mouthOpen = false,
+                mouthCloseTimer = 0f,
+                asleep = false,
+            });
+
             // Show greeting if needed (skip for night levels).
             // Skins with startWithGreeting already play greeting on init, so skip the delayed call.
             if (CTRRootController.IsShowGreeting())
