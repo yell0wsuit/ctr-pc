@@ -12,6 +12,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <!-- Analyzer/style parity with the game project (warnings, not errors). -->
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
