@@ -244,6 +244,17 @@ namespace CutTheRopeDX.GameMain
             blink.scaleX = blink.scaleY = 0.71f;
             _ = c.AddChild(blink);
 
+            // Per-candy bubble animation (mirrors the primary candy's candyBubbleAnimation,
+            // GameScene.Initialize.cs:171-178). Child of the candy so it draws with candy.Draw().
+            Animation bubbleAnim = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
+            bubbleAnim.x = c.x;
+            bubbleAnim.y = c.y;
+            bubbleAnim.parentAnchor = bubbleAnim.anchor = 18;
+            _ = bubbleAnim.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
+            bubbleAnim.PlayTimeline(0);
+            _ = c.AddChild(bubbleAnim);
+            bubbleAnim.visible = false;
+
             CandyContext ctx = new()
             {
                 candyNumber = candyNumber,
@@ -252,6 +263,7 @@ namespace CutTheRopeDX.GameMain
                 candyMain = cMain,
                 candyTop = cTop,
                 candyBlink = blink,
+                candyBubbleAnimation = bubbleAnim,
                 noCandy = false,
             };
             candies.Add(ctx);
