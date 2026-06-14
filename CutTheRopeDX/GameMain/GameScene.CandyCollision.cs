@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Resolves candy-to-candy collisions for all independent candies, matching the engine's
         /// pairwise <c>handleCandyIntersection</c> loop. No-ops for single-candy levels.
-        /// Candies that are eaten or carried by a bubble do not collide.
+        /// Candies that are eaten, carried by a bubble, or captured in a lantern do not collide.
         /// </summary>
         private void ResolveCandyCollisions()
         {
@@ -22,14 +22,14 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < count; i++)
             {
                 CandyContext ca = candies[i];
-                if (ca.noCandy || ca.bubble != null)
+                if (!CandyCollision.ShouldParticipate(ca.noCandy, ca.bubble != null, ca.inLantern))
                 {
                     continue;
                 }
                 for (int j = i + 1; j < count; j++)
                 {
                     CandyContext cb = candies[j];
-                    if (cb.noCandy || cb.bubble != null)
+                    if (!CandyCollision.ShouldParticipate(cb.noCandy, cb.bubble != null, cb.inLantern))
                     {
                         continue;
                     }
