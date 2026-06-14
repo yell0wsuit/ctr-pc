@@ -1597,6 +1597,19 @@ namespace CutTheRopeDX.GameMain
                     star.ApplyImpulseDelta(Vect((0f - star.v.X) / bubbleDamping, ((0f - star.v.Y) / bubbleDamping) + bubbleLift), delta);
                 }
             }
+            // Per-candy bubble lift for additional candies. candies[0] handled above via `star`.
+            for (int ci = 1; ci < candies.Count; ci++)
+            {
+                CandyContext ctx = candies[ci];
+                if (ctx.bubble == null || ctx.noCandy)
+                {
+                    continue;
+                }
+                float lift = (gravityButton != null && !gravityNormal) ? -bubbleLift : bubbleLift;
+                ctx.point.ApplyImpulseDelta(
+                    Vect((0f - ctx.point.v.X) / bubbleDamping, ((0f - ctx.point.v.Y) / bubbleDamping) + lift),
+                    delta);
+            }
             if (activeRocket != null)
             {
                 float rocketDamping = ActivePhysicsConstants.RocketActiveVelocityDamping;
