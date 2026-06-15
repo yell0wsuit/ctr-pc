@@ -2055,17 +2055,18 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 hand.Update(delta);
-                if (hand.state == MechanicalHand.STATE_HAND_CANDY)
+                CandyContext heldCandy = HandHeldCandy(hand);
+                if (hand.state == MechanicalHand.STATE_HAND_CANDY && heldCandy != null)
                 {
-                    candy.drawX += hand.cPoint.pos.X - star.pos.X;
-                    candy.drawY += hand.cPoint.pos.Y - star.pos.Y;
-                    star.pos = hand.cPoint.pos;
+                    heldCandy.candy.drawX += hand.cPoint.pos.X - heldCandy.point.pos.X;
+                    heldCandy.candy.drawY += hand.cPoint.pos.Y - heldCandy.point.pos.Y;
+                    heldCandy.point.pos = hand.cPoint.pos;
 
                     if (hand.doRotateCandy)
                     {
                         if (hand.rotatingSegment != null)
                         {
-                            candyMain.rotation += hand.rotatingSegment.RotationDelta();
+                            heldCandy.candyMain.rotation += hand.rotatingSegment.RotationDelta();
                         }
                     }
                     else if (activeRocket != null)
@@ -2075,7 +2076,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
 
-                float distance = VectDistance(hand.cPoint.pos, star.pos);
+                // Default distance for the grab test: nearest grabbable candy to this idle hand.
+                CandyContext nearestCandy = NearestGrabbableCandy(hand, out float distance);
                 foreach (MechanicalHand otherHand in hands)
                 {
                     if (otherHand == null || otherHand == hand)
