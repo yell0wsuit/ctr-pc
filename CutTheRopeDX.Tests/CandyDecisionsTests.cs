@@ -60,6 +60,19 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AnyUneatenOutOfScreen_TrueWhenUneatenSplitHalfLeaves()
+        {
+            List<CandyView> candies = [];
+            List<CandyView> splitCandies = [Candy(999, 0, false), Candy(0, 0, false)];
+            static bool IsOut(Vector p)
+            {
+                return p.X >= 500;
+            }
+
+            Assert.True(CandyDecisions.AnyUneatenOutOfScreen(candies, splitCandies, IsOut));
+        }
+
+        [Fact]
         public void ShouldOpenMouth_TrueWhenUneatenCandyInRange()
         {
             Vector target = new(100, 100);

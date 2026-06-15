@@ -1868,6 +1868,19 @@ namespace CutTheRopeDX.GameMain
                     anyLeft = true;
                 }
             }
+            if (twoParts != 2)
+            {
+                if (!noCandyL && PointOutOfScreen(starL))
+                {
+                    noCandyL = true;
+                    anyLeft = true;
+                }
+                if (!noCandyR && PointOutOfScreen(starR))
+                {
+                    noCandyR = true;
+                    anyLeft = true;
+                }
+            }
             if (anyLeft)
             {
                 if (activeRocket != null)

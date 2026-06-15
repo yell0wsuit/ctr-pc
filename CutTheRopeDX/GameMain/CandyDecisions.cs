@@ -44,6 +44,16 @@ namespace CutTheRopeDX.GameMain
             return false;
         }
 
+        /// <summary>Loss condition across independent candies and active split candy halves.</summary>
+        public static bool AnyUneatenOutOfScreen(
+            IReadOnlyList<CandyView> candies,
+            IReadOnlyList<CandyView> splitCandies,
+            Func<Vector, bool> isOutOfScreen)
+        {
+            return AnyUneatenOutOfScreen(candies, isOutOfScreen)
+                || AnyUneatenOutOfScreen(splitCandies, isOutOfScreen);
+        }
+
         /// <summary>True when any uneaten candy is within <paramref name="range"/> of the target.</summary>
         public static bool ShouldOpenMouth(Vector targetPos, IReadOnlyList<CandyView> candies, float range)
         {
