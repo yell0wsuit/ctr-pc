@@ -1049,35 +1049,31 @@ namespace CutTheRopeDX.GameMain
             {
                 miceManager.Update(delta);
 
-                ConstraintedPoint targetStar = null;
-                GameObject targetCandy = null;
-                bool isLeft = false;
-
-                if (twoParts != 2)
+                if (twoParts == 2)
                 {
-                    if (!noCandyL)
+                    // Non-split: the mouse grabs the first in-range grabbable candy (single-occupancy).
+                    for (int ci = 0; ci < candies.Count; ci++)
                     {
-                        targetStar = starL;
-                        targetCandy = candyL;
-                        isLeft = true;
-                    }
-                    else if (!noCandyR)
-                    {
-                        targetStar = starR;
-                        targetCandy = candyR;
+                        CandyContext ctx = candies[ci];
+                        if (ctx.noCandy || ctx.inLantern || ctx.targetSock != null || ctx.targetBambooTube != null)
+                        {
+                            continue;
+                        }
+                        if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), !ctx.noCandy, miceManager.IsActiveMouseInRange(ctx.point)))
+                        {
+                            miceManager.GrabWithActiveMouse(ctx.point, ctx.candy, false);
+                            ExhaustRocketForCandy(ctx);
+                            TriggerSpecialTutorial(4);
+                            break;
+                        }
                     }
                 }
-                else if (!noCandy)
-                {
-                    targetStar = star;
-                    targetCandy = candy;
-                }
 
-                if (targetStar != null && targetCandy != null && !miceManager.ActiveMouseHasCandy() && miceManager.IsActiveMouseInRange(targetStar))
+                // Sync per-candy carried flag from the active mouse (covers grab + every drop path).
+                ConstraintedPoint carried = miceManager.ActiveMouseCarriedStar();
+                for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    miceManager.GrabWithActiveMouse(targetStar, targetCandy, isLeft);
-                    ExhaustRocketForCandy(candies[0]);
-                    TriggerSpecialTutorial(4);
+                    candies[ci].carriedByMouse = carried != null && candies[ci].point == carried;
                 }
             }
             float collisionHalfSize = RTPD(20);
