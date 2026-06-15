@@ -33,6 +33,11 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
+                    // Handclap exemption: two hand-held candies pass through each other (spec §4).
+                    if (ca.capturingHand != null && cb.capturingHand != null)
+                    {
+                        continue;
+                    }
                     float collisionDist = CandyCollisionRadius + CandyCollisionRadius;
                     float dx = ca.point.pos.X - cb.point.pos.X;
                     float dy = ca.point.pos.Y - cb.point.pos.Y;
