@@ -274,44 +274,56 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Starts bamboo tube teleport sequence for the main candy.
+        /// Starts bamboo tube teleport sequence for the primary candy (singleton entry point).
         /// </summary>
-        /// <param name="bambooTube">Bamboo tube that receives the candy.</param>
         public void OperateBambooTube(BambooTube bambooTube)
         {
-            if (bambooTube == null || targetBambooTube != null || twoParts != PARTS_NONE || noCandy)
+            OperateBambooTube(bambooTube, candies[0]);
+        }
+
+        /// <summary>
+        /// Starts bamboo tube teleport sequence for a specific candy.
+        /// </summary>
+        public void OperateBambooTube(BambooTube bambooTube, CandyContext ctx)
+        {
+            bool isPrimary = ctx == candies[0];
+            if (bambooTube == null || ctx.targetBambooTube != null || (isPrimary && twoParts != PARTS_NONE) || ctx.noCandy)
             {
                 return;
             }
 
-            ReleaseAllRopes(false);
+            ReleaseRopesForPoint(ctx.point);
             DetachActiveHands();
-            targetBambooTube = bambooTube;
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.15f);
-            noCandy = true;
-            star.disableGravity = true;
-            candy.passTransformationsToChilds = true;
-            candyMain.scaleX = candyMain.scaleY = 1f;
-            candyTop.scaleX = candyTop.scaleY = 1f;
-
-            if (candy.GetTimeline(1) != null)
+            ctx.targetBambooTube = bambooTube;
+            if (isPrimary)
             {
-                candy.RemoveTimeline(1);
+                targetBambooTube = bambooTube; // keep singleton alias in sync
+            }
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.15f);
+            ctx.noCandy = true;
+            ctx.point.disableGravity = true;
+            ctx.candy.passTransformationsToChilds = true;
+            ctx.candyMain.scaleX = ctx.candyMain.scaleY = 1f;
+            ctx.candyTop.scaleX = ctx.candyTop.scaleY = 1f;
+
+            if (ctx.candy.GetTimeline(1) != null)
+            {
+                ctx.candy.RemoveTimeline(1);
             }
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            float towardTubeX = candy.x + ((bambooTube.x - candy.x) * 0.3f);
-            float towardTubeY = candy.y + ((bambooTube.y - candy.y) * 0.3f);
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)ctx.candy.x, (int)ctx.candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            float towardTubeX = ctx.candy.x + ((bambooTube.x - ctx.candy.x) * 0.3f);
+            float towardTubeY = ctx.candy.y + ((bambooTube.y - ctx.candy.y) * 0.3f);
             timeline.AddKeyFrame(KeyFrame.MakePos((int)towardTubeX, (int)towardTubeY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(candy.scaleX, candy.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(ctx.candy.scaleX, ctx.candy.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0f, 0f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            candy.AddTimelinewithID(timeline, 1);
-            candy.PlayTimeline(1);
+            ctx.candy.AddTimelinewithID(timeline, 1);
+            ctx.candy.PlayTimeline(1);
             timeline.delegateTimelineDelegate = aniPool;
-            _ = aniPool.AddChild(candy);
+            _ = aniPool.AddChild(ctx.candy);
         }
 
         /// <summary>

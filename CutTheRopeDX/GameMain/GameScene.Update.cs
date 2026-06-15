@@ -918,14 +918,16 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                if (targetBambooTube == null
-                    && targetSock == null
-                    && twoParts == PARTS_NONE
-                    && !noCandy
-                    && bambooTube.TryCatchCandy(star))
+                for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    OperateBambooTube(bambooTube);
-                    CTRSoundMgr.PlaySound(Resources.Snd.ExpBambooChute);
+                    CandyContext ctx = candies[ci];
+                    bool splitActive = ci == 0 && twoParts != PARTS_NONE;
+                    bool inRange = !ctx.noCandy && bambooTube.TryCatchCandy(ctx.point);
+                    if (TransportEntry.ShouldEnter(!ctx.noCandy, ctx.targetSock != null, ctx.targetBambooTube != null, ctx.inLantern, splitActive, inRange))
+                    {
+                        OperateBambooTube(bambooTube, ctx);
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpBambooChute);
+                    }
                 }
 
                 bambooTube.Update(delta);
