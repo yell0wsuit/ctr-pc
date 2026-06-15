@@ -261,6 +261,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             gameWonTriggered = true;
+            outcomeTransitionActive = true;
 
             dd.CancelAllDispatches();
 
@@ -338,6 +339,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             gameLostTriggered = true;
+            outcomeTransitionActive = true;
 
             dd.CancelAllDispatches();
 

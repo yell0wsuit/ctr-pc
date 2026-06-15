@@ -2019,6 +2019,7 @@ namespace CutTheRopeDX.GameMain
                     return;
                 }
                 restartState = -1;
+                outcomeTransitionActive = false;
             }
         }
 

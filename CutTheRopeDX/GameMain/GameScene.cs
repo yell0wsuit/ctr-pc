@@ -214,6 +214,7 @@ namespace CutTheRopeDX.GameMain
         private void Selector_gameWon(FrameworkTypes param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
+            outcomeTransitionActive = false;
             gameSceneDelegate?.GameWon();
         }
 
@@ -1122,6 +1123,11 @@ namespace CutTheRopeDX.GameMain
         /// check from re-invoking GameWon every frame, which would cancel the pending win dispatch).
         /// </summary>
         public bool gameWonTriggered;
+
+        /// <summary>
+        /// Whether a game win/loss scene transition is currently active.
+        /// </summary>
+        public bool outcomeTransitionActive;
 
         /// <summary>
         /// Whether gravity is currently in the normal orientation.

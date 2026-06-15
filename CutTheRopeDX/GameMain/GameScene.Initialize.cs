@@ -103,6 +103,7 @@ namespace CutTheRopeDX.GameMain
             nightSleepOverlayVisible = false;
             gameLostTriggered = false;
             gameWonTriggered = false;
+            outcomeTransitionActive = false;
         }
 
         /// <summary>
