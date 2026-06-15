@@ -263,7 +263,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 1; ci < candies.Count; ci++)
             {
                 CandyContext extra = candies[ci];
-                if (!extra.noCandy)
+                if (!extra.noCandy && extra.targetSock == null)
                 {
                     if (!extra.inLantern)
                     {
