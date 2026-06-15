@@ -40,6 +40,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>True while this candy is captured in a lantern (was the singleton <c>isCandyInLantern</c>).</summary>
         public bool inLantern;
 
+        /// <summary>The sock currently teleporting this candy, if any (was the singleton <c>targetSock</c>).</summary>
+        public Sock targetSock;
+
+        /// <summary>Cached exit speed for the in-progress sock teleport (was the singleton <c>savedSockSpeed</c>).</summary>
+        public float savedSockSpeed;
+
+        /// <summary>The bamboo tube currently teleporting this candy, if any (was the singleton <c>targetBambooTube</c>).</summary>
+        public BambooTube targetBambooTube;
+
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {
