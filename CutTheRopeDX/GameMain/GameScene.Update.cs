@@ -1104,17 +1104,63 @@ namespace CutTheRopeDX.GameMain
                 sock3.rotation = 0f;
                 sock3.UpdateRotation();
                 float invRotation = DEGREES_TO_RADIANS(0f - originalSockRotation);
-                Vector ptr = VectRotate(star.posDelta, invRotation);
                 sock3.rotation = originalSockRotation;
                 sock3.UpdateRotation();
 
-                float bbX = star.pos.X - collisionHalfSize;
-                float bbY = star.pos.Y - collisionHalfSize;
                 float bbSize = collisionHalfSize * 2f;
 
-                bool candyHits = ptr.Y >= 0 &&
-                    (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bbX, bbY, bbSize, bbSize) ||
-                     LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bbX, bbY, bbSize, bbSize));
+                // Per-candy: each un-transiting candy can be caught by this idle sock independently.
+                bool anyCandyHits = false;
+                for (int ci = 0; ci < candies.Count; ci++)
+                {
+                    CandyContext ctx = candies[ci];
+                    Vector ptr = VectRotate(ctx.point.posDelta, invRotation);
+                    float bbX = ctx.point.pos.X - collisionHalfSize;
+                    float bbY = ctx.point.pos.Y - collisionHalfSize;
+                    bool candyHits = ptr.Y >= 0 &&
+                        (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bbX, bbY, bbSize, bbSize) ||
+                         LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bbX, bbY, bbSize, bbSize));
+                    anyCandyHits = anyCandyHits || candyHits;
+
+                    bool splitActive = ci == 0 && twoParts != PARTS_NONE;
+                    if (!wasIdle || !TransportEntry.ShouldEnter(!ctx.noCandy, ctx.targetSock != null, ctx.targetBambooTube != null, ctx.inLantern, splitActive, candyHits))
+                    {
+                        continue;
+                    }
+
+                    foreach (Sock sock4 in socks)
+                    {
+                        if (sock4 != sock3 && sock4.group == sock3.group)
+                        {
+                            sock4.state = Sock.SOCK_THROWING;
+                            sock4.idleTimeout = 0.8f;
+                            ReleaseRopesForPoint(ctx.point);
+                            DetachActiveHands();
+                            ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
+                            ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
+                            ctx.targetSock = sock4;
+                            if (ci == 0)
+                            {
+                                savedSockSpeed = ctx.savedSockSpeed; // keep singleton aliases in sync
+                                targetSock = sock4;
+                            }
+                            sock3.light.PlayTimeline(0);
+                            sock3.light.visible = true;
+
+                            if (SpecialEvents.IsXmas)
+                            {
+                                CTRSoundMgr.PlaySound(Resources.Snd.TeleportXmas);
+                            }
+                            else
+                            {
+                                CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
+                            }
+
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.1f);
+                            break;
+                        }
+                    }
+                }
 
                 bool bulbHits = false;
                 if (!wasIdle && lightBulbs.Count > 0)
@@ -1141,42 +1187,11 @@ namespace CutTheRopeDX.GameMain
 
                 if (!wasIdle)
                 {
-                    if (!candyHits && !bulbHits && sock3.idleTimeout == 0f)
+                    if (!anyCandyHits && !bulbHits && sock3.idleTimeout == 0f)
                     {
                         sock3.idleTimeout = 0.8f;
                     }
                     continue;
-                }
-
-                if (candyHits && targetSock == null && !isCandyInLantern)
-                {
-                    foreach (Sock sock4 in socks)
-                    {
-                        if (sock4 != sock3 && sock4.group == sock3.group)
-                        {
-                            sock4.state = Sock.SOCK_THROWING;
-                            sock4.idleTimeout = 0.8f;
-                            ReleaseAllRopes(false);
-                            DetachActiveHands();
-                            savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(star.v);
-                            savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
-                            targetSock = sock4;
-                            sock3.light.PlayTimeline(0);
-                            sock3.light.visible = true;
-
-                            if (SpecialEvents.IsXmas)
-                            {
-                                CTRSoundMgr.PlaySound(Resources.Snd.TeleportXmas);
-                            }
-                            else
-                            {
-                                CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
-                            }
-
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1f);
-                            break;
-                        }
-                    }
                 }
 
                 if (lightBulbs.Count > 0)
