@@ -7,39 +7,21 @@ namespace CutTheRopeDX.Tests
     public class GameOutcomeTransitionTests
     {
         [Fact]
-        public void CanTriggerWin_FalseAfterLossTriggered()
+        public void CanTriggerTerminalOutcome_FalseAfterLossTriggered()
         {
-            Assert.False(GameOutcomeTransition.CanTriggerWin(gameWonTriggered: false, gameLostTriggered: true));
+            Assert.False(GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered: false, gameLostTriggered: true));
         }
 
         [Fact]
-        public void CanTriggerWin_FalseAfterWinTriggered()
+        public void CanTriggerTerminalOutcome_FalseAfterWinTriggered()
         {
-            Assert.False(GameOutcomeTransition.CanTriggerWin(gameWonTriggered: true, gameLostTriggered: false));
+            Assert.False(GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered: true, gameLostTriggered: false));
         }
 
         [Fact]
-        public void CanTriggerWin_TrueBeforeAnyOutcome()
+        public void CanTriggerTerminalOutcome_TrueBeforeAnyOutcome()
         {
-            Assert.True(GameOutcomeTransition.CanTriggerWin(gameWonTriggered: false, gameLostTriggered: false));
-        }
-
-        [Fact]
-        public void CanTriggerLoss_FalseAfterWinTriggered()
-        {
-            Assert.False(GameOutcomeTransition.CanTriggerLoss(gameWonTriggered: true, gameLostTriggered: false));
-        }
-
-        [Fact]
-        public void CanTriggerLoss_FalseAfterLossTriggered()
-        {
-            Assert.False(GameOutcomeTransition.CanTriggerLoss(gameWonTriggered: false, gameLostTriggered: true));
-        }
-
-        [Fact]
-        public void CanTriggerLoss_TrueBeforeAnyOutcome()
-        {
-            Assert.True(GameOutcomeTransition.CanTriggerLoss(gameWonTriggered: false, gameLostTriggered: false));
+            Assert.True(GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered: false, gameLostTriggered: false));
         }
     }
 }

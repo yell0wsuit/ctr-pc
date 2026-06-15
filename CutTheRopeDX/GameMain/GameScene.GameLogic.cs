@@ -256,7 +256,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameWon()
         {
-            if (!GameOutcomeTransition.CanTriggerWin(gameWonTriggered, gameLostTriggered))
+            if (!GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered, gameLostTriggered))
             {
                 return;
             }
@@ -333,7 +333,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameLost()
         {
-            if (!GameOutcomeTransition.CanTriggerLoss(gameWonTriggered, gameLostTriggered))
+            if (!GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered, gameLostTriggered))
             {
                 return;
             }
