@@ -20,74 +20,86 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Completes pending candy teleportation through a bamboo tube or sock.
+        /// Completes pending candy teleportation through a bamboo tube or sock for one candy.
         /// </summary>
-        public void Teleport()
+        public void Teleport(CandyContext ctx)
         {
-            if (targetBambooTube != null)
+            bool isPrimary = ctx == candies[0];
+            if (isPrimary)
             {
-                noCandy = false;
-                RestoreCandyProperties();
-                targetBambooTube.ThrowCandy(star);
-                targetBambooTube.ThrowParticlesOut(particlesAniPool);
-                candy.PlayTimeline(2);
-                if (activeRocket != null)
+                ctx.targetBambooTube ??= targetBambooTube;
+                ctx.targetSock ??= targetSock;
+                ctx.savedSockSpeed = ctx.targetSock != null ? savedSockSpeed : ctx.savedSockSpeed;
+            }
+
+            if (ctx.targetBambooTube != null)
+            {
+                ctx.noCandy = false;
+                RestoreCandyProperties(ctx);
+                ctx.targetBambooTube.ThrowCandy(ctx.point);
+                ctx.targetBambooTube.ThrowParticlesOut(particlesAniPool);
+                ctx.candy.PlayTimeline(2);
+                if (isPrimary && activeRocket != null)
                 {
-                    Vector holeOut = targetBambooTube.HoleOut;
-                    Vector tubeCenter = Vect(targetBambooTube.x, targetBambooTube.y);
+                    Vector holeOut = ctx.targetBambooTube.HoleOut;
+                    Vector tubeCenter = Vect(ctx.targetBambooTube.x, ctx.targetBambooTube.y);
                     activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
                     activeRocket.startRotation = activeRocket.rotation;
                     activeRocket.startCandyRotation = 0f;
-                    candyMain.rotation = 0f;
+                    ctx.candyMain.rotation = 0f;
                     activeRocket.additionalAngle = 0f;
                     activeRocket.UpdateRotation();
                     activeRocket.point.posDelta = vectZero;
-                    activeRocket.point.pos = star.pos;
+                    activeRocket.point.pos = ctx.point.pos;
                     activeRocket.point.prevPos = activeRocket.point.pos;
                     activeRocket.point.v = vectZero;
                 }
                 else
                 {
-                    star.disableGravity = false;
+                    ctx.point.disableGravity = false;
                 }
 
-                targetBambooTube = null;
+                ctx.targetBambooTube = null;
+                if (isPrimary)
+                {
+                    targetBambooTube = null; // keep singleton alias in sync
+                }
                 return;
             }
 
-            if (targetSock != null)
+            if (ctx.targetSock != null)
             {
-                targetSock.light.PlayTimeline(0);
-                targetSock.light.visible = true;
+                ctx.targetSock.light.PlayTimeline(0);
+                ctx.targetSock.light.visible = true;
                 Vector v = Vect(0f, -16f);
-                v = VectRotate(v, DEGREES_TO_RADIANS(targetSock.rotation));
-                star.pos.X = targetSock.x;
-                star.pos.Y = targetSock.y;
-                star.pos = VectAdd(star.pos, v);
-                star.prevPos.X = star.pos.X;
-                star.prevPos.Y = star.pos.Y;
-                star.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(targetSock.rotation)), savedSockSpeed);
-                star.posDelta = VectDiv(star.v, 60f);
-                star.prevPos = VectSub(star.pos, star.posDelta);
+                v = VectRotate(v, DEGREES_TO_RADIANS(ctx.targetSock.rotation));
+                ctx.point.pos.X = ctx.targetSock.x;
+                ctx.point.pos.Y = ctx.targetSock.y;
+                ctx.point.pos = VectAdd(ctx.point.pos, v);
+                ctx.point.prevPos.X = ctx.point.pos.X;
+                ctx.point.prevPos.Y = ctx.point.pos.Y;
+                ctx.point.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(ctx.targetSock.rotation)), ctx.savedSockSpeed);
+                ctx.point.posDelta = VectDiv(ctx.point.v, 60f);
+                ctx.point.prevPos = VectSub(ctx.point.pos, ctx.point.posDelta);
 
-                // Reset rocket direction when candy teleports through sock
-                if (activeRocket != null)
+                if (isPrimary && activeRocket != null)
                 {
-                    activeRocket.point.pos = star.pos;
-
-                    // Maintain rocket momentum
-                    activeRocket.point.prevPos = star.prevPos;
-                    activeRocket.point.v = star.v;
-                    activeRocket.point.posDelta = star.posDelta;
-
-                    activeRocket.rotation = targetSock.rotation + DEG_90;
-                    activeRocket.startRotation = targetSock.rotation + DEG_90;
-                    activeRocket.startCandyRotation = candyMain.rotation;
+                    activeRocket.point.pos = ctx.point.pos;
+                    activeRocket.point.prevPos = ctx.point.prevPos;
+                    activeRocket.point.v = ctx.point.v;
+                    activeRocket.point.posDelta = ctx.point.posDelta;
+                    activeRocket.rotation = ctx.targetSock.rotation + DEG_90;
+                    activeRocket.startRotation = ctx.targetSock.rotation + DEG_90;
+                    activeRocket.startCandyRotation = ctx.candyMain.rotation;
                     activeRocket.additionalAngle = 0f;
                     activeRocket.UpdateRotation();
                 }
 
-                targetSock = null;
+                ctx.targetSock = null;
+                if (isPrimary)
+                {
+                    targetSock = null; // keep singleton alias in sync
+                }
             }
         }
 

@@ -248,22 +248,46 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Timeline selector callback that teleports the active object.
         /// </summary>
-        /// <param name="param">Unused timeline payload.</param>
+        /// <param name="param">Candy physics point payload.</param>
         private void Selector_teleport(FrameworkTypes param)
         {
-            Teleport();
+            Teleport(param is ConstraintedPoint p ? CandyForPoint(p) : candies[0]);
         }
 
         /// <summary>
-        /// Restores the candy transform and color after temporary visual effects.
+        /// Restores the candy transform and color after temporary visual effects (singleton = candies[0]).
         /// </summary>
         private void RestoreCandyProperties()
         {
-            candy.passTransformationsToChilds = false;
-            candyTop.scaleX = candyTop.scaleY = 0.71f;
-            candyMain.scaleX = candyMain.scaleY = 0.71f;
-            candy.scaleX = candy.scaleY = 0.71f;
-            candy.color = RGBAColor.solidOpaqueRGBA;
+            RestoreCandyProperties(candies[0]);
+        }
+
+        /// <summary>
+        /// Restores a specific candy's transform and color after temporary visual effects.
+        /// </summary>
+        private static void RestoreCandyProperties(CandyContext ctx)
+        {
+            ctx.candy.passTransformationsToChilds = false;
+            ctx.candyTop.scaleX = ctx.candyTop.scaleY = 0.71f;
+            ctx.candyMain.scaleX = ctx.candyMain.scaleY = 0.71f;
+            ctx.candy.scaleX = ctx.candy.scaleY = 0.71f;
+            ctx.candy.color = RGBAColor.solidOpaqueRGBA;
+        }
+
+        /// <summary>
+        /// Resolves the candy whose physics point is <paramref name="point"/>; falls back to candies[0].
+        /// </summary>
+        private CandyContext CandyForPoint(ConstraintedPoint point)
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (candies[i].point == point)
+                {
+                    return candies[i];
+                }
+            }
+
+            return candies[0];
         }
 
         /// <summary>
