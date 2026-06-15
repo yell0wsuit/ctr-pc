@@ -1337,71 +1337,83 @@ namespace CutTheRopeDX.GameMain
                             rocket.point.ChangeRestLengthToFor(dist, rocketStar);
                         }
                     }
-                    if (
-                        rocket.state == Rocket.STATE_ROCKET_IDLE &&
-                        GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, candy) &&
-                        !noCandy &&
-                        !isCandyInLantern &&
-                        !(miceManager?.ActiveMouseHasCandy() ?? false)
-                    )
+                    if (rocket.state == Rocket.STATE_ROCKET_IDLE)
                     {
-                        rocket.mover?.Pause();
-                        rocket.startRotation = rocket.rotation;
-                        if (handHoldingCandy)
+                        for (int ci = 0; ci < candies.Count; ci++)
                         {
-                            rocket.point.pos = star.pos;
-                            rocket.point.AddConstraintwithRestLengthofType(star, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
-                            rocket.state = Rocket.STATE_ROCKET_FLY;
-                        }
-                        else
-                        {
-                            rocket.point.AddConstraintwithRestLengthofType(star, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
-                            rocket.state = Rocket.STATE_ROCKET_DIST;
-                        }
-                        lastCandyRotateDelta = 0f;
-                        Vector deltaPos = VectSub(star.pos, star.prevPos);
-                        star.prevPos = VectAdd(star.prevPos, VectDiv(deltaPos, star.disableGravity ? 2f : 1.25f));
-                        star.disableGravity = true;
-                        if (activeRocket != null)
-                        {
-                            activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                            activeRocket.StopAnimation();
-                        }
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketStart);
-                        _ = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
-                        activeRocket = rocket;
-                        rocket.isOperating = -1;
-                        rocket.startCandyRotation = candyMain.rotation;
+                            CandyContext ctx = candies[ci];
+                            bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, ctx.candy);
+                            bool mouseHasCandy = miceManager?.ActiveMouseHasCandy() ?? false;
+                            if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, mouseHasCandy, intersects))
+                            {
+                                continue;
+                            }
 
-                        Image grid = Image.Image_createWithResID(Resources.Img.ObjRocket);
-                        grid.DoRestoreCutTransparency();
+                            rocket.mover?.Pause();
+                            rocket.startRotation = rocket.rotation;
+                            if (handHoldingCandy)
+                            {
+                                rocket.point.pos = ctx.point.pos;
+                                rocket.point.AddConstraintwithRestLengthofType(ctx.point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                                rocket.state = Rocket.STATE_ROCKET_FLY;
+                            }
+                            else
+                            {
+                                rocket.point.AddConstraintwithRestLengthofType(ctx.point, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                                rocket.state = Rocket.STATE_ROCKET_DIST;
+                            }
+                            lastCandyRotateDelta = 0f;
+                            Vector deltaPos = VectSub(ctx.point.pos, ctx.point.prevPos);
+                            ctx.point.prevPos = VectAdd(ctx.point.prevPos, VectDiv(deltaPos, ctx.point.disableGravity ? 2f : 1.25f));
+                            ctx.point.disableGravity = true;
 
-                        if (new RocketSparks().InitWithTotalParticlesAngleandImageGrid(40, rocket.rotation, grid) is RocketSparks rocketSparks)
-                        {
-                            rocketSparks.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
-                            rocketSparks.x = rocket.x;
-                            rocketSparks.y = rocket.y;
-                            rocketSparks.StartSystem(0);
-                            _ = particlesAniPool.AddChild(rocketSparks);
-                            rocket.particles = rocketSparks;
-                        }
+                            // Exhaust any rocket already bound to this candy before re-binding (one-time-use safety).
+                            if (ctx.activeRocket != null && ctx.activeRocket != rocket)
+                            {
+                                ExhaustRocketForCandy(ctx);
+                            }
 
-                        if (new RocketClouds().InitWithTotalParticlesAngleandImageGrid(20, rocket.rotation, grid) is RocketClouds rocketClouds)
-                        {
-                            rocketClouds.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
-                            rocketClouds.x = rocket.x;
-                            rocketClouds.y = rocket.y;
-                            rocketClouds.StartSystem(0);
-                            _ = particlesAniPool.AddChild(rocketClouds);
-                            rocket.cloudParticles = rocketClouds;
-                        }
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketStart);
+                            _ = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
+                            ctx.activeRocket = rocket;
+                            if (ci == 0)
+                            {
+                                activeRocket = rocket; // keep singleton alias in sync
+                            }
+                            rocket.isOperating = -1;
+                            rocket.startCandyRotation = ctx.candyMain.rotation;
 
-                        rocket.StartAnimation();
-                        int count = Preferences.GetIntForKey("PREFS_ROCKETS") + 1;
-                        Preferences.SetIntForKey(count, "PREFS_ROCKETS", false);
-                        if (count >= 100)
-                        {
-                            CTRRootController.PostAchievementName("acPartyAnimal", ACHIEVEMENT_STRING("\"Party Animal\""));
+                            Image grid = Image.Image_createWithResID(Resources.Img.ObjRocket);
+                            grid.DoRestoreCutTransparency();
+
+                            if (new RocketSparks().InitWithTotalParticlesAngleandImageGrid(40, rocket.rotation, grid) is RocketSparks rocketSparks)
+                            {
+                                rocketSparks.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
+                                rocketSparks.x = rocket.x;
+                                rocketSparks.y = rocket.y;
+                                rocketSparks.StartSystem(0);
+                                _ = particlesAniPool.AddChild(rocketSparks);
+                                rocket.particles = rocketSparks;
+                            }
+
+                            if (new RocketClouds().InitWithTotalParticlesAngleandImageGrid(20, rocket.rotation, grid) is RocketClouds rocketClouds)
+                            {
+                                rocketClouds.particlesDelegate = new Particles.ParticlesFinished(particlesAniPool.ParticlesFinished);
+                                rocketClouds.x = rocket.x;
+                                rocketClouds.y = rocket.y;
+                                rocketClouds.StartSystem(0);
+                                _ = particlesAniPool.AddChild(rocketClouds);
+                                rocket.cloudParticles = rocketClouds;
+                            }
+
+                            rocket.StartAnimation();
+                            int count = Preferences.GetIntForKey("PREFS_ROCKETS") + 1;
+                            Preferences.SetIntForKey(count, "PREFS_ROCKETS", false);
+                            if (count >= 100)
+                            {
+                                CTRRootController.PostAchievementName("acPartyAnimal", ACHIEVEMENT_STRING("\"Party Animal\""));
+                            }
+                            break;
                         }
                     }
                 }
