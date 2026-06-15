@@ -356,11 +356,7 @@ namespace CutTheRopeDX.GameMain
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
             CalculateScore();
             ReleaseAllRopes(false);
-            if (activeRocket != null)
-            {
-                activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                activeRocket.StopAnimation();
-            }
+            ExhaustAllActiveRockets();
             DetachActiveSnails();
             DetachActiveHands();
 
@@ -413,11 +409,7 @@ namespace CutTheRopeDX.GameMain
             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
-            if (activeRocket != null)
-            {
-                activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                activeRocket.StopAnimation();
-            }
+            ExhaustAllActiveRockets();
             DetachActiveHands();
 
             // Make the mouse retreat and lock it from advancing to next mouse

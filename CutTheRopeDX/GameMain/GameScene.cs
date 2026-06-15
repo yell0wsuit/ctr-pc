@@ -332,10 +332,15 @@ namespace CutTheRopeDX.GameMain
         /// <param name="r">The rocket that has exhausted its fuel.</param>
         public void Exhausted(Rocket r)
         {
-            if (activeRocket == r)
+            CandyContext ctx = RocketBoundCandy(r);
+            if (ctx != null)
             {
-                activeRocket = null;
-                star.disableGravity = false;
+                ctx.activeRocket = null;
+                ctx.point.disableGravity = false;
+                if (ctx == candies[0])
+                {
+                    activeRocket = null; // keep singleton alias in sync
+                }
             }
         }
 

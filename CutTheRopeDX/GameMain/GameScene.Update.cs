@@ -967,11 +967,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         isCandyInLantern = true; // alias for not-yet-converted sock/rocket/hand guards
                     }
-                    if (activeRocket != null)
-                    {
-                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                        activeRocket.StopAnimation();
-                    }
+                    ExhaustRocketForCandy(ctx);
                     ctx.candy.passTransformationsToChilds = true;
                     ctx.candyMain.scaleX = ctx.candyMain.scaleY = 1f;
                     ctx.candyTop.scaleX = ctx.candyTop.scaleY = 1f;
@@ -1080,11 +1076,7 @@ namespace CutTheRopeDX.GameMain
                 if (targetStar != null && targetCandy != null && !miceManager.ActiveMouseHasCandy() && miceManager.IsActiveMouseInRange(targetStar))
                 {
                     miceManager.GrabWithActiveMouse(targetStar, targetCandy, isLeft);
-                    if (activeRocket != null)
-                    {
-                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                        activeRocket.StopAnimation();
-                    }
+                    ExhaustRocketForCandy(candies[0]);
                     TriggerSpecialTutorial(4);
                 }
             }
@@ -1506,11 +1498,7 @@ namespace CutTheRopeDX.GameMain
                             candyBreak.y = candy.y;
                             noCandy = true;
                         }
-                        if (activeRocket != null)
-                        {
-                            activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                            activeRocket.StopAnimation();
-                        }
+                        ExhaustAllActiveRockets();
                         candyBreak.StartSystem(5);
                         _ = aniPool.AddChild(candyBreak);
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
@@ -1621,8 +1609,7 @@ namespace CutTheRopeDX.GameMain
                     if (activeRocket.state == Rocket.STATE_ROCKET_FLY)
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
-                        activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                        activeRocket.StopAnimation();
+                        ExhaustAllActiveRockets();
                     }
                 }
                 star.ApplyImpulseDelta(Vect(-star.v.X / damping, (-star.v.Y / damping) + verticalWaterImpulse), delta);
@@ -1910,11 +1897,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (anyLeft)
             {
-                if (activeRocket != null)
-                {
-                    activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-                    activeRocket.StopAnimation();
-                }
+                ExhaustAllActiveRockets();
                 if (restartState != 0)
                 {
                     int candiesLostCount = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;
