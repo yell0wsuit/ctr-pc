@@ -29,6 +29,18 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AllConsumed_FalseWhenCandyIsTemporarilyInTransport()
+        {
+            List<CandyView> candies =
+            [
+                new CandyView(new Vector(0, 0), Consumed: true, InTransport: true),
+                new CandyView(new Vector(1, 1), Consumed: true)
+            ];
+
+            Assert.False(CandyDecisions.AllConsumed(candies));
+        }
+
+        [Fact]
         public void AllConsumed_FalseWhenEmpty()
         {
             Assert.False(CandyDecisions.AllConsumed([]));

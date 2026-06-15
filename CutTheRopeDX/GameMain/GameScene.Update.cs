@@ -1854,17 +1854,13 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
 
-                // Win when every candy has been consumed.
-                bool allConsumed = candies.Count > 0;
+                // Win when every candy has been consumed, excluding candies hidden in transport.
+                List<CandyView> allCandyViews = new(candies.Count);
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    if (!candies[ci].noCandy)
-                    {
-                        allConsumed = false;
-                        break;
-                    }
+                    allCandyViews.Add(candies[ci].ToView());
                 }
-                if (allConsumed)
+                if (CandyDecisions.AllConsumed(allCandyViews))
                 {
                     GameWon();
                     return;

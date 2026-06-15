@@ -52,7 +52,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {
-            return new CandyView(point.pos, noCandy);
+            return new CandyView(point.pos, noCandy, targetSock != null || targetBambooTube != null);
         }
     }
 }

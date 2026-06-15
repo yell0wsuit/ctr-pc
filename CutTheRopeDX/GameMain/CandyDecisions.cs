@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
             }
             for (int i = 0; i < candies.Count; i++)
             {
-                if (!candies[i].Consumed)
+                if (!candies[i].Consumed || candies[i].InTransport)
                 {
                     return false;
                 }
