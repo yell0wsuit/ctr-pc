@@ -2109,15 +2109,26 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
 
-                if (hand.state == MechanicalHand.STATE_HAND_IDLE && distance < MechanicalHand.MH_GRAB_DISTANCE && !noCandy && !isCandyInLantern && targetSock == null)
+                if (nearestCandy != null
+                    && HandGrab.ShouldGrab(
+                        hand.state == MechanicalHand.STATE_HAND_IDLE,
+                        !nearestCandy.noCandy,
+                        nearestCandy.inLantern,
+                        nearestCandy.targetSock != null,
+                        distance < MechanicalHand.MH_GRAB_DISTANCE))
                 {
+                    CandyContext ctx = nearestCandy;
+
+                    // Hand-stealing: release any other hand currently holding this same candy.
                     if (hands.Count > 1)
                     {
                         foreach (MechanicalHand otherHand in hands)
                         {
-                            if (otherHand != null && otherHand != hand && otherHand.state == MechanicalHand.STATE_HAND_CANDY)
+                            if (otherHand != null && otherHand != hand
+                                && otherHand.state == MechanicalHand.STATE_HAND_CANDY
+                                && ctx.capturingHand == otherHand)
                             {
-                                otherHand.cPoint.RemoveConstraint(star);
+                                otherHand.cPoint.RemoveConstraint(ctx.point);
                                 otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
                                 otherHand.releaseSoundPlayed = false;
                                 reorderHands = true;
@@ -2126,20 +2137,27 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
 
-                    hand.cPoint.AddConstraintwithRestLengthofType(star, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    hand.cPoint.AddConstraintwithRestLengthofType(ctx.point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                     hand.state = MechanicalHand.STATE_HAND_CANDY;
                     hand.releaseSoundPlayed = false;
                     selectedHandIndex = hands.IndexOf(hand);
+                    ctx.capturingHand = hand;
 
                     ResetConveyor();
                     BlockConveyor();
 
-                    if (candyBubble != null)
+                    if (ctx == candies[0] && candyBubble != null)
                     {
                         candyBubble = null;
                         candyBubbleAnimation.visible = false;
                         Vector clawPosition = hand.ClawPosition();
                         PopBubbleAtXY(clawPosition.X, clawPosition.Y);
+                    }
+                    else if (ctx.bubble != null)
+                    {
+                        Vector clawPosition = hand.ClawPosition();
+                        PopBubbleAtXY(clawPosition.X, clawPosition.Y);
+                        PopCandyBubble(ctx);
                     }
 
                     if (activeRocket != null)
@@ -2154,8 +2172,8 @@ namespace CutTheRopeDX.GameMain
 
                     DetachActiveSnails();
                     miceManager?.ForceDropCandy();
-                    RestoreCandyProperties();
-                    hand.AnimateCatchWithCandyPartsandAnimationsPool([candy, candyMain, candyTop], aniPool);
+                    RestoreCandyProperties(ctx);
+                    hand.AnimateCatchWithCandyPartsandAnimationsPool([ctx.candy, ctx.candyMain, ctx.candyTop], aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
                 }
 
