@@ -1552,6 +1552,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y)) && !noCandy;
                 }
+                bool anyCandyHit = flag8;
                 if (flag8)
                 {
                     DetachActiveHands();
@@ -1571,6 +1572,25 @@ namespace CutTheRopeDX.GameMain
                         HandleBouncePtDelta(bouncer, star, delta);
                     }
                 }
+                // Additional candies (index 1+) bounce independently; never split-candy.
+                for (int ci = 1; ci < candies.Count; ci++)
+                {
+                    CandyContext ctx = candies[ci];
+                    if (ctx.noCandy)
+                    {
+                        continue;
+                    }
+                    if (BarrierCollision.Hits(
+                        bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y,
+                        bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y,
+                        ctx.point.pos.X, ctx.point.pos.Y, ctx.point.prevPos.X, ctx.point.prevPos.Y,
+                        bouncerCollisionRadius))
+                    {
+                        anyCandyHit = true;
+                        DetachActiveHands();
+                        HandleBouncePtDelta(bouncer, ctx.point, delta);
+                    }
+                }
                 bool bulbHit = false;
                 if (lightBulbs.Count > 0)
                 {
@@ -1587,7 +1607,7 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
                 }
-                if (!flag8 && !bulbHit)
+                if (!anyCandyHit && !bulbHit)
                 {
                     bouncer.skip = false;
                 }
