@@ -333,7 +333,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameLost()
         {
-            if (gameLostTriggered)
+            if (!GameOutcomeTransition.CanTriggerLoss(gameWonTriggered, gameLostTriggered))
             {
                 return;
             }

@@ -9,5 +9,10 @@ namespace CutTheRopeDX.GameMain
         {
             return !gameWonTriggered && !gameLostTriggered;
         }
+
+        public static bool CanTriggerLoss(bool gameWonTriggered, bool gameLostTriggered)
+        {
+            return !gameWonTriggered && !gameLostTriggered;
+        }
     }
 }
