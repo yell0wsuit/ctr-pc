@@ -297,30 +297,42 @@ namespace CutTheRopeDX.GameMain
                                     }
                                 }
                             }
-                            else if (VectDistance(Vect(grab.x, grab.y), star.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding)
+                            else
                             {
-                                Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
-                                bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
-                                grab.hideRadius = true;
-                                grab.SetRope(bungee3);
-                                if (activeRocket != null)
+                                for (int ci = 0; ci < candies.Count; ci++)
                                 {
-                                    activeRocket.anglePercent = 0f;
-                                    activeRocket.perpSetted = false;
-                                    activeRocket.startRotation += activeRocket.additionalAngle;
-                                    activeRocket.additionalAngle = 0f;
-                                }
+                                    CandyContext ctx = candies[ci];
+                                    bool inRange = !ctx.noCandy
+                                        && VectDistance(Vect(grab.x, grab.y), ctx.point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
+                                    if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.rope == null, !ctx.noCandy, inRange))
+                                    {
+                                        continue;
+                                    }
 
-                                // If mouse already has this candy, immediately cut the rope
-                                if (miceManager?.ActiveMouseHasCandy() ?? false)
-                                {
-                                    bungee3.SetCut(bungee3.parts.Count - 2);
-                                }
+                                    Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, ctx.point, ctx.point.pos.X, ctx.point.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
+                                    bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
+                                    grab.hideRadius = true;
+                                    grab.SetRope(bungee3);
+                                    if (ctx.activeRocket != null)
+                                    {
+                                        ctx.activeRocket.anglePercent = 0f;
+                                        ctx.activeRocket.perpSetted = false;
+                                        ctx.activeRocket.startRotation += ctx.activeRocket.additionalAngle;
+                                        ctx.activeRocket.additionalAngle = 0f;
+                                    }
 
-                                CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
-                                if (grab.mover != null)
-                                {
-                                    CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                    // If mouse already has this candy, immediately cut the rope
+                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                    {
+                                        bungee3.SetCut(bungee3.parts.Count - 2);
+                                    }
+
+                                    CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+                                    if (grab.mover != null)
+                                    {
+                                        CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                                    }
+                                    break;
                                 }
                             }
                             if (grab.rope == null && lightBulbs.Count > 0)
