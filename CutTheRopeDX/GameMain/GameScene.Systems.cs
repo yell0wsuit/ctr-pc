@@ -252,6 +252,15 @@ namespace CutTheRopeDX.GameMain
                     HandlePumpFlowPtSkin(p, starR, candyR);
                 }
             }
+            // Additional candies (index 1+) are pumped independently; never split-candy.
+            for (int ci = 1; ci < candies.Count; ci++)
+            {
+                CandyContext ctx = candies[ci];
+                if (!ctx.noCandy)
+                {
+                    HandlePumpFlowPtSkin(p, ctx.point, ctx.candy);
+                }
+            }
             if (lightBulbs.Count > 0)
             {
                 for (int i = 0; i < lightBulbs.Count; i++)
