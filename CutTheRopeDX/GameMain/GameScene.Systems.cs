@@ -205,6 +205,16 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
+            // Additional candies (index 1+) are lifted independently; never split-candy.
+            for (int ci = 1; ci < candies.Count; ci++)
+            {
+                CandyContext ctx = candies[ci];
+                if (!ctx.noCandy)
+                {
+                    _ = ApplyImpulse(ctx.point);
+                }
+            }
+
             if (lightBulbs.Count > 0)
             {
                 for (int i = 0; i < lightBulbs.Count; i++)
